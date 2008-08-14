@@ -1,0 +1,668 @@
+/*
+accessibilite.css
+Mise en page pour validation et accessibilité
+@version $Id$
+*/
+
+
+/***********************
+       Général
+***********************/
+/* --- Décoration du texte --- */
+.souligne {
+	text-decoration: underline;
+	font-size: smaller;
+}
+.texte_gras {
+	font-weight: bold;
+}
+.txt_centre_pt_cap {
+	text-align:center;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+.invisible {
+	display:none;
+}
+.menu_retour{
+	font-style: normal;
+	font-weight: bold;
+}
+/* --- aligne le texte --- */
+/* .txt_centre {
+	text-align:center;
+} */
+.centre_texte {
+	text-align: center;
+}
+.droite_texte {
+	text-align: right;
+}
+.txt_gauche {
+	text-align: left;
+}
+.decale_bas {
+	text-align: center;
+	margin: 2em;
+}
+/* couleur texte */
+.bleu {
+	color:blue;
+	font-variant: small-caps;
+}
+/* taille texte */
+.petit_h2 {
+	font-size: 11pt;
+	line-height: 1em;
+}
+.h2_label {
+	font-size: 11pt;
+	line-height: 1em;
+	font-variant: normal;
+	margin: 0em;
+	margin-left: 1em;
+	padding-bottom: 0em;
+}
+/* --- Tableaux --- */
+/* Tableau avec 3 colonnes equilibrees*/
+.centre_table {
+	width: 100%;
+	min-width: 640px;
+	padding: 0.1em;
+	position: relative;
+	overflow: auto;
+}
+.ct_col_gauche {
+	width: 33%;
+	float: left;
+	text-align: left;
+}
+.ct_col_centre{
+	text-align: center;
+}
+.ct_col_droit{
+	width: 33%;
+	float: right;
+	text-align: right;
+}
+/* place un tableau à droite */
+.ct_col_droit table {
+	margin-left: auto;
+	text-align: right;
+}
+/* Tableau avec 3 colonnes 30% 50% 20% + logo*/
+.entete_releve_notes {
+	width: 100%;
+	height: 100%;
+	min-width: 640px;
+	padding: 0.3em;
+	position: relative;
+	overflow: auto;
+}
+.entete_releve_notes_gauche {
+	width: 30%;
+	float: left;
+	margin-top: 1em;
+	text-align: left;
+}
+.entete_releve_notes_centre{
+	text-align: center;
+	margin-left: 30%;
+}
+.entete_releve_notes_droit{
+	width: 20%;
+	float: right;
+	margin-top: 1em;
+	text-align: center;
+}
+.entete_releve_notes_logo{
+	width: 120px;
+	float: right;
+	text-align: center;
+}
+
+
+/***********************
+       Accueil.php
+***********************/
+
+#messagerie {
+	width: 70%;
+	padding: 5px 5px 5px 10px;
+	border: 1px dashed #0000AA;
+	background-repeat: no-repeat;
+	background-position: 0% 0%;
+	margin-right:auto;
+	margin-left:auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+/* menu */
+.accueil {
+	width: 68%;
+	margin-right:auto;
+	margin-left:auto;
+	margin-bottom:0px;
+	border: none;
+	text-align: left;
+	padding-left: 20px;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	font-size: 11pt;
+	font-weight: bold;
+	color: black;
+	background-image: url("./images/background/left-top-corner.png");
+	background-repeat: no-repeat;
+	background-position: -1px 0%;
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+table.menu {
+	width: 70%;
+	border-collapse: separate;
+	border-spacing: 0px;
+	border: none;
+	border-bottom: 1px solid lightgrey;
+	margin-right:auto;
+	margin-left:auto;
+	margin-top: 0px;
+	margin-bottom: 10px;
+	padding-left: 0px;
+	background-image:none;
+	background-repeat: no-repeat;
+	background-position: -1px 0%;
+}
+table.menu td {
+	border: 1px solid lightgrey;
+	border-bottom: none;
+	border-top: 1px solid lightgrey;
+	border-left: 1px solid lightgrey;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.accueil img {
+	position: relative;
+	bottom: -3px;
+}
+
+/********************************************
+ --- Cahier de texte : consultation.php ---
+********************************************/
+
+/* --- Affichage message page de garde --- */
+.gepi_garde {
+	text-align:center;
+	font: normal small-caps normal 14pt Verdana;
+	line-height: 125%;
+}
+
+/* === Mise en page 2 colonnes  === */
+.centre_cont_texte {
+	width: 100%;
+	min-width: 640px;
+	margin-right: auto;
+	margin-left: auto;
+	position: relative;
+	overflow: auto;
+}
+.cct_gauche {
+	width: 29%;
+	float: left;
+}
+.cct_gauche h2{
+	margin: 0px;
+}
+.cct_droit {
+	width: 69%;
+	margin-right: 0px;
+	float: right;
+}
+
+/* === Mise en page affichage des notices de cahier de texte === */
+/*--- Notices travaux à faire ---*/
+/* border-color: $couleur_bord_tableau_notice; à mettre dans les styles perso  */
+
+/* mise en page */
+.cel_trav_futur {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 5px;
+	margin-top: 3px;
+	padding: 2px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #6F6968;
+	background-color: #FFFF80;
+	padding: 2px;
+}
+.titre_a_faire {
+	margin: 0em;
+	margin-left: 1em;
+	padding-bottom: 0em;
+	line-height: 1em;
+	color: #FF4444;
+}
+.matiere_a_faire {
+	margin: 1px;
+	margin-bottom: 3px;
+	padding: 2px;
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #FFFFDF;
+	color: green;
+}
+.a_faire_titre {
+	margin: 1px;
+	padding: 2px;
+	text-align: left;
+	color: green;
+}
+.sem_du_au {
+	margin-left: 0px;
+	color:blue;
+}
+/* polices */
+.titre_a_faire {
+	font-variant: small-caps;
+	font-weight: bold;
+	font-size: 11pt;
+}
+.a_faire_titre {
+	font-variant: small-caps;
+	text-decoration: underline;
+	font-size: smaller;
+}
+.matiere_a_faire {
+	font-variant: small-caps;
+	font-weight: bold;
+}
+.sem_du_au {
+	font-variant: small-caps;
+	font-size: 10pt;
+}
+/*--- Fin notices travaux à faire ---*/
+
+/*--- Notices informations generales ---*/
+.ct_info_generale {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 5px;
+	margin-top: 3px;
+	padding: 2px;
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #ACACFF;
+}
+.tr_info_generale {
+	margin: 2px;
+	padding: 4px;
+	border-color: #6F6968;
+	background-color: #EFEFFF;
+}
+/*--- Fin notices informations générales ---*/
+
+/*--- Titre des notices séances---*/
+.titre_notice{
+	padding: 0em;
+	text-align:center;
+}
+/*--- Fin titre des notices séances ---*/
+
+/*--- Choix dates ---*/
+.cdt_dates {
+	width: 50%;
+	margin: auto;
+	border-width: 0px;
+	position: relative;
+	overflow: auto;
+	text-align:center;
+}
+.cdt_dates img{
+	height: 16px;
+	width: 16px;
+}
+.cdt_dates_jour {
+	width: 50%;
+	float: left;
+}
+.cdt_dates_precedent {
+	width: 10%;
+	float: left;
+}
+.cdt_dates_aujourdhui {
+	width: 75%;
+	margin: auto;
+	padding: 0em 0.1em;
+	text-align:center;
+	float: left;
+}
+.cdt_dates_aujourdhui a{
+	text-align:center;
+}
+.cdt_dates_suivant {
+	width: 10%;
+	float: right;
+}
+/*--- Fin choix dates ---*/
+
+/*--- Notices cours ---*/
+.ct_jour {
+	margin: 2px;
+	padding: 2px;
+	border-style:solid;
+	border-width:0px;
+	border-color:#6F6968;
+}
+.cdt_titre_not_dev {
+	margin: 0px;
+	padding: 2px;
+	border-style: solid;
+	border-width: 0px;
+}
+.cdt_fond_not_dev {
+	margin: 0px;
+	padding: 0.5px 10px 0.5px 10px;
+	border-style: solid;
+	border-width: 0px;
+	border-color: #6F6968;
+	background-color: #F6F7EF;
+}
+.cdt_une_notice {
+	width: 100%;
+	margin: auto;
+	padding: 5px 0px;
+	border-style:solid;
+	border-width:0px;
+}
+.cdt_une_notice h3 {
+	margin: 0px;
+	padding: 0px;
+	font-variant: normal;
+	font-weight: bold;
+	font-size: 11pt;
+}
+
+/* Classes des notices du cahier de texte */
+.color_fond_notices_c {
+	background-color: #C7FF99;
+}
+.couleur_entete_fond_c {
+	background-color: #C7FF99;
+}
+.couleur_cellule_c {
+	background-color: #E5FFCF;
+}
+.couleur_cellule_alt_c {
+	background-color: #D3FFAF;
+}
+.color_fond_notices_t {
+	background-color: #FFCCCF;
+}
+.couleur_entete_fond_t {
+	background-color: #FFCCCF;
+}
+.couleur_cellule_t {
+	background-color: #FFEFF0;
+}
+.couleur_cellule_alt_t {
+	background-color: #FFDFE2;
+}
+.color_fond_notices_i {
+	background-color: #ACACFF;
+}
+.couleur_entete_fond_i {
+	background-color: #EFEFFF;
+}
+.couleur_cellule_i {
+	background-color: #EFEFFF;
+}
+.couleur_cellule_alt_i {
+	background-color: #EFEFFF;
+}
+.color_fond_notices_f {
+	background-color: #FFFF80;
+}
+.couleur_cellule_f {
+	background-color: #FFFFDF;
+}
+.color_police_travaux {
+	color: #FF4444;
+}
+.color_police_matieres  {
+	color: #00EE00;
+}
+.couleur_bord_tableau_notice {
+	border-color: #6F6968;
+}
+.couleur_cellule_gen {
+	background-color: #F6F7EF;
+}
+
+
+/********************************************
+ --- Cahier de texte : see_all.php ---
+********************************************/
+.grande_ligne {
+	font-variant: small-caps;
+	font-weight: bold;
+	font-size: 11pt;
+	border-bottom: 2px solid #6F6968;
+}
+.see_all_general {
+	width: 100%;
+	margin-left: 1em;
+	border: 0px solid #6F6968;
+}
+.see_all_h3 {
+	margin: 0px;
+	margin-bottom: 2px;
+	padding: 0px;
+	font-variant: normal;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+.see_all_notice {
+	margin-bottom: 0.7em;
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	width: 100%:
+}
+.see_all_compte_rendu {
+	background-color: #C7FF99;
+}
+.see_all_a_faire {
+	background-color: #FFCCCF;
+}
+
+
+/*************************************************
+ --- Paramétrage couleurs : param_couleurs.php ---
+*************************************************/
+#tab h2 {
+	padding-left: 1em;
+	font-variant: normal;
+	font-size: 11pt;
+	line-height: 1em;
+}
+#tab h3 {
+	margin: 0px;
+	padding-left: 1.3em;
+	font-variant: normal;
+	font-weight: bold;
+	font-size: 11pt;
+}
+#tab p{
+	padding-left: 4.5em;
+}
+.tableau_param_couleur {
+	padding-left: 3em;
+}
+.fond_blanc {
+	background-color:white;
+}
+.tableau_param_couleur td{
+	padding: 0.1em 0.3em;
+	text-align:center;
+	border: 1px solid black;
+}
+.tableau_change_couleur {
+	margin: 5px 1.5em;
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+.panneau_secour {
+	width: 250px;
+	margin: 3px auto;
+	border: 1px solid black;
+	padding:1em;
+	background-color:white;
+	text-align:center;
+	color:red;
+}
+
+
+
+/*******************************************************
+ --- Paramétrage couleurs notices du cahier de texte ---
+*******************************************************/
+
+/* Notices de type compte-rendu */
+/* $color_fond_notices["c"] = "#C7FF99"; */
+.color_fond_notices_c {
+	background-color: #C7FF99;
+}
+/* $couleur_entete_fond["c"] = '#C7FF99'; */
+.couleur_entete_fond_c {
+	background-color: #C7FF99;
+}
+.couleur_entete_fond_c {
+	background-color: #C7FF99;
+}
+/* $couleur_cellule["c"]="#E5FFCF"; */
+.couleur_cellule_c {
+	background-color: #E5FFCF;
+}
+.couleur_cellule_c {
+	background-color: #E5FFCF;
+}
+/* $couleur_cellule_alt["c"] = "#D3FFAF"; */
+.couleur_cellule_alt_c {
+	background-color: #D3FFAF;
+}
+.couleur_cellule_alt_c {
+	background-color: #D3FFAF;
+}
+
+/* // Notices de type  travail à faire) */
+/* $color_fond_notices["t"] = "#FFCCCF"; */
+.color_fond_notices_t {
+	background-color: #FFCCCF;
+}
+/* $couleur_entete_fond["t"] = '#FFCCCF'; */
+.couleur_entete_fond_t {
+	background-color: #FFCCCF;
+}
+/* $couleur_cellule["t"] ="#FFEFF0"; */
+.couleur_cellule_t {
+	background-color: #FFEFF0;
+}
+/* $couleur_cellule_alt["t"] = "#FFDFE2"; */
+.couleur_cellule_alt_t {
+	background-color: #FFDFE2;
+}
+
+/* // Notice informations générales */
+/* $color_fond_notices["i"] = "#ACACFF"; */
+.color_fond_notices_i {
+	background-color: #ACACFF;
+}
+/* $couleur_entete_fond["i"] = "#EFEFFF"; */
+.couleur_entete_fond_i {
+	background-color: #EFEFFF;
+}
+/* $couleur_cellule["i"]="#EFEFFF"; */
+.couleur_cellule_i {
+	background-color: #EFEFFF;
+}
+/* $couleur_cellule_alt["i"] = "#C8C8FF"; */
+.couleur_cellule_alt_i {
+	background-color: #C8C8FF;
+}
+
+/* // Travaux à faire "futurs" */
+/* $color_fond_notices["f"] = "#FFFF80"; */
+.color_fond_notices_f {
+	background-color: #FFFF80;
+}
+/* $couleur_cellule["f"] = "#FFFFDF"; */
+.couleur_cellule_f {
+	background-color: #FFFFDF;
+}
+
+/* $color_police_travaux = "#FF4444"; */
+.color_police_travaux {
+	color: #FF4444;
+}
+/* $color_police_matieres = "green"; */
+.color_police_matieres {
+	color: green;
+}
+/* $couleur_bord_tableau_notice = "#6F6968"; */
+.couleur_bord_tableau_notice {
+	border-color: #6F6968;
+}
+/* $couleur_cellule_gen = "#F6F7EF"; */
+.couleur_cellule_gen {
+	background-color: #F6F7EF;
+}
+
+
+/***********************
+ --- Relevé de notes ---
+***********************/
+
+.bull_simpl_h2 {
+	margin: 1em auto 0px auto;
+	padding: 0px;
+	color: #000000;
+	line-height: 1em;
+	font-size: 12pt;
+	font-style: normal;
+	font-weight: bold;
+}
+.tab_releve_note {
+	margin: 0px auto;
+	padding: 2px;
+	min-width: 680px;
+	border: 1px outset;
+}
+.tab_relev_note_m {
+	width: 120px;
+}
+.tab_relev_note_n {
+}
+.tab_releve_note th {
+	padding: 4px;
+	border-style: inset;
+	border-width: 1px;
+	text-align: left;
+	color: #000000;
+	font-size: 8pt;
+	font-style: normal;
+	font-weight: normal;
+	vertical-align: middle;
+}
+.tab_releve_note td{
+	padding: 4px;
+	border-style: inset ;
+	border-width: 1px;
+	vertical-align: middle;
+}
+
+

@@ -21,6 +21,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+$accessibilite="y";
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -311,7 +314,7 @@ fieldset#login_box div#header {
 	background: #$degrade_bas;
 }
 
-/* W3C */
+/* Bandeau */
 .degrade1 {
 	background-color:#$degrade_bas;
 }
@@ -485,6 +488,83 @@ fieldset#login_box div#header {
 			}
 		}
 
+
+
+
+
+		//=========================================
+		// utiliser_cahier_texte_perso
+		//=========================================
+
+		$poste_notice_nom=array("fond_notices_c", "entete_fond_c", "cellule_c", "cellule_alt_c", "fond_notices_t", "entete_fond_t", "cellule_t", "cellule_alt_t", "fond_notices_i", "entete_fond_i", "cellule_i", "cellule_alt", "fond_notices_f", "cellule_f", "police_travaux", "police_matieres", "bord_tableau_notice", "cellule_gen");
+		$poste_notice_couleur=array("C7FF99", "C7FF99", "E5FFCF", "D3FFAF", "FFCCCF", "FFCCCF", "FFEFF0", "FFDFE2", "ACACFF", "EFEFFF", "EFEFFF", "C8C8FF", "FFFF80", "FFFFDF", "FF4444", "green", "6F6968", "F6F7EF");
+		$poste_notice_classe=array("color_fond_notices_c", "couleur_entete_fond_c", "couleur_cellule_c", "couleur_cellule_alt_c", "color_fond_notices_t", "couleur_entete_fond_t", "couleur_cellule_t", "couleur_cellule_alt_t", "color_fond_notices_i", "couleur_entete_fond_i", "couleur_cellule_i", "couleur_cellule_alt_i", "color_fond_notices_f", "couleur_cellule_f", "color_police_travaux", "color_police_matieres ", "couleur_bord_tableau_notice", "couleur_cellule_gen");
+		$poste_type_couleur=array("background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "color", "color", "border-color", "background-color");
+		
+		if(isset($_POST['utiliser_cahier_texte_perso'])){
+			if(!saveSetting('utiliser_cahier_texte_perso','y')) {		
+				$msg.="Erreur lors de la sauvegarde de 'utiliser_cahier_texte_perso'. ";
+				$nb_err++;
+			}
+
+			if($nb_err==0){
+				$fich=fopen("../style_screen_ajout.css","a+");
+					fwrite($fich,"
+/* Classes des notices du cahier de texte */
+");
+				fclose($fich);
+			}
+
+			for($i=0;$i<count($poste_notice_nom);$i++){
+				if(isset($_POST[$poste_notice_nom[$i]])){
+					if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST[$poste_notice_nom[$i]])))!=0)||(strlen($_POST[$poste_notice_nom[$i]])!=6)) {
+						$couleur_poste=$poste_notice_couleur[$i];
+					}
+					else{
+						$couleur_poste=$_POST[$poste_notice_nom[$i]];
+					}
+
+					if(saveSetting($poste_notice_nom[$i],$couleur_poste)) {
+						$temoin_modif++;
+					}
+					else{
+						$msg.="Erreur lors de la sauvegarde de '".$poste_notice_nom[$i]."'. ";
+						$nb_err++;
+					}
+				}
+
+				if($nb_err==0){
+					$fich=fopen("../style_screen_ajout.css","a+");
+						fwrite($fich,"
+.".$poste_notice_classe[$i]." {
+	".$poste_type_couleur[$i].": #".$couleur_poste.";
+}
+	");
+					fclose($fich);
+				}
+
+			}
+		}
+		else{
+			if(!saveSetting('utiliser_cahier_texte_perso','n')) {
+				$msg.="Erreur lors de la sauvegarde de 'utiliser_cahier_texte_perso'. ";
+				$nb_err++;
+			}
+			else{
+				for($i=0;$i<count($poste_notice_nom);$i++){
+					if(saveSetting($poste_notice_nom[$i],$poste_notice_couleur[$i])) {						
+						$temoin_modif++;
+					}
+					else{
+						$msg.="Erreur lors de la sauvegarde de '".$poste_notice_nom[$i]."'. ";
+						$nb_err++;
+					}
+				}
+			}
+
+		}
+
+
 		//=========================================
 
 /*
@@ -505,8 +585,13 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 //echo "<div class='norme'><p class='bold'><a href='param_gen.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-echo "<div class='norme'><p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-echo "</p>\n";
+echo "<div class='norme'>\n";
+	echo "<p class='bold'>\n";
+		echo "<a href='index.php'>\n";
+			echo "<img src='../images/icons/back.png' alt='' class='back_link'/>\n";
+			echo " Retour\n";
+		echo "</a>\n";
+	echo "</p>\n";
 echo "</div>\n";
 
 /*
@@ -519,6 +604,10 @@ foreach($_POST as $post => $val){
 
 
 <script type='text/javascript'>
+// <![CDATA[
+
+
+
 	var hexa=new Array("0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F");
 
 	/*
@@ -577,7 +666,8 @@ foreach($_POST as $post => $val){
 
 
 	//var liste=new Array('style_body_backgroundcolor');
-	var liste=new Array('style_body_backgroundcolor','degrade_haut','degrade_bas','couleur_infobulle_fond_corps','couleur_infobulle_fond_entete','couleur_lig_alt1','couleur_lig_alt_1');
+	// var liste=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1');
+	var liste=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen', 'fond_notices_c', 'fond_notices_t', 'fond_notices_i', 'fond_notices_f', 'entete_fond_c', 'entete_fond_t', 'entete_fond_i', 'cellule_c', 'cellule_t', 'cellule_i', 'cellule_f', 'cellule_alt_c', 'cellule_alt_t', 'cellule_alt_i');
 
 	function init(){
 		for(i=0;i<liste.length;i++){
@@ -627,6 +717,85 @@ foreach($_POST as $post => $val){
 	tabmotif['couleur_lig_alt_1_V']=255;
 	tabmotif['couleur_lig_alt_1_B']=240;
 
+	// Cahier de texte : Compte rendu 
+	// #C7FF99
+	tabmotif['fond_notices_c_R']=199;
+	tabmotif['fond_notices_c_V']=255;
+	tabmotif['fond_notices_c_B']=153;
+	tabmotif['entete_fond_c_R']=199;
+	tabmotif['entete_fond_c_V']=255;
+	tabmotif['entete_fond_c_B']=153;
+	// #E5FFCF
+	tabmotif['cellule_c_R']=229;
+	tabmotif['cellule_c_V']=255;
+	tabmotif['cellule_c_B']=207;
+	// #D3FFAF
+	tabmotif['cellule_alt_c_R']=211;
+	tabmotif['cellule_alt_c_V']=255;
+	tabmotif['cellule_alt_c_B']=175;
+
+	// Cahier de texte : Travail à faire 
+	//	#FFCCCF
+	tabmotif['fond_notices_t_R']=255;
+	tabmotif['fond_notices_t_V']=204;
+	tabmotif['fond_notices_t_B']=207;
+	tabmotif['entete_fond_t_R']=255;
+	tabmotif['entete_fond_t_V']=204;
+	tabmotif['entete_fond_t_B']=207;
+	// #FFEFF0
+	tabmotif['cellule_t_R']=255;
+	tabmotif['cellule_t_V']=239;
+	tabmotif['cellule_t_B']=240;
+	// #FFDFE2
+	tabmotif['cellule_alt_t_R']=255;
+	tabmotif['cellule_alt_t_V']=223;
+	tabmotif['cellule_alt_t_B']=226;
+
+	// Cahier de texte : Informations générales
+	//	#ACACFF
+	tabmotif['fond_notices_i_R']=172;
+	tabmotif['fond_notices_i_V']=172;
+	tabmotif['fond_notices_i_B']=255;
+	// #EFEFFF
+	tabmotif['entete_fond_i_R']=239;
+	tabmotif['entete_fond_i_V']=239;
+	tabmotif['entete_fond_i_B']=255;
+	tabmotif['cellule_i_R']=239;
+	tabmotif['cellule_i_V']=239;
+	tabmotif['cellule_i_B']=255;
+	// #C8C8FF
+	tabmotif['cellule_alt_i_R']=200;
+	tabmotif['cellule_alt_i_V']=200;
+	tabmotif['cellule_alt_i_B']=255;
+
+	// Cahier de texte : Travaux futurs
+	//	#FFFF80
+	tabmotif['fond_notices_f_R']=255;
+	tabmotif['fond_notices_f_V']=255;
+	tabmotif['fond_notices_f_B']=128;
+	// #FFFFDF
+	tabmotif['cellule_f_R']=255;
+	tabmotif['cellule_f_V']=255;
+	tabmotif['cellule_f_B']=223;
+
+	// Cahier de texte : Couleurs générales
+	//	#FF4444
+	tabmotif['police_travaux_R']=255;
+	tabmotif['police_travaux_V']=68;
+	tabmotif['police_travaux_B']=68;
+	//	#008000
+	tabmotif['police_matieres_R']=0;
+	tabmotif['police_matieres_V']=128;
+	tabmotif['police_matieres_B']=0;
+	//	#6F6968
+	tabmotif['bord_tableau_notice_R']=111;
+	tabmotif['bord_tableau_notice_V']=105;
+	tabmotif['bord_tableau_notice_B']=104;
+	//	#F6F7EF
+	tabmotif['cellule_gen_R']=246;
+	tabmotif['cellule_gen_V']=247;
+	tabmotif['cellule_gen_B']=239;
+
 
 	function reinit_couleurs(motif){
 		comp_motif=motif+"_R";
@@ -647,10 +816,14 @@ foreach($_POST as $post => $val){
 		//return false;
 	}
 
+//]]>
 </script>
+<noscript>
+</noscript>
 
-<p>Cette page est destinée à choisir les couleurs pour l'interface GEPI.<br />
-Dans sa version actuelle, seule la couleur de fond de la page peut être paramétrée depuis cette page.</p>
+<p>Cette page est destinée à choisir les couleurs pour l'interface GEPI.
+<!--Dans sa version actuelle, seule la couleur de fond de la page peut être paramétrée depuis cette page.-->
+</p>
 
 <?php
 
@@ -687,15 +860,14 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 		$tabcouleurs['style_body_backgroundcolor']['B']=$nb_compB;
 */
 
-		$tabcouleurs['style_body_backgroundcolor']=tab_rvb($style_body_backgroundcolor);
-	}
-	else{
-		// #EAEAEA
-		// 14*16+10
-		$tabcouleurs['style_body_backgroundcolor']['R']=234;
-		$tabcouleurs['style_body_backgroundcolor']['V']=234;
-		$tabcouleurs['style_body_backgroundcolor']['B']=234;
-	}
+	$tabcouleurs['style_body_backgroundcolor']=tab_rvb($style_body_backgroundcolor);
+} else {
+	// #EAEAEA
+	// 14*16+10
+	$tabcouleurs['style_body_backgroundcolor']['R']=234;
+	$tabcouleurs['style_body_backgroundcolor']['V']=234;
+	$tabcouleurs['style_body_backgroundcolor']['B']=234;
+}
 
 
 /*
@@ -714,179 +886,176 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 	}
 */
 
-	echo "<form name='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-	echo "<p><b>Couleurs:</b></p>\n";
-	echo "<blockquote>\n";
-	echo "<table border='0'>\n";
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "<input type='checkbox' name='utiliser_couleurs_perso' id='utiliser_couleurs_perso' value='y' ";
-	if(getSettingValue('utiliser_couleurs_perso')=='y'){
-		echo "checked ";
-	}
-	echo "/> ";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<label for='utiliser_couleurs_perso' style='cursor: pointer;'>Utiliser des couleurs personnalisées.</label>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<h2><strong>Couleurs:</strong></h2>\n";
+	// echo "<blockquote>\n";
+		echo "<div class='tableau_param_couleur'>\n";
+			// echo "<tr>\n";
+				// echo "<td>\n";
+					echo "<input type='checkbox' name='utiliser_couleurs_perso' id='utiliser_couleurs_perso' value='y' ";
+					if(getSettingValue('utiliser_couleurs_perso')=='y'){
+						echo "checked='checked' ";
+					}
+					echo "/> ";
+					echo "<label for='utiliser_couleurs_perso' style='cursor: pointer;'>Utiliser des couleurs personnalisées.</label>\n";
+				// echo "</td>\n";
+			// echo "</tr>\n";
+			// echo "<tr>\n";
+			// 	echo "<td>\n";
+			// 		echo "&nbsp;";
+			// 	echo "</td>\n";
+				// echo "<td>\n";
+					echo "<table class='tableau_change_couleur' summary=\"arrière plan changement de couleur : colonne 3 rouge, colonne 4 vert, colonne 5 bleu, colonne 7 validation\">\n";
+						echo "<tr class='fond_blanc'>\n";
+							echo "<td class='texte_gras'>\nMotif\n</td>\n";
+							echo "<td class='texte_gras'>\nPropriété\n</td>\n";
+							for($j=0;$j<count($comp);$j++){
+								echo "<td class='texte_gras'>\n$comp[$j]\n</td>\n";
+							}
+							echo "<td class='texte_gras'>\nAperçu\n</td>\n";
+							echo "<td class='texte_gras'>\nRéinitialisation\n</td>\n";
+						echo "</tr>\n";
+						for($i=0;$i<count($tab);$i++){
+							echo "<tr>\n";
+								//echo "<td>$tab[$i]</td>\n";
+								//echo "<td>Couleur de fond de page: <a href='couleur.php?objet=Fond'></a></td>\n";
+								echo "<td>\n";
+									echo "Couleur de fond de page\n";
+									//echo "<a href='couleur.php?objet=".$tab[$i]."'></a>
+								echo "</td>\n";
+								echo "<td>\nbody{background-color: #XXXXXX;}\n</td>\n";
+								for($j=0;$j<count($comp);$j++){
+									/*
+									$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
+									$res_couleur=mysql_query($sql);
+									if(mysql_num_rows($res_couleur)>0){
+										$tmp=mysql_fetch_object($res_couleur);
+										$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
+									}
+									*/
+									echo "<td>\n";
+									//echo "$sql<br />";
+									//echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab[$i]."\")' />\n";
 
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "&nbsp;";
-	echo "</td>\n";
-	echo "<td>\n";
-		echo "<table style='border: 1px solid black; border-collapse:collapse;'>\n";
+									//echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onChange='delai_affichecouleur(\"".$tab[$i]."\")' onkeydown=\"clavier_2(this.id,event);\" />\n";
 
-		echo "<tr style='background-color:white;'>\n";
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Motif</td>\n";
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Propriété</td>\n";
-		for($j=0;$j<count($comp);$j++){
-			echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>$comp[$j]</td>\n";
-		}
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Aperçu</td>\n";
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Réinitialisation</td>\n";
-
-		echo "</tr>\n";
-
-		for($i=0;$i<count($tab);$i++){
-			echo "<tr>\n";
-			//echo "<td>$tab[$i]</td>\n";
-			//echo "<td>Couleur de fond de page: <a href='couleur.php?objet=Fond'></a></td>\n";
-			echo "<td style='text-align:center; border: 1px solid black;'>Couleur de fond de page";
-			//echo "<a href='couleur.php?objet=".$tab[$i]."'></a>
-			echo "</td>\n";
-			echo "<td style='text-align:center; border: 1px solid black;'>body{background-color: #XXXXXX;}</td>\n";
-			for($j=0;$j<count($comp);$j++){
-				/*
-				$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
-				$res_couleur=mysql_query($sql);
-				if(mysql_num_rows($res_couleur)>0){
-					$tmp=mysql_fetch_object($res_couleur);
-					$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
-				}
-				*/
-				echo "<td style='text-align:center; border: 1px solid black;'>\n";
-				//echo "$sql<br />";
-				//echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onBlur='affichecouleur(\"".$tab[$i]."\")' />\n";
-
-				//echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onChange='delai_affichecouleur(\"".$tab[$i]."\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
-
-				echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onBlur='affichecouleur(\"".$tab[$i]."\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
-				echo "</td>\n";
-			}
-			echo "<td id='".$tab[$i]."' style='text-align:center; border: 1px solid black;'>\n";
-			// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
-			echo "<input type='hidden' name='$tab[$i]' value='$tab[$i]' />\n";
-			echo "&nbsp;&nbsp;&nbsp;</td>\n";
-			echo "<td style='text-align:center; border: 1px solid black;'>\n";
-			//echo "<a href='#' onClick='reinit_couleurs(\"$tab[$i]\");return false;'>Réinitialiser</a>\n";
-			echo "<a href='#' onClick='reinit_couleurs(\"$tab[$i]\");return false;'>Réinitialiser</a>\n";
-			//echo "<a href='javascript:reinit_couleurs(\"$tab[$i]\");'>Réinitialiser</a>\n";
-			//echo "<input type='button' name='reinit$i' value='Réinitialiser' onClick='javascript:reinit_couleurs(\"$tab[$i]\");' />\n";
-			echo "</td>\n";
-
-
-			echo "</tr>\n";
-		}
-		echo "</table>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "</blockquote>\n";
+							echo "<label for='id_".$tab[$i]."_".$comp[$j]."' class='invisible'>".$comp[$j]." fond ".$comp[$j]."</label>\n";
+									echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+									echo "</td>\n";
+								}
+								echo "<td id='".$tab[$i]."'>\n";
+								// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+								echo "<input type='hidden' name='$tab[$i]' value='$tab[$i]' />\n";
+								echo "&nbsp;&nbsp;&nbsp;</td>\n";
+								echo "<td>\n";
+								//echo "<a href='#' onclick='reinit_couleurs(\"$tab[$i]\");return false;'>Réinitialiser</a>\n";
+								echo "<a href='#' onclick='reinit_couleurs(\"$tab[$i]\");return false;'>Réinitialiser</a>\n";
+								//echo "<a href='javascript:reinit_couleurs(\"$tab[$i]\");'>Réinitialiser</a>\n";
+								//echo "<input type='button' name='reinit$i' value='Réinitialiser' onclick='javascript:reinit_couleurs(\"$tab[$i]\");' />\n";
+								echo "</td>\n";
+							echo "</tr>\n";
+						}
+					echo "</table>\n";
+				// echo "</td>\n";
+			// echo "</tr>\n";
+		echo "</div>\n";
+	// echo "</blockquote>\n";
 
 
 
 
 
-	echo "<p><b>Dégradé:</b></p>\n";
-	echo "<blockquote>\n";
-	echo "<table border='0'>\n";
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "<input type='checkbox' name='utiliser_degrade' id='utiliser_degrade' value='y' ";
-	if(getSettingValue('utiliser_degrade')=='y'){
-		echo "checked ";
-	}
-	echo "/> ";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<label for='utiliser_degrade' style='cursor: pointer;'>Générer/utiliser un dégradé personnalisé pour l'entête de page.</label>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	echo "<h2>\n<strong>Dégradé:</strong>\n</h2>\n";
+	// echo "<blockquote>\n";
+		echo "<div class='tableau_param_couleur'>\n";
+			// echo "<tr>\n";
+				// echo "<td>\n";
+					echo "<input type='checkbox' name='utiliser_degrade' id='utiliser_degrade' value='y' ";
+					if(getSettingValue('utiliser_degrade')=='y'){
+						echo "checked='checked' ";
+					}
+					echo "/> ";
+				// echo "</td>\n";
+				// echo "<td>\n";
+					echo "<label for='utiliser_degrade' style='cursor: pointer;'>Générer/utiliser un dégradé personnalisé pour l'entête de page.</label>\n";
+				// echo "</td>\n";
+			// echo "</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "&nbsp;";
-	echo "</td>\n";
-	echo "<td>\n";
-		echo "<table style='border: 1px solid black; border-collapse:collapse;'>\n";
-		echo "<tr style='background-color:white;'>\n";
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Couleur</td>\n";
-		for($j=0;$j<count($comp);$j++){
-			echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>$comp[$j]</td>\n";
-		}
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Aperçu</td>\n";
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Réinitialisation</td>\n";
-		echo "</tr>\n";
+			// echo "<tr>\n";
+				// echo "<td>\n";
+					// echo "&nbsp;";
+				// echo "</td>\n";
+				// echo "<td>\n";
+					echo "<table class='tableau_change_couleur' summary=\"bandeau changement de couleur : ligne 2 dégradé haut, ligne 3 dégradé bas, colonne 2 rouge, colonne 3 vert, colonne 4 bleu, colonne 6 validation\">\n";
+						echo "<tr class='fond_blanc'>\n";
+							echo "<td class='texte_gras'>Couleur</td>\n";
+							for($j=0;$j<count($comp);$j++){
+								echo "<td class='texte_gras'>$comp[$j]</td>\n";
+							}
+							echo "<td class='texte_gras'>Aperçu</td>\n";
+							echo "<td class='texte_gras'>Réinitialisation</td>\n";
+						echo "</tr>\n";
 
-		$tab_degrade=array("degrade_haut","degrade_bas");
+						$tab_degrade=array("degrade_haut","degrade_bas");
 
-		$degrade_haut=getSettingValue('degrade_haut');
-		if($degrade_haut!=""){
-			$tabcouleurs['degrade_haut']=tab_rvb($degrade_haut);
-		}
-		else{
-			$tabcouleurs['degrade_haut']['R']=2;
-			$tabcouleurs['degrade_haut']['V']=2;
-			$tabcouleurs['degrade_haut']['B']=2;
-		}
+						$degrade_haut=getSettingValue('degrade_haut');
+						if($degrade_haut!=""){
+							$tabcouleurs['degrade_haut']=tab_rvb($degrade_haut);
+						}
+						else{
+							$tabcouleurs['degrade_haut']['R']=2;
+							$tabcouleurs['degrade_haut']['V']=2;
+							$tabcouleurs['degrade_haut']['B']=2;
+						}
 
-		$degrade_bas=getSettingValue('degrade_bas');
-		if($degrade_bas!=""){
-			$tabcouleurs['degrade_bas']=tab_rvb($degrade_bas);
-		}
-		else{
-			$tabcouleurs['degrade_bas']['R']=74;
-			$tabcouleurs['degrade_bas']['V']=74;
-			$tabcouleurs['degrade_bas']['B']=89;
-		}
+						$degrade_bas=getSettingValue('degrade_bas');
+						if($degrade_bas!=""){
+							$tabcouleurs['degrade_bas']=tab_rvb($degrade_bas);
+						}
+						else{
+							$tabcouleurs['degrade_bas']['R']=74;
+							$tabcouleurs['degrade_bas']['V']=74;
+							$tabcouleurs['degrade_bas']['B']=89;
+						}
 
-		for($i=0;$i<count($tab_degrade);$i++){
-			echo "<tr>\n";
+						for($i=0;$i<count($tab_degrade);$i++){
+							echo "<tr>\n";
 
-			echo "<td style='text-align:center; border: 1px solid black;'>$tab_degrade[$i]";
-			echo "</td>\n";
+								echo "<td>$tab_degrade[$i]";
+								echo "</td>\n";
 
-			for($j=0;$j<count($comp);$j++){
-				/*
-				$sql="SELECT value FROM setting WHERE name='".$tab_degrade[$i]."_".$comp[$j]."'";
-				$res_couleur=mysql_query($sql);
-				if(mysql_num_rows($res_couleur)>0){
-					$tmp=mysql_fetch_object($res_couleur);
-					$tabcouleurs[$tab_degrade[$i]][$comp[$j]]=$tmp->value;
-				}
-				*/
-				echo "<td style='text-align:center; border: 1px solid black;'>\n";
-				echo "<input type='text' name='".$tab_degrade[$i]."_".$comp[$j]."' id='id_".$tab_degrade[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_degrade[$i]][$comp[$j]]."' size='3' onBlur='affichecouleur(\"".$tab_degrade[$i]."\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
+								for($j=0;$j<count($comp);$j++){
+									/*
+									$sql="SELECT value FROM setting WHERE name='".$tab_degrade[$i]."_".$comp[$j]."'";
+									$res_couleur=mysql_query($sql);
+									if(mysql_num_rows($res_couleur)>0){
+										$tmp=mysql_fetch_object($res_couleur);
+										$tabcouleurs[$tab_degrade[$i]][$comp[$j]]=$tmp->value;
+									}
+									*/
+									echo "<td>\n";
+							echo "<label for='id_".$tab_degrade[$i]."_".$comp[$j]."' class='invisible'>".($i+1)."$comp[$j] degrade ".($i+1)."</label>\n";
+										echo "<input type='text' name='".$tab_degrade[$i]."_".$comp[$j]."' id='id_".$tab_degrade[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_degrade[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab_degrade[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
 
-				echo "</td>\n";
-			}
-			echo "<td id='".$tab_degrade[$i]."' style='text-align:center; border: 1px solid black;'>\n";
-			// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
-			echo "<input type='hidden' name='$tab_degrade[$i]' value='$tab_degrade[$i]' />\n";
-			echo "&nbsp;&nbsp;&nbsp;</td>\n";
+									echo "</td>\n";
+								}
+								echo "<td id='".$tab_degrade[$i]."'>\n";
+								// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+									echo "<input type='hidden' name='$tab_degrade[$i]' value='$tab_degrade[$i]' />\n";
+								echo "&nbsp;&nbsp;&nbsp;</td>\n";
 
-			echo "<td style='text-align:center; border: 1px solid black;'>\n";
-			echo "<a href='#' onClick='reinit_couleurs(\"$tab_degrade[$i]\");return false;'>Réinitialiser</a>\n";
-			echo "</td>\n";
+								echo "<td>\n";
+									echo "<a href='#' onclick='reinit_couleurs(\"$tab_degrade[$i]\");return false;'>Réinitialiser</a>\n";
+								echo "</td>\n";
 
 
-			echo "</tr>\n";
-		}
-		echo "</table>\n";
-	echo "</table>\n";
-	echo "</blockquote>\n";
+							echo "</tr>\n";
+						}
+					echo "</table>\n";
+				// echo "</td>\n";
+			// echo "</tr>\n";
+		echo "</div>\n";
+	// echo "</blockquote>\n";
 
 
 
@@ -924,249 +1093,426 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 		$tabcouleurs['couleur_infobulle_fond_corps']['B']=234;
 	}
 
-	echo "<p><b>Couleurs des 'infobulles':</b></p>\n";
-	echo "<blockquote>\n";
-	echo "<table border='0'>\n";
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "<input type='checkbox' name='utiliser_couleurs_perso_infobulles' id='utiliser_couleurs_perso_infobulles' value='y' ";
-	if(getSettingValue('utiliser_couleurs_perso_infobulles')=='y'){
-		echo "checked ";
-	}
-	echo "/> ";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<label for='utiliser_couleurs_perso_infobulles' style='cursor: pointer;'>Utiliser des couleurs personnalisées pour les infobulles.</label>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	echo "<h2><strong>Couleurs des 'infobulles':</strong></h2>\n";
+	// echo "<blockquote>\n";
+		echo "<div class='tableau_param_couleur'>\n";
+		// echo "<tr>\n";
+			// echo "<td>\n";
+				echo "<input type='checkbox' name='utiliser_couleurs_perso_infobulles' id='utiliser_couleurs_perso_infobulles' value='y' ";
+				if(getSettingValue('utiliser_couleurs_perso_infobulles')=='y'){
+					echo "checked='checked' ";
+				}
+				echo "/> ";
+			// echo "</td>\n";
+			// echo "<td>\n";
+				echo "<label for='utiliser_couleurs_perso_infobulles' style='cursor: pointer;'>Utiliser des couleurs personnalisées pour les infobulles.</label>\n";
+			// echo "</td>\n";
+		// echo "</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "&nbsp;";
-	echo "</td>\n";
-	echo "<td>\n";
-		echo "<table style='border: 1px solid black; border-collapse:collapse;'>\n";
+		// echo "<tr>\n";
+			// echo "<td>\n";
+				// echo "&nbsp;";
+			// echo "</td>\n";
+			// echo "<td>\n";
+				echo "<table class='tableau_change_couleur' summary=\"infobulles changement de couleurs : ligne 2 entête, ligne 3 corps, colonne 2 rouge, colonne 3 vert, colonne 4 bleu, colonne 6 validation\">\n";
 
-		echo "<tr style='background-color:white;'>\n";
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Motif</td>\n";
-		for($j=0;$j<count($comp);$j++){
-			echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>$comp[$j]</td>\n";
+					echo "<tr class='fond_blanc'>\n";
+						echo "<td class='texte_gras'>\nMotif\n</td>\n";
+						for($j=0;$j<count($comp);$j++){
+							echo "<td class='texte_gras'>\n$comp[$j]\n</td>\n";
+						}
+						echo "<td class='texte_gras'>\nAperçu\n</td>\n";
+						echo "<td class='texte_gras'>\nRéinitialisation\n</td>\n";
+
+					echo "</tr>\n";
+
+					echo "<tr>\n";
+						echo "<td>\n";
+							echo "Couleur de fond de l'entête des infobulles\n";
+						echo "</td>\n";
+						for($j=0;$j<count($comp);$j++){
+							/*
+							$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
+							$res_couleur=mysql_query($sql);
+							if(mysql_num_rows($res_couleur)>0){
+								$tmp=mysql_fetch_object($res_couleur);
+								$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
+							}
+							*/
+
+							echo "<td>\n";
+							echo "<label for='id_couleur_infobulle_fond_entete_".$comp[$j]."' class='invisible'>".$comp[$j]."E entête ".$comp[$j]."</label>\n";
+							echo "<input type='text' name='couleur_infobulle_fond_entete_".$comp[$j]."' id='id_couleur_infobulle_fond_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_entete'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_infobulle_fond_entete\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+							echo "</td>\n";
+						}
+						echo "<td id='couleur_infobulle_fond_entete'>\n";
+						// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+							echo "<input type='hidden' name='couleur_infobulle_fond_entete' value='couleur_infobulle_fond_entete' />\n";
+						echo "&nbsp;&nbsp;&nbsp;</td>\n";
+						echo "<td>\n";
+							echo "<a href='#' onclick='reinit_couleurs(\"couleur_infobulle_fond_entete\");return false;'>Réinitialiser</a>\n";
+						echo "</td>\n";
+						echo "</tr>\n";
+
+						echo "<tr>\n";
+							echo "<td>\n";
+								echo "Couleur de fond du corps des infobulles";
+							echo "</td>\n";
+							for($j=0;$j<count($comp);$j++){
+								/*
+								$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
+								$res_couleur=mysql_query($sql);
+								if(mysql_num_rows($res_couleur)>0){
+									$tmp=mysql_fetch_object($res_couleur);
+									$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
+								}
+								*/
+
+								echo "<td>\n";
+								echo "<label for='id_couleur_infobulle_fond_corps_".$comp[$j]."' class='invisible'>".$comp[$j]."C corps ".$comp[$j]."</label>\n";
+									echo "<input type='text' name='couleur_infobulle_fond_corps_".$comp[$j]."' id='id_couleur_infobulle_fond_corps_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_corps'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_infobulle_fond_corps\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+								echo "</td>\n";
+							}
+							echo "<td id='couleur_infobulle_fond_corps'>\n";
+							// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+								echo "<input type='hidden' name='couleur_infobulle_fond_corps' value='couleur_infobulle_fond_corps' />\n";
+							echo "&nbsp;&nbsp;&nbsp;</td>\n";
+							echo "<td>\n";
+								echo "<a href='#' onclick='reinit_couleurs(\"couleur_infobulle_fond_corps\");return false;'>Réinitialiser</a>\n";
+							echo "</td>\n";
+						echo "</tr>\n";
+
+					echo "</table>\n";
+				// echo "</td>\n";
+			// echo "</tr>\n";
+		echo "</div>\n";
+	// echo "</blockquote>\n";
+
+
+
+
+		//=========================================
+
+		$tabcouleurs['couleur_lig_alt1']=array();
+		$couleur_lig_alt1=getSettingValue('couleur_lig_alt1');
+		if($couleur_lig_alt1!=""){
+			$tabcouleurs['couleur_lig_alt1']=tab_rvb($couleur_lig_alt1);
 		}
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Aperçu</td>\n";
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Réinitialisation</td>\n";
+		else{
+			// papayawhip #FFEFD5
+			$tabcouleurs['couleur_lig_alt1']['R']=255;
+			$tabcouleurs['couleur_lig_alt1']['V']=239;
+			$tabcouleurs['couleur_lig_alt1']['B']=213;
+		}
 
-		echo "</tr>\n";
+		$tabcouleurs['couleur_lig_alt_1']=array();
+		$couleur_lig_alt_1=getSettingValue('couleur_lig_alt_1');
+		if($couleur_lig_alt_1!=""){
+			$tabcouleurs['couleur_lig_alt_1']=tab_rvb($couleur_lig_alt_1);
+		}
+		else{
+			// honeydew #F0FFF0
+			$tabcouleurs['couleur_lig_alt_1']['R']=240;
+			$tabcouleurs['couleur_lig_alt_1']['V']=255;
+			$tabcouleurs['couleur_lig_alt_1']['B']=240;
+		}
 
-		echo "<tr>\n";
-		echo "<td style='text-align:center; border: 1px solid black;'>Couleur de fond de l'entête des infobulles";
-		echo "</td>\n";
-		for($j=0;$j<count($comp);$j++){
-			/*
-			$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
-			$res_couleur=mysql_query($sql);
-			if(mysql_num_rows($res_couleur)>0){
-				$tmp=mysql_fetch_object($res_couleur);
-				$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
+	echo "<h2><strong>Couleurs des lignes alternées dans les tableaux:</strong></h2>\n";
+	// echo "<blockquote>\n";
+		// echo "<table border='0'>\n";
+		echo "<div class='tableau_param_couleur'>\n";
+				// echo "<td>\n";
+					echo "<input type='checkbox' name='utiliser_couleurs_perso_lig_tab_alt' id='utiliser_couleurs_perso_lig_tab_alt' value='y' ";
+					if(getSettingValue('utiliser_couleurs_perso_lig_tab_alt')=='y'){
+						echo "checked='checked' ";
+					}
+					echo "/> ";
+				// echo "</td>\n";
+				// echo "<td>\n";
+					echo "<label for='utiliser_couleurs_perso_lig_tab_alt' style='cursor: pointer;'>couleurs des tableaux.</label>\n";
+				// echo "</td>\n";
+			// echo "</tr>\n";
+
+			// echo "<tr>\n";
+				// echo "<td>\n";
+			// 	echo "&nbsp;";
+				// echo "</td>\n";
+				// echo "<td>\n";
+					echo "<table class='tableau_change_couleur' summary=\"tableau changement de couleur : ligne 2 lignes impaires, ligne 3 lignes paires, colonne 2 rouge, colonne 3 vert, colonne 4 bleu, colonne 6 validation\">\n";
+
+						echo "<tr class='fond_blanc'>\n";
+							echo "<td class='texte_gras'>Motif</td>\n";
+							for($j=0;$j<count($comp);$j++){
+								echo "<td class='texte_gras'>$comp[$j]</td>\n";
+							}
+							echo "<td class='texte_gras'>Aperçu</td>\n";
+							echo "<td class='texte_gras'>Réinitialisation</td>\n";
+
+						echo "</tr>\n";
+
+						echo "<tr>\n";
+							echo "<td>Couleur de ligne 1";
+							echo "</td>\n";
+							for($j=0;$j<count($comp);$j++){
+								/*
+								$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
+								$res_couleur=mysql_query($sql);
+								if(mysql_num_rows($res_couleur)>0){
+									$tmp=mysql_fetch_object($res_couleur);
+									$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
+								}
+								*/
+
+								echo "<td>\n";
+									echo "<label for='id_couleur_lig_alt1_".$comp[$j]."' class='invisible'>".$comp[$j]." P lignes paires ".$comp[$j]."</label>\n";
+									echo "<input type='text' name='couleur_lig_alt1_".$comp[$j]."' id='id_couleur_lig_alt1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt1'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_alt1\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+								echo "</td>\n";
+							}
+							echo "<td id='couleur_lig_alt1'>\n";
+							// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+								echo "<input type='hidden' name='couleur_lig_alt1' value='couleur_lig_alt1' />\n";
+							echo "&nbsp;&nbsp;&nbsp;</td>\n";
+							echo "<td>\n";
+								echo "<a href='#' onclick='reinit_couleurs(\"couleur_lig_alt1\");return false;'>Réinitialiser</a>\n";
+							echo "</td>\n";
+						echo "</tr>\n";
+
+						echo "<tr>\n";
+							echo "<td>Couleur de ligne -1";
+							echo "</td>\n";
+							for($j=0;$j<count($comp);$j++){
+								/*
+								$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
+								$res_couleur=mysql_query($sql);
+								if(mysql_num_rows($res_couleur)>0){
+									$tmp=mysql_fetch_object($res_couleur);
+									$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
+								}
+								*/
+
+								echo "<td>\n";
+							echo "<label for='id_couleur_lig_alt_1_".$comp[$j]."' class='invisible'>".$comp[$j]." I lignes impaires ".$comp[$j]."</label>\n";
+									echo "<input type='text' name='couleur_lig_alt_1_".$comp[$j]."' id='id_couleur_lig_alt_1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt_1'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_alt_1\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+								echo "</td>\n";
+							}
+							echo "<td id='couleur_lig_alt_1'>\n";
+							// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+								echo "<input type='hidden' name='couleur_lig_alt_1' value='couleur_lig_alt_1' />\n";
+							echo "&nbsp;&nbsp;&nbsp;</td>\n";
+							echo "<td>\n";
+								echo "<a href='#' onclick='reinit_couleurs(\"couleur_lig_alt_1\");return false;'>Réinitialiser</a>\n";
+							echo "</td>\n";
+						echo "</tr>\n";
+
+					echo "</table>\n";
+				// echo "</td>\n";
+			// echo "</tr>\n";
+		echo "</div>\n";
+	// echo "</blockquote>\n";
+
+
+
+/* ===== couleurs du cahier de texte ===== */
+
+	echo "<h2>\n<strong>Notices cahier de texte :</strong>\n</h2>\n";
+	echo "<div class='tableau_param_couleur'>\n";
+		echo "<input type='checkbox' name='utiliser_cahier_texte_perso' id='utiliser_cahier_texte_perso' value='y' ";
+		if(getSettingValue('utiliser_cahier_texte_perso')=='y'){
+			echo "checked='checked' ";
+		}
+		echo "/> ";
+		echo "<label for='utiliser_cahier_texte_perso' style='cursor: pointer;'>Couleurs personnalisées dans le cahier de texte.</label>\n";
+
+//=== initialisation des couleurs ===
+
+		// tableaux de noms
+		$tab_ct_couleur_fond=array("fond_notices", "entete_fond", "cellule", "cellule_alt");
+		$tab_ct_couleur_classe=array("color_fond_notices", "couleur_entete_fond", "couleur_cellule", "couleur_cellule_alt");
+		$tab_ct_nom_couleur_fond=array("fond des notices", "entête des notices", "notices", "cellule_alt");
+		$tab_ct_notice=array("c","t","i","f");
+		$tab_ct_nom_notice=array("Compte rendu de séance","Travail à faire","Informations générales","Rappel des travaux à faire");
+		$tab_ct_police_bordure=array("police_travaux","police_matieres","bord_tableau_notice","cellule_gen");
+		$tab_ct_nom_police_bordure=array("police des notices travaux","police des matieres","bord des tableaux","Couleur générale des cellules");
+
+// ----- Notices -----
+
+		// Couleurs d'origine
+		$tab_ct_couleur_origine=array("fond_notices", "entete_fond", "cellule", "cellule_alt");
+		$tab_ct_couleur_origine[]=array("c","t","i","f");
+		$tab_ct_couleur_origine[][]=array();
+		$tab_ct_couleur_origine["fond_notices"]["c"]="C7FF99";
+		$tab_ct_couleur_origine["entete_fond"]["c"]="C7FF99";
+		$tab_ct_couleur_origine["cellule"]["c"]="E5FFCF";
+		$tab_ct_couleur_origine["cellule_alt"]["c"]="D3FFAF";
+		$tab_ct_couleur_origine["fond_notices"]["t"]="FFCCCF";
+		$tab_ct_couleur_origine["entete_fond"]["t"]="FFCCCF";
+		$tab_ct_couleur_origine["cellule"]["t"]="FFEFF0";
+		$tab_ct_couleur_origine["cellule_alt"]["t"]="FFDFE2";
+		$tab_ct_couleur_origine["fond_notices"]["i"]="ACACFF";
+		$tab_ct_couleur_origine["entete_fond"]["i"]="EFEFFF";
+		$tab_ct_couleur_origine["cellule"]["i"]="EFEFFF";
+		$tab_ct_couleur_origine["cellule_alt"]["i"]="C8C8FF";
+		$tab_ct_couleur_origine["fond_notices"]["f"]="FFFF80";
+		$tab_ct_couleur_origine["cellule"]["f"]="FFFFDF";
+
+		// Affectation des couleurs
+		for($i=0;$i<count($tab_ct_notice);$i++){
+			for($j=0;$j<count($tab_ct_couleur_fond);$j++){
+				$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]]=array();
+				$couleur_traite=getSettingValue($tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]);
+				if($couleur_traite!=""){
+					$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]]=tab_rvb($couleur_traite);
+				} else {
+					if (isset($tab_ct_couleur_origine[$tab_ct_couleur_fond[$j]][$tab_ct_notice[$i]])){
+						$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]]=tab_rvb($tab_ct_couleur_origine[$tab_ct_couleur_fond[$j]][$tab_ct_notice[$i]]);
+					}
+				}
 			}
-			*/
-
-			echo "<td style='text-align:center; border: 1px solid black;'>\n";
-			echo "<input type='text' name='couleur_infobulle_fond_entete_".$comp[$j]."' id='id_couleur_infobulle_fond_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_entete'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_infobulle_fond_entete\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
-			echo "</td>\n";
 		}
-		echo "<td id='couleur_infobulle_fond_entete' style='text-align:center; border: 1px solid black;'>\n";
-		// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
-		echo "<input type='hidden' name='couleur_infobulle_fond_entete' value='couleur_infobulle_fond_entete' />\n";
-		echo "&nbsp;&nbsp;&nbsp;</td>\n";
-		echo "<td style='text-align:center; border: 1px solid black;'>\n";
-		echo "<a href='#' onClick='reinit_couleurs(\"couleur_infobulle_fond_entete\");return false;'>Réinitialiser</a>\n";
-		echo "</td>\n";
-		echo "</tr>\n";
 
-		echo "<tr>\n";
-		echo "<td style='text-align:center; border: 1px solid black;'>Couleur de fond du corps des infobulles";
-		echo "</td>\n";
-		for($j=0;$j<count($comp);$j++){
-			/*
-			$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
-			$res_couleur=mysql_query($sql);
-			if(mysql_num_rows($res_couleur)>0){
-				$tmp=mysql_fetch_object($res_couleur);
-				$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
+		// Tableau de réglage des couleurs
+		for($i=0;$i<count($tab_ct_notice);$i++){
+		// Titre de la notice
+			echo "<h3>$tab_ct_nom_notice[$i]</h3>";
+			echo "<table class='tableau_change_couleur' summary=\"cahier de texte changement de couleur\">\n";
+				// entête
+				echo "<tr class='fond_blanc'>\n";
+					echo "<td class='texte_gras'>Couleur</td>\n";
+					for($j=0;$j<count($comp);$j++){
+						echo "<td class='texte_gras'>$comp[$j]</td>\n";
+					}
+					echo "<td class='texte_gras'>Aperçu</td>\n";
+					echo "<td class='texte_gras'>Réinitialisation</td>\n";
+				echo "</tr>\n";
+				// Données de la couleur
+					for($j=0;$j<count($tab_ct_couleur_fond);$j++){
+						if (isset($tab_ct_couleur_origine[$tab_ct_couleur_fond[$j]][$tab_ct_notice[$i]])){
+							echo "<tr>\n";
+								echo "<td>".$tab_ct_nom_couleur_fond[$j]."</td>";
+								// couleurs RVB
+								for($k=0;$k<count($comp);$k++){
+									echo "<td>\n";
+								echo "<label for='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' class='invisible'>".$comp[$k]." ".$tab_ct_notice[$i]." ".$tab_ct_couleur_fond[$j]."</label>\n";
+								echo "<input type='text' name='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' id='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' value='".$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]][$comp[$k]]."' size='3' onblur='affichecouleur(\"".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n</td>\n";
+								}
+								echo "<td id='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."'>";
+									echo "<input type='hidden' name='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."' value='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."' />\n";
+								echo "</td>\n";
+								echo "<td>\n";
+									echo "<a href='#' onclick='reinit_couleurs(\"".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."\");return false;'>Réinitialiser</a>\n";
+								echo "</td>\n";
+							echo "</tr>\n";
+						}
+					}
+			// Fin nom de la couleur
+			echo "</table>\n";
+			// Fin nom de la notice
+		}
+// ----- Fin fonds des notices ----- 
+
+// ----- Couleurs communes à toutes les notices -----
+
+		// Couleurs d'origine
+		$tab_ct_couleur_gen_origine=array("police_travaux","police_matieres","bord_tableau_notice","cellule_gen");
+		$tab_ct_couleur_gen_origine["police_travaux"]="FF4444";
+		$tab_ct_couleur_gen_origine["police_matieres"]="008000";
+		$tab_ct_couleur_gen_origine["bord_tableau_notice"]="6F6968";
+		$tab_ct_couleur_gen_origine["cellule_gen"]="F6F7EF";
+
+		// Affectation des couleurs
+		for($j=0;$j<count($tab_ct_police_bordure);$j++){
+			$tabcouleurs[$tab_ct_police_bordure[$j]]=array();
+			$couleur_traite=getSettingValue($tab_ct_police_bordure[$j]);
+			if($couleur_traite!=""){
+				$tabcouleurs[$tab_ct_police_bordure[$j]]=tab_rvb($couleur_traite);
+			} else {
+				if (isset($tab_ct_couleur_gen_origine[$tab_ct_police_bordure[$j]])){
+					$tabcouleurs[$tab_ct_police_bordure[$j]]=tab_rvb($tab_ct_couleur_gen_origine[$tab_ct_police_bordure[$j]]);
+				}
 			}
-			*/
-
-			echo "<td style='text-align:center; border: 1px solid black;'>\n";
-			echo "<input type='text' name='couleur_infobulle_fond_corps_".$comp[$j]."' id='id_couleur_infobulle_fond_corps_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_corps'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_infobulle_fond_corps\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
-			echo "</td>\n";
 		}
-		echo "<td id='couleur_infobulle_fond_corps' style='text-align:center; border: 1px solid black;'>\n";
-		// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
-		echo "<input type='hidden' name='couleur_infobulle_fond_corps' value='couleur_infobulle_fond_corps' />\n";
-		echo "&nbsp;&nbsp;&nbsp;</td>\n";
-		echo "<td style='text-align:center; border: 1px solid black;'>\n";
-		echo "<a href='#' onClick='reinit_couleurs(\"couleur_infobulle_fond_corps\");return false;'>Réinitialiser</a>\n";
-		echo "</td>\n";
-		echo "</tr>\n";
 
+		// Tableau de réglage des couleurs
+		// Titre de la notice
+		echo "<h3>Polices, bordures ...</h3>";
+		echo "<table class='tableau_change_couleur' summary=\"cahier de texte changement de couleur\">\n";
+			// entête
+			echo "<tr class='fond_blanc'>\n";
+				echo "<td class='texte_gras'>Couleur</td>\n";
+				for($j=0;$j<count($comp);$j++){
+					echo "<td class='texte_gras'>$comp[$j]</td>\n";
+				}
+				echo "<td class='texte_gras'>Aperçu</td>\n";
+				echo "<td class='texte_gras'>Réinitialisation</td>\n";
+			echo "</tr>\n";
+			// Données de la couleur
+			for($i=0;$i<count($tab_ct_police_bordure);$i++){
+				echo "<tr>\n";
+					echo "<td>".$tab_ct_nom_police_bordure[$i]."</td>\n";
+						// couleurs RVB
+						for($j=0;$j<count($comp);$j++){
+							echo "<td>\n";
+								echo "<label for='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' class='invisible'>".$tab_ct_police_bordure[$i]."_".$comp[$j]."</label>\n";
+								echo "<input type='text' name='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' id='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_ct_police_bordure[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab_ct_police_bordure[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+							echo "</td>\n";
+						}
+					echo "<td id='".$tab_ct_police_bordure[$i]."'>\n";
+						echo "<input type='hidden' name='".$tab_ct_police_bordure[$i]."' value='".$tab_ct_police_bordure[$i]."' />\n";
+					echo "</td>\n";
+					echo "<td>\n";
+						echo "<a href='#' onclick='reinit_couleurs(\"".$tab_ct_police_bordure[$i]."\");return false;'>Réinitialiser</a>\n";
+					echo "</td>\n";
+				echo "</tr>\n";
+			}
 		echo "</table>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "</blockquote>\n";
 
+// Fin couleurs communes
 
-
-
-	//=========================================
-
-	$tabcouleurs['couleur_lig_alt1']=array();
-	$couleur_lig_alt1=getSettingValue('couleur_lig_alt1');
-	if($couleur_lig_alt1!=""){
-		$tabcouleurs['couleur_lig_alt1']=tab_rvb($couleur_lig_alt1);
-	}
-	else{
-		// papayawhip #FFEFD5
-		$tabcouleurs['couleur_lig_alt1']['R']=255;
-		$tabcouleurs['couleur_lig_alt1']['V']=239;
-		$tabcouleurs['couleur_lig_alt1']['B']=213;
-	}
-
-	$tabcouleurs['couleur_lig_alt_1']=array();
-	$couleur_lig_alt_1=getSettingValue('couleur_lig_alt_1');
-	if($couleur_lig_alt_1!=""){
-		$tabcouleurs['couleur_lig_alt_1']=tab_rvb($couleur_lig_alt_1);
-	}
-	else{
-		// honeydew #F0FFF0
-		$tabcouleurs['couleur_lig_alt_1']['R']=240;
-		$tabcouleurs['couleur_lig_alt_1']['V']=255;
-		$tabcouleurs['couleur_lig_alt_1']['B']=240;
-	}
-
-	echo "<p><b>Couleurs des lignes alternées dans les tableaux:</b></p>\n";
-	echo "<blockquote>\n";
-	echo "<table border='0'>\n";
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "<input type='checkbox' name='utiliser_couleurs_perso_lig_tab_alt' id='utiliser_couleurs_perso_lig_tab_alt' value='y' ";
-	if(getSettingValue('utiliser_couleurs_perso_lig_tab_alt')=='y'){
-		echo "checked ";
-	}
-	echo "/> ";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<label for='utiliser_couleurs_perso_lig_tab_alt' style='cursor: pointer;'>Utiliser des couleurs personnalisées pour les lignes alternées dans les tableaux.</label>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "&nbsp;";
-	echo "</td>\n";
-	echo "<td>\n";
-		echo "<table style='border: 1px solid black; border-collapse:collapse;'>\n";
-
-		echo "<tr style='background-color:white;'>\n";
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Motif</td>\n";
-		for($j=0;$j<count($comp);$j++){
-			echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>$comp[$j]</td>\n";
-		}
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Aperçu</td>\n";
-		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Réinitialisation</td>\n";
-
-		echo "</tr>\n";
-
-		echo "<tr>\n";
-		echo "<td style='text-align:center; border: 1px solid black;'>Couleur de ligne 1";
-		echo "</td>\n";
-		for($j=0;$j<count($comp);$j++){
-			/*
-			$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
-			$res_couleur=mysql_query($sql);
-			if(mysql_num_rows($res_couleur)>0){
-				$tmp=mysql_fetch_object($res_couleur);
-				$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
-			}
-			*/
-
-			echo "<td style='text-align:center; border: 1px solid black;'>\n";
-			echo "<input type='text' name='couleur_lig_alt1_".$comp[$j]."' id='id_couleur_lig_alt1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt1'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_lig_alt1\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
-			echo "</td>\n";
-		}
-		echo "<td id='couleur_lig_alt1' style='text-align:center; border: 1px solid black;'>\n";
-		// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
-		echo "<input type='hidden' name='couleur_lig_alt1' value='couleur_lig_alt1' />\n";
-		echo "&nbsp;&nbsp;&nbsp;</td>\n";
-		echo "<td style='text-align:center; border: 1px solid black;'>\n";
-		echo "<a href='#' onClick='reinit_couleurs(\"couleur_lig_alt1\");return false;'>Réinitialiser</a>\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-
-		echo "<tr>\n";
-		echo "<td style='text-align:center; border: 1px solid black;'>Couleur de ligne -1";
-		echo "</td>\n";
-		for($j=0;$j<count($comp);$j++){
-			/*
-			$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
-			$res_couleur=mysql_query($sql);
-			if(mysql_num_rows($res_couleur)>0){
-				$tmp=mysql_fetch_object($res_couleur);
-				$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
-			}
-			*/
-
-			echo "<td style='text-align:center; border: 1px solid black;'>\n";
-			echo "<input type='text' name='couleur_lig_alt_1_".$comp[$j]."' id='id_couleur_lig_alt_1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt_1'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_lig_alt_1\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
-			echo "</td>\n";
-		}
-		echo "<td id='couleur_lig_alt_1' style='text-align:center; border: 1px solid black;'>\n";
-		// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
-		echo "<input type='hidden' name='couleur_lig_alt_1' value='couleur_lig_alt_1' />\n";
-		echo "&nbsp;&nbsp;&nbsp;</td>\n";
-		echo "<td style='text-align:center; border: 1px solid black;'>\n";
-		echo "<a href='#' onClick='reinit_couleurs(\"couleur_lig_alt_1\");return false;'>Réinitialiser</a>\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-
-		echo "</table>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "</blockquote>\n";
-	//=========================================
-
-
-
-	echo "<input type='hidden' name='is_posted' value='1' />\n";
-	//echo "<p style='text-align:center;'><input type='submit' name='ok' value='Valider' /></p>\n";
-	echo "<p style='text-align:center;'><input type='button' name='ok' value='Valider' onClick='calcule_et_valide()' /></p>\n";
-
-
-	echo "<p><b>Remarque:</b></p>";
-	echo "<blockquote>\n";
-	echo "<p>Il peut arriver qu'il faille insister après validation pour que le navigateur recharge bien la page (<i>problème de cache du navigateur</i>).<br />Vous pouvez forcer le rechargement avec CTRL+MAJ+R.</p>\n";
-	echo "</blockquote>\n";
-
-/*
-	//echo "<input type='text' name='truc' value='100' size='3' onkeypress='test_clavier(\"truc\")' />\n";
-	//echo "<input type='text' name='truc' value='100' size='3' onkeypress='xKey(\"Event\")' />\n";
-	//echo "<input type='text' name='truc' value='100' size='3' onkeypress='xKey(Event)' />\n";
-	echo "<input type='text' name='truc' id='id_truc' value='100' size='3' onKeyDown=\"clavier_2(this.id,event);\" />\n";
-	//echo "<input type='text' name='truc' id='id_truc' value='100' size='3' onKeyPress=\"clavier_2(this.id,event);\" />\n";
-*/
-	echo "<p><br /></p>\n";
-
-	echo "<div align='center'>\n";
-	echo "<div style='padding:1em; text-align:center; background-color:white; color:red; border: 1px solid black; width: 250px;'>Le bouton ci-dessous est une 'sécurité'<br />pour réinitialiser les couleurs<br />si jamais vous en arriviez à obtenir quelque chose<br />comme du texte noir sur un fond noir.<br />";
-	echo "<input type='hidden' name='secu' value='n' />\n";
-	//echo "<input type='button' name='reinitialiser' value='Réinitialiser' onClick='reinitialiser()' /></div>\n";
-	echo "<input type='button' name='reinitialiser' value='Réinitialiser' onClick='reinit()' /></div>\n";
 	echo "</div>\n";
+
+
+
+
+/*============================================*/
+/* 	 ça marche, il manque enregistrement    */
+/*============================================*/
+
+
+		//=========================================
+
+
+	echo "<p class='decale_bas'>\n";
+	echo "<input type='hidden' name='is_posted' value='1' />\n";
+	// echo "<p style='text-align:center;'><input type='submit' name='ok' value='Valider' /></p>\n";
+	echo "<input type='button' name='ok' value='Valider' onclick='calcule_et_valide()' />\n</p>\n";
+
+
+	echo "<h2><strong>Remarque:</strong></h2>";
+	// echo "<blockquote>\n";
+		echo "<p>Il peut arriver qu'il faille insister après validation pour que le navigateur recharge bien la page (<em>problème de cache du navigateur</em>).<br />Vous pouvez forcer le rechargement avec CTRL+MAJ+R.</p>\n";
+	// echo "</blockquote>\n";
+
+	/*
+		//echo "<input type='text' name='truc' value='100' size='3' onkeypress='test_clavier(\"truc\")' />\n";
+		//echo "<input type='text' name='truc' value='100' size='3' onkeypress='xKey(\"Event\")' />\n";
+		//echo "<input type='text' name='truc' value='100' size='3' onkeypress='xKey(Event)' />\n";
+		echo "<input type='text' name='truc' id='id_truc' value='100' size='3' onkeydown=\"clavier_2(this.id,event);\" />\n";
+		//echo "<input type='text' name='truc' id='id_truc' value='100' size='3' onKeyPress=\"clavier_2(this.id,event);\" />\n";
+	*/
+	//echo "<p><br /></p>\n";
+
+	// echo "<div class='centre_texte'>\n";
+		echo "<div class='panneau_secour'>\n";
+			echo "Le bouton ci-dessous est une 'sécurité'<br />pour réinitialiser les couleurs<br />si jamais vous en arriviez à obtenir quelque chose<br />comme du texte noir sur un fond noir.<br />\n";
+			echo "<input type='hidden' name='secu' value='n' />\n";
+			//echo "<input type='button' name='reinitialiser' value='Réinitialiser' onclick='reinitialiser()' /></div>\n";
+			echo "<input type='button' name='reinitialiser' value='Réinitialiser' onclick='reinit()' />\n";
+		echo "</div>\n";
+	// echo "</div>\n";
 
 	echo "<script type='text/javascript'>
 		setTimeout('init()',500);
-	</script>\n";
+	</script>\n<noscript></noscript>	";
 
 
 

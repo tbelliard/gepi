@@ -20,8 +20,30 @@ body {
 	bottom: 0.3em;
 }
 
-/* ----- see_all.php ----- */
-.ct_sa_table1 {
+/*  --- Cahier de texte : consultation.php ---  */
+/* Tableau avec 3 colonnes equilibrees */
+.centre_table {
+	overflow: visible;
 	height: 1%;
 }
+.ct_col_centre{ 
+	float: right;
+}
+#eleve {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+#matiere {
+	margin-top: 10px;
+}
 
+/* Notices 2 colonnes */
+.centre_cont_text {
+	overflow: visible;
+	height: 1%;
+}
+.cdt_fond_not_dev {
+	margin-top:-4px;
+}
+
+/* ----- see_all.php ----- */

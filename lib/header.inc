@@ -327,9 +327,19 @@ if(isset($style_specifique)){
 
 
 // Voir si on restreint l'usage aux pages du module cahier de textes
-echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/cahier_texte.css' media='screen' />\n";
-// Feuilles de styles Paramètres de configuration du cahier de texte
-echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/maj_global.css' media='screen' />\n";
+// Restreint aux pages modifiées pour une meilleure accessibilité
+// Voir si on restreint l'usage aux pages du module cahier de textes
+// Restreint aux pages modifiées pour une meilleure accessibilité
+
+if(isset($accessibilite)){
+	if($accessibilite=="y"){
+		echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/accessibilite.css' media='screen' />\n";
+		// Feuilles de styles Paramètres de configuration du cahier de texte à partir de /lib/global.inc
+		// echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/maj_global.css' media='screen' />\n";
+      // Feuilles de styles imprimante
+		echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/accessibilite_print.css' media='print' />\n";
+   }
+}
 
 // Feuilles de styles du bandeau
 echo "\n<link title='bandeau' rel='stylesheet' type='text/css' href='$gepiPath/bandeau.css' media='screen' />\n";
@@ -337,8 +347,6 @@ echo "<!--[if lte IE 7]>\n";
 	echo "	<link title='bandeau' rel='stylesheet' type='text/css' href='$gepiPath/correction_ie.css' media='screen' />\n";
 echo "<![endif]-->\n";
 
-// Feuilles de styles imprimante
-// echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/imprime_ct_eleve.css' media='print' />\n";
 // fin modification Régis
 
 if(isset($style_screen_ajout)){
@@ -354,6 +362,9 @@ if(isset($style_screen_ajout)){
 //echo "<link href='".$gepiPath."/grid.css' rel='stylesheet' type='text/css'/>\n";
 
 echo '	<!-- Fin des styles -->'."\n\n";
+
+include 'maj_coul_global.inc';
+
 // ============================== FIN des feuilles de style =======================
 ?>
 </head>
@@ -574,6 +585,7 @@ if (isset($titre_page)) {
 				echo "</div>\n";
 				// menu contact
 				echo "<!-- Contact -->\n";
+				//echo "<div class='menu_general' style='border: 1px dashed green;'>";
 				echo "<div class='menu_general'>";
 					echo "<p>";
 						$prefix = '';
@@ -601,6 +613,9 @@ if (isset($titre_page)) {
 // ----- Régis : fin des modifications du bandeau -----
 
 	echo "</div>\n";
+
+//echo "<div style='clear:both;'>&nbsp;</div>\n";
+
 // ==========> On ajoute la barre de menu <========================= //
 if (!isset($nobar)) { $nobar = "non"; }
 if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {

@@ -1516,7 +1516,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	<select name=\"matiere\" onchange=\"matiere_go()\">\n";
 	*/
 	$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
-  <p> \n<label for=\"enseignement\"><strong><em>Matière :<br /></em></strong></label> <select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";
+  <h2 class='h2_label'> \n<label for=\"enseignement\"><strong><em>Matière :<br /></em></strong></label>\n</h2>\n<p>\n<select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";
 
 	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
   if (is_numeric($id_ref)) {
@@ -1562,6 +1562,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
    $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
    }
   $out_html .= "\n</select>\n</p>\n
+
   <script type=\"text/javascript\">
   <!--
   function matiere_go()
@@ -1573,9 +1574,16 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
   // -->
   </script>
 
-  <noscript>
-	<p>
-  <input type=\"submit\" value=\"OK\" />
+  <noscript><p>\n";
+     if (is_numeric($id_ref)) {
+     $out_html .= "<input type=\"hidden\" name=\"id_classe\" value=\"$id_ref\" />\n";
+   } else {
+     $out_html .= "<input type=\"hidden\" name=\"login_eleve\" value=\"$id_ref\" />\n";
+   }
+     $out_html .= "<input type=\"hidden\" name=\"year\" value=\"$year\" />
+     <input type=\"hidden\" name=\"month\" value=\"$month\" />
+     <input type=\"hidden\" name=\"day\" value=\"$day\" />
+     <input type=\"submit\" value=\"OK\" />
 	</p>
   </noscript>
   </form>\n";
@@ -1604,16 +1612,15 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 	} else {
 		// Plusieurs élèves : on affiche un formulaire pour choisir l'élève
 	// correction W3C : onChange = onchange + ajout de balise <p> +fermeture balise <option>
-	  $out_html = "<form id=\"eleve\" name=\"eleve\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><p><label for=\"choix_eleve\"><strong><em>Elève :</em></strong></label><br />
-	  <select id=\"choix_eleve\" name=\"eleve\" onchange=\"eleve_go()\">\n";
-	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)</option>\n";
+	  $out_html = "<form id=\"eleve\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n<h2 class='h2_label'>\n<label for=\"choix_eleve\"><strong><em>Elève :</em></strong></label>\n</h2>\n<p>\n<select id=\"choix_eleve\" name=\"eleve\" onchange=\"eleve_go()\">\n";
+	  $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)</option>\n";
 		while ($current_eleve = mysql_fetch_object($get_eleves)) {
 		   if ($current) {
 		   	$selected = ($current_eleve->login == $current->login) ? "selected='selected'" : "";
 		   } else {
 		   	$selected = "";
 		   }
-		   $link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=".$current_eleve->login;
+		   $link2 = "$link?year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=".$current_eleve->login;
 		   $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($current_eleve->prenom . " - ".$current_eleve->nom)."</option>\n";
 		}
 	// ajout de la fermeture de p </p> et de \" pour encadrer submit
@@ -1631,7 +1638,10 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 
 	  <noscript>
 		<p>
-		<input type=\"submit\" value=\"OK\" />
+		  <input type=\"hidden\" name=\"year\" value=\"$year\" />
+		  <input type=\"hidden\" name=\"month\" value=\"$month\" />
+		  <input type=\"hidden\" name=\"day\" value=\"$day\" />
+		  <input type=\"submit\" value=\"OK\" />
 		</p>
 		</noscript>
 	  </form>\n";
@@ -3069,5 +3079,13 @@ function retourneUri($eleve, $https, $type){
 	}
 
 	return $rep;
+}
+
+function get_date_php() {
+	$eng_words = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+	$french_words = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre');
+	$date_str = date('l').' '.date('d').' '.date('F').' '.date('Y');
+	$date_str = str_replace($eng_words, $french_words, $date_str);
+	return $date_str;
 }
 ?>
