@@ -214,7 +214,7 @@ if(isset($modif_salle)) {
 
 ?>
 		</select>
-
+	</form>
 				</td>
 				<td>
 <?php
@@ -254,7 +254,7 @@ if (isset($new_name) AND $new_name != "" ) {
 				<td></td>
 				<td>
 	<span class="accept">La salle numéro '.$num_salle.' s\'appelle désormais : '.unslashes($new_name_propre).'.</span>
-	';
+		</form>';
 }
 ?>
 				</td>
@@ -262,7 +262,7 @@ if (isset($new_name) AND $new_name != "" ) {
 		</table>
 <br />
 </fieldset>
-	</form>
+
 <br />
 
 	<form action="ajouter_salle.php" name="effacer_salle" method="post">
