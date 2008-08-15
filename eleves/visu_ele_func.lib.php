@@ -603,12 +603,14 @@ function info_eleve($ele_login) {
 						break;
 					}
 				}
-				for($j=0;$j<count($tab_ele['cdt_entry']);$j++) {
-					if($tab_ele['cdt_entry'][$j]['date_ct']==$tab_date_ct[$i]) {
-						$tab_ele['cdt'][$cpt]['entry'][]=$tab_ele['cdt_entry'][$j];
-					}
-					elseif($tab_ele['cdt_entry'][$j]['date_ct']>$tab_date_ct[$i]) {
-						break;
+				if(isset($tab_ele['cdt_entry'])) {
+					for($j=0;$j<count($tab_ele['cdt_entry']);$j++) {
+						if($tab_ele['cdt_entry'][$j]['date_ct']==$tab_date_ct[$i]) {
+							$tab_ele['cdt'][$cpt]['entry'][]=$tab_ele['cdt_entry'][$j];
+						}
+						elseif($tab_ele['cdt_entry'][$j]['date_ct']>$tab_date_ct[$i]) {
+							break;
+						}
 					}
 				}
 				$cpt++;
