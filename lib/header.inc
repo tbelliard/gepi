@@ -483,7 +483,7 @@ if (isset($titre_page)) {
 			echo "</div>\n";
 
 			// Bandeau de droite
-			echo "<div id='bandeau_droit'>\n";
+			echo "<div id='bandeau_droit_fixe'>\n";
 				echo "<p>\n";
 					// Nom Prénom utilisateur
 					echo "<span id='bd_nom'>";
