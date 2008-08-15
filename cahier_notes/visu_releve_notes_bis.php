@@ -452,8 +452,10 @@ elseif(!isset($choix_periode)) {
 	//=======================
 	//Configuration du calendrier
 	include("../lib/calendrier/calendrier.class.php");
-	$cal1 = new Calendrier("form_choix_edit", "display_date_debut");
-	$cal2 = new Calendrier("form_choix_edit", "display_date_fin");
+	//$cal1 = new Calendrier("form_choix_edit", "display_date_debut");
+	//$cal2 = new Calendrier("form_choix_edit", "display_date_fin");
+	$cal1 = new Calendrier("formulaire", "display_date_debut");
+	$cal2 = new Calendrier("formulaire", "display_date_fin");
 	//=======================
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
