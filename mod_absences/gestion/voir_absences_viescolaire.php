@@ -75,6 +75,7 @@ function afficherCoursClasse($d, $c){
 
 	$rep = '';
 	$cours = new edtAfficher();
+	$cours->sem = 0;
 	$cours->hauteur_creneau = 70;
 	$cours->type_edt = 'classe';
 	$jour = $cours->aujourdhui();
