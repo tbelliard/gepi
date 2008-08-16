@@ -618,6 +618,21 @@ function info_eleve($ele_login) {
 		}
 	}
 
+	$tab_ele['absences']=array();
+	$sql="SELECT * FROM absences WHERE login='$ele_login' ORDER BY periode;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysql_fetch_object($res)) {
+			$tab_ele['absences'][$cpt]['periode']=$lig->periode;
+			$tab_ele['absences'][$cpt]['nb_absences']=$lig->nb_absences;
+			$tab_ele['absences'][$cpt]['non_justifie']=$lig->non_justifie;
+			$tab_ele['absences'][$cpt]['nb_retards']=$lig->nb_retards;
+			$tab_ele['absences'][$cpt]['appreciation']=$lig->appreciation;
+			$cpt++;
+		}
+	}
+
 	return $tab_ele;
 }
 

@@ -328,6 +328,7 @@ Patientez pendant l'extraction des données... merci.
 	$tab_couleur['releve']="seashell";
 	$tab_couleur['cdt']="linen";
 	$tab_couleur['anna']="blanchedalmond";
+	$tab_couleur['absences']="azure";
 
 	// On vérifie que l'élève existe
 	$sql="SELECT 1=1 FROM eleves WHERE login='$ele_login';";
@@ -382,6 +383,7 @@ Patientez pendant l'extraction des données... merci.
 		$acces_releves="n";
 		$acces_bulletins="n";
 		$acces_anna="n";
+		$acces_absences="n";
 
 		$active_annees_anterieures=getSettingValue('active_annees_anterieures');
 
@@ -391,6 +393,7 @@ Patientez pendant l'extraction des données... merci.
 			$acces_enseignements="y";
 			$acces_releves="n";
 			$acces_bulletins="y";
+			$acces_absences="y";
 			if($active_annees_anterieures=='y') {
 				$acces_anna="y";
 			}
@@ -408,6 +411,7 @@ Patientez pendant l'extraction des données... merci.
 			$acces_eleve="y";
 			$acces_responsables="y";
 			$acces_enseignements="y";
+			$acces_absences="y";
 
 			$GepiAccesReleveScol=getSettingValue('GepiAccesReleveScol');
 			if($GepiAccesReleveScol=="yes") {
@@ -444,6 +448,7 @@ Patientez pendant l'extraction des données... merci.
 			$acces_eleve="y";
 			$acces_responsables="y";
 			$acces_enseignements="y";
+			$acces_absences="y";
 
 			$GepiAccesReleveCpe=getSettingValue('GepiAccesReleveCpe');
 			if($GepiAccesReleveCpe=="yes") {
@@ -474,12 +479,14 @@ Patientez pendant l'extraction des données... merci.
 			$acces_enseignements="y";
 			$acces_releves="n";
 			$acces_bulletins="n";
+			$acces_absences="n";
 
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login='".$ele_login."' AND professeur='".$_SESSION['login']."';";
 			$test=mysql_query($sql);
 
 			if(mysql_num_rows($test)>0) {
 				$is_pp="y";
+				$acces_absences="y";
 			}
 			else {
 				$is_pp="n";
@@ -546,6 +553,10 @@ Patientez pendant l'extraction des données... merci.
 						}
 					}
 				}
+			}
+
+			if(($eleve_classe_prof=="y")||($eleve_groupe_prof=="y")) {
+				$acces_absences="y";
 			}
 
 			//echo "\$acces_releves=$acces_releves<br />";
@@ -945,7 +956,22 @@ Patientez pendant l'extraction des données... merci.
 			echo "</div>\n";
 		}
 
-		// Onglet Cahier de textes
+		// Onglet Absences
+		if($acces_absences=="y") {
+			echo "<div id='t_absences' class='t_onglet' style='";
+			if($onglet=='absences') {
+				echo "border-bottom-color: ".$tab_couleur['absences']."; ";
+			}
+			else {
+				echo "border-bottom-color: black; ";
+			}
+			echo "background-color: ".$tab_couleur['absences']."; ";
+			echo "'>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=absences' onclick=\"affiche_onglet('absences');return false;\">Absences</a>";
+			echo "</div>\n";
+		}
+
+		// Onglet Années antérieures
 		if($acces_anna=="y") {
 			echo "<div id='t_anna' class='t_onglet' style='";
 			if($onglet=='anna') {
@@ -1641,6 +1667,49 @@ Patientez pendant l'extraction des données... merci.
 
 		//===================================================
 
+		//===================================================
+
+		//========================
+		// Onglet ABSENCES
+		//========================
+
+		// $tab_ele['absences']
+
+		if($acces_absences=="y") {
+			echo "<div id='absences' class='onglet' style='";
+			if($onglet!="absences") {echo " display:none;";}
+			echo "background-color: ".$tab_couleur['absences']."; ";
+			echo "'>";
+			echo "<h2>Absences et retards de l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+
+			if(count($tab_ele['absences'])==0) {
+				echo "<p>Aucun bilan d'absences n'est enregistré.</p>\n";
+			}
+			else {
+				echo "<table class='boireaus' summary='Bilan des absences'>\n";
+				echo "<tr>\n";
+				echo "<th>Période</th>\n";
+				echo "<th>Nombre d'absences</th>\n";
+				echo "<th>Absences justifiées</th>\n";
+				echo "<th>Nombre de retards</th>\n";
+				echo "<th>Appréciation</th>\n";
+				echo "</tr>\n";
+				$alt=1;
+				for($loop=0;$loop<count($tab_ele['absences']);$loop++) {
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
+					echo "<td>".$tab_ele['absences'][$loop]['periode']."</td>\n";
+					echo "<td>".$tab_ele['absences'][$loop]['nb_absences']."</td>\n";
+					echo "<td>".$tab_ele['absences'][$loop]['non_justifie']."</td>\n";
+					echo "<td>".$tab_ele['absences'][$loop]['nb_retards']."</td>\n";
+					echo "<td>".$tab_ele['absences'][$loop]['appreciation']."</td>\n";
+					echo "</tr>\n";
+				}
+				echo "</table>\n";
+			}
+
+			echo "</div>\n";
+		}
 		//===================================================
 
 		//========================
