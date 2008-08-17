@@ -186,7 +186,7 @@ if ($_SESSION['statut'] == "administrateur") {
 
     if ((getSettingValue("disable_login"))!='no'){
 		//echo "<br /><br />\n<font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dérangement et réessayer de vous connecter ultérieurement.</font><br />\n";
-		// correction Régis balise <center> invalide 
+		// correction Régis balise <center> invalide
 		echo "<p style=\"text-align: center; color: red;\">Attention : le site est en cours de maintenance et temporairement inaccessible.</p>\n";
 	}
 
