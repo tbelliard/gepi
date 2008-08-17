@@ -8,6 +8,29 @@ Mise en page pour validation et accessibilité
 /***********************
        Général
 ***********************/
+/* --- Classes par fonctions --- */
+.
+.lien_retour {
+	font-weight: bold;
+	font-style: normal;
+}
+.choix_fin {
+	margin-bottom: 1.5em;
+}
+.erreur_saisie {
+	font-weight: bold;
+	color: red;
+}
+.centre_tout_moyen {
+	text-align: center;
+	margin: auto;
+	width: 700px;
+}
+.expli_page {
+	text-align: center;
+	font: normal 12pt verdana sans-serif;
+}
+
 /* --- Décoration du texte --- */
 .souligne {
 	text-decoration: underline;
@@ -668,7 +691,7 @@ table.menu td {
 .tab_releve_note {
 	margin: 0px auto;
 	padding: 2px;
-	min-width: 680px;
+	width: 680px;
 	border: 1px outset;
 }
 .tab_relev_note_m {
@@ -704,20 +727,32 @@ table.menu td {
 	float: left;'
 }
 .tab_signatures {
-	width: 680px;
-	padding: 1px;
+	width: 676px;
 	margin:5px auto;
+	padding: 3px;
 	border: 1px solid;
 	border-color: #cdcdcd black black #cdcdcd;
 	position: relative;
 	overflow: auto;'
 }
 .cel_signature {
-	float: left;
-	margin:1px;
 	padding: 2px;
 	border: 1px solid;
 	border-color: black #cdcdcd #cdcdcd black;
+}
+.nb_cel_1 {
+	width: 668px;
+	margin:auto;
+}
+.nb_cel_2 {
+	float: left;
+	width: 328px;
+	margin:auto 2px;
+}
+.nb_cel_3 {
+	float: left;
+	width: 215px;
+	margin:auto 2px;
 }
 #div_1 {
 	border-top: solid 1px;
@@ -732,3 +767,68 @@ table.menu td {
 }
 
 
+/********************************
+ --- Saisie des absences prof ---
+********************************/
+
+/* prof_ajout_abs.php */
+
+.enregistre_bon {
+	color: green;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.enregistre_deja {
+	color: red;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.enregistre_modifie {
+	color: orange;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.tb_code_couleur {
+	width: 150px;
+	height: 20px;
+}
+.td_Retard {
+	background-color: green;
+	color: green;
+}
+.td_Absence {
+	background-color: red;
+	color: red;
+}
+.tb_absences {
+	text-align: left;
+	width: 700px;
+}
+.td_abs_eleves {
+	width: 175px;
+	text-align: center;
+}
+.td_abs_absence {
+	width: 100px;
+	text-align: center;
+}
+.td_abs_retard {
+	width: 125px;
+	text-align: center;
+}
+.th_abs_suivi {
+	width: 300px;
+	text-align: center;
+}
+.td_nom_creneau {
+	border: 1px solid black;
+}
+.abs_ligne_paire {
+	background-color: #C6DCE3;
+}
+.abs_ligne_impaire {
+	background-color: #E8F1F4;
+}
+.abs_ligne_survol {
+	background-color: #F7F03A;
+}

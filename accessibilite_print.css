@@ -173,7 +173,7 @@ ul {
 	vertical-align: middle;
 }
 .tab_signatures {
-	width: 680px;
+	width: 678px;
 	padding: 1px;
 	margin:5px auto;
 	border: 1px solid;
@@ -181,10 +181,21 @@ ul {
 	overflow: auto;'
 }
 .cel_signature {
-	float: left;
-	margin:1px;
 	padding: 2px;
 	border: 1px solid;
 }
-
+.nb_cel_1 {
+	width: 668px;
+	margin:auto;
+}
+.nb_cel_2 {
+	float: left;
+	width: 328px;
+	margin:auto 2px;
+}
+.nb_cel_3 {
+	float: left;
+	width: 215px;
+	margin:auto 2px;
+}
 

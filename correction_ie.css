@@ -1,6 +1,6 @@
 /*
 correction_ie.css
-Correction de la mise en page dans internet exploreur
+Mise en page du bandeau pour affichage en grand dans internet exploreur
 
 @version $Id$
 
@@ -48,16 +48,15 @@ body {
 
 /* ----- cahier_notes/visu_releve_notes.php ----- */
 .tab_releve_note {
+	width: 680px;
 	margin: 0px auto;
 	padding: 2px;
-	width: 680px;
 	border: 1px outset;
 }
 .tab_signatures {
-	width: 680px;
+	width: 676px;
 	margin : 5px auto;
 	padding: 2px;
 	border: 1px solid;
 	border-color: #cdcdcd black black #cdcdcd;
 }
-
