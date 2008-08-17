@@ -184,9 +184,8 @@ echo "<div class=\"centre_table\">\n";
 			echo "new LiveClock();\n";
 			echo "//-->";
 			echo "\n</script>\n</p>\n"; 
-			//echo "<noscript>
+			echo "<noscript>\n<p>".strftime("%A %d %B %Y", $today)."</p>\n</noscript>";
 //<p class='menu_retour'>".get_date_php()."</p>\n</noscript>";
-//n<p>".strftime("%A %d %B %Y", $today)."</p>\n</noscript>";
 			// On gère la sélection de l'élève
 			if ($_SESSION['statut'] == 'responsable') {
 				echo make_eleve_select_html('consultation.php', $_SESSION['login'], $selected_eleve, $year, $month, $day);
