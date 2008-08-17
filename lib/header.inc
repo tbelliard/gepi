@@ -210,91 +210,7 @@ if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
 
 } // if(isset($utilisation_jsdivdrag...
 
-/* ===== Modification Régis =====
-	Gestion de l'affichage des bandeaux avec prototype.js
-	taille des bandeaux : bascule d'une taille à l'autre
-	fond des bandeaux :$couleur="degrade1" --> dégradé choisi par l'administrateur (gepi_stylesheet="style" utiliser_degrade="y")
-	                     $couleur="darkfade" --> gris d'origine (gepi_stylesheet="style" utiliser_degrade n'est pas à "y")
-	                    $couleur="no_style" --> les styles sont désactivés (gepi_stylesheet n'est pas à "style")
-*/
-?>
-<script type='text/javascript'>
-<!--
 
-	function modifier_taille_bandeau(){
-		// Modification de la taille du bandeau
-		if(Element.hasClassName('bandeau','pt_bandeau')){
-			$taille_bandeau_actuelle = 'pt_bandeau';
-			$taille_bandeau_future = 'gd_bandeau';
-		}else {
-			$taille_bandeau_actuelle = 'gd_bandeau';
-			$taille_bandeau_future = 'pt_bandeau';
-		}
-		// On efface la classe de taille et on attribue la nouvelle
-		Element.removeClassName('bandeau',$taille_bandeau_actuelle);
-		Element.addClassName('bandeau', $taille_bandeau_future);
-
-		// Modification de l'image de fond du bandeau
-		if(Element.hasClassName('bandeau','no_style')){
-			if(Element.hasClassName('bandeau','pt_bandeau_no_style')){
-				$image_actuelle = 'pt_bandeau_no_style';
-			}else {
-				$image_actuelle = 'gd_bandeau_no_style';
-			}
-			$image_future=$taille_bandeau_future+'_no_style';
-		}else if(Element.hasClassName('bandeau','degrade1')){
-			if(Element.hasClassName('bandeau','pt_bandeau_degrade1')){
-				$image_actuelle = 'pt_bandeau_degrade1';
-			}else {
-				$image_actuelle = 'gd_bandeau_degrade1';
-			}
-			$image_future=$taille_bandeau_future+'_degrade1';
-		}else {
-			if(Element.hasClassName('bandeau','pt_bandeau_darkfade')){
-				$image_actuelle = 'pt_bandeau_darkfade';
-			}else {
-				$image_actuelle = 'gd_bandeau_darkfade';
-			}
-			$image_future=$taille_bandeau_future+'_darkfade';
-		}
-		// On efface la classe d'image et on attribue la nouvelle
-		Element.removeClassName('bandeau',$image_actuelle);
-		Element.addClassName('bandeau', $image_future);
-	}
-
-	function modifier_couleur_bandeau($couleur){
-		// On détermine la taille actuelle
-		if(Element.hasClassName('bandeau','pt_bandeau')){
-			$taille_bandeau_header='pt_bandeau_';
-		}else {
-			$taille_bandeau_header='gd_bandeau_';
-		}
-		// On détermine la couleur et l'image actuelle
-		if(Element.hasClassName('bandeau','no_style')){
-			$couleur_actuelle='no_style';
-			$image_actuelle=$taille_bandeau_header+'no_style';
-		}else if(Element.hasClassName('bandeau','degrade1')){
-			$couleur_actuelle='degrade1';
-			$image_actuelle=$taille_bandeau_header+'degrade1';
-		}else {
-			$couleur_actuelle='darkfade';
-			$image_actuelle=$taille_bandeau_header+'darkfade';
-		}
-		$couleur_future=$couleur;
-		$image_future=$taille_bandeau_header+$couleur;
-
-		// On efface les anciennes classes et on attribue les nouvelles
-		Element.removeClassName('bandeau',$couleur_actuelle);
-		Element.addClassName('bandeau', $couleur_future);
-		Element.removeClassName('bandeau',$image_actuelle);
-		Element.addClassName('bandeau', $image_future);
-	}
-
-//-->
-</script>
-
-<?php
-/* Fin des modifications des bandeaux */
 
 
 echo "\n".'	<!-- fin des fichiers en javascript -->'."\n\n";
@@ -543,7 +459,7 @@ if (isset($titre_page)) {
 							}
 							echo "Responsable de $chaine_enfants";
 						}elseif($_SESSION["statut"] == "autre"){
-							echo $_SESSION['statut_special'];
+							echo $_SESSION["statut_special"];
 						}
 					echo "</span>";
 					// A QUOI SERT CE $temp ?
@@ -645,3 +561,4 @@ if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))){
 
 //if (isset($titre_page)) echo "</div>";
 ?>
+

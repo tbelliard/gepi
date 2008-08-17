@@ -121,7 +121,7 @@ ul {
 	text-align: center;
 }
 .entete_releve_notes_logo{
-	width: 120px;
+	width: 100px;
 	float: right;
 	text-align: center;
 }
@@ -148,7 +148,7 @@ ul {
 	margin: 0px auto;
 	padding: 2px;
 	min-width: 680px;
-	border: 1px outset;
+	border: 1px solid;
 }
 .tab_relev_note_m {
 	width: 120px;
@@ -168,9 +168,23 @@ ul {
 }
 .tab_releve_note td{
 	padding: 4px;
-	border-style: inset ;
+	border-style: solid ;
 	border-width: 1px;
 	vertical-align: middle;
+}
+.tab_signatures {
+	width: 680px;
+	padding: 1px;
+	margin:5px auto;
+	border: 1px solid;
+	position: relative;
+	overflow: auto;'
+}
+.cel_signature {
+	float: left;
+	margin:1px;
+	padding: 2px;
+	border: 1px solid;
 }
 
 

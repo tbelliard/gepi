@@ -24,9 +24,12 @@ Mise en page pour validation et accessibilité
 .invisible {
 	display:none;
 }
-.menu_retour{
+.menu_retour {
 	font-style: normal;
 	font-weight: bold;
+}
+.liste_option {
+	font-family: Arial;'
 }
 /* --- aligne le texte --- */
 /* .txt_centre {
@@ -62,6 +65,29 @@ Mise en page pour validation et accessibilité
 	margin: 0em;
 	margin-left: 1em;
 	padding-bottom: 0em;
+}
+.info {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+	margin-bottom: 1.5em;'
+}
+.message-erreur {
+	color: #FF0000;
+	font-weight: bold;'
+}
+.h2_grand {
+	line-height: 1em;
+	font-variant: normal;
+	color: #330033;
+	font-size: 16pt;
+}
+.h3_gros {
+	line-height: 1em;
+	margin-bottom: 0em;
+	font-variant: normal;
+	font-weight: bold;'
+	color: #330033;
+	font-size: 12pt;
 }
 /* --- Tableaux --- */
 /* Tableau avec 3 colonnes equilibrees*/
@@ -105,20 +131,23 @@ Mise en page pour validation et accessibilité
 	margin-top: 1em;
 	text-align: left;
 }
-.entete_releve_notes_centre{
+.entete_releve_notes_centre {
 	text-align: center;
 	margin-left: 30%;
 }
-.entete_releve_notes_droit{
+.entete_releve_notes_droit {
 	width: 20%;
 	float: right;
 	margin-top: 1em;
 	text-align: center;
 }
-.entete_releve_notes_logo{
+.entete_releve_notes_logo {
 	width: 120px;
 	float: right;
 	text-align: center;
+}
+.curseur_pointeur {
+	cursor: pointer;
 }
 
 
@@ -646,6 +675,7 @@ table.menu td {
 	width: 120px;
 }
 .tab_relev_note_n {
+	width: 550px;
 }
 .tab_releve_note th {
 	padding: 4px;
@@ -658,11 +688,47 @@ table.menu td {
 	font-weight: normal;
 	vertical-align: middle;
 }
-.tab_releve_note td{
+.tab_releve_note td {
 	padding: 4px;
 	border-style: inset ;
 	border-width: 1px;
 	vertical-align: middle;
+}
+.img_fleche img {
+	border: 0px solid ;
+	width: 13px;
+	height: 13px;
+	border: none;
+	padding:2px;
+	margin:auto 2px;
+	float: left;'
+}
+.tab_signatures {
+	width: 680px;
+	padding: 1px;
+	margin:5px auto;
+	border: 1px solid;
+	border-color: #cdcdcd black black #cdcdcd;
+	position: relative;
+	overflow: auto;'
+}
+.cel_signature {
+	float: left;
+	margin:1px;
+	padding: 2px;
+	border: 1px solid;
+	border-color: black #cdcdcd #cdcdcd black;
+}
+#div_1 {
+	border-top: solid 1px;
+	border-bottom: solid 1px;
+	padding: 10px;
+	background-color: #E0EEEF;
+}
+.choix_classe {
+	font: normal normal 11pt Verdana, sans-serif;
+	letter-spacing: -0.05em;
+	margin: 5px;
 }
 
 
