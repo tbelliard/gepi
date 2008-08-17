@@ -595,6 +595,19 @@ $debg = NULL;
 			$ajouter_cours = "";
 		}
 
+	// Ajout d'un dispositif pour les sanctions
+	global $fonction_onclick;
+	$fonction_onclick = isset($fonction_onclick) ? $fonction_onclick : NULL;
+	if ($fonction_onclick == "y") {
+		// On a besoin du nom du créneau
+		$nom_creneau = mysql_fetch_array(mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$id_creneaux."' LIMIT 1"));
+		$aff_click_sanctions = '<br /><img src="../images/edit16.png" title="Ajouter une sanction" alt="Ajouter une sanction" onclick="clic_edt(\''.$nom_creneau["nom_definie_periode"].'\', \''.$jour_semaine.'\');" />';
+	}else{
+
+		$aff_click_sanctions = NULL;
+
+	}
+
 	// On envoie l'affichage en fonction du nombre de réponses à la requête du nombre de cours
 
 		if ($nbre_ens === 0) {
@@ -630,7 +643,7 @@ $debg = NULL;
 			//elseif ((isset($aff_precedent)) AND ($aff_precedent == 3 OR $aff_precedent == 4 OR $aff_precedent == 5 OR $aff_precedent == 6)) {
 			//	$case_tab = "<!--rien2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
 			//}
-			else $case_tab = "<td rowspan=\"2\">".$creer_cours."<!--raf3 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>\n";
+			else $case_tab = "<td rowspan=\"2\">".$creer_cours."<!--raf3 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->".$aff_click_sanctions."</td>\n";
 		}
 	// Cas où il y a qu'un seul enseignement
 		elseif ($nbre_ens === 1) {
@@ -728,6 +741,10 @@ $debg = NULL;
 // Fonction qui construit le contenu d'un créneaux.
 
 function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $enseignement){
+
+	global $fonction_onclick;
+	$fonction_onclick = isset($fonction_onclick) ? $fonction_onclick : NULL;
+
 	// On récupère l'id
 	$req_recup_id = mysql_fetch_array(mysql_query("SELECT id_cours FROM edt_cours WHERE
 										id_groupe = '".$enseignement."' AND
@@ -752,6 +769,16 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 						';
 	}else {
 		$modifier_cours = "";
+	}
+
+	if ($fonction_onclick == "y") {
+		// On a besoin du nom du créneau
+		$nom_creneau = mysql_fetch_array(mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$id_creneaux."' LIMIT 1"));
+		$aff_click_sanctions = '<br /><img src="../images/edit16.png" title="Ajouter une sanction" alt="Ajouter une sanction" onclick="clic_edt(\''.$nom_creneau["nom_definie_periode"].'\', \''.$jour_semaine.'\');" />';
+	}else{
+
+		$aff_click_sanctions = NULL;
+
 	}
 
 	// On vérifie si $enseignement est ou pas pas un AID (en vérifiant qu'il est bien renseigné)
@@ -822,7 +849,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 																WHERE u.login = egp.id_utilisateurs
 																AND egp.id_gr_nom = '".$analyse[1]."'") OR trigger_error('Erreur ', E_USER_ERROR);
 			$rep_nom_prof = mysql_fetch_array($query_p);
-print_r($rep_nom_prof);
+
 
 			$aff_nbre_eleve = '0';
 			$aff_sem = NULL;
@@ -936,7 +963,7 @@ print_r($rep_nom_prof);
 	if ($type_edt == "prof"){
 		return ("".$aff_matiere."<br />\n".$classe_js." ".$effacer_cours." ".$modifier_cours." \n".$aff_sem."<br />\n<i>".$rep_salle."</i> - ".$aff_nbre_eleve." él.\n");
 	}elseif (($type_edt == "classe") OR ($type_edt == "eleve")){
-		return ("".$aff_matiere."<br />".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i> ".$aff_sem."");
+		return ("".$aff_matiere."<br />".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i> ".$aff_sem.$aff_click_sanctions."");
 	}elseif ($type_edt == "salle"){
 		return ("".$aff_matiere."<br />\n".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']." ".$aff_sem."<br />\n".$classe_js." - ".$aff_nbre_eleve." él.\n");
 	}else{
