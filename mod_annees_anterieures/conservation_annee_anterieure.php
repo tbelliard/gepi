@@ -283,11 +283,11 @@ else{
 		if(isset($deja_traitee_id_classe)){
 			echo "<p>Classes déjà traitées: ";
 
-			echo "<input type='hidden' name='deja_traitee_id_classe[]' value='$deja_traitee_id_classe[0]' />\n";
+			echo "<input type='hidden' name='deja_traitee_id_classe[]' value='$deja_traitee_id_classe[0]' />";
 			echo get_nom_classe($deja_traitee_id_classe[0]);
 
 			for($i=1;$i<count($deja_traitee_id_classe);$i++){
-				echo "<input type='hidden' name='deja_traitee_id_classe[]' value='$deja_traitee_id_classe[$i]' />\n";
+				echo "<input type='hidden' name='deja_traitee_id_classe[]' value='$deja_traitee_id_classe[$i]' />";
 				echo ", ".get_nom_classe($deja_traitee_id_classe[$i]);
 			}
 			echo "</p>\n";
