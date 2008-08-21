@@ -30,7 +30,13 @@ Mise en page pour validation et accessibilité
 	text-align: center;
 	font: normal 12pt verdana sans-serif;
 }
-
+.info_importante {
+	font-style: normal;
+	font-variant: small-caps;
+	font-weight: normal;
+	font-size: 14pt;
+	line-height: 125%;
+}
 /* --- Décoration du texte --- */
 .souligne {
 	text-decoration: underline;
@@ -578,8 +584,6 @@ table.menu td {
 	color:red;
 }
 
-
-
 /*******************************************************
  --- Paramétrage couleurs notices du cahier de texte ---
 *******************************************************/
@@ -610,7 +614,6 @@ table.menu td {
 .couleur_cellule_alt_c {
 	background-color: #D3FFAF;
 }
-
 /* // Notices de type  travail à faire) */
 /* $color_fond_notices["t"] = "#FFCCCF"; */
 .color_fond_notices_t {
@@ -628,7 +631,6 @@ table.menu td {
 .couleur_cellule_alt_t {
 	background-color: #FFDFE2;
 }
-
 /* // Notice informations générales */
 /* $color_fond_notices["i"] = "#ACACFF"; */
 .color_fond_notices_i {
@@ -646,7 +648,6 @@ table.menu td {
 .couleur_cellule_alt_i {
 	background-color: #C8C8FF;
 }
-
 /* // Travaux à faire "futurs" */
 /* $color_fond_notices["f"] = "#FFFF80"; */
 .color_fond_notices_f {
@@ -656,7 +657,6 @@ table.menu td {
 .couleur_cellule_f {
 	background-color: #FFFFDF;
 }
-
 /* $color_police_travaux = "#FF4444"; */
 .color_police_travaux {
 	color: #FF4444;
@@ -805,7 +805,9 @@ table.menu td {
 	width: 700px;
 }
 .td_abs_eleves {
-	width: 175px;
+	width: 400px;
+	padding-left: 10px;
+	font-size: 14px;
 	text-align: center;
 }
 .td_abs_absence {
@@ -813,7 +815,7 @@ table.menu td {
 	text-align: center;
 }
 .td_abs_retard {
-	width: 125px;
+	width: 100px;
 	text-align: center;
 }
 .th_abs_suivi {
@@ -831,4 +833,9 @@ table.menu td {
 }
 .abs_ligne_survol {
 	background-color: #F7F03A;
+}
+.cel_nom {
+	width: 175px;
+	font-size: 14px;
+	padding-left: 10px;
 }

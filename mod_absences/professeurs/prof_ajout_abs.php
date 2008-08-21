@@ -22,6 +22,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+$accessibilite="y";
+
 $niveau_arbo = 2;
 // Initialisations files
 require_once("../../lib/initialisations.inc.php");
@@ -358,9 +361,9 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 					// On insère alors l'absence dans la base
 					$saisie_sql = "INSERT INTO absences_rb (eleve_id, groupe_id, edt_id, jour_semaine, creneau_id, debut_ts, fin_ts, date_saisie, login_saisie) VALUES ('".$eleve_absent[$a]."', '".$classe."', '0', '".$jour_semaine[0]."', '".$rep_creneau["id_definie_periode"]."', '".$ts_debut."', '".$ts_fin."', '".$ts_actu."', '".$_SESSION["login"]."')";
 					$insere_abs = mysql_query($saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.mysql_error());//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
-					$echo .= '<h3 style="color: green;">L\'absence de '.$noms["prenom"].' '.$noms["nom"].' est bien enregistrée !</h3>';
+					$echo .= '<p class="enregistre_bon">L\'absence de '.$noms["prenom"].' '.$noms["nom"].' est bien enregistrée !</p>';
 				}else {
-					$echo .='<h3 style="color: red;">L\'absence de '.$noms["prenom"].' '.$noms["nom"].' a déjà été saisie ! </h3>';
+					$echo .='<p class="enregistre_deja">L\'absence de '.$noms["prenom"].' '.$noms["nom"].' a déjà été saisie ! </p>';
 				}
 			}
 		}
@@ -379,14 +382,14 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 					$saisie_sql = "INSERT INTO absences_rb (eleve_id, retard_absence, groupe_id, edt_id, jour_semaine, creneau_id, debut_ts, fin_ts, date_saisie, login_saisie) VALUES ('".$eleve_absent[$a]."', 'R', '".$classe."', '0', '".$jour_semaine[0]."', '".$rep_creneau["id_definie_periode"]."', '".$ts_debut."', '".$ts_fin."', '".$ts_actu."', '".$_SESSION["login"]."')";
 
 					$insere_abs = mysql_query($saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.mysql_error());//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
-					$echo .= '<h3 style="color: green;">Le retard de '.$noms["prenom"].' '.$noms["nom"].' est bien enregistré !</h3>';
+					$echo .= '<p class="enregistre_bon">Le retard de '.$noms["prenom"].' '.$noms["nom"].' est bien enregistré !</p>';
 				}else {
 					// On modifie l'absence pour un retard
 					// l'absence en question est mysql_result($cherche_ret, "id");
 					$id_abs = mysql_result($cherche_ret, "id");
 					$update = mysql_query("UPDATE absences_rb SET retard_absence = 'R'
 															WHERE id = '".$id_abs."'");
-					$echo .='<h3 style="color: orange;">L\'absence de '.$noms["prenom"].' '.$noms["nom"].' a été modifiée en retard ! </h3>';
+					$echo .='<p class="enregistre_modifie">L\'absence de '.$noms["prenom"].' '.$noms["nom"].' a été modifiée en retard ! </p>';
 				}
 
 			}
@@ -401,10 +404,10 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 		if ($nbre_verif == 0) {
 			$requete_sql = "INSERT INTO absences_rb (eleve_id, groupe_id, edt_id, jour_semaine, creneau_id, debut_ts, fin_ts, date_saisie, login_saisie) VALUES ('appel', '".$classe."', '0', '".$jour_semaine[0]."', '".$rep_creneau["id_definie_periode"]."', '".$ts_debut."', '".$ts_fin."', '".$ts_actu."', '".$_SESSION["login"]."')" OR DIE ('Impossible d\'entrer la saisie');
 			$saisie_appel = mysql_query($requete_sql);
-			$echo .= '<h3 style="color: green;">Aucun absent - L\'appel a bien été effectué.</h3>';
+			$echo .= '<p class="enregistre_bon">Aucun absent - L\'appel a bien été effectué.</p>';
 		}
 		else {
-			$echo .= '<h3 style="color: red;">Aucun absent mais cet appel a déjà été enregistré.</h3>';
+			$echo .= '<p class="enregistre_deja">Aucun absent mais cet appel a déjà été enregistré.</p>';
 		}
 	}
 } // if isset de départ de absences_rb et fin du traitement dans la table absences_rb
@@ -415,9 +418,10 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 // gestion des erreurs de saisi d'entre du formulaire de demande
 $msg_erreur = '';
 if ( $etape == '2' AND $menuBar != "ok") {
-	if ( $a_heure_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir un horaire de fin'; $$etape = ''; }
-	if ( $d_heure_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir un horaire de debut'; $$etape = ''; }
-	if ( $d_date_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir une date'; $$etape = ''; }
+	if ( $d_heure_absence_eleve>=$a_heure_absence_eleve) { $msg_erreur = 'Attention l\'horaire de debut doit précéder l\'horaire de fin'; $etape = ''; }
+	if ( $a_heure_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir un horaire de fin'; $etape = ''; }
+	if ( $d_heure_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir un horaire de debut'; $etape = ''; }
+	if ( $d_date_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir une date'; $etape = ''; }
 }
 
 // si l'utilisateur demande l'enregistrement dans l'emploi du temps
@@ -478,7 +482,7 @@ require_once("../../lib/header.inc");
 
 <?php
 echo "
-<p class=bold>
+<p class='lien_retour'>
 	<a href=\"../../accueil.php\">
 		<img src='../../images/icons/back.png' alt='Retour' class='back_link'/>
 		Retour à l'accueil
@@ -546,14 +550,19 @@ if (isset($echo)) {
 
 if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $etape != '3' ) or $msg_erreur != '' ) {
 ?>
-	<div style="text-align: center; margin: auto; width: 550px;">
+	<div class="centre_tout_moyen">
 	<h2>Saisie des absences : choix du cours</h2>
 <?php
 	if ( $msg_erreur != '' ) {
-		echo '<span style="color: #FF0000; font-weight: bold;">'.$msg_erreur.'</span>';
+		echo '
+	<p class="erreur_saisie">
+		<img src="../../images/icons/ico_attention.png" alt="ATTENTION" title="ATTENTION" />&nbsp; 
+		'.$msg_erreur.'
+	</p>';
 	}
 ?>
-		<form method="post" action="prof_ajout_abs.php" name="absence">
+		<!-- <form method="post" action="prof_ajout_abs.php" name="absence"> -->
+		<form method="post" action="prof_ajout_abs.php" id="absence">
 <?php
 	if(empty($d_date_absence_eleve)) {
 		$d_date_absence_eleve = date('d/m/Y');
@@ -561,27 +570,27 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	// On vérifie si le professeur a le droit de modifier la date
 	if (getSettingValue("date_phase1") == "y") {
 		echo '
-	<p>
-		Date
-		<input size="10" name="d_date_absence_eleve" value="'.$d_date_absence_eleve.'" />
-		<a href="#calend" onClick="'.$cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170).'">
-			<img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" />
+	<p class="choix_fin">
+		<label for="d_date_absence_eleve">Date</label>
+		<input size="10" id="d_date_absence_eleve" name="d_date_absence_eleve" value="'.$d_date_absence_eleve.'" />
+		<a href="#calend" onclick="'.$cal_1->get_strPopup('../../lib/calendrier/pop.calendrier_id.php', 350, 170).'">
+			<img src="../../lib/calendrier/petit_calendrier.gif" alt="Calendrier" />
 		</a>
 	</p>
-	<br />
 		';
 	}else{
 		echo '
 	<h3 class="gepi">'.date_frl(date_sql($d_date_absence_eleve)).'</h3>
-	<p style="color: red;">
-		<img src="../../images/icons/ico_attention.png" border="0" alt="ATTENTION" title="ATTENTION" />
+	<p class="erreur_saisie">
+		<img src="../../images/icons/ico_attention.png" alt="ATTENTION" title="ATTENTION" />&nbsp;
 		V&eacute;rifier les horaires !
 	</p>
 		';
 	}
 ?>
-		De
-		<select name="d_heure_absence_eleve">
+		<p>
+		<label for="d_heure_absence_eleve">De</label>
+		<select id="d_heure_absence_eleve" name="d_heure_absence_eleve">
 
 <?php // choix de l'heure de début du créneau
 // on vérifie que certains jours n'ont pas les mêmes créneaux
@@ -623,8 +632,8 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	}
 ?>
 		</select>
-		&nbsp;&agrave;&nbsp;
-		<select name="a_heure_absence_eleve">
+		<label for="a_heure_absence_eleve">&nbsp;&agrave;&nbsp;</label>
+		<select id="a_heure_absence_eleve" name="a_heure_absence_eleve">
 
 <?php // choix de l'heure de fin du créneau en question (en tenant compte de la durée
 	// on vérifie que certains jours n'ont pas les mêmes créneaux
@@ -660,9 +669,10 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	}
 ?>
 		</select>
-<p>
-	Groupe
-	<select name="classe">
+</p>
+<p class="choix_fin">
+	<label for="classe">Groupe</label>
+	<select id="classe" name="classe">
 <?php
 	// On récupère l'ensemble des enseignements du professeur en question
 	// Il restera à ajouter les AID après (voir plus loin)
@@ -701,16 +711,17 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 ?>
 	</select>
 </p>
-<br />
 <?php
 	if ( $etape == '2' and $classe == '' and $eleve_initial == '' ) {
 		echo '
 			<p class="erreur_rouge_jaune">
+				<img src="../../images/icons/ico_attention.png" alt="ATTENTION" title="ATTENTION" />&nbsp;
 				Erreur de selection, n\'oubliez pas de sélectionner une classe ou un élève
 			</p>
 	   ';
 	}
 
+	echo '<p class="choix_fin">'."\n";
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
 		if ($photo == 'avec_photo') {
 			$checkedPhoto = ' checked="checked"';
@@ -718,7 +729,6 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 			$checkedPhoto = '';
 		}
 		echo '
-	<p>
 		<input type="checkbox" id="affPhoto" name="photo" value="avec_photo"'.$checkedPhoto.' />
 		<label for="affPhoto">Avec photos</label>'."\n";
 	}
@@ -730,16 +740,16 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 		<label for="edtEnregistrement">Mémoriser cette sélection</label>
 		';
 	}
+	echo '</p>'."\n";
 ?>
 
-	</p>
+	<p class="choix_fin">
 		<input value="2" name="etape" type="hidden" />
 		<input type="hidden" name="premier_passage" value="ok" />
 		<input value="<?php echo $passage_form; ?>" name="passage_form" type="hidden" />
 		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
-	<br/>
-		<input value="Afficher les élèves" name="Valider" type="submit" onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
-	<br /><br /><br />
+		<input value="Afficher les élèves" name="Valider" type="submit" onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
+	</p>
 	<p>
 <?php // on affiche la date du jour si le professeur est autorisé à la modifier
 	if (getSettingValue("date_phase1") == "y") {
@@ -749,7 +759,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 ?>
 		il est actuellement : <?php echo date('G:i')  ?>
 	</p>
-	<p><a href="./bilan_absences_professeur.php">Visualiser toutes ses saisies d'absences</a></p>
+	<p class="voir_tout"><a href="./bilan_absences_professeur.php">Visualiser toutes ses saisies d'absences</a></p>
 	</form>
 </div>
 <?php
@@ -776,9 +786,9 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	}
 
 ?>
-	<div style="text-align: center; margin: auto; width: 550px;">
-		<form method="post" action="prof_ajout_abs.php" name="liste_absence_eleve">
-			<div style="text-align: center; font: normal 12pt verdana, sans-serif;">
+	<div class="centre_tout_moyen">
+		<form method="post" action="prof_ajout_abs.php" id="liste_absence_eleve">
+			<p class="expli_page choix_fin">
 				Saisie des absences<br/>
 				du <strong><?php echo date_frl(date_sql($d_date_absence_eleve)); ?></strong>
 				de <strong><?php echo heure_court($d_heure_absence_eleve); ?></strong>
@@ -786,42 +796,44 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 				<br/>
 <?php
 	echo "
-				<b>".$current_groupe["description"]."</b>
+				<strong>".$current_groupe["description"]."</strong>
 				 (".$current_groupe["classlist_string"] .")
-			</div>";
+			</p>";
 
 	if($passage_auto === 'oui' and $passage_form === '') {
 		echo '
-			<div style="text-align: center; font: normal 10pt verdana, sans-serif;">
+			<p class="choix_fin">
 				<a href="prof_ajout_abs.php?passage_form=manuel">Ceci n\'est pas la bonne liste d\'appel ?</a>
-			</div>
+			</p>
 		';
 	}
 	?>
-	<br />
-			<div style="text-align: center; margin-bottom: 20px;">
-				<input value="Enregistrer" name="Valider" type="submit"  onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
-			</div>
+			<p class="choix_fin">
+				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
+			</p>
 
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
-	<?php echo ''.$nbre_eleves.' élèves.'; ?>
-	<table style="width: 150px; height: 20px;" border="0" cellpadding="1" cellspacing="2">
+	<?php echo '<p>'.$nbre_eleves.' élèves.</p>'; ?>
+	<table class="tb_code_couleur" summary="Code des couleurs">
 		<tr>
-			<td style="background-color: green; color: green;">...</td><td>&nbsp;Retard</td>
-			<td style="background-color: red; color: red;">...</td><td>&nbsp;Absence</td>
+			<td class="td_Retard">&nbsp;R&nbsp;</td><td>&nbsp;Retard</td>
+			<td class="td_Absence">&nbsp;A&nbsp;</td><td>&nbsp;Absence</td>
 		</tr>
 	</table>
 <!-- Fin de la legende -->
-	<table style="text-align: left; width: 600px;" border="0" cellpadding="0" cellspacing="1">
+<!-- <table style="text-align: left; width: 600px;" border="0" cellpadding="0" cellspacing="1"> -->
+	<table class="tb_absences" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
+		<caption class="invisible no_print">Absences</caption>
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
-				<td style="width: 300px; text-align: center;">Liste des &eacute;l&egrave;ves</td>
-				<td style="width: 100px; text-align: center;">Absence</td>
+				<th class="td_abs_eleves" abbr="élèves">Liste des &eacute;l&egrave;ves</th>
+				<th class="td_abs_absence">Absence</th>
 	<?php // on vérifie que le professeur est bien autorisé à saisir les retards
 	if (getSettingValue("renseigner_retard") == "y") {
-		echo '
-				<td style="width: 1000px; text-align: center;">Retard</td>';
+		echo'
+				<th class="td_abs_retard">Retard</th>
+		';		
 	}
 	// on compte les créneaux pour savoir combien de cellules il faut créer
 	if (getSettingValue("creneau_different") != 'n') {
@@ -837,7 +849,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	$nbre_noms = mysql_num_rows($req_noms) OR die ('Impossible de compter les créneaux.');
 
 	echo '
-				<td colspan="'.$nbre_noms.'" style="width: 400px; text-align: center;">Suivi sur la journ&eacute;e</td>'."\n";
+				<th colspan="'.$nbre_noms.'" class="th_abs_suivi" abbr="Créneaux">Suivi sur la journ&eacute;e</th>'."\n";
 ?>
 			</tr>
 			<tr>
@@ -867,11 +879,12 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	}
 	for($a=0; $a<$nbre_noms; $a++){
 		echo '
-				<td style="border: 1px solid black;">'.$rep_sql[$a]["nom_creneau"].'</td>';
+				<td class="td_nom_creneau">'.$rep_sql[$a]["nom_creneau"].'</td>';
 	}
 ?>
 			</tr>
 	<?php
+
 	if ($test[0] == "AID") {
 			// On a besoin du login, nom, prenom et sexe de l'élève
 		$requete_liste_eleve = "SELECT eleves.* FROM eleves, aid, j_aid_eleves WHERE eleves.login = j_aid_eleves.login AND j_aid_eleves.id_aid = aid.id AND id = '".$test[1]."' GROUP BY nom, prenom";
@@ -883,20 +896,28 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
     }
 	$cpt_eleve = '0';
 	$ic = '1';
+	$ligne= '0';
 	while ($data_liste_eleve = mysql_fetch_array($execution_liste_eleve)) {
+		$ligne= $ligne+1;
 		if ($ic === '1') {
 			$ic='2';
 			$couleur_cellule="td_tableau_absence_1";
 			$background_couleur="#E8F1F4";
+			$couleur_classe="abs_ligne_impaire";
 		} else {
 			$couleur_cellule="td_tableau_absence_2";
 			$background_couleur="#C6DCE3"; $ic='1';
+			$couleur_classe="abs_ligne_paire";
 		}
+		echo "<tr id='ligne_".$ligne."' class='$couleur_classe' onmouseover='Element.addClassName(\"ligne_$ligne\",\"abs_ligne_survol\")' onmouseout='Element.removeClassName(\"ligne_$ligne\",\"abs_ligne_survol\")'>\n";
+
 ?>
-			<tr bgcolor="<?php echo $background_couleur; ?>" onmouseover="this.bgColor='#F7F03A';" onmouseout="this.bgColor='<?php echo $background_couleur; ?>'">
-				<td style="width: 400px; font-size: 14px; padding-left: 10px;">
+			
+				<td class='td_abs_eleves'>
 					<input type="hidden" name="eleve_absent[<?php echo $cpt_eleve; ?>]" value="<?php echo $data_liste_eleve['login']; ?>" />
+
 <?php
+
 		// On détermine la civilité de l'élève
 		if($data_liste_eleve['sexe']=="M") {
 			$civile = "(M.)";
@@ -907,10 +928,9 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 			// On vérifie si le prof a le droit de voir la fiche de l'élève
 			if ($_SESSION["statut"] == "professeur" AND getSettingValue("voir_fiche_eleve") == "n" OR getSettingValue("voir_fiche_eleve") == '') {
 
-				echo strtoupper($data_liste_eleve['nom']).' '.ucfirst($data_liste_eleve['prenom']).' '.$civile;
+				echo '<h2 class="td_abs_eleves">'.strtoupper($data_liste_eleve['nom']).' '.ucfirst($data_liste_eleve['prenom']).'</h2> '.$civile;
 
 			}elseif($_SESSION["statut"] != "professeur" OR getSettingValue("voir_fiche_eleve") == "y"){
-
 				echo '
 				<a href="javascript:centrerpopup(\'../lib/fiche_eleve.php?select_fiche_eleve='.$data_liste_eleve['login'].'\',550,500,\'scrollbars=yes,statusbar=no,resizable=yes\');">
 				'.strtoupper($data_liste_eleve['nom']).' '.ucfirst($data_liste_eleve['prenom'])
@@ -920,7 +940,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 
 ?>
 				</td>
-				<td style="width: 100px; text-align: center;">
+				<td class="td_abs_absence">
 
 <?php
 		$pass='0';
@@ -963,7 +983,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 //======================== début de la saisie des retards ==================================================
 		// On vérifie que le professeur est autorisé à renseigner le retard
 		if (getSettingValue("renseigner_retard") == "y") {
-			echo '<td style="width: 100px; text-align: center;">';
+			echo '<td class="td_abs_retard">';
 
 			$pass='0';
 			$requete_retards = "SELECT count(*) FROM absences_eleves
@@ -985,7 +1005,9 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 			}
 			if ($pass === '0') {
 ?>
-				<input type="checkbox" id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="1" onClick="getHeure(active_retard_eleve<?php echo $cpt_eleve; ?>,heure_retard_eleve<?php echo $cpt_eleve; ?>,'liste_absence_eleve')" />
+				<label for="active_retard_eleve<?php echo $cpt_eleve; ?>" class="invisible no_print">Retard</label>
+				<input type="checkbox" id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="1" onclick="getHeure(active_retard_eleve<?php echo $cpt_eleve; ?>,heure_retard_eleve<?php echo $cpt_eleve; ?>,'liste_absence_eleve')" />
+				<label for="heure_retard_eleve<?php echo $cpt_eleve; ?>" class="invisible no_print">heure retard</label>
 				<input type="text" id="heure_retard_eleve<?php echo $cpt_eleve; ?>" name="heure_retard_eleve[<?php echo $cpt_eleve; ?>]" size="3" maxlength="8" value="<?php echo heure_court($heuredebut_definie_periode); ?>" />
 <?php
 			} else {
@@ -994,6 +1016,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 <?php
 			}
 		} // if (getSettingValue("renseigner_retard") == "y")
+		echo"\n</td>\n";
 //======================== fin de la saisie des retards ==================================================
 
 // ===================== On insère le suivi sur les différents créneaux ==================================
@@ -1011,7 +1034,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		// On affiche la liste des créneaux en testant chacun d'entre eux (absence ou retard)
 		for($a=0; $a<$nbre_creneaux; $a++) {
 			echo '
-				<td'.suivi_absence($rep_creneaux[$a]["id"], $data_liste_eleve['login']).'></td>';
+				<td'.suivi_absence($rep_creneaux[$a]["id"], $data_liste_eleve['login']).'</td>';
 		}
 // ===================== fin du suivi sur les différents créneaux ========================================
            // Avec ou sans photo
@@ -1034,9 +1057,11 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		$type_saisie="A";
 		$cpt_eleve = $cpt_eleve + 1;
 	} //while ($data_liste_eleve = mysql_fetch_array($execution_liste_eleve)
+// Régis j'en suis là
 ?>
 		</tbody>
 	</table>
+	<p>
 		<input value="0" name="etape" type="hidden" />
 		<input type="hidden" name="nb_i" value="<?php echo $cpt_eleve; ?>" />
 		<input type="hidden" name="type_absence_eleve" value="<?php echo $type_saisie; ?>" />
@@ -1054,12 +1079,13 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		<input type="hidden" name="etape" value="2" />
 		<input type="hidden" name="a_heure_absence_eleve" value="<?php echo $a_heure_absence_eleve; ?>" />
 		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+	</p>
 		<div style="text-align: center; margin: 20px;">
-			<input value="Enregistrer" name="Valider" type="submit"  onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
+			<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 		</div>
 	</form>
-	<h3>Quand vous saisissez vos absences (avec ou sans absent),
-	Gepi enregistre la date et l'heure ainsi que votre identifiant.</h3>
+	<p class="info_importante">Quand vous saisissez vos absences (avec ou sans absent),
+	Gepi enregistre la date et l'heure ainsi que votre identifiant.</p>
 
 </div>
 <?php

@@ -61,7 +61,7 @@ function suivi_absence($creneau_id, $eleve_id){
 		$rep = mysql_fetch_array($req);
 			// S'il est marqué absent A -> fond rouge
 		if ($rep["retard_absence"] == "A") {
-			return " style=\"background-color: red;\"";
+			return " class=\"td_Absence\">A";
 		//}
 			// S'il est marqué en retard R -> fond vert
 			//else if ($rep["retard_absence"] == "R") {
@@ -73,9 +73,9 @@ function suivi_absence($creneau_id, $eleve_id){
 				AND debut_ts = '".$ts_heuredeb."'");
 			$rep = mysql_fetch_array($req);
 			if ($rep["retard_absence"] == "R") {
-				return " style=\"background-color: green;\"";
+				return " class=\"td_Retard\">R";
 			}else{
-				return "";
+				return ">";
 			}
 		}
 	}

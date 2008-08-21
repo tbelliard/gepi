@@ -5,7 +5,7 @@ Mise en page pour impression sans passer par des pages spéciales
 */
 
 /*  Général */
-.no_print {
+#essaiMenu, .lien_retour, .no_print, .choix_fin {
 	display:none;
 }
 #container {

@@ -83,6 +83,8 @@ if ($session_gepi->auth_locale && isset($_POST['login']) && isset($_POST['no_ant
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta http-equiv="Content-Style-Type" content="text/css" />
 
+<link rel='stylesheet' type='text/css' href='portable.css' media='handheld' />
+
 <title><?php echo getSettingValue("gepiSchoolName"); ?> : base de données élèves | Identifiez vous...</title>
 <?php
 	$style = getSettingValue("gepi_stylesheet");
@@ -105,12 +107,12 @@ if ($session_gepi->auth_locale && isset($_POST['login']) && isset($_POST['no_ant
 <?php
 
 // Conteneur de l'ensemble de la page
-echo "<div id='new_div_login' class='center'>\n";
+echo "<div id='new_div_login' class='center .portable_gauche'>\n";
 
 	//==================================
 	//On vérifie si le module est activé
 	if (getSettingValue("active_cahiers_texte")=='y' and getSettingValue("cahier_texte_acces_public") == "yes" and getSettingValue("disable_login")!='yes') {
-		echo "<div style='margin-top:3em;'><a href=\"./public/index.php?id_classe=-1\">\n";
+		echo "<div class='ct_public' style='margin-top:3em;'><a href=\"./public/index.php?id_classe=-1\">\n";
 		echo "<img src='./images/icons/cahier_texte.png' alt='' class='link' /> Consulter les cahiers de texte</a> (accès public)\n";
 		echo "</div>\n";
 
@@ -164,7 +166,7 @@ echo "<div id='new_div_login' class='center'>\n";
 			echo "<table cellpadding='3' cellspacing='0' summary=\"Saisie de compte/mot de passe\">\n";
 
 			echo "<tr>
-				<td style='text-align:center; width:80px; margin-left: 15px;'><img src='images/icons/lock.png' width='48' height='48' alt='Cadenas' /></td>
+				<td style='text-align:center; width:80px; margin-left: 15px;'><img class='cadenas' src='images/icons/lock.png' alt='Cadenas' /></td>
 				<td>
 					<table summary=\"Saisie de compte/mot de passe (bis)\">
 					<tr>
@@ -185,7 +187,7 @@ echo "<div id='new_div_login' class='center'>\n";
 			<tr>
 				<!--td style='text-align: center; padding-top: 10px;'-->\n";
 				// padding-left: 15px
-				echo "<td style='text-align: left; padding-top: 10px; padding-left: 10px;'>\n";
+				echo "<td class='no_telephone' style='text-align: left; padding-top: 10px; padding-left: 10px;'>\n";
 
 				if (getSettingValue("enable_password_recovery") == "yes") {
 					echo "<a class='small' href='recover_password.php'>Mot de passe oublié ?</a>";
@@ -251,7 +253,7 @@ echo "<div id='new_div_login' class='center'>\n";
 	-->
 	</script>
 
-	<div class="center" style="margin-bottom: 32px;">
+	<div class="center no_telephone" style="margin-bottom: 32px;">
 	<?php
 	if ($session_gepi->auth_sso) {
 		echo "<p><a href='login_sso.php'><img src='images/icons/forward_.png' /> Se connecter en utilisant le service d'authentification unique</a></p><br/>";
@@ -300,7 +302,7 @@ echo "<div id='new_div_login' class='center'>\n";
 	</div>
 
 
-	<div id="new_login_footer">
+	<div id="new_login_footer" class="no_telephone">
 		<a href="http://gepi.mutualibre.org/">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />
 		Copyright &copy; 2001-2008
 		<?php

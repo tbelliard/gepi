@@ -277,6 +277,9 @@ if(isset($style_screen_ajout)){
 
 //echo "<link href='".$gepiPath."/grid.css' rel='stylesheet' type='text/css'/>\n";
 
+echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/portable.css' media='handheld' />\n";
+
+
 echo '	<!-- Fin des styles -->'."\n\n";
 
 include 'maj_coul_global.inc';
@@ -418,9 +421,9 @@ if (isset($titre_page)) {
 					else {
 						echo "NOM Prenom";
 					}
-					echo "</span>\n<br />";
+					echo "</span>\n";
 					// statut utilisateur
-					echo "<span id='bd_parent'>";
+					echo "<span id='bd_parent'><br />\n";
 						if ($_SESSION['statut'] == "administrateur") {
 							echo "<span class='red'>Administrateur</span>\n";
 						} elseif ($_SESSION['statut'] == "professeur") {
