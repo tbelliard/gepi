@@ -1015,8 +1015,9 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 				En retard<input id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="0" type="hidden" />
 <?php
 			}
-		} // if (getSettingValue("renseigner_retard") == "y")
 		echo"\n</td>\n";
+		} // if (getSettingValue("renseigner_retard") == "y")
+		//echo"\n</td>\n";
 //======================== fin de la saisie des retards ==================================================
 
 // ===================== On insère le suivi sur les différents créneaux ==================================
