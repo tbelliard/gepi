@@ -1455,8 +1455,8 @@ Pour éviter un centrage bizarre:
 					$l_graphique = '370'; //536
 // temporaire
 
-$du = '01/09/2007';
-$au = '30/06/2008';
+$du = '01/09/2008';
+$au = '30/06/2009';
 $du_explose = explode('/',$du);
 	$au_explose = explode('/',$au);
 		$jour_du = '1';

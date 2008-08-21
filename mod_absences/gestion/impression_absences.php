@@ -100,7 +100,7 @@ $cal_3 = new Calendrier("form3", "du");
 $cal_4 = new Calendrier("form3", "au");
 $cal_5 = new Calendrier("form5", "du");
 $cal_6 = new Calendrier("form5", "au");
-
+$cal_7 = new Calendrier("form6", "du");
 
     $date_ce_jour = date('d/m/Y'); $erreur = '';
 
@@ -931,13 +931,13 @@ affichercacher('div_1');
 if ( $type_impr == "bj" ) { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
-   <form method="post" action="bilan_absences_quotidien_pdf.php" name="form95">
+   <form method="post" action="bilan_absences_quotidien_pdf.php" name="form6">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
          <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
             <div class="titre_tableau_gestion">Bilan journalier général</div>
             <div class="norme_absence" style="text-align: left;">
             <br />
-            du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal_3->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
+            du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal_7->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
 			&nbsp;
 			<input type="submit" name="Submit2" value="Générer le PDF" /></div>
 			<br />
