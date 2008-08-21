@@ -1535,6 +1535,40 @@ if (getSettingValue("active_inscription")=='y') {
 *****************************/
 
 
+/*************************
+	Module discipline
+*************************/
+
+if (getSettingValue("active_mod_discipline")=='y') {
+
+	$chemin = array();
+	$chemin[]="/mod_discipline/index.php";
+	$titre = array();
+	$titre[] = "Discipline";
+
+	$expli = array();
+	$expli[] = "Signaler des incidents, prendre des mesures, des sanctions.";
+
+	$nb_ligne = count($chemin);
+	$affiche = 'no';
+	for ($i=0;$i<$nb_ligne;$i++) {
+		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+	}
+	if ($affiche=='yes') {
+			echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Discipline</h2>\n";
+			echo "<table class='menu' summary=\"Module discipline. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+			for ($i=0;$i<$nb_ligne;$i++) {
+				affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+			}
+			echo "</table>";
+	}
+}
+
+/*****************************
+	Fin module discipline
+*****************************/
+
+
 /**************************************************************
 	Lien vers les flux rss pour les élèves s'ils sont activés
 **************************************************************/
