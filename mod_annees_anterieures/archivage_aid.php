@@ -645,7 +645,7 @@ if(!isset($annee_scolaire)){
         if ($log_error =='y')
             echo " : <b><font color='green'>OK !</font></b></h3>";
         else
-            echo "</h3>Aucun nouvel enregistrement n'a été effectué.";
+            echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
     echo "<H3>Enregistrement des données des élèves non encore archivés";
     if ($flag_tab5 == 1)
         echo $tab5;
@@ -653,7 +653,7 @@ if(!isset($annee_scolaire)){
         if ($log_error =='y')
             echo " : <b><font color='green'>OK !</font></b></h3>";
         else
-            echo "</h3>Aucun nouvel enregistrement n'a été effectué.";
+            echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
 
     echo "<H3>Enregistrement des AIDs";
     if ($flag_tab2 == 1)
@@ -662,7 +662,7 @@ if(!isset($annee_scolaire)){
         if ($log_error =='y')
             echo " : <b><font color='green'>OK !</font></b></h3>";
         else
-            echo "</h3>Aucun nouvel enregistrement n'a été effectué.";
+            echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
 
     echo "<H3>Enregistrement des liens AIDs/élèves";
     if ($flag_tab3 == 1)
@@ -671,7 +671,7 @@ if(!isset($annee_scolaire)){
         if ($log_error =='y')
             echo " : <b><font color='green'>OK !</font></b></h3>";
         else
-            echo "</h3>Aucun nouvel enregistrement n'a été effectué.";
+            echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
 
     echo "<H3>Enregistrement des appréciations, notes, min, max";
     if ($flag_tab4 == 1)
@@ -680,7 +680,7 @@ if(!isset($annee_scolaire)){
         if ($log_error =='y')
             echo " : <b><font color='green'>OK !</font></b></h3>";
         else
-            echo "</h3>Aucun nouvel enregistrement n'a été effectué.";
+            echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
 
 
 
