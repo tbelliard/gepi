@@ -500,9 +500,9 @@ fieldset#login_box div#header {
 		$poste_notice_couleur=array("C7FF99", "C7FF99", "E5FFCF", "D3FFAF", "FFCCCF", "FFCCCF", "FFEFF0", "FFDFE2", "ACACFF", "EFEFFF", "EFEFFF", "C8C8FF", "FFFF80", "FFFFDF", "FF4444", "green", "6F6968", "F6F7EF");
 		$poste_notice_classe=array("color_fond_notices_c", "couleur_entete_fond_c", "couleur_cellule_c", "couleur_cellule_alt_c", "color_fond_notices_t", "couleur_entete_fond_t", "couleur_cellule_t", "couleur_cellule_alt_t", "color_fond_notices_i", "couleur_entete_fond_i", "couleur_cellule_i", "couleur_cellule_alt_i", "color_fond_notices_f", "couleur_cellule_f", "color_police_travaux", "color_police_matieres ", "couleur_bord_tableau_notice", "couleur_cellule_gen");
 		$poste_type_couleur=array("background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "color", "color", "border-color", "background-color");
-		
+
 		if(isset($_POST['utiliser_cahier_texte_perso'])){
-			if(!saveSetting('utiliser_cahier_texte_perso','y')) {		
+			if(!saveSetting('utiliser_cahier_texte_perso','y')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_cahier_texte_perso'. ";
 				$nb_err++;
 			}
@@ -552,7 +552,7 @@ fieldset#login_box div#header {
 			}
 			else{
 				for($i=0;$i<count($poste_notice_nom);$i++){
-					if(saveSetting($poste_notice_nom[$i],$poste_notice_couleur[$i])) {						
+					if(saveSetting($poste_notice_nom[$i],$poste_notice_couleur[$i])) {
 						$temoin_modif++;
 					}
 					else{
@@ -717,7 +717,7 @@ foreach($_POST as $post => $val){
 	tabmotif['couleur_lig_alt_1_V']=255;
 	tabmotif['couleur_lig_alt_1_B']=240;
 
-	// Cahier de texte : Compte rendu 
+	// Cahier de texte : Compte rendu
 	// #C7FF99
 	tabmotif['fond_notices_c_R']=199;
 	tabmotif['fond_notices_c_V']=255;
@@ -734,7 +734,7 @@ foreach($_POST as $post => $val){
 	tabmotif['cellule_alt_c_V']=255;
 	tabmotif['cellule_alt_c_B']=175;
 
-	// Cahier de texte : Travail à faire 
+	// Cahier de texte : Travail à faire
 	//	#FFCCCF
 	tabmotif['fond_notices_t_R']=255;
 	tabmotif['fond_notices_t_V']=204;
@@ -818,8 +818,8 @@ foreach($_POST as $post => $val){
 
 //]]>
 </script>
-<noscript>
-</noscript>
+<!--noscript>
+</noscript-->
 
 <p>Cette page est destinée à choisir les couleurs pour l'interface GEPI.
 <!--Dans sa version actuelle, seule la couleur de fond de la page peut être paramétrée depuis cette page.-->
@@ -1349,7 +1349,8 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 		$tab_ct_couleur_origine["cellule"]["t"]="FFEFF0";
 		$tab_ct_couleur_origine["cellule_alt"]["t"]="FFDFE2";
 		$tab_ct_couleur_origine["fond_notices"]["i"]="ACACFF";
-		$tab_ct_couleur_origine["entete_fond"]["i"]="EFEFFF";
+		//$tab_ct_couleur_origine["entete_fond"]["i"]="EFEFFF";
+		$tab_ct_couleur_origine["entete_fond"]["i"]="ACACFF";
 		$tab_ct_couleur_origine["cellule"]["i"]="EFEFFF";
 		$tab_ct_couleur_origine["cellule_alt"]["i"]="C8C8FF";
 		$tab_ct_couleur_origine["fond_notices"]["f"]="FFFF80";
@@ -1408,7 +1409,7 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo "</table>\n";
 			// Fin nom de la notice
 		}
-// ----- Fin fonds des notices ----- 
+// ----- Fin fonds des notices -----
 
 // ----- Couleurs communes à toutes les notices -----
 
@@ -1512,7 +1513,7 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
 	echo "<script type='text/javascript'>
 		setTimeout('init()',500);
-	</script>\n<noscript></noscript>	";
+	</script>\n<!--noscript></noscript-->";
 
 
 
