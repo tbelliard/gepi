@@ -174,22 +174,24 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			echo "<div style='border: 1px solid black; background-color: white; padding: 3px;'>\n";
 		}
 
-		$sql="SELECT DISTINCT nom_periode FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire'";
+		//$sql="SELECT DISTINCT nom_periode FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire'";
+		$sql="SELECT DISTINCT nom_periode, classe FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire'";
 		$res_per=mysql_query($sql);
 
 		if(mysql_num_rows($res_per)==0){
 			$nom_periode="période $num_periode";
+			$classe_ant="???";
 		}
 		else{
 			$lig_per=mysql_fetch_object($res_per);
 			$nom_periode=$lig_per->nom_periode;
+			$classe_ant=$lig_per->classe;
 		}
-
 
 		echo "<h2>Antécédents de $ele_prenom $ele_nom: millésime $annee_scolaire</h2>\n";
 
 		//echo "<p>Bulletin simplifié de $prenom $nom pour la période $num_periode de l'année scolaire $annee_scolaire</p>";
-		echo "<p>Bulletin simplifié de $ele_prenom $ele_nom: $nom_periode de l'année scolaire $annee_scolaire en <strong>$classe</strong></p>\n";
+		echo "<p>Bulletin simplifié de $ele_prenom $ele_nom: $nom_periode de l'année scolaire $annee_scolaire en <strong>$classe_ant</strong> <em style='font-size: x-small;'>(actuellement en $classe)</em></p>\n";
 
 		// Affichage des infos élève
 
