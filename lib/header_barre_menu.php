@@ -56,6 +56,16 @@ if (!checkAccess()) {
 		$edt = '<li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
 	}else{$edt = '';}
 
+	// Module emploi du temps
+	if (getSettingValue("autorise_edt_tous") == "y") {
+		$edt = '<li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
+	}else{$edt = '';}
+	
+	// Module discipline
+	if (getSettingValue("active_mod_discipline")=='y') {
+	    $discipline = "<li><a href=".$gepiPath."/mod_discipline/index.php>Discipline</a></li>";
+	} else {$discipline = '';}
+	
 	// Module notanet
 	if (getSettingValue("active_notanet") == "y") {
 		$notanet = '<li><a href="'.$gepiPath.'/mod_notanet/index.php">Brevet</a></li>';
@@ -69,6 +79,7 @@ if (!checkAccess()) {
 		'.$textes.'
 		'.$note.'
 		'.$edt.'
+		'.$discipline.'
 		'.$notanet.'
 		<li><a href="'.$gepiPath.'/utilisateurs/mon_compte.php">Mon compte</a></li>
 	</ol>
