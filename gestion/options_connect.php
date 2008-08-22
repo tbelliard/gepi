@@ -60,15 +60,15 @@ if (isset($_POST['duree'])) {
 
 
 if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1") {
-	
+
 	if (isset($_POST['auth_sso'])) {
 	    if (!in_array($_POST['auth_sso'], array("none","lemon","cas","lcs"))) {
 	    	$_POST['auth_sso'] = "none";
 	    }
-		saveSetting("auth_sso", $_POST['auth_sso']);	    
+		saveSetting("auth_sso", $_POST['auth_sso']);
 	}
 
-	
+
 	if (isset($_POST['auth_locale'])) {
 	    if ($_POST['auth_locale'] != "yes") {
 	    	$_POST['auth_locale'] = "no";
@@ -77,7 +77,7 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 		$_POST['auth_locale'] = "no";
 	}
 	saveSetting("auth_locale", $_POST['auth_locale']);
-	
+
 	if (isset($_POST['auth_ldap'])) {
 	    if ($_POST['auth_ldap'] != "yes") {
 	    	$_POST['auth_ldap'] = "no";
@@ -86,7 +86,7 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 		$_POST['auth_ldap'] = "no";
 	}
 	saveSetting("auth_ldap", $_POST['auth_ldap']);
-	
+
 	if (isset($_POST['ldap_write_access'])) {
 	    if ($_POST['ldap_write_access'] != "yes") {
 	    	$_POST['ldap_write_access'] = "no";
@@ -95,7 +95,7 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 		$_POST['ldap_write_access'] = "no";
 	}
 	saveSetting("ldap_write_access", $_POST['ldap_write_access']);
-	
+
 	if (isset($_POST['may_import_user_profile'])) {
 	    if ($_POST['may_import_user_profile'] != "yes") {
 	    	$_POST['may_import_user_profile'] = "no";
@@ -104,14 +104,14 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 		$_POST['may_import_user_profile'] = "no";
 	}
 	saveSetting("may_import_user_profile", $_POST['may_import_user_profile']);
-	
+
 	if (isset($_POST['statut_utilisateur_defaut'])) {
 	    if (!in_array($_POST['statut_utilisateur_defaut'], array("professeur","responsable","eleve"))) {
 	    	$_POST['statut_utilisateur_defaut'] = "professeur";
 	    }
-		saveSetting("statut_utilisateur_defaut", $_POST['statut_utilisateur_defaut']);	    
+		saveSetting("statut_utilisateur_defaut", $_POST['statut_utilisateur_defaut']);
 	}
-	
+
 }
 
 
@@ -213,7 +213,7 @@ echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;
 //
 
 echo "<h3 class='gepi'>Mode d'authentification</h3>";
-echo "<p><span style='color: red'><strong>Attention !</strong></span> Ne modifiez ces paramètres que si vous savez vraiment ce que vous faites ! Si vous activez l'authentification SSO et que vous ne pouvez plus vous connecter à Gepi en administrateur, vous pouvez utiliser la variable \$block_sso dans le fichier /lib/global.inc pour désactiver le SSO et rebasculer en authentification locale. Il est donc vivement recommander de créer un compte administrateur local (dont le login n'interfèrera pas avec un login SSO) avant d'activer le SSO.</p>";
+echo "<p><span style='color: red'><strong>Attention !</strong></span> Ne modifiez ces paramètres que si vous savez vraiment ce que vous faites ! Si vous activez l'authentification SSO et que vous ne pouvez plus vous connecter à Gepi en administrateur, vous pouvez utiliser la variable \$block_sso dans le fichier /lib/global.inc pour désactiver le SSO et rebasculer en authentification locale. Il est donc vivement recommandé de créer un compte administrateur local (dont le login n'interfèrera pas avec un login SSO) avant d'activer le SSO.</p>";
 echo "<p>Gepi permet d'utiliser plusieurs modes d'authentification en parallèle. Les combinaisons les plus courantes seront une authentification locale avec une authentifcation LDAP, ou bien une authentification locale et une authentification unique (utilisant un serveur d'authentification distinct).</p>";
 echo "<p>Le mode d'authentification est explicitement spécifié pour chaque utilisateur dans la base de données de Gepi. Assurez-vous que le mode défini correspond effectivement au mode utilisé par l'utilisateur.</p>";
 echo "<p>Dans le cas d'une authentification externe (LDAP ou SSO), aucun mot de passe n'est stocké dans la base de données de Gepi.</p>";
