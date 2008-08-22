@@ -300,7 +300,8 @@ else{
 	$prof=array();
 	if($_SESSION['statut']=="administrateur"){
 
-		$sql="SELECT DISTINCT nom,prenom,login FROM utilisateurs WHERE statut='professeur' ORDER BY nom, prenom";
+		//$sql="SELECT DISTINCT nom,prenom,login FROM utilisateurs WHERE statut='professeur' ORDER BY nom, prenom";
+		$sql="SELECT DISTINCT nom,prenom,login FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY nom, prenom";
 		$res_prof=mysql_query($sql);
 		if(mysql_num_rows($res_prof)==0){
 			echo "<p>Aucun professeur n'est encore défini.<br />Commencez par créer les comptes professeurs.</p>\n";
@@ -440,7 +441,7 @@ else{
 		$tabchamps=array('accueil_simpl','accueil_infobulles','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
 
 		//echo "<table border='1'>\n";
-		echo "<table class='contenu'>\n";
+		echo "<table class='contenu' summary='Préférences professeurs'>\n";
 
 		// 1ère ligne
 		//$lignes_entete="<tr style='background-color: white;'>\n";
@@ -536,7 +537,7 @@ else{
 		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_boite');
 
 		//echo "<table border='1'>\n";
-		echo "<table class='contenu'>\n";
+		echo "<table class='contenu' summary='Préférences professeurs'>\n";
 
 		// 1ère ligne
 		//$lignes_entete.="<tr style='background-color: white;'>\n";
@@ -619,7 +620,7 @@ else{
 		$tabchamps=array('add_modif_conteneur_simpl','add_modif_conteneur_nom_court','add_modif_conteneur_nom_complet','add_modif_conteneur_description','add_modif_conteneur_coef','add_modif_conteneur_boite','add_modif_conteneur_aff_display_releve_notes','add_modif_conteneur_aff_display_bull');
 
 		//echo "<table border='1'>\n";
-		echo "<table class='contenu'>\n";
+		echo "<table class='contenu' summary='Préférences professeurs'>\n";
 
 		// 1ère ligne
 		//$lignes_entete.="<tr style='background-color: white;'>\n";
