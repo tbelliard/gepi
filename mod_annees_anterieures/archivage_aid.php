@@ -646,7 +646,7 @@ if(!isset($annee_scolaire)){
             echo " : <b><font color='green'>OK !</font></b></h3>";
         else
             echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
-    echo "<H3>Enregistrement des données des élèves non encore archivés";
+    echo "<H3>Enregistrement de nouveaux élèves non encore archivés";
     if ($flag_tab5 == 1)
         echo $tab5;
     else
