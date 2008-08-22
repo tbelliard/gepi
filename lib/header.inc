@@ -403,9 +403,9 @@ if (isset($titre_page)) {
 
 			// Bandeau de droite
 			echo "<div id='bandeau_droit_fixe'>\n";
-				echo "<p>\n";
+				echo "<p id='bd_nom'>\n";
 					// Nom Prénom utilisateur
-					echo "<span id='bd_nom'>";
+					// echo "<span id='bd_nom'>";
 					if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
 						$sql="SELECT nom, prenom FROM utilisateurs WHERE login='".$_SESSION['login']."';";
 						$res_np=mysql_query($sql);
@@ -421,9 +421,11 @@ if (isset($titre_page)) {
 					else {
 						echo "NOM Prenom";
 					}
-					echo "</span>\n";
+					// echo "</span>\n";
+					echo "</p>\n";
 					// statut utilisateur
-					echo "<span id='bd_parent'><br />\n";
+					// echo "<span id='bd_parent'><br />\n";
+					echo "<p id='bd_parent'>\n";
 						if ($_SESSION['statut'] == "administrateur") {
 							echo "<span class='red'>Administrateur</span>\n";
 						} elseif ($_SESSION['statut'] == "professeur") {
@@ -464,7 +466,7 @@ if (isset($titre_page)) {
 						}elseif($_SESSION["statut"] == "autre"){
 							echo $_SESSION["statut_special"];
 						}
-					echo "</span>";
+					// echo "</span>";
 					// A QUOI SERT CE $temp ?
 					$temp = '';
 					// christian

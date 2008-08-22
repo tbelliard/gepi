@@ -96,8 +96,10 @@ Mise en page du bandeau
 .gd_bandeau .menu_general{
 	border-top: 1px dotted;
 }
+/* margin-bottom: 2em; */
 .gd_bandeau #bandeau_gauche h1{
-	margin-bottom: 2em;
+	min-height: 3.3em;
+	margin-bottom: 0px;
 }
 /* petit bandeau */
 .pt_bandeau {
