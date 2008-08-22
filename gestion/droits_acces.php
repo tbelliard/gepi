@@ -616,6 +616,21 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesBulletinSimplePP !";
 	}
 
+
+
+	if (isset($_POST['appreciations_types_profs'])) {
+		if (!saveSetting("appreciations_types_profs", 'y')) {
+			$msg .= "Erreur lors de l'enregistrement de l'autorisation d'utilisation d'appréciations-types pour les professeurs !";
+		}
+	}
+	else{
+		if (!saveSetting("appreciations_types_profs", 'n')) {
+			$msg .= "Erreur lors de l'enregistrement de l'interdiction d'utilisation d'appréciations-types pour les professeurs !";
+		}
+	}
+
+
+
 	$tab_droits_ele_trombi=array('GepiAccesEleTrombiTousEleves',
 'GepiAccesEleTrombiElevesClasse',
 'GepiAccesEleTrombiPersonnels',
@@ -702,6 +717,11 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesBulletinSimpleProfToutesClasses" id="GepiAccesBulletinSimpleProfToutesClasses" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleProfToutesClasses")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesBulletinSimpleProfToutesClasses' style='cursor: pointer;'> a accès aux bulletins simples des élèves de toutes les classes</label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="appreciations_types_profs" id="appreciations_types_profs" value="y" <?php if (getSettingValue("GepiAccesBulletinSimpleProfToutesClasses")=='y') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='appreciations_types_profs' style='cursor: pointer;'> peut utiliser des appréciations-types sur les bulletins.</label></td>
 			</tr>
 
 			<tr valign='top'>

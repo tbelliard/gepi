@@ -56,6 +56,7 @@ if(isset($_POST['is_posted'])){
 		}
 	}
 
+	/*
 	if (isset($_POST['appreciations_types_profs'])) {
 		if (!saveSetting("appreciations_types_profs", 'y')) {
 			$msg .= "Erreur lors de l'enregistrement de l'autorisation d'utilisation d'appréciations-types pour les professeurs !";
@@ -66,6 +67,7 @@ if(isset($_POST['is_posted'])){
 			$msg .= "Erreur lors de l'enregistrement de l'interdiction d'utilisation d'appréciations-types pour les professeurs !";
 		}
 	}
+	*/
 }
 
 
@@ -105,6 +107,7 @@ require_once("../lib/header.inc");
 	}
 	echo "</p>\n";
 
+	/*
 	echo "<br />\n";
 
 	echo "<p>\n";
@@ -115,7 +118,7 @@ require_once("../lib/header.inc");
 	echo " /> \n";
 	echo "<label for='appreciations_types_profs' style='cursor: pointer;'>Permettre aux professeurs d'utiliser des appréciations-types sur les bulletins.\n";
 	echo "</p>\n";
-
+	*/
 
 ?>
 
