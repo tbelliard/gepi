@@ -247,6 +247,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
     ORDER BY type.nom, aid.nom";
 		//echo "$sql<br />";
 		$res_aid=mysql_query($sql);
+		/*
 		if(mysql_num_rows($res_aid)==0){
 			// On ne devrait pas arriver là.
 			echo "<tr><td colspan='6'>Aucun résultat enregistré???";
@@ -254,6 +255,8 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			echo "</td></tr>\n";
 		}
 		else{
+		*/
+		if(mysql_num_rows($res_aid)>0){
 			while($lig_aid=mysql_fetch_object($res_aid)){
 				echo "<tr>\n";
 				echo "<td>";
@@ -264,12 +267,13 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 				echo "<td class='td_note_classe'>$lig_aid->min_aid</td>\n";
 				echo "<td class='td_note_classe'>$lig_aid->max_aid</td>\n";
 				echo "<td class='td_note'>$lig_aid->note_aid";
-        echo "</td>\n";
+				echo "</td>\n";
 				echo "<td>";
-  		  if (($lig_aid->note_sur_aid != 20) and ($lig_aid->note_aid !='-'))
-		    echo "(note sur ".$lig_aid->note_sur_aid.") ";
+				if (($lig_aid->note_sur_aid != 20) and ($lig_aid->note_aid !='-')) {
+					echo "(note sur ".$lig_aid->note_sur_aid.") ";
+				}
 
-        echo htmlentities(stripslashes($lig_aid->appreciation))."</td>\n";
+				echo htmlentities(stripslashes($lig_aid->appreciation))."</td>\n";
 				echo "</tr>\n";
 			}
 		}
@@ -335,6 +339,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		}
 		elseif(mysql_num_rows($res_avis)>1){
 			echo "Bizarre: Il y a plus d'un enregistrement pour cette élève, cette période et cette année.</p>\n";
+			$prof_suivi="?";
 		}
 		else{
 			$lig_avis=mysql_fetch_object($res_avis);
