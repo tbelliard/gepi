@@ -510,7 +510,7 @@ if(!isset($id_classe)){
 
 }
 else{
-	if($_SESSION['statut']!='eleve'){
+	if($_SESSION['statut']!='eleve') {
 		echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
 	}
 
@@ -525,6 +525,7 @@ else{
 			die();
 		}
 
+		//echo "$sql_ele<br />\n";
 		$res_ele=mysql_query($sql_ele);
 
 		if(mysql_num_rows($res_ele)==0){
@@ -565,6 +566,7 @@ else{
 			echo "</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
+			flush();
 
 			/*
 			// ===========================================================
@@ -620,10 +622,11 @@ else{
 			echo "<blockquote>\n";
 
 			$sql="SELECT DISTINCT ad.annee FROM archivage_disciplines ad, eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND ad.INE=e.no_gep ORDER BY annee ASC;";
+			//echo "$sql<br />\n";
 			$res_ant=mysql_query($sql);
-
 			if(mysql_num_rows($res_ant)==0){
-				echo "<p>Aucun résultat antérieur n'a été conservé pour cet élève.</p>\n";
+				//echo "<p>Aucun résultat antérieur n'a été conservé pour cet élève.</p>\n";
+				echo "<p>Aucun résultat antérieur n'a été conservé pour cette classe.</p>\n";
 			}
 			else{
 
@@ -659,6 +662,7 @@ else{
 						}
 					}
 					echo "</tr>\n";
+					flush();
 					$cpt++;
 				}
 				echo "</table>\n";
@@ -681,6 +685,7 @@ else{
 
 					echo "</td>\n";
 					echo "</tr>\n";
+					flush();
 					$cpt++;
 				}
 				echo "</table>\n";
