@@ -69,7 +69,8 @@ if ($test1 ==0) {
         //$test3 = mysql_result(mysql_query("SELECT count(*) FROM temp_gep_import WHERE LOGIN !=''"),0);
         $test3 = mysql_result(mysql_query("SELECT count(*) FROM temp_gep_import2 WHERE LOGIN !=''"),0);
         if ($test3 ==0) {
-            echo "<p class='grand'>Afin de procéder à la phase de définition des options suivies par les élèves, vous devez d'abord effectuer la première phase d'importation des élèves à partir du fichier ELEVES.CSV</p>";
+            //echo "<p class='grand'>Afin de procéder à la phase de définition des options suivies par les élèves, vous devez d'abord effectuer la première phase d'importation des élèves à partir du fichier ELEVES.CSV</p>";
+            echo "<p class='grand'>Afin de procéder à la phase de définition des options suivies par les élèves, vous devez d'abord effectuer la première phase d'importation des élèves à partir du fichier ElevesSansAdresses.xml</p>";
             die();
         }
     }
