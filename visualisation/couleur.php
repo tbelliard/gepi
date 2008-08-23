@@ -137,13 +137,13 @@ Pour affichage d'un fixe en bas à droite (ne marche pas avec IE 6)
 
 <?php if (isset($niveau_arbo) and ($niveau_arbo == 0)) {
    echo "<script src=\"lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"./favicon.ico\" /></head>\n";
+   echo "<LINK REL=\"SHORTCUT ICON\" href=\"./favicon.ico\" />\n";
 } else if (isset($niveau_arbo) and ($niveau_arbo == 2)) {
    echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../../favicon.ico\" /></head>\n";
+   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../../favicon.ico\" />\n";
 } else {
    echo "<script src=\"../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../favicon.ico\" /></head>\n";
+   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../favicon.ico\" />\n";
 }
 // Couleur de fond des pages
 if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
@@ -158,6 +158,7 @@ if(isset($style_screen_ajout)){
 	}
 }
 
+echo "</head>\n";
 ?>
 
 <body <?php echo $bgcouleur; ?> onLoad="show_message_deconnexion()">
