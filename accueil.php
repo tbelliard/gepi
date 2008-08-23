@@ -598,6 +598,12 @@ if ((getSettingValue("active_module_trombinoscopes")=='y')||(getSettingValue("ac
     for ($i=0;$i<$nb_ligne;$i++) {
         if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
     }
+
+	if(($_SESSION['statut']=='eleve')&&(getSettingValue('GepiAccesEleTrombiTousEleves')!="yes")&&
+(getSettingValue('GepiAccesEleTrombiElevesClasse')!="yes")&&
+(getSettingValue('GepiAccesEleTrombiPersonnels')!="yes")&&
+(getSettingValue('GepiAccesEleTrombiProfsClasse')!="yes")) {$affiche = 'no';}
+
     if ($affiche=='yes') {
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/configure.png' alt=''/> - Trombinoscope</h2>\n";
