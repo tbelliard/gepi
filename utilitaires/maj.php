@@ -6801,6 +6801,22 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
       $result .= "<font color=\"blue\">Le paramètre ldap_write_access existe déjà dans la table setting.</font><br />";
     }
 
+
+	$test = sql_query1("SHOW TABLES LIKE 'commentaires_types_profs'");
+	if ($test == -1) {
+		$result .= "<br />Création de la table 'commentaires_types_profs'. ";
+		$sql="CREATE TABLE IF NOT EXISTS commentaires_types_profs (
+		id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		login VARCHAR( 255 ) NOT NULL ,
+		app TEXT NOT NULL
+		);";
+		$result_inter = traite_requete($sql);
+		if ($result_inter != '') {
+			$result .= "<br />Erreur sur la création de la table 'commentaires_types_profs': ".$result_inter."<br />";
+		}
+	}
+
+
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
     saveSetting("versionRc", $gepiRcVersion);
