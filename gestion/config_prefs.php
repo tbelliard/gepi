@@ -70,15 +70,29 @@ if($_SESSION['statut']!="administrateur"){
 
 	// Petite fonction pour déterminer le checked="checked" des input en tenant compte des deux utilisations (admin et prof)
 	function eval_checked($Settings, $yn, $statut, $nom){
-			$aff_check = '';
-	if ($statut == "professeur") {
-		$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM preferences WHERE login = '".$nom."' AND name = '".$Settings."'"))
-							OR DIE ('Erreur requête eval_setting (prof) : '.mysql_error());
-	}elseif ($statut == "administrateur") {
-		$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = '".$Settings."'"))
-							OR DIE ('Erreur requête eval_setting (admin) : '.mysql_error());
-	}
-		if ($req_setting["value"] == $yn) {
+		$aff_check = '';
+		if ($statut == "professeur") {
+			/*
+			$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM preferences WHERE login = '".$nom."' AND name = '".$Settings."'"))
+								OR DIE ('Erreur requête eval_setting (prof) : '.mysql_error());
+			*/
+			$test=mysql_query("SELECT value FROM preferences WHERE login = '".$nom."' AND name = '".$Settings."'");
+			if(mysql_num_rows($test)>0) {
+				$req_setting = mysql_fetch_array($test);
+			}
+		}
+		elseif ($statut == "administrateur") {
+			/*
+			$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = '".$Settings."'"))
+								OR DIE ('Erreur requête eval_setting (admin) : '.mysql_error());
+			*/
+			$test=mysql_query("SELECT value FROM preferences WHERE name = '".$Settings."'");
+			if(mysql_num_rows($test)>0) {
+				$req_setting = mysql_fetch_array($test);
+			}
+		}
+		//if ($req_setting["value"] == $yn) {
+		if((isset($req_setting["value"]))&&($req_setting["value"]==$yn)) {
 			$aff_check = ' checked="checked"';
 		}else {
 			$aff_check = '';
