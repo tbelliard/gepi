@@ -3088,4 +3088,20 @@ function get_date_php() {
 	$date_str = str_replace($eng_words, $french_words, $date_str);
 	return $date_str;
 }
+
+function casse_prenom($prenom) {
+	$tab=explode("-",$prenom);
+
+	$retour="";
+	for($i=0;$i<count($tab);$i++) {
+		if($i>0) {
+			$retour.="-";
+		}
+		$tab[$i]=ucwords(strtolower($tab[$i]));
+		$retour.=$tab[$i];
+	}
+
+	return $retour;
+}
+
 ?>
