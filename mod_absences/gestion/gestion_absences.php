@@ -389,7 +389,8 @@ function DecocheCheckbox() {
                  $nom_photo = '';
                  $nom_photo = nom_photo($data_top10['elenoet'],"eleves",2);
                  $photos = "../../photos/eleves/".$nom_photo;
-                 if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
                  } ?>
@@ -428,7 +429,8 @@ function DecocheCheckbox() {
               $nom_photo = '';
               $nom_photo = nom_photo($data_top10['elenoet'],"eleves",2);
               $photos = "../../photos/eleves/".$nom_photo;
-              if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+              //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+              if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
              } ?>
@@ -498,8 +500,9 @@ function DecocheCheckbox() {
                  $nom_photo = '';
                  $nom_photo = nom_photo($data_sans_motif['elenoet'],"eleves",2);
                  $photos = "../../photos/eleves/".$nom_photo;
-                 if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-		 $valeur=redimensionne_image($photos);
+                 //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+				$valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
                  } ?>
              </tr>
@@ -605,7 +608,8 @@ function DecocheCheckbox() {
               	  $nom_photo = '';
                   $nom_photo = nom_photo($data_sans_motif['elenoet'],"eleves",2);
                   $photos = "../../photos/eleves/".$nom_photo;
-                  if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                  //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                  if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 		$valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td>
               <?php } ?>
@@ -700,7 +704,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
                  $nom_photo = '';
                  $nom_photo = nom_photo($data_sans_motif['elenoet'],"eleves",2);
                  $photos = "../../photos/eleves/".$nom_photo;
-                 if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php                 } ?>
             </tr>
@@ -792,7 +797,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
                                       $nom_photo = '';
                                       $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
                                       $photos = "../../photos/eleves/".$nom_photo;
-                 if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 		$valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td>
             <?php } ?>
@@ -891,7 +897,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 					$nom_photo = '';
 					$nom_photo = nom_photo($data_avec_motif['elenoet'],"eleves",2);
           			$photos = "../../photos/eleves/".$nom_photo;
-					if ( $nom_photo === '' or !file_exists($photo) ) {
+					//if ( $nom_photo === '' or !file_exists($photo) ) {
+					if ( $nom_photo === '' or !file_exists($photos) ) {
 						$photos = "../../mod_trombinoscopes/images/trombivide.jpg";
 					}
 					$valeur=redimensionne_image($photos);
@@ -1009,7 +1016,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 				$nom_photo = '';
 				$nom_photo = nom_photo($data_avec_motif['elenoet'],"eleves",2);
         		$photos = "../../photos/eleves/".$nom_photo;
-				if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+				//if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+				if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 				$valeur = redimensionne_image($photos);
 ?>
 			<img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td>
@@ -1143,7 +1151,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
                 $nom_photo = '';
                 $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
                 $photos = "../../photos/eleves/".$nom_photo;
-                if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><?php
                  } ?>
