@@ -89,7 +89,7 @@ if($_SESSION['statut']!="administrateur"){
 				--> A VERIFIER ICI : l'admin charge un setting normalement pas sa préférence : CONFIRMEZ VOUS le changement ?
 				-- > si le changement est confirmé, il faudrait ensuite effacer les commentaires (le svn garde une trace de tout ça ;) )
 			*/
-			$test=mysql_query("SELECT value FROM preferences WHERE name = '".$Settings."'");
+			$test=mysql_query("SELECT value FROM setting WHERE name = '".$Settings."'");
 			if(mysql_num_rows($test)>0) {
 				$req_setting = mysql_fetch_array($test);
 			}
