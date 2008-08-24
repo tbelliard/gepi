@@ -229,14 +229,16 @@ if (isset($_POST['mode_generation_pwd_majmin'])) {
 	}
 }
 
-if (isset($_POST['mode_generation_pwd_excl'])) {
-	if (!saveSetting("mode_generation_pwd_excl", $_POST['mode_generation_pwd_excl'])) {
-		$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
+if (isset($_POST['is_posted'])) {
+	if (isset($_POST['mode_generation_pwd_excl'])) {
+		if (!saveSetting("mode_generation_pwd_excl", $_POST['mode_generation_pwd_excl'])) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
+		}
 	}
-}
-else{
-	if (!saveSetting("mode_generation_pwd_excl", 'n')) {
-		$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
+	else{
+		if (!saveSetting("mode_generation_pwd_excl", 'n')) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
+		}
 	}
 }
 
