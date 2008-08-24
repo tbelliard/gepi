@@ -40,27 +40,11 @@ if ($resultat_session == 'c') {
 //include("../fckeditor/fckeditor.php") ;
 
 // Check access
-/*
-$sql="DELETE FROM droits WHERE id='/saisie/saisie_cmnt_type_prof.php';";
-$suppr=mysql_query($sql);
-
-$sql="INSERT INTO droits SET id='/saisie/saisie_cmnt_type_prof.php',
-administrateur='F',
-professeur='V',
-scolarite='F',
-cpe='F',
-eleve='F',
-responsable='F',
-secours='F',
-autres='F',
-'Saisie de commentaires-types pour les progs';"
-$insert=mysql_query($sql);
-
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
-*/
+
 // On n'autorise que les profs à accéder à cette page
 if($_SESSION['statut']!='professeur') {
     header("Location: ../logout.php?auto=1");
