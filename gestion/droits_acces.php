@@ -1000,28 +1000,28 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEleTrombiTousEleves" id="GepiAccesEleTrombiTousEleves" value="yes" <?php if (getSettingValue("GepiAccesEleTrombiTousEleves")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesEleTrombiTousEleves' style='cursor: pointer;'> a accès au trombinoscope de tous les élèves de l'établissement.<br />
-				<i>(voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
+				<i>(sous réserve que le module Trombinoscope-élève soit activé.<br />voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
 				</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEleTrombiElevesClasse" id="GepiAccesEleTrombiElevesClasse" value="yes" <?php if (getSettingValue("GepiAccesEleTrombiElevesClasse")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesEleTrombiElevesClasse' style='cursor: pointer;'> a accès au trombinoscope des élèves de sa classe.<br />
-				<i>(voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
+				<i>(sous réserve que le module Trombinoscope-élève soit activé.<br />voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
 				</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEleTrombiPersonnels" id="GepiAccesEleTrombiPersonnels" value="yes" <?php if (getSettingValue("GepiAccesEleTrombiPersonnels")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesEleTrombiPersonnels' style='cursor: pointer;'> a accès au trombinoscope de tous les personnels de l'établissement.<br />
-				<i>(voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
+				<i>(sous réserve que le module Trombinoscope-personnels soit activé.<br />voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
 				</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEleTrombiProfsClasse" id="GepiAccesEleTrombiProfsClasse" value="yes" <?php if (getSettingValue("GepiAccesEleTrombiProfsClasse")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesEleTrombiProfsClasse' style='cursor: pointer;'> a accès au trombinoscope des professeurs de sa classe.<br />
-				<i>(voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
+				<i>(sous réserve que le module Trombinoscope-personnels soit activé.<br />voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
 				</label></td>
 			</tr>
 
