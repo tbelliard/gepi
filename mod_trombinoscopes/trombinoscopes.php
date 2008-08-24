@@ -199,6 +199,13 @@ function reactiver(mavar) {
 	$GepiAccesEleTrombiPersonnels=getSettingValue("GepiAccesEleTrombiPersonnels");
 	$GepiAccesEleTrombiProfsClasse=getSettingValue("GepiAccesEleTrombiProfsClasse");
 
+	/*
+	echo "\$GepiAccesEleTrombiTousEleves=$GepiAccesEleTrombiTousEleves<br />";
+	echo "\$GepiAccesEleTrombiElevesClasse=$GepiAccesEleTrombiElevesClasse<br />";
+	echo "\$GepiAccesEleTrombiPersonnels=$GepiAccesEleTrombiPersonnels<br />";
+	echo "\$GepiAccesEleTrombiProfsClasse=$GepiAccesEleTrombiProfsClasse<br />";
+	*/
+
 	$affichage_div_gauche="n";
 
 	if ( ( $classe === 'toutes' or $groupe === 'toutes' or $equipepeda === 'toutes' or $discipline === 'toutes' ) or ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) ) {
@@ -379,6 +386,8 @@ function reactiver(mavar) {
 		if(($_SESSION['statut']=='eleve')&&($GepiAccesEleTrombiPersonnels!="yes")&&($GepiAccesEleTrombiProfsClasse!="yes")) {
 			$acces="n";
 		}
+
+		//echo "\$acces=$acces<br />";
 
 		if((getSettingValue('active_module_trombino_pers')=='y')&&($acces=="y")) {
 

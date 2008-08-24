@@ -562,7 +562,9 @@ if ($affiche=='yes') {
 
 //On vérifie si le module est activé
 //if (getSettingValue("active_module_trombinoscopes")=='y') {
-if ((getSettingValue("active_module_trombinoscopes")=='y')||(getSettingValue("active_module_trombino_pers")=='y')) {
+$active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes");
+$active_module_trombino_pers=getSettingValue("active_module_trombino_pers");
+if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
 //
 // Visualisation des trombinoscopes
 //
@@ -599,10 +601,32 @@ if ((getSettingValue("active_module_trombinoscopes")=='y')||(getSettingValue("ac
         if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
     }
 
-	if(($_SESSION['statut']=='eleve')&&(getSettingValue('GepiAccesEleTrombiTousEleves')!="yes")&&
-(getSettingValue('GepiAccesEleTrombiElevesClasse')!="yes")&&
-(getSettingValue('GepiAccesEleTrombiPersonnels')!="yes")&&
-(getSettingValue('GepiAccesEleTrombiProfsClasse')!="yes")) {$affiche = 'no';}
+	if(($_SESSION['statut']=='eleve')&&($affiche=="yes")) {
+		$GepiAccesEleTrombiTousEleves=getSettingValue("GepiAccesEleTrombiTousEleves");
+		$GepiAccesEleTrombiElevesClasse=getSettingValue("GepiAccesEleTrombiElevesClasse");
+		$GepiAccesEleTrombiPersonnels=getSettingValue("GepiAccesEleTrombiPersonnels");
+		$GepiAccesEleTrombiProfsClasse=getSettingValue("GepiAccesEleTrombiProfsClasse");
+
+		if(($GepiAccesEleTrombiTousEleves!="yes")&&
+		($GepiAccesEleTrombiElevesClasse!="yes")&&
+		($GepiAccesEleTrombiPersonnels!="yes")&&
+		($GepiAccesEleTrombiProfsClasse!="yes")) {
+			$affiche = 'no';
+		}
+		else {
+			// Au moins un des droits est donné aux élèves.
+			$affiche = 'yes';
+
+			if (($active_module_trombinoscopes!='y')&&($GepiAccesEleTrombiPersonnels!="yes")&&($GepiAccesEleTrombiProfsClasse!="yes")) {
+				$affiche = 'no';
+			}
+
+			if (($active_module_trombino_pers!='y')&&($GepiAccesEleTrombiTousEleves!="yes")&&($GepiAccesEleTrombiElevesClasse!="yes")) {
+				$affiche = 'no';
+			}
+		}
+	}
+
 
     if ($affiche=='yes') {
 	// modification Régis : créer des <h2> pour faciliter la navigation
