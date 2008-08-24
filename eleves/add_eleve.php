@@ -326,7 +326,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						header("Location: index.php?msg=$mess");
 						die();
 					} elseif ($mode == "multiple") {
-						$mess=rawurlencode("Elève enregistré.Vous pouvez saisir l'élève suivant.");
+						$mess=rawurlencode("Elève enregistré. Vous pouvez saisir l'élève suivant.");
 						header("Location: add_eleve.php?mode=multiple&msg=$mess");
 						die();
 					}
