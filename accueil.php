@@ -1627,7 +1627,7 @@ if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") 
 				</td>
 				<td class="menu_droit">
 					<div id="divuri" style="display: none;">
-						<a onclick="window.open(this.href, \'_blank\'); return false;" href="'.$uri_el.'">'.$uri_el.'</a>
+						<a onclick="window.open(this.href, \'_blank\'); return false;" href="'.$uri_el["uri"].'">'.$uri_el["text"].'</a>
 					</div>
 					<div id="divexpli" style="display: block;">En cliquant sur la cellule de gauche, vous pourrez récupérer votre URI <em>(si vous avez activé le javascript sur votre navigateur)</em>.</div>
 				</td>

@@ -3052,6 +3052,7 @@ function decompte_debug($motif,$texte) {
 function retourneUri($eleve, $https, $type){
 
 	global $gepiPath;
+	$rep = array();
 
 	// on vérifie que la table e nquestion existe déjà
 	$test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
@@ -3068,14 +3069,19 @@ function retourneUri($eleve, $https, $type){
 				$web = 'http://';
 			}
 			if ($type == 'cdt') {
-				$rep = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
+				$rep["uri"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
+				$rep["text"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
 			}
 
 		}else{
-			return 'erreur1';
+			$rep["text"] = 'erreur1';
+			$rep["uri"] = '#';
 		}
 	}else{
-		return 'Demandez à votre administrateur de générer les URI.';
+
+		$rep["text"] = 'Demandez à votre administrateur de générer les URI.';
+		$rep["uri"] = '#';
+
 	}
 
 	return $rep;
