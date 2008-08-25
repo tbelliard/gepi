@@ -112,6 +112,12 @@ $expli[] = "Pour gérer le module Notanet/Fiches Brevet";
 $expli[] = "Pour gérer simplement les inscriptions des professeurs par exemple à des stages ou bien des interventions dans les collèges";
 $expli[] = "Gestion des flux rss des cahiers de textes produits par Gepi";
 
+// AUtorisation des statuts personnalisés
+// Années antérieures
+$chemin[] = "/utilisateurs/creer_statut_admin.php";
+$titre[] = "Créer des statuts personnalisés";
+$expli[] = "Définir des statuts supplémentaires en personnalisant les droits d'accès.";
+
 // Années antérieures
 $chemin[] = "/mod_annees_anterieures/admin.php";
 $titre[] = "Années antérieures";
