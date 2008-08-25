@@ -497,7 +497,7 @@ fieldset#login_box div#header {
 		//=========================================
 
 		$poste_notice_nom=array("fond_notices_c", "entete_fond_c", "cellule_c", "cellule_alt_c", "fond_notices_t", "entete_fond_t", "cellule_t", "cellule_alt_t", "fond_notices_i", "entete_fond_i", "cellule_i", "cellule_alt", "fond_notices_f", "cellule_f", "police_travaux", "police_matieres", "bord_tableau_notice", "cellule_gen");
-		$poste_notice_couleur=array("C7FF99", "C7FF99", "E5FFCF", "D3FFAF", "FFCCCF", "FFCCCF", "FFEFF0", "FFDFE2", "ACACFF", "EFEFFF", "EFEFFF", "C8C8FF", "FFFF80", "FFFFDF", "FF4444", "green", "6F6968", "F6F7EF");
+		$poste_notice_couleur=array("C7FF99", "C7FF99", "E5FFCF", "D3FFAF", "FFCCCF", "FFCCCF", "FFEFF0", "FFDFE2", "ACACFF", "ACACFF", "EFEFFF", "C8C8FF", "FFFF80", "FFFFDF", "FF4444", "green", "6F6968", "F6F7EF");
 		$poste_notice_classe=array("color_fond_notices_c", "couleur_entete_fond_c", "couleur_cellule_c", "couleur_cellule_alt_c", "color_fond_notices_t", "couleur_entete_fond_t", "couleur_cellule_t", "couleur_cellule_alt_t", "color_fond_notices_i", "couleur_entete_fond_i", "couleur_cellule_i", "couleur_cellule_alt_i", "color_fond_notices_f", "couleur_cellule_f", "color_police_travaux", "color_police_matieres ", "couleur_bord_tableau_notice", "couleur_cellule_gen");
 		$poste_type_couleur=array("background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "color", "color", "border-color", "background-color");
 
@@ -757,8 +757,8 @@ foreach($_POST as $post => $val){
 	tabmotif['fond_notices_i_V']=172;
 	tabmotif['fond_notices_i_B']=255;
 	// #EFEFFF
-	tabmotif['entete_fond_i_R']=239;
-	tabmotif['entete_fond_i_V']=239;
+	tabmotif['entete_fond_i_R']=172;
+	tabmotif['entete_fond_i_V']=172;
 	tabmotif['entete_fond_i_B']=255;
 	tabmotif['cellule_i_R']=239;
 	tabmotif['cellule_i_V']=239;
