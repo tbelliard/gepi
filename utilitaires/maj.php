@@ -6818,6 +6818,85 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 		}
 	}
 
+	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'denomination_professeur'");
+	$res_test=mysql_num_rows($req_test);
+	if ($res_test==0){
+	$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_professeur', 'professeur');");
+	if ($result_inter == '') {
+	    $result.="<font color=\"green\">Définition du paramètre denomination_professeur à 'professeur': Ok !</font><br />";
+	} else {
+	    $result.="<font color=\"red\">Définition du paramètre denomination_professeur à 'professeur': Erreur !</font><br />";
+	}
+	} else {
+	$result .= "<font color=\"blue\">Le paramètre denomination_professeur existe déjà dans la table setting.</font><br />";
+	}
+
+	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'denomination_professeurs'");
+	$res_test=mysql_num_rows($req_test);
+	if ($res_test==0){
+	$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_professeurs', 'professeurs');");
+	if ($result_inter == '') {
+	    $result.="<font color=\"green\">Définition du paramètre denomination_professeurs à 'professeurs': Ok !</font><br />";
+	} else {
+	    $result.="<font color=\"red\">Définition du paramètre denomination_professeurs à 'professeurs': Erreur !</font><br />";
+	}
+	} else {
+	$result .= "<font color=\"blue\">Le paramètre denomination_professeurs existe déjà dans la table setting.</font><br />";
+	}
+
+	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'denomination_responsable'");
+	$res_test=mysql_num_rows($req_test);
+	if ($res_test==0){
+	$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_responsable', 'responsable légal');");
+	if ($result_inter == '') {
+	    $result.="<font color=\"green\">Définition du paramètre denomination_responsable à 'responsable légal': Ok !</font><br />";
+	} else {
+	    $result.="<font color=\"red\">Définition du paramètre denomination_responsable à 'responsable légal': Erreur !</font><br />";
+	}
+	} else {
+	$result .= "<font color=\"blue\">Le paramètre denomination_responsable existe déjà dans la table setting.</font><br />";
+	}
+
+	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'denomination_responsables'");
+	$res_test=mysql_num_rows($req_test);
+	if ($res_test==0){
+	$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_responsables', 'responsables légaux');");
+	if ($result_inter == '') {
+	    $result.="<font color=\"green\">Définition du paramètre denomination_responsables à 'responsables légaux': Ok !</font><br />";
+	} else {
+	    $result.="<font color=\"red\">Définition du paramètre denomination_responsables à 'responsables légaux': Erreur !</font><br />";
+	}
+	} else {
+	$result .= "<font color=\"blue\">Le paramètre denomination_responsables existe déjà dans la table setting.</font><br />";
+	}
+
+	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'denomination_eleve'");
+	$res_test=mysql_num_rows($req_test);
+	if ($res_test==0){
+	$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_eleve', 'élève');");
+	if ($result_inter == '') {
+	    $result.="<font color=\"green\">Définition du paramètre denomination_eleve à 'élève': Ok !</font><br />";
+	} else {
+	    $result.="<font color=\"red\">Définition du paramètre denomination_eleve à 'élève': Erreur !</font><br />";
+	}
+	} else {
+	$result .= "<font color=\"blue\">Le paramètre denomination_eleve existe déjà dans la table setting.</font><br />";
+	}
+
+	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'denomination_eleves'");
+	$res_test=mysql_num_rows($req_test);
+	if ($res_test==0){
+	$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_eleves', 'élèves');");
+	if ($result_inter == '') {
+	    $result.="<font color=\"green\">Définition du paramètre denomination_eleves à 'élèves': Ok !</font><br />";
+	} else {
+	    $result.="<font color=\"red\">Définition du paramètre denomination_eleves à 'élèves': Erreur !</font><br />";
+	}
+	} else {
+	$result .= "<font color=\"blue\">Le paramètre denomination_eleves existe déjà dans la table setting.</font><br />";
+	}
+
+
 
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);

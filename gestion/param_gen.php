@@ -242,12 +242,48 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
+// Dénomination du professeur de suivi
 if (isset($_POST['gepi_prof_suivi'])) {
 	if (!saveSetting("gepi_prof_suivi", $_POST['gepi_prof_suivi'])) {
 		$msg .= "Erreur lors de l'enregistrement de gepi_prof_suivi !";
 	}
 }
 
+// Dénomination des professeurs
+if (isset($_POST['denomination_professeur'])) {
+	if (!saveSetting("denomination_professeur", $_POST['denomination_professeur'])) {
+		$msg .= "Erreur lors de l'enregistrement de denomination_professeur !";
+	}
+}
+if (isset($_POST['denomination_professeurs'])) {
+	if (!saveSetting("denomination_professeurs", $_POST['denomination_professeurs'])) {
+		$msg .= "Erreur lors de l'enregistrement de denomination_professeurs !";
+	}
+}
+
+// Dénomination des responsables légaux
+if (isset($_POST['denomination_responsable'])) {
+	if (!saveSetting("denomination_responsable", $_POST['denomination_responsable'])) {
+		$msg .= "Erreur lors de l'enregistrement de denomination_responsable !";
+	}
+}
+if (isset($_POST['denomination_responsables'])) {
+	if (!saveSetting("denomination_responsables", $_POST['denomination_responsables'])) {
+		$msg .= "Erreur lors de l'enregistrement de denomination_responsables !";
+	}
+}
+
+// Dénomination des élèves
+if (isset($_POST['denomination_eleve'])) {
+	if (!saveSetting("denomination_eleve", $_POST['denomination_eleve'])) {
+		$msg .= "Erreur lors de l'enregistrement de denomination_eleve !";
+	}
+}
+if (isset($_POST['denomination_eleves'])) {
+	if (!saveSetting("denomination_eleves", $_POST['denomination_eleves'])) {
+		$msg .= "Erreur lors de l'enregistrement de denomination_eleves !";
+	}
+}
 // Initialiser à 'Boite'
 if (isset($_POST['gepi_denom_boite'])) {
 	if (!saveSetting("gepi_denom_boite", $_POST['gepi_denom_boite'])) {
@@ -470,8 +506,29 @@ require_once("../lib/header.inc");
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
+		Dénomination des professeurs :</td>
+		<td>Sing. :<input type="text" name="denomination_professeur" size="20" value="<?php echo(getSettingValue("denomination_professeur")); ?>" />
+		<br/>Pluriel :<input type="text" name="denomination_professeurs" size="20" value="<?php echo(getSettingValue("denomination_professeurs")); ?>" />
+		</td>
+	</tr>
+	<tr>
+		<td style="font-variant: small-caps;">
 		Dénomination du professeur chargé du suivi des élèves :</td>
 		<td><input type="text" name="gepi_prof_suivi" size="20" value="<?php echo(getSettingValue("gepi_prof_suivi")); ?>" />
+		</td>
+	</tr>
+	<tr>
+		<td style="font-variant: small-caps;">
+		Dénomination des élèves :</td>
+		<td>Sing. :<input type="text" name="denomination_eleve" size="20" value="<?php echo(getSettingValue("denomination_eleve")); ?>" />
+		<br/>Pluriel :<input type="text" name="denomination_eleves" size="20" value="<?php echo(getSettingValue("denomination_eleves")); ?>" />
+		</td>
+	</tr>
+	<tr>
+		<td style="font-variant: small-caps;">
+		Dénomination des responsables légaux :</td>
+		<td>Sing. :<input type="text" name="denomination_responsable" size="20" value="<?php echo(getSettingValue("denomination_responsable")); ?>" />
+		<br/>Pluriel :<input type="text" name="denomination_responsables" size="20" value="<?php echo(getSettingValue("denomination_responsables")); ?>" />
 		</td>
 	</tr>
 	<tr>
