@@ -374,6 +374,9 @@ function reactiver(mavar) {
 
 			echo "</optgroup>\n";
 			echo "</select><br /><br />";
+
+			echo "<input value='2' name='etape' type='hidden' />\n";
+
 			echo "<input value='valider' name='Valider' id='valid1' type='submit' onClick=\"this.form.submit();this.disabled=true;this.value='En cours'\" />\n";
 			echo "</div>";
 		}
