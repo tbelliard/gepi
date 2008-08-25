@@ -322,7 +322,8 @@ $tab_password=array();
 unset($tab_non_INE_password);
 $tab_non_INE_password=array();
 
-echo "<style type='text/css'>
+if(($mode_impression!='pdf')&&($mode_impression!='csv')) {
+	echo "<style type='text/css'>
 #div_mdp_non_ine {
 	border: 1px solid black;
 	text-align:center;
@@ -337,6 +338,7 @@ echo "<style type='text/css'>
 </style>
 
 <div id='div_mdp_non_ine'></div>\n";
+}
 // =====================
 
 $p = 0;
