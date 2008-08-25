@@ -46,6 +46,8 @@ $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ?
 // Test SSO. Dans le cas d'un SSO, on laisse le mot de passevide.
 $test_sso = ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and (getSettingValue("use_sso") != "lcs") and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso);
 
+$mdp_INE=isset($_POST["mdp_INE"]) ? $_POST["mdp_INE"] : (isset($_GET["mdp_INE"]) ? $_GET["mdp_INE"] : NULL);
+
 $msg = '';
 
 // Si on est en traitement par lot, on sélectionne tout de suite la liste des utilisateurs impliqués
@@ -140,7 +142,7 @@ if ($action == "rendre_inactif") {
 		$ldap_write_access = true;
 		$ldap_server = new LDAPServer;
 	}
-	
+
 	// Suppression d'un ou plusieurs utilisateurs
 	if ($mode == "individual") {
 		// Suppression pour un utilisateur unique
@@ -191,16 +193,24 @@ if ($action == "rendre_inactif") {
 	if ($mode != "classe") {
 		$msg .= "Erreur : Vous devez sélectionner une classe.";
 	} elseif ($mode == "classe") {
+
+		if(isset($mdp_INE)) {
+			$chaine_mdp_INE="&amp;mdp_INE=$mdp_INE";
+		}
+		else {
+			$chaine_mdp_INE="";
+		}
+
 		if ($_POST['classe'] == "all") {
 			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve'.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
-            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
-            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=html$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=csv$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=pdf$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
 		} else if (is_numeric($_POST['classe'])) {
 			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve' pour cette classe.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
 		}
 	}
 } elseif ($action == "change_auth_mode") {
@@ -223,7 +233,7 @@ if ($action == "rendre_inactif") {
 					// On modifie !
 					$nb_comptes++;
 					$res = mysql_query("UPDATE utilisateurs SET auth_mode = '".$reg_auth_mode."' WHERE login = '".$current_eleve->login."'");
-					
+
 					// On regarde si des opérations spécifiques sont nécessaires
 					if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
 						// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
@@ -242,7 +252,7 @@ if ($action == "rendre_inactif") {
 							$delete_ldap_user = true;
 						}
 					}
-					
+
 					// On effectue les opérations LDAP
 					if (isset($create_ldap_user) && $create_ldap_user) {
 						if (!$ldap_server->test_user($current_eleve->login)) {
@@ -263,7 +273,7 @@ if ($action == "rendre_inactif") {
 							$write_ldap_success = $ldap_server->delete_user($current_eleve->login);
 						}
 					}
-					
+
 				}
 			}
 		}
@@ -314,13 +324,13 @@ while ($current_classe = mysql_fetch_object($quelles_classes)) {
 echo "</select>\n";
 echo "<input type='hidden' name='mode' value='classe' />\n";
 echo "<br />\n";
-echo "<input type='radio' name='action' value='rendre_inactif' /> Rendre inactif\n";
-echo "<input type='radio' name='action' value='rendre_actif' style='margin-left: 20px;'/> Rendre actif \n";
+echo "<input type='radio' name='action' id='action_rendre_inactif' value='rendre_inactif' onchange='traite_p_mdp_INE()' /><label for='action_rendre_inactif' style='cursor:pointer;'> Rendre inactif</label>\n";
+echo "<input type='radio' name='action' id='action_rendre_actif' value='rendre_actif' style='margin-left: 20px;' onchange='traite_p_mdp_INE()' /><label for='action_rendre_actif' style='cursor:pointer;'> Rendre actif</label> \n";
 if ($session_gepi->auth_locale || $gepiSettings['ldap_write_access']) {
-    echo "<input type='radio' name='action' value='reinit_password' style='margin-left: 20px;'/> Réinitialiser mots de passe\n";
+    echo "<input type='radio' name='action' id='action_reinit_password' value='reinit_password' style='margin-left: 20px;' onchange='traite_p_mdp_INE()' /><label for='action_reinit_password' style='cursor:pointer;'> Réinitialiser mots de passe</label>\n";
 }
-echo "<input type='radio' name='action' value='supprimer' style='margin-left: 20px;' /> Supprimer<br />\n";
-echo "<input type='radio' name='action' value='change_auth_mode' /> Modifier authentification : ";
+echo "<input type='radio' name='action' id='action_supprimer' value='supprimer' style='margin-left: 20px;' onchange='traite_p_mdp_INE()' /><label for='action_supprimer' style='cursor:pointer;'> Supprimer</label><br />\n";
+echo "<input type='radio' name='action' id='action_change_auth_mode' value='change_auth_mode' onchange='traite_p_mdp_INE()' /><label for='action_change_auth_mode' style='cursor:pointer;'> Modifier authentification : </label>";
 ?>
 <select id="select_auth_mode" name="reg_auth_mode" size="1">
 <option value='gepi'>Locale (base Gepi)</option>
@@ -332,6 +342,22 @@ echo "<br />\n";
 //echo "<br />\n";
 echo "&nbsp;<input type='submit' name='Valider' value='Valider' />\n";
 echo "</p>\n";
+
+echo "<p id='p_mdp_INE' style='font-size:x-small;'><input type='checkbox' name='mdp_INE' id='mdp_INE' value='y' /> <label for='mdp_INE' style='cursor:pointer'>Utiliser le numéro national de l'élève (<i>INE</i>) comme mot de passe lorsqu'il est renseigné pour la réinitialisation des mots de passe de la (des) classe(s).</label></p>\n";
+
+echo "<script type='text/javascript'>
+	document.getElementById('p_mdp_INE').style.display='none';
+
+	function traite_p_mdp_INE() {
+		if(document.getElementById('action_reinit_password').checked) {
+			document.getElementById('p_mdp_INE').style.display='';
+		}
+		else {
+			document.getElementById('p_mdp_INE').style.display='none';
+		}
+	}
+</script>\n";
+
 echo "</blockquote>\n";
 echo "</form>\n";
 
