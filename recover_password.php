@@ -402,7 +402,7 @@ Cette adresse doit être déjà associée à votre compte au sein de Gepi.
 </div>
 <div id="login_footer">
 <a href="http://gepi.mutualibre.org">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />
-Copyright &copy; 2001-2007
+Copyright &copy; 2001-2008
 </div>
 </div>
 </body>
