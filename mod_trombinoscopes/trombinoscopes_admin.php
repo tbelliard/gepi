@@ -154,7 +154,7 @@ Dans la page "Gestion générale"->"Droits d'accès", vous avez la possibilité de d
 <li>Ci-dessous, sélectionner dans la liste des catégories d'AIDs, celle portant le nom que vous avez donné ci-dessus.
 <i>(cette liste n'appararaît pas si vous n'avez pas donné la possibilité à tous les élèves d'envoyer/modifier leur photo dans "Gestion générale"->"Droits d'accès")</i>.
 </li>
-<li>Tous les élèves inscrits dans une des AIDs de la catégorie sus-nommée pourront alors envoyer/modifier leur photo.</li>
+<li>Tous les élèves inscrits dans une des AIDs de la catégorie sus-nommée pourront alors envoyer/modifier leur photo (<em>à l'exception des élèves sans numéro Sconet ou "elenoet"</em>).</li>
 </ul>
 
 <?php
@@ -176,7 +176,7 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
     }
     ?>
     </select><br />
-    <b>Remarque :</b>Si "aucune" AID n'est définie, <b>tous les élèves</b> peuvent envoyer/modifier leur photo.
+    <b>Remarque&nbsp;:</b> Si "aucune" AID n'est définie, <b>tous les élèves</b> peuvent envoyer/modifier leur photo (<em>sauf ceux sans elenoet</em>).
     <br />
 <?php
 }

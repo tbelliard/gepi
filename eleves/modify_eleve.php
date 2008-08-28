@@ -1746,7 +1746,7 @@ echo "</table>\n";
 
 if (($reg_no_gep == '') and (isset($eleve_login))) {
    //echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élèves.</font>\n";
-   echo "<font color='red'>ATTENTION : Cet élève ne possède pas de numéro interne Sconet (<i>elenoet</i>). Vous ne pourrez pas importer les absences à partir des fichiers GEP/Sconet pour cet élèves.<br />Vous ne pourrez pas définir l'établissement d'origine de l'élève.</font>\n";
+   echo "<font color='red'>ATTENTION : Cet élève ne possède pas de numéro interne Sconet (<i>elenoet</i>). Vous ne pourrez pas importer les absences à partir des fichiers GEP/Sconet pour cet élève.<br />Vous ne pourrez pas définir l'établissement d'origine de l'élève.<br />Cet élève ne pourra pas figurer dans le module trombinoscope.</font>\n";
 
 	$sql="select value from setting where name='import_maj_xml_sconet'";
 	$test_sconet=mysql_query($sql);
