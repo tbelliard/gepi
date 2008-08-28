@@ -504,17 +504,13 @@ require_once("../lib/header.inc");
 		<td><input type="text" name="longmin_pwd" size="20" value="<?php echo(getSettingValue("longmin_pwd")); ?>" />
 		</td>
 	</tr>
+        <?php if (isset($use_custom_denominations) && $use_custom_denominations) {
+          ?>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Dénomination des professeurs :</td>
 		<td>Sing. :<input type="text" name="denomination_professeur" size="20" value="<?php echo(getSettingValue("denomination_professeur")); ?>" />
 		<br/>Pluriel :<input type="text" name="denomination_professeurs" size="20" value="<?php echo(getSettingValue("denomination_professeurs")); ?>" />
-		</td>
-	</tr>
-	<tr>
-		<td style="font-variant: small-caps;">
-		Dénomination du professeur chargé du suivi des élèves :</td>
-		<td><input type="text" name="gepi_prof_suivi" size="20" value="<?php echo(getSettingValue("gepi_prof_suivi")); ?>" />
 		</td>
 	</tr>
 	<tr>
@@ -529,6 +525,13 @@ require_once("../lib/header.inc");
 		Dénomination des responsables légaux :</td>
 		<td>Sing. :<input type="text" name="denomination_responsable" size="20" value="<?php echo(getSettingValue("denomination_responsable")); ?>" />
 		<br/>Pluriel :<input type="text" name="denomination_responsables" size="20" value="<?php echo(getSettingValue("denomination_responsables")); ?>" />
+		</td>
+	</tr>
+        <?php } ?>
+	<tr>
+		<td style="font-variant: small-caps;">
+		Dénomination du professeur chargé du suivi des élèves :</td>
+		<td><input type="text" name="gepi_prof_suivi" size="20" value="<?php echo(getSettingValue("gepi_prof_suivi")); ?>" />
 		</td>
 	</tr>
 	<tr>
