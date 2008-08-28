@@ -48,6 +48,7 @@ $classe = get_classe($id_classe);
 $display = isset($_GET['display']) ? $_GET['display'] : (isset($_POST['display']) ? $_POST["display"] : NULL);
 if ($display != "new") $display = "current";
 
+$tri_matiere=isset($_GET['tri_matiere']) ? $_GET['tri_matiere'] : (isset($_POST['tri_matiere']) ? $_POST["tri_matiere"] : "alpha");
 
 // =================================
 // AJOUT: boireaus
@@ -256,6 +257,8 @@ $titre_page = "Gestion des enseignements 'simples' par lot";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
+//debug_var();
+
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 echo "<p class='bold'>\n";
 echo "<a href='../classes/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
@@ -315,22 +318,36 @@ echo "<script language='javascript' type='text/javascript'>
 	}
 </script>\n";
 
-// On peut basculer entre deux modes de saisis : seulement les groupes déjà associés, ou bien nouveaux groupes
+// On peut basculer entre deux modes de saisie : seulement les groupes déjà associés, ou bien nouveaux groupes
 if ($display == "current") {
 	echo "<p><img src='../images/icons/add.png' alt='' class='back_link' /> <a href='edit_class_grp_lot.php?id_classe=".$id_classe."&amp;display=new' onclick=\"return confirm_abandon (this, change, '$themessage')\">Ajouter de nouveaux groupes</a></p>";
 } else {
 	echo "<p><img src='../images/icons/configure.png' alt='' class='back_link' /> <a href='edit_class_grp_lot.php?id_classe=".$id_classe."&amp;display=current' onclick=\"return confirm_abandon (this, change, '$themessage')\">Editer les groupes existants</a></p>";
 }
-//echo "<form enctype='multipart/form-data' action='add_group.php' name='new_group' method='get'>";
-echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='new_groups' method='post'>";
 
-echo "<table border='0'>\n";
+if($tri_matiere=='alpha') {
+	echo "<p style='font-size:x-small;'>Les matières sont triées par ordre alphabétique.<br /><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;display=$display&amp;tri_matiere=priorite'>Trier les matières par priorité</a></p>\n";
+}
+else {
+	echo "<p style='font-size:x-small;'>Les matières sont triées par priorité.<br /><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;display=$display&amp;tri_matiere=alpha'>Trier les matières par ordre alphabétique</a></p>\n";
+}
+
+//echo "<form enctype='multipart/form-data' action='add_group.php' name='new_group' method='get'>";
+echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='new_groups' method='post'>\n";
+echo "<input type='hidden' name='tri_matiere' value='$tri_matiere' />\n";
+
+echo "<table border='0' summary='Tableau des matières'>\n";
 echo "<tr valign='top'>";
 echo "<td>&nbsp;</td>\n";
-echo "<td>Matière</td>\n";
-echo "<td>Professeur</td>\n";
+echo "<td style='font-weight: bold;'>Matière</td>\n";
+echo "<td style='font-weight: bold;'>Professeur</td>\n";
 echo "</tr>\n";
-$result_matiere=mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
+if($tri_matiere=='alpha') {
+	$result_matiere=mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
+}
+else {
+	$result_matiere=mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY priority");
+}
 $nb_mat=mysql_num_rows($result_matiere);
 $cpt=0;
 while($ligne_matiere=mysql_fetch_object($result_matiere)){
@@ -341,7 +358,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 	// Récupération des infos déjà saisies:
 	$sql="SELECT jgm.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='$id_classe' AND jgm.id_matiere='$ligne_matiere->matiere' AND jgc.id_groupe=jgm.id_groupe";
 	$result_grp=mysql_query($sql);
-	if(mysql_num_rows($result_grp)==0 and $display == "new"){
+	if(mysql_num_rows($result_grp)==0 and $display == "new") {
 		$display_current = true;
 		echo "<tr>\n";
 		echo "<td>\n";
@@ -352,7 +369,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 		//echo "<input type='hidden' name='id_grp[$cpt]' value='' />\n";
 		echo "</td>\n";
 	}
-	elseif(mysql_num_rows($result_grp)==1 and $display == "current"){
+	elseif(mysql_num_rows($result_grp)==1 and $display == "current") {
 		$display_current = true;
 		echo "<tr>\n";
 		$ligne_grp=mysql_fetch_object($result_grp);
@@ -364,11 +381,11 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 			echo "<td colspan='3'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs professeurs</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
 			$groupe_existant="trop";
 		}
-		else{
+		else {
 			$sql="SELECT * FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_groupe='$ligne_grp->id_groupe' AND jgm.id_matiere='$ligne_matiere->matiere' AND jgc.id_groupe=jgm.id_groupe";
 			//echo "<td>$sql</td>\n";
 			$result_verif_grp_classes=mysql_query($sql);
-			if(mysql_num_rows($result_verif_grp_classes)==1){
+			if(mysql_num_rows($result_verif_grp_classes)==1) {
 				echo "<td>\n";
 				echo "<input type='hidden' name='id_matiere[$cpt]' value='$ligne_matiere->matiere' />\n";
 				echo "<input type='checkbox' name='checkmat[$cpt]' id='checkmat_".$cpt."' value='$ligne_grp->id_groupe' onchange='changement()' checked />\n";
@@ -376,14 +393,14 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 				echo "</td>\n";
 				$groupe_existant="oui";
 			}
-			else{
+			else {
 				//echo "<td colspan='3'>Le groupe associé à la matière $ligne_matiere->matiere est associé à plusieurs classes.<br />Ce n'est pas un enseignement 'simple'.<br />A traiter ailleurs...</td>\n";
 				echo "<td colspan='3'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
 				$groupe_existant="trop";
 			}
 		}
 	}
-	elseif(mysql_num_rows($result_grp)>1 and $display == "current"){
+	elseif(mysql_num_rows($result_grp)>1 and $display == "current") {
 		$display_current = true;
 		echo "<tr>\n";
 		// C'est le bazar... plusieurs groupes existent pour cette matière dans cette classe
@@ -393,7 +410,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 	}
 
 	//echo "<td><input type='checkbox' name='checkmat[$cpt]' id='checkmat_".$cpt."' value='coche' /></td>\n";
-	if($groupe_existant!="trop" and $display_current){
+	if($groupe_existant!="trop" and $display_current) {
 		echo "<td>".htmlentities($ligne_matiere->nom_complet)."</td>\n";
 		$sql="SELECT jpm.id_professeur,u.nom,u.prenom,u.civilite FROM j_professeurs_matieres jpm, matieres m, utilisateurs u WHERE jpm.id_matiere=m.matiere AND m.matiere='$ligne_matiere->matiere' AND u.login=jpm.id_professeur ORDER BY jpm.id_professeur";
 		$result_prof=mysql_query($sql);
@@ -401,11 +418,11 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 		echo "<select name='prof[$cpt]' id='prof_".$cpt."' onchange='test_prof($cpt);changement();'>\n";
 		echo "<option value=''>---</option>\n";
 		$selected="";
-		while($ligne_prof=mysql_fetch_object($result_prof)){
+		while($ligne_prof=mysql_fetch_object($result_prof)) {
 			if($groupe_existant=="oui"){
 				$sql="SELECT * FROM j_groupes_professeurs jgp WHERE jgp.id_groupe='$ligne_grp->id_groupe' AND jgp.login='$ligne_prof->id_professeur'";
 				$result_verif=mysql_query($sql);
-				if(mysql_num_rows($result_verif)==0){
+				if(mysql_num_rows($result_verif)==0) {
 					$selected="";
 				}
 				else{
