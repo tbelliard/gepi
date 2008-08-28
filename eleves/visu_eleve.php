@@ -1842,7 +1842,7 @@ Patientez pendant l'extraction des données... merci.
 		//========================
 
 		// Liste des onglets de niveau 1
-		$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins','cdt','anna');
+		$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins','cdt','anna','absences');
 		$chaine_tab_onglets="tab_onglets=new Array(";
 		for($i=0;$i<count($tab_onglets);$i++) {
 			if($i>0) {$chaine_tab_onglets.=", ";}
