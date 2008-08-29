@@ -1,4 +1,8 @@
 <?php
+
+$ldap_class = "lib/LDAPServer.php4.class.php";
+$session_class = "lib/Session.php4.class.php";
+
 // Pour les scripts situés à la racine de GEPI
 if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    // Database configuration file
@@ -22,8 +26,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
      die("Erreur chargement settings");
    }
    // Session related functions
-   require_once("./lib/LDAPServer.class.php");
-   require_once("./lib/Session.class.php");
+   require_once("./".$ldap_class);
+   require_once("./".$session_class);
 
 // Pour les scripts situés dans un sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
 } else if (isset($niveau_arbo) and ($niveau_arbo == "2")) {
@@ -48,8 +52,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
        die("Erreur chargement settings");
    }
    // Session related functions
-   require_once("../../lib/LDAPServer.class.php");
-   require_once("../../lib/Session.class.php");
+   require_once("../../".$ldap_class);
+   require_once("../../".$session_class);
 
 // Pour les scripts situés dans un sous-sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
 } else if (isset($niveau_arbo) and ($niveau_arbo == "3")) {
@@ -74,8 +78,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
        die("Erreur chargement settings");
    }
    // Session related functions
-   require_once("../../../lib/LDAPServer.class.php");
-   require_once("../../../lib/Session.class.php");
+   require_once("../../../".$ldap_class);
+   require_once("../../../".$session_class);
 
 // Pour les scripts situés dans le sous-répertoire "public"
 // Ces scripts font appel au fichier /public/secure/connect.inc et non pas /secure/connect.inc
@@ -99,8 +103,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
         die("Erreur chargement settings");
     }
    // Session related functions
-   require_once("../lib/LDAPServer.class.php");
-   require_once("../lib/Session.class.php");
+   require_once("../".$ldap_class);
+   require_once("../".$session_class);
 
 // Pour les scripts situés dans un sous-répertoire GEPI
 } else {
@@ -125,8 +129,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
        die("Erreur chargement settings");
    }
    // Session related functions
-   require_once("../lib/LDAPServer.class.php");
-   require_once("../lib/Session.class.php");
+   require_once("../".$ldap_class);
+   require_once("../".$session_class);
 }
 
 	// Modif pour la longueur des logins par $longmax_login du global.inc
