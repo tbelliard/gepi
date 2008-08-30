@@ -126,7 +126,7 @@ class Session {
 	    // On commence par extraire le mode d'authentification défini
 	    // pour l'utilisateur. Si l'utilisateur n'existe pas, on essaiera
 	    // l'authentification LDAP et le SSO quand même.
-		$auth_mode = self::user_auth_mode($_login);
+		$auth_mode = Session::user_auth_mode($_login);
 
 		switch ($auth_mode) {
 			case "gepi":
@@ -277,7 +277,7 @@ class Session {
 		    }
 
 			# On teste la cohérence de mode de connexion
-		    $auth_mode = self::user_auth_mode($this->login);
+		    $auth_mode = Session::user_auth_mode($this->login);
 		    if ($auth_mode != $this->current_auth_mode) {
 		    	$this->reset(2);
 		    	return "5";

@@ -296,7 +296,7 @@ class LDAPServer {
 		return $update;
 	}
 
-	static function connect_ldap($_adresse,$_port,$_login,$_password) {
+	function connect_ldap($_adresse,$_port,$_login,$_password) {
 		# Pour avoir du débug en log serveur, décommenter la ligne suivante.
 		#ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
 	    $ds = ldap_connect($_adresse, $_port);
