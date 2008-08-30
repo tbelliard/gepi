@@ -1,7 +1,13 @@
 <?php
 
-$ldap_class = "lib/LDAPServer.php4.class.php";
-$session_class = "lib/Session.php4.class.php";
+$version = substr(phpversion(), 0, 1);
+if ($version == 4) {
+  $ldap_class = "lib/LDAPServer.php4.class.php";
+  $session_class = "lib/Session.php4.class.php";
+} else {
+  $ldap_class = "lib/LDAPServer.class.php";
+  $session_class = "lib/Session.class.php";
+}
 
 // Pour les scripts situés à la racine de GEPI
 if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
