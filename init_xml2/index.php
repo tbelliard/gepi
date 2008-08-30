@@ -100,7 +100,7 @@ require_once("../lib/header.inc");
 				<p><a href='responsables.php'>Procéder à la deuxième phase</a> d'importation des responsables des élèves : le fichier <b>ResponsablesAvecAdresses.xml</b> est requis.</p>
 			</li>
 			<li>
-				<p><a href='disciplines_csv.php'>Procéder à la troisième phase</a> d'importation des matières : le fichier <b>sts_emp_RNE_ANNEE.xml</b> est requis.</p>
+				<p><a href='matieres.php'>Procéder à la troisième phase</a> d'importation des matières : le fichier <b>sts_emp_RNE_ANNEE.xml</b> est requis.</p>
 			</li>
 			<li>
 				<p><a href='professeurs.php'>Procéder à la quatrième phase</a> d'importation des professeurs.<br />
