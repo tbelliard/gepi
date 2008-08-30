@@ -244,7 +244,7 @@ $num_resp=isset($_POST['num_resp']) ? $_POST['num_resp'] : (isset($_GET['num_res
 //echo "\$num_resp=$num_resp<br />";
 
 
-echo "<p class=bold>";
+echo "<p class='bold'>";
 if ($_SESSION['statut'] == 'administrateur'){
 	echo "<a href=\"../accueil_admin.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo " | <a href=\"modify_resp.php\">Ajouter un responsable</a>\n";
@@ -446,6 +446,9 @@ if($val_rech!=""){
 
 	if($cpt==0){
 		echo "<p>Aucun responsable trouvé.</p>\n";
+		if($chaine_recherche!="") {
+			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour à l'index Responsables</a></p>\n";
+		}
 		require("../lib/footer.inc.php");
 		die();
 	}
