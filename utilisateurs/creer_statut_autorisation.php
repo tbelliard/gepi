@@ -40,6 +40,7 @@ $autorise[5] = array('/cahier_texte/see_all.php');
 $autorise[6] = array('/cahier_texte_admin/visa_ct.php');
 $autorise[7] = array('/edt_organisation/index_edt.php');
 $autorise[8] = array('/tous_les_edt');
+$autorise[9] = array('/messagerie/index.php');
 
 $iter = count($autorise);
 $nbre_menu = $iter - 1;
@@ -53,5 +54,6 @@ $menu_accueil[5] = array('Cahiers de textes', 'Visionner tous les cahiers de tex
 $menu_accueil[6] = array('Signer les cahiers de textes', 'Signer (viser) les cahiers de textes', 'cdt_visa');
 $menu_accueil[7] = array('Emploi du temps', 'Visionner les emplois du temps de tous les élèves', 'ee');
 $menu_accueil[8] = array('Emploi du temps', 'Visionner tous les emplois du temps de l\'établissement', 'te');
+$menu_accueil[9] = array('Panneau d\'affichage', 'Gérer les messages à afficher sur la page d\'accueil des utilisateurs.', 'pa');
 
 ?>
