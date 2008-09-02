@@ -1,9 +1,21 @@
 <?php
 
-
-$lcs_setup_valid = file_exists("./secure/config_lcs.inc.php") ? true : false;
-if ($lcs_setup_valid)
-   include "./secure/config_lcs.inc.php";
+// Pour les scripts situés à la racine de GEPI
+if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
+  if (file_exists("./secure/config_lcs.inc.php"))
+    include "./secure/config_lcs.inc.php";
+// Pour les scripts situés dans un sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
+} else if (isset($niveau_arbo) and ($niveau_arbo == "2")) {
+  if (file_exists("../../secure/config_lcs.inc.php"))
+    include "../../secure/config_lcs.inc.php";
+// Pour les scripts situés dans un sous-sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
+} else if (isset($niveau_arbo) and ($niveau_arbo == "3")) {
+  if (file_exists("../../../secure/config_lcs.inc.php"))
+    include "../../../secure/config_lcs.inc.php";
+} else {
+  if (file_exists("../secure/config_lcs.inc.php"))
+    include "../secure/config_lcs.inc.php";
+}
 
 $version = substr(phpversion(), 0, 1);
 if ($version == 4) {
