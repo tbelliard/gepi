@@ -2156,7 +2156,8 @@ function get_enfants_from_resp_login($resp_login){
 											resp_pers rp
 										WHERE e.ele_id=r.ele_id AND
 											rp.pers_id=r.pers_id AND
-											rp.login='$resp_login'
+											rp.login='$resp_login' AND
+											r.resp_legal!='0'
 										ORDER BY e.nom,e.prenom;";
 	$res_ele=mysql_query($sql);
 
