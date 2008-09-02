@@ -6219,6 +6219,41 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
             $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
         }
 
+    // Modification Delineau
+    // lorsque le trunk sera officiellement en 1.5.1, on supprimera ces lignes
+    $result .= "<br />&nbsp;->Mise à jour des tables d'archivage.<br />";
+    $result_inter = traite_requete("ALTER TABLE `archivage_aids` CHANGE `annee` `annee` VARCHAR( 244 ) NOT NULL");
+    if ($result_inter == '')
+       $result .= "<font color=\"green\">Le champ annee de la table archivage_aids a été modifiée !</font><br />";
+    else
+       $result .= $result_inter."<br />";
+    $result_inter = traite_requete("ALTER TABLE `archivage_appreciations_aid` CHANGE `annee` `annee` VARCHAR( 244 ) NOT NULL");
+    if ($result_inter == '')
+       $result .= "<font color=\"green\">Le champ annee de la table archivage_appreciations_aid a été modifiée !</font><br />";
+    else
+       $result .= $result_inter."<br />";
+    $result_inter = traite_requete("ALTER TABLE `archivage_disciplines` CHANGE `annee` `annee` VARCHAR( 244 ) NOT NULL");
+    if ($result_inter == '')
+       $result .= "<font color=\"green\">Le champ annee de la table archivage_disciplines a été modifiée !</font><br />";
+    else
+       $result .= $result_inter."<br />";
+    $result_inter = traite_requete("ALTER TABLE `archivage_eleves2` CHANGE `annee` `annee` VARCHAR( 244 ) NOT NULL");
+    if ($result_inter == '')
+       $result .= "<font color=\"green\">Le champ annee de la table archivage_eleves2 a été modifiée !</font><br />";
+    else
+       $result .= $result_inter."<br />";
+    $result_inter = traite_requete("ALTER TABLE `archivage_types_aid` CHANGE `annee` `annee` VARCHAR( 244 ) NOT NULL");
+    if ($result_inter == '')
+       $result .= "<font color=\"green\">Le champ annee de la table archivage_types_aid a été modifiée !</font><br />";
+    else
+       $result .= $result_inter."<br />";
+    $result_inter = traite_requete("ALTER TABLE `archivage_aid_eleve` CHANGE `id_aid` `id_aid` INT( 11 ) NOT NULL DEFAULT '0'");
+    if ($result_inter == '')
+       $result .= "<font color=\"green\">Le champ id_aid de la table archivage_aid_eleve a été modifiée !</font><br />";
+    else
+       $result .= $result_inter."<br />";
+    // Fin des lignes à supprimer quand la version stable sera sortie
+
 
 	//==========================================================
     // Modification Delineau
