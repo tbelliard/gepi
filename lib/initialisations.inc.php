@@ -1,5 +1,10 @@
 <?php
 
+
+$lcs_setup_valid = file_exists("./secure/config_lcs.inc.php") ? true : false;
+if ($lcs_setup_valid)
+   include "./secure/config_lcs.inc.php";
+
 $version = substr(phpversion(), 0, 1);
 if ($version == 4) {
   $ldap_class = "lib/LDAPServer.php4.class.php";
@@ -147,5 +152,5 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
 
 // Initialisaton de la session Gepi :
 $session_gepi = new Session();
-	
+
 ?>
