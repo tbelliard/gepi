@@ -233,7 +233,8 @@ else {
 								e.login = jec.login AND
 								r.adr_id = ra.adr_id AND
 								(re.resp_legal='1' OR re.resp_legal='2') AND
-								jec.id_classe = '$user_classe')";
+								jec.id_classe = '$user_classe')
+								ORDER BY u.nom,u.prenom";
 				$call_user_info = mysql_query($sql_user_resp);
 				//echo $sql_user_resp."<br />\n";
 				$cas_traite=1;
@@ -378,6 +379,7 @@ while ($p < $nb_users) {
 							AND r2.ele_id = e.ele_id
 							AND e.login = jec.login
 							AND jec.id_classe = c.id
+							AND r2.resp_legal!='0'
 							)";
 		//echo "<br />\$sql_resp_eleves=".$sql_resp_eleves."<br />";
 		$call_resp_eleves=mysql_query($sql_resp_eleves);
