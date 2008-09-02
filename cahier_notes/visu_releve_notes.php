@@ -461,7 +461,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 				//echo "</td><td width='100%' align=\"right\"><IMG SRC=\"".$nom_fic_logo_c."\" BORDER=0 ALT=\"\" />";
 				//echo "</div>\n";
 			echo "<div class='entete_releve_notes_logo'>\n<img src=\"".$nom_fic_logo_c."\" alt='logo' />\n</div>\n";
-		} 
+		}
 			//else {
 			//	echo "</div>\n";
 			//	echo "<div>&nbsp;";
@@ -780,7 +780,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 
 				if($rn_sign_chefetab=='y'){
 					// echo "<div style='width:$largeur_case; border: 1px;'>\n";
-					echo "<div class='cel_signature nb_cel_$nb_cases'>\n";					
+					echo "<div class='cel_signature nb_cel_$nb_cases'>\n";
 						echo "<strong>Signature du chef d'établissement:</strong>";
 						for($i=0;$i<$rn_sign_nblig;$i++){
 							echo "<br />\n";
@@ -790,7 +790,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 
 				if($rn_sign_pp=='y'){
 					// echo "<div style='width:$largeur_case; border: 1px;'>\n";
-					echo "<div class='cel_signature nb_cel_$nb_cases'>\n";			
+					echo "<div class='cel_signature nb_cel_$nb_cases'>\n";
 						echo "<strong>Signature du ".getSettingValue("gepi_prof_suivi").":</strong>";
 						for($i=0;$i<$rn_sign_nblig;$i++){
 							echo "<br />\n";
@@ -800,7 +800,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 
 				if($rn_sign_resp=='y'){
 					// echo "<div style='width:$largeur_case; border: 1px;'>\n";
-					echo "<div class='cel_signature nb_cel_$nb_cases'>\n";			
+					echo "<div class='cel_signature nb_cel_$nb_cases'>\n";
 						echo "<strong>Signature des responsables:</strong>";
 						for($i=0;$i<$rn_sign_nblig;$i++){
 							echo "<br />\n";
@@ -891,12 +891,12 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			$nombreligne = mysql_num_rows($calldata);
 //       echo "<strong><a href='../accueil.php'>Accueil</a> | Total : ".$nombreligne." classes</strong>\n";
 // rajout christian
-			
+
 			echo "<strong>\n";
 			echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | \n";
-			if(empty($format) AND ($_SESSION["statut"] != 'autre')) { 
+			if(empty($format) AND ($_SESSION["statut"] != 'autre')) {
 				echo "<a href='visu_releve_notes.php?format=pdf'>Impression au format PDF</a>\n";
-			} else { 
+			} else {
 				echo "<a href='visu_releve_notes.php?format='>Impression au format HTML</a>\n";
 			}
 				echo " | Total : ".$nombreligne." classes\n";
@@ -1005,12 +1005,12 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 							//echo "<a href=\"#calend\" onclick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\">\n";
 								echo "<img src='../lib/calendrier/petit_calendrier.gif' alt='Calendrier' />\n";
 							echo "</a>\n";
-							echo "&nbsp;au :\n"; 
+							echo "&nbsp;au :\n";
 							echo "<input type='text' id='display_date_fin' name ='display_date_fin' size='10' value='$display_date_fin' />\n";
 							echo "<label for='display_date_fin' class='invisible'>Date de fin</label>\n";
 							echo "<a href=\"#calend\" onclick=\"".$cal4->get_strPopup('../lib/calendrier/pop.calendrier_id.php', 350, 170)."\">\n";
 								echo "<img src='../lib/calendrier/petit_calendrier.gif' alt='Calendrier' />\n";
-							echo "</a>\n"; 
+							echo "</a>\n";
 							echo "<br />\n";
 							echo "<p class='info'>\n";
 								echo "(Veillez à respecter le format jj/mm/aaaa)\n";
@@ -1043,23 +1043,23 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		  					echo "<select id'eleves' name='eleve[]' size='6' multiple='multiple' tabindex='4'>\n";
 							echo "<label for='eleves' class='invisible'>Sélection des élèves</label>\n";
 		  						echo "<optgroup label='----- Listes des &eacute;l&egrave;ves -----'>\n";
-		   						 
+
 									// sélection des id eleves sélectionné.
 									if(!empty($classe[0])) {
 										$cpt_classe_selec = 0; $selection_classe = "";
-										while(!empty($classe[$cpt_classe_selec])) { 
-											if($cpt_classe_selec == 0) { 
-												$selection_classe = $prefix_base."j_eleves_classes.id_classe = ".$classe[$cpt_classe_selec]; 
-											} else { 
-												$selection_classe = $selection_classe." OR ".$prefix_base."j_eleves_classes.id_classe = ".$classe[$cpt_classe_selec]; 
-											} $cpt_classe_selec = $cpt_classe_selec + 1; 
+										while(!empty($classe[$cpt_classe_selec])) {
+											if($cpt_classe_selec == 0) {
+												$selection_classe = $prefix_base."j_eleves_classes.id_classe = ".$classe[$cpt_classe_selec];
+											} else {
+												$selection_classe = $selection_classe." OR ".$prefix_base."j_eleves_classes.id_classe = ".$classe[$cpt_classe_selec];
+											} $cpt_classe_selec = $cpt_classe_selec + 1;
 										}
 										$requete_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE ('.$selection_classe.') AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC');
 						  				while ($donner_eleve = mysql_fetch_array($requete_eleve)) {
 											?><option value="<?php echo $donner_eleve['login']; ?>"  <?php if(!empty($eleve) and in_array($donner_eleve['login'], $eleve)) { ?>selected="selected"<?php } ?>><?php echo strtoupper($donner_eleve['nom'])." ".ucfirst($donner_eleve['prenom']); ?></option><?php
 										}
 									}
-									if(empty($classe[0]) and empty($eleve)) { 
+									if(empty($classe[0]) and empty($eleve)) {
 										echo "<option value='' disabled='disabled'>Vide</option>\n";
 									}
 						  		echo "</optgroup>\n";
@@ -1186,7 +1186,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 										echo " />\n";
 										echo "<label for='aff_classe_nom3' class='curseur_pointeur'>Nom long (Nom court)</label>\n";
 										echo "<br />\n";
-			// FIN AJOUT chapel 20071026 
+			// FIN AJOUT chapel 20071026
 
 										echo "<input type='checkbox' name='avec_nom_devoir' id='avec_nom_devoir' value='oui'";
 											if(isset($avec_nom_devoir) and $avec_nom_devoir === 'oui') {
@@ -1284,7 +1284,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 				echo "</form>\n";
 // Régis j'en suis là mais le PDF ne fonctionne pas, pas de tableau de notes
 
-				/* rajout christian */ 
+				/* rajout christian */
 ?>
 				<!--<script type='text/javascript' language='javascript'>    -->
 				<script type='text/javascript'>
@@ -1304,7 +1304,7 @@ function aff_lig_adresse_parent(mode){
 						aff_lig_adresse_parent('cacher');
 					}
 				</script>
-<?php 
+<?php
 				/* fin rajout christian */
 
 			}
@@ -1708,7 +1708,7 @@ function aff_lig_adresse_parent(mode){
 								"FROM j_eleves_classes jec, eleves e, responsables2 re WHERE (" .
 								"e.ele_id = re.ele_id AND " .
 								"re.pers_id = '$lig_tmp->pers_id' AND " .
-								"jec.login = e.login )";
+								"jec.login = e.login AND (re.resp_legal='1' OR re.resp_legal='2'))";
 			//echo "$sql_quels_eleves<br />";
 			$quels_eleves=mysql_query($sql_quels_eleves);
 
@@ -2106,7 +2106,7 @@ if ($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") {
 				"e.login = '" . $login_eleve . "' AND " .
 				"e.ele_id = re.ele_id AND " .
 				"re.pers_id = r.pers_id AND " .
-				"r.login = '" . $_SESSION['login'] . "')");
+				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 		if (mysql_result($test, 0) == 0) {
 			tentative_intrusion(3, "Tentative d'un parent d'accès aux relevés de notes d'un élève dont il n'est pas responsable légal.");
 			echo "Vous ne pouvez visualiser que les relevés de notes des élèves pour lesquels vous êtes responsable légal.\n";
@@ -2153,7 +2153,7 @@ if (ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_fin'])) {
 	//echo "\$choix_periode=$choix_periode<br />";
 
 if ($choix_edit == '2') {
-	
+
 	echo "<div id='container'>\n";
 	releve_notes($login_eleve,$nb_periode,$anneed,$moisd,$jourd,$anneef,$moisf,$jourf);
 }
@@ -2192,4 +2192,4 @@ if ($choix_edit != '2') {
 
 }
 require("../lib/footer.inc.php");
-?>			
+?>
