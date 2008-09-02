@@ -53,7 +53,7 @@ if ($_SESSION['statut'] == "responsable") {
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$_SESSION['login']."')");
+			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 
 	if (mysql_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
@@ -247,7 +247,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
 				"e.ele_id = re.ele_id AND " .
 				"re.pers_id = r.pers_id AND " .
-				"r.login = '" . $_SESSION['login'] . "')");
+				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 
 	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser un bulletin simplifié :</p>";
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
