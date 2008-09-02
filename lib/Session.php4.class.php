@@ -27,7 +27,7 @@
 # à partir de différentes sources.
 
 class Session {
-	
+
         # Attributs publics
         var $login = false;
 	var $nom = false;
@@ -612,6 +612,7 @@ class Session {
 	}
 
 	function authenticate_lcs() {
+	  global $DBAUTH,$HTTP_COOKIE_VARS,$authlink,$dbHost,$dbUser,$dbPass,$db_nopersist,$dbDb;
 		include LCS_PAGE_AUTH_INC_PHP;
 		include LCS_PAGE_LDAP_INC_PHP;
 		list ($idpers,$login) = isauth();
@@ -626,7 +627,7 @@ class Session {
 
 			// A ce stade, l'utilisateur est authentifié
 			// Etablir à nouveau la connexion à la base
-			if (empty($db_nopersist))
+      if (empty($db_nopersist))
 				$db_c = mysql_pconnect($dbHost, $dbUser, $dbPass);
 			else
 				$db_c = mysql_connect($dbHost, $dbUser, $dbPass);
