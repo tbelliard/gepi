@@ -48,7 +48,7 @@ if ($_SESSION['statut'] == "responsable") {
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$_SESSION['login']."')");
+			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 
 	if (mysql_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
@@ -101,7 +101,7 @@ if ($login_eleve != null and $_SESSION['statut'] == "responsable") {
 			"e.login = '" . $login_eleve . "' AND " .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '" . $_SESSION['login'] . "')");
+			"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 	if (mysql_result($test, 0) == 0) {
 	    tentative_intrusion(2, "Tentative par un parent d'accéder à l'équipe pédagogique d'un élève dont il n'est pas responsable légal.");
 	    echo "Vous ne pouvez visualiser que les relevés de notes des élèves pour lesquels vous êtes responsable légal.\n";
@@ -119,7 +119,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 				"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
 				"e.ele_id = re.ele_id AND " .
 				"re.pers_id = r.pers_id AND " .
-				"r.login = '" . $_SESSION['login'] . "')");
+				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
     echo "<form enctype=\"multipart/form-data\" action=\"visu_profs_eleve.php\" method=\"post\">\n";
 	echo "<table summary='Choix'>\n";
 	echo "<tr>\n";
