@@ -577,7 +577,8 @@ if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
     $expli = array();
     $expli[] = "Cet outil vous permet de visualiser les trombinoscopes des classes.";
 
-    // On n'appelle les aid "trombinoscope"
+    if (getSettingValue("active_version152")!="y") {// lorsque le trunk sera officiellement en 1.5.2, on supprimera ce test
+    // On appelle les aid "trombinoscope"
     $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid= '".getSettingValue("num_aid_trombinoscopes")."' ORDER BY nom");
     $nb_aid = mysql_num_rows($call_data);
     $i=0;
@@ -593,6 +594,7 @@ if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
         }
         $i++;
     }
+    } // fin du test à supprimer lorsque le trunk sera officiellement en 1.5.2
 
 
     $nb_ligne = count($chemin);
