@@ -443,7 +443,7 @@ while($cpt_i_cadre<$i_cadre)
 
 
 
-	$variable = array("<sexe>", "<nom_eleve>", "<prenom_eleve>", "<date_naissance>", "<classe_eleve>", "<civilite_court_responsable>", "<civilite_long_responsable>", "<nom_responsable>", "<prenom_responsable>", "<adresse_responsable>", "<cp_responsable>", "<commune_responsable>", "<remarque_eleve>", "<date_debut>", "<heure_debut>", "<date_fin>", "<heure_fin>", "<liste>", "<courrier_signe_par_fonction>", "<courrier_signe_par>", "<civilite_court_cpe>", "<civilite_long_cpe>", "<nom_cpe>", "<prenom_cpe>", "<date_court>", "<date_long>");
+	$variable = array("<sexe>", "<nom_eleve>", "<prenom_eleve>", "<date_naissance>", "<classe_eleve>", "<civilitee_court_responsable>", "<civilitee_long_responsable>", "<nom_responsable>", "<prenom_responsable>", "<adresse_responsable>", "<cp_responsable>", "<commune_responsable>", "<remarque_eleve>", "<date_debut>", "<heure_debut>", "<date_fin>", "<heure_fin>", "<liste>", "<courrier_signe_par_fonction>", "<courrier_signe_par>", "<civilitee_court_cpe>", "<civilitee_long_cpe>", "<nom_cpe>", "<prenom_cpe>", "<date_court>", "<date_long>");
 		$civilite_long_responsable = 'Madame, Monsieur';
 	if( !isset($adresse_responsable[1][$i]) or $adresse_responsable[0][$i] != $adresse_responsable[1][$i]) {
 		if($civilite_responsable[0][$i] == 'M.') {
@@ -474,7 +474,7 @@ while($cpt_i_cadre<$i_cadre)
 	$civilite_long_cpe = (isset($cpe_de_l_eleve[$i]['civilite']) AND $cpe_de_l_eleve[$i]['civilite'] != '') ? $cpe_de_l_eleve[$i]['civilite'] : 'M.';
 
 	$remplacer_par = array($sexe_eleve[$i], strtoupper($nom_eleve[$i]), ucfirst($prenom_eleve[$i]), $naissance_eleve[$i], $classe_eleve[$i], $civilite_responsable[0][$i], $civilite_long_responsable, $nom_responsable[0][$i], $prenom_responsable[0][$i], $adresse_responsable[0][$i], $cp_responsable[0][$i], $commune_responsable[0][$i], $remarque[$i], $date_debut[$i], $heure_debut[$i], $date_fin[$i], $heure_fin[$i], $liste_abs[$i], $signature_status[$i], $signature[$i], $cpe_de_l_eleve[$i]['civilite'], $civilite_long_cpe, $cpe_de_l_eleve[$i]['nom'], $cpe_de_l_eleve[$i]['prenom'], $date_ce_jour, date_frl($date_ce_jour_sql));
-	//print_r($remplacer_par);
+	//print_r($remplacer_par);print_r($variable);
 
 	$text = str_replace($variable, $remplacer_par, $text);
 
