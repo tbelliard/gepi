@@ -1522,6 +1522,11 @@ else{
 								WHERE e.ele_id='$tab_ele_id[$i]' AND
 										jer.login=e.login AND
 										t.ele_id=e.ele_id";
+						//=============
+						//DEBUG
+						if($tab_ele_id[$i]=='782611') {echo "$sql<br />";}
+						//=============
+						//echo "$sql<br />";
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0){
 							$lig=mysql_fetch_object($test);
@@ -1536,6 +1541,7 @@ else{
 								else{
 									echo ", ";
 								}
+
 								echo $tab_ele_id[$i];
 								echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
 								//echo "<br />\n";
@@ -1544,6 +1550,46 @@ else{
 								$cpt++;
 							}
 						}
+
+
+
+
+						$temoin_test_doublant='n';
+
+						if(!isset($tab_ele_id_diff)){
+							$temoin_test_doublant='y';
+						}
+						elseif(!in_array($tab_ele_id[$i],$tab_ele_id_diff)){
+							$temoin_test_doublant='y';
+						}
+
+						if($temoin_test_doublant=='y'){
+							$sql="SELECT 1=1 FROM j_eleves_regime jer, eleves e, temp_gep_import2 t
+									WHERE e.ele_id='$tab_ele_id[$i]' AND
+											jer.login=e.login AND
+											t.ele_id=e.ele_id AND
+											((jer.doublant='-' AND t.ELEDOUBL='O') OR (jer.doublant!='-' AND t.ELEDOUBL='N'));";
+							//echo "$sql<br />";
+							$test=mysql_query($sql);
+							if(mysql_num_rows($test)>0){
+								if($cpt==0){
+									echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
+									echo "<br />\n";
+									echo "En voici le(s) ELE_ID: ";
+								}
+								else{
+									echo ", ";
+								}
+
+								echo $tab_ele_id[$i];
+								echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
+								//echo "<br />\n";
+								// Pour le cas où on est dans la dernière tranche:
+								$tab_ele_id_diff[]=$tab_ele_id[$i];
+								$cpt++;
+							}
+						}
+
 					}
 				}
 			}
@@ -5817,6 +5863,24 @@ else{
 					$update=mysql_query($sql);
 					*/
 
+
+
+
+					if($cpt==0){
+						echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
+						echo "<br />\n";
+						echo "En voici le(s) couple(s) ELE_ID/PERS_ID: ";
+					}
+					else{
+						echo ", ";
+					}
+					echo "<span style='color:red;'>".$tab_tmp[1]."/".$tab_tmp[2]."</span>";
+
+					$cpt++;
+
+
+
+
 					echo "<input type='hidden' name='tab_resp_diff[]' value='t_".$tab_tmp[1]."_".$tab_tmp[2]."' />\n";
 
 					// FAIRE UN echo POUR INDIQUER CES NOUVEAUX RESPONSABLES REPéRéS
@@ -5901,8 +5965,13 @@ else{
 			$parcours_diff++;
 			//echo "<input type='hidden' name='parcours_diff' value='$parcours_diff' />\n";
 
+			//=====================
+			// DEBUG
+			//echo "count(\$tab_resp)=".count($tab_resp)." et \$eff_tranche=$eff_tranche<br />";
+			//=====================
 
-			if(count($tab_resp)>$eff_tranche){
+			//if(count($tab_resp)>$eff_tranche){
+			if((count($tab_resp)>$eff_tranche)||($cpt>0)) {
 				echo "<input type='hidden' name='parcours_diff' value='$parcours_diff' />\n";
 				//echo "<input type='hidden' name='step' value='17' />\n";
 				echo "<input type='hidden' name='step' value='18' />\n";
