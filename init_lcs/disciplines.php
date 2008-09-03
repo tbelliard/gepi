@@ -21,6 +21,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+function connect_ldap($l_adresse,$l_port,$l_login,$l_pwd) {
+    $ds = @ldap_connect($l_adresse, $l_port);
+    if($ds) {
+       // On dit qu'on utilise LDAP V3, sinon la V2 par d?faut est utilis? et le bind ne passe pas.
+       $norme = @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+       // Acc?s non anonyme
+       if ($l_login != '') {
+          // On tente un bind
+          $b = @ldap_bind($ds, $l_login, $l_pwd);
+       } else {
+          // Acc?s anonyme
+          $b = @ldap_bind($ds);
+       }
+       if ($b) {
+           return $ds;
+       } else {
+           return false;
+       }
+    } else {
+       return false;
+    }
+}
+
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
