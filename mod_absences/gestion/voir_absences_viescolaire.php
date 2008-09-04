@@ -208,7 +208,7 @@ for($i = 0; $i < $nbre_rep; $i++) {
 		$rep_nom["nom"] = "";
 		$rep_nom["prenom"] = "";
 		// On explose poour vérifier qu'il ne s'agit pas d'un aid
-		$verif_aid = explode(":", $rep_absences[$i]["groupe_id"]);
+		$verif_aid = explode("|", $rep_absences[$i]["groupe_id"]);
 		if ($verif_aid[0] == "AID") {
 			$rep_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.mysql_error());
 			// On construit alors l'affichage de cette info qui doit permettre à la vie scolaire de savoir
