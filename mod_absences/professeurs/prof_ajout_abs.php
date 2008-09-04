@@ -556,7 +556,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	if ( $msg_erreur != '' ) {
 		echo '
 	<p class="erreur_saisie">
-		<img src="../../images/icons/ico_attention.png" alt="ATTENTION" title="ATTENTION" />&nbsp; 
+		<img src="../../images/icons/ico_attention.png" alt="ATTENTION" title="ATTENTION" />&nbsp;
 		'.$msg_erreur.'
 	</p>';
 	}
@@ -833,7 +833,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	if (getSettingValue("renseigner_retard") == "y") {
 		echo'
 				<th class="td_abs_retard">Retard</th>
-		';		
+		';
 	}
 	// on compte les créneaux pour savoir combien de cellules il faut créer
 	if (getSettingValue("creneau_different") != 'n') {
@@ -912,7 +912,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		echo "<tr id='ligne_".$ligne."' class='$couleur_classe' onmouseover='Element.addClassName(\"ligne_$ligne\",\"abs_ligne_survol\")' onmouseout='Element.removeClassName(\"ligne_$ligne\",\"abs_ligne_survol\")'>\n";
 
 ?>
-			
+
 				<td class='td_abs_eleves'>
 					<input type="hidden" name="eleve_absent[<?php echo $cpt_eleve; ?>]" value="<?php echo $data_liste_eleve['login']; ?>" />
 
@@ -928,7 +928,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 			// On vérifie si le prof a le droit de voir la fiche de l'élève
 			if ($_SESSION["statut"] == "professeur" AND getSettingValue("voir_fiche_eleve") == "n" OR getSettingValue("voir_fiche_eleve") == '') {
 
-				echo '<h2 class="td_abs_eleves">'.strtoupper($data_liste_eleve['nom']).' '.ucfirst($data_liste_eleve['prenom']).'</h2> '.$civile;
+				echo '<span class="td_abs_eleves">'.strtoupper($data_liste_eleve['nom']).' '.ucfirst($data_liste_eleve['prenom']).'&nbsp;'.$civile.'</span>';
 
 			}elseif($_SESSION["statut"] != "professeur" OR getSettingValue("voir_fiche_eleve") == "y"){
 				echo '
