@@ -37,50 +37,50 @@ if (!checkAccess()) {
 /* On fixe l'ensemble des modules qui sont ouverts pour faire la liste des <li> */
 	// module absence
 	if (getSettingValue("active_module_absence_professeur")=='y') {
-		$absence = '<li><a href="'.$gepiPath.'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs.'">Absences</a></li>';
-	}else{$absence = '';}
+		$barre_absence = '<li><a href="'.$gepiPath.'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs.'">Absences</a></li>';
+	}else{$barre_absence = '';}
 
 	// Module Cahier de textes
 	if (getSettingValue("active_cahiers_texte") == 'y') {
-		$textes = '<li><a href="'.$gepiPath.'/cahier_texte/index.php'.$groupe_text.'">C. de Textes</a></li>';
-	}else{$textes = '';}
+		$barre_textes = '<li><a href="'.$gepiPath.'/cahier_texte/index.php'.$groupe_text.'">C. de Textes</a></li>';
+	}else{$barre_textes = '';}
 
 	// Module carnet de notes
 	if(getSettingValue("active_carnets_notes") == 'y'){
-		$note = '<li><a href="'.$gepiPath.'/cahier_notes/index.php">Notes</a></li>
+		$barre_note = '<li><a href="'.$gepiPath.'/cahier_notes/index.php">Notes</a></li>
 		<li><a href="'.$gepiPath.'/saisie/index.php">Bulletins</a></li>';
-	}else{$note = '';}
+	}else{$barre_note = '';}
 
 	// Module emploi du temps
 	if (getSettingValue("autorise_edt_tous") == "y") {
-		$edt = '<li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
-	}else{$edt = '';}
+		$barre_edt = '<li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
+	}else{$barre_edt = '';}
 
 	// Module emploi du temps
 	if (getSettingValue("autorise_edt_tous") == "y") {
-		$edt = '<li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
-	}else{$edt = '';}
-	
+		$barre_edt = '<li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
+	}else{$barre_edt = '';}
+
 	// Module discipline
 	if (getSettingValue("active_mod_discipline")=='y') {
-	    $discipline = "<li><a href=".$gepiPath."/mod_discipline/index.php>Discipline</a></li>";
-	} else {$discipline = '';}
-	
+	    $barre_discipline = "<li><a href=".$gepiPath."/mod_discipline/index.php>Discipline</a></li>";
+	} else {$barre_discipline = '';}
+
 	// Module notanet
 	if (getSettingValue("active_notanet") == "y") {
-		$notanet = '<li><a href="'.$gepiPath.'/mod_notanet/index.php">Brevet</a></li>';
-	}else{ $notanet = '';}
+		$barre_notanet = '<li><a href="'.$gepiPath.'/mod_notanet/index.php">Brevet</a></li>';
+	}else{ $barre_notanet = '';}
 
 
 	echo '
 	<ol id="essaiMenu">
 		<li><a href="'.$gepiPath.'/accueil.php">Accueil</a></li>
-		'.$absence.'
-		'.$textes.'
-		'.$note.'
-		'.$edt.'
-		'.$discipline.'
-		'.$notanet.'
+		'.$barre_absence.'
+		'.$barre_textes.'
+		'.$barre_note.'
+		'.$barre_edt.'
+		'.$barre_discipline.'
+		'.$barre_notanet.'
 		<li><a href="'.$gepiPath.'/utilisateurs/mon_compte.php">Mon compte</a></li>
 	</ol>
 	';
