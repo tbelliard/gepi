@@ -69,7 +69,10 @@ class edt{
 		* On définit tous les attributs de l'objet
 		*/
 
-		$sql = "SELECT * FROM edt_cours WHERE id_cours = '".$this->id."' LIMIT 1";
+		$sql = "SELECT edt_cours.*, numero_salle FROM edt_cours, salle_cours
+												WHERE id_cours = '".$this->id."'
+												AND edt_cours.id_salle = salle_cours.id_salle
+												LIMIT 1";
 		$query = mysql_query($sql) OR trigger_error('Impossible de récupérer les infos du cours.', E_USER_ERROR);
 		$rep = mysql_fetch_array($query);
 
@@ -79,7 +82,7 @@ class edt{
 		$this->edt_creneau = $rep["id_definie_periode"];
 		$this->edt_debut = $rep["heuredeb_dec"];
 		$this->edt_duree = $rep["duree"];
-		$this->edt_salle = $rep["id_salle"];
+		$this->edt_salle = $rep["numero_salle"];
 		$this->edt_semaine = $rep["id_semaine"];
 		$this->edt_calend = $rep["id_calendrier"];
 		$this->edt_modif = $rep["modif_edt"];
