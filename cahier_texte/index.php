@@ -495,7 +495,9 @@ if (($id_groupe == null)) {
     if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != '')) {
        echo " <b>AVERTISSEMENT</b> : En raison du caractère personnel du contenu, l'accès au <a href=\"../public\">site de consultation publique du cahier de textes</a> est restreint.
        Pour accéder aux cahiers de textes, le visiteur (élève, parent, ...) doit être en possession d'un nom d'utilisateur et d'un mot de passe valides.\n";
-    } else {
+    } elseif(getSettingValue('cahier_texte_acces_public') == 'no'){
+		echo '<p style="font-weight: bold;">L\'accès aux cahiers de textes est protégé.</p>';
+	}else {
        echo " <b><span style='font-weight:bold;'>AVERTISSEMENT</span> : l'accès à l'interface de consultation publique du cahier de textes est entièrement libre et n'est soumise à aucune restriction.</b>\n";
     }
     echo "<br /><br />En utilisant le cahier de textes électronique de GEPI :
@@ -688,7 +690,7 @@ while (true) {
 
     // Passage en HTML
 	$content = &$not_dev->contenu;
-	
+
     include ("../lib/transform.php");
     // Documents joints
     $html .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
@@ -712,8 +714,8 @@ while (true) {
         $num_notice = 1;
     }
     }
-	
-	//Eric 
+
+	//Eric
 	if (isset($not_dev->visa)) { //notice
 	    if ($not_dev->visa != 'y') {
 	      if ($not_dev->id_ct == $id_ct) echo " - <strong><span  class=\"red\">en&nbsp;modification</span></strong>";
@@ -723,8 +725,8 @@ while (true) {
 	      if ($not_dev->id_ct == $id_ct) echo " - <strong><span  class=\"red\">en&nbsp;modification</span></strong>";
           echo("&nbsp;&nbsp;&nbsp;&nbsp;");
 	}
-	
-	//Modif  Eric visa des notices et interdiction de modifier suite à un visa des notices	
+
+	//Modif  Eric visa des notices et interdiction de modifier suite à un visa des notices
     $html_balise = '<div style="margin: 0px; float: right;">';
     if ($not_dev->type == "c") {
 	    if (($not_dev->vise != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')){
@@ -759,14 +761,14 @@ while (true) {
 			if ($not_dev->vise == 'y') {
 			   $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 			}
-       
+
 		} else {
 		  $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 		}
     }
     $html_balise .= '</div>';
-	
-	
+
+
     echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n$html_balise$html</td>\n</tr>\n</table>\n<br/>\n");
     if ($not_dev->type == "c") $date_ct_old = $not_dev->date_ct;
 }
