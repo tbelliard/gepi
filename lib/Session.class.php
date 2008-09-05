@@ -389,6 +389,17 @@ class Session {
 	}
 
 
+	// Recréer le log dans la table logs.
+	// ATTENTION ! Cette méthode n'est utile que dans un cas très particulier :
+	// la restauration d'une sauvegarde, qui compromet la session en cours de
+	// l'administrateur. Elle ne devrait jamais être utilisée dans un autre
+	// cas.
+	// A noter : la méthode ne réinitialise pas la session. Elle ne fait que
+	// réenregistrer la session en cours dans la base de données.
+	public function recreate_log() {
+	   return $this->insert_log();
+        }
+
 	## METHODE PRIVEES ##
 
 	// Création d'une entrée de log
@@ -611,6 +622,18 @@ class Session {
 	private function authenticate_lcs() {
 		include LCS_PAGE_AUTH_INC_PHP;
 		include LCS_PAGE_LDAP_INC_PHP;
+		# LCS a besoin de quelques variables extérieures...
+		# L'initialisation ci-dessous n'est pas très propre, il faudra
+		# reprendre ça...
+		$DBAUTH = $_GLOBALS['DBAUTH'];
+		$HTTP_COOKIE_VARS = $_GLOBALS['HTTP_COOKIE_VARS'];
+		$authlink = $_GLOBALS['authlink'];
+		$dbHost = $_GLOBALS['dbHost'];
+		$dbUser = $_GLOBALS['dbUser'];
+		$dbPass = $_GLOBALS['dbPass'];
+		$db_nopersist = $_GLOBALS['db_nopersist'];
+		$dbDb = $_GLOBALS['dbDb'];
+	  
 		list ($idpers,$login) = isauth();
 		if ($idpers) {
 			list($user, $groups)=people_get_variables($login, false);
