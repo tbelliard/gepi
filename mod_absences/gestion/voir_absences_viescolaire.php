@@ -137,7 +137,7 @@ if (isset($choix_creneau)) {
 	$abs_fin_ts = mktime($ex_horaire[3], $ex_horaire[4], 0, date("m"), date("d"), date("Y"));
 
 	// Cette requête permet de suivre une absence d'une durée supérieure à un seul créneau
-	$sql = "SELECT DISTINCT id, eleve_id, retard_absence, groupe_id
+	$sql = "SELECT DISTINCT id, eleve_id, retard_absence, groupe_id, login_saisie
 					FROM absences_rb
 					WHERE
 					(
@@ -159,13 +159,13 @@ if (isset($choix_creneau)) {
 	//$rep_absences = mysql_fetch_array($req);
 	$nbre_rep = mysql_num_rows($req);
 
-	$aff_nbre_abs = "Il y a ".$nbre_rep." absents sur ce créneau";
 
 	for($a=0; $a < $nbre_rep; $a++){
 		$rep_absences[$a]["id_abs"] = mysql_result($req, $a, "id");
 		$rep_absences[$a]["eleve_id"] = mysql_result($req, $a, "eleve_id");
 		$rep_absences[$a]["retard_absence"] = mysql_result($req, $a, "retard_absence");
 		$rep_absences[$a]["groupe_id"] = mysql_result($req, $a, "groupe_id");
+		$rep_absences[$a]["login_saisie"] = mysql_result($req, $a, "login_saisie");
 	}
 } // if (isset($choix_creneau))
 
@@ -183,11 +183,14 @@ $aff_classe = array();
 		$aff_classe[$i] = $reponse[$i]["classe"];
 	}
 
+$nbre_abs_cren = 0; // On initialise le nombre d'absents du créneau
+
 for($i = 0; $i < $nbre_rep; $i++) {
-	$req_prof = mysql_fetch_array(mysql_query("SELECT login_saisie FROM absences_rb WHERE id = '".$rep_absences[$i]["id_abs"]."'")) or die ('erreur 1a : '.mysql_error());
-	$rep_prof = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$req_prof["login_saisie"]."'")) or die ('erreur 1b : '.mysql_error());
+	//$req_prof = mysql_fetch_array(mysql_query("SELECT login_saisie FROM absences_rb WHERE id = '".$rep_absences[$i]["id_abs"]."'")) or die ('erreur 1a : '.mysql_error());
+	$rep_prof = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$rep_absences[$i]["login_saisie"]."'")) or die ('erreur 1b : '.mysql_error());
 
 	if ($rep_absences[$i]["eleve_id"] != "appel") {
+		$nbre_abs_cren++; // on incrémente le nombre d'absents du créneau
 		$rep_nom = mysql_fetch_array(mysql_query("SELECT nom, prenom, regime FROM eleves e, j_eleves_regime jer
 																			 WHERE e.login = jer.login
 																			 AND e.login = '".$rep_absences[$i]["eleve_id"]."'"));
@@ -255,6 +258,8 @@ for($i = 0; $i < $nbre_rep; $i++) {
 	}
 } // for
 
+// On annonce le nombre total d'absents sur le créneau
+	$aff_nbre_abs = "Il y a ".$nbre_abs_cren." absents sur ce créneau";
 
 ?>
 <h2><a href="../../accueil.php"><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a> -
