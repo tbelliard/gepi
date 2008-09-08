@@ -331,7 +331,398 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
     return TRUE;
 }
 
-function restoreMySqlDump($dumpFile,$duree) {
+//function restoreMySqlDump($dumpFile,$duree) {
+function restoreMySqlDump($duree) {
+    // $dumpFile, fichier source
+
+	// ON TRANSMET EN FAIT LA VERSION EXTRAITE
+
+    // $duree=timeout pour changement de page (-1 = aucun)
+
+    global $TPSCOUR,$offset,$cpt;
+	//global $nom_table;
+	//global $table_log_passee;
+	global $dirname;
+	global $debug_restaure;
+
+	$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%' AND value!='log' AND value!='setting' AND value!='utilisateurs' ORDER BY name LIMIT 1;";
+	if($debug_restaure=='y') {echo "<span style='color:red; font-size: x-small;'>$sql</span><br />\n";}
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+
+		$num_table=ereg_replace('^table_','',$lig->name);
+		$nom_table=$lig->value;
+
+		$dumpFile="../backup/".$dirname."/base_extraite_table_".$num_table.".sql";
+		if(!file_exists($dumpFile)) {
+			echo "$dumpFile non trouvé<br />\n";
+			return FALSE;
+		}
+
+		$sql="SELECT value FROM a_tmp_setting WHERE name='nb_tables';";
+		$res=mysql_query($sql);
+		$lig=mysql_fetch_object($res);
+		$nb_tables=$lig->value;
+
+		$sql="SELECT 1=1 FROM a_tmp_setting WHERE name LIKE 'table_%';";
+		$res=mysql_query($sql);
+		$nb_tables_passees=$nb_tables-mysql_num_rows($res);
+
+		echo "<p style='text-align:center;'>Table $nb_tables_passees/$nb_tables</p>\n";
+
+		echo "<p>Traitement de la table <span style='color:green;'>$nom_table</span><br />";
+
+		//$fileHandle = fopen($dumpFile, "r");
+		$fileHandle = gzopen($dumpFile, "rb");
+
+		$cpt_insert=0;
+
+	    $formattedQuery = "";
+		$old_offset = $offset;
+		while(!gzeof($fileHandle)) {
+			current_time();
+			if ($duree>0 and $TPSCOUR>=$duree) {  //on atteint la fin du temps imparti
+				if ($old_offset == $offset) {
+					echo "<p align=\"center\"><b><font color=\"#FF0000\">La procédure de restauration ne peut pas continuer.
+					<br />Un problème est survenu lors du traitement d'une requête près de :.
+					<br />".$debut_req."</font></b></p><hr />\n";
+					return FALSE;
+				}
+				$old_offset = $offset;
+				return TRUE;
+			}
+
+			//echo $TPSCOUR."<br />";
+			$buffer=gzgets($fileHandle);
+			if (substr($buffer,strlen($buffer),1)==0) {
+				$buffer=substr($buffer,0,strlen($buffer)-1);
+			}
+			//echo $buffer."<br />";
+
+			if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/") {
+				if (!isset($debut_req))  $debut_req = $buffer;
+				$formattedQuery .= $buffer;
+				//echo $formattedQuery."<hr />";
+				if ($formattedQuery) {
+					// Iconv désactivé pour l'instant... Il semble qu'il y ait une fuite mémoire...
+					//if (function_exists("iconv")) {
+					//	$sql = charset_to_iso($formattedQuery, "iconv");
+					//} elseif (function_exists("mbstring_convert_encoding")) {
+					if (function_exists("mb_convert_encoding")) {
+						$sql = charset_to_iso($formattedQuery, "mbstring");
+					} else {
+						$sql = $formattedQuery;
+					}
+					if (mysql_query($sql)) {//réussie sinon continue à concaténer
+						if(ereg("^DROP TABLE ",$sql)) {
+							echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
+						}
+						elseif(ereg("^CREATE TABLE ",$sql)) {
+							echo "Création de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde.<br />";
+						}
+						else {
+							if($cpt_insert==0) {
+								//echo "<div style='width:100%'>";
+								echo "Restauration des enregistrements de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde: ";
+							}
+							else {
+								echo "<span style='font-size: xx-small;'>. </span>";
+							}
+							$cpt_insert++;
+						}
+						flush();
+
+						debug_pb($sql);
+
+						$offset=gztell($fileHandle);
+						//echo $offset;
+						$formattedQuery = "";
+						unset($debut_req);
+						$cpt++;
+						//echo $cpt;
+					}
+				}
+			}
+		}
+
+		if($cpt_insert>0) {
+			echo "<br />";
+			echo "$cpt_insert enregistrement(s) restauré(s).";
+			//echo "</div>\n";
+		}
+
+		if (mysql_error()) {
+			echo "<hr />\nERREUR à partir de [$formattedQuery]<br />".mysql_error()."<hr />\n";
+		}
+		gzclose($fileHandle);
+
+		$sql="DELETE FROM a_tmp_setting WHERE name='table_".$num_table."';";
+		if($debug_restaure=='y') {
+			if($nettoyage=mysql_query($sql)) {
+				echo "Succès de la suppression dans a_tmp_setting.<br />\n";
+			}
+			else {
+				echo "<p style='color:red;'>Erreur lors de la suppression dans 'a_tmp_setting'.</p>\n";
+			}
+
+			if(unlink($dumpFile)) {
+				echo "Succès de la suppression de $dumpFile.<br />";
+			}
+			else {
+				echo "<p style='color:red;'>Erreur lors de la suppression de $dumpFile.</p>\n";
+			}
+		}
+		else {
+			if(!$nettoyage=mysql_query($sql)) {
+				echo "<p style='color:red;'>Erreur lors de la suppression dans 'a_tmp_setting'.</p>\n";
+			}
+
+			if(!unlink($dumpFile)) {
+				echo "<p style='color:red;'>Erreur lors de la suppression de $dumpFile.</p>\n";
+			}
+		}
+
+	}
+	else {
+		// Il ne reste que les tables log, setting et utilisateurs à restaurer
+
+		$tab_tables=array("setting","utilisateurs","log");
+
+		for($i=0;$i<count($tab_tables);$i++) {
+
+			$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%' AND value='".$tab_tables[$i]."';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$lig=mysql_fetch_object($res);
+
+				$num_table=ereg_replace('^table_','',$lig->name);
+				$nom_table=$lig->value;
+
+				$dumpFile="../backup/".$dirname."/base_extraite_table_".$num_table.".sql";
+				if(!file_exists($dumpFile)) {
+					echo "$dumpFile non trouvé<br />\n";
+					return FALSE;
+				}
+
+				echo "<p>Traitement de la table <span style='color:green;'>$nom_table</span><br />";
+
+				//$fileHandle = fopen($dumpFile, "r");
+				$fileHandle = gzopen($dumpFile, "rb");
+
+				$cpt_insert=0;
+
+				$formattedQuery = "";
+				$old_offset = $offset;
+				while(!gzeof($fileHandle)) {
+					current_time();
+					if ($duree>0 and $TPSCOUR>=$duree) {  //on atteint la fin du temps imparti
+						if ($old_offset == $offset) {
+							echo "<p align=\"center\"><b><font color=\"#FF0000\">La procédure de restauration ne peut pas continuer.
+							<br />Un problème est survenu lors du traitement d'une requête près de :.
+							<br />".$debut_req."</font></b></p><hr />\n";
+							return FALSE;
+						}
+						$old_offset = $offset;
+						return TRUE;
+					}
+
+					//echo $TPSCOUR."<br />";
+					$buffer=gzgets($fileHandle);
+					if (substr($buffer,strlen($buffer),1)==0) {
+						$buffer=substr($buffer,0,strlen($buffer)-1);
+					}
+					//echo $buffer."<br />";
+
+					if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/") {
+						if (!isset($debut_req))  $debut_req = $buffer;
+						$formattedQuery .= $buffer;
+						//echo $formattedQuery."<hr />";
+						if ($formattedQuery) {
+							// Iconv désactivé pour l'instant... Il semble qu'il y ait une fuite mémoire...
+							//if (function_exists("iconv")) {
+							//	$sql = charset_to_iso($formattedQuery, "iconv");
+							//} elseif (function_exists("mbstring_convert_encoding")) {
+							if (function_exists("mb_convert_encoding")) {
+								$sql = charset_to_iso($formattedQuery, "mbstring");
+							} else {
+								$sql = $formattedQuery;
+							}
+							if (mysql_query($sql)) {//réussie sinon continue à concaténer
+								if(ereg("^DROP TABLE ",$sql)) {
+									echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
+								}
+								elseif(ereg("^CREATE TABLE ",$sql)) {
+									echo "Création de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde.<br />";
+								}
+								else {
+									if($cpt_insert==0) {
+										//echo "<div style='width:100%'>";
+										echo "Restauration des enregistrements de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde: ";
+									}
+									else {
+										echo "<span style='font-size: xx-small;'>. </span>";
+									}
+									$cpt_insert++;
+								}
+								flush();
+
+								debug_pb($sql);
+
+								$offset=gztell($fileHandle);
+								//echo $offset;
+								$formattedQuery = "";
+								unset($debut_req);
+								$cpt++;
+								//echo $cpt;
+							}
+						}
+					}
+				}
+
+				if($cpt_insert>0) {
+					echo "<br />";
+					echo "$cpt_insert enregistrement(s) restauré(s).";
+					//echo "</div>\n";
+				}
+
+				if (mysql_error())
+					echo "<hr />\nERREUR à partir de [$formattedQuery]<br />".mysql_error()."<hr />\n";
+
+				gzclose($fileHandle);
+
+				$sql="DELETE FROM a_tmp_setting WHERE name='table_".$num_table."';";
+				if($debug_restaure=='y') {
+					if($nettoyage=mysql_query($sql)) {
+						echo "Succès de la suppression dans a_tmp_setting.<br />\n";
+					}
+					else {
+						echo "<p style='color:red;'>Erreur lors de la suppression dans 'a_tmp_setting'.</p>\n";
+					}
+
+					if(unlink($dumpFile)) {
+						echo "Succès de la suppression de $dumpFile.<br />";
+					}
+					else {
+						echo "<p style='color:red;'>Erreur lors de la suppression de $dumpFile.</p>\n";
+					}
+				}
+				else {
+					if(!$nettoyage=mysql_query($sql)) {
+						echo "<p style='color:red;'>Erreur lors de la suppression dans 'a_tmp_setting'.</p>\n";
+					}
+
+					if(!unlink($dumpFile)) {
+						echo "<p style='color:red;'>Erreur lors de la suppression de $dumpFile.</p>\n";
+					}
+				}
+			}
+		}
+
+	}
+
+    return TRUE;
+}
+
+function extractMySqlDump($dumpFile,$duree) {
+    // $dumpFile, fichier source
+    // $duree=timeout pour changement de page (-1 = aucun)
+
+    global $TPSCOUR,$offset,$cpt;
+	//global $nom_table;
+	global $dirname;
+	//global $table_log_passee;
+
+	global $ne_pas_restaurer_log;
+	global $ne_pas_restaurer_tentatives_intrusion;
+
+    if(!file_exists($dumpFile)) {
+         echo "$dumpFile non trouvé<br />\n";
+         return FALSE;
+    }
+
+    $fileHandle = gzopen($dumpFile, "rb");
+
+    if(!$fileHandle) {
+        echo "Ouverture de $dumpFile impossible.<br />\n";
+        return FALSE;
+    }
+
+    if ($offset!=0) {
+        if (gzseek($fileHandle,$offset,SEEK_SET)!=0) { //erreur
+            echo "Impossible de trouver l'octet ".number_format($offset,0,""," ")."<br />\n";
+            return FALSE;
+        }
+        //else
+        //    echo "Reprise à l'octet ".number_format($offset,0,""," ")."<br />";
+        flush();
+    }
+
+    $formattedQuery = "";
+    $old_offset = $offset;
+	$num_table=0;
+    while(!gzeof($fileHandle)) {
+        current_time();
+        if ($duree>0 and $TPSCOUR>=$duree) {  //on atteint la fin du temps imparti
+            if ($old_offset == $offset) {
+                echo "<p align=\"center\"><b><font color=\"#FF0000\">La procédure de restauration ne peut pas continuer.
+                <br />Un problème est survenu lors du traitement d'une requête près de :.
+                <br />".$debut_req."</font></b></p><hr />\n";
+                return FALSE;
+            }
+            $old_offset = $offset;
+            return TRUE;
+        }
+        //echo $TPSCOUR."<br />";
+        $buffer=gzgets($fileHandle);
+
+		// On ne met pas les lignes de commentaire, ni les lignes vides
+		if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/" AND trim($buffer)!='') {
+			if(ereg("^DROP TABLE ",$buffer)) {
+				if(isset($fich)) {fclose($fich);}
+				//$fich=fopen("../backup/".$dirname."/base_extraite_table_".$num_table.".sql","w+");
+				$fich=fopen("../backup/".$dirname."/base_extraite_table_".sprintf("%03d",$num_table).".sql","w+");
+
+				$nom_table=trim(ereg_replace("[ `;]","",ereg_replace("^DROP TABLE ","",ereg_replace("^DROP TABLE IF EXISTS ","",$buffer))));
+
+				$sql="INSERT INTO a_tmp_setting SET name='table_".sprintf("%03d",$num_table)."', value='$nom_table';";
+				$res=mysql_query($sql);
+
+				$num_table++;
+			}
+			if(isset($fich)) {
+				if($nom_table=='log') {
+					if(($ne_pas_restaurer_log!='y')||(!eregi("^INSERT INTO ",$buffer))) {
+						fwrite($fich,$buffer);
+					}
+				}
+				elseif($nom_table=='tentatives_intrusion') {
+					if(($ne_pas_restaurer_tentatives_intrusion!='y')||(!eregi("^INSERT INTO ",$buffer)))  {
+						fwrite($fich,$buffer);
+					}
+				}
+				else {
+					fwrite($fich,$buffer);
+				}
+			}
+			else {
+				echo "Non enregistré: \$buffer=$buffer<br />";
+			}
+		}
+	}
+	if(isset($fich)) {fclose($fich);}
+
+    gzclose($fileHandle);
+    //fclose($fich);
+
+	$sql="INSERT INTO a_tmp_setting SET name='nb_tables', value='$num_table';";
+	$res=mysql_query($sql);
+
+    //$offset=-1;
+    return TRUE;
+}
+
+function restoreMySqlDump_old($dumpFile,$duree) {
     // $dumpFile, fichier source
     // $duree=timeout pour changement de page (-1 = aucun)
 
@@ -412,6 +803,16 @@ function restoreMySqlDump($dumpFile,$duree) {
     return TRUE;
 }
 
+
+function debug_pb($ligne) {
+	$debug=1;
+	if($debug==1) {
+		$fich=fopen("/tmp/rest.txt","a+");
+		fwrite($fich,$ligne."\n");
+		fclose($fich);
+	}
+}
+
 function get_def($db, $table) {
     $def="#\n# Structure de la table $table\n#\n";
     $def .="DROP TABLE IF EXISTS `$table`;\n";
@@ -486,6 +887,8 @@ $titre_page = "Outil de gestion | Sauvegardes/Restauration";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 // Test d'écriture dans /backup
 $test_write = test_ecriture_backup();
 if ($test_write == 'no') {
@@ -514,58 +917,297 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
     <br /><br />\n<b>AVERTISSEMENT :</b> Cette procédure peut être très longue selon la quantité de données à restaurer.</p>\n";
     echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>\n";
 
-    echo "<center><table cellpadding=\"5\" cellspacing=\"5\" border=\"0\">\n<tr><td>\n";
+	/*
+    echo "<center><table cellpadding=\"5\" cellspacing=\"5\" border=\"0\" summary='Confirmation'>\n";
+    echo "<tr>\n";
+    echo "<td>\n";
     echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_oui>\n";
+    echo "<input type=\"checkbox\" name=\"debug_restaure\" id=\"debug_restaure\" value=\"y\" /><label for='debug_restaure' style='cursor:pointer;'> Activer le mode debug</label><br />\n";
     echo "<input type='submit' name='confirm' value = 'Oui' />\n";
     echo "<input type=\"hidden\" name=\"action\" value=\"restaure\" />\n";
     echo "<input type=\"hidden\" name=\"file\" value=\"".$_GET['file']."\" />\n";
     echo "</form>\n";
-    echo "</td>\n<td>\n";
+    echo "</td>\n<td valign='bottom'>\n";
     echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_non>\n";
     echo "<input type='submit' name='confirm' value = 'Non' />\n</form>\n</td></tr>\n</table>\n</center>\n";
+	*/
+
+	echo "<blockquote>\n";
+
+    echo "<table cellpadding=\"5\" cellspacing=\"5\" border=\"0\" summary='Confirmation'>\n";
+    echo "<tr>\n";
+    echo "<td>\n";
+		echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_oui>\n";
+		echo "<table summary='Oui'>\n";
+		echo "<tr>\n";
+		echo "<td valign='top'>\n";
+		echo "<input type='submit' name='confirm' value = 'Oui' />\n";
+		echo "</td>\n";
+		echo "<td align='left'>\n";
+		echo "<input type=\"checkbox\" name=\"debug_restaure\" id=\"debug_restaure\" value=\"y\" /><label for='debug_restaure' style='cursor:pointer;'> Activer le mode debug</label><br />\n";
+
+		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_log\" id=\"ne_pas_restaurer_log\" value=\"y\" /><label for='ne_pas_restaurer_log' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'log'.</label><br />\n";
+
+		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_tentatives_intrusion\" id=\"ne_pas_restaurer_tentatives_intrusion\" value=\"y\" /><label for='ne_pas_restaurer_tentatives_intrusion' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'tentatives_intrusion'.</label><br />\n";
+
+		echo "---<br />";
+		echo "<input type=\"checkbox\" name=\"restauration_old_way\" id=\"restauration_old_way\" value=\"y\" /><label for='restauration_old_way' style='cursor:pointer;'> Restaurer la sauvegarde d'un bloc<br />(<i>utile par exemple pour restaurer un fichier SQL ne correspondant pas à une sauvegarde classique</i>).</label><br />\n";
+
+		echo "</td>\n";
+		echo "</table>\n";
+		echo "<input type=\"hidden\" name=\"action\" value=\"restaure\" />\n";
+		echo "<input type=\"hidden\" name=\"file\" value=\"".$_GET['file']."\" />\n";
+		echo "</form>\n";
+    echo "</td>\n";
+    echo "</tr>\n";
+    echo "<tr>\n";
+	echo "<td valign='top' align='left'>\n";
+    echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_non>\n";
+    echo "<input type='submit' name='confirm' value = 'Non' />\n";
+    echo "</form>\n";
+    echo "</td>\n";
+    echo "</tr>\n";
+    echo "</table>\n";
+
+	echo "</blockquote>\n";
+
     require("../lib/footer.inc.php");
     die();
 }
+
 
 // Restauration
 if (isset($action) and ($action == 'restaure'))  {
     unset($file);
     $file = isset($_POST["file"]) ? $_POST["file"] : (isset($_GET["file"]) ? $_GET["file"] : NULL);
 
-    init_time(); //initialise le temps
-    //début de fichier
-    if (!isset($_GET["offset"])) $offset=0;
-    else  $offset=$_GET["offset"];
+	$restauration_old_way=isset($_POST["restauration_old_way"]) ? $_POST["restauration_old_way"] : (isset($_GET["restauration_old_way"]) ? $_GET["restauration_old_way"] : "n");
 
-    //timeout
-    if (!isset($_GET["duree"])) $duree=$_SESSION['defaulttimeout'];
-        else $duree=$_GET["duree"];
-    $fsize=filesize($path.$file);
-    if(isset($offset)) {
-        if ($offset==-1) $percent=100;
-           else $percent=min(100,round(100*$offset/$fsize,0));
-    }
-    else $percent=0;
+	if($restauration_old_way=='y') {
+		//===============================================
+		init_time(); //initialise le temps
+		//début de fichier
+		if (!isset($_GET["offset"])) $offset=0;
+		else  $offset=$_GET["offset"];
 
-    if ($percent >= 0) {
-        $percentwitdh=$percent*4;
-        echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'><b>Restauration en cours</b><br /><br />Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n";
-    }
-    flush();
-    if ($offset!=-1) {
-        if (restoreMySqlDump($path.$file,$duree)) {
-            if (isset($debug)) echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path\">ici</a> pour poursuivre la restauration</b>\n";
-            if (!isset($debug))  echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path\">ici</a></b>\n";
-            if (!isset($debug))  echo "<script>window.location=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path\";</script>\n";
-            flush();
-            exit;
-        }
-    } else {
+		//timeout
+		if (!isset($_GET["duree"])) $duree=$_SESSION['defaulttimeout'];
+			else $duree=$_GET["duree"];
+		$fsize=filesize($path.$file);
+		if(isset($offset)) {
+			if ($offset==-1) $percent=100;
+			else $percent=min(100,round(100*$offset/$fsize,0));
+		}
+		else $percent=0;
 
-        echo "<div align='center'><p>Restauration Terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
-		require("../lib/footer.inc.php");
-        die();
-    }
+		if ($percent >= 0) {
+			$percentwitdh=$percent*4;
+			echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'><b>Restauration en cours</b><br /><br />Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n";
+		}
+		flush();
+		if ($offset!=-1) {
+			if (restoreMySqlDump_old($path.$file,$duree)) {
+				if (isset($debug)) {
+					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way\">ici</a> pour poursuivre la restauration</b>\n";
+				}
+
+				if (!isset($debug)) {
+					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way\">ici</a></b>\n";
+				}
+
+				if (!isset($debug)) {
+					echo "<script>window.location=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way\";</script>\n";
+				}
+				flush();
+				exit;
+			}
+		} else {
+
+			echo "<div align='center'><p>Restauration Terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+		//===============================================
+	}
+	else {
+
+		$debug_restaure=isset($_POST["debug_restaure"]) ? $_POST["debug_restaure"] : (isset($_GET["debug_restaure"]) ? $_GET["debug_restaure"] : "n");
+
+		$ne_pas_restaurer_log=isset($_POST["ne_pas_restaurer_log"]) ? $_POST["ne_pas_restaurer_log"] : (isset($_GET["ne_pas_restaurer_log"]) ? $_GET["ne_pas_restaurer_log"] : "n");
+
+		$ne_pas_restaurer_tentatives_intrusion=isset($_POST["ne_pas_restaurer_tentatives_intrusion"]) ? $_POST["ne_pas_restaurer_tentatives_intrusion"] : (isset($_GET["ne_pas_restaurer_tentatives_intrusion"]) ? $_GET["ne_pas_restaurer_tentatives_intrusion"] : "n");
+
+		init_time(); //initialise le temps
+
+		//début de fichier
+		// En fait d'offset, on compte maintenant des lignes
+		if (!isset($_GET["offset"])) {$offset=0;}
+		else {$offset=$_GET["offset"];}
+
+		//timeout
+		if (!isset($_GET["duree"])) {$duree=$_SESSION['defaulttimeout'];}
+			else {$duree=$_GET["duree"];}
+		/*
+		$fsize=filesize($path.$file);
+		if(isset($offset)) {
+			if ($offset==-1) {$percent=100;}
+			else {$percent=min(100,round(100*$offset/$fsize,0));}
+		}
+		else {$percent=0;}
+
+
+		if ($percent >= 0) {
+			$percentwitdh=$percent*4;
+			//echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'><b>Restauration en cours</b><br /><br />Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n";
+			echo "<div align='center'><b>Restauration en cours</b></div>\n";
+		}
+		flush();
+		*/
+
+		echo "<div align='center'><b>Restauration en cours</b></div>\n";
+
+		$suite_restauration=isset($_GET['suite_restauration']) ? $_GET['suite_restauration'] : NULL;
+
+		if(!isset($suite_restauration)) {
+			// EXTRAIRE -> SCINDER
+
+			$sql="SHOW TABLES LIKE 'a_tmp_setting';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				// Nettoyage au cas où la restauration précédente aurait échoué
+				$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%';";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					while($lig=mysql_fetch_object($res)) {
+						$num_table=ereg_replace('^table_','',$lig->name);
+						unlink("../backup/".$dirname."/base_extraite_table_".$num_table.".sql");
+					}
+				}
+			}
+
+			// On achève le ménage:
+			$sql="DROP TABLE a_tmp_setting;";
+			$res=mysql_query($sql);
+
+			$sql="CREATE TABLE a_tmp_setting (
+name VARCHAR(255) NOT NULL,
+value VARCHAR(255) NOT NULL);";
+			$res=mysql_query($sql);
+
+			$sql="INSERT INTO a_tmp_setting SET name='offset', value='0';";
+			$res=mysql_query($sql);
+
+			$sql="INSERT INTO a_tmp_setting SET name='nom_table', value='';";
+			$res=mysql_query($sql);
+
+			echo "<p>Extraction de l'archive...<br />";
+			if(extractMySqlDump($path.$file,$duree)) {
+				$succes_etape="y";
+			}
+
+		}
+		else {
+			// TESTER S'IL RESTE DES table_%
+			$sql="SELECT 1=1 FROM a_tmp_setting WHERE name LIKE 'table_%';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				// Il reste des tables à restaurer
+
+				//if (restoreMySqlDump($path."/base_extraite.sql",$duree)) {
+				if (restoreMySqlDump($duree)) {
+					$succes_etape="y";
+				}
+			}
+			else {
+				// La restauration est achevée
+
+				// On ne devrait pas arriver là.
+
+				echo "<div align='center'><p>Restauration Terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
+
+				require("../lib/footer.inc.php");
+				die();
+			}
+		}
+
+		if($succes_etape!="y") {
+
+			echo "<p style='color:red'>Une erreur s'est produite!<br />";
+
+		}
+		else {
+
+			$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)==0) {
+
+				echo "<div id='div_fin_restauration' class='infobulle_corps' style='position:absolute; top: 200px; left:100px; border:1px solid black; width: 30em;'>\n";
+				//echo "<div id='div_fin_restauration' class='infobulle_corps' style='position:absolute; border:1px solid black; width: 30em;'>\n";
+				//background-color: white;
+
+					echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; width: 30em;'";
+					// Là on utilise les fonctions de http://www.brainjar.com stockées dans brainjar_drag.js
+					echo " onmousedown=\"dragStart(event, 'div_fin_restauration')\">";
+					echo "Restauration Terminée";
+					echo "</div>\n";
+
+					echo "<div align='center'>\n";
+					echo "<p>Restauration Terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href=\"../login.php\">Se connecter</a></p>\n";
+					echo "<p><em>NOTE:</em> J'ai un problème bizarre! Alors que le lien pointe bien vers ../login.php, je me retrouve un dossier plus haut sur un logout.php hors du dossier de Gepi si bien que j'obtiens un 404 Not Found???</p>\n";
+					echo "</div>\n";
+
+				echo "</div>\n";
+
+				$sql="DROP TABLE a_tmp_setting;";
+				$res=mysql_query($sql);
+
+				// Il ne faut pas recharger la page après restauration des tables log, setting, utilisateurs.
+
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			// RESOUMETTRE
+			echo "<form action='".$_SERVER['PHP_SELF']."' method='get' name='form_suite'>\n";
+			//echo "<input type='hidden' name='offset' value='$offset' />\n";
+			//echo "<input type='hidden' name='file' value='$file' />\n";
+			//echo "<input type='hidden' name='cpt' value='$cpt' />\n";
+			//echo "<input type='hidden' name='path' value='$path' />\n";
+			//echo "<input type='hidden' name='duree' value='$duree' />\n";
+			echo "<input type='hidden' name='suite_restauration' value='y' />\n";
+			echo "<input type='hidden' name='action' value='restaure' />\n";
+			echo "<input type='hidden' name='debug_restaure' value='$debug_restaure' />\n";
+
+			echo "<input type='hidden' name='ne_pas_restaurer_log' value='$ne_pas_restaurer_log' />\n";
+			echo "<input type='hidden' name='ne_pas_restaurer_tentatives_intrusion' value='$ne_pas_restaurer_tentatives_intrusion' />\n";
+
+			//if(isset($nom_table)) {
+			//	echo "<input type='hidden' name='nom_table' value='$nom_table' />\n";
+			//}
+			echo "</form>\n";
+
+			echo "<script type='text/javascript'>
+	setTimeout(\"document.forms['form_suite'].submit();\",500);
+</script>\n";
+
+			//echo "<noscript><br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path\">ici</a> pour poursuivre la restauration</b></noscript>\n";
+			echo "<br />\n";
+			echo "<a name='suite'></a>\n";
+			//echo "<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path";
+			echo "<b>Cliquez <a href=\"accueil_sauve.php?action=restaure";
+			//if(isset($nom_table)) {
+			//	echo "&nom_table=$nom_table";
+			//}
+			echo "&amp;suite_restauration=y";
+			echo "&amp;debug_restaure=$debug_restaure";
+			echo "&amp;ne_pas_restaurer_log=$ne_pas_restaurer_log";
+			echo "&amp;ne_pas_restaurer_tentatives_intrusion=$ne_pas_restaurer_tentatives_intrusion";
+			echo "#suite\">ici</a> pour poursuivre la restauration</b>\n";
+		}
+	}
+
+	require("../lib/footer.inc.php");
+	die();
 }
 
 // Sauvegarde
