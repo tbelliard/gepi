@@ -6145,7 +6145,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_eleves2'"));
     if ($test == 0) {
-      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(200) NOT NULL default '',`ine` varchar(255) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL, PRIMARY KEY  (`ine`,`annee(15)`));");
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(50) NOT NULL default '',`ine` varchar(50) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL, PRIMARY KEY  (`ine`,`annee`));");
       if ($result_inter == '')
           $result .= "<font color=\"green\">La table archivage_eleves2 a été créée !</font><br />";
       else
@@ -6237,7 +6237,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
        $result .= "<font color=\"green\">Le champ annee de la table archivage_disciplines a été modifié !</font><br />";
     else
        $result .= $result_inter."<br />";
-    $result_inter = traite_requete("ALTER TABLE `archivage_eleves2` CHANGE `annee` `annee` VARCHAR( 200 ) NOT NULL");
+    $result_inter = traite_requete("ALTER TABLE `archivage_eleves2` CHANGE `annee` `annee` VARCHAR( 50 ) NOT NULL");
     if ($result_inter == '')
        $result .= "<font color=\"green\">Le champ annee de la table archivage_eleves2 a été modifié !</font><br />";
     else
