@@ -6163,6 +6163,8 @@ else{
 							if(($resp_legal==1)||($resp_legal==2)) {
 								$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='$resp_legal';";
 								$test2=mysql_query($sql);
+
+								/*
 								if(mysql_num_rows($test2)>0){
 									//$lig2=mysql_fetch_object($test2);
 									$sql="UPDATE responsables2 SET pers_id='$pers_id',
@@ -6178,6 +6180,19 @@ else{
 																	resp_legal='$resp_legal';";
 									$update=mysql_query($sql);
 								}
+								*/
+
+								if(mysql_num_rows($test2)>0){
+									$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND
+																	resp_legal='$resp_legal';";
+									$delete=mysql_query($sql);
+								}
+
+								$sql="INSERT INTO responsables2 SET pers_id='$pers_id',
+																pers_contact='$pers_contact',
+																ele_id='$ele_id',
+																resp_legal='$resp_legal';";
+								$insert=mysql_query($sql);
 							}
 							else{
 								// Cas de resp_legal=0
@@ -6185,7 +6200,7 @@ else{
 																pers_contact='$pers_contact',
 																ele_id='$ele_id',
 																resp_legal='$resp_legal';";
-								$update=mysql_query($sql);
+								$insert=mysql_query($sql);
 							}
 						}
 					}
@@ -6221,6 +6236,7 @@ else{
 							if(($resp_legal==1)||($resp_legal==2)) {
 								$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='$resp_legal';";
 								$test2=mysql_query($sql);
+								/*
 								if(mysql_num_rows($test2)>0){
 									//$lig2=mysql_fetch_object($test2);
 									$sql="UPDATE responsables2 SET pers_id='$pers_id',
@@ -6236,6 +6252,20 @@ else{
 																	resp_legal='$resp_legal';";
 									$update=mysql_query($sql);
 								}
+								*/
+
+								if(mysql_num_rows($test2)>0){
+									$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND
+																	resp_legal='$resp_legal';";
+									$delete=mysql_query($sql);
+								}
+
+								$sql="INSERT INTO responsables2 SET pers_id='$pers_id',
+																pers_contact='$pers_contact',
+																ele_id='$ele_id',
+																resp_legal='$resp_legal';";
+								$insert=mysql_query($sql);
+
 							}
 							else{
 								// Cas de resp_legal=0

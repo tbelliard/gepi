@@ -664,21 +664,64 @@ temoin VARCHAR( 50 ) NOT NULL
 					$stat=0;
 					$i=0;
 					while($i<count($responsables)){
-						//$sql="INSERT INTO temp_responsables2_import SET ";
-						$sql="INSERT INTO responsables2 SET ";
-						$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
-						$sql.="pers_id='".$responsables[$i]["personne_id"]."', ";
-						$sql.="resp_legal='".$responsables[$i]["resp_legal"]."', ";
-						$sql.="pers_contact='".$responsables[$i]["pers_contact"]."';";
+						// VERIFICATION: Il arrive que Sconet contienne des anomalies
+						$sql="SELECT 1=1 FROM responsables2 WHERE ";
+						$sql.="ele_id='".$responsables[$i]["eleve_id"]."' AND ";
+						$sql.="resp_legal='".$responsables[$i]["resp_legal"]."' AND ";
+						$sql.="(resp_legal='1' OR resp_legal='2');";
 						affiche_debug("$sql<br />\n");
-						$res_insert=mysql_query($sql);
-						if(!$res_insert){
-							echo "Erreur lors de la requête $sql<br />\n";
-							flush();
-							$nb_err++;
+						$res_test=mysql_query($sql);
+						if(mysql_num_rows($res_test)==0){
+							//$sql="INSERT INTO temp_responsables2_import SET ";
+							$sql="INSERT INTO responsables2 SET ";
+							$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
+							$sql.="pers_id='".$responsables[$i]["personne_id"]."', ";
+							$sql.="resp_legal='".$responsables[$i]["resp_legal"]."', ";
+							$sql.="pers_contact='".$responsables[$i]["pers_contact"]."';";
+							affiche_debug("$sql<br />\n");
+							$res_insert=mysql_query($sql);
+							if(!$res_insert){
+								echo "Erreur lors de la requête $sql<br />\n";
+								flush();
+								$nb_err++;
+							}
+							else{
+								$stat++;
+							}
 						}
-						else{
-							$stat++;
+						else {
+							$sql="SELECT nom, prenom FROM eleves WHERE ele_id='".$responsables[$i]["eleve_id"]."';";
+							affiche_debug("$sql<br />\n");
+							$res_ele_anomalie=mysql_query($sql);
+							if(mysql_num_rows($res_ele_anomalie)>0){
+								$lig_ele_anomalie=mysql_fetch_object($res_ele_anomalie);
+								echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->prenom." ".$lig_ele_anomalie->nom."<br />Seule la première responsabilité a été enregistrée.<br />Vous devriez faire le ménage dans Sconet et faire une mise à jour par la suite.</p>\n";
+
+								$nb_err++;
+							}
+							else {
+
+								$sql="SELECT ELENOM, ELEPRE, DIVCOD FROM temp_gep_import2 WHERE ELE_ID='".$responsables[$i]["eleve_id"]."';";
+								affiche_debug("$sql<br />\n");
+								$res_ele_anomalie=mysql_query($sql);
+								if(mysql_num_rows($res_ele_anomalie)>0){
+									// Si l'élève associé n'est ni dans 'eleves', ni dans 'temp_gep_import2', on ne s'en occupe pas.
+
+									$sql="SELECT civilite,nom,prenom FROM temp_resp_pers_import WHERE pers_id='".$responsables[$i]["personne_id"]."';";
+									$res_resp_anomalie=mysql_query($sql);
+									if(mysql_num_rows($res_resp_anomalie)>0){
+										$lig_resp_anomalie=mysql_fetch_object($res_resp_anomalie);
+
+										echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>).<br />L'un d'eux est: ".$lig_resp_anomalie->civilite." ".$lig_resp_anomalie->nom." ".$lig_resp_anomalie->prenom."</p>\n";
+									}
+									else {
+										echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>)<br />L'élève n'a semble-t-il pas été ajouté à la table 'eleves'.<br />Par ailleurs, la personne responsable semble inexistante, mais l'association avec l'identifiant de responsable n°".$responsables[$i]["personne_id"]." existe dans le XML fourni???<br />L'anomalie n'est pas grave pour Gepi; par contre il serait bon de corriger dans Sconet.</p>\n";
+									}
+
+									$nb_err++;
+								}
+							}
+							//$nb_err++;
 						}
 
 						$i++;
