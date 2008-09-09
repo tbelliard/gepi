@@ -4435,6 +4435,7 @@ else{
 				// On a terminé le parcours
 				echo "<p>Le parcours des différences concernant les personnes est terminé.</p>\n";
 
+				flush();
 
 				$sql="SELECT adr_id FROM temp_resp_adr_import WHERE statut='nouveau' OR statut='modif';";
 				//echo "$sql<br />";
@@ -4655,6 +4656,9 @@ else{
 			echo "<p>$cpt fantôme(s) supprimé(s) de la table temporaire.</p>\n";
 
 			echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
+
+			echo "<p><input type='checkbox' name='ne_pas_proposer_redoublonnage_adresse' id='ne_pas_proposer_redoublonnage_adresse' value='y' /><label for='ne_pas_proposer_redoublonnage_adresse' style='cursor:pointer;'> Ne pas proposer de rétablir des doublons d'adresses identiques avec identifiant différent pour des parents qui conservent la même adresse.</label></p>\n";
+
 			echo "</form>\n";
 
 			break;
@@ -4663,12 +4667,14 @@ else{
 		case 16:
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
+			$ne_pas_proposer_redoublonnage_adresse=isset($_POST['ne_pas_proposer_redoublonnage_adresse']) ? $_POST['ne_pas_proposer_redoublonnage_adresse'] : "n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
+			echo "<input type='hidden' name='ne_pas_proposer_redoublonnage_adresse' value='$ne_pas_proposer_redoublonnage_adresse' />\n";
 
 			if(!isset($parcours_diff)){
 				//$sql="SELECT 1=1 FROM tempo2 WHERE col1='pers_id';";
@@ -4723,7 +4729,8 @@ else{
 					}
 				}
 
-				$sql="SELECT 1=1 FROM tempo2 WHERE col1='pers_id';";
+				//$sql="SELECT 1=1 FROM tempo2 WHERE col1='pers_id';";
+				$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id';";
 				$test=mysql_query($sql);
 
 				echo "<p>".mysql_num_rows($test)." personnes/adresses restantes sur un total de $total_pers_diff.</p>\n";
@@ -4820,13 +4827,24 @@ else{
 
 				$liste_resp_sans_eleve="";
 
+				// Entête du tableau:
 				echo $ligne_entete_tableau;
+
+				$nb_chgt_adresse_inapproprie_non_affiche=0;
 
 				$alt=1;
 				$cpt=0;
 				while($lig1=mysql_fetch_object($res1)){
 				//for($i=0;$i<count($pers_modif);$i++){
 					//$pers_id=$pers_modif[$i];
+
+					// Témoin pour permettre de ne pas afficher la ligne si les adresses de deux responsables associés sont identiques mais avec des adr_id différents dans Sconet alors que la correction (fusion des adr_id) a été effectuée dans Gepi.
+					$temoin_chgt_adresse_inapproprie="n";
+					// Témoin d'une différence autre que celle ci-dessus
+					$temoin_diff_autre="n";
+					// Ligne à afficher ou non:
+					$ligne_parent="";
+
 					$pers_id=$lig1->col2;
 
 					// Est-ce un nouveau ou une modif?
@@ -4858,35 +4876,18 @@ else{
 						$adr_id1=$lig_pers1->adr_id;
 					}
 
-					//echo "<tr>\n";
 					$alt=$alt*(-1);
-					/*
-					echo "<tr style='background-color:";
-					if($alt==1){
-						echo "silver";
-					}
-					else{
-						echo "white";
-					}
-					echo ";'>\n";
-					*/
-					echo "<tr class='lig$alt'>\n";
+					$ligne_parent.="<tr class='lig$alt'>\n";
 
-					//echo "<td style='text-align:center;'>";
-					//echo "</td>\n";
-					echo "<td style='text-align: center;'>\n";
-					echo "<input type='checkbox' id='check_".$cpt."' name='valid_pers_id[]' value='$pers_id' />\n";
-					echo "<input type='hidden' name='liste_pers_id[]' value='$pers_id' />\n";
-					echo "</td>\n";
+					$ligne_parent.="<td style='text-align: center;'>\n";
+					$ligne_parent.="<input type='checkbox' id='check_".$cpt."' name='valid_pers_id[]' value='$pers_id' />\n";
+					$ligne_parent.="<input type='hidden' name='liste_pers_id[]' value='$pers_id' />\n";
+					$ligne_parent.="</td>\n";
 
 					if($nouveau==0){
-						//echo "<td style='text-align: center; background-color: lightgreen;'>Modif</td>\n";
-						echo "<td class='modif'>Modif</td>\n";
+						$ligne_parent.="<td class='modif'>Modif</td>\n";
 					}
 					else{
-						//echo "<td style='text-align: center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
-						//echo "<td class='nouveau'>Nouveau</td>\n";
-
 						$sql="SELECT 1=1 FROM temp_resp_pers_import trp,
 												temp_responsables2_import tr,
 												eleves e
@@ -4895,240 +4896,221 @@ else{
 												tr.ele_id=e.ele_id";
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0){
-							echo "<td class='nouveau'>Nouveau</td>\n";
+							$ligne_parent.="<td class='nouveau'>Nouveau</td>\n";
 						}
 						else{
 							if($liste_resp_sans_eleve!=""){$liste_resp_sans_eleve.=",";}
 							//$liste_resp_sans_eleve.="'$pers_id'";
 							$liste_resp_sans_eleve.="'$cpt'";
-							echo "<td style='background-color:orange;'>";
-							echo "<a href='#' onmouseover=\"afficher_div('nouveau_resp_sans_eleve','y',-20,20);\"";
-							echo " onmouseout=\"cacher_div('nouveau_resp_sans_eleve')\" onclick=\"return false;\"";
-							echo ">";
-							echo "Nouveau<br />(*)";
-							echo "</a>";
-							echo "</td>\n";
+							$ligne_parent.="<td style='background-color:orange;'>";
+							$ligne_parent.="<a href='#' onmouseover=\"afficher_div('nouveau_resp_sans_eleve','y',-20,20);\"";
+							$ligne_parent.=" onmouseout=\"cacher_div('nouveau_resp_sans_eleve')\" onclick=\"return false;\"";
+							$ligne_parent.=">";
+							$ligne_parent.="Nouveau<br />(*)";
+							$ligne_parent.="</a>";
+							$ligne_parent.="</td>\n";
 						}
 					}
 
-					echo "<td style='text-align:center;'>$pers_id";
-					//echo "<input type='hidden' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
-					//echo "<input type='text' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
-					echo "</td>\n";
+					$ligne_parent.="<td style='text-align:center;'><a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a>";
+					//$ligne_parent.="<input type='hidden' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
+					//$ligne_parent.="<input type='text' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
+					$ligne_parent.="</td>\n";
 
 
 					$sql="SELECT * FROM temp_resp_pers_import WHERE (pers_id='$pers_id')";
 					$res_pers2=mysql_query($sql);
 					$lig_pers2=mysql_fetch_object($res_pers2);
 
-					//echo "<td style='text-align:center;";
-					echo "<td";
+					$ligne_parent.="<td";
 					if($nouveau==0){
 						if(stripslashes($lig_pers2->nom)!=stripslashes($nom1)){
-							//echo " background-color:lightgreen;'>";
-							echo " class='modif'>";
+							$ligne_parent.=" class='modif'>";
 							if($nom1!=''){
-								echo stripslashes($nom1)." <font color='red'>-&gt;</font>\n";
+								$ligne_parent.=stripslashes($nom1)." <font color='red'>-&gt;</font>\n";
 							}
+
+							$temoin_diff_autre="y";
 						}
 						else{
-							//echo "'>";
-							echo ">";
+							$ligne_parent.=">";
 						}
 					}
 					else{
-						//echo "'>";
-						echo ">";
+						$ligne_parent.=">";
 					}
-					echo stripslashes($lig_pers2->nom);
-					echo "</td>\n";
+					$ligne_parent.=stripslashes($lig_pers2->nom);
+					$ligne_parent.="</td>\n";
 
-					//echo "<td style='text-align:center;";
-					echo "<td";
+					$ligne_parent.="<td";
 					if($nouveau==0){
 						if(stripslashes($lig_pers2->prenom)!=stripslashes($prenom1)){
-							//echo " background-color:lightgreen;'>";
-							echo " class='modif'>";
+							$ligne_parent.=" class='modif'>";
 							if($prenom1!=''){
-								echo stripslashes($prenom1)." <font color='red'>-&gt;</font>\n";
+								$ligne_parent.=stripslashes($prenom1)." <font color='red'>-&gt;</font>\n";
 							}
+
+							$temoin_diff_autre="y";
 						}
 						else{
-							//echo "'>";
-							echo ">";
+							$ligne_parent.=">";
 						}
 					}
 					else{
-						//echo "'>";
-						echo ">";
+						$ligne_parent.=">";
 					}
-					echo stripslashes($lig_pers2->prenom);
-					echo "</td>\n";
+					$ligne_parent.=stripslashes($lig_pers2->prenom);
+					$ligne_parent.="</td>\n";
 
 
 					//======================================
-					//echo "<td style='text-align:center;";
-					echo "<td";
+					$ligne_parent.="<td";
 					if($nouveau==0){
-						//if(stripslashes($lig_pers2->civilite)!=stripslashes($civilite1)){
 						if(ucfirst(strtolower(stripslashes($lig_pers2->civilite)))!=ucfirst(strtolower(stripslashes($civilite1)))){
-							//echo " background-color:lightgreen;'>";
-							echo " class='modif'>";
+							$ligne_parent.=" class='modif'>";
 							if($civilite1!=''){
-								echo stripslashes($civilite1)." <font color='red'>-&gt;</font>\n";
+								$ligne_parent.=stripslashes($civilite1)." <font color='red'>-&gt;</font>\n";
 							}
+
+							$temoin_diff_autre="y";
 						}
 						else{
-							//echo "'>";
-							echo ">";
+							$ligne_parent.=">";
 						}
 					}
 					else{
-						//echo "'>";
-						echo ">";
+						$ligne_parent.=">";
 					}
-					//echo stripslashes($lig_pers2->civilite);
-					echo ucfirst(strtolower(stripslashes($lig_pers2->civilite)));
-					echo "</td>\n";
+					$ligne_parent.=ucfirst(strtolower(stripslashes($lig_pers2->civilite)));
+					$ligne_parent.="</td>\n";
 					//======================================
 
 
-					echo "<td style='text-align:center; padding: 2px;'>";
-						//echo "<table border='1' width='100%'>\n";
-						echo "<table class='majimport' width='100%'>\n";
-						echo "<tr>\n";
-						echo "<td style='text-align:center; font-weight:bold;'>Tel</td>\n";
-						//echo "<td style='text-align:center;";
-						echo "<td";
+					$ligne_parent.="<td style='text-align:center; padding: 2px;'>";
+						$ligne_parent.="<table class='majimport' width='100%'>\n";
+						$ligne_parent.="<tr>\n";
+						$ligne_parent.="<td style='text-align:center; font-weight:bold;'>Tel</td>\n";
+						$ligne_parent.="<td";
 						if($nouveau==0){
 							if($lig_pers2->tel_pers!=$tel_pers1) {
 								if(($lig_pers2->tel_pers!='')||($tel_pers1!='')){
-									//echo " background-color:lightgreen;'>";
-									echo " class='modif'>";
+									$ligne_parent.=" class='modif'>";
 									if($tel_pers1!=''){
-										echo $tel_pers1." <font color='red'>-&gt;</font>\n";
+										$ligne_parent.=$tel_pers1." <font color='red'>-&gt;</font>\n";
 									}
+
+									$temoin_diff_autre="y";
 								}
 								else{
-									//echo "'>";
-									echo ">";
+									$ligne_parent.=">";
 								}
 							}
 							else{
-								//echo "'>";
-								echo ">";
+								$ligne_parent.=">";
 							}
 						}
 						else{
-							//echo "'>";
-							echo ">";
+							$ligne_parent.=">";
 						}
-						echo $lig_pers2->tel_pers;
-						echo "</td>\n";
-						echo "</tr>\n";
+						$ligne_parent.=$lig_pers2->tel_pers;
+						$ligne_parent.="</td>\n";
+						$ligne_parent.="</tr>\n";
 
-						echo "<tr>\n";
-						echo "<td style='text-align:center; font-weight:bold;'>TPo</td>\n";
-						//echo "<td style='text-align:center;";
-						echo "<td";
+						$ligne_parent.="<tr>\n";
+						$ligne_parent.="<td style='text-align:center; font-weight:bold;'>TPo</td>\n";
+						$ligne_parent.="<td";
 						if($nouveau==0){
 							if($lig_pers2->tel_port!=$tel_port1) {
 								if(($lig_pers2->tel_port!='')||($tel_port1!='')){
-									//echo " background-color:lightgreen;'>";
-									echo " class='modif'>";
+									$ligne_parent.=" class='modif'>";
 									if($tel_port1!=''){
-										echo $tel_port1." <font color='red'>-&gt;</font>\n";
+										$ligne_parent.=$tel_port1." <font color='red'>-&gt;</font>\n";
 									}
+
+									$temoin_diff_autre="y";
 								}
 								else{
-									//echo "'>";
-									echo ">";
+									$ligne_parent.=">";
 								}
 							}
 							else{
-								//echo "'>";
-								echo ">";
+								$ligne_parent.=">";
 							}
 						}
 						else{
-							//echo "'>";
-							echo ">";
+							$ligne_parent.=">";
 						}
-						echo $lig_pers2->tel_port;
-						echo "</td>\n";
-						echo "</tr>\n";
+						$ligne_parent.=$lig_pers2->tel_port;
+						$ligne_parent.="</td>\n";
+						$ligne_parent.="</tr>\n";
 
-						echo "<tr>\n";
-						echo "<td style='text-align:center; font-weight:bold;'>TPr</td>\n";
-						//echo "<td style='text-align:center;";
-						echo "<td";
+						$ligne_parent.="<tr>\n";
+						$ligne_parent.="<td style='text-align:center; font-weight:bold;'>TPr</td>\n";
+						$ligne_parent.="<td";
 						if($nouveau==0){
 							if($lig_pers2->tel_prof!=$tel_prof1) {
 								if(($lig_pers2->tel_prof!='')||($tel_prof1!='')){
-									//echo " background-color:lightgreen;'>";
-									echo " class='modif'>";
+									$ligne_parent.=" class='modif'>";
 									if($tel_prof1!=''){
-										echo $tel_prof1." <font color='red'>-&gt;</font>\n";
+										$ligne_parent.=$tel_prof1." <font color='red'>-&gt;</font>\n";
 									}
+
+									$temoin_diff_autre="y";
 								}
 								else{
-									//echo "'>";
-									echo ">";
+									$ligne_parent.=">";
 								}
 							}
 							else{
-								//echo "'>";
-								echo ">";
+								$ligne_parent.=">";
 							}
 						}
 						else{
-							//echo "'>";
-							echo ">";
+							$ligne_parent.=">";
 						}
-						echo $lig_pers2->tel_prof;
-						echo "</td>\n";
-						echo "</tr>\n";
+						$ligne_parent.=$lig_pers2->tel_prof;
+						$ligne_parent.="</td>\n";
+						$ligne_parent.="</tr>\n";
 
-						echo "<tr>\n";
-						echo "<td style='text-align:center; font-weight:bold;'>mel</td>\n";
-						//echo "<td style='text-align:center;";
-						echo "<td";
+						$ligne_parent.="<tr>\n";
+						$ligne_parent.="<td style='text-align:center; font-weight:bold;'>mel</td>\n";
+						$ligne_parent.="<td";
 						if($nouveau==0){
 							if($lig_pers2->mel!=$mel1) {
 								if(($lig_pers2->mel!='')||($mel1!='')){
-									//echo " background-color:lightgreen;'>";
-									echo " class='modif'>";
+									$ligne_parent.=" class='modif'>";
 									if($mel1!=''){
-										echo $mel1." <font color='red'>-&gt;</font>\n";
+										$ligne_parent.=$mel1." <font color='red'>-&gt;</font>\n";
 									}
+
+									$temoin_diff_autre="y";
 								}
 								else{
-									//echo "'>";
-									echo ">";
+									//$ligne_parent.="'>";
+									$ligne_parent.=">";
 								}
 							}
 							else{
-								//echo "'>";
-								echo ">";
+								//$ligne_parent.="'>";
+								$ligne_parent.=">";
 							}
 						}
 						else{
-							//echo "'>";
-							echo ">";
+							//$ligne_parent.="'>";
+							$ligne_parent.=">";
 						}
-						echo $lig_pers2->mel;
-						echo "</td>\n";
-						echo "</tr>\n";
-						echo "</table>\n";
+						$ligne_parent.=$lig_pers2->mel;
+						$ligne_parent.="</td>\n";
+						$ligne_parent.="</tr>\n";
+						$ligne_parent.="</table>\n";
 
-						//echo "\$lig_pers2->adr_id=$lig_pers2->adr_id";
-					echo "</td>\n";
+						//$ligne_parent.="\$lig_pers2->adr_id=$lig_pers2->adr_id";
+					$ligne_parent.="</td>\n";
 
 
 
 					// Adresse
-					//echo "<td style='text-align:center;";
-					echo "<td";
+					$ligne_parent.="<td";
 
 					if($lig_pers2->adr_id!=""){
 						$sql="SELECT * FROM temp_resp_adr_import WHERE (adr_id='".$lig_pers2->adr_id."')";
@@ -5251,13 +5233,14 @@ else{
 						}
 
 						if($chaine_adr1!=$chaine_adr2){
-							//echo " background-color:lightgreen;'>";
-							echo " class='modif'>";
-							echo $chaine_adr1;
-							echo " <font color='red'>-&gt;</font><br />\n";
+							$ligne_parent.=" class='modif'>";
+							$ligne_parent.=$chaine_adr1;
+							$ligne_parent.=" <font color='red'>-&gt;</font><br />\n";
+
+							$temoin_diff_autre="y";
 						}
 						elseif(($adr_id1!="")&&($lig_pers2->adr_id!="")&&($adr_id1!=$lig_pers2->adr_id)) {
-							echo " class='modif'>";
+							$ligne_parent.=" class='modif'>";
 
 							// Mettre une infobulle pour détailler la situation:
 							$titre="Modification adresse";
@@ -5270,6 +5253,8 @@ else{
 								$lig_autre_resp_adr_partagee=mysql_fetch_object($test_adr_id);
 								//$texte.="$civilite1 $nom1 $prenom1 partageait l'adresse suivante avec $lig_autre_resp_adr_partagee->civilite $lig_autre_resp_adr_partagee->nom $lig_autre_resp_adr_partagee->prenom:<br />\n";
 								$infos_adresse="Partagée avec $lig_autre_resp_adr_partagee->civilite $lig_autre_resp_adr_partagee->nom $lig_autre_resp_adr_partagee->prenom";
+
+								$temoin_chgt_adresse_inapproprie="y";
 							}
 							else {
 								//$texte.="$civilite1 $nom1 $prenom1 avait l'adresse:<br />\n";
@@ -5308,6 +5293,8 @@ else{
 								$lig_autre_resp_adr_partagee=mysql_fetch_object($test_adr_id);
 								//$texte.="$civilite1 $nom1 $prenom1 partageait l'adresse suivante avec $lig_autre_resp_adr_partagee->civilite $lig_autre_resp_adr_partagee->nom $lig_autre_resp_adr_partagee->prenom:<br />\n";
 								$infos_adresse="Partagée avec $lig_autre_resp_adr_partagee->civilite $lig_autre_resp_adr_partagee->nom $lig_autre_resp_adr_partagee->prenom";
+
+								$temoin_chgt_adresse_inapproprie="y";
 							}
 							else {
 								//$texte.="$civilite1 $nom1 $prenom1 avait l'adresse:<br />\n";
@@ -5342,123 +5329,20 @@ else{
 
 							$tabdiv_infobulle[]=creer_div_infobulle('chgt_adr_'.$cpt,$titre,"",$texte,"",40,0,'y','y','n','n');
 
-							echo "<a href='#' onmouseover=\"afficher_div('chgt_adr_".$cpt."','y',-20,20);\">";
-							echo "<img src='../images/info.png' width='29' height='29'  align='middle' border='0' alt='Information' title='Information' />";
-							echo "</a> ";
+							$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_adr_".$cpt."','y',-20,20);\">";
+							$ligne_parent.="<img src='../images/info.png' width='29' height='29'  align='middle' border='0' alt='Information' title='Information' />";
+							$ligne_parent.="</a> ";
 
 						}
 						else {
-							//echo "'>";
-							echo ">";
+							$ligne_parent.=">";
 						}
-						echo $chaine_adr2;
-
-
-						/*
-						if($lig_pers2->adr_id!=$adr_id1) {
-							if($adr_id1!=""){
-								$sql="SELECT * FROM resp_adr WHERE (adr_id='".$adr_id1."')";
-								//$adr_id=$personne[$pers_id]["adr_id"];
-								$res_adr1=mysql_query($sql);
-								if(mysql_num_rows($res_adr1)==0){
-									$adr1_1="";
-									$adr2_1="";
-									$adr3_1="";
-									$adr4_1="";
-									$cp1="";
-									$commune1="";
-									$pays1="";
-								}
-								else{
-									$lig_adr1=mysql_fetch_object($res_adr1);
-
-									$adr1_1=$lig_adr1->adr1;
-									$adr2_1=$lig_adr1->adr2;
-									$adr3_1=$lig_adr1->adr3;
-									$adr4_1=$lig_adr1->adr4;
-									$cp1=$lig_adr1->cp;
-									$commune1=$lig_adr1->commune;
-									$pays1=$lig_adr1->pays;
-								}
-							}
-							else{
-								$adr1_1="";
-								$adr2_1="";
-								$adr3_1="";
-								$adr4_1="";
-								$cp1="";
-								$commune1="";
-								$pays1="";
-							}
-
-
-							echo " background-color:lightgreen;'>";
-							if(($adr1_1!="")||($adr2_1!="")||($adr3_1!="")||($adr4_1!="")||($cp1!="")||($commune1!="")||($pays1!="")){
-								$chaine_adr="";
-								if($adr1_1!=""){
-									$chaine_adr.=stripslashes("$adr1_1, ");
-								}
-								if($adr2_1!=""){
-									$chaine_adr.=stripslashes("$adr2_1, ");
-								}
-								if($adr3_1!=""){
-									$chaine_adr.=stripslashes("$adr3_1, ");
-								}
-								if($adr4_1!=""){
-									$chaine_adr.=stripslashes("$adr4_1, ");
-								}
-								if($cp1!=""){
-									$chaine_adr.=stripslashes("$cp1, ");
-								}
-								if($commune1!=""){
-									$chaine_adr.=stripslashes("$commune1, ");
-								}
-								if($pays1!=""){
-									$chaine_adr.=stripslashes("$pays1");
-								}
-								echo $chaine_adr;
-								echo " <font color='red'>-&gt;</font><br />\n";
-							}
-
-							if(($adr1_2!="")||($adr2_2!="")||($adr3_2!="")||($adr4_2!="")||($cp2!="")||($commune2!="")||($pays2!="")){
-								$chaine_adr="";
-								if($adr1_2!=""){
-									$chaine_adr.=stripslashes("$adr1_2, ");
-								}
-								if($adr2_2!=""){
-									$chaine_adr.=stripslashes("$adr2_2, ");
-								}
-								if($adr3_2!=""){
-									$chaine_adr.=stripslashes("$adr3_2, ");
-								}
-								if($adr4_2!=""){
-									$chaine_adr.=stripslashes("$adr4_2, ");
-								}
-								if($cp2!=""){
-									$chaine_adr.=stripslashes("$cp2, ");
-								}
-								if($commune2!=""){
-									$chaine_adr.=stripslashes("$commune2, ");
-								}
-								if($pays2!=""){
-									$chaine_adr.=stripslashes("$pays2");
-								}
-								echo $chaine_adr;
-							}
-							else{
-								echo "Adresse vide";
-							}
-						}
-						else{
-							echo "'>";
-							echo "Identifiant d'adresse inchangé: $adr_id1";
-						}
-						*/
+						$ligne_parent.=$chaine_adr2;
 
 					}
 					else{
-						//echo "'>";
-						echo ">";
+						//$ligne_parent.="'>";
+						$ligne_parent.=">";
 						// Indiquer l'adresse pour cette nouvelle personne responsable
 
 						if(($adr1_2!="")||($adr2_2!="")||($adr3_2!="")||($adr4_2!="")||($cp2!="")||($commune2!="")||($pays2!="")){
@@ -5484,16 +5368,46 @@ else{
 							if($pays2!=""){
 								$chaine_adr.=stripslashes("$pays2");
 							}
-							echo $chaine_adr;
+							$ligne_parent.=$chaine_adr;
 						}
 						else{
-							echo "<span color='red'>Adresse vide</span>\n";
+							$ligne_parent.="<span color='red'>Adresse vide</span>\n";
 						}
 					}
-					echo "</td>\n";
+					$ligne_parent.="</td>\n";
 
 
-					echo "</tr>\n";
+					$ligne_parent.="</tr>\n";
+
+
+					if($ne_pas_proposer_redoublonnage_adresse=="n") {
+						// Si on n'a pas demandé à ne pas afficher les situations de redoublonnage, on affiche la ligne
+						echo $ligne_parent;
+					}
+					else {
+						if($temoin_chgt_adresse_inapproprie=="n") {
+							// S'il n'y a pas de redoublonnage d'adresse, on affiche la ligne
+							echo $ligne_parent;
+						}
+						elseif($temoin_diff_autre=="y") {
+							// Même si un redoublonnage d'adresse est repéré, on affiche la ligne s'il y a d'autres différences
+							echo $ligne_parent;
+						}
+						else {
+
+							echo "<tr style='display:none;'><td colspan='8'>Avant...";
+							//echo "<tr><td colspan='8'>Avant...";
+							//echo "<input type='hidden' name='valid_pers_id[]' value='$pers_id' />\n";
+							echo "<input type='hidden' name='liste_pers_id[]' value='$pers_id' />\n";
+							echo "</td></tr>\n";
+							//echo $ligne_parent;
+							//echo "<tr style='display:none;'><td colspan='8'>... après</td></tr>\n";
+							//echo "<tr><td colspan='8'>... après</td></tr>\n";
+
+							$nb_chgt_adresse_inapproprie_non_affiche++;
+						}
+					}
+
 					$cpt++;
 				}
 
@@ -5504,6 +5418,12 @@ else{
 					echo "<p>Une ou des personnes apparaissent comme nouvelles, mais ne sont associées à aucun élève (<i>ni dans l'actuelle table 'responsables2', ni dans la table temporaire 'temp_responsables2_import'</i>).<br />Pour ne cocher que les responsables réellement associés à des élèves, cliquez ici: <a href=\"javascript:modifcase2()\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher intelligemment' /></a></p>\n";
 				}
 
+				if($nb_chgt_adresse_inapproprie_non_affiche==1) {
+					echo "<p>$nb_chgt_adresse_inapproprie_non_affiche personne à cette étape n'a pas été proposée pour un re-doublonnage d'adresse.</p>\n";
+				}
+				elseif($nb_chgt_adresse_inapproprie_non_affiche>1) {
+					echo "<p>$nb_chgt_adresse_inapproprie_non_affiche personnes à cette étape n'ont pas été proposées pour un re-doublonnage d'adresse.</p>\n";
+				}
 
 				echo "<script type='text/javascript'>
 	function modifcase(mode){
@@ -5998,6 +5918,7 @@ else{
 			else{
 				echo "<p>Le parcours des différences concernant les associations élèves/responsables est terminé.<br />Vous allez pouvoir contrôler les différences.</p>\n";
 				//echo "<p>La première phase du parcours des différences concernant les associations élève/responsables est terminé.<br />Vous allez pouvoir passer à la deuxième phase avant de contrôler les différences.</p>\n";
+
 
 				for($i=0;$i<count($tab_resp_diff);$i++){
 					$sql="UPDATE tempo2 SET col1='t_diff' WHERE col2='$tab_resp_diff[$i]'";
