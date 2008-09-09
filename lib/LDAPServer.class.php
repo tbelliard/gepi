@@ -12,8 +12,8 @@ class LDAPServer {
 	private $port = "389";
 	private $login = "";
 	private $password = "";
-	private $base_dn = "o=gouv,o=fr";
-	private $people_ou = "ou=People";
+	public $base_dn = "o=gouv,o=fr";
+	public $people_ou = "ou=People";
 
 	# Les classes de l'entrée LDAP d'un utilisateur. Elles doivent
 	# être cohérentes avec les attributs utilisés.
@@ -57,7 +57,7 @@ class LDAPServer {
 	# évite d'avoir à refaire plusieurs fois la connexion lors de
 	# l'exécution d'un même script faisant appel à plusieurs reprises
 	# à des requêtes vers l'annuaire.
-	private $ds = false;
+	public $ds = false;
 
 
 	public function __construct() {
