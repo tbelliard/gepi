@@ -484,7 +484,7 @@ function DecocheCheckbox() {
          }
          $execution_sans_motif = mysql_query($requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
 		// Pour la position du premier div, on définit le margin-top
-		$margin_top = 50;
+		$margin_top = 20;
 		while ( $data_sans_motif = mysql_fetch_array($execution_sans_motif)) {
 			// DEBUT DE GESTION DU CALQUE D'INFORMATION
 			echo '
