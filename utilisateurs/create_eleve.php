@@ -84,6 +84,8 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 	}
 
 	if (!$error) {
+		$nb_comptes_preexistants=0;
+
 		$nb_comptes = 0;
 		while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 			// Création du compte utilisateur pour l'élève considéré
@@ -123,26 +125,35 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				} elseif ($_POST['reg_auth_mode'] == "auth_sso") {
 					$reg_auth = "sso";
 				}
-				
-				$reg = mysql_query("INSERT INTO utilisateurs SET " .
-						"login = '" . $current_eleve->login . "', " .
-						"nom = '" . addslashes($current_eleve->nom) . "', " .
-						"prenom = '". addslashes($current_eleve->prenom) ."', " .
-						"password = '', " .
-						"civilite = '" . $civilite."', " .
-						"email = '" . $current_eleve->email . "', " .
-						"statut = 'eleve', " .
-						"etat = 'actif', " .
-						"auth_mode = '".$reg_auth."', ".
-						"change_mdp = 'n'");
 
-				if (!$reg) {
-					$msg .= "Erreur lors de la création du compte ".$current_eleve->login."<br />";
-				} else {
-					$nb_comptes++;
+				$sql="SELECT 1=1 FROM utilisateurs WHERE login='".$current_eleve->login."';";
+				//echo "$sql<br />";
+				$test_existence_compte=mysql_query($sql);
+				if(mysql_num_rows($test_existence_compte)==0) {
+					$reg = mysql_query("INSERT INTO utilisateurs SET " .
+							"login = '" . $current_eleve->login . "', " .
+							"nom = '" . addslashes($current_eleve->nom) . "', " .
+							"prenom = '". addslashes($current_eleve->prenom) ."', " .
+							"password = '', " .
+							"civilite = '" . $civilite."', " .
+							"email = '" . $current_eleve->email . "', " .
+							"statut = 'eleve', " .
+							"etat = 'actif', " .
+							"auth_mode = '".$reg_auth."', ".
+							"change_mdp = 'n'");
+
+					if (!$reg) {
+						$msg .= "Erreur lors de la création du compte ".$current_eleve->login."<br />";
+					} else {
+						$nb_comptes++;
+					}
+				}
+				else {
+					// On compte les comptes existants
+					$nb_comptes_preexistants++;
 				}
 			} else {
-				$msg .= "Erreur lors de la création du compte ".$current_eleve->login." : l'utilisateur n'a pas pu être créé sur l'annuaire LDAP.<br/>";
+				$msg .= "Erreur lors de la création du compte ".$current_eleve->login." : l'utilisateur n'a pas pu être créé sur l'annuaire LDAP.<br />";
 
 			}
 		}
@@ -180,7 +191,17 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			$msg .= "<br />Vous devez effectuer cette opération maintenant !";
 		} else {
 			if ($nb_comptes > 0) {
-				$msg .= "Vous avez créé des comptes d'accès en mode SSO ou LDAP, mais sans avoir configuré l'accès LDAP en écriture. En conséquence, vous ne pouvez pas générer de mot de passe pour les utilisateurs.<br/>";
+				$msg .= "Vous avez créé des comptes d'accès en mode SSO ou LDAP, mais sans avoir configuré l'accès LDAP en écriture. En conséquence, vous ne pouvez pas générer de mot de passe pour les utilisateurs.<br />";
+			}
+		}
+
+
+		if($nb_comptes_preexistants>0) {
+			if($nb_comptes_preexistants==1) {
+				$msg.="Un compte existait déjà pour la sélection.<br />";
+			}
+			else {
+				$msg.="$nb_comptes_preexistants comptes existaient déjà pour la sélection.<br />";
 			}
 		}
 	}
