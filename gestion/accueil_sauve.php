@@ -805,7 +805,7 @@ function restoreMySqlDump_old($dumpFile,$duree) {
 
 
 function debug_pb($ligne) {
-	$debug=1;
+	$debug=0;
 	if($debug==1) {
 		$fich=fopen("/tmp/rest.txt","a+");
 		fwrite($fich,$ligne."\n");
