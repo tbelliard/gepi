@@ -2064,10 +2064,14 @@ function mysql_table_exists($table , $db) {
 
 	$requete = 'SHOW TABLES FROM '.$db.' LIKE \''.$table.'\'';
 	$exec = mysql_query($requete);
-	return mysql_num_rows($exec);
+	if ($exec) {
+		return mysql_num_rows($exec);
+	}else{
+		return 0;
+	}
 }
 
-// fonction qui transforme un date et une heure en timestamps
+// fonction qui transforme une date et une heure en timestamps
 function timestamps_encode($date_select, $heure_select)
 {
 
