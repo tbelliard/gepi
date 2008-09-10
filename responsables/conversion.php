@@ -55,7 +55,12 @@ echo "<p class=bold>";
 echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 
-echo "<h2>Conversion eleves/responsables</h2>\n";
+// Traitement particulier LCS : on met à jour l'identifiant national dans eleves (np_gep)
+if(getSettingValue('auth_sso')=="lcs")
+ echo "<h2>Mise à jour des données élèves et responsables</h2>\n";
+else
+ echo "<h2>Conversion eleves/responsables</h2>\n";
+
 
 // Suppression de l'adresse de retour mise pour permettre la génération des CSV
 if(isset($_SESSION['ad_retour'])){
@@ -466,12 +471,21 @@ if($temoin==1){
 					echo "<p><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 				}
 				else{
-					echo "<p>Dans un premier temps, on renseigne le nouveau champ 'ele_id' dans la table 'eleves'.</p>\n";
+					echo "<p>Dans un premier temps, on renseigne le nouveau champ 'ele_id' dans la table 'eleves'\n";
+					if(getSettingValue('auth_sso')=="lcs") {
+  					echo " et on met à jour les donnnées élèves (regime, doublant, identifiant national, établissement d'origine)";
+            // Par sécurité, on vide la table j_eleves_etablissements (établissement d'origine)
+            mysql_query("TRUNCATE TABLE j_eleves_etablissements");
+  				}
+          echo ".</p>";
 
 					echo "<div id='div_eleves' style='display:none;'>\n";
 
-					$tabchamps = array("ELENOET","ELE_ID");
-
+					// Traitement particulier LCS : on met à jour l'identifiant national dans eleves (np_gep)
+          if(getSettingValue('auth_sso')=="lcs")
+              $tabchamps = array("ELENOET","ELE_ID","ELENONAT","ELEDOUBL","ELEREG","ETOCOD_EP");
+          else
+              $tabchamps = array("ELENOET","ELE_ID");
 					$erreur=0;
 
 					$nblignes=0;
@@ -548,6 +562,43 @@ if($temoin==1){
 									}
 									else{
 										echo "Renseignement de l'ele_id avec la valeur $affiche[1] pour l'élève d'ELENOET $affiche[0]<br />\n";
+									}
+
+  								// Traitement particulier LCS : on met à jour l'identifiant national dans eleves (np_gep)
+                  if(getSettingValue('auth_sso')=="lcs") {
+                      // Récupération du login
+                      $eleve_login = sql_query1("select login from eleves where elenoet='$affiche[0]' OR elenoet='".sprintf("%05d",$affiche[0])."'");
+                      // Mise à jour de l'identifiant national
+                      if ($affiche[2]=='')
+       										echo "<font color='red'>Erreur</font> L'identifiant national pour l'élève d'ELENOET $affiche[0] ($eleve_login) n'a pas été enregistré car il est absent du fichier eleves.csv.<br />\n";
+       								else {
+    									  $sql="UPDATE eleves SET no_gep='$affiche[2]' WHERE elenoet='$affiche[0]' OR elenoet='".sprintf("%05d",$affiche[0])."'";
+      									$res_update=mysql_query($sql);
+  		    							if(!$res_update){
+        										echo "<font color='red'>Erreur</font> lors du renseignement de l'identifiant national la valeur $affiche[2] pour l'élève d'ELENOET $affiche[0] ($eleve_login)<br />\n";
+  			    						}
+  					    				else{
+  							    			echo "Renseignement de l'identifiant national avec la valeur $affiche[2] pour l'élève d'ELENOET $affiche[0] ($eleve_login)<br />\n";
+  									    }
+									    }
+									    // mise à jour du champ Doublant et du champ regime
+									    if ($affiche[3]=='N')
+									        $doublant = "-";
+									    else
+  								        $doublant = "R";
+									    if ($affiche[4]=='3')
+									        $regime = "d/p";
+									    else if ($affiche[4]=='2')
+  								        $regime = "int.";
+									    else if ($affiche[4]=='1')
+  								        $regime = "i-e";
+  								    else
+                          $regime = "ext.";
+
+                      $res = mysql_query("update j_eleves_regime SET regime='".$regime."', doublant = '".$doublant."' where login ='".$eleve_login."'");
+                      // Etablissement d'origine
+                      $sql="insert into j_eleves_etablissements SET id_etablissement='$affiche[5]', id_eleve='".sprintf("%05d",$affiche[0])."'";
+     									$res_insert=mysql_query($sql);
 									}
 								}
 								else{

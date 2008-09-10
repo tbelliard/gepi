@@ -317,7 +317,10 @@ if (isset($_POST['step'])) {
             }
             $res = mysql_query("delete from periodes where verouiller='T'");
             echo "<p>Vous venez d'effectuer l'enregistrement des données concernant les classes. S'il n'y a pas eu d'erreurs, vous pouvez aller à l'étape suivante pour enregistrer les données concernant les élèves.</p>";
-            echo "<p>Remarque :<br>Les champs \"régime\" (demi-pensionnaire, externe, ...) et \"doublant\" ne sont pas présents dans l'annuaire LDAP. Tous les élèves seront dont considérés par défaut comme demi-pensionniaires et non-doublant. Vous aurez donc des corrections à effectuer ultèrieurement.</p>";
+            echo "<p><b>ATTENTION</b> :<br>Les champs \"régime\" (demi-pensionnaire, externe, ...), \"doublant\"  et \"identifiant national\" ne sont pas présents dans l'annuaire LDAP.
+            Il en est de même de toutes les informations sur les responsables des élèves.
+            <br />A l'issue de cette étape, <b>vous devrez donc procéder à une opération consistant à convertir la table \"eleves\" et à importer les informations manquantes.</b>
+            <br />Vous devrez pour cela fournir des fichiers CSV (ELEVES.CSV, PERSONNES.CSV, RESPONSABLES.CSV et ADRESSES.CSV) <b><a href=\"../init_xml/lecture_xml_sconet.php\" target=\"_blank\">générés ici</a></b> depuis des fichiers XML extraits de SCONET.</p>";
             echo "<center>";
             echo "<form enctype='multipart/form-data' action='eleves.php' method=post name='formulaire'>";
             echo "<input type=\"hidden\" name=\"record\" value=\"no\" />";
@@ -542,7 +545,7 @@ if (isset($_POST['step'])) {
                                 $del = mysql_query("DELETE from j_eleves_regime WHERE login = '" . $uid . "'");
                             $res = mysql_query("INSERT into j_eleves_regime SET login = '" . $uid . "',
                             regime  = 'd/p',
-                            doublant  = 'N'");
+                            doublant  = '-'");
                         }
                         @ldap_free_result ( $result2 );
                     }
@@ -554,7 +557,8 @@ if (isset($_POST['step'])) {
             @ldap_free_result ( $result );
         }
         echo "</table><p>Opération effectuée.</p>";
-        echo "<p>Vous pouvez vérifier l'importation en allant sur la page de <a href='../eleves/index.php'>gestion des eleves</a>.</p>";
+        echo "<p>Avant de passer à l'étape suivante, vous devez procéder à la conversion de la table \"eleves\" et à l'importation des données manquantes :
+        <a href='../responsables/conversion.php?mode=1'>Conversion et importation des données manquantes</a>.</p>";
     }
 
 } else {
