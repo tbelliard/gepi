@@ -83,7 +83,8 @@ class Session {
 		  	} else {
 		  		$logout_path = "../logout.php";
 		  	}
-		  	header("Location: ".$logout_path."?auto=3&debut_session=".$debut_session."&session_id=".session_id());
+		  	//echo $logout_path;die();
+		  	header("Location:".$logout_path."?auto=3&debut_session=".$debut_session."&session_id=".session_id());
 		  	exit();
 		  } else {
 		  	# Pas de timeout : on met à jour le log

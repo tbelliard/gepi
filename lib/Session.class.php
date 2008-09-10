@@ -80,7 +80,7 @@ class Session {
 		  	} else {
 		  		$logout_path = "../logout.php";
 		  	}
-		  	header("Location: ".$logout_path."?auto=3&debut_session=".$debut_session."&session_id=".session_id());
+		  	header("Location:".$logout_path."?auto=3&debut_session=".$debut_session."&session_id=".session_id());
 		  	exit();
 		  } else {
 		  	# Pas de timeout : on met à jour le log
@@ -633,7 +633,7 @@ class Session {
 		$dbPass = $_GLOBALS['dbPass'];
 		$db_nopersist = $_GLOBALS['db_nopersist'];
 		$dbDb = $_GLOBALS['dbDb'];
-	  
+
 		list ($idpers,$login) = isauth();
 		if ($idpers) {
 			list($user, $groups)=people_get_variables($login, false);
