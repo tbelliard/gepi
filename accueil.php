@@ -730,12 +730,15 @@ if ($affiche=='yes') {
 
 $chemin = array();
 $chemin[] = "/edt_organisation/index_edt.php";
+$chemin[] = "/edt_organisation/edt_eleve.php";
 
 $titre = array();
+$titre[] = "Emploi du temps";
 $titre[] = "Emploi du temps";
 
 $expli = array();
 $expli[] = "Cet outil permet la consultation/gestion de l'emploi du temps.";
+$expli[] = "Cet outil permet la consultation de votre emploi du temps.";
 
 $nb_ligne = count($chemin);
 $affiche = 'no';
@@ -744,14 +747,10 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 	// Ajout d'un test param_edt() pour savoir si l'admin a activé ou non le module EdT - Calendrier
 if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
-	// modification Régis : créer des <h2> pour faciliter la navigation
+
 	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Emploi du temps</h2>\n";
-	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
 	echo "<table class='menu' summary=\"Module Emploi du temps. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
-   // echo "<table class='menu' summary=\"Module Emploi du temps\">\n";
-   // echo "<tr>\n";
-   // echo "<th colspan='2'><img src='./images/icons/document.png' alt='Emploi du temps' class='link'/> - Emploi du temps</th>\n";
-   // echo "</tr>\n";
+
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
@@ -865,12 +864,9 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
 	// modification Régis : créer des <h2> pour faciliter la navigation
-	echo "<h2 class='accueil'><img src='./images/icons/vie_privee.png' alt=''/> - Consultation</h2>\n";
+	echo "<h2 class='accueil'><img src='./images/icons/vie_privee.png' alt='' /> - Consultation</h2>\n";
 	echo "<table class='menu' summary=\"Outils de consultation. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
-    // echo "<table class='menu' summary=\"Absences\">\n";
-    // echo "<tr>\n";
-   //  echo "<th colspan='2'><img src='./images/icons/vie_privee.png' alt='Consultation' class='link'/> - Consultation</th>\n";
-    // echo "</tr>\n";
+
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
