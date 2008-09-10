@@ -67,7 +67,7 @@ class LDAPServer {
 	function LDAPServer() {
 		# On charge la configuration et on établit la connexion si
 		# le serveur a été configuré.
-		if (self::is_setup()) {
+		if (LDAPServer::is_setup()) {
 			$this->load_config();
 			$this->ds = $this->connect();
 		}
@@ -80,7 +80,7 @@ class LDAPServer {
 
 	# Retourne un lien de connexion LDAP
 	function connect() {
-		return self::connect_ldap($this->host, $this->port, $this->login, $this->password);
+		return LDAPServer::connect_ldap($this->host, $this->port, $this->login, $this->password);
 	}
 
 	# Retourne true ou false selon qu'un utilisateur a été trouvé avec le login indiqué
@@ -329,7 +329,7 @@ class LDAPServer {
 	# /secure/config_ldap.inc.php
 	function load_config() {
 		$ldap_config = array();
-		if (self::is_setup()) {
+		if (LDAPServer::is_setup()) {
 			$path = dirname(__FILE__)."/../".LDAPServer::config_file();
 			include($path);
 
