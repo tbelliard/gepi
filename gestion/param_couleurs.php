@@ -1314,14 +1314,14 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
 /* ===== couleurs du cahier de texte ===== */
 
-	echo "<h2>\n<strong>Notices cahier de texte :</strong>\n</h2>\n";
+	echo "<h2>\n<strong>Notices cahier de textes :</strong>\n</h2>\n";
 	echo "<div class='tableau_param_couleur'>\n";
 		echo "<input type='checkbox' name='utiliser_cahier_texte_perso' id='utiliser_cahier_texte_perso' value='y' ";
 		if(getSettingValue('utiliser_cahier_texte_perso')=='y'){
 			echo "checked='checked' ";
 		}
 		echo "/> ";
-		echo "<label for='utiliser_cahier_texte_perso' style='cursor: pointer;'>Couleurs personnalisées dans le cahier de texte.</label>\n";
+		echo "<label for='utiliser_cahier_texte_perso' style='cursor: pointer;'>Couleurs personnalisées dans le cahier de textes.</label>\n";
 
 //=== initialisation des couleurs ===
 
