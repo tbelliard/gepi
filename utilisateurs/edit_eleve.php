@@ -472,6 +472,7 @@ while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 		}
 		echo "</td>\n";
 
+		/*
 		echo "<td>\n";
 		$tmp_class=get_class_from_ele_login($current_eleve->login);
 		if(isset($tmp_class['liste'])) {
@@ -481,6 +482,7 @@ while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 			echo "<span style='color:red;'>Aucune</span>";
 		}
 		echo "</td>\n";
+		*/
 	echo "</tr>\n";
 }
 ?>
