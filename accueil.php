@@ -730,7 +730,13 @@ if ($affiche=='yes') {
 
 $chemin = array();
 $chemin[] = "/edt_organisation/index_edt.php";
-$chemin[] = "/edt_organisation/edt_eleve.php";
+if ($_SESSION["statut"] == 'responsable') {
+	// on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
+	$tab_tmp_ele = get_enfants_from_resp_login($_SESSION['login']);
+	$chemin[] = "/edt_organisation/edt_eleve.php?login_edt=" . $tab_tmp_ele[0];
+}else{
+	$chemin[] = "/edt_organisation/edt_eleve.php";
+}
 
 $titre = array();
 $titre[] = "Emploi du temps";
