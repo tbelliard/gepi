@@ -397,7 +397,19 @@ class Session {
 	// A noter : la méthode ne réinitialise pas la session. Elle ne fait que
 	// réenregistrer la session en cours dans la base de données.
 	public function recreate_log() {
-	   return $this->insert_log();
+	   // On teste que le login enregistré en session existe bien dans la table
+	   // des utilisateurs. Ceci est pour vérifier que cette opération de
+	   // réécriture du log est bien nécessaire, et valide !
+	   if ($this->login == '') {
+	      return false;
+           } else {
+	      $test = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE login = '".$this->login."'"));
+	      if ($test == 0) {
+		  return false;
+	       } else {
+		  return $this->insert_log();
+	      }
+	   }
         }
 
 	## METHODE PRIVEES ##
