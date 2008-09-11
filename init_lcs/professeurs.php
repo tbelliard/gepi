@@ -81,7 +81,8 @@ function add_user($_login, $_nom, $_prenom, $_sexe, $_statut, $_email) {
         civilite = '" . $_civilite . "',
         email = '" . $_email . "',
         statut = '" . $_statut . "',
-        etat = 'actif'
+        etat = 'actif',
+        auth_mode='sso'
         WHERE login = '" . $_login . "'");
     } else {
         $query = "INSERT into utilisateurs SET
@@ -93,6 +94,7 @@ function add_user($_login, $_nom, $_prenom, $_sexe, $_statut, $_email) {
         email = '" . $_email . "',
         statut = '" . $_statut . "',
         etat ='actif',
+        auth_mode='sso',
         change_mdp = 'n'";
         $record = mysql_query($query);
     }
