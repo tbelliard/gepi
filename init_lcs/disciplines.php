@@ -124,7 +124,7 @@ if (isset($_POST['is_posted'])) {
     $ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
 
     // On commence par récupérer tous les profs depuis le LDAP
-    $sr = ldap_search($ds,$ldap_base,"(cn=Matiere_*)");
+    $sr = ldap_search($ds,$lcs_ldap_base_dn,"(cn=Matiere_*)");
     $info = ldap_get_entries($ds,$sr);
 
     if ($_POST['record'] == "yes") {
@@ -160,7 +160,20 @@ if (isset($_POST['is_posted'])) {
 
             // On regarde maintenant les affectations professeur/matière
             $list_member = "";
-            for ( $u = 0; $u < $info[$i]["member"]["count"] ; $u++ ) {
+            if ($info[$i]["memberuid"]["count"] > 0) {
+              for ( $u = 0; $u < $info[$i]["memberuid"]["count"] ; $u++ ) {
+                $member = preg_replace ("/^uid=([^,]+),ou=.*/" , "\\1", $info[$i]["memberuid"][$u] );
+                if (trim($member) !="") {
+                    if ($list_member != "") $list_member .=", ";
+                    $list_member .=$member;
+                    $test = mysql_result(mysql_query("SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
+                    if ($test == 0) {
+                        $res = mysql_query("INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
+                    }
+                }
+              }
+            } else {
+              for ( $u = 0; $u < $info[$i]["member"]["count"] ; $u++ ) {
                 $member = preg_replace ("/^uid=([^,]+),ou=.*/" , "\\1", $info[$i]["member"][$u] );
                 if (trim($member) !="") {
                     if ($list_member != "") $list_member .=", ";
@@ -170,6 +183,7 @@ if (isset($_POST['is_posted'])) {
                         $res = mysql_query("INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
                     }
                 }
+              }
             }
             echo "<tr><td>".$matiere."</td><td>".stripslashes($_POST['reg_nom_complet'][$matiere])."</td><td>".$list_member."</td></tr>\n";
         }
