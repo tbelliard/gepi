@@ -177,6 +177,7 @@ if (!@setlocale(LC_TIME,'fr_FR.ISO8859-1','French','france','fra','french','FR',
 }
 
 $gepiShowGenTime = "no"; // Pour afficher le temps de génération de certaines pages.
+$pageload_starttime = microtime(true);
 
 // Global settings array
 $gepiSettings = array();

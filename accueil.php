@@ -1,6 +1,4 @@
 <?php
-$starttime = microtime();
-
 /*
  * $Id$
  *
@@ -1715,9 +1713,5 @@ if ($_SESSION["statut"] == 'autre') {
 }
 // ========================== fin Statut AUTRE =============================
 
+require_once ("./lib/footer.inc.php");
 ?>
-<!-- correction Régis balise <center> invalide, remplacée par des données dans table.menu dans style.css -->
-<!-- </center>-->
-</div>
-</body>
-</html>

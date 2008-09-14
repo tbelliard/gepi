@@ -70,6 +70,19 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	if(getSettingValue("gepi_pmv")!="n"){
 		if (file_exists($gepiPath."/pmv.php")) require ($gepiPath."/pmv.php");
 	}
+	// Affichage de la durée de chargement de la page
+
+	 if ($niveau_arbo == "0") {
+	   require ("./lib/microtime.php");
+	} elseif ($niveau_arbo == "1") {
+	   require ("../lib/microtime.php");
+	} elseif ($niveau_arbo == "2") {
+	    require ("../../lib/microtime.php");
+	} elseif ($niveau_arbo == "3") {
+	    require ("../../../lib/microtime.php");
+	} else {
+	   require ("../lib/microtime.php");
+	}
 ?>
 </div>
 </body>

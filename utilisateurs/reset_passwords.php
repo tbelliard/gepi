@@ -225,9 +225,16 @@ else {
 						"jec.id_classe = '".$user_classe."')");
 				*/
 				$sql_user_resp="SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, u.auth_mode, re.pers_id, re.resp_legal, r.civilite, jec.id_classe, ra.*
-								FROM utilisateurs u, resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e, resp_adr ra
-								WHERE ( u.login = r.login AND
+								FROM utilisateurs u,
+								     resp_pers r,
+								     responsables2 re,
+								     classes c,
+								     j_eleves_classes jec,
+								     eleves e, 
+								     resp_adr ra
+								WHERE (
 								u.statut = 'responsable' AND
+							        u.login = r.login AND
 								r.pers_id = re.pers_id AND
 								re.ele_id = e.ele_id AND
 								e.login = jec.login AND

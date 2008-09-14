@@ -159,6 +159,4 @@ if ($affiche=='yes') {
 ?>
 
 </center>
-</div>
-</body>
-</html>
+<?php require_once "./lib/footer.inc.php"; ?>
