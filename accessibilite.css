@@ -58,7 +58,7 @@ Mise en page pour validation et accessibilité
 	font-weight: bold;
 }
 .liste_option {
-	font-family: Arial;'
+	font-family: Arial;
 }
 /* --- aligne le texte --- */
 /* .txt_centre {
@@ -98,11 +98,11 @@ Mise en page pour validation et accessibilité
 .info {
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 0.8em;
-	margin-bottom: 1.5em;'
+	margin-bottom: 1.5em;
 }
 .message-erreur {
 	color: #FF0000;
-	font-weight: bold;'
+	font-weight: bold;
 }
 .h2_grand {
 	line-height: 1em;
@@ -114,7 +114,7 @@ Mise en page pour validation et accessibilité
 	line-height: 1em;
 	margin-bottom: 0em;
 	font-variant: normal;
-	font-weight: bold;'
+	font-weight: bold;
 	color: #330033;
 	font-size: 12pt;
 }
@@ -724,7 +724,7 @@ table.menu td {
 	border: none;
 	padding:2px;
 	margin:auto 2px;
-	float: left;'
+	float: left;
 }
 .tab_signatures {
 	width: 676px;
@@ -733,7 +733,7 @@ table.menu td {
 	border: 1px solid;
 	border-color: #cdcdcd black black #cdcdcd;
 	position: relative;
-	overflow: auto;'
+	overflow: auto;
 }
 .cel_signature {
 	padding: 2px;
