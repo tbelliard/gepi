@@ -9,7 +9,7 @@ Mise en page pour validation et accessibilité
        Général
 ***********************/
 /* --- Classes par fonctions --- */
-.
+
 .lien_retour {
 	font-weight: bold;
 	font-style: normal;
@@ -529,7 +529,7 @@ table.menu td {
 	border-style:solid;
 	border-width:1px;
 	border-color: #6F6968;
-	width: 100%:
+	width: 100%;
 }
 .see_all_compte_rendu {
 	background-color: #C7FF99;

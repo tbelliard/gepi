@@ -9,7 +9,7 @@ Mise en page pour impression sans passer par des pages spéciales
 	display:none;
 }
 #container {
-	width: 100%:
+	width: 100%;
 }
 h2 {
 	margin: 0pt;
@@ -178,7 +178,7 @@ ul {
 	margin:5px auto;
 	border: 1px solid;
 	position: relative;
-	overflow: auto;'
+	overflow: auto;
 }
 .cel_signature {
 	padding: 2px;
