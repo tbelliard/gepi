@@ -6932,8 +6932,140 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	$result .= "<font color=\"blue\">Le paramètre denomination_eleves existe déjà dans la table setting.</font><br />";
 	}
 
+	// Ajouts d'index
+	$result .= "&nbsp;->Ajout de l'index 'statut' à la table utilisateurs<br />";
+	$req_test = mysql_query("SHOW INDEX FROM utilisateurs WHERE Key_name = 'statut'");
+	$req_res = mysql_num_rows($req_test);
+	if ($req_res == 0) {
+	   $query = mysql_query("ALTER TABLE `utilisateurs` ADD INDEX statut ( `statut` )");
+	   if ($query) {
+	       $result .= "<font color=\"green\">Ok !</font><br />";
+	   } else {
+	       $result .= "<font color=\"red\">Erreur</font><br />";
+	   }
+	} else {
+	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+	}
 
+	$result .= "&nbsp;->Ajout de l'index 'etat' à la table utilisateurs<br />";
+	$req_test = mysql_query("SHOW INDEX FROM utilisateurs WHERE Key_name = 'etat'");
+	$req_res = mysql_num_rows($req_test);
+	if ($req_res == 0) {
+	   $query = mysql_query("ALTER TABLE `utilisateurs` ADD INDEX etat ( `etat` )");
+	   if ($query) {
+	       $result .= "<font color=\"green\">Ok !</font><br />";
+	   } else {
+	       $result .= "<font color=\"red\">Erreur</font><br />";
+	   }
+	} else {
+	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+	}
+    
+    
+	$result .= "&nbsp;->Ajout de l'index 'login' à la table resp_pers<br />";
+	$req_test = mysql_query("SHOW INDEX FROM resp_pers WHERE Key_name = 'login'");
+	$req_res = mysql_num_rows($req_test);
+	if ($req_res == 0) {
+	   $query = mysql_query("ALTER TABLE `resp_pers` ADD INDEX login ( `login` )");
+	   if ($query) {
+	       $result .= "<font color=\"green\">Ok !</font><br />";
+	   } else {
+	       $result .= "<font color=\"red\">Erreur</font><br />";
+	   }
+	} else {
+	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+	}
+	
+	$result .= "&nbsp;->Ajout de l'index 'adr_id' à la table resp_pers<br />";
+	$req_test = mysql_query("SHOW INDEX FROM resp_pers WHERE Key_name = 'adr_id'");
+	$req_res = mysql_num_rows($req_test);
+	if ($req_res == 0) {
+	   $query = mysql_query("ALTER TABLE `resp_pers` ADD INDEX adr_id ( `adr_id` )");
+	   if ($query) {
+	       $result .= "<font color=\"green\">Ok !</font><br />";
+	   } else {
+	       $result .= "<font color=\"red\">Erreur</font><br />";
+	   }
+	} else {
+	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+	}
+    
+    
+	$result .= "&nbsp;->Ajout de l'index 'pers_id' à la table responsables2<br />";
+	$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'pers_id'");
+	$req_res = mysql_num_rows($req_test);
+	if ($req_res == 0) {
+	   $query = mysql_query("ALTER TABLE `responsables2` ADD INDEX pers_id ( `pers_id` )");
+	   if ($query) {
+	       $result .= "<font color=\"green\">Ok !</font><br />";
+	   } else {
+	       $result .= "<font color=\"red\">Erreur</font><br />";
+	   }
+	} else {
+	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+	}
 
+	$result .= "&nbsp;->Ajout de l'index 'ele_id' à la table responsables2<br />";
+	$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'ele_id'");
+	$req_res = mysql_num_rows($req_test);
+	if ($req_res == 0) {
+	   $query = mysql_query("ALTER TABLE `responsables2` ADD INDEX ele_id ( `ele_id` )");
+	   if ($query) {
+	       $result .= "<font color=\"green\">Ok !</font><br />";
+	   } else {
+	       $result .= "<font color=\"red\">Erreur</font><br />";
+	   }
+	} else {
+	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+	}
+    
+	$result .= "&nbsp;->Ajout de l'index 'resp_legal' à la table responsables2<br />";
+	$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'resp_legal'");
+	$req_res = mysql_num_rows($req_test);
+	if ($req_res == 0) {
+	   $query = mysql_query("ALTER TABLE `responsables2` ADD INDEX resp_legal ( `resp_legal` )");
+	   if ($query) {
+	       $result .= "<font color=\"green\">Ok !</font><br />";
+	   } else {
+	       $result .= "<font color=\"red\">Erreur</font><br />";
+	   }
+	} else {
+	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+	}
+	
+	$result .= "&nbsp;->Ajout de l'index 'ele_id' à la table eleves<br />";
+	$req_test = mysql_query("SHOW INDEX FROM eleves WHERE Key_name = 'ele_id'");
+	$req_res = mysql_num_rows($req_test);
+	if ($req_res == 0) {
+	   $query = mysql_query("ALTER TABLE `eleves` ADD INDEX ele_id ( `ele_id` )");
+	   if ($query) {
+	       $result .= "<font color=\"green\">Ok !</font><br />";
+	   } else {
+	       $result .= "<font color=\"red\">Erreur</font><br />";
+	   }
+	} else {
+	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+	}
+	
+	$result .= "&nbsp;->Ajout de l'index 'id_classe' à la table j_eleves_classes<br />";
+	$req_test = mysql_query("SHOW INDEX FROM j_eleves_classes WHERE Key_name = 'id_classe'");
+	$req_res = mysql_num_rows($req_test);
+	if ($req_res == 0) {
+	   $query = mysql_query("ALTER TABLE `j_eleves_classes` ADD INDEX id_classe ( `id_classe` )");
+	   if ($query) {
+	       $result .= "<font color=\"green\">Ok !</font><br />";
+	   } else {
+	       $result .= "<font color=\"red\">Erreur</font><br />";
+	   }
+	} else {
+	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+	}
+    
+    
+    
+    
+    
+    
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
     saveSetting("versionRc", $gepiRcVersion);
