@@ -162,7 +162,7 @@ if(isset($step)){
 															jec.login=e.login AND
 															jec.id_classe=c.id AND
 															c.id='$tab_classe[$i]';";
-						echo "$sql<br />\n";
+						//echo "$sql<br />\n";
 						$res_test=mysql_query($sql);
 						if(mysql_num_rows($res_test)>0){
 							//echo "$lig_tmp->login<br />\n";
@@ -472,7 +472,7 @@ if(!isset($tab_classe)) {
 
 		$i = 0;
 
-		echo "<table width='100%'>\n";
+		echo "<table width='100%' summary='Choix des classes'>\n";
 		echo "<tr valign='top' align='left'>\n";
 		echo "<td>\n";
 		$nb_class_par_colonne=round($nombre_lignes/3);
@@ -564,7 +564,7 @@ else {
 	//array_unique($tab_classe);
 	$tab_dedoub=array();
 
-	echo "<table class='boireaus'>\n";
+	echo "<table class='boireaus' summary='Groupes'>\n";
 	echo "<tr>\n";
 	echo "<th>Classe</th>\n";
 	echo "<th>Groupe</th>\n";
