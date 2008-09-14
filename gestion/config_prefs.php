@@ -458,7 +458,7 @@ else{
 		$tabchamps=array('accueil_simpl','accueil_infobulles','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
 
 		//echo "<table border='1'>\n";
-		echo "<table class='contenu' summary='Préférences professeurs'>\n";
+		echo "<table class='contenu' border='1' summary='Préférences professeurs'>\n";
 
 		// 1ère ligne
 		//$lignes_entete="<tr style='background-color: white;'>\n";
@@ -554,7 +554,7 @@ else{
 		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_boite');
 
 		//echo "<table border='1'>\n";
-		echo "<table class='contenu' summary='Préférences professeurs'>\n";
+		echo "<table class='contenu' border='1' summary='Préférences professeurs'>\n";
 
 		// 1ère ligne
 		//$lignes_entete.="<tr style='background-color: white;'>\n";
@@ -637,7 +637,7 @@ else{
 		$tabchamps=array('add_modif_conteneur_simpl','add_modif_conteneur_nom_court','add_modif_conteneur_nom_complet','add_modif_conteneur_description','add_modif_conteneur_coef','add_modif_conteneur_boite','add_modif_conteneur_aff_display_releve_notes','add_modif_conteneur_aff_display_bull');
 
 		//echo "<table border='1'>\n";
-		echo "<table class='contenu' summary='Préférences professeurs'>\n";
+		echo "<table class='contenu' border='1' summary='Préférences professeurs'>\n";
 
 		// 1ère ligne
 		//$lignes_entete.="<tr style='background-color: white;'>\n";
