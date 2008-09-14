@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 26/08/2006
+ * @version: $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -208,6 +208,24 @@ if($msg!=""){
 
 	}
 
+
+	function survol_infobulle(texte) {
+		/*
+		for(i=0;i<".$nombreligne.";i=i+10){
+			idcellule='col_tit_'+i+'_'+colonne;
+			eval('document.getElementById(\''+idcellule+'\').style.background=\'lightblue\'');
+		}
+		*/
+
+		if(document.getElementById('div_infobulle')) {
+			document.getElementById('div_infobulle').innerHTML=texte;
+			afficher_div('div_infobulle','y',20,20);
+		}
+	}
+
+
+
+
 	function masquage(colonne){
 		if(document.getElementById('c_col_'+colonne).checked){
 			document.getElementById('td_col_'+colonne).style.background='red';
@@ -252,7 +270,7 @@ if($msg!=""){
 		echo "<input type='hidden' name='tab_matiere[$i]' value='$tab_matiere[$i]' />\n";
 	}
 
-	echo "<table border='1' summary='Tableau des professeurs et matières'>\n";
+	echo "<table class='boireaus' border='1' summary='Tableau des professeurs et matières'>\n";
 	echo "<tr style='text-align:center; background: white;'>\n";
 	echo "<td>Masquage</td>\n";
 	for($i=0;$i<count($tab_matiere);$i++){
@@ -261,6 +279,7 @@ if($msg!=""){
 	echo "</tr>\n";
 
 	$cpt=0;
+	$alt=1;
 	while ($cpt < $nombreligne){
 
 		if($cpt/10-round($cpt/10)==0){
@@ -278,7 +297,8 @@ if($msg!=""){
 		$user_login = mysql_result($calldata, $cpt, "login");
 		//$user_etat[$cpt] = mysql_result($calldata, $cpt, "etat");
 
-		echo "<tr>\n";
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name='user_login[]' value='$user_login' />\n";
 		echo "$user_nom $user_prenom";
@@ -298,7 +318,7 @@ if($msg!=""){
 			}
 
 			//echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt);' onMouseOut='retablit_couleurs($cpt);'>\n";
-			echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt); survol_colore_matiere($j)' onMouseOut='retablit_couleurs($cpt);'>\n";
+			echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt); survol_colore_matiere($j);survol_infobulle(\"<p align=center>".$user_nom." ".substr($user_prenom,0,1).".<br />".$tab_matiere[$j]."</p>\")' onMouseOut='retablit_couleurs($cpt);cacher_div(\"div_infobulle\")'>\n";
 			echo "<div id='d_".$cpt."_".$j."'>\n";
 			echo "<input type='checkbox' id='c_".$cpt."_".$j."' name='c_".$cpt."_[".$j."]' value='oui' onchange='colore(\"td_".$cpt."_".$j."\",\"c_".$cpt."_".$j."\")' $checked_ou_pas />\n";
 			echo "</div>\n";
@@ -312,6 +332,7 @@ if($msg!=""){
 ?>
 <input type='hidden' name='valid' value="yes" />
 <center><input type='submit' value='Enregistrer' /></center>
+<div id='div_infobulle' style='width:15em; color: #000000; border: 1px solid #000000; background-color:white; padding: 0px; position: absolute;'></div>
 </div>
 </form>
 <?php require("../lib/footer.inc.php");?>
