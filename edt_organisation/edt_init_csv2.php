@@ -62,7 +62,7 @@ require_once("./menu.inc.php");
 // +++++++++++++++++++GESTION DU RETOUR vers absences+++++++++++++++++
 $_SESSION["retour"] = "edt_init_csv2";
 // +++++++++++++++++++FIN GESTION RETOUR vers absences++++++++++++++++
-debug_var();
+//debug_var();
 ?>
 
 
