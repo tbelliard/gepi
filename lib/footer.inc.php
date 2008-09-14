@@ -72,6 +72,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	}
 	// Affichage de la durée de chargement de la page
 
+	if (!isset($niveau_arbo)) $niveau_arbo = 1;
 	 if ($niveau_arbo == "0") {
 	   require ("./lib/microtime.php");
 	} elseif ($niveau_arbo == "1") {
@@ -80,8 +81,6 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	    require ("../../lib/microtime.php");
 	} elseif ($niveau_arbo == "3") {
 	    require ("../../../lib/microtime.php");
-	} else {
-	   require ("../lib/microtime.php");
 	}
 ?>
 </div>
