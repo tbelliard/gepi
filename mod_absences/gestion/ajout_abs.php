@@ -35,16 +35,16 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
-die();
+	die();
 };
 
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
-die();
+	die();
 }
 
 
@@ -132,6 +132,18 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve)
 		}
 }
 */
+
+	// On fait le rapport avec la table horaires_etablissement pour éviter de vérifier le dimanche s'il est ouvert
+	$sql_h = "SELECT jour_horaire_etablissement, ouvert_horaire_etablissement FROM horaires_etablissement LIMIT 7";
+	$query_h = mysql_query($sql_h);
+	$test_jour_dimanche = 'non';
+	while($rep = mysql_fetch_array($query_h)){
+		 if ($rep["jour_horaire_etablissement"] == 'dimanche' AND $rep["ouvert_horaire_etablissement"] == 1) {
+		 	$test_jour_dimanche = 'oui';
+		 }
+	} // while
+
+
 if($action_sql == "ajouter" or $action_sql == "modifier")
 {
 
@@ -173,8 +185,8 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
           $eleve_absent[$total] = $eleve_absence_eleve ;
 
 
-    if($active_absence_eleve === 'oui')
-     {
+	if($active_absence_eleve === 'oui')
+	{
           if ($d_heure_absence_eleve=="00:00" or $d_heure_absence_eleve=="") {$d_heure_absence_eleve = ""; }
           if ($a_heure_absence_eleve=="00:00" or $a_heure_absence_eleve=="") {$a_heure_absence_eleve = ""; }
           if ($a_date_absence_eleve_ins=="AAAA-MM-JJ" or $a_date_absence_eleve_ins=="" or $a_date_absence_eleve_ins=="JJ/MM/AAAA" or $a_date_absence_eleve_ins=="--") {$a_date_absence_eleve_ins = $d_date_absence_eleve_ins; }
@@ -199,47 +211,56 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
                            }
                }
 
-            //Vérification
-                 $d_date_absence_eleve_verif = explode('-',$d_date_absence_eleve_ins);
-                 $a_date_absence_eleve_verif = explode('-',$a_date_absence_eleve_ins);
+		//Vérification
 
-              if (verif_date($d_date_absence_eleve_ins) === "pass")
-               {
-                    $verification = '1';
-                    if (verif_date($a_date_absence_eleve_ins) === "pass")
-                     {
-                           $verification = '1';
-                           if ($d_date_absence_eleve_ins <= $a_date_absence_eleve_ins)
-                            {
-                                  $verification = '1';
-                                   if (date("w", mktime(0, 0, 0, $d_date_absence_eleve_verif[1], $d_date_absence_eleve_verif[2], $d_date_absence_eleve_verif[0])) != '0')
+		$d_date_absence_eleve_verif = explode('-',$d_date_absence_eleve_ins);
+		$a_date_absence_eleve_verif = explode('-',$a_date_absence_eleve_ins);
+
+			if (verif_date($d_date_absence_eleve_ins) === "pass")
+			{
+				$verification = '1';
+                if (verif_date($a_date_absence_eleve_ins) === "pass")
+                {
+                   	$verification = '1';
+					if ($d_date_absence_eleve_ins <= $a_date_absence_eleve_ins)
+					{
+						$verification = '1';
+						if (date("w", mktime(0, 0, 0, $d_date_absence_eleve_verif[1], $d_date_absence_eleve_verif[2], $d_date_absence_eleve_verif[0])) != '0' OR $test_jour_dimanche == 'oui')
+                        {echo 'coucou';
+							$verification = '1';
+							if (date("w", mktime(0, 0, 0, $a_date_absence_eleve_verif[1], $a_date_absence_eleve_verif[2], $a_date_absence_eleve_verif[0])) != '0' OR $test_jour_dimanche == 'oui')
+							{
+                                $verification = '1';
+                                if(( $d_heure_absence_eleve != "" and $a_heure_absence_eleve != "") or ( $dp_absence_eleve != '' or $ap_absence_eleve != '' ))
+                                {
+                                	$verification = '1';
+                                    if ($a_heure_absence_eleve_ins > $d_heure_absence_eleve_ins)
                                     {
-                                           $verification = '1';
-                                           if (date("w", mktime(0, 0, 0, $a_date_absence_eleve_verif[1], $a_date_absence_eleve_verif[2], $a_date_absence_eleve_verif[0])) != '0')
-                                            {
-                                                  $verification = '1';
-                                                  if(( $d_heure_absence_eleve != "" and $a_heure_absence_eleve != "") or ( $dp_absence_eleve != '' or $ap_absence_eleve != '' ))
-                                                   {
-                                                       $verification = '1';
-                                                       if ($a_heure_absence_eleve_ins > $d_heure_absence_eleve_ins)
-                                                       {
-                                                           $verification = '1';
-                                                       } else {
-                                                                if ($d_date_absence_eleve_ins == $a_date_absence_eleve_ins)
-                                                                 {
-                                                                     $verification = '11'; $erreur = '1'; $texte_erreur="L'heure de debut ne peut pas être plus grande ou égale à celle de fin";
-                                                                 } else { $verification = '1'; }
-                                                              }
-                                                   } else {
-                                                             if(( ($d_heure_absence_eleve === '' || '00:00') and ($a_heure_absence_eleve === '' || '00:00')) and ( $dp_absence_eleve === '' and $ap_absence_eleve === '' )) { $verification = '2'; $texte_erreur="il n'y a pas d'horaire ou de créneaux horaire  de saisie"; }
-                                                             if(( $d_heure_absence_eleve != '' and $a_heure_absence_eleve != '' ) and ( $dp_absence_eleve != '' or $ap_absence_eleve != '' )) { $verification = '3'; $texte_erreur="vous ne pouvez pas saisire une période et une heure"; }
-                                                             $erreur = '1';
-                                                          }
-                                             } else { $verification = '7'; $erreur = '1'; $texte_erreur="la date de fin tombe un dimanche"; }
-                                      } else { $verification = '6'; $erreur = '1'; $texte_erreur="la date de debut tombe un dimanche"; }
-                               } else { $verification = '8'; $erreur='1'; $texte_erreur="La date  du debut doit &ecirc;tre plus petit que la date de fin..."; }
-                        } else { $verification = '5'; $erreur = '1'; $texte_erreur="la date de fin n'est pas correcte"; }
-                 } else { $verification = '4'; $erreur = '1'; $texte_erreur="La date de debut n'est pas correcte"; }
+                                        $verification = '1';
+                                    } else {
+                                        if ($d_date_absence_eleve_ins == $a_date_absence_eleve_ins)
+                                        {
+                                            $verification = '11'; $erreur = '1'; $texte_erreur="L'heure de debut ne peut pas être plus grande ou égale à celle de fin";
+                                        } else {
+											$verification = '1';
+										}
+                                    }
+                                } else {
+                                    if(( ($d_heure_absence_eleve === '' || '00:00') and ($a_heure_absence_eleve === '' || '00:00')) and ( $dp_absence_eleve === '' and $ap_absence_eleve === '' ))
+									{
+										$verification = '2'; $texte_erreur="il n'y a pas d'horaire ou de créneaux horaire  de saisie";
+									}
+									if(( $d_heure_absence_eleve != '' and $a_heure_absence_eleve != '' ) and ( $dp_absence_eleve != '' or $ap_absence_eleve != '' ))
+									{
+										$verification = '3'; $texte_erreur="vous ne pouvez pas saisire une période et une heure";
+									}
+									$erreur = '1';
+                                }
+							} else { $verification = '7'; $erreur = '1'; $texte_erreur="la date de fin tombe un dimanche"; }
+						} else { $verification = '6'; $erreur = '1'; $texte_erreur="la date de debut tombe un dimanche"; }
+                    } else { $verification = '8'; $erreur='1'; $texte_erreur="La date  du debut doit &ecirc;tre plus petit que la date de fin..."; }
+                } else { $verification = '5'; $erreur = '1'; $texte_erreur="la date de fin n'est pas correcte"; }
+			} else { $verification = '4'; $erreur = '1'; $texte_erreur="La date de debut n'est pas correcte"; }
 
 
 
@@ -277,7 +298,7 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 
 
 
-// on vérifie si une absences est déjas définie
+// on vérifie si une absences est déja définie
 
   //requete dans la base absence eleve
   if ( $action_sql === "ajouter" ) { $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$eleve_absence_eleve."' AND d_date_absence_eleve <= '".$d_date_absence_eleve_ins."' AND  a_date_absence_eleve >= '".$d_date_absence_eleve_ins."'"; }
@@ -384,7 +405,7 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
                       {
                              $erreur = '1';
                              $verification = '10';
-                             $texte_erreur="vous essayer d'enregistré une absence dans un interval de temps d'absence déjas saisie";
+                             $texte_erreur="vous essayez d'enregistrer une absence dans un intervale de temps d'absence déja saisie";
                              $id_abs = $data['id_absence_eleve'];
                              $erreur_aff_d_date_absence_eleve = date_fr($data['d_date_absence_eleve']);
                              $erreur_aff_a_date_absence_eleve = date_fr($data['a_date_absence_eleve']);
@@ -400,7 +421,7 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
                       {
                              $erreur = '1';
                              $verification = '10';
-                             $texte_erreur="une absence est déja enregistré dans cette interval de date";
+                             $texte_erreur="une absence est déja enregistrée dans cet intervale de date";
                              $id_abs = $data['id_absence_eleve'];
                              $erreur_aff_d_date_absence_eleve = date_fr($data['d_date_absence_eleve']);
                              $erreur_aff_a_date_absence_eleve = date_fr($data['a_date_absence_eleve']);
