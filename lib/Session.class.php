@@ -67,12 +67,12 @@ class Session {
 		  	# timeout : on remet à zéro.
 		  	$debut_session = $_SESSION['start'];
 		  	$this->reset(3);
-		  	if (isset($_GLOBALS['niveau_arbo'])) {
-		  		if ($_GLOBALS['niveau_arbo'] == "0") {
+		  	if (isset($GLOBALS['niveau_arbo'])) {
+		  		if ($GLOBALS['niveau_arbo'] == "0") {
 		  			$logout_path = "./logout.php";
-		  		} elseif ($_GLOBALS['niveau_arbo'] == "2") {
+		  		} elseif ($GLOBALS['niveau_arbo'] == "2") {
 		  			$logout_path = "../../logout.php";
-		  		} elseif ($_GLOBALS['niveau_arbo'] == "3") {
+		  		} elseif ($GLOBALS['niveau_arbo'] == "3") {
 		  			$logout_path = "../../../logout.php";
 		  		} else {
 		  			$logout_path = "../logout.php";
@@ -189,7 +189,7 @@ class Session {
 			// Dans le cas du multisite, il faut maintenant déterminer le RNE
 			// de l'utilisateur avant d'aller plus loin, sauf s'il a déjà été passé
 			// en paramètre.
-			if (isset($_GLOBALS['multisite']) && $_GLOBALS['multisite'] == "y") {
+			if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == "y") {
 				if (!isset($_GET['rne']) AND !isset($_COOKIE["RNE"])) {
 					if (LDAPServer::is_setup()) {
 						// Le RNE n'a pas été transmis. Il faut le récupérer et recharger la page
@@ -637,14 +637,14 @@ class Session {
 		# LCS a besoin de quelques variables extérieures...
 		# L'initialisation ci-dessous n'est pas très propre, il faudra
 		# reprendre ça...
-		$DBAUTH = $_GLOBALS['DBAUTH'];
-		$HTTP_COOKIE_VARS = $_GLOBALS['HTTP_COOKIE_VARS'];
-		$authlink = $_GLOBALS['authlink'];
-		$dbHost = $_GLOBALS['dbHost'];
-		$dbUser = $_GLOBALS['dbUser'];
-		$dbPass = $_GLOBALS['dbPass'];
-		$db_nopersist = $_GLOBALS['db_nopersist'];
-		$dbDb = $_GLOBALS['dbDb'];
+		$DBAUTH = $GLOBALS['DBAUTH'];
+		$HTTP_COOKIE_VARS = $GLOBALS['HTTP_COOKIE_VARS'];
+		$authlink = $GLOBALS['authlink'];
+		$dbHost = $GLOBALS['dbHost'];
+		$dbUser = $GLOBALS['dbUser'];
+		$dbPass = $GLOBALS['dbPass'];
+		$db_nopersist = $GLOBALS['db_nopersist'];
+		$dbDb = $GLOBALS['dbDb'];
 
 		list ($idpers,$login) = isauth();
 		if ($idpers) {
@@ -688,7 +688,7 @@ class Session {
 		}
 
 		# Gestion du multisite : on a besoin du RNE de l'utilisateur.
-		if (isset($_GLOBALS['multisite']) && $_GLOBALS['multisite'] == 'y' && LDAPServer::is_setup()) {
+		if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && LDAPServer::is_setup()) {
 			$ldap = new LDAServer;
 			$user = $ldap->get_user_profile($this->login);
 			$this->rne = $user["rne"];
@@ -811,7 +811,7 @@ class Session {
 
 	# Verrouillage d'un compte en raison d'un trop grand nombre d'échec de connexion.
 	private function lock_account($_login) {
-       if ((!isset($_GLOBALS['bloque_compte_admin'])) or ($_GLOBALS['bloque_compte_admin'] != "n")) {
+       if ((!isset($GLOBALS['bloque_compte_admin'])) or ($GLOBALS['bloque_compte_admin'] != "n")) {
           // On verrouille le compte même si c'est un admin
           $reg_data = sql_query("UPDATE utilisateurs SET date_verrouillage=now() WHERE login='".$_login."'");
        } else {
