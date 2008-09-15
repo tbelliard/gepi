@@ -474,12 +474,12 @@ class Session {
 		# 3 : logout lié à un timeout
 
 	    # On teste 'start' simplement pour simplement vérifier que la session n'a pas encore été fermée.
-		if ($this->start) {
+	    if ($this->start) {
 	      $sql = "UPDATE log SET AUTOCLOSE = '" . $_auto . "', END = now() where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
-          $res = sql_query($sql);
-    	}
+              $res = sql_query($sql);
+	   }
 
-    	// Détruit toutes les variables de session
+	   // Détruit toutes les variables de session
 	    session_unset();
 	    $_SESSION = array();
 
