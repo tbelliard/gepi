@@ -98,7 +98,7 @@ require_once("../lib/header.inc");
     </td>
 </tr>
 <tr>
-    <td width='200'><a href="config_prefs.php">Paramétrage de l'interface professeur</a></td>
+    <td width='200'><a href="config_prefs.php">Paramétrage de l'interface <?php echo $gepiSettings['denomination_professeur']; ?></a></td>
     <td>Paramétrage des items de l'interface simplifiée pour certaines pages. Gestion du menu en barre horizontale.</td>
 </tr>
 <tr>
@@ -129,12 +129,12 @@ require_once("../lib/header.inc");
 </tr>
 <tr>
     <td width='200'><a href="efface_base.php">Effacer la base</a></td>
-    <td>Permet de réinitialiser les bases en effaçant toutes les données élèves de la base.
+    <td>Permet de réinitialiser les bases en effaçant toutes les données <?php echo $gepiSettings['denomination_eleves']; ?> de la base.
     </td>
 </tr>
 <tr>
     <td width='200'><a href="efface_photos.php">Effacer les photos</a></td>
-    <td>Permet d'effacer les photos des élèves qui ne sont plus dans la base.</td>
+    <td>Permet d'effacer les photos des <?php echo $gepiSettings['denomination_eleves']; ?> qui ne sont plus dans la base.</td>
 </tr>
 <tr>
     <td width='200'><a href="gestion_temp_dir.php">Gestion des dossiers temporaires</a></td>
@@ -153,12 +153,12 @@ if (LDAPServer::is_setup()) {
     ?>
 <tr>
     <td width='200'><a href="../init_scribe/index.php">Initialisation à partir de l'annuaire LDAP du serveur Eole Scribe</a></td>
-    <td>Permet d'importer les données élèves, classes, professeurs, matières directement depuis le serveur LDAP de Scribe.
+    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières directement depuis le serveur LDAP de Scribe.
     </td>
 </tr>
 <tr>
     <td width='200'><a href="../init_lcs/index.php">Initialisation à partir de l'annuaire LDAP du serveur LCS</a></td>
-    <td>Permet d'importer les données élèves, classes, professeurs, matières directement depuis le serveur LDAP de LCS.
+    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières directement depuis le serveur LDAP de LCS.
     </td>
 </tr>
 <?php
@@ -166,30 +166,30 @@ if (LDAPServer::is_setup()) {
 ?>
 <tr>
     <td width='200'><a href="../init_csv/index.php">Initialisation des données à partir de fichiers CSV</a></td>
-    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis des fichiers CSV, par exemple des exports depuis Sconet.
+    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis des fichiers CSV, par exemple des exports depuis Sconet.
     </td>
 </tr>
 <tr>
     <td width='200'><a href="../init_xml2/index.php">Initialisation des données à partir de fichiers XML</a></td>
-    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les exports XML de Sconet/STS.<br />
+    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis les exports XML de Sconet/STS.<br />
 	<b>Nouvelle procédure:</b> Plus simple et moins gourmande en ressources que l'ancienne méthode ci-dessous.
     </td>
 </tr>
 <tr>
     <td width='200'><a href="../init_xml/index.php">Initialisation des données à partir de fichiers XML</a></td>
-    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les exports XML de Sconet/STS.<br />
+    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis les exports XML de Sconet/STS.<br />
 	<i>Les XML sont traités pour générer des fichiers CSV qui sont ensuite réclamés dans les différentes étapes de l'initialisation.</i>
     </td>
 </tr>
 <tr>
     <td width='200'><a href="../init_dbf_sts/index.php">Initialisation des données à partir de fichiers DBF et XML</a> (OBSOLETE)</td>
-    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis deux fichiers DBF et l'export XML de STS.<br />
+    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis deux fichiers DBF et l'export XML de STS.<br />
 	<span style='color:red; '>Cette solution ne sera plus maintenue dans la future version 1.5.2 de Gepi.</span>
     </td>
 </tr>
 <tr>
     <td width='200'><a href="../initialisation/index.php">Initialisation des données à partir des fichiers GEP</a> (OBSOLETE)</td>
-    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les fichiers GEP. Cette procédure est désormais obsolète avec la généralisation de Sconet.<br />
+    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis les fichiers GEP. Cette procédure est désormais obsolète avec la généralisation de Sconet.<br />
 	<span style='color:red; '>Cette solution ne sera plus maintenue dans la future version 1.5.2 de Gepi.</span>
     </td>
 </tr>

@@ -620,12 +620,12 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 
 	if (isset($_POST['appreciations_types_profs'])) {
 		if (!saveSetting("appreciations_types_profs", 'y')) {
-			$msg .= "Erreur lors de l'enregistrement de l'autorisation d'utilisation d'appréciations-types pour les professeurs !";
+			$msg .= "Erreur lors de l'enregistrement de l'autorisation d'utilisation d'appréciations-types pour les ".$gepiSettings['denomination_professeurs']." !";
 		}
 	}
 	else{
 		if (!saveSetting("appreciations_types_profs", 'n')) {
-			$msg .= "Erreur lors de l'enregistrement de l'interdiction d'utilisation d'appréciations-types pour les professeurs !";
+			$msg .= "Erreur lors de l'enregistrement de l'interdiction d'utilisation d'appréciations-types pour les ".$gepiSettings['denomination_professeurs']." !";
 		}
 	}
 
@@ -671,52 +671,52 @@ require_once("../lib/header.inc");
 		</th>
 	</tr>
 	<tr>
-		<td style="font-variant: small-caps;">Le professeur</td>
+		<td style="font-variant: small-caps;">Un <?php echo $gepiSettings['denomination_professeur']; ?></td>
 		<td>
 			<table border='0' summary='Professeur'>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveProf" id="GepiAccesReleveProf" value="yes" <?php if (getSettingValue("GepiAccesReleveProf")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesReleveProf' style='cursor: pointer;'> a accès aux relevés de notes des élèves des classes dans lesquelles il enseigne</label></td>
+				<td style='border: 0px;'><label for='GepiAccesReleveProf' style='cursor: pointer;'> a accès aux relevés de notes des <?php echo $gepiSettings['denomination_eleves']; ?> des classes dans lesquelles il enseigne</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveProfTousEleves" id="GepiAccesReleveProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesReleveProfTousEleves")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesReleveProfTousEleves' style='cursor: pointer;'> a accès aux relevés de notes de tous les élèves des classes dans lesquelles il enseigne (<i>si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées</i>)</label></td>
+				<td style='border: 0px;'><label for='GepiAccesReleveProfTousEleves' style='cursor: pointer;'> a accès aux relevés de notes de tous les <?php echo $gepiSettings['denomination_eleves']; ?> des classes dans lesquelles il enseigne (<i>si case non cochée, le <?php echo $gepiSettings['denomination_professeur']; ?> ne voit que les <?php echo $gepiSettings['denomination_eleves']; ?> de ses groupes d'enseignement et pas les autres <?php echo $gepiSettings['denomination_eleves']; ?> des classes concernées</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveProfToutesClasses" id="GepiAccesReleveProfToutesClasses" value="yes" <?php if (getSettingValue("GepiAccesReleveProfToutesClasses")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesReleveProfToutesClasses' style='cursor: pointer;'> a accès aux relevés de notes des élèves de toutes les classes</label></td>
+				<td style='border: 0px;'><label for='GepiAccesReleveProfToutesClasses' style='cursor: pointer;'> a accès aux relevés de notes des <?php echo $gepiSettings['denomination_eleves']; ?> de toutes les classes</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesMoyennesProf" id="GepiAccesMoyennesProf" value="yes" <?php if (getSettingValue("GepiAccesMoyennesProf")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesMoyennesProf' style='cursor: pointer;'> a accès aux moyennes des élèves des classes dans lesquelles il enseigne</label></td>
+				<td style='border: 0px;'><label for='GepiAccesMoyennesProf' style='cursor: pointer;'> a accès aux moyennes des <?php echo $gepiSettings['denomination_eleves']; ?> des classes dans lesquelles il enseigne</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesMoyennesProfTousEleves" id="GepiAccesMoyennesProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesMoyennesProfTousEleves")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesMoyennesProfTousEleves' style='cursor: pointer;'> a accès aux moyennes de tous les élèves des classes dans lesquelles il enseigne (<i>si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées</i>)</label></td>
+				<td style='border: 0px;'><label for='GepiAccesMoyennesProfTousEleves' style='cursor: pointer;'> a accès aux moyennes de tous les <?php echo $gepiSettings['denomination_eleves']; ?> des classes dans lesquelles il enseigne (<i>si case non cochée, le <?php echo $gepiSettings['denomination_professeur']; ?> ne voit que les <?php echo $gepiSettings['denomination_eleves']; ?> de ses groupes d'enseignement et pas les autres <?php echo $gepiSettings['denomination_eleves']; ?> des classes concernées</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesMoyennesProfToutesClasses" id="GepiAccesMoyennesProfToutesClasses" value="yes" <?php if (getSettingValue("GepiAccesMoyennesProfToutesClasses")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesMoyennesProfToutesClasses' style='cursor: pointer;'> a accès aux moyennes des élèves de toutes les classes</label></td>
+				<td style='border: 0px;'><label for='GepiAccesMoyennesProfToutesClasses' style='cursor: pointer;'> a accès aux moyennes des <?php echo $gepiSettings['denomination_eleves']; ?> de toutes les classes</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesBulletinSimpleProf" id="GepiAccesBulletinSimpleProf" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleProf")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesBulletinSimpleProf' style='cursor: pointer;'> a accès aux bulletins simples des élèves des classes dans lesquelles il enseigne</label></td>
+				<td style='border: 0px;'><label for='GepiAccesBulletinSimpleProf' style='cursor: pointer;'> a accès aux bulletins simples des <?php echo $gepiSettings['denomination_eleves']; ?> des classes dans lesquelles il enseigne</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesBulletinSimpleProfTousEleves" id="GepiAccesBulletinSimpleProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleProfTousEleves")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesBulletinSimpleProfTousEleves' style='cursor: pointer;'> a accès aux bulletins simples de tous les élèves des classes dans lesquelles il enseigne (<i>si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées</i>)</label></td>
+				<td style='border: 0px;'><label for='GepiAccesBulletinSimpleProfTousEleves' style='cursor: pointer;'> a accès aux bulletins simples de tous les <?php echo $gepiSettings['denomination_eleves']; ?> des classes dans lesquelles il enseigne (<i>si case non cochée, le <?php echo $gepiSettings['denomination_professeur']; ?> ne voit que les <?php echo $gepiSettings['denomination_eleves']; ?> de ses groupes d'enseignement et pas les autres <?php echo $gepiSettings['denomination_eleves']; ?> des classes concernées</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesBulletinSimpleProfToutesClasses" id="GepiAccesBulletinSimpleProfToutesClasses" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleProfToutesClasses")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesBulletinSimpleProfToutesClasses' style='cursor: pointer;'> a accès aux bulletins simples des élèves de toutes les classes</label></td>
+				<td style='border: 0px;'><label for='GepiAccesBulletinSimpleProfToutesClasses' style='cursor: pointer;'> a accès aux bulletins simples des <?php echo $gepiSettings['denomination_eleves']; ?> de toutes les classes</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -737,17 +737,17 @@ require_once("../lib/header.inc");
 			<!-- Années antérieures -->
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="AAProfTout" id="AAProfTout" value="yes" <?php if (getSettingValue("AAProfTout")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='AAProfTout' style='cursor: pointer;'> a accès aux données d'années antérieures pour tous les élèves</label></td>
+				<td style='border: 0px;'><label for='AAProfTout' style='cursor: pointer;'> a accès aux données d'années antérieures pour tous les <?php echo $gepiSettings['denomination_eleves']; ?></label></td>
 			</tr>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="AAProfClasses" id="AAProfClasses" value="yes" <?php if (getSettingValue("AAProfClasses")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='AAProfClasses' style='cursor: pointer;'> a accès aux données antérieures des élèves des classes pour lesquelles il fournit un enseignement<br />
-				(<i>sans nécessairement avoir tous les élèves de la classe</i>)</label></td>
+				<td style='border: 0px;'><label for='AAProfClasses' style='cursor: pointer;'> a accès aux données antérieures des <?php echo $gepiSettings['denomination_eleves']; ?> des classes pour lesquelles il fournit un enseignement<br />
+				(<i>sans nécessairement avoir tous les <?php echo $gepiSettings['denomination_eleves']; ?> de la classe</i>)</label></td>
 			</tr>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="AAProfGroupes" id="AAProfGroupes" value="yes" <?php if (getSettingValue("AAProfGroupes")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='AAProfGroupes' style='cursor: pointer;'> a accès aux données antérieures des élèves des groupes auxquels il enseigne<br />
-				(<i>il a ces élèves en classe</i>)
+				<td style='border: 0px;'><label for='AAProfGroupes' style='cursor: pointer;'> a accès aux données antérieures des <?php echo $gepiSettings['denomination_eleves']; ?> des groupes auxquels il enseigne<br />
+				(<i>il a ces <?php echo $gepiSettings['denomination_eleves']; ?> en classe</i>)
 				</label></td>
 			</tr>
 
@@ -762,7 +762,7 @@ require_once("../lib/header.inc");
 	</tr>
 	<tr>
 		<!-- Professeur principal-->
-		<td style="font-variant: small-caps;">Le <?php echo getSettingValue("gepi_prof_suivi"); ?></td>
+		<td style="font-variant: small-caps;">Un <?php echo getSettingValue("gepi_prof_suivi"); ?></td>
 		<td>
 			<table border='0' summary='Professeur principal'>
 			<tr valign='top'>
@@ -788,12 +788,12 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesRestrAccesAppProfP" id="GepiAccesRestrAccesAppProfP" value="yes" <?php if (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesRestrAccesAppProfP' style='cursor: pointer;'> a accès au paramétrage des accès parents/élèves aux appréciations/avis des classes dont il est <?php echo getSettingValue("gepi_prof_suivi"); ?></label></td>
+				<td style='border: 0px;'><label for='GepiAccesRestrAccesAppProfP' style='cursor: pointer;'> a accès au paramétrage des accès <?php echo $gepiSettings['denomination_responsables']; ?>/<?php echo $gepiSettings['denomination_eleves']; ?> aux appréciations/avis des classes dont il est <?php echo getSettingValue("gepi_prof_suivi"); ?></label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesBulletinSimplePP" id="GepiAccesBulletinSimplePP" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimplePP")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesBulletinSimplePP' style='cursor: pointer;'> a accès aux bulletins simples des élèves dont il est <?php echo getSettingValue("gepi_prof_suivi");?></label></td>
+				<td style='border: 0px;'><label for='GepiAccesBulletinSimplePP' style='cursor: pointer;'> a accès aux bulletins simples des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est <?php echo getSettingValue("gepi_prof_suivi");?></label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -803,7 +803,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesGestElevesProfP" id="GepiAccesGestElevesProfP" value="yes" <?php if (getSettingValue("GepiAccesGestElevesProfP")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesGestElevesProfP' style='cursor: pointer;'> a accès aux fiches des élèves dont il est <?php echo getSettingValue("gepi_prof_suivi"); ?></label>
+				<td style='border: 0px;'><label for='GepiAccesGestElevesProfP' style='cursor: pointer;'> a accès aux fiches des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est <?php echo getSettingValue("gepi_prof_suivi"); ?></label>
 				</td>
 			</tr>
 
@@ -812,13 +812,13 @@ require_once("../lib/header.inc");
 				<input type="checkbox" name="GepiAccesGestPhotoElevesProfP" id="GepiAccesGestPhotoElevesProfP" value="yes" <?php if (getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes') echo "checked"; ?> />
 				</td>
 				<td style='border: 0px;'><label for='GepiAccesGestPhotoElevesProfP' style='cursor: pointer;'>
-				 a accès à l'upload des photos de ces élèves si le module trombinoscope est activé et si le professeur a accès aux fiches élèves (<i>ci-dessus</i>).</label></td>
+				 a accès à l'upload des photos de ses <?php echo $gepiSettings['denomination_eleves']; ?> si le module trombinoscope est activé et si le <?php echo $gepiSettings['denomination_professeur']; ?> a accès aux fiches <?php echo $gepiSettings['denomination_eleves']; ?> (<i>ci-dessus</i>).</label></td>
 			</tr>
 
 			<!-- Années antérieures -->
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="AAProfPrinc" id="AAProfPrinc" value="yes" <?php if (getSettingValue("AAProfPrinc")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='AAProfPrinc' style='cursor: pointer;'> a accès aux données d'années antérieures des élèves dont il est professeur principal</label></td>
+				<td style='border: 0px;'><label for='AAProfPrinc' style='cursor: pointer;'> a accès aux données d'années antérieures des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est <?php echo $gepiSettings['denomination_professeur']; ?> principal</label></td>
 			</tr>
 			</table>
 	</tr>
@@ -859,11 +859,11 @@ require_once("../lib/header.inc");
 			<!-- Années antérieures -->
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="AAScolTout" id="AAScolTout" value="yes" <?php if (getSettingValue("AAScolTout")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='AAScolTout' style='cursor: pointer;'> a accès aux données d'années antérieures de tous les élèves</label></td>
+				<td style='border: 0px;'><label for='AAScolTout' style='cursor: pointer;'> a accès aux données d'années antérieures de tous les <?php echo $gepiSettings['denomination_eleves']; ?></label></td>
 			</tr>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="AAScolResp" id="AAScolResp" value="yes" <?php if (getSettingValue("AAScolResp")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='AAScolResp' style='cursor: pointer;'> a accès aux données d'années antérieures des élèves des classes dont il est responsable</label></td>
+				<td style='border: 0px;'><label for='AAScolResp' style='cursor: pointer;'> a accès aux données d'années antérieures des <?php echo $gepiSettings['denomination_eleves']; ?> des classes dont il est responsable</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -876,7 +876,7 @@ require_once("../lib/header.inc");
 		</td>
 	</tr>
 	<tr>
-		<td style="font-variant: small-caps;">Le CPE</td>
+		<td style="font-variant: small-caps;">Un CPE</td>
 		<td>
 			<table border='0' summary='CPE'>
 			<tr valign='top'>
@@ -897,11 +897,11 @@ require_once("../lib/header.inc");
 			<!-- Années antérieures -->
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="AACpeTout" id="AACpeTout" value="yes" <?php if (getSettingValue("AACpeTout")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='AACpeTout' style='cursor: pointer;'> a accès aux données d'années antérieures de tous les élèves</label></td>
+				<td style='border: 0px;'><label for='AACpeTout' style='cursor: pointer;'> a accès aux données d'années antérieures de tous les <?php echo $gepiSettings['denomination_eleves']; ?></label></td>
 			</tr>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="AACpeResp" id="AACpeResp" value="yes" <?php if (getSettingValue("AACpeResp")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='AACpeResp' style='cursor: pointer;'> a accès aux données d'années antérieures des élèves dont il est responsable</label></td>
+				<td style='border: 0px;'><label for='AACpeResp' style='cursor: pointer;'> a accès aux données d'années antérieures des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est responsable</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -914,7 +914,7 @@ require_once("../lib/header.inc");
 		</td>
 	</tr>
 	<tr>
-		<td style="font-variant: small-caps;">L'administrateur</td>
+		<td style="font-variant: small-caps;">Un administrateur</td>
 		<td>
 			<table border='0' summary='Administrateur'>
 			<tr valign='top'>
@@ -936,7 +936,7 @@ require_once("../lib/header.inc");
 		</td>
 	</tr>
 	<tr>
-		<td style="font-variant: small-caps;">L'élève</td>
+		<td style="font-variant: small-caps;">Un <?php echo $gepiSettings['denomination_eleve']; ?></td>
 		<td>
 			<table border='0' summary='Elève'>
 			<tr valign='top'>
@@ -999,14 +999,14 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEleTrombiTousEleves" id="GepiAccesEleTrombiTousEleves" value="yes" <?php if (getSettingValue("GepiAccesEleTrombiTousEleves")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesEleTrombiTousEleves' style='cursor: pointer;'> a accès au trombinoscope de tous les élèves de l'établissement.<br />
+				<td style='border: 0px;'><label for='GepiAccesEleTrombiTousEleves' style='cursor: pointer;'> a accès au trombinoscope de tous les <?php echo $gepiSettings['denomination_eleves']; ?> de l'établissement.<br />
 				<i>(sous réserve que le module Trombinoscope-élève soit activé.<br />voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
 				</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEleTrombiElevesClasse" id="GepiAccesEleTrombiElevesClasse" value="yes" <?php if (getSettingValue("GepiAccesEleTrombiElevesClasse")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesEleTrombiElevesClasse' style='cursor: pointer;'> a accès au trombinoscope des élèves de sa classe.<br />
+				<td style='border: 0px;'><label for='GepiAccesEleTrombiElevesClasse' style='cursor: pointer;'> a accès au trombinoscope des <?php echo $gepiSettings['denomination_eleves']; ?> de sa classe.<br />
 				<i>(sous réserve que le module Trombinoscope-élève soit activé.<br />voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
 				</label></td>
 			</tr>
@@ -1020,7 +1020,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEleTrombiProfsClasse" id="GepiAccesEleTrombiProfsClasse" value="yes" <?php if (getSettingValue("GepiAccesEleTrombiProfsClasse")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesEleTrombiProfsClasse' style='cursor: pointer;'> a accès au trombinoscope des professeurs de sa classe.<br />
+				<td style='border: 0px;'><label for='GepiAccesEleTrombiProfsClasse' style='cursor: pointer;'> a accès au trombinoscope des <?php echo $gepiSettings['denomination_professeurs']; ?> de sa classe.<br />
 				<i>(sous réserve que le module Trombinoscope-personnels soit activé.<br />voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
 				</label></td>
 			</tr>
@@ -1029,12 +1029,12 @@ require_once("../lib/header.inc");
 		</td>
 	</tr>
 	<tr>
-		<td style="font-variant: small-caps;">Le responsable d'élève</td>
+		<td style="font-variant: small-caps;">Un <?php echo $gepiSettings['denomination_responsable']; ?></td>
 		<td>
 			<table border='0' summary='Responsable'>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveParent" id="GepiAccesReleveParent" value="yes" <?php if (getSettingValue("GepiAccesReleveParent")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesReleveParent' style='cursor: pointer;'> a accès aux relevés de notes des élèves dont il est responsable</label></td>
+				<td style='border: 0px;'><label for='GepiAccesReleveParent' style='cursor: pointer;'> a accès aux relevés de notes des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est responsable</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -1044,7 +1044,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesCahierTexteParent" id="GepiAccesCahierTexteParent" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteParent")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesCahierTexteParent' style='cursor: pointer;'> a accès au cahier de texte des élèves dont il est responsable</label></td>
+				<td style='border: 0px;'><label for='GepiAccesCahierTexteParent' style='cursor: pointer;'> a accès au cahier de texte des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est responsable</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -1054,33 +1054,33 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEquipePedaParent" id="GepiAccesEquipePedaParent" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaParent")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesEquipePedaParent' style='cursor: pointer;'> a accès à l'équipe pédagogique concernant les élèves dont il est responsable</label></td>
+				<td style='border: 0px;'><label for='GepiAccesEquipePedaParent' style='cursor: pointer;'> a accès à l'équipe pédagogique concernant les <?php echo $gepiSettings['denomination_eleves']; ?> dont il est responsable</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesCpePPEmailParent" id="GepiAccesCpePPEmailParent" value="yes" <?php if (getSettingValue("GepiAccesCpePPEmailParent")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesCpePPEmailParent' style='cursor: pointer;'> a accès aux adresses email du CPE et du professeur principal responsables des élèves dont il est responsable (<i>paramètre utile seulement si le paramètre suivant est décoché</i>)</label></td>
+				<td style='border: 0px;'><label for='GepiAccesCpePPEmailParent' style='cursor: pointer;'> a accès aux adresses email du CPE et du professeur principal responsables des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est responsable (<i>paramètre utile seulement si le paramètre suivant est décoché</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEquipePedaEmailParent" id="GepiAccesEquipePedaEmailParent" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaEmailParent")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesEquipePedaEmailParent' style='cursor: pointer;'> a accès aux adresses email de l'équipe pédagogique concernant les élèves dont il est responsable</label></td>
+				<td style='border: 0px;'><label for='GepiAccesEquipePedaEmailParent' style='cursor: pointer;'> a accès aux adresses email de l'équipe pédagogique concernant les <?php echo $gepiSettings['denomination_eleves']; ?> dont il est responsable</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesBulletinSimpleParent" id="GepiAccesBulletinSimpleParent" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleParent")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesBulletinSimpleParent' style='cursor: pointer;'> a accès aux bulletins simplifiés des élèves dont il est responsable</label></td>
+				<td style='border: 0px;'><label for='GepiAccesBulletinSimpleParent' style='cursor: pointer;'> a accès aux bulletins simplifiés des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est responsable</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesGraphParent" id="GepiAccesGraphParent" value="yes" <?php if (getSettingValue("GepiAccesGraphParent")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesGraphParent' style='cursor: pointer;'> a accès à la visualisation graphique des résultats des élèves dont il est responsable</label></td>
+				<td style='border: 0px;'><label for='GepiAccesGraphParent' style='cursor: pointer;'> a accès à la visualisation graphique des résultats des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est responsable</label></td>
 			</tr>
 
 			<!-- Années antérieures -->
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="AAResponsable" id="AAResponsable" value="yes" <?php if (getSettingValue("AAResponsable")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='AAResponsable' style='cursor: pointer;'> a accès aux données d'années antérieures des élèves dont il est responsable</label></td>
+				<td style='border: 0px;'><label for='AAResponsable' style='cursor: pointer;'> a accès aux données d'années antérieures des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est responsable</label></td>
 			</tr>
 			</table>
 		</td>

@@ -24,13 +24,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-$titre_page = "Consultation d'un élève";
 
 $niveau_arbo = 1;
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
+
+$titre_page = "Consultation d'un ".$gepiSettings['denomination_eleve'];
 // fonctions complémentaires et/ou librairies utiles
 
 
@@ -86,7 +87,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	echo "<noscript>
 	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
 		<p>
-		Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
+		Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
 		<input type='hidden' name='page' value='$page' />
 		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
 		</p>
@@ -124,7 +125,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit='cherche_eleves();return false;' method='post' name='formulaire'>";
 	echo "<p>\n";
-	echo "Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>nom</b> contient: <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' value='Rechercher' onclick='cherche_eleves()' />\n";
 	echo "</p>\n";
@@ -141,7 +142,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 		//echo "$sql<br />";
 		$res_ele=mysql_query($sql);
 		if(mysql_num_rows($res_ele)>0) {
-			echo "<p>Elèves de la classe de ".get_class_from_id($id_classe).":</p>\n";
+			echo "<p>".ucfirst($gepiSettings['denomination_eleves'])." de la classe de ".get_class_from_id($id_classe).":</p>\n";
 
 			/*
 			echo "<table class='boireaus' border='1' summary='Tableau des élèves'>\n";
@@ -186,7 +187,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	//echo "$sql<br />";
 	$res_clas=mysql_query($sql);
 	if(mysql_num_rows($res_clas)>0) {
-		echo "<p>Ou choisir un élève dans une classe:</p>\n";
+		echo "<p>Ou choisir un ".$gepiSettings['denomination_eleve']." dans une classe:</p>\n";
 
 		$tab_txt=array();
 		$tab_lien=array();
@@ -207,7 +208,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 elseif(isset($_POST['Recherche_sans_js'])) {
 	// On ne passe ici que si JavaScript est désactivé
 	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre ".$gepiSettings['denomination_eleve']."</a>\n";
 	echo "</p>\n";
 	echo "</div>\n";
 
@@ -219,7 +220,7 @@ else {
 	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
 	//echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève</a>\n";
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève/classe</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre ".$gepiSettings['denomination_eleve']."/classe</a>\n";
 
 	if(!isset($id_classe)) {
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$ele_login' ORDER BY periode DESC;";
@@ -280,7 +281,7 @@ else {
 
 		if($ele_login_prec!=""){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login_prec&amp;id_classe=$id_classe";
-			echo "'>Elève précédent</a>";
+			echo "'>".ucfirst($gepiSettings['denomination_eleve'])." précédent</a>";
 		}
 		if($chaine_options_eleves!="") {
 			echo " | <select name='ele_login' onchange=\"document.forms['form1'].submit();\">\n";
@@ -289,7 +290,7 @@ else {
 		}
 		if($ele_login_suiv!=""){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login_suiv&amp;id_classe=$id_classe";
-			echo "'>Elève suivant</a>";
+			echo "'>".ucfirst($gepiSettings['denomination_eleve'])." suivant</a>";
 		}
 
 		//echo "</p>\n";
@@ -336,7 +337,7 @@ Patientez pendant l'extraction des données... merci.
 
 	if(mysql_num_rows($res_ele)==0){
 		// On ne devrait pas arriver là.
-		echo "<p>L'élève dont le login serait $ele_login n'est pas dans la table 'eleves'.</p>\n";
+		echo "<p>L'".$gepiSettings['denomination_eleve']." dont le login serait $ele_login n'est pas dans la table 'eleves'.</p>\n";
 	}
 	else{
 		//================================
@@ -403,7 +404,7 @@ Patientez pendant l'extraction des données... merci.
 			$test=mysql_query($sql);
 
 			if(mysql_num_rows($test)==0) {
-				echo "<p>Vous n'êtes pas responsable d'un élève dont le login serait $ele_login.</p>\n";
+				echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
 				require_once("../lib/footer.inc.php");
 				die();
 			}
@@ -440,7 +441,7 @@ Patientez pendant l'extraction des données... merci.
 			$test=mysql_query($sql);
 
 			if(mysql_num_rows($test)==0) {
-				echo "<p>Vous n'êtes pas responsable d'un élève dont le login serait $ele_login.</p>\n";
+				echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
 				require_once("../lib/footer.inc.php");
 				die();
 			}
@@ -1003,7 +1004,7 @@ Patientez pendant l'extraction des données... merci.
 		if($onglet!="eleve") {echo " display:none;";}
 		echo "background-color: ".$tab_couleur['eleve']."; ";
 		echo "'>";
-		echo "<h2>Informations sur l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+		echo "<h2>Informations sur l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 		echo "<table border='0' summary='Infos élève'>\n";
 		echo "<tr>\n";
@@ -1094,7 +1095,7 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="responsables") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['responsables']."; ";
 			echo "'>";
-			echo "<h2>Responsables de l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			echo "<h2>Responsables de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			if((!isset($tab_ele['resp']))||(count($tab_ele['resp'])==0)) {
 				echo "<p>Aucun responsable n'a été enregistré.</p>\n";
@@ -1225,10 +1226,10 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="enseignements") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['enseignements']."; ";
 			echo "'>";
-			echo "<h2>Enseignements suivis par l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			echo "<h2>Enseignements suivis par l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			if((!isset($tab_ele['periodes']))||(!isset($tab_ele['groupes']))) {
-				echo "<p>Aucune période ou aucun enseignement n'a été trouvé pour cet élève.</p>\n";
+				echo "<p>Aucune période ou aucun enseignement n'a été trouvé pour cet ".$gepiSettings['denomination_eleve'].".</p>\n";
 			}
 			else {
 				echo "<table class='boireaus' summary='Enseignements'>\n";
@@ -1293,7 +1294,7 @@ Patientez pendant l'extraction des données... merci.
 			echo "background-color: ".$tab_couleur['bulletins']."; ";
 			echo "'>";
 
-			echo "<h2>Bulletins de l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			echo "<h2>Bulletins de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			$sql="SELECT MIN(periode) AS min_per, MAX(periode) AS max_per FROM matieres_notes WHERE login='".$ele_login."';";
 			//echo "$sql<br />";
@@ -1450,7 +1451,7 @@ Patientez pendant l'extraction des données... merci.
 				// Il ne faut pas proposer de relevé de notes?
 			}
 
-			echo "<h2>Relevés de notes de l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			echo "<h2>Relevés de notes de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			$id_releve_1="";
 
@@ -1565,7 +1566,7 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="cdt") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['cdt']."; ";
 			echo "'>";
-			echo "<h2>Cahier de textes de l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			echo "<h2>Cahier de textes de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			echo "<p align='center'>";
 			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_prec&amp;month=$m_sem_prec&amp;year=$y_sem_prec'><img src='../images/icons/back.png' width='16' height='16' alt='Semaine précédente' /></a> ";
@@ -1680,7 +1681,7 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="absences") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['absences']."; ";
 			echo "'>";
-			echo "<h2>Absences et retards de l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			if(count($tab_ele['absences'])==0) {
 				echo "<p>Aucun bilan d'absences n'est enregistré.</p>\n";
@@ -1721,7 +1722,7 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="anna") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['anna']."; ";
 			echo "'>";
-			echo "<h2>Données d'années antérieures de l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			echo "<h2>Données d'années antérieures de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			require("../mod_annees_anterieures/fonctions_annees_anterieures.inc.php");
 
@@ -1737,7 +1738,7 @@ Patientez pendant l'extraction des données... merci.
 
 
 
-			echo "<p>Liste des années scolaires et périodes pour lesquelles des données ont été conservées pour cet élève:</p>\n";
+			echo "<p>Liste des années scolaires et périodes pour lesquelles des données ont été conservées pour cet ".$gepiSettings['denomination_eleve']." :</p>\n";
 
 			// Récupérer les années-scolaires et périodes pour lesquelles on trouve l'INE dans archivage_disciplines
 			//$sql="SELECT DISTINCT annee,num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC, num_periode ASC";
@@ -1746,7 +1747,7 @@ Patientez pendant l'extraction des données... merci.
 			$res_ant=mysql_query($sql);
 
 			if(mysql_num_rows($res_ant)==0){
-				echo "<p>Aucun résultat antérieur n'a été conservé pour cet élève.</p>\n";
+				echo "<p>Aucun résultat antérieur n'a été conservé pour cet ".$gepiSettings['denomination_eleve'].".</p>\n";
 			}
 			else{
 
@@ -1776,7 +1777,7 @@ Patientez pendant l'extraction des données... merci.
 					$res_ant2=mysql_query($sql);
 
 					if(mysql_num_rows($res_ant2)==0){
-						echo "<td>Aucun résultat antérieur n'a été conservé pour cet élève.</td>\n";
+						echo "<td>Aucun résultat antérieur n'a été conservé pour cet ".$gepiSettings['denomination_eleve'].".</td>\n";
 					}
 					else{
 

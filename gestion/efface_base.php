@@ -60,7 +60,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 1)) {
         <!--table border = 10 bordercolor='red'-->
         <!--table style='border:10px solid red'-->
         <table class='bordercolor10'>
-        <tr><td><INPUT TYPE=SUBMIT value ="EFFACER LES DONNEES ELEVES" /></td></tr></table>
+        <tr><td><INPUT TYPE=SUBMIT value ="EFFACER LES DONNEES <?php echo strtoupper($gepiSettings['denomination_eleves']);?>" /></td></tr></table>
         <INPUT TYPE=HIDDEN name=is_posted value = 2 />
         </FORM></center>
         <?php
@@ -68,7 +68,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 1)) {
 }
 
 if (!isset($_POST['is_posted'])) {
-    echo "<p><b>ATTENTION : Cette procédure efface tout le contenu de la base de données concernant les élèves (données personnelles, notes, appréciations, ...)</b>
+    echo "<p><b>ATTENTION : Cette procédure efface tout le contenu de la base de données concernant les ".$gepiSettings['denomination_eleves']." (données personnelles, notes, appréciations, ...)</b>
     <br />Si vous souhaitez initialiser l'année à l'aide de fichiers GEP, inutile d'utiliser cette procédure, l'effacement des données vous sera proposé au cours de la procédure d'initialisation.
 
     <br /><br />Les données suivantes sont conservées :

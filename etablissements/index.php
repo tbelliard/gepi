@@ -54,7 +54,7 @@ require_once("../lib/header.inc");
  | <a href="modify_etab.php">Ajouter un établissement</a>
  | <a href="import_etab_csv.php">Importer un fichier d'établissements</a>
 </p>
-<p>Les données de la base établissement servent à l'affichage de l'établissement d'origine des élèves
+<p>Les données de la base établissement servent à l'affichage de l'établissement d'origine des <?php echo $gepiSettings['denomination_eleves'];?>
  sur les documents tels que les bulletins simplifiés.</p>
 <?php
 // On va chercher les établissements déjà existant, et on les affiche.

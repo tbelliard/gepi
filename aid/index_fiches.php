@@ -64,16 +64,16 @@ if (!isset($_GET['action'])) {
     echo "</p>";
     echo "<b>Votre choix : </b>\n";
     echo "<ul>";
-    echo "<li><a href=\"index_fiches.php?action=liste_projet&amp;indice_aid=".$indice_aid."\"><b>Tableau de toutes les fiches ".$nom_projet."</b> (professeurs responsables, élèves responsables";
-    if ($test_salle != 0)
+    echo "<li><a href=\"index_fiches.php?action=liste_projet&amp;indice_aid=".$indice_aid."\"><b>Tableau de toutes les fiches ".$nom_projet."</b> (".$gepiSettings['denomination_professeurs']." responsables, ".$gepiSettings['denomination_eleves']." responsables";
+    if (isset($test_salle) && $test_salle != 0)
         echo ", salles";
     if (($feuille_presence == 'y') and ($_SESSION["statut"] != "eleve") and ($_SESSION["statut"] != "responsable"))
         echo ", feuilles de présence";
     echo ")</a></li>\n";
     echo "<li><a href=\"visu_fiches.php?indice_aid=".$indice_aid."\"><b>Tableau de toutes les fiches ".$nom_projet."</b> (résumé, productions attendues, ...)</a></li>\n";
-    echo "<li><a href=\"index_fiches.php?action=liste_eleves&amp;indice_aid=".$indice_aid."\"><b>Liste de tous les élèves</b> (classements possibles par nom, prénom, classe, projet)</a></li>\n";
+    echo "<li><a href=\"index_fiches.php?action=liste_eleves&amp;indice_aid=".$indice_aid."\"><b>Liste de tous les ".$gepiSettings['denomination_eleves']."</b> (classements possibles par nom, prénom, classe, projet)</a></li>\n";
     if (($_SESSION["statut"] == "administrateur") or ($_SESSION["statut"] == "cpe"))
-        echo "<li><a href=\"index_fiches.php?action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."\"><b>Liste des élèves non affectés</b></a></li>\n";
+        echo "<li><a href=\"index_fiches.php?action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."\"><b>Liste des ".$gepiSettings['denomination_eleves']." non affectés</b></a></li>\n";
     if (($feuille_presence == 'y') and ($_SESSION["statut"] != "eleve") and ($_SESSION["statut"] != "responsable"))
         echo "<li><a href=\"index_fiches.php?action=liste_presence&amp;indice_aid=".$indice_aid."\"  target=\"_blank\"><b>Edition de toutes les feuilles de présence</b></a></li>\n";
 
@@ -96,8 +96,8 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_projet")) {
     echo "<tr>\n";
     echo "<td>N°</td>\n";
     echo "<td>Nom du projet ".$nom_projet."</td>\n";
-    echo "<td>Professeur(s) responsable(s)</td>\n";
-    echo "<td>Elève(s) responsable(s)</td>\n";
+    echo "<td>".ucfirst($gepiSettings['denomination_professeurs'])." responsables</td>\n";
+    echo "<td>".ucfirst($gepiSettings['denomination_eleves'])." responsables</td>\n";
     // On n'affiche la colonne "salle" uniquement si ce champ est utilisé.
     If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso1',"R")) {
         echo "<td>".LibelleChampAid("perso1")."</td>\n";
@@ -303,10 +303,10 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
         }
         echo "</table>\n";
         if ($vide == 1) {
-            echo "<br /><font color = red>Il n'y a pas actuellement d'élèves dans cette AID !</font>\n";
+            echo "<br /><font color = red>Il n'y a actuellement aucun ".$gepiSettings['denomination_eleve']." dans cette AID !</font>\n";
         } else {
             echo "<table width=\"90%\" border=\"0\" cellpadding=\"5\">\n";
-            echo "<tr><td width=\"50%\">&nbsp;</td><td><b>Signature du (des) professeur(s) responsable(s)</b></td></tr>\n";
+            echo "<tr><td width=\"50%\">&nbsp;</td><td><b>Signature du/des ".$gepiSettings['denomination_professeur']."/".$gepiSettings['denomination_professeurs']." responsable(s)</b></td></tr>\n";
             echo "</table>";
         }
         if ($nombreligne > 1)  echo "<p class='saut'>&nbsp;</p>\n";
@@ -325,8 +325,8 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
     echo "<p class=bold>";
     echo "<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
     echo "</p>";
-    echo "<h2>Liste des élèves</h2>";
-    echo "Cliquez sur l'en-tête de la première ligne pour classer les élèves par nom et prénom, classe ou projet<br /><br />";
+    echo "<h2>Liste des ".$gepiSettings['denomination_eleves']."</h2>";
+    echo "Cliquez sur l'en-tête de la première ligne pour classer les ".$gepiSettings['denomination_eleves']." par nom et prénom, classe ou projet<br /><br />";
 
     $call_liste_data = mysql_query("SELECT distinct e.nom, e.prenom, c.classe, c.id, a.nom, j.id_aid, e.login
     FROM eleves e, j_aid_eleves j, classes c, j_eleves_classes jec, aid a
@@ -379,7 +379,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
     }
     echo "</table>\n";
     if ($vide == 1) {
-        echo "<br /><font color = red>Il n'y a pas actuellement d'élèves inscrits dans les ".$nom_projet." !</font>\n";
+        echo "<br /><font color = red>Il n'y a actuellement aucun ".$gepiSettings['denomination_eleve']." inscrit dans les ".$nom_projet." !</font>\n";
     }
 
 }
@@ -393,7 +393,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves_sans_projet")) 
     echo "<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
     echo "</p>";
     echo "<h2>Liste des élèves non affectés</h2>";
-    echo "Cliquez sur l'en-tête de la première ligne pour classer les élèves par nom et prénom ou classe<br /><br />";
+    echo "Cliquez sur l'en-tête de la première ligne pour classer les ".$gepiSettings['denomination_eleves']." par nom et prénom ou classe<br /><br />";
 
     $call_liste_data = mysql_query("SELECT distinct e.nom, e.prenom, c.classe, c.id, e.login
     FROM eleves e, classes c, j_eleves_classes jec
@@ -436,7 +436,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves_sans_projet")) 
     }
     echo "</table>\n";
     if ($vide == 1) {
-        echo "<br /><font color = red>Actuellement tous les élèves sont inscrits dans un projet !</font>\n";
+        echo "<br /><font color = red>Actuellement tous les ".$gepiSettings['denomination_eleves']." sont inscrits dans un projet !</font>\n";
     }
 
 }

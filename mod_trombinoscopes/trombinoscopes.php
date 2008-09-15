@@ -222,7 +222,7 @@ function reactiver(mavar) {
 			$affichage_div_gauche="y";
 			echo "<div style='width: 45%; float: left; padding: 5px;'>\n";
 
-			echo "<div style='font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;'>Elèves</div>\n";
+			echo "<div style='font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;'>".ucfirst($gepiSettings['denomination_eleve'])."</div>\n";
 
 			//=================================================================
 			// CLASSES

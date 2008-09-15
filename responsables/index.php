@@ -194,7 +194,7 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))){
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Gestion des responsables élèves";
+$titre_page = "Gestion des ".$gepiSettings['denomination_responsables'];
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -205,7 +205,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$test=mysql_query($sql);
 	//echo "mysql_num_rows($test)=".mysql_num_rows($test)."<br />";
 	if(mysql_num_rows($test)>0){
-		echo "<p>Une conversion des données responsables est requise.</p>\n";
+		echo "<p>Une conversion des données ".$gepiSettings['denomination_responsables']." est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -214,7 +214,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
-		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Une conversion des données ".$gepiSettings['denomination_eleves']."/".$gepiSettings['denomination_responsables']." est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -230,7 +230,7 @@ if(!getSettingValue('conv_new_resp_table')){
 				echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 			}
 
-			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+			echo "<p>Une conversion des données ".$gepiSettings['denomination_eleves']."/".$gepiSettings['denomination_responsables']." est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -247,7 +247,7 @@ $num_resp=isset($_POST['num_resp']) ? $_POST['num_resp'] : (isset($_GET['num_res
 echo "<p class='bold'>";
 if ($_SESSION['statut'] == 'administrateur'){
 	echo "<a href=\"../accueil_admin.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-	echo " | <a href=\"modify_resp.php\">Ajouter un responsable</a>\n";
+	echo " | <a href=\"modify_resp.php\">Ajouter un ".$gepiSettings['denomination_responsable']."</a>\n";
 	if(getSettingValue("import_maj_xml_sconet")==1){
 		echo " | <a href=\"maj_import.php\">Mettre à jour depuis Sconet</a>\n";
 	}
@@ -373,7 +373,7 @@ if($val_rech!=""){
 		$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
-			echo "<p>Suppression de responsabilités sans élève.<br />Voici la liste des identifiants de responsables qui étaient associés à des élèves inexistants: \n";
+			echo "<p>Suppression de responsabilités sans ".$gepiSettings['denomination_eleve'].".<br />Voici la liste des identifiants de ".$gepiSettings['denomination_responsables']." qui étaient associés à des ".$gepiSettings['denomination_eleves']." inexistants: \n";
 			$cpt_nett=0;
 			while($lig_nett=mysql_fetch_object($test)){
 				if($cpt_nett>0){echo ", ";}
@@ -445,9 +445,9 @@ if($val_rech!=""){
 
 
 	if($cpt==0){
-		echo "<p>Aucun responsable trouvé.</p>\n";
+		echo "<p>Aucun ".$gepiSettings['denomination_responsable']." trouvé.</p>\n";
 		if($chaine_recherche!="") {
-			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour à l'index Responsables</a></p>\n";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour à l'index ".$gepiSettings['denomination_responsables']."</a></p>\n";
 		}
 		require("../lib/footer.inc.php");
 		die();
@@ -462,16 +462,16 @@ if($val_rech!=""){
 
 echo "<p style='font-weight:bold; text-align:center;'>";
 if("$num_resp"=="0"){
-	echo "Responsables sans élève associé";
+	echo ucfirst($gepiSettings['denomination_responsables'])." sans ".$gepiSettings['denomination_eleve']." associé";
 }
 elseif(($order_by=="nom,prenom")&&("$num_resp"=="1")) {
-	echo "Responsables triés par nom du responsable légal 1";
+	echo $gepiSettings['denomination_responsables']." triés par nom du ".$gepiSettings['denomination_responsable']." 1";
 }
 elseif(($order_by=="nom,prenom")&&("$num_resp"=="2")) {
-	echo "Responsables triés par nom du responsable légal 2";
+	echo ucfirst($gepiSettings['denomination_responsables'])." triés par nom du ".$gepiSettings['denomination_responsable']." 2";
 }
 elseif(($order_by=="nom,prenom")&&("$num_resp"=="ele")) {
-	echo "Responsables triés par nom d'élève";
+	echo ucfirst($gepiSettings['denomination_responsables'])." triés par nom d'élève";
 }
 
 if($chaine_info_recherche!=""){
@@ -947,7 +947,7 @@ if("$num_resp"=="0"){
 
 	}
 	else{
-		echo "<p>Aucun responsable n'a été trouvé dans la table 'resp_pers'.</p>\n";
+		echo "<p>Aucun ". $gepiSettings['denomination_responsable']." n'a été trouvé dans la table 'resp_pers'.</p>\n";
 	}
 
 }
@@ -1527,7 +1527,7 @@ if($cpt>0){
 	echo "<center><input type='submit' value='Valider' /></center>\n";
 }
 else{
-	echo "<p align='center'>Aucun responsable n'a été trouvé.</p>\n";
+	echo "<p align='center'>Aucun ". $gepiSettings['denomination_responsable']." n'a été trouvé.</p>\n";
 }
 echo "<p><br /></p>\n";
 

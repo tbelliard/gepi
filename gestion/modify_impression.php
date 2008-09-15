@@ -53,7 +53,7 @@ if (isset($_POST['ok'])) {
     if	(isset($_POST['impression_parentFCK'])) {
 		$imp = html_entity_decode_all_version($_POST['impression_parentFCK']);
 		if (!saveSetting("ImpressionFicheParent", $imp)) {
-			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les parents !";
+			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les ".$gepiSettings['denomination_responsables']." !";
 			$erreur = true;
 		}
     }
@@ -61,7 +61,7 @@ if (isset($_POST['ok'])) {
     if (isset($_POST['impression_eleveFCK'])) {
 		$imp = html_entity_decode_all_version($_POST['impression_eleveFCK']);
 		if (!saveSetting("ImpressionFicheEleve", $imp)) {
-			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les élèves !";
+			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les ".$gepiSettings['denomination_eleves']." !";
 			$erreur = true;
 		}
     }
@@ -90,7 +90,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <form enctype="multipart/form-data" action="modify_impression.php" method=post name=formulaire>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_impression.php?fiche=personnels"> Fiche Personnels Etablissement </a>|<a href="modify_impression.php?fiche=responsables"> Fiche Responsables </a>|<a href="modify_impression.php?fiche=eleves"> Fiche Elèves </a></p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_impression.php?fiche=personnels"> Fiche Personnels Etablissement </a>|<a href="modify_impression.php?fiche=responsables"> Fiche <?php echo $gepiSettings['denomination_responsables']; ?></a>|<a href="modify_impression.php?fiche=eleves"> Fiche <?php echo $gepiSettings['denomination_eleves'];?> </a></p>
 
 <?php
 
@@ -140,7 +140,7 @@ case 'responsables' :
 		$impression_parent = getSettingValue("ImpressionFicheParent");
 		$nb_impression_parent = getSettingValue("ImpressionNombreParent");
 
-		echo "<h3 class='gepi' align='center'>Fiche d'information : Responsables</h3>\n";
+		echo "<h3 class='gepi' align='center'>Fiche d'information : ".$gepiSettings['denomination_responsables']."</h3>\n";
 		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'responsable'.</p>\n";
 		echo "<p>Nombre de fiches à imprimer par page : \n";
 		echo "<select name='nb_impression_parent' size='1'>\n";
@@ -169,7 +169,7 @@ case 'eleves' :
 		$impression_eleve = getSettingValue("ImpressionFicheEleve");
 		$nb_impression_eleve = getSettingValue("ImpressionNombreEleve");
 
-		echo "<h3 class='gepi' align='center'>Fiche d'information : Elèves</h3>\n";
+		echo "<h3 class='gepi' align='center'>Fiche d'information : ".$gepiSettings['denomination_eleves']."</h3>\n";
 		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'eleve'.</p>\n";
 		echo "<p>Nombre de fiches à imprimer par page : \n";
 		echo "<select name='nb_impression_eleve' size='1'>\n";

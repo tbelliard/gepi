@@ -102,8 +102,8 @@ $titre = array(
 "Gestion des établissements",
 "Gestion des matières",
 "Gestion des comptes d'accès des utilisateurs",
-"Gestion des élèves",
-"Gestion des responsables élèves",
+"Gestion des ".$gepiSettings['denomination_eleves'],
+"Gestion des ".$gepiSettings['denomination_responsables'],
 "Gestion des classes",
 //"Gestion des groupes",
 "Gestion des AID",
@@ -113,20 +113,20 @@ $titre = array(
 $expli = array(
 "Définir, modifier, supprimer des établissements de la base de données.",
 "Définir, modifier, supprimer des matières de la base de données.",
-"Gérer les comptes d'accès permettant aux utilisateurs de se connecter à Gepi (personnels de l'établissement, élèves et responsables).",
-"Définir, modifier, supprimer les élèves.",
-"Définir, modifier, supprimer les responsables élèves.",
+"Gérer les comptes d'accès permettant aux utilisateurs de se connecter à Gepi (personnels de l'établissement, ".$gepiSettings['denomination_eleves']." et ".$gepiSettings['denomination_responsables'].").",
+"Définir, modifier, supprimer les ".$gepiSettings['denomination_eleves'].".",
+"Définir, modifier, supprimer les ".$gepiSettings['denomination_responsables'].".",
 "Définir, modifier, supprimer les classes.
 <br />Gérer les paramètres des classes : périodes, coefficients, affichage du rang, ...
-<br />Affecter les matières et les professeurs aux classes.
-<br />Affecter les élèves aux classes.
-<br />Affecter les professeurs principaux, les CPE, modifier le régime et la mention \"redoublant\".
-<br />Modifier les matières suivies par les élèves.
+<br />Affecter les matières et les ".$gepiSettings['denomination_professeurs']." aux classes.
+<br />Affecter les ".$gepiSettings['denomination_eleves']." aux classes.
+<br />Affecter le ".$gepiSettings['gepi_prof_suivi'].", les CPE, modifier le régime et la mention \"redoublant\".
+<br />Modifier les matières suivies par les ".$gepiSettings['denomination_eleves'].".
 <br />Modifier des paramètres du bulletin.",
 //"Définir, modifier, supprimer les groupes d'enseignement",
 "Définir, modifier, supprimer des AID (Activités Inter-Disciplinaires).
-<br />Affecter les professeurs et les élèves.",
-"Repérer les personnels/élèves n'ayant pas de photo.
+<br />Affecter les ".$gepiSettings['denomination_professeurs']." et les ".$gepiSettings['denomination_eleves'].".",
+"Repérer les personnels/".$gepiSettings['denomination_eleves']." n'ayant pas de photo.
 <br />Vider le dossier des photos,..."
 );
 

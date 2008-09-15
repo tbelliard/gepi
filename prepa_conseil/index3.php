@@ -65,7 +65,7 @@ if ($_SESSION['statut'] == "responsable") {
 
 } else if ($_SESSION['statut'] == "eleve") {
 	if ($login_eleve != null and (strtoupper($login_eleve) != strtoupper($_SESSION['login']))) {
-		tentative_intrusion(2, "Tentative d'un élève de visualiser le bulletin simplifié d'un autre élève.");
+		tentative_intrusion(2, "Tentative d'un ".$gepiSettings['denomination_eleve']." de visualiser le bulletin simplifié d'un autre ".$gepiSettings['denomination_eleve'].".");
 	}
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
 	$login_eleve = $_SESSION['login'];
@@ -143,7 +143,7 @@ document.form_choix_edit.periode2.value=indi+1;
 if ($_SESSION['statut'] == "responsable" and $error_login == true) {
 	echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
-	echo "<p>Il semble que vous ne soyez associé à aucun élève. Contactez l'administrateur pour résoudre cette erreur.</p>";
+	echo "<p>Il semble que vous ne soyez associé à aucun ".$gepiSettings['denomination_eleve'].". Contactez l'administrateur pour résoudre cette erreur.</p>";
 	require "../lib/footer.inc.php";
 	die();
 }
@@ -249,7 +249,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				"re.pers_id = r.pers_id AND " .
 				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 
-	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser un bulletin simplifié :</p>";
+	echo "<p>Cliquez sur le nom d'un ".$gepiSettings['denomination_eleve']." pour visualiser son bulletin simplifié :</p>";
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 		echo "<p><a href='index3.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
 	}
@@ -391,9 +391,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	    echo "<table summary='Choix des élèves'>\n";
 		echo "<tr>\n";
 	    echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_1' value=\"1\" checked /></td>\n";
-	    echo "<td><label for='choix_edit_1' style='cursor: pointer;'>Les bulletins simplifiés de tous les élèves de la classe";
+	    echo "<td><label for='choix_edit_1' style='cursor: pointer;'>Les bulletins simplifiés de tous les ".$gepiSettings['denomination_eleves']." de la classe";
 		if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
-			echo " (uniquement les élèves que j'ai en cours)";
+			echo " (uniquement les ".$gepiSettings['denomination_eleves']." que j'ai en cours)";
 		}
 		echo "</label></td></tr>\n";
 
@@ -403,7 +403,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	    if ($nb_lignes > 1) {
 	        echo "<tr>\n";
 	        echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_3' value=\"3\" /></td>\n";
-	        echo "<td><label for='choix_edit_3' style='cursor: pointer;'>Uniquement les bulletins simplifiés des élèves dont le ".getSettingValue("gepi_prof_suivi")." est :</label>\n";
+	        echo "<td><label for='choix_edit_3' style='cursor: pointer;'>Uniquement les bulletins simplifiés des ".$gepiSettings['denomination_eleves']." dont le ".getSettingValue("gepi_prof_suivi")." est :</label>\n";
 	        echo "<select size=\"1\" name=\"login_prof\" onclick=\"active(1)\">\n";
 	        $i=0;
 	        while ($i < $nb_lignes) {
@@ -421,7 +421,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	    echo "<tr>\n";
 	    echo "<td><input type=\"radio\" id='choix_edit_2' name=\"choix_edit\" value=\"2\" /></td>\n";
-	    echo "<td><label for='choix_edit_2' style='cursor: pointer;'>Uniquement le bulletin simplifié de l'élève sélectionné ci-contre : </label>\n";
+	    echo "<td><label for='choix_edit_2' style='cursor: pointer;'>Uniquement le bulletin simplifié de l'".$gepiSettings['denomination_eleve']." sélectionné ci-contre : </label>\n";
 	    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
 
 	    //if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
@@ -464,7 +464,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
     	$prenom_eleve = mysql_result($eleve, 0, "prenom");
     	$nom_eleve = mysql_result($eleve, 0, "nom");
 
-	    echo "<p class='grand'>Elève : ".$prenom_eleve." ".$nom_eleve."</p>\n";
+	    echo "<p class='grand'>".ucfirst($gepiSettings['denomination_eleve'])." : ".$prenom_eleve." ".$nom_eleve."</p>\n";
 	    echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 	    echo "<input type=\"hidden\" name=\"choix_edit\" value=\"2\" />\n";
 	    echo "<input type=\"hidden\" name=\"login_eleve\" value=\"".$login_eleve."\" />\n";

@@ -318,7 +318,7 @@ $titre = array(
 
 $expli = array(
 "Pour accéder aux outils de gestion (sécurité, configuration générale, bases de données, initialisation de GEPI).",
-"Pour gérer les bases (établissements, utilisateurs, matières, classes, élèves, responsables, AIDs).",
+"Pour gérer les bases (établissements, utilisateurs, matières, classes, ".$gepiSettings['denomination_eleves'].", ".$gepiSettings['denomination_responsables'].", AIDs).",
 "Pour gérer les modules (cahiers de texte, carnet de notes, absences, trombinoscope)."
 );
 
@@ -379,7 +379,7 @@ if (getSettingValue("active_module_absence")=='y') {
     $titre[] = "Visualiser les absences";
 
     $expli = array();
-    $expli[] = "Cet outil vous permet de gérer les absences, dispenses, retards et autres  bobos à l'infirmerie des élèves.";
+    $expli[] = "Cet outil vous permet de gérer les absences, dispenses, retards et autres bobos à l'infirmerie des ".$gepiSettings['denomination_eleves'].".";
     $expli[] = "Vous pouvez visualiser créneau par créneau la saisie des absences.";
 
     $nb_ligne = count($chemin);
@@ -421,7 +421,7 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
     $chemin[] = "/mod_absences/professeurs/prof_ajout_abs.php";
 
     $titre = array();
-    $titre[] = "Gestion des Absences par le professeur";
+    $titre[] = "Gestion des Absences par le ".$gepiSettings['denomination_professeur'];
 
     $expli = array();
     $expli[] = "Cet outil vous permet de gérer les absences durant vos cours.";
@@ -477,7 +477,7 @@ if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $titre[]
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $titre[] = "Bulletin : saisie des avis du conseil";
 
 $expli = array();
-$expli[] = "Cet outil vous permet d'enregistrer les absences des élèves. Elles figureront sur le bulletin scolaire.";
+$expli[] = "Cet outil vous permet d'enregistrer les absences des ".$gepiSettings['denomination_eleves'].". Elles figureront sur le bulletin scolaire.";
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_cahiers_texte")=='y')) $expli[] = "Cet outil vous permet de constituer un cahier de texte pour chacune de vos classes.";
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $expli[] = "Cet outil vous permet de constituer un carnet de notes pour chaque période et de saisir les notes de toutes vos évaluations.";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $expli[] = "Cet outil permet de saisir directement, sans passer par le carnet de notes, les moyennes et les appréciations du bulletin";
@@ -495,7 +495,7 @@ while ($i < $nb_aid) {
         $nom_aid = @mysql_result($call_data, $i, "nom");
         $chemin[] = "/saisie/saisie_aid.php?indice_aid=".$indice_aid;
         $titre[] = "Bulletin : saisie des appréciations $nom_aid";
-        $expli[] = "Cet outil permet la saisie des appréciations des élèves pour les $nom_aid.";
+        $expli[] = "Cet outil permet la saisie des appréciations des ".$gepiSettings['denomination_eleves']." pour les $nom_aid.";
     }
     $i++;
 }
@@ -588,7 +588,7 @@ if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
             $nom_aid = @mysql_result($call_data, $i, "nom");
             $chemin[] = "/aid/index2.php?indice_aid=".$indice_aid;
             $titre[] = $nom_aid;
-            $expli[] = "Cet outil vous permet de visualiser quels élèves ont le droit d'envoyer/modifier leur photo.";
+            $expli[] = "Cet outil vous permet de visualiser quels ".$gepiSettings['denomination_eleves']." ont le droit d'envoyer/modifier leur photo.";
         }
         $i++;
     }
@@ -689,7 +689,7 @@ $titre = array();
 if ($condition) $titre[] = "Visualisation et impression des relevés de notes";
 
 $expli = array();
-if ($condition) $expli[] = "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes, élève par élève, classe par classe.";
+if ($condition) $expli[] = "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes, ".$gepiSettings['denomination_eleve']." par ".$gepiSettings['denomination_eleve'].", classe par classe.";
 
 
 if ($condition && $condition2) $chemin[] = "/cahier_notes/index2.php";
@@ -784,7 +784,7 @@ if ($condition) {
     $chemin[] = "/cahier_texte/consultation.php";
     $titre[] = "Cahier de texte";
     if ($_SESSION['statut'] == "responsable") {
-    	$expli[] = "Permet de consulter les compte-rendus de séance et les devoirs à faire pour le ou les élève(s) dont vous êtes responsable légal.";
+    	$expli[] = "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les ".$gepiSettings['denomination_eleves']." dont vous êtes le ".$gepiSettings['denomination_responsable'].".";
     } else {
     	$expli[] = "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements que vous suivez.";
     }
@@ -800,7 +800,7 @@ if ($condition) {
     $chemin[] = "/cahier_notes/visu_releve_notes.php";
     $titre[] = "Relevés de notes";
     if ($_SESSION['statut'] == "responsable") {
-    	$expli[] = "Permet de consulter les relevés de notes du ou des élève(s) dont vous êtes responsable légal.";
+    	$expli[] = "Permet de consulter les relevés de notes des ".$gepiSettings['denomination_eleves']." dont vous êtes le ".$gepiSettings['denomination_responsable'].".";
     } else {
     	$expli[] = "Permet de consulter vos relevés de notes détaillés.";
     }
@@ -815,7 +815,7 @@ if ($condition) {
     $chemin[] = "/groupes/visu_profs_eleve.php";
     $titre[] = "Equipe pédagogique";
     if ($_SESSION['statut'] == "responsable") {
-    	$expli[] = "Permet de consulter l'équipe pédagogique du ou des élève(s) dont vous êtes responsable légal.";
+    	$expli[] = "Permet de consulter l'équipe pédagogique des ".$gepiSettings['denomination_eleves']." dont vous êtes ".$gepiSettings['denomination_responsable'].".";
     } else {
     	$expli[] = "Permet de consulter l'équipe pédagogique qui vous concerne.";
     }
@@ -830,7 +830,7 @@ if ($condition) {
     $chemin[] = "/prepa_conseil/index3.php";
     $titre[] = "Bulletins simplifiés";
     if ($_SESSION['statut'] == "responsable") {
-    	$expli[] = "Permet de consulter les bulletins simplifiés du ou des élève(s) dont vous êtes responsable légal.";
+    	$expli[] = "Permet de consulter les bulletins simplifiés des ".$gepiSettings['denomination_eleves']." dont vous êtes ".$gepiSettings['denomination_responsable'].".";
     } else {
     	$expli[] = "Permet de consulter vos bulletins sous forme simplifiée.";
     }
@@ -845,7 +845,7 @@ if ($condition) {
     $chemin[] = "/visualisation/affiche_eleve.php";
     $titre[] = "Visualisation graphique";
     if ($_SESSION['statut'] == "responsable") {
-    	$expli[] = "Permet de visualiser sous forme graphique les résultats du ou des élève(s) dont vous êtes responsable légal, par rapport à la classe.";
+    	$expli[] = "Permet de visualiser sous forme graphique les résultats des ".$gepiSettings['denomination_eleves']." dont vous êtes ".$gepiSettings['denomination_responsable'].", par rapport à la classe.";
     } else {
     	$expli[] = "Permet de consulter vos résultats sous forme graphique, comparés à la classe.";
     }
@@ -858,7 +858,7 @@ $conditions3 = ($_SESSION['statut'] == "responsable" AND
 if ($conditions3) {
 	$chemin[] = "/mod_absences/absences.php";
 	$titre[] = "Absences";
-	$expli[] = "Permet de suivre les absences et les retards des &eacute;l&egrave;ves dont je suis responsable";
+	$expli[] = "Permet de suivre les absences et les retards des &eacute;l&egrave;ves dont je suis ".$gepiSettings['denomination_responsable'];
 }
 
 $nb_ligne = count($chemin);
@@ -913,7 +913,7 @@ if ($nb_aid != 0) {
         $nom_aid = mysql_result($call_data,$i,"nom");
         $chemin[]="/aid/index_fiches.php?indice_aid=".$indice_aid;
         $titre[] = $nom_aid. " : outils de visualisation et d'édition";
-        $expli[] = "Tableau récapitulatif, liste des élèves, ...";
+        $expli[] = "Tableau récapitulatif, liste des ".$gepiSettings['denomination_eleves'].", ...";
         $i++;
     }
   $nb_ligne = count($chemin);
@@ -991,15 +991,15 @@ if ($_SESSION['statut']!='professeur')
 //        Sur quel droit s'appuyer pour donner l'accès?
 //            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
 if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
-{ $titre[] = "Accès des élèves et responsables aux appreciations"; }
+{ $titre[] = "Accès des ".$gepiSettings['denomination_eleves']." et ".$gepiSettings['denomination_responsables']." aux appreciations"; }
 //==========================================================
 
 if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
 { $titre[] = "Paramètres d'impression des bulletins";}
 if ($_SESSION['statut']=='scolarite')
-{ $titre[] = "Gestion des fiches responsables élèves";}
+{ $titre[] = "Gestion des fiches ".$gepiSettings['denomination_responsables'];}
 if ($_SESSION['statut']=='scolarite')
-{ $titre[] = "Gestion des fiches élèves";}
+{ $titre[] = "Gestion des fiches ".$gepiSettings['denomination_eleves'];}
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
 { $titre[] = "Visualisation et impression des bulletins";}
 
@@ -1016,15 +1016,15 @@ if ($_SESSION['statut']!='professeur')
 //        Sur quel droit s'appuyer pour donner l'accès?
 //            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
 if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
-{ $expli[] = "Permet de définir quand les comptes élèves et responsables (s'ils existent) peuvent accéder aux appreciations des professeurs sur le bulletin et avis du conseil de classe."; }
+{ $expli[] = "Permet de définir quand les comptes ".$gepiSettings['denomination_eleves']." et ".$gepiSettings['denomination_responsables']." (s'ils existent) peuvent accéder aux appreciations des ".$gepiSettings['denomination_professeurs']." sur le bulletin et avis du conseil de classe."; }
 //==========================================================
 
 if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
 { $expli[] = "Permet de modifier les paramètres de mise en page et d'impression des bulletins.";}
 if ($_SESSION['statut']=='scolarite')
-{ $expli[] = "Cet outil vous permet de modifier/supprimer/ajouter des fiches responsable élèves.";}
+{ $expli[] = "Cet outil vous permet de modifier/supprimer/ajouter des fiches de ".$gepiSettings['denomination_responsables']." des ".$gepiSettings['denomination_eleves'].".";}
 if ($_SESSION['statut']=='scolarite')
-{ $expli[] = "Cet outil vous permet de modifier/supprimer/ajouter des fiches élèves.";}
+{ $expli[] = "Cet outil vous permet de modifier/supprimer/ajouter des fiches ".$gepiSettings['denomination_eleves'].".";}
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
 { $expli[] = "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.";}
 
@@ -1129,13 +1129,13 @@ $titre = array();
 //===========================
 // AJOUT:boireaus
 $titre[] = "Visualisation des équipes pédagogiques";
-$titre[] = "Consultation d'un élève";
+$titre[] = "Consultation d'un ".$gepiSettings['denomination_eleve'];
 $titre[] = "Impression PDF de listes";
 if(($_SESSION['statut']=='scolarite')||(($_SESSION['statut']=='professeur') and ($test_prof_suivi != "0"))){
 	$titre[] = "Impression PDF des avis du conseil de classe";
 }
 if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='professeur')||($_SESSION['statut']=='cpe')){
-	$titre[] = "Exporter mes listes d'élèves";
+	$titre[] = "Exporter mes listes";
 }
 //===========================
 $titre[] = "Outils graphiques de visualisation";
@@ -1157,19 +1157,19 @@ elseif(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesBulletinS
 $expli = array();
 //===========================
 // AJOUT:boireaus
-$expli[] = "Ceci vous permet de connaître tous les enseignants des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernés.";
-$expli[] = "Ce menu vous permet de consulter dans une même page les informations concernant un élève (<em>enseignements suivis, bulletins, relevés de notes, responsables,...</em>). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.";
-$expli[] = "Ceci vous permet d'imprimer en PDF des listes d'élèves à l'unité ou en série. L'apparence des listes est paramétrable.";
+$expli[] = "Ceci vous permet de connaître tous les ".$gepiSettings['denomination_professeurs']." des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernés.";
+$expli[] = "Ce menu vous permet de consulter dans une même page les informations concernant un ".$gepiSettings['denomination_eleve']." (<em>enseignements suivis, bulletins, relevés de notes, ".$gepiSettings['denomination_responsables'].",...</em>). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.";
+$expli[] = "Ceci vous permet d'imprimer en PDF des listes avec les ".$gepiSettings['denomination_eleves'].", à l'unité ou en série. L'apparence des listes est paramétrable.";
 if(($_SESSION['statut']=='scolarite')||(($_SESSION['statut']=='professeur') and ($test_prof_suivi != "0"))){
 	$expli[] = "Ceci vous permet d'imprimer en PDF la synthèse des avis du conseil de classe.";
 }
 if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='professeur')||($_SESSION['statut']=='cpe')){
-	$expli[] = "Ce menu permet de télécharger ses listes d'élèves au format CSV avec les champs CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS.";
+	$expli[] = "Ce menu permet de télécharger ses listes avec tous les ".$gepiSettings['denomination_eleves']." au format CSV avec les champs CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS.";
 }
 
 //===========================
 
-$expli[] = "Visualisation graphique des résultats des élèves ou des classes, en croisant les données de multiples manières.";
+$expli[] = "Visualisation graphique des résultats des ".$gepiSettings['denomination_eleves']." ou des classes, en croisant les données de multiples manières.";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur'))
     if ($_SESSION['statut']!='scolarite')
         $expli[] = "Tableau récapitulatif de vos moyennes et/ou appréciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.";
@@ -1199,7 +1199,7 @@ while ($i < $nb_aid) {
         $nom_aid = @mysql_result($call_data, $i, "nom");
         $chemin[] = "/prepa_conseil/visu_aid.php?indice_aid=".$indice_aid;
         $titre[] = "Visualiser des appréciations $nom_aid";
-        $expli[] = "Cet outil permet la visualisation et l'impression des appréciations des élèves pour les $nom_aid.";
+        $expli[] = "Cet outil permet la visualisation et l'impression des appréciations des ".$gepiSettings['denomination_eleves']." pour les $nom_aid.";
     }
     $i++;
 }
@@ -1211,8 +1211,8 @@ if(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiAccesGestElevesPro
 	if (mysql_num_rows($test)>0) {
 		$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 		$chemin[] = "/eleves/index.php";
-		$titre[] = "Gestion des élèves";
-		$expli[] = "Cet outil permet d'accéder aux informations des élèves dont vous êtes $gepi_prof_suivi.";
+		$titre[] = "Gestion des ".$gepiSettings['denomination_eleves'];
+		$expli[] = "Cet outil permet d'accéder aux informations des ".$gepiSettings['denomination_eleves']." dont vous êtes $gepi_prof_suivi.";
 	}
 }
 
@@ -1496,7 +1496,7 @@ if (EstAutoriseAteliers($_SESSION["login"])) {
 
   $chemin[]="/mod_ateliers/ateliers_accueil_admin.php";
   $titre[] = "Configuration du module Ateliers";
-  $expli[] = "Configuration des événements, des disciplines, des professeurs, des salles.";
+  $expli[] = "Configuration des événements, des disciplines, des ".$gepiSettings['denomination_professeurs'].", des salles.";
 
   $nb_ligne = count($chemin);
   $affiche = 'no';

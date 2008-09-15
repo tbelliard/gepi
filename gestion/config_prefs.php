@@ -300,7 +300,7 @@ if((!isset($page))&&($_SESSION['statut']=="administrateur")){
 
 	echo "<p>Cette page permet de configurer l'interface simplifiée pour:</p>\n";
 	echo "<ul>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?page=accueil_simpl'>Page d'accueil simplifiée pour les professeurs</a></li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?page=accueil_simpl'>Page d'accueil simplifiée pour les ".$gepiSettings['denomination_professeurs']."</a></li>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?page=add_modif_dev'>Page de création d'évaluation</a></li>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?page=add_modif_conteneur'>Page de création de ".strtolower(getSettingValue("gepi_denom_boite"))."</a></li>\n";
 	echo "</ul>\n";
@@ -321,7 +321,7 @@ else{
 		$sql="SELECT DISTINCT nom,prenom,login FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY nom, prenom";
 		$res_prof=mysql_query($sql);
 		if(mysql_num_rows($res_prof)==0){
-			echo "<p>Aucun professeur n'est encore défini.<br />Commencez par créer les comptes professeurs.</p>\n";
+			echo "<p>Aucun ".$gepiSettings['denomination_professeur']." n'est encore défini.<br />Commencez par créer les comptes ".$gepiSettings['denomination_professeurs'].".</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -451,7 +451,7 @@ else{
 
 	//if($page=="accueil_simpl"){
 	if(($page=="accueil_simpl")||($_SESSION['statut']=='professeur')){
-		echo "<p>Paramétrage de la page d'<b>accueil</b> simplifiée pour les professeurs.</p>\n";
+		echo "<p>Paramétrage de la page d'<b>accueil</b> simplifiée pour les ".$gepiSettings['denomination_professeurs'].".</p>\n";
 
 		//$tabchamps=array('accueil_simpl','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
 		//accueil_aff_txt_icon
@@ -464,10 +464,10 @@ else{
 		//$lignes_entete="<tr style='background-color: white;'>\n";
 		$lignes_entete="<tr class='entete'>\n";
 		if($_SESSION['statut']!='professeur'){
-			$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+			$lignes_entete.="<th rowspan='3'>".$gepiSettings['denomination_professeur']."</th>\n";
 		}
 		else{
-			$lignes_entete.="<th rowspan='2'>Professeur</th>\n";
+			$lignes_entete.="<th rowspan='2'>".$gepiSettings['denomination_professeur']."</th>\n";
 		}
 		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
 		$lignes_entete.="<th rowspan='2'>Afficher les infobulles</th>\n";
@@ -549,7 +549,7 @@ else{
 
 
 	if(($page=="add_modif_dev")||($_SESSION['statut']=='professeur')){
-		echo "<p>Paramétrage de la page de <b>création d'évaluation</b> pour les professeurs</p>\n";
+		echo "<p>Paramétrage de la page de <b>création d'évaluation</b> pour les ".$gepiSettings['denomination_professeurs']."</p>\n";
 
 		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_boite');
 
@@ -560,10 +560,10 @@ else{
 		//$lignes_entete.="<tr style='background-color: white;'>\n";
 		$lignes_entete="<tr class='entete'>\n";
 		if($_SESSION['statut']!='professeur'){
-			$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+			$lignes_entete.="<th rowspan='3'>".$gepiSettings['denomination_professeur']."</th>\n";
 		}
 		else{
-			$lignes_entete.="<th rowspan='2'>Professeur</th>\n";
+			$lignes_entete.="<th rowspan='2'>".$gepiSettings['denomination_professeur']."</th>\n";
 		}
 		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
 		$lignes_entete.="<th colspan='6'>Afficher les champs</th>\n";
@@ -632,7 +632,7 @@ else{
 
 
 	if(($page=="add_modif_conteneur")||($_SESSION['statut']=='professeur')){
-		echo "<p>Paramétrage de la page de <b>création de ".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))."</b> pour les professeurs</p>\n";
+		echo "<p>Paramétrage de la page de <b>création de ".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))."</b> pour les ".$gepiSettings['denomination_professeurs']."</p>\n";
 
 		$tabchamps=array('add_modif_conteneur_simpl','add_modif_conteneur_nom_court','add_modif_conteneur_nom_complet','add_modif_conteneur_description','add_modif_conteneur_coef','add_modif_conteneur_boite','add_modif_conteneur_aff_display_releve_notes','add_modif_conteneur_aff_display_bull');
 
@@ -643,10 +643,10 @@ else{
 		//$lignes_entete.="<tr style='background-color: white;'>\n";
 		$lignes_entete="<tr class='entete'>\n";
 		if($_SESSION['statut']!='professeur'){
-			$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+			$lignes_entete.="<th rowspan='3'>".$gepiSettings['denomination_professeur']."</th>\n";
 		}
 		else{
-			$lignes_entete.="<th rowspan='2'>Professeur</th>\n";
+			$lignes_entete.="<th rowspan='2'>".$gepiSettings['denomination_professeur']."</th>\n";
 		}
 		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
 		$lignes_entete.="<th colspan='7'>Afficher les champs</th>\n";

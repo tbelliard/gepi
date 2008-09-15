@@ -201,7 +201,10 @@ if(isset($id_classe)){
                 $sql="SELECT DISTINCT nom,prenom FROM eleves e,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jec.e_login=e.login AND jecl.id_classe='$id_classe' AND jec.cpe_login='$lig_cpe->cpe_login'";
                 $result_eleve=mysql_query($sql);
                 $nb_eleves=mysql_num_rows($result_eleve);
-                echo "<td><a href='javascript:ouvre_popup(\"VIE_SCOLAIRE\",\"$id_classe\");'>".$nb_eleves." élève".accord_pluriel($nb_eleves)."</a></td>\n";
+                echo "<td><a href='javascript:ouvre_popup(\"VIE_SCOLAIRE\",\"$id_classe\");'>".$nb_eleves." ";
+		if ($nb_eleves > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
+		echo "</a></td>\n";
+                
 
                 echo "<td>";
                 if($lig_cpe->email!=""){
@@ -242,8 +245,9 @@ if(isset($id_classe)){
             echo "<tr valign='top'><td>".htmlentities($lig_grp->nom_complet)."</td>\n";
 
             echo "<td>";
-            echo "<a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"$id_classe\");'>".$nb_eleves." élève".accord_pluriel($nb_eleves)."</a>\n";
-            //if($nb_eleves_classe!=$nb_eleves){
+            echo "<a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"$id_classe\");'>".$nb_eleves." ";
+		if ($nb_eleves > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
+		echo "</a>\n";
             if($nb_class_grp>1){
                 // Effectif...
                 // ... pour tout le groupe
@@ -251,8 +255,11 @@ if(isset($id_classe)){
                 $res_tous_eleves_grp=mysql_query($sql);
                 $nb_tous_eleves_grp=mysql_num_rows($res_tous_eleves_grp);
 
-                echo " sur <a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"\");'>".$nb_tous_eleves_grp." élève".accord_pluriel($nb_tous_eleves_grp)."</a>\n";
-            }
+                echo " sur <a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"\");'>".$nb_tous_eleves_grp." ";
+		if ($nb_tous_eleves_grp > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
+		echo "</a>\n";
+	     }
+		
             echo "</td>\n";
 
 

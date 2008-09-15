@@ -109,7 +109,7 @@ $expli[] = "Pour gérer l'ouverture de l'emploi du temps de Gepi.";
 if ($force_msj) $expli[] = "Pour gérer le module de mise à jour de GEPI";
 $expli[] = "Pour gérer le module trombinoscope";
 $expli[] = "Pour gérer le module Notanet/Fiches Brevet";
-$expli[] = "Pour gérer simplement les inscriptions des professeurs par exemple à des stages ou bien des interventions dans les collèges";
+$expli[] = "Pour gérer simplement les inscriptions des ".$gepiSettings['denomination_professeurs']." par exemple à des stages ou bien des interventions dans les collèges";
 $expli[] = "Gestion des flux rss des cahiers de textes produits par Gepi";
 
 // AUtorisation des statuts personnalisés

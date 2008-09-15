@@ -456,7 +456,7 @@ if(!isset($id_classe)){
 
 	echo "<h2>Choix de la classe</h2>\n";
 
-	echo "<p>Choisissez la classe dans laquelle se trouve actuellement l'élève dont vous souhaitez consulter les données d'années antérieures.</p>";
+	echo "<p>Choisissez la classe dans laquelle se trouve actuellement un ".$gepiSettings['denomination_eleve']." pour lequel vous souhaitez consulter les données d'années antérieures.</p>";
 
 
 	//$sql="SELECT id,classe FROM classes ORDER BY classe";
@@ -520,7 +520,7 @@ else{
 
 		//$sql="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom,e.prenom";
 		if(!isset($sql_ele)){
-			echo "<p>ERREUR: Il semble que la requête de choix de l'élève n'ait pas été initialisée.</p>\n";
+			echo "<p>ERREUR: Il semble que la requête de choix de l'".$gepiSettings['denomination_eleve']." n'ait pas été initialisée.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -529,12 +529,12 @@ else{
 		$res_ele=mysql_query($sql_ele);
 
 		if(mysql_num_rows($res_ele)==0){
-			echo "<p>ERREUR: Il semble qu'l n'y ait aucun élève dans cette classe.</p>\n";
+			echo "<p>ERREUR: Il semble qu'l n'y ait aucun ".$gepiSettings['denomination_eleve']." dans cette classe.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
 		else{
-			echo "<p>Choisissez l'élève dont vous souhaitez consulter les informations antérieures.</p>\n";
+			echo "<p>Choisissez un ".$gepiSettings['denomination_eleve']." pour lequel vous souhaitez consulter les informations antérieures.</p>\n";
 
 			$nb_eleves=mysql_num_rows($res_ele);
 
@@ -652,7 +652,7 @@ else{
 					$res_ant2=mysql_query($sql);
 
 					if(mysql_num_rows($res_ant2)==0){
-						echo "<td>Aucun résultat antérieur n'a été conservé pour cet élève.</td>\n";
+						echo "<td>Aucun résultat antérieur n'a été conservé pour cet ".$gepiSettings['denomination_eleve'].".</td>\n";
 					}
 					else{
 						$cpt=0;
@@ -704,12 +704,12 @@ else{
 		($_SESSION['statut']=='professeur')
 	)) {
 		//if($_SESSION['statut']!='eleve'){
-			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir une autre période ou élève</a>\n";
+			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir une autre période ou ".$gepiSettings['denomination_eleve']."</a>\n";
 		//}
 
 		$res_liste_ele=mysql_query($sql_ele);
 		if(mysql_num_rows($res_liste_ele)==0) {
-			echo "<p>Aucun élève n'a semble-t-il été trouvé.</p>\n";
+			echo "<p>Aucun ".$gepiSettings['denomination_eleve']." n'a semble-t-il été trouvé.</p>\n";
 		}
 		else {
 			require("fonctions_annees_anterieures.inc.php");
@@ -724,7 +724,7 @@ else{
 	}
 	else{
 		if($_SESSION['statut']!='eleve'){
-			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir un autre élève</a>\n";
+			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir un autre ".$gepiSettings['denomination_eleve']."</a>\n";
 		}
 
 		require("fonctions_annees_anterieures.inc.php");
@@ -761,7 +761,7 @@ else{
 					echo "<p><b>ERREUR:</b> La période ne semble pas avoir été choisie.</p>\n";
 				}
 				elseif(!isset($id_classe)){
-					echo "<p><b>ERREUR:</b> L'identifiant de la classe actuelle de l'élève ne semble pas avoir été fourni.</p>\n";
+					echo "<p><b>ERREUR:</b> L'identifiant de la classe actuelle de cet ".$gepiSettings['denomination_eleve']." ne semble pas avoir été fourni.</p>\n";
 				}
 				else{
 					/*
