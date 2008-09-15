@@ -52,6 +52,8 @@ class Session {
 		session_name("GEPI");
 		session_start();
 
+		$this->verif_CAS_multisite();
+
 		# On charge les valeurs déjà présentes en session
 		$this->load_session_data();
 
@@ -190,7 +192,8 @@ class Session {
 			// de l'utilisateur avant d'aller plus loin, sauf s'il a déjà été passé
 			// en paramètre.
 			if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == "y") {
-				if (!isset($_GET['rne']) AND !isset($_COOKIE["RNE"])) {
+
+				if (!isset($_GET['rne']) AND (!isset($_COOKIE["RNE"]) OR $_COOKIE["RNE"] == 'RNE')) {
 					if (LDAPServer::is_setup()) {
 						// Le RNE n'a pas été transmis. Il faut le récupérer et recharger la page
 						// pour obtenir la bonne base de données
@@ -209,14 +212,16 @@ class Session {
 								}
 
 								header("Location: choix_rne.php?nbre=".$test."&lesrne=".$rnes);
+								exit();
 
 							}else{
 								// Il n'y en a qu'un, on recharge !
 								if ($this->current_auth_mode == "sso") {
-									header("Location: login_sso.php?rne=".$user["rne"]);
+									setcookie('RNE', $user["rne"][0]);
+									header("Location: login_sso.php?rne=".$user["rne"][0]);
 									exit();
 								} else {
-									header("Location: login.php?rne=".$user["rne"]);
+									header("Location: login.php?rne=".$user["rne"][0]);
 									exit();
 								}
 							}
@@ -397,20 +402,20 @@ class Session {
 	// A noter : la méthode ne réinitialise pas la session. Elle ne fait que
 	// réenregistrer la session en cours dans la base de données.
 	public function recreate_log() {
-	   // On teste que le login enregistré en session existe bien dans la table
-	   // des utilisateurs. Ceci est pour vérifier que cette opération de
-	   // réécriture du log est bien nécessaire, et valide !
-	   if ($this->login == '') {
-	      return false;
-           } else {
-	      $test = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE login = '".$this->login."'"));
-	      if ($test == 0) {
-		  return false;
-	       } else {
-		  return $this->insert_log();
-	      }
-	   }
-        }
+		// On teste que le login enregistré en session existe bien dans la table
+		// des utilisateurs. Ceci est pour vérifier que cette opération de
+		// réécriture du log est bien nécessaire, et valide !
+		if ($this->login == '') {
+			return false;
+		} else {
+			$test = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE login = '".$this->login."'"));
+			if ($test == 0) {
+				return false;
+			} else {
+				return $this->insert_log();
+			}
+		}
+	}
 
 	## METHODE PRIVEES ##
 
@@ -438,6 +443,19 @@ class Session {
 		} else {
 			$sql = "UPDATE log SET END = now() + interval " . $this->maxLength . " minute where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
         	$res = sql_query($sql);
+		}
+	}
+
+	// Dans le cas du multisite on vérifie si la session a été initialisée dans la bonne base
+	private function verif_CAS_multisite(){
+
+		if (isset($_GET['rne']) AND $GLOBALS['multisite'] == 'y' AND isset($_SESSION["login"])) {
+			// Alors, on initialise la session ici
+
+			$this->start = mysql_result(mysql_query("SELECT now();"),0);
+			$_SESSION['start'] = $this->start;
+			$this->recreate_log();
+
 		}
 	}
 
@@ -689,9 +707,9 @@ class Session {
 
 		# Gestion du multisite : on a besoin du RNE de l'utilisateur.
 		if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && LDAPServer::is_setup()) {
-			$ldap = new LDAServer;
+			$ldap = new LDAPServer;
 			$user = $ldap->get_user_profile($this->login);
-			$this->rne = $user["rne"];
+			$this->rne = $user["rne"][0];
 		}
 
 		# On regarde si on doit utiliser un login en majuscule. Si c'est le cas, il faut impérativement
