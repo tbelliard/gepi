@@ -119,7 +119,7 @@ if (isset($_POST['is_posted'])) {
             $id_matiere = $row2[0];
             $nom_complet = $row2[1];
             // On cherche tous groupes qui commence par "Cours_Matiere_Classe"
-            $nom_cours = "Cours_".$id_matiere."_".$nom_classe;
+            $nom_cours = "Cours_".$id_matiere."_".$nom_classe."_";
             $sr = ldap_search($ds,$ldap_base,"(cn=".$nom_cours."*)");
             $info = ldap_get_entries($ds,$sr);
             $ordre = 0;
