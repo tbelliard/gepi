@@ -52,6 +52,7 @@ class Session {
 		session_name("GEPI");
 		session_start();
 
+		$this->maxLength = getSettingValue("sessionMaxLength");
 		$this->verif_CAS_multisite();
 
 		# On charge les valeurs déjà présentes en session

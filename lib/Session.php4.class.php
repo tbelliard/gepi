@@ -54,7 +54,8 @@ class Session {
 		# On initialise la session
 		session_name("GEPI");
 		session_start();
-
+		  
+		$this->maxLength = getSettingValue("sessionMaxLength");
 		# On charge les valeurs déjà présentes en session
 		$this->load_session_data();
 
