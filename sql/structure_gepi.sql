@@ -204,7 +204,7 @@ DROP TABLE IF EXISTS notanet_avis;
 CREATE TABLE IF NOT EXISTS notanet_avis (login VARCHAR( 50 ) NOT NULL ,favorable ENUM( 'O', 'N' ) NOT NULL ,avis TEXT NOT NULL ,PRIMARY KEY ( login ));
 DROP TABLE IF EXISTS communes;
 CREATE TABLE IF NOT EXISTS communes (code_commune_insee VARCHAR( 50 ) NOT NULL ,departement VARCHAR( 50 ) NOT NULL ,commune VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( code_commune_insee ));
-DROP TABLE IF EXISTS archivage_aids
+DROP TABLE IF EXISTS archivage_aids;
 CREATE TABLE IF NOT EXISTS `archivage_aids` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`id_type_aid` int(11) NOT NULL default '0',`productions` varchar(100) NOT NULL default '',`resume` text NOT NULL,`famille` smallint(6) NOT NULL default '0',`mots_cles` text NOT NULL,`adresse1` varchar(255) NOT NULL default '',`adresse2` varchar(255) NOT NULL default '',`public_destinataire` varchar(50) NOT NULL default '',`contacts` text NOT NULL,`divers` text NOT NULL,`matiere1` varchar(100) NOT NULL default '',`matiere2` varchar(100) NOT NULL default '',`fiche_publique` enum('y','n') NOT NULL default 'n',`affiche_adresse1` enum('y','n') NOT NULL default 'n',`en_construction` enum('y','n') NOT NULL default 'n',`notes_moyenne` varchar(255) NOT NULL,`notes_min` varchar(255) NOT NULL,`notes_max` varchar(255) NOT NULL,`responsables` text NOT NULL,`eleves` text NOT NULL,`eleves_resp` text NOT NULL, PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS archivage_aid_eleve;
 CREATE TABLE IF NOT EXISTS `archivage_aid_eleve` (`id_aid` int(11) NOT NULL default '0',`id_eleve` varchar(255) NOT NULL,`eleve_resp` char(1) NOT NULL default 'n',PRIMARY KEY  (`id_aid`,`id_eleve`));
