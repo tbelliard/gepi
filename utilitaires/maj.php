@@ -7060,10 +7060,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	} else {
 	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
 	}
-    
-    
-    
-    
+
     
     
     // Mise à jour du numéro de version
