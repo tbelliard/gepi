@@ -143,7 +143,11 @@ if(isset($_POST['is_posted'])) {
 
 	if($reinitialiser=='y'){
 		if(saveSetting('style_body_backgroundcolor','')) {
-			$fich=fopen("../style_screen_ajout.css","w+");
+			if ($GLOBALS['multisite'] == 'y') {
+				$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
+			}else{
+				$fich=fopen("../style_screen_ajout.css","w+");
+			}
 			fwrite($fich,"/*
 Ce fichier est destiné à recevoir des paramètres définis depuis la page /gestion/param_couleurs.php
 Chargé juste avant la section <body> dans le /lib/header.inc,
@@ -170,7 +174,11 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 
 			if(isset($_POST['style_body_backgroundcolor'])){
 				if(saveSetting('style_body_backgroundcolor',$_POST['style_body_backgroundcolor'])) {
-					$fich=fopen("../style_screen_ajout.css","w+");
+					if ($GLOBALS['multisite'] == 'y') {
+						$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
+					}else{
+						$fich=fopen("../style_screen_ajout.css","w+");
+					}
 					fwrite($fich,"/*
 Ce fichier est destiné à recevoir des paramètres définis depuis la page /gestion/param_couleurs.php
 Chargé juste avant la section <body> dans le /lib/header.inc,
@@ -200,7 +208,11 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 				$nb_err++;
 			}
 
-			$fich=fopen("../style_screen_ajout.css","w+");
+			if ($GLOBALS['multisite'] == 'y') {
+				$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
+			}else{
+				$fich=fopen("../style_screen_ajout.css","w+");
+			}
 			fwrite($fich,"/*
 Ce fichier est destiné à recevoir des paramètres définis depuis la page /gestion/param_couleurs.php
 Chargé juste avant la section <body> dans le /lib/header.inc,
@@ -270,7 +282,11 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 				genere_degrade($degrade_haut,$degrade_bas,40,"../images/background/degrade1_small.png");
 
 
-				$fich=fopen("../style_screen_ajout.css","a+");
+				if ($GLOBALS['multisite'] == 'y') {
+					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
+				}else{
+					$fich=fopen("../style_screen_ajout.css","a+");
+				}
 				fwrite($fich,"
 
 div#header {
@@ -394,7 +410,11 @@ fieldset#login_box div#header {
 			}
 
 			if($nb_err==0){
-				$fich=fopen("../style_screen_ajout.css","a+");
+				if ($GLOBALS['multisite'] == 'y') {
+					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
+				}else{
+					$fich=fopen("../style_screen_ajout.css","a+");
+				}
 				fwrite($fich,"
 .infobulle_entete {
 	background-color: #$couleur_infobulle_fond_entete;
@@ -461,7 +481,11 @@ fieldset#login_box div#header {
 			}
 
 			if($nb_err==0){
-				$fich=fopen("../style_screen_ajout.css","a+");
+				if ($GLOBALS['multisite'] == 'y') {
+					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
+				}else{
+					$fich=fopen("../style_screen_ajout.css","a+");
+				}
 				fwrite($fich,"
 .gestion_temp_dir .lig-1 {
 	background-color: #$couleur_lig_alt_1;
@@ -508,7 +532,11 @@ fieldset#login_box div#header {
 			}
 
 			if($nb_err==0){
-				$fich=fopen("../style_screen_ajout.css","a+");
+				if ($GLOBALS['multisite'] == 'y') {
+					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
+				}else{
+					$fich=fopen("../style_screen_ajout.css","a+");
+				}
 					fwrite($fich,"
 /* Classes des notices du cahier de texte */
 ");
@@ -534,7 +562,11 @@ fieldset#login_box div#header {
 				}
 
 				if($nb_err==0){
-					$fich=fopen("../style_screen_ajout.css","a+");
+					if ($GLOBALS['multisite'] == 'y') {
+						$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
+					}else{
+						$fich=fopen("../style_screen_ajout.css","a+");
+					}
 						fwrite($fich,"
 .".$poste_notice_classe[$i]." {
 	".$poste_type_couleur[$i].": #".$couleur_poste.";
