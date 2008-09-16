@@ -1,5 +1,0 @@
-/*
-Ce fichier est destiné à recevoir des paramètres définis depuis la page /gestion/param_couleurs.php
-Chargé juste avant la section <body> dans le /lib/header.inc,
-ses propriétés écrasent les propriétés définies auparavant dans le </head>.
-*/

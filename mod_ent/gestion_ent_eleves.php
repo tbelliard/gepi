@@ -97,9 +97,31 @@ if ($action == "modifier") {
         if (strpos($reg_login, "erreur") === false) {
         	// On ne fait rien
         }else{
+        	// On vérifie quand même si il n'y a pas un nom qui correspond à celui-ci dans ldap_bx
+        	$sql_r = "SELECT login_u, nom_u, prenom_u FROM ldap_bx WHERE nom_u = '".$reg_nom."' AND prenom_u = '".$reg_prenom."' AND statut_u = 'student'";
+        	$query_r = mysql_query($sql_r);
+        	$nbre_v = mysql_num_rows($query_r);
+        	$result_r = mysql_fetch_array($query_r);
+        	if (isset($result_r["login_u"]) AND $nbre_v <= 1) {
+        		$aff_rep_r = $result_r["login_u"];
+        		$aff_rep_nomprenom_r = '--> ?? (' . $result_r["nom_u"] . '&nbsp;' . $result_r["prenom_u"] . ')';
+        	}else{
+        		// On teste avec seulement le nom
+        		$sql_r2 = "SELECT login_u, nom_u, prenom_u FROM ldap_bx WHERE nom_u = '".trim($reg_nom)."' AND statut_u = 'student'";
+        		$query_r2 = mysql_query($sql_r2);
+        		$nbre_v2 = mysql_num_rows($query_r2);
+        		$result_r2 = mysql_fetch_array($query_r2);
+        		if (isset($result_r2["login_u"]) AND $nbre_v2 <= 1) {
+        			$aff_rep_r = 'A VERIFIER';
+        			$aff_rep_nomprenom_r = '<span style="color: red;">--> ' . $result_r2["login_u"] . ' (' . $result_r2["nom_u"] . '&nbsp;' . $result_r2["prenom_u"] . ')</span>';
+        		}
+				$aff_rep_r = $reg_login;
+				$aff_rep_nomprenom_r = '(Pas de r&eacute;ponse sur le nom pr&eacute;nom)';
+			}
+
 			$aff_erreurs .= '
 			<p>Une erreur sur cet élève : '.$reg_nom.' '.$reg_prenom.' (num. int. '.$reg_eleonet.') - '.$reg_sexe.' - '.$reg_naissance.'
-			<input type="text" name="modifier_'.$j.'" value="'.$reg_login.'" />
+			<input type="text" name="modifier_'.$j.'" value="'.$aff_rep_r.'" />'.$aff_rep_nomprenom_r.'
 			<input type="hidden" name="id_'.$j.'" value="'.$inc.'" />.</p>';
 			$j++;
 		}
