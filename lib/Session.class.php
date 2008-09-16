@@ -622,9 +622,15 @@ class Session {
 		if ($cas_use_logout) {
 			phpCAS::logout();
 		}else{
-			// Il faudra trouver mieux
-			echo '<html><head><title>GEPI</title></head><body><h2>Vous &ecirc;tes d&eacute;connect&eacute;.</h2></body></html>';
-			exit();
+			if ($cas_logout_url != '') {
+				header("Location:".$cas_logout_url);
+				exit();
+			}else{
+				// Il faudra trouver mieux
+				echo '<html><head><title>GEPI</title></head><body><h2>Vous &ecirc;tes d&eacute;connect&eacute;.</h2></body></html>';
+				exit();
+			}
+
 		}
 		// redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a
 		// été trouvé par le client CAS.
