@@ -619,7 +619,13 @@ class Session {
 		// Le premier argument est la version du protocole CAS
 		phpCAS::client(CAS_VERSION_2_0,$cas_host,$cas_port,$cas_root,'');
 		phpCAS::setLang('french');
-		phpCAS::logout();
+		if ($cas_use_logout) {
+			phpCAS::logout();
+		}else{
+			// Il faudra trouver mieux
+			echo '<html><head><title>GEPI</title></head><body><h2>Vous &ecirc;tes d&eacute;connect&eacute;.</h2></body></html>';
+			exit();
+		}
 		// redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a
 		// été trouvé par le client CAS.
 		//phpCAS::setNoCasServerValidation();
