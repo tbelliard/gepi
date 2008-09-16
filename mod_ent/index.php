@@ -50,6 +50,7 @@ if (getSettingValue("use_ent") != 'y') {
 
 // ======================= Initialisation des variables ==========================
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
+$aff_continuer = NULL;
 
 
 // ======================= Traitement des données ================================
@@ -95,7 +96,7 @@ if ($_GET["etape"] == 2) {
 	$tr = mysql_query("TRUNCATE TABLE ldap_bx");
 
 	// On ouvre une connexion avec le ldap
-	$ldap = new LDAServer;
+	$ldap = new LDAPServer;
 	$info = $ldap->get_all_users('rne', $RNE);
 
 	// $infos est donc un tableau de tous les utilisateurs du LDAP qui ont ce $RNE en attribut (sic)
@@ -131,7 +132,7 @@ if ($_GET["etape"] == 2) {
 			$msg2 .= '<br /><span style="color: red;">L\'utilisateur '.$info[$a][$ldap_login][0].' n\'a pas été enregistré.</span>';
 		}
 	}
-
+	$aff_continuer = '<p>Vous pouvez retourner sur la page d\'initialisation par sconet/STSweb <a href="../init_xml2/index.php">CONTINUER</a></p>';
 
 }
 
@@ -148,7 +149,7 @@ require_once("../lib/header.inc");
 
 <h2>R&eacute;cup&eacute;ration des informations de l'ENT</h2>
 
-<?php echo $msg2; ?>
+<?php echo $msg2 . $aff_continuer; ?>
 
 
 
