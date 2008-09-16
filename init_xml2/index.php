@@ -39,11 +39,6 @@ if (!checkAccess()) {
 	die();
 }
 
-/*
-if (!function_exists("dbase_open"))  {
-    $msg = "ATTENTION : PHP n'est pas configuré pour gérer les fichiers GEP (dbf). L'extension  d_base n'est pas active. Adressez-vous à l'administrateur du serveur pour corriger le problème.";
-}
-*/
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année";
@@ -51,6 +46,10 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class='bold'><a href="../gestion/index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<?php if (getSettingValue('use_ent') == 'y') {
+	echo '<p>Avant de commencer, vous devez récupérer les logins de vos utilisateurs dans l\'ENT : <a href="../mod_ent/index.php">RECUPERER</a></p>';
+}
+?>
 
 <p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.<br />
 <?php

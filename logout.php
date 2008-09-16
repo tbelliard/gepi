@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
@@ -28,6 +28,7 @@ require_once("./lib/initialisations.inc.php");
 
 
 if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "cas") {
+	$session_gepi->close(0);
     $session_gepi->logout_cas();
     die();
 }
