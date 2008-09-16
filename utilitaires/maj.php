@@ -648,6 +648,11 @@ if (isset ($_POST['maj'])) {
 
     $tab_req[] = "INSERT INTO droits VALUES('/saisie/saisie_cmnt_type_prof.php','F','V','F','F','F','F','F','F', 'Saisie appréciations-types pour les profs','');";
 
+    $tab_req[] = "INSERT INTO droits VALUES('/mod_ent/index.php','V','F','F','F','F','F','F','F', 'Gestion de l intégration de GEPI dans un ENT','');";
+    $tab_req[] = "INSERT INTO droits VALUES('/mod_ent/gestion_ent_eleves.php','V','F','F','F','F','F','F','F', 'Gestion de l intégration de GEPI dans un ENT','');";
+    $tab_req[] = "INSERT INTO droits VALUES('/mod_ent/gestion_ent_profs.php','V','F','F','F','F','F','F','F', 'Gestion de l intégration de GEPI dans un ENT','');";
+
+
     //$tab_req[] = "";
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
@@ -6960,8 +6965,8 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	} else {
 	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
 	}
-    
-    
+
+
 	$result .= "&nbsp;->Ajout de l'index 'login' à la table resp_pers<br />";
 	$req_test = mysql_query("SHOW INDEX FROM resp_pers WHERE Key_name = 'login'");
 	$req_res = mysql_num_rows($req_test);
@@ -6975,7 +6980,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	} else {
 	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
 	}
-	
+
 	$result .= "&nbsp;->Ajout de l'index 'adr_id' à la table resp_pers<br />";
 	$req_test = mysql_query("SHOW INDEX FROM resp_pers WHERE Key_name = 'adr_id'");
 	$req_res = mysql_num_rows($req_test);
@@ -6989,8 +6994,8 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	} else {
 	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
 	}
-    
-    
+
+
 	$result .= "&nbsp;->Ajout de l'index 'pers_id' à la table responsables2<br />";
 	$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'pers_id'");
 	$req_res = mysql_num_rows($req_test);
@@ -7018,7 +7023,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	} else {
 	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
 	}
-    
+
 	$result .= "&nbsp;->Ajout de l'index 'resp_legal' à la table responsables2<br />";
 	$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'resp_legal'");
 	$req_res = mysql_num_rows($req_test);
@@ -7032,7 +7037,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	} else {
 	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
 	}
-	
+
 	$result .= "&nbsp;->Ajout de l'index 'ele_id' à la table eleves<br />";
 	$req_test = mysql_query("SHOW INDEX FROM eleves WHERE Key_name = 'ele_id'");
 	$req_res = mysql_num_rows($req_test);
@@ -7046,7 +7051,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	} else {
 	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
 	}
-	
+
 	$result .= "&nbsp;->Ajout de l'index 'id_classe' à la table j_eleves_classes<br />";
 	$req_test = mysql_query("SHOW INDEX FROM j_eleves_classes WHERE Key_name = 'id_classe'");
 	$req_res = mysql_num_rows($req_test);
@@ -7061,8 +7066,8 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	   $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
 	}
 
-    
-    
+
+
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
     saveSetting("versionRc", $gepiRcVersion);
