@@ -226,7 +226,7 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 					{
 						$verification = '1';
 						if (date("w", mktime(0, 0, 0, $d_date_absence_eleve_verif[1], $d_date_absence_eleve_verif[2], $d_date_absence_eleve_verif[0])) != '0' OR $test_jour_dimanche == 'oui')
-                        {echo 'coucou';
+                        {
 							$verification = '1';
 							if (date("w", mktime(0, 0, 0, $a_date_absence_eleve_verif[1], $a_date_absence_eleve_verif[2], $a_date_absence_eleve_verif[0])) != '0' OR $test_jour_dimanche == 'oui')
 							{
