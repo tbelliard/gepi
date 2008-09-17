@@ -140,8 +140,6 @@ header("Content-disposition: filename=exportation.csv");
 
     echo "NOM;PRENOM;CLASSE;TYPE ABS;JUSTIFIE;MOTIF;DATE DU;HEURE DE;DATE AU;HEURE A;\n";
 
-    echo $requete."\n";
-
 	while ( $donner = mysql_fetch_array( $executer ) )
    {
 		echo $donner['nom'].";".$donner['prenom'].";".$donner['nom_complet'].";".$donner['type_absence_eleve'].";".$donner['justify_absence_eleve'].";".$donner['motif_absence_eleve'].";".$donner['d_date_absence_eleve'].";".$donner['d_heure_absence_eleve'].";".$donner['a_date_absence_eleve'].";".$donner['d_heure_absence_eleve'].";\n";
