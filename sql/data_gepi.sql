@@ -726,4 +726,4 @@ INSERT INTO setting VALUES ('denomination_eleves', 'élèves');
 INSERT INTO setting VALUES ('denomination_professeur', 'professeur');
 INSERT INTO setting VALUES ('denomination_professeurs', 'professeurs');
 INSERT INTO setting VALUES ('denomination_responsable', 'responsable légal');
-INSERT INTO setting VALUES ('denomination_responsables', 'responsable légaux');
+INSERT INTO setting VALUES ('denomination_responsables', 'responsables légaux');
