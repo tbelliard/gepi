@@ -633,6 +633,40 @@ function info_eleve($ele_login) {
 		}
 	}
 
+	// ============================================================================= //
+	// === SUIVI des absences pour ceux qui utilisent la saisie 'fond de classe' === //
+	// ============================================================================= //
+	$tab_ele['abs_quotidien'] = array();
+	$tab_ele['abs_quotidien']['autorisation'] = 'non'; // ne sera changé que dans le cas où la requête suivante renvoie un résultat
+	$ts_quinze_jours_avant = date("U") - 1296000;
+
+	$sql2 = "SELECT DISTINCT * FROM absences_rb WHERE eleve_id = '".$ele_login."' AND date_saisie > '".$ts_quinze_jours_avant."'";
+	$query = mysql_query($sql2);
+
+	if ($query) {
+		$test = mysql_num_rows($query);
+		if ($test >= 1) {
+			$tab_ele['abs_quotidien']['autorisation'] = 'oui';
+		}
+		// On enregistre toutes les absences de l'élève dans le tableau
+		$s = 0;
+		while($rep = mysql_fetch_object($query)){
+
+			$jour = date("d/m", $rep->debut_ts);
+			$creneau = mysql_fetch_array(mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$rep->creneau_id."' LIMIT 1"));
+
+			$tab_ele['abs_quotidien'][$s]['retard_absence'] = $rep->retard_absence;
+			$tab_ele['abs_quotidien'][$s]['jour_semaine'] = $rep->jour_semaine . ' ' . $jour;
+			$tab_ele['abs_quotidien'][$s]['debut_heure'] = date("H:i", $rep->debut_ts);
+			$tab_ele['abs_quotidien'][$s]['creneau'] = $creneau["nom_definie_periode"];
+			$s++;
+		}
+
+	}else{
+		// rien et on laisse
+	}
+
+
 	return $tab_ele;
 }
 

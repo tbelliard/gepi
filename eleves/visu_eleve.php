@@ -1708,6 +1708,38 @@ Patientez pendant l'extraction des données... merci.
 				}
 				echo "</table>\n";
 			}
+						// On ajoute le suivi par créneaux si il y en a
+			if ($tab_ele['abs_quotidien']['autorisation'] == 'oui') {
+				// On affiche
+				echo '<br /><p class="bold">Le détail des absences enregistrées : </p>';
+
+				echo '
+				<table class="boireaus" style="margin-left: 4em;" summary="D&eacute;tail des absences">
+					<tr>
+						<th>R/A</th>
+						<th>Jour</th>
+						<th>Heure</th>
+						<th>Créneau</th>
+					</tr>';
+				foreach($tab_ele["abs_quotidien"] as $abs){
+					if (isset($abs["retard_absence"]) AND ($abs["retard_absence"] == 'A' OR $abs["retard_absence"] == 'R')) {
+						$aff_couleur = ' style="background-color: green;"';
+						$aff_abs_lettre = 'R';
+						if ($abs["retard_absence"] == 'A') {
+							$aff_couleur = ' style="background-color: red;"';
+							$aff_abs_lettre = 'A';
+						}
+						echo '
+					<tr>
+						<td' . $aff_couleur . '>' . $aff_abs_lettre . '</td>
+						<td>' . $abs["jour_semaine"] . '</td>
+						<td>' . $abs["debut_heure"] . '</td>
+						<td>' . $abs["creneau"] . '</td>
+					</tr>';
+					}
+				}
+				echo '</table>'."\n";
+			}
 
 			echo "</div>\n";
 		}
