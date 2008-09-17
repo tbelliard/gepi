@@ -66,32 +66,84 @@ die();
     else { if (isset($_GET['classe_choix'])) { $classe_choix = $_GET['classe_choix']; } if (isset($_POST['classe_choix'])) { $classe_choix = $_POST['classe_choix']; } }
    if (empty($_GET['eleve_choix']) and empty($_POST['eleve_choix'])) { $eleve_choix = ''; }
     else { if (isset($_GET['eleve_choix'])) { $eleve_choix = $_GET['eleve_choix']; } if (isset($_POST['eleve_choix'])) { $eleve_choix = $_POST['eleve_choix']; } }
-   if (empty($_GET['du']) and empty($_POST['du'])) { $du = ''; }
-    else { if (isset($_GET['du'])) { $du = $_GET['du']; } if (isset($_POST['du'])) { $du = $_POST['du']; } }
-   if (empty($_GET['au']) and empty($_POST['au'])) { $au = ''; }
-    else { if (isset($_GET['au'])) { $au = $_GET['au']; } if (isset($_POST['au'])) { $au = $_POST['au']; } }
+
+	$du = isset($_GET["du"]) ? $_GET["du"] : (isset($_POST["du"]) ? $_POST["du"] : '');
+	$au = isset($_GET["au"]) ? $_GET["au"] : (isset($_POST["au"]) ? $_POST["au"] : '');
 
 
 // prépation de la requête
-	if(!empty($type)) { $requete_recherche = 'type_absence_eleve = \''.$type.'\''; }
-	if(!empty($justifie) and $justifie === '1') { if(!empty($requete_recherche) and $requete_recherche != '') { $requete_recherche = $requete_recherche.' AND '; } $requete_recherche = $requete_recherche.'( justify_absence_eleve = \'O\' OR justify_absence_eleve = \'T\''; }
-	if(!empty($nonjustifie) and $nonjustifie === '1') { if(!empty($requete_recherche) and $requete_recherche != '') { if(!empty($justifie)) { $requete_recherche = $requete_recherche.' OR '; } else { $requete_recherche = $requete_recherche.' AND ('; } } $requete_recherche = $requete_recherche.'justify_absence_eleve = \'N\')'; }
-		if(!empty($justifie) and empty($nonjustifie)) { $requete_recherche = $requete_recherche.')'; }
-	if(!empty($motif) and $motif != 'tous') { if(!empty($requete_recherche) and $requete_recherche != '') { $requete_recherche = $requete_recherche.' AND '; } $requete_recherche = $requete_recherche.'motif_absence_eleve = \''.$motif.'\''; }
-	if(!empty($classe_choix) and $classe_choix != 'tous') { if(!empty($requete_recherche) and $requete_recherche != '') { $requete_recherche = $requete_recherche.' AND '; } $requete_recherche = $requete_recherche.'c.id = \''.$classe_choix.'\''; }
-	if(!empty($eleve_choix) and $eleve_choix != 'tous') { if(!empty($requete_recherche) and $requete_recherche != '') { $requete_recherche = $requete_recherche.' AND '; } $requete_recherche = $requete_recherche.'e.login = \''.$eleve_choix.'\''; }
+	if(!empty($type)) {
+		$requete_recherche = 'type_absence_eleve = \''.$type.'\'';
+	}
+	if(!empty($justifie) and $justifie === '1') {
+		if(!empty($requete_recherche) and $requete_recherche != '') {
+			$requete_recherche = $requete_recherche.' AND ';
+		}
+		$requete_recherche = $requete_recherche.'( justify_absence_eleve = \'O\' OR justify_absence_eleve = \'T\'';
+	}
+	if(!empty($nonjustifie) and $nonjustifie === '1') {
+		if(!empty($requete_recherche) and $requete_recherche != '') {
+			if(!empty($justifie)) {
+				$requete_recherche = $requete_recherche.' OR ';
+			} else {
+				$requete_recherche = $requete_recherche.' AND (';
+			}
+		}
+		$requete_recherche = $requete_recherche.'justify_absence_eleve = \'N\')';
+	}
+	if(!empty($justifie) and empty($nonjustifie)) {
+		$requete_recherche = $requete_recherche.')';
+	}
+	if(!empty($motif) and $motif != 'tous') {
+		if(!empty($requete_recherche) and $requete_recherche != '') {
+			$requete_recherche = $requete_recherche.' AND ';
+		} $requete_recherche = $requete_recherche.'motif_absence_eleve = \''.$motif.'\'';
+	}
+	if(!empty($classe_choix) and $classe_choix != 'tous') {
+		if(!empty($requete_recherche) and $requete_recherche != '') {
+			$requete_recherche = $requete_recherche.' AND ';
+		}
+		$requete_recherche = $requete_recherche.'c.id = \''.$classe_choix.'\'';
+	}
+	if(!empty($eleve_choix) and $eleve_choix != 'tous') {
+		if(!empty($requete_recherche) and $requete_recherche != '') {
+			$requete_recherche = $requete_recherche.' AND ';
+		}
+		$requete_recherche = $requete_recherche.'e.login = \''.$eleve_choix.'\'';
+	}
 
-	$requete = "SELECT * FROM ".$prefix_base."classes c, ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = e.login AND e.login = ec.login AND c.id = ec.id_classe AND ".$requete_recherche." GROUP BY id_absence_eleve ORDER BY nom, prenom ASC";
+	// Pour les dates, on ajoute
+	$complement_requete = '';
+	if ($du != '') {
+		$test = explode("/", $du);
+		$date = $test[2] . '-' . $test[1] . '-' . $test[0];
+		$complement_requete = " AND d_date_absence_eleve >= '" . $date . "' ";
+	}
+
+	$requete = "SELECT * FROM
+					".$prefix_base."classes c,
+					".$prefix_base."eleves e,
+					".$prefix_base."j_eleves_classes ec,
+					".$prefix_base."absences_eleves
+					WHERE eleve_absence_eleve = e.login
+					AND e.login = ec.login
+					AND c.id = ec.id_classe
+					AND ".$requete_recherche.$complement_requete."
+					GROUP BY id_absence_eleve ORDER BY nom, prenom ASC";
 
 
 // Entête du fichier CSV
-  header("Content-Type: application/csv-tab-delimited-table");
-  header("Content-disposition: filename=exportation.csv");
+header("Content-Type: application/csv-tab-delimited-table");
+header("Content-disposition: filename=exportation.csv");
 
-  $executer = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br>'.mysql_error());
+	$executer = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br>'.mysql_error());
+
     echo "NOM;PRENOM;CLASSE;TYPE ABS;JUSTIFIE;MOTIF;DATE DU;HEURE DE;DATE AU;HEURE A;\n";
-  while ( $donner = mysql_fetch_array( $executer ) )
-   {   
-     echo $donner['nom'].";".$donner['prenom'].";".$donner['nom_complet'].";".$donner['type_absence_eleve'].";".$donner['justify_absence_eleve'].";".$donner['motif_absence_eleve'].";".$donner['d_date_absence_eleve'].";".$donner['d_heure_absence_eleve'].";".$donner['a_date_absence_eleve'].";".$donner['d_heure_absence_eleve'].";\n";
+
+    echo $requete."\n";
+
+	while ( $donner = mysql_fetch_array( $executer ) )
+   {
+		echo $donner['nom'].";".$donner['prenom'].";".$donner['nom_complet'].";".$donner['type_absence_eleve'].";".$donner['justify_absence_eleve'].";".$donner['motif_absence_eleve'].";".$donner['d_date_absence_eleve'].";".$donner['d_heure_absence_eleve'].";".$donner['a_date_absence_eleve'].";".$donner['d_heure_absence_eleve'].";\n";
    }
-?> 
+?>
