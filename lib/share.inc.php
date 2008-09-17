@@ -144,6 +144,9 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
         }
 
         $login_user = $temp1;
+
+		//echo "\$login_user=$login_user<br />";
+		/*
         // On teste l'unicité du login que l'on vient de créer
         $m = '';
         $test_unicite = 'no';
@@ -160,9 +163,14 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
             }
         }
 
+		echo "\$login_user=$login_user<br />";
+		*/
+
         // Nettoyage final
         $login_user = substr($login_user, 0, 50);
         $login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim($login_user));
+
+		//echo "\$login_user=$login_user<br />";
 
         $test1 = $login_user{0};
 		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
@@ -175,6 +183,24 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
 			$login_user = substr($login_user, 0, strlen($login_user)-1);
 			$test1 = $login_user{strlen($login_user)-1};
 		}
+
+        // On teste l'unicité du login que l'on vient de créer
+        $m = '';
+        $test_unicite = 'no';
+        while ($test_unicite != 'yes') {
+            $test_unicite = test_unique_login($login_user.$m);
+            if ($test_unicite != 'yes') {
+            	if ($m == '') {
+            		$m = 2;
+            	} else {
+                	$m++;
+            	}
+            } else {
+            	$login_user = $login_user.$m;
+            }
+        }
+
+		//echo "\$login_user=$login_user<br />";
 
 		return $login_user;
 }

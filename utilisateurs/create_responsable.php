@@ -53,7 +53,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 	$error = false;
 	$msg = "";
 	if ($create_mode == "individual") {
-		echo "grouik : ".$_POST['pers_id'];
+		//echo "grouik : ".$_POST['pers_id'];
 		// $_POST['pers_id'] est filtré automatiquement contre les injections SQL, on l'utilise directement
 		$test = mysql_query("SELECT count(e.login) FROM eleves e, responsables2 re WHERE (e.ele_id = re.ele_id AND re.pers_id = '" . $_POST['pers_id'] ."')");
 		if (mysql_result($test, 0) == "0") {
@@ -147,8 +147,9 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 						$reg_login = "erreur_".$k;
 					}
 				}
-			}else{
+			} else {
 				// Création du compte utilisateur pour le responsable considéré
+				//echo "\$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, ".getSettingValue("mode_generation_login").");<br />\n";
 				$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login"));
 			}
 
