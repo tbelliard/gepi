@@ -57,6 +57,7 @@ function getPref($login,$item,$default){
 // Ajout de la possibilité d'afficher ou pas le menu en barre horizontale
 $afficherMenu = isset($_POST["afficher_menu"]) ? $_POST["afficher_menu"] : NULL;
 $modifier_le_menu = isset($_POST["modifier_le_menu"]) ? $_POST["modifier_le_menu"] : NULL;
+$modifier_entete_prof = isset($_POST['modifier_entete_prof']) ? $_POST['modifier_entete_prof'] : NULL;
 $page = isset($_GET['page']) ? $_GET['page'] : (isset($_POST['page']) ? $_POST['page'] : NULL);
 $prof = isset($_POST['prof']) ? $_POST['prof'] : NULL;
 $enregistrer=isset($_POST['enregistrer']) ? $_POST['enregistrer'] : NULL;
@@ -82,19 +83,13 @@ if($_SESSION['statut']!="administrateur"){
 			}
 		}
 		elseif ($statut == "administrateur") {
-			/*
-			$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = '".$Settings."'"))
-								OR DIE ('Erreur requête eval_setting (admin) : '.mysql_error());
 
-				--> A VERIFIER ICI : l'admin charge un setting normalement pas sa préférence : CONFIRMEZ VOUS le changement ?
-				-- > si le changement est confirmé, il faudrait ensuite effacer les commentaires (le svn garde une trace de tout ça ;) )
-			*/
 			$test=mysql_query("SELECT value FROM setting WHERE name = '".$Settings."'");
 			if(mysql_num_rows($test)>0) {
 				$req_setting = mysql_fetch_array($test);
 			}
 		}
-		//if ($req_setting["value"] == $yn) {
+
 		if((isset($req_setting["value"]))&&($req_setting["value"]==$yn)) {
 			$aff_check = ' checked="checked"';
 		}else {
@@ -134,6 +129,22 @@ if ($modifier_le_menu == "ok") {
 		}
 } // fin du if ($modifier_le_menu...
 // +++++++++++++++++++++ FIN -- MENU en barre horizontale -- FIN ++++++++++++++++++++
+
+// ====== hauteur du header ======= //
+	$message_header_prof = NULL;
+
+if ($modifier_entete_prof == 'ok') {
+	// On traite alors la demande
+	$reglage = isset($_POST['header_bas']) ? $_POST['header_bas'] : 'n';
+
+	if (saveSetting('impose_petit_entete_prof', $reglage)) {
+		$message_header_prof = '<p style="color: green;">Modification enregistrée</p>';
+	}else{
+		$message_header_prof = '<p style="color: red;">Impossible d\'enregistrer la modification</p>';
+	}
+}
+
+
 
 // Tester les valeurs de $page
 // Les valeurs autorisées sont (actuellement): accueil, add_modif_dev, add_modif_conteneur
@@ -814,6 +825,28 @@ if ($aff == "oui") {
 		'.$messageMenu
 		;
 } // fin du if ($aff == "oui")
+
+echo '<br />' . "\n";
+
+if ($_SESSION["statut"] == 'administrateur') {
+	// On propose de pouvoir obliger tous les professeurs à avoir un header court
+	echo '
+		<form name="change_header_prof" method="post" action="config_prefs.php">
+			<fieldset style="border: 1px solid grey;">
+				<legend style="border: 1px solid grey;">Gérer la hauteur de l\'entête pour les professeurs</legend>
+				<input type="hidden" name="modifier_entete_prof" value="ok" />
+				<p>
+					<label for="headerBas">Imposer une entête basse</label>
+					<input type="radio" id="headerBas" name="header_bas" value="y"'.eval_checked("impose_petit_entete_prof", "y", "administrateur", $_SESSION["login"]).' onclick="document.change_header_prof.submit();" />
+				</p>
+				<p>
+					<label for="headerNormal">Ne rien imposer</label>
+					<input type="radio" id="headerNormal" name="header_bas" value="n"'.eval_checked("impose_petit_entete_prof", "n", "administrateur", $_SESSION["login"]).' onclick="document.change_header_prof.submit();" />
+				</p>
+				' . $message_header_prof . '
+			</fieldset>
+		</form>';
+}
 
 echo "<br />\n";
 require("../lib/footer.inc.php");

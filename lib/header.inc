@@ -298,7 +298,9 @@ include 'maj_coul_global.inc';
 <body onload="show_message_deconnexion()">
 
 <?php
-
+if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {
+	$_SESSION['cacher_header']="y";
+}
 // Taille à récupérer dans la base pour initialiser $_SESSION['cacher_header']
 	// petit bandeau toute valeur sauf "n" ;
 	// grand bandeau "n";
