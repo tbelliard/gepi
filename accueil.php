@@ -1347,7 +1347,8 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 									ORDER BY c.classe";
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)>0){
-					$chemin[] = "/mod_annees_anterieures/index.php";
+					//$chemin[] = "/mod_annees_anterieures/index.php";
+					$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
 					$titre[] = "Années antérieures";
 					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<em>bulletins simplifiés,...</em>).";
 				}
