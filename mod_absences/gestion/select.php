@@ -62,9 +62,14 @@ if ($type == "R") {$page = "ajout_ret"; }
 if ($type == "") {exit(); }
 
 $requete_liste_classe = "SELECT id, classe, nom_complet FROM classes ORDER BY nom_complet ASC, classe DESC";
-if ($classe_choix == "tous")
-    $requete_liste_eleve = "SELECT eleves.login, eleves.nom, eleves.prenom FROM eleves GROUP BY eleves.nom, eleves.prenom ORDER BY nom, prenom ASC";
-else  {
+if ($classe_choix == "tous"){
+	$requete_liste_eleve = "SELECT e.login, e.nom, e.prenom, c.classe
+									FROM eleves e, j_eleves_classes jec, classes c
+									WHERE e.login = jec.login
+									AND jec.id_classe = c.id
+									GROUP BY e.nom, e.prenom
+									ORDER BY nom, prenom ASC";
+}else{
     settype($classe_choix,"integer");
     $requete_liste_eleve = "SELECT eleves.login, eleves.nom, eleves.prenom, j_eleves_classes.login, j_eleves_classes.id_classe, j_eleves_classes.periode, classes.id, classes.classe, classes.nom_complet FROM eleves, j_eleves_classes, classes WHERE eleves.login=j_eleves_classes.login AND j_eleves_classes.id_classe=classes.id AND classes.id='".$classe_choix."' GROUP BY eleves.nom, eleves.prenom ORDER BY nom, prenom ASC";
 }
@@ -124,7 +129,7 @@ if ($_SESSION["statut"] == 'autre') {
             <?php
             $resultat_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
             while($data_liste_eleve = mysql_fetch_array ($resultat_liste_eleve)) { ?>
-                <option value="<?php echo $data_liste_eleve['login']; ?>"><?php echo strtoupper($data_liste_eleve['nom'])." ".ucfirst($data_liste_eleve['prenom']); ?></option>
+                <option value="<?php echo $data_liste_eleve['login']; ?>"><?php echo strtoupper($data_liste_eleve['nom'])." ".ucfirst($data_liste_eleve['prenom']); ?>&nbsp;(<?php echo $data_liste_eleve['classe']; ?>)</option>
                   <?php } ?>
             </select>
          <input type="hidden" name="classe_choix" value="<?php echo $classe_choix; ?>" />

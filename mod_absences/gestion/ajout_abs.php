@@ -89,22 +89,22 @@ $total = '0'; $erreur = '0'; $nb = '0';
 $requete_liste_motif = "SELECT init_motif_absence, def_motif_absence FROM ".$prefix_base."absences_motifs ORDER BY init_motif_absence ASC";
 
 //si c'est une classe qui est sélectionné on sélectionne tous les élèves de cette classe.
-  if($mode === 'classe')
-   {
-          //je compte les élève si = 0 alors on redirige
-           $cpt_eleves = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."'"),0);
-           	 // christian modif du 15/01/2007 if($cpt_eleves === '0') { header("Location:select.php?type=$type"); }
-         //je recherche tous les élèves de la classe sélectionné
-           $requete_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."' GROUP BY nom, prenom";
-           $execution_eleve = mysql_query($requete_eleve) or die('Erreur SQL !'.$requete_eleve.'<br />'.mysql_error());
-           $cpt_eleve = 0;
-           while ($data_eleve = mysql_fetch_array($execution_eleve))
-             {
-                //insertion de l'élève dans la varibale $eleve_absent
-                 $eleve_absent[$cpt_eleve] = $data_eleve['login'];
-                 $cpt_eleve = $cpt_eleve + 1;
-             }
-   }
+if($mode === 'classe')
+{
+	//je compte les élève si = 0 alors on redirige
+	$cpt_eleves = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."'"),0);
+	// christian modif du 15/01/2007 if($cpt_eleves === '0') { header("Location:select.php?type=$type"); }
+	//je recherche tous les élèves de la classe sélectionné
+	$requete_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."' GROUP BY nom, prenom";
+	$execution_eleve = mysql_query($requete_eleve) or die('Erreur SQL !'.$requete_eleve.'<br />'.mysql_error());
+	$cpt_eleve = 0;
+	while ($data_eleve = mysql_fetch_array($execution_eleve))
+	{
+		//insertion de l'élève dans la varibale $eleve_absent
+		$eleve_absent[$cpt_eleve] = $data_eleve['login'];
+		$cpt_eleve = $cpt_eleve + 1;
+	}
+}
 
 
 // permet de supprimer un courrier s'il y a besoin par rapport à l'id de l'absence
@@ -566,8 +566,8 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 }
 //echo $erreur." ab ".$verification." ";
 
- $datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
- $datejour = date('d/m/Y');
+$datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
+$datejour = date('d/m/Y');
 
 
 if ($action === 'supprimer')
