@@ -714,10 +714,8 @@ if ($_SESSION["statut"] == 'autre') {
 	}
 	$retour = 'gestion_absences.php?type='.$type.$aff_fiche;
 }
-?>
 
-<p class=bold>|<a href='<?php echo $retour; ?>'>Retour</a>|
-</p><?php
+echo "<p class=bold> <a href=\"".$retour."\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 //si un élève est sélectionné ou modifier
 if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
