@@ -222,7 +222,7 @@ if ($action === 'modifier')
     ?>
 
 <div class="couleur_ligne_3" style="width: 500px; height: 135px; margin: auto; border: solid 2px #2F4F4F;">
-	<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Identitée élève</div>
+	<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Identité élève</div>
 	<div style="width: 90px; float: right; padding: 2px; text-align: center;">
 		<?php
 		if ( getSettingValue("active_module_trombinoscopes")=='y' ) {
