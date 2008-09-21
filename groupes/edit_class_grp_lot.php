@@ -48,7 +48,8 @@ $classe = get_classe($id_classe);
 $display = isset($_GET['display']) ? $_GET['display'] : (isset($_POST['display']) ? $_POST["display"] : NULL);
 if ($display != "new") $display = "current";
 
-$tri_matiere=isset($_GET['tri_matiere']) ? $_GET['tri_matiere'] : (isset($_POST['tri_matiere']) ? $_POST["tri_matiere"] : "alpha");
+//$tri_matiere=isset($_GET['tri_matiere']) ? $_GET['tri_matiere'] : (isset($_POST['tri_matiere']) ? $_POST["tri_matiere"] : "alpha");
+$tri_matiere=isset($_GET['tri_matiere']) ? $_GET['tri_matiere'] : (isset($_POST['tri_matiere']) ? $_POST["tri_matiere"] : "priorite");
 
 // =================================
 // AJOUT: boireaus
