@@ -280,53 +280,53 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     case "del_eleve":
     //Suppression d'un élève
-    $mess[0] = "Table des élèves :";
+    $mess[0] = "Table des élèves";
     $test_nb[0] = "SELECT * FROM eleves WHERE login='$cible1'";
     $req[0] = "DELETE FROM eleves WHERE login='$cible1'";
 
-    $mess[1] = "Table des moyennes :";
+    $mess[1] = "Table des moyennes";
     $test_nb[1] = "SELECT * FROM matieres_notes WHERE login='$cible1'";
     $req[1] = "DELETE FROM matieres_notes WHERE login='$cible1'";
 
-    $mess[2] = "Table des groupes suivis :";
+    $mess[2] = "Table des groupes suivis";
     $test_nb[2] = "SELECT * FROM j_eleves_groupes WHERE login='$cible1'";
     $req[2] = "DELETE FROM j_eleves_groupes WHERE login='$cible1'";
 
-    $mess[3] = "Table de jointure classe/élève :";
+    $mess[3] = "Table de jointure classe/élève";
     $test_nb[3] = "SELECT * FROM j_eleves_classes WHERE login='$cible1'";
     $req[3] = "DELETE FROM j_eleves_classes WHERE login='$cible1'";
 
-    $mess[4] = "Table des appréciations AID :";
+    $mess[4] = "Table des appréciations AID";
     $test_nb[4] = "SELECT * FROM aid_appreciations WHERE login='$cible1'";
     $req[4] = "DELETE FROM aid_appreciations WHERE login='$cible1'";
 
-    $mess[5] = "Table de jointure élève\Aid suivie :";
+    $mess[5] = "Table de jointure élève\Aid suivie";
     $test_nb[5] = "SELECT * FROM j_aid_eleves WHERE login='$cible1'";
     $req[5] = "DELETE FROM j_aid_eleves WHERE login='$cible1'";
 
-    $mess[6] = "Table des appréciations :";
+    $mess[6] = "Table des appréciations";
     $test_nb[6] = "SELECT * FROM matieres_appreciations WHERE login='$cible1'";
     $req[6] = "DELETE FROM matieres_appreciations WHERE login='$cible1'";
 
-    $mess[7] = "Table de jointure élève/".getSettingValue("gepi_prof_suivi")." :";
+    $mess[7] = "Table de jointure élève/".getSettingValue("gepi_prof_suivi")."";
     $test_nb[7] = "SELECT * FROM j_eleves_professeurs WHERE login='$cible1'";
     $req[7] = "DELETE FROM j_eleves_professeurs WHERE login='$cible1'";
 
-    $mess[8] = "Table des avis des conseils de classe :";
+    $mess[8] = "Table des avis des conseils de classe";
     $test_nb[8] = "SELECT * FROM avis_conseil_classe WHERE login='$cible1'";
     $req[8] = "DELETE FROM avis_conseil_classe WHERE login='$cible1'";
 
-    $mess[9] = "Table de jointure élève/établissement :";
+    $mess[9] = "Table de jointure élève/établissement";
     //$test_nb[9] = "SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$cible1'";
     //$req[9] = "DELETE FROM j_eleves_etablissements WHERE id_eleve ='$cible1'";
     $test_nb[9] = "SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$cible2'";
     $req[9] = "DELETE FROM j_eleves_etablissements WHERE id_eleve ='$cible2'";
 
-    $mess[10] = "Table des notes du carnet de notes :";
+    $mess[10] = "Table des notes du carnet de notes";
     $test_nb[10] = "SELECT * FROM cn_notes_devoirs WHERE login='$cible1'";
     $req[10] = "DELETE FROM cn_notes_devoirs WHERE login='$cible1';";
 
-    $mess[11] = "Table des moyennes du carnet de notes :";
+    $mess[11] = "Table des moyennes du carnet de notes";
     $test_nb[11] = "SELECT * FROM cn_notes_conteneurs WHERE login='$cible1'";
     $req[11] = "DELETE FROM cn_notes_conteneurs WHERE login='$cible1';";
 
@@ -334,7 +334,11 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[12] = "SELECT * FROM j_aid_eleves_resp WHERE login='$cible1'";
     $req[12] = "DELETE FROM j_aid_eleves_resp WHERE login='$cible1'";
 
-    $nombre_req = 13;
+    $mess[13] = "Table de utilisateurs";
+    $test_nb[13] = "SELECT * FROM utilisateurs WHERE (login='$cible1' AND statut='eleve')";
+    $req[13] = "DELETE FROM utilisateurs WHERE (login='$cible1' AND statut='eleve')";
+
+    $nombre_req = 14;
 
 	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire';");
 	if(mysql_num_rows($test_existence)>0){
@@ -363,13 +367,13 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 		$nombre_req++;
 	}
 
-    $mess[] = "Table des absences :";
+    $mess[] = "Table des absences";
     $test_nb[] = "SELECT * FROM absences WHERE login ='$cible1'";
     $req[] = "DELETE FROM absences WHERE login ='$cible1'";
 
 	$nombre_req++;
 
-    $mess[] = "Table de jointure élève/régime :";
+    $mess[] = "Table de jointure élève/régime";
     $test_nb[] = "SELECT * FROM j_eleves_regime WHERE login ='$cible1'";
     $req[] = "DELETE FROM j_eleves_regime WHERE login ='$cible1'";
 
