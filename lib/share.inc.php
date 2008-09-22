@@ -1871,7 +1871,7 @@ function check_temp_directory(){
 		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 		$dirname = $r;
 		$create = mkdir("./temp/".$dirname, 0700);
-		chmod("./temp/".$dirname, 0700);
+		chmod("/temp/".$dirname, 0700);
 
 		if ($create) {
 			$fich=fopen("./temp/".$dirname."/index.html","w+");
@@ -1919,7 +1919,7 @@ function check_user_temp_directory(){
 			for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 			$dirname = $_SESSION['login']."_".$r;
 			$create = mkdir("./temp/".$dirname, 0700);
-			chmod("./temp/".$dirname, 0700);
+			chmod("/temp/".$dirname, 0700);
 
 			if($create){
 				$fich=fopen("./temp/".$dirname."/index.html","w+");
@@ -1948,7 +1948,7 @@ function check_user_temp_directory(){
 				// Le dossier n'existe pas
 				// On créé le répertoire temp
 				$create = mkdir("./temp/".$dirname, 0700);
-				chmod("./temp/".$dirname, 0700);
+				chmod("/temp/".$dirname, 0700);
 
 				if($create){
 					$fich=fopen("./temp/".$dirname."/index.html","w+");
