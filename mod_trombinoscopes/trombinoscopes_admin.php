@@ -73,6 +73,11 @@ if (isset($_POST['l_max_imp_trombinoscopes'])) {
 if (isset($_POST['h_max_imp_trombinoscopes'])) {
     if (!saveSetting("h_max_imp_trombinoscopes", $_POST['h_max_imp_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
 }
+
+if (isset($_POST['nb_col_imp_trombinoscopes'])) {
+    if (!saveSetting("nb_col_imp_trombinoscopes", $_POST['nb_col_imp_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du nombre de colonnes sur les trombinos imprimés !";
+}
+
 if (isset($_POST['l_resize_trombinoscopes'])) {
     if (!saveSetting("l_resize_trombinoscopes", $_POST['l_resize_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre l_resize_trombinoscopes !";
 }
@@ -121,7 +126,8 @@ require_once("../lib/header.inc");
 hauteur maxi&nbsp;<input name="h_max_aff_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_max_aff_trombinoscopes"); ?>" />
 <br /><span style="font-weight: bold;">Pour l'impression</span><br />
 &nbsp;&nbsp;&nbsp;&nbsp;largeur maxi <input name="l_max_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_max_imp_trombinoscopes"); ?>" />&nbsp;
-hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_max_imp_trombinoscopes"); ?>" />
+hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_max_imp_trombinoscopes"); ?>" />&nbsp;Nombre de colonnes&nbsp;<input name="nb_col_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("nb_col_imp_trombinoscopes"); ?>" />
+
 <br /><span style="font-weight: bold;">Pour le stockage sur le serveur</span><br />
 &nbsp;&nbsp;&nbsp;&nbsp;largeur <input name="l_resize_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_resize_trombinoscopes"); ?>" />&nbsp;
 hauteur &nbsp;<input name="h_resize_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_resize_trombinoscopes"); ?>" />
