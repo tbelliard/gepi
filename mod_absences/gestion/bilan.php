@@ -55,43 +55,39 @@ Header('Pragma: public');
 
 // fonction de redimensionnement d'image
 function redimensionne_logo($photo, $L_max, $H_max)
- {
+{
 	// prendre les informations sur l'image
 	$info_image = getimagesize($photo);
 	// largeur et hauteur de l'image d'origine
 	$largeur = $info_image[0];
 	$hauteur = $info_image[1];
 	// largeur et/ou hauteur maximum à afficher en pixel
-	 $taille_max_largeur = $L_max;
-	 $taille_max_hauteur = $H_max;
+	$taille_max_largeur = $L_max;
+	$taille_max_hauteur = $H_max;
 
 	// calcule le ratio de redimensionnement
-	 $ratio_l = $largeur / $taille_max_largeur;
-	 $ratio_h = $hauteur / $taille_max_hauteur;
-	 $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
+	$ratio_l = $largeur / $taille_max_largeur;
+	$ratio_h = $hauteur / $taille_max_hauteur;
+	$ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
 	// définit largeur et hauteur pour la nouvelle image
-	 $nouvelle_largeur = $largeur / $ratio;
-	 $nouvelle_hauteur = $hauteur / $ratio;
+	$nouvelle_largeur = $largeur / $ratio;
+	$nouvelle_hauteur = $hauteur / $ratio;
 
 	// des Pixels vers Millimetres
-	 $nouvelle_largeur = $nouvelle_largeur / 2.8346;
-	 $nouvelle_hauteur = $nouvelle_hauteur / 2.8346;
+	$nouvelle_largeur = $nouvelle_largeur / 2.8346;
+	$nouvelle_hauteur = $nouvelle_hauteur / 2.8346;
 
 	return array($nouvelle_largeur, $nouvelle_hauteur);
- }
+}
 
    $date_ce_jour = date('d/m/Y');
-    if (empty($_GET['id_classe']) and empty($_POST['id_classe'])) {$id_classe="";}
-      else { if (isset($_GET['id_classe'])) {$id_classe=$_GET['id_classe'];} if (isset($_POST['id_classe'])) {$id_classe=$_POST['id_classe'];} }
-    if (empty($_GET['du']) and empty($_POST['du'])) {$du="$date_ce_jour";}
-      else { if (isset($_GET['du'])) {$du=$_GET['du'];} if (isset($_POST['du'])) {$du=$_POST['du'];} }
-    if (empty($_GET['au']) and empty($_POST['au'])) {$au="$du";}
-      else { if (isset($_GET['au'])) {$au=$_GET['au'];} if (isset($_POST['au'])) {$au=$_POST['au'];} }
-    if (empty($_GET['a_imprimer']) and empty($_POST['a_imprimer'])) {$a_imprimer="";}
-      else { if (isset($_GET['a_imprimer'])) {$a_imprimer=$_GET['a_imprimer'];} if (isset($_POST['a_imprimer'])) {$a_imprimer=$_POST['a_imprimer'];} }
+$id_classe	= isset($_GET['id_classe']) ? $_GET['id_classe'] : (isset($_POST['id_classe']) ? $_POST['id_classe'] : '');
+$du			= isset($_GET['du']) ? $_GET['du'] : (isset($_POST['du']) ? $_POST['du'] : $date_ce_jour);
+$au			= isset($_GET['au']) ? $_GET['au'] : (isset($_POST['au']) ? $_POST['au'] : $du);
+$a_imprimer	= isset($_GET['a_imprimer']) ? $_GET['a_imprimer'] : (isset($_POST['a_imprimer']) ? $_POST['a_imprimer'] : '');
 
-    if ($au == "" or $au == "JJ/MM/AAAA") { $au = $du; }
+if ($au == "" OR $au == "JJ/MM/AAAA") { $au = $du; }
 
 define('FPDF_FONTPATH','../../fpdf/font/');
 require('../../fpdf/fpdf.php');
@@ -112,93 +108,100 @@ $p = 1;
                  $fax_etab = getSettingValue("gepiSchoolFax");
                  $mel_etab = getSettingValue("gepiSchoolEmail");
 
-  //information sur l'élève
-      $nb = 0;
-      $t = 0;
-      while(empty($id_classe[$t])==false)
-           {
-                if (isset($a_imprimer[$t]))
-                {
-                  $id_classe_pdf = $id_classe[$t];
-//                  $eleve_sql=mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'responsables WHERE '.$prefix_base.'j_eleves_classes.id_classe = "'.$id_classe_pdf.'" AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'eleves.login AND '.$prefix_base.'eleves.ereno = '.$prefix_base.'responsables.ereno GROUP BY '.$prefix_base.'eleves.nom, '.$prefix_base.'eleves.prenom ORDER BY nom, prenom ASC');
-                  $eleve_sql=mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = "'.$id_classe_pdf.'" AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.nom, '.$prefix_base.'eleves.prenom ORDER BY nom, prenom ASC');
-                  while($eleve_data = mysql_fetch_array($eleve_sql))
-                    {
-                       // $test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve_data['login']."'"),0);
-                       $test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve_data['login']."'"),0);
-                        if ($test != "0")
-                         {
-                               	$id[$nb] = $eleve_data['login'];
-                               	$id_eleve_pdf = $eleve_data['login'];
-			 	$ele_id_eleve[$nb] = $eleve_data['ele_id'];
-                               	$civilite[$nb] = "";
-                               	if ($eleve_data['sexe']=="M") { $civilite[$nb]="M."; } elseif ($eleve_data['sexe']=="F") { $civilite[$nb]="Mlle"; }
-                               	$nom_eleve[$nb] = $eleve_data['nom'];
-                               	$prenom_eleve[$nb] = $eleve_data['prenom'];
-                               	$division[$nb] = classe_de($eleve_data['login']);
-				//les responsables
-				$nombre_de_responsable = 0;
-				$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$nb]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
-				if($nombre_de_responsable != 0)
-				{
-					$cpt_parents = 0;
-					$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$nb]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
-					while ($donner_parents = mysql_fetch_array($requete_parents))
-				  	 {
-						$civilite_responsable[$nb][$cpt_parents] = $donner_parents['civilite'];
+//information sur l'élève
+	$nb = 0;
+	$t = 0;
+	while(empty($id_classe[$t])==false)
+	{
+		if (isset($a_imprimer[$t]))
+		{
+			$id_classe_pdf = $id_classe[$t];
+			$eleve_sql=mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = "'.$id_classe_pdf.'" AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.nom, '.$prefix_base.'eleves.prenom ORDER BY nom, prenom ASC');
+			while($eleve_data = mysql_fetch_array($eleve_sql))
+			{
+
+				$test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve_data['login']."'"),0);
+				if ($test != "0")
+ 				{
+					$id[$nb] = $eleve_data['login'];
+					$id_eleve_pdf = $eleve_data['login'];
+					$ele_id_eleve[$nb] = $eleve_data['ele_id'];
+					$civilite[$nb] = "";
+					if ($eleve_data['sexe']=="M") {
+						$civilite[$nb]="M.";
+					} elseif ($eleve_data['sexe']=="F") {
+						$civilite[$nb]="Mlle";
+					}
+					$nom_eleve[$nb] = $eleve_data['nom'];
+					$prenom_eleve[$nb] = $eleve_data['prenom'];
+					$division[$nb] = classe_de($eleve_data['login']);
+
+					//les responsables
+					$nombre_de_responsable = 0;
+					$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$nb]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
+					if($nombre_de_responsable != 0)
+					{
+						$cpt_parents = 0;
+						$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$nb]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
+						while ($donner_parents = mysql_fetch_array($requete_parents))
+						{
+							$civilite_responsable[$nb][$cpt_parents] = $donner_parents['civilite'];
 					        $nom_responsable[$nb][$cpt_parents] = $donner_parents['nom'];
 			        		$prenom_responsable[$nb][$cpt_parents] = $donner_parents['prenom'];
 					        $adresse1_responsable[$nb][$cpt_parents] = $donner_parents['adr1'];
 					        $adresse2_responsable[$nb][$cpt_parents] = $donner_parents['adr2'];
 					        $ville_responsable[$nb][$cpt_parents] = $donner_parents['commune'];
 					        $cp_responsable[$nb][$cpt_parents] = $donner_parents['cp'];
-						$cpt_parents = $cpt_parents + 1;
-					 }
+							$cpt_parents = $cpt_parents + 1;
+					 	}
 
-				} else {
-					 $civilite_responsable[$nb][0] = 'Pas de responsable sélectionné';
-				         $nom_responsable[$nb][0] = '';
-			        	 $prenom_responsable[$nb][0] = '';
-				         $adresse1_responsable[$nb][0] = '';
-				         $adresse2_responsable[$nb][0] = '';
-				         $ville_responsable[$nb][0] = '';
-				         $cp_responsable[$nb][0] = '';
-					 $civilite_responsable[$nb][1] = '';
-			        	 $nom_responsable[$nb][1] = '';
-				         $prenom_responsable[$nb][1] = '';
-				         $adresse1_responsable[$nb][1] = '';
-				         $adresse2_responsable[$nb][1] = '';
-				         $ville_responsable[$nb][1] = '';
-				         $cp_responsable[$nb][1] = '';
+					} else {
+						$civilite_responsable[$nb][0] = 'Pas de responsable sélectionné';
+						$nom_responsable[$nb][0] = '';
+						$prenom_responsable[$nb][0] = '';
+				        $adresse1_responsable[$nb][0] = '';
+				        $adresse2_responsable[$nb][0] = '';
+				        $ville_responsable[$nb][0] = '';
+				        $cp_responsable[$nb][0] = '';
+						$civilite_responsable[$nb][1] = '';
+			        	$nom_responsable[$nb][1] = '';
+				        $prenom_responsable[$nb][1] = '';
+				        $adresse1_responsable[$nb][1] = '';
+				        $adresse2_responsable[$nb][1] = '';
+				        $ville_responsable[$nb][1] = '';
+				        $cp_responsable[$nb][1] = '';
 					}
 
                     if($cpe[$t]!="idem")
                     {
-                             $cpe_pdf = $cpe[$t];
+						$cpe_pdf = $cpe[$t];
                     } else {
-                                 $t_2 = $t;
-                                 $cpe_pdf = "idem";
-                                 while($cpe_pdf=="idem")
-                                    {
-                                     $t_2 = $t_2 - 1;
+						$t_2 = $t;
+						$cpe_pdf = "idem";
+						while($cpe_pdf=="idem")
+						{
+							$t_2 = $t_2 - 1;
 
-                                     $cpe_pdf = $cpe[$t_2];
-                                    }
-                                  }
-                         $cpe_sql=mysql_query('SELECT '.$prefix_base.'utilisateurs.login, '.$prefix_base.'utilisateurs.nom, '.$prefix_base.'utilisateurs.prenom, '.$prefix_base.'utilisateurs.civilite FROM '.$prefix_base.'utilisateurs WHERE '.$prefix_base.'utilisateurs.login="'.$cpe_pdf.'"');
-                         while($cpe_data = mysql_fetch_array($cpe_sql))
-                            {
-                               $civilite_cpe[$nb] = $cpe_data['civilite'];
-                               $nom_cpe[$nb] = strtoupper($cpe_data['nom']);
-                               $prenom_cpe[$nb] = ucfirst($cpe_data['prenom']);
-                            }
-
-                      $nb = $nb + 1;
-                       }
+							$cpe_pdf = $cpe[$t_2];
+						}
+					}
+					$cpe_sql=mysql_query('SELECT '.$prefix_base.'utilisateurs.login, '.$prefix_base.'utilisateurs.nom, '.$prefix_base.'utilisateurs.prenom, '.$prefix_base.'utilisateurs.civilite FROM '.$prefix_base.'utilisateurs WHERE '.$prefix_base.'utilisateurs.login="'.$cpe_pdf.'"');
+					while($cpe_data = mysql_fetch_array($cpe_sql))
+                    {
+                       	$civilite_cpe[$nb] = $cpe_data['civilite'];
+                        $nom_cpe[$nb] = strtoupper($cpe_data['nom']);
+                        $prenom_cpe[$nb] = ucfirst($cpe_data['prenom']);
                     }
-                   $t = $t + 1;
-                } else { $t = $t + 1; }
+
+ 					$nb = $nb + 1;
+				}
             }
+			$t = $t + 1;
+
+        } else {
+			$t = $t + 1;
+		}
+    }
 
 class bilan_PDF extends FPDF
 {
@@ -222,12 +225,12 @@ class bilan_PDF extends FPDF
 	$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
 	if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 	{
-	 $valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
-	 //$X_logo et $Y_logo; placement du bloc identite de l'établissement
-	 $X_logo=5; $Y_logo=5; $L_logo=$valeur[0]; $H_logo=$valeur[1];
-	 $X_etab=$X_logo+$L_logo; $Y_etab=$Y_logo;
-	 //logo
-         $this->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
+		$valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
+		//$X_logo et $Y_logo; placement du bloc identite de l'établissement
+		$X_logo=5; $Y_logo=5; $L_logo=$valeur[0]; $H_logo=$valeur[1];
+		$X_etab=$X_logo+$L_logo; $Y_etab=$Y_logo;
+		//logo
+		$this->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
 	}
 
 	//adresse
@@ -359,9 +362,9 @@ $pdf->AddPage();
 	$pdf->Text(109, 40,trim($ident_responsable));
 	$pdf->Text(109, 45,$adresse1_responsable[$i][0]);
 	if($adresse2_responsable[$i][0] != "")
-	  {
-	    $pdf->Text(109, 50,'adresse2');
-	  }
+	{
+		$pdf->Text(109, 50, $adresse2_responsable[$i][0]);
+	}
 	$ident_ville = $cp_responsable[$i][0]." ".strtoupper($ville_responsable[$i][0]);
 	if($adresse2_responsable[$i][0] != "")
 	  {
