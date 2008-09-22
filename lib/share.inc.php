@@ -1394,17 +1394,22 @@ function quelle_maj($num) {
 
 function check_backup_directory() {
 
+	global $multisite;
+
     $current_backup_dir = getSettingValue("backup_directory");
     if ($current_backup_dir == null) $current_backup_dir = "no_folder";
     if (!file_exists("./backup/".$current_backup_dir)) {
-        // On regarde d'abord si le répertoire de backup n'existerait pas déjà...
-        $handle=opendir('./backup');
         $backupDirName = null;
-        while ($file = readdir($handle)) {
-            if (strlen($file) > 34 and is_dir('./backup/'.$file)) $backupDirName = $file;
-        }
+        if ($multisite != 'y') {
+        	// On regarde d'abord si le répertoire de backup n'existerait pas déjà...
+        	$handle=opendir('./backup');
 
-        closedir($handle);
+        	while ($file = readdir($handle)) {
+            	if (strlen($file) > 34 and is_dir('./backup/'.$file)) $backupDirName = $file;
+        	}
+
+        	closedir($handle);
+        }
 
         if ($backupDirName != null) {
             // Il existe : on met simplement à jour le nom du répertoire...
