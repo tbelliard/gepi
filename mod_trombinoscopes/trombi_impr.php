@@ -312,6 +312,8 @@ function matiereprof($prof, $equipepeda) {
 
 	$num_col=0;
 	$nb_col=5;
+	$nb_col_imp_trombinoscopes=getSettingValue("nb_col_imp_trombinoscopes");
+	if($nb_col_imp_trombinoscopes>0) {$nb_col=$nb_col_imp_trombinoscopes;}
 
 	$i = 1;
 	while($i<$total) {
