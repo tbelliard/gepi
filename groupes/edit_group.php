@@ -213,7 +213,13 @@ if (isset($_POST['is_posted'])) {
                 $proflogin = $_POST["proflogin_".$id];
                 // Normalement on a un traitement anti-injection sur $_POST, donc pas de soucis.
                 // Mais ça serait bien de faire un test quand même. Si un dev passe par là...
-                $reg_professeurs[] = $proflogin;
+                //$reg_professeurs[] = $proflogin;
+
+				$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_professeur='$proflogin' AND id_matiere='$reg_matiere';";
+				$test_prof_matiere=mysql_query($sql);
+				if(mysql_num_rows($test_prof_matiere)>0) {
+					$reg_professeurs[] = $proflogin;
+				}
             }
         }
 
