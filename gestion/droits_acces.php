@@ -658,6 +658,8 @@ if (!loadSettings()) {
 }
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
 
+//debug_var();
+
 // End standart header
 $titre_page = "Droits d'accès";
 require_once("../lib/header.inc");
@@ -720,7 +722,7 @@ require_once("../lib/header.inc");
 			</tr>
 
 			<tr valign='top'>
-				<td style='border: 0px;'><input type="checkbox" name="appreciations_types_profs" id="appreciations_types_profs" value="y" <?php if (getSettingValue("GepiAccesBulletinSimpleProfToutesClasses")=='y') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><input type="checkbox" name="appreciations_types_profs" id="appreciations_types_profs" value="y" <?php if (getSettingValue("appreciations_types_profs")=='y') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='appreciations_types_profs' style='cursor: pointer;'> peut utiliser des appréciations-types sur les bulletins.</label></td>
 			</tr>
 
