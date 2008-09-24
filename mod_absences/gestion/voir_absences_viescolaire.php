@@ -93,13 +93,25 @@ require_once("../../lib/header.inc");
 //************** FIN EN-TETE ***************
 
 	// Traitement du passage entre absence et retard
-	// Pour le collège j'ai ajouté OR $_SESSION["login"] == "VISCO" mais il faudra l'enlever
+
 	if ($_SESSION["statut"] == "cpe") {
 		if (isset($vers_absence)) {
 			$cgt_RA = mysql_query("UPDATE absences_rb SET retard_absence = 'A' WHERE id = '".$vers_absence."'");
 		}
 		else if (isset($vers_retard)) {
 			$cgt_RA = mysql_query("UPDATE absences_rb SET retard_absence = 'R' WHERE id = '".$vers_retard."'");
+			$query_recup = mysql_query("SELECT * FROM absences_rb WHERE id = '".$vers_retard."'");
+			$donnees = mysql_fetch_array($query_recup);
+			$date_recherchee = explode(" ", date("Y-m-d H:i:s", $donnees["debut_ts"]));
+			// On bascule aussi celle de la table absences_eleves
+			$sql_abs_eleve = "UPDATE absences_eleves SET type_absence_eleve = 'R'
+														WHERE eleve_absence_eleve = '" . $donnees["eleve_id"] . "'
+														AND justify_absence_eleve = 'N'
+														AND d_date_absence_eleve = '" . $date_recherchee[0] . "'
+														AND d_heure_absence_eleve = '" . $date_recherchee[1] . "'";
+			// On force alors la mise à jour et on évite l'apparition d'un message d'erreur si le update ne donne rien
+			$query_abs_eleve = @mysql_query($sql_abs_eleve);
+
 		}
 	}
 
