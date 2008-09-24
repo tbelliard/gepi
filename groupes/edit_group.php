@@ -346,12 +346,58 @@ if ($mode == "groupe") {
     echo "<input type='hidden' name='id_classe' value='".$id_classe."' />\n";
     echo "<p>Sélectionnez les classes auxquelles appartient le regroupement :";
 
-    $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
+    //$call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
+    //$sql="SELECT * FROM classes c, periodes p WHERE p.id_classe=c.id AND MAX(p.num_periode)='".get_period_number($id_classe)."' ORDER BY classe;";
+    $sql="SELECT * FROM classes ORDER BY classe;";
+	//echo "$sql<br />";
+    $call_data = mysql_query($sql);
     $nombre_lignes = mysql_num_rows($call_data);
     if ($nombre_lignes != 0) {
 
 		$i = 0;
 
+		$tmp_tab_classe=array();
+		$tmp_tab_id_classe=array();
+		while ($i < $nombre_lignes){
+			$id_classe_temp=mysql_result($call_data, $i, "id");
+			$classe=mysql_result($call_data, $i, "classe");
+			if (get_period_number($id_classe_temp) == get_period_number($id_classe)) {
+				$tmp_tab_classe[]=$classe;
+				$tmp_tab_id_classe[]=$id_classe_temp;
+			}
+			$i++;
+		}
+
+        echo "<table width='100%'>\n";
+        echo "<tr valign='top' align='left'>\n";
+        echo "<td>\n";
+        $nb_class_par_colonne=round($nombre_lignes/3);
+		for($i=0;$i<count($tmp_tab_classe);$i++) {
+            if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+                echo "</td>\n";
+                echo "<td>\n";
+            }
+
+			$id_classe_temp=$tmp_tab_id_classe[$i];
+			$classe=$tmp_tab_classe[$i];
+
+			//echo "<br /><input type='checkbox' name='classe_" . $id_classe_temp . "' value='yes'";
+			echo "<input type='checkbox' name='classe_" . $id_classe_temp . "' id='classe_" . $id_classe_temp . "' value='yes'";
+			if (in_array($id_classe_temp, $reg_clazz)){
+				echo " checked";
+			}
+			//echo " />$classe</option>\n";
+			echo " onchange='changement();'";
+			echo " /><label for='classe_".$id_classe_temp."' style='cursor: pointer;'>$classe</label>\n";
+			if (in_array($id_classe_temp, $reg_clazz)){
+				// Pour contrôler les suppressions de classes.
+				// On conserve la liste des classes précédemment cochées:
+				echo "<input type='hidden' name='precclasse_".$id_classe_temp."' value='y' />\n";
+			}
+			echo "<br />\n";
+		}
+
+		/*
         echo "<table width='100%'>\n";
         echo "<tr valign='top' align='left'>\n";
         echo "<td>\n";
@@ -382,6 +428,7 @@ if ($mode == "groupe") {
 			}
 			$i++;
 		}
+		*/
         //echo "</p>\n";
         echo "</td>\n";
         echo "</tr>\n";
