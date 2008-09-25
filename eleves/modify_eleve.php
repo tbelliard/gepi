@@ -660,6 +660,35 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 										else{
 											$msg.="Erreur lors de la mise en place de la photo.";
 										}
+
+										if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+											// si le redimensionnement des photos est activé on redimenssionne
+											$source = imagecreatefromjpeg($dest_file); // La photo est la source
+
+											if (getSettingValue("active_module_trombinoscopes_rt")=='') {
+												$destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
+											} // On crée la miniature vide
+
+											if (getSettingValue("active_module_trombinoscopes_rt")!='') {
+												$destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes"));
+											} // On crée la miniature vide
+
+											// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
+											$largeur_source = imagesx($source);
+											$hauteur_source = imagesy($source);
+											$largeur_destination = imagesx($destination);
+											$hauteur_destination = imagesy($destination);
+
+											// On crée la miniature
+											imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
+											if (getSettingValue("active_module_trombinoscopes_rt")!='') {
+												$degrees = getSettingValue("active_module_trombinoscopes_rt");
+												// $destination = imagerotate($destination,$degrees);
+												$destination = ImageRotateRightAngle($destination,$degrees);
+											}
+											// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
+											imagejpeg($destination, $dest_file,100);
+										}
 									}
 									else{
 										$msg.="Erreur lors de l'upload de la photo.";
@@ -1632,7 +1661,7 @@ if(isset($reg_no_gep)){
 		if("$photo"!=""){
 			if(file_exists($photo)){
 				echo "<br />\n";
-				echo "<input type='checkbox' name='suppr_filephoto' value='y' onchange='changement();' /> Supprimer la photo existante\n";
+				echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' onchange='changement();' /><label for='suppr_filephoto' style='cursor:pointer;'> Supprimer la photo existante</label>\n";
 			}
 		}
 		echo "</div>\n";
