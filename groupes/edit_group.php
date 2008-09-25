@@ -377,7 +377,8 @@ if ($mode == "groupe") {
         echo "<table width='100%'>\n";
         echo "<tr valign='top' align='left'>\n";
         echo "<td>\n";
-        $nb_class_par_colonne=round($nombre_lignes/3);
+        //$nb_class_par_colonne=round($nombre_lignes/3);
+        $nb_class_par_colonne=round(count($tmp_tab_classe)/3);
 		for($i=0;$i<count($tmp_tab_classe);$i++) {
             if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
                 echo "</td>\n";
