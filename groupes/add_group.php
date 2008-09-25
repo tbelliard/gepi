@@ -246,8 +246,45 @@ if ($mode == "groupe") {
     $nombre_lignes = mysql_num_rows($call_data);
     if ($nombre_lignes != 0) {
 
-
         $i = 0;
+
+		$tmp_tab_classe=array();
+		$tmp_tab_id_classe=array();
+		while ($i < $nombre_lignes){
+			$id_classe_temp=mysql_result($call_data, $i, "id");
+			$classe=mysql_result($call_data, $i, "classe");
+			if (get_period_number($id_classe_temp) == get_period_number($id_classe)) {
+				$tmp_tab_classe[]=$classe;
+				$tmp_tab_id_classe[]=$id_classe_temp;
+			}
+			$i++;
+		}
+
+        echo "<table width='100%'>\n";
+        echo "<tr valign='top' align='left'>\n";
+        echo "<td>\n";
+        //$nb_class_par_colonne=round($nombre_lignes/3);
+        $nb_class_par_colonne=round(count($tmp_tab_classe)/3);
+        //while ($i < $nombre_lignes){
+		for($i=0;$i<count($tmp_tab_classe);$i++) {
+            if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+                echo "</td>\n";
+                echo "<td>\n";
+            }
+
+			$_id_classe=$tmp_tab_id_classe[$i];
+			$classe=$tmp_tab_classe[$i];
+
+			echo "<input type='checkbox' name='classe_" . $_id_classe . "' id='classe_" . $_id_classe . "' value='yes'";
+
+			if (in_array($_id_classe, $reg_clazz) OR $_id_classe == $id_classe) {echo " checked";}
+
+			echo " /><label for='classe_".$_id_classe."' style='cursor: pointer;'>$classe</label>\n";
+			//echo ">$classe</option>\n";
+
+			echo "<br />\n";
+        }
+		/*
         echo "<table width='100%'>\n";
         echo "<tr valign='top' align='left'>\n";
         echo "<td>\n";
@@ -272,6 +309,7 @@ if ($mode == "groupe") {
             }
 	        $i++;
         }
+		*/
         //echo "</p>\n";
         echo "</td>\n";
         echo "</tr>\n";
