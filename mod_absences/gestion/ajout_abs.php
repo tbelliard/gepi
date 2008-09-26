@@ -432,125 +432,219 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
    }
 
    // fin de la vérifiation
-    if ($erreur === '1')
-       {
-          if($verification != '1')
-           {
-              $type_absence_eleve_erreur[$j] = $type_absence_eleve;
-              $eleve_absence_eleve_erreur[$j] = $eleve_absence_eleve;
-              $justify_absence_eleve_erreur[$j] = $justify_absence_eleve;
-              $info_justify_absence_eleve_erreur[$j] = $info_justify_absence_eleve;
-              $motif_absence_eleve_erreur[$j] = $motif_absence_eleve_ins;
-              $d_date_absence_eleve_erreur[$j] = date_fr($d_date_absence_eleve_ins);
-              $a_date_absence_eleve_erreur[$j] = date_fr($a_date_absence_eleve_ins);
-              $d_heure_absence_eleve_erreur[$j] = $d_heure_absence_eleve;
-              $a_heure_absence_eleve_erreur[$j] = $a_heure_absence_eleve;
-              $dp_absence_eleve_erreur[$j] = $dp_absence_eleve;
-              $ap_absence_eleve_erreur[$j] = $ap_absence_eleve;
-              $verification_erreur[$j] = $verification;
-              $j = $j + 1;
-           }
-       } else {
-                   if ( $action_sql === "ajouter" ) { $requete="INSERT INTO ".$prefix_base."absences_eleves (type_absence_eleve,eleve_absence_eleve,justify_absence_eleve,info_justify_absence_eleve,motif_absence_eleve,d_date_absence_eleve,a_date_absence_eleve,d_heure_absence_eleve,a_heure_absence_eleve,saisie_absence_eleve) values ('$type_absence_eleve','$eleve_absence_eleve','$justify_absence_eleve','$info_justify_absence_eleve','$motif_absence_eleve_ins','$d_date_absence_eleve_ins','$a_date_absence_eleve_ins','$d_heure_absence_eleve_ins','$a_heure_absence_eleve_ins','".$_SESSION['login']."')"; }
-                   if ( $action_sql === "modifier" ) { $requete="UPDATE ".$prefix_base."absences_eleves SET
-                                                                 justify_absence_eleve = '$justify_absence_eleve',
-                                                                 info_justify_absence_eleve = '$info_justify_absence_eleve',
-                                                                 motif_absence_eleve = '$motif_absence_eleve_ins',
-                                                                 d_date_absence_eleve = '$d_date_absence_eleve_ins',
-                                                                 a_date_absence_eleve = '$a_date_absence_eleve_ins',
-                                                                 d_heure_absence_eleve = '$d_heure_absence_eleve_ins',
-                                                                 a_heure_absence_eleve = '$a_heure_absence_eleve_ins',
-                                                                 saisie_absence_eleve = '".$_SESSION['login']."'
-                                                                 WHERE id_absence_eleve = '".$id."'"; }
-                     $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+		if ($erreur === '1'){
+
+			if($verification != '1') {
+
+				$type_absence_eleve_erreur[$j] = $type_absence_eleve;
+				$eleve_absence_eleve_erreur[$j] = $eleve_absence_eleve;
+				$justify_absence_eleve_erreur[$j] = $justify_absence_eleve;
+				$info_justify_absence_eleve_erreur[$j] = $info_justify_absence_eleve;
+				$motif_absence_eleve_erreur[$j] = $motif_absence_eleve_ins;
+				$d_date_absence_eleve_erreur[$j] = date_fr($d_date_absence_eleve_ins);
+				$a_date_absence_eleve_erreur[$j] = date_fr($a_date_absence_eleve_ins);
+				$d_heure_absence_eleve_erreur[$j] = $d_heure_absence_eleve;
+				$a_heure_absence_eleve_erreur[$j] = $a_heure_absence_eleve;
+				$dp_absence_eleve_erreur[$j] = $dp_absence_eleve;
+				$ap_absence_eleve_erreur[$j] = $ap_absence_eleve;
+				$verification_erreur[$j] = $verification;
+
+				$j = $j + 1;
+
+			}
+		} else {
+			if ( $action_sql === "ajouter" ) {
+				$requete="INSERT INTO ".$prefix_base."absences_eleves
+								(type_absence_eleve,
+								eleve_absence_eleve,
+								justify_absence_eleve,
+								info_justify_absence_eleve,
+								motif_absence_eleve,
+								d_date_absence_eleve,
+								a_date_absence_eleve,
+								d_heure_absence_eleve,
+								a_heure_absence_eleve,
+								saisie_absence_eleve)
+							values (
+								'$type_absence_eleve',
+								'$eleve_absence_eleve',
+								'$justify_absence_eleve',
+								'$info_justify_absence_eleve',
+								'$motif_absence_eleve_ins',
+								'$d_date_absence_eleve_ins',
+								'$a_date_absence_eleve_ins',
+								'$d_heure_absence_eleve_ins',
+								'$a_heure_absence_eleve_ins',
+								'".$_SESSION['login']."')";
+			}
+			if ( $action_sql === "modifier" ) {
+				$requete="UPDATE ".$prefix_base."absences_eleves SET
+                                                    justify_absence_eleve = '$justify_absence_eleve',
+                                                    info_justify_absence_eleve = '$info_justify_absence_eleve',
+                                                    motif_absence_eleve = '$motif_absence_eleve_ins',
+                                                    d_date_absence_eleve = '$d_date_absence_eleve_ins',
+                                                    a_date_absence_eleve = '$a_date_absence_eleve_ins',
+                                                    d_heure_absence_eleve = '$d_heure_absence_eleve_ins',
+                                                    a_heure_absence_eleve = '$a_heure_absence_eleve_ins',
+                                                    saisie_absence_eleve = '".$_SESSION['login']."'
+                                                WHERE
+													id_absence_eleve = '".$id."'";
+			}
+			$resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 			// connaitre l'id de l'enregistrement
 			if ( $action_sql === 'ajouter' ) { $num_id = mysql_insert_id(); }
 			if ( $action_sql === 'modifier' ) { $num_id = $id; }
 
-			// gestion du courrier
+		// ++++++++ gestion du courrier ++++++++ //
+
 			if ( $justify_absence_eleve === 'N' and $motif_absence_eleve_ins != 'RE') {
 				//envoie d'une lettre de justification
 				$date_emis = date('Y-m-d');
-			        $heure_emis = date('H:i:s');
-				$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND emis_date_lettre_suivi = '".$date_emis."' AND partde_lettre_suivi = 'absences_eleves'"),0);
+				$heure_emis = date('H:i:s');
+				$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*)
+														FROM ".$prefix_base."lettres_suivis
+														WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."'
+														AND emis_date_lettre_suivi = '".$date_emis."'
+														AND partde_lettre_suivi = 'absences_eleves'"),0);
+
 				if( $cpt_lettre_suivi == 0 ) {
-					//si aucune lettre n'a encore été demandé alors on en créer une
-					$requete = "INSERT INTO ".$prefix_base."lettres_suivis (quirecois_lettre_suivi, partde_lettre_suivi, partdenum_lettre_suivi, quiemet_lettre_suivi, emis_date_lettre_suivi, emis_heure_lettre_suivi, type_lettre_suivi, statu_lettre_suivi) VALUES ('".$eleve_absence_eleve."', 'absences_eleves', ',".$num_id.",', '".$_SESSION['login']."', '".$date_emis."', '".$heure_emis."', '6', 'en attente')";
-				        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+					//si aucune lettre n'a encore été demandée alors on en crée une
+					$requete = "INSERT INTO ".$prefix_base."lettres_suivis
+									(quirecois_lettre_suivi,
+									partde_lettre_suivi,
+									partdenum_lettre_suivi,
+									quiemet_lettre_suivi,
+									emis_date_lettre_suivi,
+									emis_heure_lettre_suivi,
+									type_lettre_suivi,
+									statu_lettre_suivi)
+								VALUES (
+									'".$eleve_absence_eleve."',
+									'absences_eleves',
+									',".$num_id.",',
+									'".$_SESSION['login']."',
+									'".$date_emis."',
+									'".$heure_emis."',
+									'6',
+									'en attente')";
+					mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 				} else {
-						//si une lettre a déjas été demandé alors on la modifi
-						// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
-						$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis  WHERE emis_date_lettre_suivi = '".$date_emis."' AND partde_lettre_suivi = 'absences_eleves'";
-					        $execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
-					        while ( $donne_info = mysql_fetch_array($execution_info))
-						{ $id_lettre_suivi = $donne_info['id_lettre_suivi']; $id_deja_present = $donne_info['partdenum_lettre_suivi']; }
-							$tableau_deja_existe = explode(',', $id_deja_present);
-							if ( in_array($num_id, $tableau_deja_existe) ) { $id_ajout = $id_deja_present; }
-							 else { $id_ajout = $id_deja_present.$num_id.','; }
-						  $requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '6' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
-					          mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-				       }
+					// si une lettre a déja été demandée alors on la modifie
+					// on cherche la lettre concernée et on prend les id déja disponibles
+					// puis on y ajoute le nouvel id
+					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+									WHERE emis_date_lettre_suivi = '".$date_emis."'
+									AND partde_lettre_suivi = 'absences_eleves'";
+					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+									WHERE emis_date_lettre_suivi = '".$date_emis."'
+									AND partde_lettre_suivi = 'absences_eleves'
+									AND quirecois_lettre_suivi= '".$eleve_absence_eleve."'";
+					$execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
+					while ( $donne_info = mysql_fetch_array($execution_info))
+					{
+						$id_lettre_suivi = $donne_info['id_lettre_suivi'];
+						$id_deja_present = $donne_info['partdenum_lettre_suivi'];
+					}
+					$tableau_deja_existe = explode(',', $id_deja_present);
+
+					if ( in_array($num_id, $tableau_deja_existe) ) {
+						$id_ajout = $id_deja_present;
+					} else {
+						$id_ajout = $id_deja_present.$num_id.',';
+					}
+					$requete = "UPDATE ".$prefix_base."lettres_suivis
+									SET partdenum_lettre_suivi = '".$id_ajout."',
+									quiemet_lettre_suivi = '".$_SESSION['login']."',
+									type_lettre_suivi = '6'
+									WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+					mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+				}
 			}
-			// si on modifie un absence et que la lettre n'a pas encore était envoyé alors on l'enlève des lettres de suivi
+
+			// si on modifie un absence et que la lettre n'a pas encore était envoyé
+			// alors on l'enlève des lettres de suivi
 			if ( ($justify_absence_eleve === 'O' or $justify_absence_eleve === 'T') and $motif_absence_eleve_ins != 'RE') {
 				//envoie d'une lettre de justification
 				$date_emis = date('Y-m-d');
-			        $heure_emis = date('H:i:s');
+				$heure_emis = date('H:i:s');
 				$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND emis_date_lettre_suivi = '".$date_emis."' AND partde_lettre_suivi = 'absences_eleves'"),0);
+
 				if( $cpt_lettre_suivi == 1 ) {
-						//si une lettre a déjas été demandé alors on la modifi
-						// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
-						$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis  WHERE emis_date_lettre_suivi = '".$date_emis."' AND partde_lettre_suivi = 'absences_eleves'";
-					        $execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
-					        while ( $donne_info = mysql_fetch_array($execution_info))
-						{ $id_lettre_suivi = $donne_info['id_lettre_suivi']; $id_deja_present = $donne_info['partdenum_lettre_suivi']; }
-							$tableau_deja_existe = explode(',', $id_deja_present);
-							$cpt_tab = '1'; // pas 0 car vide on commence par ,
-							$id_ajout = '';
+					//si une lettre a déjas été demandé alors on la modifi
+					// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
+					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+									WHERE emis_date_lettre_suivi = '".$date_emis."'
+									AND partde_lettre_suivi = 'absences_eleves'";
+					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+									WHERE emis_date_lettre_suivi = '".$date_emis."'
+									AND partde_lettre_suivi = 'absences_eleves'
+									AND quirecois_lettre_suivi= '".$eleve_absence_eleve."'";
+					$execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
+					while ( $donne_info = mysql_fetch_array($execution_info))
+					{
+						$id_lettre_suivi = $donne_info['id_lettre_suivi'];
+						$id_deja_present = $donne_info['partdenum_lettre_suivi'];
+					}
+					$tableau_deja_existe = explode(',', $id_deja_present);
+					$cpt_tab = '1'; // pas 0 car vide on commence par ,
+					$id_ajout = '';
 
 //echo '<pre>';
 //print_r($tableau_deja_existe);
 //echo '</pre>';
-							while ( !empty($tableau_deja_existe[$cpt_tab]) )
-							 {
-								if ( $tableau_deja_existe[$cpt_tab] != $num_id and empty($id_ajout) ) { $id_ajout =  ','.$tableau_deja_existe[$cpt_tab].','; }
-								elseif ( $tableau_deja_existe[$cpt_tab] != $num_id and !empty($id_ajout) ) { $id_ajout =  $id_ajout.$tableau_deja_existe[$cpt_tab].','; }
-								$cpt_tab = $cpt_tab + 1;
-							 }
-							 if ( !empty($tableau_deja_existe[2]) ) {
-								// s'il reste d'autre id alors on modifie sinon on supprime
-							 	 $requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '6' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
-							         mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-							 } else {
-							              $requete = "DELETE FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
-								      mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-								}
-				       }
+
+					while ( !empty($tableau_deja_existe[$cpt_tab]) )
+					{
+						if ( $tableau_deja_existe[$cpt_tab] != $num_id and empty($id_ajout) ) {
+							$id_ajout =  ','.$tableau_deja_existe[$cpt_tab].',';
+						} elseif ($tableau_deja_existe[$cpt_tab] != $num_id and !empty($id_ajout) ) {
+							$id_ajout =  $id_ajout.$tableau_deja_existe[$cpt_tab].',';
+						}
+						$cpt_tab = $cpt_tab + 1;
+					}
+					if ( !empty($tableau_deja_existe[2]) ) {
+						// s'il reste d'autre id alors on modifie sinon on supprime
+						$requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '6' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+						mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+					} else {
+						$requete = "DELETE FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+						mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+					}
+				}
 			}
+
 			if ( $motif_absence_eleve_ins === 'RE') {
 				//envoie d'une lettre de renvoi
 				$date_emis = date('Y-m-d');
-			        $heure_emis = date('H:i:s');
+				$heure_emis = date('H:i:s');
 				$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND emis_date_lettre_suivi = '".$date_emis."' AND partde_lettre_suivi = 'absences_eleves'"),0);
 				if( $cpt_lettre_suivi == 0 ) {
 					//si aucune lettre n'a encore été demandé alors on en créer une
 					$requete = "INSERT INTO ".$prefix_base."lettres_suivis (quirecois_lettre_suivi, partde_lettre_suivi, partdenum_lettre_suivi, quiemet_lettre_suivi, emis_date_lettre_suivi, emis_heure_lettre_suivi, type_lettre_suivi, statu_lettre_suivi) VALUES ('".$eleve_absence_eleve."', 'absences_eleves', ',".$num_id.",', '".$_SESSION['login']."', '".$date_emis."', '".$heure_emis."', '4', 'en attente')";
-				        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+					mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 				} else {
-						//si une lettre a déjas été demandé alors on la modifi
-						// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
-						$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis  WHERE emis_date_lettre_suivi = '".$date_emis."' AND partde_lettre_suivi = 'absences_eleves'";
-					        $execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
-					        while ( $donne_info = mysql_fetch_array($execution_info))
-						{ $id_lettre_suivi = $donne_info['id_lettre_suivi']; $id_deja_present = $donne_info['partdenum_lettre_suivi']; }
-						  $id_ajout = $id_deja_present.$num_id.',';
-						  $requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '4' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
-					          mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-				       }
+					//si une lettre a déjas été demandé alors on la modifi
+					// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
+					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+										WHERE emis_date_lettre_suivi = '".$date_emis."'
+										AND partde_lettre_suivi = 'absences_eleves'";
+					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+										WHERE emis_date_lettre_suivi = '".$date_emis."'
+										AND partde_lettre_suivi = 'absences_eleves'
+										AND quirecois_lettre_suivi= '".$eleve_absence_eleve."'";
+					$execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
+					while ( $donne_info = mysql_fetch_array($execution_info))
+					{
+						$id_lettre_suivi = $donne_info['id_lettre_suivi'];
+						$id_deja_present = $donne_info['partdenum_lettre_suivi'];
+					}
+					$id_ajout = $id_deja_present.$num_id.',';
+					$requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '4' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+					mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+				}
 			}
 
-
-             }
+		}
            } //fermer le oui si active = non
        $total = $total + 1;
  }
