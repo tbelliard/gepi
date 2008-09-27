@@ -35,7 +35,7 @@ if (version_compare(PHP_VERSION,'5','>=')) {
 /**
  * phpCAS version. accessible for the user by phpCAS::getVersion().
  */
-define('PHPCAS_VERSION','1.0.0RC7-${phpcas.release}');
+define('PHPCAS_VERSION','1.0.1');
 
 // ------------------------------------------------------------------------
 //  CAS VERSIONS
@@ -1120,7 +1120,7 @@ class phpCAS
 		$parsedParams = array();
 		if ($params != "") {
 			if (is_string($params)) {
-				phpCAS::error('method `phpCAS::logout($url)\' is now deprecated, use `phpCAS::logoutWithService($service)\' instead');
+				phpCAS::error('method `phpCAS::logout($url)\' is now deprecated, use `phpCAS::logoutWithUrl($url)\' instead');
 			}
 			if (!is_array($params)) {
 				phpCAS::error('type mismatched for parameter $params (should be `array\')');

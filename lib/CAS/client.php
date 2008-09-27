@@ -497,7 +497,7 @@ class CASClient
 		
 		phpCAS::traceBegin();
 		
-		if (!$this->isLogoutRequest() && !empty($_GET['ticket'])) {
+		if (!$this->isLogoutRequest() && !empty($_GET['ticket']) && $start_session) {
             // copy old session vars and destroy the current session
             if (!isset($_SESSION)) {
             	session_start();
@@ -505,7 +505,7 @@ class CASClient
             $old_session = $_SESSION;
             session_destroy();
             // set up a new session, of name based on the ticket
-			$session_id = preg_replace('|-|','',$_GET['ticket']);
+			$session_id = preg_replace('/[^\w]/','',$_GET['ticket']);
 			phpCAS::LOG("Session ID: " . $session_id);
 			session_id($session_id);
             if (!isset($_SESSION)) {
@@ -513,6 +513,8 @@ class CASClient
             }
             // restore old session vars
             $_SESSION = $old_session;
+            // Redirect to location without ticket.
+            header('Location: '.$this->getURL());
 		}
 		
 		//activate session mechanism if desired
@@ -1032,7 +1034,7 @@ class CASClient
 		$wrappedSamlSessionIndex = preg_replace('|<samlp:SessionIndex>|','',$tick[0][0]);
 		$ticket2logout = preg_replace('|</samlp:SessionIndex>|','',$wrappedSamlSessionIndex);
 		phpCAS::log("Ticket to logout: ".$ticket2logout);
-		$session_id = preg_replace('|-|','',$ticket2logout);
+		$session_id = preg_replace('/[^\w]/','',$ticket2logout);
 		phpCAS::log("Session id: ".$session_id);
 
 		// fix New session ID
@@ -1805,7 +1807,7 @@ class CASClient
 		// initialize the CURL session
 		$ch = curl_init($url);
 		
-		if (version_compare(PHP_VERSION,'5','>=')) {
+		if (version_compare(PHP_VERSION,'5.1.3','>=')) {
 			//only avaible in php5
 			curl_setopt_array($ch, $this->_curl_options);
 		} else {
@@ -2203,17 +2205,14 @@ class CASClient
 				$server_name = $_SERVER['HTTP_X_FORWARDED_SERVER'];
 			}
 			$final_uri .= $server_name;
-
-			# Modif Thomas : cette opération, en principe *très* rarement
-			# nécessaire dans le cas de Gepi, pose de gros problèmes en cas
-			# de reverse proxy... (le port n'est pas le bon)
-			#if (!strpos($server_name, ':')) {
-			#	if ( ($this->isHttps() && $_SERVER['SERVER_PORT']!=443)
-			#			|| (!$this->isHttps() && $_SERVER['SERVER_PORT']!=80) ) {
-			#		$final_uri .= ':';
-			#		$final_uri .= $_SERVER['SERVER_PORT'];
-			#	}
-			#}
+			# Commenté par Thomas : problème avec le reserve proxy.
+//			if (!strpos($server_name, ':')) {
+//				if ( ($this->isHttps() && $_SERVER['SERVER_PORT']!=443)
+//						|| (!$this->isHttps() && $_SERVER['SERVER_PORT']!=80) ) {
+//					$final_uri .= ':';
+//					$final_uri .= $_SERVER['SERVER_PORT'];
+//				}
+//			}
 			
 			$final_uri .= strtok($_SERVER['REQUEST_URI'],"?");
 			$cgi_params = '?'.strtok("?");
