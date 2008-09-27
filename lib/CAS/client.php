@@ -2203,13 +2203,17 @@ class CASClient
 				$server_name = $_SERVER['HTTP_X_FORWARDED_SERVER'];
 			}
 			$final_uri .= $server_name;
-			if (!strpos($server_name, ':')) {
-				if ( ($this->isHttps() && $_SERVER['SERVER_PORT']!=443)
-						|| (!$this->isHttps() && $_SERVER['SERVER_PORT']!=80) ) {
-					$final_uri .= ':';
-					$final_uri .= $_SERVER['SERVER_PORT'];
-				}
-			}
+
+			# Modif Thomas : cette opération, en principe *très* rarement
+			# nécessaire dans le cas de Gepi, pose de gros problèmes en cas
+			# de reverse proxy... (le port n'est pas le bon)
+			#if (!strpos($server_name, ':')) {
+			#	if ( ($this->isHttps() && $_SERVER['SERVER_PORT']!=443)
+			#			|| (!$this->isHttps() && $_SERVER['SERVER_PORT']!=80) ) {
+			#		$final_uri .= ':';
+			#		$final_uri .= $_SERVER['SERVER_PORT'];
+			#	}
+			#}
 			
 			$final_uri .= strtok($_SERVER['REQUEST_URI'],"?");
 			$cgi_params = '?'.strtok("?");
