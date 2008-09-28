@@ -597,7 +597,7 @@ class Session {
 		phpCAS::setNoCasServerValidation();
 
 		// Gestion du single sign-out
-		phpCAS::handleLogoutRequests();
+		phpCAS::handleLogoutRequests(false);
 		
 		// Authentification
 		phpCAS::forceAuthentication();
