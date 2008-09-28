@@ -504,7 +504,7 @@ if (isset($titre_page)) {
 						echo "</a>\n";
 						if ($session_gepi->current_auth_mode == "sso" && $gepiSettings['sso_display_portail'] == 'yes') {
 						echo "-";
-						echo " <a href='".$gepiSettings['sso_url_portail'].">";
+						echo " <a href='".$gepiSettings['sso_url_portail']."'>";
 							echo "<img src='$gepiPath/images/icons/home.png' alt='Portail' title='Retour portail' />";
 							echo "<span class='menu_bandeau'>";
 								echo "&nbsp;Retour portail";
