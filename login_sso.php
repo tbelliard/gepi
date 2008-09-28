@@ -30,7 +30,7 @@ $niveau_arbo = 0;
 // Cas particulier du single sign-out CAS
 // On doit empêcher le filtrage de $_POST['logoutRequest'], qui contient des
 // caractères spéciaux
-if ($session_gepi->auth_sso && isset($_POST) && $_POST['logoutRequest'] != '') {
+if (isset($_POST) && array_key_exists('logoutRequest', $_POST)) {
     $logout_request = $_POST['logoutRequest'];
 }
 // Initialisations files
