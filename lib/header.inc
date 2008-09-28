@@ -502,6 +502,16 @@ if (isset($titre_page)) {
 								echo "&nbsp;Gérer mon compte";
 							echo "</span>";
 						echo "</a>\n";
+						if ($session_gepi->auth_sso && $gepiSettings['sso_display_portail'] == 'yes') {
+						echo "-";
+						echo " <a href='".$gepiSettings['sso_url_portail'].">";
+							echo "<img src='$gepiPath/images/icons/home.png' alt='Portail' title='Retour portail' />";
+							echo "<span class='menu_bandeau'>";
+								echo "&nbsp;Retour portail";
+							echo "</span>";
+						echo "</a>\n";
+						}
+						if (!$session_gepi->auth_sso || $gepiSettings['sso_hide_logout'] != 'yes') {
 						echo "-";
 						echo " <a href='$gepiPath/logout.php?auto=0'".insert_confirm_abandon().">";
 							echo "<img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' title='Se déconnecter' />";
@@ -509,6 +519,7 @@ if (isset($titre_page)) {
 								echo "&nbsp;Déconnexion";
 							echo "</span>";
 						echo "</a>\n";
+						}
 					echo "</p>";
 				echo "</div>\n";
 				// menu contact

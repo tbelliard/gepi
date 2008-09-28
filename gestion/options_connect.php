@@ -96,6 +96,20 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 	}
 	saveSetting("ldap_write_access", $_POST['ldap_write_access']);
 
+    	if (isset($_POST['sso_display_portail'])) {
+	    if ($_POST['sso_display_portail'] != "yes") {
+	    	$_POST['sso_display_portail'] = "no";
+	    }
+	} else {
+		$_POST['sso_display_portail'] = "no";
+	}
+	saveSetting("sso_display_portail", $_POST['sso_display_portail']);
+	
+    	if (isset($_POST['sso_url_portail'])) {
+	    saveSetting("sso_url_portail", $_POST['sso_url_portail']);
+	}
+    
+    
 	if (isset($_POST['may_import_user_profile'])) {
 	    if ($_POST['may_import_user_profile'] != "yes") {
 	    	$_POST['may_import_user_profile'] = "no";
@@ -278,14 +292,14 @@ echo "</p>";
 echo "<p>Statut par défaut appliqué en cas d'impossibilité de déterminer le statut lors de l'import :";
 echo "<br/><select name=\"statut_utilisateur_defaut\" size=\"1\">";
 echo "<option ";
-$duree = getSettingValue("statut_utilisateur_defaut");
-if ($duree == "professeur") echo "selected";
+$statut_defaut = $gepiSettings['statut_utilisateur_defaut'];
+if ($statut_defaut == "professeur") echo "selected";
 echo " value='professeur'>Professeur</option>";
 echo "<option ";
-if ($duree == "eleve") echo "selected";
+if ($statut_defaut == "eleve") echo "selected";
 echo " value='eleve'>Élève</option>";
 echo "<option ";
-if ($duree == "responsable") echo "selected";
+if ($statut_defaut == "responsable") echo "selected";
 echo " value='responsable'>Responsable légal</option>";
 echo "</select>";
 echo "</p>";
@@ -297,6 +311,24 @@ echo " /> <label for='label_ldap_write_access' style='cursor: pointer;'>Accès LD
 if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>";
 echo "</label>";
 echo "</p>";
+
+echo "<p><input type='checkbox' name='sso_display_portail' value='yes' id='label_sso_display_portail'";
+if ($gepiSettings['sso_display_portail'] == 'yes') echo " checked ";
+echo " /> <label for='label_sso_display_portail' style='cursor: pointer;'>Sessions SSO uniquement : afficher un lien vers un portail (vous devez renseigner le champ ci-dessous).";
+echo "</label>";
+echo "</p>";
+
+echo "<p>";
+echo "<label for='label_sso_url_portail' style='cursor: pointer;'>Adresse complète du portail : </label>";
+echo "<input type='text' size='60' name='sso_url_portail' value='".$gepiSettings['sso_url_portail']."' id='label_sso_url_portail' />";
+echo "</p>";
+
+echo "<p><input type='checkbox' name='sso_hide_logout' value='yes' id='label_sso_hide_logout'";
+if ($gepiSettings['sso_hide_logout'] == 'yes') echo " checked ";
+echo " /> <label for='label_sso_hide_logout' style='cursor: pointer;'>Sessions SSO uniquement : masquer le lien de déconnexion (soyez sûr que l'utilisateur dispose alors d'un moyen alternatif de se déconnecter).";
+echo "</label>";
+echo "</p>";
+
 echo "<br/>";
 echo "<center><input type=\"submit\" name=\"auth_mode_submit\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir changer le mode d\' authentification ?', 'Confirmation')\" /></center>";
 
