@@ -218,9 +218,6 @@ if (isset ($_POST['maj'])) {
 				$result .= "<font color=\"red\">Erreur</font><br />";
 			}
 		}
-		else{
-			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
-		}
 
     // A effectuer quelquesoit la mise à jour
     $tab_req[] = "TRUNCATE droits;";
@@ -4548,6 +4545,10 @@ if (isset ($_POST['maj'])) {
 
 
 
+	#
+	# MISE A JOUR GEPI 1.5.1
+	#
+
     if (($force_maj == 'yes') or (quelle_maj("1.5.1"))) {
         $result .= "<br /><br /><b>Mise à jour vers la version 1.5.1" . $rc . $beta . " :</b><br />";
 
@@ -5667,7 +5668,6 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
 		}
 
-    }
 
     //Initialisation des paramètres liés au module inscription
     $result_inter = "";
@@ -7067,6 +7067,74 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	}
 
 
+	//------------------------------------------------------------------------
+	// Fin du bloc de mise à jour 1.5.1. Les mises à jour jusqu'à la diffusion
+        // de la 1.5.1 stable doivent se situer au-dessus de cette ligne !
+	//------------------------------------------------------------------------
+    }
+
+
+    #-----------------------------
+    #	MISE A JOUR GEPI 1.5.2
+    #-----------------------------
+    if (($force_maj == 'yes') or (quelle_maj("1.5.2"))) {
+        $result .= "<br /><br /><b>Mise à jour vers la version 1.5.2" . $rc . $beta . " :</b><br />";
+
+    	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_display_portail'");
+	$res_test=mysql_num_rows($req_test);
+	if ($res_test==0){
+	    $result_inter = traite_requete("INSERT INTO setting VALUES ('sso_display_portail','no');");
+	    if ($result_inter == '') {
+		$result.="<font color=\"green\">Définition du paramètre sso_display_portail à 'no': Ok !</font><br />";
+	    } else {
+		$result.="<font color=\"red\">Définition du paramètre sso_display_portail à 'no': Erreur !</font><br />";
+	    }
+	} else {
+	    $result .= "<font color=\"blue\">Le paramètre sso_use_portail existe déjà dans la table setting.</font><br />";
+	}
+	
+   	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_url_portail'");
+	$res_test=mysql_num_rows($req_test);
+	if ($res_test==0){
+	    $result_inter = traite_requete("INSERT INTO setting VALUES ('sso_url_portail', 'https://www.example.com');");
+	    if ($result_inter == '') {
+		$result.="<font color=\"green\">Définition du paramètre sso_url_portail à 'https://www.example.com': Ok !</font><br />";
+	    } else {
+		$result.="<font color=\"red\">Définition du paramètre sso_url_portail à 'https://www.example.com': Erreur !</font><br />";
+	    }
+	} else {
+	    $result .= "<font color=\"blue\">Le paramètre denomination_eleves existe déjà dans la table setting.</font><br />";
+	}
+	
+   	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_hide_logout'");
+	$res_test=mysql_num_rows($req_test);
+	if ($res_test==0){
+	    $result_inter = traite_requete("INSERT INTO setting VALUES ('sso_hide_logout', 'no');");
+	    if ($result_inter == '') {
+		$result.="<font color=\"green\">Définition du paramètre sso_hide_logout à 'no': Ok !</font><br />";
+	    } else {
+		$result.="<font color=\"red\">Définition du paramètre sso_hide_logout à 'no': Erreur !</font><br />";
+	    }
+	} else {
+	    $result .= "<font color=\"blue\">Le paramètre sso_hide_logout existe déjà dans la table setting.</font><br />";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//------------------------------------------------------------------------
+	// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion
+        // de la 1.5.2 stable doivent se situer au-dessus de cette ligne !
+	//------------------------------------------------------------------------
+        }
+    
+	
 
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
@@ -7074,6 +7142,8 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     saveSetting("versionBeta", $gepiBetaVersion);
     saveSetting("pb_maj", $pb_maj);
 }
+
+
 // Load settings
 if (!loadSettings()) {
     die("Erreur chargement settings");
