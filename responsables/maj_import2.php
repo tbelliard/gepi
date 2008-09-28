@@ -68,6 +68,22 @@ function affiche_debug($texte){
 	}
 }
 
+// Initialisation du répertoire actuel de sauvegarde
+$dirname = getSettingValue("backup_directory");
+
+function info_debug($texte){
+	global $step;
+	global $dirname;
+
+	$debug=0;
+	if($debug==1) {
+		//$fich_debug=fopen("/tmp/debug_maj_import2.txt","a+");
+		$fich_debug=fopen("../backup/".$dirname."/debug_maj_import2.txt","a+");
+		fwrite($fich_debug,"$step;$texte;".time()."\n");
+		fclose($fich_debug);
+	}
+}
+
 function maj_ini_prenom($prenom){
 	$prenom2="";
 	$tab1=explode("-",$prenom);
@@ -4198,6 +4214,8 @@ else{
 
 
 			if(!isset($parcours_diff)){
+				info_debug("==================================================");
+				info_debug("Avant parcours_diff PERSONNES");
 				echo "<p>On va commencer les comparaisons...</p>\n";
 
 				$sql="SELECT COUNT(pers_id) AS nb_pers FROM temp_resp_pers_import;";
@@ -4228,6 +4246,7 @@ else{
 			if(mysql_num_rows($res1)==0) {
 				// On a terminé le parcours
 				echo "<p>Le parcours des différences concernant les personnes est terminé.</p>\n";
+				info_debug("parcours_diff personnes terminé");
 
 				// On stocke dans la table tempo2 la liste des pers_id pour lesquels un changement a eu lieu:
 				$sql="TRUNCATE TABLE tempo2;";
@@ -4242,6 +4261,7 @@ else{
 						$insert=mysql_query($sql);
 					}
 				}
+				info_debug("fin du remplissage de tempo2");
 
 				echo "<input type='hidden' name='step' value='14' />\n";
 				//echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
@@ -4262,8 +4282,11 @@ else{
 	setTimeout(\"test_stop2()\",3000);
 </script>\n";
 
+				info_debug("==================================================");
 			}
 			else {
+				info_debug("========================");
+				info_debug("parcours de la tranche $num_tranche/$nb_parcours");
 				echo "<p>Parcours de la tranche <b>$num_tranche/$nb_parcours</b>.</p>\n";
 
 				echo "<input type='hidden' name='num_tranche'value='$num_tranche' />\n";
@@ -4291,8 +4314,10 @@ else{
 				while($lig=mysql_fetch_object($res1)){
 					$sql="SELECT 1=1 FROM resp_pers rp, temp_resp_pers_import t WHERE rp.pers_id=t.pers_id AND t.pers_id='$lig->pers_id'";
 					$test=mysql_query($sql);
+					info_debug("Test diff $lig->pers_id");
 					if(mysql_num_rows($test)==0){
 						// On ne va considérer comme nouveau responsable qu'une personne associée à un élève effectivement accepté dans la table 'eleves':
+						info_debug("$lig->pers_id semble être un nouveau");
 						$sql="SELECT 1=1 FROM temp_resp_pers_import trp,
 												temp_responsables2_import tr,
 												eleves e
@@ -4302,6 +4327,7 @@ else{
 						//echo "$sql<br />";
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0){
+							info_debug("$lig->pers_id est bien un nouveau");
 							if($cpt>0){
 								//$chaine_nouveaux.=", ";
 								echo ", ";
@@ -4315,6 +4341,7 @@ else{
 							$cpt++;
 						}
 						else {
+							info_debug("$lig->pers_id n'est associé à personne");
 							// Ce 'nouveau' responsable n'est associé à aucun élève de 'eleves'...
 							// Pour ne pas laisser le statut vide (signe qu'on n'a pas encore testé ce pers_id):
 							$sql="UPDATE temp_resp_pers_import SET statut='-' WHERE pers_id='$lig->pers_id';";
@@ -4322,6 +4349,7 @@ else{
 						}
 					}
 					else{
+						info_debug("$lig->pers_id est déjà dans resp_pers");
 						//$tab_pers_id[]=$lig->pers_id;
 						//$sql="SELECT rp.pers_id FROM resp_pers rp, temp_resp_pers_import t
 						$sql="SELECT 1=1 FROM resp_pers rp, temp_resp_pers_import t
@@ -4339,6 +4367,7 @@ else{
 						//echo "$sql<br />\n";
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0){
+							info_debug("... avec une diff au moins dans resp_pers");
 							if($cpt>0) {
 								echo ", ";
 							}
@@ -4350,6 +4379,7 @@ else{
 							$cpt++;
 						}
 						else {
+							info_debug("... sans diff dans resp_pers");
 							// Pour ne pas laisser le statut vide (signe qu'on n'a pas encore testé ce pers_id):
 							$sql="UPDATE temp_resp_pers_import SET statut='-' WHERE pers_id='$lig->pers_id';";
 							$update=mysql_query($sql);
@@ -4403,6 +4433,8 @@ else{
 
 
 			if(!isset($parcours_diff)){
+				info_debug("=======================================================");
+				info_debug("Avant parcours_diff ADRESSES");
 				echo "<p>On va commencer les comparaisons...</p>\n";
 
 				$sql="SELECT COUNT(adr_id) AS nb_adr FROM temp_resp_adr_import;";
@@ -4432,6 +4464,7 @@ else{
 			//echo "mysql_num_rows(\$res1)=".mysql_num_rows($res1)."<br />";
 
 			if(mysql_num_rows($res1)==0) {
+				info_debug("Fin parcours_diff adresses");
 				// On a terminé le parcours
 				echo "<p>Le parcours des différences concernant les personnes est terminé.</p>\n";
 
@@ -4441,6 +4474,7 @@ else{
 				//echo "$sql<br />";
 				$res2=mysql_query($sql);
 				if(mysql_num_rows($res2)>0) {
+					info_debug(mysql_num_rows($res2)." nouvelles adresses ou modifs...");
 					while($lig2=mysql_fetch_object($res2)) {
 
 						$sql="SELECT DISTINCT pers_id FROM resp_pers WHERE adr_id='".$lig2->adr_id."';";
@@ -4450,6 +4484,7 @@ else{
 							while($lig3=mysql_fetch_object($test)){
 								$sql="INSERT INTO tempo2 SET col1='pers_id', col2='".$lig3->pers_id."';";
 								$insert=mysql_query($sql);
+								info_debug("Modif adresse $lig2->adr_id pour resp_pers.pers_id=$lig3->pers_id");
 							}
 						}
 						else{
@@ -4460,6 +4495,7 @@ else{
 								while($lig3=mysql_fetch_object($test)){
 									$sql="INSERT INTO tempo2 SET col1='pers_id', col2='$lig3->pers_id'";
 									$insert=mysql_query($sql);
+									info_debug("Nouvelle adresse $lig2->adr_id pour temp_resp_pers_import.pers_id=$lig3->pers_id");
 								}
 							}
 							// Les doublons importent peu.
@@ -4497,9 +4533,12 @@ else{
 </script>\n";
 
 
+				info_debug("==================================================");
 			}
 			else {
+				info_debug("========================");
 				echo "<p>Parcours de la tranche <b>$num_tranche/$nb_parcours</b>.</p>\n";
+				info_debug("Parcours de la tranche $num_tranche/$nb_parcours");
 
 				echo "<input type='hidden' name='num_tranche'value='$num_tranche' />\n";
 
@@ -4537,9 +4576,13 @@ else{
 						$sql="UPDATE temp_resp_adr_import SET statut='nouveau' WHERE adr_id='$lig->adr_id';";
 						//echo "$sql<br />";
 						$update=mysql_query($sql);
+
+						info_debug("Nouvelle adresse adr_id=$lig->adr_id");
+
 						$cpt++;
 					}
 					else {
+						$debug_time=time();
 						$sql="SELECT ra.adr_id FROM resp_adr ra, temp_resp_adr_import t
 										WHERE ra.adr_id=t.adr_id AND
 												(
@@ -4554,6 +4597,8 @@ else{
 												AND ra.adr_id='".$lig->adr_id."';";
 						//echo "$sql<br />\n";
 						$test=mysql_query($sql);
+						$diff_debug_time=time()-$debug_time;
+						info_debug("Test modif adr_id=$lig->adr_id (durée: $diff_debug_time)");
 						if(mysql_num_rows($test)>0){
 							if($cpt>0){
 								echo ", ";
@@ -4562,6 +4607,7 @@ else{
 							$sql="UPDATE temp_resp_adr_import SET statut='modif' WHERE adr_id='$lig->adr_id';";
 							//echo "$sql<br />";
 							$update=mysql_query($sql);
+							info_debug("Adresse modifiée adr_id=$lig->adr_id");
 							$cpt++;
 						}
 						else {
@@ -4569,6 +4615,7 @@ else{
 							// Pour ne pas laisser le statut vide (signe qu'on n'a pas encore testé ce pers_id):
 							$sql="UPDATE temp_resp_adr_import SET statut='-' WHERE adr_id='$lig->adr_id';";
 							$update=mysql_query($sql);
+							info_debug("Adresse adr_id=$lig->adr_id inchangée.");
 						}
 					}
 					flush();
@@ -4606,6 +4653,9 @@ else{
 		case "15":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
+			info_debug("=========================================================");
+			info_debug("Etape 15.");
+
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
@@ -4625,6 +4675,7 @@ else{
 			$cpt=0;
 			while($lig=mysql_fetch_object($test)){
 				//$sql="SELECT 1=1 FROM temp_resp_pers_import trp,
+				$debug_time=time();
 				$sql="SELECT trp.nom,trp.prenom FROM temp_resp_pers_import trp,
 										temp_responsables2_import tr,
 										eleves e
@@ -4632,6 +4683,9 @@ else{
 										trp.pers_id=tr.pers_id AND
 										tr.ele_id=e.ele_id";
 				$test2=mysql_query($sql);
+				$diff_debug_time=time()-$debug_time;
+				info_debug("Contrôle de pers_id=$lig->col2 (durée: $diff_debug_time)");
+
 				if(mysql_num_rows($test2)==0){
 					if($cpt>0){echo ", ";}
 					//$liste_resp_sans_eleve.="'$pers_id'";
@@ -4677,6 +4731,7 @@ else{
 			echo "<input type='hidden' name='ne_pas_proposer_redoublonnage_adresse' value='$ne_pas_proposer_redoublonnage_adresse' />\n";
 
 			if(!isset($parcours_diff)){
+				info_debug("========================================================");
 				//$sql="SELECT 1=1 FROM tempo2 WHERE col1='pers_id';";
 				$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id';";
 				//echo "$sql<br />";
@@ -4706,6 +4761,8 @@ else{
 				echo "<input type='hidden' name='total_pers_diff' value='".mysql_num_rows($test)."' />\n";
 			}
 			else{
+				info_debug("========================");
+				info_debug("Enregistrement des validations/refus de la tranche...");
 				if(isset($valid_pers_id)){
 					// On modifie la valeur de col1 pour les pers_id confirmés pour ne pas les re-parcourir:
 					for($i=0;$i<count($valid_pers_id);$i++){
@@ -4728,6 +4785,7 @@ else{
 						}
 					}
 				}
+				info_debug("... fin de l'enregistrement des validations/refus de la tranche.");
 
 				//$sql="SELECT 1=1 FROM tempo2 WHERE col1='pers_id';";
 				$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id';";
