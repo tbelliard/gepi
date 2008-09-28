@@ -27,8 +27,19 @@ if (isset($_GET["rne"])) {
 
 $niveau_arbo = 0;
 
+// Cas particulier du single sign-out CAS
+// On doit empêcher le filtrage de $_POST['logoutRequest'], qui contient des
+// caractères spéciaux
+if ($session_gepi->auth_sso && isset($_POST) && $_POST['logoutRequest'] != '') {
+    $logout_request = $_POST['logoutRequest'];
+}
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
+
+
+if ($session_gepi->auth_sso && isset($_POST) && $_POST['logoutRequest'] != '') {
+    $_POST['logoutRequest'] = $logout_request;
+}
 
 # Cette page a pour vocation de gérer les authentification SSO.
 # Si l'authentification SSO n'est pas paramétrée, on renvoie tout de suite
