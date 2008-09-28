@@ -511,7 +511,7 @@ if (isset($titre_page)) {
 							echo "</span>";
 						echo "</a>\n";
 						}
-						if (!$session_gepi->current_auth_mode == "sso" || $gepiSettings['sso_hide_logout'] != 'yes') {
+						if ($session_gepi->current_auth_mode != "sso" || $gepiSettings['sso_hide_logout'] != 'yes') {
 						echo "-";
 						echo " <a href='$gepiPath/logout.php?auto=0'".insert_confirm_abandon().">";
 							echo "<img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' title='Se déconnecter' />";
