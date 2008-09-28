@@ -37,7 +37,7 @@ if ($session_gepi->auth_sso && isset($_POST) && $_POST['logoutRequest'] != '') {
 require_once("./lib/initialisations.inc.php");
 
 
-if ($session_gepi->auth_sso && isset($_POST) && $_POST['logoutRequest'] != '') {
+if ($session_gepi->auth_sso && isset($logout_request)) {
     $_POST['logoutRequest'] = $logout_request;
 }
 
