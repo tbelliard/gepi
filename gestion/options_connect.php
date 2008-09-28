@@ -105,6 +105,16 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 	}
 	saveSetting("sso_display_portail", $_POST['sso_display_portail']);
 	
+        if (isset($_POST['sso_hide_logout'])) {
+	    if ($_POST['sso_hide_logout'] != "yes") {
+	    	$_POST['sso_hide_logout'] = "no";
+	    }
+	} else {
+		$_POST['sso_hide_logout'] = "no";
+	}
+	saveSetting("sso_hide_logout", $_POST['sso_hide_logout']);
+    
+    
     	if (isset($_POST['sso_url_portail'])) {
 	    saveSetting("sso_url_portail", $_POST['sso_url_portail']);
 	}
