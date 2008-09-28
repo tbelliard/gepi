@@ -162,6 +162,10 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
 		$longmax_login = $gepiSettings['longmax_login'];
 	}
 
+if (!isset($mode_debug)) {
+    $mode_debug = false;
+}
+
 // Initialisaton de la session Gepi :
 $session_gepi = new Session();
 

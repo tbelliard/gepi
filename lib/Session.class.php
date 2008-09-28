@@ -583,7 +583,9 @@ class Session {
 
 	private function authenticate_cas() {
 		include_once('CAS.php');
-
+		if ($GLOBALS['mode_debug']) {
+		    phpCAS::setDebug($GLOBALS['debug_log_file']);
+                }
 		// config_cas.inc.php est le fichier d'informations de connexions au serveur cas
 		$path = dirname(__FILE__)."/../secure/config_cas.inc.php";
 		include($path);

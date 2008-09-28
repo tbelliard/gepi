@@ -71,12 +71,12 @@ class Session {
 		  	# timeout : on remet à zéro.
 		  	$debut_session = $_SESSION['start'];
 		  	$this->reset(3);
-		  	if (isset($_GLOBALS['niveau_arbo'])) {
-		  		if ($_GLOBALS['niveau_arbo'] == "0") {
+		  	if (isset($GLOBALS['niveau_arbo'])) {
+		  		if ($GLOBALS['niveau_arbo'] == "0") {
 		  			$logout_path = "./logout.php";
-		  		} elseif ($_GLOBALS['niveau_arbo'] == "2") {
+		  		} elseif ($GLOBALS['niveau_arbo'] == "2") {
 		  			$logout_path = "../../logout.php";
-		  		} elseif ($_GLOBALS['niveau_arbo'] == "3") {
+		  		} elseif ($GLOBALS['niveau_arbo'] == "3") {
 		  			$logout_path = "../../../logout.php";
 		  		} else {
 		  			$logout_path = "../logout.php";
@@ -194,7 +194,7 @@ class Session {
 			// Dans le cas du multisite, il faut maintenant déterminer le RNE
 			// de l'utilisateur avant d'aller plus loin, sauf s'il a déjà été passé
 			// en paramètre.
-			if (isset($_GLOBALS['multisite']) && $_GLOBALS['multisite'] == "y") {
+			if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == "y") {
 				if (!isset($_GET['rne']) AND !isset($_COOKIE["RNE"])) {
 					if (LDAPServer::is_setup()) {
 						// Le RNE n'a pas été transmis. Il faut le récupérer et recharger la page
@@ -569,7 +569,9 @@ class Session {
 
 	function authenticate_cas() {
 		include_once('CAS.php');
-
+		if ($GLOBALS['mode_debug']) {
+		    phpCAS::setDebug($GLOBALS['debug_log_file']);
+                }
 		// config_cas.inc.php est le fichier d'informations de connexions au serveur cas
 		$path = dirname(__FILE__)."/../secure/config_cas.inc.php";
 		include($path);
@@ -687,7 +689,7 @@ class Session {
 		}
 
 		# Gestion du multisite : on a besoin du RNE de l'utilisateur.
-		if (isset($_GLOBALS['multisite']) && $_GLOBALS['multisite'] == 'y' && LDAPServer::is_setup()) {
+		if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && LDAPServer::is_setup()) {
 			$ldap = new LDAServer;
 			$user = $ldap->get_user_profile($this->login);
 			$this->rne = $user["rne"];
@@ -810,7 +812,7 @@ class Session {
 
 	# Verrouillage d'un compte en raison d'un trop grand nombre d'échec de connexion.
 	function lock_account($_login) {
-	   if ((!isset($_GLOBALS['bloque_compte_admin'])) or ($_GLOBALS['bloque_compte_admin'] != "n")) {
+	   if ((!isset($GLOBALS['bloque_compte_admin'])) or ($GLOBALS['bloque_compte_admin'] != "n")) {
 	      // On verrouille le compte même si c'est un admin
 	      $reg_data = sql_query("UPDATE utilisateurs SET date_verrouillage=now() WHERE login='".$_login."'");
 	   } else {
