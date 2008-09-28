@@ -4,15 +4,19 @@
 */
 
 function getCouleurGlobal($couleur,$coul_origine) {
-    $sql = "select VALUE from setting where NAME='".$couleur."'";
-    $coul = sql_query($sql);
-    if (!$coul) return ($coul_origine);
-    if (count($coul) == 0) {
+   $sql = "select VALUE from setting where NAME='".$couleur."'";
+   $coul = sql_query($sql);
+	if (!$coul) return ($coul_origine);
+   if (count($coul) == 0) {
         return ($coul_origine);
-    } else {
+	} else {
 		$row = sql_row($coul,0);
+		if ($row == "") {
+			return ($coul_origine);
+		} else {
         return ("#".$row[0]);
-    }
+		}
+	}
 }
 
 
