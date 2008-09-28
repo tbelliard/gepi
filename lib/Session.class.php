@@ -595,6 +595,11 @@ class Session {
 		// redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a
 		// été trouvé par le client CAS.
 		phpCAS::setNoCasServerValidation();
+
+		// Gestion du single sign-out
+		phpCAS::handleLogoutRequests();
+		
+		// Authentification
 		phpCAS::forceAuthentication();
 
 		$this->login = phpCAS::getUser();
