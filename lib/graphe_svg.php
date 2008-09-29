@@ -71,8 +71,14 @@
 
 	for($i=0;$i<count($notes);$i++) {
 		//$v=Ceil($notes[$i]/$largeur)*$largeur;
-		$v=Floor($notes[$i]/$largeur)*$largeur;
+		//$v=Floor($notes[$i]/$largeur)*$largeur;
 		//$w=$v+$largeur;
+
+		if($notes[$i]==20) {
+			// Modif pour faire passer les notes 20 dans la tranche [0;20[
+			$notes[$i]=19.9;
+		}
+
 		$tab_tranche[Floor($notes[$i]/$largeur)]++;
 	}
 
