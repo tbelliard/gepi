@@ -463,7 +463,7 @@ foreach ($current_group["periodes"] as $period) {
 			}
 
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'>\n";
+			echo "<tr class='lig$alt white_hover'>\n";
 			if (array_key_exists($e_login, $eleves_list["users"])){
 				/*
 				echo "<td>" . $eleves_list["users"][$e_login]["prenom"] . " " .

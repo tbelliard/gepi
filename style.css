@@ -737,6 +737,10 @@ table.boireaus {
 	background-color: #eeaaff;
 }
 /* ===================== */
+.white_hover:hover {
+	background-color:white;
+}
+/* ===================== */
 #essaiMenu {
 	margin: 0;
 	padding: 0.1em 1em;
