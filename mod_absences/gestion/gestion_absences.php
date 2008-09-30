@@ -260,7 +260,7 @@ if ( $action_sql === 'supprimer_selection' )
 	if (empty($_GET['selection']) and empty($_POST['selection'])) {$selection='';}
 	    else { if (isset($_GET['selection'])) {$selection=$_GET['selection'];} if (isset($_POST['selection'])) {$selection=$_POST['selection'];} }
 
-	// supprime tout les absences semectionner fait le ménage dans les courrier en liaison avec ces absences
+	// supprime toutes les absences selectionnées, fait le ménage dans les courrier en liaison avec ces absences
 	$action_php = supprime_id($id_absence_eleve, $prefix_base, 'absences_eleves', $selection);
 
 }
@@ -354,7 +354,7 @@ function DecocheCheckbox() {
 		<?php /* <input type="submit" name="submit8" value="&lt;&lt;" /> */ ?>
    </fieldset>
   </form>
-<div class="centre"><hr width="550" size="1"/></div>
+<div class="centre"><hr style="width: 550px;" /></div>
 <div class="centre">
 <?php if($type == "A" and $fiche_eleve == "") { ?>
 [ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences sans motif</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences avec motif</a> ]
@@ -490,8 +490,20 @@ function DecocheCheckbox() {
 if ($choix=="sm" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 	$i = 0;
 	if ($type == "A" or $type == "I" or $type == "R" or $type == "D") {
-		if ($classe_choix != "") { $requete_sans_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.saisie_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve, jec.login, jec.id_classe, jec.periode, c.classe, c.id, c.nom_complet FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c, ".$prefix_base."absences_eleves ae WHERE ( e.login = ae.eleve_absence_eleve AND e.login = jec.login AND jec.id_classe = c.id AND c.id = '".$classe_choix."' AND ae.justify_absence_eleve != 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve"; }
-		if ($classe_choix == "") { $requete_sans_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.saisie_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve FROM ".$prefix_base."eleves e, ".$prefix_base."absences_eleves ae WHERE ( e.login = ae.eleve_absence_eleve AND ae.justify_absence_eleve != 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve"; }
+		if ($classe_choix != "") {
+			$requete_sans_motif = "SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.saisie_absence_eleve,
+										ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.type_absence_eleve,
+										ae.motif_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve,
+										ae.a_heure_absence_eleve, jec.login, jec.id_classe, jec.periode, jer.regime, c.classe, c.id, c.nom_complet
+									FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_regime jer, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c, ".$prefix_base."absences_eleves ae
+									WHERE ( e.login = ae.eleve_absence_eleve AND e.login = jec.login AND jec.id_classe = c.id AND c.id = '".$classe_choix."' AND ae.justify_absence_eleve != 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve";
+		} elseif ($classe_choix == "") {
+			$requete_sans_motif = "SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.saisie_absence_eleve,
+										ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.type_absence_eleve,
+										ae.motif_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve,
+										ae.a_heure_absence_eleve, jer.regime FROM ".$prefix_base."eleves e, ".$prefix_base."absences_eleves ae, ".$prefix_base."j_eleves_regime jer
+									WHERE ( e.login = ae.eleve_absence_eleve AND ae.justify_absence_eleve != 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve";
+		}
 	}
 	$execution_sans_motif = mysql_query($requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
 	// Pour la position du premier div, on définit le margin-top
@@ -571,15 +583,15 @@ if ($choix=="sm" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
-<table style="margin: auto; width: 600px;" border="0" cellspacing="0" cellpadding="1">
+<table style="margin: auto; width: 800px; border: 0 0 0 0;">
   <tr style="vertical-align: top">
     <td class="td_tableau_gestion">
       <br />
       <form name ="form3" method="post" action="gestion_absences.php?choix=<?php echo $choix; ?>&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>&amp;action_sql=supprimer_selection">
        <fieldset class="fieldset_efface">
-        <table class="td_tableau_gestion" border="0" cellspacing="1" cellpadding="2">
+        <table class="td_tableau_gestion" style="margin: auto; width: 500px; border: 0 0 0 0;">
           <tr>
-            <td colspan="2" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absences sans motif<?php } ?><?php if ($type=="R") { ?>Retards sans motif<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispenses sans motif<?php } ?></b></td>
+            <td colspan="2" class="titre_tableau_gestion"><b><?php if ($type=="A") { ?>Absences sans motif<?php } ?><?php if ($type=="R") { ?>Retards sans motif<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispenses sans motif<?php } ?></b></td>
           </tr>
           <?php
          $total = 0;
@@ -615,12 +627,12 @@ if ($choix=="sm" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 				else
 				{
 
-            		?><a href="ajout_<?php if($data_sans_motif['type_absence_eleve']=="A") { ?>abs<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>ret<?php } if($data_sans_motif['type_absence_eleve']=="D") { ?>dip<?php } if($data_sans_motif['type_absence_eleve']=="I") { ?>inf<?php } ?>.php?action=supprimer&amp;type=<?php echo $type; ?>&amp;id=<?php echo $data_sans_motif['id_absence_eleve']; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>" <?php $info_sup = 'du '.date_fr($data_sans_motif['d_date_absence_eleve']).' au '.date_fr($data_sans_motif['a_date_absence_eleve']); ?>onClick="return confirm('Etes-vous sur de vouloir le supprimer <?php if($data_avec_motif['type_absence_eleve']=="A") { ?>l\'absence<?php } if ($data_avec_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_avec_motif['type_absence_eleve']=="D") { ?>la dispence<?php } if ($data_avec_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>.')"><img src="../../images/icons/delete.png" style="width: 16px; height: 16px;" title="supprimer <?php if($data_sans_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_sans_motif['type_absence_eleve']=="D") { ?>la dispence<?php } if ($data_sans_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>" border="0" alt="" /></a><?php
+            		?><a href="ajout_<?php if($data_sans_motif['type_absence_eleve']=="A") { ?>abs<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>ret<?php } if($data_sans_motif['type_absence_eleve']=="D") { ?>dip<?php } if($data_sans_motif['type_absence_eleve']=="I") { ?>inf<?php } ?>.php?action=supprimer&amp;type=<?php echo $type; ?>&amp;id=<?php echo $data_sans_motif['id_absence_eleve']; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>" <?php $info_sup = 'du '.date_fr($data_sans_motif['d_date_absence_eleve']).' au '.date_fr($data_sans_motif['a_date_absence_eleve']); ?>onClick="return confirm('Etes-vous sur de vouloir le supprimer <?php if($data_avec_motif['type_absence_eleve']=="A") { ?>l\'absence<?php } if ($data_avec_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_avec_motif['type_absence_eleve']=="D") { ?>la dispense<?php } if ($data_avec_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>.')"><img src="../../images/icons/delete.png" style="width: 16px; height: 16px;" title="supprimer <?php if($data_sans_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_sans_motif['type_absence_eleve']=="D") { ?>la dispense<?php } if ($data_sans_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>" border="0" alt="" /></a><?php
 
 
 				} ?>
             	<a href="ajout_<?php if($data_sans_motif['type_absence_eleve']=="A") { ?>abs<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>ret<?php } if($data_sans_motif['type_absence_eleve']=="I") { ?>inf<?php } if($data_sans_motif['type_absence_eleve']=="D") { ?>dip<?php } ?>.php?action=modifier&amp;type=<?php echo $type; ?>&amp;id=<?php echo $data_sans_motif['id_absence_eleve']; ?>&amp;mode=eleve"><img src="../../images/icons/saisie.png" style="width: 16px; height: 16px;" title="modifier <?php if($data_sans_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_sans_motif['type_absence_eleve']=="D") { ?>la dispence<?php } if ($data_sans_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?>" border="0" alt="" /></a>
-            	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_sans_motif['login']; ?>" title="consulter la fiche de l'élève"><?php echo "<b>".strtoupper($data_sans_motif['nom'])."</b> ".ucfirst($data_sans_motif['prenom']); ?></a>
+            	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_sans_motif['login']; ?>" title="consulter la fiche de l'élève"><?php echo "<b>".strtoupper($data_sans_motif['nom'])."</b> ".ucfirst($data_sans_motif['prenom'])." (".$data_sans_motif['regime'].")"; ?></a>
             	</td>
             <td class="<?php echo $couleur_cellule; ?>">
 
@@ -1301,14 +1313,7 @@ Pour éviter un centrage bizarre:
 						<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '4') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>
 						<input name="support_suivi_eleve_cpe" id="ppar6" value="6" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '6') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar6" style="cursor: pointer;">Document de liaison</label>
 
-     <?php /* désactivé dans l'imédia peut servir par la suite
-	<input name="support_suivi_eleve_cpe" id="ppar1" value="1" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar1" style="cursor: pointer;">Oralement</label>
-	<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label>
-	<input name="support_suivi_eleve_cpe" id="ppar3" value="3" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar3" style="cursor: pointer;">Fax</label><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>
-	<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label>
-	<input name="support_suivi_eleve_cpe" id="ppar6" value="6" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar6" style="cursor: pointer;">Document de liaison</label>
-		*/ ?>
+
 					<div id='ligne_type_courrier'>
 					   <select name="lettre_type" size="6" style="width: 350px; border: 1px solid #000000;">
 						<optgroup label="Type de lettre">
@@ -1741,7 +1746,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
 <br />
-<form method="post" action="gestion_absences.php?choix=lemessager" name="form1">A la date du <input name="du" type="text" size="11" maxlength="11" value="<?php if(isset($du)) { echo $du; } ?>" /><a href="#calend" onClick="<?php echo $cal->get_strPopup('../../lib/calendrier/pop.calendrier.php',350,170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a> <input type="submit" name="Submit" value="&gt;&gt;" /></form>
+<form method="post" action="gestion_absences.php?choix=lemessager" name="form1">A la date du <input name="du" type="text" size="11" maxlength="11" value="<?php if(isset($du)) { echo $du; } ?>" /><a href="#calend" onclick="<?php echo $cal->get_strPopup('../../lib/calendrier/pop.calendrier.php',350,170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a> <input type="submit" name="Submit" value="&gt;&gt;" /></form>
     <table style="margin: auto; width: 700px;" border="0" cellspacing="1" cellpadding="0">
        <tr class="fond_rouge">
            <td colspan="2" class="titre_tableau_gestion"><b>Le messager</b></td>
@@ -1818,7 +1823,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 		  	 {
 				$requete_cpt_nb_eleve_1 =  mysql_query('SELECT count(*) FROM '.$prefix_base.'eleves, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_classes WHERE '.$prefix_base.'classes.id = "'.$donner_classe['id_classe'].'" AND '.$prefix_base.'j_eleves_classes.id_classe='.$prefix_base.'classes.id AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login');
 				$requete_cpt_nb_eleve = mysql_num_rows($requete_cpt_nb_eleve_1);
-			   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe_multiple) and in_array($donner_classe['id_classe'], $classe_multiple)) { ?>selected="selected"<?php } ?> onClick="javascript:document.form3.submit()"><?php echo $donner_classe['nom_complet']; ?> (eff. <?php echo $requete_cpt_nb_eleve; ?>)</option><?php
+			   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe_multiple) and in_array($donner_classe['id_classe'], $classe_multiple)) { ?>selected="selected"<?php } ?> onclick="javascript:document.form3.submit()"><?php echo $donner_classe['nom_complet']; ?> (eff. <?php echo $requete_cpt_nb_eleve; ?>)</option><?php
 			 }
 			?>
 		  </optgroup>
@@ -1853,7 +1858,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 </td>
 		 </tr>
 		</table>
-                du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
+                du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onclick="<?php  echo $cal->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
             </div>
       </fieldset>
     </form>

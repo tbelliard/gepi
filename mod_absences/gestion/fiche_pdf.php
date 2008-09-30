@@ -194,96 +194,86 @@ function microtime_float_img() {
 $etiquette_action = 'originaux';
 
 if ( $etiquette_action === 'originaux' ) {
-// on sélectionne les informations
-// sql sélection des eleves et de leurs informations
+	// on sélectionne les informations
+	// sql sélection des eleves et de leurs informations
 	//requête des classes sélectionné
 	if (isset($id_classe[0])) {
- 	$o=0; $prepa_requete = "";
-        while(!empty($id_classe[$o]))
-	     {
-		if($o == "0") { $prepa_requete = 'ec.id_classe = "'.$id_classe[$o].'"'; }
-		if($o != "0") { $prepa_requete = $prepa_requete.' OR ec.id_classe = "'.$id_classe[$o].'" '; }
-		$o = $o + 1;
-             }
+		$o=0;
+		$prepa_requete = "";
+		while(!empty($id_classe[$o]))
+		{
+			if($o == "0") {
+				$prepa_requete = 'ec.id_classe = "'.$id_classe[$o].'"';
+			} elseif($o != "0") {
+				$prepa_requete = $prepa_requete.' OR ec.id_classe = "'.$id_classe[$o].'" ';
+			}
+			$o = $o + 1;
+		}
 	}
 	//requête des élèves sélectionné
 	if (!empty($id_eleve[0])) {
- 	$o=0; $prepa_requete = "";
-        while(!empty($id_eleve[$o]))
-	     {
-		if($o == "0") { $prepa_requete = 'e.login = "'.$id_eleve[$o].'"'; }
-		if($o != "0") { $prepa_requete = $prepa_requete.' OR e.login = "'.$id_eleve[$o].'" '; }
-		$o = $o + 1;
-             }
+		$o=0;
+		$prepa_requete = "";
+
+		while(!empty($id_eleve[$o]))
+		{
+			if($o == "0") {
+				$prepa_requete = 'e.login = "'.$id_eleve[$o].'"';
+			} elseif($o != "0") {
+				$prepa_requete = $prepa_requete.' OR e.login = "'.$id_eleve[$o].'" ';
+			}
+			$o = $o + 1;
+		}
 	}
 
 	//tableau des données élève
-		if (isset($id_classe[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC'); }
-		if (isset($id_eleve[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC'); }
+	if (isset($id_classe[0])) {
+		$call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC');
+	}
+	if (isset($id_eleve[0])) {
+		$call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC');
+	}
 
-		//on compte les élèves sélectionné
-		    $nb_eleves = mysql_num_rows($call_eleve);
-		    $i = '0';
-		    while ( $donne_persone = mysql_fetch_array( $call_eleve ))
-			{
-				// information sur l'élève
-				$id_eleve[$i] = $donne_persone['login']; // id de l'élève
-				$ele_id_eleve[$i] = $donne_persone['ele_id']; // ele_id de l'élève
-				$classe_eleve[$i] = classe_de($id_eleve[$i]);
-				$sexe_eleve[$i] = $donne_persone['sexe']; // M ou F
-				$nom_eleve[$i] = strtoupper($donne_persone['nom']); // nom de l'élève
-				$prenom_eleve[$i] = ucfirst($donne_persone['prenom']); // prénom de l'élève
-				if ($sexe_eleve[$i] == "M") {
-			            $date_naissance[$i] = 'Né le '.date_fr($donne_persone['naissance']);
-			        } else {
-				            $date_naissance[$i] = 'Née le '.date_fr($donne_persone['naissance']);
-				       }
-				$classe_id_eleve[$i] = $donne_persone['id'];
-				$classe_nomlong_eleve[$i] = $donne_persone['nom_complet'];
-				$classe_nomcour_eleve[$i] = $donne_persone['classe'];
+	//on compte les élèves sélectionné
+	$nb_eleves = mysql_num_rows($call_eleve);
+	$i = '0';
+	while ( $donne_persone = mysql_fetch_array( $call_eleve ))
+	{
+		// information sur l'élève
+		$id_eleve[$i] = $donne_persone['login']; // id de l'élève
+		$ele_id_eleve[$i] = $donne_persone['ele_id']; // ele_id de l'élève
+		$classe_eleve[$i] = classe_de($id_eleve[$i]);
+		$sexe_eleve[$i] = $donne_persone['sexe']; // M ou F
+		$nom_eleve[$i] = strtoupper($donne_persone['nom']); // nom de l'élève
+		$prenom_eleve[$i] = ucfirst($donne_persone['prenom']); // prénom de l'élève
+		if ($sexe_eleve[$i] == "M") {
+			$date_naissance[$i] = 'Né le '.date_fr($donne_persone['naissance']);
+		} else {
+			$date_naissance[$i] = 'Née le '.date_fr($donne_persone['naissance']);
+		}
+			$classe_id_eleve[$i] = $donne_persone['id'];
+			$classe_nomlong_eleve[$i] = $donne_persone['nom_complet'];
+			$classe_nomcour_eleve[$i] = $donne_persone['classe'];
 
         $nom_photo = nom_photo(strtolower($donne_persone['elenoet']),"eleves",2);
-        if ($nom_photo != "") $photo_eleve[$i] = "../../photos/eleves/".$nom_photo;
-        if ((!(file_exists($photo_eleve[$i]))) or ($nom_photo == "")) { $photo_eleve[$i] = ""; }
+        if ($nom_photo != ""){
+			$photo_eleve[$i] = "../../photos/eleves/".$nom_photo;
+		}else{
+			$photo_eleve[$i] = '';
+		}
+        if ((!(file_exists($photo_eleve[$i]))) or ($nom_photo == "")) {
+			$photo_eleve[$i] = "";
+		}
         $doublement_eleve[$i]='';
-					if($donne_persone['doublant']==='R') {  if($sexe_eleve[$i]==='M') { $doublement[$i]='doublant'; } else { $doublement[$i]='doublante'; } }
-					if($donne_persone['regime']==='d/p') { $dp_eleve[$i]='demi-pensionnaire'; }
-		 			if($donne_persone['regime']==='ext.') { $dp_eleve[$i]='externe'; }
-					if($donne_persone['regime']==='int.') { $dp_eleve[$i]='interne'; }
-					if($donne_persone['regime']==='i-e') { if($sexe_eleve[$i]==='M') { $dp_eleve[$i]='interne externé'; } else { $dp_eleve[$i]='interne externée'; } }
-					if($donne_persone['regime']!='ext.' and $donne_persone['regime']!='d/p' and $donne_persone['regime']==='int.' and $donne_persone['regime']==='i-e') { $dp_eleve[$i]='inconnu'; }
+		if($donne_persone['doublant']==='R') {  if($sexe_eleve[$i]==='M') { $doublement[$i]='doublant'; } else { $doublement[$i]='doublante'; } }
+		if($donne_persone['regime']==='d/p') { $dp_eleve[$i]='demi-pensionnaire'; }
+		if($donne_persone['regime']==='ext.') { $dp_eleve[$i]='externe'; }
+		if($donne_persone['regime']==='int.') { $dp_eleve[$i]='interne'; }
+		if($donne_persone['regime']==='i-e') { if($sexe_eleve[$i]==='M') { $dp_eleve[$i]='interne externé'; } else { $dp_eleve[$i]='interne externée'; } }
+		if($donne_persone['regime']!='ext.' and $donne_persone['regime']!='d/p' and $donne_persone['regime']==='int.' and $donne_persone['regime']==='i-e') { $dp_eleve[$i]='inconnu'; }
 
-		// information sur les parents
-		/*$nombre_de_responsable = 0;
-		$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
-		if($nombre_de_responsable != 0)
-		{
-			$cpt_parents = 0;
-			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
-			while ($donner_parents = mysql_fetch_array($requete_parents))
-			{
-				$civilitee_responsable[$cpt_parents][$i] = $donner_parents['civilite']; // civilité du responsable
-			        $nom_responsable[$cpt_parents][$i] = strtoupper($donner_parents['nom']); // nom du responsable
-				$prenom_responsable[$cpt_parents][$i] = ucfirst($donner_parents['prenom']); // prénom du responsable
-				$adresse_responsable[$cpt_parents][$i] = $donner_parents['adr1']; // adresse du responsable
-				$adressecomp_responsable[$cpt_parents][$i] = $donner_parents['adr2']; // adresse du responsable suite
-				$commune_responsable[$cpt_parents][$i] = $donner_parents['commune']; // ville du responsable
-				$cp_responsable[$cpt_parents][$i] = $donner_parents['cp']; // code postal du responsable
-				$cpt_parents = $cpt_parents + 1;
-			}
-		} else {
-				$civilitee_responsable[0][$i] = ''; // civilité du responsable
-			        $nom_responsable[0][$i] = ''; // nom du responsable
-				$prenom_responsable[0][$i] = ''; // prénom du responsable
-				$adresse_responsable[0][$i] = ''; // adresse du responsable
-				$adressecomp_responsable[0][$i] = ''; // adresse du responsable suite
-				$commune_responsable[0][$i] = ''; // ville du responsable
-				$cp_responsable[0][$i] = ''; // code postal du responsable
-			}*/
-
-
- 	 $i = $i + 1;
-	 }
+		$i = $i + 1;
+	}
 }
 
 // REQUETE SQL SUR LES PERIODES (HORAIRE)
@@ -714,24 +704,7 @@ $pdf->SetFillColor(255,255,255);
 $info_absence = repartire_jour($id_eleve[$cpt_eleve], 'A', $du_sql, $au_sql);
 $info_retard = repartire_jour($id_eleve[$cpt_eleve], 'R', $du_sql, $au_sql);
 
-//echo '<pre>';
-//print_r($info_absence);
-//echo '</pre>';
 
-/* pour test
-$mois[$i]['mois'] = 'aou. 2006'; $mois[$i]['num_mois'] = '08'; $mois[$i]['num_mois_simple'] = '8'; $mois[$i]['num_annee'] = '2006'; $i = $i + 1;
-$mois[$i]['mois'] = 'sep. 2006'; $mois[$i]['num_mois'] = '09'; $mois[$i]['num_mois_simple'] = '9'; $mois[$i]['num_annee'] = '2006'; $i = $i + 1;
-$mois[$i]['mois'] = 'oct. 2006'; $mois[$i]['num_mois'] = '10'; $mois[$i]['num_mois_simple'] = '10'; $mois[$i]['num_annee'] = '2006'; $i = $i + 1;
-$mois[$i]['mois'] = 'nov. 2006'; $mois[$i]['num_mois'] = '11'; $mois[$i]['num_mois_simple'] = '11'; $mois[$i]['num_annee'] = '2006'; $i = $i + 1;
-$mois[$i]['mois'] = 'dec. 2006'; $mois[$i]['num_mois'] = '12'; $mois[$i]['num_mois_simple'] = '12'; $mois[$i]['num_annee'] = '2006'; $i = $i + 1;
-$mois[$i]['mois'] = 'jan 2007'; $mois[$i]['num_mois'] = '01'; $mois[$i]['num_mois_simple'] = '1'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
-$mois[$i]['mois'] = 'fev. 2007'; $mois[$i]['num_mois'] = '02'; $mois[$i]['num_mois_simple'] = '2'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
-$mois[$i]['mois'] = 'mar. 2007'; $mois[$i]['num_mois'] = '03'; $mois[$i]['num_mois_simple'] = '3'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
-$mois[$i]['mois'] = 'avr. 2007';  $mois[$i]['num_mois'] = '04'; $mois[$i]['num_mois_simple'] = '4'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
-$mois[$i]['mois'] = 'mai. 2007'; $mois[$i]['num_mois'] = '05'; $mois[$i]['num_mois_simple'] = '5'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
-$mois[$i]['mois'] = 'jui. 2007';  $mois[$i]['num_mois'] = '06'; $mois[$i]['num_mois_simple'] = '6'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
-$mois[$i]['mois'] = 'juil. 2007'; $mois[$i]['num_mois'] = '07'; $mois[$i]['num_mois_simple'] = '7'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
-*/
 	// on initialise le tableau des mois sélectionné
 	if ( $mois === '' ) { $mois = tableau_mois($mois_du, $annee_du, $mois_au, $annee_au); }
 
@@ -868,19 +841,6 @@ $mois[$i]['mois'] = 'juil. 2007'; $mois[$i]['num_mois'] = '07'; $mois[$i]['num_m
 // tableau annuel des absences et retards
 
 $annuel = $mois;
-/* test
-$i = '0';
-while ($i < 12) {
-$annuel[$i]['mois'] = 'jan.';
-	$annuel[$i]['nb_heure_abs_nj'] = '1440';
-	$annuel[$i]['nb_abs_nj'] = '5';
-	$annuel[$i]['nb_heure_abs_j'] = '04h00';
-	$annuel[$i]['nb_abs_j'] = '5';
-	$annuel[$i]['nb_ret_nj'] = '8';
-	$annuel[$i]['nb_ret_j'] = '8';
-$i = $i + 1;
-}*/
-
 
 	// placement en x du tableau
 	$x_annuel = '10';
@@ -1139,15 +1099,6 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 
 // tableau des nombre de retards par jour et par heure (période)
 $i = '0';
-/*
-if ( isset($semaine_horaire['lundi']['ouverture']) ) { $semaine[$i]['jour'] = 'lundi'; $i = $i + 1; }
-if ( isset($semaine_horaire['mardi']['ouverture']) ) { $semaine[$i]['jour'] = 'mardi'; $i = $i + 1; }
-if ( isset($semaine_horaire['mercredi']['ouverture']) ) { $semaine[$i]['jour'] = 'mercredi'; $i = $i + 1; }
-if ( isset($semaine_horaire['jeudi']['ouverture']) ) { $semaine[$i]['jour'] = 'jeudi'; $i = $i + 1; }
-if ( isset($semaine_horaire['vendredi']['ouverture']) ) { $semaine[$i]['jour'] = 'vendredi'; $i = $i + 1; }
-if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = 'samedi'; $i = $i + 1; }
-*/
-
 
 	// placement en x du tableau
 	$x_semaine = '107';
@@ -1204,7 +1155,8 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 // fin du tableau des nombre d'absences par jour et par heure (période)
 
 // le graphique
-if ( $active_graphique === '1' ) {
+$test = 'on';
+if ( $active_graphique === '1' AND $test == 'on') {
 	// placement en x du graphique
 	$x_graphique = '10';
 	// placement en y du graphique
