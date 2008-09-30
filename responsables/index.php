@@ -446,7 +446,8 @@ if($val_rech!=""){
 
 	if($cpt==0){
 		echo "<p>Aucun ".$gepiSettings['denomination_responsable']." trouvé.</p>\n";
-		if($chaine_recherche!="") {
+		//if($chaine_recherche!="") {
+		if((isset($chaine_recherche))&&($chaine_recherche!="")) {
 			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour à l'index ".$gepiSettings['denomination_responsables']."</a></p>\n";
 		}
 		require("../lib/footer.inc.php");
