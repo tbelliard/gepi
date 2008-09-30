@@ -585,7 +585,7 @@ affichercacher('div_1');
 
 		?>
 		<form method="post" action="lettre_pdf.php" name="imprime_pdf_ok" target="_blank">
-	  		<fieldset style="width: 90%; margin: auto;"><legend>Votre sélection</legend>
+	  		<fieldset style="width: 90%; margin: auto; border: 1px solid;"><legend>Votre sélection</legend>
 	  		 	<input type="hidden" name="id_lettre_suivi" value='<?php echo serialize($id_lettre_suivi); ?>' />
 	  		 	<input type="hidden" name="lettre_action" value="<?php echo $lettre_action; ?>" />
 	  		 	<center><input type="submit" id="valider_pdf" name="creer_pdf" value="Générer le fichier PDF" /></center>
@@ -683,100 +683,107 @@ affichercacher('div_1');
 	      <td align="center" nowrap="nowrap" valign="middle" class="norme_absence_blanc" style="width: 90px; font-weight:bold;">envoy&eacute;</td>
 	      <td align="center" nowrap="nowrap" valign="middle" class="norme_absence_blanc" style="width: 90px; font-weight:bold;">r&eacute;ponse</td>
 	      <td align="center" nowrap="nowrap" valign="middle" class="norme_absence_blanc" style="width: 80px; font-weight:bold;">statut</td>
-	    </tr>
+		</tr>
 	    <?php $i = '0'; $ic = '1';
 		//while ( $i < 5)
 
-	      $requete_liste_courrier = "SELECT * FROM ".$prefix_base."lettres_suivis, ".$prefix_base."eleves WHERE login = quirecois_lettre_suivi ".$crearequete." ORDER BY nom ASC, prenom ASC";
+		//$requete_liste_courrier = "SELECT * FROM ".$prefix_base."lettres_suivis, ".$prefix_base."eleves WHERE login = quirecois_lettre_suivi ".$crearequete." ORDER BY nom ASC, prenom ASC";
+		$requete_liste_courrier = "SELECT DISTINCT lettres_suivis.*, eleves.* FROM lettres_suivis, eleves, j_eleves_classes
+		  									WHERE eleves.login = quirecois_lettre_suivi ".$crearequete."
+		  									AND eleves.login = j_eleves_classes.login
+											ORDER BY j_eleves_classes.id_classe ASC, nom ASC, prenom ASC";
+		// On ajoute un paramètre sur les élèves de ce CPE en particulier
+		$sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
+		$query_eleves_cpe = mysql_query($sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . mysql_error());
+		$test = array();
+
+		$test_nbre_eleves_cpe = mysql_num_rows($query_eleves_cpe);
+		while($test_cpe = mysql_fetch_array($query_eleves_cpe)){
+			$test[] = $test_cpe['e_login'];
+		}
 
 		$varcoche = ''; //variable des checkbox pour la fonction javascript
-              $resultat_liste_courrier = mysql_query($requete_liste_courrier) or die('Erreur SQL !'.$requete_liste_courrier.'<br />'.mysql_error());
-	      $nombre_d_entre = mysql_num_rows($resultat_liste_courrier);
-              while ( $donner_liste_courrier = mysql_fetch_array ($resultat_liste_courrier))
-                 { if ($ic === '1') { $ic = '2'; $couleur_cellule = 'td_tableau_absence_1'; } else { $couleur_cellule = 'td_tableau_absence_2'; $ic = '1'; }
-                  ?>
-	<?php /*     <tr class="<?php echo $couleur_cellule; ?>" onmouseover="this.className='td_tableau_sel';" onmouseout="this.className='<?php echo $couleur_cellule; ?>';" id="tr<?php echo $i; ?>">*/ ?>
-	    <tr id="tr<?php echo $i; ?>" class="<?php echo $couleur_cellule; ?>" onmouseover="document.getElementById('tr<?php echo $i; ?>').className='td_tableau_sel';" onmouseout="document.getElementById('tr<?php echo $i; ?>').className='<?php echo $couleur_cellule; ?>';">
-	      <td align="center" nowrap="nowrap" valign="middle">
-	      	<a name="n<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>"></a>
-	      	<?php
-	      		if ( $donner_liste_courrier['statu_lettre_suivi'] != 'recus' )
-	      		{
+		$resultat_liste_courrier = mysql_query($requete_liste_courrier) or die('Erreur SQL !'.$requete_liste_courrier.'<br />'.mysql_error());
+		$nombre_d_entre = mysql_num_rows($resultat_liste_courrier);
+	while ( $donner_liste_courrier = mysql_fetch_array ($resultat_liste_courrier))
+	{
+		if (in_array($donner_liste_courrier['login'], $test) OR $test_nbre_eleves_cpe === 0) {
 
-	      			?><input type="checkbox" name="id_lettre_suivi[]" id="sel<?php echo $i; ?>" value="<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>"  onclick="document.getElementById('tr<?php echo $i; ?>').className='td_tableau_sel';" />
-	      			<?php $varcoche = $varcoche."'sel".$i."',"; ?>
-	      <?php }
-	      		else
-	      		{
+			if ($ic === '1') {
+				$ic = '2';
+				$couleur_cellule = 'td_tableau_absence_1';
+			} else {
+				$couleur_cellule = 'td_tableau_absence_2';
+				$ic = '1';
+			}
 
-	      			/* ?><input type="hidden" name="id_lettre_suivi[]" /><?php */
-
-	      		} ?>
-	      </td>
-	      <td align="center" nowrap="nowrap" valign="middle" style="text-align: left;"><label for="sel<?php echo $i; ?>"><?php echo '<strong>'.$donner_liste_courrier['nom'].' '.$donner_liste_courrier['prenom'].'</strong> ('.classe_de($donner_liste_courrier['login']).')'; ?></label></td>
-	      <td align="center" nowrap="nowrap" valign="middle"><small><?php echo lettre_type($donner_liste_courrier['type_lettre_suivi']); ?></small></td>
-	      <td align="center" nowrap="nowrap" valign="middle"><?php $datation = date_frl($donner_liste_courrier['emis_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['emis_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quiemet_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['emis_date_lettre_suivi']).'</span>'; ?></td>
-	      <td align="center" nowrap="nowrap" valign="middle"><?php if($donner_liste_courrier['envoye_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['envoye_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['envoye_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quienvoi_lettre_suivi']); ?><span title="<?php echo $datation; ?>"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'recus' ) { echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); } else { ?><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=reinit_envoi&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>" onClick="return confirm('Etes-vous sur de vouloire réinitialiser la date d\'envoi ?')"><?php echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); ?></a><?php } ?></span><?php } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
-	      <td align="center" nowrap="nowrap" valign="middle"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'envoyer' ) { ?><?php } elseif($donner_liste_courrier['reponse_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['reponse_date_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['reponse_date_lettre_suivi']).'</span>';  } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
-	      <td align="center" nowrap="nowrap" valign="middle"><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=aff_status&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>#n<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>" title="modifier l'état de réception"><?php echo $donner_liste_courrier['statu_lettre_suivi']; ?></a></td>
-	    </tr>
-<?php if( $action_laf === 'aff_status' and $id === $donner_liste_courrier['id_lettre_suivi']) {
-	    ?><tr id="tra<?php echo $i; ?>" class="<?php echo $couleur_cellule; ?>" onmouseover="document.getElementById('tr<?php echo $i; ?>').className='td_tableau_sel'; document.getElementById('tra<?php echo $i; ?>').className='td_tableau_sel';" onmouseout="document.getElementById('tr<?php echo $i; ?>').className='<?php echo $couleur_cellule; ?>'; document.getElementById('tra<?php echo $i; ?>').className='<?php echo $couleur_cellule; ?>';">
-	      <td align="center" nowrap="nowrap" valign="middle"></td>
-	      <td align="center" nowrap="nowrap" valign="middle" style="text-align: left;" colspan="7" >
-		Statut
-			<select name="statu_lettre[0]" style="width: 130px; border: 1px solid #000000;">
-				<option value="envoyer" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'envoyer') { ?>selected="selected"<?php } ?>>envoyé</option>
-				<option value="en attente" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'en attente') { ?>selected="selected"<?php } ?>>en attente</option>
-				<option value="recus" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'recus') { ?>selected="selected"<?php } ?>>réponses reçue</option>
-				<option value="annuler" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>selected="selected"<?php } ?>>courriers annulé</option>
-			</select>
-		Remarque <input type="texte" name="remarque_lettre_suivi[0]" style="width: 150px; border: 1px solid #000000;" />
-		<?php /* en prévision ?
-		Renvoie d'un courrier
-		<select name="lettre_type" size="1" style="width: 100px; border: 1px solid #000000;">
-		<option value="">Aucun</option>
-		<optgroup label="Type de lettre">
-		    <?php
-			$requete_lettre ="SELECT * FROM ".$prefix_base."lettres_types ORDER BY categorie_lettre_type ASC, titre_lettre_type ASC";
-		        $execution_lettre = mysql_query($requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.mysql_error());
-	  		while ($donner_lettre = mysql_fetch_array($execution_lettre))
-		  	 {
-			   ?><option value="<?php echo $donner_lettre['id_lettre_type']; ?>" <?php if (isset($lettre_type) and $lettre_type === $donner_lettre['id_lettre_type']) { ?>selected="selected"<?php } ?>><?php echo ucfirst($donner_lettre['titre_lettre_type']); ?></option><?php echo "\n";
-			 }
 			?>
-		</optgroup>
-	      </select> */ ?>
-		<input type="hidden" name="action_laf" value="modif_status" />
-		<input type="hidden" name="id" value="<?php echo $id; ?>" />
-		<input type="submit" name="Submit" value="<<" style="cursor: pointer;" /></td>
-	      </td>
+		<tr id="tr<?php echo $i; ?>" class="<?php echo $couleur_cellule; ?>" onmouseover="document.getElementById('tr<?php echo $i; ?>').className='td_tableau_sel';" onmouseout="document.getElementById('tr<?php echo $i; ?>').className='<?php echo $couleur_cellule; ?>';">
+			<td align="center" nowrap="nowrap" valign="middle">
+	      		<a name="n<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>"></a>
+			<?php
+			if ( $donner_liste_courrier['statu_lettre_suivi'] != 'recus' )
+			{ ?>
+				<input type="checkbox" name="id_lettre_suivi[]" id="sel<?php echo $i; ?>" value="<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>" onclick="document.getElementById('tr<?php echo $i; ?>').className='td_tableau_sel';" />
+	    	<?php $varcoche = $varcoche."'sel".$i."',";
+			}?>
+
+	      	</td>
+	      	<td align="center" nowrap="nowrap" valign="middle" style="text-align: left;"><label for="sel<?php echo $i; ?>"><?php echo '<strong>'.$donner_liste_courrier['nom'].' '.$donner_liste_courrier['prenom'].'</strong> ('.classe_de($donner_liste_courrier['login']).')'; ?></label></td>
+	      	<td align="center" nowrap="nowrap" valign="middle"><small><?php echo lettre_type($donner_liste_courrier['type_lettre_suivi']); ?></small></td>
+	      	<td align="center" nowrap="nowrap" valign="middle"><?php $datation = date_frl($donner_liste_courrier['emis_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['emis_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quiemet_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['emis_date_lettre_suivi']).'</span>'; ?></td>
+	      	<td align="center" nowrap="nowrap" valign="middle"><?php if($donner_liste_courrier['envoye_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['envoye_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['envoye_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quienvoi_lettre_suivi']); ?><span title="<?php echo $datation; ?>"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'recus' ) { echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); } else { ?><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=reinit_envoi&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>" onClick="return confirm('Etes-vous sur de vouloire réinitialiser la date d\'envoi ?')"><?php echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); ?></a><?php } ?></span><?php } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
+	      	<td align="center" nowrap="nowrap" valign="middle"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'envoyer' ) { ?><?php } elseif($donner_liste_courrier['reponse_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['reponse_date_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['reponse_date_lettre_suivi']).'</span>';  } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
+	      	<td align="center" nowrap="nowrap" valign="middle"><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=aff_status&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>#n<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>" title="modifier l'état de réception"><?php echo $donner_liste_courrier['statu_lettre_suivi']; ?></a></td>
 	    </tr>
-<?php } ?>
-	    <?php $i = $i + 1; } ?>
-            <tr class="fond_vert">
-              <td colspan="7" class="norme_absence_blanc"><?php if($nombre_d_entre!='' and $nombre_d_entre!='0') { ?>Nombre de lettres affichées <strong><?php echo $nombre_d_entre.'</strong>'; } else { ?>Aucune sélection<?php } ?></td>
+			<?php
+			if( $action_laf === 'aff_status' and $id === $donner_liste_courrier['id_lettre_suivi'])
+			{
+	    	?>
+		<tr id="tra<?php echo $i; ?>" class="<?php echo $couleur_cellule; ?>" onmouseover="document.getElementById('tr<?php echo $i; ?>').className='td_tableau_sel'; document.getElementById('tra<?php echo $i; ?>').className='td_tableau_sel';" onmouseout="document.getElementById('tr<?php echo $i; ?>').className='<?php echo $couleur_cellule; ?>'; document.getElementById('tra<?php echo $i; ?>').className='<?php echo $couleur_cellule; ?>';">
+	      	<td align="center" nowrap="nowrap" valign="middle"></td>
+	      	<td align="center" nowrap="nowrap" valign="middle" style="text-align: left;" colspan="7" >Statut
+				<select name="statu_lettre[0]" style="width: 130px; border: 1px solid #000000;">
+					<option value="envoyer" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'envoyer') { ?>selected="selected"<?php } ?>>envoyé</option>
+					<option value="en attente" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'en attente') { ?>selected="selected"<?php } ?>>en attente</option>
+					<option value="recus" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'recus') { ?>selected="selected"<?php } ?>>réponses reçue</option>
+					<option value="annuler" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>selected="selected"<?php } ?>>courriers annulé</option>
+				</select>
+				Remarque
+				<input type="texte" name="remarque_lettre_suivi[0]" style="width: 150px; border: 1px solid #000000;" />
+				<input type="hidden" name="action_laf" value="modif_status" />
+				<input type="hidden" name="id" value="<?php echo $id; ?>" />
+				<input type="submit" name="Submit" value="<<" style="cursor: pointer;" /></td>
+	      	</td>
 	    </tr>
-            <tr>
-              <td colspan="6" class="norme_absence">
-		<?php $varcoche = $varcoche."'form2'"; ?>
-		<a href="javascript:CocheCheckbox(<?php echo $varcoche; ?>)">Cocher</a> | <a href="javascript:DecocheCheckbox(<?php echo $varcoche; ?>)">Décocher</a>
-</td>
-              <td class="centre">
+			<?php
+			}
+			$i = $i + 1;
+		}
+	} // fin du while ?>
+		<tr class="fond_vert">
+			<td colspan="7" class="norme_absence_blanc"><?php if($nombre_d_entre!='' and $nombre_d_entre!='0') { ?>Nombre de lettres affichées <strong><?php echo $nombre_d_entre.'</strong>'; } else { ?>Aucune sélection<?php } ?></td>
+	    </tr>
+        <tr>
+            <td colspan="6" class="norme_absence">
+				<?php $varcoche = $varcoche."'form2'"; ?>
+				<a href="javascript:CocheCheckbox(<?php echo $varcoche; ?>)">Cocher</a> | <a href="javascript:DecocheCheckbox(<?php echo $varcoche; ?>)">Décocher</a>
+			</td>
+            <td class="centre">
                 <input type="hidden" name="du" value="<?php echo $du; ?>" />
                 <input type="hidden" name="nbi" value="<?php echo $i; ?>" />
 
-		<input type="hidden" name="type_impr" value="<?php echo $type_impr; ?>" />
-		<input type="hidden" name="choix" value="<?php echo $choix; ?>" />
-		<input type="hidden" name="action_lettre" value="<?php echo $action_lettre; ?>" />
-		<input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
-		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+				<input type="hidden" name="type_impr" value="<?php echo $type_impr; ?>" />
+				<input type="hidden" name="choix" value="<?php echo $choix; ?>" />
+				<input type="hidden" name="action_lettre" value="<?php echo $action_lettre; ?>" />
+				<input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
+				<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
 
                 <input type="submit" name="Submit3" value="Sélectionner" />
-              </td>
-            </tr>
-	  </tbody>
-	</table>
+            </td>
+        </tr>
+	</tbody>
+</table>
       <?php } ?>
       </form>
 
@@ -1369,6 +1376,8 @@ if($sous_rubrique === 'gb') { ?>
 	print_r($test);
 	echo '</pre>';
 */
+//debug_var();
+
 require("../../lib/footer.inc.php");
 ?>
 <?php mysql_close(); ?>

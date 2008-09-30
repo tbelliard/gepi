@@ -61,6 +61,16 @@ if ($type == "I") {$page = "ajout_inf"; }
 if ($type == "R") {$page = "ajout_ret"; }
 if ($type == "") {exit(); }
 
+// On ajoute un paramètre sur les élèves de ce CPE en particulier
+$sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
+$query_eleves_cpe = mysql_query($sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . mysql_error());
+$test_cpe = array();
+
+$test_nbre_eleves_cpe = mysql_num_rows($query_eleves_cpe);
+while($test_eleves_cpe = mysql_fetch_array($query_eleves_cpe)){
+	$test_cpe[] = $test_eleves_cpe['e_login'];
+}
+
 $requete_liste_classe = "SELECT id, classe, nom_complet FROM classes ORDER BY nom_complet ASC, classe DESC";
 if ($classe_choix == "tous"){
 	$requete_liste_eleve = "SELECT e.login, e.nom, e.prenom, c.classe
@@ -68,7 +78,7 @@ if ($classe_choix == "tous"){
 									WHERE e.login = jec.login
 									AND jec.id_classe = c.id
 									GROUP BY e.nom, e.prenom
-									ORDER BY nom, prenom ASC";
+									ORDER BY id_classe, nom, prenom ASC";
 }else{
     settype($classe_choix,"integer");
     $requete_liste_eleve = "SELECT eleves.login, eleves.nom, eleves.prenom, j_eleves_classes.login, j_eleves_classes.id_classe, j_eleves_classes.periode, classes.id, classes.classe, classes.nom_complet FROM eleves, j_eleves_classes, classes WHERE eleves.login=j_eleves_classes.login AND j_eleves_classes.id_classe=classes.id AND classes.id='".$classe_choix."' GROUP BY eleves.nom, eleves.prenom ORDER BY nom, prenom ASC";
@@ -83,7 +93,7 @@ if ($_SESSION["statut"] == 'autre') {
 	$retour = './gestion_absences.php?type='.$type;
 }
 ?>
-<p class=bold><a href='<?php echo $retour; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" /> Retour</a>
+<p class="bold"><a href='<?php echo $retour; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" /> Retour</a>
 </p>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
@@ -99,19 +109,25 @@ if ($_SESSION["statut"] == 'autre') {
     <tr>
       <td class="td_tableau_selection">
         <form name="form1" method="post" action="select.php?type=<?php echo $type; ?>">
-         <fieldset class="fieldset_efface">
+         <fieldset class="fieldset_efface" style="width: 450px;">
             Sélection de la classe :
             <select name="classe_choix">
-              <option value="tous" selected onClick="javascript:document.form1.submit()">Toutes les classes</option>
-              <?php
-              $resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
-              while($data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
-                  if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
-                  <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?> onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']." (".$data_liste_classe['classe'].")"; ?></option>
-             <?php } ?>
+            	<option value="tous" selected="selected" onclick="javascript:document.form1.submit()">Toutes les classes</option>
+			<?php
+			$resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
+			while($data_liste_classe = mysql_fetch_array ($resultat_liste_classe))
+			{
+            	if ($classe_choix==$data_liste_classe['id']) {
+					$selected = 'selected="selected"';
+				} else {
+					$selected = "";
+				}?>
+            	<option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?> onclick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']." (".$data_liste_classe['classe'].")"; ?></option>
+    		<?php
+			} ?>
             </select>
             <noscript>
-            <input type="submit" name="submit3" value="Ok" />
+            <p><input type="submit" name="submit3" value="Ok" /></p>
             </noscript>
           </fieldset>
          </form>
@@ -124,16 +140,21 @@ if ($_SESSION["statut"] == 'autre') {
       </td>
       <td class="td_tableau_selection">
 	<form method="post" action="<?php echo $page; ?>.php?action=ajouter&amp;type=<?php echo $type; ?>" name="form2">
-            Sélection :<br />
-            <select name="eleve_absent[]" size="10" <?php if ($type == "D" or $type == "I") {} else {?>multiple<?php } ?> style="width: 200px;">
+            <p>Sélection :<br />
+            <select name="eleve_absent[]" size="10" <?php if ($type == "D" or $type == "I") {} else {?>multiple="multiple"<?php } ?> style="width: 350px;">
             <?php
-            $resultat_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
-            while($data_liste_eleve = mysql_fetch_array ($resultat_liste_eleve)) { ?>
+			$resultat_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
+            while($data_liste_eleve = mysql_fetch_array ($resultat_liste_eleve))
+			{
+				if (in_array($data_liste_eleve['login'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {?>
+
                 <option value="<?php echo $data_liste_eleve['login']; ?>"><?php echo strtoupper($data_liste_eleve['nom'])." ".ucfirst($data_liste_eleve['prenom']); ?>&nbsp;(<?php echo $data_liste_eleve['classe']; ?>)</option>
-                  <?php } ?>
+            <?php
+            	}
+			} ?>
             </select>
-         <input type="hidden" name="classe_choix" value="<?php echo $classe_choix; ?>" />
-         <br /><input type="submit" name="submit" value="Valider votre sélection" />
+         <input type="hidden" name="classe_choix" value="<?php echo $classe_choix; ?>" /></p>
+         <p><input type="submit" name="submit" value="Valider votre sélection" /></p>
         </form>
       </td>
     </tr>
@@ -141,6 +162,5 @@ if ($_SESSION["statut"] == 'autre') {
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
-<?php mysql_close(); ?>
-</body>
-</html>
+<?php require("../../lib/footer.inc.php"); ?>
+

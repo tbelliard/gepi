@@ -50,14 +50,14 @@ if (!checkAccess()) {
     die();
 }
 ?>
-<script type="text/javascript" language="javascript">
+<script type="text/javascript">
 <!--
 function MM_openBrWindow(theURL,winName,features) { //v2.0
   window.open(theURL,winName,features);
 }
 //-->
 </script>
-<script type="text/javascript" language="javascript">
+<script type="text/javascript">
 <!--
 // Scrolling bug fixing by Pierre Gardenat
 	NS4 = (document.layers) ? 1 : 0;
@@ -207,15 +207,26 @@ include("./functions.php");
       else { if (isset($_GET['pagedarriver'])) { $pagedarriver = $_GET['pagedarriver']; } if (isset($_POST['pagedarriver'])) { $pagedarriver = $_POST['pagedarriver']; } }
 
 
-//Quelle que variabale
-  $datej = date('Y-m-d');
-  $annee_scolaire=annee_en_cours_t($datej);
+//Quelques variabales
+$datej = date('Y-m-d');
+$annee_scolaire=annee_en_cours_t($datej);
 
 //REQUETE
-//requête pour liste les motif d'absence
+
+// On ajoute un paramètre sur les élèves de ce CPE en particulier
+$sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
+$query_eleves_cpe = mysql_query($sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . mysql_error());
+$test_cpe = array();
+
+$test_nbre_eleves_cpe = mysql_num_rows($query_eleves_cpe);
+while($test_eleves_cpe = mysql_fetch_array($query_eleves_cpe)){
+	$test_cpe[] = $test_eleves_cpe['e_login'];
+}
+
+//requête pour lister les motifs d'absence
 $requete_liste_motif = "SELECT init_motif_absence, def_motif_absence FROM ".$prefix_base."absences_motifs ORDER BY init_motif_absence ASC";
 
-//requete sur les champs des tableaus
+//requete sur les champs des tableaux
 if ($motif == "tous" and $classe_choix == "tous" AND $eleve_choix == "tous" AND $justifie == "1" AND $nonjustifie == "1")
    {
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) ORDER BY nom, prenom ASC";
@@ -310,19 +321,21 @@ if ($motif != "tous" AND $classe_choix != "tous" AND $eleve_choix != "tous" AND 
 
 if ($recherche == "afficher")
 {
-  if ($classe_choix == "tous") { $requete_liste_eleve = "SELECT login, nom, prenom FROM ".$prefix_base."eleves ORDER BY nom, prenom ASC";
-  } else { $requete_liste_eleve = "SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.id, ".$prefix_base."classes.classe, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' GROUP BY ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom ORDER BY nom, prenom ASC"; }
-    $requete_liste_classe = "SELECT id, classe, nom_complet FROM ".$prefix_base."classes ORDER BY nom_complet DESC";
+	if ($classe_choix == "tous") {
+		$requete_liste_eleve = "SELECT login, nom, prenom FROM ".$prefix_base."eleves ORDER BY nom, prenom ASC";
+	} else {
+		$requete_liste_eleve = "SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.id, ".$prefix_base."classes.classe, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' GROUP BY ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom ORDER BY nom, prenom ASC";
+	}
+	$requete_liste_classe = "SELECT id, classe, nom_complet FROM ".$prefix_base."classes ORDER BY nom_complet DESC";
 }
-?>
 
+if( $pagedarriver === 'gestion_absences') {
+	echo "<p class='bold'> <a href=\"../gestion/gestion_absences.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+}elseif( $pagedarriver === 'prof_ajout_abs') {
+	echo "<p class='bold'> <a href=\"../professeurs/prof_ajout_abs.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+}
 
-<?php
- if( $pagedarriver === 'gestion_absences') { echo "<p class=bold> <a href=\"../gestion/gestion_absences.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>"; }
- if( $pagedarriver === 'prof_ajout_abs') { echo "<p class=bold> <a href=\"../professeurs/prof_ajout_abs.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>"; }
-?>
-
-<? /* div de centrage du tableau pour ie5 */ ?>
+/* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
     <form method="post" action="" name="form1">
       <fieldset style="width: 400px; margin: auto;">
@@ -341,7 +354,7 @@ if ($recherche == "afficher")
            <?php if($type == "A" OR $type == "R") { ?>
            Motif
              <select name="motif" id="motif">
-                 <option value="tous" <?php if (empty($motif)) {?>selected<?php } ?>>tous</option>
+                 <option value="tous" <?php if (empty($motif)) {?>selected="selected"<?php } ?>>tous</option>
                   <?php
                     $resultat_liste_motif = mysql_query($requete_liste_motif) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
                     while ( $data_liste_motif = mysql_fetch_array ($resultat_liste_motif)) {
@@ -352,7 +365,7 @@ if ($recherche == "afficher")
            <?php } else { ?><input type="hidden" name="motif" value="tous" /><?php } ?>
            Classe
               <select name="classe_choix" id="classe_choix">
-                 <option value="tous" <?php if (empty($classe_choix)) {?>selected<?php } ?>>tous</option>
+                 <option value="tous" <?php if (empty($classe_choix)) {?>selected="selected"<?php } ?>>tous</option>
                     <?php
                     $resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
                     While ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
@@ -387,35 +400,61 @@ if ($recherche == "afficher")
 <div class="centre"><span class="norme_absence_bleu">Un passage avec la souris sur le NOM permet d'afficher la fiche de l'&eacute;l&egrave;ve</span></div>
 
 
-<?php if ($type == "A" or $type == "tous") { ?>
 <?php
-      $execution_div = mysql_query($requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.mysql_error());
-      while ( $data_div = mysql_fetch_array( $execution_div ) ) {
+if ($type == "A" or $type == "tous")
+{
+
+	$execution_div = mysql_query($requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.mysql_error());
+	while ( $data_div = mysql_fetch_array( $execution_div ) )
+	{
+		if (in_array($data_div['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+
  ?>
-       <div id="d<?php echo $data_div['id_absence_eleve']; ?>" style="position: absolute; z-index: 20; visibility: hidden; top: 0px; left: 0px;">
-             <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
-                 <tr>
-                   <td class="texte_fondjaune_calque_information"><?php echo "<b>".strtoupper($data_div['nom'])."</b> ".ucfirst($data_div['prenom']); ?> élève de <?php echo "<b>".classe_de($data_div['login'])."</b>"; $id_classe_eleve = classe_de($data_div['login']); ?> &agrave; &eacute;t&eacute; absent<?php if ($data_div['sexe'] == "F") { ?>e<?php } ?><br />le <?php echo date_frl($data_div['d_date_absence_eleve']); ?><?php if (($data_div['a_date_absence_eleve'] != $data_div['d_date_absence_eleve'] and $data_div['a_date_absence_eleve'] != "") or $data_div['a_date_absence_eleve'] == "0000-00-00") { ?> au <?php echo date_frl($data_div['a_date_absence_eleve']); ?><?php } ?><br /><?php if ($data_div['a_heure_absence_eleve'] == "00:00:00" or $data_div['a_heure_absence_eleve'] == "") { ?>à <?php } else { ?>de <?php } ?><?php echo heure($data_div['d_heure_absence_eleve']); ?> <?php if ($data_div['a_heure_absence_eleve'] == "00:00:00" or $data_div['a_heure_absence_eleve'] == "") { } else { ?> à <?php ?> <?php echo heure($data_div['a_heure_absence_eleve']); } ?></td>
-                  <?php if (getSettingValue("active_module_trombinoscopes")=='y') {
-                  $nom_photo = nom_photo($data_div['elenoet']);
-                  $photo = "../../photos/eleves/".$nom_photo;
-                 if (($nom_photo == "") or (!(file_exists($photo)))) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-		 $valeur=redimensionne_image($photo);
-                  ?><td style="width: 60px; vertical-align: top" rowspan="4"><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
-                  } ?>
-                 </tr>
-                 <tr>
-                   <td class="norme_absence">Pour le motif : <?php echo motif_de($data_div['motif_absence_eleve']); ?></td>
-                 </tr>
-                 <tr>
-                   <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>N'a pas donn&eacute; de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
+	<div id="d<?php echo $data_div['id_absence_eleve']; ?>" style="position: absolute; z-index: 20; visibility: hidden; top: 0px; left: 0px;">
+		<table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
+			<tr>
+				<td class="texte_fondjaune_calque_information"><?php echo "<b>".strtoupper($data_div['nom'])."</b> ".ucfirst($data_div['prenom']); ?> élève de <?php echo "<b>".classe_de($data_div['login'])."</b>"; $id_classe_eleve = classe_de($data_div['login']); ?> &agrave; &eacute;t&eacute; absent<?php if ($data_div['sexe'] == "F") { ?>e<?php } ?><br />le <?php echo date_frl($data_div['d_date_absence_eleve']); ?><?php if (($data_div['a_date_absence_eleve'] != $data_div['d_date_absence_eleve'] and $data_div['a_date_absence_eleve'] != "") or $data_div['a_date_absence_eleve'] == "0000-00-00") { ?> au <?php echo date_frl($data_div['a_date_absence_eleve']); ?><?php } ?><br /><?php if ($data_div['a_heure_absence_eleve'] == "00:00:00" or $data_div['a_heure_absence_eleve'] == "") { ?>à <?php } else { ?>de <?php } ?><?php echo heure($data_div['d_heure_absence_eleve']); ?> <?php if ($data_div['a_heure_absence_eleve'] == "00:00:00" or $data_div['a_heure_absence_eleve'] == "") { } else { ?> à <?php ?> <?php echo heure($data_div['a_heure_absence_eleve']); } ?></td>
+				<?php
+				// On construit la ligne de la justification
+				if ($data_div['justify_absence_eleve'] == "O") {
+					$class = 'norme_absence_vert';
+					$style = '';
+					$texte = 'a donn&eacute; pour justification : ';
+				} elseif($data_div['justify_absence_eleve'] == "T") {
+					$class = "norme_absence_vert";
+					$style = ' style="color: orange;"';
+					$texte = 'a justifi&eacute; par t&eacute;l&eacute;phone : ';
+				} else {
+					$class = 'norme_absence_rouge';
+					$style = '';
+					$texte = 'N\'a pas donn&eacute; de justification';
+				}
+
+				if (getSettingValue("active_module_trombinoscopes")=='y') {
+					$nom_photo = nom_photo($data_div['elenoet']);
+					$photo = "../../photos/eleves/".$nom_photo;
+					if (($nom_photo == "") or (!(file_exists($photo)))) {
+						$photo = "../../mod_trombinoscopes/images/trombivide.jpg";
+					}
+					$valeur=redimensionne_image($photo);
+				?>
+				<td style="width: 60px; vertical-align: top" rowspan="4"><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
+                } ?>
+                </tr>
+                <tr>
+                	<td class="norme_absence">Pour le motif : <?php echo motif_de($data_div['motif_absence_eleve']); ?></td>
+                </tr>
+                <tr>
+                	<td class="norme_absence"><span class="<?php echo $class; ?>"<?php echo $style; ?>><b><?php echo $texte; ?></b></span></td>
                  </tr>
                  <tr>
                    <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
                  </tr>
             </table>
       </div>
-<?php } ?>
+<?php
+		}
+	} ?>
 
 
 <? /* div de centrage du tableau pour ie5 */ ?>
@@ -440,7 +479,10 @@ if ($recherche == "afficher")
       $init_v = "";
       $ic = 1;
       $execution_recherche = mysql_query($requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.mysql_error());
-      while ( $data_recherche = mysql_fetch_array( $execution_recherche ) ) {
+      while ( $data_recherche = mysql_fetch_array( $execution_recherche ) )
+	  {
+		if (in_array($data_recherche['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+
            if ($ic==1) {
                           $ic=2;
                           $couleur_cellule="td_tableau_absence_1";
@@ -456,16 +498,23 @@ if ($recherche == "afficher")
       <td class="norme_absence centre"><?php echo heure($data_recherche['d_heure_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo heure($data_recherche['a_heure_absence_eleve']); ?></td>
     </tr>
-    <?php } ?>
+    <?php
+		}
+	} ?>
   </table>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
 
-<?php } if ($type == "R" or $type == "tous") { ?>
+<?php
+}
+if ($type == "R" or $type == "tous") { ?>
 <?php
       $execution_div = mysql_query($requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.mysql_error());
-      while ( $data_div = mysql_fetch_array( $execution_div ) ) {
+	while ( $data_div = mysql_fetch_array( $execution_div ) )
+	{
+		if (in_array($data_div['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+
  ?>
    <div id="d<?php echo $data_div['id_absence_eleve']; ?>" style="position: absolute; z-index: 20; visibility: hidden; top: 0px; left: 0px;">
         <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
@@ -483,14 +532,18 @@ if ($recherche == "afficher")
                <td class="norme_absence">Pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
              </tr>
              <tr>
-               <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>N'a pas donn&eacute; de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute;e por justification : </b><?php } ?></span></td>
+               <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] == "O") {?><span class="norme_absence_vert"><b>a donn&eacute;e pour justification : </b>
+			   <? } elseif($data_div['justify_absence_eleve'] == "T") { ?><span class="norme_absence_vert" style="color: orange;"><b>a justifi&eacute; par t&eacute;l&eacute;phone </b>
+			   																	<?php } else { ?><span class="norme_absence_rouge"><b>N'a pas donn&eacute; de justification</b>
+			   <?php } ?></span></td>
              </tr>
              <tr>
                <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
              </tr>
         </table>
   </div>
-<?php } ?>
+<?php	}
+	} ?>
 
   <table style="margin: auto; width: 600px;" border="0" cellspacing="2" cellpadding="0">
     <tr>
@@ -503,18 +556,21 @@ if ($recherche == "afficher")
       <td class="norme_absence_blanc">Cause</td>
     </tr>
     <?php
-      $init = "";
-      $init_v = "";
-      $ic = 1;
-      $execution_recherche = mysql_query($requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.mysql_error());
-      while ( $data_recherche = mysql_fetch_array( $execution_recherche ) ) {
-          if ($ic==1) {
-                          $ic=2;
-                          $couleur_cellule="td_tableau_absence_1";
-                       } else {
-                                 $couleur_cellule="td_tableau_absence_2";
-                                 $ic=1;
-                              }
+    $init = "";
+    $init_v = "";
+    $ic = 1;
+    $execution_recherche = mysql_query($requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.mysql_error());
+    while ( $data_recherche = mysql_fetch_array( $execution_recherche ) )
+	{
+		if (in_array($data_recherche['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+
+			if ($ic==1) {
+				$ic=2;
+				$couleur_cellule="td_tableau_absence_1";
+			} else {
+				$couleur_cellule="td_tableau_absence_2";
+				$ic=1;
+			}
     ?>
     <tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; showdiv(event, 'd<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hidediv('d<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
       <td class="norme_absence"><?php echo "<b>".strtoupper($data_recherche['nom'])."</b><br />".ucfirst($data_recherche['prenom']); ?></td>
@@ -522,7 +578,8 @@ if ($recherche == "afficher")
       <td class="norme_absence centre"><?php echo heure($data_recherche['d_heure_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo $data_recherche['info_justify_absence_eleve']; ?></td>
     </tr>
-    <?php } ?>
+    <?php }
+	} ?>
   </table>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
@@ -531,7 +588,10 @@ if ($recherche == "afficher")
 <?php } if ($type == "D" or $type == "tous") { ?>
 <?php
       $execution_div = mysql_query($requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.mysql_error());
-      while ( $data_div = mysql_fetch_array( $execution_div ) ) {
+    while ( $data_div = mysql_fetch_array( $execution_div ) )
+	{
+		if (in_array($data_div['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+
  ?>
    <div id="d<?php echo $data_div['id_absence_eleve']; ?>" style="position: absolute; z-index: 20; visibility: hidden; top: 0px; left: 0px;">
        <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
@@ -549,7 +609,8 @@ if ($recherche == "afficher")
             </tr>
        </table>
   </div>
-<?php } ?>
+<?php 	}
+	} ?>
 
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
@@ -571,7 +632,10 @@ if ($recherche == "afficher")
       $init_v = "";
       $ic = 1;
       $execution_recherche = mysql_query($requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.mysql_error());
-      while ( $data_recherche = mysql_fetch_array( $execution_recherche ) ) {
+    while ( $data_recherche = mysql_fetch_array( $execution_recherche ) )
+	{
+		if (in_array($data_recherche['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+
           if ($ic==1) {
                           $ic=2;
                           $couleur_cellule="td_tableau_absence_1";
@@ -586,15 +650,21 @@ if ($recherche == "afficher")
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['a_date_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo $data_recherche['info_absence_eleve']; ?></td>
     </tr>
-    <?php } ?>
+    <?php
+    	}
+	} ?>
   </table>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
-<?php } if ($type == "I" or $type == "tous") { ?>
+<?php
+}
+if ($type == "I" or $type == "tous") { ?>
 <?php
       $execution_div = mysql_query($requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.mysql_error());
-      while ( $data_div = mysql_fetch_array( $execution_div ) ) {
+    while ( $data_div = mysql_fetch_array( $execution_div ) )
+	{
+		if (in_array($data_div['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
  ?>
    <div id="d<?php echo $data_div['id_absence_eleve']; ?>" style="position: absolute; z-index: 20; visibility: hidden; top: 0px; left: 0px;">
          <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
@@ -616,7 +686,8 @@ if ($recherche == "afficher")
              </tr>
          </table>
    </div>
-<?php } ?>
+<?php	}
+	} ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
   <table style="margin: auto; width: 600px;" border="0" cellspacing="2" cellpadding="0">
@@ -634,7 +705,10 @@ if ($recherche == "afficher")
       $init_v = "";
       $ic = 1;
       $execution_recherche = mysql_query($requete_recherche) or die('Erreur SQL !'.$requete_recherche.'<br />'.mysql_error());
-      while ( $data_recherche = mysql_fetch_array( $execution_recherche ) ) {
+    while ( $data_recherche = mysql_fetch_array( $execution_recherche ) )
+	{
+		if (in_array($data_recherche['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+
            if ($ic==1) {
                           $ic=2;
                           $couleur_cellule="td_tableau_absence_1";
@@ -649,7 +723,9 @@ if ($recherche == "afficher")
       <td class="norme_absence centre"><?php echo heure($data_recherche['d_heure_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo heure($data_recherche['a_heure_absence_eleve']); ?></td>
     </tr>
-    <?php } ?>
+    <?php
+    	}
+	} ?>
   </table>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>

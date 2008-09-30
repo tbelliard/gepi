@@ -140,6 +140,16 @@ function age($date_de_naissance_fr)
                return($suivi_par);
           }
 
+// On ajoute un paramètre sur les élèves de ce CPE en particulier
+$sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
+$query_eleves_cpe = mysql_query($sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . mysql_error());
+$test_cpe = array();
+
+$test_nbre_eleves_cpe = mysql_num_rows($query_eleves_cpe);
+while($test_eleves_cpe = mysql_fetch_array($query_eleves_cpe)){
+	$test_cpe[] = $test_eleves_cpe['e_login'];
+}
+
 //ajout des fiche_suivi des eleves
 if ($action_sql == "ajouter" or $action_sql == "modifier")
 {
@@ -193,7 +203,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
 }
 
 if ($action_sql === "supprimer")
- {
+{
 //	include "../lib/function_abs.php";
 
 //	if (empty($_GET['id_suivi_eleve_cpe']) and empty($_POST['id_suivi_eleve_cpe'])) {$id_suivi_eleve_cpe="";}
@@ -255,6 +265,7 @@ if ( $action_sql === 'supprimer_selection' )
 
 }
 /* FIN - Gére la suppression d'une absence                      */
+
 /* ************************************************************ */
 
 		$varcoche = ''; //variable des checkbox pour la fonction javascript
@@ -271,14 +282,14 @@ $cal = new Calendrier("form1", "du");
 include "../lib/mincals_absences.inc";
 
 ?>
-<script type="text/javascript" language="javascript">
+<script type="text/javascript">
 <!--
 function MM_openBrWindow(theURL,winName,features) { //v2.0
   window.open(theURL,winName,features);
 }
 //-->
 </script>
-<script type="text/javascript" language="javascript">
+<script type="text/javascript">
 <!--
 function CocheCheckbox() {
 
@@ -331,10 +342,10 @@ function DecocheCheckbox() {
    <fieldset class="fieldset_efface">
      <input name="date_ce_jour" type="hidden" value="<?php echo $date_ce_jour; ?>" />
      <select name="type">
-        <option value="A" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="A") {echo "selected"; } ?>>Absences</option>
-        <option value="R" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="R") {echo "selected"; } ?>>Retards</option>
-        <option value="I" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="I") {echo "selected"; } ?>>Infirmerie</option>
-        <option value="D" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="D") {echo "selected"; } ?>>Dispenses</option>
+        <option value="A" onclick="javascript:document.choix_type_vs.submit()" <?php if ($type=="A") {echo "selected"; } ?>>Absences</option>
+        <option value="R" onclick="javascript:document.choix_type_vs.submit()" <?php if ($type=="R") {echo "selected"; } ?>>Retards</option>
+        <option value="I" onclick="javascript:document.choix_type_vs.submit()" <?php if ($type=="I") {echo "selected"; } ?>>Infirmerie</option>
+        <option value="D" onclick="javascript:document.choix_type_vs.submit()" <?php if ($type=="D") {echo "selected"; } ?>>Dispenses</option>
      </select>
      <!--<input name="submit8" type="image" src="../../images/enabled.png" style="border: 0px;" />-->
 		<?php /* <input type="submit" name="submit8" value="&lt;&lt;" />*/ ?>
@@ -450,7 +461,7 @@ function DecocheCheckbox() {
           <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
           Classe &nbsp;
           <select name="classe_choix">
-            <option value="" selected onClick="javascript:document.form1.submit()">Toutes les classes</option>
+            <option value="" selected="selected" onclick="javascript:document.form1.submit()">Toutes les classes</option>
                 <?php
                   $resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
                   while ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
@@ -476,21 +487,23 @@ function DecocheCheckbox() {
 ?>
 
 <?php
-	if ($choix=="sm" and $fiche_eleve == "" and $select_fiche_eleve == "") {
-		$i = 0;
-		if ($type == "A" or $type == "I" or $type == "R" or $type == "D") {
-           if ($classe_choix != "") { $requete_sans_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.saisie_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve, jec.login, jec.id_classe, jec.periode, c.classe, c.id, c.nom_complet FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c, ".$prefix_base."absences_eleves ae WHERE ( e.login = ae.eleve_absence_eleve AND e.login = jec.login AND jec.id_classe = c.id AND c.id = '".$classe_choix."' AND ae.justify_absence_eleve != 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve"; }
-           if ($classe_choix == "") { $requete_sans_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.saisie_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve FROM ".$prefix_base."eleves e, ".$prefix_base."absences_eleves ae WHERE ( e.login = ae.eleve_absence_eleve AND ae.justify_absence_eleve != 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve"; }
-         }
-         $execution_sans_motif = mysql_query($requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
-		// Pour la position du premier div, on définit le margin-top
-		$margin_top = 20;
-		while ( $data_sans_motif = mysql_fetch_array($execution_sans_motif)) {
-			// DEBUT DE GESTION DU CALQUE D'INFORMATION
-			echo '
+if ($choix=="sm" and $fiche_eleve == "" and $select_fiche_eleve == "") {
+	$i = 0;
+	if ($type == "A" or $type == "I" or $type == "R" or $type == "D") {
+		if ($classe_choix != "") { $requete_sans_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.saisie_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve, jec.login, jec.id_classe, jec.periode, c.classe, c.id, c.nom_complet FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c, ".$prefix_base."absences_eleves ae WHERE ( e.login = ae.eleve_absence_eleve AND e.login = jec.login AND jec.id_classe = c.id AND c.id = '".$classe_choix."' AND ae.justify_absence_eleve != 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve"; }
+		if ($classe_choix == "") { $requete_sans_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.saisie_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve FROM ".$prefix_base."eleves e, ".$prefix_base."absences_eleves ae WHERE ( e.login = ae.eleve_absence_eleve AND ae.justify_absence_eleve != 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve"; }
+	}
+	$execution_sans_motif = mysql_query($requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
+	// Pour la position du premier div, on définit le margin-top
+	$margin_top = 20;
+	while ( $data_sans_motif = mysql_fetch_array($execution_sans_motif))
+	{
+		if (in_array($data_sans_motif['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+		// DEBUT DE GESTION DU CALQUE D'INFORMATION
+		echo '
 				<div id="d'.$data_sans_motif['id_absence_eleve'].'" style="position: absolute; margin-left: 200px; margin-top: '.$margin_top.'px; z-index: 20; display: none; top: 0px; left: 0px;">
 				';
-			$margin_top = $margin_top + 23;
+		$margin_top = $margin_top + 23;
 ?>
           <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
              <tr>
@@ -510,7 +523,10 @@ function DecocheCheckbox() {
                 <td class="norme_absence"><?php if($data_sans_motif['saisie_absence_eleve']!="") { ?>Enregistré par : <?php echo qui($data_sans_motif['saisie_absence_eleve']); } ?><br />pour le motif : <?php echo motif_de($data_sans_motif['motif_absence_eleve']); ?></td>
              </tr>
              <tr>
-                <td class="norme_absence"><?php if ($data_sans_motif['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute; de justification</b><?php } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
+                <td class="norme_absence"><?php if ($data_sans_motif['justify_absence_eleve'] == "O") {?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b>
+									<?php } elseif ($data_sans_motif['justify_absence_eleve'] == "T") { ?><span class="norme_absence_vert" style="color: orange;"><b>a justifi&eacute; par t&eacute;l&eacute;phone : </b>
+																						<?php } else { ?><span class="norme_absence_rouge"><b>n'a pas donn&eacute; de justification</b>
+																						<?php } ?></span></td>
              </tr>
              <tr>
                 <td class="norme_absence"><?php if(!empty($data_sans_motif['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_sans_motif['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -548,8 +564,9 @@ function DecocheCheckbox() {
               </tr>
            </table>
      </div>
-<?php /* FIN DE GESTION DU CALQUE D'INFORMATION */ ?>
-<?php } ?>
+<?php /* FIN DE GESTION DU CALQUE D'INFORMATION */
+		}
+	} ?>
 
 
 <? /* div de centrage du tableau pour ie5 */ ?>
@@ -569,15 +586,18 @@ function DecocheCheckbox() {
          $i = 0;
          $ic = 1;
            $execution_sans_motif = mysql_query($requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
-           while ( $data_sans_motif = mysql_fetch_array($execution_sans_motif))
-           {
-              if ($ic==1) {
-                            $ic=2;
-                            $couleur_cellule="td_tableau_absence_1";
-                          } else {
-                                   $couleur_cellule="td_tableau_absence_2";
-                                   $ic=1;
-                                }
+		while ( $data_sans_motif = mysql_fetch_array($execution_sans_motif))
+		{
+			if (in_array($data_sans_motif['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+
+			if ($ic==1)
+			{
+				$ic=2;
+				$couleur_cellule="td_tableau_absence_1";
+			} else {
+				$couleur_cellule="td_tableau_absence_2";
+				$ic=1;
+			}
            ?>
           <tr>
             <td class="<?php echo $couleur_cellule; ?>" onmouseover="changementDisplay('d<?php echo $data_sans_motif['id_absence_eleve']; ?>', ''); return true;" onmouseout="changementDisplay('d<?php echo $data_sans_motif['id_absence_eleve']; ?>', ''); return true;"><input name="selection[<?php echo $total; ?>]" id="sel<?php echo $total; ?>" type="checkbox" value="1" <?php $varcoche = $varcoche."'sel".$total."',"; ?><?php /* if((isset($selection[$total]) and $selection[$total] == "1") OR $cocher == 1) { ?>checked="checked"<?php } */ ?> />
@@ -615,7 +635,9 @@ function DecocheCheckbox() {
               <?php } ?>
             </td>
           </tr>
-      <?php $total = $total + 1; } ?>
+      	<?php $total = $total + 1;
+      		}
+		} ?>
           <tr>
             <td class="class55bas">&nbsp;</td>
             <td class="class35bas">&nbsp;</td>
@@ -645,7 +667,7 @@ function DecocheCheckbox() {
           Informations données pour la date du<br /><b><?php echo date_frl($date_ce_jour); ?></b><br /><br />
           Classe &nbsp;
           <select name="classe_choix">
-            <option value="" selected onClick="javascript:document.form1.submit()">Toutes les classes</option>
+            <option value="" selected onclick="javascript:document.form1.submit()">Toutes les classes</option>
                 <?php
                   $resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
                   while($data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
@@ -669,7 +691,8 @@ function DecocheCheckbox() {
 </table>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-<?php }
+<?php
+	}
 
 //
 // ABSENCES SANS MOTIF
@@ -688,7 +711,9 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 			or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
 		// Pour la position du premier div, on définit le margin-top
 			$margin_top = 50;
-		while($data_sans_motif = mysql_fetch_array($execution_sans_motif)){
+		while($data_sans_motif = mysql_fetch_array($execution_sans_motif))
+		{
+			if (in_array($data_sans_motif['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
 
 			if($type == "A" or $type == "I" or $type == "R" or $type == "D") {
 				echo '
@@ -713,7 +738,10 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
                <td class="norme_absence">pour le motif : <?php echo motif_de($data_sans_motif['motif_absence_eleve']); ?></td>
              </tr>
              <tr>
-                <td class="norme_absence"><?php if ($data_sans_motif['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute; de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
+                <td class="norme_absence"><?php if ($data_sans_motif['justify_absence_eleve'] == "O") {?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b>
+										<? } elseif($data_sans_motif['justify_absence_eleve'] == "T") { ?><span class="norme_absence_vert" style="color: orange;"><b>a justifi&eacute; par t&eacute;l&eacute;phone : </b>
+																						<?php } else { ?><span class="norme_absence_rouge"><b>n'a pas donn&eacute; de justification</b>
+																							<?php }?></span></td>
              </tr>
              <tr>
                 <td class="norme_absence"><?php if(!empty($data_sans_motif['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_sans_motif['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -751,8 +779,9 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
               </tr>
           </table>
        </div>
-<?php } ?>
-<?php } ?>
+<?php		}
+		}
+	} ?>
 
 
 <? /* div de centrage du tableau pour ie5 */ ?>
@@ -774,6 +803,7 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
          $execution_sans_motif = mysql_query($requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
          while ( $data_sans_motif = mysql_fetch_array($execution_sans_motif))
          {
+			if (in_array($data_sans_motif['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
                      if ($ic==1) {
                           $ic=2;
                           $couleur_cellule="td_tableau_absence_1";
@@ -791,20 +821,27 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
           	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_sans_motif['login']; ?>" title="consulter la fiche de l'élève"><?php echo "<b>".strtoupper($data_sans_motif['nom'])."</b> ".ucfirst($data_sans_motif['prenom']); ?></a>
           </td>
           <td class="<?php echo $couleur_cellule; ?>">
-            <?php if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
-                                      $id_eleve = $data_sans_motif['id_absence_eleve'];
-                                      $id_eleve_photo = $data_sans_motif['elenoet'];
-                                      $nom_photo = '';
-                                      $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
-                                      $photos = "../../photos/eleves/".$nom_photo;
-                 //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-                 if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-		 		$valeur=redimensionne_image($photos);
-                 ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td>
+            <?php
+				if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo"))
+				{
+					$id_eleve = $data_sans_motif['id_absence_eleve'];
+                    $id_eleve_photo = $data_sans_motif['elenoet'];
+					$nom_photo = '';
+                    $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
+                    $photos = "../../photos/eleves/".$nom_photo;
+
+					if ( $nom_photo === '' or !file_exists($photos) ) {
+						$photos = "../../mod_trombinoscopes/images/trombivide.jpg";
+					}
+		 			$valeur=redimensionne_image($photos);
+            ?>
+				<img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td>
             <?php } ?>
           </td>
         </tr>
-    <?php $total = $total + 1; } ?>
+    <?php 	$total = $total + 1;
+			}
+		} ?>
         <tr>
           <td class="class10">&nbsp;</td>
           <td class="class55bas">&nbsp;</td>
@@ -838,7 +875,7 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
                   $resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
                   while ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
                          if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
-                        <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']." (".$data_liste_classe['classe'].")"; ?></option>
+                        <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onclick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']." (".$data_liste_classe['classe'].")"; ?></option>
                 <?php } ?>
           </select><br />
           <?php if (getSettingValue("active_module_trombinoscopes")=='y') { ?>
@@ -913,7 +950,10 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 				<td class="norme_absence">pour le motif : <?php echo motif_de($data_avec_motif['motif_absence_eleve']); ?></td>
 			</tr>
 			<tr>
-				<td class="norme_absence"><?php if ($data_avec_motif['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute; de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
+				<td class="norme_absence"><?php if ($data_avec_motif['justify_absence_eleve'] == "O") {?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b>
+									<?php } elseif($data_avec_motif['justify_absence_eleve'] == "T") { ?><span class="norme_absence_vert" style="color: orange;"><b>a justifi&eacute; par t&eacute;l&eacute;phone</b>
+																							<?php }else { ?><span class="norme_absence_rouge"><b>n'a pas donn&eacute; de justification</b>
+																							<?php } ?></span></td>
 			</tr>
 			<tr>
 				<td class="norme_absence"><?php if(!empty($data_avec_motif['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_avec_motif['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -977,6 +1017,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 		$execution_avec_motif = mysql_query($requete_avec_motif)
 			or die('Erreur SQL !'.$requete_avec_motif.'<br />'.mysql_error());
 		while ( $data_avec_motif = mysql_fetch_array($execution_avec_motif)) {
+			if (in_array($data_avec_motif['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+
 			if ($ic==1) {
 				$ic=2;
 				$couleur_cellule="td_tableau_absence_1";
@@ -1028,6 +1070,7 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 	</tr>
 <?php
 			$total = $total + 1;
+			}
 		} // fin du while
 ?>
         <tr>
@@ -1280,7 +1323,7 @@ Pour éviter un centrage bizarre:
 					  </select>
 					</div>
 
-				<script type='text/javascript' language='javascript'>
+				<script type='text/javascript'>
 					test='cacher';
 					function aff_lig_type_courrier(mode){
 						if(mode=='afficher'){

@@ -183,17 +183,26 @@ if ( $lettre_action === 'originaux' ) {
 	$i = '0'; $requete_command = '';
 
 	while(!empty($id_lettre_suivi[$i]))
-	 {
-		if ( $i === '0' ) { $requete_command = 'id_lettre_suivi = '.$id_lettre_suivi[$i]; }
-		if ( $i != '0' ) { $requete_command = $requete_command.' OR id_lettre_suivi = '.$id_lettre_suivi[$i]; }
+	{
+		if ( $i === '0' ) {
+			$requete_command = 'id_lettre_suivi = '.$id_lettre_suivi[$i];
+		}elseif ( $i !== '0' ) {
+			$requete_command = $requete_command.' OR id_lettre_suivi = '.$id_lettre_suivi[$i];
+		}
 		$i = $i + 1;
-	 }
+	}
 
 	$i = '0';
-        $requete_persone ="SELECT * FROM ".$prefix_base."lettres_suivis, ".$prefix_base."eleves e WHERE ( (".$requete_command.") AND login = quirecois_lettre_suivi )";
-        $execution_persone = mysql_query($requete_persone) or die('Erreur SQL !'.$requete_persone.'<br />'.mysql_error());
-        while ( $donne_persone = mysql_fetch_array($execution_persone))
-	 {
+
+	$requete_persone = "SELECT DISTINCT lettres_suivis.*, eleves.* FROM lettres_suivis, eleves, j_eleves_classes
+		  									WHERE (".$requete_command.")
+											AND eleves.login = quirecois_lettre_suivi
+		  									AND eleves.login = j_eleves_classes.login
+										ORDER BY j_eleves_classes.id_classe ASC, nom ASC, prenom ASC";
+
+	$execution_persone = mysql_query($requete_persone) or die('Erreur SQL !'.$requete_persone.'<br />'.mysql_error());
+	while ( $donne_persone = mysql_fetch_array($execution_persone))
+	{
 		$id_lettre_suivi = $donne_persone['id_lettre_suivi'];
 		// information sur l'élève
 		$id_eleve[$i] = $donne_persone['login']; // id de l'élève
