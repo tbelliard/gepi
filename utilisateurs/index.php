@@ -374,13 +374,25 @@ while ($i < $nombreligne){
     $col[$i]['civ'] = $user_civilite;
     // fin ajout
 
+	//echo "<p>Contrôle des matières de $user_login: <br />\n";
     $call_matieres = mysql_query("SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
     $nb_mat = mysql_num_rows($call_matieres);
     $k = 0;
+	$kk=0;
     while ($k < $nb_mat) {
         $user_matiere_id = mysql_result($call_matieres, $k, "id_matiere");
-        $user_matiere[$k] = mysql_result(mysql_query("SELECT matiere FROM matieres WHERE matiere='$user_matiere_id'"),0);
-        $k++;
+		//echo "SELECT matiere FROM matieres WHERE matiere='$user_matiere_id'<br />\n";
+        //$user_matiere[$k] = mysql_result(mysql_query("SELECT matiere FROM matieres WHERE matiere='$user_matiere_id'"),0);
+		$sql="SELECT matiere FROM matieres WHERE matiere='$user_matiere_id';";
+		$res_test_matiere=mysql_query($sql);
+		if(mysql_num_rows($res_test_matiere)>0) {
+			$user_matiere[$kk] = mysql_result($res_test_matiere,0);
+			$kk++;
+		}
+		else {
+			echo "<span style='color:red;'>Anomalie:</span> La matière '$user_matiere_id' n'existe plus mais reste asociée à '$user_login'.<br />Recréez la matière (<i>puis supprimez la proprement si nécessaire</i>)<br />\n";
+		}
+		$k++;
     }
 
     // Affichage du statut
@@ -405,7 +417,8 @@ while ($i < $nombreligne){
     $k = 0;
     $col[$i][4] = '';
     while ($k < $nb_mat) {
-        $col[$i][4]=$col[$i][4]." $user_matiere[$k] - ";
+        //$col[$i][4]=$col[$i][4]." $user_matiere[$k] - ";
+        if(isset($user_matiere[$k])) {$col[$i][4]=$col[$i][4]." $user_matiere[$k] - ";}
         $k++;
     }
     if ($col[$i][4]=='') {$col[$i][4] = "&nbsp;";}
