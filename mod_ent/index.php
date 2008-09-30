@@ -51,6 +51,8 @@ if (getSettingValue("use_ent") != 'y') {
 // ======================= Initialisation des variables ==========================
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
 $aff_continuer = NULL;
+$msg2 = NULL;
+$etape = isset($_GET["etape"]) ? $_GET["etape"] : NULL;
 
 
 // ======================= Traitement des données ================================
@@ -66,7 +68,7 @@ if ($RNE === '') {
 }
 
 // On teste pour la table
-if ($_GET["etape"] == 2) {
+if ($etape == 2) {
 
 	$msg = NULL;
 	// On crée la table si nécessaire
