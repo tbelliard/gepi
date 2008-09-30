@@ -49,13 +49,6 @@ if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
     die();
 }
-
-
-//**************** EN-TETE *****************
-$titre_page = "Gestion des absences";
-require_once("../../lib/header.inc");
-//**************** FIN EN-TETE *****************
-
 ?>
 
 <script type="text/javascript">
@@ -160,6 +153,13 @@ function hidediv ( name ) {
 //-->
 </script>
 <?php
+
+//**************** EN-TETE *****************
+$titre_page = "Gestion des absences";
+require_once("../../lib/header.inc");
+//**************** FIN EN-TETE *****************
+
+
 //Configuration du calendrier
 include("../../lib/calendrier/calendrier.class.php");
 $cal_1 = new Calendrier("form1", "du");
