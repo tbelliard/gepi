@@ -616,6 +616,8 @@ $titre_page = "Choix des couleurs GEPI";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+include("../lib/couleurs_ccm.php");
+
 //echo "<div class='norme'><p class='bold'><a href='param_gen.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 echo "<div class='norme'>\n";
 	echo "<p class='bold'>\n";
@@ -631,6 +633,13 @@ foreach($_POST as $post => $val){
 	echo $post.' : '.$val."<br />\n";
 }
 */
+
+/*
+echo "<div id='div_tmp'>";
+aff_tab_couleurs_ccm('div_tmp','id_style_body_backgroundcolor_R','id_style_body_backgroundcolor_V','id_style_body_backgroundcolor_B','style_body_backgroundcolor');
+echo "</div>";
+*/
+aff_tab_couleurs_ccm('div_choix_couleur');
 
 ?>
 
@@ -971,19 +980,38 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
 									//echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onChange='delai_affichecouleur(\"".$tab[$i]."\")' onkeydown=\"clavier_2(this.id,event);\" />\n";
 
-							echo "<label for='id_".$tab[$i]."_".$comp[$j]."' class='invisible'>".$comp[$j]." fond ".$comp[$j]."</label>\n";
+									echo "<label for='id_".$tab[$i]."_".$comp[$j]."' class='invisible'>".$comp[$j]." fond ".$comp[$j]."</label>\n";
 									echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
 									echo "</td>\n";
 								}
-								echo "<td id='".$tab[$i]."'>\n";
+
+								//echo "<td id='".$tab[$i]."'>\n";
+								echo "<td id='".$tab[$i]."'";
+
+								echo " onclick=\"document.getElementById('id_couleur_r').value='id_".$tab[$i]."_R';";
+								echo "document.getElementById('id_couleur_v').value='id_".$tab[$i]."_V';";
+								echo "document.getElementById('id_couleur_b').value='id_".$tab[$i]."_B';";
+								echo "document.getElementById('id_couleur_motif').value='".$tab[$i]."';";
+								echo "afficher_div('div_choix_couleur','y',10,-200)\">";
+
 								// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 								echo "<input type='hidden' name='$tab[$i]' value='$tab[$i]' />\n";
 								echo "&nbsp;&nbsp;&nbsp;</td>\n";
+
 								echo "<td>\n";
 								//echo "<a href='#' onclick='reinit_couleurs(\"$tab[$i]\");return false;'>Réinitialiser</a>\n";
 								echo "<a href='#' onclick='reinit_couleurs(\"$tab[$i]\");return false;'>Réinitialiser</a>\n";
 								//echo "<a href='javascript:reinit_couleurs(\"$tab[$i]\");'>Réinitialiser</a>\n";
 								//echo "<input type='button' name='reinit$i' value='Réinitialiser' onclick='javascript:reinit_couleurs(\"$tab[$i]\");' />\n";
+
+								/*
+								echo " <a href='#' onclick=\"document.getElementById('id_couleur_r').value='id_".$tab[$i]."_R';";
+								echo "document.getElementById('id_couleur_v').value='id_".$tab[$i]."_V';";
+								echo "document.getElementById('id_couleur_b').value='id_".$tab[$i]."_B';";
+								echo "document.getElementById('id_couleur_motif').value='".$tab[$i]."';";
+								echo "afficher_div('div_choix_couleur','y',10,-200)\">Choix</a>";
+								*/
+
 								echo "</td>\n";
 							echo "</tr>\n";
 						}
@@ -1066,12 +1094,21 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 									}
 									*/
 									echo "<td>\n";
-							echo "<label for='id_".$tab_degrade[$i]."_".$comp[$j]."' class='invisible'>".($i+1)."$comp[$j] degrade ".($i+1)."</label>\n";
+									echo "<label for='id_".$tab_degrade[$i]."_".$comp[$j]."' class='invisible'>".($i+1)."$comp[$j] degrade ".($i+1)."</label>\n";
 										echo "<input type='text' name='".$tab_degrade[$i]."_".$comp[$j]."' id='id_".$tab_degrade[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_degrade[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab_degrade[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
 
 									echo "</td>\n";
 								}
-								echo "<td id='".$tab_degrade[$i]."'>\n";
+								//echo "<td id='".$tab_degrade[$i]."'>\n";
+
+								echo "<td id='".$tab_degrade[$i]."'";
+
+								echo " onclick=\"document.getElementById('id_couleur_r').value='id_".$tab_degrade[$i]."_R';";
+								echo "document.getElementById('id_couleur_v').value='id_".$tab_degrade[$i]."_V';";
+								echo "document.getElementById('id_couleur_b').value='id_".$tab_degrade[$i]."_B';";
+								echo "document.getElementById('id_couleur_motif').value='".$tab_degrade[$i]."';";
+								echo "afficher_div('div_choix_couleur','y',10,-200)\">";
+
 								// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 									echo "<input type='hidden' name='$tab_degrade[$i]' value='$tab_degrade[$i]' />\n";
 								echo "&nbsp;&nbsp;&nbsp;</td>\n";
@@ -1177,7 +1214,16 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 							echo "<input type='text' name='couleur_infobulle_fond_entete_".$comp[$j]."' id='id_couleur_infobulle_fond_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_entete'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_infobulle_fond_entete\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
 							echo "</td>\n";
 						}
-						echo "<td id='couleur_infobulle_fond_entete'>\n";
+						//echo "<td id='couleur_infobulle_fond_entete'>\n";
+
+						echo "<td id='couleur_infobulle_fond_entete'";
+
+						echo " onclick=\"document.getElementById('id_couleur_r').value='id_couleur_infobulle_fond_entete_R';";
+						echo "document.getElementById('id_couleur_v').value='id_couleur_infobulle_fond_entete_V';";
+						echo "document.getElementById('id_couleur_b').value='id_couleur_infobulle_fond_entete_B';";
+						echo "document.getElementById('id_couleur_motif').value='couleur_infobulle_fond_entete';";
+						echo "afficher_div('div_choix_couleur','y',10,-200)\">";
+
 						// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 							echo "<input type='hidden' name='couleur_infobulle_fond_entete' value='couleur_infobulle_fond_entete' />\n";
 						echo "&nbsp;&nbsp;&nbsp;</td>\n";
@@ -1201,11 +1247,19 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 								*/
 
 								echo "<td>\n";
-								echo "<label for='id_couleur_infobulle_fond_corps_".$comp[$j]."' class='invisible'>".$comp[$j]."C corps ".$comp[$j]."</label>\n";
+									echo "<label for='id_couleur_infobulle_fond_corps_".$comp[$j]."' class='invisible'>".$comp[$j]."C corps ".$comp[$j]."</label>\n";
 									echo "<input type='text' name='couleur_infobulle_fond_corps_".$comp[$j]."' id='id_couleur_infobulle_fond_corps_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_corps'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_infobulle_fond_corps\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
 								echo "</td>\n";
 							}
-							echo "<td id='couleur_infobulle_fond_corps'>\n";
+							//echo "<td id='couleur_infobulle_fond_corps'>\n";
+							echo "<td id='couleur_infobulle_fond_corps'";
+
+							echo " onclick=\"document.getElementById('id_couleur_r').value='id_couleur_infobulle_fond_corps_R';";
+							echo "document.getElementById('id_couleur_v').value='id_couleur_infobulle_fond_corps_V';";
+							echo "document.getElementById('id_couleur_b').value='id_couleur_infobulle_fond_corps_B';";
+							echo "document.getElementById('id_couleur_motif').value='couleur_infobulle_fond_corps';";
+							echo "afficher_div('div_choix_couleur','y',10,-200)\">";
+
 							// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 								echo "<input type='hidden' name='couleur_infobulle_fond_corps' value='couleur_infobulle_fond_corps' />\n";
 							echo "&nbsp;&nbsp;&nbsp;</td>\n";
@@ -1300,7 +1354,15 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 									echo "<input type='text' name='couleur_lig_alt1_".$comp[$j]."' id='id_couleur_lig_alt1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt1'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_alt1\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
 								echo "</td>\n";
 							}
-							echo "<td id='couleur_lig_alt1'>\n";
+							//echo "<td id='couleur_lig_alt1'>\n";
+							echo "<td id='couleur_lig_alt1'";
+
+							echo " onclick=\"document.getElementById('id_couleur_r').value='id_couleur_lig_alt1_R';";
+							echo "document.getElementById('id_couleur_v').value='id_couleur_lig_alt1_V';";
+							echo "document.getElementById('id_couleur_b').value='id_couleur_lig_alt1_B';";
+							echo "document.getElementById('id_couleur_motif').value='couleur_lig_alt1';";
+							echo "afficher_div('div_choix_couleur','y',10,-200)\">";
+
 							// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 								echo "<input type='hidden' name='couleur_lig_alt1' value='couleur_lig_alt1' />\n";
 							echo "&nbsp;&nbsp;&nbsp;</td>\n";
@@ -1327,7 +1389,15 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 									echo "<input type='text' name='couleur_lig_alt_1_".$comp[$j]."' id='id_couleur_lig_alt_1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt_1'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_alt_1\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
 								echo "</td>\n";
 							}
-							echo "<td id='couleur_lig_alt_1'>\n";
+							//echo "<td id='couleur_lig_alt_1'>\n";
+							echo "<td id='couleur_lig_alt_1'";
+
+							echo " onclick=\"document.getElementById('id_couleur_r').value='id_couleur_lig_alt_1_R';";
+							echo "document.getElementById('id_couleur_v').value='id_couleur_lig_alt_1_V';";
+							echo "document.getElementById('id_couleur_b').value='id_couleur_lig_alt_1_B';";
+							echo "document.getElementById('id_couleur_motif').value='couleur_lig_alt_1';";
+							echo "afficher_div('div_choix_couleur','y',10,-200)\">";
+
 							// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 								echo "<input type='hidden' name='couleur_lig_alt_1' value='couleur_lig_alt_1' />\n";
 							echo "&nbsp;&nbsp;&nbsp;</td>\n";
@@ -1428,7 +1498,18 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 								echo "<label for='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' class='invisible'>".$comp[$k]." ".$tab_ct_notice[$i]." ".$tab_ct_couleur_fond[$j]."</label>\n";
 								echo "<input type='text' name='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' id='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' value='".$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]][$comp[$k]]."' size='3' onblur='affichecouleur(\"".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n</td>\n";
 								}
-								echo "<td id='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."'>";
+
+								//echo "<td id='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."'>";
+
+								echo "<td id='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."'";
+
+								echo " onclick=\"document.getElementById('id_couleur_r').value='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_R';";
+								echo "document.getElementById('id_couleur_v').value='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_V';";
+								echo "document.getElementById('id_couleur_b').value='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_B';";
+								echo "document.getElementById('id_couleur_motif').value='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."';";
+								echo "afficher_div('div_choix_couleur','y',10,-200)\">";
+
+
 									echo "<input type='hidden' name='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."' value='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."' />\n";
 								echo "</td>\n";
 								echo "<td>\n";
@@ -1489,7 +1570,17 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 								echo "<input type='text' name='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' id='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_ct_police_bordure[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab_ct_police_bordure[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
 							echo "</td>\n";
 						}
-					echo "<td id='".$tab_ct_police_bordure[$i]."'>\n";
+					//echo "<td id='".$tab_ct_police_bordure[$i]."'>\n";
+					echo "<td id='".$tab_ct_police_bordure[$i]."'";
+
+					echo " onclick=\"document.getElementById('id_couleur_r').value='".$tab_ct_police_bordure[$i]."_R';";
+					echo "document.getElementById('id_couleur_v').value='".$tab_ct_police_bordure[$i]."_V';";
+					echo "document.getElementById('id_couleur_b').value='".$tab_ct_police_bordure[$i]."_B';";
+					echo "document.getElementById('id_couleur_motif').value='".$tab_ct_police_bordure[$i]."';";
+					echo "afficher_div('div_choix_couleur','y',10,-200)\">";
+
+
+
 						echo "<input type='hidden' name='".$tab_ct_police_bordure[$i]."' value='".$tab_ct_police_bordure[$i]."' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
