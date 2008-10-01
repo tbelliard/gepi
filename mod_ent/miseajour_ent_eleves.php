@@ -48,9 +48,19 @@ if (getSettingValue("use_ent") != 'y') {
 }
 
 // ======================= Initialisation des variables ======================= //
-
+$aff_liste_eleves = NULL;
+$enregistrer = isset($_POST['enregistrer']) ? $_POST['enregistrer'] : NULL;
+$maj = isset($_POST['maj']) ? $_POST['maj'] : NULL;
 
 // ======================= code métier ======================================== //
+
+// Si c'est demandé, on traite les nouveaux logins
+if ($enregistrer == "Ajouter ces élèves") {
+	$nbre_a_traiter = count($maj);
+	echo $nbre_a_traiter;
+}
+
+
 // On récupère la liste des élèves déjà inscrits dans la base
 $sql_all = "SELECT DISTINCT login FROM eleves";
 $query_all = mysql_query($sql_all);
@@ -67,16 +77,19 @@ while($rep_ent = mysql_fetch_array($query_ent)){
 	$tab_ent[] = $rep_ent['login_u'];
 } // while
 
-// Et enfin, on compare les deux tableaux et on garde les nouveaux login
-$tab_new_eleves = array_intersect($tab_all, $tab_ent);
+// Et enfin, on compare les deux tableaux et on garde les nouveaux logins
+$tab_new_eleves = array_diff($tab_ent, $tab_all);
+
 $test_new = count($tab_new_eleves);
 if ($test_new >= 1) {
 	// Alors il y a au moins un nouvel élève dans le ldap
-	print_r($tab_new_eleves);
+	foreach($tab_new_eleves as $rep){
+
+		$aff_liste_eleves .= $rep . '<br />';
+
+	}
 
 }
-
-
 
 
 // =========== fichiers spéciaux ==========
@@ -85,12 +98,27 @@ $style_specifique = "edt_organisation/style_edt";
 $titre_page = "Les utilisateurs de l'ENT";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-//debug_var(); // à enlever en production
+debug_var(); // à enlever en production
 ?>
 <p><a href="../accueil.php">RETOUR vers l'accueil</a></p>
 <p>Avant de continuer, vous devez r&eacute;cup&eacute;rer tous les utilisateurs actuellement dans l'ENT <a href="index.php">ICI</a>.</p>
 
+	<form method="post" action="miseajour_ent_eleves.php">
+<table>
 
+	<tr>
+		<th>Mise &agrave; jour</th>
+		<th>Login</th>
+	</tr>
+		<?php foreach($tab_new_eleves as $rep): ?>
+	<tr>
+		<td><input type="checkbox" name="maj[]" value="<?php echo $rep; ?>" checked="checked" /></td>
+		<td><?php echo $rep; ?></td>
+	</tr>
+		<?php endforeach; ?>
 
+</table>
+		<input type="submit" name="enregistrer" value="Ajouter ces &eacute;l&egrave;ves" />
+	</form>
 
 <?php require_once("../lib/footer.inc.php");

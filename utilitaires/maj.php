@@ -648,6 +648,7 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES('/mod_ent/index.php','V','F','F','F','F','F','F','F', 'Gestion de l intégration de GEPI dans un ENT','');";
     $tab_req[] = "INSERT INTO droits VALUES('/mod_ent/gestion_ent_eleves.php','V','F','F','F','F','F','F','F', 'Gestion de l intégration de GEPI dans un ENT','');";
     $tab_req[] = "INSERT INTO droits VALUES('/mod_ent/gestion_ent_profs.php','V','F','F','F','F','F','F','F', 'Gestion de l intégration de GEPI dans un ENT','');";
+    $tab_req[] = "INSERT INTO droits VALUES('/mod_ent/miseajour_ent_eleves.php','V','F','F','F','F','F','F','F', 'Gestion de l intégration de GEPI dans un ENT','');";
 
 
     //$tab_req[] = "";
@@ -7092,7 +7093,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	} else {
 	    $result .= "<font color=\"blue\">Le paramètre sso_use_portail existe déjà dans la table setting.</font><br />";
 	}
-	
+
    	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_url_portail'");
 	$res_test=mysql_num_rows($req_test);
 	if ($res_test==0){
@@ -7105,7 +7106,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	} else {
 	    $result .= "<font color=\"blue\">Le paramètre denomination_eleves existe déjà dans la table setting.</font><br />";
 	}
-	
+
    	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_hide_logout'");
 	$res_test=mysql_num_rows($req_test);
 	if ($res_test==0){
@@ -7118,23 +7119,23 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	} else {
 	    $result .= "<font color=\"blue\">Le paramètre sso_hide_logout existe déjà dans la table setting.</font><br />";
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
 	//------------------------------------------------------------------------
 	// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion
         // de la 1.5.2 stable doivent se situer au-dessus de cette ligne !
 	//------------------------------------------------------------------------
-        }
-    
-	
+    }
+
+
 
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
