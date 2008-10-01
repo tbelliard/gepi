@@ -1076,8 +1076,8 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 							echo "<div class='txt_gauche'>\n";
 								echo "<span id='ligne_adresse_parent'>\n";
 									echo "<br />\n";
-									echo "<input type='checkbox' id='avec_adresse_responsable' name='avec_adresse_responsable' id='avec_adresse_responsable' value='1' ";
 							echo "<label for='avec_adresse_responsable' class='invisible'>avec adresse responsable</label>\n";
+									echo "<input type='checkbox' id='avec_adresse_responsable' name='avec_adresse_responsable' id='avec_adresse_responsable' value='1' ";
 									if (isset($avec_adresse_responsable) and $avec_adresse_responsable === '1') {;
 										echo " checked='checked' ";
 									}
@@ -1085,7 +1085,9 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 									echo "<label for='avec_adresse_responsable' class='curseur_pointeur'>\n";
 										echo "Afficher les adresses responsables.\n";
 									echo "</label>\n";
-									echo "<br/>\n";
+									echo "<br />\n";
+
+									echo "<blockquote>\n";
 							echo "<!-- DEBUT AJOUT Eric 16022008-->\n";
 									echo "<strong>choix de l'adresse à imprimer</strong>\n";
 									echo "<br />\n";
@@ -1121,6 +1123,8 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 										echo "Uniquement les Responsables 2 différents du responsable 1\n";
 									echo "</label>\n";
 							echo "<!-- FIN AJOUT Eric 16022008-->\n";
+									echo "</blockquote>\n";
+
 								echo "</span>\n";
 							echo "</div>\n";
 						 	echo "<br />\n";
