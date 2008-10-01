@@ -543,8 +543,32 @@ while ($i < $nombreligne){
 
     // Affichage du téléchargement pour la photo si le module trombi est activé
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
+
+
+        	echo "<td style='white-space: nowrap;'><input name='photo[$i]' type='file' />\n";
+			echo "<input type='hidden' name='quiestce[$i]' value='";
+			//$codephoto = md5($col[$i][1].''.$col[$i][2]);
+			$codephoto = md5(strtolower($col[$i][1]));
+			echo $codephoto;
+			echo "' />\n";
+			$photo = '../photos/personnels/'.$codephoto.'.jpg';
+			if(file_exists($photo)) {
+				echo "<a href='$photo' target='_blank'><img src='../mod_trombinoscopes/images/";
+				if($col[$i]['civ'] == 'Mme' or $col[$i]['civ'] == 'Mlle') {
+					echo "photo_f.png";
+				}
+				else {
+					echo "photo_g.png";
+				}
+				echo "' width='32' height='32'  align='middle' border='0' alt='photo présente' title='photo présente' /></a>\n";
+			}
+			echo "</td>\n";
+
+			/*
+
         	?><td style="white-space: nowrap;"><input name="photo[<?php echo $i; ?>]" type="file" /><input type="hidden" name="quiestce[<?php echo $i; ?>]" value="<?php $codephoto = md5($col[$i][1].''.$col[$i][2]); echo $codephoto; ?>" /><?php $photo = '../photos/personnels/'.$codephoto.'.jpg'; if(file_exists($photo)) { ?><a href="<?php echo $photo; ?>" target="_blank"><img src="../mod_trombinoscopes/images/<?php if($col[$i]['civ'] == 'Mme' or $col[$i]['civ'] == 'Mlle') { ?>photo_f.png<?php } else { ?>photo_g.png<?php } ?>" width="32" height="32"  align="middle" border="0" alt="photo présente" title="photo présente" /></a><?php } ?></td>
         <?php
+			*/
 		}
     // Fin de la ligne courante
     echo "</tr>\n";
