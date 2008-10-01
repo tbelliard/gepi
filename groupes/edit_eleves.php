@@ -192,6 +192,8 @@ $titre_page = "Gestion des groupes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
+//debug_var();
+
 //=========================
 // AJOUT: boireaus 20071010
 $nb_periode=$current_group['nb_periode'];
@@ -262,7 +264,7 @@ function DecochePeriode() {
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 ?>
-<p class=bold>
+<p class="bold">
 <a href="edit_class.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <?php
@@ -282,10 +284,57 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 	}
 ?>
 
+<?php
+	$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe AND g.id=jgc.id_groupe AND jgc.id_groupe!='$id_groupe' ORDER BY g.name;";
+	//echo "$sql<br />\n";
+	$res_grp_avec_eleves=mysql_query($sql);
+	if(mysql_num_rows($res_grp_avec_eleves)>0) {
+		echo "<div style='float:right; text-align:center;'>\n";
+		echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_copie_ele' method='post'>\n";
+		echo "<p>\n";
+		echo "<select name='choix_modele_copie' id='choix_modele_copie'>\n";
+		$cpt_ele_grp=0;
+		$chaine_js=array();
+		//echo "<option value=''>---</option>\n";
+		while($lig_grp_avec_eleves=mysql_fetch_object($res_grp_avec_eleves)) {
+
+			$tmp_grp=get_group($lig_grp_avec_eleves->id_groupe);
+
+			/*
+			$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$lig_grp_avec_eleves->id_groupe';";
+			*/
+
+			$chaine_js[$cpt_ele_grp]="";
+			for($loop=0;$loop<count($tmp_grp["eleves"]["all"]["list"]);$loop++) {
+				$chaine_js[$cpt_ele_grp].=",\"".$tmp_grp["eleves"]["all"]["list"][$loop]."\"";
+			}
+			$chaine_js[$cpt_ele_grp]=substr($chaine_js[$cpt_ele_grp],1);
+
+			echo "<option value='$cpt_ele_grp'>".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+
+			$cpt_ele_grp++;
+		}
+		echo "</select>\n";
+		echo "<br />\n";
+		echo "<input type='button' name='Copie' value='Recopie des élèves associés' onclick=\"recopie_grp_ele(document.getElementById('choix_modele_copie').selectedIndex);\" />\n";
+		echo "</p>\n";
+
+		echo "<script type='text/javascript'>\n";
+		for($loop=0;$loop<count($chaine_js);$loop++) {
+			echo "tab_grp_ele_".$loop."=new Array(".$chaine_js[$loop].");\n";
+		}
+		echo "</script>\n";
+
+		echo "</form>\n";
+		echo "</div>\n";
+	}
+?>
+
+
 <p>
 <b><a href="javascript:CocheCase(true)">Tout cocher</a> - <a href="javascript:CocheCase(false)">Tout décocher</a></b>
 </p>
-<form enctype="multipart/form-data" action="edit_eleves.php" name="formulaire" method=post>
+<form enctype="multipart/form-data" action="edit_eleves.php" name="formulaire" method='post'>
 <p><input type='submit' value='Enregistrer' /></p>
 <?php
 
@@ -340,7 +389,8 @@ for ($i=0;$i<$nb;$i++) {
 	$e_login = mysql_result($calldata, $i, "login");
 	//================================
 	// AJOUT: boireaus
-	echo "<input type='hidden' name='login_eleve[$i]' value='$e_login' />\n";
+	//echo "<input type='hidden' name='login_eleve[$i]' value='$e_login' />\n";
+	echo "<input type='hidden' name='login_eleve[$i]' id='login_eleve_$i' value='$e_login' />\n";
 	//=========================
 	// AJOUT: boireaus 20071010
 	$login_eleve[$i]=$e_login;
@@ -591,6 +641,24 @@ function DecocheColonne(i) {
 	for (var ki=0;ki<$nb_eleves;ki++) {
 		if(document.getElementById('case_'+i+'_'+ki)){
 			document.getElementById('case_'+i+'_'+ki).checked = false;
+		}
+	}
+}
+
+function recopie_grp_ele(num) {
+	tab=eval('tab_grp_ele_'+num);
+	//alert('tab[0]='+tab[0]);
+
+	for(j=0;j<$nb_eleves;j++) {
+		DecocheLigne(j);
+	}
+
+	for(i=0;i<tab.length;i++) {
+		for(j=0;j<$nb_eleves;j++) {
+
+			if(document.getElementById('login_eleve_'+j).value==tab[i]) {
+				CocheLigne(j);
+			}
 		}
 	}
 }
