@@ -156,6 +156,28 @@ if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
     if ($msg == '') $msg = "Les modifications ont été enregistrées.";
 }
 
+if (isset($_POST["selection_aids"]) and ($_POST["selection_aids"] == "y")) {
+    $msg = "";
+    // On récupère la liste des profs responsable de cette Aids :
+    $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
+    $query = mysql_query($sql) OR DIE('Erreur dans la requête : '.mysql_error());
+    while($temp = mysql_fetch_array($query)) {
+        $liste_profs[] = $temp["id_utilisateur"];
+    }
+    foreach($_POST["liste_aids"] as $key1) {
+      foreach($liste_profs as $key2){
+        $test = sql_query1("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$key1."' and id_utilisateur = '".$key2."' and indice_aid='$indice_aid'");
+        if ($test == -1) {
+          $reg_data = mysql_query("INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$key2', id_aid = '$key1', indice_aid='$indice_aid'");
+          if (!$reg_data) { $msg .= "Erreur lors de l'ajout du professeur $key2 à l'aid dont l'identifiant est $key1 !<br />"; }
+        }
+     }
+    }
+    $flag = "prof";
+    if ($msg == '') $msg = "Les modifications ont été enregistrées.";
+}
+
+
 if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
     $msg = "";
     // On récupère la liste des profs responsable de cette Aids :
@@ -336,6 +358,30 @@ if ($flag == "prof") { ?>
       echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />\n";
       echo "<br /><input type=\"submit\" value=\"Affecter la liste aux Aids sans professeur\" />\n";
       echo "</form>";
+      ?>
+      <form enctype="multipart/form-data" action="modify_aid.php" method="post">
+      <hr /><H2>Affecter cette liste aux Aids s&eacute;lectionn&eacute;es</H2>
+      <?php
+      echo "<input type=\"hidden\" name=\"selection_aids\" value=\"y\" />\n";
+      echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
+      echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />\n";
+      // On appelle toutes les aids de la catégorie
+      $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY numero, nom");
+      $nombreligne = mysql_num_rows($calldata);
+      $i = 0;
+      echo "<select name=\"liste_aids[]\" size=\"6\" multiple>\n";
+      while ($i < $nombreligne){
+        $aid_id = @mysql_result($calldata, $i, "id");
+        $aid_nom = @mysql_result($calldata, $i, "nom");
+        echo "<option value=\"$aid_id\">$aid_nom</option>\n";
+        $i++;
+      }
+      echo "</select>";
+
+      echo "<br />Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste de cette AID seront également affectés à toutes les AIDs s&eacute;lectionn&eacute;es ci-dessus.<br />";
+      echo "<br /><input type=\"submit\" value=\"Affecter la liste aux Aids sélectionnées ci-dessus\" />\n";
+      echo "</form>";
+
    }
 
 }
