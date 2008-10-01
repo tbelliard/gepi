@@ -441,11 +441,15 @@ function delete_group($_id_groupe) {
             "(cn_devoirs.id_racine = cn_cahier_notes.id_cahier_notes OR cn_devoirs.id_conteneur = cn_conteneurs.id) AND " .
             "cn_notes_devoirs.id_devoir = cn_devoirs.id)");
     if (!$del6) $errors .= "Erreur lors de la suppression des données relatives au carnet de notes lié au groupe.<br/>";
+    $text_ct = sql_query1("SELECT count(id_groupe) from ct_entry WHERE (ct_entry.id_groupe = '" . $_id_groupe . "'");
+    if ($text_ct > 0) $errors .= "Attention un cahier de texte lié au groupe supprimé est maintenant \"orphelin\". Rendez-vous dans le module \"cahier de texte\" pour régler le problème.<br/>";
+    /*
     $del7 = mysql_query("DELETE from ct_entry, ct_devoirs_entry, ct_documents WHERE (" .
             "ct_entry.id_groupe = '" . $_id_groupe . "' AND " .
             "ct_devoirs_entry.id_groupe = '" . $_id_groupe . "' AND " .
             "ct_documents.id_ct = ct_entry.id_ct)");
     if (!$del7) $errors .= "Erreur lors de la suppression des données relatives au cahier de texte lié au groupe.<br/>";
+    */
 
     if (!empty($errors)) {
         return $errors;
