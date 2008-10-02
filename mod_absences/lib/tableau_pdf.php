@@ -43,6 +43,11 @@ if ($resultat_session == 'c') {
 	header("Location: ../../logout.php?auto=1");
 	die();
 };
+
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=1");
+	die();
+}
 //================================
 require('../../fpdf/fpdf.php');
 
