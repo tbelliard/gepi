@@ -134,7 +134,8 @@ if ($etape == 2) {
 			$msg2 .= '<br /><span style="color: red;">L\'utilisateur '.$info[$a][$ldap_login][0].' n\'a pas été enregistré.</span>';
 		}
 	}
-	$aff_continuer = '<p>Vous pouvez retourner sur la page d\'initialisation par sconet/STSweb <a href="../init_xml2/index.php">CONTINUER</a></p>';
+	$aff_continuer = '<p>Vous pouvez retourner sur la page d\'initialisation par sconet/STSweb <a href="../init_xml2/index.php">CONTINUER</a></p>
+	<p><a href="miseajour_ent_eleves.php">Ajouter de nouveaux utilisateurs arrivés en cours d\'année</a></p>';
 
 }
 
@@ -148,6 +149,7 @@ require_once("../lib/header.inc");
 ?>
 
 <!-- Mise à jour à partir de l'ENT -->
+<p class="bold"><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <h2>R&eacute;cup&eacute;ration des informations de l'ENT</h2>
 

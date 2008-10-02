@@ -321,6 +321,12 @@ $expli = array(
 "Pour gérer les bases (établissements, utilisateurs, matières, classes, ".$gepiSettings['denomination_eleves'].", ".$gepiSettings['denomination_responsables'].", AIDs).",
 "Pour gérer les modules (cahiers de texte, carnet de notes, absences, trombinoscope)."
 );
+if (getSettingValue('use_ent') == 'y') {
+	// On ajoute les pages du module
+	$chemin[]	= '/mod_ent/index.php';
+	$titre[]	= 'Liaison ENT';
+	$expli[]	= 'Entrer en liaison avec l\'ENT pour gérer les utilisateurs et récupérer les logins pour le sso';
+}
 
 $nb_ligne = count($chemin);
 

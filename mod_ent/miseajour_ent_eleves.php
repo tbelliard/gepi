@@ -187,7 +187,7 @@ $style_specifique = "edt_organisation/style_edt";
 $titre_page = "Les utilisateurs de l'ENT";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-debug_var(); // à enlever en production
+//debug_var(); // à enlever en production
 $increment = 0; // pour les name du formulaire ci-dessous
 ?>
 <p><a href="../accueil.php">RETOUR vers l'accueil</a>&nbsp;-&nbsp;Ajouter un nouvel &eacute;l&egrave;ve inscrit dans l'ENT</p>
@@ -204,24 +204,24 @@ $increment = 0; // pour les name du formulaire ci-dessous
 		<th>Nom</th>
 		<th>Pr&eacute;nom</th>
 		<th>Sexe</th>
-		<th>Date de naissance<br /><span style="color: blue; font-size: 0.6em;">sous la forme aaaa-mm-jj</span></th>
+		<th>Date de naissance<br /><span style="color: blue; font-size: 0.5em;">sous la forme aaaa-mm-jj</span></th>
 		<th>R&eacute;gime</th>
-		<th>Elenoet<br /><span style="color: blue; font-size: 0.6em;">(num&eacute;ro interne)</span></th>
-		<th>I.N.E.<span style="color: blue; font-size: 0.6em;">(num&eacute;ro national)</span></th>
+		<th>Elenoet<br /><span style="color: blue; font-size: 0.5em;">(num&eacute;ro interne)</span></th>
+		<th>I.N.E.<br /><span style="color: blue; font-size: 0.5em;">(num&eacute;ro national)</span></th>
 	</tr>
 		<?php foreach($tab_new_eleves as $rep): ?>
 	<tr>
 		<td><p style="text-align: center;"><input type="checkbox" name="maj[<?php echo $increment; ?>]" value="<?php echo $rep['_login']; ?>" checked="checked" /></p></td>
 		<td><?php echo $rep['_login']; ?></td>
 		<td><input type="text" name="nom[<?php echo $increment; ?>]" value="<?php echo $rep['_nom']; ?>" /></td>
-		<td><input type="text" name="prenom[<?php echo $increment; ?>]" value="<?php echo $rep['_prenom']; ?>" /></td>
+		<td><input type="text" name="prenom[<?php echo $increment; ?>]" value="<?php echo $rep['_prenom']; ?>" style="width: 80px;" /></td>
 		<td>
 			<select name="sexe[<?php echo $increment; ?>]">
 				<option value="F" selected="selected">F&eacute;minin</option>
 				<option value="M">Masculin</option>
 			</select>
 		</td>
-		<td><input type="text" name="naissance[<?php echo $increment; ?>]" value="" /></td>
+		<td style="text-align: center;"><input type="text" name="naissance[<?php echo $increment; ?>]" value="" style="width: 100px;" /></td>
 		<td>
 			<select name="regime[<?php echo $increment; ?>]">
 				<option value="inc">Inconnu</option>
@@ -230,7 +230,7 @@ $increment = 0; // pour les name du formulaire ci-dessous
 				<option value="int">Interne</option>
 			</select>
 		</td>
-		<td><input type="text" name="elenoet[<?php echo $increment; ?>]" value="" /></td>
+		<td><input type="text" name="elenoet[<?php echo $increment; ?>]" value="" style="width: 80px;" /></td>
 		<td><input type="text" name="national[<?php echo $increment; ?>]" value="<?php echo $rep['_no_gep']; ?>" /></td>
 	</tr>
 		<?php $increment++; endforeach; ?>
