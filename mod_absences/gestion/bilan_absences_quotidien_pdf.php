@@ -299,6 +299,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	$classe_precedent = '';
 
 	$execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+
 	while ( $donnee = mysql_fetch_array($execution))
 	{
 
