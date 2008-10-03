@@ -337,23 +337,26 @@ else {
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='new_groups' method='post'>\n";
 echo "<input type='hidden' name='tri_matiere' value='$tri_matiere' />\n";
 
-echo "<table border='0' summary='Tableau des matières'>\n";
+echo "<table border='0' class='boireaus' summary='Tableau des matières'>\n";
 echo "<tr valign='top'>";
-echo "<td>&nbsp;</td>\n";
-echo "<td style='font-weight: bold;'>Matière</td>\n";
-echo "<td style='font-weight: bold;'>Professeur</td>\n";
+echo "<th>&nbsp;</th>\n";
+echo "<th style='font-weight: bold;'>Matière</th>\n";
+echo "<th style='font-weight: bold;'>Professeur</th>\n";
 echo "</tr>\n";
 if($tri_matiere=='alpha') {
-	$result_matiere=mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
+	//$result_matiere=mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
+	$result_matiere=mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet, matiere");
 }
 else {
 	$result_matiere=mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY priority");
 }
 $nb_mat=mysql_num_rows($result_matiere);
 $cpt=0;
+$alt=1;
 while($ligne_matiere=mysql_fetch_object($result_matiere)){
 	$groupe_existant="non";
 
+	$alt=$alt*(-1);
 
 	$display_current = false;
 	// Récupération des infos déjà saisies:
@@ -361,7 +364,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 	$result_grp=mysql_query($sql);
 	if(mysql_num_rows($result_grp)==0 and $display == "new") {
 		$display_current = true;
-		echo "<tr>\n";
+		echo "<tr class='lig$alt'>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name='id_matiere[$cpt]' value='$ligne_matiere->matiere' />\n";
 		echo "<input type='checkbox' name='checkmat[$cpt]' id='checkmat_".$cpt."' value='nouveau_groupe' onchange='changement()' />\n";
@@ -372,7 +375,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 	}
 	elseif(mysql_num_rows($result_grp)==1 and $display == "current") {
 		$display_current = true;
-		echo "<tr>\n";
+		echo "<tr class='lig$alt'>\n";
 		$ligne_grp=mysql_fetch_object($result_grp);
 
 		$sql="SELECT * FROM j_groupes_professeurs WHERE id_groupe='$ligne_grp->id_groupe'";
@@ -403,7 +406,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 	}
 	elseif(mysql_num_rows($result_grp)>1 and $display == "current") {
 		$display_current = true;
-		echo "<tr>\n";
+		echo "<tr class='lig$alt'>\n";
 		// C'est le bazar... plusieurs groupes existent pour cette matière dans cette classe
 		//echo "<td colspan='3'>La matière $ligne_matiere->matiere a plusieurs groupes définis pour cette classe.<br />Ce n'est pas un enseignement 'simple'.<br />Elle devra être traitée ailleurs...</td>\n";
 		echo "<td colspan='3'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
@@ -412,11 +415,15 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 
 	//echo "<td><input type='checkbox' name='checkmat[$cpt]' id='checkmat_".$cpt."' value='coche' /></td>\n";
 	if($groupe_existant!="trop" and $display_current) {
-		echo "<td>".htmlentities($ligne_matiere->nom_complet)."</td>\n";
+		echo "<td style='text-align:left;'>";
+		echo "<label for='checkmat_".$cpt."' style='cursor:pointer;'>";
+		echo htmlentities($ligne_matiere->nom_complet);
+		echo "</label>\n";
+		echo "</td>\n";
 		//$sql="SELECT jpm.id_professeur,u.nom,u.prenom,u.civilite FROM j_professeurs_matieres jpm, matieres m, utilisateurs u WHERE jpm.id_matiere=m.matiere AND m.matiere='$ligne_matiere->matiere' AND u.login=jpm.id_professeur ORDER BY jpm.id_professeur";
 		$sql="SELECT jpm.id_professeur,u.nom,u.prenom,u.civilite FROM j_professeurs_matieres jpm, matieres m, utilisateurs u WHERE jpm.id_matiere=m.matiere AND m.matiere='$ligne_matiere->matiere' AND u.login=jpm.id_professeur AND u.etat='actif' ORDER BY jpm.id_professeur";
 		$result_prof=mysql_query($sql);
-		echo "<td>\n";
+		echo "<td style='text-align:left;'>\n";
 		echo "<select name='prof[$cpt]' id='prof_".$cpt."' onchange='test_prof($cpt);changement();'>\n";
 		echo "<option value=''>---</option>\n";
 		$selected="";
@@ -447,7 +454,7 @@ echo "<input type='hidden' name='compteur_matieres' value='$cpt' />\n";
 echo "<input type='hidden' name='mode' value='groupe' />\n";
 echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
 echo "<input type='hidden' name='is_posted' value='oui' />\n";
-echo "<input type='submit' value='Valider' />\n";
+echo "<p><input type='submit' value='Valider' /></p>\n";
 echo "</form>\n";
 
 /*
