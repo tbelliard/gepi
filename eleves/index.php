@@ -707,6 +707,42 @@ if (!isset($quelles_classes)) {
 		// =====================================================
 
 
+		// =====================================================
+		$sql="SELECT 1=1 FROM eleves e
+			LEFT JOIN responsables2 r ON e.ele_id=r.ele_id
+			where r.ele_id is NULL;";
+		$test_no_resp=mysql_query($sql);
+		//$test_no_resp_effectif=mysql_num_rows($test_no_resp)-mysql_num_rows($test_na);
+		$test_no_resp_effectif=mysql_num_rows($test_no_resp);
+		//if(mysql_num_rows($test_no_resp)==0){
+		if($test_no_resp_effectif==0){
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "&nbsp;\n";
+			echo "</td>\n";
+			echo "<td>\n";
+
+			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='no_resp' onclick='verif2()' /></span>\n";
+
+			echo "<span class='norme'>Tous les élèves ont un responsable associé.</span><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		else{
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='radio' name='quelles_classes' id='quelles_classes_no_resp' value='no_resp' onclick='verif2()' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='quelles_classes_no_resp' style='cursor: pointer;'>\n";
+			echo "<span class='norme'>Les élèves sans responsable (<i>".$test_no_resp_effectif."</i>).</span><br />\n";
+			echo "</label>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		// =====================================================
+
+
 
 		// A FAIRE:
 		// Liste des élèves dont le nom commence par/contient...
@@ -1091,6 +1127,27 @@ if(isset($quelles_classes)) {
 			}
 
 			echo "<p align='center'>Liste des élèves sans ".getSettingValue('gepi_prof_suivi')."</p>\n";
+
+		} else if ($quelles_classes == 'no_resp') {
+			if(ereg('classe',$order_type)){
+
+				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, classes c
+						WHERE e.login=jec.login AND
+							jec.id_classe=c.id AND
+							e.ele_id NOT IN (SELECT ele_id FROM responsables2) ORDER BY $order_type;";
+				//echo "$sql<br />\n";
+				$calldata=mysql_query($sql);
+
+			}
+			else{
+
+				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec
+						WHERE e.login=jec.login AND
+							e.ele_id NOT IN (SELECT ele_id FROM responsables2) ORDER BY $order_type;";
+				//echo "$sql<br />\n";
+				$calldata=mysql_query($sql);
+
+			}
 
 		} else if ($quelles_classes == 'recherche') {
 			/*
