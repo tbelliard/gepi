@@ -382,7 +382,11 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 		$result_verif_grp_prof=mysql_query($sql);
 		if(mysql_num_rows($result_verif_grp_prof)>1){
 			//echo "<td colspan='3'>Le groupe associé à la matière $ligne_matiere->matiere pour cette classe a plusieurs professeurs définis.<br />Ce n'est pas un enseignement 'simple'.<br />A traiter ailleurs...</td>\n";
-			echo "<td colspan='3'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs professeurs</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
+
+			echo "<td>&nbsp;</td>\n";
+
+			//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs professeurs</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
+			echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres professeurs impliqués</i>).</td>\n";
 			$groupe_existant="trop";
 		}
 		else {
@@ -399,7 +403,12 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 			}
 			else {
 				//echo "<td colspan='3'>Le groupe associé à la matière $ligne_matiere->matiere est associé à plusieurs classes.<br />Ce n'est pas un enseignement 'simple'.<br />A traiter ailleurs...</td>\n";
-				echo "<td colspan='3'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
+
+				echo "<td>&nbsp;</td>\n";
+
+				//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
+				echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres classes impliquées</i>).</td>\n";
+
 				$groupe_existant="trop";
 			}
 		}
@@ -409,13 +418,16 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 		echo "<tr class='lig$alt'>\n";
 		// C'est le bazar... plusieurs groupes existent pour cette matière dans cette classe
 		//echo "<td colspan='3'>La matière $ligne_matiere->matiere a plusieurs groupes définis pour cette classe.<br />Ce n'est pas un enseignement 'simple'.<br />Elle devra être traitée ailleurs...</td>\n";
-		echo "<td colspan='3'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
+
+		echo "<td>&nbsp;</td>\n";
+
+		echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
 		$groupe_existant="trop";
 	}
 
 	//echo "<td><input type='checkbox' name='checkmat[$cpt]' id='checkmat_".$cpt."' value='coche' /></td>\n";
 	if($groupe_existant!="trop" and $display_current) {
-		echo "<td style='text-align:left;'>";
+		echo "<td style='text-align:left;'>\n";
 		echo "<label for='checkmat_".$cpt."' style='cursor:pointer;'>";
 		echo htmlentities($ligne_matiere->nom_complet);
 		echo "</label>\n";
