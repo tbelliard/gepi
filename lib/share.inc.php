@@ -1626,12 +1626,14 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 {
 	global $selected_eleve;
 	// $current est le login de l'élève actuellement sélectionné
-	$get_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
+	$sql="SELECT e.login, e.nom, e.prenom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$login_resp."')");
+			"r.login = '".$login_resp."' AND (re.resp_legal='1' OR re.resp_legal='2'));";
+	//echo "$sql<br />\n";
+	$get_eleves = mysql_query($sql);
 
 	if (mysql_num_rows($get_eleves) == 0) {
 			// Aucun élève associé

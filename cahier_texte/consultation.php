@@ -92,7 +92,7 @@ if ($_SESSION['statut'] == 'eleve') {
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$_SESSION['login']."')");
+			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'));");
 
 	if (mysql_num_rows($get_eleves) == 1) {
 			// Un seul élève associé : on initialise tout de suite la variable $selected_eleve
@@ -115,6 +115,19 @@ if ($_SESSION['statut'] == 'eleve') {
 			// de sélectionner un élève pour lequel il n'est pas responsable.
 			tentative_intrusion(2, "Tentative d'accès par un parent au cahier de textes d'un autre élève que le ou les sien(s).");
 			$selected_eleve = false;
+		}
+	}
+
+
+	if((isset($login_eleve))&&($login_eleve!="")) {
+		$sql="SELECT 1=1 FROM resp_pers r, responsables2 re, eleves e WHERE r.pers_id=re.pers_id AND re.ele_id=e.ele_id AND r.login='".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2') AND e.login='".$login_eleve."';";
+		//echo "$sql<br />";
+		$verif_ele=mysql_query($sql);
+		if(mysql_num_rows($verif_ele)==0) {
+			tentative_intrusion(2, "Tentative d'accès par un parent au cahier de textes d'un autre élève que le ou les sien(s).");
+			header("Location: ../logout.php?auto=1");
+			die();
+			//echo "PB intrusion<br />";
 		}
 	}
 }
@@ -146,11 +159,14 @@ $titre_page = "Cahier de textes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
+//debug_var();
+
 //echo "<p>\$selected_eleve_login=$selected_eleve_login</p>";
 //echo "<p>id_classe=$id_classe</p>";
 //echo "<p>\$today=$today</p>";
 if($selected_eleve_login!=""){
 	$sql="SELECT * FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC";
+	//echo "$sql<br />\n";
 	$res_ele_classe=mysql_query($sql);
 	if(mysql_num_rows($res_ele_classe)>0){
 		$ligtmp=mysql_fetch_object($res_ele_classe);
@@ -183,14 +199,14 @@ echo "<div class=\"centre_table\">\n";
 			echo "<!--\n";
 			echo "new LiveClock();\n";
 			echo "//-->";
-			echo "\n</script>\n</p>\n"; 
+			echo "\n</script>\n</p>\n";
 			echo "<noscript>\n<p>".strftime("%A %d %B %Y", $today)."</p>\n</noscript>";
 //<p class='menu_retour'>".get_date_php()."</p>\n</noscript>";
 			// On gère la sélection de l'élève
 			if ($_SESSION['statut'] == 'responsable') {
 				echo make_eleve_select_html('consultation.php', $_SESSION['login'], $selected_eleve, $year, $month, $day);
 			}
-			if ($selected_eleve_login != "") echo make_matiere_select_html('consultation.php', $selected_eleve_login, $id_groupe, $year, $month, $day);
+			if ($selected_eleve_login != "") {echo make_matiere_select_html('consultation.php', $selected_eleve_login, $id_groupe, $year, $month, $day);}
 		echo "</div>\n";
 		//echo "<td align=\"right\">\n";
 		// Modification Régis : la colonne de droite doit être avant la colonne centrale
@@ -214,11 +230,13 @@ echo "<div class=\"centre_table\">\n";
 		echo "<div class=\"ct_col_centre\">\n";
 			echo "<p>\n";
 				echo "<span class='grand'>Cahier de textes";
-				if ($current_group) echo " - $matiere_nom ($matiere_nom_court)";
-				if ($id_classe != null) echo "<br />$classe_nom";
+				if ($current_group) {echo " - $matiere_nom ($matiere_nom_court)";}
+				if ($id_classe != null) {echo "<br />$classe_nom";}
 				echo "</span>\n";
+
 				// Test si le cahier de texte est partagé
-				if ($current_group) {
+				//if ($current_group) {
+				if (($current_group)&&(isset($selected_eleve_classe))) {
 					//echo "<br />\n<strong>(";
 					echo "<br />\n<strong>(";
 					$i=0;
@@ -232,6 +250,7 @@ echo "<div class=\"centre_table\">\n";
 				  //echo ")</strong>\n";
 				  echo ")</strong>\n";
 				}
+
 			echo "</p>\n";
 		echo "</div>\n";
 	//echo "</tr>\n";
@@ -656,7 +675,7 @@ $td = date("d",$i);
              /* if ($not_dev->type == "c") {
                 echo "c'>";
               } else {
-              	 echo "t'>"; 
+              	 echo "t'>";
               }*/
               echo "<h3>\n".$titre."</h3>\n</div>\n";
 // ---------------------------- Fin titre notices (div div div div div /div) --
