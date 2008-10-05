@@ -4361,6 +4361,7 @@ else{
 													rp.tel_pers!=t.tel_pers OR
 													rp.tel_port!=t.tel_port OR
 													rp.tel_prof!=t.tel_prof OR
+													rp.mel!=t.mel OR
 													rp.adr_id!=t.adr_id
 												)
 												AND rp.pers_id='".$lig->pers_id."';";
