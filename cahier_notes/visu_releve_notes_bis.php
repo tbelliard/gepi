@@ -1163,7 +1163,7 @@ function cocher_tous_eleves() {
 			}
 		}
 		else {
-			echo "CocheColonneSelectEleves($i,$periode);\n";
+			echo "CocheColonneSelectEleves($i,'$periode');\n";
 		}
 	}
 
@@ -1178,7 +1178,7 @@ function decocher_tous_eleves() {
 			}
 		}
 		else {
-			echo "DecocheColonneSelectEleves($i,$periode);\n";
+			echo "DecocheColonneSelectEleves($i,'$periode');\n";
 		}
 	}
 
