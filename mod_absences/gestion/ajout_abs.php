@@ -53,49 +53,75 @@ if (empty($_GET['mode']) and empty($_POST['mode'])) {$mode="";}
 $mode_cop = $mode;
 if (empty($_GET['page']) AND empty($_POST['page'])) {$page="";}
     else { if (isset($_GET['page'])) {$page=$_GET['page'];} if (isset($_POST['page'])) {$page=$_POST['page'];} }
-if (empty($_POST['action_sql'])) {$action_sql = ''; } else {$action_sql=$_POST['action_sql']; }
 if (empty($_POST['eleve_absent'])) {$eleve_absent = ''; } else {$eleve_absent=$_POST['eleve_absent']; }
 if (empty($_POST['classe_absent'])) {$classe_absent = ''; } else {$classe_absent=$_POST['classe_absent']; }
 if (empty($_POST['classe_choix'])) {$classe_choix = ''; } else {$classe_choix=$_POST['classe_choix']; }
 if (empty($_POST['groupe_absent'])) {$groupe_absent = ''; } else {$groupe_absent=$_POST['groupe_absent']; }
-if (empty($_POST['nb_i'])) {$nb_i = '1'; } else {$nb_i=$_POST['nb_i']; }
-if (empty($_GET['action'])) {$action = ''; } else {$action=$_GET['action']; }
-if (empty($_GET['type'])) {$type = ''; } else {$type=$_GET['type']; }
+
 if (empty($_POST['id_absence_eleve'])) {$id_absence_eleve = ''; } else {$id_absence_eleve=$_POST['id_absence_eleve']; }
-if (empty($_GET['id'])) {$id = ''; } else {$id=$_GET['id']; }
 if (empty($_POST['d_heure_absence_eleve'])) {$d_heure_absence_eleve = ''; } else {$d_heure_absence_eleve=$_POST['d_heure_absence_eleve']; }
 if (empty($_POST['a_heure_absence_eleve'])) {$a_heure_absence_eleve = ''; } else {$a_heure_absence_eleve=$_POST['a_heure_absence_eleve']; }
 if (empty($_POST['d_heure_absence_eleve_ins'])) {$d_heure_absence_eleve_ins = ''; } else {$d_heure_absence_eleve_ins=$_POST['d_heure_absence_eleve_ins']; }
 if (empty($_POST['a_heure_absence_eleve_ins'])) {$a_heure_absence_eleve_ins = ''; } else {$a_heure_absence_eleve_ins=$_POST['a_heure_absence_eleve_ins']; }
 
-if (empty($_GET['fiche']) and empty($_POST['fiche'])) {$fiche="";}
-    else { if (isset($_GET['fiche'])) {$fiche=$_GET['fiche'];} if (isset($_POST['fiche'])) {$fiche=$_POST['fiche'];} }
+// ============ Réécriture progressive de l'initialisation des variables ==================== //
+$nb_i = isset($_POST['nb_i']) ? $_POST['nb_i'] : '1';
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+$type = isset($_GET['type']) ? $_GET['type'] : '';
+$id = isset($_GET['id']) ? $_GET['id'] : '';
+$action_sql = isset($_POST['action_sql']) ? $_POST['action_sql'] : '';
+$fiche = isset($_POST['fiche']) ? $_POST['fiche'] : (isset($_GET['fiche']) ? $_GET['fiche'] : '');
+
 
 // si pas de sélection on retourne à la sélection
-if((empty($classe_choix) or $classe_choix === 'tous') and empty($eleve_absent[0]) and empty($id) and $action_sql === '') { header("Location:select.php?type=$type"); }
+if((empty($classe_choix) or $classe_choix === 'tous') and empty($eleve_absent[0]) and empty($id) and $action_sql === '') {
+	header("Location:select.php?type=$type");
+}
 
 //if(empty($eleve_absent[0])==true and $action_sql === '' and $mode != 'eleve') { $mode="classe"; } else { $mode="eleve"; }
 if(!isset($eleve_absent[0]) and empty($eleve_absent[0]) and $mode !='eleve')
- {
-      if (empty($_POST['classe_choix'])) {$classe_absent = ''; } else { $classe_absent=$_POST['classe_choix']; }
-      $classe_choix_eleve = $classe_absent;
-      $mode = 'classe'; $mode_init = 'classe';
- } else { $mode = 'eleve'; $mode_init = 'eleve'; }
+{
+	if (empty($_POST['classe_choix'])) {
+		$classe_absent = '';
+	} else {
+		$classe_absent=$_POST['classe_choix'];
+	}
+	$classe_choix_eleve = $classe_absent;
+	$mode = 'classe'; $mode_init = 'classe';
+} else {
+	$mode = 'eleve';
+	$mode_init = 'eleve';
+}
 
-$verification = '0'; $id_absence_eleve = $id;
-$total = '0'; $erreur = '0'; $nb = '0';
+$verification = '0';
+$id_absence_eleve = $id;
+$total = '0';
+$erreur = '0';
+$nb = '0';
 
 //requête pour liste les motif d'absence
-$requete_liste_motif = "SELECT init_motif_absence, def_motif_absence FROM ".$prefix_base."absences_motifs ORDER BY init_motif_absence ASC";
+$requete_liste_motif = "SELECT init_motif_absence, def_motif_absence
+													FROM ".$prefix_base."absences_motifs
+													ORDER BY init_motif_absence ASC";
 
 //si c'est une classe qui est sélectionné on sélectionne tous les élèves de cette classe.
 if($mode === 'classe')
 {
 	//je compte les élève si = 0 alors on redirige
-	$cpt_eleves = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."'"),0);
+	$cpt_eleves = mysql_result(mysql_query("SELECT count(*)
+							FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes
+							WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
+							AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
+							AND id = '".$classe_choix_eleve."'"),0);
+
 	// christian modif du 15/01/2007 if($cpt_eleves === '0') { header("Location:select.php?type=$type"); }
-	//je recherche tous les élèves de la classe sélectionné
-	$requete_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND id = '".$classe_choix_eleve."' GROUP BY nom, prenom";
+	//je recherche tous les élèves de la classe sélectionnée
+	$requete_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet
+									FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes
+									WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
+									AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
+									AND id = '".$classe_choix_eleve."'
+								GROUP BY nom, prenom";
 	$execution_eleve = mysql_query($requete_eleve) or die('Erreur SQL !'.$requete_eleve.'<br />'.mysql_error());
 	$cpt_eleve = 0;
 	while ($data_eleve = mysql_fetch_array($execution_eleve))
@@ -106,43 +132,18 @@ if($mode === 'classe')
 	}
 }
 
+// On fait le rapport avec la table horaires_etablissement pour éviter de vérifier le dimanche s'il est ouvert
+$sql_h = "SELECT jour_horaire_etablissement, ouvert_horaire_etablissement FROM horaires_etablissement LIMIT 7";
+$query_h = mysql_query($sql_h);
+$test_jour_dimanche = 'non';
+while($rep = mysql_fetch_array($query_h)){
+	if ($rep["jour_horaire_etablissement"] == 'dimanche' AND $rep["ouvert_horaire_etablissement"] == 1) {
+		$test_jour_dimanche = 'oui';
+	}
+} // while
 
-// permet de supprimer un courrier s'il y a besoin par rapport à l'id de l'absence
-/*
-function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve)
-{
 
-	global $prefix_base;
-		// on vérify s'il y a un courrier si oui on le supprime s'il fait parti d'un ensemble de courrier alors on le modifi.
-		// première option il existe une lettre qui fait seulement référence à cette id donc suppression
-		$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'"),0);
-		if( $cpt_lettre_suivi == 1 ) {
-	              $requete = "DELETE FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'";
-	              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-		}
-		// deuxième option il existe une lettre qui fait référence à cette id mais à d'autre aussi donc modification
-		$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"),0);
-		if( $cpt_lettre_suivi == 1 ) {
-		      $requete = mysql_query("SELECT * FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'");
-		      $donnee = mysql_fetch_array($requete);
-		      $remplace_sa = ','.$id_absence_eleve.',';
-		      $modifier_par = ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
-		      $requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$modifier_par."', envoye_date_lettre_suivi = '', envoye_heure_lettre_suivi = '', quienvoi_lettre_suivi = '' WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'";
-	              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-		}
-}
-*/
-
-	// On fait le rapport avec la table horaires_etablissement pour éviter de vérifier le dimanche s'il est ouvert
-	$sql_h = "SELECT jour_horaire_etablissement, ouvert_horaire_etablissement FROM horaires_etablissement LIMIT 7";
-	$query_h = mysql_query($sql_h);
-	$test_jour_dimanche = 'non';
-	while($rep = mysql_fetch_array($query_h)){
-		 if ($rep["jour_horaire_etablissement"] == 'dimanche' AND $rep["ouvert_horaire_etablissement"] == 1) {
-		 	$test_jour_dimanche = 'oui';
-		 }
-	} // while
-
+/* ========== On commence à traiter la saisie des absences, les demandes ont été faites =============== */
 
 if($action_sql == "ajouter" or $action_sql == "modifier")
 {
@@ -152,69 +153,96 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
     $total = '0';
     $j = '0';
 
-    while ($total < $nb_i)
-      {
-    		$erreur = '0'; $verification = '0';
+	// Ici commence le traitement à proprement parler des saisies
+    while ($total < $nb_i) // $nb_i étant envoyé par le navigateur et représentant le nombre d'absences envoyées par le navigateur
+    {
+		$erreur = '0';
+		$verification = '0';
 
-          $type_absence_eleve = $_POST['type_absence_eleve'];
-          if(isset($_POST['active'][$total]) and !empty($_POST['active'][$total])) { $active_absence_eleve = $_POST['active'][$total]; } else { $active_absence_eleve = 'non'; }
-          $eleve_absence_eleve = $_POST['eleve_absence_eleve'][$total];
-          if($mode != 'classe')
-           {
-                $justify_absence_eleve = $_POST['justify_absence_eleve'][$total];
-                $info_justify_absence_eleve = $_POST['info_justify_absence_eleve'][$total];
-                $motif_absence_eleve_ins = $_POST['motif_absence_eleve'][$total];
-                $d_date_absence_eleve_ins = date_sql($_POST['d_date_absence_eleve'][$total]);
-                $a_date_absence_eleve_ins = date_sql($_POST['a_date_absence_eleve'][$total]);
-                $d_heure_absence_eleve = $_POST['d_heure_absence_eleve'][$total];
-                $a_heure_absence_eleve = $_POST['a_heure_absence_eleve'][$total];
-                $dp_absence_eleve = $_POST['dp_absence_eleve'][$total];
-                $ap_absence_eleve = $_POST['ap_absence_eleve'][$total];
-           } else {
-                        $justify_absence_eleve = $_POST['justify_absence_eleve'][0];
-                        $info_justify_absence_eleve = $_POST['info_justify_absence_eleve'][0];
-                        $motif_absence_eleve_ins = $_POST['motif_absence_eleve'][0];
-                        $d_date_absence_eleve_ins = date_sql($_POST['d_date_absence_eleve'][0]);
-                        $a_date_absence_eleve_ins = date_sql($_POST['a_date_absence_eleve'][0]);
-                        $d_heure_absence_eleve = $_POST['d_heure_absence_eleve'][0];
-                        $a_heure_absence_eleve = $_POST['a_heure_absence_eleve'][0];
-                        $dp_absence_eleve = $_POST['dp_absence_eleve'][0];
-                        $ap_absence_eleve = $_POST['ap_absence_eleve'][0];
-                  }
+		$type_absence_eleve = $_POST['type_absence_eleve'];
+		if(isset($_POST['active'][$total]) and !empty($_POST['active'][$total])) {
+			$active_absence_eleve = $_POST['active'][$total]; // si c'est oui, alors c'est que cette demande doit être traitée
+		} else {
+			$active_absence_eleve = 'non';
+		}
 
-          $eleve_absent[$total] = $eleve_absence_eleve ;
+		$eleve_absence_eleve = $_POST['eleve_absence_eleve'][$total]; // le login de l'élève analysé
+
+	    if($mode != 'classe')
+		{
+			$justify_absence_eleve = $_POST['justify_absence_eleve'][$total]; // N = non, T = par téléphone et O = oui
+            $info_justify_absence_eleve = $_POST['info_justify_absence_eleve'][$total]; // le texte de justif (saisie à la main)
+            $motif_absence_eleve_ins = $_POST['motif_absence_eleve'][$total]; // Voir liste des motifs d'absences
+            $d_date_absence_eleve_ins = date_sql($_POST['d_date_absence_eleve'][$total]); // début de l'absence jj/mm/aaaa
+            $a_date_absence_eleve_ins = date_sql($_POST['a_date_absence_eleve'][$total]); // fin de l'absence jj/mm/aaaa
+            $d_heure_absence_eleve = $_POST['d_heure_absence_eleve'][$total]; // heuredébut hh:mm
+            $a_heure_absence_eleve = $_POST['a_heure_absence_eleve'][$total]; // heure fin hh:mm
+        	$dp_absence_eleve = $_POST['dp_absence_eleve'][$total];
+            $ap_absence_eleve = $_POST['ap_absence_eleve'][$total];
+		} else {
+            $justify_absence_eleve = $_POST['justify_absence_eleve'][0];
+            $info_justify_absence_eleve = $_POST['info_justify_absence_eleve'][0];
+			$motif_absence_eleve_ins = $_POST['motif_absence_eleve'][0];
+			$d_date_absence_eleve_ins = date_sql($_POST['d_date_absence_eleve'][0]);
+			$a_date_absence_eleve_ins = date_sql($_POST['a_date_absence_eleve'][0]);
+			$d_heure_absence_eleve = $_POST['d_heure_absence_eleve'][0];
+			$a_heure_absence_eleve = $_POST['a_heure_absence_eleve'][0];
+            $dp_absence_eleve = $_POST['dp_absence_eleve'][0];
+			$ap_absence_eleve = $_POST['ap_absence_eleve'][0];
+		}
+
+		$eleve_absent[$total] = $eleve_absence_eleve ;
 
 
-	if($active_absence_eleve === 'oui')
-	{
-          if ($d_heure_absence_eleve=="00:00" or $d_heure_absence_eleve=="") {$d_heure_absence_eleve = ""; }
-          if ($a_heure_absence_eleve=="00:00" or $a_heure_absence_eleve=="") {$a_heure_absence_eleve = ""; }
-          if ($a_date_absence_eleve_ins=="AAAA-MM-JJ" or $a_date_absence_eleve_ins=="" or $a_date_absence_eleve_ins=="JJ/MM/AAAA" or $a_date_absence_eleve_ins=="--") {$a_date_absence_eleve_ins = $d_date_absence_eleve_ins; }
-          if ($d_heure_absence_eleve != "") { $d_heure_absence_eleve_ins = $d_heure_absence_eleve.":00"; }
-          if ($a_heure_absence_eleve != "") { $a_heure_absence_eleve_ins = $a_heure_absence_eleve.":00"; }
+		if($active_absence_eleve === 'oui')
+		{
+			if ($d_heure_absence_eleve=="00:00" or $d_heure_absence_eleve=="") {
+				$d_heure_absence_eleve = "";
+			}
+			if ($a_heure_absence_eleve=="00:00" or $a_heure_absence_eleve=="") {
+				$a_heure_absence_eleve = "";
+			}
+			if ($a_date_absence_eleve_ins == "AAAA-MM-JJ"
+					or $a_date_absence_eleve_ins == ""
+					or $a_date_absence_eleve_ins == "JJ/MM/AAAA"
+					or $a_date_absence_eleve_ins == "--") {
 
-          //mettre les heures par rapport à une période si période sélectionné
-              if ($dp_absence_eleve != "")
-               {
-                   $requete_recherche_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux WHERE id_definie_periode="'.$dp_absence_eleve.'"';
-                   $resultat_recherche_periode = mysql_query($requete_recherche_periode) or die('Erreur SQL !'.$requete_recherche_periode.'<br />'.mysql_error());
-                   $data_recherche_periode = mysql_fetch_array($resultat_recherche_periode);
-                   $d_heure_absence_eleve_ins = $data_recherche_periode['heuredebut_definie_periode'];
-                   if (empty($ap_absence_eleve) == true)
-                    {
-                        $a_heure_absence_eleve_ins = $data_recherche_periode['heurefin_definie_periode'];
-                    } else {
-                                $requete_recherche_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux WHERE id_definie_periode="'.$ap_absence_eleve.'"';
-                                $resultat_recherche_periode = mysql_query($requete_recherche_periode) or die('Erreur SQL !'.$requete_recherche_periode.'<br />'.mysql_error());
-                                $data_recherche_periode = mysql_fetch_array($resultat_recherche_periode);
-                                $a_heure_absence_eleve_ins = $data_recherche_periode['heurefin_definie_periode'];
-                           }
-               }
+				// La date de début et de fin sont alors identiques si la fin n'est pas  renseignée
+				$a_date_absence_eleve_ins = $d_date_absence_eleve_ins;
 
-		//Vérification
+			}
+			if ($d_heure_absence_eleve != "") {
+				$d_heure_absence_eleve_ins = $d_heure_absence_eleve.":00";
+			}
+			if ($a_heure_absence_eleve != "") {
+				$a_heure_absence_eleve_ins = $a_heure_absence_eleve.":00";
+			}
 
-		$d_date_absence_eleve_verif = explode('-',$d_date_absence_eleve_ins);
-		$a_date_absence_eleve_verif = explode('-',$a_date_absence_eleve_ins);
+			//mettre les heures par rapport à une période si période sélectionné
+			if ($dp_absence_eleve != "")
+			{
+				$requete_recherche_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux
+														WHERE id_definie_periode="'.$dp_absence_eleve.'"';
+
+                $resultat_recherche_periode = mysql_query($requete_recherche_periode) or die('Erreur SQL !'.$requete_recherche_periode.'<br />'.mysql_error());
+                $data_recherche_periode = mysql_fetch_array($resultat_recherche_periode);
+                $d_heure_absence_eleve_ins = $data_recherche_periode['heuredebut_definie_periode'];
+                if (empty($ap_absence_eleve) === true)
+                {
+					$a_heure_absence_eleve_ins = $data_recherche_periode['heurefin_definie_periode'];
+                } else {
+					$requete_recherche_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux
+														WHERE id_definie_periode="'.$ap_absence_eleve.'"';
+					$resultat_recherche_periode = mysql_query($requete_recherche_periode) or die('Erreur SQL !'.$requete_recherche_periode.'<br />'.mysql_error());
+					$data_recherche_periode = mysql_fetch_array($resultat_recherche_periode);
+					$a_heure_absence_eleve_ins = $data_recherche_periode['heurefin_definie_periode'];
+				}
+			}
+
+			//Vérification
+
+			$d_date_absence_eleve_verif = explode('-',$d_date_absence_eleve_ins);
+			$a_date_absence_eleve_verif = explode('-',$a_date_absence_eleve_ins);
 
 			if (verif_date($d_date_absence_eleve_ins) === "pass")
 			{
@@ -240,7 +268,9 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
                                     } else {
                                         if ($d_date_absence_eleve_ins == $a_date_absence_eleve_ins)
                                         {
-                                            $verification = '11'; $erreur = '1'; $texte_erreur="L'heure de debut ne peut pas être plus grande ou égale à celle de fin";
+                                            $verification = '11';
+											$erreur = '1';
+											$texte_erreur="L'heure de d&eacute;but ne peut pas être plus grande ou égale à celle de fin";
                                         } else {
 											$verification = '1';
 										}
@@ -248,25 +278,47 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
                                 } else {
                                     if(( ($d_heure_absence_eleve === '' || '00:00') and ($a_heure_absence_eleve === '' || '00:00')) and ( $dp_absence_eleve === '' and $ap_absence_eleve === '' ))
 									{
-										$verification = '2'; $texte_erreur="il n'y a pas d'horaire ou de créneaux horaire  de saisie";
+										$verification = '2';
+										$texte_erreur = "il n'y a pas d'horaire ou de créneaux horaire de saisie";
 									}
 									if(( $d_heure_absence_eleve != '' and $a_heure_absence_eleve != '' ) and ( $dp_absence_eleve != '' or $ap_absence_eleve != '' ))
 									{
-										$verification = '3'; $texte_erreur="vous ne pouvez pas saisire une période et une heure";
+										$verification = '3';
+										$texte_erreur = "vous ne pouvez pas saisir une période et une heure";
 									}
 									$erreur = '1';
                                 }
-							} else { $verification = '7'; $erreur = '1'; $texte_erreur="la date de fin tombe un dimanche"; }
-						} else { $verification = '6'; $erreur = '1'; $texte_erreur="la date de debut tombe un dimanche"; }
-                    } else { $verification = '8'; $erreur='1'; $texte_erreur="La date  du debut doit &ecirc;tre plus petit que la date de fin..."; }
-                } else { $verification = '5'; $erreur = '1'; $texte_erreur="la date de fin n'est pas correcte"; }
-			} else { $verification = '4'; $erreur = '1'; $texte_erreur="La date de debut n'est pas correcte"; }
+							} else {
+								$verification = '7';
+								$erreur = '1';
+								$texte_erreur = "la date de fin tombe un dimanche";
+							}
+						} else {
+							$verification = '6';
+							$erreur = '1';
+							$texte_erreur = "la date de debut tombe un dimanche";
+						}
+                    } else {
+						$verification = '8';
+						$erreur='1';
+						$texte_erreur = "La date de debut doit &ecirc;tre plus petite que la date de fin...";
+					}
+                } else {
+					$verification = '5';
+					$erreur = '1';
+					$texte_erreur = "la date de fin n'est pas correcte";
+				}
+			} else {
+				$verification = '4';
+				$erreur = '1';
+				$texte_erreur = "La date de debut n'est pas correcte";
+			}
 
 
 
-        /* ******************************************** */
-        /* gestion de l'ajout dans la table absences_rb */
-        /* gerer_absence($id,$eleve_id,$retard_absence,$groupe_id='',$edt_id='',$jour_semaine='',$creneau_id='',$debut_ts,$fin_ts,$date_saisie,$login_saisie) */
+        	/* ******************************************** */
+        	/* gestion de l'ajout dans la table absences_rb */
+        	/* gerer_absence($id,$eleve_id,$retard_absence,$groupe_id='',$edt_id='',$jour_semaine='',$creneau_id='',$debut_ts,$fin_ts,$date_saisie,$login_saisie) */
 
 			$explode_heuredeb = explode(":", $d_heure_absence_eleve_ins);
 			$explode_heurefin = explode(":", $a_heure_absence_eleve_ins);
@@ -284,201 +336,217 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 				gerer_absence('',$eleve_absence_eleve,'A','','','','',$debut_ts,$fin_ts,$date_saisie,$login_saisie,$action);
 
 			}
-
-			if ( $action_sql === "modifier" )
+			elseif ( $action_sql === "modifier" )
 			{
 
 				modifier_absences_rb($id,$debut_ts,$fin_ts);
 
 			}
 
-        /*                                              */
-        /* ******************************************** */
+        	/*                                              */
+        	/* ******************************************** */
 
 
+			// on vérifie si une absences est déja définie
 
-
-// on vérifie si une absences est déja définie
-
-  //requete dans la base absence eleve
-  if ( $action_sql === "ajouter" ) { $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$eleve_absence_eleve."' AND d_date_absence_eleve <= '".$d_date_absence_eleve_ins."' AND  a_date_absence_eleve >= '".$d_date_absence_eleve_ins."'"; }
-  if ( $action_sql === "modifier" ) { $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$eleve_absence_eleve."' AND d_date_absence_eleve <= '".$d_date_absence_eleve_ins."' AND  a_date_absence_eleve >= '".$d_date_absence_eleve_ins."' AND id_absence_eleve <> '".$id."'"; }
-  $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-
-  if($d_date_absence_eleve_ins === $a_date_absence_eleve_ins)
-   {
-        //on prend les donnée pour les vérifier
-        while ($data = mysql_fetch_array($resultat))
-          {
-                if ($d_heure_absence_eleve_ins <= $data['d_heure_absence_eleve'] and ($a_heure_absence_eleve_ins <= $data['a_heure_absence_eleve'] and $a_heure_absence_eleve_ins >=  $data['d_heure_absence_eleve']))
-                 {
-                    $id_abs = $data['id_absence_eleve'];
-
-                    // rédéfinie l'heure de fin
-                      $a_heure_absence_eleve_ins = $data['a_heure_absence_eleve'];
-                    // supprime l'absences dans la base
-                      $req_delete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_abs."'";
-                      $req_sql2 = mysql_query($req_delete);
-			// vérification du courrier lettre de justificatif
-			modif_suivi_du_courrier($id_abs, $eleve_absence_eleve);
-                 } else {
-                          if (($d_heure_absence_eleve_ins >= $data['d_heure_absence_eleve'] and $d_heure_absence_eleve_ins <= $data['a_heure_absence_eleve']) and $a_heure_absence_eleve_ins >= $data['a_heure_absence_eleve'])
-                             {
-                                $id_abs = $data['id_absence_eleve'];
-
-                                // rédéfinie l'heure de debut
-                                  $d_heure_absence_eleve_ins = $data['d_heure_absence_eleve'];
-                                // supprime l'absences dans la base
-                                  $req_delete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_abs."'";
-                                  $req_sql2 = mysql_query($req_delete);
-				// vérification du courrier lettre de justificatif
-	  			  modif_suivi_du_courrier($id_abs, $eleve_absence_eleve);
-                              } else {
-                                        if ($d_heure_absence_eleve_ins >= $data['d_heure_absence_eleve'] and $a_heure_absence_eleve_ins <= $data['a_heure_absence_eleve'])
-                                           {
-                                              $erreur='1';
-                                              $verification = '10';
-                                              $texte_erreur="une absence est déja enregistré dans cette horaire";
-                                              $erreur_aff_d_date_absence_eleve = date_fr($data['d_date_absence_eleve']);
-                                              $erreur_aff_a_date_absence_eleve = date_fr($data['a_date_absence_eleve']);
-                                              $erreur_aff_d_heure_absence_eleve = $data['d_heure_absence_eleve'];
-                                              $erreur_aff_a_heure_absence_eleve= $data['a_heure_absence_eleve'];
-                                            } else {
-                                                      if ($d_heure_absence_eleve_ins <= $data['d_heure_absence_eleve'] and $a_heure_absence_eleve_ins >= $data['a_heure_absence_eleve'])
-                                                         {
-                                                 $id_abs = $data['id_absence_eleve'];
-
-/*                                                // supprime l'absences dans la base
-                                                  $req_delete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_abs."'";
-                                                  $req_sql3 = mysql_query($req_delete); */
-                                                            $erreur='1';
-                                                            $verification = '10';
-                                                            $texte_erreur="une absence est déja enregistré dans cette horaire";
-                                                            $erreur_aff_d_date_absence_eleve = date_fr($data['d_date_absence_eleve']);
-                                                            $erreur_aff_a_date_absence_eleve = date_fr($data['a_date_absence_eleve']);
-                                                            $erreur_aff_d_heure_absence_eleve = $data['d_heure_absence_eleve'];
-                                                            $erreur_aff_a_heure_absence_eleve= $data['a_heure_absence_eleve'];
-                                                          }
-                                                     }
-                                       }
-                         }
-            }
-   }
-
-  //requete dans la base absence eleve
-  if ( $action_sql === 'ajouter' ) { $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$eleve_absence_eleve."' "; }
-  if ( $action_sql === 'modifier' ) { $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$eleve_absence_eleve."' AND id_absence_eleve <> '".$id."'"; }
-  $resultat_m = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-
-  if($d_date_absence_eleve_ins != $a_date_absence_eleve_ins)
-   {
-      //on prend les donnée pour les vérifier
-        while ($data = mysql_fetch_array($resultat_m))
-          {
-                     if($d_date_absence_eleve_ins < $data['d_date_absence_eleve'] and ($a_date_absence_eleve_ins <= $data['a_date_absence_eleve'] and $a_date_absence_eleve_ins >= $data['d_date_absence_eleve']))
-                      {
-                          $id_abs = $data['id_absence_eleve'];
-
-                          // rédéfinie la date de fin
-                             $a_date_absence_eleve_ins = $data['a_date_absence_eleve'];
-                             $a_heure_absence_eleve_ins = $data['a_heure_absence_eleve'];
-                          // supprime l'absences dans la base
-                             $req_delete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_abs."'";
-                             $req_sql2 = mysql_query($req_delete);
-				// vérification du courrier lettre de justificatif
-				modif_suivi_du_courrier($id_abs, $eleve_absence_eleve);
-                      }
-                 elseif(($d_date_absence_eleve_ins >= $data['d_date_absence_eleve'] and $d_date_absence_eleve_ins <= $data['a_date_absence_eleve']) and $a_date_absence_eleve_ins > $data['a_date_absence_eleve'])
-                      {
-                         $id_abs = $data['id_absence_eleve'];
-
-                          // rédéfinie la date de debut
-                             $d_date_absence_eleve_ins = $data['d_date_absence_eleve'];
-                             $d_heure_absence_eleve_ins = $data['d_heure_absence_eleve'];
-                          // supprime l'absences dans la base
-                             $req_delete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_abs."'";
-                             $req_sql2 = mysql_query($req_delete);
-				// vérification du courrier lettre de justificatif
-				modif_suivi_du_courrier($id_abs, $eleve_absence_eleve);
-                      }
-                 elseif($d_date_absence_eleve_ins < $data['d_date_absence_eleve'] and $a_date_absence_eleve_ins > $data['a_date_absence_eleve'])
-                      {
-                             $erreur = '1';
-                             $verification = '10';
-                             $texte_erreur="vous essayez d'enregistrer une absence dans un intervale de temps d'absence déja saisie";
-                             $id_abs = $data['id_absence_eleve'];
-                             $erreur_aff_d_date_absence_eleve = date_fr($data['d_date_absence_eleve']);
-                             $erreur_aff_a_date_absence_eleve = date_fr($data['a_date_absence_eleve']);
-                             $erreur_aff_d_heure_absence_eleve = $data['d_heure_absence_eleve'];
-                             $erreur_aff_a_heure_absence_eleve= $data['a_heure_absence_eleve'];
-/*                         $id_abs = $data['id_absence_eleve'];
-
-                          // supprime l'absences dans la base
-                             $req_delete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_abs."'";
-                             $req_sql2 = mysql_query($req_delete);                                                           */
-                      }
-                 elseif($d_date_absence_eleve_ins >= $data['d_date_absence_eleve'] and $a_date_absence_eleve_ins <= $data['a_date_absence_eleve'])
-                      {
-                             $erreur = '1';
-                             $verification = '10';
-                             $texte_erreur="une absence est déja enregistrée dans cet intervale de date";
-                             $id_abs = $data['id_absence_eleve'];
-                             $erreur_aff_d_date_absence_eleve = date_fr($data['d_date_absence_eleve']);
-                             $erreur_aff_a_date_absence_eleve = date_fr($data['a_date_absence_eleve']);
-                             $erreur_aff_d_heure_absence_eleve = $data['d_heure_absence_eleve'];
-                             $erreur_aff_a_heure_absence_eleve= $data['a_heure_absence_eleve'];
-                      }
-          }
-   }
-
-   // fin de la vérifiation
-		if ($erreur === '1'){
-
-			if($verification != '1') {
-
-				$type_absence_eleve_erreur[$j] = $type_absence_eleve;
-				$eleve_absence_eleve_erreur[$j] = $eleve_absence_eleve;
-				$justify_absence_eleve_erreur[$j] = $justify_absence_eleve;
-				$info_justify_absence_eleve_erreur[$j] = $info_justify_absence_eleve;
-				$motif_absence_eleve_erreur[$j] = $motif_absence_eleve_ins;
-				$d_date_absence_eleve_erreur[$j] = date_fr($d_date_absence_eleve_ins);
-				$a_date_absence_eleve_erreur[$j] = date_fr($a_date_absence_eleve_ins);
-				$d_heure_absence_eleve_erreur[$j] = $d_heure_absence_eleve;
-				$a_heure_absence_eleve_erreur[$j] = $a_heure_absence_eleve;
-				$dp_absence_eleve_erreur[$j] = $dp_absence_eleve;
-				$ap_absence_eleve_erreur[$j] = $ap_absence_eleve;
-				$verification_erreur[$j] = $verification;
-
-				$j = $j + 1;
-
-			}
-		} else {
+			//requete dans la base absence eleve
 			if ( $action_sql === "ajouter" ) {
-				$requete="INSERT INTO ".$prefix_base."absences_eleves
-								(type_absence_eleve,
-								eleve_absence_eleve,
-								justify_absence_eleve,
-								info_justify_absence_eleve,
-								motif_absence_eleve,
-								d_date_absence_eleve,
-								a_date_absence_eleve,
-								d_heure_absence_eleve,
-								a_heure_absence_eleve,
-								saisie_absence_eleve)
-							values (
-								'$type_absence_eleve',
-								'$eleve_absence_eleve',
-								'$justify_absence_eleve',
-								'$info_justify_absence_eleve',
-								'$motif_absence_eleve_ins',
-								'$d_date_absence_eleve_ins',
-								'$a_date_absence_eleve_ins',
-								'$d_heure_absence_eleve_ins',
-								'$a_heure_absence_eleve_ins',
-								'".$_SESSION['login']."')";
+				$requete = "SELECT * FROM ".$prefix_base."absences_eleves
+									WHERE eleve_absence_eleve = '".$eleve_absence_eleve."'
+									AND d_date_absence_eleve <= '".$d_date_absence_eleve_ins."'
+									AND  a_date_absence_eleve >= '".$d_date_absence_eleve_ins."'";
+			} elseif ( $action_sql === "modifier" ) {
+				$requete = "SELECT * FROM ".$prefix_base."absences_eleves
+									WHERE eleve_absence_eleve='".$eleve_absence_eleve."'
+									AND d_date_absence_eleve <= '".$d_date_absence_eleve_ins."'
+									AND a_date_absence_eleve >= '".$d_date_absence_eleve_ins."'
+									AND id_absence_eleve <> '".$id."'";
 			}
-			if ( $action_sql === "modifier" ) {
-				$requete="UPDATE ".$prefix_base."absences_eleves SET
+			$resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+
+			if($d_date_absence_eleve_ins === $a_date_absence_eleve_ins)
+			{
+
+        		//on prend les données pour les vérifier
+        		while ($data = mysql_fetch_array($resultat))
+				{
+
+                	if ($d_heure_absence_eleve_ins <= $data['d_heure_absence_eleve']
+						and ($a_heure_absence_eleve_ins <= $data['a_heure_absence_eleve']
+						and $a_heure_absence_eleve_ins >=  $data['d_heure_absence_eleve']))
+                	{
+                    	$id_abs = $data['id_absence_eleve'];
+
+                    	// rédéfinie l'heure de fin
+                    	$a_heure_absence_eleve_ins = $data['a_heure_absence_eleve'];
+                    	// supprime l'absences dans la base
+                    	$req_delete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_abs."'";
+                    	$req_sql2 = mysql_query($req_delete);
+						// vérification du courrier lettre de justificatif
+						modif_suivi_du_courrier($id_abs, $eleve_absence_eleve);
+
+					} else {
+                    	if (($d_heure_absence_eleve_ins >= $data['d_heure_absence_eleve'] and $d_heure_absence_eleve_ins <= $data['a_heure_absence_eleve']) and $a_heure_absence_eleve_ins >= $data['a_heure_absence_eleve'])
+                        {
+                        	$id_abs = $data['id_absence_eleve'];
+
+							// rédéfinie l'heure de debut
+							$d_heure_absence_eleve_ins = $data['d_heure_absence_eleve'];
+							// supprime l'absences dans la base
+							$req_delete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_abs."'";
+							$req_sql2 = mysql_query($req_delete);
+							// vérification du courrier lettre de justificatif
+							modif_suivi_du_courrier($id_abs, $eleve_absence_eleve);
+						} else {
+							if ($d_heure_absence_eleve_ins >= $data['d_heure_absence_eleve'] and $a_heure_absence_eleve_ins <= $data['a_heure_absence_eleve'])
+							{
+                            	$erreur='1';
+                                $verification = '10';
+                                $texte_erreur="une absence est déja enregistré dans cette horaire";
+                                $erreur_aff_d_date_absence_eleve = date_fr($data['d_date_absence_eleve']);
+                                $erreur_aff_a_date_absence_eleve = date_fr($data['a_date_absence_eleve']);
+                                $erreur_aff_d_heure_absence_eleve = $data['d_heure_absence_eleve'];
+                                $erreur_aff_a_heure_absence_eleve= $data['a_heure_absence_eleve'];
+                            } else {
+                                if ($d_heure_absence_eleve_ins <= $data['d_heure_absence_eleve'] and $a_heure_absence_eleve_ins >= $data['a_heure_absence_eleve'])
+                                {
+                                	$id_abs = $data['id_absence_eleve'];
+
+                                    $erreur='1';
+                                    $verification = '10';
+                                    $texte_erreur="une absence est déja enregistré dans cette horaire";
+                                    $erreur_aff_d_date_absence_eleve = date_fr($data['d_date_absence_eleve']);
+                                    $erreur_aff_a_date_absence_eleve = date_fr($data['a_date_absence_eleve']);
+                                    $erreur_aff_d_heure_absence_eleve = $data['d_heure_absence_eleve'];
+                                    $erreur_aff_a_heure_absence_eleve= $data['a_heure_absence_eleve'];
+                                }
+							}
+						}
+					}
+				}
+			}
+
+			//requete dans la base absence eleve
+			if ( $action_sql === 'ajouter' ) {
+				$requete = "SELECT * FROM ".$prefix_base."absences_eleves
+									WHERE eleve_absence_eleve='".$eleve_absence_eleve."' ";
+			}
+			if ( $action_sql === 'modifier' ) {
+				$requete = "SELECT * FROM ".$prefix_base."absences_eleves
+									WHERE eleve_absence_eleve='".$eleve_absence_eleve."'
+									AND id_absence_eleve <> '".$id."'";
+			}
+			$resultat_m = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+
+			if($d_date_absence_eleve_ins != $a_date_absence_eleve_ins)
+			{
+				//on prend les donnée pour les vérifier
+				while ($data = mysql_fetch_array($resultat_m))
+				{
+
+					if($d_date_absence_eleve_ins < $data['d_date_absence_eleve'] and ($a_date_absence_eleve_ins <= $data['a_date_absence_eleve'] and $a_date_absence_eleve_ins >= $data['d_date_absence_eleve']))
+					{
+						$id_abs = $data['id_absence_eleve'];
+
+						// rédéfinie la date de fin
+						$a_date_absence_eleve_ins = $data['a_date_absence_eleve'];
+                        $a_heure_absence_eleve_ins = $data['a_heure_absence_eleve'];
+                        // supprime l'absences dans la base
+                        $req_delete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_abs."'";
+                        $req_sql2 = mysql_query($req_delete);
+						// vérification du courrier lettre de justificatif
+						modif_suivi_du_courrier($id_abs, $eleve_absence_eleve);
+					} elseif(($d_date_absence_eleve_ins >= $data['d_date_absence_eleve'] and $d_date_absence_eleve_ins <= $data['a_date_absence_eleve']) and $a_date_absence_eleve_ins > $data['a_date_absence_eleve'])
+                    {
+                    	$id_abs = $data['id_absence_eleve'];
+
+						// rédéfinie la date de debut
+                        $d_date_absence_eleve_ins = $data['d_date_absence_eleve'];
+                        $d_heure_absence_eleve_ins = $data['d_heure_absence_eleve'];
+                        // supprime l'absences dans la base
+                        $req_delete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_abs."'";
+                        $req_sql2 = mysql_query($req_delete);
+						// vérification du courrier lettre de justificatif
+						modif_suivi_du_courrier($id_abs, $eleve_absence_eleve);
+					} elseif($d_date_absence_eleve_ins < $data['d_date_absence_eleve'] and $a_date_absence_eleve_ins > $data['a_date_absence_eleve'])
+					{
+                    	$erreur = '1';
+                        $verification = '10';
+                        $texte_erreur="vous essayez d'enregistrer une absence dans un intervale de temps d'absence déja saisie";
+                        $id_abs = $data['id_absence_eleve'];
+                        $erreur_aff_d_date_absence_eleve = date_fr($data['d_date_absence_eleve']);
+                        $erreur_aff_a_date_absence_eleve = date_fr($data['a_date_absence_eleve']);
+                        $erreur_aff_d_heure_absence_eleve = $data['d_heure_absence_eleve'];
+                        $erreur_aff_a_heure_absence_eleve= $data['a_heure_absence_eleve'];
+						/*
+						$id_abs = $data['id_absence_eleve'];
+
+                        // supprime l'absences dans la base
+                        	$req_delete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_abs."'";
+                            $req_sql2 = mysql_query($req_delete);
+						*/
+					} elseif($d_date_absence_eleve_ins >= $data['d_date_absence_eleve'] and $a_date_absence_eleve_ins <= $data['a_date_absence_eleve'])
+                    {
+						$erreur = '1';
+						$verification = '10';
+                        $texte_erreur="une absence est déja enregistrée dans cet intervale de date";
+						$id_abs = $data['id_absence_eleve'];
+						$erreur_aff_d_date_absence_eleve = date_fr($data['d_date_absence_eleve']);
+						$erreur_aff_a_date_absence_eleve = date_fr($data['a_date_absence_eleve']);
+						$erreur_aff_d_heure_absence_eleve = $data['d_heure_absence_eleve'];
+						$erreur_aff_a_heure_absence_eleve= $data['a_heure_absence_eleve'];
+					}
+				}
+			}
+
+   			// fin de la vérifiation
+			if ($erreur === '1'){
+
+				if($verification != '1') {
+
+					$type_absence_eleve_erreur[$j] = $type_absence_eleve;
+					$eleve_absence_eleve_erreur[$j] = $eleve_absence_eleve;
+					$justify_absence_eleve_erreur[$j] = $justify_absence_eleve;
+					$info_justify_absence_eleve_erreur[$j] = $info_justify_absence_eleve;
+					$motif_absence_eleve_erreur[$j] = $motif_absence_eleve_ins;
+					$d_date_absence_eleve_erreur[$j] = date_fr($d_date_absence_eleve_ins);
+					$a_date_absence_eleve_erreur[$j] = date_fr($a_date_absence_eleve_ins);
+					$d_heure_absence_eleve_erreur[$j] = $d_heure_absence_eleve;
+					$a_heure_absence_eleve_erreur[$j] = $a_heure_absence_eleve;
+					$dp_absence_eleve_erreur[$j] = $dp_absence_eleve;
+					$ap_absence_eleve_erreur[$j] = $ap_absence_eleve;
+					$verification_erreur[$j] = $verification;
+
+					$j = $j + 1;
+
+				}
+			} else {
+				if ( $action_sql === "ajouter" ) {
+					$requete="INSERT INTO ".$prefix_base."absences_eleves
+									(type_absence_eleve,
+									eleve_absence_eleve,
+									justify_absence_eleve,
+									info_justify_absence_eleve,
+									motif_absence_eleve,
+									d_date_absence_eleve,
+									a_date_absence_eleve,
+									d_heure_absence_eleve,
+									a_heure_absence_eleve,
+									saisie_absence_eleve)
+								values (
+									'$type_absence_eleve',
+									'$eleve_absence_eleve',
+									'$justify_absence_eleve',
+									'$info_justify_absence_eleve',
+									'$motif_absence_eleve_ins',
+									'$d_date_absence_eleve_ins',
+									'$a_date_absence_eleve_ins',
+									'$d_heure_absence_eleve_ins',
+									'$a_heure_absence_eleve_ins',
+									'".$_SESSION['login']."')";
+				}
+				if ( $action_sql === "modifier" ) {
+					$requete="UPDATE ".$prefix_base."absences_eleves SET
                                                     justify_absence_eleve = '$justify_absence_eleve',
                                                     info_justify_absence_eleve = '$info_justify_absence_eleve',
                                                     motif_absence_eleve = '$motif_absence_eleve_ins',
@@ -489,27 +557,31 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
                                                     saisie_absence_eleve = '".$_SESSION['login']."'
                                                 WHERE
 													id_absence_eleve = '".$id."'";
-			}
-			$resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-			// connaitre l'id de l'enregistrement
-			if ( $action_sql === 'ajouter' ) { $num_id = mysql_insert_id(); }
-			if ( $action_sql === 'modifier' ) { $num_id = $id; }
+				}
+				$resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+				// connaitre l'id de l'enregistrement
+				if ( $action_sql === 'ajouter' ) {
+					$num_id = mysql_insert_id();
+				}
+				if ( $action_sql === 'modifier' ) {
+					$num_id = $id;
+				}
 
-		// ++++++++ gestion du courrier ++++++++ //
+				// ++++++++ gestion du courrier ++++++++ //
 
-			if ( $justify_absence_eleve === 'N' and $motif_absence_eleve_ins != 'RE') {
-				//envoie d'une lettre de justification
-				$date_emis = date('Y-m-d');
-				$heure_emis = date('H:i:s');
-				$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*)
+				if ( $justify_absence_eleve === 'N' and $motif_absence_eleve_ins != 'RE') {
+					//envoie d'une lettre de justification
+					$date_emis = date('Y-m-d');
+					$heure_emis = date('H:i:s');
+					$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*)
 														FROM ".$prefix_base."lettres_suivis
 														WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."'
 														AND emis_date_lettre_suivi = '".$date_emis."'
 														AND partde_lettre_suivi = 'absences_eleves'"),0);
 
-				if( $cpt_lettre_suivi == 0 ) {
-					//si aucune lettre n'a encore été demandée alors on en crée une
-					$requete = "INSERT INTO ".$prefix_base."lettres_suivis
+					if( $cpt_lettre_suivi == 0 ) {
+						//si aucune lettre n'a encore été demandée alors on en crée une
+						$requete = "INSERT INTO ".$prefix_base."lettres_suivis
 									(quirecois_lettre_suivi,
 									partde_lettre_suivi,
 									partdenum_lettre_suivi,
@@ -527,137 +599,143 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 									'".$heure_emis."',
 									'6',
 									'en attente')";
-					mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-				} else {
-					// si une lettre a déja été demandée alors on la modifie
-					// on cherche la lettre concernée et on prend les id déja disponibles
-					// puis on y ajoute le nouvel id
-					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
-									WHERE emis_date_lettre_suivi = '".$date_emis."'
-									AND partde_lettre_suivi = 'absences_eleves'";
-					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
-									WHERE emis_date_lettre_suivi = '".$date_emis."'
-									AND partde_lettre_suivi = 'absences_eleves'
-									AND quirecois_lettre_suivi= '".$eleve_absence_eleve."'";
-					$execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
-					while ( $donne_info = mysql_fetch_array($execution_info))
-					{
-						$id_lettre_suivi = $donne_info['id_lettre_suivi'];
-						$id_deja_present = $donne_info['partdenum_lettre_suivi'];
-					}
-					$tableau_deja_existe = explode(',', $id_deja_present);
-
-					if ( in_array($num_id, $tableau_deja_existe) ) {
-						$id_ajout = $id_deja_present;
+						mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 					} else {
-						$id_ajout = $id_deja_present.$num_id.',';
-					}
-					$requete = "UPDATE ".$prefix_base."lettres_suivis
-									SET partdenum_lettre_suivi = '".$id_ajout."',
-									quiemet_lettre_suivi = '".$_SESSION['login']."',
-									type_lettre_suivi = '6'
-									WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
-					mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-				}
-			}
-
-			// si on modifie un absence et que la lettre n'a pas encore était envoyé
-			// alors on l'enlève des lettres de suivi
-			if ( ($justify_absence_eleve === 'O' or $justify_absence_eleve === 'T') and $motif_absence_eleve_ins != 'RE') {
-				//envoie d'une lettre de justification
-				$date_emis = date('Y-m-d');
-				$heure_emis = date('H:i:s');
-				$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND emis_date_lettre_suivi = '".$date_emis."' AND partde_lettre_suivi = 'absences_eleves'"),0);
-
-				if( $cpt_lettre_suivi == 1 ) {
-					//si une lettre a déjas été demandé alors on la modifi
-					// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
-					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+						// si une lettre a déja été demandée alors on la modifie
+						// on cherche la lettre concernée et on prend les id déja disponibles
+						// puis on y ajoute le nouvel id
+						$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
 									WHERE emis_date_lettre_suivi = '".$date_emis."'
 									AND partde_lettre_suivi = 'absences_eleves'";
-					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+						$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
 									WHERE emis_date_lettre_suivi = '".$date_emis."'
 									AND partde_lettre_suivi = 'absences_eleves'
 									AND quirecois_lettre_suivi= '".$eleve_absence_eleve."'";
-					$execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
-					while ( $donne_info = mysql_fetch_array($execution_info))
-					{
-						$id_lettre_suivi = $donne_info['id_lettre_suivi'];
-						$id_deja_present = $donne_info['partdenum_lettre_suivi'];
-					}
-					$tableau_deja_existe = explode(',', $id_deja_present);
-					$cpt_tab = '1'; // pas 0 car vide on commence par ,
-					$id_ajout = '';
-
-//echo '<pre>';
-//print_r($tableau_deja_existe);
-//echo '</pre>';
-
-					while ( !empty($tableau_deja_existe[$cpt_tab]) )
-					{
-						if ( $tableau_deja_existe[$cpt_tab] != $num_id and empty($id_ajout) ) {
-							$id_ajout =  ','.$tableau_deja_existe[$cpt_tab].',';
-						} elseif ($tableau_deja_existe[$cpt_tab] != $num_id and !empty($id_ajout) ) {
-							$id_ajout =  $id_ajout.$tableau_deja_existe[$cpt_tab].',';
+						$execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
+						while ( $donne_info = mysql_fetch_array($execution_info))
+						{
+							$id_lettre_suivi = $donne_info['id_lettre_suivi'];
+							$id_deja_present = $donne_info['partdenum_lettre_suivi'];
 						}
-						$cpt_tab = $cpt_tab + 1;
-					}
-					if ( !empty($tableau_deja_existe[2]) ) {
-						// s'il reste d'autre id alors on modifie sinon on supprime
-						$requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '6' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
-						mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-					} else {
-						$requete = "DELETE FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+						$tableau_deja_existe = explode(',', $id_deja_present);
+
+						if ( in_array($num_id, $tableau_deja_existe) ) {
+							$id_ajout = $id_deja_present;
+						} else {
+							$id_ajout = $id_deja_present.$num_id.',';
+						}
+						$requete = "UPDATE ".$prefix_base."lettres_suivis
+										SET partdenum_lettre_suivi = '".$id_ajout."',
+										quiemet_lettre_suivi = '".$_SESSION['login']."',
+										type_lettre_suivi = '6'
+										WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
 						mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 					}
 				}
-			}
 
-			if ( $motif_absence_eleve_ins === 'RE') {
-				//envoie d'une lettre de renvoi
-				$date_emis = date('Y-m-d');
-				$heure_emis = date('H:i:s');
-				$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND emis_date_lettre_suivi = '".$date_emis."' AND partde_lettre_suivi = 'absences_eleves'"),0);
-				if( $cpt_lettre_suivi == 0 ) {
-					//si aucune lettre n'a encore été demandé alors on en créer une
-					$requete = "INSERT INTO ".$prefix_base."lettres_suivis (quirecois_lettre_suivi, partde_lettre_suivi, partdenum_lettre_suivi, quiemet_lettre_suivi, emis_date_lettre_suivi, emis_heure_lettre_suivi, type_lettre_suivi, statu_lettre_suivi) VALUES ('".$eleve_absence_eleve."', 'absences_eleves', ',".$num_id.",', '".$_SESSION['login']."', '".$date_emis."', '".$heure_emis."', '4', 'en attente')";
-					mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-				} else {
-					//si une lettre a déjas été demandé alors on la modifi
-					// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
-					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+				// si on modifie un absence et que la lettre n'a pas encore était envoyé
+				// alors on l'enlève des lettres de suivi
+				if ( ($justify_absence_eleve === 'O' or $justify_absence_eleve === 'T') and $motif_absence_eleve_ins != 'RE') {
+					//envoie d'une lettre de justification
+					$date_emis = date('Y-m-d');
+					$heure_emis = date('H:i:s');
+					$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND emis_date_lettre_suivi = '".$date_emis."' AND partde_lettre_suivi = 'absences_eleves'"),0);
+
+					if( $cpt_lettre_suivi == 1 ) {
+						//si une lettre a déjas été demandé alors on la modifi
+						// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
+						$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
 										WHERE emis_date_lettre_suivi = '".$date_emis."'
 										AND partde_lettre_suivi = 'absences_eleves'";
-					$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+						$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
 										WHERE emis_date_lettre_suivi = '".$date_emis."'
 										AND partde_lettre_suivi = 'absences_eleves'
 										AND quirecois_lettre_suivi= '".$eleve_absence_eleve."'";
-					$execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
-					while ( $donne_info = mysql_fetch_array($execution_info))
-					{
-						$id_lettre_suivi = $donne_info['id_lettre_suivi'];
-						$id_deja_present = $donne_info['partdenum_lettre_suivi'];
+						$execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
+						while ( $donne_info = mysql_fetch_array($execution_info))
+						{
+							$id_lettre_suivi = $donne_info['id_lettre_suivi'];
+							$id_deja_present = $donne_info['partdenum_lettre_suivi'];
+						}
+						$tableau_deja_existe = explode(',', $id_deja_present);
+						$cpt_tab = '1'; // pas 0 car vide on commence par ,
+						$id_ajout = '';
+
+						//echo '<pre>';
+						//print_r($tableau_deja_existe);
+						//echo '</pre>';
+
+						while ( !empty($tableau_deja_existe[$cpt_tab]) )
+						{
+							if ( $tableau_deja_existe[$cpt_tab] != $num_id and empty($id_ajout) ) {
+								$id_ajout =  ','.$tableau_deja_existe[$cpt_tab].',';
+							} elseif ($tableau_deja_existe[$cpt_tab] != $num_id and !empty($id_ajout) ) {
+								$id_ajout =  $id_ajout.$tableau_deja_existe[$cpt_tab].',';
+							}
+							$cpt_tab = $cpt_tab + 1;
+						}
+						if ( !empty($tableau_deja_existe[2]) ) {
+							// s'il reste d'autre id alors on modifie sinon on supprime
+							$requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '6' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+							mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+						} else {
+							$requete = "DELETE FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+							mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+						}
 					}
-					$id_ajout = $id_deja_present.$num_id.',';
-					$requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '4' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
-					mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+				}
+
+				if ( $motif_absence_eleve_ins === 'RE') {
+					//envoie d'une lettre de renvoi
+					$date_emis = date('Y-m-d');
+					$heure_emis = date('H:i:s');
+					$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND emis_date_lettre_suivi = '".$date_emis."' AND partde_lettre_suivi = 'absences_eleves'"),0);
+					if( $cpt_lettre_suivi == 0 ) {
+						//si aucune lettre n'a encore été demandé alors on en créer une
+						$requete = "INSERT INTO ".$prefix_base."lettres_suivis (quirecois_lettre_suivi, partde_lettre_suivi, partdenum_lettre_suivi, quiemet_lettre_suivi, emis_date_lettre_suivi, emis_heure_lettre_suivi, type_lettre_suivi, statu_lettre_suivi) VALUES ('".$eleve_absence_eleve."', 'absences_eleves', ',".$num_id.",', '".$_SESSION['login']."', '".$date_emis."', '".$heure_emis."', '4', 'en attente')";
+						mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+					} else {
+						//si une lettre a déjas été demandé alors on la modifi
+						// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
+						$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+											WHERE emis_date_lettre_suivi = '".$date_emis."'
+											AND partde_lettre_suivi = 'absences_eleves'";
+						$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis
+											WHERE emis_date_lettre_suivi = '".$date_emis."'
+											AND partde_lettre_suivi = 'absences_eleves'
+											AND quirecois_lettre_suivi= '".$eleve_absence_eleve."'";
+						$execution_info = mysql_query($requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysql_error());
+						while ( $donne_info = mysql_fetch_array($execution_info))
+						{
+							$id_lettre_suivi = $donne_info['id_lettre_suivi'];
+							$id_deja_present = $donne_info['partdenum_lettre_suivi'];
+						}
+						$id_ajout = $id_deja_present.$num_id.',';
+						$requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '4' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+						mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+					}
 				}
 			}
+		} //fermer le oui si active = non
+		$total = $total + 1;
 
+	} //while ($total < $nb_i)
+
+	// si tout est ok on redirige
+	if(!isset($eleve_absence_eleve_erreur[0]) and empty($eleve_absence_eleve_erreur[0]))
+	{
+		if ( $action_sql === "ajouter" ) {
+			header("Location:select.php?type=A");
 		}
-           } //fermer le oui si active = non
-       $total = $total + 1;
- }
-
-      // si tout est ok on redirige
-      if(!isset($eleve_absence_eleve_erreur[0]) and empty($eleve_absence_eleve_erreur[0]))
-         {
-           if ( $action_sql === "ajouter" ) { header("Location:select.php?type=A"); }
-           if ( $action_sql === "modifier" ) {
-                                               if($fiche === 'oui') { header("Location:gestion_absences.php?type=A&select_fiche_eleve=$eleve_absence[0]"); } else { header("Location:gestion_absences.php?type=A"); }
-                                            }
-         }
-}
+		if ( $action_sql === "modifier" ) {
+			if($fiche === 'oui') {
+				header("Location:gestion_absences.php?type=A&select_fiche_eleve=$eleve_absence[0]");
+			} else {
+				header("Location:gestion_absences.php?type=A");
+			}
+        }
+	}
+} // if($action_sql == "ajouter" or $action_sql == "modifier")
 //echo $erreur." ab ".$verification." ";
 
 $datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
@@ -666,11 +744,18 @@ $datejour = date('d/m/Y');
 
 if ($action === 'supprimer')
 {
-
 	include "../lib/function_abs.php";
 
-	if (empty($_GET['date_ce_jour']) and empty($_POST['date_ce_jour'])) { $date_ce_jour = ''; }
-	   else { if (isset($_GET['date_ce_jour'])) { $date_ce_jour = $_GET['date_ce_jour']; } if (isset($_POST['date_ce_jour'])) { $date_ce_jour = $_POST['date_ce_jour']; } }
+	if (empty($_GET['date_ce_jour']) and empty($_POST['date_ce_jour'])) {
+		$date_ce_jour = '';
+	} else {
+		if (isset($_GET['date_ce_jour'])) {
+			$date_ce_jour = $_GET['date_ce_jour'];
+		}
+		if (isset($_POST['date_ce_jour'])) {
+			$date_ce_jour = $_POST['date_ce_jour'];
+		}
+	}
 
     $id_absence_eleve = $_GET['id'];
     // si une réponse à un courrier expédié à était reçus alors on ne peut supprimer l'absences
@@ -678,9 +763,9 @@ if ($action === 'supprimer')
 
     if( $cpt_lettre_recus === '0' ) {
 
-        // Vérification des champs
-          if ( $id_absence_eleve != '' )
-          {
+		// Vérification des champs
+		if ( $id_absence_eleve != '' )
+		{
 
 			// suppression dans la table absence_rb
        		suppr_absences_rb($id_absence_eleve);
@@ -691,94 +776,108 @@ if ($action === 'supprimer')
             // Execution de cette requete
             mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 
-		// on vérify s'il y a un courrier si oui on le supprime s'il fait parti d'un ensemble de courrier alors on le modifi.
-		// première option il existe une lettre qui fait seulement référence à cette id donc suppression
-		$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'"),0);
-		if( $cpt_lettre_suivi == 1 ) {
-	              $requete = "DELETE FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'";
+			// on vérify s'il y a un courrier si oui on le supprime s'il fait parti d'un ensemble de courrier alors on le modifi.
+			// première option il existe une lettre qui fait seulement référence à cette id donc suppression
+			$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'"),0);
+			if( $cpt_lettre_suivi == 1 ) {
+	              $requete = "DELETE FROM ".$prefix_base."lettres_suivis
+				  					WHERE partde_lettre_suivi = 'absences_eleves'
+									  AND type_lettre_suivi = '6'
+									  AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'";
 	              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+			}
+			// deuxième option il existe une lettre qui fait référence à cette id mais à d'autre aussi donc modification
+			$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"),0);
+			if( $cpt_lettre_suivi == 1 ) {
+				$requete = mysql_query("SELECT * FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'");
+				$donnee = mysql_fetch_array($requete);
+				$remplace_sa = ','.$id_absence_eleve.',';
+				$modifier_par = ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
+				$requete = "UPDATE ".$prefix_base."lettres_suivis
+									SET partdenum_lettre_suivi = '".$modifier_par."'
+									WHERE partde_lettre_suivi = 'absences_eleves'
+									AND type_lettre_suivi = '6'
+									AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'";
+
+				mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+			}
+ 			header('Location:gestion_absences.php?type=A&date_ce_jour='.$date_ce_jour);
 		}
-		// deuxième option il existe une lettre qui fait référence à cette id mais à d'autre aussi donc modification
-		$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"),0);
-		if( $cpt_lettre_suivi == 1 ) {
-		      $requete = mysql_query("SELECT * FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'");
-		      $donnee = mysql_fetch_array($requete);
-		      $remplace_sa = ','.$id_absence_eleve.',';
-		      $modifier_par = ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
-		      $requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$modifier_par."' WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'";
-	              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-		}
-              header('Location:gestion_absences.php?type=A&date_ce_jour='.$date_ce_jour);
-          }
-	} else { header('Location:gestion_absences.php?type=A'); /* manque gestion d'erreur impossible de supprimer car il existe une lettre reçus sur cette absences */ }
+	} else {
+		header('Location:gestion_absences.php?type=A');
+		/* manque gestion d'erreur impossible de supprimer car il existe une lettre reçus sur cette absences */ }
 }
 
 
 $i = '0';
 if ($action === "modifier")
 {
-        $requete_modif = "SELECT * FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='$id_absence_eleve'";
-        $resultat_modif = mysql_query($requete_modif) or die('Erreur SQL !'.$requete_modif.'<br />'.mysql_error());
-        while ($data_modif = mysql_fetch_array($resultat_modif))
-        {
-            $type_absence_eleve[$i] = $data_modif['type_absence_eleve'];
-            $eleve_absent[$i] = $data_modif['eleve_absence_eleve'];
-            $justify_absence_eleve[$i] = $data_modif['justify_absence_eleve'];
-            $info_justify_absence_eleve[$i] = $data_modif['info_justify_absence_eleve'];
-            $motif_absence_eleve[$i] = $data_modif['motif_absence_eleve'];
-            $d_date_absence_eleve[$i] = date_fr($data_modif['d_date_absence_eleve']);
-            $a_date_absence_eleve[$i] = date_fr($data_modif['a_date_absence_eleve']);
-            $d_heure_absence_eleve[$i] = $data_modif['d_heure_absence_eleve'];
-            $a_heure_absence_eleve[$i] = $data_modif['a_heure_absence_eleve'];
-          $i = $i + 1;
-        }
+	$requete_modif = "SELECT * FROM ".$prefix_base."absences_eleves
+								WHERE id_absence_eleve ='$id_absence_eleve'";
+	$resultat_modif = mysql_query($requete_modif) or die('Erreur SQL !'.$requete_modif.'<br />'.mysql_error());
+
+	while ($data_modif = mysql_fetch_array($resultat_modif))
+	{
+		$type_absence_eleve[$i] = $data_modif['type_absence_eleve'];
+		$eleve_absent[$i] = $data_modif['eleve_absence_eleve'];
+        $justify_absence_eleve[$i] = $data_modif['justify_absence_eleve'];
+        $info_justify_absence_eleve[$i] = $data_modif['info_justify_absence_eleve'];
+        $motif_absence_eleve[$i] = $data_modif['motif_absence_eleve'];
+        $d_date_absence_eleve[$i] = date_fr($data_modif['d_date_absence_eleve']);
+        $a_date_absence_eleve[$i] = date_fr($data_modif['a_date_absence_eleve']);
+        $d_heure_absence_eleve[$i] = $data_modif['d_heure_absence_eleve'];
+        $a_heure_absence_eleve[$i] = $data_modif['a_heure_absence_eleve'];
+        $i = $i + 1;
+    }
 }
 
 
-// s'il y a eu un problème alors on réaffect le donnée au nom des variables du formulaire
+// s'il y a eu un problème alors on réaffecte le donnée au nom des variables du formulaire
 $i = '0';
 if(isset($eleve_absence_eleve_erreur[0]) and !empty($eleve_absence_eleve_erreur[0]))
 {
-	  unset($type_absence_eleve);
-	  unset($eleve_absent);
-	  unset($justify_absence_eleve);
-	  unset($info_justify_absence_eleve);
-	  unset($motif_absence_eleve);
-	  unset($d_date_absence_eleve);
-	  unset($a_date_absence_eleve);
-	  unset($d_heure_absence_eleve);
-	  unset($a_heure_absence_eleve);
-	  unset($dp_absence_eleve);
-	  unset($ap_absence_eleve);
+	unset($type_absence_eleve);
+	unset($eleve_absent);
+	unset($justify_absence_eleve);
+	unset($info_justify_absence_eleve);
+	unset($motif_absence_eleve);
+	unset($d_date_absence_eleve);
+	unset($a_date_absence_eleve);
+	unset($d_heure_absence_eleve);
+	unset($a_heure_absence_eleve);
+	unset($dp_absence_eleve);
+	unset($ap_absence_eleve);
 
-        while (isset($eleve_absence_eleve_erreur[$i]))
-        {
+    while (isset($eleve_absence_eleve_erreur[$i]))
+    {
 
-            $type_absence_eleve[$i] = $type_absence_eleve_erreur[$i];
-            $eleve_absent[$i] = $eleve_absence_eleve_erreur[$i];
-            $justify_absence_eleve[$i] = $justify_absence_eleve_erreur[$i];
-            $info_justify_absence_eleve[$i] = $info_justify_absence_eleve_erreur[$i];
-            $motif_absence_eleve[$i] = $motif_absence_eleve_erreur[$i];
-            $d_date_absence_eleve[$i] = $d_date_absence_eleve_erreur[$i];
-            $a_date_absence_eleve[$i] = $a_date_absence_eleve_erreur[$i];
-            $d_heure_absence_eleve[$i] = $d_heure_absence_eleve_erreur[$i];
-            $a_heure_absence_eleve[$i] = $a_heure_absence_eleve_erreur[$i];
+		$type_absence_eleve[$i] = $type_absence_eleve_erreur[$i];
+		$eleve_absent[$i] = $eleve_absence_eleve_erreur[$i];
+		$justify_absence_eleve[$i] = $justify_absence_eleve_erreur[$i];
+		$info_justify_absence_eleve[$i] = $info_justify_absence_eleve_erreur[$i];
+		$motif_absence_eleve[$i] = $motif_absence_eleve_erreur[$i];
+		$d_date_absence_eleve[$i] = $d_date_absence_eleve_erreur[$i];
+		$a_date_absence_eleve[$i] = $a_date_absence_eleve_erreur[$i];
+		$d_heure_absence_eleve[$i] = $d_heure_absence_eleve_erreur[$i];
+		$a_heure_absence_eleve[$i] = $a_heure_absence_eleve_erreur[$i];
 	    $dp_absence_eleve[$i] = $dp_absence_eleve_erreur[$i];
-            $ap_absence_eleve[$i] = $ap_absence_eleve_erreur[$i];
-	    if(isset($id) and !empty($id)) { $action = 'modifier'; }
+		$ap_absence_eleve[$i] = $ap_absence_eleve_erreur[$i];
+	    if(isset($id) and !empty($id)) {
+			$action = 'modifier';
+		}
  	    $mode = $mode_cop;
-          $i = $i + 1;
-        }
+		$i = $i + 1;
+    }
 }
 
- $datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
- $datejour = date('d/m/Y');
+$datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
+$datejour = date('d/m/Y');
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des absences";
 require_once("../../lib/header.inc");
 //**************** FIN EN-TETE *****************
-
+debug_var();
 ?>
 <script type="text/javascript" language="javascript">
 <!--
@@ -809,18 +908,18 @@ if ($_SESSION["statut"] == 'autre') {
 	$retour = 'gestion_absences.php?type='.$type.$aff_fiche;
 }
 
-echo "<p class=bold> <a href=\"".$retour."\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+echo "<p class=\"bold\"><a href=\"".$retour."\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
-//si un élève est sélectionné ou modifier
+//si un élève est sélectionné ou modifié
 if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
 {
 
     $i = '0';
 
-        //Configuration du calendrier
-        include("../../lib/calendrier/calendrier.class.php");
-        $cal_1 = new Calendrier("form1", "d_date_absence_eleve[0]");
-        $cal_2 = new Calendrier("form1", "a_date_absence_eleve[0]");
+	//Configuration du calendrier
+	include("../../lib/calendrier/calendrier.class.php");
+	$cal_1 = new Calendrier("form1", "d_date_absence_eleve[0]");
+	$cal_2 = new Calendrier("form1", "a_date_absence_eleve[0]");
 
 /* div de centrage du tableau pour ie5 */
 ?><div style="text-align:center"><?php
@@ -862,43 +961,67 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
         </tr>
         <tr class="td_tableau_absence_1">
           <td class="centre">
-              <?php
+        <?php
 		$mode='eleve';
-                 if ($mode==="eleve") { $requete_id="SELECT * FROM ".$prefix_base."eleves WHERE login='".$eleve_absent[$i]."'"; }
-                 if ($mode==="classe") { $requete_id="SELECT * FROM ".$prefix_base."classes WHERE id='".$classe_absent[$i]."'"; }
-              /* if ($mode=="groupe") { $requete_id="SELECT * FROM ".$prefix_base."groupes WHERE id_groupe='".$groupe_absent[$i]."'"; } */
-                 $resultat_id = mysql_query($requete_id) or die('Erreur SQL !'.$requete_id.'<br />'.mysql_error());
-                 while($data_id = mysql_fetch_array ($resultat_id))
-                   {
-                        if ($mode==="eleve") { ?><strong><?php echo strtoupper($data_id['nom']); ?></strong><br /><?php echo ucfirst($data_id['prenom']); $id_eleve = $data_id['login']; $id_eleve_photo = $data_id['elenoet']; ?><br /><div class="norme_absence_bleu"><strong><?php echo classe_de($data_id['login']); }?></strong></div><?php
-                        if ($mode==="classe") { ?><strong><?php echo $data_id['classe']; ?></strong><br /><?php $id_classe = $data_id['id']; ?><br /><?php }
-                     /* if ($mode=="groupe") { ?><strong><?php echo $data_id['nom_groupe']; ?></strong><br /><?php $id_groupe = $data_id['id_groupe']; ?><br /><?php } */
-                   }
-                   if (getSettingValue("active_module_trombinoscopes")=='y') {
-                   	  $nom_photo = '';
-                      $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
-                      $photo = "../../photos/eleves/".$nom_photo;
-                      if ( $nom_photo === '' or !file_exists($photo) ) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-                      $valeur=redimensionne_image($photo);
-                      ?><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><br /><?php
-                   }
-                   if ($mode==="eleve")
-                     {
-                          $test_dispense = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='D'"),0);
-                          if ($test_dispense != '0')
-                           {  ?>
-                              <table class="tableau_info_compt" border="0" cellspacing="0" cellpadding="2">
-                                  <tr>
-                                      <td class="tableau_info_disp"><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $id_eleve; ?>&amp;type=D',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="voir les dispenses">Dispense détecté</a></td>
-                                   </tr>
-                              </table>
-                      <?php } ?>
-                             <table class="tableau_info_compt" border="0" cellspacing="0" cellpadding="2">
-                                  <tr>
-                                      <td class="tableau_info_compt"><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $id_eleve; ?>&amp;type=<?php echo $type; ?>',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="voir les absences">voir absences</a></td>
-                                   </tr>
-                              </table>
-              <?php } ?>
+		if ($mode==="eleve") {
+			$requete_id="SELECT * FROM ".$prefix_base."eleves WHERE login='".$eleve_absent[$i]."'";
+		}
+		if ($mode==="classe") {
+			$requete_id="SELECT * FROM ".$prefix_base."classes WHERE id='".$classe_absent[$i]."'";
+		}
+		/* if ($mode=="groupe") { $requete_id="SELECT * FROM ".$prefix_base."groupes WHERE id_groupe='".$groupe_absent[$i]."'"; } */
+		$resultat_id = mysql_query($requete_id) or die('Erreur SQL !'.$requete_id.'<br />'.mysql_error());
+		while($data_id = mysql_fetch_array ($resultat_id))
+		{
+			if ($mode==="eleve") { ?>
+				<strong><?php echo strtoupper($data_id['nom']); ?></strong>
+				<br />
+				<?php echo ucfirst($data_id['prenom']); $id_eleve = $data_id['login']; $id_eleve_photo = $data_id['elenoet']; ?>
+				<br />
+				<div class="norme_absence_bleu">
+					<strong><?php echo classe_de($data_id['login']);
+			}?>
+					</strong>
+				</div>
+		<?php
+			if ($mode==="classe") { ?>
+				<strong><?php echo $data_id['classe']; ?></strong>
+				<br /><?php $id_classe = $data_id['id']; ?><br />
+		<?php }
+			/* if ($mode=="groupe") { ?><strong><?php echo $data_id['nom_groupe']; ?></strong><br /><?php $id_groupe = $data_id['id_groupe']; ?><br /><?php } */
+		}
+		if (getSettingValue("active_module_trombinoscopes")=='y') {
+			$nom_photo = '';
+			$nom_photo = nom_photo($id_eleve_photo,"eleves",2);
+			$photo = "../../photos/eleves/".$nom_photo;
+			if ( $nom_photo === '' or !file_exists($photo) ) {
+				$photo = "../../mod_trombinoscopes/images/trombivide.jpg";
+			}
+			$valeur=redimensionne_image($photo);
+        ?>
+			<img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
+			<br />
+		<?php
+		}
+		if ($mode==="eleve")
+		{
+			$test_dispense = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='D'"),0);
+			if ($test_dispense != '0')
+			{  ?>
+				<table class="tableau_info_compt" border="0" cellspacing="0" cellpadding="2">
+					<tr>
+                        <td class="tableau_info_disp"><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $id_eleve; ?>&amp;type=D',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="voir les dispenses">Dispense détecté</a></td>
+                    </tr>
+                </table>
+			<?php
+			} ?>
+                <table class="tableau_info_compt" border="0" cellspacing="0" cellpadding="2">
+                    <tr>
+                        <td class="tableau_info_compt"><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $id_eleve; ?>&amp;type=<?php echo $type; ?>',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="voir les absences">voir absences</a></td>
+                    </tr>
+                </table>
+		<?php
+		} ?>
           </td>
           <td>
               <table class="tableau_100" border="0" cellspacing="1" cellpadding="2">
@@ -908,46 +1031,64 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
                   <td><strong>P&eacute;riode</strong></td>
                 </tr>
                 <tr class="td_tableau_absence_1">
-                  <td>du&nbsp;<input name="d_date_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if(isset($d_date_absence_eleve) and !empty($d_date_absence_eleve)) { echo $d_date_absence_eleve[$i]; } else { echo $datejour; } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
-                  <td>de&nbsp;<input name="d_heure_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if (isset($d_heure_absence_eleve[$i]) and !empty($d_heure_absence_eleve[$i])) { echo $d_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" size="5" maxlength="5" /></td>
-                  <td><?php if ( $action != "modifier" ) { ?>en
-                     <select name="dp_absence_eleve[<?php echo $i; ?>]">
-                     <?php
-                            $requete_pe = ('SELECT * FROM '.$prefix_base.'absences_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
-                            $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
-                            ?><option value="">pas de s&eacute;lection</option><?php
-                            while($data_pe = mysql_fetch_array ($resultat_pe)) { ?>
-                                     <option value="<?php echo $data_pe['id_definie_periode']; ?>" <?php if(isset($dp_absence_eleve_erreur[$i]) and $dp_absence_eleve_erreur[$i] == $data_pe['id_definie_periode']) { ?>selected<?php } else { } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heuredebut_definie_periode'])."-".heure_court($data_pe['heurefin_definie_periode']); ?></option><?php
-                                 } ?>
-                    </select>
-                    <?php } else { ?>
-                                    <input type="hidden" name="dp_absence_eleve[<?php echo $i; ?>]" value="" />
-                           <?php } ?>
+					<td>du&nbsp;<input name="d_date_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if(isset($d_date_absence_eleve) and !empty($d_date_absence_eleve)) { echo $d_date_absence_eleve[$i]; } else { echo $datejour; } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
+					<td>de&nbsp;<input name="d_heure_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if (isset($d_heure_absence_eleve[$i]) and !empty($d_heure_absence_eleve[$i])) { echo $d_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" size="5" maxlength="5" /></td>
+					<td>
+		<?php
+			if ( $action != "modifier" ) { ?>
+						en
+                     	<select name="dp_absence_eleve[<?php echo $i; ?>]">
+		<?php
+				$requete_pe = ('SELECT * FROM '.$prefix_base.'absences_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
+				$resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
+		?>
+							<option value="">pas de s&eacute;lection</option>
+		<?php
+					while($data_pe = mysql_fetch_array ($resultat_pe)) { ?>
+							<option value="<?php echo $data_pe['id_definie_periode']; ?>" <?php if(isset($dp_absence_eleve_erreur[$i]) and $dp_absence_eleve_erreur[$i] == $data_pe['id_definie_periode']) { ?>selected<?php } else { } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heuredebut_definie_periode'])."-".heure_court($data_pe['heurefin_definie_periode']); ?></option>
+		<?php
+                	} ?>
+						</select>
+		<?php
+			} else { ?>
+						<input type="hidden" name="dp_absence_eleve[<?php echo $i; ?>]" value="" />
+        <?php
+			} ?>
                     </td>
                 </tr>
                 <tr>
-                  <td>au&nbsp;<input name="a_date_absence_eleve[<?php echo $i; ?>]"  onfocus="javascript:this.select()" type="text" value="<?php if (isset($a_date_absence_eleve[$i]) and !empty($a_date_absence_eleve[$i])) { echo $a_date_absence_eleve[$i]; } else { ?>JJ/MM/AAAA<?php } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php echo $cal_2->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
-                  <td>&agrave;&nbsp;&nbsp;<input name="a_heure_absence_eleve[<?php echo $i; ?>]"  onfocus="javascript:this.select()" type="text" value="<?php if (isset($a_heure_absence_eleve[$i]) and !empty($a_heure_absence_eleve[$i])) { echo $a_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" size="5" maxlength="5" /></td>
-                  <td><?php if ( $action != "modifier" ) { ?>en
-                    <select name="ap_absence_eleve[<?php echo $i; ?>]">
-                    <?php
-                            $requete_pe = ('SELECT * FROM '.$prefix_base.'absences_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
-                            $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
-                            ?><option value="">pas de s&eacute;lection</option><?php
-                            while ( $data_pe = mysql_fetch_array ($resultat_pe)) { ?>
-                                     <option value="<?php echo $data_pe['id_definie_periode']; ?>" <?php if(isset($ap_absence_eleve[$i]) and $ap_absence_eleve[$i] === $data_pe['id_definie_periode']) { ?>selected="selected"<?php } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heuredebut_definie_periode'])."-".heure_court($data_pe['heurefin_definie_periode']); ?></option><?php
+					<td>au&nbsp;<input name="a_date_absence_eleve[<?php echo $i; ?>]"  onfocus="javascript:this.select()" type="text" value="<?php if (isset($a_date_absence_eleve[$i]) and !empty($a_date_absence_eleve[$i])) { echo $a_date_absence_eleve[$i]; } else { ?>JJ/MM/AAAA<?php } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php echo $cal_2->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
+					<td>&agrave;&nbsp;&nbsp;<input name="a_heure_absence_eleve[<?php echo $i; ?>]"  onfocus="javascript:this.select()" type="text" value="<?php if (isset($a_heure_absence_eleve[$i]) and !empty($a_heure_absence_eleve[$i])) { echo $a_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" size="5" maxlength="5" /></td>
+					<td>
+		<?php
+			if ( $action != "modifier" ) { ?>
+						en
+                    	<select name="ap_absence_eleve[<?php echo $i; ?>]">
+        <?php
+            	$requete_pe = ('SELECT * FROM '.$prefix_base.'absences_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
+                $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error()); ?>
+
+							<option value="">pas de s&eacute;lection</option><?php
+
+				while ( $data_pe = mysql_fetch_array ($resultat_pe)) { ?>
+							<option value="<?php echo $data_pe['id_definie_periode']; ?>" <?php if(isset($ap_absence_eleve[$i]) and $ap_absence_eleve[$i] === $data_pe['id_definie_periode']) { ?>selected="selected"<?php } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heuredebut_definie_periode'])."-".heure_court($data_pe['heurefin_definie_periode']); ?></option><?php
                                   } ?>
-                    </select>
-                    <?php } else { ?>
-                                     <input type="hidden" name="ap_absence_eleve[<?php echo $i; ?>]" value="" />
-                           <?php } ?>
+						</select>
+        <?php
+			} else { ?>
+						<input type="hidden" name="ap_absence_eleve[<?php echo $i; ?>]" value="" />
+		<?php } ?>
                     </td>
                 </tr>
-                <?php if($action!="modifier" and $erreur!='1') { ?>
+        <?php if($action!="modifier" and $erreur!='1') { ?>
                 <tr>
-                  <td colspan="3"><span class="norme_absence_bleu"><strong>!</strong>Si la date du et au sont identiques ne renseignez que "du"</span></td>
+					<td colspan="3">
+						<span class="norme_absence_bleu">
+							<strong>!</strong>Si la date du et au sont identiques ne renseignez que "du"
+						</span>
+					</td>
                 </tr>
-                <?php } ?>
+        <?php } ?>
                 <tr class="tr_tableau_absence_titre">
                   <td colspan="2"><strong>Motif</strong></td>
                   <td><strong>Justification</strong></td>
@@ -955,11 +1096,12 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
                 <tr>
                   <td colspan="2">
                     <select name="motif_absence_eleve[<?php echo $i; ?>]">
-                    <?php
-                      $resultat_liste_motif = mysql_query($requete_liste_motif) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
-                      while ( $data_liste_motif = mysql_fetch_array ($resultat_liste_motif)) { ?>
-                                     <option value="<?php echo $data_liste_motif['init_motif_absence']; ?>" <?php if(isset($motif_absence_eleve[$i]) and $motif_absence_eleve[$i] === $data_liste_motif['init_motif_absence']) { ?>selected="selected"<?php } ?>><?php echo $data_liste_motif['init_motif_absence']." - ".$data_liste_motif['def_motif_absence']; ?></option>
-                           <?php } ?>
+		<?php
+			$resultat_liste_motif = mysql_query($requete_liste_motif) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
+            while ( $data_liste_motif = mysql_fetch_array ($resultat_liste_motif)) { ?>
+						<option value="<?php echo $data_liste_motif['init_motif_absence']; ?>" <?php if(isset($motif_absence_eleve[$i]) and $motif_absence_eleve[$i] === $data_liste_motif['init_motif_absence']) { ?>selected="selected"<?php } ?>><?php echo $data_liste_motif['init_motif_absence']." - ".$data_liste_motif['def_motif_absence']; ?></option>
+		<?php
+			} ?>
                     </select>
                     <br />
            <?php /* <strong>Action</strong><br />
@@ -1153,6 +1295,7 @@ if (isset($eleve_absent[1]) and !empty($eleve_absent[1]) or $mode === 'classe') 
 </form>
     <? /* fin du div de centrage du tableau pour ie5 */ ?>
     </div>
-<?php } ?>
-<?php mysql_close(); ?>
+<?php }
+require("../../lib/footer.inc.php");
+mysql_close(); ?>
 
