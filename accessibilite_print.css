@@ -9,7 +9,7 @@ Mise en page pour impression sans passer par des pages spéciales
 	display:none;
 }
 #container {
-	width: 100%;
+	width: 98%;
 }
 h2 {
 	margin: 0pt;
@@ -126,7 +126,7 @@ ul {
 	text-align: center;
 }
 
-.bull_simpl_h2 {
+/*.bull_simpl_h2 {
 	margin: 0px auto;
 	padding: 0px;
 	color: #000000;
@@ -134,7 +134,7 @@ ul {
 	font-size: 12pt;
 	font-style: normal;
 	font-weight: bold;
-}
+}*/
 .bull_simpl_h2 {
 	margin: 1em auto 0px auto;
 	padding: 0px;
@@ -151,9 +151,13 @@ ul {
 	border: 1px solid;
 }
 .tab_relev_note_m {
-	width: 120px;
+	width: 18%;
 }
 .tab_relev_note_n {
+	width: 75%;
+}
+.tab_releve_note table{
+	width:100%;
 }
 .tab_releve_note th {
 	padding: 4px;
