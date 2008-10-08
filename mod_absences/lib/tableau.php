@@ -707,11 +707,23 @@ if ($type == "A" or $type == "tous")
 
 				if ( !empty($info_responsable) )
 				{
+					// L'affichage du numéro de téléphone du responsable 1
+					$nbre = count($info_responsable);
+					for ($i = 0 ; $i < $nbre ; $i++){
+						if ($info_responsable[$i]['resp_legal'] == '1') {
 
-					if ( $info_responsable[0]['tel_pers'] != '' ) { $telephone_pers = '<br />Pers. <strong>'.present_tel($info_responsable[0]['tel_pers']).'</strong> '; }
-					if ( $info_responsable[0]['tel_prof'] != ''  ) { $telephone_prof = '<br />Prof. <strong>'.present_tel($info_responsable[0]['tel_prof']).'</strong> '; }
-					if ( $info_responsable[0]['tel_port'] != ''  ) { $telephone_port = '<br />Port.<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="14" width="14" /> '.present_tel($info_responsable[0]['tel_port']); }
-
+							$ident_resp = ' <span style="font-size: 0.8em;">(' . $info_responsable[$i]['nom'] . ' ' . $info_responsable[$i]['prenom'] . ' : resp n° ' . $info_responsable[$i]['resp_legal'] . ')</span>';
+							if ( $info_responsable[$i]['tel_pers'] != '' ) {
+								$telephone_pers = '<br />Pers. <strong>'.present_tel($info_responsable[$i]['tel_pers']).'</strong> ';
+							}
+							if ( $info_responsable[$i]['tel_prof'] != ''  ) {
+								$telephone_prof = '<br />Prof. <strong>'.present_tel($info_responsable[$i]['tel_prof']).'</strong> ';
+							}
+							if ( $info_responsable[$i]['tel_port'] != ''  ) {
+								$telephone_port = '<br />Port.<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="14" width="14" /> '.present_tel($info_responsable[$i]['tel_port']);
+							}
+						}
+					}
 				}
 
 				if ( $telephone_pers != '' and $telephone_prof === '' ) { $telephone = $telephone_pers; }
@@ -722,7 +734,7 @@ if ($type == "A" or $type == "tous")
 				if ( $telephone_pers != '' or $telephone_prof != '' or $telephone_port != '' ) { $telephone = 'Téléphone responsable : '.$telephone; }
 				else { $telephone = 'Aucun numéro de téléphone disponible'; }
 
-				echo $telephone;
+				echo $telephone . $ident_resp . $telephone_port;
 
 		  		?>
                 </td>
