@@ -225,7 +225,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 		}
 
 		echo "<tr>\n";
-		echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".htmlentities($tab_bull['groupe'][$j]['matiere']['nom_complet'])."</span>";
+		echo "<td$chaine_rowspan style='text-align: left;'><span class='bulletin'>".htmlentities($tab_bull['groupe'][$j]['matiere']['nom_complet'])."</span>";
 		echo "<br />\n";
 		echo "<span class='bulletin'>";
 		$cpt=0;
