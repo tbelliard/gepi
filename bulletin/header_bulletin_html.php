@@ -193,6 +193,9 @@
 	$col_note_largeur=getSettingValue("col_note_largeur") ? getSettingValue("col_note_largeur") : 50;
 	$largeurtableau=getSettingValue("largeurtableau") ? getSettingValue("largeurtableau") : 800;
 
+	$col_matiere_largeur=getSettingValue("col_matiere_largeur") ? getSettingValue("col_matiere_largeur") : 150;
+
+
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi") ? getSettingValue("gepi_prof_suivi") : "professeur principal";
 
 	$bull_espace_avis=getSettingValue("bull_espace_avis") ? getSettingValue("bull_espace_avis") : 1;
