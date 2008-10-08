@@ -2006,12 +2006,16 @@ function tel_responsable($ele_id)
 {
     global $prefix_base;
 
-	$nombre_de_responsable = 0; $tel_pers_responsable = ''; $tel_responsable = '';
+	$nombre_de_responsable = 0;
+	$tel_pers_responsable = '';
+	$tel_responsable = '';
 	$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal = '1' )"),0);
 	if($nombre_de_responsable != 0)
 	{
 			$cpt_parents = 0;
-			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id ) ORDER BY resp_legal ASC");
+			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."responsables2 r
+														WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id)
+													ORDER BY resp_legal DESC");
 			while ($donner_parents = mysql_fetch_array($requete_parents))
 			{
 				$tel_responsable[$cpt_parents]['civilite'] = $donner_parents['civilite']; // nom du responsable suite
