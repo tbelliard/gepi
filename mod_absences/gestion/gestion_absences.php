@@ -1231,7 +1231,17 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 				$cpt_responsable = 0;
 				while ( !empty($responsable_eleve[$cpt_responsable]) )
 				{
-					echo $responsable_eleve[$cpt_responsable]['civilite'].' '.strtoupper($responsable_eleve[$cpt_responsable]['nom']).' '.ucfirst($responsable_eleve[$cpt_responsable]['prenom']).'<br />';
+					if ($responsable_eleve[$cpt_responsable]['resp_legal'] == 1) {
+						$style = ' style="color: red;"';
+						$text = '(resp. 1)';
+					}else{
+						$style = $text = '';
+					}
+
+
+					echo '<p' . $style .'>' . $responsable_eleve[$cpt_responsable]['civilite'].' '
+						.strtoupper($responsable_eleve[$cpt_responsable]['nom']).' '
+						.ucfirst($responsable_eleve[$cpt_responsable]['prenom']) . $text . '</p>';
 					$telephone = '';
 						if ( !empty($responsable_eleve[$cpt_responsable]['tel_pers']) ) { $telephone = $telephone.'Tél. <strong>'.present_tel($responsable_eleve[$cpt_responsable]['tel_pers']).'</strong> '; }
 						if ( !empty($responsable_eleve[$cpt_responsable]['tel_prof']) ) { $telephone = $telephone.'Prof. <strong>'.present_tel($responsable_eleve[$cpt_responsable]['tel_prof']).'</strong> '; }
