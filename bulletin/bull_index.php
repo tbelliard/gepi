@@ -1160,16 +1160,30 @@ else {
 			$type_bulletin=isset($_POST['type_bulletin']) ? $_POST['type_bulletin'] : 1;
 			// CONTROLER SI type_bulletin EST BIEN UN ENTIER éventuellement -1
 			if(isset($type_bulletin)) {
+				//echo "\$type_bulletin=$type_bulletin<br />";
 				if ($type_bulletin == -1) {
 					// cas modèle par classe
 					$sql="SELECT modele_bulletin_pdf FROM classes WHERE id='".$tab_id_classe[$loop_classe]."';";
+					//echo "$sql<br />";
 					$res_model=mysql_query($sql);
-					$lig_mb=mysql_fetch_object($res_model);
+					if(mysql_num_rows($res_model)==0) {
+						$sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='1';";
+					}
+					else {
+						$lig_mb=mysql_fetch_object($res_model);
 
-					$sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='".$lig_mb->modele_bulletin_pdf."';";
+						//echo "\$lig_mb->modele_bulletin_pdf=$lig_mb->modele_bulletin_pdf<br />";
+						if(($lig_mb->modele_bulletin_pdf=='NULL')||($lig_mb->modele_bulletin_pdf=='')) {
+							$sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='1';";
+						}
+						else {
+							$sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='".$lig_mb->modele_bulletin_pdf."';";
+						}
+					}
 				} else {
 					$sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='".$type_bulletin."';";
 				}
+				//echo "$sql<br />";
 			}
 
 			//$type_bulletin=3;

@@ -11,7 +11,13 @@ echo "<thead>\n";
 echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px; vertical-align: top;\">
 <span class='bulletin'><font size=\"1\">";
 if ($bull_affiche_numero == 'yes'){
-	echo "Bulletin N° ".$k."/".$tab_bull['eff_classe'];
+	// En attendant de corriger le bug sur $k
+	if(isset($k)) {
+		echo "Bulletin N° ".$k."/".$tab_bull['eff_classe'];
+	}
+	else {
+		echo "Bulletin N° .../".$tab_bull['eff_classe'];
+	}
 }
 else{
 	echo "Effectif : ".$tab_bull['eff_classe']." élèves";
