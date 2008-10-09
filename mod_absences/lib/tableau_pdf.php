@@ -215,6 +215,7 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 
 			$tab_donnee[$i]['nom']							= $donner['nom'];
 	    	$tab_donnee[$i]['prenom']						= $donner['prenom'];
+			$tab_donnee[$i]['classe']						= $donner['classe'];
 			$tab_donnee[$i]['d_date_absence_eleve']			= $donner['d_date_absence_eleve'];
 			$tab_donnee[$i]['a_date_absence_eleve']			= $donner['a_date_absence_eleve'];
 			$tab_donnee[$i]['d_heure_absence_eleve']		= $donner['d_heure_absence_eleve'];
@@ -256,13 +257,15 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 
 	// hauteur de l'entête
 	$hau_entete = '6';
-
+    // ajout classe dans tableau  et  modification différentes largeurs de colonne
 	// largeur de la colonne du nom de l'élève
-	$lar_col_eleve = '70';
+	$lar_col_eleve = '58';
+	// largeur de la colonneclasse
+	$lar_col_classe = '14';
     // largeur de la colonne Le
-	$lar_col_date_le = '40';
+	$lar_col_date_le = '38';
 	// largeur de la colonne date du
-	$lar_col_date_du = '40';
+	$lar_col_date_du = '38';
 	// largeur de la colonne date au
 	$lar_col_date_au = '40';
 	// largeur de la colonne Heure debut
@@ -276,7 +279,7 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 	// largeur de la colonne horaire dispense
 	$lar_col_heure_dispense = '25';
       // largeur de la colonne motif
-	$lar_col_motif = '15';
+	$lar_col_motif = '14';
 	// nombre de ligne à affiché sur 1 page
 	$nb_ligne_parpage = '22';
 
@@ -578,6 +581,10 @@ if ($type=='A') {
 	// Cellule identité
 	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom Prénom', 1, 0, 'C');
 
+	// Cellule classe ajout
+
+	$pdf->Cell($lar_col_classe, $hau_entete, 'Classe', 1, 0, 'C');
+
 	// Cellule date du
     $pdf->Cell($lar_col_date_du, $hau_entete, 'Absence du', 1, 0, 'C');
 
@@ -605,6 +612,10 @@ if ($type=='A') {
 	// Cellule identité
 	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom Prénom', 1, 0, 'C');
 
+	// Cellule classe ajout
+
+	$pdf->Cell($lar_col_classe, $hau_entete, 'Classe', 1, 0, 'C');
+
 	// Cellule date du
     $pdf->Cell($lar_col_date_le, $hau_entete, 'le', 1, 0, 'C');
 
@@ -627,6 +638,10 @@ if ($type=='A') {
 	// Cellule identité
 	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom Prénom', 1, 0, 'C');
 
+	// Cellule classe ajout
+
+	$pdf->Cell($lar_col_classe, $hau_entete, 'Classe', 1, 0, 'C');
+
 	// Cellule date du
     $pdf->Cell($lar_col_date_du, $hau_entete, 'Du', 1, 0, 'C');
 
@@ -648,6 +663,10 @@ if ($type=='A') {
 
 	// Cellule identité
 	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom Prénom', 1, 0, 'C');
+
+	// Cellule classe ajout
+
+	$pdf->Cell($lar_col_classe, $hau_entete, 'Classe', 1, 0, 'C');
 
 	// Cellule date
     $pdf->Cell($lar_col_date_du, $hau_entete, 'Date', 1, 0, 'C');
@@ -681,6 +700,8 @@ if ($type=='A') {
 				$pdf->SetXY($x_tab, $y_dernier);
 				// colonne du nom et prénom de l'élève
 				$pdf->Cell($lar_col_eleve, $hau_donnee, $tab_donnee[$nb_ligne_passe]['nom']." ".$tab_donnee[$nb_ligne_passe]['prenom'], 1, 0, 'C');
+				// classe ajout
+				$pdf->Cell($lar_col_classe, $hau_donnee, $tab_donnee[$nb_ligne_passe]['classe'], 1, 0, 'C');
 				// colonne du debut date absence
 				$pdf->Cell($lar_col_date_du, $hau_donnee, date_frc($tab_donnee[$nb_ligne_passe]['d_date_absence_eleve']), 1, 0, 'C');
 				// colonne de fin date absence
@@ -720,6 +741,8 @@ if ($type=='R') {
 				$pdf->SetXY($x_tab, $y_dernier);
 				// colonne du nom et prénom de l'élève
 				$pdf->Cell($lar_col_eleve, $hau_donnee, $tab_donnee[$nb_ligne_passe]['nom']." ".$tab_donnee[$nb_ligne_passe]['prenom'], 1, 0, 'C');
+				// classe ajout
+				$pdf->Cell($lar_col_classe, $hau_donnee, $tab_donnee[$nb_ligne_passe]['classe'], 1, 0, 'C');
 				// colonne de date retard
 				$pdf->Cell($lar_col_date_le, $hau_donnee, date_frc($tab_donnee[$nb_ligne_passe]['d_date_absence_eleve']), 1, 0, 'C');
 				// colonne de heure retard
@@ -755,6 +778,8 @@ if ($type=='R') {
 				$pdf->SetXY($x_tab, $y_dernier);
 				// colonne du nom et prénom de l'élève
 				$pdf->Cell($lar_col_eleve, $hau_donnee, $tab_donnee[$nb_ligne_passe]['nom']." ".$tab_donnee[$nb_ligne_passe]['prenom'], 1, 0, 'C');
+				// classe ajout
+				$pdf->Cell($lar_col_classe, $hau_donnee, $tab_donnee[$nb_ligne_passe]['classe'], 1, 0, 'C');
 				// colonne du debut date dispense
 				$pdf->Cell($lar_col_date_du, $hau_donnee, date_frc($tab_donnee[$nb_ligne_passe]['d_date_absence_eleve']), 1, 0, 'C');
 				// colonne de fin date dispense
@@ -789,6 +814,8 @@ if ($type=='R') {
 				$pdf->SetXY($x_tab, $y_dernier);
 				// colonne du nom et prénom de l'élève
 				$pdf->Cell($lar_col_eleve, $hau_donnee, $tab_donnee[$nb_ligne_passe]['nom']." ".$tab_donnee[$nb_ligne_passe]['prenom'], 1, 0, 'C');
+				// classe ajout
+				$pdf->Cell($lar_col_classe, $hau_donnee, $tab_donnee[$nb_ligne_passe]['classe'], 1, 0, 'C');
 				// colonne du debut date
 				$pdf->Cell($lar_col_date_du, $hau_donnee, date_frc($tab_donnee[$nb_ligne_passe]['d_date_absence_eleve']), 1, 0, 'C');
 				// colonne de heure début

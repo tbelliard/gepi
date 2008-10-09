@@ -877,7 +877,7 @@ $datejour = date('d/m/Y');
 $titre_page = "Gestion des absences";
 require_once("../../lib/header.inc");
 //**************** FIN EN-TETE *****************
-debug_var();
+//debug_var();
 ?>
 <script type="text/javascript" language="javascript">
 <!--

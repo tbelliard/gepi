@@ -170,6 +170,7 @@ $tri = (isset($_POST['tri']) AND $_POST['tri'] != '') ? $_POST['tri'] : 'nom, pr
 
 
 // ===== Les fonctions du module absences ====== //
+
 include("./functions.php");
 
 //Quelques variabales
@@ -233,78 +234,98 @@ while($test_eleves_cpe = mysql_fetch_array($query_eleves_cpe)){
 $requete_liste_motif = "SELECT init_motif_absence, def_motif_absence FROM ".$prefix_base."absences_motifs ORDER BY init_motif_absence ASC";
 
 //requete sur les champs des tableaux
+//Extension de la requete pour affichage des classes dans le tableau (DIDIER)
 if ($motif == "tous" and $classe_choix == "tous" AND $eleve_choix == "tous" AND $justifie == "1" AND $nonjustifie == "1") {
 
-	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves
+	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes , ".$prefix_base."classes
 	  								WHERE type_absence_eleve = '".$type."'
-									AND eleve_absence_eleve = login
+									AND eleve_absence_eleve = ".$prefix_base."eleves.login
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 							  			AND d_date_absence_eleve <= '".date_sql($au)."')
 							  			OR (a_date_absence_eleve >= '".date_sql($du)."'
 							  			AND a_date_absence_eleve <= '".date_sql($au)."'))
-								ORDER BY ".$tri." ASC";
+										AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
+										AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
+										GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve
+										ORDER BY ".$tri." ASC";
+
 
 } elseif ($motif == "tous" AND $classe_choix == "tous" AND $eleve_choix == "tous" AND $justifie == "1" AND $nonjustifie != "1") {
 
-	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves
+	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes , ".$prefix_base."classes
 									WHERE type_absence_eleve = '".$type."'
-									AND eleve_absence_eleve = login
+									AND eleve_absence_eleve = ".$prefix_base."eleves.login
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
 										AND a_date_absence_eleve <= '".date_sql($au)."'))
 									AND justify_absence_eleve = 'O'
-								ORDER BY ".$tri." ASC";
+								     AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
+										AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
+										GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve
+										ORDER BY ".$tri." ASC";
 
 }elseif ($motif == "tous" AND $classe_choix == "tous" AND $eleve_choix == "tous" AND $justifie != "1" AND $nonjustifie == "1") {
 
-	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves
+	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes , ".$prefix_base."classes
 									WHERE type_absence_eleve = '".$type."'
-									AND eleve_absence_eleve = login
+									AND eleve_absence_eleve = ".$prefix_base."eleves.login
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
 										AND a_date_absence_eleve <= '".date_sql($au)."'))
 									AND justify_absence_eleve != 'O'
-								ORDER BY ".$tri." ASC";
+								AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
+										AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
+										GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve
+										ORDER BY ".$tri." ASC";
 
 } elseif ($motif != "tous" AND $classe_choix == "tous" AND $eleve_choix == "tous" AND $justifie == "1" AND $nonjustifie == "1") { //Spécifie le motif
 
-	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves
+	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes , ".$prefix_base."classes
 									WHERE type_absence_eleve = '".$type."'
-									AND eleve_absence_eleve = login
+									AND eleve_absence_eleve = ".$prefix_base."eleves.login
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
 										AND a_date_absence_eleve <= '".date_sql($au)."'))
 									AND motif_absence_eleve = '".$motif."'
-								ORDER BY ".$tri." ASC";
+								AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
+										AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
+										GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve
+										ORDER BY ".$tri." ASC";
 
 } elseif ($motif != "tous" AND $classe_choix == "tous" AND $eleve_choix == "tous" AND $justifie == "1" AND $nonjustifie != "1") {
 
-	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves
+	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes , ".$prefix_base."classes
 									WHERE type_absence_eleve = '".$type."'
-									AND eleve_absence_eleve = login
+									AND eleve_absence_eleve = ".$prefix_base."eleves.login
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
 										AND a_date_absence_eleve <= '".date_sql($au)."'))
 									AND justify_absence_eleve = 'O'
 									AND motif_absence_eleve = '".$motif."'
-								ORDER BY ".$tri." ASC";
+								AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
+										AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
+										GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve
+										ORDER BY ".$tri." ASC";
 
 } elseif ($motif != "tous" AND $classe_choix == "tous" AND $eleve_choix == "tous" AND $justifie != "1" AND $nonjustifie == "1") {
 
-	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves
+	$requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes , ".$prefix_base."classes
 									WHERE type_absence_eleve = '".$type."'
-									AND eleve_absence_eleve = login
+									AND eleve_absence_eleve = ".$prefix_base."eleves.login
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
 										AND a_date_absence_eleve <= '".date_sql($au)."'))
 									AND justify_absence_eleve != 'O'
 									AND motif_absence_eleve = '".$motif."'
-								ORDER BY ".$tri." ASC";
+								AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
+										AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
+										GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve
+										ORDER BY ".$tri." ASC";
 
 }
 
@@ -516,16 +537,7 @@ if ($recherche == "afficher")
 	if ($classe_choix == "tous") {
 		$requete_liste_eleve = "SELECT login, nom, prenom FROM ".$prefix_base."eleves ORDER BY nom, prenom ASC";
 	} else {
-		$requete_liste_eleve = "SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom,
-										".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe,
-										".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.id, ".$prefix_base."classes.classe,
-										".$prefix_base."classes.nom_complet
-									FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes
-									WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
-									AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
-									AND ".$prefix_base."classes.id='".$classe_choix."'
-								GROUP BY ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom
-								ORDER BY nom, prenom ASC";
+		$requete_liste_eleve = "SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.id, ".$prefix_base."classes.classe, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' GROUP BY ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom ORDER BY nom, prenom ASC";
 	}
 	$requete_liste_classe = "SELECT id, classe, nom_complet FROM ".$prefix_base."classes ORDER BY nom_complet DESC";
 }
@@ -724,15 +736,25 @@ if ($type == "A" or $type == "tous")
 							}
 						}
 					}
+
 				}
 
-				if ( $telephone_pers != '' and $telephone_prof === '' ) { $telephone = $telephone_pers; }
-				if ( $telephone_pers === '' and $telephone_prof != '' ) { $telephone = $telephone_prof; }
-				if ( $telephone_pers != '' and $telephone_prof != '' ) { $telephone = $telephone_pers . ' ' . $telephone_prof; }
-				if ( $telephone_pers === '' and $telephone_prof === '' and $telephone_port != '' ) { $telephone = $telephone_port . ' ! surtaxe'; }
+				if ( $telephone_pers != '' and $telephone_prof === '' ) {
+					$telephone = $telephone_pers;
+				}elseif ( $telephone_pers === '' and $telephone_prof != '' ) {
+					$telephone = $telephone_prof;
+				}elseif ( $telephone_pers != '' and $telephone_prof != '' ) {
+					$telephone = $telephone_pers . ' ' . $telephone_prof;
+				}
+				if ( $telephone_pers === '' and $telephone_prof === '' and $telephone_port != '' ) {
+					$telephone = ''; //$telephone_port . ' ! surtaxe';
+				}
 
-				if ( $telephone_pers != '' or $telephone_prof != '' or $telephone_port != '' ) { $telephone = 'Téléphone responsable : '.$telephone; }
-				else { $telephone = 'Aucun numéro de téléphone disponible'; }
+				if ( $telephone_pers != '' or $telephone_prof != '' or $telephone_port != '' ) {
+					$telephone = 'Téléphone responsable : '.$telephone;
+				} else {
+					$telephone = 'Aucun numéro de téléphone disponible';
+				}
 
 				echo $telephone . $ident_resp . $telephone_port;
 
@@ -750,19 +772,24 @@ if ($type == "A" or $type == "tous")
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
   <table style="margin: auto; width: 600px;" border="0" cellspacing="2" cellpadding="0">
-    <tr>
-      <td colspan="5" class="titre_tableau_gestion" nowrap><b>Absence</b></td>
+     <tr>
+	<? /* modification tableau pour ajout colonne classe et motif  didier   */ ?>
+      <td colspan="7" class="titre_tableau_gestion" nowrap><b>Absence</b></td>
     </tr>
     <tr class="fond_vert">
-      <td rowspan="2" class="norme_absence_blanc">Nom Pr&eacute;nom</td>
-      <td colspan="2" class="norme_absence_blanc">Date</td>
-      <td colspan="2" class="norme_absence_blanc">Heure</td>
+<?/* Ajout d'une possibilité de tri sur les colonnes en mode afficher  didier*/ ?>
+      <td rowspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='nom, prenom';document.form1.submit()">Nom Pr&eacute;nom</a><?php } else {echo 'Nom Pr&eacute;nom';}?></td>
+	  <td rowspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='classe';document.form1.submit()">Classe</a><?php } else {echo 'Classe';}?></td>
+      <td colspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='d_date_absence_eleve';document.form1.submit()">Date</a><?php } else {echo 'Date';}?></td>
+      <td colspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='d_heure_absence_eleve';document.form1.submit()">Heure</a><?php } else {echo 'Heure';}?></td>
+	  <td rowspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='motif_absence_eleve';document.form1.submit()">Motif</a><?php } else {echo 'Motif';}?></td>
     </tr>
     <tr class="fond_vert">
       <td class="norme_absence_blanc">Du</td>
       <td class="norme_absence_blanc">Au</td>
       <td class="norme_absence_blanc">Debut</td>
       <td class="norme_absence_blanc">Fin</td>
+
     </tr>
     <?php
       $init = "";
@@ -781,12 +808,15 @@ if ($type == "A" or $type == "tous")
 				$ic=1;
 			}
     ?>
+	<? /*ajout des colonnes classe et motif */?>
     <tr class="<?php echo $couleur_cellule; ?>" onmouseover="showdiv(event, 'd<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hidediv('d<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
       <td class="norme_absence"><?php echo "<b>".strtoupper($data_recherche['nom'])."</b><br />".ucfirst($data_recherche['prenom']); ?></td>
+      <td class="norme_absence centre"><?php echo $data_recherche['classe']; ?></td>
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['d_date_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php if ($data_recherche['a_date_absence_eleve'] != "") { echo date_frc($data_recherche['a_date_absence_eleve']); } ?></td>
       <td class="norme_absence centre"><?php echo heure($data_recherche['d_heure_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo heure($data_recherche['a_heure_absence_eleve']); ?></td>
+      <td class="norme_absence centre"><?php echo $data_recherche['motif_absence_eleve']; ?></td>
     </tr>
     <?php
 		}
@@ -845,10 +875,23 @@ if ($type == "R" or $type == "tous") { ?>
 
 				if ( !empty($info_responsable) )
 				{
+					// L'affichage du numéro de téléphone du responsable 1
+					$nbre = count($info_responsable);
+					for ($i = 0 ; $i < $nbre ; $i++){
+						if ($info_responsable[$i]['resp_legal'] == '1') {
 
-					if ( $info_responsable[0]['tel_pers'] != '' ) { $telephone_pers = '<br />Pers. <strong>'.present_tel($info_responsable[0]['tel_pers']).'</strong> '; }
-					if ( $info_responsable[0]['tel_prof'] != ''  ) { $telephone_prof = '<br />Prof. <strong>'.present_tel($info_responsable[0]['tel_prof']).'</strong> '; }
-					if ( $info_responsable[0]['tel_port'] != ''  ) { $telephone_port = '<br />Port.<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="14" width="14" /> '.present_tel($info_responsable[0]['tel_port']); }
+							$ident_resp = ' <span style="font-size: 0.8em;">(' . $info_responsable[$i]['nom'] . ' ' . $info_responsable[$i]['prenom'] . ' : resp n° ' . $info_responsable[$i]['resp_legal'] . ')</span>';
+							if ( $info_responsable[$i]['tel_pers'] != '' ) {
+								$telephone_pers = '<br />Pers. <strong>'.present_tel($info_responsable[$i]['tel_pers']).'</strong> ';
+							}
+							if ( $info_responsable[$i]['tel_prof'] != ''  ) {
+								$telephone_prof = '<br />Prof. <strong>'.present_tel($info_responsable[$i]['tel_prof']).'</strong> ';
+							}
+							if ( $info_responsable[$i]['tel_port'] != ''  ) {
+								$telephone_port = '<br />Port.<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="14" width="14" /> '.present_tel($info_responsable[$i]['tel_port']);
+							}
+						}
+					}
 
 				}
 
@@ -857,13 +900,10 @@ if ($type == "R" or $type == "tous") { ?>
 				if ( $telephone_pers != '' and $telephone_prof != '' ) { $telephone = $telephone_pers . ' ' . $telephone_prof; }
 				if ( $telephone_pers === '' and $telephone_prof === '' and $telephone_port != '' ) { $telephone = $telephone_port . ' ! surtaxe'; }
 
-				if ( $telephone_pers != '' or $telephone_prof != '' or $telephone_port != '' ) {
-					$telephone = 'Téléphone responsable : '.$telephone;
-				} else {
-					$telephone = 'Aucun numéro de téléphone disponible';
-				}
+				if ( $telephone_pers != '' or $telephone_prof != '' or $telephone_port != '' ) { $telephone = 'Téléphone responsable : '.$telephone; }
+				else { $telephone = 'Aucun numéro de téléphone disponible'; }
 
-				echo $telephone;
+				echo $telephone . $ident_resp . $telephone_port;
 
 		  		?>
                 </td>
@@ -874,15 +914,20 @@ if ($type == "R" or $type == "tous") { ?>
 <?php	}
 	} ?>
 
+<? /* div de centrage du tableau pour ie5  correction oubli didier */?>
+<div style="text-align:center">
   <table style="margin: auto; width: 600px;" border="0" cellspacing="2" cellpadding="0">
     <tr>
-      <td colspan="4" class="titre_tableau_gestion" nowrap><b>Retard</b></td>
+	<? /* modification nombre colonnes didier */?>
+      <td colspan="5" class="titre_tableau_gestion" nowrap><b>Retard</b></td>
     </tr>
     <tr class="fond_vert">
-      <td class="norme_absence_blanc">Nom Prénom</td>
-      <td class="norme_absence_blanc">Le</td>
-      <td class="norme_absence_blanc">A</td>
-      <td class="norme_absence_blanc">Cause</td>
+	<? /* ajout possibilité de tri sur colonnes en mode afficher didier */?>
+      <td class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='nom, prenom';document.form1.submit()">Nom Pr&eacute;nom</a><?php } else {echo 'Nom Pr&eacute;nom';}?></td>
+      <td class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='classe';document.form1.submit()">Classe</a><?php } else {echo 'Le';}?></td>
+	  <td class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='d_date_absence_eleve';document.form1.submit()">Le</a><?php } else {echo 'Le';}?></td>
+      <td class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='d_heure_absence_eleve';document.form1.submit()">A</a><?php } else {echo 'A';}?></td>
+      <td class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='info_justify_absence_eleve';document.form1.submit()">Cause</a><?php } else {echo 'Cause';}?></td>
     </tr>
     <?php
     $init = "";
@@ -903,6 +948,8 @@ if ($type == "R" or $type == "tous") { ?>
     ?>
     <tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; showdiv(event, 'd<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hidediv('d<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
       <td class="norme_absence"><?php echo "<b>".strtoupper($data_recherche['nom'])."</b><br />".ucfirst($data_recherche['prenom']); ?></td>
+      <? /* ajout colonne classe didier */ ?>
+	  <td class="norme_absence centre"><?php echo $data_recherche['classe']; ?></td>
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['d_date_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo heure($data_recherche['d_heure_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo $data_recherche['info_justify_absence_eleve']; ?></td>
@@ -952,10 +999,23 @@ if ($type == "D" or $type == "tous") { ?>
 
 				if ( !empty($info_responsable) )
 				{
+					// L'affichage du numéro de téléphone du responsable 1
+					$nbre = count($info_responsable);
+					for ($i = 0 ; $i < $nbre ; $i++){
+						if ($info_responsable[$i]['resp_legal'] == '1') {
 
-					if ( $info_responsable[0]['tel_pers'] != '' ) { $telephone_pers = '<br />Pers. <strong>'.present_tel($info_responsable[0]['tel_pers']).'</strong> '; }
-					if ( $info_responsable[0]['tel_prof'] != ''  ) { $telephone_prof = '<br />Prof. <strong>'.present_tel($info_responsable[0]['tel_prof']).'</strong> '; }
-					if ( $info_responsable[0]['tel_port'] != ''  ) { $telephone_port = '<br />Port.<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="14" width="14" /> '.present_tel($info_responsable[0]['tel_port']); }
+							$ident_resp = ' <span style="font-size: 0.8em;">(' . $info_responsable[$i]['nom'] . ' ' . $info_responsable[$i]['prenom'] . ' : resp n° ' . $info_responsable[$i]['resp_legal'] . ')</span>';
+							if ( $info_responsable[$i]['tel_pers'] != '' ) {
+								$telephone_pers = '<br />Pers. <strong>'.present_tel($info_responsable[$i]['tel_pers']).'</strong> ';
+							}
+							if ( $info_responsable[$i]['tel_prof'] != ''  ) {
+								$telephone_prof = '<br />Prof. <strong>'.present_tel($info_responsable[$i]['tel_prof']).'</strong> ';
+							}
+							if ( $info_responsable[$i]['tel_port'] != ''  ) {
+								$telephone_port = '<br />Port.<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="14" width="14" /> '.present_tel($info_responsable[$i]['tel_port']);
+							}
+						}
+					}
 
 				}
 
@@ -967,7 +1027,7 @@ if ($type == "D" or $type == "tous") { ?>
 				if ( $telephone_pers != '' or $telephone_prof != '' or $telephone_port != '' ) { $telephone = 'Téléphone responsable : '.$telephone; }
 				else { $telephone = 'Aucun numéro de téléphone disponible'; }
 
-				echo $telephone;
+				echo $telephone . $ident_resp . $telephone_port;
 
 		  		?>
                 </td>
@@ -982,12 +1042,15 @@ if ($type == "D" or $type == "tous") { ?>
 <div style="text-align:center">
   <table style="margin: auto; width: 600px;" border="0" cellspacing="2" cellpadding="0">
     <tr>
-      <td colspan="4" class="titre_tableau_gestion" nowrap><b>Dispense</b></td>
+	<? /* modification nombre colonne pour ajout classe didier */ ?>
+      <td colspan="5" class="titre_tableau_gestion" nowrap><b>Dispense</b></td>
     </tr>
     <tr class="fond_vert">
-      <td rowspan="2" class="norme_absence_blanc">Nom Prénom</td>
-      <td colspan="2" class="norme_absence_blanc">Date</td>
-      <td rowspan="2" class="norme_absence_blanc">Horaire</td>
+	<? /* ajout possibilité de tri par colonne en mode afficher  et ajout colonne classe didier*/ ?>
+      <td rowspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='nom, prenom';document.form1.submit()">Nom Pr&eacute;nom</a><?php } else {echo 'Nom Pr&eacute;nom';}?></td>
+	  <td rowspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='classe';document.form1.submit()">Classe</a><?php } else {echo 'Classe';}?></td>
+      <td colspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='d_date_absence_eleve';document.form1.submit()">Date</a><?php } else {echo 'Date';}?></td>
+      <td rowspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='info_absence_eleve';document.form1.submit()">Horaire</a><?php } else {echo 'Horaire';}?></td>
     </tr>
     <tr class="fond_vert">
       <td class="norme_absence_blanc">Du</td>
@@ -1013,6 +1076,8 @@ if ($type == "D" or $type == "tous") { ?>
     ?>
     <tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; showdiv(event, 'd<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hidediv('d<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
       <td class="norme_absence"><?php echo "<b>".strtoupper($data_recherche['nom'])."</b><br />".ucfirst($data_recherche['prenom']); ?><br /></td>
+      <? /* ajout colonne classe didier*/ ?>
+	  <td class="norme_absence centre"><?php echo $data_recherche['classe']; ?></td>
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['d_date_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['a_date_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo $data_recherche['info_absence_eleve']; ?></td>
@@ -1071,10 +1136,23 @@ if ($type == "I" or $type == "tous") { ?>
 
 				if ( !empty($info_responsable) )
 				{
+					// L'affichage du numéro de téléphone du responsable 1
+					$nbre = count($info_responsable);
+					for ($i = 0 ; $i < $nbre ; $i++){
+						if ($info_responsable[$i]['resp_legal'] == '1') {
 
-					if ( $info_responsable[0]['tel_pers'] != '' ) { $telephone_pers = '<br />Pers. <strong>'.present_tel($info_responsable[0]['tel_pers']).'</strong> '; }
-					if ( $info_responsable[0]['tel_prof'] != ''  ) { $telephone_prof = '<br />Prof. <strong>'.present_tel($info_responsable[0]['tel_prof']).'</strong> '; }
-					if ( $info_responsable[0]['tel_port'] != ''  ) { $telephone_port = '<br />Port.<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="14" width="14" /> '.present_tel($info_responsable[0]['tel_port']); }
+							$ident_resp = ' <span style="font-size: 0.8em;">(' . $info_responsable[$i]['nom'] . ' ' . $info_responsable[$i]['prenom'] . ' : resp n° ' . $info_responsable[$i]['resp_legal'] . ')</span>';
+							if ( $info_responsable[$i]['tel_pers'] != '' ) {
+								$telephone_pers = '<br />Pers. <strong>'.present_tel($info_responsable[$i]['tel_pers']).'</strong> ';
+							}
+							if ( $info_responsable[$i]['tel_prof'] != ''  ) {
+								$telephone_prof = '<br />Prof. <strong>'.present_tel($info_responsable[$i]['tel_prof']).'</strong> ';
+							}
+							if ( $info_responsable[$i]['tel_port'] != ''  ) {
+								$telephone_port = '<br />Port.<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="14" width="14" /> '.present_tel($info_responsable[$i]['tel_port']);
+							}
+						}
+					}
 
 				}
 
@@ -1083,13 +1161,10 @@ if ($type == "I" or $type == "tous") { ?>
 				if ( $telephone_pers != '' and $telephone_prof != '' ) { $telephone = $telephone_pers . ' ' . $telephone_prof; }
 				if ( $telephone_pers === '' and $telephone_prof === '' and $telephone_port != '' ) { $telephone = $telephone_port . ' ! surtaxe'; }
 
-				if ( $telephone_pers != '' or $telephone_prof != '' or $telephone_port != '' ) {
-					$telephone = 'Téléphone responsable : '.$telephone;
-				} else {
-					$telephone = 'Aucun numéro de téléphone disponible';
-				}
+				if ( $telephone_pers != '' or $telephone_prof != '' or $telephone_port != '' ) { $telephone = 'Téléphone responsable : '.$telephone; }
+				else { $telephone = 'Aucun numéro de téléphone disponible'; }
 
-				echo $telephone;
+				echo $telephone . $ident_resp . $telephone_port;
 
 		  		?>
 				</td>
@@ -1104,14 +1179,17 @@ if ($type == "I" or $type == "tous") { ?>
 <div style="text-align:center">
 	<table style="margin: auto; width: 600px;" border="0" cellspacing="2" cellpadding="0">
 		<tr>
-			<td colspan="4" class="titre_tableau_gestion" nowrap><b>Infirmerie</b></td>
-		</tr>
-		<tr class="fond_vert">
-			<td class="norme_absence_blanc centre">Nom Prénom</td>
-			<td class="norme_absence_blanc centre">Date</td>
-			<td class="norme_absence_blanc centre">De</td>
-			<td class="norme_absence_blanc centre">A</td>
-		</tr>
+		<?php /* modification nombre colonnes didier */ ?>
+      <td colspan="5" class="titre_tableau_gestion" nowrap><b>Infirmerie</b></td>
+    </tr>
+    <tr class="fond_vert">
+	<?php /* ajout du tri par colonne en mode afficher didier */ ?>
+      <td class="norme_absence_blanc centre"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='nom, prenom';document.form1.submit()">Nom Pr&eacute;nom</a><?php } else {echo 'Nom Pr&eacute;nom';}?></td>
+	  <td class="norme_absence_blanc centre"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='classe';document.form1.submit()">Classe</a><?php } else {echo 'Classe';}?></td>
+      <td class="norme_absence_blanc centre"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='d_date_absence_eleve';document.form1.submit()">Date</a><?php } else {echo 'Date';}?></td>
+      <td class="norme_absence_blanc centre"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='d_heure_absence_eleve';document.form1.submit()">De</a><?php } else {echo 'De';}?></td>
+      <td class="norme_absence_blanc centre"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='a_heure_absence_eleve';document.form1.submit()">A</a><?php } else {echo 'A';}?></td>
+    </tr>
 	<?php
 	$init = "";
 	$init_v = "";
@@ -1131,6 +1209,8 @@ if ($type == "I" or $type == "tous") { ?>
     ?>
 		<tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; showdiv(event, 'd<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hidediv('d<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
 			<td class="norme_absence"><?php echo "<b>".strtoupper($data_recherche['nom'])."</b><br />".ucfirst($data_recherche['prenom']); ?></td>
+            <?php /* ajout colonne classe didier */ ?>
+			<td class="norme_absence centre"><?php echo $data_recherche['classe']; ?></td>
 			<td class="norme_absence centre"><?php echo date_frc($data_recherche['d_date_absence_eleve']); ?></td>
 			<td class="norme_absence centre"><?php echo heure($data_recherche['d_heure_absence_eleve']); ?></td>
 			<td class="norme_absence centre"><?php echo heure($data_recherche['a_heure_absence_eleve']); ?></td>

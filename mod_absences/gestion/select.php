@@ -73,12 +73,13 @@ while($test_eleves_cpe = mysql_fetch_array($query_eleves_cpe)){
 
 $requete_liste_classe = "SELECT id, classe, nom_complet FROM classes ORDER BY nom_complet ASC, classe DESC";
 if ($classe_choix == "tous"){
+	// On récupère tous les élèves qu'on range avec le nom de leur classe dans l'ordre alpha
 	$requete_liste_eleve = "SELECT e.login, e.nom, e.prenom, c.classe
 									FROM eleves e, j_eleves_classes jec, classes c
 									WHERE e.login = jec.login
 									AND jec.id_classe = c.id
 									GROUP BY e.nom, e.prenom
-									ORDER BY id_classe, nom, prenom ASC";
+									ORDER BY nom, prenom ASC";
 }else{
     settype($classe_choix,"integer");
     $requete_liste_eleve = "SELECT eleves.login, eleves.nom, eleves.prenom, j_eleves_classes.login, j_eleves_classes.id_classe, j_eleves_classes.periode, classes.id, classes.classe, classes.nom_complet FROM eleves, j_eleves_classes, classes WHERE eleves.login=j_eleves_classes.login AND j_eleves_classes.id_classe=classes.id AND classes.id='".$classe_choix."' GROUP BY eleves.nom, eleves.prenom ORDER BY nom, prenom ASC";

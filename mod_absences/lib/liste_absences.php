@@ -69,7 +69,7 @@ if (!isset($_GET['id_eleve']))
 <?php echo $titre; ?>
 </div>
 <?php
-//affiche s'il y a quelle que chose pour l'élève
+//affiche s'il y a quelque chose pour l'élève
 $cpt_eleves = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$_GET['id_eleve']."' and type_absence_eleve = '".$_GET['type']."'"),0);
 if ($cpt_eleves!=0) {
 ?>
@@ -82,7 +82,31 @@ if ($cpt_eleves!=0) {
     while ($donnee_dispense = mysql_fetch_array($execution_dispense))
     { ?>
     <tr>
-    <td><?php if($donnee_dispense['d_date_absence_eleve'] != $donnee_dispense['a_date_absence_eleve']) { ?>du<?php } else { ?>le<?php } echo " <b>".date_frc($donnee_dispense['d_date_absence_eleve'])."</b>"; if($donnee_dispense['d_date_absence_eleve'] != $donnee_dispense['a_date_absence_eleve']) { ?><br />au <?php echo date_frc($donnee_dispense['a_date_absence_eleve']); } if($_GET['type'] == "D") { ?><br /><?php echo $donnee_dispense['info_absence_eleve']; } if($_GET['type'] == "I" or $_GET['type'] == "A") { ?><br /><?php echo "de ".$donnee_dispense['d_heure_absence_eleve']." à ".$donnee_dispense['a_heure_absence_eleve']; } if($_GET['type'] == "R") { ?><br /><?php echo "à ".$donnee_dispense['d_heure_absence_eleve']."<br />".motif_de($donnee_dispense['motif_absence_eleve']); } ?><br />&nbsp;</td>
+		<td>
+		<?php
+		if($donnee_dispense['d_date_absence_eleve'] != $donnee_dispense['a_date_absence_eleve']) {
+			?>du<?php
+		} else {
+			?>le<?php
+		}
+		echo " <b>".date_frc($donnee_dispense['d_date_absence_eleve'])."</b>";
+		if($donnee_dispense['d_date_absence_eleve'] != $donnee_dispense['a_date_absence_eleve']) {
+			?><br />au <?php
+			echo date_frc($donnee_dispense['a_date_absence_eleve']);
+		}
+		if($_GET['type'] == "D") {
+			?><br /><?php echo $donnee_dispense['info_absence_eleve'];
+		}
+		if($_GET['type'] == "I" or $_GET['type'] == "A") {
+			?><br /><?php
+			echo "de ".$donnee_dispense['d_heure_absence_eleve']." à ".$donnee_dispense['a_heure_absence_eleve']."<br />".motif_de($donnee_dispense['motif_absence_eleve']);
+		}
+		if($_GET['type'] == "R" ) {
+			?><br /><?php
+			echo "à ".$donnee_dispense['d_heure_absence_eleve']."<br />".motif_de($donnee_dispense['motif_absence_eleve']);
+		} //modif didier motif absence?>
+		<br />&nbsp;
+		</td>
     </tr>
 <?php } ?>
      </thead>
