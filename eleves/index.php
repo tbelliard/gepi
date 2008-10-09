@@ -708,9 +708,13 @@ if (!isset($quelles_classes)) {
 
 
 		// =====================================================
+		/*
 		$sql="SELECT 1=1 FROM eleves e
 			LEFT JOIN responsables2 r ON e.ele_id=r.ele_id
 			where r.ele_id is NULL;";
+		*/
+		$sql="SELECT DISTINCT e.login FROM eleves e,j_eleves_classes jec
+				WHERE (e.login=jec.login AND e.ele_id NOT IN (SELECT ele_id FROM responsables2));";
 		$test_no_resp=mysql_query($sql);
 		//$test_no_resp_effectif=mysql_num_rows($test_no_resp)-mysql_num_rows($test_na);
 		$test_no_resp_effectif=mysql_num_rows($test_no_resp);
