@@ -405,6 +405,9 @@ Evitez les 'fantaisies';o).</p>
 			$group=get_group($id_grp[$i]);
 			echo "<p><b>".htmlentities($group['name'])." (<i>".htmlentities($group['matiere']['nom_complet'])." en ".$group["classlist_string"]."</i>)"."</b><br />\n";
 
+            affiche_debug("\$id_grp[$i]=$id_grp[$i]<br />");
+            affiche_debug("\$id_grp_fut[$i]=$id_grp_fut[$i]<br />");
+
 			if($id_grp[$i]==$id_grp_fut[$i]) {
 				// C'était un groupe partagé entre les deux classes
 				echo "L'enseignement était partagé entre les deux classes.<br />\n";
@@ -617,7 +620,9 @@ Evitez les 'fantaisies';o).</p>
 					mise_a_jour_moyennes_conteneurs($group, $periode_num,$lig_ccn->id_cahier_notes,$lig_ccn->id_cahier_notes,$arret);
 					recherche_enfant($lig_ccn->id_cahier_notes, $group, $periode_num, $lig_ccn->id_cahier_notes);
 
-					if($id_grp_fut[$i]!='') {
+					//if($id_grp_fut[$i]!='') {
+                    // $group_fut, $id_racine_fut ne sont renseignés que s'il y avait des notes dans l'ancien carnet de notes... donc des notes à transférer...
+					if(($id_grp_fut[$i]!='')&&(isset($group_fut))&&(isset($id_racine_fut))) {
 						$arret = 'no';
 						affiche_debug("Futur: mise_a_jour_moyennes_conteneurs($group_fut, $periode_num,$id_racine_fut,$id_racine_fut,$arret);<br />");
 						mise_a_jour_moyennes_conteneurs($group_fut, $periode_num,$id_racine_fut,$id_racine_fut,$arret);
