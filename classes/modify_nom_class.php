@@ -199,10 +199,11 @@ require_once("../lib/header.inc");
 $id_class_prec=0;
 $id_class_suiv=0;
 
+$chaine_options_classes="";
 if (isset($id_classe)) {
 	// =================================
 	// AJOUT: boireaus
-	$chaine_options_classes="";
+	//$chaine_options_classes="";
 	$sql="SELECT id, classe FROM classes ORDER BY classe";
 	$res_class_tmp=mysql_query($sql);
 	if(mysql_num_rows($res_class_tmp)>0){
