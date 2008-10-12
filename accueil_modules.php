@@ -128,6 +128,11 @@ $chemin[] = "/mod_ateliers/ateliers_config.php";
 $titre[] = "Ateliers";
 $expli[] = "Gestion et mise en place d'ateliers de type conférences (gestion des ateliers, des intervenants, des inscriptions...).";
 
+// Module discipline
+$chemin[] = "/mod_discipline/discipline_admin.php";
+$titre[] = "Discipline";
+$expli[] = "Pour gérer le module Discipline.";
+
 $nb_ligne = count($chemin);
 //
 // Outils d'administration
