@@ -41,6 +41,13 @@ $autorise[6] = array('/cahier_texte_admin/visa_ct.php');
 $autorise[7] = array('/edt_organisation/index_edt.php');
 $autorise[8] = array('/tous_les_edt');
 $autorise[9] = array('/messagerie/index.php');
+$autorise[10]= array('/eleves/visu_eleve.php');
+$autorise[11]= array('/voir_resp');
+$autorise[12]= array('/voir_ens');
+$autorise[13]= array('/voir_notes');
+$autorise[14]= array('/voir_bulle');
+$autorise[15]= array('/voir_abs');
+$autorise[16]= array('/mod_trombinoscopes/trombinoscopes.php');
 
 $iter = count($autorise);
 $nbre_menu = $iter - 1;
@@ -55,5 +62,13 @@ $menu_accueil[6] = array('Signer les cahiers de textes', 'Signer (viser) les cah
 $menu_accueil[7] = array('Emploi du temps', 'Visionner les emplois du temps de tous les élèves', 'ee');
 $menu_accueil[8] = array('Emploi du temps', 'Visionner tous les emplois du temps de l\'établissement', 'te');
 $menu_accueil[9] = array('Panneau d\'affichage', 'Gérer les messages à afficher sur la page d\'accueil des utilisateurs.', 'pa');
+$menu_accueil[10] = array('Fiches élèves', 'Accès général sur les fiches des élèves', 've');
+$menu_accueil[11] = array('Fiches : ', 'Fiches : voir les responsables', 'vre');
+$menu_accueil[12] = array('Fiches : ', 'Fiches : voir les enseignements', 'vee');
+$menu_accueil[13] = array('Fiches : ', 'Fiches : voir les relevés de notes', 'vne');
+$menu_accueil[14] = array('Fiches : ', 'Fiches : voir les bulletins simplifiés', 'vbe');
+$menu_accueil[15] = array('Fiches : ', 'Fiches : voir les absences', 'vae');
+$menu_accueil[16] = array('Trombinoscope', 'Trombinoscope des élèves', 'tr');
+
 
 ?>

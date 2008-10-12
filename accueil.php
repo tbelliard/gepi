@@ -1693,8 +1693,12 @@ if ($_SESSION["statut"] == 'autre') {
 		}
 
 		if ($rep_f == 'V') {
-			if ($autorise[$a][0] == "/tous_les_edt") {
+
+			$test = explode(".", $autorise[$a][0]); // On teste pour voir s'il y a un .php à la fin de la chaîne
+
+			if (!isset($test[1])) {
 				// rien, la vérification se fait dans le module EdT
+				// ou alors dans les autres modules spécifiés
 			}else{
 				if($a == 4){
 					// Dans le cas de la saisie des absences, il faut ajouter une variable pour le GET

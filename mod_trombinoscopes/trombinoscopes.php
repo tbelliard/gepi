@@ -232,7 +232,8 @@ function reactiver(mavar) {
 			//if ( $_SESSION['statut'] != 'professeur' ) { $classe = 'toutes'; }
 			if(($_SESSION['statut']=='scolarite')||
 				($_SESSION['statut']=='cpe')||
-				($_SESSION['statut']=='administrateur')
+				($_SESSION['statut']=='administrateur')||
+				($_SESSION['statut']=='autre')
 			) {
 				$classe = 'toutes';
 			}
@@ -304,7 +305,8 @@ function reactiver(mavar) {
 			//if ( $_SESSION['statut'] != 'professeur' ) { $groupe = 'toutes'; }
 			if(($_SESSION['statut']=='scolarite')||
 				($_SESSION['statut']=='cpe')||
-				($_SESSION['statut']=='administrateur')
+				($_SESSION['statut']=='administrateur')||
+				($_SESSION['statut']=='autre')
 			) {
 				$groupe = 'toutes';
 			}

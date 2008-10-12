@@ -167,6 +167,13 @@ if ($action == 'modifier') {
 		$test[$a][7] = isset($_POST["ee|".$b]) ? $_POST["ee|".$b] : NULL;
 		$test[$a][8] = isset($_POST["te|".$b]) ? $_POST["te|".$b] : NULL;
 		$test[$a][9] = isset($_POST["pa|".$b]) ? $_POST["pa|".$b] : NULL;
+		$test[$a][10] = isset($_POST["ve|".$b]) ? $_POST["ve|".$b] : NULL;
+		$test[$a][11] = isset($_POST["vre|".$b]) ? $_POST["vre|".$b] : NULL;
+		$test[$a][12] = isset($_POST["vee|".$b]) ? $_POST["vee|".$b] : NULL;
+		$test[$a][13] = isset($_POST["vne|".$b]) ? $_POST["vne|".$b] : NULL;
+		$test[$a][14] = isset($_POST["vbe|".$b]) ? $_POST["vbe|".$b] : NULL;
+		$test[$a][15] = isset($_POST["vae|".$b]) ? $_POST["vae|".$b] : NULL;
+		$test[$a][16] = isset($_POST["tr|".$b]) ? $_POST["tr|".$b] : NULL;
 
 		// On assure les différents traitements
 		if ($test[$a][0] == 'on') {

@@ -184,6 +184,9 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	elseif(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='secours')) {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
+	elseif($_SESSION['statut'] == 'autre'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
 	//echo "$sql<br />";
 	$res_clas=mysql_query($sql);
 	if(mysql_num_rows($res_clas)>0) {
@@ -671,6 +674,33 @@ Patientez pendant l'extraction des données... merci.
 					}
 				}
 			}
+		}elseif($_SESSION['statut'] == 'autre'){
+
+			// On récupère les droits de ce statuts pour savoir ce qu'on peut afficher
+			$sql_d = "SELECT * FROM droits_speciaux WHERE id_statut = '" . $_SESSION['statut_special_id'] . "'";
+			$query_d = mysql_query($sql_d);
+			$auth_other = array();
+
+			while($rep_d = mysql_fetch_array($query_d)){
+
+				//print_r($rep_d);
+				if ($rep_d['nom_fichier'] == '/voir_resp' AND $rep_d['autorisation'] == 'V') {
+					$acces_responsables = "y";
+				}
+				if ($rep_d['nom_fichier'] == '/voir_ens' AND $rep_d['autorisation'] == 'V') {
+					$acces_enseignements = "y";
+				}
+				if ($rep_d['nom_fichier'] == '/voir_notes' AND $rep_d['autorisation'] == 'V') {
+					$acces_releves = "y";
+				}if ($rep_d['nom_fichier'] == '/voir_bulle' AND $rep_d['autorisation'] == 'V') {
+					$acces_bulletins = "y";
+				}
+				if ($rep_d['nom_fichier'] == '/voir_abs' AND $rep_d['autorisation'] == 'V') {
+					$acces_absences="y";
+				}
+
+			}
+
 		}
 
 		// A REVOIR par la suite
