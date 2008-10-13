@@ -695,45 +695,55 @@ function DecocheCheckbox() {
 
 		//$requete_model = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin');
 		$requete_model = mysql_query("SELECT id_model_bulletin, valeur FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY id_model_bulletin;");
+        if(mysql_num_rows($requete_model)==0) {
+            $message_alerte="<p style='text-align:center; color:red;'>Il semble qu'aucun modèle ne soit défini.<br />Ce n'est pas normal.<br />";
+            if($_SESSION['login']=='administrateur') {
+                $message_alerte.="Vous devriez effectuer/forcer une <a href='../utilitaires/maj.php'>mise à jour de la base</a> pour corriger.<br />Prenez tout de même soin de vérifier que personne d'autre que vous n'est connecté.\n";
+            }
+            else {
+                $message_alerte.="Contactez l'administrateur pour qu'il effecute une mise à jour de la base.\n";
+            }
+            $message_alerte.="</p>\n";
+        }
+        else {
+            while($data_model = mysql_fetch_array($requete_model)) {
+                if ($i === '1') { $i = '2'; $couleur_cellule = '#CCCCCC'; } else { $couleur_cellule = '#DEDEDE'; $i = '1'; }
 
-		while($data_model = mysql_fetch_array($requete_model)) {
-			if ($i === '1') { $i = '2'; $couleur_cellule = '#CCCCCC'; } else { $couleur_cellule = '#DEDEDE'; $i = '1'; }
+                echo "<tr>\n";
 
-			echo "<tr>\n";
+                echo "<td style='vertical-align: top; white-space: nowrap; text-align: left; width: 12px; background: $couleur_cellule;'>\n";
+                //echo "<input name='selection[$nb_modele]' id='sel$nb_modele' value='1' type='checkbox' />\n";
+                echo "<input name='selection[$nb_modele]' id='sel$nb_modele' value='".$data_model['id_model_bulletin']."' type='checkbox' />\n";
+                echo "<input name='id_model_bulletin[$nb_modele]' value='".$data_model['id_model_bulletin']."' type='hidden' />\n";
 
-			echo "<td style='vertical-align: top; white-space: nowrap; text-align: left; width: 12px; background: $couleur_cellule;'>\n";
-			//echo "<input name='selection[$nb_modele]' id='sel$nb_modele' value='1' type='checkbox' />\n";
-			echo "<input name='selection[$nb_modele]' id='sel$nb_modele' value='".$data_model['id_model_bulletin']."' type='checkbox' />\n";
-			echo "<input name='id_model_bulletin[$nb_modele]' value='".$data_model['id_model_bulletin']."' type='hidden' />\n";
+                $varcoche = $varcoche."'sel".$nb_modele."',";
 
-			$varcoche = $varcoche."'sel".$nb_modele."',";
+                echo "</td>\n";
 
-			echo "</td>\n";
+                echo "<td style='vertical-align: top; white-space: nowrap; text-align: left; width: 50%; background: $couleur_cellule'>\n";
+                //echo ucfirst($data_model['nom_model_bulletin']);
+                echo ucfirst($data_model['valeur']);
+                echo "</td>\n";
 
-			echo "<td style='vertical-align: top; white-space: nowrap; text-align: left; width: 50%; background: $couleur_cellule'>\n";
-			//echo ucfirst($data_model['nom_model_bulletin']);
-			echo ucfirst($data_model['valeur']);
-			echo "</td>\n";
+                echo "<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 25%; background: $couleur_cellule'>\n";
+                echo "[<a href='".$_SERVER['PHP_SELF']."?modele=aff&amp;action_model=modifier&amp;modele_action=".$data_model['id_model_bulletin']."'>\n";
+                echo "Modifier\n";
+                echo "</a>]\n";
+                echo "</td>\n";
 
-			echo "<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 25%; background: $couleur_cellule'>\n";
-			echo "[<a href='".$_SERVER['PHP_SELF']."?modele=aff&amp;action_model=modifier&amp;modele_action=".$data_model['id_model_bulletin']."'>\n";
-			echo "Modifier\n";
-			echo "</a>]\n";
-			echo "</td>\n";
+                echo "<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 25%; background: $couleur_cellule;'>\n";
+                if($data_model['id_model_bulletin']!='1') {
+                    echo "[<a href='".$_SERVER['PHP_SELF']."?modele=aff&amp;action_model=supprimer&amp;modele_action=".$data_model['id_model_bulletin']."'>Supprimer</a>]";
+                }
+                else {
+                    echo "&nbsp;";
+                }
+                echo "</td>\n";
+                echo "</tr>\n";
 
-			echo "<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 25%; background: $couleur_cellule;'>\n";
-			if($data_model['id_model_bulletin']!='1') {
-				echo "[<a href='".$_SERVER['PHP_SELF']."?modele=aff&amp;action_model=supprimer&amp;modele_action=".$data_model['id_model_bulletin']."'>Supprimer</a>]";
-			}
-			else {
-				echo "&nbsp;";
-			}
-			echo "</td>\n";
-			echo "</tr>\n";
-
-			$nb_modele = $nb_modele + 1;
-		}
-
+                $nb_modele = $nb_modele + 1;
+            }
+        }
 		$varcoche = $varcoche."'form3'";
 
 		echo "<tr>\n";
@@ -757,6 +767,11 @@ function DecocheCheckbox() {
 		}
 
 		echo "</center>\n";
+
+        if(isset($message_alerte)) {
+            echo $message_alerte;
+        }
+
 		echo "<br />\n";
 		echo "<br />\n";
 		echo "<hr />\n";
