@@ -2201,7 +2201,13 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 				fich_debug_bull("\n");
 				fich_debug_bull("Catégorie précédente: \$categorie_passe=$categorie_passe\n");
-				fich_debug_bull("Catégorie courante :  \$tab_bull['nom_cat_complet'][$m]=".$tab_bull['nom_cat_complet'][$m]."\n");
+				//fich_debug_bull("Catégorie courante :  \$tab_bull['nom_cat_complet'][$m]=".$tab_bull['nom_cat_complet'][$m]."\n");
+				if(isset($tab_bull['nom_cat_complet'][$m])) {
+                  fich_debug_bull("Catégorie courante :  \$tab_bull['nom_cat_complet'][$m]=".$tab_bull['nom_cat_complet'][$m]."\n");
+                }
+                else {
+                  fich_debug_bull("Catégorie courante :  \$tab_bull['nom_cat_complet'][$m] non affectée.\n");
+                }
 				fich_debug_bull("\$tab_bull['groupe'][$m]['matiere']['matiere']=".$tab_bull['groupe'][$m]['matiere']['matiere']."\n");
 				fich_debug_bull("\$X_bloc_matiere=$X_bloc_matiere\n");
 				fich_debug_bull("\$Y_decal=$Y_decal\n");
