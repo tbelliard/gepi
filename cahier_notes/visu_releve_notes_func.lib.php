@@ -218,7 +218,9 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 	// et le passer via global
 	//================================
 
-
+    // Pour retourner à la ligne entre les devoirs dans le cas où le nom ou l'appréciation du devoir est demandée:
+    $retour_a_la_ligne="y";
+    // Passer à "n" pour désactiver le retour à la ligne.
 
 
 /*
@@ -677,6 +679,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			// sans bloc adresse responsable
 			//-------------------------------
 
+            echo "<div align='center'>\n";
 			echo "<table width='$releve_largeurtableau' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'";
 			echo " summary=\"Tableau de l'entête\"";
 			echo ">\n";
@@ -818,6 +821,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			echo "</p>\n";
 
 			echo "</td>\n</tr>\n</table>\n";
+            echo "</div>\n";
 			//-------------------------------
 			// Fin de l'en-tête
 		}
@@ -844,6 +848,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		$larg_col1 = $releve_col_matiere_largeur;
 		$larg_col2 = $larg_tab - $larg_col1;
 		//echo "<table width=\"$larg_tab\" class='boireaus' border=1 cellspacing=3 cellpadding=3>\n";
+        echo "<div align='center'>\n";
 		echo "<table width=\"$larg_tab\"$releve_class_bordure border='1' cellspacing='3' cellpadding='3'";
 		echo "summary=\"Tableau des notes\" ";
 		echo ">\n";
@@ -941,7 +946,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 					// Si une "Note" doit être affichée
 					if ($affiche_note != '') {
 						if ($tiret == "yes") {
-							if (($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y")) {
+							if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
 								echo "<br />";
 							}
 							else {
@@ -1125,6 +1130,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 		}
 		//================================
+        echo "</div>\n";
 
 
 		//================================
