@@ -1621,6 +1621,7 @@ else {
 				//echo "\$current_group[$j]['name']=".$current_group[$j]['name']."<br />";
 				//echo "\$current_group[$j]['matiere']['matiere']=".$current_group[$j]['matiere']['matiere']."<br />";
 				if(isset($current_group[$j]['matiere']['matiere'])) {
+                    /*
 					$sql="SELECT mc.id,
 								mc.nom_court,
 								mc.nom_complet,
@@ -1634,6 +1635,24 @@ else {
 								jmcc.categorie_id=mc.id AND
 								m.matiere='".$current_group[$j]['matiere']['matiere']."'
 							ORDER BY mc.priority, jmcc.priority, jmcc.categorie_id;";
+                    */
+							//ORDER BY jmcc.categorie_id, jmcc.priority, mc.priority;";
+					$sql="SELECT mc.id,
+								mc.nom_court,
+								mc.nom_complet,
+								jmcc.priority,
+								jmcc.affiche_moyenne
+							FROM j_matieres_categories_classes jmcc,
+								matieres_categories mc,
+                                j_groupes_classes jgc
+							WHERE jmcc.classe_id='$id_classe' AND
+                                  jgc.id_classe=jmcc.classe_id AND
+                                  jgc.categorie_id=jmcc.categorie_id AND
+								jmcc.categorie_id=mc.id AND
+								jgc.id_groupe='".$current_group[$j]['id']."'
+							ORDER BY mc.priority, jmcc.priority, jmcc.categorie_id;";
+                    //echo "\$current_group[$j]['matiere']['matiere']=".$current_group[$j]['matiere']['matiere']."<br />";
+                    //echo "$sql<br />";
 					$res_cat=mysql_query($sql);
 
 					if(mysql_num_rows($res_cat)>0) {
