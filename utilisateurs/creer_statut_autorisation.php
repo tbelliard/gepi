@@ -48,7 +48,8 @@ $autorise[12]= array('/voir_ens');
 $autorise[13]= array('/voir_notes');
 $autorise[14]= array('/voir_bulle');
 $autorise[15]= array('/voir_abs');
-$autorise[16]= array('/mod_trombinoscopes/trombinoscopes.php');
+$autorise[16]= array('/voir_anna');
+$autorise[17]= array('/mod_trombinoscopes/trombinoscopes.php');
 
 $iter = count($autorise);
 $nbre_menu = $iter - 1;
@@ -69,7 +70,8 @@ $menu_accueil[12] = array('Fiches : ', 'Fiches : voir les enseignements', 'vee')
 $menu_accueil[13] = array('Fiches : ', 'Fiches : voir les relevés de notes', 'vne');
 $menu_accueil[14] = array('Fiches : ', 'Fiches : voir les bulletins simplifiés', 'vbe');
 $menu_accueil[15] = array('Fiches : ', 'Fiches : voir les absences', 'vae');
-$menu_accueil[16] = array('Trombinoscope', 'Trombinoscope des élèves', 'tr');
+$menu_accueil[16] = array('Fiches : ', 'Fiches : voir année antérieure', 'anna');
+$menu_accueil[17] = array('Trombinoscope', 'Trombinoscope des élèves', 'tr');
 
 
 ?>

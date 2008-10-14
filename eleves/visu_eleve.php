@@ -696,7 +696,10 @@ Patientez pendant l'extraction des données... merci.
 					$acces_bulletins = "y";
 				}
 				if ($rep_d['nom_fichier'] == '/voir_abs' AND $rep_d['autorisation'] == 'V') {
-					$acces_absences="y";
+					$acces_absences = "y";
+				}
+				if ($rep_d['nom_fichier'] == '/voir_anna' AND $rep_d['autorisation'] == 'V') {
+					$acces_anna = "y";
 				}
 
 			}
