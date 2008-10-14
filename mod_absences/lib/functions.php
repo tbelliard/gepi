@@ -7,7 +7,7 @@ function classe_de($id_classe_eleve) {
     $requete_classe_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$id_classe_eleve."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id";
     $execution_classe_eleve = mysql_query($requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.mysql_error());
     $data_classe_eleve = mysql_fetch_array($execution_classe_eleve);
-	$id_classe_eleve = $data_classe_eleve['nom_complet']." (".$data_classe_eleve['classe'].")";
+	$id_classe_eleve = $data_classe_eleve['nom_complet'];
     return($id_classe_eleve);
 }
 
@@ -2013,9 +2013,12 @@ function tel_responsable($ele_id)
 	if($nombre_de_responsable != 0)
 	{
 			$cpt_parents = 0;
-			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."responsables2 r
-														WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id)
-													ORDER BY resp_legal DESC");
+			//$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."responsables2 r
+			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."responsables2 r, ".$prefix_base."resp_pers rp
+													LEFT JOIN  ".$prefix_base."resp_adr ra ON rp.adr_id=ra.adr_id
+													WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id )
+													ORDER BY resp_legal ASC");
+
 			while ($donner_parents = mysql_fetch_array($requete_parents))
 			{
 				$tel_responsable[$cpt_parents]['civilite'] = $donner_parents['civilite']; // nom du responsable suite
@@ -2025,6 +2028,9 @@ function tel_responsable($ele_id)
 				$tel_responsable[$cpt_parents]['tel_port'] = $donner_parents['tel_port']; // ville du responsable
 				$tel_responsable[$cpt_parents]['tel_prof'] = $donner_parents['tel_prof']; // code postal du responsable
 				$tel_responsable[$cpt_parents]['resp_legal'] = $donner_parents['resp_legal']; // code représente légam
+				$tel_responsable[$cpt_parents]['adr1'] = $donner_parents['adr1']; // adresse1
+				$tel_responsable[$cpt_parents]['cp'] = $donner_parents['cp']; // cp
+				$tel_responsable[$cpt_parents]['commune'] = $donner_parents['commune']; // commune
 				$cpt_parents = $cpt_parents + 1;
 			}
 	}
