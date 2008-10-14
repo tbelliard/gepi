@@ -1074,7 +1074,8 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 
 			$tabdiv_infobulle[]=creer_div_infobulle('repartition_notes_'.$k,$titre,"",$texte,"",14,0,'y','y','n','n');
 
-			echo " <a href='#' onmouseover=\"afficher_div('repartition_notes_$k','y',-100,20);\"";
+			//echo " <a href='#' onmouseover=\"afficher_div('repartition_notes_$k','y',-100,20);\"";
+			echo " <a href='#' onmouseover=\"delais_afficher_div('repartition_notes_$k','y',-100,20,1000,10,10);\"";
 			echo ">";
 			echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
 			echo "</a>";
