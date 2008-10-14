@@ -41,7 +41,8 @@ $autorise[6] = array('/cahier_texte_admin/visa_ct.php');
 $autorise[7] = array('/edt_organisation/index_edt.php');
 $autorise[8] = array('/tous_les_edt');
 $autorise[9] = array('/messagerie/index.php');
-$autorise[10]= array('/eleves/visu_eleve.php');
+$autorise[10]= array('/eleves/visu_eleve.php',
+						'/eleves/liste_eleves.php');
 $autorise[11]= array('/voir_resp');
 $autorise[12]= array('/voir_ens');
 $autorise[13]= array('/voir_notes');
