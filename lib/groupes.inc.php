@@ -102,7 +102,8 @@ function get_group($_id_groupe) {
     // Classes
 
     $get_classes = mysql_query("SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.categorie_id FROM classes c, j_groupes_classes j WHERE (" .
-                                    "c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "')");
+                                    "c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "') ORDER BY c.classe, c.nom_complet;");
+    //                                "c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "')");
     $nb_classes = mysql_num_rows($get_classes);
     for ($k=0;$k<$nb_classes;$k++) {
         $c_id = mysql_result($get_classes, $k, "id");
@@ -258,6 +259,8 @@ function create_group($_name, $_description, $_matiere, $_classes, $_categorie =
         $_categorie = 1;
     }
     $_insert2 = mysql_query("insert into j_groupes_matieres set id_groupe = '" . $_group_id . "', id_matiere = '" . $_matiere . "'");
+    //$_priorite = mysql_result(mysql_query("SELECT priority FROM matieres WHERE matiere = '" . $_matiere . "'"), 0);
+    //echo "SELECT priority FROM matieres WHERE matiere = '" . $_matiere . "'";
     $_priorite = mysql_result(mysql_query("SELECT priority FROM matieres WHERE matiere = '" . $_matiere . "'"), 0);
     if (count($_classes) > 0) {
         //$test_per = get_period_num($_classes[0]);
@@ -269,15 +272,15 @@ function create_group($_name, $_description, $_matiere, $_classes, $_categorie =
         if (get_period_number($_id_classe) == $test_per) {
             $_res = mysql_query("insert into j_groupes_classes set id_groupe = '" . $_group_id . "', id_classe = '" . $_id_classe . "', priorite = '" . $_priorite . "'");
 	if (!$_res) {
-		echo "Bug: "."insert into j_groupes_classes set id_groupe = '" . $_group_id . "', id_classe = '" . $_id_classe . "', priorite = '" . $_priorite . "', categorie_id = '" . $_categorie . "'<BR>";
-		echo mysql_error();
-		echo "<BR>";
+		echo "<span style='color:red;'>Bug:</span> "."insert into j_groupes_classes set id_groupe = '" . $_group_id . "', id_classe = '" . $_id_classe . "', priorite = '" . $_priorite . "', categorie_id = '" . $_categorie . "'<br />";
+		echo "<span style='color:red;'>".mysql_error()."</span>";
+		echo "<br />";
 	}
 	$res = mysql_query("update j_groupes_classes set categorie_id = '".$_categorie."'WHERE (id_groupe = '" . $_group_id . "' and id_classe = '" . $_id_classe . "')");
 	if (!$_res) {
-		echo "Bug: "."update j_groupes_classes set categorie_id = '".$_categorie."'WHERE (id_groupe = '" . $_group_id . "' and id_classe = '" . $_id_classe . "'<BR>";
-		echo mysql_error();
-		echo "<BR>";
+		echo "<span style='color:red;'>Bug:</span> "."update j_groupes_classes set categorie_id = '".$_categorie."'WHERE (id_groupe = '" . $_group_id . "' and id_classe = '" . $_id_classe . "'<br />";
+		echo "<span style='color:red;'>".mysql_error()."</span>";
+		echo "<br />";
 	}
 
         }
