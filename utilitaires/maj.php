@@ -651,6 +651,25 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES('/mod_ent/gestion_ent_profs.php','V','F','F','F','F','F','F','F', 'Gestion de l intégration de GEPI dans un ENT','');";
     $tab_req[] = "INSERT INTO droits VALUES('/mod_ent/miseajour_ent_eleves.php','V','F','F','F','F','F','F','F', 'Gestion de l intégration de GEPI dans un ENT','');";
 
+    // Module discipline:
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/traiter_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Traitement', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/saisie_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Saisie incident', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/occupation_lieu_heure.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Occupation lieu', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/liste_sanctions_jour.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Liste', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Index', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/incidents_sans_protagonistes.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Incidents sans protagonistes', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/edt_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: EDT élève', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/ajout_sanction.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Ajout sanction', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/saisie_sanction.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Saisie sanction', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_roles.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définition des rôles', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_mesures.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définition des mesures', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/sauve_role.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Svg rôle incident', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_autres_sanctions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir types sanctions', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/liste_retenues_jour.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Liste des retenues du jour', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/avertir_famille.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Avertir famille incident', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/avertir_famille_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Avertir famille incident', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/sauve_famille_avertie.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Svg famille avertie', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/discipline_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Activation/desactivation du module', '');";
 
     //$tab_req[] = "";
 
@@ -7121,10 +7140,278 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	    $result .= "<font color=\"blue\">Le paramètre sso_hide_logout existe déjà dans la table setting.</font><br />";
 	}
 
+    // Module discipline
+    $test = sql_query1("SHOW TABLES LIKE 's_incidents'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_incidents'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_incidents (
+              id_incident INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+              declarant VARCHAR( 50 ) NOT NULL ,
+              date DATE NOT NULL ,
+              heure VARCHAR( 20 ) NOT NULL ,
+              id_lieu INT( 11 ) NOT NULL ,
+              nature VARCHAR( 255 ) NOT NULL ,
+              description TEXT NOT NULL,
+              etat VARCHAR( 20 ) NOT NULL
+              );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_incidents': ".$result_inter."<br />";
+        }
+    }
+    // Avec cette table on ne gère pas un historique des modifications de déclaration...
 
 
+    $test = sql_query1("SHOW TABLES LIKE 's_qualites'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_qualites'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_qualites (
+              id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+              qualite VARCHAR( 50 ) NOT NULL
+              );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_qualites': ".$result_inter."<br />";
+        }
+        else {
+          $tab_qualite=array("Responsable","Victime","Témoin","Autre");
+          for($loop=0;$loop<count($tab_qualite);$loop++) {
+              $sql="SELECT 1=1 FROM s_qualites WHERE qualite='".$tab_qualite[$loop]."';";
+              //echo "$sql<br />";
+              $test=mysql_query($sql);
+              if(mysql_num_rows($test)==0) {
+                  $sql="INSERT INTO s_qualites SET qualite='".$tab_qualite[$loop]."';";
+                  $insert=mysql_query($sql);
+              }
+          }
+        }
+    }
 
+    $test = sql_query1("SHOW TABLES LIKE 's_types_sanctions'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_types_sanctions'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_types_sanctions (
+              id_nature INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+              nature VARCHAR( 255 ) NOT NULL
+              );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_types_sanctions': ".$result_inter."<br />";
+        }
+        else {
+          $tab_type=array("Avertissement travail","Avertissement comportement");
+          for($loop=0;$loop<count($tab_type);$loop++) {
+              $sql="SELECT 1=1 FROM s_types_sanctions WHERE nature='".$tab_type[$loop]."';";
+              //echo "$sql<br />";
+              $test=mysql_query($sql);
+              if(mysql_num_rows($test)==0) {
+                  $sql="INSERT INTO s_types_sanctions SET nature='".$tab_type[$loop]."';";
+                  $insert=mysql_query($sql);
+              }
+          }
+        }
+    }
 
+    $test = sql_query1("SHOW TABLES LIKE 's_autres_sanctions'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_autres_sanctions'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_autres_sanctions (
+            id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+            id_sanction INT( 11 ) NOT NULL ,
+            id_nature INT( 11 ) NOT NULL ,
+            description TEXT NOT NULL
+            );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_autres_sanctions': ".$result_inter."<br />";
+        }
+    }
+
+    $test = sql_query1("SHOW TABLES LIKE 's_mesures'");
+    if ($test == -1) {
+      $result .= "<br />Création de la table 's_mesures'. ";
+      $sql="CREATE TABLE IF NOT EXISTS s_mesures (
+            id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+            type ENUM('prise','demandee') ,
+            mesure VARCHAR( 50 ) NOT NULL ,
+            commentaire TEXT NOT NULL
+            );";
+      $result_inter = traite_requete($sql);
+      if ($result_inter != '') {
+        $result .= "<br />Erreur sur la création de la table 's_mesures': ".$result_inter."<br />";
+      }
+      else {
+        // Mesures prises
+        $tab_mesure=array("Travail supplémentaire","Mot dans le carnet de liaison");
+        for($loop=0;$loop<count($tab_mesure);$loop++) {
+          $sql="SELECT 1=1 FROM s_mesures WHERE mesure='".$tab_mesure[$loop]."';";
+          //echo "$sql<br />";
+          $test=mysql_query($sql);
+          if(mysql_num_rows($test)==0) {
+              $sql="INSERT INTO s_mesures SET mesure='".$tab_mesure[$loop]."', type='prise';";
+              $insert=mysql_query($sql);
+          }
+        }
+
+        // Mesures demandées
+        $tab_mesure=array("Retenue","Exclusion");
+        for($loop=0;$loop<count($tab_mesure);$loop++) {
+          $sql="SELECT 1=1 FROM s_mesures WHERE mesure='".$tab_mesure[$loop]."';";
+          //echo "$sql<br />";
+          $test=mysql_query($sql);
+          if(mysql_num_rows($test)==0) {
+              $sql="INSERT INTO s_mesures SET mesure='".$tab_mesure[$loop]."', type='demandee';";
+              $insert=mysql_query($sql);
+          }
+        }
+      }
+    }
+
+    $test = sql_query1("SHOW TABLES LIKE 's_traitement_incident'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_traitement_incident'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_traitement_incident (
+              id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+              id_incident INT( 11 ) NOT NULL ,
+              login_ele VARCHAR( 50 ) NOT NULL ,
+              login_u VARCHAR( 50 ) NOT NULL ,
+              id_mesure INT( 11 ) NOT NULL
+              );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_traitement_incident': ".$result_inter."<br />";
+        }
+    }
+
+    $test = sql_query1("SHOW TABLES LIKE 's_lieux_incidents'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_lieux_incidents'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_lieux_incidents (
+              id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+              lieu VARCHAR( 255 ) NOT NULL
+              );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_lieux_incidents': ".$result_inter."<br />";
+        }
+        else {
+          $tab_lieu=array("Classe","Couloir","Cour","Réfectoire","Autre");
+          for($loop=0;$loop<count($tab_lieu);$loop++) {
+              $sql="SELECT 1=1 FROM s_lieux_incidents WHERE lieu='".$tab_lieu[$loop]."';";
+              //echo "$sql<br />";
+              $test=mysql_query($sql);
+              if(mysql_num_rows($test)==0) {
+                  $sql="INSERT INTO s_lieux_incidents SET lieu='".$tab_lieu[$loop]."';";
+                  $insert=mysql_query($sql);
+              }
+          }
+        }
+    }
+
+    $test = sql_query1("SHOW TABLES LIKE 's_protagonistes'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_incidents'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_protagonistes (
+              id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+              id_incident INT NOT NULL ,
+              login VARCHAR( 50 ) NOT NULL ,
+              statut VARCHAR( 50 ) NOT NULL ,
+              qualite VARCHAR( 50 ) NOT NULL,
+              avertie ENUM('N','O') NOT NULL DEFAULT 'N'
+              );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_protagonistes': ".$result_inter."<br />";
+        }
+    }
+
+    $test = sql_query1("SHOW TABLES LIKE 's_sanctions'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_sanctions'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_sanctions (
+              id_sanction INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+              login VARCHAR( 50 ) NOT NULL ,
+              description TEXT NOT NULL ,
+              nature VARCHAR( 255 ) NOT NULL ,
+              effectuee ENUM( 'N', 'O' ) NOT NULL ,
+              id_incident INT( 11 ) NOT NULL
+              );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_sanctions': ".$result_inter."<br />";
+        }
+    }
+
+    $test = sql_query1("SHOW TABLES LIKE 's_communication'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_communication'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_communication (
+              id_communication INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+              id_incident INT( 11 ) NOT NULL ,
+              login VARCHAR( 50 ) NOT NULL ,
+              nature VARCHAR( 255 ) NOT NULL ,
+              description TEXT NOT NULL
+              );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_communication': ".$result_inter."<br />";
+        }
+    }
+
+    $test = sql_query1("SHOW TABLES LIKE 's_travail'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_travail'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_travail (
+              id_travail INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+              id_sanction INT( 11 ) NOT NULL ,
+              date_retour DATE NOT NULL ,
+              heure_retour VARCHAR( 20 ) NOT NULL ,
+              travail TEXT NOT NULL
+              );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_travail': ".$result_inter."<br />";
+        }
+    }
+
+    $test = sql_query1("SHOW TABLES LIKE 's_retenues'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_retenues'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_retenues (
+              id_retenue INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+              id_sanction INT( 11 ) NOT NULL ,
+              date DATE NOT NULL ,
+              heure_debut VARCHAR( 20 ) NOT NULL ,
+              duree FLOAT NOT NULL ,
+              travail TEXT NOT NULL ,
+              lieu VARCHAR( 255 ) NOT NULL
+              );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_retenues': ".$result_inter."<br />";
+        }
+    }
+
+    $test = sql_query1("SHOW TABLES LIKE 's_exclusions'");
+    if ($test == -1) {
+        $result .= "<br />Création de la table 's_exclusions'. ";
+        $sql="CREATE TABLE IF NOT EXISTS s_exclusions (
+              id_exclusion INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+              id_sanction INT( 11 ) NOT NULL ,
+              date_debut DATE NOT NULL ,
+              heure_debut VARCHAR( 20 ) NOT NULL ,
+              date_fin DATE NOT NULL ,
+              heure_fin VARCHAR( 20 ) NOT NULL,
+              travail TEXT NOT NULL ,
+              lieu VARCHAR( 255 ) NOT NULL
+              );";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 's_exclusions': ".$result_inter."<br />";
+        }
+    }
+
+    // Fin du module discipline
 
 
 
