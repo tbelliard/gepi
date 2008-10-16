@@ -36,10 +36,19 @@ if ($resultat_session == 'c') {
 	die();
 }
 
+//===========================================
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+/*
+if($_SESSION['statut']!='administrateur') {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+*/
+//===========================================
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année | Initialisation  des options par GEP";
@@ -144,7 +153,8 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
                 	// On commence par récupérer l'ID du groupe concerné
 
                 	if (!in_array($tab_options[$j], $no_group)) {
-	                	$group_id = @mysql_result(mysql_query("SELECT g.id FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm where (" .
+	                	/*
+						$group_id = @mysql_result(mysql_query("SELECT g.id FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm where (" .
 	                			"g.id = jgm.id_groupe and " .
 	                			"jgm.id_matiere = '" . $tab_options[$j] . "' and " .
 	                			"jgm.id_groupe = jgc.id_groupe and " .
@@ -153,6 +163,21 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
 	                    	$reg = mysql_query("DELETE FROM j_eleves_groupes WHERE (id_groupe = '" . $group_id . "' and login='". $current_eleve_login . "')");
 	                    	// DEBUG :: echo "<br/>DELETED FROM GROUPE : " . $group_id;
 	                	} else {
+	                		$no_group[] = $tab_options[$j];
+	                	}
+						*/
+						$sql="SELECT g.id FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm where (" .
+	                			"g.id = jgm.id_groupe and " .
+	                			"jgm.id_matiere = '" . $tab_options[$j] . "' and " .
+	                			"jgm.id_groupe = jgc.id_groupe and " .
+	                			"jgc.id_classe = '" . $id_classe . "')";
+						$res_grp=mysql_query($sql);
+						if(mysql_num_rows($res_grp)>0) {
+							while($lig_grp=mysql_fetch_object($res_grp)) {
+								$reg = mysql_query("DELETE FROM j_eleves_groupes WHERE (id_groupe = '" . $lig_grp->id . "' and login='". $current_eleve_login . "')");
+							}
+						}
+	                	else {
 	                		$no_group[] = $tab_options[$j];
 	                	}
 		            }
