@@ -739,7 +739,8 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_no_resp' style='cursor: pointer;'>\n";
-			echo "<span class='norme'>Les élèves sans responsable (<i>".$test_no_resp_effectif."</i>).</span><br />\n";
+			//echo "<span class='norme'>Les élèves sans responsable (<i>".$test_no_resp_effectif."</i>).</span><br />\n";
+			echo "<span class='norme'>Les élèves sans responsable mais inscrits dans une classe (<i>".$test_no_resp_effectif."</i>).</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
