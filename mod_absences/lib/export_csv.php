@@ -112,13 +112,22 @@ die();
 		$requete_recherche = $requete_recherche.'e.login = \''.$eleve_choix.'\'';
 	}
 
-	// Pour les dates, on ajoute
-	$complement_requete = '';
+	// Pour les dates, on ajoute modif didier pour couvrir les basences incluses dans une période
+	$complement_requete_du = '';
 	if ($du != '') {
 		$test = explode("/", $du);
-		$date = $test[2] . '-' . $test[1] . '-' . $test[0];
-		$complement_requete = " AND d_date_absence_eleve >= '" . $date . "' ";
+		$date1 = $test[2] . '-' . $test[1] . '-' . $test[0];
+		$complement_requete_du = " AND ((d_date_absence_eleve >= '" . $date1 . "' ";
 	}
+    $complement_requete_au = '';
+	if ($au != '') {
+		$test = explode("/", $au);
+		$date2 = $test[2] . '-' . $test[1] . '-' . $test[0];
+		$complement_requete_au = " AND d_date_absence_eleve <= '" . $date2 . "' )";
+	}
+	
+				
+	$complement_requete_dateincluse = " OR (d_date_absence_eleve <= '" . $date1 . "' AND a_date_absence_eleve >= '" . $date2 . "'))";//modif didier
 
 	$requete = "SELECT * FROM
 					".$prefix_base."classes c,
@@ -128,8 +137,8 @@ die();
 					WHERE eleve_absence_eleve = e.login
 					AND e.login = ec.login
 					AND c.id = ec.id_classe
-					AND ".$requete_recherche.$complement_requete."
-					GROUP BY id_absence_eleve ORDER BY nom, prenom ASC";
+					AND ".$requete_recherche.$complement_requete_du.$complement_requete_au.$complement_requete_dateincluse. //modif didier
+					"GROUP BY id_absence_eleve ORDER BY nom, prenom ASC";
 
 
 // Entête du fichier CSV

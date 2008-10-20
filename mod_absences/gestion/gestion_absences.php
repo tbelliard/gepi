@@ -416,7 +416,7 @@ function affichercacher(a) {
 			echo '
 				<div id="d'.$data_top10['login'].'" style="position: absolute; margin-left: 200px; margin-top: '.$margin_top.'px; z-index: 20; display: none; top: 0px; left: 0px;">
 			';
-			$margin_top = $margin_top + 23;
+			$margin_top = $margin_top + 15;
 ?>
           <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
              <tr>
@@ -546,8 +546,8 @@ if ($choix=="sm" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 		}
 	}
 	$execution_sans_motif = mysql_query($requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
-	// Pour la position du premier div, on définit le margin-top
-	$margin_top = 20;
+	// Pour la position du premier div, on définit le margin-top mise à zero pour eviter clignotement si information rentrée
+	$margin_top = 0;
 	while ( $data_sans_motif = mysql_fetch_array($execution_sans_motif))
 	{
 		if (in_array($data_sans_motif['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
@@ -555,7 +555,7 @@ if ($choix=="sm" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 		echo '
 				<div id="d'.$data_sans_motif['id_absence_eleve'].'" style="position: absolute; margin-left: 200px; margin-top: '.$margin_top.'px; z-index: 20; display: none; top: 0px; left: 0px;">
 				';
-		$margin_top = $margin_top + 23;
+		$margin_top = $margin_top + 15;
 ?>
           <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
              <tr>
@@ -789,8 +789,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 
 		$execution_sans_motif = mysql_query($requete_sans_motif)
 			or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
-		// Pour la position du premier div, on définit le margin-top
-			$margin_top = 50;
+		// Pour la position du premier div, on définit le margin-top mise à zero pour éviter clignotement si information saisie didier
+			$margin_top = 0;
 		while($data_sans_motif = mysql_fetch_array($execution_sans_motif))
 		{
 			if (in_array($data_sans_motif['eleve_absence_eleve'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
@@ -799,7 +799,7 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 				echo '
 					<div id="d'.$data_sans_motif['id_absence_eleve'].'" style="position: absolute; margin-left: 200px; margin-top: '.$margin_top.'px; z-index: 20; display: none; top: 0px; left: 0px;">
 				';
-				$margin_top = $margin_top + 23;
+				$margin_top = $margin_top + 15;
 ?>
          <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
             <tr>
@@ -1032,8 +1032,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 		$execution_avec_motif = mysql_query($requete_avec_motif)
 		 	or die('Erreur SQL !'.$requete_avec_motif.'<br />'.mysql_error());
 		// On construit alors le div de la fiche élève
-		// Pour la position du premier div, on définit le margin-top
-			$margin_top = 50;
+		// Pour la position du premier div, on définit le margin-top mise a zero pour eviter clignotement si information saisie didier
+			$margin_top = 0;
 		while ( $data_avec_motif = mysql_fetch_array($execution_avec_motif)) {
 
 			if($type == "A" or $type == "I" or $type == "R" or $type == "D") {
@@ -1174,7 +1174,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 			}
 ?>
 	<tr>
-		<td class="<?php echo $couleur_cellule; ?>" onmouseover="changementDisplay('d<?php echo $data_avec_motif['id_absence_eleve']; ?>', ''); return true;" onmouseout="changementDisplay('d<?php if ($type == "D" ) { echo $data_avec_motif['id_dispense_eleve']; } else  { echo $data_avec_motif['id_absence_eleve']; } ?>', ''); return true;">
+	      <?php// modif didier pour affichage div dispense ?>
+		 <td class="<?php echo $couleur_cellule; ?>" onmouseover="changementDisplay('d<?php echo $data_avec_motif['id_absence_eleve']; ?>', ''); return true;" onmouseout="changementDisplay('d<?php echo $data_avec_motif['id_absence_eleve']; ?>', ''); return true;">
 		<input name="selection[<?php echo $total; ?>]" id="sel<?php echo $total; ?>" type="checkbox" value="1" <?php $varcoche = $varcoche."'sel".$total."',"; ?> <?php /* if((isset($selection[$total]) and $selection[$total] == "1") OR $cocher == 1) { ?>checked="checked"<?php } */ ?> />
 		<input name="id_absence_eleve[<?php echo $total; ?>]" type="hidden" value="<?php echo $data_avec_motif['id_absence_eleve']; ?>" />
 		<?php

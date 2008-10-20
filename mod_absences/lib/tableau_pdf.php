@@ -183,15 +183,19 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 	$complement_requete_du = '';
 	if ($du != '') {
 		$test = explode("/", $du);
-		$date = $test[2] . '-' . $test[1] . '-' . $test[0];
-		$complement_requete_du = " AND d_date_absence_eleve >= '" . $date . "' ";
+		$date1 = $test[2] . '-' . $test[1] . '-' . $test[0];
+		$complement_requete_du = " AND ((d_date_absence_eleve >= '" . $date1 . "' ";
 	}
     $complement_requete_au = '';
 	if ($au != '') {
 		$test = explode("/", $au);
-		$date = $test[2] . '-' . $test[1] . '-' . $test[0];
-		$complement_requete_au = " AND d_date_absence_eleve <= '" . $date . "' ";
+		$date2 = $test[2] . '-' . $test[1] . '-' . $test[0];
+		$complement_requete_au = " AND d_date_absence_eleve <= '" . $date2 . "' )";
 	}
+	
+				
+	$complement_requete_dateincluse = " OR (d_date_absence_eleve <= '" . $date1 . "' AND a_date_absence_eleve >= '" . $date2 . "'))";//modif didier
+	
 	$requete = "SELECT * FROM
 					".$prefix_base."classes c,
 					".$prefix_base."eleves e,
@@ -200,8 +204,8 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 					WHERE eleve_absence_eleve = e.login
 					AND e.login = ec.login
 					AND c.id = ec.id_classe
-					AND ".$requete_recherche.$complement_requete_du.$complement_requete_au."
-					GROUP BY id_absence_eleve ORDER BY ".$tri." ASC";
+					AND ".$requete_recherche.$complement_requete_du.$complement_requete_au.$complement_requete_dateincluse.//modif didier
+					" GROUP BY id_absence_eleve ORDER BY ".$tri." ASC";
 
 	$executer = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br>'.mysql_error());
 	$nb_d_entree_total = mysql_num_rows( $executer );

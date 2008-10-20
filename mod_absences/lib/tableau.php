@@ -243,7 +243,9 @@ if ($motif == "tous" and $classe_choix == "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 							  			AND d_date_absence_eleve <= '".date_sql($au)."')
 							  			OR (a_date_absence_eleve >= '".date_sql($du)."'
-							  			AND a_date_absence_eleve <= '".date_sql($au)."'))
+							  			AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 										AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 										AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
 										GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve
@@ -258,7 +260,9 @@ if ($motif == "tous" and $classe_choix == "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve = 'O'
 								     AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 										AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
@@ -273,7 +277,9 @@ if ($motif == "tous" and $classe_choix == "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve != 'O'
 								AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 										AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
@@ -288,7 +294,9 @@ if ($motif == "tous" and $classe_choix == "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND motif_absence_eleve = '".$motif."'
 								AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 										AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
@@ -303,7 +311,9 @@ if ($motif == "tous" and $classe_choix == "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve = 'O'
 									AND motif_absence_eleve = '".$motif."'
 								AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
@@ -319,7 +329,9 @@ if ($motif == "tous" and $classe_choix == "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve != 'O'
 									AND motif_absence_eleve = '".$motif."'
 								AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
@@ -338,7 +350,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 									AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
 									AND ".$prefix_base."classes.id='".$classe_choix."'
@@ -353,7 +367,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve = 'O'
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 									AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
@@ -369,7 +385,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve != 'O'
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 									AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
@@ -385,7 +403,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND motif_absence_eleve = '".$motif."'
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 									AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
@@ -401,7 +421,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve = 'O'
 									AND motif_absence_eleve = '".$motif."'
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
@@ -418,7 +440,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve != 'O'
 									AND motif_absence_eleve = '".$motif."'
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
@@ -435,7 +459,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 									AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 									AND ".$prefix_base."eleves.login='".$eleve_choix."'
 									AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
@@ -451,7 +477,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve = 'O'
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 									AND ".$prefix_base."eleves.login='".$eleve_choix."'
@@ -468,7 +496,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve != 'O'
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 									AND ".$prefix_base."eleves.login='".$eleve_choix."'
@@ -485,7 +515,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND motif_absence_eleve = '".$motif."'
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 									AND ".$prefix_base."eleves.login='".$eleve_choix."'
@@ -502,7 +534,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve = 'O'
 									AND motif_absence_eleve = '".$motif."'
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
@@ -520,7 +554,9 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
 									AND ((d_date_absence_eleve >= '".date_sql($du)."'
 										AND d_date_absence_eleve <= '".date_sql($au)."')
 										OR (a_date_absence_eleve >= '".date_sql($du)."'
-										AND a_date_absence_eleve <= '".date_sql($au)."'))
+										AND a_date_absence_eleve <= '".date_sql($au)."')
+										OR (d_date_absence_eleve <= '".date_sql($du)."'
+							  			AND a_date_absence_eleve >= '".date_sql($au)."'))
 									AND justify_absence_eleve != 'O'
 									AND motif_absence_eleve = '".$motif."'
 									AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
