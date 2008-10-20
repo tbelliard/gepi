@@ -378,13 +378,14 @@ function affichercacher(a) {
 <div class="centre"><hr style="width: 550px;" /></div>
 <div class="centre">
 <?php if($type == "A" and $fiche_eleve == "") { ?>
-[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences sans motif</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences avec motif</a> ]
+<?php //modification de l'affichage didier?>
+[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences non justifiées</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences justifiées</a> ]
 <?php } if($type == "R" and $fiche_eleve == "") { ?>
-[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retards sans motif</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retards avec motif</a> ]
+[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retards non justifiés</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retards justifiés</a> ]
 <?php } if($type == "I" and $fiche_eleve == "") { ?>
 [ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Infirmerie avec motif</a> ]
 <?php } if($type == "D" and $fiche_eleve == "") { ?>
-[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispenses sans motif</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispenses avec motif</a> ]
+[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispenses non justifiées</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispenses justifiées</a> ]
 <?php } ?>
 </div>
 
@@ -641,7 +642,8 @@ if ($choix=="sm" and $fiche_eleve == "" and $select_fiche_eleve == "") {
        <fieldset class="fieldset_efface">
         <table class="td_tableau_gestion" style="margin: auto; width: 550px; border: 0 0 0 0;">
           <tr>
-            <td colspan="2" class="titre_tableau_gestion"><b><?php if ($type=="A") { ?>Absences sans motif<?php } ?><?php if ($type=="R") { ?>Retards sans motif<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispenses sans motif<?php } ?></b></td>
+<? /* modification affichage didier */ ?>           
+		   <td colspan="2" class="titre_tableau_gestion"><b><?php if ($type=="A") { ?>Absences non justifiées<?php } ?><?php if ($type=="R") { ?>Retards non justifiés<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispenses non justifiées<?php } ?></b></td>
           </tr>
           <?php
          $total = 0;
@@ -771,9 +773,9 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
        if ($type == "A" or $type == "I" or $type == "R" or $type == "D")
          {
            if ($classe_choix != "")
-		   {//ajout parenthèse ouvrante après le where didier  correction bug
+		   {//ajout parenthèse ouvrante après le where didier  correction bug + correction du l'oubli de date debut et fin  absence necessaire dans div
 		   $requete_sans_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, jer.regime, ae.id_absence_eleve, ae.eleve_absence_eleve,
-                        		   ae.justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve, ae.info_justify_absence_eleve, ae.d_heure_absence_eleve,
+                        		   ae.justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve,ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.info_justify_absence_eleve, ae.d_heure_absence_eleve,
 								   ae.a_heure_absence_eleve, jec.login, jec.id_classe, jec.periode, c.classe, c.id, c.nom_complet
 								   FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_regime jer, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c, ".$prefix_base."absences_eleves ae
 								   WHERE (e.login = ae.eleve_absence_eleve AND e.login = jer.login AND e.login = jec.login AND jec.id_classe = c.id AND c.id = '".$classe_choix."' AND ae.justify_absence_eleve != 'O' AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve"; }
@@ -885,7 +887,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
       <fieldset class="fieldset_efface">
         <table class="td_tableau_gestion" style="margin: auto; width: 550px; border: 0 0 0 0;">
         <tr>
-          <td colspan="2" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absences sans motif<?php } ?><?php if ($type=="R") { ?>Retards sans motif<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispenses sans motif<?php } ?></b></td>
+		<? /* modification affichage didier */ ?>  
+          <td colspan="2" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absences non justifiées <?php } ?><?php if ($type=="R") { ?>Retards non justifiés<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispenses non justifiées<?php } ?></b></td>
         </tr>
         <?php
          $total = 0;
@@ -1043,12 +1046,20 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 			<tr>
 				<td class="texte_fondjaune_calque_information">
 <?php
-			echo "
-				<b>".strtoupper($data_avec_motif['nom'])."</b> ".ucfirst($data_avec_motif['prenom']); ?> élève de <?php echo "<b>".classe_de($data_avec_motif['login'])."</b>"; $id_classe_eleve = classe_de($data_avec_motif['login']); ?>
-				<br />
-				<?php if ($data_avec_motif['type_absence_eleve']=="A") { ?> &agrave; &eacute;t&eacute; absent<?php if ($data_avec_motif['sexe'] == "F") { ?>e<?php } } if  ($data_avec_motif['type_absence_eleve']=="R") { ?> est arrivé<?php if ($data_avec_motif['sexe'] == "F") { ?>e<?php } ?> en retard<?php } ?><?php if ($data_avec_motif['type_absence_eleve']=="I") { ?>est allé à l'infirmerie<?php } ?><br /> le <?php echo date_frl($data_avec_motif['d_date_absence_eleve']); ?><?php if (($data_avec_motif['a_date_absence_eleve'] != $data_avec_motif['d_date_absence_eleve'] and $data_avec_motif['a_date_absence_eleve'] != "") or $data_avec_motif['a_date_absence_eleve'] == "0000-00-00") { ?> au <?php echo date_frl($data_avec_motif['a_date_absence_eleve']); ?><?php } ?>
-				<br />
-
+			 echo "<b>".$data_avec_motif['nom']."</b> ".$data_avec_motif['prenom']; ?> élève de <?php echo "<b>".classe_de($data_avec_motif['login'])."</b>";
+			 $id_classe_eleve = classe_de($data_avec_motif['login']); ?>
+			 <br />
+			 <?php //ajout creneau horaire dans div didier ?>
+			 <?php if ($data_avec_motif['type_absence_eleve']=="A") { ?> a été absent<?php if ($data_avec_motif['sexe'] == "F") { ?>e<?php } }
+      			 if  ($data_avec_motif['type_absence_eleve']=="R") { ?> est arrivé<?php if ($data_avec_motif['sexe'] == "F") { ?>e<?php } ?> en retard<?php } ?>
+				 <?php if ($data_avec_motif['type_absence_eleve']=="I") { ?>est allé à l'infirmerie<?php } ?>
+				 <br />
+				 le <?php echo date_frl($data_avec_motif['d_date_absence_eleve']); ?>
+				 <?php if (($data_avec_motif['a_date_absence_eleve'] != $data_avec_motif['d_date_absence_eleve'] and $data_avec_motif['a_date_absence_eleve'] != "") or $data_sans_motif['a_date_absence_eleve'] == "0000-00-00") { ?> au <?php echo date_frl($data_avec_motif['a_date_absence_eleve']); ?><?php } ?>
+				 <br />
+				 <?php if ($data_avec_motif['a_heure_absence_eleve'] == "" or $data_avec_motif['a_heure_absence_eleve'] == "00:00:00") { ?>à <?php } else { ?>de <?php } ?><?php echo heure($data_avec_motif['d_heure_absence_eleve']); ?> <?php if ($data_avec_motif['a_heure_absence_eleve'] == "00:00:00" or $data_avec_motif['a_heure_absence_eleve'] == "") { } else { echo 'à '.heure($data_avec_motif['a_heure_absence_eleve']); } ?></td>
+			
+			
 <?php
 				if (getSettingValue("active_module_trombinoscopes")=='y') {
 					echo "<td style=\"width: 60px; vertical-align: top\" rowspan=\"4\">";
@@ -1142,7 +1153,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
    <fieldset class="fieldset_efface">
     <table class="td_tableau_gestion"  style="width: 500px;">
         <tr>
-          <td colspan="2" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absences avec motif<?php } ?><?php if ($type=="R") { ?>Retards avec motif<?php } ?><?php if ($type=="I") { ?>Infirmerie avec motif<?php } ?><?php if ($type=="D") { ?>Dispenses avec motif<?php } ?></b></td>
+		<? /* modification affichage didier */ ?>  
+          <td colspan="2" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absences justifiées<?php } ?><?php if ($type=="R") { ?>Retards justifiés<?php } ?><?php if ($type=="I") { ?>Infirmerie avec motif<?php } ?><?php if ($type=="D") { ?>Dispenses justifiées<?php } ?></b></td>
         </tr>
 <?php
 		$total = 0;
@@ -1586,13 +1598,15 @@ Pour éviter un centrage bizarre:
 
 	   <?php /* tableau des absences non justifiée */ ?>
            <?php $cpt_absences = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'A'"),0);
-		 $cpt_absences_nj = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'A' AND justify_absence_eleve = 'N '"),0);
+// modification du critère pour compter aussi les non justifs par telephone didier		
+		$cpt_absences_nj = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'A' AND justify_absence_eleve != 'O'"),0);
            if ( $cpt_absences != 0 ) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=A',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Absences"><?php echo $cpt_absences; ?></a></b> Absence(s)</p>
                <?php if ( $cpt_absences_nj != 0 ) { ?>
            	   Liste des absences non justifiée(s)<br />
 		   <ul>
-        	   <?php $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
+        	   <?php // modification du critère pour compter aussi les non justifs par telephone didier	
+			   $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A' AND justify_absence_eleve != 'O' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
                 	 $execution_absences_nr = mysql_query($requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysql_error());
 	                 while ($data_absences_nr = mysql_fetch_array($execution_absences_nr))
         	         {
@@ -1609,18 +1623,20 @@ Pour éviter un centrage bizarre:
 
 	   <?php /* tableau des retards non justifiée */ ?>
 	   <?php $cpt_retards = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'R'"),0);
-		 $cpt_retards_nj = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'R' AND justify_absence_eleve = 'N '"),0);
+		 // modification du critère pour compter aussi les non justifs par telephone didier
+		 $cpt_retards_nj = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'R' AND justify_absence_eleve != 'O '"),0);
 
            if ( $cpt_retards != 0 ) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=R',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Retards"><?php echo $cpt_retards; ?></a></b> Retards</p>
                <?php if($cpt_retards_nj != 0) { ?>
 	           Liste des retards non justifié(s)<br />
 		   <ul>
-	           <?php $requete_retards_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
+	           <?php // modification du critère pour compter aussi les non justifs par telephone didier	
+			   $requete_retards_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R' AND justify_absence_eleve != 'O' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
         	         $execution_retards_nr = mysql_query($requete_retards_nr) or die('Erreur SQL !'.$requete_retards_nr.'<br />'.mysql_error());
 	                 while ($data_retards_nr = mysql_fetch_array($execution_retards_nr))
 	                 {
-         	             ?><li><a href="ajout_ret.php?action=modifier&amp;type=R&amp;id=<?php echo $data_retards_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><li><?php echo date_fr($data_retards_nr['d_date_absence_eleve'])." ".$data_retards_nr['d_heure_absence_eleve']; ?></a></li><?php
+         	            //suppression d'un <li> inutile didier ?><li><a href="ajout_ret.php?action=modifier&amp;type=R&amp;id=<?php echo $data_retards_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><?php echo date_fr($data_retards_nr['d_date_absence_eleve'])." ".$data_retards_nr['d_heure_absence_eleve']; ?></a></li><?php
                 	 }
 	           ?>
 		   </ul>
@@ -1639,7 +1655,7 @@ Pour éviter un centrage bizarre:
         	         $execution_dispences_nr = mysql_query($requete_dispences_nr) or die('Erreur SQL !'.$requete_dispences_nr.'<br />'.mysql_error());
 	                 while ($data_dispences_nr = mysql_fetch_array($execution_dispences_nr))
         	         {
-                	      ?><li><a href="ajout_dip.php?action=modifier&amp;type=D&amp;id=<?php echo $data_dispences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><li><?php echo date_fr($data_dispences_nr['d_date_absence_eleve'])." ".$data_dispences_nr['d_heure_absence_eleve']; ?></a></li><?php
+                	      //suppression d'un <li> inutile didier?><li><a href="ajout_dip.php?action=modifier&amp;type=D&amp;id=<?php echo $data_dispences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><?php echo date_fr($data_dispences_nr['d_date_absence_eleve'])." ".$data_dispences_nr['d_heure_absence_eleve']; ?></a></li><?php
 	                 }
         	   ?>
 		   </ul>

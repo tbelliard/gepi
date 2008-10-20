@@ -80,7 +80,11 @@ if ($cpt_eleves!=0) {
     $requete_dispense ="SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$_GET['id_eleve']."' and type_absence_eleve = '".$_GET['type']."' ORDER BY d_date_absence_eleve";
     $execution_dispense = mysql_query($requete_dispense);
     while ($donnee_dispense = mysql_fetch_array($execution_dispense))
-    { ?>
+    { //modif couleur selon motif didier
+    if ($donnee_dispense['justify_absence_eleve'] == 'O') {$style = ' style="color: green;"';}
+    if ($donnee_dispense['justify_absence_eleve'] =='T') {$style = ' style="color: orange;"';}
+	if ($donnee_dispense['justify_absence_eleve'] == 'N') {$style = ' style="color: red;"';}
+	?>
     <tr>
 		<td>
 		<?php
@@ -95,15 +99,15 @@ if ($cpt_eleves!=0) {
 			echo date_frc($donnee_dispense['a_date_absence_eleve']);
 		}
 		if($_GET['type'] == "D") {
-			?><br /><?php echo $donnee_dispense['info_absence_eleve'];
+			//modif couleur selon motif didier?><br /><?php echo "<span . $style . >".$donnee_dispense['info_absence_eleve']."</span>";
 		}
 		if($_GET['type'] == "I" or $_GET['type'] == "A") {
-			?><br /><?php
-			echo "de ".$donnee_dispense['d_heure_absence_eleve']." à ".$donnee_dispense['a_heure_absence_eleve']."<br />".motif_de($donnee_dispense['motif_absence_eleve']);
+			?><br /><?php //modif couleur selon motif didier
+			echo "de ".$donnee_dispense['d_heure_absence_eleve']." à ".$donnee_dispense['a_heure_absence_eleve']."<br /> <span . $style . >".motif_de($donnee_dispense['motif_absence_eleve'])."</span>";
 		}
 		if($_GET['type'] == "R" ) {
-			?><br /><?php
-			echo "à ".$donnee_dispense['d_heure_absence_eleve']."<br />".motif_de($donnee_dispense['motif_absence_eleve']);
+			?><br /><?php //modif couleur selon motif didier
+			echo "à ".$donnee_dispense['d_heure_absence_eleve']."<br /> <span . $style . >".motif_de($donnee_dispense['motif_absence_eleve'])."</span>";
 		} //modif didier motif absence?>
 		<br />&nbsp;
 		</td>

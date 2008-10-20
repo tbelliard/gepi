@@ -138,7 +138,7 @@ if ($type=='A') {$typetableau='des absences';}
 if ($type=='R') {$typetableau='des retards';}
 if ($type=='D') {$typetableau='des dispenses';}
 if ($type=='I') {$typetableau='de l\'Infirmerie';}
-// prépation de la requête
+// prépation de la requête modification pour absences par telephone didier
 	if(!empty($type)) {
 		$requete_recherche = 'type_absence_eleve = \''.$type.'\'';
 	}
@@ -146,7 +146,7 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 		if(!empty($requete_recherche) and $requete_recherche != '') {
 			$requete_recherche = $requete_recherche.' AND ';
 		}
-		$requete_recherche = $requete_recherche.'( justify_absence_eleve = \'O\' OR justify_absence_eleve = \'T\'';
+		$requete_recherche = $requete_recherche.'( justify_absence_eleve = \'O\' ';
 	}
 	if(!empty($nonjustifie) and $nonjustifie === '1') {
 		if(!empty($requete_recherche) and $requete_recherche != '') {
@@ -156,7 +156,7 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 				$requete_recherche = $requete_recherche.' AND (';
 			}
 		}
-		$requete_recherche = $requete_recherche.'justify_absence_eleve = \'N\')';
+		$requete_recherche = $requete_recherche.'justify_absence_eleve = \'N\' OR justify_absence_eleve = \'T\')';
 	}
 	if(!empty($justifie) and empty($nonjustifie)) {
 		$requete_recherche = $requete_recherche.')';

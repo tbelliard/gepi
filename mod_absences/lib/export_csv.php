@@ -79,7 +79,7 @@ die();
 		if(!empty($requete_recherche) and $requete_recherche != '') {
 			$requete_recherche = $requete_recherche.' AND ';
 		}
-		$requete_recherche = $requete_recherche.'( justify_absence_eleve = \'O\' OR justify_absence_eleve = \'T\'';
+		$requete_recherche = $requete_recherche.'( justify_absence_eleve = \'O\' ';
 	}
 	if(!empty($nonjustifie) and $nonjustifie === '1') {
 		if(!empty($requete_recherche) and $requete_recherche != '') {
@@ -89,7 +89,7 @@ die();
 				$requete_recherche = $requete_recherche.' AND (';
 			}
 		}
-		$requete_recherche = $requete_recherche.'justify_absence_eleve = \'N\')';
+		$requete_recherche = $requete_recherche.'justify_absence_eleve = \'N\' OR justify_absence_eleve = \'T\')';
 	}
 	if(!empty($justifie) and empty($nonjustifie)) {
 		$requete_recherche = $requete_recherche.')';
