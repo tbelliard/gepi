@@ -386,7 +386,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 			echo "<td>&nbsp;</td>\n";
 
 			//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs professeurs</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
-			echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres professeurs impliqués</i>).</td>\n";
+			echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres professeurs impliqués</i>)</td>\n";
 			$groupe_existant="trop";
 		}
 		else {
@@ -407,7 +407,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 				echo "<td>&nbsp;</td>\n";
 
 				//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
-				echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres classes impliquées</i>).</td>\n";
+				echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres classes impliquées</i>)</td>\n";
 
 				$groupe_existant="trop";
 			}
@@ -421,7 +421,9 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 
 		echo "<td>&nbsp;</td>\n";
 
-		echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
+		//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
+		echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres classes et plusieurs professeurs impliqués</i>)</td>\n";
+
 		$groupe_existant="trop";
 	}
 
