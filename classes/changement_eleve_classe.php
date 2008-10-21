@@ -535,9 +535,9 @@ Evitez les 'fantaisies';o).</p>
 									// Création du devoir si la note n'est pas vide
 									$sql="INSERT INTO cn_devoirs SET id_conteneur='$id_racine_fut',
 											id_racine='$id_racine_fut',
-											nom_court='".$lig_cd->nom_court."_".$classe."',
-											nom_complet='$lig_cd->nom_complet',
-											description='$lig_cd->description',
+											nom_court='".addslashes($lig_cd->nom_court."_".$classe)."',
+											nom_complet='".addslashes($lig_cd->nom_complet)."',
+											description='".addslashes($lig_cd->description)."',
 											facultatif='$lig_cd->facultatif',
 											date='$lig_cd->date',
 											coef='$lig_cd->coef',
@@ -550,20 +550,22 @@ Evitez les 'fantaisies';o).</p>
 									if($reg) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 									echo "<br />\n";
 
-									// Insertion du statut 'v' pour tous les autres élèves du groupe futur
-									foreach($group_fut['eleves'][$periode_num]["list"] as $grp_fut_ele_login) {
-										$sql="INSERT INTO cn_notes_devoirs SET login='".$grp_fut_ele_login."', id_devoir='$id_devoir_fut', statut='v';";
-										affiche_debug("$sql<br />");
-										$reg=mysql_query($sql);
-									}
+                                    if($id_devoir_fut>0) {
+                                        // Insertion du statut 'v' pour tous les autres élèves du groupe futur
+                                        foreach($group_fut['eleves'][$periode_num]["list"] as $grp_fut_ele_login) {
+                                            $sql="INSERT INTO cn_notes_devoirs SET login='".$grp_fut_ele_login."', id_devoir='$id_devoir_fut', statut='v';";
+                                            affiche_debug("$sql<br />");
+                                            $reg=mysql_query($sql);
+                                        }
 
-									// Insertion de la note:
-									$sql="INSERT INTO cn_notes_devoirs SET login='$login_eleve', id_devoir='$id_devoir_fut', note='$lig_cd->note', comment='$lig_cd->comment', statut='$lig_cd->statut';";
-									affiche_debug("$sql<br />");
-									$reg=mysql_query($sql);
-									echo "Insertion de la note du devoir n°".$lig_cd->id." dans le groupe de $classe_future: ";
-									if($reg) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
-									echo "<br />\n";
+                                        // Insertion de la note:
+                                        $sql="INSERT INTO cn_notes_devoirs SET login='$login_eleve', id_devoir='$id_devoir_fut', note='$lig_cd->note', comment='$lig_cd->comment', statut='$lig_cd->statut';";
+                                        affiche_debug("$sql<br />");
+                                        $reg=mysql_query($sql);
+                                        echo "Insertion de la note du devoir n°".$lig_cd->id." dans le groupe de $classe_future: ";
+                                        if($reg) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
+                                        echo "<br />\n";
+                                    }
 								}
 
 								// Suppression de la note dans l'ancien carnet de notes
@@ -675,10 +677,11 @@ Evitez les 'fantaisies';o).</p>
 
 echo "<p><br /></p>\n";
 
-echo "<p><i>NOTE:</i></p>
-<blockquote>
-<p>Les devoirs sont transférés, mais pas les conteneurs/boites/sous-matières.<br />Les notes se retrouvent \"en vrac\" à la racine du cahier de notes du groupe pour la période choisie.</p>
-</blockquote>\n";
+echo "<p><i>NOTES:</i></p>
+<ul>
+<li><p>Les devoirs sont transférés, mais pas les conteneurs/boites/sous-matières.<br />Les notes se retrouvent \"en vrac\" à la racine du cahier de notes du groupe pour la période choisie.</p></li>
+<li><p>Avant de procéder au changement de classe, il est bon d'imprimer le relevé de notes de la période pour l'élève (<i>compte scolarité</i>).<br />Effectuer une <a href='../gestion/accueil_sauve.php?action=dump' target='_blank'>sauvegarde préalable de la base</a> est aussi une sage précaution.</p></li>
+</ul>\n";
 //echo "<p>Il faudrait que le lien de retour mène à la nouvelle classe en fin de procédure et qu'un message invite à vérifier/changer le CPE et prof principal.</p>";
 
 require("../lib/footer.inc.php");
