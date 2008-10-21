@@ -1154,7 +1154,14 @@ if (($active_bloc_adresse_parent == '1') and ($choix_adr_parent == '4') or
 			if($active_bloc_adresse_parent==='1' and $nb_releve_par_page==='1') {
 			$ident_eleve_aff=$login[$nb_eleves_i];
 			$pdf->SetXY($X_parent,$Y_parent);
-			$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+            //==========================================
+            // MODIF: 20081021
+			//$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+			$texte_1_responsable="";
+            if(isset($civilite_parents[$ident_eleve_aff][$responsable_place])) {$texte_1_responsable.=$civilite_parents[$ident_eleve_aff][$responsable_place]." ";}
+            if(isset($nom_parents[$ident_eleve_aff][$responsable_place])) {$texte_1_responsable.=$nom_parents[$ident_eleve_aff][$responsable_place]." ";}
+            if(isset($prenom_parents[$ident_eleve_aff][$responsable_place])) {$texte_1_responsable.=$prenom_parents[$ident_eleve_aff][$responsable_place]." ";}
+            //==========================================
 				$hauteur_caractere=12;
 				$pdf->SetFont($caractere_utilse,'B',$hauteur_caractere);
 				$val = $pdf->GetStringWidth($texte_1_responsable);
