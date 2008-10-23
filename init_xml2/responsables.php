@@ -827,7 +827,8 @@ temoin VARCHAR( 50 ) NOT NULL
 					"CODE_POSTAL",
 					"LL_PAYS",
 					"CODE_DEPARTEMENT",
-					"LIBELLE_POSTAL"
+					"LIBELLE_POSTAL",
+					"COMMUNE_ETRANGERE"
 					);
 
 
@@ -925,6 +926,8 @@ temoin VARCHAR( 50 ) NOT NULL
 						}
 						if(isset($adresses[$i]["libelle_postal"])){
 							$sql.="commune='".$adresses[$i]["libelle_postal"]."', ";
+						} elseif(isset($adresses[$i]["commune_etrangere"])) {
+							$sql.="commune='".$adresses[$i]["commune_etrangere"]."', ";
 						}
 						$sql=substr($sql,0,strlen($sql)-2);
 						$sql.=";";
