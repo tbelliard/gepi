@@ -146,7 +146,7 @@ function recherche_ele($rech_nom,$page) {
 function recherche_utilisateur($rech_nom,$page) {
 	$rech_nom=ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]","",$rech_nom);
 
-	$sql="SELECT * FROM utilisateurs WHERE nom LIKE '%$rech_nom%';";
+	$sql="SELECT * FROM utilisateurs WHERE (nom LIKE '%$rech_nom%' AND statut!='responsable');";
 	$res_utilisateur=mysql_query($sql);
 
 	$nb_utilisateur=mysql_num_rows($res_utilisateur);
