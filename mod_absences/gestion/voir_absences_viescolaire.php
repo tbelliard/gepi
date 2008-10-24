@@ -28,6 +28,7 @@ $niveau_arbo = 2;
 require_once("../../lib/initialisations.inc.php");
 //mes fonctions
 include("../lib/functions.php");
+include("../../edt_organisation/fonctions_calendrier.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -45,7 +46,7 @@ if (!checkAccess()) {
 }
 
 // Initialisation des variables
-$choix_creneau = isset($_POST["choix_creneau"]) ? $_POST["choix_creneau"] : (isset($_GET["choix_creneau"]) ? $_GET["choix_creneau"] : NULL);
+$choix_creneau = isset($_POST["choix_creneau"]) ? $_POST["choix_creneau"] : (isset($_GET["choix_creneau"]) ? $_GET["choix_creneau"] : retourneCreneau());
 $vers_absence = isset($_GET["vers_absence"]) ? $_GET["vers_absence"] : NULL;
 $vers_retard = isset($_GET["vers_retard"]) ? $_GET["vers_retard"] : NULL;
 $aff_nbre_abs = NULL;
@@ -91,7 +92,7 @@ $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $titre_page = "Les absents du jour.";
 require_once("../../lib/header.inc");
 //************** FIN EN-TETE ***************
-
+//debug_var();
 	// Traitement du passage entre absence et retard
 
 	if ($_SESSION["statut"] == "cpe") {
@@ -290,6 +291,7 @@ for($i = 0; $i < $nbre_rep; $i++) {
 		$req_creneaux = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	}
 	$nbre_creneaux = mysql_num_rows($req_creneaux);
+	$aff_creneaux_sans_select = NULL;
 	for($a=0; $a<$nbre_creneaux; $a++) {
 		$aff_creneaux[$a]["nom"] = mysql_result($req_creneaux, $a, "nom_definie_periode");
 		$aff_creneaux[$a]["id"] = mysql_result($req_creneaux, $a, "id_definie_periode");
@@ -299,9 +301,18 @@ for($i = 0; $i < $nbre_rep; $i++) {
 		//echo '
 		//<option value="'.$aff_creneaux[$a]["heure_debut"].':'.$aff_creneaux[$a]["heure_fin"].'">'.$aff_creneaux[$a]["nom"].'</option>
 		//';
+		if ($aff_creneaux[$a]["id"] == $choix_creneau) {
+			$selected = ' selected="selected"';
+			$color_selected = 'style="color: red; font-weight: bold;"';
+		}else{
+			$selected = '';
+			$color_selected = '';
+		}
 		echo '
-		<option value="'.$aff_creneaux[$a]["id"].'">'.$aff_creneaux[$a]["nom"].'</option>
+		<option value="'.$aff_creneaux[$a]["id"].'"'.$selected.'>'.$aff_creneaux[$a]["nom"].'</option>
 		';
+		// Ajout des liens directs sans le select
+		$aff_creneaux_sans_select .= '<a href="' . $_SERVER["PHP_SELF"] . '?choix_creneau='.$aff_creneaux[$a]["id"].'"'.$color_selected.'>'.$aff_creneaux[$a]["nom"].'</a>&nbsp;-&nbsp;';
 	}
 ?>
 	</select>
@@ -318,6 +329,7 @@ if (isset($choix_creneau)) {
 	echo ' Voir les absences de <span style="color: blue;">'.$explode1[0].':'.$explode1[1].'</span> à <span style="color: blue;">'.$explode2[0].':'.$explode2[1].'</span>.';
 }
 ?>
+&nbsp;&nbsp;<span style="border: 1px solid grey;"><?php echo $aff_creneaux_sans_select; ?></span></p>
 <br />
 <!-- Affichage des réponses-->
 <table class="tab_edt" summary="Liste des absents r&eacute;partie par classe">
