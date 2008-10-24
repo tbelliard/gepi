@@ -52,6 +52,11 @@ class Session {
 		session_name("GEPI");
 		session_start();
 
+		# Avant de faire quoi que ce soit, on initialise le fuseau horaire
+		if (isset($GLOBALS['timezone']) && $GLOBALS['timezone'] != '') {
+		    $this->update_timezone($GLOBALS['timezone']);
+                }
+
 		$this->maxLength = getSettingValue("sessionMaxLength");
 		$this->verif_CAS_multisite();
 
@@ -922,5 +927,33 @@ class Session {
 			}
 		}
 	}
+
+	# Cette méthode sert à forcer PHP et MySQL à utiliser un fuseau horaire
+	# particulier.
+	# Le fuseau horaire est simplement paramétré dans connect.inc.php,
+	# en assignant $timezone.
+	private function update_timezone($_timezone) {
+
+	    # Mise à jour du fuseau horaire pour PHP
+	    $update_timezone = date_default_timezone_set($_timezone);
+
+	    # Mise à jour pour MySQL
+	    if ($update_timezone) {
+
+		# Il faut qu'on formatte le fuseau
+		$timezone = new DateTimeZone(date_default_timezone_get());
+		$time = new DateTime("now", $timezone);
+		$offset = $timezone->getOffset($time);
+		$offset_sign = $offset < 0 == "-" ? "-" : "+";
+		$offset = abs($offset);
+		$offset_hours = $offset / 3600 % 24;
+		$offset_hours = strlen($offset_hours) == '1' ? "0".$offset_hours : $offset_hours;
+		$offset_minutes = $offset / 60 % 60;
+		$offset_minutes = strlen($offset_minutes) == '1' ? "0".$offset_minutes : $offset_minutes;
+		$mysql_offset = $offset_sign . $offset_hours . ":" . $offset_minutes;
+		$test = mysql_query("SET time_zone = '".$mysql_offset."'");
+	    }
+	    return $update_timezone;
+        }
 }
 ?>
