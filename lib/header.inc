@@ -309,17 +309,7 @@ if (isset($titre_page)) {
 		$_SESSION['cacher_header']="n";
 	}
 
-	if ($_SESSION['statut'] == "administrateur") {
-		$rc = null;
-		$beta = null;
-		if ($gepiRcVersion != '') $rc = "-RC".$gepiRcVersion;
-		if ($gepiBetaVersion != '') $beta = "-beta".$gepiBetaVersion;
-		echo "<div id='version_gepi'";
-		//if($_SESSION['cacher_header']=="y"){
-			echo " style='margin-left:22px;'";
-		//}
-		echo ">v".$gepiVersion.$rc.$beta."</div>";
-	}
+
 
 // ----- modifications Régis Bandeau -----
 // début des modifications du bandeau
@@ -343,6 +333,19 @@ if (isset($titre_page)) {
 
 // Initialisation du bandeau à grand bandeau darkfade pour ceux qui n'ont pas de javascript
 	echo "<div id='bandeau' class='gd_bandeau darkfade gd_bandeau_darkfade'>\n";
+	
+    // Affichage de la version de Gepi
+	if ($_SESSION['statut'] == "administrateur") {
+		$rc = null;
+		$beta = null;
+		if ($gepiRcVersion != '') $rc = "-RC".$gepiRcVersion;
+		if ($gepiBetaVersion != '') $beta = "-beta".$gepiBetaVersion;
+		echo "<div id='version_gepi'";
+		//if($_SESSION['cacher_header']=="y"){
+			echo " style='margin-left:22px;'";
+		//}
+		echo ">v".$gepiVersion.$rc.$beta."</div>";
+	}
 // Initialisation du bandeau à la bonne couleur
 	echo "<script type='text/javascript'>
 		<!--
