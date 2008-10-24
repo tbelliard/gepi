@@ -1361,7 +1361,8 @@ else {
 			$res_per=mysql_query($sql);
 			$lig_per=mysql_fetch_object($res_per);
 			$tab_bulletin[$id_classe][$periode_num]['num_periode']=$lig_per->num_periode;
-			$tab_bulletin[$id_classe][$periode_num]['nom_periode']=$lig_per->nom_periode;
+			//$tab_bulletin[$id_classe][$periode_num]['nom_periode']=$lig_per->nom_periode;
+			$tab_bulletin[$id_classe][$periode_num]['nom_periode']=ereg_replace("&#039;","'",$lig_per->nom_periode);
 			$tab_bulletin[$id_classe][$periode_num]['verouiller']=$lig_per->verouiller;
 
 
@@ -2530,7 +2531,18 @@ else {
 	if($mode_bulletin=="html") {
 		echo "<script type='text/javascript'>
 	document.getElementById('infodiv').style.display='none';
+
+    var aElm=document.body.getElementsByTagName('*');
+    for(var i=0; i<aElm.length; i++) {
+        if(aElm[i].className=='espacement_bulletins') {
+            //do something
+            //aElm[i].style.color='lime';
+            aElm[i].style.display='none';
+        }
+    }
+
 </script>\n";
+
 	}
 }
 
