@@ -61,6 +61,12 @@ if (!checkAccess()) {
 	die();
 }
 
+//debug_var();
+/*
+foreach($_SESSION['classe'] as $key => $value) {
+echo "\$_SESSION['classe'][$key] = $value<br />";
+}
+*/
 
 // fonction qui recoit une date heure est recompose la date en français
 function date_fr_dh($var)
@@ -467,9 +473,18 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	}
 
 	//tableau des données élève
-		if (isset($id_classe[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
-		if (isset($id_eleve[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
-		//on compte les élèves sélectionné
+		if (isset($id_classe[0])) {
+			//$call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC');
+			$sql='SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
+		}
+		if (isset($id_eleve[0])) {
+			//$call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC');
+			$sql='SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
+		}
+		//echo "$sql<br />";
+		$call_eleve = mysql_query($sql);
+
+		//on compte les élèves sélectionnés
 		$nb_eleves = mysql_num_rows($call_eleve);
 		while ( $donner = mysql_fetch_array( $call_eleve ))
 		{
@@ -553,6 +568,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 			$nombre_de_responsable = 0;
 			//$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
 			$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2'))"),0);
+			//echo "\$nombre_de_responsable=$nombre_de_responsable<br />";
 			if($nombre_de_responsable != 0)
 			{
 
@@ -968,6 +984,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 	}
 
+//echo "\$nb_eleves_i=$nb_eleves_i<br />";
 
 // Définition de la page
 $pdf=new rel_PDF("P","mm","A4");
@@ -979,7 +996,7 @@ $pdf->SetAutoPageBreak(true, BottomMargin);
 // Couleur des traits
 $pdf->SetDrawColor(0,0,0);
 
-// Caractéres utilisée
+// Caractères utilisés
 $caractere_utilse = 'arial';
 
 // on appelle une nouvelle page pdf
@@ -998,7 +1015,7 @@ switch ($choix_adr_parent) {
 		$nb_boucle_a_faire = 1;
 	break;
 	case '4' :
-	    $responsable_place = 1; // les responsable N°2 uniquement
+	    $responsable_place = 1; // les responsables N°2 uniquement
 		$nb_boucle_a_faire = 1;
 	break;
     default :
@@ -1006,63 +1023,65 @@ switch ($choix_adr_parent) {
 		$nb_boucle_a_faire = 1;
 }
 
+
 $nb_eleves_i = 1;
 $nb_boucle = 0; //compteur de boucle à faire pour R1 et R2 != R1
-while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle <= $nb_boucle_a_faire))
+//while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle <= $nb_boucle_a_faire))
+while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 {
 
-//cas N°4 uniquement les responsables 2 différent de responsable 1
-// et Cas N°2 lors de la 2ème boucle
-if (($active_bloc_adresse_parent == '1') and ($choix_adr_parent == '4') or
-    ((($active_bloc_adresse_parent == '1') and ($choix_adr_parent == '2')) and ($nb_boucle == 1)) )	{
+	//cas N°4 uniquement les responsables 2 différent de responsable 1
+	// et Cas N°2 lors de la 2ème boucle
+	if (($active_bloc_adresse_parent == '1') and ($choix_adr_parent == '4') or
+		((($active_bloc_adresse_parent == '1') and ($choix_adr_parent == '2')) and ($nb_boucle == 1)) )	{
 
-	//test si les adresses sont identiques
+		//test si les adresses sont identiques
 
-	$temoin = true;
-	//tant que l'on ne trouve pas 2 adresses différentes on boucle et on incrément le compteur $nb_eleves_i
-	while ($temoin) {
-	  $ident_eleve=$login[$nb_eleves_i];
+		$temoin = true;
+		//tant que l'on ne trouve pas 2 adresses différentes on boucle et on incrément le compteur $nb_eleves_i
+		while ($temoin) {
+			$ident_eleve=$login[$nb_eleves_i];
 
-	  if (($adresse1_parents[$ident_eleve][0] != $adresse1_parents[$ident_eleve][1]) or
-		  ($adresse2_parents[$ident_eleve][0] != $adresse2_parents[$ident_eleve][1]) or
-		  ($ville_parents[$ident_eleve][0] != $ville_parents[$ident_eleve][1]) or
-		  ($cp_parents[$ident_eleve][0] != $cp_parents[$ident_eleve][1]) ) {
+			if (($adresse1_parents[$ident_eleve][0] != $adresse1_parents[$ident_eleve][1]) or
+				($adresse2_parents[$ident_eleve][0] != $adresse2_parents[$ident_eleve][1]) or
+				($ville_parents[$ident_eleve][0] != $ville_parents[$ident_eleve][1]) or
+				($cp_parents[$ident_eleve][0] != $cp_parents[$ident_eleve][1]) ) {
 
-			 $adresse2_vide = false;
-		     //si l'adresse N°2 est vide, (pas de nom de famille)
-			 if ($nom_parents[$ident_eleve][1] == '') {
-			     /*($adresse1_parents[$ident_eleve][1] == '') and
-				 ($adresse2_parents[$ident_eleve][1] == '') and
-				 ($ville_parents[$ident_eleve][1] == '') and
-				 ($cp_parents[$ident_eleve][1] == '') ) { */
+				$adresse2_vide = false;
+				//si l'adresse N°2 est vide, (pas de nom de famille)
+				if ($nom_parents[$ident_eleve][1] == '') {
+					/*($adresse1_parents[$ident_eleve][1] == '') and
+					($adresse2_parents[$ident_eleve][1] == '') and
+					($ville_parents[$ident_eleve][1] == '') and
+					($cp_parents[$ident_eleve][1] == '') ) { */
 
-			   $nb_eleves_i++;
-			   $adresse2_vide = true;
+				$nb_eleves_i++;
+				$adresse2_vide = true;
 
-			 } else {
-		       $temoin=false;
-			 }
+				} else {
+					$temoin=false;
+				}
 
-		 if (!$adresse2_vide) {$temoin=false;}
+				if (!$adresse2_vide) {$temoin=false;}
 
-	  } else {
-          // R1 et R2 sont différentes
-	      $nb_eleves_i++;
-	  }
+			} else {
+				// R1 et R2 sont différentes
+				$nb_eleves_i++;
+			}
 
-	  if ($nb_eleves_i > $nb_eleves) {
-		$temoin = false;
-		$nb_eleves_i = $nb_eleves_i - 1;
+			if ($nb_eleves_i > $nb_eleves) {
+				$temoin = false;
+				$nb_eleves_i = $nb_eleves_i - 1;
 
-		//si on dépase le nombre d'élèves, on clos le fichier PDF
-		// sortie PDF sur écran
-		$nom_releve=date("Ymd_Hi");
-		$nom_releve = 'Releve_'.$nom_releve.'.pdf';
-		$pdf->Output($nom_releve,'I');
-		die();
-	  }
-	} // while temoin
-}
+				//si on dépase le nombre d'élèves, on clos le fichier PDF
+				// sortie PDF sur écran
+				$nom_releve=date("Ymd_Hi");
+				$nom_releve = 'Releve_'.$nom_releve.'.pdf';
+				$pdf->Output($nom_releve,'I');
+				die();
+			}
+		} // while temoin
+	}
 
 	$pdf->AddPage("P");
 	$pdf->SetFontSize(10);
