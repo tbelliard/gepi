@@ -494,7 +494,7 @@ elseif(!isset($choix_periode)) {
     echo "<input type='text' name = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" />";
     echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 	echo "<br />\n";
-    echo " (Veillez à respectez le format jj/mm/aaaa)</label>\n";
+    echo " (Veillez à respecter le format jj/mm/aaaa)</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
