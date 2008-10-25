@@ -1846,7 +1846,7 @@ function aff_lig_adresse_parent(mode){
 			echo "<img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" />\n";
 		echo "</a>\n";
 
-		echo " (Veillez à respectez le format jj/mm/aaaa)\n";
+		echo " (Veillez à respecter le format jj/mm/aaaa)\n";
 	echo "</label>\n";
 	echo "</p>\n";
 
