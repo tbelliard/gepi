@@ -84,6 +84,8 @@ if (!isset($id_classe)) {
 	$i = 0;
 	unset($tab_lien);
 	unset($tab_txt);
+	$tab_txt=array();
+	$tab_lien=array();
 	while ($i < $nombreligne){
 		$tab_lien[$i] = "index.php?id_classe=".mysql_result($calldata, $i, "id");
 		$tab_txt[$i] = mysql_result($calldata, $i, "classe");
