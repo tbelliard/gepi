@@ -2007,18 +2007,23 @@ function tel_responsable($ele_id)
     global $prefix_base;
 
 	$nombre_de_responsable = 0;
-	$tel_pers_responsable = '';
+	//$tel_pers_responsable = '';
 	$tel_responsable = '';
+
+	$tel_responsable=array();
+
 	$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal = '1' )"),0);
 	if($nombre_de_responsable != 0)
 	{
 			$cpt_parents = 0;
 			//$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."responsables2 r
+			/*
 			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."responsables2 r, ".$prefix_base."resp_pers rp
 													LEFT JOIN  ".$prefix_base."resp_adr ra ON rp.adr_id=ra.adr_id
 													WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id )
 													ORDER BY resp_legal ASC");
-
+			*/
+			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id AND (r.resp_legal = '1' OR r.resp_legal = '2' )) ORDER BY resp_legal ASC");
 			while ($donner_parents = mysql_fetch_array($requete_parents))
 			{
 				$tel_responsable[$cpt_parents]['civilite'] = $donner_parents['civilite']; // nom du responsable suite
@@ -2027,10 +2032,21 @@ function tel_responsable($ele_id)
 				$tel_responsable[$cpt_parents]['tel_pers'] = $donner_parents['tel_pers']; // adresse du responsable suite
 				$tel_responsable[$cpt_parents]['tel_port'] = $donner_parents['tel_port']; // ville du responsable
 				$tel_responsable[$cpt_parents]['tel_prof'] = $donner_parents['tel_prof']; // code postal du responsable
-				$tel_responsable[$cpt_parents]['resp_legal'] = $donner_parents['resp_legal']; // code représente légam
-				$tel_responsable[$cpt_parents]['adr1'] = $donner_parents['adr1']; // adresse1
-				$tel_responsable[$cpt_parents]['cp'] = $donner_parents['cp']; // cp
-				$tel_responsable[$cpt_parents]['commune'] = $donner_parents['commune']; // commune
+				$tel_responsable[$cpt_parents]['resp_legal'] = $donner_parents['resp_legal']; // code représente légal
+
+				$sql="SELECT adr1,cp,commune FROM resp_adr WHERE adr_id='".$donner_parents['adr_id']."';";
+				$res_adr=mysql_query($sql);
+				if(mysql_num_rows($res_adr)==0) {
+					$tel_responsable[$cpt_parents]['adr1'] = ""; // adresse1
+					$tel_responsable[$cpt_parents]['cp'] = ""; // cp
+					$tel_responsable[$cpt_parents]['commune'] = ""; // commune
+				}
+				else {
+					$lig_adr=mysql_fetch_object($res_adr);
+					$tel_responsable[$cpt_parents]['adr1'] = $lig_adr->adr1; // adresse1
+					$tel_responsable[$cpt_parents]['cp'] = $lig_adr->cp; // cp
+					$tel_responsable[$cpt_parents]['commune'] = $lig_adr->commune; // commune
+				}
 				$cpt_parents = $cpt_parents + 1;
 			}
 	}
