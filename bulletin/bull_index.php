@@ -2570,6 +2570,8 @@ On a aussi ajouté des champs dans la table 'classes' pour les relevés de notes,.
 	require("../lib/footer.inc.php");
 }
 elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
+	// On ajoute le bon en tête sur le type de document envoyé sinon FF3 se plante
+	header('Content-type: application/pdf');
 	//fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 	$nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
 	$pdf->Output($nom_bulletin,'I');
