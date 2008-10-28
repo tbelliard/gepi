@@ -112,7 +112,23 @@ require_once("../../lib/header.inc");
 														AND d_heure_absence_eleve = '" . $date_recherchee[1] . "'";
 			// On force alors la mise à jour et on évite l'apparition d'un message d'erreur si le update ne donne rien
 			$query_abs_eleve = @mysql_query($sql_abs_eleve);
+			// Il faut alors regarder s'il existe un courrier déjà lancé pour cette absence
+			// le cas échéant, il faut le détruire
+			$sql_lettre = "SELECT ls.id_lettre_suivi, ls.partdenum_lettre_suivi FROM lettres_suivis ls
+												WHERE ls.emis_date_lettre_suivi = '" . $date_recherchee[0] . "'
+												AND ls.quirecois_lettre_suivi = '" . $donnees["eleve_id"] . "'
+												AND ls.statu_lettre_suivi = 'en attente'
+												AND ls.envoye_date_lettre_suivi = '0000-00-00'"; // ce dernier point permet d'éviter de détruire des lettres déjà envoyées
+			$query_lettre = mysql_query($sql_lettre) OR DIE('Impossible de détruire la lettre déjà émise <br /> -->' . $sql_lettre . '<br /><p style="color: red;">' . mysql_error() . '</p>');
+			$test = mysql_num_rows($query_lettre);
 
+			if ($test === 1) {
+				// GEPI n'a trouvé qu'une seule réponse, on peut donc l'effacer
+				$lettre_a_effacer = mysql_result($query_lettre, "id_lettre_suivi");
+				$delete = mysql_query("DELETE FROM lettres_suivis WHERE id_lettre_suivi = '" . $lettre_a_effacer . "'");
+			}elseif($test > 1){
+				$message_erreur_lettre_a_effacer = 'Il y a des lettres qui correspondent à ce retard mais aucune n\'a été détruite.';
+			}
 		}
 	}
 
