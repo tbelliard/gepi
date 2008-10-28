@@ -25,6 +25,8 @@
 // Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
 //Le problème peut être résolu en ajoutant la ligne suivante :
 Header('Pragma: public');
+// On ajoute le bon en tête sur le type de document envoyé sinon FF3 se plante
+header('Content-type: application/pdf');
 
 require('../fpdf/fpdf.php');
 require('../fpdf/ex_fpdf.php');
