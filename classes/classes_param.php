@@ -566,7 +566,8 @@ while ($per < $max_periode) {
 	<td><?PHP
 		echo "<select tabindex=\"5\" name=\"modele_bulletin_".$per."\">";
 		// sélection des modèle des bulletins.
-		$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
+		//$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
+		$requete_modele = mysql_query("SELECT id_model_bulletin, valeur as nom_model_bulletin FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC;");
 		echo "<option value=\"0\">Aucun changement</option>";
 		while($donner_modele = mysql_fetch_array($requete_modele)) {
 			echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
