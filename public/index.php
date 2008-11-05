@@ -30,7 +30,7 @@ require_once("../lib/transform_functions.php");
 require_once("lib/functions.inc");
 // On vérifie si l'accès est restreint ou non
 require_once("lib/auth.php");
-debug_var();
+
 
 unset($id_classe);
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id_classe"]) ? $_GET["id_classe"] : NULL);

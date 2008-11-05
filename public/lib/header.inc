@@ -23,9 +23,10 @@
 
 // Pour le multisite, on doit récupérer le RNE de l'établissement
 $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
-$aff_get_rne = NULL;
+$aff_get_rne = $aff_get_rne_bis = NULL;
 if ($rne != 'aucun') {
 	$aff_get_rne = '&amp;rne=' . $rne;
+	$aff_get_rne_bis = '?rne=' . $rne;
 }
 
 
@@ -113,7 +114,7 @@ if(isset($style_screen_ajout)){
 		echo "<span class='grey'>";
 		    echo "<a href=\"".$page_accueil. $aff_get_rne ."\">Accueil</a> - ";
 		    echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a> - ";
-		    echo "<a href=\"javascript:centrerpopup('contacter_admin_pub.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>";
+		    echo "<a href=\"javascript:centrerpopup('contacter_admin_pub.php" . $aff_get_rne_bis . "',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>";
 		echo "</span>\n";
 
 		echo "</td>\n";
