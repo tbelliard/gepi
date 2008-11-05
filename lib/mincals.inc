@@ -46,18 +46,29 @@ class Calendar
         $this->dmy   = $dmy;
     }
 
+    function getRneMultisite(){
+    	// Pour le multisite, on doit récupérer le RNE de l'établissement
+		$rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
+		$aff_get_rne = NULL;
+		if ($rne != 'aucun') {
+			return '&amp;rne=' . $rne;
+		}else{
+			return '';
+		}
+    }
+
    function getCalendarLink($month, $year, $id_groupe)
    {
         global $id_classe;
         global $selected_eleve_login;
         $day=1;
-        return $this->dmy."year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login";
+        return $this->dmy."year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login" . $this->getRneMultisite();
     }
 	// correction w3c : ajout de \" pour encadrer le lien
    function getDateLink($day, $month, $year) {
       global $id_classe;
       global $selected_eleve_login;
-      return "<a title=\"Voir le cahier de texte pour cette journée\" href=\"".$this->dmy."year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=".$this->id_groupe."\"";
+      return "<a title=\"Voir le cahier de texte pour cette journée\" href=\"".$this->dmy."year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=".$this->id_groupe . $this->getRneMultisite() . "\"";
    }
 
 

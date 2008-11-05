@@ -30,6 +30,7 @@ require_once("../lib/transform_functions.php");
 require_once("lib/functions.inc");
 // On vérifie si l'accès est restreint ou non
 require_once("lib/auth.php");
+debug_var();
 
 unset($id_classe);
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id_classe"]) ? $_GET["id_classe"] : NULL);
@@ -48,6 +49,13 @@ if (is_numeric($id_groupe)) {
     if ($id_classe == NULL) $id_classe = $current_group["classes"]["list"][0];
 } else {
     $current_group = false;
+}
+
+// Pour le multisite, on doit récupérer le RNE de l'établissement
+$rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
+$aff_input_rne = NULL;
+if ($rne != 'aucun') {
+	$aff_input_rne = '<input type="hidden" name="rne" value="' . $rne . '" />' . "\n";
 }
 
 // Nom complet de la classe
@@ -132,6 +140,7 @@ echo "<form action=\"./index.php\" method=\"post\" style=\"width: 100%;\">\n";
 genDateSelector("", $day, $month, $year,'');
 echo "<input type=hidden name=id_groupe value=$id_groupe />\n";
 echo "<input type=hidden name=id_classe value=$id_classe />\n";
+echo $aff_input_rne . "\n";
 echo "<input type=\"submit\" value=\"OK\"/></form>\n";
 //Affiche le calendrier
 minicals($year, $month, $day, $id_groupe, 'index.php?');

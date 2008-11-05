@@ -1500,7 +1500,15 @@ function html_entity_decode_all_version ($string)
 function make_classes_select_html($link, $current, $year, $month, $day)
 
 {
+  // Pour le multisite, on doit récupérer le RNE de l'établissement
+  $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
+  $aff_input_rne = $aff_get_rne = NULL;
+  if ($rne != 'aucun') {
+	$aff_input_rne = '<input type="hidden" name="rne" value="' . $rne . '" />' . "\n";
+	$aff_get_rne = '&amp;rne=' . $rne;
+  }
   $out_html = "<form name=\"classe\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><strong><em>Classe :</em></strong><br />
+  " . $aff_input_rne . "
   <select name=\"classe\" onchange=\"classe_go()\">";
 	// correction W3C : onChange = onchange
   $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=-1\">(Choisissez une classe)";
@@ -1511,7 +1519,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
   if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
   {
     $selected = ($row[0] == $current) ? "selected" : "";
-    $link2 = "$link?year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$row[0]";
+    $link2 = "$link?year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$row[0]" . $aff_get_rne;
     $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[1]);
   }
   $out_html .= "</select>
@@ -1546,7 +1554,14 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	$out_html = "<form name=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><strong><em>Matière :</em></strong><br />
 	<select name=\"matiere\" onchange=\"matiere_go()\">\n";
 	*/
-	$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+  // Pour le multisite, on doit récupérer le RNE de l'établissement
+  $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
+  $aff_input_rne = $aff_get_rne = NULL;
+  if ($rne != 'aucun') {
+	$aff_input_rne = '<input type="hidden" name="rne" value="' . $rne . '" />' . "\n";
+	$aff_get_rne = '&amp;rne=' . $rne;
+  }
+	$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n" . $aff_input_rne . "\n
   <h2 class='h2_label'> \n<label for=\"enseignement\"><strong><em>Matière :<br /></em></strong></label>\n</h2>\n<p>\n<select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";
 
 	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
@@ -1584,9 +1599,9 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
    //$selected = ($row[0] == $current) ? "selected" : "";
    $selected = ($row[0] == $current) ? "selected=\"selected\"" : "";
    if (is_numeric($id_ref)) {
-   		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=$row[0]";
+   		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
    } else {
-   		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=$row[0]";
+   		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
    }
 	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
    //$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";

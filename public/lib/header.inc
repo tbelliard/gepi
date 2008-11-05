@@ -20,6 +20,15 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
+// Pour le multisite, on doit récupérer le RNE de l'établissement
+$rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
+$aff_get_rne = NULL;
+if ($rne != 'aucun') {
+	$aff_get_rne = '&amp;rne=' . $rne;
+}
+
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="fr">
@@ -102,7 +111,7 @@ if(isset($style_screen_ajout)){
 
 		echo "<td id='td_headerBottomRight' style='padding-bottom: 5px;'>\n";
 		echo "<span class='grey'>";
-		    echo "<a href=\"".$page_accueil."\">Accueil</a> - ";
+		    echo "<a href=\"".$page_accueil. $aff_get_rne ."\">Accueil</a> - ";
 		    echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a> - ";
 		    echo "<a href=\"javascript:centrerpopup('contacter_admin_pub.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>";
 		echo "</span>\n";
