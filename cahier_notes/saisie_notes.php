@@ -561,6 +561,7 @@ if ($order_by != "classe") {
 	$tab_classes = array();
 	foreach($current_group["classes"]["list"] as $classe_id) {
 		$tab_classes[$classe_id] = array();
+        //echo "\$tab_classes[$classe_id]=".$tab_classes[$classe_id]."<br />";
 	}
 	// On passe maintenant élève par élève et on les met dans la bonne liste selon leur classe
 	foreach($current_group["eleves"][$periode_num]["list"] as $e_login) {
@@ -1261,9 +1262,11 @@ while($i < $nombre_lignes) {
 // Génération de l'infobulle pour $tab_graph_moy[]
 if($id_devoir==0) {
 	$graphe_serie="";
-	for($l=0;$l<count($tab_graph_moy);$l++) {
-		if($l>0) {$graphe_serie.="|";}
-		$graphe_serie.=$tab_graph_moy[$l];
+	if(isset($tab_graph_moy)) {
+		for($l=0;$l<count($tab_graph_moy);$l++) {
+			if($l>0) {$graphe_serie.="|";}
+			$graphe_serie.=$tab_graph_moy[$l];
+		}
 	}
 
 	//$titre="Répartition des notes de ".$nom_dev[$k];
