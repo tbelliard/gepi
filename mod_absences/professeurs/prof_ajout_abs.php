@@ -827,6 +827,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		<caption class="invisible no_print">Absences</caption>
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
+				<th class="td_abs_eleves" style="width: 10%;">&nbsp;Hier&nbsp;</th>
 				<th class="td_abs_eleves" abbr="élèves">Liste des &eacute;l&egrave;ves</th>
 				<th class="td_abs_absence">Absence</th>
 	<?php // on vérifie que le professeur est bien autorisé à saisir les retards
@@ -853,6 +854,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 ?>
 			</tr>
 			<tr>
+				<td></td>
 				<td></td>
 				<td></td>
 	<?php // on vérifie que le professeur est bien autorisé à saisir les retards
@@ -911,8 +913,23 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		}
 		echo "<tr id='ligne_".$ligne."' class='$couleur_classe' onmouseover='Element.addClassName(\"ligne_$ligne\",\"abs_ligne_survol\")' onmouseout='Element.removeClassName(\"ligne_$ligne\",\"abs_ligne_survol\")'>\n";
 
-?>
+		// On cherche s'il y a eu des absences la veille
+		$hier_00h00 = date("U") - ((date("H") * 3600) + 86400);
+		$hier_23h59 = date("U") - ((date("H") * 3600) + 3600);
 
+		$sql_hier = "SELECT * FROM absences_rb WHERE eleve_id = '" . $data_liste_eleve["login"] . "'
+												AND debut_ts > '" . $hier_00h00 . "'
+												AND fin_ts < '" . $hier_23h59 . "'
+												AND retard_absence = 'A'
+												ORDER BY debut_ts";
+		$query_hier = mysql_query($sql_hier) OR DIE('ERREUR dans la requête SQL ' . $sql_hier . '<br />&nbsp;&nbsp;--> ' . mysql_error());
+		$compter_hier = mysql_num_rows($query_hier);
+
+		$color_hier = ($compter_hier >= 2) ? ' style="background-color: blue; text-align: center; color: white; font-weight: bold;"' : '';
+		$aff_compter_hier = ($compter_hier >= 1) ? $compter_hier.' enr.' : '';
+
+?>
+				<td<?php echo $color_hier; ?>><?php echo $aff_compter_hier; ?></td>
 				<td class='td_abs_eleves'>
 					<input type="hidden" name="eleve_absent[<?php echo $cpt_eleve; ?>]" value="<?php echo $data_liste_eleve['login']; ?>" />
 
