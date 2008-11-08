@@ -2429,43 +2429,47 @@ if (isset ($_POST['maj'])) {
         $result.="<font color=\"green\">Ok !</font><br />";
     }
 
-    $test=mysql_query("SHOW TABLES;");
-    //$temoin_j_scol_classes="";
-    $notok_j_scol_classes=false;
-    if($test){
-        while($lig_test=mysql_fetch_array($test)){
-            if($lig_test[0]=='j_scol_classes'){
-                $call_classes_tmp=mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-                if(mysql_num_rows($call_classes_tmp)>0){
-                    while($lig_clas=mysql_fetch_object($call_classes_tmp)){
-                        $sql="SELECT login,nom,prenom FROM utilisateurs WHERE (statut='scolarite' AND etat='actif') ORDER BY nom,prenom";
-                        $res_scol=mysql_query($sql);
-                        if(mysql_num_rows($res_scol)>0){
-                            while($lig_scol=mysql_fetch_object($res_scol)){
-                                //$test=mysql_query("SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$lig_clas->id."' AND login='".$scol_login[$i]."'");
-                                $test=mysql_query("SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$lig_clas->id."' AND login='".$lig_scol->login."'");
-                                if(mysql_num_rows($test)==0){
-                                    $sql="INSERT INTO j_scol_classes SET id_classe='".$lig_clas->id."', login='".$lig_scol->login."'";
-                                    $reg_data=mysql_query($sql);
-                                    if(!$reg_data){
-                                        $notok_j_scol_classes=true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                //$temoin_j_scol_classes="ok";
-            }
-        }
-    }
-    else{
-        $result.="Erreur à la lecture des tables!<br />";
-    }
+	$sql="SELECT 1=1 FROM j_scol_classes;";
+	$query=mysql_query($sql);
+	if(mysql_num_rows($query)==0) {
+		$test=mysql_query("SHOW TABLES;");
+		//$temoin_j_scol_classes="";
+		$notok_j_scol_classes=false;
+		if($test){
+			while($lig_test=mysql_fetch_array($test)){
+				if($lig_test[0]=='j_scol_classes'){
+					$call_classes_tmp=mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+					if(mysql_num_rows($call_classes_tmp)>0){
+						while($lig_clas=mysql_fetch_object($call_classes_tmp)){
+							$sql="SELECT login,nom,prenom FROM utilisateurs WHERE (statut='scolarite' AND etat='actif') ORDER BY nom,prenom";
+							$res_scol=mysql_query($sql);
+							if(mysql_num_rows($res_scol)>0){
+								while($lig_scol=mysql_fetch_object($res_scol)){
+									//$test=mysql_query("SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$lig_clas->id."' AND login='".$scol_login[$i]."'");
+									$test=mysql_query("SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$lig_clas->id."' AND login='".$lig_scol->login."'");
+									if(mysql_num_rows($test)==0){
+										$sql="INSERT INTO j_scol_classes SET id_classe='".$lig_clas->id."', login='".$lig_scol->login."'";
+										$reg_data=mysql_query($sql);
+										if(!$reg_data){
+											$notok_j_scol_classes=true;
+										}
+									}
+								}
+							}
+						}
+					}
+					//$temoin_j_scol_classes="ok";
+				}
+			}
+		}
+		else{
+			$result.="Erreur à la lecture des tables!<br />";
+		}
 
-    if($notok_j_scol_classes){
-        $result.="Erreur à la l'affectation des classes aux comptes scolarité!<br />";
-    }
+		if($notok_j_scol_classes){
+			$result.="Erreur à la l'affectation des classes aux comptes scolarité!<br />";
+		}
+	}
 
     // Mise à jour des tables pour le module absences
 
