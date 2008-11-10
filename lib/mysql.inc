@@ -13,6 +13,11 @@
 // Including this file connects you to the database, or exits on error.
 
 // Etablir la connexion à la base
+if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
+  // On utilise le module pdo de php pour entrer en contact avec la base
+  $cnx = new PDO('mysql:host='.$dbHos.';dbname='.$dbDb, $dbUser, $dbPass);
+
+}
 if (empty($db_nopersist))
     $db_c = mysql_pconnect($dbHost, $dbUser, $dbPass);
 else

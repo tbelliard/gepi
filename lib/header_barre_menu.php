@@ -8,7 +8,7 @@
  */
 // ====== SECURITE =======
 
-if (!checkAccess()) {
+if (!$_SESSION["login"]) {
     header("Location: ../logout.php?auto=2");
     die();
 }
