@@ -15,7 +15,7 @@
 // Etablir la connexion à la base
 if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
   // On utilise le module pdo de php pour entrer en contact avec la base
-  $cnx = new PDO('mysql:host='.$dbHos.';dbname='.$dbDb, $dbUser, $dbPass);
+  $cnx = new PDO('mysql:host='.$dbHost.';dbname='.$dbDb, $dbUser, $dbPass);
 
 }
 if (empty($db_nopersist))

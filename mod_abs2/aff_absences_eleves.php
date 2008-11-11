@@ -22,7 +22,9 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 $utiliser_pdo = 'on';
+//error_reporting(0);
 // Initialisation des feuilles de style après modification pour améliorer l'accessibilité
 $accessibilite="y";
 
@@ -37,17 +39,43 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();
 };
+//debug_var();
+// ============== traitement des variables ==================
+
+
+// ============== Code métier ===============================
+include("absences.class.php");
+
+include("helpers/aff_listes_utilisateurs.inc.php");
+$liste_eleves = ListeEleves(array('eleves'=>'alpha', 'classes'=>'toutes'));
+$aff_liste_eleves = affSelectEleves($liste_eleves);
+
+$test1 = new absences();
+$array_abs = array('eleves_id' => 'FELIX_detre');
+$test1->setChamps($array_abs);
+$array2_abs = array('debut_abs' => date("U"));
+$test1->setChamps($array2_abs);
+$test2 = $test1->getChamps();
 
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-$sql = "SELECT * FROM utilisateurs WHERE login = 'JJOCAL'";
-$query = $cnx -> query($sql);
-$aff = $query->fetch(PDO::FETCH_OBJ);
-echo '<pre>';
-print_r($aff);
-echo '</pre>';
+
+
 ?>
+<p>Un utilisateur veut enregistrer une absence, il s'agit de <?php echo $test2["utilisateurs_id"]; ?>
+&nbsp;&agrave; <?php echo date("H:i:s", $test2["date_saisie"]); ?> le <?php echo date("d/m/Y", $test2["date_saisie"]); ?></p>
+
+<form method="post" action="aff_absences_eleves.php" >
+
+  <p><?php echo $aff_liste_eleves; ?></p>
+
+</form>
+
+
+<pre><?php print_r($test2); ?></pre>
+
+
 
 <?php require_once("../lib/footer.inc.php"); ?>

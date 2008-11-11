@@ -34,7 +34,7 @@ class absences{
 	 * abs_informations
 	 * @access protected
 	 */
-	protected $champs = array();
+  protected $champs = array();
 
 	/**
 	 * Constructor
@@ -42,23 +42,60 @@ class absences{
 	 * @access protected
 	 */
 	public function __construct(){
-    $this -> champs = array();
+    /**
+  	* + id
+  	* + utilisateurs_id (qui a saisi ?)
+  	* + groupes_id (cet événement a eu lieu pendant quel groupe ?)
+    * + eleves_id (qui est absent ?)
+   	* + date_saisie (timestamp UNIX)
+  	* + debut_abs (timestamp UNIX)
+  	* + fin_abs (timestamp UNIX)
+  	*/
+    $this->champs = array('utilisateurs_id' => $_SESSION["login"],
+                          'groupes_id' => NULL,
+                          'eleves_id' => NULL,
+                          'date_saisie' => date("U"),
+                          'debut_abs' => NULL,
+                          'fin_abs' => NULL);
 	}
 
+	private function pdoConnect(){
+    global $cnx;
+    return $cnx;
+  }
+
 	public function setChamps($donnees = array()){
+
+    $this->champs["utilisateurs_id"] = isset($donnees["utilisateurs_id"]) ? $donnees["utilisateurs_id"] : $this->champs["utilisateurs_id"];
+    $this->champs["groupes_id"] = isset($donnees["groupes_id"]) ? $donnees["groupes_id"] : $this->champs["groupes_id"];
+    $this->champs["eleves_id"] = isset($donnees["eleves_id"]) ? $donnees["eleves_id"] : $this->champs["eleves_id"];
+    $this->champs["date_saisie"] = isset($donnees["date_saisie"]) ? $donnees["date_saisie"] : $this->champs["date_saisie"];
+    $this->champs["debut_abs"] = isset($donnees["debut_abs"]) ? $donnees["debut_abs"] : $this->champs["debut_abs"];
+    $this->champs["fin_abs"] = isset($donnees["fin_abs"]) ? $donnees["fin_abs"] : $this->champs["fin_abs"];
 
   }
 
   public function getChamps(){
-
+      return $this->champs;
   }
 
   protected function verifAbs(){
+    return true;
+  }
+
+  protected function affErreur(){
 
   }
 
   public function insertAbs(){
-
+    if ($this->verifAbs()) {
+      $sql = "";
+      $sql .= "INSERT INTO abs_informations (utilisateurs_id, groupes_id, eleves_id, date_saisie, debut_abs, fin_abs)";
+      $sql .= " VALUES('".$this->champs["utilisateurs_id"]."', '".$this->champs["groupes_id"]."', '".$this->champs["eleves_id"]."', '".$this->champs["date_saisie"]."', '".$this->champs["debut_abs"]."', '".$this->champs["fin_abs"]."')";
+      $this->pdoConnect()->query($sql);
+    }else{
+      echo $this->affErreur();
+    }
   }
 
   public function updateAbs(){
