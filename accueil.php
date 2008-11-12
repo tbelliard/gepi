@@ -193,7 +193,47 @@ if ($_SESSION['statut'] == "administrateur") {
     $sql = "select LOGIN from log where END > now()";
     $res = sql_query($sql);
     $nb_connect = sql_count($res);
-    echo "<p>\nNombre de personnes actuellement connectées : $nb_connect ";
+	if(mysql_num_rows($res)>1) {
+		$titre="Personnes connectées";
+
+		$texte="<div align='center'>\n";
+		$texte.="<table class='boireaus'>\n";
+		$texte.="<tr>\n";
+		$texte.="<th>Personne</th>\n";
+		$texte.="<th>Statut</th>\n";
+		$texte.="</tr>\n";
+		$alt=1;
+		while($lig_log=mysql_fetch_object($res)) {
+			$sql="SELECT nom,prenom,statut,email FROM utilisateurs WHERE login='$lig_log->LOGIN';";
+			$res_pers=mysql_query($sql);
+			if(mysql_num_rows($res)==0) {
+				$texte.="<tr><td style='color:red;'>$lig_log->LOGIN</td><td style='color:red;'>???</td></tr>\n";
+			}
+			else {
+				$lig_pers=mysql_fetch_object($res_pers);
+				$alt=$alt*(-1);
+				$texte.="<tr class='lig$alt'><td>";
+				if($lig_pers->email!="") {$texte.="<a href='mailto:$lig_pers->email'>";}
+				$texte.=strtoupper($lig_pers->nom)." ".ucfirst(strtolower($lig_pers->prenom));
+				if($lig_pers->email!="") {$texte.="</a>";}
+				$texte.="</td><td>".$lig_pers->statut."</td></tr>\n";
+			}
+		}
+		$texte.="</table>\n";
+		$texte.="</div>\n";
+
+		if($nb_connect>10) {
+			$tabdiv_infobulle[]=creer_div_infobulle('personnes_connectees',$titre,"",$texte,"",20,10,'y','y','n','y');
+		}
+		else {
+			$tabdiv_infobulle[]=creer_div_infobulle('personnes_connectees',$titre,"",$texte,"",20,0,'y','y','n','n');
+		}
+
+		echo "<p>\nNombre de personnes actuellement connectées :<a href='#' onClick='return false;' onMouseover=\"delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);\"> $nb_connect </a>";
+	}
+	else {
+		echo "<p>\nNombre de personnes actuellement connectées : $nb_connect ";
+	}
     echo "(<a href = 'gestion/gestion_connect.php?mode_navig=accueil'>Gestion des connexions</a>)\n</p>\n";
 
 	// Lien vers le panneau de contrôle de sécurité
