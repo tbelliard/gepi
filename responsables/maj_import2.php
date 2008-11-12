@@ -451,12 +451,14 @@ else{
 
 						$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
 						if ($res_extract != 0) {
-							echo "<p>Le fichier a été dézippé.</p>\n";
+							echo "<p>Le fichier uploadé a été dézippé.</p>\n";
 							$fichier_extrait=$res_extract[0]['filename'];
 							$res_copy=rename("$fichier_extrait" , "$dest_file");
 						}
 						else {
 							echo "<p style='color:red'>Echec de l'extraction de l'archive ZIP.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
 						}
 					}
 				}
@@ -3656,12 +3658,14 @@ else{
 
 						$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
 						if ($res_extract != 0) {
-							echo "<p>Le fichier a été dézippé.</p>\n";
+							echo "<p>Le fichier uploadé a été dézippé.</p>\n";
 							$fichier_extrait=$res_extract[0]['filename'];
 							$res_copy=rename("$fichier_extrait" , "$dest_file");
 						}
 						else {
 							echo "<p style='color:red'>Echec de l'extraction de l'archive ZIP.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
 						}
 					}
 				}
