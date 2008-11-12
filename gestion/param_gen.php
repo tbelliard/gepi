@@ -330,6 +330,21 @@ if (isset($_POST['mode_generation_login'])) {
 	$modif_maxlong = mysql_query($req);
 }
 
+
+if (isset($_POST['unzipped_max_filesize'])) {
+	$unzipped_max_filesize=$_POST['unzipped_max_filesize'];
+	if(substr($unzipped_max_filesize,0,1)=="-") {$unzipped_max_filesize=-1;}
+	elseif(strlen(ereg_replace("[0-9]","",$unzipped_max_filesize))!=0) {
+		$unzipped_max_filesize=10;
+		$msg .= "Caractères invalides pour le paramètre unzipped_max_filesize<br />Initialisation à 10 Mo !";
+	}
+
+	if (!saveSetting("unzipped_max_filesize", $unzipped_max_filesize)) {
+		$msg .= "Erreur lors de l'enregistrement du paramètre unzipped_max_filesize !";
+	}
+}
+
+
 if (isset($_POST['gepi_pmv'])) {
 	if (!saveSetting("gepi_pmv", $_POST['gepi_pmv'])) {
 		$msg .= "Erreur lors de l'enregistrement de gepi_pmv !";
@@ -563,7 +578,7 @@ require_once("../lib/header.inc");
 
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
-		Mode de génération des mots de passe :<br />(<i>Jeu de caractères à utiliser en plus des caractères numériques</i>)</td>
+		Mode de génération des mots de passe :<br />(<i style='font-size:small;'>Jeu de caractères à utiliser en plus des caractères numériques</i>)</td>
 	<td valign='top'>
 		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_y" value="y" <?php if((getSettingValue("mode_generation_pwd_majmin")=="y")||(getSettingValue("mode_generation_pwd_majmin")=="")) {echo 'checked';} ?> /> <label for='mode_generation_pwd_majmin_y' style='cursor: pointer;'>Majuscules et minuscules</label><br />
 		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_n" value="n" <?php if(getSettingValue("mode_generation_pwd_majmin")=="n"){echo 'checked';} ?> /> <label for='mode_generation_pwd_majmin_n' style='cursor: pointer;'>Minuscules seulement</label><br />
@@ -613,6 +628,31 @@ require_once("../lib/header.inc");
 		}
 		echo "</tr>\n";
 */
+	?>
+	<?php
+		echo "<tr>\n";
+		if(file_exists("../lib/pclzip.lib.php")){
+			echo "<td style='font-variant: small-caps;'>Taille maximale extraite des fichiers dézippés:<br />
+(<i style='font-size:small;'>Un fichier dézippé peut prendre énormément de place.<br />
+Par prudence, il convient de fixer une limite à la taille d'un fichier extrait.<br />
+En mettant zéro, vous ne fixez aucune limite.<br />
+En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
+			echo "<td valign='top'><input type='text' name='unzipped_max_filesize' value='";
+			$unzipped_max_filesize=getSettingValue('unzipped_max_filesize');
+			if($unzipped_max_filesize==""){
+				echo '10';
+			}
+			else {
+				echo $unzipped_max_filesize;
+			}
+			echo "' size='3' /> Mo";
+			echo "</td>\n";
+		}
+		else{
+			echo "<td style='font-variant: small-caps;'>En mettant en place la bibliothèque 'pclzip.lib.php' dans le dossier '/lib/', vous pouvez envoyer des fichiers Zippés vers le serveur.<br />Voir <a href='http://www.phpconcept.net/pclzip/index.php' style=''>http://www.phpconcept.net/pclzip/index.php</a></td>\n";
+			echo "<td>&nbsp;</td>\n";
+		}
+		echo "</tr>\n";
 	?>
 	<tr>
 		<td style="font-variant: small-caps;">

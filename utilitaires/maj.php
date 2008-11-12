@@ -7419,6 +7419,19 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     // Fin du module discipline
 
 
+	$sql="SELECT 1=1 FROM setting WHERE name='unzipped_max_filesize';";
+	$query = mysql_query($sql);
+	if (mysql_num_rows($query)==0) {
+        $result .= "<br />Initialisation de la taille maximale d'un fichier extrait d'une archive ZIP&nbsp;: ";
+        $sql="INSERT INTO setting SET name='unzipped_max_filesize',value='10';";
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+			$result.="<font color=\"red\">Erreur</font><br />";
+        }
+		else {
+			$result.="<font color=\"green\">OK</font><br />";
+		}
+	}
 
 
 
