@@ -35,7 +35,9 @@ function ListeEleves($reglage){
         $sql = "SELECT nom, prenom, id_eleve FROM eleves ORDER BY nom, prenom";
       }elseif($reglage["eleves"] == 'classe'){
         // On les range par classe et par ordre alpha à l'intérieur de celles-ci
-        $sql = "SELECT nom, prenom, id_eleve FROM ";
+        $sql = "SELECT DISTINCT nom, prenom, id_eleve, classe FROM eleves e, j_eleves_classes jec, classes c";
+        $sql .= " WHERE jec.login = e.login AND jec.id_classe = c.id";
+        $sql .= " ORDER BY c.classe, e.nom, e.prenom";
       }
     }elseif($reglage["classes"] == 'cpe'){
       // On n'affiche que les classes du cpe en question
@@ -78,8 +80,9 @@ function affSelectEleves($liste_eleves){
     }else{
 
       for($a = 0 ; $a < $nbre ; $a++){
+        $classe = isset($liste_eleves[$a]->classe) ? $liste_eleves[$a]->classe : '';
         $retour .= '
-        <option value="' . $liste_eleves[$a]->id_eleve . '">' . $liste_eleves[$a]->nom . ' ' . $liste_eleves[$a]->prenom . '</option>
+        <option value="' . $liste_eleves[$a]->id_eleve . '">' . $liste_eleves[$a]->nom . ' ' . $liste_eleves[$a]->prenom . ' ' . $classe . '</option>
         ';
       }
 

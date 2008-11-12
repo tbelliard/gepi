@@ -24,7 +24,7 @@
  */
 
 $utiliser_pdo = 'on';
-//error_reporting(0);
+error_reporting(0);
 // Initialisation des feuilles de style après modification pour améliorer l'accessibilité
 $accessibilite="y";
 
@@ -41,22 +41,44 @@ if ($resultat_session == 'c') {
 };
 //debug_var();
 // ============== traitement des variables ==================
-
+$variable_test = isset($_POST["var"]) ? $_POST["var"] : '123';
 
 // ============== Code métier ===============================
 include("absences.class.php");
 
 include("helpers/aff_listes_utilisateurs.inc.php");
-$liste_eleves = ListeEleves(array('eleves'=>'alpha', 'classes'=>'toutes'));
+$liste_eleves = ListeEleves(array('eleves'=>'classe', 'classes'=>'toutes'));
 $aff_liste_eleves = affSelectEleves($liste_eleves);
 
-$test1 = new absences();
-$array_abs = array('eleves_id' => 'FELIX_detre');
-$test1->setChamps($array_abs);
-$array2_abs = array('debut_abs' => date("U"));
-$test1->setChamps($array2_abs);
-$test2 = $test1->getChamps();
+try{
+  $test1 = new absences();
+  $array_abs = array('eleves_id' => 12, 'groupes_id' => $variable_test);
+  $test1->setChamps($array_abs);
+  $array2_abs = array('debut_abs' => date("U"), 'fin_abs'=> (date("U") + 3600));
+  $test1->setChamps($array2_abs);
+  $test2 = $test1->getChamps();
+  $test1->setAffErreur('aff');
+  if ($variable_test == 124 OR $variable_test == 'josianne') {
+    $test1->insertAbs();
+  }
+}catch(exception $e){
+  $tab = $e->getMessage();
+  $erreur = explode("||", $tab);
+  $erreur2 = $e->getTrace();
+  $file = explode("/", $erreur2[0]["file"]);
+  $nbre = count($file); $aff = $nbre - 1; $aff2 = $nbre - 2;
 
+  echo '
+        <div style="width: 400px; height: 300px; border: 2px solid grey; background-color: silver;">
+        <p style="color: red; font-weight: bold; text-align: center;">ERREUR</p>
+        <p>Message : ' . $erreur[0] . '</p>
+        <p>Requête : ' . $erreur[1] . '</p>
+        <p>Classe : ' . $erreur2[0]["class"] . '&nbsp;&nbsp;&nbsp;Méthode : ' . $erreur2[0]["function"] . '</p>
+        <p>Ligne : ' . $erreur2[0]["line"] . '</p>
+        <p>fichier : ' . $file[$aff2] . '/' . $file[$aff] . '</p>
+      </div>';
+  exit();
+}
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 require_once("../lib/header.inc");
@@ -67,9 +89,18 @@ require_once("../lib/header.inc");
 <p>Un utilisateur veut enregistrer une absence, il s'agit de <?php echo $test2["utilisateurs_id"]; ?>
 &nbsp;&agrave; <?php echo date("H:i:s", $test2["date_saisie"]); ?> le <?php echo date("d/m/Y", $test2["date_saisie"]); ?></p>
 
+
 <form method="post" action="aff_absences_eleves.php" >
 
   <p><?php echo $aff_liste_eleves; ?></p>
+  <p>
+    <select name="var">
+      <option value="123">Aucun choix</option>
+      <option value="124">Erreur dans la requ&ecirc;te</option>
+      <option value="josianne">Erreur dans l'absence</option>
+      <input type="submit" name="enregistrer" value="Envoyer" />
+    </select>
+  </p>
 
 </form>
 

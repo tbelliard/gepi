@@ -36,6 +36,7 @@ class absences{
 	 */
   protected $champs = array();
 
+  private $affErreurs = 'n';
 	/**
 	 * Constructor
 	 * Permet d'initialiser les attributs de l'objet
@@ -64,6 +65,12 @@ class absences{
     return $cnx;
   }
 
+  public function setAffErreur($aff = NULL){
+    if ($aff !== NULL) {
+      $this->affErreurs = $aff;
+    }
+  }
+
 	public function setChamps($donnees = array()){
 
     $this->champs["utilisateurs_id"] = isset($donnees["utilisateurs_id"]) ? $donnees["utilisateurs_id"] : $this->champs["utilisateurs_id"];
@@ -76,25 +83,51 @@ class absences{
   }
 
   public function getChamps(){
-      return $this->champs;
+    return $this->champs;
   }
 
   protected function verifAbs(){
+    if(!is_string($this->champs["utilisateurs_id"])){return false;}
+    if(!is_numeric($this->champs["groupes_id"])){return false;}
+    if(!is_numeric($this->champs["eleves_id"])){return false;}
+    if(!is_numeric($this->champs["date_saisie"])){return false;}
+    if(!is_numeric($this->champs["debut_abs"])){return false;}
+    if(!is_numeric($this->champs["fin_abs"])){return false;}
     return true;
   }
 
-  protected function affErreur(){
-
+  protected function voirErreur($message){
+    // --> affiche les erreurs si le réglage est souhaité
+    if ($this->affErreurs == 'aff') {
+      echo '
+      <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+      <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+      <head><title>ERREUR la requête est erronée.</title></head>
+      <body>
+      <div style="width: 400px; height: 300px; border: 2px solid grey; background-color: silver;">
+        <p>ERREUR : une erreur s\'est glissée dans le traitement php.</p>
+        <p>Méthode : ' . $message["methode"] . '</p>
+        <p>Requête : ' . $message["sql"] . '</p>
+        <p>Erreur GEPI : ' . $message["erreur"] . '</p>
+      </div>
+      </body></html>
+      ';
+    }
+    exit();
   }
 
   public function insertAbs(){
-    if ($this->verifAbs()) {
       $sql = "";
       $sql .= "INSERT INTO abs_informations (utilisateurs_id, groupes_id, eleves_id, date_saisie, debut_abs, fin_abs)";
       $sql .= " VALUES('".$this->champs["utilisateurs_id"]."', '".$this->champs["groupes_id"]."', '".$this->champs["eleves_id"]."', '".$this->champs["date_saisie"]."', '".$this->champs["debut_abs"]."', '".$this->champs["fin_abs"]."')";
-      $this->pdoConnect()->query($sql);
+    if ($this->verifAbs()) {
+      if ($this->pdoConnect()->query($sql)) {
+
+      }else{
+        throw new Exception('Impossible d\'enregistrer une nouvelle absence.||' . $sql);
+      }
     }else{
-      echo $this->affErreur();
+      $this->voirErreur(array('methode'=>__method__, 'erreur'=>'Il y a une erreur dans la vérification de l\'absence', 'sql'=>$sql));
     }
   }
 
@@ -111,7 +144,7 @@ class absences{
   }
 
   public function __call($methode, $action){
-
+    echo '<p>ATTENTION vous appelez une méthode qui n\'existe pas : ' . $methode . '</p>';
   }
 
   public function absEleveJour($jour){
