@@ -227,6 +227,10 @@ while ($ind < $nb_messages) {
 		if($chaine_destinataires!="") {$chaine_destinataires.=" - ";}
 		$chaine_destinataires.="élèves";
 	}
+	if (strpos($destinataires1, "r")) {
+		if($chaine_destinataires!="") {$chaine_destinataires.=" - ";}
+		$chaine_destinataires.="responsables";
+	}
 	echo $chaine_destinataires;
 
    echo "<br /><a href='index.php?id_mess=$id_message'>modifier</a>
