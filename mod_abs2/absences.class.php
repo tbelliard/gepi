@@ -46,13 +46,14 @@ class absences{
     /**
   	* + id
   	* + utilisateurs_id (qui a saisi ?)
-  	* + groupes_id (cet événement a eu lieu pendant quel groupe ?)
+  	* + groupes_id (cet événement a eu lieu pendant quel groupe ou AID ?)
     * + eleves_id (qui est absent ?)
    	* + date_saisie (timestamp UNIX)
   	* + debut_abs (timestamp UNIX)
   	* + fin_abs (timestamp UNIX)
   	*/
-    $this->champs = array('utilisateurs_id' => $_SESSION["login"],
+    $this->champs = array('id'=>'',
+                          'utilisateurs_id' => $_SESSION["login"],
                           'groupes_id' => NULL,
                           'eleves_id' => NULL,
                           'date_saisie' => date("U"),
@@ -66,6 +67,9 @@ class absences{
   }
 
   public function setAffErreur($aff = NULL){
+    /**
+    * Permet d'arrêter d'afficher les erreurs autres que les exceptions
+    */
     if ($aff !== NULL) {
       $this->affErreurs = $aff;
     }
@@ -73,6 +77,7 @@ class absences{
 
 	public function setChamps($donnees = array()){
 
+    $this->champs["id"] = isset($donnees["id"]) ? $donnees["id"] : $this->champs["id"];
     $this->champs["utilisateurs_id"] = isset($donnees["utilisateurs_id"]) ? $donnees["utilisateurs_id"] : $this->champs["utilisateurs_id"];
     $this->champs["groupes_id"] = isset($donnees["groupes_id"]) ? $donnees["groupes_id"] : $this->champs["groupes_id"];
     $this->champs["eleves_id"] = isset($donnees["eleves_id"]) ? $donnees["eleves_id"] : $this->champs["eleves_id"];
@@ -88,7 +93,7 @@ class absences{
 
   protected function verifAbs(){
     if(!is_string($this->champs["utilisateurs_id"])){return false;}
-    if(!is_numeric($this->champs["groupes_id"])){return false;}
+    if(!is_numeric($this->champs["groupes_id"]) AND strpos($this->champs["groupes_id"], "AID") !== FALSE){return false;}
     if(!is_numeric($this->champs["eleves_id"])){return false;}
     if(!is_numeric($this->champs["date_saisie"])){return false;}
     if(!is_numeric($this->champs["debut_abs"])){return false;}
@@ -135,24 +140,40 @@ class absences{
 
   }
 
-  public function findAllAbs($_login = NULL){
-
+  public function findAllAbs($_options = NULL){
+    /**
+    * Permet de récupérer toutes les absences d'un élève entre deux dates données ou de récupérer toutes les absences entre ces deux dates
+    */
+    $where  = isset($this->champ["eleves_id"]) ? ' WHERE eleves_id ="' . $this->champ["eleves_id"] . '"' : NULL;
+    $_debut = isset($_options["debut"]) ? $_options["debut"] : 0;
+    $_fin   = isset($_options["fin"]) ? $_options["fin"] : date("U");
+    $sql = "SELECT * FROM";
   }
 
   public function deleteAbs(){
+    if (!isset($this->id)) {
 
+    }
   }
 
   public function __call($methode, $action){
-    echo '<p>ATTENTION vous appelez une méthode qui n\'existe pas : ' . $methode . '</p>';
+    $test = explode("By", $methode);
+    if ($test[0] == 'find') {
+      $sql = "SELECT * FROM abs_informations WHERE " . $test[1] . " = '" . $action . "'";
+      if ($query = $this->pdoConnect()->query($sql)) {
+      }else{
+        throw new Exception('Cet enregistrement n\'existe pas dans la table abs_informations.||' . $sql);
+      }
+    }else{
+      $this->voirErreur(array('methode'=>$methode, 'erreur'=>'Cette méthode n\'existe pas dans la classe ' . __CLASS__, 'sql'=>$action));
+      exit();
+    }
+    $retour = $query->fetchAll(PDO::FETCH_OBJ);
   }
 
   public function absEleveJour($jour){
 
   }
 
-  public function donneesFicheEleve($_login){
-    return array();
-  }
 }
 ?>

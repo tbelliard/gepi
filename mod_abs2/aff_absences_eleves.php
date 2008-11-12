@@ -24,7 +24,7 @@
  */
 
 $utiliser_pdo = 'on';
-error_reporting(0);
+//error_reporting(0);
 // Initialisation des feuilles de style après modification pour améliorer l'accessibilité
 $accessibilite="y";
 
@@ -45,14 +45,14 @@ $variable_test = isset($_POST["var"]) ? $_POST["var"] : '123';
 
 // ============== Code métier ===============================
 include("absences.class.php");
-
+include("lib/erreurs.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
 $liste_eleves = ListeEleves(array('eleves'=>'classe', 'classes'=>'toutes'));
 $aff_liste_eleves = affSelectEleves($liste_eleves);
 
 try{
   $test1 = new absences();
-  $array_abs = array('eleves_id' => 12, 'groupes_id' => $variable_test);
+  $array_abs = array('eleves_id' => 689, 'groupes_id' => $variable_test);
   $test1->setChamps($array_abs);
   $array2_abs = array('debut_abs' => date("U"), 'fin_abs'=> (date("U") + 3600));
   $test1->setChamps($array2_abs);
@@ -61,23 +61,9 @@ try{
   if ($variable_test == 124 OR $variable_test == 'josianne') {
     $test1->insertAbs();
   }
+  $test_responsables = donneesFicheEleve($test2["eleves_id"]);
 }catch(exception $e){
-  $tab = $e->getMessage();
-  $erreur = explode("||", $tab);
-  $erreur2 = $e->getTrace();
-  $file = explode("/", $erreur2[0]["file"]);
-  $nbre = count($file); $aff = $nbre - 1; $aff2 = $nbre - 2;
-
-  echo '
-        <div style="width: 400px; height: 300px; border: 2px solid grey; background-color: silver;">
-        <p style="color: red; font-weight: bold; text-align: center;">ERREUR</p>
-        <p>Message : ' . $erreur[0] . '</p>
-        <p>Requête : ' . $erreur[1] . '</p>
-        <p>Classe : ' . $erreur2[0]["class"] . '&nbsp;&nbsp;&nbsp;Méthode : ' . $erreur2[0]["function"] . '</p>
-        <p>Ligne : ' . $erreur2[0]["line"] . '</p>
-        <p>fichier : ' . $file[$aff2] . '/' . $file[$aff] . '</p>
-      </div>';
-  exit();
+  affExceptions($e);
 }
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
@@ -105,7 +91,7 @@ require_once("../lib/header.inc");
 </form>
 
 
-<pre><?php print_r($test2); ?></pre>
+<pre><?php print_r($test_responsables); ?></pre>
 
 
 
