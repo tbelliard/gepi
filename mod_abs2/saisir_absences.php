@@ -41,8 +41,9 @@ if ($resultat_session == 'c') {
 };
 
 // ============== traitement des variables ==================
+$_SESSION["type_aff_abs"] = isset($_SESSION["type_aff_abs"]) ? $_SESSION["type_aff_abs"] : 'alpha';
 $_SESSION["type_aff_abs"] = (isset($_GET["type_aff_abs"]) AND ($_GET["type_aff_abs"] == 'alpha' OR $_GET["type_aff_abs"] == 'classe'))
-                            ? $_GET["type_aff_abs"] : 'alpha';
+                            ? $_GET["type_aff_abs"] : $_SESSION["type_aff_abs"];
 
 
 // ============== Code métier ===============================
@@ -52,11 +53,11 @@ include("lib/erreurs.php");
 
 try{
 
-  // ICI, on peut appliquer tout le code nécessaire mais sans utiliser de SQL
-  // On préfèrera mettre tout le SQL dans les classes adéquates même s'il faut en créer de nouvelles
-  $options = array('classes'=>644, 'eleves'=>$_SESSION["type_aff_abs"]);
+  // le tableau des élèves en vue de son affichage sous différentes formes
+  $options = array('classes'=>'toutes', 'eleves'=>$_SESSION["type_aff_abs"]);
   $liste_eleves = ListeEleves($options);
-  $reglages = array('classe'=>"debut");
+  $reglages = array('classe'=>"debut", 'label'=>'Elève (nom)',
+                    'event'=>'change', 'method_event'=>'gestionaffAbs');
 
 
 }catch(exception $e){
@@ -64,24 +65,53 @@ try{
   affExceptions($e);
 }
 //**************** EN-TETE *****************
-$titre_page = "Les absences";
+$javascript_specifique = "mod_abs2/lib/absences_ajax";
+$titre_page = "Saisir les absences";
 require_once("../lib/header.inc");
+require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
-debug_var();
-?>
-<p><a href="saisir_absences.php?type_aff_abs=alpha">Afficher tous les &eacute;l&egrave;ves</a> - <a href="saisir_absences.php?type_aff_abs=classe">Afficher par classe</a></p>
 
-<fieldset id="espace_saisie">
+?>
+<p><a href="saisir_absences.php?type_aff_abs=alpha">Afficher tous les &eacute;l&egrave;ves</a> -
+<a href="saisir_absences.php?type_aff_abs=classe">Afficher par classe</a></p>
+
+<div id="saisie_abs" style="border: 2px solid silver; background-color: lightblue; padding: 10px 10px 10px 10px;">
+<fieldset id="espace_saisie" style="border: 1px solid grey; padding: 5px 5px 5px 5px; width: 40%;">
   <legend>Saisir un ou plusieurs &eacute;l&egrave;ves</legend>
 
   <form action="saisir_absences.php" method="post">
+    <p>
+      <?php echo affSelectEleves($liste_eleves, $reglages); ?>
+    </p>
+    <p>
+      <input type="radio" name="choix_select" value="" id="" />
+      <label for=""></label>
+      <?php echo affSelectClasses(); ?>
+    </p>
+    <p>
+      <input type="radio" name="choix_select" value="" id="" />
+      <label for=""></label>
+      <?php echo affSelectEnseignements(); ?>
+    </p>
+    <p>
+      <input type="radio" name="choix_select" value="" id="" />
+      <label for=""></label>
+      <?php echo affSelectAid(); ?>
+    </p>
 
-    <?php echo affSelectEleves($liste_eleves, $reglages); ?>
-    <input type="submit" name="valider" value="&eacute;tape suivante" />
+    <p style="position: relative; margin-left: 1%;">
+      <input type="submit" name="valider" value="&nbsp;>>&nbsp;" />
+    </p>
 
   </form>
 
 
 </fieldset>
+</div>
+
+<div id="aff_result" style="display: none;">
+  <!-- Affichage des données AJAX -->
+</div>
+
 
 <?php require("../lib/footer.inc.php"); ?>

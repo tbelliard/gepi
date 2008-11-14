@@ -80,9 +80,14 @@ function affSelectEleves($liste_eleves, $options = NULL){
     die('<p style="color: red;">Il manque des informations pour afficher la liste des élèves.</p>');
   }else{
     // On peut décider du lieu d'affichage de la classe dans le select
+    $id = 'listeIdEleve';
     $aff_classe = isset($options["classe"]) ? $options["classe"] : 'fin';
-    $retour = '
-    <select name="choix_eleve">';
+    $aff_label = isset($options["label"]) ? '<label for="listeIdEleve">'.$options["label"].'</label>' : '';
+    $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '')" : '';
+    $aff_event = isset($options["event"]) ? ' on'.$options["event"].'="'.$method_event.'"' : '';
+    $retour =
+    $aff_label . '
+    <select name="choix_eleve" id="listeIdEleve"' . $aff_event . '>';
 
     $nbre = count($liste_eleves);
     if ($nbre === 0) {
@@ -139,4 +144,15 @@ function donneesFicheEleve($_eleves_id){
     return $donnees;
   }
 
+function affSelectClasses(){
+
+}
+
+function affSelectAid(){
+
+}
+
+function affSelectEnseignements(){
+
+}
 ?>
