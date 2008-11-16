@@ -113,44 +113,59 @@ elseif(isset($valide_import_cmnt)) {
 		echo "<a href='".$_SERVER['PHP_SELF']."?import_cmnt=y'>Cliquer ici</a> pour recommencer !</p>\n";
 	}
 	else{
-		$fp=fopen($csv_file['tmp_name'],"r");
 
-		if(!$fp){
-			echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
-			echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
+		//echo "mime_content_type(".$csv_file['tmp_name'].")=".mime_content_type($csv_file['tmp_name'])."<br />";
+		//die();
+		if(mime_content_type($csv_file['tmp_name'])!="text/plain") {
+			echo "<p style='color:red;'>Le type du fichier ne convient pas: ".mime_content_type($csv_file['tmp_name'])."<br />\n";
+			echo "Vous devez fournir un fichier TXT (<i>type bloc-notes</i>), pas un fichier traitement de texte ou quoi que ce soit d'autre.</p>\n";
 		}
-		else{
-
+		else {
 			$fp=fopen($csv_file['tmp_name'],"r");
 
-			$nb_reg=0;
-			$temoin_erreur='n';
+			if(!$fp){
+				echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
+				echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
+			}
+			else{
 
-			while(!feof($fp)){
-				$ligne = fgets($fp, 4096);
-				if(trim($ligne)!=""){
-					$ligne=trim($ligne);
+				$fp=fopen($csv_file['tmp_name'],"r");
 
-					$sql="SELECT 1=1 FROM commentaires_types_profs WHERE login='".$_SESSION['login']."' AND app='".addslashes($ligne)."';";
-					//echo "$sql<br />";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0) {
-						$sql="INSERT INTO commentaires_types_profs SET login='".$_SESSION['login']."', app='".addslashes($ligne)."';";
+				$nb_max_reg=100;
+
+				$nb_reg=0;
+				$temoin_erreur='n';
+
+				while(!feof($fp)){
+					$ligne = fgets($fp, 4096);
+					if(trim($ligne)!="") {
+						$ligne=trim($ligne);
+
+						$sql="SELECT 1=1 FROM commentaires_types_profs WHERE login='".$_SESSION['login']."' AND app='".addslashes($ligne)."';";
 						//echo "$sql<br />";
-						$insert=mysql_query($sql);
-						if($insert) {
-							$nb_reg++;
-						}
-						else {
-							echo "<span style='color:red;'><b>Erreur lors de l'insertion de l'appréciation:</b> $ligne</span><br />\n";
-							$temoin_erreur='y';
+						$test=mysql_query($sql);
+						if(mysql_num_rows($test)==0) {
+							$sql="INSERT INTO commentaires_types_profs SET login='".$_SESSION['login']."', app='".addslashes($ligne)."';";
+							//echo "$sql<br />";
+							$insert=mysql_query($sql);
+							if($insert) {
+								$nb_reg++;
+							}
+							else {
+								echo "<span style='color:red;'><b>Erreur lors de l'insertion de l'appréciation:</b> $ligne</span><br />\n";
+								$temoin_erreur='y';
+							}
 						}
 					}
+					if($nb_reg>=$nb_max_reg) {
+						echo "<p style='color:red;'>On n'enregistre pas plus de $nb_max_reg appréciations lors d'un import.</p>";
+						break;
+					}
 				}
-			}
-			fclose($fp);
+				fclose($fp);
 
-			if(($nb_reg>0)&&($temoin_erreur=='n')) {echo "<span style='color:red;'>Import effectué.</span><br />";}
+				if(($nb_reg>0)&&($temoin_erreur=='n')) {echo "<span style='color:red;'>Import effectué.</span><br />";}
+			}
 		}
 	}
 }
