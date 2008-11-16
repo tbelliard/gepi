@@ -30,7 +30,7 @@ function ListeEleves($reglage){
   }else{
     if ($reglage["classes"] == 'toutes') {
       // On affiche la liste de tous les élèves de toutes les classes
-      $sql = "SELECT DISTINCT nom, prenom, id_eleve, classe FROM eleves e, j_eleves_classes jec, classes c";
+      $sql  = "SELECT DISTINCT nom, prenom, id_eleve, classe FROM eleves e, j_eleves_classes jec, classes c";
       $sql .= " WHERE jec.login = e.login AND jec.id_classe = c.id";
       if ($reglage["eleves"] == 'alpha') {
         // On les range par ordre alphabétique général
@@ -44,7 +44,11 @@ function ListeEleves($reglage){
 
     }elseif($reglage["classes"] == 'cpe'){
       // On n'affiche que les classes du cpe en question
-      $sql = "";
+      $sql  = "SELECT DISTINCT nom, prenom, id_eleve, classe FROM eleves e, j_eleves_classes jec, classes c, j_eleves_cpe jep";
+      $sql .= " WHERE jec.login = e.login AND jec.id_classe = c.id";
+      $sql .= " AND jep.e_login = e.login AND jep.cpe_login = '" . $_SESSION["login"] . "'";
+      $sql .= " ORDER BY e.nom, e.prenom";
+
     }elseif(is_numeric($reglage["classes"]) OR strpos($reglage["classes"], "AID")){
       // On affiche que la liste des élèves de ce groupe ou de cet AID
       $test = explode("|", $reglage["classes"]);
@@ -80,14 +84,17 @@ function affSelectEleves($liste_eleves, $options = NULL){
     die('<p style="color: red;">Il manque des informations pour afficher la liste des élèves.</p>');
   }else{
     // On peut décider du lieu d'affichage de la classe dans le select
-    $id = 'listeIdEleve';
     $aff_classe = isset($options["classe"]) ? $options["classe"] : 'fin';
-    $aff_label = isset($options["label"]) ? '<label for="listeIdEleve">'.$options["label"].'</label>' : '';
+    $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdEleve';
+    $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">'.$options["label"].'</label>' : '';
     $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '')" : '';
     $aff_event = isset($options["event"]) ? ' on'.$options["event"].'="'.$method_event.'"' : '';
+
+
     $retour =
     $aff_label . '
-    <select name="choix_eleve" id="listeIdEleve"' . $aff_event . '>';
+    <select name="choix_eleve" id="' . $_id . '"' . $aff_event . '>
+      <option value="r">-- -- -- --</option>';
 
     $nbre = count($liste_eleves);
     if ($nbre === 0) {
@@ -144,15 +151,107 @@ function donneesFicheEleve($_eleves_id){
     return $donnees;
   }
 
-function affSelectClasses(){
+function affSelectClasses($options = NULL){
+  if (!isset($options["classes"])) {
+    // On affiche alors par défaut toutes les classes
+    $sql = "SELECT id, classe, nom_complet FROM classes ORDER BY nom_complet";
 
+  }elseif($options["classes"] == 'cpe'){
+    // Il faut tirer la bonne requête ici pour ne garder que les classes de ce cpe
+  }
+  if ($query = $GLOBALS["cnx"]->query($sql)) {
+    $donnees = $query->fetchAll(PDO::FETCH_OBJ);
+  }else{
+    throw new Exception('Aucune classe n\'est disponible.||' . $sql);
+  }
+  $nbre = count($donnees);
+  $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdClasses';
+  $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">' . $options["label"] . '</label>' : '';
+  $_width = isset($options["width"]) ? ' style="width: ' . $options["width"] . ';"' : '';
+
+  $retour =
+  $aff_label . '
+  <select name="choix_classe" id="' . $_id . '"' . $_width . '>
+    <option value="r">-- -- -- --</option>
+  ';
+  for ($a = 0 ; $a < $nbre ; $a++){
+    $retour .= '
+    <option value="' . $donnees[$a]->id . '">' . $donnees[$a]->classe . '</option>';
+  }
+  $retour .= '
+  </select>
+  ';
+  return $retour;
 }
 
-function affSelectAid(){
+function affSelectAid($options = NULL){
 
+  if (!isset($options["aid"])) {
+    // On affiche alors tous les AID
+    $sql = "SELECT id, nom FROM aid ORDER BY indice_aid, nom";
+  }
+  if ($query = $GLOBALS["cnx"]->query($sql)) {
+    $donnees = $query->fetchAll(PDO::FETCH_OBJ);
+  }else{
+    throw new Exception('Aucune classe n\'est disponible.||' . $sql);
+  }
+  $nbre = count($donnees);
+  $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdAid';
+  $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">' . $options["label"] . '</label>' : '';
+  $_width = isset($options["width"]) ? ' style="width: ' . $options["width"] . ';"' : '';
+
+  $retour =
+  $aff_label . '
+  <select name="choix_classe" id="' . $_id . '"' . $_width . '>
+    <option value="r">-- -- -- --</option>
+  ';
+  for ($a = 0 ; $a < $nbre ; $a++){
+    $retour .= '
+    <option value="' . $donnees[$a]->id . '">' . $donnees[$a]->nom . '</option>';
+  }
+  $retour .= '
+  </select>
+  ';
+
+  return $retour;
 }
 
-function affSelectEnseignements(){
+function affSelectEnseignements($options = NULL){
 
+  if (!isset($options["groupes"])) {
+    // On affiche alors tous les groupes
+/* ======== Il faut ajouter le nom de la classe à côté =====================*/
+    $sql = "SELECT g.id, g.description, c.classe FROM groupes g, j_groupes_classes jgc, classes c
+                                                WHERE g.id = jgc.id_groupe
+                                                AND jgc.id_classe = c.id
+                                                ORDER BY name";
+  }
+
+  if ($query = $GLOBALS["cnx"]->query($sql)) {
+    $donnees = $query->fetchAll(PDO::FETCH_OBJ);
+  }else{
+    throw new Exception('Impossible de lister les enseignements.||' . $sql);
+  }
+  $nbre = count($donnees);
+  $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdGroupes';
+  $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">' . $options["label"] . '</label>' : '';
+  $_width = isset($options["width"]) ? ' style="width: ' . $options["width"] . ';"' : '';
+
+  $retour =
+  $aff_label . '
+  <select name="choix_groupe" id="' . $_id . '"' . $_width . '>
+    <option value="r">-- -- -- --</option>
+  ';
+
+  for($a = 0 ; $a < $nbre ; $a++){
+    $retour .= '
+    <option value="' . $donnees[$a]->id . '">' . $donnees[$a]->description . ' ( ' . $donnees[$a]->classe . ') </option>';
+  }
+
+  $retour .= '
+  </select>
+  ';
+
+  return $retour;
 }
 ?>

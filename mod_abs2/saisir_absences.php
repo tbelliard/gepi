@@ -76,27 +76,21 @@ require("lib/abs_menu.php");
 <a href="saisir_absences.php?type_aff_abs=classe">Afficher par classe</a></p>
 
 <div id="saisie_abs" style="border: 2px solid silver; background-color: lightblue; padding: 10px 10px 10px 10px;">
-<fieldset id="espace_saisie" style="border: 1px solid grey; padding: 5px 5px 5px 5px; width: 40%;">
+<fieldset id="espace_saisie" style="border: 1px solid grey; padding: 5px 5px 5px 5px; width: 500px;">
   <legend>Saisir un ou plusieurs &eacute;l&egrave;ves</legend>
 
   <form action="saisir_absences.php" method="post">
     <p>
       <?php echo affSelectEleves($liste_eleves, $reglages); ?>
     </p>
-    <p>
-      <input type="radio" name="choix_select" value="" id="" />
-      <label for=""></label>
-      <?php echo affSelectClasses(); ?>
+    <p style="text-align: right;">
+      <?php echo affSelectClasses(array('label'=>'Classes', 'width'=>'380px')); ?>
     </p>
-    <p>
-      <input type="radio" name="choix_select" value="" id="" />
-      <label for=""></label>
-      <?php echo affSelectEnseignements(); ?>
+    <p style="text-align: right;">
+      <?php echo affSelectEnseignements(array('label'=>'Enseignements', 'width'=>'380px')); ?>
     </p>
-    <p>
-      <input type="radio" name="choix_select" value="" id="" />
-      <label for=""></label>
-      <?php echo affSelectAid(); ?>
+    <p style="text-align: right;">
+      <?php echo affSelectAid(array('label'=>'Par AID', 'width'=>'380px')); ?>
     </p>
 
     <p style="position: relative; margin-left: 1%;">
