@@ -3,6 +3,10 @@
 		$Id$
 	*/
 
+	// Hauteur du DIV des appréciations-types
+	// Cela conditionne le nombre d'appréciations-types que l'on peut voir simultanément
+	$hauteur_div_ctp=10;
+
 	//============================================
 	// Dispositif dépendant de la présence des fonctions javascript un peu plus haut comme appliqué dans $mess[$k]:
 	//$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';\"";
@@ -33,7 +37,7 @@
 
 		//echo "\$texte_bulle=$texte_bulle<br />";
 
-		$tabdiv_infobulle[]=creer_div_infobulle('div_commtype',$titre_bulle,"",$texte_bulle,"",30,10,'y','y','n','y');
+		$tabdiv_infobulle[]=creer_div_infobulle('div_commtype',$titre_bulle,"",$texte_bulle,"",30,$hauteur_div_ctp,'y','y','n','y');
 	}
 
 	echo "<script type='text/javascript'>
