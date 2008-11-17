@@ -638,6 +638,7 @@ else {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,8);
 
 					} elseif ($_POST['login_gen_type'] == "name8") {
@@ -646,6 +647,7 @@ else {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,8);
 					} elseif ($_POST['login_gen_type'] == "fname8") {
 						$temp1 = $prof[$k]["prenom"]{0} . $prof[$k]["nom_usage"];
@@ -653,6 +655,7 @@ else {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,8);
 					} elseif ($_POST['login_gen_type'] == "fname19") {
 						$temp1 = $prof[$k]["prenom"]{0} . $prof[$k]["nom_usage"];
@@ -660,6 +663,7 @@ else {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,19);
 					} elseif ($_POST['login_gen_type'] == "firstdotname") {
 						if ($prenom_compose != '') {
@@ -674,6 +678,7 @@ else {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,19);
 					} elseif ($_POST['login_gen_type'] == "firstdotname19") {
 						if ($prenom_compose != '') {
@@ -687,6 +692,7 @@ else {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,19);
 					} elseif ($_POST['login_gen_type'] == "namef8") {
 						$temp1 =  substr($prof[$k]["nom_usage"],0,7) . $prof[$k]["prenom"]{0};
@@ -694,6 +700,7 @@ else {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,8);
 					} elseif ($_POST['login_gen_type'] == "lcs") {
 						$nom = $prof[$k]["nom_usage"];
@@ -716,6 +723,7 @@ else {
 						$prenom = $prof[$k]["prenom"];
 						$prenom1 = $prof[$k]["prenom"]{0};
 						$temp1 = $prenom1 . $nom1;
+						$temp1 = remplace_accents($temp1,"all");
 					}elseif($_POST['login_gen_type'] == 'ent'){
 
 						if (getSettingValue("use_ent") == "y") {
@@ -743,6 +751,7 @@ else {
 					}
 
 					$login_prof = $temp1;
+					//$login_prof = remplace_accents($temp1,"all");
 					// On teste l'unicité du login que l'on vient de créer
 					$m = 2;
 					$test_unicite = 'no';
