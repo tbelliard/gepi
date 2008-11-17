@@ -109,6 +109,9 @@ $saisie_absence_eleve = isset($_POST["saisie_absence_eleve"]) ? $_POST["saisie_a
 $eleve_absent = isset($_POST["eleve_absent"]) ? $_POST["eleve_absent"] : NULL;
 $active_absence_eleve = isset($_POST["active_absence_eleve"]) ? $_POST["active_absence_eleve"] : NULL;
 $active_retard_eleve = isset($_POST["active_retard_eleve"]) ? $_POST["active_retard_eleve"] : NULL;
+// Ajout Eric
+$active_repas_eleve = isset($_POST["active_repas_eleve"]) ? $_POST["active_repas_eleve"] : NULL;
+// Fin Ajout
 $heure_retard_eleve = isset($_POST["heure_retard_eleve"]) ? $_POST["heure_retard_eleve"] : NULL;
 $edt_enregistrement = isset($_POST["edt_enregistrement"]) ? $_POST["edt_enregistrement"] : NULL;
 $premier_passage = isset($_POST["premier_passage"]) ? $_POST["premier_passage"] : NULL;
@@ -394,6 +397,23 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 
 			}
 		}
+		
+		//Ajout Eric traitement des repas
+		if (isset($active_repas_eleve[$a])) {
+			if ($active_repas_eleve[$a] == 1){
+				// On récupère le nom et le prénom de l'élève
+				$req_noms = mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$eleve_absent[$a]."'");
+				$noms = mysql_fetch_array($req_noms);
+				$date_du_jour = date ('Y-m-d');
+				// On insère alors le retard dans la base
+				$saisie_sql = "INSERT INTO absences_repas (date_repas, id_groupe,eleve_id, pers_id ) VALUES ('".$date_du_jour."', '".$classe."', '".$eleve_absent[$a]."','".$_SESSION["login"]."')";
+				//echo $saisie_sql;
+				$insere_abs = mysql_query($saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.mysql_error());//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
+				$echo .= '<p class="enregistre_bon">Le repas pour '.$noms["prenom"].' '.$noms["nom"].' est bien enregistré !</p>';
+			}
+		}
+		//Fin Ajout Eric
+		
 	} // for $a
 
 		// Le cas où il n'y a pas d'absent
@@ -836,6 +856,15 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 				<th class="td_abs_retard">Retard</th>
 		';
 	}
+	
+	//ajout Eric
+	if (getSettingValue("renseigner_Repas") == "y") {
+		echo'
+				<th class="td_abs_retard">Repas</th>
+		';
+	}
+	//Fin Ajout Eric
+	
 	// on compte les créneaux pour savoir combien de cellules il faut créer
 	if (getSettingValue("creneau_different") != 'n') {
 		if (date("w") == getSettingValue("creneau_different")) {
@@ -862,7 +891,14 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		echo '
 				<td></td>';
 	}
-
+	
+	//Ajout Eric
+	if (getSettingValue("renseigner_Repas") == "y") {
+		echo '
+				<td></td>';
+	}
+    // Fin Ajout Eric
+	
 	// On insère les noms des différents créneaux
 	if (getSettingValue("creneau_different") != 'n') {
 		if (date("w") == getSettingValue("creneau_different")) {
@@ -1036,6 +1072,45 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		} // if (getSettingValue("renseigner_retard") == "y")
 		//echo"\n</td>\n";
 //======================== fin de la saisie des retards ==================================================
+
+//======================== début de la saisie des Repas ==================================================
+		// On vérifie que le professeur est autorisé à renseigner Les Repas
+		if (getSettingValue("renseigner_Repas") == "y") {
+			echo '<td class="td_abs_retard">';
+
+			$pass='0';
+			$requete_retards = "SELECT count(*) FROM absences_eleves
+					WHERE eleve_absence_eleve='".$data_liste_eleve['login']."'
+					AND type_absence_eleve = 'R'
+					AND
+					( '".date_sql($d_date_absence_eleve)."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+						OR d_date_absence_eleve BETWEEN '".date_sql($d_date_absence_eleve)."' AND '".date_sql($d_date_absence_eleve)."'
+						OR a_date_absence_eleve BETWEEN '".date_sql($d_date_absence_eleve)."' AND '".date_sql($d_date_absence_eleve)."'
+					)AND
+					( '".$d_heure_absence_eleve."' BETWEEN d_heure_absence_eleve AND a_heure_absence_eleve
+						OR '".$a_heure_absence_eleve."' BETWEEN d_heure_absence_eleve AND a_heure_absence_eleve
+						OR d_heure_absence_eleve BETWEEN '".$d_heure_absence_eleve."' AND '".$a_heure_absence_eleve."'
+						OR a_heure_absence_eleve BETWEEN '".$d_heure_absence_eleve."' AND '".$a_heure_absence_eleve."'
+					)";
+			$cpt_retards = mysql_result(mysql_query($requete_retards),0);
+			if($cpt_retards != '0') {
+				$pass = '1';
+			}
+			if ($pass === '0') {
+?>
+				<label for="active_repas_eleve<?php echo $cpt_eleve; ?>" class="invisible no_print">Repas</label>
+				<input type="checkbox" id="active_repas_eleve<?php echo $cpt_eleve; ?>" name="active_repas_eleve[<?php echo $cpt_eleve; ?>]" value="1" " />
+<?php
+			} 
+?>
+<?php
+			
+		echo"\n</td>\n";
+		} // if (getSettingValue("renseigner_retard") == "y")
+		//echo"\n</td>\n";
+//======================== fin de la saisie des retards ==================================================
+
+
 
 // ===================== On insère le suivi sur les différents créneaux ==================================
 // On construit le tableau html des créneaux avec les couleurs

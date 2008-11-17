@@ -247,3 +247,5 @@ DROP TABLE IF EXISTS s_retenues;
 CREATE TABLE IF NOT EXISTS s_retenues (id_retenue INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_sanction INT( 11 ) NOT NULL ,date DATE NOT NULL ,heure_debut VARCHAR( 20 ) NOT NULL ,duree FLOAT NOT NULL ,travail TEXT NOT NULL ,lieu VARCHAR( 255 ) NOT NULL);
 DROP TABLE IF EXISTS s_exclusions;
 CREATE TABLE IF NOT EXISTS s_exclusions (id_exclusion INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_sanction INT( 11 ) NOT NULL ,date_debut DATE NOT NULL ,heure_debut VARCHAR( 20 ) NOT NULL ,date_fin DATE NOT NULL ,heure_fin VARCHAR( 20 ) NOT NULL,travail TEXT NOT NULL ,lieu VARCHAR( 255 ) NOT NULL);
+DROP TABLE IF EXISTS absences_repas;
+CREATE TABLE IF NOT EXISTS absences_repas (`id` int(5) NOT NULL AUTO_INCREMENT, `date_repas` date NOT NULL default '0000-00-00', `id_groupe` varchar(8) NOT NULL, `eleve_id` varchar(30) NOT NULL, `pers_id` varchar(30) NOT NULL, PRIMARY KEY  (`id`));
