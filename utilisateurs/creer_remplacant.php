@@ -20,7 +20,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 // INSERT INTO `droits` VALUES ('/utilisateurs/creer_remplacant.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'script de création d''un remplaçant', '');
 
 
@@ -67,16 +67,18 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
         $msg = "Veuillez entrer un nom pour l'utilisateur !";
     } else {
         $k = 0;
-        while ($k < $_POST['max_mat']) {
-            $temp = "matiere_".$k;
-            $reg_matiere[$k] = $_POST[$temp];
-            $k++;
-        }
+		if(isset($_POST['max_mat'])) {
+			while ($k < $_POST['max_mat']) {
+				$temp = "matiere_".$k;
+				$reg_matiere[$k] = $_POST[$temp];
+				$k++;
+			}
+		}
 //
 // actions si un nouvel utilisateur a été défini
 //
         if (true) {
-            
+
             $reg_password_c = md5($NON_PROTECT['password1']);
             $resultat = "";
             if (($_POST['no_anti_inject_password1'] != $_POST['reg_password2']) and ($is_pwd == "y")) {
@@ -89,7 +91,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				// partie du code reprise dans /init_xml/prof_csv
 				    $affiche[1] = $form_prenom;
 					$affiche[0] = $form_nom;
-				
+
 					$prenoms = explode(" ",$affiche[1]);
 					$premier_prenom = $prenoms[0];
 					$prenom_compose = '';
@@ -125,21 +127,22 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$exist = 'yes';
 						$login_prof_gepi = mysql_result($test_exist,0,'login');
 					}
-					
-					
+
+
 				if ($exist == 'no') {
 					// Aucun professeur ne porte le même nom dans la base GEPI. On va donc rentrer ce professeur dans la base
 
 					$affiche[1] = traitement_magic_quotes(corriger_caracteres($affiche[1]));
-					
+
 					$mode_generation_login=getSettingValue("mode_generation_login");
-					
+
 					if ($mode_generation_login == "name") {
 						$temp1 = $affiche[0];
 						$temp1 = strtoupper($temp1);
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,8);
 
 					} elseif ($mode_generation_login == "name8") {
@@ -148,6 +151,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,8);
 					} elseif ($mode_generation_login == "fname8") {
 						$temp1 = $affiche[1]{0} . $affiche[0];
@@ -155,6 +159,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,8);
 					} elseif ($mode_generation_login == "fname19") {
 						$temp1 = $affiche[1]{0} . $affiche[0];
@@ -162,6 +167,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,19);
 					} elseif ($mode_generation_login == "firstdotname") {
 						if ($prenom_compose != '') {
@@ -175,6 +181,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,19);
 					} elseif ($mode_generation_login == "firstdotname19") {
 						if ($prenom_compose != '') {
@@ -187,6 +194,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,19);
 					} elseif ($mode_generation_login == "namef8") {
 						$temp1 =  substr($affiche[0],0,7) . $affiche[1]{0};
@@ -194,6 +202,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$temp1 = ereg_replace(" ","", $temp1);
 						$temp1 = ereg_replace("-","_", $temp1);
 						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,8);
 					} elseif ($mode_generation_login == "lcs") {
 						$nom = $affiche[0];
@@ -216,8 +225,10 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$prenom = $affiche[1];
 						$prenom1 = $affiche[1]{0};
 						$temp1 = $prenom1 . $nom1;
+						$temp1 = remplace_accents($temp1,"all");
 					}
 					$login_prof = $temp1;
+					//$login_prof = remplace_accents($temp1,"all");
 					// On teste l'unicité du login que l'on vient de créer
 					$m = 2;
 					$test_unicite = 'no';
@@ -242,9 +253,9 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$mess_mdp = "aucun (sso)";
 						//echo "<tr><td colspan='4'>sso</td></tr>";
 					}
-// Fin code génération login de init_xml					
+// Fin code génération login de init_xml
 
-					
+
 					//choix du format
 					//test du login
 					$test = mysql_query("SELECT * FROM utilisateurs WHERE login = '".$login_prof."'");
@@ -253,7 +264,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$resultat = "NON";
 						$msg = "*** Attention ! Un utilisateur ayant le même identifiant existe déjà. Enregistrement impossible ! ***";
 					}
-					
+
 					if ($resultat != "NON") {
 					   if ($is_pwd == "y")
 							$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='$reg_password_c',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='y'");
@@ -265,11 +276,11 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$login_prof."&amp;mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
 					$msg = $msg."<br />Attention : ultérieurement, il vous sera impossible d'imprimer à nouveau le mot de passe d'un utilisateur ! ";
 					$user_login = $login_prof;
-					
-					
+
+
 					// Ajout au remplaçant des classes et matières enseignées du prof remplacé.
-					
-					//on recheche les matières du prof remplacé			
+
+					//on recheche les matières du prof remplacé
 					$sql_matieres = "select * from j_professeurs_matieres where id_professeur='$login_prof_remplace'";
 
 					$result_matieres = mysql_query($sql_matieres);
@@ -280,7 +291,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					  $ordre_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'ordre_matieres');
 					  //echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
 					}
-					
+
 					//on affecte les matières au prof remplaçant
 					for ($i=0;$i<sizeof($id_matiere_prof_remplace);$i++) {
 					  $sql_matieres = "insert into j_professeurs_matieres set id_matiere='$id_matiere_prof_remplace[$i]', id_professeur='$login_prof', ordre_matieres='$ordre_matiere_prof_remplace[$i]'";
@@ -288,7 +299,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					  $insertion = mysql_query($sql_matieres);
 					}
 					//on recheche les groupes du prof remplacé
-					
+
 					$sql_groupes = "select * from j_groupes_professeurs where login='$login_prof_remplace'";
 
 					$result_groupes = mysql_query($sql_groupes);
@@ -299,15 +310,15 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					  $ordre_groupes_prof_remplace[$i] = mysql_result($result_groupes,$i,'ordre_prof');
 					  //echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
 					}
-					
+
 					//on affecte les groupes au prof remplaçant
 					for ($i=0;$i<sizeof($id_groupes_prof_remplace);$i++) {
 					  $sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupes_prof_remplace[$i]', login='$login_prof', ordre_prof='$ordre_groupes_prof_remplace[$i]'";
 					  //echo "<br>".$sql_groupes;
 					  $insertion = mysql_query($sql_groupes);
 					}
-					
-					
+
+
                 } else {
 				  $msg="La personne existe déjà dans la base (même nom et même prénom)";
 				}
@@ -331,7 +342,7 @@ require_once("../lib/header.inc");
 <a href="index.php?mode=personnels"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 
-<?php 
+<?php
 
 //affichage du formulaire
 if ($valid!='yes') {
@@ -342,7 +353,7 @@ if ($valid!='yes') {
 		$user_prenom = mysql_result($call_user_info, "0", "prenom");
 		$user_civilite = mysql_result($call_user_info, "0", "civilite");
 	}
-	
+
 	echo "<br /><p>Création d'un remplaçant pour l'identifiant : <b>".$login_prof_remplace."</b> (".$user_civilite." ".$user_prenom." ".$user_nom.")</p>";
 	echo "<br />";
 	//Affichage formulaire
@@ -359,7 +370,7 @@ if ($valid!='yes') {
 	echo "</td></tr>\n";
 	echo "<tr><td>Courriel : </td><td><input type=text name=form_email size=30  /></td></tr>\n";
 	echo "</table>\n";
-	
+
 	if (!(isset($user_login)) or ($user_login=='')) {
 		if (getSettingValue("use_sso") == "lcs") {
 			echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\"><tr><td>";
@@ -375,12 +386,12 @@ if ($valid!='yes') {
 		echo "<tr><td>Mot de passe (à confirmer) : </td><td><input type=password name=reg_password2 size=20 /></td></tr></table>";
 		echo "<br /><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractères minimum et doit être composé à la fois de lettres et de chiffres.</b>";
 		echo "<br /><b>Remarque</b> : lors de la création d'un utilisateur, il est recommandé de choisir le NUMEN comme mot de passe.<br />";
-		if (getSettingValue("use_sso") == "lcs") echo "</td></tr></table>";	
-	}	
+		if (getSettingValue("use_sso") == "lcs") echo "</td></tr></table>";
+	}
 	echo "<br />\n";
-	
+
 	echo "<input type=hidden name=valid value=\"yes\" />\n";
-	 if (isset($user_login)) echo "<input type=hidden name=user_login value=\"".$user_login."\" />\n"; 
+	 if (isset($user_login)) echo "<input type=hidden name=user_login value=\"".$user_login."\" />\n";
 	echo "<center><input type=submit value=\"Créer le remplaçant\" /></center>\n";
 	echo "<!--/span-->\n";
 	echo "</div>\n";
