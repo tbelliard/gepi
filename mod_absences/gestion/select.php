@@ -70,8 +70,20 @@ $test_nbre_eleves_cpe = mysql_num_rows($query_eleves_cpe);
 while($test_eleves_cpe = mysql_fetch_array($query_eleves_cpe)){
 	$test_cpe[] = $test_eleves_cpe['e_login'];
 }
+// requete liste classe en fonction du cpe responsable didier
+if ($test_nbre_eleves_cpe === 0){
 
-$requete_liste_classe = "SELECT id, classe, nom_complet FROM classes ORDER BY nom_complet ASC, classe DESC";
+  
+   	$requete_liste_classe = "SELECT id, classe, nom_complet FROM classes ORDER BY nom_complet ASC";
+   
+}
+else
+{
+	$requete_liste_classe = "SELECT  id, classe, nom_complet FROM classes c, j_eleves_cpe jecp ,j_eleves_classes jec
+                                 WHERE (jecp.cpe_login = '".$_SESSION['login']."' AND jecp.e_login=jec.login AND jec.id_classe=c.id )
+								 GROUP BY id ORDER BY nom_complet ASC";
+}
+   
 if ($classe_choix == "tous"){
 	// On récupère tous les élèves qu'on range avec le nom de leur classe dans l'ordre alpha
 	$requete_liste_eleve = "SELECT e.login, e.nom, e.prenom, c.classe
@@ -112,7 +124,7 @@ if ($_SESSION["statut"] == 'autre') {
         <form name="form1" method="post" action="select.php?type=<?php echo $type; ?>">
          <fieldset class="fieldset_efface" style="width: 450px;">
             Sélection de la classe :
-            <select name="classe_choix">
+            <select name="classe_choix" onchange="javascript:document.form1.submit();"> <? /* correction pour ie didier  */ ?>
             	<option value="tous" selected="selected" onclick="javascript:document.form1.submit()">Toutes les classes</option>
 			<?php
 			$resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
