@@ -1890,9 +1890,14 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			}
 
 			// nombre de notes
-			if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
+			// 20081118
+			//if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
+			if(($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1')&&($tab_modele_pdf["active_nombre_note"][$classe_id]!='1')) {
 				$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
 				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+
+				// $tab_modele_pdf["largeur_nombre_note"][$classe_id]
+
 				$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $hauteur_entete, $tab_modele_pdf["titre_entete_nbnote"][$classe_id],'LRB',0,'C');
 				$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_nombre_note"][$classe_id];
 			}
@@ -2259,7 +2264,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						}
 
 						// nombre de note
-						if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
+						// 20081118
+						//if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
+						if(($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1')&&($tab_modele_pdf["active_nombre_note"][$classe_id]!='1')) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
 							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 							$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
@@ -2683,7 +2690,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					//}
 
 					// nombre de note
-					if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
+					// 20081118
+					//if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
+					if(($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1')&&($tab_modele_pdf["active_nombre_note"][$classe_id]!='1')) {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 						$valeur = $tab_bull['nbct'][$m][$i] . "/" . $tab_bull['groupe'][$m]['nbct'];
@@ -2984,7 +2993,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				}
 
 				// nombre de note
-				if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
+				// 20081118
+				//if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
+				if(($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1')&&($tab_modele_pdf["active_nombre_note"][$classe_id]!='1')) {
 					$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
 					$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 					$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], "",1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);

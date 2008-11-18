@@ -1197,6 +1197,9 @@ else {
 				}
 			}
 
+			// Il faudrait appliquer d'autres correctifs:
+			if($tab_modele_pdf["largeur_nombre_note"][$tab_id_classe[$loop_classe]]=="0") {$tab_modele_pdf["largeur_nombre_note"][$tab_id_classe[$loop_classe]] = 8;}
+
 
 			if($tab_modele_pdf["active_regroupement_cote"][$tab_id_classe[$loop_classe]]==='1') {
 				$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]+5;
