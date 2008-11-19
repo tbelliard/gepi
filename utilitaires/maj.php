@@ -7436,7 +7436,18 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 		}
 	}
 
-
+	$result .= "&nbsp;->Création de la absences_repas<br />";
+        $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'absences_repas'"));
+        if ($test == 0) {
+            $query3 = mysql_query("CREATE TABLE `absences_repas` (`id` int(5) NOT NULL auto_increment, `date_repas` date NOT NULL default '0000-00-00', `id_groupe` varchar(8) NOT NULL, `eleve_id` varchar(30) NOT NULL, `pers_id` varchar(30) NOT NULL, PRIMARY KEY  (`id`));");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table absences_repas existe déjà</font><br />";
+        }
 
 	//------------------------------------------------------------------------
 	// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion
