@@ -621,6 +621,12 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 
 	$periode_par_defaut_bulletin=isset($_SESSION['periode_par_defaut_bulletin']) ? $_SESSION['periode_par_defaut_bulletin'] : NULL;
 
+	if(isset($periode_par_defaut_bulletin)) {
+		if ($ver_periode[$periode_par_defaut_bulletin] == "N") {
+			unset($periode_par_defaut_bulletin);
+		}
+	}
+
 	while ($i < $nb_periode) {
 		echo "<tr>\n";
 		if ($ver_periode[$i] == "N") {
