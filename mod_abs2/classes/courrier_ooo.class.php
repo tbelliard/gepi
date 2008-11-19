@@ -57,7 +57,10 @@ class odfDoc{
 				if (!$zip->addFromString('content.xml', $this->content))
 					exit('Impossible d\'enregistrer le fichier');
 				$zip->close();
-				echo $newfile;
+
+				header('Content-type: multipart/x-zip');
+				header('Content-disposition: attachment; filename=' . $newfile);
+				readfile($newfile);
 			} else {
 				exit('Impossible d\'enregistrer le fichier');
 			}
