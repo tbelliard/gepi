@@ -49,34 +49,79 @@ function ListeEleves($reglage){
       $sql .= " AND jep.e_login = e.login AND jep.cpe_login = '" . $_SESSION["login"] . "'";
       $sql .= " ORDER BY e.nom, e.prenom";
 
-    }elseif(is_numeric($reglage["classes"]) OR strpos($reglage["classes"], "AID")){
-      // On affiche que la liste des élèves de ce groupe ou de cet AID
+    }elseif(is_numeric($reglage["classes"])){
+      // On affiche que la liste des élèves de ce groupe
+
+      $sql  = "SELECT DISTINCT nom, prenom, id_eleve FROM eleves e, j_eleves_groupes jeg";
+      $sql .= " WHERE jeg.login = e.login AND jeg.id_groupe = '" . $reglage["classes"] . "'";
+      $sql .= " ORDER BY e.nom, e.prenom";
+
+    }elseif(substr($reglage["classes"], 0, 3) == 'AID'){
+      // On affiche que la liste des élèves de cet AID
       $test = explode("|", $reglage["classes"]);
-      if ($test[0] == 'AID') {
-        // On a affaire à une AID, il faut donc appeler la liste des élèves de celle-ci
-        $sql = "SELECT";
+      // On a affaire à une AID, il faut donc appeler la liste des élèves de celle-ci
+      $sql  = "SELECT DISTINCT nom, prenom, id_eleve FROM eleves e, j_aid_eleves jae";
+      $sql .= " WHERE jae.login = e.login AND jae.id_aid = '" . $test[1] . "'";
+      $sql .= " ORDER BY e.nom, e.prenom";
 
-      }else{
-        // Il s'agit donc d'un groupe
-        $sql  = "SELECT DISTINCT nom, prenom, id_eleve FROM eleves e, j_eleves_groupes jeg";
-        $sql .= " WHERE jeg.login = e.login AND jeg.id_groupe = '" . $reglage["classes"] . "'";
-        $sql .= " ORDER BY e.nom, e.prenom";
-
-      }
+    }elseif(substr($reglage["classes"], 0, 3) == 'CLA'){
+      $test = explode("|", $reglage["classes"]);
+      $sql  = "SELECT DISTINCT nom, prenom, id_eleve FROM eleves e, j_eleves_classes jac";
+      $sql .= " WHERE jac.login = e.login AND jac.id_classe = '" . $test[1] . "'";
+      $sql .= " ORDER BY e.nom, e.prenom";
 
     }else{
       throw new Exception('Un mauvais réglage dans la requête empêche de pouvoir lister les élèves.||' . $sql);
     }
   }
 
-    if ($query = $GLOBALS["cnx"]->query($sql)) {
-      $eleves = $query->fetchAll(PDO::FETCH_OBJ);
-    }else{
-      throw new Exception('Une erreur dans la requête empêche de pouvoir lister les élèves.||' . $sql);
-    }
+  if ($query = $GLOBALS["cnx"]->query($sql)) {
+    $eleves = $query->fetchAll(PDO::FETCH_OBJ);
+  }else{
+    throw new Exception('Une erreur dans la requête empêche de pouvoir lister les élèves.||' . $sql);
+  }
 
     return $eleves;
 
+}
+
+function infosResponsables($ele_id) {
+
+	$sql = "SELECT * FROM responsables2 r, resp_pers rp
+													LEFT JOIN  resp_adr ra ON rp.adr_id=ra.adr_id
+													WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id )
+													ORDER BY resp_legal DESC, nom, prenom";
+	if ($query = $GLOBALS["cnx"]->query($sql)) {
+    $responsables = $query->fetchAll(PDO::FETCH_OBJ);
+  }else{
+    throw new Exception('Une erreur dans la requête empêche de voir les informations des reponsables de cet élève.||' . $sql);
+  }
+
+    return $responsables;
+}
+
+function infosEleve($_id_eleve){
+  // On récupère les informations de cet élève
+  $eleve = array();
+  $sql  = "SELECT DISTINCT nom, prenom, id_eleve, sexe, naissance, classe, ele_id FROM eleves e, j_eleves_classes jec, classes c";
+  $sql .= " WHERE e.login = jec.login AND jec.id_classe = c.id AND e.id_eleve = '".$_id_eleve."'";
+
+  if ($query = $GLOBALS["cnx"]->query($sql)) {
+    $eleve = $query->fetchAll(PDO::FETCH_OBJ);
+  }else{
+    throw new Exception('Une erreur dans la requête empêche de pouvoir lister les élèves.||' . $sql);
+  }
+  $eleve[0]->fiche_eleve = 'ok'; // pour pouvoir afficher la fiche de l'élève
+
+  // Les responsables
+  $responsables = infosResponsables($eleve[0]->ele_id);
+  $eleve[0]->responsables = $responsables;
+
+  return $eleve;
+}
+
+function listeCreneaux($options = NULL){
+  $sql = "SELECT ";
 }
 
 function affSelectEleves($liste_eleves, $options = NULL){
@@ -87,7 +132,7 @@ function affSelectEleves($liste_eleves, $options = NULL){
     $aff_classe = isset($options["classe"]) ? $options["classe"] : 'fin';
     $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdEleve';
     $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">'.$options["label"].'</label>' : '';
-    $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '')" : '';
+    $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."')" : '';
     $aff_event = isset($options["event"]) ? ' on'.$options["event"].'="'.$method_event.'"' : '';
 
 
@@ -168,10 +213,12 @@ function affSelectClasses($options = NULL){
   $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdClasses';
   $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">' . $options["label"] . '</label>' : '';
   $_width = isset($options["width"]) ? ' style="width: ' . $options["width"] . ';"' : '';
+  $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."')" : '';
+  $aff_event = isset($options["event"]) ? ' on'.$options["event"].'="'.$method_event.'"' : '';
 
   $retour =
   $aff_label . '
-  <select name="choix_classe" id="' . $_id . '"' . $_width . '>
+  <select name="choix_classe" id="' . $_id . '"' . $_width . $aff_event .'>
     <option value="r">-- -- -- --</option>
   ';
   for ($a = 0 ; $a < $nbre ; $a++){
@@ -199,10 +246,12 @@ function affSelectAid($options = NULL){
   $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdAid';
   $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">' . $options["label"] . '</label>' : '';
   $_width = isset($options["width"]) ? ' style="width: ' . $options["width"] . ';"' : '';
+  $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."')" : '';
+  $aff_event = isset($options["event"]) ? ' on'.$options["event"].'="'.$method_event.'"' : '';
 
   $retour =
   $aff_label . '
-  <select name="choix_classe" id="' . $_id . '"' . $_width . '>
+  <select name="choix_classe" id="' . $_id . '"' . $_width . $aff_event .'>
     <option value="r">-- -- -- --</option>
   ';
   for ($a = 0 ; $a < $nbre ; $a++){
@@ -236,10 +285,12 @@ function affSelectEnseignements($options = NULL){
   $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdGroupes';
   $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">' . $options["label"] . '</label>' : '';
   $_width = isset($options["width"]) ? ' style="width: ' . $options["width"] . ';"' : '';
+  $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."')" : '';
+  $aff_event = isset($options["event"]) ? ' on'.$options["event"].'="'.$method_event.'"' : '';
 
   $retour =
   $aff_label . '
-  <select name="choix_groupe" id="' . $_id . '"' . $_width . '>
+  <select name="choix_groupe" id="' . $_id . '"' . $_width . $aff_event .'>
     <option value="r">-- -- -- --</option>
   ';
 

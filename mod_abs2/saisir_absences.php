@@ -38,14 +38,14 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // ============== traitement des variables ==================
 $_SESSION["type_aff_abs"] = isset($_SESSION["type_aff_abs"]) ? $_SESSION["type_aff_abs"] : 'alpha';
 $_SESSION["type_aff_abs"] = (isset($_GET["type_aff_abs"]) AND ($_GET["type_aff_abs"] == 'alpha' OR $_GET["type_aff_abs"] == 'classe'))
                             ? $_GET["type_aff_abs"] : $_SESSION["type_aff_abs"];
 
-
+debug_var();
 // ============== Code métier ===============================
 include("absences.class.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
@@ -56,8 +56,7 @@ try{
   // le tableau des élèves en vue de son affichage sous différentes formes
   $options = array('classes'=>'toutes', 'eleves'=>$_SESSION["type_aff_abs"]);
   $liste_eleves = ListeEleves($options);
-  $reglages = array('classe'=>"debut", 'label'=>'Elève (nom)',
-                    'event'=>'change', 'method_event'=>'gestionaffAbs');
+  $reglages = array('classe'=>"debut", 'label'=>'Elève (nom)', 'event'=>'change', 'method_event'=>'gestionaffAbs');
 
 
 }catch(exception $e){
@@ -84,13 +83,13 @@ require("lib/abs_menu.php");
       <?php echo affSelectEleves($liste_eleves, $reglages); ?>
     </p>
     <p style="text-align: right;">
-      <?php echo affSelectClasses(array('label'=>'Classes', 'width'=>'380px')); ?>
+      <?php echo affSelectClasses(array('label'=>'Classes', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs')); ?>
     </p>
     <p style="text-align: right;">
-      <?php echo affSelectEnseignements(array('label'=>'Enseignements', 'width'=>'380px')); ?>
+      <?php echo affSelectEnseignements(array('label'=>'Enseignements', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs')); ?>
     </p>
     <p style="text-align: right;">
-      <?php echo affSelectAid(array('label'=>'Par AID', 'width'=>'380px')); ?>
+      <?php echo affSelectAid(array('label'=>'Par AID', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs')); ?>
     </p>
 
     <p style="position: relative; margin-left: 1%;">
