@@ -673,7 +673,7 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/avertir_famille_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Avertir famille incident', '');";
     $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/sauve_famille_avertie.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Svg famille avertie', '');";
     $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/discipline_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Activation/desactivation du module', '');";
-
+    $tab_req[] = "INSERT INTO droits VALUES ('/aid/annees_anterieures_accueil.php', 'V', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'Configuration des AID', '');";
 
     //$tab_req[] = "";
 
@@ -5941,9 +5941,9 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
       $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('divers', 'F', 'V', 'F', 'F', 'V', 'F', 'F', 'Divers', '1');");
       $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('matiere1', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Discipline principale', '1');");
       $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('matiere2', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Discipline secondaire', '1');");
-      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('eleve_peut_modifier', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
-      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('cpe_peut_modifier', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
-      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('prof_peut_modifier', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '0');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('eleve_peut_modifier', '-', '-', '-', '-', '-', '-', '-', 'A préciser', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('cpe_peut_modifier', '-', '-', '-', '-', '-', '-', '-', 'A préciser', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('prof_peut_modifier', '-', '-', '-', '-', '-', '-', '-', 'A préciser', '0');");
       $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('fiche_publique', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
       $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('affiche_adresse1', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
       $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('en_construction', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
@@ -7435,6 +7435,15 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			$result.="<font color=\"green\">OK</font><br />";
 		}
 	}
+
+    // Module année antérieure
+    $result .= "<br />Mise à jour de la table archivage_types_aid.<br />";
+    $result_inter = traite_requete("ALTER TABLE archivage_types_aid ADD outils_complementaires ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' AFTER display_bulletin");
+    if ($result_inter == '')
+       $result .= "<font color=\"green\">Le champ outils_complementaires de la table archivage_types_aid a été ajouté !</font><br />";
+    else
+       $result .= $result_inter."<br />";
+
 
 	$result .= "&nbsp;->Création de la absences_repas<br />";
         $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'absences_repas'"));
