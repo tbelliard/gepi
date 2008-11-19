@@ -62,6 +62,7 @@ calc_moy_debug("\$nombre_eleves=$nombre_eleves\n");
 
 // On appelle la liste des matières de la classe
 if ($affiche_categories) {
+    calc_moy_debug("\$affiche_categories=$affiche_categories\n");
 	// On utilise les valeurs spécifiées pour la classe en question
 	/*
 	$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
@@ -87,6 +88,7 @@ if ($affiche_categories) {
 	calc_moy_debug($sql."\n");
 	$appel_liste_groupes = mysql_query($sql);
 } else {
+    calc_moy_debug("\$affiche_categories=\n");
 	/*
 	$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef
 	FROM j_groupes_classes jgc, j_groupes_matieres jgm
@@ -184,6 +186,10 @@ $prev_cat = null;
 while ($j < $nombre_groupes) {
     $group_id = mysql_result($appel_liste_groupes, $j, "id_groupe");
     $current_group[$j] = get_group($group_id);
+
+	calc_moy_debug("\$current_group[$j]['name']=".$current_group[$j]['name']."\n");
+	calc_moy_debug("\$current_group[$j]['matiere']['matiere']=".$current_group[$j]['matiere']['matiere']."\n");
+
 	$current_coef[$j] = mysql_result($appel_liste_groupes, $j, "coef");
 	calc_moy_debug("\$current_coef[$j]=mysql_result(\$appel_liste_groupes, $j, \"coef\")=$current_coef[$j]\n");
 
@@ -307,6 +313,7 @@ while ($j < $nombre_groupes) {
 
         // Maintenant on regarde si l'élève suit bien cette matière ou pas
         if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
+			calc_moy_debug("\$current_group[$j]['name']=".$current_group[$j]['name']."\n");
         	//$count[$j][$i] == "0"
 			/*
             $current_eleve_note_query = mysql_query("SELECT distinct * FROM matieres_notes
@@ -404,22 +411,29 @@ while ($j < $nombre_groupes) {
 
 
 			calc_moy_debug("\$coef_eleve=$coef_eleve\n");
+			calc_moy_debug("\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."\n");
+			calc_moy_debug("\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."\n");
             if ($coef_eleve != 0) {
-               if (($current_eleve_note[$j][$i] != '') and ($current_eleve_statut[$j][$i] == '')) {
+               //if (($current_eleve_note[$j][$i] != '') and ($current_eleve_statut[$j][$i] == '')) {
+               if (($current_eleve_note[$j][$i] != '') and ($current_eleve_note[$j][$i] != '-') and ($current_eleve_statut[$j][$i] == '')) {
 
+					/*
                     //$total_coef[$i] += $coef_eleve;
 					//calc_moy_debug("\$total_coef[$i]=$total_coef[$i]\n");
                     $total_coef_classe[$i] += $current_coef[$j];
 					calc_moy_debug("\$total_coef_classe[$i]=$total_coef_classe[$i]\n");
-                    $total_coef_eleve[$i] += $coef_eleve;
+                    */
+					$total_coef_eleve[$i] += $coef_eleve;
 					calc_moy_debug("\$total_coef_eleve[$i]=$total_coef_eleve[$i]\n");
 
+					/*
                     //$total_coef_cat[$i][$prev_cat] += $coef_eleve;
                     $total_coef_cat_classe[$i][$prev_cat] += $current_coef[$j];
 					calc_moy_debug("\$total_coef_cat_classe[$i][$prev_cat]=".$total_coef_cat_classe[$i][$prev_cat]."\n");
+					*/
                     $total_coef_cat_eleve[$i][$prev_cat] += $coef_eleve;
 					calc_moy_debug("\$total_coef_cat_eleve[$i][$prev_cat]=".$total_coef_cat_eleve[$i][$prev_cat]."\n");
-
+					/*
                     //$moy_gen_classe[$i] += $coef_eleve*$current_classe_matiere_moyenne[$j];
                     $moy_gen_classe[$i] += $current_coef[$j]*$current_classe_matiere_moyenne[$j];
 					calc_moy_debug("\$moy_gen_classe[$i]=$moy_gen_classe[$i]\n");
@@ -427,7 +441,7 @@ while ($j < $nombre_groupes) {
                     //$moy_cat_classe[$i][$prev_cat] += $coef_eleve*$current_classe_matiere_moyenne[$j];
                     $moy_cat_classe[$i][$prev_cat] += $current_coef[$j]*$current_classe_matiere_moyenne[$j];
 					calc_moy_debug("\$moy_cat_classe[$i][$prev_cat]=".$moy_cat_classe[$i][$prev_cat]."\n");
-
+					*/
                     $moy_gen_eleve[$i] += $coef_eleve*$current_eleve_note[$j][$i];
 					calc_moy_debug("\$moy_gen_eleve[$i]=$moy_gen_eleve[$i]\n");
 
@@ -435,6 +449,25 @@ while ($j < $nombre_groupes) {
 					calc_moy_debug("\$moy_cat_eleve[$i][$prev_cat]=".$moy_cat_eleve[$i][$prev_cat]."\n");
                 }
             }
+
+			// Il ne faut pas augmenter si il n'y a aucune note dans la matière $j.
+			if($current_classe_matiere_moyenne[$j]!="") {
+				$total_coef_classe[$i] += $current_coef[$j];
+				calc_moy_debug("\$total_coef_classe[$i]=$total_coef_classe[$i]\n");
+
+				//$total_coef_cat[$i][$prev_cat] += $coef_eleve;
+				$total_coef_cat_classe[$i][$prev_cat] += $current_coef[$j];
+				calc_moy_debug("\$total_coef_cat_classe[$i][$prev_cat]=".$total_coef_cat_classe[$i][$prev_cat]."\n");
+
+				//$moy_gen_classe[$i] += $coef_eleve*$current_classe_matiere_moyenne[$j];
+				$moy_gen_classe[$i] += $current_coef[$j]*$current_classe_matiere_moyenne[$j];
+				calc_moy_debug("\$moy_gen_classe[$i]=$moy_gen_classe[$i]\n");
+
+				//$moy_cat_classe[$i][$prev_cat] += $coef_eleve*$current_classe_matiere_moyenne[$j];
+				$moy_cat_classe[$i][$prev_cat] += $current_coef[$j]*$current_classe_matiere_moyenne[$j];
+				calc_moy_debug("\$moy_cat_classe[$i][$prev_cat]=".$moy_cat_classe[$i][$prev_cat]."\n");
+			}
+
         }
         $i++;
 		calc_moy_debug("==============================\n");
@@ -484,6 +517,7 @@ while ($i < $nombre_eleves) {
 	    if ($total_coef_cat_classe[$i][$cat] != 0) {
 	        $moy_cat_classe[$i][$cat] = $moy_cat_classe[$i][$cat]/$total_coef_cat_classe[$i][$cat];
 	        $moy_cat_classe[$i][$cat] = number_format($moy_cat_classe[$i][$cat],1, ',', ' ');
+			calc_moy_debug("\$moy_cat_classe[$i][$cat]=".$moy_cat_classe[$i][$cat]."\n");
 	    } else {
 	        $moy_cat_classe[$i][$cat] = "-";
 	    }
@@ -491,6 +525,7 @@ while ($i < $nombre_eleves) {
 	    if ($total_coef_cat_eleve[$i][$cat] != 0) {
 	        $moy_cat_eleve[$i][$cat] = $moy_cat_eleve[$i][$cat]/$total_coef_cat_eleve[$i][$cat];
 	        $moy_cat_eleve[$i][$cat] = number_format($moy_cat_eleve[$i][$cat],1, ',', ' ');
+			calc_moy_debug("\$moy_cat_eleve[$i][$cat]=".$moy_cat_eleve[$i][$cat]."\n");
 	    } else {
 	        $moy_cat_eleve[$i][$cat] = "-";
 	    }
