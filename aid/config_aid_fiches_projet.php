@@ -53,10 +53,10 @@ if (isset($is_posted) and ($is_posted == "1")) {
     while ($i < $nb_lignes) {
         $id = mysql_result($res,$i,"id");
         if ($_POST["description_".$id]=="") $_POST["description_".$id] = "A préciser";
-        if (!(isset($_POST["public_".$id]))) $_POST["public_".$id] = 'F';
-        if (!(isset($_POST["professeur_".$id]))) $_POST["professeur_".$id] = 'F';
-        if (!(isset($_POST["cpe_".$id]))) $_POST["cpe_".$id] = 'F';
-        if (!(isset($_POST["eleve_".$id]))) $_POST["eleve_".$id] = 'F';
+        if (!(isset($_POST["public_".$id]))) $_POST["public_".$id] = '-';
+        if (!(isset($_POST["professeur_".$id]))) $_POST["professeur_".$id] = '-';
+        if (!(isset($_POST["cpe_".$id]))) $_POST["cpe_".$id] = '-';
+        if (!(isset($_POST["eleve_".$id]))) $_POST["eleve_".$id] = '-';
         if (!(isset($_POST["statut_".$id]))) $_POST["statut_".$id]= '0';
         $sql = mysql_query("update droits_aid set
         public = '".$_POST["public_".$id]."',
@@ -85,11 +85,14 @@ require_once("../lib/header.inc");
 <?php
 
 echo "<p>Le tableau suivant permet de fixer les droits sur les différents champs des fiches projet.";
-echo "<br><br />Remarques :
+echo "<br /><br />Remarques :
 <ul>
 <li>Quand un champ est <b>actif</b>, il est visible dans l'interface privée de GEPI (utilisateur connecté) par les administrateurs, les professeurs, les CPE, les élèves et les responsables.</li>
 <li>Quand un champ n'est pas <b>actif</b>, cela signifie qu'il n'est pas utilisé dans GEPI.</li>
-<li>Pour qu'un champ soit visible dans l'interface publique, il est nécessaire de cocher également la case correspondante dans le tableau.</li>
+<li>Le code \"<b>R &amp; W</b>\" signifie que le champ est accessible en lecture et écriture.
+<br />Le code \"<b>R</b>\" signifie que le champ est accessible en lecture seulement.
+<br />Le code \"<b>-</b>\" signifie que le champ n'est pas accessible.
+</li>
 </ul>";
 echo "<table border='1' cellpadding='5' class='boireaus'>";
 echo "<tr><th><b>Champ de la fiche projet</b></th>
@@ -126,21 +129,50 @@ while ($i < $nb_lignes) {
 
     }
 
-    echo "<td><input type=\"checkbox\" name=\"public_".$id."\" value=\"V\" ";
-    if ($public=='V') echo " checked ";
-    echo "/></td>\n";
+    echo "<td><select name=\"public_".$id."\">\n";
+    echo "<option value=\"F\" ";
+    if ($public=='F') echo " selected ";
+    echo " >R</option>\n";
+    echo "<option value=\"-\" ";
+    if ($public=='-') echo " selected ";
+    echo " >-</option>\n";
+    echo "</select>\n</td>\n";
 
-    echo "<td><input type=\"checkbox\" name=\"professeur_".$id."\" value=\"V\" ";
-    if ($professeur=='V') echo " checked ";
-    echo "/></td>\n";
+    echo "<td><select name=\"professeur_".$id."\">\n";
+    echo "<option value=\"V\" ";
+    if ($professeur=='V') echo " selected ";
+    echo " >R &amp; W</option>\n";
+    echo "<option value=\"F\" ";
+    if ($professeur=='F') echo " selected ";
+    echo " >R</option>\n";
+    echo "<option value=\"-\" ";
+    if ($professeur=='-') echo " selected ";
+    echo " >-</option>\n";
+    echo "</select>\n</td>\n";
 
-    echo "<td><input type=\"checkbox\" name=\"cpe_".$id."\" value=\"V\" ";
-    if ($cpe=='V') echo " checked ";
-    echo "/></td>\n";
+    echo "<td><select name=\"cpe_".$id."\">\n";
+    echo "<option value=\"V\" ";
+    if ($cpe=='V') echo " selected ";
+    echo " >R &amp; W</option>\n";
+    echo "<option value=\"F\" ";
+    if ($cpe=='F') echo " selected ";
+    echo " >R</option>\n";
+    echo "<option value=\"-\" ";
+    if ($cpe=='-') echo " selected ";
+    echo " >-</option>\n";
+    echo "</select>\n</td>\n";
 
-    echo "<td><input type=\"checkbox\" name=\"eleve_".$id."\" value=\"V\" ";
-    if ($eleve=='V') echo " checked ";
-    echo "/></td>\n";
+    echo "<td><select name=\"eleve_".$id."\">\n";
+    echo "<option value=\"V\" ";
+    if ($eleve=='V') echo " selected ";
+    echo " >R &amp; W</option>\n";
+    echo "<option value=\"F\" ";
+    if ($eleve=='F') echo " selected ";
+    echo " >R</option>\n";
+    echo "<option value=\"-\" ";
+    if ($eleve=='-') echo " selected ";
+    echo " >-</option>\n";
+    echo "</select>\n</td>\n";
 
     echo "<td><input type=\"checkbox\" name=\"statut_".$id."\" value=\"1\" ";
     if ($_statut=='1') echo " checked ";

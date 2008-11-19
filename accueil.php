@@ -945,7 +945,11 @@ function AfficheAid($_statut,$_login,$indice_aid){
 
 $call_data = sql_query("select indice_aid, nom from aid_config WHERE outils_complementaires = 'y' order by nom_complet");
 $nb_aid = mysql_num_rows($call_data);
-if ($nb_aid != 0) {
+$call_data2 = sql_query("select id from archivage_types_aid WHERE outils_complementaires = 'y'");
+$nb_aid_annees_anterieures = mysql_num_rows($call_data2);
+$nb_total=$nb_aid+$nb_aid_annees_anterieures;
+
+if ($nb_total != 0) {
     $chemin = array();
     $titre = array();
     $expli = array();
@@ -955,7 +959,7 @@ if ($nb_aid != 0) {
         $_indice_aid[] = mysql_result($call_data,$i,"indice_aid");
         $nom_aid = mysql_result($call_data,$i,"nom");
         $chemin[]="/aid/index_fiches.php?indice_aid=".$indice_aid;
-        $titre[] = $nom_aid. " : outils de visualisation et d'édition";
+        $titre[] = $nom_aid;
         $expli[] = "Tableau récapitulatif, liste des ".$gepiSettings['denomination_eleves'].", ...";
         $i++;
     }
@@ -964,6 +968,9 @@ if ($nb_aid != 0) {
   for ($i=0;$i<$nb_ligne;$i++) {
       if ((acces($chemin[$i],$_SESSION['statut'])==1) and AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))  {$affiche = 'yes';}
   }
+  if (($nb_aid_annees_anterieures > 0) and (acces("/aid/annees_anterieures_accueil.php",$_SESSION['statut'])==1))
+    $affiche = 'yes';
+
   if ($affiche=='yes') {
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Outils de visualisation et d'édition des fiches projets</h2>\n";
@@ -976,6 +983,12 @@ if ($nb_aid != 0) {
       for ($i=0;$i<$nb_ligne;$i++) {
           if (AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))
               affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+      }
+      if (($nb_aid_annees_anterieures > 0) and (acces("/aid/annees_anterieures_accueil.php",$_SESSION['statut'])==1)) {
+        $chemin_="/aid/annees_anterieures_accueil.php";
+        $titre_ = "Fiches projets des années antérieures";
+        $expli_ = "Accès administrateur aux fiches projets des années antérieures";
+        affiche_ligne($chemin_,$titre_,$expli_,$tab,$_SESSION['statut']);
       }
       echo "</table>";
   }

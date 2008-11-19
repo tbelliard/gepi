@@ -28,16 +28,21 @@ $indice_aid
 $_login -> laisser vide s'il s'agit de l'interface publqiue
 $message_avertissement -> message "en construction
 $non_defini -> ce qui s'affiche si le champ n'est pas rempli
+$annee -> il s'agit de l'année en cours. Si non précisé, il s'agit de l'année en cours
 */
 
 // Initialisation des variables
+if (!isset($annee)) $annee='';
 $call_productions = mysql_query("select * from aid_productions order by nom");
 $nb_productions = mysql_num_rows($call_productions);
 $call_public = mysql_query("select * from aid_public order by public");
 $nb_public = mysql_num_rows($call_public );
 
+if ($annee=='')
+    $requete = "SELECT * FROM aid WHERE indice_aid='$indice_aid' ";
+else
+    $requete = "SELECT * FROM archivage_aids WHERE id_type_aid='$indice_aid' and annee='".$annee."' ";
 
-$requete = "SELECT * FROM aid WHERE indice_aid='$indice_aid' ";
 // S'il s'agit de l'interface publique, on restreint aux fiches publiques
 if ($_login=="")
     $requete .= " and fiche_publique='y'";
@@ -74,9 +79,11 @@ while ($i < $nombreligne){
     if ($aid_num =='') {$aid_num='&nbsp;';}
     $aid_id = @mysql_result($calldata, $i, "id");
     // autres champs :
-    $call_data_projet = mysql_query("select * from aid where (id = '$aid_id' and indice_aid='$indice_aid')");
+    if ($annee=='')
+      $call_data_projet = mysql_query("select * from aid where (id = '$aid_id' and indice_aid='$indice_aid')");
+    else
+      $call_data_projet = mysql_query("select * from archivage_aids where (id = '$aid_id' and id_type_aid='$indice_aid' and annee='".$annee."')");
 
-    $ressources = @mysql_result($call_data_projet,0,"ressources");
     $resume = @mysql_result($call_data_projet,0,"resume");
     $discipline1 = @mysql_result($call_data_projet,0,"matiere1");
     $discipline2 = @mysql_result($call_data_projet,0,"matiere2");
@@ -87,45 +94,61 @@ while ($i < $nombreligne){
     $public = @mysql_result($call_data_projet,0,"public_destinataire");
     $mots_cles = @mysql_result($call_data_projet,0,"mots_cles");
     $divers = @mysql_result($call_data_projet,0,"divers");
-    $perso1 = @mysql_result($call_data_projet,0,"perso1");
-    $perso2 = @mysql_result($call_data_projet,0,"perso2");
-    $perso3 = @mysql_result($call_data_projet,0,"perso3");
     $contacts = @mysql_result($call_data_projet,0,"contacts");
-    $eleve_peut_modifier = @mysql_result($call_data_projet,0,"eleve_peut_modifier");
-    $prof_peut_modifier = @mysql_result($call_data_projet,0,"prof_peut_modifier");
-    $cpe_peut_modifier = @mysql_result($call_data_projet,0,"cpe_peut_modifier");
-    $fiche_publique = @mysql_result($call_data_projet,0,"fiche_publique");
     $affiche_adresse1 = @mysql_result($call_data_projet,0,"affiche_adresse1");
     $en_construction = @mysql_result($call_data_projet,0,"en_construction");
+    $fiche_publique = @mysql_result($call_data_projet,0,"fiche_publique");
+    if ($annee=='') {
+      $perso1 = @mysql_result($call_data_projet,0,"perso1");
+      $perso2 = @mysql_result($call_data_projet,0,"perso2");
+      $perso3 = @mysql_result($call_data_projet,0,"perso3");
+      $eleve_peut_modifier = @mysql_result($call_data_projet,0,"eleve_peut_modifier");
+      $prof_peut_modifier = @mysql_result($call_data_projet,0,"prof_peut_modifier");
+      $cpe_peut_modifier = @mysql_result($call_data_projet,0,"cpe_peut_modifier");
+    } else {
+      $perso1 = '';
+      $perso2 = '';
+      $perso3 = '';
+      $eleve_peut_modifier = 'n';
+      $prof_peut_modifier = 'n';
+      $cpe_peut_modifier = 'n';
+      $eleves_resp = @mysql_result($call_data_projet,0,"eleves_resp");
+      $eleves = @mysql_result($call_data_projet,0,"eleves");
+      $responsables = @mysql_result($call_data_projet,0,"responsables");
+    }
 
     echo "<span id=\"info1_".$aid_id."\" style=\"cursor:pointer;\" onclick=\"javascript:Element.show('id_".$aid_id."');Element.hide('info1_".$aid_id."');Element.show('info2_".$aid_id."');\" >
 	   <img src=\"../images/plier.png\" alt=\"Plus de détails\" Title=\"Plus de détails\"  style=\"vertical-align: middle;\" /></span>\n";
     echo "<span id=\"info2_".$aid_id."\" style=\"display: none;cursor:pointer;\" onclick=\"javascript:Element.hide('id_".$aid_id."');Element.show('info1_".$aid_id."');Element.hide('info2_".$aid_id."');\" >
 	   <img src=\"../images/deplier.png\" alt=\"Moins de détails\" Title=\"Moins de détails\"  style=\"vertical-align: middle;\" /></span>\n";
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'',''))
-        echo "<a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=modif&amp;retour=visu_fiches.php'><img src=\"../images/edit.png\" alt=\"Modifier la fiche\" Title=\"Modifier la fiche\" style=\"vertical-align: middle;\" /></a>\n";
+    if ($annee=='')
+      $retour = "visu_fiches.php";
+    else
+      $retour="annees_anterieures_accueil.php";
+    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'','',$annee))
+        echo "<a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=modif&amp;annee=$annee&amp;retour=$retour'><img src=\"../images/edit.png\" alt=\"Modifier la fiche\" Title=\"Modifier la fiche\" style=\"vertical-align: middle;\" /></a>\n";
 
 
     echo "&nbsp;<b>$aid_nom</b>\n";
 
     // Adresse publique :
-    if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'adresse1','')) and ($adresse1 != "")) {
+    if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'adresse1','',$annee)) and ($adresse1 != "")) {
         if (($affiche_adresse1 == 'y')or(($affiche_adresse1 != 'y') and ($_login!="") )) {
             if ((substr($adresse1,0,4) == "http") or (substr($adresse1,0,3) == "ftp")) {
-                echo " -  Accès public : <a href='".$adresse1."' title='".$adresse1."' target='_blank' ";
+                echo "<span class=\"small\"> -  Accès public : <a href='".$adresse1."' title='".$adresse1."' target='_blank' ";
                 if (($en_construction == 'y') and ($message_avertissement!="")) echo " onclick='alert(\"".$message_avertissement."\");' ";
-                echo ">cliquer pour accéder au site</a>";
+                echo ">cliquer pour accéder au site</a></span>";
              } else
-                echo " -  Accès public : <b>".$adresse1."</b>";
+                echo "<span class=\"small\"> -  Accès public : <b>".$adresse1."</b></span>";
         }
     }
     // Adresse privée :
-    if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'adresse2','')) and ($adresse2 != "")) {
+    if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'adresse2','',$annee)) and ($adresse2 != "")) {
         if ($adresse2 != "")  {
             if ((substr($adresse2,0,4) == "http") or (substr($adresse2,0,3) == "ftp"))
-                echo " -  Accès restreint : <a href='".$adresse2."' title='".$adresse2."' target='_blank'>cliquer pour accéder au site</a>";
+                echo "<span class=\"small\"> -  Accès restreint : <a href='".$adresse2."' title='".$adresse2."' target='_blank'>cliquer pour accéder au site</a></span>";
             else
-                echo " -  Accès restreint : <b>".$adresse2."</b>";
+                echo "<span class=\"small\"> -  Accès restreint : <b>".$adresse2."</b></span>";
         }
     }
     echo "<br />";
@@ -133,7 +156,7 @@ while ($i < $nombreligne){
     echo "<table width=\"100%\" cellpadding=\"4\" bgcolor=\"#FFB68E\">\n";
     echo "<tr>\n";
     echo "<td width=50% style=\"vertical-align:top;\">";
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'resume','')) {
+    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'resume','',$annee)) {
         echo "<span class='medium'><b>Résumé : </b>";
         //Résumé
         if ($resume == -1) $resume = $non_defini;
@@ -143,7 +166,7 @@ while ($i < $nombreligne){
     echo "</td>\n";
 
     echo "<td style=\"vertical-align:top;\">";
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'famille','')) {
+    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'famille','',$annee)) {
         // Famille
         echo "<span class='medium'><b>Projet classé dans la famille : </b>";
         $famille = sql_query1("select type from aid_familles where id = '".$famille."'");
@@ -153,7 +176,7 @@ while ($i < $nombreligne){
     }
 
     //Mots clés :
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'mots_cles','')) {
+    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'mots_cles','',$annee)) {
         $mc = explode("|",$mots_cles);
         $k = 0;
         while ($k < 5) {
@@ -177,7 +200,7 @@ while ($i < $nombreligne){
         echo "</span>\n";
     }
     //Production
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'productions','')) {
+    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'productions','',$annee)) {
         $p = explode("|",$productions);
         $k = 0;
         while ($k < $nb_productions) {
@@ -202,7 +225,7 @@ while ($i < $nombreligne){
         echo "</span>\n";
     }
     //Public
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'public_destinataire','')) {
+    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'public_destinataire','',$annee)) {
         $public = explode("|",$public);
         $k = 0;
         while ($k < $nb_public) {
@@ -228,7 +251,7 @@ while ($i < $nombreligne){
     }
 
     // Disciplines
-    if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'matiere1','')) and (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'matiere2',''))) {
+    if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'matiere1','',$annee)) and (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'matiere2',''))) {
         $discipline1 = sql_query1("select nom_complet from matieres where matiere = '".$discipline1."'");
         $discipline2 = sql_query1("select nom_complet from matieres where matiere = '".$discipline2."'");
         echo "<br /><span class='medium'><b>Disciplines attachées : </b>\n";
@@ -249,69 +272,79 @@ while ($i < $nombreligne){
     echo "<tr><td colspan=2><hr />\n";
 
     //Divers
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'divers','')) {
+    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'divers','',$annee)) {
         if ($divers == "") $divers = "-";
         echo "<b>Divers : </b>".htmlentities($divers)."<br />";
     }
 
     // perso1
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'perso1','')) {
+    if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'perso1','',$annee)) and ($annee=='')) {
         if ($perso1 == "") $perso1 = "-";
         echo "<b>".LibelleChampAid("perso1")." : </b>".htmlentities($perso1)."<br />";
     }
 
     // perso2
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'perso2','')) {
+    if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'perso2','',$annee)) and ($annee=='')) {
         if ($perso2 == "") $perso2 = "-";
         echo "<b>".LibelleChampAid("perso2")." : </b>".htmlentities($perso2)."<br />";
     }
 
     // perso3
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'perso3','')) {
+    if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'perso3','',$annee)) and ($annee=='')) {
         if ($perso3 == "") $perso3 = "-";
         echo "<b>".LibelleChampAid("perso3")." : </b>".htmlentities($perso3)."<br />";
     }
 
     //Contacts
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'contacts','')) {
+    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'contacts','',$annee)) {
         if ($contacts == "") $contacts = "-";
         echo "<b>Contacts extérieurs, ressources, ... : </b>".htmlentities($contacts)."<br />";
     }
 
     // Autres infos
-    if (
-    VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'eleve_peut_modifier','') or
-    VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'prof_peut_modifier','') or
-    VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'cpe_peut_modifier','') or
-    VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'fiche_publique','')
-    ) {
-    echo "<hr /><b>Autres informations : </b><ul>";
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'eleve_peut_modifier','')) {
-      if ($eleve_peut_modifier == "y")
-        echo "<li>Les élèves responsables peuvent modifier cette fiche.</li>";
-      else
-        echo "<li>Les élèves responsables ne peuvent pas modifier cette fiche.</li>";
-    }
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'prof_peut_modifier','')) {
-      if ($prof_peut_modifier == "y")
-        echo "<li>Les professeurs responsables peuvent modifier cette fiche.</li>";
-      else
-        echo "<li>Les professeurs responsables ne peuvent pas modifier cette fiche.</li>";
-    }
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'cpe_peut_modifier','')) {
-      if ($cpe_peut_modifier == "y")
-        echo "<li>Les CPE peuvent modifier cette fiche.</li>";
-      else
-        echo "<li>Les CPE ne peuvent pas modifier cette fiche.</li>";
-    }
-    if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'fiche_publique','')) {
-      if ($fiche_publique == "y")
-        echo "<li>Cette fiche est en ligne dans <a href=\"javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">l'interface publique</a>.</li>";
-      else
-        echo "<li>Cette fiche n'est pas disponible dans <a href=\"javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">l'interface publique</a>.</li>";
-    }
+    if ($annee=='') {
+      if (
+      VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'eleve_peut_modifier','',$annee) or
+      VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'prof_peut_modifier','',$annee) or
+      VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'cpe_peut_modifier','',$annee) or
+      VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'fiche_publique','',$annee)
+      )
+      {
+      echo "<hr /><b>Autres informations : </b><ul>";
+      if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'eleve_peut_modifier','',$annee)) {
+        if ($eleve_peut_modifier == "y")
+          echo "<li>Les élèves responsables peuvent modifier cette fiche.</li>";
+        else
+          echo "<li>Les élèves responsables ne peuvent pas modifier cette fiche.</li>";
+      }
+      if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'prof_peut_modifier','',$annee)) {
+        if ($prof_peut_modifier == "y")
+          echo "<li>Les professeurs responsables peuvent modifier cette fiche.</li>";
+        else
+          echo "<li>Les professeurs responsables ne peuvent pas modifier cette fiche.</li>";
+      }
+      if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'cpe_peut_modifier','',$annee)) {
+        if ($cpe_peut_modifier == "y")
+          echo "<li>Les CPE peuvent modifier cette fiche.</li>";
+        else
+          echo "<li>Les CPE ne peuvent pas modifier cette fiche.</li>";
+      }
+      if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'fiche_publique','',$annee)) {
+        if ($fiche_publique == "y")
+          echo "<li>Cette fiche est en ligne dans <a href=\"javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">l'interface publique</a>.</li>";
+        else
+          echo "<li>Cette fiche n'est pas disponible dans <a href=\"javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">l'interface publique</a>.</li>";
+      }
 
-    echo "</ul>";
+      echo "</ul>";
+      }
+    } else {
+      echo "<hr /><b>Autres informations : </b><ul>";
+      echo "<li>Elèves responsables du projet :".$eleves_resp."</li>";
+      echo "<li>Professeurs responsables du projet :".$responsables."</li>";
+      echo "<li>Elèves faisant partie du projet :".$eleves."</li>";
+      echo "</ul>";
+
     }
     echo "</td></tr></table></div>\n";
 

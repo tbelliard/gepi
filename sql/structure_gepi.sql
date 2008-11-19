@@ -217,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `archivage_eleves` (`ine` varchar(255) NOT NULL,`nom`
 DROP TABLE IF EXISTS archivage_eleves2;
 CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(50) NOT NULL default '',`ine` varchar(50) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL, PRIMARY KEY  (`ine`,`annee`));
 DROP TABLE IF EXISTS archivage_types_aid;
-CREATE TABLE IF NOT EXISTS `archivage_types_aid` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`nom_complet` varchar(100) NOT NULL default '',`note_sur` int(11) NOT NULL default '0',`type_note` varchar(5) NOT NULL default '',  `display_bulletin` char(1) NOT NULL default 'y', PRIMARY KEY  (`id`));
+CREATE TABLE IF NOT EXISTS `archivage_types_aid` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`nom_complet` varchar(100) NOT NULL default '',`note_sur` int(11) NOT NULL default '0',`type_note` varchar(5) NOT NULL default '',  `display_bulletin` char(1) NOT NULL default 'y', `outils_complementaires` enum('y','n') NOT NULL default 'n', PRIMARY KEY  (`id`));
 CREATE TABLE IF NOT EXISTS `commentaires_types` (`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,`commentaire` TEXT NOT NULL ,`num_periode` INT NOT NULL ,`id_classe` INT NOT NULL);
 DROP TABLE IF EXISTS commentaires_types_profs;
 CREATE TABLE commentaires_types_profs (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,login VARCHAR( 255 ) NOT NULL ,app TEXT NOT NULL);

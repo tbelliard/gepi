@@ -2770,7 +2770,9 @@ function get_class_from_id($id_classe) {
 /* Outils complémentaires de gestion des AID
 fonction vérifiant les droits d'accès au module selon l'identifiant
 */
-function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode) {
+function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='') {
+ //$annee='' signifie qu'il s'agit de l'année courante
+ if ($annee=='') {
     // Les outils complémetaires sont-ils activés ?
     $test_active = sql_query1("select indice_aid from aid_config WHERE outils_complementaires = 'y' and indice_aid='".$indice_aid."'");
     // Les outils complémenatires ne sont activés pour aucune AID, on renvoie FALSE
@@ -2864,33 +2866,89 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode) {
     } else {
         // Le champ est précisé. On cherche à savoir si l'utilisateur a le droit de voir et/ou de modifier ce champ
         $CheckAccess = sql_query1("select ".$statut_login." from droits_aid where id = '".$champ."'");
-        if ($CheckAccess == 'V') {
+        // $CheckAccess='V' -> possibilité de modifier et de voir le champ
+        // $CheckAccess='F' -> possibilité de voir le champ mais pas de le modifier
+        // $CheckAccess='-' -> Interdiction de voir et ou de modifier le champ
+        if (($mode != 'W') and ($CheckAccess != '-'))
             return (true);
-        } else {
-            if ($mode=="W")
-                return (false);
-            else
-                if ($_login !="")
-                    return TRUE;
-                else
-                    return FALSE;
+        else if (($mode == 'W') and ($CheckAccess == 'V'))
+            return (true);
+        else
+            return (false);
+
+    }
+  } else {
+  // il s'agit de projets d'une année passée...
+    // Les outils complémetaires sont-ils activés ?
+    $test_active = sql_query1("select id from archivage_types_aid WHERE outils_complementaires = 'y' and id='".$indice_aid."'");
+    // Les outils complémenatires ne sont activés pour aucune AID, on renvoie FALSE
+    if ($test_active == -1) {
+        return false;
+        die();
+    }
+
+    // Si le champ n'est pas activé, on ne l'affiche pas !
+    // Deux valeurs possibles :
+    // 0 -> le champ n'est pas utilisé
+    // 1 -> Le champ est utilisé
+    if ($champ != "") {
+        $statut_champ = sql_query1("select statut from droits_aid where id = '".$champ."'");
+        if ($statut_champ == 0) {
+            return FALSE;
+            die();
         }
     }
+    if ($_login!='') {
+        $statut_login = sql_query1("select statut from utilisateurs where login='".$_login."' and etat='actif' ");
+    } else {
+        // si le login n'est pas précisé, on est dans l'interface publique
+        $statut_login = "public";
+    }
+    // Admin ?
+    if  ($statut_login == "administrateur") {
+        return TRUE;
+        die();
+    }
+    if ($champ == "") {
+    // Si $champ == "", cela signifie qu'on demande l'accès à une page privée de modif ou de visualisation
+       return FALSE;
+    // Si le champ est précisé, on regarde si l'utilisateur a les droits de modif de ce champ
+    } else {
+        // Le champ est précisé. On cherche à savoir si l'utilisateur a le droit de voir et/ou de modifier ce champ
+        $CheckAccess = sql_query1("select ".$statut_login." from droits_aid where id = '".$champ."'");
+        // $CheckAccess='V' -> possibilité de modifier et de voir le champ
+        // $CheckAccess='F' -> possibilité de voir le champ mais pas de le modifier
+        // $CheckAccess='-' -> Interdiction de voir et ou de modifier le champ
+        if (($mode != 'W') and ($CheckAccess != '-'))
+            return (true);
+        else if (($mode == 'W') and ($CheckAccess == 'V'))
+            return (true);
+        else
+            return (false);
+    }
+
+  }
 }
 /* Outils complémentaires de gestion des AID
 fonction vérifiant si les outils complémetaires sont-ils activés
 */
-function VerifAidIsAcive($indice_aid,$aid_id) {
-    $test_active = sql_query1("select indice_aid from aid_config WHERE outils_complementaires = 'y' and indice_aid='".$indice_aid."'");
+function VerifAidIsAcive($indice_aid,$aid_id,$annee='') {
+    if ($annee=='')
+      $test_active = sql_query1("select indice_aid from aid_config WHERE outils_complementaires = 'y' and indice_aid='".$indice_aid."'");
+    else
+      $test_active = sql_query1("select id from archivage_types_aid WHERE outils_complementaires = 'y' and id='".$indice_aid."'");
     if ($test_active == -1)
        return FALSE;
     else {
        if ($aid_id != "") {
+         if ($annee=='')
            $test_aid_existe = sql_query1("select count(id) from aid WHERE indice_aid='".$indice_aid."' and id='".$aid_id."'");
-           if ($test_aid_existe != 1)
-             return FALSE;
-           else
-             return TRUE;
+        else
+           $test_aid_existe = sql_query1("select count(id) from archivage_aids WHERE id_type_aid='".$indice_aid."' and id='".$aid_id."'");
+        if ($test_aid_existe != 1)
+           return FALSE;
+        else
+           return TRUE;
        } else
            return TRUE;
 

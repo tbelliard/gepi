@@ -296,6 +296,7 @@ if(!isset($annee_scolaire)){
       $outils_complementaires = mysql_result($res_aid,$i,"outils_complementaires");
       $display_bulletin = mysql_result($res_aid,$i,"display_bulletin");
       $bull_simplifie = mysql_result($res_aid,$i,"bull_simplifie");
+      $outils_complementaires= mysql_result($res_aid,$i,"outils_complementaires");
       if (($display_bulletin == 'y') or ($bull_simplifie=='y'))
           $display = 'y';
       else
@@ -306,6 +307,7 @@ if(!isset($annee_scolaire)){
       note_sur='".addslashes($note_max_type)."',
       type_note='".addslashes($type_note_type)."',
       display_bulletin='".$display."',
+      outils_complementaires='".$outils_complementaires."',
       annee='".$annee_scolaire."'";
       $res_insert1=sql_query($sql_archiv);
       if(!$res_insert1){
