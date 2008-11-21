@@ -717,14 +717,11 @@ if ($test_nbre_eleves_cpe === 0){
 				<?php
 				}
 				else // sinon si lettre envoyé  n'affiche pas case à cocher et affiche icone delete_imp modif didier
-				{
+				{$info_sup = 'du '.date_fr($data_sans_motif['d_date_absence_eleve']).' au '.date_fr($data_sans_motif['a_date_absence_eleve']);
 				?>
 				<img src="../images/icons/coche_imp.png" style="width: 20px; height: 20px;" title="Impossible de supprimer <?php if($data_sans_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_sans_motif['type_absence_eleve']=="D") { ?>la dispense<?php } if ($data_sans_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>" border="0" alt="" />
 				<input name="id_absence_eleve[<?php echo $total; ?>]" type="hidden" value="<?php echo $data_sans_motif['id_absence_eleve']; ?>" />
-				<?php
-				$info_sup = 'du '.date_fr($data_sans_motif['d_date_absence_eleve']).' au '.date_fr($data_sans_motif['a_date_absence_eleve']);
-				?>
-				<a href="#" onClick="alert('Pour le supprimer, supprimer la date d\'envoye du courrier.'); return false;"><img src="../../images/icons/delete_imp.png" style="width: 16px; height: 16px;" title="Impossible de supprimer <?php if($data_sans_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_sans_motif['type_absence_eleve']=="D") { ?>la dispense<?php } if ($data_sans_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>" border="0" alt="" /></a>
+				<a href="#" onClick="alert('Pour le supprimer, supprimer la date d\'envoye du courrier.'); return false;"><img src="../images/icons/delete_imp.png" style="width: 16px; height: 16px;" title="Impossible de supprimer <?php if($data_sans_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_sans_motif['type_absence_eleve']=="D") { ?>la dispense<?php } if ($data_sans_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>" border="0" alt="" /></a>
 				<?php
 				}
 				?>
@@ -1036,12 +1033,10 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
 				}
 				else // sinon impossible de supprimer absence didier
 				{
+				 $info_sup = 'du '.date_fr($data_sans_motif['d_date_absence_eleve']).' au '.date_fr($data_sans_motif['a_date_absence_eleve']);
 				?><img src="../images/icons/coche_imp.png" style="width: 18px; height: 18px;" title="Impossible de supprimer <?php if($data_sans_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_sans_motif['type_absence_eleve']=="D") { ?>la dispense<?php } if ($data_sans_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>" border="0" alt="" />
 				<input name="id_absence_eleve[<?php echo $total; ?>]" type="hidden" value="<?php echo $data_sans_motif['id_absence_eleve']; ?>" />
-				<?php
-				$info_sup = 'du '.date_fr($data_sans_motif['d_date_absence_eleve']).' au '.date_fr($data_sans_motif['a_date_absence_eleve']);
-				?>
-				<a href="#" onClick="alert('Pour le supprimer, supprimer la date d\'envoye du courrier.'); return false;"><img src="../../images/icons/delete_imp.png" style="width: 16px; height: 16px;" title="Impossible de supprimer <?php if($data_sans_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_sans_motif['type_absence_eleve']=="D") { ?>la dispense<?php } if ($data_sans_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>" border="0" alt="" /></a>
+				<a href="#" onClick="alert('Pour le supprimer, supprimer la date d\'envoye du courrier.'); return false;"><img src="../images/icons/delete_imp.png" style="width: 16px; height: 16px;" title="Impossible de supprimer <?php if($data_sans_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_sans_motif['type_absence_eleve']=="D") { ?>la dispense<?php } if ($data_sans_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>" border="0" alt="" /></a>
 				<?php
 				}
 				?>
@@ -1254,7 +1249,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
 				 <?php if ($data_avec_motif['type_absence_eleve']=="I") { ?>est allé à l'infirmerie<?php } ?>
 				 <br />
 				 le <?php echo date_frl($data_avec_motif['d_date_absence_eleve']); ?>
-				 <?php if (($data_avec_motif['a_date_absence_eleve'] != $data_avec_motif['d_date_absence_eleve'] and $data_avec_motif['a_date_absence_eleve'] != "") or $data_sans_motif['a_date_absence_eleve'] == "0000-00-00") { ?> au <?php echo date_frl($data_avec_motif['a_date_absence_eleve']); ?><?php } ?>
+				 <?php if (($data_avec_motif['a_date_absence_eleve'] != $data_avec_motif['d_date_absence_eleve'] and $data_avec_motif['a_date_absence_eleve'] != "") or $data_avec_motif['a_date_absence_eleve'] == "0000-00-00") { ?> au <?php echo date_frl($data_avec_motif['a_date_absence_eleve']); } ?>
 				 <br />
 				 <?php if ($data_avec_motif['a_heure_absence_eleve'] == "" or $data_avec_motif['a_heure_absence_eleve'] == "00:00:00") { ?>à <?php } else { ?>de <?php } ?><?php echo heure($data_avec_motif['d_heure_absence_eleve']); ?> <?php if ($data_avec_motif['a_heure_absence_eleve'] == "00:00:00" or $data_avec_motif['a_heure_absence_eleve'] == "") { } else { echo 'à '.heure($data_avec_motif['a_heure_absence_eleve']); } ?></td>
 
@@ -1383,7 +1378,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
             	{
 
 					$info_sup = 'du '.date_fr($data_avec_motif['d_date_absence_eleve']).' au '.date_fr($data_avec_motif['a_date_absence_eleve']);
-					?><a href="#" onClick="alert('Pour le supprimer, supprimer la date d\'envoye du courrier.'); return false;"><img src="../../images/icons/delete_imp.png" style="width: 16px; height: 16px;" title="Impossible de supprimer <?php if($data_avec_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_avec_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_avec_motif['type_absence_eleve']=="D") { ?>la dispence<?php } if ($data_avec_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>" border="0" alt="" /></a><?php
+					?><a href="#" onClick="alert('Pour le supprimer, supprimez la date d\'envoi du courrier.'); return false;"><img src="../images/icons/delete_imp.png" style="width: 16px; height: 16px;" title="Impossible de supprimer <?php if($data_avec_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_avec_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_avec_motif['type_absence_eleve']=="D") { ?>la dispence<?php } if ($data_avec_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?> <?php echo $info_sup; ?>" border="0" alt="" /></a><?php
 
 				}
 				else

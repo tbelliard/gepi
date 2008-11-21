@@ -168,26 +168,26 @@ if(($action_sql == "ajouter" or $action_sql == "modifier") and $valide_form==='y
 		$eleve_absent_ins = $_POST['eleve_absent'][$total];
 		$active_absence_eleve_ins = $_POST['active_absence_eleve'][$total];
 		if($active_absence_eleve_ins == "1" or !empty($heure_retard_eleve[$total])) {
-			// on vérifie si une absences est déja définie
+			// on vérifie si une absences est déja définie et non justifiee  modif didier
 			//requete dans la base absence eleve
 			if ( $action_sql == "ajouter" ) {
 				$requete = "SELECT * FROM absences_eleves
 					WHERE eleve_absence_eleve='".$eleve_absent_ins."' AND
 					d_date_absence_eleve <= '".$d_date_absence_eleve_format_sql."' AND
 					a_date_absence_eleve >= '".$d_date_absence_eleve_format_sql."' AND
-					type_absence_eleve = 'A'";
+					type_absence_eleve = 'A' AND justify_absence_eleve= 'N'";
 				$requete_retard = "SELECT * FROM absences_eleves
 					WHERE eleve_absence_eleve='".$eleve_absent_ins."' AND
 					d_date_absence_eleve = '".$d_date_absence_eleve_format_sql."' AND
 					a_date_absence_eleve = '".$d_date_absence_eleve_format_sql."' AND
-					type_absence_eleve = 'R'";
+					type_absence_eleve = 'R' AND justify_absence_eleve= 'N'";
 			}
 			if ( $action_sql == "modifier" ) {
 				$requete = "SELECT * FROM absences_eleves
 					WHERE eleve_absence_eleve='".$eleve_absent_ins."' AND
 					d_date_absence_eleve <= '".$d_date_absence_eleve_format_sql."' AND
 					a_date_absence_eleve >= '".$d_date_absence_eleve_format_sql."' AND
-					id_absence_eleve <> '".$id."'";
+					id_absence_eleve <> '".$id."' AND justify_absence_eleve= 'N'";
 			}
 
 			$resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
@@ -393,6 +393,7 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 					$update = mysql_query("UPDATE absences_rb SET retard_absence = 'R'
 															WHERE id = '".$id_abs."'");
 					$echo .='<p class="enregistre_modifie">L\'absence de '.$noms["prenom"].' '.$noms["nom"].' a été modifiée en retard ! </p>';
+                  
 				}
 
 			}
