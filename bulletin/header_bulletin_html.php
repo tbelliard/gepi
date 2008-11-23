@@ -193,6 +193,8 @@
 	$col_note_largeur=getSettingValue("col_note_largeur") ? getSettingValue("col_note_largeur") : 50;
 	$largeurtableau=getSettingValue("largeurtableau") ? getSettingValue("largeurtableau") : 800;
 
+	$col_boite_largeur=getSettingValue("col_boite_largeur") ? getSettingValue("col_boite_largeur") : 20;
+
 	$col_matiere_largeur=getSettingValue("col_matiere_largeur") ? getSettingValue("col_matiere_largeur") : 150;
 
 
