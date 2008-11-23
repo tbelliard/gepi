@@ -1198,8 +1198,8 @@ else {
 			}
 
 			// Il faudrait appliquer d'autres correctifs:
+			//echo "\$tab_modele_pdf[\"largeur_nombre_note\"][$tab_id_classe[$loop_classe]]='".$tab_modele_pdf["largeur_nombre_note"][$tab_id_classe[$loop_classe]]."'<br />";
 			if($tab_modele_pdf["largeur_nombre_note"][$tab_id_classe[$loop_classe]]=="0") {$tab_modele_pdf["largeur_nombre_note"][$tab_id_classe[$loop_classe]] = 8;}
-
 
 			if($tab_modele_pdf["active_regroupement_cote"][$tab_id_classe[$loop_classe]]==='1') {
 				$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]+5;
@@ -1438,6 +1438,100 @@ else {
 					$affiche_categories = false;
 				}
 			}
+
+			// Vérifier si il n'y a pas de bêtise sur les catégories.
+			if($affiche_categories) {
+				$sql="SELECT DISTINCT jmcc.priority ".
+				"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
+				"WHERE ( " .
+				"jgc.categorie_id = jmcc.categorie_id AND " .
+				"jgc.id_classe=jmcc.classe_id AND " .
+				"jgc.id_classe='".$id_classe."' AND " .
+				"jgm.id_groupe=jgc.id_groupe AND " .
+				"m.matiere = jgm.id_matiere" .
+				");";
+				$res_nb_cat_priorites=mysql_query($sql);
+				$nb_cat_priorites=mysql_num_rows($res_nb_cat_priorites);
+				//echo "\$nb_cat_priorites=$nb_cat_priorites<br />\n";
+
+				$sql="SELECT DISTINCT jgc.categorie_id ".
+				"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
+				"WHERE ( " .
+				"jgc.categorie_id = jmcc.categorie_id AND " .
+				"jgc.id_classe=jmcc.classe_id AND " .
+				"jgc.id_classe='".$id_classe."' AND " .
+				"jgm.id_groupe=jgc.id_groupe AND " .
+				"m.matiere = jgm.id_matiere" .
+				");";
+				$res_nb_cat=mysql_query($sql);
+				$nb_cat=mysql_num_rows($res_nb_cat);
+				//echo "\$nb_cat=$nb_cat<br />\n";
+
+				if($nb_cat_priorites!=$nb_cat) {
+					// Tester si les catégories de matières ont bien des priorités différentes au niveau Gestion des matières
+					// Si ce n'est pas le cas, produire une alerte et sortir
+
+					$sql="SELECT DISTINCT mc.priority ".
+					"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m, matieres_categories mc " .
+					"WHERE ( " .
+					"mc.id=jmcc.categorie_id AND ".
+					"jgc.categorie_id = jmcc.categorie_id AND " .
+					"jgc.id_classe=jmcc.classe_id AND " .
+					"jgc.id_classe='".$id_classe."' AND " .
+					"jgm.id_groupe=jgc.id_groupe AND " .
+					"m.matiere = jgm.id_matiere" .
+					");";
+					$res_nb_cat_priorites_glob=mysql_query($sql);
+					$nb_cat_priorites_glob=mysql_num_rows($res_nb_cat_priorites_glob);
+					//echo "\$nb_cat_priorites=$nb_cat_priorites<br />\n";
+
+					if($nb_cat_priorites_glob!=$nb_cat) {
+						if($mode_bulletin!="pdf") {
+							echo "<h1 align='center'>Erreur</h1>";
+							echo "<p>Vous avez demandé à afficher les catégories de matières, mais les priorités d'affichage des catégories ne sont pas correctement définies, ni au niveau global dans Gestion des matières, ni au niveau particulier dans Gestion des classes/&lt;Classe&gt; Enseignements<br />Il ne faut pas que deux catégories aient la même priorité sans quoi il peut survenir des anomalies d'ordre des matières sur le bulletin.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+						else {
+
+							$pdf=new bul_PDF('p', 'mm', 'A4');
+							$pdf->SetCreator($gepiSchoolName);
+							$pdf->SetAuthor($gepiSchoolName);
+							$pdf->SetKeywords('');
+							$pdf->SetSubject('Bulletin');
+							$pdf->SetTitle('Bulletin');
+							$pdf->SetDisplayMode('fullwidth', 'single');
+							$pdf->SetCompression(TRUE);
+							$pdf->SetAutoPageBreak(TRUE, 5);
+
+							$pdf->AddPage(); //ajout d'une page au document
+							$pdf->SetFont('Arial');
+							$pdf->SetXY(20,20);
+							$pdf->SetFontSize(14);
+							$pdf->Cell(90,7, "ERREUR",0,2,'');
+
+							$pdf->SetXY(20,40);
+							$pdf->SetFontSize(10);
+							$pdf->Cell(150,7, "Vous avez demandé à afficher les catégories de matières,",0,2,'');
+							$pdf->SetXY(20,45);
+							$pdf->Cell(150,7, "mais les priorités d'affichage des catégories ne sont pas correctement définies,",0,2,'');
+							$pdf->SetXY(20,50);
+							$pdf->Cell(150,7, "ni au niveau global dans Gestion des matières,",0,2,'');
+							$pdf->SetXY(20,55);
+							$pdf->Cell(150,7, "ni au niveau particulier dans Gestion des classes/<Classe> Enseignements",0,2,'');
+							$pdf->SetXY(20,65);
+							$pdf->Cell(150,7, "Il ne faut pas que deux catégories aient la même priorité",0,2,'');
+							$pdf->SetXY(20,70);
+							$pdf->Cell(150,7, "sans quoi il peut survenir des anomalies d'ordre des matières sur le bulletin.",0,2,'');
+
+							$nom_bulletin = 'Erreur_bulletin.pdf';
+							$pdf->Output($nom_bulletin,'I');
+							die();
+						}
+					}
+				}
+			}
+
 			//========================================
 
 
@@ -1505,6 +1599,9 @@ else {
 				flush();
 			}
 			//==============================
+
+			//echo "\$affiche_categories=$affiche_categories<br />";
+			// $affiche_categories=1
 
 			/*
 			$classe=get_class_from_id($id_classe);
@@ -2573,8 +2670,6 @@ On a aussi ajouté des champs dans la table 'classes' pour les relevés de notes,.
 	require("../lib/footer.inc.php");
 }
 elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
-	// On ajoute le bon en tête sur le type de document envoyé sinon FF3 se plante
-	header('Content-type: application/pdf');
 	//fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 	$nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
 	$pdf->Output($nom_bulletin,'I');
