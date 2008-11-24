@@ -34,12 +34,12 @@ header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 die();
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
-die();
-};
+	die();
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
-die();
+	die();
 }
 
 
@@ -71,6 +71,8 @@ if ($_SESSION['statut'] != "secours") {
 	}
 }
 
+$msg="";
+
 if (isset($_POST['is_posted'])) {
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
@@ -86,7 +88,9 @@ if (isset($_POST['is_posted'])) {
 		//=================================================
 		// AJOUT: boireaus 20080201
 		if(isset($_POST['app_grp_'.$k])){
-			if($current_group["classe"]["ver_periode"]['all'][$k]!=0){
+			//echo "\$current_group[\"classe\"][\"ver_periode\"]['all'][$k]=".$current_group["classe"]["ver_periode"]['all'][$k]."<br />";
+			//if($current_group["classe"]["ver_periode"]['all'][$k]!=0){
+			if(($current_group["classe"]["ver_periode"]['all'][$k]!=0)&&($current_group["classe"]["ver_periode"]['all'][$k]!=1)) {
 				if (isset($NON_PROTECT["app_grp_".$k])){
 					$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["app_grp_".$k]));
 				}
@@ -113,6 +117,9 @@ if (isset($_POST['is_posted'])) {
 						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour le groupe/classe<br />";}
 					}
 				}
+			}
+			else {
+				$msg.="Anomalie: Tentative de saisie d'une appréciation de classe alors que la période n'est pas ouverte en saisie.<br />";
 			}
 		}
 		//=================================================
@@ -173,9 +180,10 @@ if (isset($_POST['is_posted'])) {
 		}
 		$k++;
 	}
-// A partir de là, toutes les appréciations ont été sauvegardées proprement, on vide la table tempo
-$effacer = mysql_query("DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
-OR DIE('Erreur dans l\'effacement de la table temporaire (1) :'.mysql_error());
+
+	// A partir de là, toutes les appréciations ont été sauvegardées proprement, on vide la table tempo
+	$effacer = mysql_query("DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
+	OR die('Erreur dans l\'effacement de la table temporaire (1) :'.mysql_error());
 
 
 	/*
@@ -217,7 +225,10 @@ OR DIE('Erreur dans l\'effacement de la table temporaire (1) :'.mysql_error());
 		}
 	}
 	*/
-	$affiche_message = 'yes';
+
+	if($msg=="") {
+		$affiche_message = 'yes';
+	}
 }
 
 if (!isset($periode_cn)) $periode_cn = 0;
@@ -515,8 +526,10 @@ while ($k < $nb_periode) {
 	$mess[$k]="";
 	$mess[$k].="<td>".$moyenne_t[$k]."</td>\n";
 	$mess[$k].="<td>\n";
-	if ($current_group["classe"]["ver_periode"]['all'][$k] == 0){
-		$mess[$k].=htmlentities(nl2br($app_grp[$k]));
+	//if ($current_group["classe"]["ver_periode"]['all'][$k] == 0){
+	if(($current_group["classe"]["ver_periode"]['all'][$k] == 0)||($current_group["classe"]["ver_periode"]['all'][$k] == 1)) {
+		//$mess[$k].=htmlentities(nl2br($app_grp[$k]));
+		$mess[$k].=nl2br($app_grp[$k]);
 	}
 	else {
 		if(!isset($id_premier_textarea)) {$id_premier_textarea=$k.$num_id;}
