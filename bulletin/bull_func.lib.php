@@ -1031,6 +1031,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 	// Préparation des lignes d'adresse
 
+	//echo "\$i=$i et \$nb_bulletins=$nb_bulletins<br />";
+
 	// Initialisation:
 	for($loop=0;$loop<=1;$loop++) {
 		$tab_adr_ligne1[$loop]="";
@@ -1051,6 +1053,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		$tab_adr_ligne3[0]="";
 		$tab_adr_ligne4[0]="";
 		$tab_adr_ligne5[0]="";
+
+		// Initialisation parce qu'on a des blagues s'il n'y a pas de resp:
+		$nb_bulletins=1;
 	}
 	else {
 		if (isset($tab_bull['eleve'][$i]['resp'][1])) {
@@ -1227,6 +1232,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		}
 	}
 	//=========================================
+
+	//echo "\$i=$i et \$nb_bulletins=$nb_bulletins<br />";
 
 	//+++++++++++++++++++++++++++++++++++++++++++
 	// A FAIRE
@@ -1857,6 +1864,17 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				//fwrite($fich,"\$tab_bull['groupe'][$j]['matiere']['matiere']=".$tab_bull['groupe'][$j]['matiere']['matiere']." ");
 				//fwrite($fich,"\$tab_bull['note'][$j][$i]=".$tab_bull['note'][$j][$i]."\n");
 				$nb_matiere++;
+
+
+				// Si les catégories doivent être affichées, il faut réordonner les matières pour ne pas avoir:
+				//     LIT
+				//     SCI
+				//     AUT
+				//     LIT à nouveau
+				// Sinon, les calculs de hauteur sont faussés et ça ne permet pas d'avoir des ordres très différents avec et sans catégories
+				// Il vaudrait mieux refaire ce tri au départ, avant d'être dans les boucles élèves
+
+
 			}
 		}
 		//fclose($fich);
@@ -2290,7 +2308,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 											$valeur = "-";
 										} else {
 											//$calcule_moyenne_eleve_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_eleve']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
-											$valeur = present_nombre($tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$m]], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+											$valeur = present_nombre(ereg_replace(",",".",$tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$m]]), $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 										}
 										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',8);
 										$pdf->SetFillColor($tab_modele_pdf["couleur_reperage_eleve1"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve2"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve3"][$classe_id]);
