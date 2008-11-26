@@ -108,7 +108,7 @@ header('Content-Type: text/html; charset:utf-8');
 </div>
   ';
 
-if ($type_req != $_id) {{
+if ($type_req != $_id) {
   // Cas où l'utilisateur veut ajouter une entrée dans la base
 
   echo '&ccedil;a marche un peu : ' . utf8_encode($_id);
