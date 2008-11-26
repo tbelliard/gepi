@@ -336,15 +336,24 @@ if (isset($titre_page)) {
 	
     // Affichage de la version de Gepi
 	if ($_SESSION['statut'] == "administrateur") {
-		$rc = null;
-		$beta = null;
-		if ($gepiRcVersion != '') $rc = "-RC".$gepiRcVersion;
-		if ($gepiBetaVersion != '') $beta = "-beta".$gepiBetaVersion;
+        $version_gepi = '';
+        if ($gepiVersion == 'trunk') {
+            // On a une version trunk
+            $version_gepi .= "gepi-trunk";
+        } else {
+            // On a une version numérotée
+            $version_gepi .= "v".$gepiVersion;
+            if ($gepiRcVersion != '') $version_gepi .= "-RC".$gepiRcVersion;
+            if ($gepiBetaVersion != '') $version_gepi .= "-beta".$gepiBetaVersion;
+            if ($gepiVersionMaintenance != '') $version_gepi .= ".".$gepiVersionMaintenance;
+        }
+        if ($gepiSvnRev != '') $version_gepi .= " r".$gepiSvnRev;
+
 		echo "<div id='version_gepi'";
 		//if($_SESSION['cacher_header']=="y"){
 			echo " style='margin-left:22px;'";
 		//}
-		echo ">v".$gepiVersion.$rc.$beta."</div>";
+		echo ">".$version_gepi."</div>";
 	}
 // Initialisation du bandeau à la bonne couleur
 	echo "<script type='text/javascript'>

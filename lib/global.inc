@@ -124,8 +124,11 @@ $couleur_cellule_gen = "#F6F7EF";
 
 // Version de GEPI
 $gepiVersion = "1.5.2";
+$gepiVersionMaintenance = "";
 $gepiRcVersion = "";
 $gepiBetaVersion = "";
+$gepiSvnRev = "";   // Cette variable est utilisée par le système de packaging
+                    // automatique du site web de Gepi.
 
 // Forcer l'utilisation du module de gestion des absences au quoditien
 //
