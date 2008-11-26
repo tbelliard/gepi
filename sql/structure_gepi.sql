@@ -24,11 +24,11 @@ CREATE TABLE `cn_notes_conteneurs` ( `login` varchar(50) NOT NULL default '', `i
 DROP TABLE IF EXISTS `cn_notes_devoirs`;
 CREATE TABLE `cn_notes_devoirs` ( `login` varchar(50) NOT NULL default '', `id_devoir` int(11) NOT NULL default '0', `note` float(10,1) NOT NULL default '0.0', `comment` text NOT NULL, `statut` varchar(4) NOT NULL default '', PRIMARY KEY  (`login`,`id_devoir`));
 DROP TABLE IF EXISTS `ct_devoirs_entry`;
-CREATE TABLE `ct_devoirs_entry` ( `id_ct` int(11) NOT NULL auto_increment, `id_groupe` INT(11) NOT NULL, `date_ct` int(11) NOT NULL default '0', `id_login` varchar(32) NOT NULL default '', `contenu` text NOT NULL, `vise` CHAR( 1 ) NOT NULL DEFAULT 'n', KEY `id_ct` (`id_ct`,`id_groupe`));
+CREATE TABLE `ct_devoirs_entry` ( `id_ct` int(11) NOT NULL auto_increment, `id_groupe` INT(11) NOT NULL, `date_ct` int(11) NOT NULL default '0', `id_login` varchar(32) NOT NULL default '', `contenu` text NOT NULL, `vise` CHAR( 1 ) NOT NULL DEFAULT 'n', PRIMARY KEY `id_ct`, KEY `id_groupe` (`id_groupe`));
 DROP TABLE IF EXISTS `ct_documents`;
 CREATE TABLE `ct_documents` ( `id` int(11) NOT NULL auto_increment, `id_ct` int(11) NOT NULL default '0', `titre` varchar(255) NOT NULL default '', `taille` int(11) NOT NULL default '0', `emplacement` varchar(255) NOT NULL default '', PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS `ct_entry`;
-CREATE TABLE `ct_entry` ( `id_ct` int(11) NOT NULL auto_increment, `heure_entry` time NOT NULL default '00:00:00', `id_groupe` INT(11) NOT NULL, `date_ct` int(11) NOT NULL default '0', `id_login` varchar(32) NOT NULL default '', `contenu` text NOT NULL, `vise` CHAR( 1 ) NOT NULL DEFAULT 'n', `visa` CHAR( 1 ) NOT NULL DEFAULT 'n', KEY `id_ct` (`id_ct`, `id_groupe`));
+CREATE TABLE `ct_entry` ( `id_ct` int(11) NOT NULL auto_increment, `heure_entry` time NOT NULL default '00:00:00', `id_groupe` INT(11) NOT NULL, `date_ct` int(11) NOT NULL default '0', `id_login` varchar(32) NOT NULL default '', `contenu` text NOT NULL, `vise` CHAR( 1 ) NOT NULL DEFAULT 'n', `visa` CHAR( 1 ) NOT NULL DEFAULT 'n', PRIMARY KEY `id_ct`, KEY `id_groupe` (`id_groupe`));
 DROP TABLE IF EXISTS `ct_types_documents`;
 CREATE TABLE `ct_types_documents` ( `id_type` bigint(21) NOT NULL auto_increment, `titre` text NOT NULL, `extension` varchar(10) NOT NULL default '', `upload` enum('oui','non') NOT NULL default 'oui', PRIMARY KEY  (`id_type`), UNIQUE KEY `extension` (`extension`));
 DROP TABLE IF EXISTS `droits`;
