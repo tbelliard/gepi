@@ -132,7 +132,8 @@ function affSelectEleves($liste_eleves, $options = NULL){
     $aff_classe = isset($options["classe"]) ? $options["classe"] : 'fin';
     $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdEleve';
     $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">'.$options["label"].'</label>' : '';
-    $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."')" : '';
+    $_url = isset($options["url"]) ? $options["url"] : NULL;
+    $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."', '".$_url."')" : '';
     $aff_event = isset($options["event"]) ? ' on'.$options["event"].'="'.$method_event.'"' : '';
 
 
@@ -213,7 +214,8 @@ function affSelectClasses($options = NULL){
   $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdClasses';
   $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">' . $options["label"] . '</label>' : '';
   $_width = isset($options["width"]) ? ' style="width: ' . $options["width"] . ';"' : '';
-  $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."')" : '';
+  $_url = isset($options["url"]) ? $options["url"] : NULL;
+  $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."', '".$_url."')" : '';
   $aff_event = isset($options["event"]) ? ' on'.$options["event"].'="'.$method_event.'"' : '';
 
   $retour =
@@ -246,7 +248,8 @@ function affSelectAid($options = NULL){
   $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdAid';
   $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">' . $options["label"] . '</label>' : '';
   $_width = isset($options["width"]) ? ' style="width: ' . $options["width"] . ';"' : '';
-  $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."')" : '';
+  $_url = isset($options["url"]) ? $options["url"] : NULL;
+  $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."', '".$_url."')" : '';
   $aff_event = isset($options["event"]) ? ' on'.$options["event"].'="'.$method_event.'"' : '';
 
   $retour =
@@ -285,7 +288,8 @@ function affSelectEnseignements($options = NULL){
   $_id = isset($options["id"]) ? ' id="' . $options["id"] . '"' : 'listeIdGroupes';
   $aff_label = isset($options["label"]) ? '<label for="' . $_id . '">' . $options["label"] . '</label>' : '';
   $_width = isset($options["width"]) ? ' style="width: ' . $options["width"] . ';"' : '';
-  $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."')" : '';
+  $_url = isset($options["url"]) ? $options["url"] : NULL;
+  $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."', '".$_url."')" : '';
   $aff_event = isset($options["event"]) ? ' on'.$options["event"].'="'.$method_event.'"' : '';
 
   $retour =

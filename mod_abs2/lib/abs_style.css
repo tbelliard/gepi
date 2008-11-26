@@ -1,0 +1,12 @@
+.abs_menu span {
+width: 50px; padding: 2px 20px 2px 20px; background-color: silver; margin-left: 10%;
+}
+.abs_menu span:hover {
+background-color: grey; cursor: pointer;
+}
+#aff_result {
+background-color: lightblue;
+}
+.lienWeb{
+color: blue; cursor: pointer;
+}

@@ -45,7 +45,7 @@ $_SESSION["type_aff_abs"] = isset($_SESSION["type_aff_abs"]) ? $_SESSION["type_a
 $_SESSION["type_aff_abs"] = (isset($_GET["type_aff_abs"]) AND ($_GET["type_aff_abs"] == 'alpha' OR $_GET["type_aff_abs"] == 'classe'))
                             ? $_GET["type_aff_abs"] : $_SESSION["type_aff_abs"];
 
-debug_var();
+
 // ============== Code métier ===============================
 include("absences.class.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
@@ -56,7 +56,7 @@ try{
   // le tableau des élèves en vue de son affichage sous différentes formes
   $options = array('classes'=>'toutes', 'eleves'=>$_SESSION["type_aff_abs"]);
   $liste_eleves = ListeEleves($options);
-  $reglages = array('classe'=>"debut", 'label'=>'Elève (nom)', 'event'=>'change', 'method_event'=>'gestionaffAbs');
+  $reglages = array('classe'=>"debut", 'label'=>'Elève (nom)', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php');
 
 
 }catch(exception $e){
@@ -67,6 +67,7 @@ try{
 $javascript_specifique = "mod_abs2/lib/absences_ajax";
 $titre_page = "Saisir les absences";
 require_once("../lib/header.inc");
+$menu = 'saisir';
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
 
@@ -83,13 +84,13 @@ require("lib/abs_menu.php");
       <?php echo affSelectEleves($liste_eleves, $reglages); ?>
     </p>
     <p style="text-align: right;">
-      <?php echo affSelectClasses(array('label'=>'Classes', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs')); ?>
+      <?php echo affSelectClasses(array('label'=>'Classes', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php')); ?>
     </p>
     <p style="text-align: right;">
-      <?php echo affSelectEnseignements(array('label'=>'Enseignements', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs')); ?>
+      <?php echo affSelectEnseignements(array('label'=>'Enseignements', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php')); ?>
     </p>
     <p style="text-align: right;">
-      <?php echo affSelectAid(array('label'=>'Par AID', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs')); ?>
+      <?php echo affSelectAid(array('label'=>'Par AID', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php')); ?>
     </p>
 
     <p style="position: relative; margin-left: 1%;">
@@ -107,4 +108,4 @@ require("lib/abs_menu.php");
 </div>
 
 
-<?php require("../lib/footer.inc.php"); ?>
+<?php require("../lib/footer.inc.php"); debug_var(); ?>

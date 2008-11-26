@@ -30,13 +30,40 @@ if (!$_SESSION["login"]) {
     die();
 }
 
+// On permet de modifier la couleur du menu pour savoir où on est
+$menu = isset($menu) ? $menu : '';
+$aff_saisir = $aff_suivre = $aff_envoyer = $aff_stats = $aff_exporter = $aff_parametrer = NULL;
+switch($menu){
+  case 'saisir':
+    $aff_saisir = ' style="background-color: red;"';
+    break;
+  case 'suivre':
+    $aff_suivre = ' style="background-color: red;"';
+    break;
+  case 'envoyer':
+    $aff_envoyer = ' style="background-color: red;"';
+    break;
+  case 'stats':
+    $aff_stats = ' style="background-color: red;"';
+    break;
+  case 'exporter':
+    $aff_exporter = ' style="background-color: red;"';
+    break;
+  case 'parametrer':
+    $aff_parametrer = ' style="background-color: red;"';
+    break;
+  default:
+    $aff_saisir = $aff_suivre = $aff_envoyer = $aff_stats = $aff_exporter = $aff_parametrer = NULL;;
+} // switch
+
 echo '
 	<ol id="essaiMenu">
-    <li><a href="saisir_absences.php">Saisie</a></li>
-		<li><a href="suivi_absences.php">Suivi</a></li>
-		<li><a href="envoi_absences.php">Envoi aux familles</a></li>
-		<li><a href="stats_absences.php">Statistiques</a></li>
-		<li><a href="exports_absences.php">Exports</a></li>
+    <li' . $aff_saisir . '><a href="saisir_absences.php">Saisie</a></li>
+		<li' . $aff_suivre . '><a href="suivi_absences.php">Suivi</a></li>
+		<li' . $aff_envoyer . '><a href="envoi_absences.php">Envoi aux familles</a></li>
+		<li' . $aff_stats . '><a href="stats_absences.php">Statistiques</a></li>
+		<li' . $aff_exporter . '><a href="exports_absences.php">Exports</a></li>
+		<li' . $aff_parametrer . '><a href="parametrage_absences.php">Paramètres</a></li>
 	</ol>
 	';
 ?>
