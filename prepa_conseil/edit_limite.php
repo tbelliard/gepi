@@ -190,6 +190,7 @@ if ($choix_edit == '2') {
 }
 
 if ($choix_edit != '2') {
+	// Si on arrive là, on n'est ni élève, ni responsable
 
 	//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 	if ($_SESSION['statut'] == "professeur" AND
@@ -224,8 +225,8 @@ if ($choix_edit != '2') {
 	    // On sélectionne sans restriction
 
 		// A REVOIR: l'ajout de !isset($login_prof) est destiné à éviter une erreur en compte scolarité... il me semble
-	    if ($choix_edit == '1') {
-	    //if (($choix_edit == '1')||(!isset($login_prof))) {
+	    //if ($choix_edit == '1') {
+	    if (($choix_edit == '1')||(!isset($login_prof))) {
 	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
 	        		"FROM eleves e, j_eleves_classes c " .
 	        		"WHERE (" .
