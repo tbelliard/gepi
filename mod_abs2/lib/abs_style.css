@@ -10,3 +10,15 @@ background-color: lightblue;
 .lienWeb{
 color: blue; cursor: pointer;
 }
+.ok{
+color: green;
+}
+.no{
+color: red;
+}
+#presentations{
+padding: 10px 5px 10px 5px; witdh: 200px;
+}
+#presentations td{
+padding: 10px 5px 10px 5px; background-color: silver; color: white; font-weight: bold; text-align: center;
+}

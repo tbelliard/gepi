@@ -46,12 +46,36 @@ $type_req = isset($_POST["type"]) ? $_POST["type"] : NULL;
 $_table = $_champ = NULL;
 $_id = isset($_POST["_id"]) ? $_POST["_id"] : NULL;
 $prefix = 'abs_';
+$ajouter = $modifier = $effacer = NULL;
+$action = 'ajouter';
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("lib/erreurs.php");
 include("classes/abs_gestion.class.php");
 
+
 try{
+
+  // On vérifie l'état de la variable $type_req
+  if (substr($type_req, 0, 7) == "effacer") {
+    // Alors on explose $_id en deux et on requalifie $type_req pour la suite du script
+    $testons_id = explode("|||", $_id);
+
+    if (count($testons_id) == 2 AND is_numeric($testons_id[1])) {
+
+      $type_req = $testons_id[0];
+      $del_id   = $testons_id[1];
+      $action = "effacer";
+      //echo "<br /> _id = " . $_id . "<br />del_id = " . $del_id . "<br />type_req = " . $type_req; exit();
+
+    }else{
+
+      // On ne fait rien mais une exception sera levée car $type_req ne passera pas le switch
+      throw new Exception("Il manque des informations pour aller au bout de la demande : impossible de supprimer cette entr&eacute;e.||" . $testons_id[1] . "+" . $testons_id[0]);
+
+    }
+  }
+
   switch($type_req){
     case 'types':
     $_table = $prefix . $type_req;
@@ -74,9 +98,37 @@ try{
   } // switch
 
   $test = new abs_gestion();
-  $test->getChamps($_champ);
-  $test->getTable($_table);
-  $aff = $test->voirTout();
+  $test->setChamps($_champ); // on donne le nom du champ de cette table (définie ci-dessous)
+  $test->setTable($_table); // On choisit la bonne table
+  $test->setEncodage("utf8"); // On précise l'encodage s'il est différent de l'ISO-8859-1
+
+  if ($type_req != $_id AND $action == 'ajouter') {
+
+    // On est dans le cas d'une demande d'ajout dans la base
+    if ($test->_saveNew($_id)) {
+      $ajouter = 'ok';
+    }else{
+      $ajouter = 'no';
+    }
+
+  }elseif($type_req != $_id AND $action == 'effacer'){
+
+    if ($test->_deleteById($del_id)) {
+      $effacer = 'ok';
+    }else{
+      $effacer = 'no';
+    }
+
+  }
+
+  $tout = $test->voirTout(); // on liste toutes les entrées de la table $_table.
+
+/*
+  echo '<pre>';
+  print_r($tout);
+  echo '</pre>';
+*/
+
 
 }catch(exception $e){
   // Cette fonction est présente dans /lib/erreurs.php
@@ -85,33 +137,57 @@ try{
 // On précise l'entête HTML pour que le navigateur ne se perde pas .
 header('Content-Type: text/html; charset:utf-8');
 
+?>
+<table id="presentations">
 
+  <tr>
+    <th><?php echo $type_req; ?></th>
+    <th>Effacer</th>
+  </tr>
 
+  <?php foreach($tout as $aff): ?>
+    <?php $effacer_id = 'effacer' . $aff->id ; ?>
+    <tr>
+      <td><?php echo $aff->$_champ; ?></td>
+      <td>
+        <input type="hidden" name="effacer" id="<?php echo $effacer_id; ?>" value="<?php echo $type_req.'|||'.$aff->id ; ?>" />
+        <img src="../images/icons/delete.png" alt="effacer" title="Effacer" onclick="gestionaffAbs('aff_result', '<?php echo $effacer_id; ?>', 'parametrage_ajax.php');" /><?php ?></td>
+    </tr>
+
+  <?php endforeach; ?>
+
+</table>
+
+<?php
   // Cas où l'utilisateur vient de choisir ce qu'il veut afficher : types, actions, motifs et justifications
 
   echo '
 
   <p onclick="afficherDiv(\'ajouterEntree\');" class="lienWeb">Ajouter des ' .$type_req . '</p>
 
-<div id="ajouterEntree" style="display: none;">Ajouter une entr&eacute;e dans la base
+<div id="ajouterEntree" style="display: none;">
 
-  <form action="#" method="post" id="testForm">
+  <p>Ajouter une entr&eacute;e dans la base</p>
+
+
 
     <label for="' . $type_req . '">Entrez un ' . str_replace('s', '', $type_req) . ' :</label>
-    <input type="text" id="' . $type_req . '" name="nom" value="" />
+    <input onkeydown="func_KeyDown(event, \'1\', \'' . $type_req . '\');" type="text" id="' . $type_req . '" name="nom" value="" />
     <p onclick="gestionaffAbs(\'aff_result\', \'' . $type_req . '\', \'parametrage_ajax.php\');" class="lienWeb">Enregistrer</p>
 
-  </form>
-
-  <div id="reponse"></div>
+' . $effacer . '
 
 </div>
   ';
 
-if ($type_req != $_id) {
+if ($ajouter == 'ok') {
   // Cas où l'utilisateur veut ajouter une entrée dans la base
 
-  echo '&ccedil;a marche un peu : ' . utf8_encode($_id);
+  echo '<p class="ok">' . $type_req . ' en plus : ' . utf8_encode($_id) . '<p>';
+
+}elseif($ajouter == 'no'){
+
+  echo '<p class="no">Impossible d\'enregistrer "' . utf8_encode($_id) . '"<p>';
 
 }
 

@@ -39,6 +39,8 @@ class abs_gestion{
   private $_table = NULL;
   private $_champ = NULL;
 
+  private $_encode = 'ISO-8859-1';
+
   /**
    * Constructor
    * @access protected
@@ -47,23 +49,32 @@ class abs_gestion{
 
   }
 
-  public function getTable($table){
+  public function setTable($table){
     $this->_table = $table;
   }
 
-  public function getChamps($champs){
+  public function setChamps($champs){
     $this->_champs = $champs;
+  }
+
+  public function setEncodage($encode){
+    if ($encode == "utf8") {
+      $this->_encode = $encode;
+    }else{
+      throw new Exception("L'encodage demandé n'est pas valide pour Gepi. ||" . $encode);
+    }
+
   }
 
   public function voirTout(){
     if (!isset($this->_table)) {
-      throw new Exception(utf8_encode('La table de la bdd n\'est pas définie ou n\'existe pas'));
+      throw new Exception(utf8_encode('La table de la bdd n\'est pas d&eacute;finie ou n\'existe pas'));
     }else{
 
       $sql = "SELECT * FROM " . $this->_table;
       if ($query = $GLOBALS["cnx"]->query($sql)) {
 
-
+        return $query->fetchALL(PDO::FETCH_OBJ);
 
       }else{
         throw new Exception(utf8_encode("Impossible de lire la table " . $this->_table . "||" . $sql));
@@ -75,11 +86,41 @@ class abs_gestion{
   public function voirById($_id){
 
     if (!isset($this->_champ) OR !isset($this->_table)) {
-      throw new Exception(utf8_encode('La table et son champs n\'ont pas été définis ou n\'existent pas'));
+      throw new Exception(utf8_encode('La table et son champs n\'ont pas &eacute;t&eacute; d&eacute;finis ou n\'existent pas'));
     }else{
 
       $sql = "SELECT " . $this->_champ . " FROM " . $this->_table . " WHERE id = '" . $_id . "'";
 
+    }
+
+  }
+
+  public function _saveNew($new){
+
+    $insert_new = $this->_encode == 'utf8' ? utf8_decode($new) : $new;
+
+    $sql = "INSERT INTO " . $this->_table . " (" . $this->_champs . ") VALUES ('" . $insert_new . "')";
+
+    if ($insert = $GLOBALS["cnx"]->exec($sql)) {
+      return $insert;
+    }else{
+      throw new Exception('Erreur dans la requ&ecirc;te SQL ||' . $sql);
+    }
+
+  }
+
+  public function _deleteById($_id){
+
+    if (!is_numeric($_id)) {
+      return FALSE;
+    }
+
+    $sql = "DELETE FROM " . $this->_table . " WHERE id = '" . $_id . "' LIMIT 1";
+
+    if ($delete = $GLOBALS["cnx"]->exec($sql)) {
+      return $delete;
+    }else{
+      throw new Exception('Erreur dans la requ&ecirc;te SQL ||' . $sql);
     }
 
   }
