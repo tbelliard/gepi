@@ -291,8 +291,10 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 
 		if($tab_bull['affiche_rang']=='y') {
 			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>";
-			if(isset($tab_bull['rang'][$i][$j])) {
-				echo $tab_bull['rang'][$i][$j]."/".$tab_bull['groupe'][$j]['effectif'];
+			//if(isset($tab_bull['rang'][$i][$j])) {
+				//echo $tab_bull['rang'][$i][$j]."/".$tab_bull['groupe'][$j]['effectif'];
+			if(isset($tab_bull['rang'][$j][$i])) {
+				echo $tab_bull['rang'][$j][$i]."/".$tab_bull['groupe'][$j]['effectif_avec_note'];
 			}
 			else {
 				echo "-";

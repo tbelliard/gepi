@@ -1344,6 +1344,8 @@ else {
 			unset($moy_max_classe_grp);
 			unset($current_eleve_rang);
 
+			unset($current_group_effectif_avec_note);
+
 			unset($current_eleve_app);
 			//============================
 
@@ -1784,6 +1786,8 @@ else {
 					// On pourrait utiliser count($tab_bulletin[$id_classe][$periode_num]['groupe'][$j]["eleves"][$key]["list"])
 					// avec $key=$periode_num
 					$tab_bulletin[$id_classe][$periode_num]['groupe'][$j]['effectif']=count($tab_bulletin[$id_classe][$periode_num]['groupe'][$j]["eleves"][$periode_num]["list"]);
+
+					$tab_bulletin[$id_classe][$periode_num]['groupe'][$j]['effectif_avec_note']=$current_group_effectif_avec_note[$j];
 				}
 			}
 

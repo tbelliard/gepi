@@ -239,6 +239,21 @@ while ($j < $nombre_groupes) {
 */
 	calc_moy_debug("\$current_classe_matiere_moyenne[$j]=$current_classe_matiere_moyenne[$j]\n");
 
+	//===================================
+	// Effectif du groupe pour le rang:
+    $sql="SELECT 1=1
+        FROM matieres_notes
+        WHERE (
+        statut ='' AND
+        id_groupe='".$current_group[$j]["id"]."' AND
+        periode='$periode_num'
+        )
+        ";
+	calc_moy_debug("$sql\n");
+	$req_current_group_effectif_avec_note = mysql_query($sql);
+	$current_group_effectif_avec_note[$j] = mysql_num_rows($req_current_group_effectif_avec_note);
+	//===================================
+
     // Calcul de la moyenne des élèves et de la moyenne de la classe
     $i=0;
 	//======================================
@@ -330,6 +345,7 @@ while ($j < $nombre_groupes) {
             periode='$periode_num' AND
             id_groupe='".$current_group[$j]["id"]."'
             )";
+			//if($current_eleve_login[$i]=="ALLAIX_N") {echo "$sql<br />";}
 			calc_moy_debug("$sql\n");
 			//echo "$sql<br />";
 			$current_eleve_note_query = mysql_query($sql);
@@ -385,6 +401,8 @@ while ($j < $nombre_groupes) {
 
 			if ((isset($affiche_rang))&&($affiche_rang=='y')) {
 				$current_eleve_rang[$j][$i] = @mysql_result($current_eleve_note_query, 0, "rang");
+				if(($current_eleve_rang[$j][$i]==0)||($current_eleve_rang[$j][$i]=="-1")) {$current_eleve_rang[$j][$i]="-";}
+				//if($current_eleve_login[$i]=="ALLAIX_N") {echo "\$current_eleve_rang[$j][$i]=".$current_eleve_rang[$j][$i]."<br />";}
 			}
 
 			//======================================
@@ -604,5 +622,6 @@ for ( $i=0 ; $i < sizeof($moy_gen_eleve) ; $i++ ) {
 //     - $current_eleve_rang[$j][$i] sous réserve que $affiche_rang=='y'
 //     - $quartile1_grp[$j] à $quartile6_grp[$j]
 //     - $place_eleve_grp[$j][$i]
+//     - $current_group_effectif_avec_note[$j] pour le nombre de "vraies" moyennes pour le rang (pas disp, abs,...)
 
 ?>
