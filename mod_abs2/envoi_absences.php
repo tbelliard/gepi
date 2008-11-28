@@ -44,12 +44,21 @@ if ($resultat_session == 'c') {
 
 
 // ============== Code métier ===============================
-include("absences.class.php");
+include("classes/courrier_ooo.class.php");
 include("lib/erreurs.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
 
 
 try{
+
+  if ($action == "odt") {
+    $odf = new odfDoc("test.odt");
+    $odf->setVars("{titre1}", "Premier titre pour voir ;)");
+    $odf->setVars("{titre2}", "deuxième titre avec un accent pour voir aussi");
+    $odf->save("fichierResultat.odt");
+    $odf->versNavigateur();
+  }
+
 
 }catch(exception $e){
   affExceptions($e);

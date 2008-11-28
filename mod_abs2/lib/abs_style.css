@@ -22,3 +22,6 @@ padding: 10px 5px 10px 5px; witdh: 200px;
 #presentations td{
 padding: 10px 5px 10px 5px; background-color: silver; color: white; font-weight: bold; text-align: center;
 }
+._center td{
+text-align: center; border: 1px solid pink;
+}

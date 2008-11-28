@@ -135,11 +135,14 @@ function affSelectEleves($liste_eleves, $options = NULL){
     $_url = isset($options["url"]) ? $options["url"] : NULL;
     $method_event = isset($options["method_event"]) ? $options["method_event"]."('aff_result', '".$_id."', '".$_url."')" : '';
     $aff_event = isset($options["event"]) ? ' on'.$options["event"].'="'.$method_event.'"' : '';
+    $aff_multiple = (isset($options["multiple"]) AND $options["multiple"] == 'on') ? ' multiple="multiple"' : NULL;
+    $aff_multiple_name = (isset($options["multiple"]) AND $options["multiple"] == 'on') ? '[]' : NULL;
+    $aff_size = isset($options["size"]) ? ' size="'.$options["size"].'"' : NULL;
 
 
     $retour =
     $aff_label . '
-    <select name="choix_eleve" id="' . $_id . '"' . $aff_event . '>
+    <select name="choix_eleve'.$aff_multiple_name.'" id="' . $_id . '"' . $aff_event . $aff_multiple . $aff_size . '>
       <option value="r">-- -- -- --</option>';
 
     $nbre = count($liste_eleves);

@@ -47,7 +47,7 @@ class odfDoc{
 	                       PCLZIP_OPT_PATH, $aff_fichiers[9]['stored_filename']) == 0) { //de l'archive dans le dossier archive (id unique)
       echo "ERROR : ".$zip->errorInfo(true);
      }
-A REVOIR DE PLUS PRES
+
       /*
       echo '<pre>';
       print_r($aff_fichiers);
@@ -110,17 +110,6 @@ A REVOIR DE PLUS PRES
       // A faire si on en a besoin
 
     }
-}
-
-
-try{
-   $odf = new odfDoc("test.odt");
-   $odf->setVars("{titre1}", "Premier titre pour voir ;)");
-   $odf->setVars("{titre2}", "deuxième titre avec un accent pour voir aussi");
-   $odf->save("fichierResultat.odt");
-   $odf->versNavigateur();
-}catch(exception $e){
-  echo $e->getMessage();
 }
 
 ?>

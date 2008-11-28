@@ -44,6 +44,8 @@ if ($resultat_session == 'c') {
 $_id = isset($_POST["_id"]) ? $_POST["_id"] : NULL;
 $type = isset($_POST["type"]) ? $_POST["type"] : NULL;
 $_ok = 'oui';
+$aff_coche = '';
+$test_aff_fiche = "ok";
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("absences.class.php");
@@ -51,6 +53,13 @@ include("helpers/aff_listes_utilisateurs.inc.php");
 include("lib/erreurs.php");
 
 try{
+
+  // On teste $_id pour savoir s'il renvoie qu'un seul numéro d'élève ou plusieurs
+  $test_id = explode(",", $_id);
+  $test_nbre = count($test_id);
+  if ($test_nbre >= 2) {
+    $test_aff_fiche = 'no'; // Il y a plus d'un élève appelé, donc, pas de fiche élève
+  }
 
   $test_type = substr($type, 7); // permet de savoir quel type d'info il faut renvoyer
   switch($test_type){
@@ -72,12 +81,23 @@ try{
   } // switch
 
   if ($_ok == 'oui') {
-    $aff_liste = ListeEleves(array('classes'=>$liste));
+    $aff_liste[0] = ListeEleves(array('classes'=>$liste));
   }else{
-    // Il s'agit d'afficher les infos sur un élève
-    $aff_liste = infosEleve($liste);
+    // On vérifie le nombre d'_id envoyés
+    if ($test_aff_fiche == 'no') {
+      // Il y a plus d'un élève à afficher
+      for($i = 0 ; $i < $test_nbre ; $i++){
+
+        // On charge les fiches de tous ces élèves pour l'affichage
+        $aff_liste[$i] = infosEleve($test_id[$i]);
+        $aff_coche = ' checked="checked"'; // pour cocher par défaut l'absence de tous ces élèves sur la journée
+
+      }
+    }
+    // Il s'agit d'afficher les infos sur un seul élève pour l'affichage
+    $aff_liste[0] = infosEleve($liste);
   }
-//print_r($aff_liste);echo'fraise';exit();
+
 
 
 }catch(exception $e){
@@ -87,26 +107,31 @@ try{
 // On précise l'entête HTML pour que le navigateur ne se perde pas .
 header('Content-Type: text/html; charset:utf-8');
 ?>
-<br />
-<div style="border: 1px solid grey; height: 100%; padding: 10px; background-color: #99FFFF;">
+
+<div id="div_saisie_abs" style="border: 1px solid grey; height: 200%; margin: 5px 5px 5px 5px; padding: 5px 5px 5px 5px; background-color: #99FFFF;">
 
   <form method="post" action="saisir_absences.php">
 
     <p><input type="hidden" name="action" value="eleves" /></p>
-    <p><input type="submit" name="enregistrer_absences" value="Enregistrer" /></p>
-    <table>
-      <tr><th>id_eleve</th><th>Nom Pr&eacute;nom</th><th>Saisie de l'absence</th></tr>
+    <p><input type="submit" name="enregistrer_absences" value="Enregistrer" /> - <?php echo $test_type; ?></p>
+    <table class="_center">
+      <tr><th>id_eleve</th><th>Nom Pr&eacute;nom</th><th>Abs. Journ.</th><th>D&eacute;but</th><th>Fin</th><th>Justification</th><th>Motif</th></tr>
 
       <?php foreach($aff_liste as $tab): ?>
+
+        <?php foreach($tab as $aff_tab): ?>
         <tr>
-          <td><?php echo $tab->id_eleve; ?></td>
-          <td><label for="el<?php echo $tab->id_eleve; ?>"><?php echo utf8_encode($tab->nom) . ' ' . utf8_encode($tab->prenom); ?></label></td>
-          <td>
-              <table><tr>
-                  <td><input type="checkbox" name="_eleve[]" id="el<?php echo $tab->id_eleve; ?>" value="<?php echo $tab->id_eleve; ?>" /></td>
-              </tr></table>
-          </td>
+
+          <td><?php echo $aff_tab->id_eleve; ?></td>
+          <td><label for="el<?php echo $aff_tab->id_eleve; ?>"><?php echo utf8_encode($aff_tab->nom) . ' ' . utf8_encode($aff_tab->prenom); ?></label></td>
+          <td><input type="checkbox" name="_eleve[]" id="el<?php echo $aff_tab->id_eleve; ?>" value="<?php echo $aff_tab->id_eleve; ?>"<?php echo $aff_coche; ?> /></td>
+          <td><select name="deb"><option value="m1">M1</option><option value="m2">M2</option><option value="m3">M3</option></select></td>
+          <td><select name="fin"><option value="m1">M1</option><option value="m2">M2</option><option value="m3">M3</option></select></td>
+          <td><?php echo 'justif.'; ?></td>
+          <td><?php echo 'motif.'; ?></td>
+
         </tr>
+      <?php endforeach; ?>
       <?php endforeach; ?>
 
     </table>
@@ -114,8 +139,9 @@ header('Content-Type: text/html; charset:utf-8');
     <p><input type="submit" name="enregistrer_absences" value="Enregistrer" /></p>
 
   </form>
-<?php /* A partir d'ici, on affiche la fiche de l'élève si on la demande */
-if (isset($aff_liste[0]->fiche_eleve)) { ?>
+
+<?php /* A partir d'ici, on affiche la fiche de l'élève si on la demande (uniquement dans le cas où un seul élève est demandé */
+if (isset($aff_liste[0]->fiche_eleve) AND $test_aff_fiche == 'ok') { ?>
   <hr style="width: 1000px;" />
   <!-- fiche des responsables -->
   <div id="responsables_eleve" style="position: absolute; margin-left: 520px; width: 600px; background-color: lightblue;">

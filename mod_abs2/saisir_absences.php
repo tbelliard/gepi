@@ -56,7 +56,7 @@ try{
   // le tableau des élèves en vue de son affichage sous différentes formes
   $options = array('classes'=>'toutes', 'eleves'=>$_SESSION["type_aff_abs"]);
   $liste_eleves = ListeEleves($options);
-  $reglages = array('classe'=>"debut", 'label'=>'Elève (nom)', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php');
+  $reglages = array('classe'=>"debut", 'label'=>'Elève (nom)', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php', 'multiple'=>'on', 'size'=>'10');
 
 
 }catch(exception $e){
@@ -65,6 +65,7 @@ try{
 }
 //**************** EN-TETE *****************
 $javascript_specifique = "mod_abs2/lib/absences_ajax";
+$style_specifique = "mod_abs2/lib/abs_style";
 $titre_page = "Saisir les absences";
 require_once("../lib/header.inc");
 $menu = 'saisir';
@@ -76,13 +77,12 @@ require("lib/abs_menu.php");
 <a href="saisir_absences.php?type_aff_abs=classe">Afficher par classe</a></p>
 
 <div id="saisie_abs" style="border: 2px solid silver; background-color: lightblue; padding: 10px 10px 10px 10px;">
-<fieldset id="espace_saisie" style="border: 1px solid grey; padding: 5px 5px 5px 5px; width: 500px;">
-  <legend>Saisir un ou plusieurs &eacute;l&egrave;ves</legend>
+
 
   <form action="saisir_absences.php" method="post">
-    <p>
-      <?php echo affSelectEleves($liste_eleves, $reglages); ?>
-    </p>
+
+<fieldset id="espace_saisie2" style="position: absolute; border: 1px solid grey; padding: 5px 5px 5px 5px; width: 500px; margin-left: 520px;">
+  <legend> - Afficher une liste pr&eacute;cise - </legend>
     <p style="text-align: right;">
       <?php echo affSelectClasses(array('label'=>'Classes', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php')); ?>
     </p>
@@ -97,10 +97,19 @@ require("lib/abs_menu.php");
       <input type="submit" name="valider" value="&nbsp;>>&nbsp;" />
     </p>
 
+</fieldset>
+
+<fieldset id="espace_saisie" style="border: 1px solid grey; padding: 5px 5px 5px 5px; width: 500px;">
+  <legend> - Saisir un ou plusieurs &eacute;l&egrave;ves - </legend>
+
+    <p>
+      <?php echo affSelectEleves($liste_eleves, $reglages); ?>
+    </p>
+</fieldset>
+
+
   </form>
 
-
-</fieldset>
 </div>
 
 <div id="aff_result" style="display: none;">
@@ -108,4 +117,4 @@ require("lib/abs_menu.php");
 </div>
 
 
-<?php require("../lib/footer.inc.php"); debug_var(); ?>
+<?php require("../lib/footer.inc.php"); //debug_var(); ?>
