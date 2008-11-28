@@ -138,7 +138,7 @@ function AffSelectParametres($options){
   $param = new abs_gestion();
   $param->setTable('abs_' . $options["_type"]); // On définit la bonne table
   $donnees = $param->voirTout();
-  $champ = 'type_' . str_replace("s", "", $options["_type"]); // On définit le champ de cette table
+  $champ = 'type_' . substr($options["_type"], 0, (strlen($options["_type"]) - 1)); // On définit le champ de cette table
 
   $retour = '
     <select name="' . $aff_name . '">
@@ -154,6 +154,8 @@ function AffSelectParametres($options){
   $retour .= '
     </select>
   ';
+
+  return $retour;
 }
 
 function affSelectEleves($liste_eleves, $options = NULL){

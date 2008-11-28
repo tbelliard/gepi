@@ -97,7 +97,7 @@ class abs_gestion{
 
   public function _saveNew($new){
 
-    $insert_new = $this->_encode == 'utf8' ? utf8_decode($new) : $new;
+    $insert_new = $this->_encode == 'utf8' ? htmlentities(utf8_decode($new)) : $new;
 
     $sql = "INSERT INTO " . $this->_table . " (" . $this->_champs . ") VALUES ('" . $insert_new . "')";
 

@@ -49,6 +49,7 @@ $test_aff_fiche = "ok";
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("absences.class.php");
+include("classes/abs_gestion.class.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
 include("lib/erreurs.php");
 
@@ -127,8 +128,8 @@ header('Content-Type: text/html; charset:utf-8');
           <td><input type="checkbox" name="_eleve[]" id="el<?php echo $aff_tab->id_eleve; ?>" value="<?php echo $aff_tab->id_eleve; ?>"<?php echo $aff_coche; ?> /></td>
           <td><select name="deb"><option value="m1">M1</option><option value="m2">M2</option><option value="m3">M3</option></select></td>
           <td><select name="fin"><option value="m1">M1</option><option value="m2">M2</option><option value="m3">M3</option></select></td>
-          <td><?php echo 'justif.'; ?></td>
-          <td><?php echo 'motif.'; ?></td>
+          <td><?php echo AffSelectParametres(array('_type'=>'justifications', 'name'=>'_justifications[]')); ?></td>
+          <td><?php echo AffSelectParametres(array('_type'=>'motifs', 'name'=>'_motifs[]')); ?></td>
 
         </tr>
       <?php endforeach; ?>

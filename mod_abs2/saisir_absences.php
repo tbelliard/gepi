@@ -48,7 +48,6 @@ $_SESSION["type_aff_abs"] = (isset($_GET["type_aff_abs"]) AND ($_GET["type_aff_a
 
 // ============== Code métier ===============================
 include("absences.class.php");
-include("classes/abs_gestion.class.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
 include("lib/erreurs.php");
 
