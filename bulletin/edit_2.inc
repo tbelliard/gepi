@@ -300,7 +300,8 @@
                                     if (($current_eleve_note[$j][$i]>=12) and ($current_eleve_note[$j][$i]<15)) { $place_eleve=2;}
                                     if ($current_eleve_note[$j][$i]>=15) { $place_eleve=1;}
                                 }
-                                $note=number_format($current_eleve_note[$j][$i],1, ',', ' ');
+                                //$note=number_format($current_eleve_note[$j][$i],1, ',', ' ');
+                                if($note!="-") {$note=number_format($current_eleve_note[$j][$i],1, ',', ' ');}
                                 echo $note;
                                 $flag_moy = 'yes';
                             }

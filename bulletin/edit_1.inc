@@ -353,9 +353,11 @@
 		}
 
 
-
+		// Moyenne de l'élève
 		echo "<td style=\"text-align: center; width: ".$col_note_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\"><span class='bulletin'><b>";
 
+		// On va déterminer la place de l'élève si la note n'est pas abs, disp,...
+		// avant d'afficher la moyenne de l'élève
                         $place_eleve = "";
                         $flag_moy = 'no';
                         if ($current_eleve_note[$j][$i] != '') {
@@ -370,7 +372,8 @@
                                     if (($current_eleve_note[$j][$i]>=12) and ($current_eleve_note[$j][$i]<15)) { $place_eleve=2;}
                                     if ($current_eleve_note[$j][$i]>=15) { $place_eleve=1;}
                                 }
-                                $note=number_format($current_eleve_note[$j][$i],1, ',', ' ');
+								//echo "\$note=$note<br />";
+                                if($note!="-") {$note=number_format($current_eleve_note[$j][$i],1, ',', ' ');}
                                 echo $note;
                                 $flag_moy = 'yes';
                             }
@@ -396,13 +399,16 @@
                         }
 
                         if ($affiche_rang == 'y')  {
-                            $rang = sql_query1("select rang from matieres_notes where (
+                            $sql="select rang from matieres_notes where (
                             periode = '".$periode_num."' and
                             id_groupe = '".$current_group[$j]["id"]."' and
                             login = '".$current_eleve_login[$i]."')
-                            ");
+                            ";
+                            $rang = sql_query1($sql);
                             if (($rang == 0) or ($rang == -1)) $rang = "-"; else $rang.="/".$nb_notes[$current_group[$j]["id"]][$periode_num];
-                            echo "<td style=\"text-align: center; width: ".$col_note_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\"><span class='bulletin'><i>".$rang."</i></span>\n</td>\n";
+                            echo "<td style=\"text-align: center; width: ".$col_note_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\"><span class='bulletin'><i>".$rang."</i></span>\n";
+							//echo "<br />$sql\n";
+							echo "</td>\n";
                         }
                     }
 
