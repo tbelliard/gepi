@@ -34,7 +34,7 @@ $tab[] = "CREATE TABLE IF NOT EXISTS `abs_creneaux` (`id` INT( 11 ) NOT NULL , `
 $tab[] = "CREATE TABLE IF NOT EXISTS `abs_informations` (`id` int(11) NOT NULL auto_increment, `utilisateurs_id` INT(4) NOT NULL, `eleves_id` VARCHAR(100) NOT NULL, `date_saisie` INT(13) NOT NULL, `debut_abs` INT(12) NOT NULL, `fin_abs` INT(12) NOT NULL, PRIMARY KEY ( `id` ) ) ENGINE = InnoDB ";
 $tab[] = "CREATE TABLE IF NOT EXISTS `abs_traitements` (`id` int(11) NOT NULL auto_increment, `abs_informations_id` VARCHAR(250) NOT NULL, `utilisateurs_id` INT(13) NOT NULL, `date_traitement` INT(13) NOT NULL, `date_modif_traitement` INT(13) NOT NULL, `abs_type_id` INT(4) NOT NULL, `abs_motif_id` INT(4) NOT NULL, `abs_justification_id` INT(4) NOT NULL, `texte_justification` VARCHAR(250) NOT NULL, `abs_action_id` INT(4) NOT NULL, PRIMARY KEY ( `id` ) ) ENGINE = InnoDB";
 $tab[] = "CREATE TABLE IF NOT EXISTS `abs_types` (`id` int(11) NOT NULL auto_increment, `type_absence` VARCHAR(250) NOT NULL, PRIMARY KEY ( `id` ) ) ENGINE = InnoDB";
-$tab[] = "CREATE TABLE IF NOT EXISTS `abs_motifs` (`id` int(11) NOT NULL auto_increment, `motifs` VARCHAR(250) NOT NULL, PRIMARY KEY ( `id` ) ) ENGINE = InnoDB";
+$tab[] = "CREATE TABLE IF NOT EXISTS `abs_motifs` (`id` int(11) NOT NULL auto_increment, `type_motif` VARCHAR(250) NOT NULL, PRIMARY KEY ( `id` ) ) ENGINE = InnoDB";
 $tab[] = "CREATE TABLE IF NOT EXISTS `abs_justifications` (`id` int(11) NOT NULL auto_increment, `type_justification` VARCHAR(250) NOT NULL, PRIMARY KEY ( `id` ) ) ENGINE = InnoDB";
 $tab[] = "CREATE TABLE IF NOT EXISTS `abs_actions` (`id` int(11) NOT NULL auto_increment, `type_action` VARCHAR(250) NOT NULL, PRIMARY KEY ( `id` ) ) ENGINE = InnoDB";
 

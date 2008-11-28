@@ -83,7 +83,7 @@ try{
       break;
     case 'motifs':
     $_table = $prefix . $type_req;
-    $_champ = 'motifs';
+    $_champ = 'type_motif';
       break;
     case 'actions':
     $_table = $prefix . $type_req;

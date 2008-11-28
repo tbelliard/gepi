@@ -124,6 +124,38 @@ function listeCreneaux($options = NULL){
   $sql = "SELECT ";
 }
 
+function AffSelectParametres($options){
+  /**
+  * Permet de lister les motifs, les types, les justifications et les actions
+  * $options["_type"] définit lequel des quatre on renvoie :
+  * ATTENTION : doit être types / motifs / justifications / actions et c'est tout
+  * A besoin du fichier /classes/abs_gestion.class.php pour charger la classe abs_gestion
+  */
+  if(!isset($options["_type"])){return false;}
+
+  $aff_name = isset($options["name"]) ? $options["name"] : 'liste' . $options["_type"];
+
+  $param = new abs_gestion();
+  $param->setTable('abs_' . $options["_type"]); // On définit la bonne table
+  $donnees = $param->voirTout();
+  $champ = 'type_' . str_replace("s", "", $options["_type"]); // On définit le champ de cette table
+
+  $retour = '
+    <select name="' . $aff_name . '">
+  ';
+  foreach($donnees as $aff_param):
+
+   $retour .= '
+    <option value="' . $aff_param->id . '">' . $aff_param->$champ . '</option>
+   ';
+
+   endforeach;
+
+  $retour .= '
+    </select>
+  ';
+}
+
 function affSelectEleves($liste_eleves, $options = NULL){
   if (!is_array($liste_eleves)) {
     die('<p style="color: red;">Il manque des informations pour afficher la liste des élèves.</p>');
