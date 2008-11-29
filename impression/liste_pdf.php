@@ -371,36 +371,46 @@ if ($id_liste_groupes!=NULL) {
 			$pdf->SetLineWidth(0.3);
 			$pdf->SetFont($caractere_utilise,'',9);
 			$y_tmp = $Y_courant;
-
 			//Nb de ligne AVANT dans le tableau
 			if ($nb_ligne_avant > 0) {
+
 				//la première ligne peut être plus haute
 				if ($h_premiere_cell > $h_cell) {
 					//Une première ligne qui peut être plus haute (date ou nom du devoir par ex)
 					$pdf->Setxy($X_tableau,$y_tmp);
+
 					// Option effectif
 					if (($option_effectif == 1) and ($nb_ligne_avant == 1)) {
 					  //on indique ici le nombre d'élève dans la classe (option)
 					  $texte = 'Effectif : '.$nb_eleves;
 					  $pdf->Cell($l_cell_nom,$h_premiere_cell,$texte,'R',2,'C',2);
 					} else {
-					  $pdf->Cell($l_cell_nom,$h_premiere_cell,' ','R',2,'C',2);
+						//$pdf->Cell($l_cell_nom,$h_premiere_cell,' ','R',2,'C',2);
+						// Avec le 'R' pas de bordure
+						$pdf->Cell($l_cell_nom,$h_premiere_cell,' ','R',2,'L',0);
 					}
+
 					//la fin du quadrillage
 					for($i=0; $i < $nb_colonne ; $i++) {
 						$pdf->Setxy($X_tableau+$l_cell_nom + $i*$l_cell,$y_tmp);
 						if ($i<$nb_max_col_ligne) {
-						   $pdf->Cell($l_cell,$h_premiere_cell,'',1,2,'C',2); //le quadrillage
+							//$pdf->Cell($l_cell,$h_premiere_cell,'',1,2,'C',2); //le quadrillage
+							// Cell(largeur,hauteur,texte,epaisseur_bord,???,alignement,remplissage)
+							$pdf->Cell($l_cell,$h_premiere_cell,'',1,2,'C',0); //le quadrillage
 						} else {
-						   if ($i < ($nb_colonne-1)) {
-							 $pdf->Cell($l_cell,$h_premiere_cell,'','TB',2,'C',2); //suivant le type : plus de quadrillage
-						   } else {
-							   $pdf->Cell($l_cell,$h_premiere_cell,'','TBR',2,'C',2); // pour le dernier, on clos le tableau
-						   }
+							if ($i < ($nb_colonne-1)) {
+								//$pdf->Cell($l_cell,$h_premiere_cell,'','TB',2,'C',2); //suivant le type : plus de quadrillage
+								$pdf->Cell($l_cell,$h_premiere_cell,'','TB',2,'C',0);
+							} else {
+								//$pdf->Cell($l_cell,$h_premiere_cell,'','TBR',2,'C',2); // pour le dernier, on clos le tableau
+								$pdf->Cell($l_cell,$h_premiere_cell,'','TBR',2,'C',0); // pour le dernier, on clos le tableau
+							}
 						}
 					}
+
 					$y_tmp = $pdf->GetY();
 					$nb_ligne_avant--;
+
 				}
 
 				//La suite des lignes avant
@@ -442,6 +452,7 @@ if ($id_liste_groupes!=NULL) {
 					$y_tmp = $y_tmp + $h_cell;
 					$pdf->ln();
 				}
+
 				$y_tmp = $pdf->GetY();
 
 				$nb_ligne_avant = $nb_ligne_avant_initial;
@@ -453,9 +464,9 @@ if ($id_liste_groupes!=NULL) {
 				$pdf->Setxy($X_tableau,$y_tmp);
 				$pdf->SetFont($caractere_utilise,'B',9);
 				if ($flag_groupe==true) {
-				$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]." (".$donnees_eleves['nom_court'][$nb_eleves_i].")");
+					$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]." (".$donnees_eleves['nom_court'][$nb_eleves_i].")");
 				} else {
-				  $texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
+					$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
 				}
 				$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
 				for($i=0; $i < $nb_colonne ; $i++) {
