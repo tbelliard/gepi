@@ -1323,10 +1323,12 @@ require_once("../lib/header.inc");
 $classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 
 if ($referent == "une_periode") {
-	echo "<p class=bold>Classe : $classe - Résultats : $nom_periode[$num_periode] - Année scolaire : ".getSettingValue("gepiYear")."</p>";
+	//echo "<p class=bold>Classe : $classe - Résultats : $nom_periode[$num_periode] - Année scolaire : ".getSettingValue("gepiYear")."</p>";
+	echo "<p class='bold'>Classe : $classe - Moyennes du carnet de notes du $nom_periode[$num_periode] - ".getSettingValue("gepiYear")."</p>\n";
 }
 else {
-	echo "<p class=bold>Classe : $classe - Résultats : Moyennes annuelles - Année scolaire : ".getSettingValue("gepiYear")."</p>";
+	//echo "<p class=bold>Classe : $classe - Résultats : Moyennes annuelles - Année scolaire : ".getSettingValue("gepiYear")."</p>";
+	echo "<p class='bold'>Classe : $classe - Moyennes annuelles du carnet de notes - ".getSettingValue("gepiYear")."</p>\n";
 }
 
 //affiche_tableau($nb_lignes_tableau, $nb_col, $ligne1, $col, $larg_tab, $bord,0,1,$couleur_alterne);
