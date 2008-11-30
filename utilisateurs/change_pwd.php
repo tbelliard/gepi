@@ -71,7 +71,6 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 		} else {
 			// On est en mode base de données
 			$reg_data = mysql_query("UPDATE utilisateurs SET password = '$reg_password_c' WHERE login='".$user_login."'");
-
 		}
 
 		//ajout Eric En cas de réinitialisation par l'admin, il faut forcer à la première connexion la changement du mot de passe
@@ -82,7 +81,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 		if (!$reg_data) {
 			$msg = "Erreur lors de l'enregistrement du mot de passe !";
 		} else {
-			$msg="Le mot de passe a été changé !";
+			$msg="Le mot de passe a été changé ($user_login:$ine_password) !";
 		}
 	}
 	else {
