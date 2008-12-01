@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 14/03/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -40,6 +40,11 @@ require_once("../lib/initialisations.inc.php");
 //=============================
 
 require('../fpdf/fpdf.php');
+//require('../fpdf/fpdf15.php');
+
+// Il faut récupérer l'info sur le mode avant l'appel à ex_fpdf.php pour que les accents de l'entête soient corrects
+$mode_utf8_pdf=getSettingValue("mode_utf8_visu_notes_pdf");
+if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
 require('../fpdf/ex_fpdf.php');
 
 /*
@@ -98,11 +103,34 @@ if (isset($_GET['id_groupe'])) {
     }
 }
 
-if ($text_classe_matiere != '') $pdf->Cell(100, 8, $text_classe_matiere,$bord,0,"L",0);
+//=========================================================
+/*
+$mode_utf8_pdf=getSettingValue("mode_utf8_visu_notes_pdf");
+if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
+$mode_utf8_pdf="y";
+*/
+
+//debug_var();
+/*
+function traite_accents_utf8($chaine) {
+	global $mode_utf8_pdf;
+	if($mode_utf8_pdf=="y") {
+		return utf8_encode($chaine);
+	}
+	else {
+		return $chaine;
+	}
+}
+*/
+//=========================================================
+
+//if ($text_classe_matiere != '') $pdf->Cell(100, 8, $text_classe_matiere,$bord,0,"L",0);
+if ($text_classe_matiere != '') $pdf->Cell(100, 8, traite_accents_utf8($text_classe_matiere),$bord,0,"L",0);
 $pdf->ln();
 
 
-isset($_GET['titre']) ? $titre = unslashes($_GET['titre']) : $titre='' ;
+//isset($_GET['titre']) ? $titre = unslashes($_GET['titre']) : $titre='' ;
+isset($_GET['titre']) ? $titre = traite_accents_utf8(unslashes($_GET['titre'])) : $titre='' ;
 if ($titre!='') {
     //Positionnement du titre
     $w=$pdf->GetStringWidth($titre)+6;
@@ -126,7 +154,14 @@ $w1 = unserialize($_SESSION['w_pdf']);
 
 // tableau des données
 $data1 = array();
+//$data1 = unserialize($_SESSION['data_pdf']);
 $data1 = unserialize($_SESSION['data_pdf']);
+
+/*
+foreach($data1 as $key => $value) {
+	$data1[$key]=traite_accents_utf8($data1[$value]);
+}
+*/
 
 $pdf->SetFont('Arial','',8);
 $pdf->FancyTable($w1,$header1,$data1,"v");

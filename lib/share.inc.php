@@ -3220,4 +3220,14 @@ function casse_prenom($prenom) {
 	return $retour;
 }
 
+function traite_accents_utf8($chaine) {
+	global $mode_utf8_pdf;
+	if($mode_utf8_pdf=="y") {
+		return utf8_encode($chaine);
+	}
+	else {
+		return $chaine;
+	}
+}
+
 ?>

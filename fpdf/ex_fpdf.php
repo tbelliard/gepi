@@ -55,13 +55,16 @@ function Header()
     $x=$this->GetX();
     $y=$this->GetY();
     // on imprime du texte à gauche
-    $this->MultiCell($l, 5, $gepi_text,$bord, "L",0);
+    //$this->MultiCell($l, 5, $gepi_text,$bord, "L",0);
+    $this->MultiCell($l, 5, traite_accents_utf8($gepi_text),$bord, "L",0);
     // déplace le curseur
     $this->SetXY($x+$l,$y);
     // on imprime du texte à droite
-    $this->MultiCell($l, 5, $etab_text,$bord, "R",0);
+    //$this->MultiCell($l, 5, $etab_text,$bord, "R",0);
+    $this->MultiCell($l, 5, traite_accents_utf8($etab_text),$bord, "R",0);
 
-    $this->MultiCell($l, 5, $nom." - ".$user_statut, $bord, "L",0);
+    //$this->MultiCell($l, 5, $nom." - ".$user_statut, $bord, "L",0);
+    $this->MultiCell($l, 5, traite_accents_utf8($nom." - ".$user_statut), $bord, "L",0);
     // on trace un trait horizontal
     $this->cell(0,2,"","T",0);
     // Saut de ligne et retour à la marge

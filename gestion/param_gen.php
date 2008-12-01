@@ -240,6 +240,55 @@ if (isset($_POST['is_posted'])) {
 			$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
 		}
 	}
+
+	//===============================================================
+	// Traitement des problemes de points d'interrogation à la place des accents
+	/*
+	if (isset($_POST['mode_utf8_bulletins_pdf'])) {
+		if (!saveSetting("mode_utf8_bulletins_pdf", $_POST['mode_utf8_bulletins_pdf'])) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
+		}
+	}
+	else{
+		if (!saveSetting("mode_utf8_bulletins_pdf", 'n')) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
+		}
+	}
+
+	if (isset($_POST['mode_utf8_listes_pdf'])) {
+		if (!saveSetting("mode_utf8_listes_pdf", $_POST['mode_utf8_listes_pdf'])) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
+		}
+	}
+	else{
+		if (!saveSetting("mode_utf8_listes_pdf", 'n')) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
+		}
+	}
+	*/
+	if (isset($_POST['mode_utf8_visu_notes_pdf'])) {
+		if (!saveSetting("mode_utf8_visu_notes_pdf", $_POST['mode_utf8_visu_notes_pdf'])) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
+		}
+	}
+	else{
+		if (!saveSetting("mode_utf8_visu_notes_pdf", 'n')) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
+		}
+	}
+	/*
+	if (isset($_POST['mode_utf8_releves_pdf'])) {
+		if (!saveSetting("mode_utf8_releves_pdf", $_POST['mode_utf8_releves_pdf'])) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_releves_pdf !";
+		}
+	}
+	else{
+		if (!saveSetting("mode_utf8_releves_pdf", 'n')) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_releves_pdf !";
+		}
+	}
+	*/
+	//===============================================================
 }
 
 // Dénomination du professeur de suivi
@@ -596,6 +645,65 @@ require_once("../lib/header.inc");
 	</tr>
 
 
+	<!-- Traitement des problemes de points d'interrogation à la place des accents -->
+<?php
+/*
+	// Apparemment, ce n'est pas utile...
+	<tr>
+		<td style="font-variant: small-caps;" valign='top'>
+		<label for='mode_utf8_releves_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des relevés de notes PDF&nbsp;:</label>
+		</td>
+		<td>
+		<input type="checkbox" id='mode_utf8_releves_pdf' name="mode_utf8_releves_pdf" value="y"
+		<?php
+			if(getSettingValue("mode_utf8_releves_pdf")=='y'){echo " checked";}
+		?>
+		/>
+		</td>
+	</tr>
+*/
+?>
+	<tr>
+		<td style="font-variant: small-caps;" valign='top'>
+		<label for='mode_utf8_visu_notes_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués dans la visualisation des notes du carnet de notes&nbsp;:</label>
+		</td>
+		<td>
+		<input type="checkbox" id='mode_utf8_visu_notes_pdf' name="mode_utf8_visu_notes_pdf" value="y"
+		<?php
+			if(getSettingValue("mode_utf8_visu_notes_pdf")=='y'){echo " checked";}
+		?>
+		/>
+		</td>
+	</tr>
+<?php
+/*
+	// Apparemment, ce n'est pas utile...
+	<tr>
+		<td style="font-variant: small-caps;" valign='top'>
+		<label for='mode_utf8_listes_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des listes PDF&nbsp;:</label>
+		</td>
+		<td>
+		<input type="checkbox" id='mode_utf8_listes_pdf' name="mode_utf8_listes_pdf" value="y"
+		<?php
+			if(getSettingValue("mode_utf8_listes_pdf")=='y'){echo " checked";}
+		?>
+		/>
+		</td>
+	</tr>
+	<tr>
+		<td style="font-variant: small-caps;" valign='top'>
+		<label for='mode_utf8_bulletins_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des bulletins PDF&nbsp;:</label>
+		</td>
+		<td>
+		<input type="checkbox" id='mode_utf8_bulletins_pdf' name="mode_utf8_bulletins_pdf" value="y"
+		<?php
+			if(getSettingValue("mode_utf8_bulletins_pdf")=='y'){echo " checked";}
+		?>
+		/>
+		</td>
+	</tr>
+*/
+?>
 
 	<tr>
 		<td style="font-variant: small-caps;">
