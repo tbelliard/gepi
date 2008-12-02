@@ -301,8 +301,14 @@
                                     if ($current_eleve_note[$j][$i]>=15) { $place_eleve=1;}
                                 }
                                 //$note=number_format($current_eleve_note[$j][$i],1, ',', ' ');
-                                if($note!="-") {$note=number_format($current_eleve_note[$j][$i],1, ',', ' ');}
+                                //if($note!="-") {$note=number_format($current_eleve_note[$j][$i],1, ',', ' ');}
+                                if($current_eleve_note[$j][$i]!="-") {
+									$note=number_format($current_eleve_note[$j][$i],1, ',', ' ');
+								} else {
+									$note="-";
+								}
                                 echo $note;
+								// Est-il judicieux d'avoir ce $flag_moy ici même si la note est un '-'? A quoi sert-il?
                                 $flag_moy = 'yes';
                             }
                         } else {
