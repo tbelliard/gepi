@@ -434,14 +434,14 @@ class ActiveRecordGepi{
 
 }
 
-/**
- *
- *
+/*
 
 class utilisateurs extends ActiveRecordGepi{
 
   public function __construct(){
+
     parent::__construct('utilisateurs');
+
   }
 }
 
