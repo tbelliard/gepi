@@ -82,6 +82,9 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 //============== ENTETE BULLETIN HTML ================
 elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
 
+	$mode_utf8_pdf=getSettingValue("mode_utf8_bulletins_pdf");
+	if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
+
 	include("header_bulletin_pdf.php");
 
 	//=============================================

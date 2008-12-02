@@ -243,7 +243,6 @@ if (isset($_POST['is_posted'])) {
 
 	//===============================================================
 	// Traitement des problemes de points d'interrogation à la place des accents
-	/*
 	if (isset($_POST['mode_utf8_bulletins_pdf'])) {
 		if (!saveSetting("mode_utf8_bulletins_pdf", $_POST['mode_utf8_bulletins_pdf'])) {
 			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
@@ -254,7 +253,7 @@ if (isset($_POST['is_posted'])) {
 			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
 		}
 	}
-
+	/*
 	if (isset($_POST['mode_utf8_listes_pdf'])) {
 		if (!saveSetting("mode_utf8_listes_pdf", $_POST['mode_utf8_listes_pdf'])) {
 			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
@@ -690,6 +689,8 @@ require_once("../lib/header.inc");
 		/>
 		</td>
 	</tr>
+*/
+?>
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
 		<label for='mode_utf8_bulletins_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des bulletins PDF&nbsp;:</label>
@@ -702,8 +703,6 @@ require_once("../lib/header.inc");
 		/>
 		</td>
 	</tr>
-*/
-?>
 
 	<tr>
 		<td style="font-variant: small-caps;">
