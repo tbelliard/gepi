@@ -66,15 +66,27 @@ class ActiveRecordGepi{
   /**
    * Constructor
    * Permet d'initialiser la bonne table de la base de données ainsi que tous les champs sous la forme d'attributs
+   * Par défaut, le nom de la table est le nom de la classe fille en minuscule et au pluriel.
+   * Si la règle n'est pas respectée, on peut imposer un nom de table avec $this->setTableName()
    *
    * @access protected
    */
-  protected function __construct($_table){
+  protected function __construct($_classe){
 
-    $this->_table = $_table;
+    $this->_table = strtolower(self::pluralize($_classe));
 
     $this->returnChamps();
 
+  }
+
+  /**
+  * méthode protégée qui permet d'imposer le nom d'une table précise dans le cas où le pluriel
+  * ne suffit pas.
+  *
+  * @acces protected
+  */
+  protected function setTableName($_table){
+    $this->_table = $_table;
   }
 
   /**
@@ -296,11 +308,14 @@ class ActiveRecordGepi{
 
 
   /**
-  * On recherche toutes les propriétés de l'objet qui correspondent aux champs
+  * Permet de rajouter un "s" à la fin de la classe pour trouver la bonne _table
   *
-  *
+  * @acces public
   */
 
+  public static function pluralize($word) {
+    return $word.'s';
+  }
 
   /**
   * Permet de récupérer tous les enregistrements de la table $this->_table
@@ -436,17 +451,17 @@ class ActiveRecordGepi{
 
 /*
 
-class utilisateurs extends ActiveRecordGepi{
+class Utilisateur extends ActiveRecordGepi{
 
   public function __construct(){
 
-    parent::__construct('utilisateurs');
+    parent::__construct(__CLASSE__);
 
   }
 }
 
 try{
-  $test = new utilisateurs();
+  $test = new Utilisateur();
   $test->findByLogin("SGARCIA"); // Il suffit de mettre un login de votre base pour tester
 
 
