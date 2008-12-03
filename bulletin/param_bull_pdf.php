@@ -954,7 +954,9 @@ function DecocheCheckbox() {
 			echo "<p>Modèle: <select tabindex='5' name='type_bulletin'>\n";
 
 			// sélection des modèles des bulletins.
-			$requete_model = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
+			//$requete_model = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
+			$sql="SELECT id_model_bulletin, valeur FROM modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY nom ASC";
+			$requete_model = mysql_query($sql);
 			while($donner_model = mysql_fetch_array($requete_model))
 			{
 				echo "<option value='".$donner_model['id_model_bulletin']."'";
@@ -962,7 +964,8 @@ function DecocheCheckbox() {
 					echo " selected='selected'";
 				}
 				echo ">";
-				echo ucfirst($donner_model['nom_model_bulletin']);
+				//echo ucfirst($donner_model['nom_model_bulletin']);
+				echo ucfirst($donner_model['valeur']);
 				echo "</option>\n";
 			}
 
