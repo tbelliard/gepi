@@ -943,7 +943,8 @@ function DecocheCheckbox() {
 			}
 
 
-			echo " | <a href=\"./".$_SERVER['PHP_SELF']."\"> Paramètres d'impression des bulletins PDF</a>";
+			//echo " | <a href=\"./".$_SERVER['PHP_SELF']."\"> Paramètres d'impression des bulletins PDF</a>";
+			echo " | <a href=\"".$_SERVER['PHP_SELF']."\"> Paramètres d'impression des bulletins PDF</a>";
 
 			echo "</p>\n";
 			echo "<br /><br />\n";
