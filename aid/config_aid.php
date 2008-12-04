@@ -217,7 +217,7 @@ if (isset($indice_aid)) {
 
 <hr />
 
-Choisissez le nom complet de l'AID (par exemple Travaux Pratiques Encadrés) :
+Choisissez le nom complet de l'AID (par exemple Travaux Personnels Encadrés) :
 
 <br />Nom complet : <input type="text" name="reg_nom_complet" size="40" <?php if (isset($reg_nom_complet)) { echo "value=\"".$reg_nom_complet."\"";}?> />
 
