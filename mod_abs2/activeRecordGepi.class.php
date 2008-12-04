@@ -98,31 +98,31 @@ class ActiveRecordGepi{
   protected function returnChamps(){
 
     if (!isset($this->_table)) {
-			return false;
-		}else{
+      return false;
+    }else{
 
-			// On récupère la liste des champs de la table en question
-			$sql = "SHOW COLUMNS FROM ".$this->_table;
-			$query = $this->_requete($sql);
+      // On récupère la liste des champs de la table en question
+      $sql = "SHOW COLUMNS FROM ".$this->_table;
+      $query = $this->_requete($sql);
 
-			$return = $query->fetchAll(PDO::FETCH_OBJ);
-			$nbre_champs = count($return);
+      $return = $query->fetchAll(PDO::FETCH_OBJ);
+      $nbre_champs = count($return);
 
-			for($a = 0 ; $a < $nbre_champs ; $a++){
+      for($a = 0 ; $a < $nbre_champs ; $a++){
 
-				$reponse[$return[$a]->Field] = $return[$a]->Type; // Pour en conserver une trace dans l'objet
-				$reponseKey[$return[$a]->Field] = $return[$a]->Key; // Pour en conserver une trace dans l'objet
+        $reponse[$return[$a]->Field] = $return[$a]->Type; // Pour en conserver une trace dans l'objet
+        $reponseKey[$return[$a]->Field] = $return[$a]->Key; // Pour en conserver une trace dans l'objet
 
         $champ = $return[$a]->Field;
 
-				$this->$champ = $return[$a]->Default; // Pour les modifier à loisir
+        $this->$champ = $return[$a]->Default; // Pour les modifier à loisir
 
-			}
-			$this->typeChamps  = $reponse; // On stocke le type de chaque champ
-			$this->typeKeys    = $reponseKey; // On stocke le type de clé pour chaque champ
-			return true;
-		}
-	}
+      }
+      $this->typeChamps  = $reponse; // On stocke le type de chaque champ
+      $this->typeKeys    = $reponseKey; // On stocke le type de clé pour chaque champ
+      return true;
+    }
+  }
 
   protected function _requete($sql){
 
@@ -136,7 +136,7 @@ class ActiveRecordGepi{
     if (!is_array($sql)) {
 
       // On teste pour former la bonne requête
-		  $test = substr(strtoupper($sql), 0, 4);
+      $test = substr(strtoupper($sql), 0, 4);
 
       if ($test == 'SELE' OR $test == 'SHOW' OR $test == 'CREA' OR $test == 'DROP') {
 
@@ -155,12 +155,12 @@ class ActiveRecordGepi{
           return self::pdo_connect()->lastInsertId();
 
         }else{
-				  return $reponse;
+          return $reponse;
         }
 
       }else{
-			 return false;
-		  }
+        return false;
+      }
 
     }else{
       // On pourra ici coder une logique de construction des requêtes SQL par
@@ -181,16 +181,16 @@ class ActiveRecordGepi{
     $verif = 'no';
 
     if (!isset($this->_table)) {
-			return false;
-		}
+      return false;
+    }
 
-		if (!$this->chercherClePrimaire()) {
-		  // Alors id est la clé primaire
-		  // Si le champ id n'existe pas alors qu'il y a plusieurs champs clé primaire
-		  // C'est qu'il y a une erreur de conception dans la table
-		  $this->_pk = $this->id;
+    if (!$this->chercherClePrimaire()) {
+      // Alors id est la clé primaire
+      // Si le champ id n'existe pas alors qu'il y a plusieurs champs clé primaire
+      // C'est qu'il y a une erreur de conception dans la table
+      $this->_pk = $this->id;
 
-		}elseif($this->chercherClePrimaire() == 'no'){
+    }elseif($this->chercherClePrimaire() == 'no'){
       // Il n'y a pas de clé primaire dans cette table
       // Difficile de savoir s'il s'agit d'un insert ou d'un update
     }else{
@@ -200,36 +200,36 @@ class ActiveRecordGepi{
 
     $clePrimaire = $this->_pk;
 
-		if (!isset($this->$clePrimaire) OR $this->$clePrimaire == '' OR $this->newTuple === true) {
+    if (!isset($this->$clePrimaire) OR $this->$clePrimaire == '' OR $this->newTuple === true) {
 
-			$sql = "INSERT INTO ".$this->_table." SET ";
-			$verif = 'insert';
+      $sql = "INSERT INTO ".$this->_table." SET ";
+      $verif = 'insert';
 
-		}else{
+    }else{
 
-			$sql = "UPDATE ".$this->_table." SET ";
-			$verif = 'update';
+      $sql = "UPDATE ".$this->_table." SET ";
+      $verif = 'update';
 
-		}
+    }
 
-		foreach($this->typeChamps as $cle => $valeur){
+    foreach($this->typeChamps as $cle => $valeur){
 
-			if (isset($this->$cle) AND $this->$cle != '') {
-				$sql .= $cle . ' = ' . $this->echappe($this->$cle) . ', ';
-			}
+      if (isset($this->$cle) AND $this->$cle != '') {
+        $sql .= $cle . ' = ' . $this->echappe($this->$cle) . ', ';
+      }
 
-		}
+    }
 
-		$sql = substr($sql, 0, -2); // On enlève la dernière virgule et le dernier espace
-		if ($verif == 'update') {
-			$sql .= " WHERE " . $this->_pk . " = '" . $this->$clePrimaire . "'";
-		}
+    $sql = substr($sql, 0, -2); // On enlève la dernière virgule et le dernier espace
+    if ($verif == 'update') {
+      $sql .= " WHERE " . $this->_pk . " = '" . $this->$clePrimaire . "'";
+    }
 
-		if ($query = $this->_requete($sql)) {
+    if ($query = $this->_requete($sql)) {
 
       return $query;
 
-		}
+    }
 
   }
 
@@ -240,7 +240,7 @@ class ActiveRecordGepi{
   }
 
   public function isNotNew(){
-      $this->newTuple = false;
+    $this->newTuple = false;
   }
 
   protected function echappe($string){
@@ -271,15 +271,15 @@ class ActiveRecordGepi{
           $_keys[] = $cle;
         }
 
-		  }
-		  $test = count($_keys);
+      }
+      $test = count($_keys);
 
-		  if ($test == 1) {
-		    $this->_pk = $_keys[0];
-		    return true;
-		  }elseif($test == 0){
-		    return 'no';
-		  }else{
+      if ($test == 1) {
+        $this->_pk = $_keys[0];
+        return true;
+      }elseif($test == 0){
+        return 'no';
+      }else{
         $this->_pk = $_keys;
         return false;
       }
@@ -328,32 +328,32 @@ class ActiveRecordGepi{
   *   'limit' numérique
   */
 
-	public function findAll($tab_request = NULL){
+  public function findAll($tab_request = NULL){
 
-		if (!$this->_table) {
+    if (!$this->_table) {
 
-			return false;
+      return false;
 
-		}else{
+    }else{
 
-			$sql = 'SELECT * FROM ' . $this->_table;
+      $sql = 'SELECT * FROM ' . $this->_table;
 
-			if (is_array($tab_request)) {
+      if (is_array($tab_request)) {
 
-				$sql .= isset($tab_request['where']) ? ' WHERE ' . $tab_request['where'] : NULL;
-				$sql .= isset($tab_request['order_by']) ? ' ORDER BY ' . $tab_request['order_by'] : NULL;
-				$sql .= isset($tab_request['limit']) ? ' LIMIT ' . $tab_request['limit'] : NULL;
+        $sql .= isset($tab_request['where']) ? ' WHERE ' . $tab_request['where'] : NULL;
+        $sql .= isset($tab_request['order_by']) ? ' ORDER BY ' . $tab_request['order_by'] : NULL;
+        $sql .= isset($tab_request['limit']) ? ' LIMIT ' . $tab_request['limit'] : NULL;
 
-			}
+      }
 
-			$req = $this->_requete($sql);
-			$rep = $req->fetchAll(PDO::FETCH_OBJ);
+      $req = $this->_requete($sql);
+      $rep = $req->fetchAll(PDO::FETCH_OBJ);
 
-			return $rep;
+      return $rep;
 
-		}
+    }
 
-	}
+  }
 
   /**
   * Méthode magique : __call permet une construction dynamique des requêtes
@@ -361,27 +361,27 @@ class ActiveRecordGepi{
   *
   * @acces public
   */
-    public function __call($methode, $valeur){
+  public function __call($methode, $valeur){
 
-		$test = explode('By', $methode);
+    $test = explode('By', $methode);
 
-		if ($test[0] == 'find') {
+    if ($test[0] == 'find') {
 
-			return $this->findBy(strtolower(substr($methode, 6)), $valeur);
+      return $this->findBy(strtolower(substr($methode, 6)), $valeur);
 
-		} elseif ( (substr($test[0], 0, 4) == 'find') AND $test[0] != 'find' ){
+    } elseif ( (substr($test[0], 0, 4) == 'find') AND $test[0] != 'find' ){
 
-			$infos = array(0 => strtolower(substr($test[0], 4)), 1 => strtolower($test[1]));
+      $infos = array(0 => strtolower(substr($test[0], 4)), 1 => strtolower($test[1]));
 
-			return $this->findByFk($infos, $valeur);
+      return $this->findByFk($infos, $valeur);
 
-		} else {
+    } else {
 
-			$this->gest_erreurs("Cette méthodes n'est pas disponible dans cette classe");
+      $this->gest_erreurs("Cette méthodes n'est pas disponible dans cette classe");
 
-		}
+    }
 
-	}
+  }
 
   /**
   * Cette fonction peuple les propriétés de l'objet créé
@@ -390,64 +390,64 @@ class ActiveRecordGepi{
   * @acces protected
   */
 
-	protected function findBy($where, $valeur){
+  protected function findBy($where, $valeur){
 
-		$sql = "SELECT * FROM " . $this->_table . " WHERE " . $where . ' = ' . $this->echappe($valeur[0]) . 'LIMIT 1';
+    $sql = "SELECT * FROM " . $this->_table . " WHERE " . $where . ' = ' . $this->echappe($valeur[0]) . 'LIMIT 1';
 
-		if ($query_s = $this->_requete($sql)) {
+    if ($query_s = $this->_requete($sql)) {
 
-			$rep = $query_s->fetch(PDO::FETCH_OBJ);
+      $rep = $query_s->fetch(PDO::FETCH_OBJ);
 
-			foreach($rep as $cle => $valeur){
+      foreach($rep as $cle => $valeur){
 
-				$this->$cle = $valeur;
+        $this->$cle = $valeur;
 
-			}
+      }
 
-		} else {
-
-			return false;
-
-		}
-
-	}
-
-  /**
-  *
-	* findByFk() permet d'ajouter les infos avec les clés étrangères
-	* On va permettre de faire simplement des liens avec les clés étrangères
-	* exemple $utilisateurs->findj_groupes_professeursByLogin($valeur)
-	* où $valeur est le login de l'utilisateur (ou toute autre information en rapport avec $this->_table
-  * Login est le champs qui sert de clé étrangère vers la table j_groupes_professeurs
-	* ce qui veut donc dire que la table j_groupes_professeurs à un champ login qui va servir pour la jointure
-	*
-	* $other_key[0] est la table de recherche
-  * $other_key[1] est le champ de jointure
-  * $valeur est la valeur de ce champ de jointure
-	*
-	* @acces protected
-	**/
-
-	protected function findByFk($other_key, $valeur){
-
-		$sql = NULL;
-
-		$sql .= "SELECT * FROM " . $other_key[0]; // . ", " . $this->_table;
-		$sql .= " WHERE " . $other_key[1] . " = " . $this->echappe($valeur[0]);
-
-		if ($query_s = $this->_requete($sql)) {
-
-			$return = $query_s->fetchAll(PDO::FETCH_OBJ);
-			$return["nbre"] = count($return);
-      return $return;
-
-		}else{
+    } else {
 
       return false;
 
     }
 
-	}
+  }
+
+  /**
+   * findByFk() permet d'ajouter les infos avec les clés étrangères
+   * On va permettre de faire simplement des liens avec les clés étrangères
+   * exemple $utilisateurs->findj_groupes_professeursByLogin($valeur)
+   * où $valeur est le login de l'utilisateur (ou toute autre information en rapport avec $this->_table
+   * Login est le champs qui sert de clé étrangère vers la table j_groupes_professeurs
+   * ce qui veut donc dire que la table j_groupes_professeurs à un champ login qui va servir pour la jointure
+   *
+   * $other_key[0] est la table de recherche
+   * $other_key[1] est le champ de jointure
+   * $valeur est la valeur de ce champ de jointure
+   *
+   * @param <array> $other_key
+   * @param <array> $valeur
+   * @return <array>
+   */
+  protected function findByFk($other_key, $valeur){
+
+    $sql = NULL;
+
+    $sql .= "SELECT * FROM " . $other_key[0]; // . ", " . $this->_table;
+    $sql .= " WHERE " . $other_key[1] . " = " . $this->echappe($valeur[0]);
+
+    if ($query_s = $this->_requete($sql)) {
+
+      $return = $query_s->fetchAll(PDO::FETCH_OBJ);
+      $return["nbre"] = count($return);
+      return $return;
+
+    }else{
+
+      return false;
+
+    }
+
+  }
 
 
 }
