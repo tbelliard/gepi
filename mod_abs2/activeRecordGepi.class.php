@@ -239,6 +239,10 @@ class ActiveRecordGepi{
 
   }
 
+  public function isNotNew(){
+      $this->newTuple = false;
+  }
+
   protected function echappe($string){
 
     if (!get_magic_quotes_gpc()) {
@@ -254,7 +258,6 @@ class ActiveRecordGepi{
   *
   * @acces private
   */
-
   private function chercherClePrimaire(){
 
     if (!$this->typeKeys) {
