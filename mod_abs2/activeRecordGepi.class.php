@@ -357,7 +357,7 @@ class ActiveRecordGepi{
 
   /**
   * Méthode magique : __call permet une construction dynamique des requêtes
-  * Tous les findBychamp() ou les findCampByautrechamp()
+  * Tous les findBychamp() ou les findChampByAutrechamp()
   *
   * @acces public
   */
@@ -424,9 +424,9 @@ class ActiveRecordGepi{
    * $other_key[1] est le champ de jointure
    * $valeur est la valeur de ce champ de jointure
    *
-   * @param <array> $other_key
-   * @param <array> $valeur
-   * @return <array>
+   * @param array $other_key
+   * @param arrayy $valeur
+   * @return array
    */
   protected function findByFk($other_key, $valeur){
 
