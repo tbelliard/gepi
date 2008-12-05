@@ -49,7 +49,7 @@ class sqlclass {
    *
    * @property
    */
-  protected $_sqlDefault = 'SELECT';
+  protected $_sqlDefault = 'SELECT * ';
 
   /**
    * Le constructeur charge le tableau qui permet de construire une requête
@@ -66,7 +66,7 @@ class sqlclass {
     }else{
       throw new Exception('Impossible de construire la requête car il manque des informations.');
     }
-    echo $this->commandeSQL();
+    echo $this->_sql();
     return $this->_sql();
   }
 
@@ -78,6 +78,7 @@ class sqlclass {
    */
   protected function _sql(){
 
+    return $this->commandeSQL() . $this->_from() . $this->_where() . $this->_orderBy;
 
   }
 
@@ -91,15 +92,49 @@ class sqlclass {
       //echo '<br />' . $cle . '<br /> valeur = ' . $valeur;
       if (in_array($cle, $this->cde_sql)){
 
-        $complement = $cle == 'insert' ? ' INTO ' : '';
+        $complement = ($cle == 'insert') ? ' INTO ' : ' ';
+        $valeur     = ($valeur == 'all') ? ' *' : $valeur;
 
         return strtoupper($cle) . $complement . $valeur . ' ';
+      }else{
+        return strtoupper($this->_sqlDefault);
       }
+    }
+  }
+
+  /**
+   * Méthode qui renvoit le from de la requête
+   */
+  protected function _from(){
+    if (isset($this->_options['from'])){
+      return ' FROM ' . $this->_options['from'];
+    }else{
+      return '';
+    }
+  }
+
+  /**
+   * Méthode qui renvoit la clause where de la requête
+   */
+  protected function _where(){
+    if (isset($this->_options['where'])){
+      return ' WHERE ' . $this->_options['where'];
+    }else{
+      return '';
+    }
+  }
+
+  /**
+   * Méthode qui renvoit l'ordre de retour des données
+   */
+  protected function _orderBy(){
+    if (isset($this->_options['order_by'])){
+      return ' ORDER BY ' . $this->_options['order_by'];
     }
   }
 }
 
-$array_sql = array('insert'=>'utilisateurs');
+$array_sql = array('from'=>'utilisateurs', 'where'=>'');
 $testSQL = new sqlclass($array_sql);
     echo '<pre>';
     print_r($testSQL);
