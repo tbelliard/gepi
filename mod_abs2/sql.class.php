@@ -52,6 +52,13 @@ class sqlclass {
   protected $_sqlDefault = 'SELECT * ';
 
   /**
+   * Et on fixe aussi la commande PDO pour lancer la requête
+   *
+   * @access protected
+   */
+    protected $commandePdo = 'query';
+
+  /**
    * Le constructeur charge le tableau qui permet de construire une requête
    * @param array $_options
    *
@@ -79,6 +86,10 @@ class sqlclass {
   protected function _sql(){
 
     return $this->commandeSQL() . $this->_from() . $this->_where() . $this->_orderBy;
+
+  }
+
+  protected function getCommandePdo(){
 
   }
 

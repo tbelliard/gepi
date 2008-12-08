@@ -23,16 +23,24 @@ class ActiveRecordGepi{
   * Toutes les classes qui étendront ActiveRecordGepi devront initialiser cet attribut
   * __contruct() {parent::__construct('nom_de_la_table');}
   *
-  * @acces private
+  * @access private
   *
   */
   private $_table = NULL;
+
+  /**
+   * On doit la passer à true dans le cas d'un nouvel enregistrement
+   *
+   * @var <type> $newTuple = FALSE
+   * @access private
+   *
+   */
   private $newTuple = FALSE;
 
   /**
   * $typeChamps permet de conserver une trace du type de chaque champ
   *
-  * @acces private
+  * @access private
   *
   */
   private $typeChamps = array();
@@ -41,7 +49,7 @@ class ActiveRecordGepi{
   * $typeKeys permet de conserver une trace des clés de la table
   * PRI / UNI / MUL
   *
-  * @acces private
+  * @access private
   *
   */
   private $typeKeys = array();
@@ -50,7 +58,7 @@ class ActiveRecordGepi{
   * $_pk est le nom de la clé primaire de la table
   * peut-être un array()
   *
-  * @acces private
+  * @access private
   *
   */
   private $_pk = array();
@@ -59,7 +67,8 @@ class ActiveRecordGepi{
   * $conn est la ressource de connexion PDO à la base
   * Soit on la récupère par $GLOBALS["cnx"], soit on crée une connexion
   * La méthode self::pdo_connect() permet de vérifier l'état de la connexion PDO à la base
-  * @acces protected
+  *
+  * @access protected
   */
   protected static $conn = NULL;
 
@@ -83,7 +92,7 @@ class ActiveRecordGepi{
   * méthode protégée qui permet d'imposer le nom d'une table précise dans le cas où le pluriel
   * ne suffit pas.
   *
-  * @acces protected
+  * @access protected
   */
   protected function setTableName($_table){
     $this->_table = $_table;
@@ -165,6 +174,10 @@ class ActiveRecordGepi{
     }else{
       // On pourra ici coder une logique de construction des requêtes SQL par
       // une classe requete qui pourrait à terme permettre de s'affranchir de MySql
+      $_sql = new sqlclass($sql);
+      $cmdPDO = isset($_sql->commandePdo) ? $_sql->commandePdo : 'query';
+      return self::pdo_connect()->$cmdPDO($_sql);
+
     }
 
   }
@@ -173,7 +186,7 @@ class ActiveRecordGepi{
   * Save() permet de récupérer tous les champs de la table (qui ont été intitialisés par ailleurs)
   * pour créer une entrée dans la table.
   *
-  * @acces public
+  * @access public
   */
 
   public function save(){
@@ -256,7 +269,7 @@ class ActiveRecordGepi{
   * Permet  de retrouver une ou plusieurs clés primaires du tuple
   * On s'appuie sur la propriété $typeKeys de l'objet
   *
-  * @acces private
+  * @access private
   */
   private function chercherClePrimaire(){
 
@@ -292,6 +305,8 @@ class ActiveRecordGepi{
   * Singleton : méthode statique d'accès à la base de données
   * Permet d'utiliser une seule connexion sur toute l'application
   * On teste la connexion du fichier /lib/mysql.inc.php
+  *
+  * @access protected
   */
   protected static function pdo_connect(){
 
@@ -313,7 +328,7 @@ class ActiveRecordGepi{
   /**
   * Permet de rajouter un "s" à la fin de la classe pour trouver la bonne _table
   *
-  * @acces public
+  * @access public
   */
 
   public static function pluralize($word) {
@@ -359,7 +374,7 @@ class ActiveRecordGepi{
   * Méthode magique : __call permet une construction dynamique des requêtes
   * Tous les findBychamp() ou les findChampByAutrechamp()
   *
-  * @acces public
+  * @access public
   */
   public function __call($methode, $valeur){
 
@@ -387,7 +402,7 @@ class ActiveRecordGepi{
   * Cette fonction peuple les propriétés de l'objet créé
   * avec les valeurs des différents champs de la table
   *
-  * @acces protected
+  * @access protected
   */
 
   protected function findBy($where, $valeur){
