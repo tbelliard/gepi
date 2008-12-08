@@ -31,7 +31,7 @@ class ActiveRecordGepi{
   /**
    * On doit la passer à true dans le cas d'un nouvel enregistrement
    *
-   * @var <type> $newTuple = FALSE
+   * @var boul $newTuple = FALSE
    * @access private
    *
    */
@@ -61,7 +61,7 @@ class ActiveRecordGepi{
   * @access private
   *
   */
-  private $_pk = array();
+  private $_pk = NULL;
 
   /**
   * $conn est la ressource de connexion PDO à la base
@@ -211,9 +211,9 @@ class ActiveRecordGepi{
       // et c'est $this->_pk
     }
 
-    $clePrimaire = $this->_pk;
+    //$clePrimaire = $this->_pk; // ce bout de code est à enlever si la modification est bonne
 
-    if (!isset($this->$clePrimaire) OR $this->$clePrimaire == '' OR $this->newTuple === true) {
+    if (!isset($this->_pk) OR $this->_pk == '' OR $this->newTuple === true) {
 
       $sql = "INSERT INTO ".$this->_table." SET ";
       $verif = 'insert';
@@ -287,10 +287,10 @@ class ActiveRecordGepi{
       }
       $test = count($_keys);
 
-      if ($test == 1) {
+      if ($test === 1) {
         $this->_pk = $_keys[0];
         return true;
-      }elseif($test == 0){
+      }elseif($test === 0){
         return 'no';
       }else{
         $this->_pk = $_keys;
@@ -403,6 +403,7 @@ class ActiveRecordGepi{
   * avec les valeurs des différents champs de la table
   *
   * @access protected
+  * @var array $valeur
   */
 
   protected function findBy($where, $valeur){
