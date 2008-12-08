@@ -5,7 +5,7 @@ font-size: 12px;
 }
 
 #calendrierEntier {
-background-image: url("calendrier.gif");
+background-image: url("petit_calendrier.gif");
 background-position: center center;
 background-repeat: no-repeat;
 }
