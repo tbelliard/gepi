@@ -52,6 +52,8 @@ if (!VerifAidIsAcive($indice_aid,$aid_id,$annee)) {
 }
 // Gestion du lien retour
 if (isset($_GET["retour"])) {
+    if ($_GET["retour"]=='') $_SESSION['retour']='';
+    else
     $_SESSION['retour']= $_GET["retour"]."?indice_aid=".$indice_aid;
     if ($_GET["retour"]=="annees_anterieures_accueil.php") $_SESSION['retour'] .= "&amp;annee_scolaire=".$annee;
     if ($_GET["retour"]=="index_fiches.php") $_SESSION['retour'] .= "&amp;action=liste_projet";
@@ -382,6 +384,7 @@ obj.checked = false;
 }
 
 echo "<p class=bold>";
+if ($_SESSION['retour']!='')
 echo "<a href=\"".$_SESSION['retour']."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 if ($action == "visu") {
     if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,"","",$annee)) {

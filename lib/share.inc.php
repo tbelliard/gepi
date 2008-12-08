@@ -2887,22 +2887,34 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
         die();
     }
 
-    // Si le champ n'est pas activé, on ne l'affiche pas !
-    // Deux valeurs possibles :
-    // 0 -> le champ n'est pas utilisé
-    // 1 -> Le champ est utilisé
-    if ($champ != "") {
-        $statut_champ = sql_query1("select statut from droits_aid where id = '".$champ."'");
-        if ($statut_champ == 0) {
-            return FALSE;
-            die();
-        }
-    }
     if ($_login!='') {
         $statut_login = sql_query1("select statut from utilisateurs where login='".$_login."' and etat='actif' ");
     } else {
         // si le login n'est pas précisé, on est dans l'interface publique
         $statut_login = "public";
+    }
+
+
+    if ($champ == 'eleves_profs') {
+    # Cas particulier du champ eleves_profs : ce champ permet de gérer le fait que n'apparaissent pas sur les fiches publiques :
+    # Les elèves responsables du projet,
+    # les professeurs responsables du projet,
+    # les élèves faisant partie du projet.
+        if ($statut_login == "public")
+            return FALSE;
+        else
+            return TRUE;
+    } else if ($champ != "") {
+    // Si le champ n'est pas activé, on ne l'affiche pas !
+    // Deux valeurs possibles :
+    // 0 -> le champ n'est pas utilisé
+    // 1 -> Le champ est utilisé
+
+        $statut_champ = sql_query1("select statut from droits_aid where id = '".$champ."'");
+        if ($statut_champ == 0) {
+            return FALSE;
+            die();
+        }
     }
     // Admin ?
     if  ($statut_login == "administrateur") {

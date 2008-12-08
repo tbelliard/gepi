@@ -339,11 +339,13 @@ while ($i < $nombreligne){
       echo "</ul>";
       }
     } else {
-      echo "<hr /><b>Autres informations : </b><ul>";
-      echo "<li>Elèves responsables du projet :".$eleves_resp."</li>";
-      echo "<li>Professeurs responsables du projet :".$responsables."</li>";
-      echo "<li>Elèves faisant partie du projet :".$eleves."</li>";
-      echo "</ul>";
+      if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'eleves_profs','',$annee)) {
+        echo "<hr /><b>Autres informations : </b><ul>";
+        echo "<li>Elèves responsables du projet :".$eleves_resp."</li>";
+        echo "<li>Professeurs responsables du projet :".$responsables."</li>";
+        echo "<li>Elèves faisant partie du projet :".$eleves."</li>";
+        echo "</ul>";
+      }
 
     }
     echo "</td></tr></table></div>\n";
