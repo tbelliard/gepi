@@ -224,11 +224,9 @@ if ($mode == "groupe") {
         while ($i < $nombre_lignes){
             $id_classe = mysql_result($call_data, $i, "id");
             $classe = mysql_result($call_data, $i, "classe");
-            if (get_period_number($id_classe) != "0") {
                 echo "<option value='" . $id_classe . "'";
                 if ($reg_id_classe == $id_classe) echo " SELECTED";
                 echo ">$classe</option>\n";
-            }
         $i++;
         }
     } else {

@@ -82,12 +82,8 @@ if ($nombre_lignes != 0) {
         } else {
             echo "&nbsp;</td>\n<td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB;'>";
         }
-        if ($nb_per != 0) {
-            echo "<a href='../groupes/edit_class.php?id_classe=$id_classe'> <img src='../images/icons/document.png' alt='' /> Enseignements</a></td>\n";
+      echo "<a href='../groupes/edit_class.php?id_classe=$id_classe'> <img src='../images/icons/document.png' alt='' /> Enseignements</a></td>\n";
 			echo "<td style='padding: 5px; padding-right: 10px; border-right: 1px solid #BBBBBB;'>";
-        } else {
-            echo "&nbsp;</td>\n<td>";
-        }
 
 	//=======================================
 	// MODIF: boireaus
