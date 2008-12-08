@@ -106,8 +106,8 @@ class sqlclass {
    * Méthode qui renvoit le from de la requête
    */
   protected function _from(){
-    if (isset($this->_options['from'])){
-      return ' FROM ' . $this->_options['from'];
+    if (isset($this->from)){
+      return ' FROM ' . $this->from;
     }else{
       return '';
     }
@@ -117,8 +117,8 @@ class sqlclass {
    * Méthode qui renvoit la clause where de la requête
    */
   protected function _where(){
-    if (isset($this->_options['where'])){
-      return ' WHERE ' . $this->_options['where'];
+    if (isset($this->where)){
+      return ' WHERE ' . $this->where;
     }else{
       return '';
     }
@@ -128,8 +128,8 @@ class sqlclass {
    * Méthode qui renvoit l'ordre de retour des données
    */
   protected function _orderBy(){
-    if (isset($this->_options['order_by'])){
-      return ' ORDER BY ' . $this->_options['order_by'];
+    if (isset($this->order_by)){
+      return ' ORDER BY ' . $this->order_by;
     }
   }
 }
