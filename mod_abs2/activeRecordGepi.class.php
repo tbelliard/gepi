@@ -183,6 +183,30 @@ class ActiveRecordGepi{
   }
 
   /**
+   * Méthode qui permet de peupler un champ du tuple avant sauvegarde
+   * Dans le cas d'un objet déjà peuplé, elle permet une maj des champs
+   *
+   * @access public
+   * @var string $valeur
+   * @var string $champ
+   */
+  public function getChamp($champ, $valeur){
+      if (isset($this->$champ)){
+          $this->$champ = $valeur;
+          return true;
+      }else{
+          return false;
+      }
+  }
+  public function setChamp($champ){
+      if (isset($this->$champ)){
+          return $this->$champ;
+      }else{
+          return false;
+      }
+  }
+
+  /**
   * Save() permet de récupérer tous les champs de la table (qui ont été intitialisés par ailleurs)
   * pour créer une entrée dans la table.
   *
@@ -491,6 +515,8 @@ try{
   }else{
     throw new Exception('Impossible de lister les groupes de ce professeur : '.$test->login);
   }
+  $test->setChamp('nom', 'Captain'); // Permet de modifier le champ nom de l'objet $test
+  $test->save(); // Et l'enregistrement est mis à jour dans la base.
 
 }catch(Exception $e){
 
