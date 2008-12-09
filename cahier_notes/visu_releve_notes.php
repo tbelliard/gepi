@@ -511,7 +511,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 			echo "<th class='bull_simpl tab_relev_note_m'>\n";
 				echo "<strong>Matière</strong><br /><em>Professeur</em>\n";
 			echo "</th>\n";
-			echo "<th class='bull_simpl tab_relev_note_n'>Notes sur 20</th>\n";
+			echo "<th class='bull_simpl tab_relev_note_n'>Notes</th>\n";
 		echo "</tr>\n";
 
 		//------------------------------
@@ -645,7 +645,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 			//$query_notes = mysql_query("SELECT nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 			if ($choix_periode ==0) {
 				//$sql1="SELECT d.coef, nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-				$sql1="SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+				$sql1="SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 				nd.login = '".$current_eleve_login."' and
 				nd.id_devoir = d.id and
 				d.display_parents='1' and
@@ -658,7 +658,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 				";
 				$query_notes = mysql_query($sql1);
 			} else {
-				$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+				$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 				nd.login = '".$current_eleve_login."' and
 				nd.id_devoir = d.id and
 	  		d.display_parents='1' and
@@ -680,6 +680,9 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 				$eleve_display_app = @mysql_result($query_notes,$m,'d.display_parents_app');
 				$eleve_app = @mysql_result($query_notes,$m,'nd.comment');
 				$eleve_note = @mysql_result($query_notes,$m,'nd.note');
+				if(getSettingValue("note_autre_que_sur_referentiel")=="V" || mysql_result($query_notes,$m,'d.note_sur')!= getSettingValue("referentiel_note")) {
+					$eleve_note = $eleve_note."/".@mysql_result($query_notes,$m,'d.note_sur');
+				}
 				$eleve_statut = @mysql_result($query_notes,$m,'nd.statut');
 				$eleve_nom_court = @mysql_result($query_notes,$m,'d.nom_court');
 	 			if (($eleve_statut != '') and ($eleve_statut != 'v')) {

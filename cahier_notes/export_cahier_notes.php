@@ -238,6 +238,7 @@ if($type_export=="CSV"){
 
 	$ligne_info_dev[]="GEPI_DEV_NOM_COURT;;;;;Nom court du devoir:";
 	$ligne_info_dev[]="GEPI_DEV_COEF;;;;;Coefficient:";
+	$ligne_info_dev[]="GEPI_DEV_NOTE_SUR;;;;;Notation sur:";
 	$ligne_info_dev[]="GEPI_DEV_DATE;;;;;Date:";
 	$ligne_info_dev[]="INFOS;Login;Nom;Prénom;Classe;Moyennes:";
 
@@ -252,6 +253,7 @@ if($type_export=="CSV"){
 		// Problème avec les 17.5 qui sont convertis en dates
 		//$coef_dev[$cpt]=$lig_dev->coef;
 		$coef_dev[$cpt]=strtr($lig_dev->coef,".",",");
+		$note_sur_dev[$cpt]=$lig_dev->note_sur;
 		// Problème avec le format DATETIME
 		//$date_dev[$cpt]=$lig_dev->date;
 		$tmptab=explode(" ",$lig_dev->date);
@@ -261,7 +263,8 @@ if($type_export=="CSV"){
 
 		$ligne_info_dev[0].=";".$nomc_dev[$cpt];
 		$ligne_info_dev[1].=";".$coef_dev[$cpt];
-		$ligne_info_dev[2].=";".$date_dev[$cpt];
+		$ligne_info_dev[2].=";".$note_sur_dev[$cpt];
+		$ligne_info_dev[3].=";".$date_dev[$cpt];
 		// A améliorer par la suite: calculer la moyenne de la classe:
 		//$ligne_info_dev[3].="Moyenne_classe;";
 		//$ligne_info_dev[3].=";";
@@ -274,14 +277,14 @@ if($type_export=="CSV"){
 			if($lig_moy[1]!=0){
 				$moy=strtr(round(10*$lig_moy[0]/$lig_moy[1])/10,".",",");
 				//echo "$lig_moy[0]/$lig_moy[1]=".$moy."<br />";
-				$ligne_info_dev[3].=";".$moy;
+				$ligne_info_dev[4].=";".$moy;
 			}
 			else{
-				$ligne_info_dev[3].=";";
+				$ligne_info_dev[4].=";";
 			}
 		}
 		else{
-			$ligne_info_dev[3].=";";
+			$ligne_info_dev[4].=";";
 		}
 
 		$cpt++;
@@ -411,6 +414,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 		// Problème avec les 17.5 qui sont convertis en dates
 		//$coef_dev[$cpt]=$lig_dev->coef;
 		$coef_dev[$cpt]=strtr($lig_dev->coef,".",",");
+		$note_sur_dev[$cpt]=$lig_dev->note_sur;
 
 		// Problème avec le format DATETIME
 		//$date_dev[$cpt]=$lig_dev->date;
@@ -551,6 +555,26 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	$ecriture=fwrite($fichier_tmp_xml,'</table:table-row>');
 
 	// ===================
+	// Note sur:
+
+	$ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro2">');
+	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>GEPI_DEV_NOTE_SUR</text:p></table:table-cell>');
+	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell/>');
+	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="3"/>');
+	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>Note sur :</text:p></table:table-cell>');
+
+	//for($i=0;$i<count($coef_dev);$i++){
+	for($i=0;$i<$nb_dev;$i++){
+		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce6" office:value-type="float" office:value="'.strtr($note_sur_dev[$i],",",".").'"><text:p>'.$note_sur_dev[$i].'</text:p></table:table-cell>');
+	}
+
+	// PB: J'ai prévu un maximum de 46 colonnes de devoirs...
+	//$nb_vide=46-count($coef_dev);
+	$nb_vide=46-$nb_dev;
+	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:number-columns-repeated="'.$nb_vide.'" table:style-name="ce6"/>');
+	$ecriture=fwrite($fichier_tmp_xml,'</table:table-row>');
+
+	// ===================
 	// Dates:
 
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro2">');
@@ -599,13 +623,13 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	for($i=0;$i<$nb_dev;$i++){
 		//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100])))" office:value-type="float" office:value="'.$valeur_defaut.'"><text:p>'.$valeur_defaut.'</text:p></table:table-cell>');
 
-		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100])))" office:value-type="float" office:value="'.strtr($moy_dev[$i],',','.').'"><text:p>'.$moy_dev[$i].'</text:p></table:table-cell>');
+		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100])))" office:value-type="float" office:value="'.strtr($moy_dev[$i],',','.').'"><text:p>'.$moy_dev[$i].'</text:p></table:table-cell>');
 		//echo "$num_col - ";
 		$num_col++;
 	}
 
 	for($i=$num_col;$i<count($tabcol);$i++){
-		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100])))"><text:p/></table:table-cell>');
+		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100])))"><text:p/></table:table-cell>');
 		//echo "$num_col - ";
 		$num_col++;
 	}
@@ -645,7 +669,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 	$prev_classe = null;
 
-	$num_lig=6;
+	$num_lig=7;
 	foreach ($liste_eleves as $eleve) {
 		$eleve_login[$i]=$eleve["login"];
 		$eleve_nom[$i]=$eleve["nom"];
@@ -668,7 +692,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 		$valeur_defaut=0;
 
 		//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:formula="oooc:=IF([.B'.$num_lig.']=&quot;&quot;;&quot;&quot;;IF(ISERROR(ROUND(SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUM([.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;abs&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;disp&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;-&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;&quot;;[.G$3:.AZ$3]));1));&quot;-&quot;;ROUND(SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUM([.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;abs&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;disp&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;-&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;&quot;;[.G$3:.AZ$3]));1)))" office:value-type="float" office:value="'.$valeur_defaut.'"><text:p>'.$valeur_defaut.'</text:p></table:table-cell>');
-		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:formula="oooc:=IF([.B'.$num_lig.']=&quot;&quot;;&quot;&quot;;IF(ISERROR(ROUND(SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUM([.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;abs&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;disp&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;-&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;v&quot;;[.G$3:.AZ$3]));1));&quot;-&quot;;ROUND(SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUM([.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;abs&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;disp&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;-&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;v&quot;;[.G$3:.AZ$3]));1)))" office:value-type="float" office:value="'.$valeur_defaut.'"><text:p>'.$valeur_defaut.'</text:p></table:table-cell>');
+		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:formula="oooc:=IF([.B'.$num_lig.']=&quot;&quot;;&quot;&quot;;IF(ISERROR(ROUND(20*SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUMPRODUCT([.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;abs&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;disp&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;-&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;v&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4]));1));&quot;-&quot;;ROUND(20*SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUMPRODUCT([.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;abs&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;disp&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;-&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;v&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4]));1)))" office:value-type="float" office:value="'.$valeur_defaut.'"><text:p>'.$valeur_defaut.'</text:p></table:table-cell>');
 
 		$num_col=6;
 		while ($k < $nb_dev) {
@@ -724,7 +748,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell/><table:table-cell table:number-columns-repeated="3"/>');
 
-		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:formula="oooc:=IF([.B'.$i.']=&quot;&quot;;&quot;&quot;;IF(ISERROR(ROUND(SUMPRODUCT([.G'.$i.':.AZ'.$i.'];[.G$3:.AZ$3])/(SUM([.G$3:.AZ$3])-SUMIF([.G'.$i.':.AZ'.$i.'];&quot;abs&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$i.':.AZ'.$i.'];&quot;disp&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$i.':.AZ'.$i.'];&quot;-&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$i.':.AZ'.$i.'];&quot;&quot;;[.G$3:.AZ$3]));1));&quot;-&quot;;ROUND(SUMPRODUCT([.G'.$i.':.AZ'.$i.'];[.G$3:.AZ$3])/(SUM([.G$3:.AZ$3])-SUMIF([.G'.$i.':.AZ'.$i.'];&quot;abs&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$i.':.AZ'.$i.'];&quot;disp&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$i.':.AZ'.$i.'];&quot;-&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$i.':.AZ'.$i.'];&quot;&quot;;[.G$3:.AZ$3]));1)))"><text:p/></table:table-cell>');
+		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:formula="oooc:=IF([.B'.$i.']=&quot;&quot;;&quot;&quot;;IF(ISERROR(ROUND(20*SUMPRODUCT([.G'.$i.':.AZ'.$i.'];[.G$3:.AZ$3])/(SUMPRODUCT([.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;abs&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;disp&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;-&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;v&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4]));1));&quot;-&quot;;ROUND(20*SUMPRODUCT([.G'.$i.':.AZ'.$i.'];[.G$3:.AZ$3])/(SUMPRODUCT([.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;abs&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;disp&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;-&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;v&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4]));1)))"><text:p/></table:table-cell>');
 
 		$nb_max_dev=46;
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:number-columns-repeated="'.$nb_max_dev.'"/>');

@@ -254,6 +254,18 @@ else{
 									}
 								}
 								break;
+							case "GEPI_DEV_NOTE_SUR":
+								unset($note_sur_dev);
+								$note_sur_dev=array();
+								for($i=$tabindice[2];$i<sizeof($tabligne);$i++){
+									// Reformater le coef...
+									if(ereg("^[0-9\.\,]{1,}$",$tabligne[$i])){
+										$note_sur_dev[]=strtr($tabligne[$i],",",".");
+									} else{
+										$note_sur_dev[]="20";
+									}
+								}
+								break;
 							case "GEPI_DEV_DATE":
 								unset($date_dev);
 								$date_dev=array();
@@ -353,15 +365,20 @@ else{
 					die();
 				}
 
-				// Et si il n'y a pas de ligne coef? ou pas de ligne date?
-
-				if((count($nomc_dev)!=count($date_dev))||(count($nomc_dev)!=count($coef_dev))){
+				// Et si il n'y a pas de ligne coef? ou pas de ligne date ?
+				if(count($nomc_dev)!=count($date_dev)
+                                   ||count($nomc_dev)!=count($coef_dev)
+                                  ){
 					echo "<p><b>Erreur:</b> Le nombre de champs ne coïncide pas pour les noms courts, coefficients et dates.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
 
+				// Et si il n'y a pas de ligne note_sur on met toutes les notes sur 20
+				if(count($nomc_dev)!=count($note_sur_dev)){
+					$note_sur_dev = array_pad(array(), count($nomc_dev), 20);
+				}
 
 				//================
 				// A FAIRE:
@@ -410,6 +427,19 @@ else{
 						echo "<th>";
 						echo "<input type='hidden' name='coef_dev[$i]' value=\"".$coef_dev[$i]."\" />\n";
 						echo $coef_dev[$i];
+						echo "</th>\n";
+					}
+				}
+				echo "</tr>\n";
+
+				echo "<tr>\n";
+				echo "<th>&nbsp;</th>\n";
+				for($i=0;$i<count($nomc_dev);$i++){
+					if($nomc_dev[$i]!=""){
+						//echo "<th>$note_sur_dev[$i]</th>\n";
+						echo "<th>";
+						echo "<input type='hidden' name='note_sur_dev[$i]' value=\"".$note_sur_dev[$i]."\" />\n";
+						echo $note_sur_dev[$i];
 						echo "</th>\n";
 					}
 				}
@@ -500,6 +530,12 @@ else{
 			require("../lib/footer.inc.php");
 		}
 
+		$note_sur_dev=isset($_POST['note_sur_dev']) ? $_POST['note_sur_dev'] : NULL;
+		if(!isset($note_sur_dev)){
+			echo "<p>ERREUR: Aucun référentiel de notation défini.</p>\n";
+			require("../lib/footer.inc.php");
+		}
+
 		$login_ele=isset($_POST['login_ele']) ? $_POST['login_ele'] : NULL;
 		if(!isset($login_ele)){
 			echo "<p>ERREUR: Aucun élève importé.</p>\n";
@@ -551,6 +587,7 @@ else{
 												nom_complet='".$nomc_dev[$i]."',
 												date='".$date_dev[$i]."',
 												coef='".$coef_dev[$i]."',
+												note_sur='".$note_sur_dev[$i]."',
 												display_parents='1'
 											WHERE id='$id_dev[$i]';";
 					echo "Création du devoir n°$i: $nomc_dev[$i]<br />\n";

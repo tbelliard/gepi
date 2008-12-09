@@ -681,6 +681,12 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
             $coef[$k] = mysql_result($appel_dev, $k, 'coef');
 			fdebug("\$coef[$k]=$coef[$k]\n");
 
+            $note_sur[$k] = mysql_result($appel_dev, $k, 'note_sur');
+			fdebug("\$note_sur[$k]=$note_sur[$k]\n");
+
+            $ramener_sur_referentiel[$k] = mysql_result($appel_dev, $k, 'ramener_sur_referentiel');
+			fdebug("\$ramener_sur_referentiel[$k]=$ramener_sur_referentiel[$k]\n");
+
             // Prise en compte de la pondération
             if (($ponderation != 0) and ($j==0) and ($k==$indice_pond)) $coef[$k] = $coef[$k] + $ponderation;
 			fdebug("\$ponderation=$ponderation\n");
@@ -696,13 +702,26 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 			fdebug("\$note=$note\n");
 
             if (($statut == '') and ($note!='')) {
+                if ($note_sur[$k] != getSettingValue("referentiel_note")) {
+                    if ($ramener_sur_referentiel[$k] != 'V') {
+                        //on ramene la note sur le referentiel mais on modifie le coefficient pour prendre en compte le référentiel
+                        $note = $note * getSettingValue("referentiel_note") / $note_sur[$k];
+                        $coef[$k] = $coef[$k] * $note_sur[$k] / getSettingValue("referentiel_note");
+                    } else {
+                        //on fait comme si c'était une note sur le referentiel avec une regle de trois ;)
+                        $note = $note * getSettingValue("referentiel_note") / $note_sur[$k];
+                    }
+                }
+                fdebug("Correction note autre que sur referentiel : \$note=$note\n");
+                fdebug("Correction note autre que sur referentiel : \$coef[$k]=$coef[$k]\n");
+
                 if ($facultatif[$k] == 'O') {
                     // le devoir n'est pas facultatif (Obligatoire) et entre systématiquement dans le calcul de la moyenne si le coef est différent de zéro
                     $total_point = $total_point + $coef[$k]*$note;
                     $somme_coef = $somme_coef + $coef[$k];
                 } else if ($facultatif[$k] == 'B') {
                     //le devoir est facultatif comme un bonus : seuls les points supérieurs à 10 sont pris en compte dans le calcul de la moyenne.
-                    if ($note > 10) {
+                    if ($note > ($note_sur[$k]/2)) {
                         $total_point = $total_point + $coef[$k]*$note;
                         $somme_coef = $somme_coef + $coef[$k];
                     }

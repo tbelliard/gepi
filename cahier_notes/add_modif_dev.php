@@ -142,6 +142,25 @@ if (isset($_POST['ok'])) {
         if (!$reg)  $reg_ok = "no";
     }
 
+   if (isset($_POST['note_sur'])) {
+        $reg = mysql_query("UPDATE cn_devoirs SET note_sur = '".$_POST['note_sur']."' WHERE id = '$id_devoir'");
+        if (!$reg)  $reg_ok = "no";
+    } else {
+        $reg = mysql_query("UPDATE cn_devoirs SET note_sur = '".getSettingValue("referentiel_note")."' WHERE id = '$id_devoir'");
+        if (!$reg)  $reg_ok = "no";
+    }
+
+    if (isset($_POST['ramener_sur_referentiel'])) {
+        if ($_POST['ramener_sur_referentiel']) {
+            $ramener_sur_referentiel='V';
+        }
+    } else {
+        $ramener_sur_referentiel='F';
+    }
+
+    $reg = mysql_query("UPDATE cn_devoirs SET ramener_sur_referentiel = '$ramener_sur_referentiel' WHERE id = '$id_devoir'");
+    if (!$reg)  $reg_ok = "no";
+
     if (($_POST['facultatif']) and ereg("^(O|N|B)$", $_POST['facultatif'])) {
         $reg = mysql_query("UPDATE cn_devoirs SET facultatif = '".$_POST['facultatif']."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
@@ -257,6 +276,8 @@ if ($id_devoir)  {
     $nom_complet = mysql_result($appel_devoir, 0, 'nom_complet');
     $description = mysql_result($appel_devoir, 0, 'description');
     $coef = mysql_result($appel_devoir, 0, 'coef');
+    $note_sur = mysql_result($appel_devoir, 0, 'note_sur');
+    $ramener_sur_referentiel = mysql_result($appel_devoir, 0, 'ramener_sur_referentiel');
     $facultatif = mysql_result($appel_devoir, 0, 'facultatif');
     $display_parents = mysql_result($appel_devoir, 0, 'display_parents');
     $display_parents_app = mysql_result($appel_devoir, 0, 'display_parents_app');
@@ -274,6 +295,8 @@ if ($id_devoir)  {
     $description = "";
     $new_devoir = 'yes';
     $coef = "1";
+    $note_sur = getSettingValue("referentiel_note");
+    $ramener_sur_referentiel = "F";
     $display_parents = "1";
     $display_parents_app = "0";
     $facultatif = "O";
@@ -368,6 +391,7 @@ if($interface_simplifiee=="y"){
 	$aff_nom_complet=getPref($_SESSION['login'],'add_modif_dev_nom_complet','n');
 	$aff_description=getPref($_SESSION['login'],'add_modif_dev_description','n');
 	$aff_coef=getPref($_SESSION['login'],'add_modif_dev_coef','y');
+	$aff_note_autre_que_referentiel=getPref($_SESSION['login'],'add_modif_dev_note_autre_que_referentiel','n');
 	$aff_date=getPref($_SESSION['login'],'add_modif_dev_date','y');
 	$aff_boite=getPref($_SESSION['login'],'add_modif_dev_boite','y');
 
@@ -448,6 +472,28 @@ if($interface_simplifiee=="y"){
 		echo "<td>\n";
 		echo "<input type='hidden' name = 'coef' size='4' value = \"".$coef."\" />\n";
 		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+
+	if($aff_note_autre_que_referentiel=='y'){
+		if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
+			echo "<tr>\n";
+			echo "<td style='background-color: #aae6aa; font-weight: bold;'>Note sur : </td>\n";
+	   		echo "<td><input type='text' name = 'note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" /></td>\n";
+			echo "</tr>\n";
+	    		echo "<tr>\n";
+			echo "<td style='background-color: #aae6aa; font-weight: bold;'>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : </td>";
+	    		echo "<td><input type='checkbox' name='ramener_sur_referentiel'"; if ($ramener_sur_referentiel == 'V') echo " checked"; echo " /></td>\n";
+			echo "</tr>\n";
+        	}
+        } else {
+		echo "<tr style='display:none;'>\n";
+		echo "<td>Note sur :</td>\n";
+		echo "<td>\n";
+           	echo("<input type='hidden' name = 'note_sur' value = '".getSettingValue("referentiel_note")."'/>");
+            	echo("<input type='hidden' name = 'ramener_sur_referentiel' value = 'F'/>");
+ 		echo "</td>\n";
 		echo "</tr>\n";
 	}
 
@@ -561,6 +607,20 @@ else{
 	echo "<h3 class='gepi'>Coefficient de l'évaluation</h3>\n";
 	echo "<table><tr><td>Valeur de la pondération dans le calcul de la moyenne (si 0, la note de l'évaluation n'intervient pas dans le calcul de la moyenne) : </td>";
 	echo "<td><input type='text' name = 'coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" /></td></tr></table>\n";
+
+	//====================================
+	// Note autre que sur 20
+	// =====
+	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
+	    echo "<h3 class='gepi'>Notation</h3>\n";
+	    echo "<table><tr><td>Note sur : </td>";
+	    echo "<td><input type='text' name = 'note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
+	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : </td>";
+	    echo "</td><td><input type='checkbox' name='ramener_sur_referentiel'"; if ($ramener_sur_referentiel == 'V') echo " checked"; echo " /></td></tr></table>\n";
+        } else {
+            echo("<input type='hidden' name = 'note_sur' value = '".getSettingValue("referentiel_note")."'/>");
+            echo("<input type='hidden' name = 'ramener_sur_referentiel' value = 'F'/>");
+        }
 
 	//====================================
 	// Statut

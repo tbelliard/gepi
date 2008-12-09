@@ -86,6 +86,7 @@ INSERT INTO setting VALUES ('beta_module_msj', 'n');
 INSERT INTO setting VALUES ('dossier_ftp_gepi', 'gepi');
 INSERT INTO setting VALUES ('bull_affiche_tel', 'n');
 INSERT INTO setting VALUES ('bull_affiche_fax', 'n');
+INSERT INTO setting VALUES ('note_autre_que_sur_20', 'F');
 INSERT INTO etablissements VALUES ('999', 'étranger', 'aucun', 'aucun', 999, '');
 INSERT INTO droits VALUES ('/absences/index.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');
 INSERT INTO droits VALUES ('/absences/saisie_absences.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');

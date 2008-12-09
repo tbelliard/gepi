@@ -148,7 +148,7 @@
         //==========================================
         // AJOUT: boireaus
         // Nombre de contrôles
-        $sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$current_eleve_login[$i]."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group[$j]["id"]."' AND ccn.periode='$periode_num' AND cnd.statut='';";
+        $sql="SELECT cnd.note, cd.note_sur FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$current_eleve_login[$i]."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group[$j]["id"]."' AND ccn.periode='$periode_num' AND cnd.statut='';";
         //echo "\n<!--sql=$sql-->\n";
         $result_nbct=mysql_query($sql);
         $current_eleve_nbct=mysql_num_rows($result_nbct);
@@ -161,6 +161,9 @@
 		while ($snnote =  mysql_fetch_assoc($result_nbct)) {
 			if ($string_notes != '') $string_notes .= ", ";
 			$string_notes .= $snnote['note'];
+			if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
+				$string_notes .= "/".$snnote['note_sur'];
+			}
 		}
 	}
 	$current_eleve_appreciation = str_replace('@@Notes', $string_notes,$current_eleve_appreciation);

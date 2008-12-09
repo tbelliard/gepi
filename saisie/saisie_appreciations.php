@@ -707,7 +707,7 @@ foreach ($liste_eleves as $eleve_login) {
 				// Ajout Eric affichage des notes au dessus de la saisie des appréciations
 				$liste_notes ='';
 				// Nombre de contrôles
-				$sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$eleve_login."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$k' AND cnd.statut='';";
+				$sql="SELECT cnd.note, cd.note_sur FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$eleve_login."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$k' AND cnd.statut='';";
 				//echo "\n<!--sql=$sql-->\n";
 				$result_nbct=mysql_query($sql);
 				$current_eleve_nbct=mysql_num_rows($result_nbct);
@@ -718,6 +718,9 @@ foreach ($liste_eleves as $eleve_login) {
 					while ($snnote =  mysql_fetch_assoc($result_nbct)) {
 						if ($liste_notes != '') $liste_notes .= ", ";
 						$liste_notes .= $snnote['note'];
+						if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
+							$liste_notes .= "/".$snnote['note_sur'];
+						}
 					}
 				}
 

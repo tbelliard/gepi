@@ -150,6 +150,8 @@ while ($num_per < $nb_cahier_note) {
         $nom_dev[$j] = mysql_result($appel_dev, $k, 'nom_court');
         $id_dev[$j] = mysql_result($appel_dev, $k, 'id');
         $coef[$j] = mysql_result($appel_dev, $k, 'coef');
+        $note_sur[$j] = mysql_result($appel_dev, $k, 'note_sur');
+        $ramener_sur_referentiel[$j] = mysql_result($appel_dev, $k, 'ramener_sur_referentiel');
         $facultatif[$j] = mysql_result($appel_dev, $k, 'facultatif');
         $date = mysql_result($appel_dev, $k, 'date');
         $annee = substr($date,0,4);
@@ -247,6 +249,8 @@ while ($num_per < $nb_cahier_note) {
             $id_s_dev[$i][$m] = mysql_result($query_nb_dev, $m, 'id');
             $nom_sous_dev[$i][$m] = mysql_result($query_nb_dev, $m, 'nom_court');
             $coef_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'coef');
+            $note_sur_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'note_sur');
+            $ramener_sur_referentiel_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'ramener_sur_referentiel');
             $fac_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'facultatif');
             $date = mysql_result($query_nb_dev, $m, 'date');
             $annee = substr($date,0,4);
@@ -281,7 +285,18 @@ while ($num_per < $nb_cahier_note) {
             $tmp = '';
         }
 
-        echo "<td class=cn".$tmp." valign='top'><center><b>$nom_dev[$i]</b><br /><font size=-2>($display_date[$i])</font></center></td>\n";
+        echo "<td class=cn".$tmp." valign='top'><center><b>$nom_dev[$i]</b><br />";
+	if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur[$i]!=getSettingValue("referentiel_note")) {
+		if ($ramener_sur_referentiel[$i] != 'V') {
+			echo "<font size=-2>Note sur $note_sur[$i]<br />";
+		} else {
+			$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+			echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_$i','y',-150,20	);\" >";
+			echo "<font size=-2>Note sur $note_sur[$i]";
+			echo "</a><br />";
+		}
+	}	
+	echo "($display_date[$i])</font></center></td>\n";
         $header_pdf[] = $nom_dev[$i]." (".$display_date[$i].")";
         $w_pdf[] = $w2;
         $i++;
@@ -293,7 +308,19 @@ while ($num_per < $nb_cahier_note) {
         while ($m < $nb_dev_s_cont[$i]) {
             $tmp = '';
             if (($mode[$num_per] == 1) and ($coef_s_dev[$i][$m] != 0)) $tmp = " bgcolor = $couleur_calcul_moy ";
-            echo "<td class=cn".$tmp." valign='top'><center><b>".$nom_sous_dev[$i][$m]."</b><br /><font size=-2>(".$display_date_s_dev[$i][$m].")</font></center></td>\n";
+            echo "<td class=cn".$tmp." valign='top'><center><b>".$nom_sous_dev[$i][$m]."</b><br />";
+	    if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur_s_dev[$i][$m]!=getSettingValue("referentiel_note")) {
+		if ($ramener_sur_referentiel_s_dev[$i][$m] != 'V') {
+			echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m]."<br />";
+		} else {
+			$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+			echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_s_dev_".$i."_".$m."','y',-150,20	);\" >";
+			echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m];
+			echo "</a><br />";
+		}
+	    }	
+
+	    echo "(".$display_date_s_dev[$i][$m].")</font></center></td>\n";
             $header_pdf[] = $nom_sous_dev[$i][$m]." (".$display_date_s_dev[$i][$m].")";
             $w_pdf[] = $w2;
 
@@ -320,13 +347,21 @@ echo "</tr>";
 // quatrième ligne
 //
 echo "<tr><td class=cn valign='top'><b>Nom&nbsp;Prénom&nbsp;\&nbsp;Coef.</b></td>\n";
-$data_pdf[0][] = "Nom Prénom\Coef.";
+if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
+	$data_pdf[0][] = "Nom Prénom\Coef. /Note sur";
+} else {
+	$data_pdf[0][] = "Nom Prénom\Coef.";
+}
 $num_per = 0;
 while ($num_per < $nb_cahier_note) {
     $i = $nb_dev[$num_per-1];
     while ($i < $nb_dev[$num_per]) {
         echo "<td class=cn valign='top'><center><b>$coef[$i]</b>";
-        $data_pdf[0][] = $coef[$i];
+	if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur[$i]!=getSettingValue("referentiel_note")) {
+		$data_pdf[0][] = $coef[$i]." /".$note_sur[$i];
+	} else {
+	        $data_pdf[0][] = $coef[$i];
+	}
         if (($facultatif[$i] == 'B') or ($facultatif[$i] == 'N')) echo "<br />Bonus";
         echo "</center></td>\n";
         $i++;
@@ -336,7 +371,11 @@ while ($num_per < $nb_cahier_note) {
         $m = 0;
         while ($m < $nb_dev_s_cont[$i]) {
             echo "<td class=cn valign='top'><center><b>".$coef_s_dev[$i][$m]."</b>";
-            $data_pdf[0][] = $coef_s_dev[$i][$m];
+	    if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur_s_dev[$i][$m]!=getSettingValue("referentiel_note")) {
+		$data_pdf[0][] = $coef_s_dev[$i][$m]." /".$note_sur_s_dev[$i][$m];
+	    } else {
+	        $data_pdf[0][] = $coef_s_dev[$i][$m];
+	    }
             if (($fac_s_dev[$i][$m] == 'B') or ($fac_s_dev[$i][$m] == 'N')) echo "<br />Bonus";
             echo "</center></td>\n";
             $m++;

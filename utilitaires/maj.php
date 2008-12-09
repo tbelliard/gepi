@@ -7421,6 +7421,46 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 
     // Fin du module discipline
 
+	    //module carnet de note
+    $result .= "<br />Modification de la table 'cn_devoirs'. ";
+    $testcn_devoirs_note_sur = mysql_num_rows(mysql_query("SHOW COLUMNS FROM cn_devoirs LIKE 'note_sur'"));
+    if ($testcn_devoirs_note_sur == 0) {
+        $query = mysql_query("ALTER TABLE `cn_devoirs` ADD `note_sur` INT(11) DEFAULT '20' AFTER `coef` ;");
+		if ($query) {
+	    	$result .= "<font color=\"green\">Ok !</font>";
+        } else {
+            $result .= "<font color=\"red\">Erreur</font><br />";
+		}
+    } else {
+        $result .= "<br /><font color=\"blue\">La colonne 'note_sur' existe deja.</font><br />";
+    }
+
+    $testcn_devoirs_ramener_sur_referentiel = mysql_num_rows(mysql_query("SHOW COLUMNS FROM cn_devoirs LIKE 'ramener_sur_referentiel'"));
+    if ($testcn_devoirs_ramener_sur_referentiel == 0) {
+        $result_inter = traite_requete("ALTER TABLE `cn_devoirs` ADD `ramener_sur_referentiel` CHAR(1) NOT NULL DEFAULT 'F' AFTER `note_sur` ;");
+		if ($query) {
+	    	$result .= "<font color=\"green\"> Ok !</font><br />";
+    	} else {
+            $result .= "<br />Erreur sur la modification de la table 'cn_devoirs': ".$result_inter."<br />";
+		}
+    } else {
+        $result .= "<font color=\"blue\">La colonne 'ramener_sur_referentiel' existe deja.</font><br />";
+    }
+
+    $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'note_autre_que_sur_referentiel'");
+    $res_test = mysql_num_rows($req_test);
+    if ($res_test == 0){
+	    $result_inter .= traite_requete("INSERT INTO setting VALUES ('note_autre_que_sur_referentiel', 'F');");
+	}
+
+    $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'referentiel_note'");
+    $res_test = mysql_num_rows($req_test);
+    if ($res_test == 0){
+	    $result_inter .= traite_requete("INSERT INTO setting VALUES ('referentiel_note', '20');");
+	}
+
+
+    //fin module carnet de note
 
 	$sql="SELECT 1=1 FROM setting WHERE name='unzipped_max_filesize';";
 	$query = mysql_query($sql);

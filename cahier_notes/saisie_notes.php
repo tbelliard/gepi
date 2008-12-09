@@ -266,7 +266,9 @@ if (isset($_POST['is_posted'])) {
 					}
 					else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
 						$note = str_replace(",", ".", "$note");
-						if (($note < 0) or ($note > 20)) {
+                                                $appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
+                                                $note_sur_verif = mysql_result($appel_note_sur,0 ,'note_sur');
+						if (($note < 0) or ($note > $note_sur_verif)) {
 							$note = '';
 							$elev_statut = '';
 						}
@@ -390,6 +392,8 @@ while ($j < $nb_dev) {
 	$nom_dev[$j] = mysql_result($appel_dev, $j, 'nom_court');
 	$id_dev[$j] = mysql_result($appel_dev, $j, 'id');
 	$coef[$j] = mysql_result($appel_dev, $j, 'coef');
+        $note_sur[$j] = mysql_result($appel_dev, $j, 'note_sur');
+        $ramener_sur_referentiel[$j] = mysql_result($appel_dev, $j, 'ramener_sur_referentiel');
 	$facultatif[$j] = mysql_result($appel_dev, $j, 'facultatif');
 	$date = mysql_result($appel_dev, $j, 'date');
 	$annee = substr($date,0,4);
@@ -494,9 +498,12 @@ $couleur_devoirs = '#AAE6AA';
 $couleur_moy_cont = '#96C8F0';
 $couleur_moy_sous_cont = '#FAFABE';
 $couleur_calcul_moy = '#AAAAE6';
+$note_sur_verif = 20;
 if ($id_devoir != 0) {
+        $appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
+        $note_sur_verif = mysql_result($appel_note_sur,'0' ,'note_sur');
 	//echo "<p class='cn'>Taper une note de 0 à 20 pour chaque élève, ou à défaut le code 'abs' pour 'absent', le code 'disp' pour 'dispensé', le code '-' pour absence de note.</p>\n";
-	echo "<p class='cn'>Taper une note de 0 à 20 pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code '-' ou 'n' pour absence de note.</p>\n";
+	echo "<p class='cn'>Taper une note de 0 à ".$note_sur_verif." pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code '-' ou 'n' pour absence de note.</p>\n";
 	echo "<p class='cn'>Vous pouvez également <b>importer directement vos notes par \"copier/coller\"</b> à partir d'un tableur ou d'une autre application : voir tout en bas de cette page.</p>\n";
 
 }
@@ -524,7 +531,7 @@ function verifcol(num_id){
 		//if((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0))){
 		if(((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0)))||
 	((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
-			if((note>20)||(note<0)){
+			if((note>".$note_sur_verif.")||(note<0)){
 				couleur='red';
 			}
 			else{
@@ -782,6 +789,8 @@ if ($id_devoir==0) {
 				$id_s_dev[$i][$m] = mysql_result($query_nb_dev, $m, 'id');
 				$nom_sous_dev[$i][$m] = mysql_result($query_nb_dev, $m, 'nom_court');
 				$coef_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'coef');
+				$note_sur_s_dev[$i][$m] = mysql_result($appel_dev, $m, 'note_sur');
+				$ramener_sur_referentiel_s_dev[$i][$m] = mysql_result($appel_dev, $m, 'ramener_sur_referentiel');
 				$fac_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'facultatif');
 				$date = mysql_result($query_nb_dev, $m, 'date');
 				$annee = substr($date,0,4);
@@ -955,15 +964,36 @@ echo "<tr><td class='cn' valign='top'><b>" .
 		"<a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=nom'>Nom Prénom</a></b></td>";
 if ($multiclasses) echo "<td><a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=classe'>Classe</a></td>";
 echo "\n";
+
 //$data_pdf[0][] = "Nom Prénom\Coef.";
-$data_pdf[0][] = traite_accents_utf8("Nom Prénom\Coef.");
+//$data_pdf[0][] = traite_accents_utf8("Nom Prénom\Coef.");
+
+if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
+	$data_pdf[0][] = traite_accents_utf8("Nom Prénom /Note sur (coef)");
+} else {
+	$data_pdf[0][] = traite_accents_utf8("Nom Prénom \ (coef)");
+}
+
 if ($multiclasses) $data_pdf[0][] = "";
 $i = 0;
 while ($i < $nb_dev) {
 	// En mode saisie, on n'affiche que le devoir à saisir
 	if (($id_devoir==0) or ($id_dev[$i] == $id_devoir)) {
-		echo "<td class='cn' valign='top'><center>coef : ".number_format($coef[$i],1, ',', ' ');
-		$data_pdf[0][] = number_format($coef[$i],1, ',', ' ');
+		echo "<td class='cn' valign='top'>";
+		if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur[$i]!=getSettingValue("referentiel_note")) {
+			$data_pdf[0][] = "/".$note_sur[$i]." (".number_format($coef[$i],1, ',', ' ').")";
+			if ($ramener_sur_referentiel[$i] != 'V') {
+				echo "<font size=-2>Note sur $note_sur[$i]<br />";
+			} else {
+				$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+				echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_$i','y',-150,20	);\" >";
+				echo "<font size=-2>Note sur $note_sur[$i]";
+				echo "</a><br />";
+			}
+		} else {
+			$data_pdf[0][] = "(".number_format($coef[$i],1, ',', ' ').")";
+		}
+		echo "coef : ".number_format($coef[$i],1, ',', ' ');
 		if (($facultatif[$i] == 'B') or ($facultatif[$i] == 'N')) echo "<br />Bonus";
 		echo "</center></td>\n";
 		if ($id_dev[$i] == $id_devoir) {
@@ -986,8 +1016,23 @@ if ($id_devoir==0) {
 		if ($_SESSION['affiche_tous'] == 'yes') {
 			$m = 0;
 			while ($m < $nb_dev_s_cont[$i]) {
-				echo "<td class='cn' valign='top'><center>coef : ".number_format($coef_s_dev[$i][$m],1, ',', ' ');
-				$data_pdf[0][] = number_format($coef_s_dev[$i][$m],1, ',', ' ');
+				echo "<td class='cn' valign='top'>";
+				if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur_s_dev[$i][$m]!=getSettingValue("referentiel_note")) {
+					$data_pdf[0][] = "/".$note_sur_s_dev[$i][$m]." (".number_format($coef_s_dev[$i][$m],1, ',', ' ').")";
+					if ($ramener_sur_referentiel[$i] != 'V') {
+						echo "<font size=-2>Note sur $note_sur_s_dev[$i][$m]<br />";
+					} else {
+						$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+						echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_s_dev_".$i."_".$m."','y',-150,20	);\" >";
+						echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m];
+						echo "</a><br />";
+					}
+				} else {
+					$data_pdf[0][] = "(".number_format($coef_s_dev[$i][$m],1, ',', ' ').")";
+				}
+
+
+				echo "<center>coef : ".number_format($coef_s_dev[$i][$m],1, ',', ' ');
 				if (($fac_s_dev[$i][$m] == 'B') or ($fac_s_dev[$i][$m] == 'N')) echo "<br />Bonus";
 				echo "</center></td>\n";
 				$m++;
@@ -1022,7 +1067,7 @@ $graphe_hauteurTotale=150;
 $graphe_titre="Répartition des notes";
 $graphe_taille_police=3;
 $graphe_epaisseur_traits=2;
-$graphe_largeur=4;
+$graphe_nb_tranches=5;
 
 //for($k=0;$k<count($tab_graph);$k++) {
 
@@ -1070,7 +1115,8 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 
 			$texte="<div align='center'><object data='../lib/graphe_svg.php?";
 			$texte.="serie=$graphe_serie";
-			$texte.="&amp;largeur=$graphe_largeur";
+			$texte.="&amp;note_sur_serie=$note_sur[$k]";
+			$texte.="&amp;nb_tranches=$graphe_nb_tranches";
 			$texte.="&amp;titre=$graphe_titre";
 			$texte.="&amp;v_legend1=Notes";
 			$texte.="&amp;v_legend2=Effectif";
@@ -1287,7 +1333,8 @@ if($id_devoir==0) {
 
 	$texte="<div align='center'><object data='../lib/graphe_svg.php?";
 	$texte.="serie=$graphe_serie";
-	$texte.="&amp;largeur=$graphe_largeur";
+	$texte.="&amp;note_sur_serie=20";
+	$texte.="&amp;nb_tranches=5";
 	$texte.="&amp;titre=$graphe_titre";
 	$texte.="&amp;v_legend1=Notes";
 	$texte.="&amp;v_legend2=Effectif";

@@ -643,7 +643,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 		if($active_regroupement_cote!='1' and $active_entete_regroupement!='1') { $systeme_de_classement = ' jgc.priorite ASC, '.$systeme_de_classement; }
 
 		// requête dans la base
-		$sql = 'SELECT *,m.nom_complet AS matiere_nom_complet,cd.nom_court AS nom_devoir,cd.coef AS coef_devoir,mc.nom_complet AS mat_cat_nom_complet FROM '.$prefix_base.'cn_devoirs cd, '.$prefix_base.'cn_notes_devoirs cnd, '.$prefix_base.'cn_cahier_notes ccn, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_matieres jgm, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'matieres m, '.$prefix_base.'.j_matieres_categories_classes jmcc, '.$prefix_base.'matieres_categories mc
+		$sql = 'SELECT *,m.nom_complet AS matiere_nom_complet,cd.nom_court AS nom_devoir,cd.coef AS coef_devoir, cd.note_sur AS note_sur, mc.nom_complet AS mat_cat_nom_complet FROM '.$prefix_base.'cn_devoirs cd, '.$prefix_base.'cn_notes_devoirs cnd, '.$prefix_base.'cn_cahier_notes ccn, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_matieres jgm, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'matieres m, '.$prefix_base.'.j_matieres_categories_classes jmcc, '.$prefix_base.'matieres_categories mc
 				 WHERE jgc.id_groupe = g.id
 				   AND jgc.id_classe = "'.$classe_id_eleve[$nb_eleves_i].'"
 				   AND jmcc.classe_id = jgc.id_classe
@@ -792,7 +792,11 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 						else
 						{
 
-							$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note'];
+							if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $donne_requete['note_sur']!=getSettingValue("referentiel_note")) {
+								$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note']."/".$donne_requete['note_sur'];
+							} else {
+								$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note'];
+							}
 
 						}
 
@@ -801,7 +805,11 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					{
 
 						// si différent de 0
-						$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note'];
+						if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $donne_requete['note_sur']!=getSettingValue("referentiel_note")) {
+							$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note']."/".$donne_requete['note_sur'];
+						} else {
+							$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note'];
+						}
 
 					}
 					//=======================
@@ -943,7 +951,11 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 						else
 						{
 
-							$notes_actif = $donne_requete['note'];
+							if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $donne_requete['note_sur']!=getSettingValue("referentiel_note")) {
+								$notes_actif = $donne_requete['note']."/".$donne_requete['note_sur'];
+							} else {
+								$notes_actif = $donne_requete['note'];
+							}
 
 						}
 
@@ -952,7 +964,11 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					{
 
 						// si note différent de 0
-						$notes_actif = $donne_requete['note'];
+							if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $donne_requete['note_sur']!=getSettingValue("referentiel_note")) {
+								$notes_actif = $donne_requete['note']."/".$donne_requete['note_sur'];
+							} else {
+								$notes_actif = $donne_requete['note'];
+							}
 
 					}
 

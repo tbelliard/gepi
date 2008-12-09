@@ -497,7 +497,7 @@
 							//if ($choix_periode ==0) {
 							if ($choix_periode=="intervalle") {
 								//$sql1="SELECT d.coef, nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-								$sql1="SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+								$sql1="SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								nd.login = '".$current_eleve_login[$i]."' and
 								nd.id_devoir = d.id and
 								d.display_parents='1' and
@@ -510,7 +510,7 @@
 								";
 							}
 							else {
-								$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+								$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								nd.login = '".$current_eleve_login[$i]."' and
 								nd.id_devoir = d.id and
 								d.display_parents='1' and
@@ -530,10 +530,15 @@
 							while ($m < $count_notes) {
 								$eleve_display_app = @mysql_result($query_notes,$m,'d.display_parents_app');
 								$eleve_app = @mysql_result($query_notes,$m,'nd.comment');
-								$eleve_note = @mysql_result($query_notes,$m,'nd.note');
+								if(getSettingValue("note_autre_que_sur_referentiel")=="V" || mysql_result($query_notes,$m,'d.note_sur')!=getSettingValue("referentiel_note")) {
+									$eleve_note = @mysql_result($query_notes,$m,'nd.note')."/".@mysql_result($query_notes,$m,'d.note_sur');
+								} else {
+									$eleve_note = @mysql_result($query_notes,$m,'nd.note');
+								}
 								$eleve_statut = @mysql_result($query_notes,$m,'nd.statut');
 								$eleve_nom_court = @mysql_result($query_notes,$m,'d.nom_court');
 								$date_note = @mysql_result($query_notes,$m,'d.date');
+								$note_sur = @mysql_result($query_notes,$m,'d.note_sur');
 								$coef_devoir = @mysql_result($query_notes,$m,'d.coef');
 
 								$tab_ele['groupe'][$j]['devoir'][$m]['display_app']=$eleve_display_app;
@@ -542,6 +547,7 @@
 								$tab_ele['groupe'][$j]['devoir'][$m]['statut']=$eleve_statut;
 								$tab_ele['groupe'][$j]['devoir'][$m]['nom_court']=$eleve_nom_court;
 								$tab_ele['groupe'][$j]['devoir'][$m]['date']=$date_note;
+								$tab_ele['groupe'][$j]['devoir'][$m]['note_sur']=$note_sur;
 								$tab_ele['groupe'][$j]['devoir'][$m]['coef']=$coef_devoir;
 								// On ne récupère pas le nom long du devoir?
 

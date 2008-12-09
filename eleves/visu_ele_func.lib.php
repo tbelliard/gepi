@@ -291,7 +291,7 @@ function info_eleve($ele_login) {
 						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['differents_coef']=$differents_coef;
 
 
-						$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+						$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 						nd.login = '".$ele_login."' and
 						nd.id_devoir = d.id and
 						d.display_parents='1' and
@@ -313,6 +313,7 @@ function info_eleve($ele_login) {
 							$eleve_nom_court = @mysql_result($query_notes,$m,'d.nom_court');
 							$date_note = @mysql_result($query_notes,$m,'d.date');
 							$coef_devoir = @mysql_result($query_notes,$m,'d.coef');
+							$note_sur_devoir = @mysql_result($query_notes,$m,'d.note_sur');
 
 							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['display_app']=$eleve_display_app;
 							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['app']=$eleve_app;
@@ -321,6 +322,7 @@ function info_eleve($ele_login) {
 							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['nom_court']=$eleve_nom_court;
 							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['date']=$date_note;
 							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['coef']=$coef_devoir;
+							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['note_sur']=$note_sur_devoir;
 							// On ne récupère pas le nom long du devoir?
 
 							$m++;
@@ -1099,6 +1101,8 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 				$eleve_date=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['date'];
 				// Coef du devoir:
 				$eleve_coef=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['coef'];
+				//note sur 
+				$eleve_note_sur=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['note_sur'];
 
 				//==========================================
 				// On teste s'il y aura une "Note" à afficher
@@ -1110,6 +1114,9 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 				}
 				elseif ($eleve_note != '') {
 					$affiche_note = $eleve_note;
+					if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
+						$affiche_note .= "/".$eleve_note_sur;
+					}
 				}
 				else {
 					$affiche_note = "";

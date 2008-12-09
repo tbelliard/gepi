@@ -12,7 +12,8 @@
 	echo "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\" \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n";
 
 	$serie=$_GET['serie'];
-	$largeur=$_GET['largeur'];
+	$note_sur_serie=$_GET['note_sur_serie'];
+	$nb_tranches=$_GET['nb_tranches'];
 	$titre=$_GET['titre'];
 	$largeurTotale=$_GET['largeurTotale'];
 	$hauteurTotale=$_GET['hauteurTotale'];
@@ -54,8 +55,8 @@
 	//echo "<line x1=\"5\" y1=\"50\" x2=\"60\" y2=\"80\" style=\"stroke:red; stroke-width:$epaisseur_grad\"/>\n";
 
 	echo "<!-- Graduations horizontales -->\n";
-	$dx=$largeur_utile*$largeur/20;
-	for($i=0;$i<Ceil(20/$largeur);$i++) {
+	$dx=$largeur_utile/$nb_tranches;
+	for($i=0;$i<$nb_tranches+1;$i++) {
 		$tab_tranche[$i]=0;
 
 		$x=$marge+$dx*$i;
@@ -65,7 +66,12 @@
 
 		$xtext=$marge+$dx*$i-5;
 		$ytext=$hauteurTotale-5;
-		$val=$i*$largeur;
+		if ($note_sur_serie % $nb_tranches == 0) {
+			//si le nombre de tranche divise le référentiel de la note (note_sur) on affiche des label entier, sinon on affiche pas de légende pour le notes.
+			$val=$i*$note_sur_serie/$nb_tranches;
+		} else {
+			$val = "";
+		}
 		echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:$axes; font-size:x-small;\">$val</text>\n";
 	}
 
@@ -74,12 +80,12 @@
 		//$v=Floor($notes[$i]/$largeur)*$largeur;
 		//$w=$v+$largeur;
 
-		if($notes[$i]==20) {
+		if($notes[$i]==$note_sur_serie) {
 			// Modif pour faire passer les notes 20 dans la tranche [0;20[
-			$notes[$i]=19.9;
+			$notes[$i]=$note_sur_serie - 0.1;
 		}
 
-		$tab_tranche[Floor($notes[$i]/$largeur)]++;
+		$tab_tranche[Floor($notes[$i]*$nb_tranches/$note_sur_serie)]++;
 	}
 
 	echo "<!-- Graduations verticales -->\n";
@@ -98,8 +104,8 @@
 
 	echo "<!-- Barres de l'histogramme -->\n";
 	for($i=0;$i<count($tab_tranche);$i++) {
-		$v=$largeur*$i;
-		$w=$v+$largeur;
+		//$v=$dx*$i;
+		//$w=$v+$dx;
 
 		$x1=$marge+$dx*$i;
 		//$x2=$marge+$dx*($i+1);

@@ -196,7 +196,7 @@ if(isset($enregistrer)){
 		}
 
 		if(($page=='add_modif_dev')||($_SESSION['statut']=='professeur')){
-			$tab=array('add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_boite');
+			$tab=array('add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_boite');
 			for($j=0;$j<count($tab);$j++){
 				unset($valeur);
 				//$valeur=isset($_POST[$tab[$j]]) ? $_POST[$tab[$j]] : NULL;
@@ -562,8 +562,11 @@ else{
 	if(($page=="add_modif_dev")||($_SESSION['statut']=='professeur')){
 		echo "<p>Paramétrage de la page de <b>création d'évaluation</b> pour les ".$gepiSettings['denomination_professeurs']."</p>\n";
 
-		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_boite');
-
+		if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
+			$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_boite');
+		} else {
+			$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_boite');	
+		}
 		//echo "<table border='1'>\n";
 		echo "<table class='contenu' border='1' summary='Préférences professeurs'>\n";
 
@@ -577,7 +580,11 @@ else{
 			$lignes_entete.="<th rowspan='2'>".$gepiSettings['denomination_professeur']."</th>\n";
 		}
 		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
-		$lignes_entete.="<th colspan='6'>Afficher les champs</th>\n";
+		if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
+			$lignes_entete.="<th colspan='7'>Afficher les champs</th>\n";
+		} else {
+			$lignes_entete.="<th colspan='6'>Afficher les champs</th>\n";
+		}
 		$lignes_entete.="</tr>\n";
 
 		// 2ème ligne
@@ -587,6 +594,9 @@ else{
 		$lignes_entete.="<th>Nom complet</th>\n";
 		$lignes_entete.="<th>Description</th>\n";
 		$lignes_entete.="<th>Coefficient</th>\n";
+		if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
+			$lignes_entete.="<th>Note autre que sur le referentiel</th>\n";
+		}
 		$lignes_entete.="<th>Date</th>\n";
 		$lignes_entete.="<th>".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))."</th>\n";
 		$lignes_entete.="</tr>\n";

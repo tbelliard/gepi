@@ -416,13 +416,16 @@ while ($j < $nombre_groupes) {
 	//++++++++++++++++++++++++
 	// Modif d'après F.Boisson
 	// notes dans appreciation
-		$sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$current_eleve_login."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$nb' AND cnd.statut='';";
+		$sql="SELECT cnd.note, cd.note_sur FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$current_eleve_login."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$nb' AND cnd.statut='';";
 		$result_nbct=mysql_query($sql);
 	$string_notes='';
 	if ($result_nbct ) {
 		while ($snnote =  mysql_fetch_assoc($result_nbct)) {
 			if ($string_notes != '') $string_notes .= ", ";
 			$string_notes .= $snnote['note'];
+			if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
+				$string_notes .= "/".$snnote['note_sur'];
+			}
 		}
 	}
 	$current_eleve_appreciation[$nb] = str_replace('@@Notes', $string_notes,$current_eleve_appreciation[$nb]);

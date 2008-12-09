@@ -69,6 +69,17 @@ if(isset($_POST['is_posted'])){
 	}
 	*/
 }
+if (isset($_POST['referentiel_note'])) {
+	if (!saveSetting("referentiel_note", $_POST['referentiel_note'])) {
+		$msg .= "Erreur lors de l'enregistrement du referentiel de note !";
+	}
+}
+
+if (isset($_POST['note_autre_que_sur_referentiel'])) {
+	if (!saveSetting("note_autre_que_sur_referentiel", $_POST['note_autre_que_sur_referentiel'])) {
+		$msg .= "Erreur lors de l'enregistrement de note_autre_que_sur_referentiel !";
+	}
+}
 
 
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
@@ -121,6 +132,22 @@ require_once("../lib/header.inc");
 	*/
 
 ?>
+<br/>
+<table>
+	<tr>
+		<td style="font-variant: small-caps;" valign='top'>
+		Référentiel des notes :</td>
+		<td>
+		<table summary='Genre'><tr valign='top'><td></td><td>
+		Référentiel des notes par défaut : <input type="text" name="referentiel_note" size="8" value="<?php echo(getSettingValue("referentiel_note")); ?>" />
+		</td></tr></table>
+		<table summary='Genre'><tr valign='top'><td></td><td>
+		<input type="radio" name="note_autre_que_sur_referentiel" id="note_sur_referentiel" value="V" <?php if(getSettingValue("note_autre_que_sur_referentiel")=="V"){echo 'checked';} ?> /> Autoriser les notes autre que sur le référentiel par défaut<br />
+		<input type="radio" name="note_autre_que_sur_referentiel" id="note_autre_que_referentiel" value="F" <?php if(getSettingValue("note_autre_que_sur_referentiel")=="F"){echo 'checked';} ?> /> Notes uniquement sur le référentiel par défaut</
+		</td></tr></table>
+		</td>
+	</tr>
+</table>
 
 
 <input type="hidden" name="is_posted" value="1" />
