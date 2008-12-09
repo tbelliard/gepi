@@ -133,6 +133,27 @@ class ActiveRecordGepi{
     }
   }
 
+  /**
+   * Cette méthode permete de peupler le tuple avec un seul tableau php
+   *
+   * @param array $valeurs
+   * @return void
+   *
+   */
+  public function populate(array $valeurs){
+      if (!is_array($valeurs)){
+          throw new Exception("Un tableau de valeurs est attendu");
+      }else{
+          foreach ($valeurs AS $cle => $valeur){
+               // On peuple toutes les propriétés dynamiques de l'objet qui ont déjà été crées
+              if (isset($this->$cle)){
+                  $this->$cle = (!get_magic_quotes_gpc()) ? $this->echappe($valeur) : $valeur;
+              }
+          }
+      }
+
+  }
+
   protected function _requete($sql){
 
     // Il faut vérifier de quel type est la requête query/exec
@@ -230,14 +251,15 @@ class ActiveRecordGepi{
     }elseif($this->chercherClePrimaire() == 'no'){
       // Il n'y a pas de clé primaire dans cette table
       // Difficile de savoir s'il s'agit d'un insert ou d'un update
+      // Mais cette situation ne devrait pas arriver ou alors tellement rarement qu'il faudra songer à coder la requête en dur
     }else{
       // Il n'y a qu'une clé primaire
       // et c'est $this->_pk
     }
 
-    //$clePrimaire = $this->_pk; // ce bout de code est à enlever si la modification est bonne
+    $clePrimaire = $this->_pk; // on désigne ainsi le nom du champ qui fait office de clé primaire
 
-    if (!isset($this->_pk) OR $this->_pk == '' OR $this->newTuple === true) {
+    if (!isset($this->$clePrimaire) OR $this->$clePrimaire == '' OR $this->newTuple === true) {
 
       $sql = "INSERT INTO ".$this->_table." SET ";
       $verif = 'insert';
