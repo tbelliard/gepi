@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 04/11/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -520,7 +520,8 @@ if (isset($id_classe)) {
 		   echo "<option value=\"NULL\" selected=\"selected\" >Aucun modèle de sélectionné</option>";
 		}
 		// sélection des modèle des bulletins.
-	    $requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
+	    //$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
+		$requete_modele = mysql_query("SELECT id_model_bulletin, valeur as nom_model_bulletin FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC;");
 		while($donner_modele = mysql_fetch_array($requete_modele)) {
 		    echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
 			if($quel_modele==$donner_modele['id_model_bulletin']) {
