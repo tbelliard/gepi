@@ -134,7 +134,50 @@ class ActiveRecordGepi{
   }
 
   /**
-   * Cette méthode permete de peupler le tuple avec un seul tableau php
+   * Méthode qui permet de vérifier si un champ $colonne existe bien dans la table appelée
+   *
+   * @param string $colonne
+   * @return boulean 
+   */
+  protected function colonneExiste($colonne){
+      return array_key_exists($colonne, $this->typeChamps);
+  }
+
+  /**
+   * Méthode "magique" qui permet de modifier la valeur d'une propriété en vérifiant qu'elle existe bien.
+   * Elle ne modifie que les propriétés qui correspondent aux champs de la table $this->_table
+   *
+   * @param string $name
+   * @param sring $value
+   * @return void
+   *
+   */
+  public function  __set($name, $value) {
+      if (!$this->colonneExiste($name)){
+          return FALSE;
+      }else{
+          $this->$name = $value;
+      }
+  }
+
+  /**
+   * Méthode "magique" qui retourne la valeur d'une propriété de l'objet en vérifiant qu'elle existe bien
+   * Elle ne renvoie que les propriétés qui correspondent aux champs de la table $ths->_table
+   *
+   * @param string $name
+   * @return string
+   *
+   */
+  public function  __get($name) {
+      if (!$this->colonneExiste($name)){
+          return FALSE;
+      }else{
+          return $this->$name;
+      }
+  }
+
+  /**
+   * Cette méthode permet de peupler le tuple avec un seul tableau php
    *
    * @param array $valeurs
    * @return void
