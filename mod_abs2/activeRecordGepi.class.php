@@ -554,7 +554,21 @@ class ActiveRecordGepi{
 
   }
 
-
+  /**
+   * Méthode qui permet de récupérer les informations liées à la table $this->_table
+   * TODO : Il faut coder l'utilisation dynamique des informations reçues
+   *
+   * @param object $obj 
+   * @access protected
+   */
+  protected function tableMapper(tableMapGepi $obj){
+      if (!is_object($obj)){
+          throw new Exception('Impossible de continuer car on attend un objet.');
+      }else{
+          // Ici, on peut peupler la propriété des clés étrangères vers les tables externes
+          // en utilisant l'objet qui $obj
+      }
+  }
 }
 
 /*
@@ -564,6 +578,7 @@ class Utilisateur extends ActiveRecordGepi{
   public function __construct(){
 
     parent::__construct(__CLASSE__);
+    parent::tableMapper(new tableMapGepi($this->_table, $arrayTableExternes, $arrayChampsDeJointure));
 
   }
 }

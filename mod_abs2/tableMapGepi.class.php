@@ -26,8 +26,8 @@ class tableMapGepi {
   /**
    * Propriété de l'objet qui stocke la clé étrangère (même si elle n'est pas définie comme telle dans la table)
    * exemple : $_fk[] = array('champ_table1_vers_table2', 'champ_table2');
-   * $_fk = array('champ_table1_vers_table3', 'champ_table3');
-   * Si la bas est construite sous la forme champ id_utilisateurs vers la table utilisateurs
+   * $_fk[] = array('champ_table1_vers_table3', 'champ_table3');
+   * Si la base est construite sous la forme champ id_utilisateurs vers la table utilisateurs
    * Cette propriété est remplie automatiquement par la méthode setFk.
    *
    * @access protected
