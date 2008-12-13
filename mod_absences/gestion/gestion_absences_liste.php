@@ -1367,7 +1367,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
 			}
 ?>
 	<tr>
-	      <?php// modif didier pour affichage div dispense ?>
+	      <?php // modif didier pour affichage div dispense ?>
 		 <td class="<?php echo $couleur_cellule; ?>" onmouseover="changementDisplay('d<?php echo $data_avec_motif['id_absence_eleve']; ?>', ''); return true;" onmouseout="changementDisplay('d<?php echo $data_avec_motif['id_absence_eleve']; ?>', ''); return true;">
 		<input name="selection[<?php echo $total; ?>]" id="sel<?php echo $total; ?>" type="checkbox" value="1" <?php $varcoche = $varcoche."'sel".$total."',"; ?> <?php /* if((isset($selection[$total]) and $selection[$total] == "1") OR $cocher == 1) { ?>checked="checked"<?php } */ ?> />
 		<input name="id_absence_eleve[<?php echo $total; ?>]" type="hidden" value="<?php echo $data_avec_motif['id_absence_eleve']; ?>" />
