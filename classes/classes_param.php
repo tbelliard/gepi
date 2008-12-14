@@ -1,6 +1,6 @@
 <?php
 /*
-* Last modification  : 22/08/2006
+* $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -96,8 +96,8 @@ if (isset($_POST['is_posted'])) {
 						$register = mysql_query("UPDATE classes SET display_rang='".$_POST['display_rang_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
-			//====================================
-			// AJOUT: boireaus
+					//====================================
+					// AJOUT: boireaus
 					if (isset($_POST['display_address_'.$per])) {
 						$register = mysql_query("UPDATE classes SET display_address='".$_POST['display_address_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
@@ -179,27 +179,41 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
-			// On enregistre les infos relatives aux catégories de matières
-			$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
-			while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
-				$reg_priority = $_POST['priority_'.$row["id"].'_'.$per];
-				if (isset($_POST['moyenne_'.$row["id"].'_'.$per])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
-				if (!is_numeric($reg_priority)) $reg_priority = 0;
-				if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
-				$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
-				if ($test == 0) {
-					// Pas d'entrée... on créé
-					$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
-				} else {
-					// Entrée existante, on met à jour
-					$res = mysql_query("UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "')");
-				}
-				if (!$res) {
-					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
-				}
-			}
+					// On enregistre les infos relatives aux catégories de matières
+					$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
+					while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+						$reg_priority = $_POST['priority_'.$row["id"].'_'.$per];
+						if (isset($_POST['moyenne_'.$row["id"].'_'.$per])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
+						if (!is_numeric($reg_priority)) $reg_priority = 0;
+						if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
+						$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
+						if ($test == 0) {
+							// Pas d'entrée... on créé
+							$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
+						} else {
+							// Entrée existante, on met à jour
+							$res = mysql_query("UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "')");
+						}
+						if (!$res) {
+							$msg .= "<br />Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
+						}
+					}
 
-			//====================================
+
+					if((isset($_POST['change_coef']))&&($_POST['change_coef']=='y')) {
+						if((isset($_POST['coef_enseignements']))&&($_POST['coef_enseignements']!="")) {
+							$coef_enseignements=ereg_replace("[^0-9]","",$_POST['coef_enseignements']);
+							if($coef_enseignements!="") {
+								$sql="UPDATE j_groupes_classes SET coef='".$coef_enseignements."' WHERE id_classe='".$id_classe."';";
+								$update_coef=mysql_query($sql);
+								if(!$update_coef) {
+									$msg .= "<br />Une erreur s'est produite lors de la mise à jour des coefficients pour la classe $id_classe.";
+								}
+							}
+						}
+					}
+
+					//====================================
 				}
 			}
 			$nbc++;
@@ -429,6 +443,26 @@ while ($per < $max_periode) {
 		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cni' style='cursor: pointer;'>Civ. Nom initiale-Prénom (M. Durand A.)</label>
 		<br />
 <br />
+<h2>Enseignements</h2>
+<table border='0'>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-weight: bold;">
+	<input type='checkbox' name='change_coef' id='change_coef' value='y' /> Passer les coefficients de tous les enseignements à :
+	</td>
+	<td>
+	<select name='coef_enseignements' onchange="document.getElementById('change_coef').checked=true">
+	<?php
+	echo "<option value=''>---</option>\n";
+	for($i=0;$i<10;$i++){
+		echo "<option value='$i'>$i</option>\n";
+	}
+	?>
+	</select>
+	</td>
+</tr>
+</table>
+
 <br />
 <table border='0'>
 <tr>
