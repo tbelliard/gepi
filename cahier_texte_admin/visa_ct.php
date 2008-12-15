@@ -226,7 +226,7 @@ echo "</div>\n";
       echo "<td>".$nb_ct."</td>";
       echo "<td>".$nb_ct_devoirs."</td>";
 	// Modif pour le statut 'autre'
-	if ($_SESSION["statut"] == 'autre') {
+	if ($_SESSION["statut"] == 'autre' OR $_SESSION["statut"] == 'administrateur') {
 		echo '<td><a href="../cahier_texte/see_all.php?id_groupe='.$id_groupe.'&amp;id_classe='.$id_classe.'">Voir</a></td>';
 	}else{
 		echo "<td><a href='../public/index.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>";

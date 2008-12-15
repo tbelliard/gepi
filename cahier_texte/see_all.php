@@ -38,10 +38,10 @@ if ($resultat_session == 'c') {
     die();
 };
 
-if (!checkAccess()) {
+/*if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
-}
+}*/
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
@@ -124,13 +124,17 @@ if ($current_imprime == 'n') {
 	$text_imprime="Retour";
 	$largeur = "5%";
 }
+
+// On ajoute un retour vers la page de signature des cdt si c'est un administrateur
+$code_retour_admin = '<p><a href="../cahier_texte_admin/visa_ct.php">RETOUR vers la signature des cahiers de textes</a></p>';
+$retour_admin = ($_SESSION["statut"] == 'administrateur') ? $code_retour_admin : '';
 //**************** EN-TETE *****************
 if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
 require_once("../lib/header.inc");
 if ($current_imprime=='y') echo "<div id='container'>\n";
 //**************** FIN EN-TETE *************
-// Création d'un espace entre le bandeau et le reste 
-echo "<p></p>\n";
+// Création d'un espace entre le bandeau et le reste ainsi que le retour pour l'admin
+echo "<p></p>\n" . $retour_admin;
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
