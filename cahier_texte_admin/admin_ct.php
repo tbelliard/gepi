@@ -39,6 +39,10 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+// Pour garder une trace du retour
+$_SESSION["retour"] = 'admin_ct';
+
 // Suppresion d'un ou plusieurs cahiers de texte
 if (isset($_POST['sup_ct'])) {
   $query = sql_query("SELECT DISTINCT id_groupe, id_login FROM ct_entry ORDER BY id_groupe");
@@ -289,7 +293,8 @@ if (!(isset($_GET['action']))) {
       echo "<td><a href='admin_ct.php?id_groupe=".$id_groupe."&id_prop=".$id_prop."&action=modif_prop' title='modifier le propriétaire'>".$nom_prof."</a></td>";
       echo "<td>".$nb_ct."</td>";
       echo "<td>".$nb_ct_devoirs."</td>";
-      echo "<td><a href='../public/index.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>";
+      //echo "<td><a href='../public/index.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>";
+      echo "<td><a href='../cahier_texte/see_all.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>";
       echo "<td><center><input type=\"checkbox\" name=\"sup".$id_groupe."_".$id_prop."\" /></center></td>";
       echo "</tr>";
 
