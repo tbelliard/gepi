@@ -21,7 +21,7 @@ class tableMapGepi {
    * @access protected
    * @property array $_tablesfk
    */
-    protected $_tablesfk;
+    protected $tmg_tablesfk;
 
   /**
    * Propriété de l'objet qui stocke la clé étrangère (même si elle n'est pas définie comme telle dans la table)
@@ -33,7 +33,7 @@ class tableMapGepi {
    * @access protected
    * @property array $_fk
    */
-    protected $_fk;
+    protected $tmg_fk;
 
   /**
    *¨Propriété de l'objet qui définit la table principale qui est liée avec $_tables et $_fk
@@ -42,17 +42,17 @@ class tableMapGepi {
    * @access protected
    * @property string $_table
    */
-    protected $_table;
+    protected $tmg_table;
 
     /**
      * Propriétés pour garder quelque part le from, le where, order_by et le limit de la requête
      *
      * @access private
      */
-    private $_from = NULL;
-    private $_where = NULL;
-    private $_order_by = NULL;
-    private $_limit = NULL;
+    private $tmg_from = NULL;
+    private $tmg_where = NULL;
+    private $tmg_order_by = NULL;
+    private $tmg_limit = NULL;
 
 
     /**
@@ -66,9 +66,9 @@ class tableMapGepi {
         if (!is_string($construct_table) OR !is_array($construct_tablesfk) OR !is_array($construct_fk)){
             throw new Exception('Un des paramètres de construction de ' . __CLASS__ . ' n\'est pas conforme.');
         }else{
-            $this->_table       = $construct_table;
-            $this->_tablesfk    = $construct_tablesfk;
-            $this->_fk          = $construct_fk;
+            $this->tmg_table       = $construct_table;
+            $this->tmg_tablesfk    = $construct_tablesfk;
+            $this->tmg_fk          = $construct_fk;
 
             $this->constructFrom();
             $this->constructWhere();
@@ -84,7 +84,31 @@ class tableMapGepi {
         if (isset($test_id)){
             $this->constructWhere($test_id);
         }
-        return 'SELECT * ' . $this->_from . $this->_where . $this->_order_by . $this->_limit;
+        return 'SELECT * ' . $this->tmg_from . $this->tmg_where . $this->tmg_order_by . $this->tmg_limit;
+    }
+
+    /**
+     * Méthode qui construit la requête pour renvoyer à __call de ActiveRecordGepi
+     * pour constuire les méthodes dynamiques qui utilisent les clé étrangères
+     *
+     * @param string $option
+     */
+    public function returnCall($option){
+        if (in_array($option, $this->tmg_tablesfk)){
+            $retour = 'SELECT * FROM ' . $this->tmg_table . ', ' . $option;
+            // on détermine maintenant le where qui va bien
+        }
+    }
+
+    /**
+     * On va coder les relations qui existes pour pouvoir récupérer toutes les informations
+     * sur des jointure qui utilisanet un table de jointure.
+     * Exemple : utilisateurs+j_groupes_professeurs+groupes
+     *
+     * @param array $_tables_join
+     */
+    public function addTableJoin(array $_tables_join){
+
     }
 
     public function addClauses($limit = NULL, array $_ordre = NULL){
@@ -100,13 +124,13 @@ class tableMapGepi {
      */
     private function constructFrom(){
         $from  = array();
-        $from[] = $this->_table;
-        $nbre = count($this->_tablesfk);
+        $from[] = $this->tmg_table;
+        $nbre = count($this->tmg_tablesfk);
         $i = 0;
         for($i = 0 ; $i < $nbre ; $i++){
-            $from[] = $this->_tablesfk[$i];
+            $from[] = $this->tmg_tablesfk[$i];
         }
-        $this->_from = ' FROM ' . join(", ", $from);
+        $this->tmg_from = ' FROM ' . join(", ", $from);
     }
 
     /**
@@ -119,27 +143,27 @@ class tableMapGepi {
 
         $clause_where = array ();
 
-        $nbre = count($this->_tablesfk);
+        $nbre = count($this->tmg_tablesfk);
         for($a = 0 ; $a < $nbre ; $a++){
             // Si la cle de jointure n'est pas précisée pour la table origine
             // alors elle est de la forme id_nomdelatableausingulier
-            $_cle_1 = isset($this->_fk[$a][0]) ? $this->_fk[$a][0] : 'id_' . substr($this->_tablesfk[$a], 0, -1);
+            $_cle_1 = isset($this->tmg_fk[$a][0]) ? $this->tmg_fk[$a][0] : 'id_' . substr($this->tmg_tablesfk[$a], 0, -1);
             // Si la clé de la table appelée n'est pas précisée, alors c'est id
-            $_cle_2 = isset($this->_fk[$a][1]) ? $this->_fk[$a][1] : 'id';
+            $_cle_2 = isset($this->tmg_fk[$a][1]) ? $this->tmg_fk[$a][1] : 'id';
 
-            $clause_where[] = $this->_table . '.' . $_cle_1 . '=' . $this->_tablesfk[$a] . '.' . $_cle_2;
+            $clause_where[] = $this->tmg_table . '.' . $_cle_1 . '=' . $this->tmg_tablesfk[$a] . '.' . $_cle_2;
 
         }
 
         // Ici, on ajoute la demande précise de la requête
         // $test_id[0] est le champ de la table et $test-id[1] est sa valeur recherchée.
         if (isset($test_id) AND is_array($test_id)){
-            $clause_where[] = $this->_table . '.' . $test_id[0] . ' = ' . stripcslashes($test_id[1]);
+            $clause_where[] = $this->tmg_table . '.' . $test_id[0] . ' = ' . stripcslashes($test_id[1]);
         }else{
-            $clause_where[] = 'id.' . $this->_table . '= *';
+            $clause_where[] = 'id.' . $this->tmg_table . '= *';
         }
 
-        $this->_where = ' WHERE ' . join(" AND ", $clause_where);
+        $this->tmg_where = ' WHERE ' . join(" AND ", $clause_where);
     }
 
     /**
@@ -153,7 +177,7 @@ class tableMapGepi {
     private function constructOrderBy(array $_ordre = NULL){
         if (!isset($_ordre)){
         }else{
-            $this->_order_by = ' ORDER BY ' . join(', ', $_ordre);
+            $this->tmg_order_by = ' ORDER BY ' . join(', ', $_ordre);
         }
     }
 
@@ -165,7 +189,7 @@ class tableMapGepi {
      */
     private function constructLimit($limite = NULL){
         if (isset($limite) AND is_numeric($limite)){
-            $this->_limit = ' LIMIT ' . $limite;
+            $this->tmg_limit = ' LIMIT ' . $limite;
         }else{
         }
     }

@@ -64,6 +64,24 @@ class ActiveRecordGepi{
   private $_pk = NULL;
 
   /**
+   * Propriété qui permet de stocker les dépendances de la table $this->_table sur une relation 1:N
+   * Exemple : la table utilisateurs has_many groupes (un utilisateur peut avoir plusieurs groupes)
+   *
+   * @var array $_belongs_to
+   * @access private
+   */
+  private $_one_to_many = NULL;
+
+  /**
+   * Propriété privée qui permet de stocker les dépendances de la table $this->_table sur des relations N:M
+   *
+   *
+   * @var array $_has_and_belongs_to_many;
+   * @access private
+   */
+  private $_has_and_belongs_to_many = NULL;
+
+  /**
   * $conn est la ressource de connexion PDO à la base
   * Soit on la récupère par $GLOBALS["cnx"], soit on crée une connexion
   * La méthode self::pdo_connect() permet de vérifier l'état de la connexion PDO à la base
@@ -425,6 +443,16 @@ class ActiveRecordGepi{
   }
 
   /**
+   * Méthode statique qui permet de mettre au singulier une table
+   *
+   * @param string $word
+   * @return string 
+   */
+  public static function singularize($word){
+      return substr($word, 0, -1);
+  }
+
+  /**
   * Permet de récupérer tous les enregistrements de la table $this->_table
   * $tab_request peut prendre 3 options
   *   'where' _champ = valeur
@@ -462,6 +490,7 @@ class ActiveRecordGepi{
   /**
   * Méthode magique : __call permet une construction dynamique des requêtes
   * Tous les findBychamp() ou les findChampByAutrechamp()
+   * Ainsi que les getTable1 : dans la classe utilisateur, on doit pouvoir retrouver getGroupes() getCLasses(),...
   *
   * @access public
   */
@@ -479,9 +508,13 @@ class ActiveRecordGepi{
 
       return $this->findByFk($infos, $valeur);
 
+    } elseif (substr($methode, 0, 3) == 'get') {
+
+      return $this->hasAndBelongsToMany(strtolower(substr($methode, 0, 3)), $valeur); // on envoie la demande en minuscule sans le get devant
+
     } else {
 
-      $this->gest_erreurs("Cette méthodes n'est pas disponible dans cette classe");
+      throw new Exception("Cette méthode n'est pas disponible dans cette classe");
 
     }
 
@@ -555,6 +588,50 @@ class ActiveRecordGepi{
   }
 
   /**
+   *
+   * @param string $join
+   * @param string $valeur
+   * @access protected
+   * @return string
+   */
+  protected function hasAndBelongsToMany($table_externe, $valeur = NULL){
+    // On teste dans $this->__has_and_belongs_to_many
+    $nbre = count($this->_has_and_belongs_to_many);
+
+    if (in_array($table_externe, $this->_has_and_belongs_to_many)){
+      for($a = 0 ; $a < $nbre ; $a++){
+        if ($table_externe == $this->_has_and_belongs_to_many[$a]){
+          // Alors on construit la requête en fonction des informations de $this->_has_and_belongs_to_many[$a]
+          $join = $this->_has_and_belongs_to_many[$a][1];
+          $table_externe = $this->_has_and_belongs_to_many[$a][0];
+          $id_table     = isset($this->_has_and_belongs_to_many[$a][4][$this->_table]) ? $this->_has_and_belongs_to_many[$a][4][$this->_table] : 'id';
+          $id_table_ext = isset($this->_has_and_belongs_to_many[$a][4][$this->_has_and_belongs_to_many[$a][0]]) ? $this->_has_and_belongs_to_many[$a][4][$this->_has_and_belongs_to_many[$a][0]] : 'id';
+          $champ_join_table = isset($this->_has_and_belongs_to_many[$a][3]) ? $this->_has_and_belongs_to_many[$a][3] : 'id_' . $this->_table; // 3
+          $champ_join_table_ext = isset($this->_has_and_belongs_to_many[$a][2]) ? $this->_has_and_belongs_to_many[$a][2] : 'id_' . $table_externe; // 2
+        }
+      }
+    }else{
+      // On considère que les conventions sont respectées
+      $join = 'j_' . $table_externe . '_' . $this->_table;
+
+      $sql  = 'SELECT * FROM ' . $this->_table . ', ' . $join . ', ' . $table_externe . ' ';
+      $sql .= 'WHERE ' . $this->_table . '.id = ' . $join . '.id_' . $this->singularize($this->_table) . ' AND ';
+      $sql .= $join . '.id_' . $this->singularize($table_externe) . ' = ' . $table_externe . '.id';
+    }
+    if ($query_s = $this->_requete($sql)) {
+
+      $return = $query_s->fetchAll(PDO::FETCH_OBJ);
+      $return["nbre"] = count($return);
+      return $return;
+
+    }else{
+
+      return false;
+
+    }
+  }
+
+  /**
    * Méthode qui permet de récupérer les informations liées à la table $this->_table
    * TODO : Il faut coder l'utilisation dynamique des informations reçues
    *
@@ -566,19 +643,63 @@ class ActiveRecordGepi{
           throw new Exception('Impossible de continuer car on attend un objet.');
       }else{
           // Ici, on peut peupler la propriété des clés étrangères vers les tables externes
-          // en utilisant l'objet qui $obj
+          // en utilisant l'objet $obj
       }
   }
+
+  /**
+   * Méthode qui permet d'ajouter des dépendances à la table $this->_table
+   * Exemple pour la classe Utilisateur, il faut donc ajouter dans le __construct() un appel à cette fonction pour ajouter ces dépendances
+   * $this->addOneToMany(array('ct_entry', 'login', 'id_login'));
+   * c'est à dire dans l'ordre : table2, champ de jonction Table1, champ de jonction table2
+   * la requête sera donc sur le modèle suivant :
+   * SELECT * FROM $this->_table, $this->_one_to_many[x][0] WHERE $this->_table.'.'.$this->_one_to_many[x][1] . ' = ' .
+   * $this->_one_to_many[x][0] . '.' . $this->_one_to_many[x][2];
+   *
+   * @param array $infos
+   * @access protected
+   */
+  protected function addOneToMany(array $infos){
+      if (!is_array($infos)){
+          throw new Exception('Impossible d\'ajouter une dépendance car il manque des informations||'. $infos);
+      }elseif(is_string($infos[0])){
+          $infos[1] = isset($infos[1]) ? $infos[1] : 'id'; // par défaut le champ est un id
+          $infos[2] = isset($infos[2]) ? $infos[2] : 'id_' . $this->_table; // par défaut de la forme id_utilisateur
+          $this->_one_to_many[] = $infos;
+      }
+  }
+
+  /**
+   * Méthode qui permet d'ajouter des dépendances du type N:M
+   *
+   * Exemple : un utilisateur peut avoir plusieurs groupes et un groupe peut avoir plusieurs utilisateurs
+   * Utilisateur : array('groupes', 'j_groupes_professeurs', 'id_groupe', 'login', array('utilisateurs'=>'login'));
+   * où id_groupe est le champ de j_groupes_professeurs qui fait lien avec le id de groupes et login est le champ de
+   * j_groupes_professeurs qui fait le lien avec le champ id de utilisateurs. $options permettant de préciser
+   * les champs des tables groupes et utilisateurs s'ils sont différents de 'id' (c'est le cas ici pour utilisateurs)
+   *
+   * @param array $infos
+   * @access protected
+   */
+  protected function addHasAndBelongsToMany(array $infos){
+      if (!is_array($infos)){
+          throw new Exception('Impossible d\'ajouter une dépendance car il manque des informations||'. $infos);
+      }elseif(is_string($infos[0])){
+          // Ajouter le code ici
+          $this->_has_and_belongs_to_many[] = $infos;
+      }
+  }
+
 }
 
-/*
+
 
 class Utilisateur extends ActiveRecordGepi{
 
   public function __construct(){
 
     parent::__construct(__CLASSE__);
-    parent::tableMapper(new tableMapGepi($this->_table, $arrayTableExternes, $arrayChampsDeJointure));
+    $this->addHasAndBelongsToMany(array('groupes', 'j_groupes_professeurs', 'id_groupe', 'login', array('utilisateurs'=>'login')));
 
   }
 }
@@ -607,5 +728,5 @@ try{
   echo '</pre>';
 
 }
- */
+
 ?>
