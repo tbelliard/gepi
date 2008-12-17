@@ -1283,7 +1283,9 @@ Patientez pendant l'extraction des données... merci.
 					echo "<th>".htmlentities($tab_ele['groupes'][$i]['name'])."<br /><span style='font-size: x-small;'>".htmlentities($tab_ele['groupes'][$i]['description'])."</span></th>\n";
 					echo "<td>\n";
 					for($j=0;$j<count($tab_ele['groupes'][$i]['prof']);$j++) {
-						if($tab_ele['groupes'][$i]['prof'][$j]['email']!='') {echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."'>";}
+						if($tab_ele['groupes'][$i]['prof'][$j]['email']!='') {
+							echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."'>";
+						}
 						if(isset($tab_ele['classe'][0]['id_classe'])) {
 							echo affiche_utilisateur($tab_ele['groupes'][$i]['prof'][$j]['prof_login'], $tab_ele['classe'][0]['id_classe']);
 						}
@@ -1314,6 +1316,30 @@ Patientez pendant l'extraction des données... merci.
 					echo "</tr>\n";
 				}
 				echo "</table>\n";
+
+				echo "<p><b>".ucfirst($gepi_prof_suivi)."</b>: ";
+				for($loop=0;$loop<count($tab_ele['classe']);$loop++) {
+					if($loop>0) {echo ", ";}
+					if($tab_ele['classe'][$loop]['pp']['email']!="") {
+						echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
+					}
+					echo $tab_ele['classe'][$loop]['pp']['civ_nom_prenom'];
+					if($tab_ele['classe'][$loop]['pp']['email']!="") {
+						echo "</a>";
+					}
+					echo " (<i>".$tab_ele['classe'][$loop]['classe']."</i>)";
+				}
+				echo "</p>\n";
+
+				echo "<p><b>CPE chargé(e) du suivi</b>: ";
+				if($tab_ele['cpe']['email']!="") {
+					echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
+				}
+				echo $tab_ele['cpe']['civ_nom_prenom'];
+				if($tab_ele['cpe']['email']!="") {
+					echo "</a>";
+				}
+				echo "</p>\n";
 			}
 			echo "</div>\n";
 		}

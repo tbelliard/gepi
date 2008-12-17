@@ -187,6 +187,9 @@ function info_eleve($ele_login) {
 				$tab_ele['classe'][$cpt]['pp']['prenom']=$lig_pp->prenom;
 				$tab_ele['classe'][$cpt]['pp']['civilite']=$lig_pp->civilite;
 				$tab_ele['classe'][$cpt]['pp']['email']=$lig_pp->email;
+
+				$tab_ele['classe'][$cpt]['pp']['civ_nom_prenom']=$lig_pp->civilite." ".$lig_pp->nom." ".substr($lig_pp->prenom,0,1).".";
+
 			}
 
 			$cpt++;
@@ -462,6 +465,9 @@ function info_eleve($ele_login) {
 		$tab_ele['cpe']['nom']=$lig_cpe->nom;
 		$tab_ele['cpe']['prenom']=$lig_cpe->prenom;
 		$tab_ele['cpe']['civilite']=$lig_cpe->civilite;
+		$tab_ele['cpe']['email']=$lig_cpe->email;
+
+		$tab_ele['cpe']['civ_nom_prenom']=$lig_cpe->civilite." ".$lig_cpe->nom." ".substr($lig_cpe->prenom,0,1).".";
 	}
 
 	/*
