@@ -1283,6 +1283,7 @@ Patientez pendant l'extraction des données... merci.
 					echo "<th>".htmlentities($tab_ele['groupes'][$i]['name'])."<br /><span style='font-size: x-small;'>".htmlentities($tab_ele['groupes'][$i]['description'])."</span></th>\n";
 					echo "<td>\n";
 					for($j=0;$j<count($tab_ele['groupes'][$i]['prof']);$j++) {
+						if($tab_ele['groupes'][$i]['prof'][$j]['email']!='') {echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."'>";}
 						if(isset($tab_ele['classe'][0]['id_classe'])) {
 							echo affiche_utilisateur($tab_ele['groupes'][$i]['prof'][$j]['prof_login'], $tab_ele['classe'][0]['id_classe']);
 						}
@@ -1291,6 +1292,8 @@ Patientez pendant l'extraction des données... merci.
 							echo " ";
 							echo ucfirst(strtolower($tab_ele['groupes'][$i]['prof'][$j]['nom']));
 						}
+						if($tab_ele['groupes'][$i]['prof'][$j]['email']!='') {echo "</a>";}
+
 						echo "<br />\n";
 					}
 					echo "</td>\n";

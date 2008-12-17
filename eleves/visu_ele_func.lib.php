@@ -186,6 +186,7 @@ function info_eleve($ele_login) {
 				$tab_ele['classe'][$cpt]['pp']['nom']=$lig_pp->nom;
 				$tab_ele['classe'][$cpt]['pp']['prenom']=$lig_pp->prenom;
 				$tab_ele['classe'][$cpt]['pp']['civilite']=$lig_pp->civilite;
+				$tab_ele['classe'][$cpt]['pp']['email']=$lig_pp->email;
 			}
 
 			$cpt++;
@@ -371,6 +372,7 @@ function info_eleve($ele_login) {
 						$tab_ele['groupes'][$cpt]['prof'][$cpt2]['nom']=$lig_prof->nom;
 						$tab_ele['groupes'][$cpt]['prof'][$cpt2]['prenom']=$lig_prof->prenom;
 						$tab_ele['groupes'][$cpt]['prof'][$cpt2]['civilite']=$lig_prof->civilite;
+						$tab_ele['groupes'][$cpt]['prof'][$cpt2]['email']=$lig_prof->email;
 
 						$tab_ele['groupes'][$cpt]['prof_liste'].=$lig_prof->civilite." ".$lig_prof->nom." ".substr($lig_prof->prenom,0,1).".";
 
@@ -1101,7 +1103,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 				$eleve_date=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['date'];
 				// Coef du devoir:
 				$eleve_coef=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['coef'];
-				//note sur 
+				//note sur
 				$eleve_note_sur=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['note_sur'];
 
 				//==========================================
