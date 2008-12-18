@@ -624,11 +624,17 @@ class ActiveRecordGepi{
 
     }
 
-    $sql  = 'SELECT * FROM ' . $this->_table . ', ' . $join . ', ' . $table_externe . ' ';
+    // On recherche s'il y a des options à la requête
+    $order_by   = isset($valeur[1]['order_by']) ? ' ORDER BY ' . $valeur[1]['order_by'] : NULL;
+    $limit      = isset($valeur[1]['limit']) ? ' LIMIT ' . $valeur[1]['limit'] : NULL;
+    $champs     = isset($valeur[1]['champs']) ? $valeur[1]['champs'] : '*';
+
+    $sql  = 'SELECT ' . $champs . ' FROM ' . $this->_table . ', ' . $join . ', ' . $table_externe . ' ';
     $sql .= 'WHERE ' . $this->_table . '.' . $id_table . ' = ' . $join . '.' . $champ_join_table . ' AND ';
     $sql .= $join . '.' . $champ_join_table_ext . ' = ' . $table_externe . '.' . $id_table_ext . ' AND ';
     $sql .= $this->_table . '.' . $id_table . ' = ' . $this->echappe($valeur[0]);
-echo $sql;
+    $sql .= $order_by . $limit;
+
     if ($query_s = $this->_requete($sql)) {
 
       $return = $query_s->fetchAll(PDO::FETCH_OBJ);
@@ -637,7 +643,7 @@ echo $sql;
 
     }else{
 
-      //throw new Exception('La méthode ' . __METHOD__ . ' ne donne rien car il manque des informations.');
+      throw new Exception('La méthode ' . __METHOD__ . ' ne donne rien car il manque des informations.');
 
     }
   }
@@ -707,18 +713,21 @@ echo $sql;
 
 class Utilisateur extends ActiveRecordGepi{
 
-  public function __construct(){
+  public function __construct($login = NULL){
 
     parent::__construct(__CLASS__);
     $this->addHasAndBelongsToMany(array('groupes', 'j_groupes_professeurs', 'id_groupe', 'login', array('utilisateurs'=>'login')));
+    $this->addHasAndBelongsToMany(array('matieres', 'j_professeurs_matieres', 'id_matiere', 'id_professeur', array('utilisateurs'=>'login', 'matieres'=>'matiere')));
 
+    // On pourrait appeler findByLogin ici directement en testant $login
   }
 }
 
 try{
-  $test = new Utilisateur();
+  $test = new Utilisateur("JJOCAL");
   $test->findByLogin("JJOCAL"); // Il suffit de mettre un login de votre base pour tester
-  $tester2 = $test->getGroupes($test->login);
+  //$tester2 = $test->getGroupes($test->login, array('champs'=>'name, description, id'));
+  $tester2 = $test->getMatieres($test->login, array('champs'=>'nom_complet, matiere', 'order_by'=>'matiere DESC'));
     echo '<pre>tester2' ;
     print_r($tester2);
     echo '</pre>fintester2';
