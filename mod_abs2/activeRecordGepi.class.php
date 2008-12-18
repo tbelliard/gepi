@@ -280,9 +280,9 @@ class ActiveRecordGepi{
           return false;
       }
   }
-  public function setChamp($champ){
+  public function setChamp($champ, $valeur){
       if (isset($this->$champ)){
-          return $this->$champ;
+          return $this->$champ = $valeur;
       }else{
           return false;
       }
@@ -510,7 +510,7 @@ class ActiveRecordGepi{
 
     } elseif (substr($methode, 0, 3) == 'get') {
 
-      return $this->hasAndBelongsToMany(strtolower(substr($methode, 0, 3)), $valeur); // on envoie la demande en minuscule sans le get devant
+      return $this->hasAndBelongsToMany(strtolower(substr($methode, 3)), $valeur); // on envoie la demande en minuscule sans le get devant
 
     } else {
 
@@ -530,7 +530,7 @@ class ActiveRecordGepi{
 
   protected function findBy($where, $valeur){
 
-    $sql = "SELECT * FROM " . $this->_table . " WHERE " . $where . ' = ' . $this->echappe($valeur[0]) . 'LIMIT 1';
+    $sql = "SELECT * FROM " . $this->_table . " WHERE " . $where . ' = ' . $this->echappe($valeur[0]) . ' LIMIT 1';
 
     if ($query_s = $this->_requete($sql)) {
 
@@ -597,10 +597,14 @@ class ActiveRecordGepi{
   protected function hasAndBelongsToMany($table_externe, $valeur = NULL){
     // On teste dans $this->__has_and_belongs_to_many
     $nbre = count($this->_has_and_belongs_to_many);
+    $test = 'off';
 
-    if (in_array($table_externe, $this->_has_and_belongs_to_many)){
+    //if (in_array($table_externe, $this->_has_and_belongs_to_many)){
+
       for($a = 0 ; $a < $nbre ; $a++){
-        if ($table_externe == $this->_has_and_belongs_to_many[$a]){
+
+        if ($table_externe == $this->_has_and_belongs_to_many[$a][0]){
+            $test = 'on';
           // Alors on construit la requête en fonction des informations de $this->_has_and_belongs_to_many[$a]
           $join = $this->_has_and_belongs_to_many[$a][1];
           $table_externe = $this->_has_and_belongs_to_many[$a][0];
@@ -610,14 +614,21 @@ class ActiveRecordGepi{
           $champ_join_table_ext = isset($this->_has_and_belongs_to_many[$a][2]) ? $this->_has_and_belongs_to_many[$a][2] : 'id_' . $table_externe; // 2
         }
       }
-    }else{
+    if($test == 'off'){
+    
       // On considère que les conventions sont respectées
       $join = 'j_' . $table_externe . '_' . $this->_table;
+      $id_table = $id_table_ext = 'id';
+      $champ_join_table = 'id_' . $this->singularize($this->_table);
+      $champ_join_table_ext = 'id_' . $this->singularize($table_externe);
 
-      $sql  = 'SELECT * FROM ' . $this->_table . ', ' . $join . ', ' . $table_externe . ' ';
-      $sql .= 'WHERE ' . $this->_table . '.id = ' . $join . '.id_' . $this->singularize($this->_table) . ' AND ';
-      $sql .= $join . '.id_' . $this->singularize($table_externe) . ' = ' . $table_externe . '.id';
     }
+
+    $sql  = 'SELECT * FROM ' . $this->_table . ', ' . $join . ', ' . $table_externe . ' ';
+    $sql .= 'WHERE ' . $this->_table . '.' . $id_table . ' = ' . $join . '.' . $champ_join_table . ' AND ';
+    $sql .= $join . '.' . $champ_join_table_ext . ' = ' . $table_externe . '.' . $id_table_ext . ' AND ';
+    $sql .= $this->_table . '.' . $id_table . ' = ' . $this->echappe($valeur[0]);
+echo $sql;
     if ($query_s = $this->_requete($sql)) {
 
       $return = $query_s->fetchAll(PDO::FETCH_OBJ);
@@ -626,7 +637,7 @@ class ActiveRecordGepi{
 
     }else{
 
-      return false;
+      //throw new Exception('La méthode ' . __METHOD__ . ' ne donne rien car il manque des informations.');
 
     }
   }
@@ -698,7 +709,7 @@ class Utilisateur extends ActiveRecordGepi{
 
   public function __construct(){
 
-    parent::__construct(__CLASSE__);
+    parent::__construct(__CLASS__);
     $this->addHasAndBelongsToMany(array('groupes', 'j_groupes_professeurs', 'id_groupe', 'login', array('utilisateurs'=>'login')));
 
   }
@@ -706,8 +717,14 @@ class Utilisateur extends ActiveRecordGepi{
 
 try{
   $test = new Utilisateur();
-  $test->findByLogin("SGARCIA"); // Il suffit de mettre un login de votre base pour tester
-
+  $test->findByLogin("JJOCAL"); // Il suffit de mettre un login de votre base pour tester
+  $tester2 = $test->getGroupes($test->login);
+    echo '<pre>tester2' ;
+    print_r($tester2);
+    echo '</pre>fintester2';
+/*    echo '<pre>test' ;
+    print_r($test);
+    echo '</pre>';
 
   if ($test2 = $test->findJ_groupes_professeursByLogin($test->login)) { // findJ_aid_utilisateursByid_utilisateur($this->login) marche très bien aussi
     echo '<pre>';
@@ -716,9 +733,9 @@ try{
   }else{
     throw new Exception('Impossible de lister les groupes de ce professeur : '.$test->login);
   }
-  $test->setChamp('nom', 'Captain'); // Permet de modifier le champ nom de l'objet $test
+  $test->setChamp('nom', 'JJOCAL'); // Permet de modifier le champ nom de l'objet $test
   $test->save(); // Et l'enregistrement est mis à jour dans la base.
-
+*/
 }catch(Exception $e){
 
   //Les exceptions ne sont pas directement liées à la classe ci dessus mais une bien belle façon de traiter les erreurs.
