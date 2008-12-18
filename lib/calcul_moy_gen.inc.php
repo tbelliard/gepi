@@ -56,6 +56,7 @@ $sql="SELECT e.* FROM eleves e, j_eleves_classes c
     ORDER BY e.nom, e.prenom";
 $appel_liste_eleves = mysql_query($sql);
 calc_moy_debug($sql."\n");
+//echo "$sql<br />";
 $nombre_eleves = mysql_num_rows($appel_liste_eleves);
 calc_moy_debug("\$nombre_eleves=$nombre_eleves\n");
 
@@ -110,6 +111,8 @@ if ($affiche_categories) {
 	$appel_liste_groupes = mysql_query($sql);
 }
 
+//echo "$sql<br />";
+
 $nombre_groupes = mysql_num_rows($appel_liste_groupes);
 calc_moy_debug("\$nombre_groupes=$nombre_groupes\n");
 
@@ -141,6 +144,7 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
   	$categories[] = $row["id"];
 }
 
+//echo "\$nombre_eleves=$nombre_eleves<br />";
 while ($i < $nombre_eleves) {
     //$total_coef[$i] = 0;
     $total_coef_classe[$i] = 0;
@@ -176,6 +180,9 @@ while ($i < $nombre_eleves) {
 	$total_coef_cat_eleve[$i][0] = 0;
 	$moy_cat_classe[$i][0] = 0;
 	//=================================
+
+	// Temoin que la moyenne générale de l'élève peut avoir une signification
+	$temoin_au_moins_une_matiere_avec_note[$i]="n";
 
     $i++;
 }
@@ -436,6 +443,17 @@ while ($j < $nombre_groupes) {
                //if (($current_eleve_note[$j][$i] != '') and ($current_eleve_statut[$j][$i] == '')) {
                if (($current_eleve_note[$j][$i] != '') and ($current_eleve_note[$j][$i] != '-') and ($current_eleve_statut[$j][$i] == '')) {
 
+					// Temoin que la moyenne générale de l'élève peut avoir une signification
+					if($coef_eleve!=0) {$temoin_au_moins_une_matiere_avec_note[$i]="y";}
+					/*
+					if($current_eleve_login[$i]=='BERTHON_G') {
+						echo "\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."<br />";
+						echo "\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."<br />";
+						echo "\$coef_eleve=$coef_eleve<br />";
+						echo "\$temoin_au_moins_une_matiere_avec_note[$i]=".$temoin_au_moins_une_matiere_avec_note[$i]."<br />";
+					}
+					*/
+
 					/*
                     //$total_coef[$i] += $coef_eleve;
 					//calc_moy_debug("\$total_coef[$i]=$total_coef[$i]\n");
@@ -497,10 +515,20 @@ while ($j < $nombre_groupes) {
 $i = 0;
 while ($i < $nombre_eleves) {
     //if ($total_coef[$i] != 0) {
+	/*
+	if($current_eleve_login[$i]=='BERTHON_G') {
+		echo "\$total_coef_eleve[$i]=".$total_coef_eleve[$i]."<br />";
+	}
+	*/
     if ($total_coef_eleve[$i] != 0) {
         $place_eleve_classe[$i] = "";
         //$moy_gen_eleve[$i] = $moy_gen_eleve[$i]/$total_coef[$i];
-        $moy_gen_eleve[$i] = $moy_gen_eleve[$i]/$total_coef_eleve[$i];
+		if($temoin_au_moins_une_matiere_avec_note[$i]=="y") {
+	        $moy_gen_eleve[$i] = $moy_gen_eleve[$i]/$total_coef_eleve[$i];
+		}
+		else {
+	        $moy_gen_eleve[$i]="-";
+		}
 		calc_moy_debug("\$moy_gen_eleve[$i]=$moy_gen_eleve[$i]\n");
 
 		if($total_coef_classe[$i] != 0){
@@ -529,8 +557,8 @@ while ($i < $nombre_eleves) {
     } else {
         $moy_gen_eleve[$i] = "-";
         $moy_gen_classe[$i] = "-";
-
     }
+
     foreach($categories as $cat) {
 	    //if ($total_coef_cat[$i][$cat] != 0) {
 	    if ($total_coef_cat_classe[$i][$cat] != 0) {
@@ -572,16 +600,22 @@ $moy_max_classe = number_format($moy_max_classe,1, ',', ' ');
 //Calcul de la moyenne générale de la classe
 $nb_elv_classe=sizeof($moy_gen_eleve);
 $moy_generale_classe = 0;
+$effectif_avec_moyenne=0;
 for ( $i=0 ; $i < $nb_elv_classe ; $i++ ) {
-  $moy_generale_classe += $moy_gen_eleve[$i];
+	$moy_generale_classe += $moy_gen_eleve[$i];
+	if($temoin_au_moins_une_matiere_avec_note[$i]=='y') {$effectif_avec_moyenne++;}
 }
-$moy_generale_classe = $moy_generale_classe / $nb_elv_classe;
-
-$moy_generale_classe = number_format($moy_generale_classe,1, ',', ' ');
-
+//$moy_generale_classe = $moy_generale_classe / $nb_elv_classe;
+if($effectif_avec_moyenne!=0) {
+	$moy_generale_classe=$moy_generale_classe/$effectif_avec_moyenne;
+	$moy_generale_classe = number_format($moy_generale_classe,1, ',', ' ');
+}
+else {
+	$moy_generale_classe="-";
+}
 
 for ( $i=0 ; $i < sizeof($moy_gen_eleve) ; $i++ ) {
-  $moy_gen_eleve[$i] = number_format($moy_gen_eleve[$i],1, ',', ' ');
+	if($moy_gen_eleve[$i]!='-') {$moy_gen_eleve[$i] = number_format($moy_gen_eleve[$i],1, ',', ' ');}
 }
 
 // On fournit en entrée:
