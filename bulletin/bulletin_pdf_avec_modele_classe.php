@@ -3921,6 +3921,7 @@ $cpt_ordre = $cpt_ordre + 1;
 					$val_tmp=present_nombre(ereg_replace(',','.',$info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve']), $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 				}
 
+				//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $val_tmp,1,0,'C',$utilise_couleur);
 				$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $val_tmp,1,0,'C',$utilise_couleur);
 
 
@@ -3952,7 +3953,7 @@ $cpt_ordre = $cpt_ordre + 1;
 					//=========================
 					// MODIF: boireaus 20080102
 					//$moyenne_classe=$tab_moy_gen_classe[$classe_id][$id_periode];
-					$moyenne_classe=$tab_moy_gen_classe[$classe_id][$id_periode];
+					$moyenne_classe=nf($tab_moy_gen_classe[$classe_id][$id_periode]);
 					/*
 					if(($moyenne_classe!="")&&($moyenne_classe!="-")) {
 						$moyenne_classe=present_nombre(ereg_replace(',','.',$moyenne_classe), $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
@@ -3994,7 +3995,7 @@ $cpt_ordre = $cpt_ordre + 1;
 					$moyenne_min=$tab_moy_min_classe[$classe_id][$id_periode];
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_min, $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general[$classe_id]);
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $moyenne_min,1,0,'C', $couleur_moy_general[$classe_id]);
-					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $moyenne_min,1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], nf($moyenne_min),1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 					//=========================
 				} else {
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], '-',1,0,'C', $couleur_moy_general[$classe_id]);
@@ -4027,7 +4028,7 @@ $cpt_ordre = $cpt_ordre + 1;
 					$moyenne_max=$tab_moy_max_classe[$classe_id][$id_periode];
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_max, $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general[$classe_id]);
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $moyenne_max,1,0,'C', $couleur_moy_general[$classe_id]);
-					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $moyenne_max,1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], nf($moyenne_max),1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 					//=========================
 				} else {
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], '-',1,0,'C', $couleur_moy_general[$classe_id]);
