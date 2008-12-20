@@ -11,6 +11,7 @@ function nbsp_au_lieu_de_vide($texte) {
 	}
 }
 
+
 /*
 function decompte_debug($motif,$texte) {
 	global $tab_instant, $debug;
@@ -2308,12 +2309,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									if(isset($tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$m]]))
 									{
 										// On va afficher la moyenne de l'élève pour la catégorie
-										//if ($tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$m]]=="") {
 										if (($tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$m]]=="")||($tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$m]]=="-")) {
 											$valeur = "-";
 										} else {
 											//$calcule_moyenne_eleve_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_eleve']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
 											$valeur = present_nombre(ereg_replace(",",".",$tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$m]]), $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+											//$valeur =$tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$m]];
 										}
 										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',8);
 										$pdf->SetFillColor($tab_modele_pdf["couleur_reperage_eleve1"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve2"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve3"][$classe_id]);
@@ -2373,6 +2374,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$pdf->SetXY($X_min_classe, $Y_decal);
 								if($tab_modele_pdf["active_moyenne_regroupement"][$classe_id]==='1') {
 									$categorie_passage=$tab_bull['nom_cat_complet'][$m];
+
 									//if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
 									if(isset($tab_bull['moy_cat_min'][$i][$tab_bull['cat_id'][$m]]))
 									{
@@ -2441,7 +2443,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								}
 								$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 							}
-						$cpt_ordre = $cpt_ordre + 1;
+							$cpt_ordre = $cpt_ordre + 1;
 						}
 						$largeur_utilise = 0;
 						// fin de boucle d'ordre
@@ -2984,6 +2986,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							fich_debug_bull("$app_aff\n");
 							fich_debug_bull("__________________________________________\n");
 
+							// DEBUT AJUSTEMENT TAILLE APPRECIATION
 							$taille_texte_total = $pdf->GetStringWidth($app_aff);
 							$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
 
@@ -3012,11 +3015,6 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								else {
 									$grandeur_texte='ok';
 								}
-
-								fich_debug_bull("\$hauteur_caractere_appreciation=$hauteur_caractere_appreciation\n");
-								fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
-								fich_debug_bull("\$grandeur_texte=$grandeur_texte\n");
-								fich_debug_bull("\n");
 							}
 							$grandeur_texte='test';
 							$pdf->drawTextBox(traite_accents_utf8($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
@@ -3294,15 +3292,21 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$info_absence = $info_absence." du suivi : <i>".affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe'])."</i>)";
 				$pdf->MultiCellTag(200, 5, $info_absence, '', 'J', '');
 
-
-
-				if ( isset($Y_avis_cons_init) ) { $tab_modele_pdf["Y_avis_cons"][$classe_id] = $Y_avis_cons_init; }
-				if ( isset($Y_sign_chef_init) ) { $tab_modele_pdf["Y_sign_chef"][$classe_id] = $Y_sign_chef_init; }
+				//=========================
+				// MODIF: boireaus 20081220
+				// Désactivation de ce qui provoquait un décalage progressif du bloc Avis du conseil,...
+				//if ( isset($Y_avis_cons_init) ) { $tab_modele_pdf["Y_avis_cons"][$classe_id] = $Y_avis_cons_init; }
+				//if ( isset($Y_sign_chef_init) ) { $tab_modele_pdf["Y_sign_chef"][$classe_id] = $Y_sign_chef_init; }
+				//=========================
 				if ( !isset($Y_avis_cons_init) ) { $Y_avis_cons_init = $tab_modele_pdf["Y_avis_cons"][$classe_id] + 0.5; }
 				if ( !isset($Y_sign_chef_init) ) { $Y_sign_chef_init = $tab_modele_pdf["Y_sign_chef"][$classe_id] + 0.5; }
 
-				if ( isset($hauteur_avis_cons_init) ) { $tab_modele_pdf["hauteur_avis_cons"][$classe_id] = $hauteur_avis_cons_init; }
-				if ( isset($hauteur_sign_chef_init) ) { $tab_modele_pdf["hauteur_sign_chef"][$classe_id] = $hauteur_sign_chef_init; }
+				//=========================
+				// MODIF: boireaus 20081220
+				// Désactivation de ce qui provoquait une réduction progressive de la hauteur du bloc Avis du conseil,...
+				//if ( isset($hauteur_avis_cons_init) ) { $tab_modele_pdf["hauteur_avis_cons"][$classe_id] = $hauteur_avis_cons_init; }
+				//if ( isset($hauteur_sign_chef_init) ) { $tab_modele_pdf["hauteur_sign_chef"][$classe_id] = $hauteur_sign_chef_init; }
+				//=========================
 				if ( !isset($hauteur_avis_cons_init) ) { $hauteur_avis_cons_init = $tab_modele_pdf["hauteur_avis_cons"][$classe_id] - 0.5; }
 				if ( !isset($hauteur_sign_chef_init) ) { $hauteur_sign_chef_init = $tab_modele_pdf["hauteur_sign_chef"][$classe_id] - 0.5; }
 
@@ -3344,18 +3348,26 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 			// si le bloc absence n'est pas activé
 			if($tab_modele_pdf["active_bloc_absence"][$classe_id] != '1') {
-				if ( isset($Y_avis_cons_init) ) { $tab_modele_pdf["Y_avis_cons"][$classe_id] = $Y_avis_cons_init; }
-				if ( isset($Y_sign_chef_init) ) { $tab_modele_pdf["Y_sign_chef"][$classe_id] = $Y_sign_chef_init; }
+				//=========================
+				// MODIF: boireaus 20081220
+				// Désactivation de ce qui provoquait un décalage progressif du bloc Avis du conseil,...
+				//if ( isset($Y_avis_cons_init) ) { $tab_modele_pdf["Y_avis_cons"][$classe_id] = $Y_avis_cons_init; }
+				//if ( isset($Y_sign_chef_init) ) { $tab_modele_pdf["Y_sign_chef"][$classe_id] = $Y_sign_chef_init; }
+				//=========================
 				if ( !isset($Y_avis_cons_init) ) { $Y_avis_cons_init = $tab_modele_pdf["Y_avis_cons"][$classe_id]; }
 				if ( !isset($Y_sign_chef_init) ) { $Y_sign_chef_init = $tab_modele_pdf["Y_sign_chef"][$classe_id]; }
 			}
 			// fin
 
+			//=========================
+			// MODIF: boireaus 20081220
+			/*
 			if($Y_avis_cons_init!=$tab_modele_pdf["Y_avis_cons"][$classe_id]) {
 				$Y_avis_cons[$classe_id] = $tab_modele_pdf["Y_avis_cons"][$classe_id] + 0.5;
 				$Y_sign_chef[$classe_id] = $tab_modele_pdf["Y_sign_chef"][$classe_id] + 0.5;
 			}
-
+			*/
+			//=========================
 
 			// ================ bloc avis du conseil de classe =================
 			if($tab_modele_pdf["active_bloc_avis_conseil"][$classe_id]==='1') {
@@ -3363,7 +3375,6 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$pdf->Rect($tab_modele_pdf["X_avis_cons"][$classe_id], $tab_modele_pdf["Y_avis_cons"][$classe_id], $tab_modele_pdf["longeur_avis_cons"][$classe_id], $tab_modele_pdf["hauteur_avis_cons"][$classe_id], 'D');
 				}
 				$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id],$tab_modele_pdf["Y_avis_cons"][$classe_id]);
-				fich_debug_bull("\$tab_modele_pdf[\"Y_avis_cons\"][$classe_id]=".$tab_modele_pdf["Y_avis_cons"][$classe_id]."\n");
 				if ( $tab_modele_pdf["taille_titre_bloc_avis_conseil"][$classe_id] != '' and $tab_modele_pdf["taille_titre_bloc_avis_conseil"][$classe_id] < '15' ) {
 					$taille = $tab_modele_pdf["taille_titre_bloc_avis_conseil"][$classe_id];
 				} else {
@@ -3380,6 +3391,11 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 				$texteavis = $tab_bull['avis'][$i];
 				$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
+				//=========================
+				// MODIF: boireaus 20081220
+				// DEBUG:
+				//$pdf->drawTextBox(traite_accents_utf8($texteavis." ".$Y_avis_cons_init." ".$tab_modele_pdf["hauteur_avis_cons"][$classe_id]), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
+				//=========================
 				$X_pp_aff=$tab_modele_pdf["X_avis_cons"][$classe_id];
 				$Y_pp_aff=$tab_modele_pdf["Y_avis_cons"][$classe_id]+$tab_modele_pdf["hauteur_avis_cons"][$classe_id]-5;
 				$pdf->SetXY($X_pp_aff,$Y_pp_aff);
