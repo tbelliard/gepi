@@ -1717,6 +1717,9 @@ else {
 			// Variables récupérées de calcul_moy_gen.inc.php
 			// Tableaux d'indices [$i][$cat] (où $i: eleve et $cat: $categorie_id)
 			$tab_bulletin[$id_classe][$periode_num]['moy_cat_classe']=$moy_cat_classe;
+			$tab_bulletin[$id_classe][$periode_num]['moy_cat_min']=$moy_cat_min;
+			$tab_bulletin[$id_classe][$periode_num]['moy_cat_max']=$moy_cat_max;
+
 			$tab_bulletin[$id_classe][$periode_num]['moy_cat_eleve']=$moy_cat_eleve;
 
 			// matieres_categories(id,nom_court,nom_complet,priority)
@@ -2310,7 +2313,12 @@ else {
 						$sql="SELECT cd.id FROM cn_devoirs cd, cn_cahier_notes ccn WHERE cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group[$j]["id"]."' AND ccn.periode='$periode_num';";
 						//echo "\n<!--sql=$sql-->\n";
 						$result_nbct_tot=mysql_query($sql);
-						$current_matiere_nbct=mysql_num_rows($result_nbct_tot);
+						if($result_nbct_tot) {
+							$current_matiere_nbct=mysql_num_rows($result_nbct_tot);
+						}
+						else {
+							$current_matiere_nbct=0;
+						}
 
 						$tab_bulletin[$id_classe][$periode_num]['groupe'][$j]['nbct']=$current_matiere_nbct;
 
@@ -2403,7 +2411,12 @@ else {
 							$sql="SELECT cnd.note, cd.note_sur FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$current_eleve_login[$i]."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group[$j]["id"]."' AND ccn.periode='$periode_num' AND cnd.statut='';";
 							//echo "\n<!--sql=$sql-->\n";
 							$result_nbct=mysql_query($sql);
-							$current_eleve_nbct=mysql_num_rows($result_nbct);
+							if($result_nbct) {
+								$current_eleve_nbct=mysql_num_rows($result_nbct);
+							}
+							else {
+								$current_eleve_nbct=0;
+							}
 
 							$tab_bulletin[$id_classe][$periode_num]['nbct'][$j][$i]=$current_eleve_nbct;
 

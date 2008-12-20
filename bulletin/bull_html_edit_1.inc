@@ -200,11 +200,15 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 
 					if($min_max_moyclas!=1) {
 						// Min
-						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
+						//echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
+						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_min'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
+
 						// Moyenne catégorie classe
-						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".$tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]]."</td>\n";
+						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
+
 						// Max
-						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
+						//echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
+						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_max'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
 					}
 					else {
 						// Moyenne catégorie classe
@@ -213,7 +217,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 
 					// Moyenne catégorie élève
 					//echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nbsp_au_lieu_de_vide($tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
-					echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".$tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$j]]."</td>\n";
+					echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
 
 					$colspan=2;
 					if($tab_bull['affiche_graph']=='y') {$colspan++;}
@@ -271,20 +275,20 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 		}
 
 		if($min_max_moyclas!=1) {
-			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".$tab_bull['moy_min_classe_grp'][$j]."</span></td>\n";
-			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".$tab_bull['moy_classe_grp'][$j]."</span></td>\n";
+			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_min_classe_grp'][$j])."</span></td>\n";
+			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_classe_grp'][$j])."</span></td>\n";
 			//echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>\$tab_bull['moy_classe_grp'][$j]=".$tab_bull['moy_classe_grp'][$j]."</span></td>\n";
-			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".$tab_bull['moy_max_classe_grp'][$j]."</span></td>\n";
+			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_max_classe_grp'][$j])."</span></td>\n";
 		}
 		else {
-			echo "<td$chaine_rowspan style='text-align: center;'><span class='bullminclasmax'>".$tab_bull['moy_min_classe_grp'][$j]."</span><br />\n";
-			echo "<span class='bullminclasmax'>".$tab_bull['moy_classe_grp'][$j]."</span><br />\n";
-			echo "<span class='bullminclasmax'>".$tab_bull['moy_max_classe_grp'][$j]."</span></td>\n";
+			echo "<td$chaine_rowspan style='text-align: center;'><span class='bullminclasmax'>".nf($tab_bull['moy_min_classe_grp'][$j])."</span><br />\n";
+			echo "<span class='bullminclasmax'>".nf($tab_bull['moy_classe_grp'][$j])."</span><br />\n";
+			echo "<span class='bullminclasmax'>".nf($tab_bull['moy_max_classe_grp'][$j])."</span></td>\n";
 		}
 
 		echo "<td$chaine_rowspan style='font-weight:bold; text-align: center;'><span class='bulletin'>";
 		if($tab_bull['statut'][$j][$i]=="") {
-			echo nbsp_au_lieu_de_vide($tab_bull['note'][$j][$i]);
+			echo nbsp_au_lieu_de_vide(nf($tab_bull['note'][$j][$i]));
 		}
 		else {
 			echo $tab_bull['statut'][$j][$i];
@@ -336,7 +340,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 				$n = 0;
 				// Première boite
 				echo "<td style='text-align: center; height: ".$col_hauteur."px; width: ".$col_boite_largeur."px;'><span class='bulletin'>";
-				echo $tab_bull['groupe'][$j][$i]['cn_nom'][$n].":".$tab_bull['groupe'][$j][$i]['cn_note'][$n];
+				echo $tab_bull['groupe'][$j][$i]['cn_nom'][$n].":".nf($tab_bull['groupe'][$j][$i]['cn_note'][$n]);
 				echo "</span></td>\n";
 				$n++;
 
@@ -350,7 +354,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 					echo "</tr>\n";
 					echo "<tr>\n";
 					echo "<td style='height: ".$col_hauteur."px; text-align: left;'><span class='bulletin'>";
-					echo $tab_bull['groupe'][$j][$i]['cn_nom'][$n].":".$tab_bull['groupe'][$j][$i]['cn_note'][$n];
+					echo $tab_bull['groupe'][$j][$i]['cn_nom'][$n].":".nf($tab_bull['groupe'][$j][$i]['cn_note'][$n]);
 					echo "</span></td>\n";
 					$n++;
 				}
@@ -484,19 +488,19 @@ if($tab_bull['display_moy_gen']=='y') {
 			}
 
 			if($min_max_moyclas!=1) {
-				echo "<td style='text-align: center;'><span class='bulletin'>".$tab_bull['moy_min_classe']."</span></td>\n";
+				echo "<td style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_min_classe'])."</span></td>\n";
 				//$tab_bull['moy_gen_classe'][$i]
-				echo "<td style='text-align: center;'><span class='bulletin'><b>".$tab_bull['moy_generale_classe']."</b></span></td>\n";
-				echo "<td style='text-align: center;'><span class='bulletin'>".$tab_bull['moy_max_classe']."</span></td>\n";
+				echo "<td style='text-align: center;'><span class='bulletin'><b>".nf($tab_bull['moy_generale_classe'])."</b></span></td>\n";
+				echo "<td style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_max_classe'])."</span></td>\n";
 			}
 			else {
-				echo "<td style='text-align: center;'><span class='bullminclasmax'>".$tab_bull['moy_min_classe']."</span><br />\n";
+				echo "<td style='text-align: center;'><span class='bullminclasmax'>".nf($tab_bull['moy_min_classe'])."</span><br />\n";
 				//$tab_bull['moy_gen_classe'][$i]
-				echo "<span class='bullminclasmax'><b>".$tab_bull['moy_generale_classe']."</b></span><br />\n";
-				echo "<span class='bullminclasmax'>".$tab_bull['moy_max_classe']."</span></td>\n";
+				echo "<span class='bullminclasmax'><b>".nf($tab_bull['moy_generale_classe'])."</b></span><br />\n";
+				echo "<span class='bullminclasmax'>".nf($tab_bull['moy_max_classe'])."</span></td>\n";
 			}
 
-			echo "<td style='text-align: center; font-weight:bold;'><span class='bulletin'>".$tab_bull['moy_gen_eleve'][$i]."</span></td>\n";
+			echo "<td style='text-align: center; font-weight:bold;'><span class='bulletin'>".nf($tab_bull['moy_gen_eleve'][$i])."</span></td>\n";
 
 			if ($tab_bull['affiche_graph']=='y') {
 				echo "<td style='text-align: center;'>";

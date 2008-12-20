@@ -241,18 +241,18 @@
                         }
                         echo "<p style='padding: 0; margin:0; font-size: ".$bull_categ_font_size."px;'>".$cat_name."</p></td>\n";
                         if ($affiche_cat_moyenne == "1") {
-				echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center'>".$moy_cat_eleve[$i][$prev_cat_id]."</td>\n"; // moy elv
+				echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center'>".nf($moy_cat_eleve[$i][$prev_cat_id])."</td>\n"; // moy elv
 
 				echo "<td colspan='" . $nb_last_cols . "'>&nbsp;</td>\n";
 
 				//ERIC  Modif pour les cas où les moy sont regroupées en fin de bulletin dans une seule cas
 				if($min_max_moyclas!=1){
 				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>"."-"."</td>\n"; // max classe
-				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".$moy_cat_classe[$i][$prev_cat_id]."</td>\n"; //moy classe
+				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($moy_cat_classe[$i][$prev_cat_id])."</td>\n"; //moy classe
 				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>"."-"."</td>\n"; // max classe
                 }
 				else {
-				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".$moy_cat_classe[$i][$prev_cat_id]."</td>\n"; //moy classe
+				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($moy_cat_classe[$i][$prev_cat_id])."</td>\n"; //moy classe
 				}
 
                         }
@@ -498,7 +498,7 @@
 
 				// Colonne Moyenne générale d'élève:
 				echo "<td style=\"text-align: center;\">";
-				echo "<span class='bulletin'><b>".$moy_gen_eleve[$i]."</b></span></td>\n";
+				echo "<span class='bulletin'><b>".nf($moy_gen_eleve[$i])."</b></span></td>\n";
 				if ($affiche_graph == 'y')  {
 					if (($quartile1_classe_gen != 0)  or ($quartile2_classe_gen != 0) or ($quartile3_classe_gen != 0) or ($quartile4_classe_gen != 0) or ($quartile5_classe_gen != 0) or ($quartile6_classe_gen != 0)){
 						echo "<td style=\"text-align: center;\"><img height='40' width='40' src='../visualisation/draw_artichow4.php?place_eleve=".$place_eleve_classe[$i]."&amp;temp1=$quartile1_classe_gen&amp;temp2=$quartile2_classe_gen&amp;temp3=$quartile3_classe_gen&amp;temp4=$quartile4_classe_gen&amp;temp5=$quartile5_classe_gen&amp;temp6=$quartile6_classe_gen&amp;nb_data=7' alt='Quartiles' /></td>\n";
@@ -548,26 +548,26 @@
 				if($min_max_moyclas!=1){
 					// Colonne Min:
 					echo "<td style=\"text-align: center;\">";
-					echo "<span class='bulletin'>$moy_min_classe</span>";
+					echo "<span class='bulletin'>".nf($moy_min_classe)."</span>";
 				    echo "</td>\n";
 
 
 				// Colonne Moyenne générale de la classe:
 				echo "<td style=\"text-align: center;\">";
-				echo "<span class='bulletin'>$moy_generale_classe</span>";
+				echo "<span class='bulletin'>".nf($moy_generale_classe)."</span>";
 				echo "</td>\n";
 
 
 					// Colonne Max:
 				    echo "<td style=\"text-align: center;\">";
-					echo "<span class='bulletin'>$moy_max_classe</span>";
+					echo "<span class='bulletin'>".nf($moy_max_classe.)."</span>";
 				    echo "</td>\n";
 				} else {
 				    //Eric Ajout colonne min classe max une seule cellule
 				    echo "<td style=\"text-align: center;\">";
-				    echo "<span class='bullminclasmax'>$moy_min_classe</span><br />\n";
-					echo "<span class='bullminclasmax'>$moy_generale_classe</span><br />\n";
-					echo "<span class='bullminclasmax'>$moy_max_classe</span><br />\n";
+				    echo "<span class='bullminclasmax'>".nf($moy_min_classe)."</span><br />\n";
+					echo "<span class='bullminclasmax'>".nf($moy_generale_classe)."</span><br />\n";
+					echo "<span class='bullminclasmax'>".nf($moy_max_classe)."</span><br />\n";
 					echo "</td>\n";
 				}
 

@@ -758,10 +758,11 @@
 		if(($angle>270)&&($angle<360)){$xtmp=$x+30;}else{$xtmp=$x;}
 		//**************
 		for($k=1;$k<=$nb_series_bis;$k++){
-			imagestring ($img, $taille_police, $xtmp, $ytmp, $moyenne[$k][$i+1], $couleureleve[$k]);
+			//imagestring ($img, $taille_police, $xtmp, $ytmp, $moyenne[$k][$i+1], $couleureleve[$k]);
+			imagestring ($img, $taille_police, $xtmp, $ytmp, nf($moyenne[$k][$i+1]), $couleureleve[$k]);
 			//imagestring ($img, $taille_police, $xtmp, $ytmp, "A", $couleureleve[$k]);
 			//$xtmp=$xtmp+strlen($moyenne[$k][$i+1]." - ")*ImageFontWidth($taille_police);
-			$xtmp=$xtmp+strlen($moyenne[$k][$i+1]." ")*ImageFontWidth($taille_police_inf);
+			$xtmp=$xtmp+strlen(nf($moyenne[$k][$i+1])." ")*ImageFontWidth($taille_police_inf);
 		}
 	}
 	//=================================

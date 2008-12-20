@@ -3261,4 +3261,20 @@ function traite_accents_utf8($chaine) {
 	}
 }
 
+function nf($nombre) {
+	// Formatage des nombres
+	// Precision:
+	$precision=0.1;
+	$nb_chiffre_apres_virgule=1;
+
+	if(($nombre=='')||($nombre=='-')) {
+		$valeur=$nombre;
+	}
+	else {
+		$valeur=number_format(round($nombre/$precision)*$precision, $nb_chiffre_apres_virgule, ',', '');
+		//$valeur=strtr($valeur,".",",");
+	}
+	return $valeur;
+}
+
 ?>

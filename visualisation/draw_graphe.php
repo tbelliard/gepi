@@ -614,11 +614,16 @@
 		//for($k=1;$k<=$nb_series;$k++){
 		for($k=1;$k<=$nb_series_bis;$k++){
 			$ytmp=$ytmp+15;
-			$largeur_texte = strlen($moyenne[$k][$i]) * ImageFontWidth($taille_police);
+			//if(strlen(ereg_replace("[0-9.,]","",$moyenne[$k][$i]))==0) {$valeur=nf($moyenne[$k][$i]);} else {$valeur=$moyenne[$k][$i];}
+			//$largeur_texte = strlen($moyenne[$k][$i]) * ImageFontWidth($taille_police);
+			//$largeur_texte = strlen($valeur) * ImageFontWidth($taille_police);
+			$largeur_texte = strlen(nf($moyenne[$k][$i])) * ImageFontWidth($taille_police);
 
 			$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
 			writinfo('/tmp/infos_graphe.txt','a+',"\nimagestring (\$img, $taille_police, ".$tmp.", $ytmp, ".$moyenne[$k][$i].", ".$couleureleve[$k].")\n");
-			imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $moyenne[$k][$i], $couleureleve[$k]);
+			//imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $moyenne[$k][$i], $couleureleve[$k]);
+			//imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $valeur, $couleureleve[$k]);
+			imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, nf($moyenne[$k][$i]), $couleureleve[$k]);
 		}
 		//===========================================================================
 
@@ -687,8 +692,14 @@
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
 			$ytmp=$ytmp+15;
-			$largeur_texte = strlen($mgen[$k]) * ImageFontWidth($taille_police);
-			imagestring ($img, $taille_police, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $mgen[$k], $couleureleve[$k]);
+			//if(strlen(ereg_replace("[0-9.,]","",$mgen[$k]))==0) {$valeur=nf($mgen[$k]);} else {$valeur=$mgen[$k];}
+			//$largeur_texte = strlen($mgen[$k]) * ImageFontWidth($taille_police);
+			//$largeur_texte = strlen($valeur) * ImageFontWidth($taille_police);
+			$largeur_texte = strlen(nf($mgen[$k])) * ImageFontWidth($taille_police);
+
+			//imagestring ($img, $taille_police, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $mgen[$k], $couleureleve[$k]);
+			//imagestring ($img, $taille_police, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $valeur, $couleureleve[$k]);
+			imagestring ($img, $taille_police, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, nf($mgen[$k]), $couleureleve[$k]);
 
 			if($mgen[$k]!="-"){
 				$total_tmp=$total_tmp+$mgen[$k];
@@ -705,8 +716,8 @@
 			}
 
 			$ytmp=$ytmp+15;
-			$largeur_texte = strlen($mgen_annuelle) * ImageFontWidth($taille_police);
-			imagestring ($img, $taille_police, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $mgen_annuelle, $couleureleve[$nb_series_bis]);
+			$largeur_texte = strlen(nf($mgen_annuelle)) * ImageFontWidth($taille_police);
+			imagestring ($img, $taille_police, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, nf($mgen_annuelle), $couleureleve[$nb_series_bis]);
 		}
 	}
 

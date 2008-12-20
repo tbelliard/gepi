@@ -727,7 +727,8 @@ if($display_moy_gen=="y") {
 			} else {
 				$moy_classe = '-';
 			}
-			echo "$moy_classe";
+			//echo "$moy_classe";
+			echo nf($moy_classe);
 			echo "</td>\n<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
 			if ($total_points_eleve[$nb] != '0') {
 				//$moy_eleve=number_format($total_points_eleve[$nb]/$total_coef[$nb],1, ',', ' ');
@@ -772,7 +773,7 @@ if($display_moy_gen=="y") {
 								$moy_classe="-";
 							}
 
-							echo $cat_names[$cat_id] . " - <b>$moy_eleve</b> (classe : " . $moy_classe . ")<br/>\n";
+							echo $cat_names[$cat_id] . " - <b>".$moy_eleve."</b> (classe : " . $moy_classe . ")<br/>\n";
 						}
 					}
 				}

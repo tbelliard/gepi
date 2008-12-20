@@ -1886,6 +1886,8 @@ function eleve_suivant(){
 
 		// Initialisation de la liste des matières.
 		$liste_matieres="";
+		$matiere=array();
+		$matiere_nom=array();
 
 		// Séries:
 		if($choix_periode=="periode"){
@@ -1920,172 +1922,151 @@ function eleve_suivant(){
 			}
 
 
-			// Récupération des noms courts/longs et priorités des matières de la classe (dans l'ordre de priorité)
-			//$call_classe_infos = mysql_query("SELECT DISTINCT  m.* FROM matieres m,j_classes_matieres_professeurs j WHERE (m.matiere = j.id_matiere AND j.id_classe='$id_classe') ORDER BY j.priorite");
-			if ($affiche_categories) {
-				//$sql="SELECT DISTINCT  m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm,j_professeurs_matieres jpm,j_matieres_categories_classes jmcc WHERE (m.matiere=jgm.id_matiere AND jpm.id_matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe' AND jgc.categorie_id = jmcc.categorie_id) ORDER BY jmcc.priority,jpm.ordre_matieres,m.matiere";
-				$sql="SELECT DISTINCT  m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm,j_matieres_categories_classes jmcc WHERE (m.matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe' AND jgc.categorie_id = jmcc.categorie_id) ORDER BY jmcc.priority,jgc.priorite,m.matiere";
-			}
-			else{
-				//$sql="SELECT DISTINCT  m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm,j_professeurs_matieres jpm WHERE (m.matiere=jgm.id_matiere AND jpm.id_matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe') ORDER BY jpm.ordre_matieres,m.matiere";
-				$sql="SELECT DISTINCT  m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm WHERE (m.matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe') ORDER BY jgc.priorite,m.matiere";
-			}
-			affiche_debug("$sql<br />");
-			$call_classe_infos = mysql_query($sql);
-			$nombre_lignes = mysql_num_rows($call_classe_infos);
-			affiche_debug("\$nombre_lignes=$nombre_lignes<br />");
+			// On calcule les moyennes:
+			// Doivent être initialisées, les variables:
+			// - $id_classe : la classe concernée
+			// - $periode_num
+			$periode_num=$num_periode;
 
-			// Compteur du nombre de notes de l'élève (autres que ABS,...)
-			$cpt2=0;
+			$coefficients_a_1="non";
+			$affiche_graph="n";
+			include('../lib/calcul_moy_gen.inc.php');
 
-			$matiere=array();
-			$matiere_nom=array();
+			// Récupérer la ligne de l'élève courant
+			// Remplir $liste_matieres, $serie[1] et $serie[2] (selon que c'est moymin, moymax, moyclasse ou un autre élève)
+			// Remplir seriemin et seriemax?
+			// Récupérer les appréciations et générer les infobulles
 
-			# Image Map
-			//$chaine_map="<map name='imagemap'>\n";
-			// $largeurGrad -> 50
-			// $largeurBandeDroite=80;
-			// $largeur=$largeurTotale-$largeurGrad-$largeurBandeDroite;
-			// $largeur=$largeur_graphe-$largeurGrad-$largeurBandeDroite;
-			// $nbMat=count($matiere);
-			// $largeurMat=round($largeur/$nbMat);
-			/*
-			$largeurGrad=50;
-			$largeurBandeDroite=80;
-			$largeur=$largeur_graphe-$largeurGrad-$largeurBandeDroite;
-			$nbMat=;
-			*/
 			$tab_imagemap=array();
 			$tab_imagemap_commentaire_present=array();
 
-			$cpt=1;
-			// Boucle sur l'ordre des matières:
-			// On ne va retenir que les matières du premier élève.
-			while($ligne=mysql_fetch_object($call_classe_infos)){
-				// Nom court/long de la matière:
-				$current_matiere=$ligne->matiere;
-				$current_matiere_nom=$ligne->nom_complet;
+			// On recherche l'élève courant:
+			$indice_eleve1=-1;
+			for($loop=0;$loop<count($current_eleve_login);$loop++) {
+				if($current_eleve_login[$loop]==$eleve1) {
+					$indice_eleve1=$loop;
+					break;
+				}
+			}
 
-				/*
-				$matiere[$cpt]=$ligne->matiere;
-				$matiere_nom[$cpt]=$ligne->nom_complet;
-				$cpt++;
-				*/
+			if($indice_eleve1==-1) {
+				echo "<p><span style='font-weight:bold; color:red;'>ERREUR:</span> L'élève $eleve1 n'a pas été trouvé lors de l'extraction des moyennes sur la période $periode.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
 
-				//$total_serie[1]=0;
-				//$nb_notes_serie=0;
-				$coef_serie[1]=array();
-				//$matiere=array();
-				//$matiere_nom=array();
+			$mgen[1]=$moy_gen_eleve[$indice_eleve1];
 
-				// Est-ce une matière que l'élève a?
-				//echo "SELECT * FROM j_eleves_matieres WHERE (login='$eleve1' AND matiere='$current_matiere' and periode='$periode')<br />";
-				//$eleve_option_query=mysql_query("SELECT * FROM j_eleves_matieres WHERE (login='$eleve1' AND matiere='$current_matiere' and periode='$periode')");
-				//$eleve_option_query=mysql_query("SELECT * FROM j_eleves_matieres WHERE (login='$eleve1' AND matiere='$current_matiere' and periode='$num_periode')");
-
-				// Le fait de suivre une matière n'est plus renseigné par j_eleves_matieres qui contenait en fait les exclusions:
-				// Les matières qu'un élève n'avait pas y était inscrites.
-				// Avec la gestion par groupes, cela ne fonctionne plus ainsi.
-				$sql="SELECT * FROM j_eleves_groupes jeg,j_groupes_matieres jgm WHERE (jeg.login='$eleve1' AND jgm.id_matiere='$current_matiere' AND jeg.id_groupe=jgm.id_groupe AND jeg.periode='".$num_periode."')";
-				affiche_debug("$sql<br />");
-				$eleve_option_query=mysql_query($sql);
-				//echo "SELECT * FROM j_eleves_groupes jeg,j_groupes_matieres jgm WHERE (jeg.login='$eleve1' AND jgm.id_matiere='$current_matiere' AND jeg.id_groupe=jgm.id_groupe)<br />\n";
-				//if(mysql_num_rows($eleve_option_query)==0){
-				if(mysql_num_rows($eleve_option_query)!=0){
-					//echo "X\n";
-					//echo "$current_matiere_nom: \n";
-
-					$matiere[$cpt]=$ligne->matiere;
-					$matiere_nom[$cpt]=$ligne->nom_complet;
-					$cpt++;
-
-					//$note_eleve_query=mysql_query("SELECT * FROM matieres_notes WHERE (login='$eleve1' AND periode='$num_periode' AND matiere='$current_matiere')");
-					$sql="SELECT mn.* FROM matieres_notes mn, j_groupes_matieres jgm WHERE (mn.login='$eleve1' AND mn.periode='$num_periode' AND jgm.id_matiere='$current_matiere' AND mn.statut ='' AND mn.id_groupe=jgm.id_groupe)";
-					affiche_debug("$sql<br />");
-					$note_eleve_query=mysql_query($sql);
-					// QU'EST-CE QUE C'EST QUE CE STATUT ??? Réponse ci-dessous:
-					// Le champ 'note' est numérique.
-					// 'ABS' est donc assimilé à un zéro.
-					// Le champ 'statut' permet de distinguer un zéro d'un 'ABS',...
-					$eleve_matiere_statut = @mysql_result($note_eleve_query, 0, "statut");
-					$note_eleve = @mysql_result($note_eleve_query, 0, "note");
-					if ($eleve_matiere_statut != "") { $note_eleve = $eleve_matiere_statut;}
-					if ($note_eleve == '') {$note_eleve = '-';}
-					//echo "$note_eleve<br />\n";
-
-					if($liste_matieres==""){
-						$liste_matieres="$current_matiere";
+			// On recherche l'élève2 et on récupère la moyenne générale 2:
+			$indice_eleve2=-1;
+			//echo "\$eleve2=$eleve2<br />";
+			if(($eleve2!='moyclasse')&&($eleve2!='moymin')&&($eleve2!='moymax')) {
+				for($loop=0;$loop<count($current_eleve_login);$loop++) {
+					if($current_eleve_login[$loop]==$eleve2) {
+						$indice_eleve2=$loop;
+						break;
 					}
-					else{
-						$liste_matieres=$liste_matieres."|$current_matiere";
+				}
+
+				$mgen[2]=$moy_gen_eleve[$indice_eleve2];
+			}
+			elseif($eleve2=='moyclasse') {
+				$mgen[2]=$moy_generale_classe;
+				//$mgen[2]=5;
+			}
+			elseif($eleve2=='moymin') {
+				$mgen[2]=$moy_min_classe;
+			}
+			elseif($eleve2=='moymax') {
+				$mgen[2]=$moy_max_classe;
+			}
+
+			// On remplit $liste_matieres, $serie[1], les tableaux d'appréciations et on génère les infobulles
+			$cpt=0;
+			for($loop=0;$loop<count($current_group);$loop++) {
+				if(isset($current_eleve_note[$loop][$indice_eleve1])) {
+					// L'élève suit l'enseignement
+
+					if($liste_matieres!="") {
+						$liste_matieres.="|";
+						$serie[1].="|";
+						$serie[2].="|";
+						$seriemin.="|";
+						$seriemax.="|";
 					}
 
-					$cpttmp=$cpt-1;
-					/*
-					echo "<p>";
-					echo $matiere[$cpttmp]." : $note_eleve<br />";
-					echo "\$liste_matieres=$liste_matieres<br />";
-					echo "</p>";
-					*/
+					// Groupe:
+					$id_groupe=$current_group[$loop]["id"];
 
-					if($serie[1]==""){
-						$serie[1]="$note_eleve";
+					// Matières
+					$matiere[$cpt]=$current_group[$loop]["matiere"]["matiere"];
+					$matiere_nom[$cpt]=$current_group[$loop]["matiere"]["nom_complet"];
+					$liste_matieres.=$matiere[$cpt];
+
+					// Elève 1:
+					if($current_eleve_statut[$loop][$indice_eleve1]!="") {
+						// Mettre le statut pose des problèmes pour le tracé de la courbe... abs, disp,... passent pour des zéros
+						//$serie[1].=$current_eleve_statut[$loop][$indice_eleve1];
+						$serie[1].="-";
 					}
-					else{
-						$serie[1]=$serie[1]."|$note_eleve";
+					else {
+						$serie[1].=$current_eleve_note[$loop][$indice_eleve1];
 					}
 
-					// Récupération des vraies notes (non-ABS,...) et coeff de la matière pour la moyenne générale:
-					if($affiche_mgen=='oui'){
-						//echo "ereg_replace(\"[0-9]*.[0-9]\",\"\",$note_eleve)=".ereg_replace("[0-9]*.[0-9]","",$note_eleve)."<br />";
-						//echo "strlen(ereg_replace(\"[0-9]*.[0-9]\",\"\",$note_eleve))=".strlen(ereg_replace("[0-9]*.[0-9]","",$note_eleve))."<br />";
-						if(strlen(ereg_replace("[0-9]*.[0-9]","",$note_eleve))==0){
-							//$total_serie[1]=$total_serie[1]+$note_eleve;
-							//$nb_notes_serie++;
-
-							$cpt2++;
-							$note_serie[1][$cpt2]=$note_eleve;
-							//$sql="SELECT DISTINCT coef FROM j_classes_matieres_professeurs WHERE id_classe='$id_classe' AND id_matiere='$current_matiere'";
-							$sql="SELECT DISTINCT coef FROM j_groupes_classes jgc,j_groupes_matieres jgm WHERE jgc.id_classe='$id_classe' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='$current_matiere'";
-							affiche_debug("$sql<br />");
-							$result=mysql_query($sql);
-							// PB: Il peut y avoir plusieurs lignes TECHN -> deux profs au collège...
-							//    ... et s'ils mettent des coeff différents???
-							$ligntmp=mysql_fetch_object($result);
-							$coef_serie[1][$cpt2]=$ligntmp->coef;
+					// Elève 2:
+					if($indice_eleve2!=-1) {
+						// Si le deuxième élève suit le même enseignement:
+						if(isset($current_eleve_note[$loop][$indice_eleve2])) {
+							if($current_eleve_statut[$loop][$indice_eleve2]!="") {
+								// Mettre le statut pose des problèmes pour le tracé de la courbe... abs, disp,... passent pour des zéros
+								//$serie[2].=$current_eleve_statut[$loop][$indice_eleve2];
+								$serie[2].="-";
+							}
+							else {
+								$serie[2].=$current_eleve_note[$loop][$indice_eleve2];
+							}
+						}
+						else {
+								$serie[2].="-";
 						}
 					}
+					elseif($eleve2=='moyclasse') {
+						$serie[2].=$current_classe_matiere_moyenne[$loop];
+					}
+					elseif($eleve2=='moymin') {
+						//$serie[2].=min($current_eleve_note[$loop]);
+						$serie[2].=$moy_min_classe_grp[$loop];
+					}
+					elseif($eleve2=='moymax') {
+						//$serie[2].=max($current_eleve_note[$loop]);
+						$serie[2].=$moy_max_classe_grp[$loop];
+					}
+
+					// Série min et série max pour les bandes min/max:
+					// Avec min($current_eleve_note[$loop]) on n'a que les élève de la classe pas ceux de tout l'enseignement si à cheval sur plusieurs classes
+					//$seriemin.=min($current_eleve_note[$loop]);
+					$seriemin.=$moy_min_classe_grp[$loop];
+					//$seriemax.=max($current_eleve_note[$loop]);
+					$seriemax.=$moy_max_classe_grp[$loop];
 
 
-					//==========================================================
-					// AJOUT: boireaus 20080218
-					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+					// Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 					if($tab_acces_app[$num_periode]=="y") {
 					//==========================================================
-						$sql="SELECT ma.* FROM matieres_appreciations ma, j_groupes_matieres jgm WHERE (ma.login='$eleve1' AND ma.periode='$num_periode' AND jgm.id_matiere='$current_matiere' AND ma.id_groupe=jgm.id_groupe)";
+						//=========================
+						// MODIF: boireaus 20081214
+						//$sql="SELECT ma.* FROM matieres_appreciations ma, j_groupes_matieres jgm WHERE (ma.login='$eleve1' AND ma.periode='$num_periode' AND jgm.id_matiere='$current_matiere' AND ma.id_groupe=jgm.id_groupe)";
+
+						//$sql="SELECT ma.* FROM matieres_appreciations ma, j_groupes_matieres jgm WHERE (ma.login='$eleve1' AND ma.periode='$num_periode' AND jgm.id_matiere='".$matiere[$cpt]."' AND ma.id_groupe=jgm.id_groupe AND jgm.id_groupe='$id_groupe');";
+						$sql="SELECT ma.* FROM matieres_appreciations ma, j_groupes_matieres jgm WHERE (ma.login='$eleve1' AND ma.periode='$num_periode' AND ma.id_groupe=jgm.id_groupe AND jgm.id_groupe='$id_groupe');";
+						//=========================
 						affiche_debug("$sql<br />");
 						$app_eleve_query=mysql_query($sql);
 
-						/*
-						echo "<div id='div_matiere_$cpt' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
 						if(mysql_num_rows($app_eleve_query)>0){
 							$ligtmp=mysql_fetch_object($app_eleve_query);
 
-							echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
-							//echo "<b>Appréciation:</b> $current_matiere ".htmlentities($ligtmp->appreciation);
-							echo "<b>".htmlentities($current_matiere_nom).":</b> (<i>$periode</i>)<br />".htmlentities($ligtmp->appreciation);
-							echo "</div>\n";
-
-							//$chaine_map.="";
-							//$tab_imagemap[]=$cpt;
-						}
-						echo "</div>\n";
-						*/
-
-						if(mysql_num_rows($app_eleve_query)>0){
-							$ligtmp=mysql_fetch_object($app_eleve_query);
-
-							$titre_bulle=htmlentities($current_matiere_nom)." (<i>$periode</i>)";
+							$titre_bulle=htmlentities($matiere_nom[$cpt])." (<i>$periode</i>)";
 							$texte_bulle="<div align='center'>\n";
 							$texte_bulle.=htmlentities($ligtmp->appreciation)."\n";
 							$texte_bulle.="</div>\n";
@@ -2100,58 +2081,35 @@ function eleve_suivant(){
 
 							$tab_imagemap_commentaire_present[]=$cpt;
 						}
-					//==========================================================
-					// AJOUT: boireaus 20080218
-					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 					}
-					//==========================================================
 
-					$tab_nom_matiere[]=$current_matiere_nom;
+					//$tab_nom_matiere[]=$current_group[$loop]["matiere"]["matiere"];
+					$tab_nom_matiere[]=$matiere[$cpt];
 					// On stocke dans un tableau, les numéros $cpt correspondant aux matières que l'élève a.
 					$tab_imagemap[]=$cpt;
+
+					$cpt++;
 				}
 				else{
 					// L'élève n'a pas cette matière.
-					//echo "$current_matiere_nom: ---<br />\n";
-					echo "<!-- $eleve1 n'a pas $current_matiere_nom -->\n";
+					echo "<!-- $eleve1 n'a pas la matière ".$current_group[$loop]["matiere"]["matiere"]." -->\n";
 				}
-				//echo "<br />\n";
 			}
+			//=========================================================
+			//=========================================================
+			//=========================================================
 
-			//echo "\$cpt2=$cpt2<br />";
 
-
+			// Avis du conseil de classe
 			$temoin_avis_present="n";
-			//==========================================================
-			// AJOUT: boireaus 20080218
-			//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+			// Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 			if($tab_acces_app[$num_periode]=="y") {
-			//==========================================================
 				$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode' ORDER BY periode";
 				$res_avis=mysql_query($sql);
-				/*
-				echo "<div id='div_avis_1' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
 				if(mysql_num_rows($res_avis)>0){
-					echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
-					echo "<b>Avis du Conseil de classe:</b><br />\n";
-					$lig_avis=mysql_fetch_object($res_avis);
-					echo htmlentities($lig_avis->avis)."\n";
-					echo "</div>\n";
-				}
-				echo "</div>\n";
-				*/
-
-				//$temoin_avis_present="n";
-				if(mysql_num_rows($res_avis)>0){
-					//==========================================================
-					// AJOUT: boireaus 20080218
 					$lig_avis=mysql_fetch_object($res_avis);
 					if($lig_avis->avis!="") {
-					//==========================================================
 						$titre_bulle="Avis du Conseil de classe";
-
-						//$lig_avis=mysql_fetch_object($res_avis);
-						//echo htmlentities($lig_avis->avis)."\n";
 
 						$texte_bulle="<div align='center'>\n";
 						$texte_bulle.=htmlentities($lig_avis->avis)."\n";
@@ -2160,18 +2118,25 @@ function eleve_suivant(){
 						$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
 
 						$temoin_avis_present="y";
-					//==========================================================
-					// AJOUT: boireaus 20080218
 					}
-					//==========================================================
 				}
-			//==========================================================
-			// AJOUT: boireaus 20080218
-			//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 			}
-			//==========================================================
 
-			# Image Map
+
+
+
+
+
+
+
+
+
+
+
+
+
+			// ImageMap:
+
 			//$chaine_map="<map name='imagemap'>\n";
 			// $largeurGrad -> 50
 			// $largeurBandeDroite=80;
@@ -2438,359 +2403,20 @@ function eleve_suivant(){
 			}
 
 
-			// Calcul de la moyenne générale de l'élève $eleve1:
-			if($affiche_mgen=='oui'){
-				if($cpt2>0){
-					$totaltmp=0;
-					if(isset($coef_serie)){
-						if(isset($coef_serie[1])){
-							for($i=1;$i<=count($coef_serie[1]);$i++){
-								if(isset($coef_serie[1][$i])){
-									$totaltmp=$totaltmp+$coef_serie[1][$i];
-								}
-							}
-						}
-					}
-					// Si aucun coeff n'est saisi, on calcule une moyenne non pondérée.
-					if($totaltmp==0){
-						$totaltmp=0;
-						for($i=1;$i<=count($note_serie[1]);$i++){$totaltmp=$totaltmp+$note_serie[1][$i];}
-						$mgen[1]=round($totaltmp/$cpt2,1);
-					}
-					else{
-						$somme_des_coeff=$totaltmp;
-						$totaltmp=0;
-						for($i=1;$i<=count($note_serie[1]);$i++){$totaltmp=$totaltmp+$note_serie[1][$i]*$coef_serie[1][$i];}
-						$mgen[1]=round($totaltmp/$somme_des_coeff,1);
-					}
-					//$mgen[1]=round($total_serie[1]/$nb_notes_serie,1);
-				}
-				else{
-					$mgen[1]="-";
-				}
-			}
-
-	/*
-			echo "<p>\$liste_matieres=$liste_matieres</p>";
-			echo "<p>\$serie[1]=$serie[1]</p>";
-	*/
-
-			// Compteur du nombre de notes différentes de ABS,...
-			$cpt2=0;
-
-			$serie2="";
-			$serie[2]="";
-			// Listes supplémentaires: (CAS periode (pas Toutes_periodes))
-	/*
-			//for($i=2;$i<=$nb_series;$i++){
-				switch($eleve2){
-					case 'moymin':
-						for($j=1;$j<=count($matiere);$j++){
-							$sql="SELECT min(n.note) as note_min FROM matieres_notes n, j_eleves_classes c WHERE (n.periode='$num_periode' AND n.matiere='$matiere[$j]' AND c.id_classe='$id_classe' AND c.login = n.login AND n.statut =''  AND c.periode='$num_periode')";
-							$resultat=mysql_query($sql);
-							$note_min=mysql_result($resultat, 0, "note_min");
-							if($serie[2]==""){
-								$serie[2]="$note_min";
-							}
-							else{
-								$serie[2]=$serie[2]."|$note_min";
-							}
-						}
-						break;
-					case 'moyclasse':
-						for($j=1;$j<=count($matiere);$j++){
-							$sql="SELECT round(avg(n.note),1) as moyenne FROM matieres_notes n, j_eleves_classes c WHERE (n.periode='$num_periode' AND n.matiere='$matiere[$j]' AND c.id_classe='$id_classe' AND c.login = n.login AND n.statut =''  AND c.periode='$num_periode')";
-							//affiche_debug("$sql<br />");
-							$resultat=mysql_query($sql);
-							$note_moy=mysql_result($resultat, 0, "moyenne");
-							// Au cas où il n'y ait pas de note dans une matière:
-							if($note_moy==""){$note_moy="-";}
-							//echo "$note_moy<br />";
-							if($serie[2]==""){
-								$serie[2]="$note_moy";
-							}
-							else{
-								$serie[2]=$serie[2]."|$note_moy";
-							}
-						}
-						break;
-					case 'moymax':
-						for($j=1;$j<=count($matiere);$j++){
-							$sql="SELECT max(n.note) as note_max FROM matieres_notes n, j_eleves_classes c WHERE (n.periode='$num_periode' AND n.matiere='$matiere[$j]' AND c.id_classe='$id_classe' AND c.login = n.login AND n.statut =''  AND c.periode='$num_periode')";
-							$resultat=mysql_query($sql);
-							$note_max=mysql_result($resultat, 0, "note_max");
-							if($serie[2]==""){
-								$serie[2]="$note_max";
-							}
-							else{
-								$serie[2]=$serie[2]."|$note_max";
-							}
-						}
-						break;
-					default:
-						// Elève 2:
-						for($j=1;$j<=count($matiere);$j++){
-							$note_eleve_query=mysql_query("SELECT * FROM matieres_notes WHERE (login='$eleve2' AND periode='$num_periode' AND matiere='$matiere[$j]')");
-							// QU'EST-CE QUE C'EST QUE CE STATUT ???
-							//$eleve_matiere_statut = @mysql_result($note_eleve_query, 0, "statut");
-							$note_eleve = @mysql_result($note_eleve_query, 0, "note");
-							//if ($eleve_matiere_statut != "") { $note_eleve = $eleve_matiere_statut;}
-							if ($note_eleve == '') {$note_eleve = '-';}
-							//echo "$note_eleve<br />\n";
-
-							if($serie[2]==""){
-								$serie[2]="$note_eleve";
-							}
-							else{
-								$serie[2]=$serie[2]."|$note_eleve";
-							}
-						}
-
-						// Moyenne générale
-						// A REVOIR... Il faut faire la moyenne sur les notes de cet élève... même s'il n'a pas toutes les mêmes matières...
-						break;
-				}
-			//}
-			//echo "<p>\$serie[2]=$serie[2]</p>";
-	*/
-
-			echo "<!--count(\$matiere)=".count($matiere)."-->\n";
-
-			// Calcul des moyennes minimales pour les matières de $eleve1:
-			for($j=1;$j<=count($matiere);$j++){
-				//$sql="SELECT min(n.note) as note_min FROM matieres_notes n, j_eleves_classes c WHERE (n.periode='$num_periode' AND n.matiere='$matiere[$j]' AND c.id_classe='$id_classe' AND c.login = n.login AND n.statut =''  AND c.periode='$num_periode')";
-
-				// PROBLEME: Il faut se base sur id_groupe dans matieres_notes... il n'y a plus de champ 'matiere'.
-				//$sql="SELECT min(n.note) as note_min FROM matieres_notes n, j_eleves_classes c WHERE (n.periode='$num_periode' AND n.matiere='$matiere[$j]' AND c.id_classe='$id_classe' AND c.login = n.login AND n.statut =''  AND c.periode='$num_periode')";
-				$sql="SELECT min(mn.note) as note_min FROM matieres_notes mn, j_groupes_matieres jgm, j_groupes_classes jgc WHERE (mn.periode='$num_periode' AND jgm.id_matiere='$matiere[$j]' AND jgc.id_classe='$id_classe' AND mn.statut ='' AND mn.id_groupe=jgm.id_groupe AND jgc.id_groupe=jgm.id_groupe)";
-				affiche_debug("$sql<br />");
-				$resultat=mysql_query($sql);
-				$note_min=mysql_result($resultat, 0, "note_min");
-				if($note_min==""){$note_min="-";}
-				if($seriemin==""){
-					$seriemin="$note_min";
-				}
-				else{
-					$seriemin=$seriemin."|$note_min";
-				}
-			}
-
-			echo "<!-- \$seriemin=$seriemin -->\n";
-
-			// Calcul des moyennes de la classe pour les matières de $eleve1:
-			for($j=1;$j<=count($matiere);$j++){
-				// PROBLEME: Il faut se base sur id_groupe dans matieres_notes... il n'y a plus de champ 'matiere'.
-				//$sql="SELECT round(avg(n.note),1) as moyenne FROM matieres_notes n, j_eleves_classes c WHERE (n.periode='$num_periode' AND n.matiere='$matiere[$j]' AND c.id_classe='$id_classe' AND c.login = n.login AND n.statut =''  AND c.periode='$num_periode')";
-				$sql="SELECT round(avg(mn.note),1) as moyenne FROM matieres_notes mn, j_groupes_matieres jgm, j_groupes_classes jgc WHERE (mn.periode='$num_periode' AND jgm.id_matiere='$matiere[$j]' AND jgc.id_classe='$id_classe' AND mn.statut ='' AND mn.id_groupe=jgm.id_groupe AND jgc.id_groupe=jgm.id_groupe)";
-				affiche_debug("$sql<br />");
-				$resultat=mysql_query($sql);
-				$note_moy=mysql_result($resultat, 0, "moyenne");
-				// Au cas où il n'y ait pas de note dans une matière:
-				if($note_moy==""){$note_moy="-";}
-				//echo "$note_moy<br />";
-				if($seriemoy==""){
-					$seriemoy="$note_moy";
-				}
-				else{
-					$seriemoy=$seriemoy."|$note_moy";
-				}
-			}
-
-			echo "<!-- \$seriemoy=$seriemoy -->\n";
-
-
-			// Calcul des moyennes maximales pour les matières de $eleve1:
-			for($j=1;$j<=count($matiere);$j++){
-				// PROBLEME: Il faut se base sur id_groupe dans matieres_notes... il n'y a plus de champ 'matiere'.
-				//$sql="SELECT max(n.note) as note_max FROM matieres_notes n, j_eleves_classes c WHERE (n.periode='$num_periode' AND n.matiere='$matiere[$j]' AND c.id_classe='$id_classe' AND c.login = n.login AND n.statut =''  AND c.periode='$num_periode')";
-				$sql="SELECT max(mn.note) as note_max FROM matieres_notes mn, j_groupes_matieres jgm, j_groupes_classes jgc WHERE (mn.periode='$num_periode' AND jgm.id_matiere='$matiere[$j]' AND jgc.id_classe='$id_classe' AND mn.statut ='' AND mn.id_groupe=jgm.id_groupe AND jgc.id_groupe=jgm.id_groupe)";
-				affiche_debug("$sql<br />");
-				$resultat=mysql_query($sql);
-				$note_max=mysql_result($resultat, 0, "note_max");
-				if($note_max==""){$note_max="-";}
-				if($seriemax==""){
-					$seriemax="$note_max";
-				}
-				else{
-					$seriemax=$seriemax."|$note_max";
-				}
-			}
-
-			echo "<!-- \$seriemax=$seriemax -->\n";
-
-
-			// Affectation de $serie[2] en fonction du choix Moyennes min/classe/max ou moyennes d'un deuxième élève:
-			switch($eleve2){
-				case 'moymin':
-					$serie[2]=$seriemin;
-					break;
-				case 'moyclasse':
-					$serie[2]=$seriemoy;
-					break;
-				case 'moymax':
-					$serie[2]=$seriemax;
-					break;
-				default:
-					// Elève 2:
-					for($j=1;$j<=count($matiere);$j++){
-						// PROBLEME: Il faut se base sur id_groupe dans matieres_notes... il n'y a plus de champ 'matiere'.
-						//$note_eleve_query=mysql_query("SELECT * FROM matieres_notes WHERE (login='$eleve2' AND periode='$num_periode' AND matiere='$matiere[$j]')");
-						$sql="SELECT mn.* FROM matieres_notes mn, j_groupes_matieres jgm WHERE (mn.login='$eleve2' AND mn.periode='$num_periode' AND jgm.id_matiere='$matiere[$j]' AND mn.statut ='' AND mn.id_groupe=jgm.id_groupe)";
-						affiche_debug("$sql<br />");
-						$note_eleve_query=mysql_query($sql);
-						// QU'EST-CE QUE C'EST QUE CE STATUT ???
-						//$eleve_matiere_statut = @mysql_result($note_eleve_query, 0, "statut");
-						$note_eleve = @mysql_result($note_eleve_query, 0, "note");
-						//if ($eleve_matiere_statut != "") { $note_eleve = $eleve_matiere_statut;}
-						if ($note_eleve == '') {$note_eleve = '-';}
-
-						if($serie[2]==""){
-							$serie[2]="$note_eleve";
-						}
-						else{
-							$serie[2]=$serie[2]."|$note_eleve";
-						}
-					}
-
-					// Calcul de la moyenne générale du deuxième élève:
-					// A FAIRE...
-
-					//=============================================================
-					//=============================================================
-					//=============================================================
-					// Récupération des noms courts/longs et priorités des matières de la classe (dans l'ordre de priorité)
-					//$call_classe_infos = mysql_query("SELECT DISTINCT  m.* FROM matieres m,j_classes_matieres_professeurs j WHERE (m.matiere = j.id_matiere AND j.id_classe='$id_classe') ORDER BY j.priorite");
-					//$sql="SELECT DISTINCT  m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm,j_professeurs_matieres jpm WHERE (m.matiere=jgm.id_matiere AND jpm.id_matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe') ORDER BY jpm.ordre_matieres,m.matiere";
-					$sql="SELECT DISTINCT  m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm WHERE (m.matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe') ORDER BY jgc.priorite,m.matiere";
-					affiche_debug("$sql<br />");
-					$call_classe_infos = mysql_query($sql);
-
-					// Compteur du nombre de notes de l'élève (autres que ABS,...)
-					$cpt2=0;
-
-					$cpt=1;
-					// Boucle sur l'ordre des matières:
-					// On ne va retenir que les matières de l'élève.
-					while($ligne=mysql_fetch_object($call_classe_infos)){
-						// Nom court/long de la matière:
-						$current_matiere=$ligne->matiere;
-						$current_matiere_nom=$ligne->nom_complet;
-
-						$coef_serie[2]=array();
-
-						// Est-ce une matière que l'élève a?
-						//echo "SELECT * FROM j_eleves_matieres WHERE (login='$eleve1' AND matiere='$current_matiere' and periode='$periode')<br />";
-						//$eleve_option_query=mysql_query("SELECT * FROM j_eleves_matieres WHERE (login='$eleve1' AND matiere='$current_matiere' and periode='$periode')");
-						//$eleve_option_query=mysql_query("SELECT * FROM j_eleves_matieres WHERE (login='$eleve2' AND matiere='$current_matiere' and periode='$num_periode')");
-						// Le fait de suivre une matière n'est plus renseigné par j_eleves_matieres qui contenait en fait les exclusions:
-						// Les matières qu'un élève n'avait pas y était inscrites.
-						// Avec la gestion par groupes, cela ne fonctionne plus ainsi.
-						$sql="SELECT * FROM j_eleves_groupes jeg,j_groupes_matieres jgm WHERE (jeg.login='$eleve2' AND jgm.id_matiere='$current_matiere' AND jeg.id_groupe=jgm.id_groupe AND jeg.periode='$num_periode')";
-						affiche_debug("$sql<br />");
-						$eleve_option_query=mysql_query($sql);
-						if(mysql_num_rows($eleve_option_query)==0){
-							//$note_eleve_query=mysql_query("SELECT * FROM matieres_notes WHERE (login='$eleve2' AND periode='$num_periode' AND matiere='$current_matiere')");
-							$sql="SELECT mn.* FROM matieres_notes mn, j_groupes_matieres jgm WHERE (mn.login='$eleve2' AND mn.periode='$num_periode' AND jgm.id_matiere='$current_matiere' AND mn.statut ='' AND mn.id_groupe=jgm.id_groupe)";
-							affiche_debug("$sql<br />");
-							$note_eleve_query=mysql_query($sql);
-
-							$eleve_matiere_statut = @mysql_result($note_eleve_query, 0, "statut");
-							$note_eleve = @mysql_result($note_eleve_query, 0, "note");
-							if ($eleve_matiere_statut != "") { $note_eleve = $eleve_matiere_statut;}
-							if ($note_eleve == '') {$note_eleve = '-';}
-
-							// Récupération des vraies notes (non-ABS,...) et coeff de la matière pour la moyenne générale:
-							if($affiche_mgen=='oui'){
-								if(strlen(ereg_replace("[0-9]*.[0-9]","",$note_eleve))==0){
-									$cpt2++;
-									$note_serie[2][$cpt2]=$note_eleve;
-									//$sql="SELECT DISTINCT coef FROM j_classes_matieres_professeurs WHERE id_classe='$id_classe' AND id_matiere='$current_matiere'";
-									$sql="SELECT DISTINCT coef FROM j_groupes_classes jgc,j_groupes_matieres jgm WHERE jgc.id_classe='$id_classe' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='$current_matiere'";
-									affiche_debug("$sql<br />");
-									$result=mysql_query($sql);
-									// PB: Il peut y avoir plusieurs lignes TECHN -> deux profs au collège...
-									//    ... et s'ils mettent des coeff différents???
-									$ligntmp=mysql_fetch_object($result);
-									$coef_serie[2][$cpt2]=$ligntmp->coef;
-								}
-							}
-
-						}
-						else{
-							// L'élève n'a pas cette matière.
-							//echo "$current_matiere_nom: ---<br />\n";
-							echo "<!-- $eleve2 n'a pas $current_matiere_nom -->\n";
-						}
-						//echo "<br />\n";
-					}
-
-					//echo "\$cpt2=$cpt2<br />";
-
-					// Calcul de la moyenne générale de l'élève $eleve1:
-					if($affiche_mgen=='oui'){
-						if($cpt2>0){
-							$totaltmp=0;
-							for($i=1;$i<=count($coef_serie[2]);$i++){$totaltmp=$totaltmp+$coef_serie[2][$i];}
-							// Si aucun coeff n'est saisi, on calcule une moyenne non pondérée.
-							if($totaltmp==0){
-								$totaltmp=0;
-								for($i=1;$i<=count($note_serie[2]);$i++){$totaltmp=$totaltmp+$note_serie[2][$i];}
-								$mgen[2]=round($totaltmp/$cpt2,1);
-							}
-							else{
-								$somme_des_coeff=$totaltmp;
-								$totaltmp=0;
-								for($i=1;$i<=count($note_serie[2]);$i++){$totaltmp=$totaltmp+$note_serie[2][$i]*$coef_serie[2][$i];}
-								$mgen[2]=round($totaltmp/$somme_des_coeff,1);
-							}
-							//$mgen[2]=round($total_serie[2]/$nb_notes_serie,1);
-						}
-						else{
-							$mgen[2]="-";
-						}
-					}
-
-					//=============================================================
-					//=============================================================
-					//=============================================================
-					break;
-			}
-
-			// **********************************************
-			// **********************************************
-			// Il faudrait afficher aussi la moyenne générale,
-			// l'age, le fait d'être redoublant...
-			// **********************************************
-			// **********************************************
-
-			/*
-			$eleves[1]="$eleve1";
-			$eleves[2]="$eleve2";
-			*/
-
-			/*
-			// Non: Il vaut mieux traiter la moyenne générale à part.
-			if($affiche_mgen=="oui"){
-				$liste_matieres="$liste_matieres|M.GEN";
-				$serie[1]="$serie[1]|".trim($mgen[1]);
-				//$serie2="$serie[2]|$mgen[2]";
-				$serie[2]="$serie[2]|-";
-
-			*/
-
-			//echo "";
 
 
 
-			/*
-			for($j=1;$j<=count($matiere);$j++){
-				$sql="SELECT ";
-				echo "<div id='div_matiere_$j' style='visibility:hidden'></div>";
-			}
-			*/
 
 
 
+
+
+
+
+
+
+
+			// Graphe:
 			echo "<a name='graph'></a>\n";
 			//echo "<img src='draw_artichow_fig7.php?temp1=$temp1&temp2=$temp2&etiquette=$etiq&titre=$graph_title&v_legend1=$v_legend1&v_legend2=$v_legend2&compteur=$compteur&nb_data=3'>";
 			//echo "<img src='draw_artichow_fig7.php?temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=$eleve2&compteur=$compteur&nb_data=3'>";
@@ -3011,11 +2637,8 @@ function eleve_suivant(){
 
 		}
 		else{
+			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			// On va afficher toutes les périodes
-
-
-
-
 
 			$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 			if ($affiche_categories == "y") {
@@ -3024,48 +2647,35 @@ function eleve_suivant(){
 				$affiche_categories = false;
 			}
 
-
-			// Récupération des noms courts/longs et priorités de toutes les matières de la classe (dans l'ordre de priorité)
-			//$call_classe_infos = mysql_query("SELECT DISTINCT  m.* FROM matieres m,j_classes_matieres_professeurs j WHERE (m.matiere = j.id_matiere AND j.id_classe='$id_classe') ORDER BY j.priorite");
-			//$sql="SELECT DISTINCT  m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm,j_professeurs_matieres jpm WHERE (m.matiere=jgm.id_matiere AND jpm.id_matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe') ORDER BY jpm.ordre_matieres,m.matiere";
-
+			// Récupération de la liste des matières dans l'ordre souhaité:
 			if ($affiche_categories) {
-				//$sql="SELECT DISTINCT  m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm,j_professeurs_matieres jpm,j_matieres_categories_classes jmcc WHERE (m.matiere=jgm.id_matiere AND jpm.id_matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe' AND jgc.categorie_id = jmcc.categorie_id) ORDER BY jmcc.priority,jpm.ordre_matieres,m.matiere";
-				$sql="SELECT DISTINCT  m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm,j_matieres_categories_classes jmcc WHERE (m.matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe' AND jgc.categorie_id = jmcc.categorie_id) ORDER BY jmcc.priority,jgc.priorite,m.matiere";
+				$sql="SELECT DISTINCT jgc.id_groupe, m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm,j_matieres_categories_classes jmcc WHERE (m.matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe' AND jgc.categorie_id = jmcc.categorie_id) ORDER BY jmcc.priority,jgc.priorite,m.matiere";
+				//ORDER BY jmcc.priority,mc.priority,jgc.priorite,m.nom_complet
 			}
 			else{
-				//$sql="SELECT DISTINCT  m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm,j_professeurs_matieres jpm WHERE (m.matiere=jgm.id_matiere AND jpm.id_matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe') ORDER BY jpm.ordre_matieres,m.matiere";
-				$sql="SELECT DISTINCT  m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm WHERE (m.matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe') ORDER BY jgc.priorite,m.matiere";
+				$sql="SELECT DISTINCT jgc.id_groupe, m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm WHERE (m.matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe') ORDER BY jgc.priorite,m.matiere";
 			}
 
-			affiche_debug("$sql<br />");
 			$call_classe_infos = mysql_query($sql);
 			$nombre_lignes = mysql_num_rows($call_classe_infos);
 			affiche_debug("\$nombre_lignes=$nombre_lignes<br />");
 
+			$id_groupe=array();
 			$liste_matieres="";
 			$matiere=array();
 			$matiere_nom=array();
 
-			$cpt=1;
+			$cpt=0;
 			// Boucle sur l'ordre des matières:
 			// On ne va retenir que les matières du premier élève.
 			while($ligne=mysql_fetch_object($call_classe_infos)){
-				// Nom court/long de la matière:
-				$current_matiere=$ligne->matiere;
-				$current_matiere_nom=$ligne->nom_complet;
 
-				affiche_debug("\$current_matiere=$current_matiere<br />");
-
-				// Est-ce une matière que l'élève a? sur une des périodes au moins?
-				//$eleve_option_query=mysql_query("SELECT * FROM j_eleves_matieres WHERE (login='$eleve1' AND matiere='$current_matiere' and periode='$num_periode')");
-				//$eleve_option_query=mysql_query("SELECT * FROM j_eleves_matieres WHERE (login='$eleve1' AND matiere='$current_matiere')");
-				//$eleve_option_query=mysql_query("SELECT * FROM j_eleves_matieres WHERE (login='$eleve1' AND matiere='$current_matiere')");
-				$sql="SELECT * FROM j_eleves_groupes jeg,j_groupes_matieres jgm WHERE (jeg.login='$eleve1' AND jgm.id_matiere='$current_matiere' AND jeg.id_groupe=jgm.id_groupe)";
+				$sql="SELECT * FROM j_eleves_groupes jeg WHERE (jeg.login='$eleve1' AND jeg.id_groupe='$ligne->id_groupe');";
 				affiche_debug("$sql<br />");
 				$eleve_option_query=mysql_query($sql);
 				//if(mysql_num_rows($eleve_option_query)==0){
 				if(mysql_num_rows($eleve_option_query)!=0){
+					$id_groupe[$cpt]=$ligne->id_groupe;
 					$matiere[$cpt]=$ligne->matiere;
 					$matiere_nom[$cpt]=$ligne->nom_complet;
 
@@ -3085,6 +2695,7 @@ function eleve_suivant(){
 			$result_periode=mysql_query($sql);
 			$nb_periode=mysql_num_rows($result_periode);
 
+			// Initialisation des séries:
 			$nb_series=$nb_periode;
 			for($i=1;$i<=$nb_series;$i++){$serie[$i]="";}
 
@@ -3097,155 +2708,123 @@ function eleve_suivant(){
 			$liste_temp="";
 			$cpt=1;
 			while($lign_periode=mysql_fetch_object($result_periode)){
+				// DEBUG
+				//echo "<p>Période $cpt<br />";
 
 				$num_periode[$cpt]=$lign_periode->num_periode;
 				//$nom_periode[$cpt]=$lign_periode->nom_periode;
 				$tab_imagemap[$cpt]=array();
 
-				// Compteur du nombre de matières avec une note autre que ABS,...
-				$cpt2=0;
-				for($i=1;$i<=count($matiere);$i++){
-					//$note_eleve_query=mysql_query("SELECT * FROM matieres_notes WHERE (login='$eleve1' AND periode='$num_periode[$cpt]' AND matiere='$matiere[$i]')");
-					$sql="SELECT mn.* FROM matieres_notes mn, j_groupes_matieres jgm WHERE (mn.login='$eleve1' AND mn.periode='$num_periode[$cpt]' AND jgm.id_matiere='$matiere[$i]' AND mn.statut ='' AND mn.id_groupe=jgm.id_groupe)";
-					affiche_debug("$sql<br />");
-					$note_eleve_query=mysql_query($sql);
-					// QU'EST-CE QUE C'EST QUE CE STATUT ???
-					//$eleve_matiere_statut = @mysql_result($note_eleve_query, 0, "statut");
-					$note_eleve = @mysql_result($note_eleve_query, 0, "note");
-					//if ($eleve_matiere_statut != "") { $note_eleve = $eleve_matiere_statut;}
-					if ($note_eleve == '') {$note_eleve = '-';}
-					//echo "$note_eleve<br />\n";
+				$coefficients_a_1="non";
+				$affiche_graph="n";
+				$periode_num=$num_periode[$cpt];
 
+				// Réinitialisations:
+				unset($current_eleve_login);
+				unset($current_group);
+				unset($moy_gen_eleve);
+				unset($current_eleve_note);
+				unset($current_eleve_statut);
+				// Puis extraction de la période $periode_num
+				include('../lib/calcul_moy_gen.inc.php');
 
-					if($serie[$cpt]==""){
-						$serie[$cpt]="$note_eleve";
+				// On recherche l'indice de l'élève courant: $eleve1
+				$indice_eleve1=-1;
+				for($loop=0;$loop<count($current_eleve_login);$loop++) {
+					if($current_eleve_login[$loop]==$eleve1) {
+						$indice_eleve1=$loop;
+						break;
 					}
-					else{
-						$serie[$cpt]=$serie[$cpt]."|$note_eleve";
+				}
+
+				// DEBUG
+				//echo "\$indice_eleve1=$indice_eleve1<br />";
+
+				if($indice_eleve1==-1) {
+					// L'élève n'est pas dans la classe sur la période?
+					for($loop=0;$loop<count($matiere);$loop++) {
+						if($serie[$cpt]!="") {$serie[$cpt].="|";}
+						$serie[$cpt].="-";
 					}
 
-					if($affiche_mgen=='oui'){
-						//echo "ereg_replace(\"[0-9]*.[0-9]\",\"\",$note_eleve)=".ereg_replace("[0-9]*.[0-9]","",$note_eleve)."<br />";
-						//echo "strlen(ereg_replace(\"[0-9]*.[0-9]\",\"\",$note_eleve))=".strlen(ereg_replace("[0-9]*.[0-9]","",$note_eleve))."<br />";
-						if(strlen(ereg_replace("[0-9]*.[0-9]","",$note_eleve))==0){
-							//$total_serie[1]=$total_serie[1]+$note_eleve;
-							//$nb_notes_serie++;
+					$mgen[$cpt]="-";
+				}
+				else {
+					// Moyenne générale de l'élève $eleve1 sur la période $cpt
+					$mgen[$cpt]=$moy_gen_eleve[$indice_eleve1];
 
-							$cpt2++;
-							$note_serie[$cpt][$cpt2]=$note_eleve;
-							//$sql="SELECT DISTINCT coef FROM j_classes_matieres_professeurs WHERE id_classe='$id_classe' AND id_matiere='".$matiere[$i]."'";
-							$sql="SELECT DISTINCT coef FROM j_groupes_classes jgc,j_groupes_matieres jgm WHERE jgc.id_classe='$id_classe' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere[$i]."'";
-							affiche_debug("$sql<br />");
-							$result=mysql_query($sql);
-							// PB: Il peut y avoir plusieurs lignes TECHN -> deux profs au collège...
-							//    ... et s'ils mettent des coeff différents???
-							$ligntmp=mysql_fetch_object($result);
-							$coef_serie[$cpt][$cpt2]=$ligntmp->coef;
+					// DEBUG
+					//echo "\$mgen[$cpt]=$mgen[$cpt]<br />";
 
-							//$temoin_au_moins_une_vraie_moyenne="oui";
+					// Boucle sur les groupes:
+					for($j=0;$j<count($id_groupe);$j++) {
+						if($serie[$cpt]!="") {$serie[$cpt].="|";}
+
+						// Recherche de l'indice du groupe retourné en $current_group par calcul_moy_gen.inc.php
+						$indice_groupe=-1;
+						for($loop=0;$loop<count($current_group);$loop++) {
+							if($current_group[$loop]['id']==$id_groupe[$j]) {
+								$indice_groupe=$loop;
+								break;
+							}
+						}
+
+						// DEBUG
+						//echo "\$indice_groupe=$indice_groupe<br />";
+
+						if($indice_groupe==-1) {
+							$serie[$cpt].="-";
+						}
+						else {
+							if(isset($current_eleve_note[$indice_groupe][$indice_eleve1])) {
+								// L'élève suit l'enseignement
+								if($current_eleve_statut[$indice_groupe][$indice_eleve1]!="") {
+									// Mettre le statut pose des problèmes pour le tracé de la courbe... abs, disp,... passent pour des zéros
+									//$serie[$cpt].=$current_eleve_statut[$indice_groupe][$indice_eleve1];
+									$serie[$cpt].="-";
+								}
+								else {
+									$serie[$cpt].=$current_eleve_note[$indice_groupe][$indice_eleve1];
+								}
+
+								// REMPLIR $tab_imagemap[$k_num_periode][$m_num_groupe]
+
+								$sql="SELECT ma.* FROM matieres_appreciations ma WHERE (ma.login='$eleve1' AND ma.periode='$num_periode[$cpt]' AND ma.id_groupe='$id_groupe[$j]');";
+								affiche_debug("$sql<br />");
+								$app_eleve_query=mysql_query($sql);
+								// Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+								if((mysql_num_rows($app_eleve_query)>0)&&($tab_acces_app[$cpt]=="y")) {
+									$ligtmp=mysql_fetch_object($app_eleve_query);
+
+									$tab_imagemap[$cpt][$j]=htmlentities($ligtmp->appreciation);
+									$info_imagemap[$j]="Au moins une appréciation";
+								}
+								else{
+									$tab_imagemap[$cpt][$j]="";
+								}
+							}
+							else{
+								// L'élève n'a pas cette matière sur la période...
+								// Pas sûr qu'on puisse arriver là
+								echo "<!-- $eleve1 n'a pas la matière ".$current_group[$indice_groupe]["matiere"]["matiere"]." -->\n";
+							}
 						}
 					}
-
-
-
-
-
-					$sql="SELECT ma.* FROM matieres_appreciations ma, j_groupes_matieres jgm WHERE (ma.login='$eleve1' AND ma.periode='$num_periode[$cpt]' AND jgm.id_matiere='$matiere[$i]' AND ma.id_groupe=jgm.id_groupe)";
-					affiche_debug("$sql<br />");
-					$app_eleve_query=mysql_query($sql);
-					//echo "<div id='div_matiere_$cpt' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
-					//==========================================================
-					// MODIF: boireaus 20080218
-					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
-					//if(mysql_num_rows($app_eleve_query)>0){
-					if((mysql_num_rows($app_eleve_query)>0)&&($tab_acces_app[$cpt]=="y")) {
-					//==========================================================
-						$ligtmp=mysql_fetch_object($app_eleve_query);
-
-						/*
-						echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
-						//echo "<b>Appréciation:</b> $current_matiere ".htmlentities($ligtmp->appreciation);
-						echo "<b>$current_matiere:</b> (<i>$periode</i>)<br />".htmlentities($ligtmp->appreciation);
-						echo "</div>\n";
-						*/
-
-						$tab_imagemap[$cpt][$i]=htmlentities($ligtmp->appreciation);
-						$info_imagemap[$i]="Au moins une appréciation";
-					}
-					else{
-						$tab_imagemap[$cpt][$i]="";
-					}
-					//echo "</div>\n";
-
 				}
-
-				if($liste_temp==""){
-					$liste_temp="temp$cpt=$serie[$cpt]";
-				}
-				else{
-					$liste_temp="$liste_temp&amp;temp$cpt=$serie[$cpt]";
-				}
-
-
-				if($affiche_mgen=='oui'){
-					if($cpt2>0){
-					//if($temoin_au_moins_une_vraie_moyenne=="oui"){
-						$totaltmp=0;
-						for($i=1;$i<=count($coef_serie[$cpt]);$i++){$totaltmp=$totaltmp+$coef_serie[$cpt][$i];}
-						// Si aucun coeff n'est saisi, on calcule une moyenne non pondérée.
-						if($totaltmp==0){
-							$totaltmp=0;
-							for($i=1;$i<=count($note_serie[$cpt]);$i++){$totaltmp=$totaltmp+$note_serie[$cpt][$i];}
-							$mgen[$cpt]=round($totaltmp/$cpt2,1);
-						}
-						else{
-							$somme_des_coeff=$totaltmp;
-							$totaltmp=0;
-							for($i=1;$i<=count($note_serie[$cpt]);$i++){$totaltmp=$totaltmp+$note_serie[$cpt][$i]*$coef_serie[$cpt][$i];}
-							$mgen[$cpt]=round($totaltmp/$somme_des_coeff,1);
-						}
-					}
-					else{
-						$mgen[$cpt]="-";
-					}
-
-					$liste_temp="$liste_temp&amp;mgen$cpt=$mgen[$cpt]";
-				}
-
-
 				$cpt++;
 			}
 
 
 
-
-			for($i=1;$i<=count($matiere);$i++){
-
-				/*
-				echo "<div id='div_matiere_$i' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
-				if(isset($info_imagemap[$i])){
-					echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
-					echo "<b>".htmlentities($matiere_nom[$i]).":</b><br />";
-					//echo "<table border='1' align='center'>\n";
-					echo "<table class='boireaus' style='margin:2px;' width='99%'>\n";
-					for($j=1;$j<=count($num_periode);$j++){
-						if($tab_imagemap[$j][$i]!=""){
-							echo "<tr><td style='font-weight:bold;'>$j</td><td style='text-align:center;'>".$tab_imagemap[$j][$i]."</td></tr>\n";
-						}
-					}
-					echo "</table>\n";
-					echo "</div>\n";
-				}
-				echo "</div>\n";
-				*/
-
+			for($i=0;$i<count($id_groupe);$i++) {
 
 				if(isset($info_imagemap[$i])){
 					$titre_bulle=htmlentities($matiere_nom[$i]);
 
 					$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Imagemap'>\n";
 					for($j=1;$j<=count($num_periode);$j++){
-						if($tab_imagemap[$j][$i]!=""){
+						//if($tab_imagemap[$j][$i]!=""){
+						if((isset($tab_imagemap[$j][$i]))&&($tab_imagemap[$j][$i]!="")) {
 							$texte_bulle.="<tr><td style='font-weight:bold;'>$j</td><td style='text-align:center;'>".$tab_imagemap[$j][$i]."</td></tr>\n";
 						}
 					}
@@ -3268,21 +2847,6 @@ function eleve_suivant(){
 
 			$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' ORDER BY periode;";
 			$res_avis=mysql_query($sql);
-			/*
-			echo "<div id='div_avis_1' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
-			if(mysql_num_rows($res_avis)>0){
-				echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
-				echo "<b>Avis du Conseil de classe:</b><br />";
-				//echo "<table border='1' align='center'>\n";
-				echo "<table class='boireaus' style='margin:2px;' width='99%'>\n";
-				while($lig_avis=mysql_fetch_object($res_avis)){
-					echo "<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlentities($lig_avis->avis)."</td></tr>\n";
-				}
-				echo "</table>\n";
-				echo "</div>\n";
-			}
-			echo "</div>\n";
-			*/
 
 			$temoin_avis_present="n";
 			if(mysql_num_rows($res_avis)>0){
@@ -3324,8 +2888,10 @@ function eleve_suivant(){
 
 				echo "<map name='imagemap'>\n";
 				//for($i=0;$i<count($tab_imagemap);$i++){
-				for($i=1;$i<=count($matiere);$i++){
-					$x0=$largeurGrad+($i-1)*$largeurMat;
+				//for($i=1;$i<=count($matiere);$i++){
+				for($i=0;$i<count($matiere);$i++){
+					//$x0=$largeurGrad+($i-1)*$largeurMat;
+					$x0=$largeurGrad+$i*$largeurMat;
 					$x1=$x0+$largeurMat;
 
 					if(isset($info_imagemap[$i])){
@@ -3356,7 +2922,7 @@ function eleve_suivant(){
 
 
 
-			//***********************************************************
+			//===============================================================
 			// Image Map pour le graphe en étoile
 			// J'ai repris une portion du code de draw_graphe_star.php
 			// pour juste récupérer les coordonnées des textes de matières
@@ -3415,7 +2981,8 @@ function eleve_suivant(){
 				//$texte=$matiere_nom_long[$i+1];
 				//$texte=$tab_nom_matiere[$i];
 				//$texte=$matiere_nom[$i];
-				$k=$i+1;
+				//$k=$i+1;
+				$k=$i;
 				$texte=$matiere_nom[$k];
 
 				$tmp_taille_police=$taille_police;
@@ -3573,7 +3140,21 @@ function eleve_suivant(){
 			}
 			//=================================
 			echo "</map>\n";
-			//***********************************************************
+			//==================================================================
+
+
+
+
+
+			// On génère les lignes de moyennes
+			$liste_temp="";
+			for($loop=1;$loop<=count($serie);$loop++) {
+				if($liste_temp!="") {$liste_temp.="&amp;";}
+				$liste_temp.="temp$loop=".$serie[$loop];
+				if($affiche_mgen=='oui'){
+					$liste_temp.="&amp;mgen$loop=".$mgen[$loop];
+				}
+			}
 
 
 
@@ -3583,6 +3164,7 @@ function eleve_suivant(){
 			echo "<a name='graph'></a>\n";
 
 			if($type_graphe=='courbe'){
+
 				if($mode_graphe=='png'){
 					//echo "<img src='draw_artichow_fig7.php?temp1=$temp1&temp2=$temp2&etiquette=$etiq&titre=$graph_title&v_legend1=$v_legend1&v_legend2=$v_legend2&compteur=$compteur&nb_data=3'>";
 					//echo "<img src='draw_artichow_fig7.php?temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_data=$nbp'>";

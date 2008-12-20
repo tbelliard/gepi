@@ -276,7 +276,13 @@ while ($j < $nombre_groupes) {
         $current_classe_matiere_moyenne_query = mysql_query("SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
         $current_classe_matiere_moyenne[$nb] = mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
 
-        // On teste si des notes de une ou plusieurs boites du carnet de notes doivent être affichée
+
+        $test_current_classe_matiere_moyenne_query = mysql_query("SELECT 1=1 FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
+		$nb_moyennes_current_classe_matiere[$nb]=mysql_num_rows($test_current_classe_matiere_moyenne_query);
+		if($nb_moyennes_current_classe_matiere[$nb]==0) {$current_classe_matiere_moyenne[$nb]='-';}
+
+
+        // On teste si des notes de une ou plusieurs boites du carnet de notes doivent être affichées
         $test_cn = mysql_query("select c.nom_court, c.id from cn_cahier_notes cn, cn_conteneurs c
         where (cn.periode = '$nb' and cn.id_groupe='".$current_group["id"]."' and cn.id_cahier_notes = c.id_racine and c.id_racine!=c.id and c.display_bulletin = 1) ");
         $nb_ligne_cn[$nb] = mysql_num_rows($test_cn);
@@ -605,16 +611,18 @@ while ($j < $nombre_groupes) {
 
 				//if($affiche_categories=='1'){
 				if(($affiche_categories=='1')||($affiche_categories==true)){
-					$total_cat_classe[$nb][$prev_cat_id] += $current_coef*$current_classe_matiere_moyenne[$nb];
+					if($current_classe_matiere_moyenne[$nb]!="-") {
+						$total_cat_classe[$nb][$prev_cat_id] += $current_coef*$current_classe_matiere_moyenne[$nb];
 
-					//===========================
-					// MODIF: boireaus 20070627
-					//$total_cat_eleve[$nb][$prev_cat_id] += $current_coef*$current_eleve_note[$nb];
-					//$total_cat_eleve[$nb][$prev_cat_id] += $coef_eleve*$current_eleve_note[$nb];
-					//$total_cat_coef[$nb][$prev_cat_id] += $current_coef;
-					//$total_cat_coef_eleve[$nb][$prev_cat_id] += $coef_eleve;
-					$total_cat_coef_classe[$nb][$prev_cat_id] += $current_coef;
-					//===========================
+						//===========================
+						// MODIF: boireaus 20070627
+						//$total_cat_eleve[$nb][$prev_cat_id] += $current_coef*$current_eleve_note[$nb];
+						//$total_cat_eleve[$nb][$prev_cat_id] += $coef_eleve*$current_eleve_note[$nb];
+						//$total_cat_coef[$nb][$prev_cat_id] += $current_coef;
+						//$total_cat_coef_eleve[$nb][$prev_cat_id] += $coef_eleve;
+						$total_cat_coef_classe[$nb][$prev_cat_id] += $current_coef;
+						//===========================
+					}
 				}
               //}
               $nb++;
@@ -720,7 +728,8 @@ if($display_moy_gen=="y") {
 			} else {
 				$moy_classe = '-';
 			}
-			echo "$moy_classe";
+			//echo "$moy_classe";
+			echo nf($moy_classe);
 			echo "</td>\n";
 			/*
 			echo "<td class='bull_simpl' align=\"center\">\n";
@@ -760,7 +769,7 @@ if($display_moy_gen=="y") {
 							//$moy_eleve=number_format($total_cat_eleve[$nb][$cat_id]/$total_cat_coef[$nb][$cat_id],1, ',', ' ');
 							//$moy_classe=number_format($total_cat_classe[$nb][$cat_id]/$total_cat_coef[$nb][$cat_id],1, ',', ' ');
 							//$moy_eleve=number_format($total_cat_eleve[$nb][$cat_id]/$total_cat_coef_eleve[$nb][$cat_id],1, ',', ' ');
-
+							//echo "\$total_cat_coef_classe[$nb][$cat_id]=".$total_cat_coef_classe[$nb][$cat_id]."<br />";
 							if ($total_cat_coef_classe[$nb][$cat_id] != "0") {
 								$moy_classe=number_format($total_cat_classe[$nb][$cat_id]/$total_cat_coef_classe[$nb][$cat_id],1, ',', ' ');
 							}
