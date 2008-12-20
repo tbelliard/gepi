@@ -920,9 +920,27 @@ if(!empty($model_bulletin)) {
 			//echo "\$tab_moy_gen_classe[\$id_classe][\$periode_num]=\$tab_moy_gen_classe[$id_classe][$periode_num]=".$tab_moy_gen_classe[$id_classe][$periode_num]."<br />";
 			$tab_moy_min_classe[$id_classe][$periode_num]=$moy_min_classe;
 			$tab_moy_max_classe[$id_classe][$periode_num]=$moy_max_classe;
+
 			unset($moy_generale_classe);
 			unset($moy_min_classe);
 			unset($moy_max_classe);
+
+			// Récupérer aussi les moyennes de catégories
+			/*
+			$moy_min_categorie[$cat];
+			$moy_max_categorie[$cat];
+			$moy_classe_categorie[$cat];
+			*/
+			$tab_moy_min_categorie[$id_classe][$periode_num]=$moy_min_categorie;
+			$tab_moy_max_categorie[$id_classe][$periode_num]=$moy_max_categorie;
+			$tab_moy_classe_categorie[$id_classe][$periode_num]=$moy_classe_categorie;
+
+			// On récupère aussi $tab_id_categories dont le contenu est le même pour toutes les classes
+
+			unset($moy_min_categorie);
+			unset($moy_max_categorie);
+			unset($moy_classe_categorie);
+
 			/*
 			$moy_gen_classe
 			$moy_gen_eleve
@@ -3211,12 +3229,16 @@ $cpt_ordre = $cpt_ordre + 1;
 									// MODIF: boireaus
 									//$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_classe']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
 									if($matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego']!=0){
-										$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_classe']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
+										//$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_classe']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
+
+										$calcule_moyenne_classe_categorie[$categorie_passage]=$tab_moy_classe_categorie[$classe_id][$id_periode][$tab_id_categories[$categorie_passage]];
+
+										//echo "\$calcule_moyenne_classe_categorie[$categorie_passage]=\$tab_moy_classe_categorie[\$tab_id_categories[$categorie_passage]]=\$tab_moy_classe_categorie[".$tab_id_categories[$categorie_passage]."]=".$calcule_moyenne_classe_categorie[$categorie_passage]."<br />";
 									}
 									else{
 										$calcule_moyenne_classe_categorie[$categorie_passage]="";
 									}
-									$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
+									//$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
 									//================================================
 									//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
 									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
@@ -3251,14 +3273,17 @@ $cpt_ordre = $cpt_ordre + 1;
 									//$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_min']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
 
 									if($matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego']!=0){
-										$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_min']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
+										//$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_min']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
+
+										$calcule_moyenne_classe_categorie[$categorie_passage]=$tab_moy_min_categorie[$classe_id][$id_periode][$tab_id_categories[$categorie_passage]];
+
 									}
 									else{
 										$calcule_moyenne_classe_categorie[$categorie_passage]="";
 									}
 									//================================================
 
-									$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
+									//$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
 									//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
 									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
 									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),'TLR',0,'C');
@@ -3290,7 +3315,10 @@ $cpt_ordre = $cpt_ordre + 1;
 									//$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_max']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
 
 									if($matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego']){
-										$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_max']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
+										//$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_max']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
+
+										$calcule_moyenne_classe_categorie[$categorie_passage]=$tab_moy_max_categorie[$classe_id][$id_periode][$tab_id_categories[$categorie_passage]];
+
 									}
 									else{
 										$calcule_moyenne_classe_categorie[$categorie_passage]="";
@@ -3302,6 +3330,10 @@ $cpt_ordre = $cpt_ordre + 1;
 									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
 									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),'TLR',0,'C');
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]),'TLR',0,'C');
+
+									//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], $categorie_passage,'TLR',0,'C');
+
+
 								} else {
 									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C');
@@ -3952,6 +3984,7 @@ $cpt_ordre = $cpt_ordre + 1;
 				if ( $moyenne_classe != '-' ) {
 					//=========================
 					// MODIF: boireaus 20080102
+					// On remplace la moyenne mal calculée au sein de la page par la moyenne calculée dans /lib/calcul_moy_gen.inc.php
 					//$moyenne_classe=$tab_moy_gen_classe[$classe_id][$id_periode];
 					$moyenne_classe=nf($tab_moy_gen_classe[$classe_id][$id_periode]);
 					/*
@@ -3991,6 +4024,7 @@ $cpt_ordre = $cpt_ordre + 1;
 				if ( $moyenne_min != '-' ) {
 					//=========================
 					// MODIF: boireaus 20080102
+					// On remplace la moyenne mal calculée au sein de la page par la moyenne calculée dans /lib/calcul_moy_gen.inc.php
 					//$moyenne_min=$tab_moy_min_classe[$classe_id][$id_periode];
 					$moyenne_min=$tab_moy_min_classe[$classe_id][$id_periode];
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_min, $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general[$classe_id]);
@@ -4024,6 +4058,7 @@ $cpt_ordre = $cpt_ordre + 1;
 				if ( $moyenne_max != '-' ) {
 					//=========================
 					// MODIF: boireaus 20080102
+					// On remplace la moyenne mal calculée au sein de la page par la moyenne calculée dans /lib/calcul_moy_gen.inc.php
 					//$moyenne_max=$tab_moy_max_classe[$classe_id][$id_periode];
 					$moyenne_max=$tab_moy_max_classe[$classe_id][$id_periode];
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_max, $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general[$classe_id]);
