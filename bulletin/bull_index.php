@@ -1493,7 +1493,7 @@ else {
 					if($nb_cat_priorites_glob!=$nb_cat) {
 						if($mode_bulletin!="pdf") {
 							echo "<h1 align='center'>Erreur</h1>";
-							echo "<p>Vous avez demandé à afficher les catégories de matières, mais les priorités d'affichage des catégories ne sont pas correctement définies, ni au niveau global dans Gestion des matières, ni au niveau particulier dans Gestion des classes/&lt;Classe&gt; Enseignements<br />Il ne faut pas que deux catégories aient la même priorité sans quoi il peut survenir des anomalies d'ordre des matières sur le bulletin.</p>\n";
+							echo "<p>Vous avez demandé à afficher les catégories de matières, mais les priorités d'affichage des catégories ne sont pas correctement définies, ni au niveau global dans Gestion des matières, ni au niveau particulier dans Gestion des classes/&lt;Classe&gt; Paramètres<br />Il ne faut pas que deux catégories aient la même priorité sans quoi il peut survenir des anomalies d'ordre des matières sur le bulletin.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
