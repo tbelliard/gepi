@@ -1,5 +1,5 @@
 <?php
-
+include("../lib/initialisations.inc.php");
 /**
  *
  *
@@ -265,6 +265,21 @@ class ActiveRecordGepi{
   }
 
   /**
+   * Méthode qui renvoie le contenu d'un champ de l'objet
+   * Pas vraiment utile puisque chaque champ est aussi une propriété de l'objet
+   *
+   * @param string $champ
+   * @return string $this->$champ
+   */
+  public function getChamp($champ){
+      if (isset($this->$champ)){
+          return $this->$champ;
+      }else{
+          return false;
+      }
+  }
+
+  /**
    * Méthode qui permet de peupler un champ du tuple avant sauvegarde
    * Dans le cas d'un objet déjà peuplé, elle permet une maj des champs
    *
@@ -272,14 +287,6 @@ class ActiveRecordGepi{
    * @var string $valeur
    * @var string $champ
    */
-  public function getChamp($champ, $valeur){
-      if (isset($this->$champ)){
-          $this->$champ = $valeur;
-          return true;
-      }else{
-          return false;
-      }
-  }
   public function setChamp($champ, $valeur){
       if (isset($this->$champ)){
           return $this->$champ = $valeur;
@@ -720,18 +727,44 @@ class Utilisateur extends ActiveRecordGepi{
     $this->addHasAndBelongsToMany(array('matieres', 'j_professeurs_matieres', 'id_matiere', 'id_professeur', array('utilisateurs'=>'login', 'matieres'=>'matiere')));
 
     // On pourrait appeler findByLogin ici directement en testant $login
+    if ($login !== NULL){
+      $this->findByLogin($login);
+    }
+  }
+  public function findByLogin($valeur){
+    // j'ai codé cette méthode en dur pour voir la différence de traitement entre celle construite par __call() de parent::
+    // et celle-ci codée en dur.
+    $sql = "SELECT * FROM utilisateurs WHERE login = " . $this->echappe($valeur) . " LIMIT 1";
+
+    if ($query_s = $this->_requete($sql)) {
+
+      $rep = $query_s->fetch(PDO::FETCH_OBJ);
+
+      foreach($rep as $cle => $valeur){
+
+        $this->$cle = $valeur;
+
+      }
+
+    } else {
+
+      return false;
+
+    }
+
   }
 }
 
 try{
-  $test = new Utilisateur("JJOCAL");
-  $test->findByLogin("JJOCAL"); // Il suffit de mettre un login de votre base pour tester
+  $test = new Utilisateur();
+
+  $test->findByLogin("prof"); // Il suffit de mettre un login de votre base pour tester
   //$tester2 = $test->getGroupes($test->login, array('champs'=>'name, description, id'));
-  $tester2 = $test->getMatieres($test->login, array('champs'=>'nom_complet, matiere', 'order_by'=>'matiere DESC'));
+  //$tester2 = $test->getMatieres($test->login, array('champs'=>'nom_complet, matiere', 'order_by'=>'matiere DESC'));
     echo '<pre>tester2' ;
-    print_r($tester2);
+    //print_r($tester2);
     echo '</pre>fintester2';
-/*    echo '<pre>test' ;
+    echo '<pre>test' ;
     print_r($test);
     echo '</pre>';
 
@@ -744,7 +777,7 @@ try{
   }
   $test->setChamp('nom', 'JJOCAL'); // Permet de modifier le champ nom de l'objet $test
   $test->save(); // Et l'enregistrement est mis à jour dans la base.
-*/
+
 }catch(Exception $e){
 
   //Les exceptions ne sont pas directement liées à la classe ci dessus mais une bien belle façon de traiter les erreurs.
