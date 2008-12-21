@@ -3298,6 +3298,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				//if ( isset($Y_avis_cons_init) ) { $tab_modele_pdf["Y_avis_cons"][$classe_id] = $Y_avis_cons_init; }
 				//if ( isset($Y_sign_chef_init) ) { $tab_modele_pdf["Y_sign_chef"][$classe_id] = $Y_sign_chef_init; }
 				//=========================
+				// Il y a une ligne pour les absences, retards,... donc on compte une ligne (+0.5) de décalage pour le bloc Avis du conseil et celui de la signature du chefetab
 				if ( !isset($Y_avis_cons_init) ) { $Y_avis_cons_init = $tab_modele_pdf["Y_avis_cons"][$classe_id] + 0.5; }
 				if ( !isset($Y_sign_chef_init) ) { $Y_sign_chef_init = $tab_modele_pdf["Y_sign_chef"][$classe_id] + 0.5; }
 
@@ -3309,6 +3310,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				//=========================
 				if ( !isset($hauteur_avis_cons_init) ) { $hauteur_avis_cons_init = $tab_modele_pdf["hauteur_avis_cons"][$classe_id] - 0.5; }
 				if ( !isset($hauteur_sign_chef_init) ) { $hauteur_sign_chef_init = $tab_modele_pdf["hauteur_sign_chef"][$classe_id] - 0.5; }
+
+$hauteur_pris_app_abs=0;
 
 				if($tab_bull['eleve'][$i]['appreciation_absences'] != "")
 				{
@@ -3326,18 +3329,37 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$nb_ligne = ceil($val / 200);
 					$hauteur_pris = $nb_ligne * 3;
 
-					$tab_modele_pdf["Y_avis_cons"][$classe_id] = $tab_modele_pdf["Y_avis_cons"][$classe_id] + $hauteur_pris;
-					$tab_modele_pdf["hauteur_avis_cons"][$classe_id] = $tab_modele_pdf["hauteur_avis_cons"][$classe_id] - ( $hauteur_pris + 0.5 );
-					$tab_modele_pdf["Y_sign_chef"][$classe_id] = $tab_modele_pdf["Y_sign_chef"][$classe_id] + $hauteur_pris;
-					$tab_modele_pdf["hauteur_sign_chef"][$classe_id] = $tab_modele_pdf["hauteur_sign_chef"][$classe_id] - ( $hauteur_pris + 0.5 );
+$hauteur_pris_app_abs=$hauteur_pris;
+
+					//$tab_modele_pdf["Y_avis_cons"][$classe_id] = $tab_modele_pdf["Y_avis_cons"][$classe_id] + $hauteur_pris;
+					$Y_avis_cons_init=$Y_avis_cons_init+$hauteur_pris;
+
+					//$tab_modele_pdf["hauteur_avis_cons"][$classe_id] = $tab_modele_pdf["hauteur_avis_cons"][$classe_id] - ( $hauteur_pris + 0.5 );
+					$hauteur_avis_cons_init=$hauteur_avis_cons_init - ( $hauteur_pris + 0.5 );
+
+					//$tab_modele_pdf["Y_sign_chef"][$classe_id] = $tab_modele_pdf["Y_sign_chef"][$classe_id] + $hauteur_pris;
+					$Y_sign_chef_init=$Y_sign_chef_init+$hauteur_pris;
+
+					//$tab_modele_pdf["hauteur_sign_chef"][$classe_id] = $tab_modele_pdf["hauteur_sign_chef"][$classe_id] - ( $hauteur_pris + 0.5 );
+					$hauteur_sign_chef_init=$hauteur_sign_chef_init - ( $hauteur_pris + 0.5 );
+
 					$hauteur_pris = 0;
-				} else {
+				}
+				else {
 					if($Y_avis_cons_init!=$tab_modele_pdf["Y_avis_cons"][$classe_id])
 					{
-						$tab_modele_pdf["Y_avis_cons"][$classe_id] = $tab_modele_pdf["Y_avis_cons"][$classe_id] - $hauteur_pris;
-						$tab_modele_pdf["hauteur_avis_cons"][$classe_id] = $tab_modele_pdf["hauteur_avis_cons"][$classe_id] + $hauteur_pris;
-						$tab_modele_pdf["Y_sign_chef"][$classe_id] = $tab_modele_pdf["Y_sign_chef"][$classe_id] - $hauteur_pris;
-						$tab_modele_pdf["hauteur_sign_chef"][$classe_id] = $tab_modele_pdf["hauteur_sign_chef"][$classe_id] + $hauteur_pris;
+						//$tab_modele_pdf["Y_avis_cons"][$classe_id] = $tab_modele_pdf["Y_avis_cons"][$classe_id] - $hauteur_pris;
+						$Y_avis_cons_init=$Y_avis_cons_init-$hauteur_pris;
+
+						//$tab_modele_pdf["hauteur_avis_cons"][$classe_id] = $tab_modele_pdf["hauteur_avis_cons"][$classe_id] + $hauteur_pris;
+						$hauteur_avis_cons_init=$hauteur_avis_cons_init + $hauteur_pris;
+
+						//$tab_modele_pdf["Y_sign_chef"][$classe_id] = $tab_modele_pdf["Y_sign_chef"][$classe_id] - $hauteur_pris;
+						$Y_sign_chef_init=$Y_sign_chef_init-$hauteur_pris;
+
+						//$tab_modele_pdf["hauteur_sign_chef"][$classe_id] = $tab_modele_pdf["hauteur_sign_chef"][$classe_id] + $hauteur_pris;
+						$hauteur_sign_chef_init=$hauteur_sign_chef_init + $hauteur_pris;
+
 						$hauteur_pris = 0;
 					}
 				}
@@ -3346,7 +3368,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 			}
 
-			// si le bloc absence n'est pas activé
+			// sinon, si le bloc absence n'est pas activé
 			if($tab_modele_pdf["active_bloc_absence"][$classe_id] != '1') {
 				//=========================
 				// MODIF: boireaus 20081220
@@ -3372,9 +3394,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			// ================ bloc avis du conseil de classe =================
 			if($tab_modele_pdf["active_bloc_avis_conseil"][$classe_id]==='1') {
 				if($tab_modele_pdf["cadre_avis_cons"][$classe_id]!=0) {
-					$pdf->Rect($tab_modele_pdf["X_avis_cons"][$classe_id], $tab_modele_pdf["Y_avis_cons"][$classe_id], $tab_modele_pdf["longeur_avis_cons"][$classe_id], $tab_modele_pdf["hauteur_avis_cons"][$classe_id], 'D');
+					//$pdf->Rect($tab_modele_pdf["X_avis_cons"][$classe_id], $tab_modele_pdf["Y_avis_cons"][$classe_id], $tab_modele_pdf["longeur_avis_cons"][$classe_id], $tab_modele_pdf["hauteur_avis_cons"][$classe_id], 'D');
+					$pdf->Rect($tab_modele_pdf["X_avis_cons"][$classe_id], $Y_avis_cons_init, $tab_modele_pdf["longeur_avis_cons"][$classe_id], $hauteur_avis_cons_init, 'D');
 				}
-				$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id],$tab_modele_pdf["Y_avis_cons"][$classe_id]);
+				//$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id],$tab_modele_pdf["Y_avis_cons"][$classe_id]);
+				$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id],$Y_avis_cons_init);
+
 				if ( $tab_modele_pdf["taille_titre_bloc_avis_conseil"][$classe_id] != '' and $tab_modele_pdf["taille_titre_bloc_avis_conseil"][$classe_id] < '15' ) {
 					$taille = $tab_modele_pdf["taille_titre_bloc_avis_conseil"][$classe_id];
 				} else {
@@ -3387,17 +3412,25 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$tt_avis = 'Avis du Conseil de classe:';
 				}
 				$pdf->Cell($tab_modele_pdf["longeur_avis_cons"][$classe_id],5, $tt_avis,0,2,'');
-				$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id]+2.5,$tab_modele_pdf["Y_avis_cons"][$classe_id]+5);
+
+				//$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id]+2.5,$tab_modele_pdf["Y_avis_cons"][$classe_id]+5);
+				$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id]+2.5,$Y_avis_cons_init+5);
+
 				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 				$texteavis = $tab_bull['avis'][$i];
-				$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
+
+				//$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
+				$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $hauteur_avis_cons_init-10, 'J', 'M', 0);
 				//=========================
 				// MODIF: boireaus 20081220
 				// DEBUG:
-				//$pdf->drawTextBox(traite_accents_utf8($texteavis." ".$Y_avis_cons_init." ".$tab_modele_pdf["hauteur_avis_cons"][$classe_id]), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
+				//$pdf->drawTextBox(traite_accents_utf8($texteavis." \$Y_avis_cons_init=".$Y_avis_cons_init." \$tab_modele_pdf[\"hauteur_avis_cons\"][$classe_id]=".$tab_modele_pdf["hauteur_avis_cons"][$classe_id]." \$hauteur_pris_app_abs=".$hauteur_pris_app_abs), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
 				//=========================
 				$X_pp_aff=$tab_modele_pdf["X_avis_cons"][$classe_id];
-				$Y_pp_aff=$tab_modele_pdf["Y_avis_cons"][$classe_id]+$tab_modele_pdf["hauteur_avis_cons"][$classe_id]-5;
+
+				//$Y_pp_aff=$tab_modele_pdf["Y_avis_cons"][$classe_id]+$tab_modele_pdf["hauteur_avis_cons"][$classe_id]-5;
+				$Y_pp_aff=$Y_avis_cons_init+$hauteur_avis_cons_init-5;
+
 				$pdf->SetXY($X_pp_aff,$Y_pp_aff);
 				if ( $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] != '' and $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] < '15' ) {
 					$taille = $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id];
@@ -3423,9 +3456,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			// ======================= bloc du président du conseil de classe ================
 			if( $tab_modele_pdf["active_bloc_chef"][$classe_id] === '1' ) {
 				if( $tab_modele_pdf["cadre_sign_chef"][$classe_id] != 0 ) {
-					$pdf->Rect($tab_modele_pdf["X_sign_chef"][$classe_id], $tab_modele_pdf["Y_sign_chef"][$classe_id], $tab_modele_pdf["longeur_sign_chef"][$classe_id], $tab_modele_pdf["hauteur_sign_chef"][$classe_id], 'D');
+					//$pdf->Rect($tab_modele_pdf["X_sign_chef"][$classe_id], $tab_modele_pdf["Y_sign_chef"][$classe_id], $tab_modele_pdf["longeur_sign_chef"][$classe_id], $tab_modele_pdf["hauteur_sign_chef"][$classe_id], 'D');
+					$pdf->Rect($tab_modele_pdf["X_sign_chef"][$classe_id], $Y_sign_chef_init, $tab_modele_pdf["longeur_sign_chef"][$classe_id], $hauteur_sign_chef_init, 'D');
 				}
-				$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$tab_modele_pdf["Y_sign_chef"][$classe_id]);
+				//$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$tab_modele_pdf["Y_sign_chef"][$classe_id]);
+				$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$Y_sign_chef_init);
+
 				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 				if( $tab_modele_pdf["affichage_haut_responsable"][$classe_id] === '1' ) {
 					if ( $tab_modele_pdf["affiche_fonction_chef"][$classe_id] === '1' ){
