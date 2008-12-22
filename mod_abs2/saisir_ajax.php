@@ -116,23 +116,24 @@ header('Content-Type: text/html; charset:utf-8');
     <p><input type="hidden" name="action" value="eleves" /></p>
     <p><input type="submit" name="enregistrer_absences" value="Enregistrer" /> - <?php echo $test_type; ?></p>
     <table class="_center">
-      <tr><th>id_eleve</th><th>Nom Pr&eacute;nom</th><th>Abs. Journ.</th><th>D&eacute;but</th><th>Fin</th><th>Justification</th><th>Motif</th></tr>
+      <tr><th>Absents</th><th>Nom Pr&eacute;nom</th><th>Abs. Journ.</th><th>D&eacute;but</th><th>Fin</th><th>Justification</th><th>Motif</th></tr>
 
       <?php foreach($aff_liste as $tab): ?>
 
         <?php foreach($tab as $aff_tab): ?>
         <tr>
 
-          <td><?php echo $aff_tab->id_eleve; ?></td>
+          <td><input type="checkbox" name="_eleve[<?php echo $aff_tab->id_eleve; ?>]" id="el<?php echo $aff_tab->id_eleve; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
           <td><label for="el<?php echo $aff_tab->id_eleve; ?>"><?php echo utf8_encode($aff_tab->nom) . ' ' . utf8_encode($aff_tab->prenom); ?></label></td>
-          <td><input type="checkbox" name="_eleve[]" id="el<?php echo $aff_tab->id_eleve; ?>" value="<?php echo $aff_tab->id_eleve; ?>"<?php echo $aff_coche; ?> /></td>
-          <td><select name="deb"><option value="m1">M1</option><option value="m2">M2</option><option value="m3">M3</option></select></td>
-          <td><select name="fin"><option value="m1">M1</option><option value="m2">M2</option><option value="m3">M3</option></select></td>
-          <td><?php echo AffSelectParametres(array('_type'=>'justifications', 'name'=>'_justifications[]')); ?></td>
-          <td><?php echo AffSelectParametres(array('_type'=>'motifs', 'name'=>'_motifs[]')); ?></td>
+          <td><input type="checkbox" name="_jourentier[<?php echo $aff_tab->id_eleve; ?>]" id="el<?php echo $aff_tab->id_eleve; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
+          <td><select name="_deb[<?php echo $aff_tab->id_eleve; ?>]"><option value="m1">M1</option><option value="m2">M2</option><option value="m3">M3</option></select></td>
+          <td><select name="_fin[<?php echo $aff_tab->id_eleve; ?>]"><option value="m1">M1</option><option value="m2">M2</option><option value="m3">M3</option></select></td>
+          <td><?php echo AffSelectParametres(array('_type'=>'justifications', 'name'=>'_justifications['.$aff_tab->id_eleve.']')); ?></td>
+          <td><?php echo AffSelectParametres(array('_type'=>'motifs', 'name'=>'_motifs['.$aff_tab->id_eleve.']')); ?></td>
 
         </tr>
-      <?php endforeach; ?>
+        <?php endforeach; ?>
+
       <?php endforeach; ?>
 
     </table>

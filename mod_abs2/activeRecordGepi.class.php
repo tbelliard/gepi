@@ -1,5 +1,5 @@
 <?php
-include("../lib/initialisations.inc.php");
+//include("../lib/initialisations.inc.php");
 /**
  *
  *
@@ -145,6 +145,7 @@ class ActiveRecordGepi{
         $this->$champ = $return[$a]->Default; // Pour les modifier à loisir
 
       }
+
       $this->typeChamps  = $reponse; // On stocke le type de chaque champ
       $this->typeKeys    = $reponseKey; // On stocke le type de clé pour chaque champ
       return true;
@@ -171,11 +172,9 @@ class ActiveRecordGepi{
    *
    */
   public function  __set($name, $value) {
-      if (!$this->colonneExiste($name)){
-          return FALSE;
-      }else{
-          $this->$name = $value;
-      }
+
+    $this->$name = $value;
+
   }
 
   /**
@@ -238,7 +237,7 @@ class ActiveRecordGepi{
         if ($reponse = self::pdo_connect()->exec($sql)) {
 
         }else{
-          throw new Exception('Erreur dans la requête ' . $reponse);
+          throw new Exception('Erreur dans la requête ' . $reponse . '||' . $sql);
         }
 
         if($test == 'INSE'){ // on retourne alors le dernier id enregistré
@@ -288,11 +287,10 @@ class ActiveRecordGepi{
    * @var string $champ
    */
   public function setChamp($champ, $valeur){
-      if (isset($this->$champ)){
-          return $this->$champ = $valeur;
-      }else{
-          return false;
-      }
+
+        $this->$champ = $valeur;
+        return true;
+
   }
 
   /**
@@ -754,7 +752,7 @@ class Utilisateur extends ActiveRecordGepi{
 
   }
 }
-
+/*
 try{
   $test = new Utilisateur();
 
@@ -787,5 +785,5 @@ try{
   echo '</pre>';
 
 }
-
+*/
 ?>

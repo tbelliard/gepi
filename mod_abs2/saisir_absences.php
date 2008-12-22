@@ -29,7 +29,9 @@ $utiliser_pdo = 'on';
 $accessibilite="y";
 
 // Initialisations files
-require_once("../lib/initialisations.inc.php");
+include("../lib/initialisations.inc.php");
+
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -50,8 +52,20 @@ $_SESSION["type_aff_abs"] = (isset($_GET["type_aff_abs"]) AND ($_GET["type_aff_a
 include("absences.class.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
 include("lib/erreurs.php");
+require_once("activeRecordGepi.class.php");
+require_once("classes/abs_informations.class.php");
 
 try{
+
+  $test = new Abs_information();
+
+  $test->setChamp("utilisateurs_id", $_SESSION["login"]);
+  $test->setChamp("eleve_id", "eleve_test");
+  $test->setChamp("date_saisie", date("U"));
+  $test->setChamp("debut_abs", date("U"));
+  $test->setChamp("fin_abs", date("U"));
+
+  $test->save();
 
   // le tableau des élèves en vue de son affichage sous différentes formes
   $options = array('classes'=>'toutes', 'eleves'=>$_SESSION["type_aff_abs"]);
@@ -71,7 +85,7 @@ require_once("../lib/header.inc");
 $menu = 'saisir';
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
-
+debug_var();
 ?>
 <p><a href="saisir_absences.php?type_aff_abs=alpha">Afficher tous les &eacute;l&egrave;ves</a> -
 <a href="saisir_absences.php?type_aff_abs=classe">Afficher par classe</a></p>
