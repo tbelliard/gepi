@@ -111,7 +111,8 @@ header('Content-Type: text/html; charset:utf-8');
 
 <div id="div_saisie_abs" style="border: 1px solid grey; height: 200%; margin: 5px 5px 5px 5px; padding: 5px 5px 5px 5px; background-color: #99FFFF;">
 
-  <form method="post" action="saisir_absences.php">
+  <!--<form method="post" action="saisir_absences.php">-->
+  <form method="post" action="saisir_enregistrer.php">
 
     <p><input type="hidden" name="action" value="eleves" /></p>
     <p><input type="submit" name="enregistrer_absences" value="Enregistrer" /> - <?php echo $test_type; ?></p>

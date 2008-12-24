@@ -70,6 +70,7 @@ require("lib/abs_menu.php");
   <span onclick="utiliseAjaxAbs('aff_result', 'motifs', 'parametrage_ajax.php');">Les motifs</span>
   <span onclick="utiliseAjaxAbs('aff_result', 'actions', 'parametrage_ajax.php');">Les actions</span>
   <span onclick="utiliseAjaxAbs('aff_result', 'justifications', 'parametrage_ajax.php');">Les justifications</span>
+  <span onclick="utiliseAjaxAbs('aff_result', 'creneaux', 'parametrage_creneaux_ajax.php');">Les cr&eacute;neaux</span>
 </p>
 
 <div id="aff_result" style="display: none;">

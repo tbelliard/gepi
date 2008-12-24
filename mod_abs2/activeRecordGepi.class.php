@@ -354,6 +354,8 @@ class ActiveRecordGepi{
 
       return $query;
 
+    }else{
+      return FALSE;
     }
 
   }
@@ -444,7 +446,12 @@ class ActiveRecordGepi{
   */
 
   public static function pluralize($word) {
-    return $word.'s';
+    if (substr($word, -3) == 'eau'){
+      return $word . 'x';
+    }else{
+      return $word.'s';
+    }
+
   }
 
   /**

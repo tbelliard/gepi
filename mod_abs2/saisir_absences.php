@@ -47,6 +47,18 @@ $_SESSION["type_aff_abs"] = isset($_SESSION["type_aff_abs"]) ? $_SESSION["type_a
 $_SESSION["type_aff_abs"] = (isset($_GET["type_aff_abs"]) AND ($_GET["type_aff_abs"] == 'alpha' OR $_GET["type_aff_abs"] == 'classe'))
                             ? $_GET["type_aff_abs"] : $_SESSION["type_aff_abs"];
 
+# Enregistrement de nouvelles absences
+$action               = isset($_POST['action']) ? $_POST['action'] : NULL;
+$_eleve               = isset ($_POST['_eleve']) ? $_POST['_eleve'] : NULL;
+$_jourentier          = isset($_POST["_jourentier"]) ? $_POST["_jourentier"] : NULL;
+$_deb                 = isset ($_POST['_deb']) ? $_POST['_deb'] : NULL;
+$_fin                 = isset ($_POST['_fin']) ? $_POST['_fin'] : NULL;
+$_justifications      = isset ($_POST['_justifications']) ? $_POST['_justifications'] : NULL;
+$_motifs              = isset ($_POST['_motifs']) ? $_POST['_motifs'] : NULL;
+$nombre              = isset ($_POST['nombre']) ? $_POST['nombre'] : NULL;
+$enregistrer_absences = isset ($_POST['enregistrer_absences']) ? $_POST['enregistrer_absences'] : NULL;
+
+
 
 // ============== Code métier ===============================
 include("absences.class.php");
@@ -57,15 +69,19 @@ require_once("classes/abs_informations.class.php");
 
 try{
 
-  $test = new Abs_information();
+  // Un edemande d'enregistrement des absences est lancée
+  if ($action == '' AND $enregistrer_absences == 'ok'){
+    $test = new Abs_information();
 
-  $test->setChamp("utilisateurs_id", $_SESSION["login"]);
-  $test->setChamp("eleve_id", "eleve_test");
-  $test->setChamp("date_saisie", date("U"));
-  $test->setChamp("debut_abs", date("U"));
-  $test->setChamp("fin_abs", date("U"));
+    $test->setChamp("utilisateurs_id", $_SESSION["login"]);
+    $test->setChamp("eleve_id", "eleve_test");
+    $test->setChamp("date_saisie", date("U"));
+    $test->setChamp("debut_abs", date("U"));
+    $test->setChamp("fin_abs", date("U"));
 
-  $test->save();
+    $test->save();
+  }
+
 
   // le tableau des élèves en vue de son affichage sous différentes formes
   $options = array('classes'=>'toutes', 'eleves'=>$_SESSION["type_aff_abs"]);
