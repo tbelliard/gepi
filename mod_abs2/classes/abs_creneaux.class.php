@@ -25,6 +25,12 @@
 
 /**
  * Classe qui permet d'utiliser les créneaux de Gepi
+ * id             int(11)
+ * nom_creneau    varchar(50)
+ * debut_creneau 	int(12)
+ * fin_creneau    int(12)
+ * jour_creneau 	int(2)
+ * type_creneau   enum('pause', 'repas', 'cours')
  *
  * @author jjocal
  */
@@ -48,5 +54,46 @@ class Abs_creneau extends activeRecordGepi {
 
     return $heures . ':' . $minutes;
   }
+
+  /**
+   * Méthode qui renvoit un horaire de la forme 10:00 sous un nombre de seconde écoulées depuis 00:00
+   *
+   * @param string $var
+   * @return numeric
+   */
+  public function heureBdd($var){
+    if (self::isHoraire($var)){
+      $test = explode(":", $var);
+      return (($test[0] * 3600) + ($test[1]* 60));
+    }else{
+      return false;
+    }
+  }
+
+  /**
+   * Méthode qui permet de vérifier si les horaires saisis par l'utilisateur sont corrects ou pas
+   *
+   * @param string $info
+   * @return boolean false/true
+   */
+  protected function isHoraire($info){
+    $test = explode(":", $info);
+    if (count($test) == 2){
+      // C'est bon, on continue les tests
+      if (is_numeric($test[0]) AND is_numeric($test[1])){
+        // C'est encore bon, on termine les tests
+        if ($test[0] < 25 AND $test[1] < 61){
+          return true;
+        }else{
+          return false;
+        }
+      }else{
+        return false;
+      }
+    }else{
+      return false;
+    }
+  }
+
 }
 ?>

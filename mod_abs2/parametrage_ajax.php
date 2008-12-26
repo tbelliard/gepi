@@ -151,7 +151,7 @@ header('Content-Type: text/html; charset:utf-8');
       <td><?php echo $aff->$_champ; ?></td>
       <td>
         <input type="hidden" name="effacer" id="<?php echo $effacer_id; ?>" value="<?php echo $type_req.'|||'.$aff->id ; ?>" />
-        <img src="../images/icons/delete.png" alt="effacer" title="Effacer" onclick="gestionaffAbs('aff_result', '<?php echo $effacer_id; ?>', 'parametrage_ajax.php');" /><?php ?></td>
+        <img src="../images/icons/delete.png" alt="effacer" title="Effacer" onclick="gestionaffAbs('aff_result', '<?php echo $effacer_id; ?>', 'parametrage_ajax.php');" /></td>
     </tr>
 
   <?php endforeach; ?>

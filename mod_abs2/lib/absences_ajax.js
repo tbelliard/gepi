@@ -10,7 +10,6 @@ function gestionaffAbs(id, reglage, url){
   }else{
     var info = $F(reglage);
   }
-  alert(info);
 	o_options = new Object();
 	o_options = {postBody: '_id='+info+'&type='+reglage, onComplete:afficherDiv(id)};
 	var laRequete = new Ajax.Updater(elementHTML,url,o_options);

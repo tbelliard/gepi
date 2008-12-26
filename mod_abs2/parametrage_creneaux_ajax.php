@@ -38,7 +38,9 @@ if ($resultat_session == 'c') {
 }
 
 // ==================== VARIABLES ===============================
-
+$msg = NULL;
+$_id  = isset($_POST["_id"]) ? $_POST["_id"] : NULL;
+$type = isset($_POST["type"]) ? $_POST["type"] : NULL;
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("lib/erreurs.php");
@@ -48,12 +50,52 @@ include("classes/abs_creneaux.class.php");
 
 try{
 
+  // On commence par analyser les variables envoyées par la requête AJAX
+  $tester_type = explode("||", $type);
+
+  if (isset ($tester_type[4]) AND $tester_type[4] == 'action' AND $tester_type[1] != 'action2') {
+    // Alors on teste $_id qui doit ressembler à $type
+    $tester_id = explode("||", $_id);
+
+    if (isset ($tester_id[4]) AND $tester_id[4] == "enregistrer"){
+      // On vérifie les informations envoyées avant de sauvegarder
+
+      $new_creneau = new Abs_creneau();
+      if ($deb = $new_creneau->heureBdd($tester_id[1]) AND $fin = $new_creneau->heureBdd($tester_id[2]) AND $tester_id[0] != '') {
+        $new_creneau->setChamp('nom_creneau', $tester_id[0]);
+        $new_creneau->setChamp('debut_creneau', $deb);
+        $new_creneau->setChamp('fin_creneau', $fin);
+        $new_creneau->setChamp('type_creneau', $tester_id[3]);
+        if ($new_creneau->save()){
+          $msg = '<p style="color: green;">Le nouveau cr&eacute;neau est enregistr&eacute</p>';
+        }else{
+          throw new Exception("Impossible d'enregistrer ce nouveau créneau. || " . 'pas de requête à afficher');
+        }
+        
+      }else{
+        $msg = '<p style="color: red;">Il manque des informations ou certaines informations sont incompl&eagrave;tes.</p>';
+      }
+
+
+    }
+  }elseif($tester_type[1] == 'action2'){
+    // Dans ce cas, l'utilisateur demande à effacer un créneau
+    $tester_id = explode("||", $_id);
+      if ($tester_id[1] == 'effacer'){
+        $del_creneau = new Abs_creneau();
+        $del_creneau->_delete($tester_id[0]); // et c'est effacé
+
+      }
+
+  }
+
+
   $creneaux = new Abs_creneau();
-  $liste_creneaux = $creneaux->findAll();
+  $liste_creneaux = $creneaux->findAll(array('order_by' => 'debut_creneau'));
 
 /*
   echo '<pre>';
-  print_r($_POST);
+  print_r($tester_type);
   echo '</pre>';
 */
 
@@ -71,7 +113,7 @@ header('Content-Type: text/html; charset:utf-8');
   <table>
     <tr>
       <td>nom</td>
-      <td>début</td>
+      <td>d&eacute;but</td>
       <td>fin</td>
       <td>type</td>
     </tr>
@@ -83,25 +125,44 @@ header('Content-Type: text/html; charset:utf-8');
       <td><?php echo Abs_creneau::heureFr($aff_creneau->debut_creneau); ?></td>
       <td><?php echo Abs_creneau::heureFr($aff_creneau->fin_creneau); ?></td>
       <td><?php echo $aff_creneau->type_creneau ; ?></td>
+      <td>
+        <input type="hidden" name="del<?php echo $aff_creneau->id; ?>" id="del<?php echo $aff_creneau->id; ?>" value="<?php echo $aff_creneau->id; ?>" />
+        <img src="../images/icons/delete.png" alt="effacer" title="Effacer" onclick="gestionaffAbs('aff_result', 'del<?php echo $aff_creneau->id; ?>||action2', 'parametrage_creneaux_ajax.php');" /></td>
     </tr>
 
     <?php endforeach; ?>
-
+    <input type="hidden" id="action2" name="action2" value="effacer" />
   </table>
   
   <p onclick="afficherDiv('id_nouveau')">Ajouter un nouveau cr&eacute;neau</p>
   <div id="id_nouveau" style="display: none;">
 
-      <input type="text" id="nom" name="nom" value="" />
-      <input type="text" id="deb" name="deb" value="" />
-      <input type="text" id="fin" name="fin" value="" />
-      <input type="text" id="type" name="type" value="" />
+      <p>
+        <label for="nom">Nom du cr&eacute;neau</label>
+        <input type="text" id="nom" name="nom" value="" />
+      </p>
+      <p>
+        <label for="deb">Heure d&eacute;but (hh:mm)</label>
+        <input type="text" size="5" id="deb" name="deb" value="" />
+      </p>
+      <p>
+        <label for="fin">Heure de fin (hh:mm)</label>
+        <input type="text" size="5" id="fin" name="fin" value="" />
+      </p>
+      <p>
+        <label for="type">Type de cr&eacute;neau</label>
+        <select id="type" name="type">
+          <option value="cours" selected="selected">Cours</option>
+          <option value="repas">Repas</option>
+          <option value="pause">Pause</option>
+        </select>
+      </p>
       <input type="hidden" id="action" name="action" value="enregistrer" />
 
-      <input type="submit" name="enregistrer" value="Enregistrer" onclick="gestionaffAbs('aff_result', 'nom||deb||fin||type||action', 'parametrage_creneaux_ajax.php')" />
+      <input type="submit" name="enregistrer" value="Enregistrer" onclick="gestionaffAbs('aff_result', 'nom||deb||fin||type||action', 'parametrage_creneaux_ajax.php');" />
   </div>
 
-
+<?php echo $msg; ?>
 
 </div>
 

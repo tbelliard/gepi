@@ -237,7 +237,7 @@ class ActiveRecordGepi{
         if ($reponse = self::pdo_connect()->exec($sql)) {
 
         }else{
-          throw new Exception('Erreur dans la requête ' . $reponse . '||' . $sql);
+          throw new Exception('Erreur dans la requête INSE/UPDA/DELE ' . $reponse . '||' . $sql);
         }
 
         if($test == 'INSE'){ // on retourne alors le dernier id enregistré
@@ -358,6 +358,27 @@ class ActiveRecordGepi{
       return FALSE;
     }
 
+  }
+
+  /**
+   * Méthode qui permet d'effacer un tuple de la table (par défaut, le champ pk de la table est id
+   * TODO : il faut tester la méthode avec la clé primaire $this->id ou $this->_pk
+   *
+   * @param integer $id
+   * @return void
+   */
+  public function _delete($id = NULL){
+    if ($id !== NULL){
+      $champ_pk = 'id';
+      $_id = $id;
+    }else{
+      $this->chercherClePrimaire();
+      $champ_pk = isset($this->_pk) ? $this->_pk : 'id';
+      $_id = $this->$champ_pk; // puisqu'il existe ;)
+    }
+
+    $sql =  "DELETE FROM " . $this->_table . " WHERE " . $champ_pk . " = " . $_id;
+    $this->_requete($sql);
   }
 
   public function isNew(){
