@@ -61,11 +61,11 @@ $enregistrer_absences = isset ($_POST['enregistrer_absences']) ? $_POST['enregis
 
 
 // ============== Code métier ===============================
-include("absences.class.php");
+//include("classes/absences.class.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
 include("lib/erreurs.php");
-require_once("activeRecordGepi.class.php");
-require_once("classes/abs_informations.class.php");
+require_once("classes/activeRecordGepi.class.php");
+include("classes/abs_informations.class.php");
 
 try{
 

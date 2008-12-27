@@ -62,7 +62,7 @@ echo '
 		<li' . $aff_suivre . '><a href="suivi_absences.php"><img src="../images/icons/releve.png" alt="Suivi"> - Suivi</a></li>
 		<li' . $aff_envoyer . '><a href="envoi_absences.php"><img src="../images/icons/mail.png" alt="courrier"> - Envoi aux familles</a></li>
 		<li' . $aff_stats . '><a href="stats_absences.php"><img src="../images/icons/stats.png" alt="Stats"> - Statistiques</a></li>
-		<li' . $aff_exporter . '><a href="exports_absences.php"><img src="../images/absences.png" alt="Exports"> - Exports</a></li>
+		<li' . $aff_exporter . '><a href="exports_absences.php"><img src="../images/icons/absences.png" alt="Exports"> - Exports</a></li>
 		<li' . $aff_parametrer . '><a href="parametrage_absences.php"><img src="../images/icons/configure.png" alt="param&eacute;trer"> - Param&egrave;tres</a></li>
 	</ol>
 	';

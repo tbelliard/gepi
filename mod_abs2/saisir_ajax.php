@@ -46,10 +46,13 @@ $type = isset($_POST["type"]) ? $_POST["type"] : NULL;
 $_ok = 'oui';
 $aff_coche = '';
 $test_aff_fiche = "ok";
+$aff_creneaux = NULL;
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
-include("absences.class.php");
+include("classes/activeRecordGepi.class.php");
+include("classes/absences.class.php");
 include("classes/abs_gestion.class.php");
+include("classes/abs_creneaux.class.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
 include("lib/erreurs.php");
 
@@ -99,6 +102,13 @@ try{
     $aff_liste[0] = infosEleve($liste);
   }
 
+  // CRENEAUX : On crée les options pour les selects des créneaux
+  $creneaux = new Abs_creneau();
+  $liste_creneaux = $creneaux->findAll(array('where' => 'type_creneau != "pause" AND type_creneau != "repas"'));
+  foreach($liste_creneaux as $aff_liste_creneaux){
+    $aff_creneaux .= '<option value="' . $aff_liste_creneaux->id . '">' . $aff_liste_creneaux->nom_creneau . '</option>';
+
+  }
 
 
 }catch(exception $e){
@@ -121,19 +131,19 @@ header('Content-Type: text/html; charset:utf-8');
 
       <?php foreach($aff_liste as $tab): ?>
 
-        <?php foreach($tab as $aff_tab): ?>
+        <?php $a = 0; foreach($tab as $aff_tab): ?>
         <tr>
 
-          <td><input type="checkbox" name="_eleve[<?php echo $aff_tab->id_eleve; ?>]" id="el<?php echo $aff_tab->id_eleve; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
-          <td><label for="el<?php echo $aff_tab->id_eleve; ?>"><?php echo utf8_encode($aff_tab->nom) . ' ' . utf8_encode($aff_tab->prenom); ?></label></td>
-          <td><input type="checkbox" name="_jourentier[<?php echo $aff_tab->id_eleve; ?>]" id="el<?php echo $aff_tab->id_eleve; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
-          <td><select name="_deb[<?php echo $aff_tab->id_eleve; ?>]"><option value="m1">M1</option><option value="m2">M2</option><option value="m3">M3</option></select></td>
-          <td><select name="_fin[<?php echo $aff_tab->id_eleve; ?>]"><option value="m1">M1</option><option value="m2">M2</option><option value="m3">M3</option></select></td>
-          <td><?php echo AffSelectParametres(array('_type'=>'justifications', 'name'=>'_justifications['.$aff_tab->id_eleve.']')); ?></td>
-          <td><?php echo AffSelectParametres(array('_type'=>'motifs', 'name'=>'_motifs['.$aff_tab->id_eleve.']')); ?></td>
+          <td><input type="checkbox" name="_eleve[<?php echo $a; ?>]" id="el<?php echo $a; ?>" value="<?php echo $aff_tab->id_eleve; ?>"<?php echo $aff_coche; ?> /></td>
+          <td><label for="el<?php echo $a; ?>"><?php echo utf8_encode($aff_tab->nom) . ' ' . utf8_encode($aff_tab->prenom); ?></label></td>
+          <td><input type="checkbox" name="_jourentier[<?php echo $a; ?>]" id="el<?php echo $a; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
+          <td><select name="_deb[<?php echo $a; ?>]"><?php echo $aff_creneaux; ?></select></td>
+          <td><select name="_fin[<?php echo $a; ?>]"><?php echo $aff_creneaux; ?></select></td>
+          <td><?php echo AffSelectParametres(array('_type'=>'justifications', 'name'=>'_justifications['.$a.']')); ?></td>
+          <td><?php echo AffSelectParametres(array('_type'=>'motifs', 'name'=>'_motifs['.$a.']')); ?></td>
 
         </tr>
-        <?php endforeach; ?>
+        <?php $a++; endforeach; ?>
 
       <?php endforeach; ?>
 

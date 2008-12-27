@@ -57,7 +57,8 @@ $enregistrer_absences = isset ($_POST['enregistrer_absences']) ? $_POST['enregis
 //include("absences.class.php");
 //include("helpers/aff_listes_utilisateurs.inc.php");
 include("lib/erreurs.php");
-include("activeRecordGepi.class.php");
+include("classes/activeRecordGepi.class.php");
+include("classes/abs_creneaux.class.php");
 include("classes/abs_informations.class.php");
 
 try{
@@ -65,21 +66,49 @@ try{
   // Une demande d'enregistrement des absences est lancée
   if ($action == 'eleves' AND $enregistrer_absences == 'Enregistrer'){
 /*
-echo '<pre>';
+echo '<pre>' . count($_eleve);
 print_r($_POST);
 echo '</pre>';
 */
+    $nbre = count($_eleve);
     $test = new Abs_information();
+    $creneau = new Abs_creneau();
+    $increment = 0;
 
-    $test->setChamp("utilisateurs_id", $_SESSION["login"]);
-    $test->setChamp("eleve_id", "eleve_test");
-    $test->setChamp("date_saisie", date("U"));
-    $test->setChamp("debut_abs", date("U"));
-    $test->setChamp("fin_abs", date("U"));
+    for($a = 0 ; $a < $nbre ; $a++){
 
-    if ($test->save()){
-      header("Location: saisir_absences.php");
+      $test->setChamp("utilisateurs_id", $_SESSION["login"]);
+      $test->setChamp("eleves_id", $_eleve[$a]);
+      // SI on demande la journée entière
+      if (isset($_jourentier[$a]) AND $_jourentier[$a] != ''){
+
+        // On indique le premier et le dernier créneau de la journée
+        $test->setChamp("debut_abs", $creneau->getFirstCreneau());
+        $test->setChamp("fin_abs", $creneau->getLastCreneau());
+
+      }else{
+
+        $test->setChamp("debut_abs", $_deb[$a]);
+        $test->setChamp("fin_abs", $_fin[$a]);
+
+      }
+      $test->setChamp("date_saisie", date("U"));
+      
+
+      if ($_last_id = $test->save()){
+        // $_last_id est donc l'id de l'enregistrement qui vient d'avoir lieu
+        $increment++;
+      }
     }
+
+    if ($increment == $nbre){
+      header("Location: saisir_absences.php");
+    }else{
+      throw new Exception('Il y a une erreur dans la saisie des absences, au moins une d\'entre elles ne peut pas être enregistrée.||' . $increment . '+' . $nbre);
+    }
+
+
+
   }
 
 }catch(exception $e){

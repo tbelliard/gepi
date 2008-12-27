@@ -36,21 +36,58 @@
  */
 class Abs_creneau extends activeRecordGepi {
 
+  /**
+   * la clé [nbre] donne le nombre de créneaux total
+   *
+   * @var array Tous les créneaux sans aucune distinction
+   */
+  private $all_the_creneaux = NULL;
+  /**
+   *
+   * @var integer L'id du premier créneau dans l'ordre chronologique
+   */
+  private $first_creneau = NULL;
+  /**
+   *
+   * @var integer L'id du dernier créneau dans l'ordre chronologique
+   */
+  private $last_creneau = NULL;
+
 
   public function  __construct() {
+
     parent::__construct(__CLASS__);
+
+    $this->all_the_creneaux = $this->findAllCreneaux();
+
+    $this->all_the_creneaux["nbre"] = count($this->all_the_creneaux);
+
+    $this->first_creneau = $this->all_the_creneaux[0]->id;
+    $last = $this->all_the_creneaux["nbre"] - 1;
+    $this->last_creneau = $this->all_the_creneaux[$last]->id;
+
+  }
+
+  public function getFirstCreneau(){
+    return $this->first_creneau;
+  }
+
+  public function getLastCreneau(){
+    return $this->last_creneau;
   }
 
   /**
-   * Méthode qui transforme les secondes de l'horaire en heure fançaise hh:mm:ss
+   * Méthode qui transforme les secondes de l'horaire en heure fançaise hh:mm
    *
    * @access public
-   * @return void
+   * @param string $var Nombre de secondes
+   * @return string hh:mm
    */
   public function heureFr($var){
     $heures = floor($var / 3600);
     $reste = $var % 3600;
     $minutes = floor($reste / 60);
+    $minutes = $minutes < 10 ? '0' . $minutes : $minutes;
 
     return $heures . ':' . $minutes;
   }
@@ -58,7 +95,7 @@ class Abs_creneau extends activeRecordGepi {
   /**
    * Méthode qui renvoit un horaire de la forme 10:00 sous un nombre de seconde écoulées depuis 00:00
    *
-   * @param string $var
+   * @param string $var hh:mm
    * @return numeric
    */
   public function heureBdd($var){
@@ -93,6 +130,16 @@ class Abs_creneau extends activeRecordGepi {
     }else{
       return false;
     }
+  }
+
+  /**
+   * Méthode qui renvoie tous les créneaux sans distinction de type en commençant par le plus ancien
+   *
+   * @access public
+   * @return array Liste de tous les créneaux
+   */
+  private function findAllCreneaux(){
+    return $this->findAll(array('order_by'=> 'debut_creneau'));
   }
 
 }

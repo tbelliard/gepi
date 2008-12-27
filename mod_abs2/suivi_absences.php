@@ -44,12 +44,17 @@ if ($resultat_session == 'c') {
 
 
 // ============== Code métier ===============================
-include("absences.class.php");
+include("classes/absences.class.php");
 include("lib/erreurs.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
+include 'classes/activeRecordGepi.class.php';
+include 'classes/abs_informations.class.php';
 
 
 try{
+
+  $_absences = new Abs_information();
+  $liste_absents = $_absences->findAll(array('order_by' => 'debut_abs'));
 
 }catch(exception $e){
   affExceptions($e);
@@ -62,6 +67,27 @@ require("lib/abs_menu.php");
 
 
 ?>
+<table>
+  <tr>
+    <th>Saisisseur (sic)</th>
+    <th>Eleve ?</th>
+    <th>Quand saisie ?</th>
+    <th>creneau Deb</th>
+    <th>Creneau fin</th>
+  </tr>
+  <?php foreach($liste_absents as $aff_liste_absents): ?>
+
+  <tr>
+    <td><?php echo $aff_liste_absents->utilisateurs_id ; ?></td>
+    <td><?php echo $aff_liste_absents->eleves_id ; ?></td>
+    <td><?php echo $aff_liste_absents->date_saisie ; ?></td>
+    <td><?php echo $aff_liste_absents->debut_abs ; ?></td>
+    <td><?php echo $aff_liste_absents->fin_abs ; ?></td>
+  </tr>
+
+  <?php endforeach; ?>
+
+</table>
 
 
 

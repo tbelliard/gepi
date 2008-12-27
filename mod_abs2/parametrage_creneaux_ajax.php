@@ -61,6 +61,7 @@ try{
       // On vérifie les informations envoyées avant de sauvegarder
 
       $new_creneau = new Abs_creneau();
+
       if ($deb = $new_creneau->heureBdd($tester_id[1]) AND $fin = $new_creneau->heureBdd($tester_id[2]) AND $tester_id[0] != '') {
         $new_creneau->setChamp('nom_creneau', $tester_id[0]);
         $new_creneau->setChamp('debut_creneau', $deb);
@@ -110,8 +111,8 @@ header('Content-Type: text/html; charset:utf-8');
 ?>
 <div id="ajouter_creneau">
 
-  <table>
-    <tr>
+  <table style="margin-left: 50px; padding: 5px 10px 5px 10px; border: solid 2px grey;">
+    <tr style="width: 50px;">
       <td>nom</td>
       <td>d&eacute;but</td>
       <td>fin</td>
@@ -135,7 +136,7 @@ header('Content-Type: text/html; charset:utf-8');
   </table>
   
   <p onclick="afficherDiv('id_nouveau')">Ajouter un nouveau cr&eacute;neau</p>
-  <div id="id_nouveau" style="display: none;">
+  <div id="id_nouveau" style="display: none; margin-top: 20px; border: solid 2px blue; padding: 10px 10px 10px 10px; width: 500px; text-align: right;">
 
       <p>
         <label for="nom">Nom du cr&eacute;neau</label>

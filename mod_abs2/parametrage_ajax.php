@@ -51,6 +51,7 @@ $action = 'ajouter';
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("lib/erreurs.php");
+include("classes/activeRecordGepi.class.php");
 include("classes/abs_gestion.class.php");
 
 

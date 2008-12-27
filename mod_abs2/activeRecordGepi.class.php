@@ -362,10 +362,10 @@ class ActiveRecordGepi{
 
   /**
    * Méthode qui permet d'effacer un tuple de la table (par défaut, le champ pk de la table est id
-   * TODO : il faut tester la méthode avec la clé primaire $this->id ou $this->_pk
    *
-   * @param integer $id
-   * @return void
+   * @todo il faut tester la méthode avec la clé primaire $this->id ou $this->_pk
+   * @param integer $id identifiant unique du tuple
+   * @return boulean true or Exception
    */
   public function _delete($id = NULL){
     if ($id !== NULL){
@@ -378,7 +378,11 @@ class ActiveRecordGepi{
     }
 
     $sql =  "DELETE FROM " . $this->_table . " WHERE " . $champ_pk . " = " . $_id;
-    $this->_requete($sql);
+    if ($this->_requete($sql)){
+      return true;
+    }else{
+      throw new Exception('Impossible de détruire cette ligne de la base.||' . $sql);
+    }
   }
 
   public function isNew(){

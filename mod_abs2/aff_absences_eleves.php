@@ -44,7 +44,7 @@ if ($resultat_session == 'c') {
 $variable_test = isset($_POST["var"]) ? $_POST["var"] : '123';
 
 // ============== Code métier ===============================
-include("absences.class.php");
+include("classes/absences.class.php");
 include("lib/erreurs.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
 $liste_eleves = ListeEleves(array('eleves'=>'classe', 'classes'=>'toutes'));
@@ -61,7 +61,9 @@ try{
   if ($variable_test == 124 OR $variable_test == 'josianne') {
     $test1->insertAbs();
   }
+
   $test_responsables = donneesFicheEleve($test2["eleves_id"]);
+
 }catch(exception $e){
   affExceptions($e);
 }
