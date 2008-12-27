@@ -44,7 +44,7 @@ $type = isset($_POST["type"]) ? $_POST["type"] : NULL;
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("lib/erreurs.php");
-include("activeRecordGepi.class.php");
+include("classes/activeRecordGepi.class.php");
 include("classes/abs_creneaux.class.php");
 
 
@@ -74,7 +74,7 @@ try{
         }
         
       }else{
-        $msg = '<p style="color: red;">Il manque des informations ou certaines informations sont incompl&eagrave;tes.</p>';
+        $msg = '<p style="color: red;">Il manque des informations ou certaines informations sont incompl&egrave;tes.</p>';
       }
 
 
@@ -135,7 +135,7 @@ header('Content-Type: text/html; charset:utf-8');
     <input type="hidden" id="action2" name="action2" value="effacer" />
   </table>
   
-  <p onclick="afficherDiv('id_nouveau')">Ajouter un nouveau cr&eacute;neau</p>
+  <p onclick="afficherDiv('id_nouveau')" class="lienWeb">Ajouter un nouveau cr&eacute;neau</p>
   <div id="id_nouveau" style="display: none; margin-top: 20px; border: solid 2px blue; padding: 10px 10px 10px 10px; width: 500px; text-align: right;">
 
       <p>

@@ -44,7 +44,7 @@ if ($resultat_session == 'c') {
 
 
 // ============== Code métier ===============================
-include("absences.class.php");
+include("classes/absences.class.php");
 include("lib/erreurs.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
 

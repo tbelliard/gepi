@@ -68,12 +68,50 @@ class Abs_creneau extends activeRecordGepi {
 
   }
 
+  /**
+   * Méthode publique qui permet de connaitre l'id du premier créneau
+   *
+   * @return integer un id
+   */
   public function getFirstCreneau(){
     return $this->first_creneau;
   }
 
+  /**
+   * Méthode qui permet de connaitre l'id du dernier créneau
+   *
+   * @return integer id
+   */
   public function getLastCreneau(){
     return $this->last_creneau;
+  }
+
+  /**
+   * heure du début du créneau
+   *
+   * @param integer $_id
+   * @return numeric en nombre de secondes
+   */
+  public function getDebut($_id){
+    for($a = 0 ; $a < $this->all_the_creneaux["nbre"] ; $a++){
+      if ($this->all_the_creneaux[$a]->id == $_id){
+        return $this->all_the_creneaux[$a]->debut_creneau;
+      }
+    }
+  }
+
+  /**
+   * heure de fin du créneau
+   *
+   * @param integer $_id
+   * @return numeric en nombre de secondes
+   */
+  public function getFin($_id){
+    for($a = 0 ; $a < $this->all_the_creneaux["nbre"] ; $a++){
+      if ($this->all_the_creneaux[$a]->id == $_id){
+        return $this->all_the_creneaux[$a]->fin_creneau;
+      }
+    }
   }
 
   /**
