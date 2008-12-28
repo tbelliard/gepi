@@ -111,14 +111,15 @@ if((strlen(ereg_replace("[0-9]","",$id_groupe))!=0)||(strlen(ereg_replace("[0-9]
 
 
 // On teste si le professeur est bien associé au groupe
-$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE login='".$_SESSION['login']."' AND id_groupe='$id_groupe'";
-$res_test=mysql_query($sql);
-if (mysql_num_rows($res_test)==0) {
-    $mess=rawurlencode("Vous tentez d'accéder à des données qui ne vous appartiennent pas !");
-    header("Location: index.php?msg=$mess");
-    die();
+if($_SESSION['statut']!='secours') {
+	$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE login='".$_SESSION['login']."' AND id_groupe='$id_groupe'";
+	$res_test=mysql_query($sql);
+	if (mysql_num_rows($res_test)==0) {
+		$mess=rawurlencode("Vous tentez d'accéder à des données qui ne vous appartiennent pas !");
+		header("Location: index.php?msg=$mess");
+		die();
+	}
 }
-
 //
 // On dispose donc pour la suite de deux variables :
 // id_groupe
