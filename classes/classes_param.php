@@ -31,7 +31,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -212,6 +212,89 @@ if (isset($_POST['is_posted'])) {
 							}
 						}
 					}
+
+
+
+
+					if((isset($_POST['creer_enseignement']))&&($_POST['creer_enseignement']=='y')) {
+						if((isset($_POST['matiere_nouvel_enseignement']))&&($_POST['matiere_nouvel_enseignement']!="")) {
+
+							$matiere_nouvel_enseignement=$_POST['matiere_nouvel_enseignement'];
+							$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere_nouvel_enseignement';";
+							$verif=mysql_query($sql);
+							if(mysql_num_rows($verif)==0) {
+								$msg .= "<br />La matière $matiere_nouvel_enseignement n'existe pas.";
+							}
+							else {
+								$coef_nouvel_enseignement=isset($_POST['coef_nouvel_enseignement']) ? $_POST['coef_nouvel_enseignement'] : 0;
+								$coef_nouvel_enseignement=ereg_replace("[^0-9]","",$_POST['coef_nouvel_enseignement']);
+
+								$professeur_nouvel_enseignement=isset($_POST['professeur_nouvel_enseignement']) ? $_POST['professeur_nouvel_enseignement'] : NULL;
+								$professeur_nouvel_enseignement=ereg_replace("[^A-Za-z0-9._-]","",$professeur_nouvel_enseignement);
+								if($professeur_nouvel_enseignement!="") {
+									$sql="SELECT 1=1 FROM utilisateurs u WHERE u.login='$professeur_nouvel_enseignement';";
+									$verif=mysql_query($sql);
+									if(mysql_num_rows($verif)==0) {
+										$professeur_nouvel_enseignement="";
+									}
+
+									$sql="SELECT 1=1 FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$professeur_nouvel_enseignement' AND jpm.id_matiere='$matiere_nouvel_enseignement'";
+									$verif=mysql_query($sql);
+									if(mysql_num_rows($verif)==0) {
+										$professeur_nouvel_enseignement="";
+									}
+								}
+
+								$reg_clazz = array();
+								$reg_clazz[] = $id_classe;
+								$reg_categorie = 1; // Récupérer par la suite la catégorie par défaut de la table 'matieres' (champ categorie_id)
+								$reg_nom_groupe=$matiere_nouvel_enseignement; // Obtenir une unicité...?
+								$reg_nom_complet=$matiere_nouvel_enseignement; // Obtenir une unicité...?
+
+								$sql="SELECT nom_complet,categorie_id FROM matieres WHERE matiere='$matiere_nouvel_enseignement';";
+								$res_mat=mysql_query($sql);
+								if(mysql_num_rows($res_mat)>0) {
+									$lig_mat=mysql_fetch_object($res_mat);
+									$reg_categorie=$lig_mat->categorie_id;
+									$reg_nom_complet=$lig_mat->nom_complet;
+								}
+								$reg_matiere=$matiere_nouvel_enseignement;
+								$create = create_group($reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_categorie);
+								if($create) {
+									$current_group=get_group($create);
+
+									$reg_professeurs = array();
+									if($professeur_nouvel_enseignement!="") {
+										$reg_professeurs[]=$professeur_nouvel_enseignement;
+									}
+
+									$reg_eleves=array();
+									foreach ($current_group["periodes"] as $period) {
+										$reg_eleves[$period['num_periode']]=array();
+										$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='".$period['num_periode']."';";
+										$res_ele=mysql_query($sql);
+										if(mysql_num_rows($res_ele)>0){
+											while($lig_ele=mysql_fetch_object($res_ele)){
+												$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+											}
+										}
+									}
+
+									$res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
+
+									if($coef_nouvel_enseignement!="") {
+										$sql="UPDATE j_groupes_classes SET coef='$coef_nouvel_enseignement' WHERE id_groupe='$create' AND id_classe='$id_classe';";
+										$res_coef=mysql_query($sql);
+										if(!$res_coef) {
+											$msg .= "<br />Erreur lors de la mise à jour du coefficient du groupe n°$create pour la classe n°$id_classe.";
+										}
+									}
+								}
+							}
+
+						}
+					}
+
 
 					//====================================
 				}
@@ -460,6 +543,69 @@ while ($per < $max_periode) {
 	?>
 	</select>
 	</td>
+</tr>
+</table>
+
+<table border='0'>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-weight: bold; vertical-align:top;">
+	<input type='checkbox' name='creer_enseignement' id='creer_enseignement' value='y' /> Créer un enseignement de :
+	</td>
+	<?php
+		$sql="SELECT DISTINCT matiere,nom_complet FROM matieres ORDER BY nom_complet,matiere;";
+		$res_mat=mysql_query($sql);
+		if(mysql_num_rows($res_mat)==0) {
+			echo "<td>Aucune matière n'est encore créée.</td>\n";
+		}
+		else {
+			echo "<td colspan='2'>\n";
+			echo "<select name='matiere_nouvel_enseignement' id='matiere_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;maj_prof_enseignement();\">\n";
+			echo "<option value=''>---</option>\n";
+			while($lig_mat=mysql_fetch_object($res_mat)) {
+				echo "<option value='$lig_mat->matiere'>".htmlentities($lig_mat->nom_complet)."</option>\n";
+			}
+			echo "</select>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+
+			echo "<tr>\n";
+			echo "<td colspan='2'>&nbsp;&nbsp;&nbsp;</td>\n";
+			echo "<td>\n";
+			echo "Coefficient&nbsp;: ";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<select name='coef_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;\">";
+			echo "<option value=''>---</option>\n";
+			for($i=0;$i<10;$i++){
+				echo "<option value='$i'>$i</option>\n";
+			}
+			echo "</select>\n";
+			//echo "<span style='color:red'>A FAIRE: pas pris en compte pour le moment</span>";
+			//echo "<br /><span style='color:red'>A FAIRE aussi: récupérer la catégorie associée à la matière dans 'matieres.categorie_id' et récupérer le matieres.nom_complet pour le nom du groupe</span>";
+			echo "</td>\n";
+			echo "</tr>\n";
+
+			echo "<tr>\n";
+			echo "<td colspan='2'>&nbsp;&nbsp;&nbsp;</td>\n";
+			echo "<td>\n";
+			echo "Professeur&nbsp;: ";
+
+			echo "<script type='text/javascript'>
+				// <![CDATA[
+				function maj_prof_enseignement() {
+					matiere=document.getElementById('matiere_nouvel_enseignement').value;
+					new Ajax.Updater($('td_prof_nouvel_enseignement'),'classes_ajax_lib.php?matiere='+matiere,{method: 'get'});
+				}
+				//]]>
+			</script>\n";
+
+			echo "</td>\n";
+			echo "<td id='td_prof_nouvel_enseignement'>\n";
+			echo "&nbsp;";
+			echo "</td>\n";
+		}
+	?>
 </tr>
 </table>
 
