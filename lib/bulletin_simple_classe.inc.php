@@ -475,7 +475,8 @@ while ($j < $nombre_groupes) {
 
 
 			if($avec_rapport_effectif=="y") {
-				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+				//$sql="SELECT 1=1 FROM j_eleves_classes jec,
+				$sql="SELECT DISTINCT jeg.login FROM j_eleves_classes jec,
 									j_eleves_groupes jeg,
 									j_groupes_classes jgc
 								WHERE jec.id_classe='$id_classe' AND
@@ -484,6 +485,7 @@ while ($j < $nombre_groupes) {
 										jec.login=jeg.login AND
 										jeg.id_groupe=jgc.id_groupe AND
 										jeg.id_groupe='".$current_group["id"]."';";
+				//$sql0=$sql;
 				$res_effectif=mysql_query($sql);
 				$effectif_grp_classe=mysql_num_rows($res_effectif);
 
@@ -494,11 +496,13 @@ while ($j < $nombre_groupes) {
 				$effectif_grp_total=mysql_num_rows($res_effectif_tot);
 
 				echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>";
+				//echo "$sql0<br /><br />";
+				//echo "$sql<br /><br />";
 				if($effectif_grp_classe==$effectif_grp_total) {
-					echo $effectif_grp_classe.' él.';
+					echo $effectif_grp_classe.'&nbsp;él.';
 				}
 				else {
-					echo "$effectif_grp_classe él./$effectif_grp_total";
+					echo "$effectif_grp_classe&nbsp;él. /$effectif_grp_total";
 				}
 				echo "</td>\n";
 			}
