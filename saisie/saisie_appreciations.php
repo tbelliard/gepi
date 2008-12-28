@@ -90,7 +90,11 @@ if (isset($_POST['is_posted'])) {
 		if(isset($_POST['app_grp_'.$k])){
 			//echo "\$current_group[\"classe\"][\"ver_periode\"]['all'][$k]=".$current_group["classe"]["ver_periode"]['all'][$k]."<br />";
 			//if($current_group["classe"]["ver_periode"]['all'][$k]!=0){
-			if(($current_group["classe"]["ver_periode"]['all'][$k]!=0)&&($current_group["classe"]["ver_periode"]['all'][$k]!=1)) {
+
+			//if(($current_group["classe"]["ver_periode"]['all'][$k]!=0)&&($current_group["classe"]["ver_periode"]['all'][$k]!=1)) {
+			if(($current_group["classe"]["ver_periode"]['all'][$k]>=2)||
+				(($current_group["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
+
 				if (isset($NON_PROTECT["app_grp_".$k])){
 					$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["app_grp_".$k]));
 				}
@@ -139,7 +143,9 @@ if (isset($_POST['is_posted'])) {
 					// La période est-elle ouverte?
 					if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
 						$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
-						if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N"){
+						//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N"){
+						if(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="N")||
+							(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]!="O")&&($_SESSION['statut']=='secours'))) {
 
 							$nom_log = "app_eleve_".$k."_".$i;
 
@@ -527,7 +533,10 @@ while ($k < $nb_periode) {
 	$mess[$k].="<td>".$moyenne_t[$k]."</td>\n";
 	$mess[$k].="<td>\n";
 	//if ($current_group["classe"]["ver_periode"]['all'][$k] == 0){
-	if(($current_group["classe"]["ver_periode"]['all'][$k] == 0)||($current_group["classe"]["ver_periode"]['all'][$k] == 1)) {
+	//if(($current_group["classe"]["ver_periode"]['all'][$k] == 0)||($current_group["classe"]["ver_periode"]['all'][$k] == 1)) {
+	if(((($current_group["classe"]["ver_periode"]['all'][$k] == 0)||($current_group["classe"]["ver_periode"]['all'][$k] == 1))&&($_SESSION['statut']!='secours'))||
+	(($current_group["classe"]["ver_periode"]['all'][$k]==0)&&($_SESSION['statut']=='secours'))) {
+
 		//$mess[$k].=htmlentities(nl2br($app_grp[$k]));
 		$mess[$k].=nl2br($app_grp[$k]);
 	}
@@ -684,7 +693,10 @@ foreach ($liste_eleves as $eleve_login) {
 			$note .= "</center>";
 
 			$eleve_login_t[$k] = $eleve_login."_t".$k;
-			if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N") {
+			//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N") {
+			if ((($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]!="N")&&($_SESSION['statut']!='secours'))||
+				(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="O")&&($_SESSION['statut']=='secours'))) {
+
 				//
 				// si la période est verrouillée
 				//
@@ -696,7 +708,7 @@ foreach ($liste_eleves as $eleve_login) {
 						$mess[$k] =$mess[$k].$eleve_app;
 					}
 					else{
-									$mess[$k] =$mess[$k].nl2br($eleve_app);
+						$mess[$k] =$mess[$k].nl2br($eleve_app);
 					}
 				} else {
 					$mess[$k] =$mess[$k]."&nbsp;";

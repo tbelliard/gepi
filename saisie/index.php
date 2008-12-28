@@ -56,8 +56,13 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 
-<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>
+<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>
 <?php
+
+if($_SESSION['statut']=='secours') {
+	echo " | <a href='saisie_secours_eleve.php'>Choix d'un élève</a>";
+}
+
 if ($current_group) {
 
     $matiere_nom = $current_group["matiere"]["nom_complet"];
@@ -102,7 +107,9 @@ if ($current_group) {
 		$liste_periodes_ouvertes="";
 		while ($i < $nb_periode) {
 			echo "<td>\n";
-			if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+			//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+			if (($current_group["classe"]["ver_periode"]["all"][$i] >= 2)||
+				((($current_group["classe"]["ver_periode"]["all"][$i]!=0))&&($_SESSION['statut']=='secours'))) {
 				if($liste_periodes_ouvertes!=""){$liste_periodes_ouvertes.=", ";}
 				$liste_periodes_ouvertes.=$current_group["periodes"][$i]["nom_periode"];
 
@@ -153,7 +160,9 @@ if ($current_group) {
 		echo "<th>Appréciations</th>\n";
 		while ($i < $nb_periode) {
 			echo "<td>\n";
-			if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+			//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+			if (($current_group["classe"]["ver_periode"]["all"][$i] >= 2)||
+				((($current_group["classe"]["ver_periode"]["all"][$i]!=0))&&($_SESSION['statut']=='secours'))) {
 
 				$tabdiv_infobulle[]=creer_div_infobulle("info_app_periode_$i","","","<center>Saisir les appréciations</center>","",12,0,"n","n","y","n");
 
@@ -179,7 +188,9 @@ if ($current_group) {
 		$i=1;
 		while ($i < $nb_periode) {
 			echo "<td>\n";
-			if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+			//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+			if (($current_group["classe"]["ver_periode"]["all"][$i] >= 2)||
+				((($current_group["classe"]["ver_periode"]["all"][$i]!=0))&&($_SESSION['statut']=='secours'))) {
 				$tabdiv_infobulle[]=creer_div_infobulle("info_import_csv_periode_$i","","","<center>Import CSV<br />(<i>les champs vides ne sont pas importés</i>)</center>","",15,0,"n","n","y","n");
 
 				//echo "<a href='import_note_app.php?id_groupe=$id_groupe&amp;periode_num=$i' onmouseover=\"afficher_div('info_import_csv_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_import_csv_periode_$i')\"><img src='../images/import4.png' width='32' height='32' ";
@@ -255,7 +266,9 @@ if ($current_group) {
 	echo "<th>CSV</th>\n";
 	while ($i < $nb_periode) {
 		echo "<td>\n";
-		if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+		//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+		if (($current_group["classe"]["ver_periode"]["all"][$i] >= 2)||
+			((($current_group["classe"]["ver_periode"]["all"][$i]!=0))&&($_SESSION['statut']=='secours'))) {
 			$tabdiv_infobulle[]=creer_div_infobulle("info_export_csv_periode_$i","","","<center>Export CSV des identifiants GEPI, avec les colonnes Moyennes et Appréciations de cette classe, avec ligne d'entête.</center>","",15,0,"n","n","y","n");
 
 			echo "<a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=$i&amp;champs=3&amp;ligne_entete=y&amp;mode=Id_Note_App' onmouseover=\"afficher_div('info_export_csv_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_export_csv_periode_$i')\"><img src='../images/notes_app_csv.png' width='30' height='30' alt='Export' ";
@@ -296,7 +309,9 @@ if ($current_group) {
 			// importation par csv
 			while ($i < $nb_periode) {
 				echo "<td>\n";
-				if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+				//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+				if (($current_group["classe"]["ver_periode"]["all"][$i] >= 2)||
+					((($current_group["classe"]["ver_periode"]["all"][$i]!=0))&&($_SESSION['statut']=='secours'))) {
 
 					//echo "-> <a href='export_class_ods.php?id_groupe=$id_groupe&amp;periode_num=$i'>Télécharger un fichier tableur OpenOffice (<i>ODS</i>) avec les identifiants GEPI, les colonnes Moyennes et Appréciations de cette classe.</a>\n";
 
