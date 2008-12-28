@@ -46,13 +46,17 @@ $type_req = isset($_POST["type"]) ? $_POST["type"] : NULL;
 $_table = $_champ = NULL;
 $_id = isset($_POST["_id"]) ? $_POST["_id"] : NULL;
 $prefix = 'abs_';
+$prefix_c = 'Abs_';
+$_classe = NULL;
 $ajouter = $modifier = $effacer = NULL;
 $action = 'ajouter';
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("lib/erreurs.php");
 include("classes/activeRecordGepi.class.php");
+/* #@TODO A enlever
 include("classes/abs_gestion.class.php");
+# @TODO */
 
 
 try{
@@ -80,49 +84,83 @@ try{
   switch($type_req){
     case 'types':
     $_table = $prefix . $type_req;
+    $_classe = $prefix_c . substr($type_req, 0, -1);
     $_champ = 'type_absence';
       break;
     case 'motifs':
     $_table = $prefix . $type_req;
+    $_classe = $prefix_c . $type_req;
     $_champ = 'type_motif';
       break;
     case 'actions':
     $_table = $prefix . $type_req;
+    $_classe = $prefix_c . $type_req;
     $_champ = 'type_action';
       break;
     case 'justifications':
     $_table = $prefix . $type_req;
+    $_classe = $prefix_c . $type_req;
     $_champ = 'type_justification';
       break;
     default:
-      $_table = $_champ = NULL;
+      $_table = $_champ = $_classe = NULL;
   } // switch
 
+/*# @TODO : à enlever après avoir terminé l'utilisation de $action
   $test = new abs_gestion();
   $test->setChamps($_champ); // on donne le nom du champ de cette table (définie ci-dessous)
   $test->setTable($_table); // On choisit la bonne table
   $test->setEncodage("utf8"); // On précise l'encodage s'il est différent de l'ISO-8859-1
+# @TODO */
+
+  if ($_classe !== NULL){
+    include("classes/". $_table . ".class.php");
+  }
+  $action = ($_classe !== NULL) ? new $_classe : NULL; // On instancie la bonne classe si elle existe
 
   if ($type_req != $_id AND $action == 'ajouter') {
 
     // On est dans le cas d'une demande d'ajout dans la base
-    if ($test->_saveNew($_id)) {
+    $action->setChamp($_champ, $_id);
+    if ($action->save()) {
       $ajouter = 'ok';
     }else{
       $ajouter = 'no';
     }
 
+
+    /*# @TODO : A enlever
+    if ($test->_saveNew($_id)) {
+      $ajouter = 'ok';
+    }else{
+      $ajouter = 'no';
+    }
+    # @TODO*/
+
   }elseif($type_req != $_id AND $action == 'effacer'){
 
-    if ($test->_deleteById($del_id)) {
+    if ($action->_delete($del_id)) {
       $effacer = 'ok';
     }else{
       $effacer = 'no';
     }
 
+    /*# @TODO : à enlever
+    if ($test->_deleteById($del_id)) {
+      $effacer = 'ok';
+    }else{
+      $effacer = 'no';
+    }
+    # @TODO */
+
   }
 
+  $tout = $action->findAll(); // on liste toutes les entrées de la table $_table.
+
+  /* # @TODO à enlever
   $tout = $test->voirTout(); // on liste toutes les entrées de la table $_table.
+   # @TODO */
+
 
 /*
   echo '<pre>';

@@ -25,7 +25,7 @@
 
 
 /**
- * CLasse qui permet de gérer les motifs, les types, les justifications et lesactions possibles
+ * CLasse qui permet de gérer les motifs, les types, les justifications et les actions possibles
  *
  */
 class abs_gestion{
