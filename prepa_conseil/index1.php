@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -125,7 +125,7 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
-if (isset($_SESSION['chemin_retour'])) $retour = $_SESSION['chemin_retour'] ; else $retour = "index1.php";
+if (isset($_SESSION['chemin_retour'])) {$retour = $_SESSION['chemin_retour'];} else {$retour = "index1.php";}
 
 if ($en_tete!="yes"){
 	echo "<script type='text/javascript'>
@@ -133,6 +133,16 @@ if ($en_tete!="yes"){
 </script>\n";
 }
 
+if($_SESSION['statut']=='professeur'){
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// A FAIRE
+	// TEST: Est-ce que le PP a accès aux appréciations ?
+	//       Créer un droit dans Droits d'accès ?
+	if(getSettingValue("GepiAccesBulletinSimplePP")=='yes') {
+		$acces_pp="y";
+	}
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+}
 
 if (!$current_group) {
     unset($_SESSION['chemin_retour']);
@@ -162,10 +172,10 @@ if (!$current_group) {
 	$lignes = mysql_num_rows($appel_donnees);
 	//echo "\$lignes=$lignes<br />";
 
-	if($lignes==0){
+	if($lignes==0) {
 		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
-	else{
+	else {
 		$nb_class_par_colonne=round($lignes/3);
 		/*
 		echo "<table width='100%'>\n";
@@ -173,8 +183,10 @@ if (!$current_group) {
 			echo "<td>\n";
 		*/
 
+		echo "<table border='0'>\n";
+
 		$i = 0;
-		while($i < $lignes){
+		while($i < $lignes) {
 		/*
 		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 			echo "</td>\n";
@@ -187,30 +199,55 @@ if (!$current_group) {
 			$groups = get_groups_for_class($id_classe);
 			//echo "\$id_classe=$id_classe et count(\$groups)=".count($groups)."<br />";
 
-			foreach($groups as $group){
+			foreach($groups as $group) {
+				$temoin_pp="no";
 				$flag2 = "no";
 				//if ($_SESSION['statut']!='scolarite') {
 				// Seuls les comptes scolarite, professeur et secours ont accès à cette page.
 				if ($_SESSION['statut']=='professeur') {
 					$test = mysql_query("SELECT count(*) FROM j_groupes_professeurs
 					WHERE (id_groupe='" . $group["id"]."' and login = '" . $_SESSION["login"] . "')");
-					if (mysql_result($test, 0) == 1) $flag2 = 'yes';
+					if (mysql_result($test, 0) == 1) {$flag2 = 'yes';}
+
+					if($acces_pp=="y") {
+						$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.login=jep.login AND jec.id_classe=jep.id_classe AND jep.professeur='".$_SESSION['login']."' AND jec.id_classe='$id_classe';";
+						$test=mysql_query($sql);
+						if(mysql_num_rows($test)>0) {
+							$flag2 = 'yes';
+							$temoin_pp="yes";
+						}
+					}
 				} else {
 					$flag2 = 'yes';
 				}
 
 				if ($flag2 == "yes") {
 					$display_class = mysql_result($appel_donnees, $i, "classe");
-					echo "<span class='norme'>";
+					//echo "<span class='norme'>";
 					//if ($aff_class == 'no') {echo "<span class='norme'><b>$display_class</b> : ";$aff_class = 'yes';}
-					if ($aff_class == 'no') {echo "<b>$display_class</b> : ";$aff_class = 'yes';}
+					//if ($aff_class == 'no') {echo "<b>$display_class</b> : ";$aff_class = 'yes';}
 					//echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> - ";
 					//echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a></span> - \n";
 
+
+					if ($aff_class == 'no') {
+						echo "<tr>\n";
+						echo "<td valign='top'>\n";
+						echo "<span class='norme'>";
+						echo "<b>$display_class</b> : ";
+						echo "</span>";
+						echo "</td>\n";
+						echo "<td>\n";
+
+						$aff_class = 'yes';
+					}
+
+					echo "<span class='norme'>";
 					echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . " </a>\n";
 
 					// pas de nom si c'est un prof qui demande la page.
-					if ($_SESSION['statut']!='professeur') {
+					//if ($_SESSION['statut']!='professeur') {
+					if(($_SESSION['statut']!='professeur')||($temoin_pp=="yes")) {
 						$id_groupe_en_cours = $group["id"];
 						//recherche profs du groupe
 						$sql_prof_groupe = "SELECT jgp.login,u.nom,u.prenom FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$id_groupe_en_cours' AND u.login=jgp.login";
@@ -234,9 +271,11 @@ if (!$current_group) {
 				}
 			}
 			//if ($flag2 == 'yes') {echo "</span><br /><br />\n";}
-			if ($flag2 == 'yes') {echo "<br /><br />\n";}
+			//if ($flag2 == 'yes') {echo "<br /><br />\n";}
+			if ($flag2 == 'yes') {echo "</td></tr>\n";}
 			$i++;
 		}
+		echo "</table>\n";
 	}
         /*
 	echo "</td>\n";
@@ -246,7 +285,17 @@ if (!$current_group) {
 
 } else if (!isset($choix_visu)) {
     echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
-    if ((!(check_prof_groupe($_SESSION['login'],$id_groupe))) and ($_SESSION['statut']!='scolarite') and ($_SESSION['statut']!='secours')) {
+
+	$test_acces_pp="n";
+	if(($_SESSION['statut']=='professeur')&&($acces_pp=="y")) {
+		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_groupes jeg WHERE jeg.login=jep.login AND jep.professeur='".$_SESSION['login']."' AND jeg.id_groupe='$id_groupe';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$test_acces_pp="y";
+		}
+	}
+
+    if ((!(check_prof_groupe($_SESSION['login'],$id_groupe))) and ($_SESSION['statut']!='scolarite') and ($_SESSION['statut']!='secours') and ($test_acces_pp=="n")) {
         echo "<p>Vous n'êtes pas dans cette classe le professeur de la matière choisie !</p>\n";
         echo "<p><a href='index1.php'>Retour à l'accueil</a></p>\n";
         die();
@@ -313,6 +362,24 @@ if (!$current_group) {
     echo "<input type='hidden' name='choix_visu' value='yes' />\n";
     echo "</form>\n";
 } else {
+
+
+	$test_acces_pp="n";
+	if(($_SESSION['statut']=='professeur')&&($acces_pp=="y")) {
+		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_groupes jeg WHERE jeg.login=jep.login AND jep.professeur='".$_SESSION['login']."' AND jeg.id_groupe='$id_groupe';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$test_acces_pp="y";
+		}
+	}
+
+    if ((!(check_prof_groupe($_SESSION['login'],$id_groupe))) and ($_SESSION['statut']!='scolarite') and ($_SESSION['statut']!='secours') and ($test_acces_pp=="n")) {
+        echo "<p>Vous n'êtes pas dans cette classe le professeur de la matière choisie !</p>\n";
+        echo "<p><a href='index1.php'>Retour à l'accueil</a></p>\n";
+        die();
+    }
+
+
     $nombre_eleves = count($current_group["eleves"]["all"]["list"]);
 	//echo "\$nombre_eleves=$nombre_eleves<br />";
 
@@ -615,7 +682,7 @@ if (!$current_group) {
 							$string_notes .= $snnote['note'];
 							if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
 								$string_notes .= "/".$snnote['note_sur'];
-							}						
+							}
 						}
 					}
 					$app = str_replace('@@Notes', $string_notes,$app);
