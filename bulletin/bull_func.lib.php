@@ -1,5 +1,7 @@
 <?php
 
+/* $Id$ */
+
 include("../cahier_notes/visu_releve_notes_func.lib.php");
 
 function nbsp_au_lieu_de_vide($texte) {
