@@ -53,71 +53,80 @@ if (getSettingValue("active_carnets_notes")!='y') {
 if(isset($_POST['recopier'])){
 	$num_periode=$_POST['num_periode'];
 	$id_classe=$_POST['id_classe'];
-	$login=$_POST['login'];
-	$id_groupe=$_POST['id_groupe'];
-	$moy=$_POST['moy'];
-	//$coche=$_POST['coche'];
-	$coche=isset($_POST['coche']) ? $_POST['coche'] : NULL;
-	$cpt=$_POST['cpt'];
 
-	//echo "<p>Classe $id_classe sur période $num_periode<br />\n";
-	$nberr=0;
-	$nbsucces=0;
-	$msg="";
-	for($i=0;$i<$cpt;$i++){
-		if((isset($coche[$i]))&&($moy[$i]!='-')){
-			//echo "$login[$i] $id_groupe[$i] $moy[$i] <br />\n";
-			$sql="SELECT * FROM matieres_notes WHERE
-				login='$login[$i]' AND
-				id_groupe='$id_groupe[$i]' AND
-				periode='$num_periode'";
-			//echo "$sql<br />\n";
-			$res_test=mysql_query($sql);
-			if(mysql_num_rows($res_test)==0){
-				$sql="INSERT INTO matieres_notes SET
-					login='$login[$i]',
-					id_groupe='$id_groupe[$i]',
-					periode='$num_periode',
-					note=$moy[$i]";
-				//echo "$sql<br />\n";
-				$res_insert=mysql_query($sql);
-				if(!$res_insert){
-					$nberr++;
-				}
-				else{
-					$nbsucces++;
-				}
-			}
-			else{
-				$sql="UPDATE matieres_notes SET
-					note=$moy[$i] WHERE
+	// Vérification:
+	$sql="SELECT 1=1 FROM periodes WHERE num_periode='$num_periode' AND id_classe='$id_classe' AND verouiller='O';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		$msg="La période n°$num_periode est close.";
+	}
+	else {
+		$login=$_POST['login'];
+		$id_groupe=$_POST['id_groupe'];
+		$moy=$_POST['moy'];
+		//$coche=$_POST['coche'];
+		$coche=isset($_POST['coche']) ? $_POST['coche'] : NULL;
+		$cpt=$_POST['cpt'];
+
+		//echo "<p>Classe $id_classe sur période $num_periode<br />\n";
+		$nberr=0;
+		$nbsucces=0;
+		$msg="";
+		for($i=0;$i<$cpt;$i++){
+			if((isset($coche[$i]))&&($moy[$i]!='-')){
+				//echo "$login[$i] $id_groupe[$i] $moy[$i] <br />\n";
+				$sql="SELECT * FROM matieres_notes WHERE
 					login='$login[$i]' AND
 					id_groupe='$id_groupe[$i]' AND
 					periode='$num_periode'";
 				//echo "$sql<br />\n";
-				$res_update=mysql_query($sql);
-				if(!$res_update){
-					$nberr++;
+				$res_test=mysql_query($sql);
+				if(mysql_num_rows($res_test)==0){
+					$sql="INSERT INTO matieres_notes SET
+						login='$login[$i]',
+						id_groupe='$id_groupe[$i]',
+						periode='$num_periode',
+						note=$moy[$i]";
+					//echo "$sql<br />\n";
+					$res_insert=mysql_query($sql);
+					if(!$res_insert){
+						$nberr++;
+					}
+					else{
+						$nbsucces++;
+					}
 				}
 				else{
-					$nbsucces++;
+					$sql="UPDATE matieres_notes SET
+						note=$moy[$i] WHERE
+						login='$login[$i]' AND
+						id_groupe='$id_groupe[$i]' AND
+						periode='$num_periode'";
+					//echo "$sql<br />\n";
+					$res_update=mysql_query($sql);
+					if(!$res_update){
+						$nberr++;
+					}
+					else{
+						$nbsucces++;
+					}
 				}
 			}
 		}
-	}
-	unset($num_periode);
-	unset($id_classe);
-	unset($login);
-	unset($moy);
-	unset($coche);
-	unset($cpt);
-	//echo "</p>\n";
+		unset($num_periode);
+		unset($id_classe);
+		unset($login);
+		unset($moy);
+		unset($coche);
+		unset($cpt);
+		//echo "</p>\n";
 
-	if($nberr>0){
-		$msg="$nberr erreur(s) a(ont) eu lieu.<br />";
-	}
-	elseif($nbsucces>0){
-		$msg="$nbsucces enregistrement(s) effectué(s).<br />";
+		if($nberr>0){
+			$msg="$nberr erreur(s) a(ont) eu lieu.<br />";
+		}
+		elseif($nbsucces>0){
+			$msg="$nbsucces enregistrement(s) effectué(s).<br />";
+		}
 	}
 }
 
@@ -322,7 +331,8 @@ else{
 			*/
 			while($lig_per=mysql_fetch_object($res_per)){
 				//echo "<label for=''><input type='radio' name='num_periode' value='$lig_per->num_periode' /> $lig_per->nom_periode</label>\n";
-				if($lig_per->verouiller=='N'){
+				//if($lig_per->verouiller=='N'){
+				if($lig_per->verouiller!='O'){
 					echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;num_periode=$lig_per->num_periode'>$lig_per->nom_periode</a><br />\n";
 				}
 				else{
