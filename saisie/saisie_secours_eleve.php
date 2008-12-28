@@ -37,12 +37,12 @@ die();
 	die();
 }
 
-/*
+
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-*/
+
 if ($_SESSION['statut'] != "secours") {
 	$mess=rawurlencode("Vous n'avez pas accès à cette page !");
 	header("Location: index.php?msg=$mess");

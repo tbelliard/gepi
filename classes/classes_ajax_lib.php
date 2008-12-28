@@ -38,12 +38,12 @@ if ($resultat_session == 'c') {
 
 // SQL : INSERT INTO droits VALUES ( '/classes/classes_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajax', '');
 // maj : $tab_req[] = "INSERT INTO droits VALUES ( '/classes/classes_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajax', '');";
-/*
+
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
 }
-*/
+
 
 //$cpt=isset($_GET['cpt']) ? $_GET['cpt'] : NULL;
 $matiere=isset($_GET['matiere']) ? $_GET['matiere'] : NULL;
