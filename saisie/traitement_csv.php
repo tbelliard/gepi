@@ -65,6 +65,18 @@ $titre_page = "Saisie des moyennes et appréciations | Importation";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a>";
+
+if((($_SESSION['statut']!='secours')&&($current_group["classe"]["ver_periode"]['all'][$periode_num]<2))||
+(($_SESSION['statut']=='secours')&&($current_group["classe"]["ver_periode"]['all'][$periode_num]==0))) {
+	echo "<p class = 'grand'>Importation de moyennes et appréciations - $nom_periode[$periode_num]</p>";
+	echo "<p class = 'bold'>Groupe : " . $current_group["description"] . " " . $current_group["classlist_string"] . " | Matière : " . $current_group["matiere"]["nom_complet"]."</p>\n";
+
+	echo "<p>La période est close.</p>\n";
+	require("../lib/footer.inc.php");
+	die();
+}
+
+
 //====================================
 if($_SESSION['statut']=='professeur'){
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
@@ -142,73 +154,86 @@ for ($row=1; $row<$nb_row; $row++) {
         $reg_app = '';
     }
 
-    $call_login = mysql_query("SELECT * FROM eleves WHERE login='$reg_login'");
+	$temoin_periode_close="n";
+
+    $call_login = mysql_query("SELECT * FROM eleves WHERE login='$reg_login';");
     $test = mysql_num_rows($call_login);
     if ($test != 0) {
         //
         // Si l'élève ne suit pas l'enseignement, échec
         //
         if (in_array($reg_login, $current_group["eleves"][$periode_num]["list"]))  {
-            $reg_note_min = strtolower($reg_note);
-            if (ereg ("^[0-9\.\,]{1,}$", $reg_note)) {
-                $reg_note = str_replace(",", ".", "$reg_note");
-                //$test_num = settype($reg_note,"double");
-                if (($reg_note >= 0) and ($reg_note <= 20)) {
-                    $elev_statut = '';
-                } else {
-                    $reg_note = '0';
-                    $elev_statut = '-';
-                }
-            } elseif ($reg_note_min == '-') {
-                $reg_note = '0';
-                $elev_statut = '-';
-            } elseif ($reg_note_min == "disp") {
-                $reg_note = '0';
-                $elev_statut = 'disp';
-            } elseif ($reg_note_min == "abs") {
-                $reg_note = '0';
-                $elev_statut = 'abs';
-            } elseif ($reg_note == "") {
-                $enregistrement_note = 'no';
-            } else {
-                $reg_note = '0';
-                $elev_statut = '-';
-            }
+			$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$periode_num]["users"][$reg_login]["classe"]]["id"];
+			if (($current_group["classe"]["ver_periode"][$eleve_id_classe][$periode_num]=="N")||
+			(($current_group["classe"]["ver_periode"][$eleve_id_classe][$periode_num]!="O")&&($_SESSION['statut']=='secours'))) {
+				$reg_note_min = strtolower($reg_note);
+				if (ereg ("^[0-9\.\,]{1,}$", $reg_note)) {
+					$reg_note = str_replace(",", ".", "$reg_note");
+					//$test_num = settype($reg_note,"double");
+					if (($reg_note >= 0) and ($reg_note <= 20)) {
+						$elev_statut = '';
+					} else {
+						$reg_note = '0';
+						$elev_statut = '-';
+					}
+				} elseif ($reg_note_min == '-') {
+					$reg_note = '0';
+					$elev_statut = '-';
+				} elseif ($reg_note_min == "disp") {
+					$reg_note = '0';
+					$elev_statut = 'disp';
+				} elseif ($reg_note_min == "abs") {
+					$reg_note = '0';
+					$elev_statut = 'abs';
+				} elseif ($reg_note == "") {
+					$enregistrement_note = 'no';
+				} else {
+					$reg_note = '0';
+					$elev_statut = '-';
+				}
 
-            if ($enregistrement_note != "no") {
-                $test_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
-                $test = mysql_num_rows($test_eleve_note_query);
-                if ($test != "0") {
-                    $reg_data1 = mysql_query("UPDATE matieres_notes SET note='$reg_note',statut='$elev_statut', rang='0' WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
-                    $modif = 'yes';
-                } else {
-                    $reg_data1 = mysql_query("INSERT INTO matieres_notes SET login='$reg_login', id_groupe='" . $id_groupe . "',periode='$periode_num',note='$reg_note',statut='$elev_statut', rang='0'");
-                    $modif = 'yes';
-                }
-            } else {
-                $reg_data1 ='ok';
-            }
+				if ($enregistrement_note != "no") {
+					$test_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
+					$test = mysql_num_rows($test_eleve_note_query);
+					if ($test != "0") {
+						$reg_data1 = mysql_query("UPDATE matieres_notes SET note='$reg_note',statut='$elev_statut', rang='0' WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
+						$modif = 'yes';
+					} else {
+						$reg_data1 = mysql_query("INSERT INTO matieres_notes SET login='$reg_login', id_groupe='" . $id_groupe . "',periode='$periode_num',note='$reg_note',statut='$elev_statut', rang='0'");
+						$modif = 'yes';
+					}
+				} else {
+					$reg_data1 ='ok';
+				}
 
-            if ($reg_app != "") {
-                $test_eleve_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
-                $test = mysql_num_rows($test_eleve_app_query);
-                if ($test != 0) {
-                    $reg_data2 = mysql_query("UPDATE matieres_appreciations SET appreciation='" . $reg_app . "' WHERE (login='$reg_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$periode_num')");
-                } else {
-                    $reg_data2 = mysql_query("INSERT INTO matieres_appreciations set login = '" . $reg_login . "', id_groupe = '" . $id_groupe . "', periode = '" . $periode_num . "', appreciation = '" . $reg_app . "'");
-                    echo mysql_error();
-                }
-            } else {
-                $reg_data2 = 'ok';
-            }
-
+				if ($reg_app != "") {
+					$test_eleve_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
+					$test = mysql_num_rows($test_eleve_app_query);
+					if ($test != 0) {
+						$reg_data2 = mysql_query("UPDATE matieres_appreciations SET appreciation='" . $reg_app . "' WHERE (login='$reg_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$periode_num')");
+					} else {
+						$reg_data2 = mysql_query("INSERT INTO matieres_appreciations set login = '" . $reg_login . "', id_groupe = '" . $id_groupe . "', periode = '" . $periode_num . "', appreciation = '" . $reg_app . "'");
+						echo mysql_error();
+					}
+				} else {
+					$reg_data2 = 'ok';
+				}
+			}
+			else {
+				$temoin_periode_close="y";
+			}
         }
     }
-    if ((!$reg_data1) or (!$reg_data2)) {
-        echo "<font color=red>Erreur lors de la modification de données de l'utilisateur $reg_login !</font><br />";
-    } else {
-        echo "Les données de l'utilisateur $reg_login ont été modifiées avec succès !<br />";
-    }
+	if($temoin_periode_close=="y") {
+		echo "<font color='red'>La période est close pour l'utilisateur $reg_login !</font><br />\n";
+	}
+	else {
+		if ((!$reg_data1) or (!$reg_data2)) {
+				echo "<font color='red'>Erreur lors de la modification de données de l'utilisateur $reg_login !</font><br />\n";
+		} else {
+			echo "Les données de l'utilisateur $reg_login ont été modifiées avec succès !<br />\n";
+		}
+	}
 }
 
 // on indique que qu'il faut le cas échéant procéder à un recalcul du rang des élèves
