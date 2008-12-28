@@ -140,10 +140,18 @@ $total_coef_cat_classe = array();
 $total_coef_cat_eleve = array();
 
 $i=0;
-$get_cat = mysql_query("SELECT id FROM matieres_categories");
+//$get_cat = mysql_query("SELECT id FROM matieres_categories");
+$get_cat = mysql_query("SELECT id,nom_complet FROM matieres_categories");
 $categories = array();
+$tab_noms_categories = array();
+$tab_id_categories = array();
 while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
-  	$categories[] = $row["id"];
+	$categories[] = $row["id"];
+	$tab_noms_categories[$row["id"]]=$row["nom_complet"];
+	$tab_id_categories[$row["nom_complet"]]=$row["id"];
+
+	//echo "\$tab_noms_categories[".$row["id"]."]=".$row["nom_complet"]."<br />";
+	//echo "\$tab_id_categories[".$row["nom_complet"]."]=".$row["id"]."<br />";
 }
 
 //echo "\$nombre_eleves=$nombre_eleves<br />";
@@ -669,13 +677,17 @@ foreach($categories as $cat) {
 //Ajout Eric pour avoir les moyennes générales minimum et maximum sur les bulletins
 
 //$moy_min_classe = min($moy_gen_eleve);
-$moy_min_classe=20;
+//$moy_min_classe=20;
+$moy_min_classe=21;
 for ( $i=0 ; $i < sizeof($moy_gen_eleve) ; $i++ ) {
 	if($moy_gen_eleve[$i]!="-"){
 		if($moy_gen_eleve[$i]<$moy_min_classe){
 			$moy_min_classe=$moy_gen_eleve[$i];
 		}
 	}
+}
+if($moy_min_classe==21) {
+	$moy_min_classe="-";
 }
 
 //$moy_min_classe = number_format($moy_min_classe,1, ',', ' ');
