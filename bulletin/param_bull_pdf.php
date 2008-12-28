@@ -63,6 +63,13 @@ if (isset($_POST['option_modele_bulletin'])) {
 	}
 }
 
+//=========================
+// AJOUT: boireaus 20081224
+if(isset($_POST['valide_modif_model'])) {
+	$affiche_nom_etab=isset($_POST['affiche_nom_etab']) ? $_POST['affiche_nom_etab'] : 0;
+	$affiche_adresse_etab=isset($_POST['affiche_adresse_etab']) ? $_POST['affiche_adresse_etab'] : 0;
+}
+//=========================
 //===================================================
 // Christian renvoye vers le fichier PDF bulletin
 	if (empty($_GET['classe']) and empty($_POST['classe'])) {$classe="";}
@@ -1054,9 +1061,32 @@ function DecocheCheckbox() {
 			<tr>
 			<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
 				<div style="font-weight: bold; background: #CFCFCF;">Cadre information établissement</div>
+
+			<?php
+				// AJOUT: boireaus 20081224
+				// Afficher le nom de l'établissement
+				echo "<input name='affiche_nom_etab' id='affiche_nom_etab' style='border: 1px solid #74748F;' type='checkbox' value='1' ";
+				//if(!empty($affiche_nom_etab) and $affiche_nom_etab==='1') {
+				if((!isset($affiche_nom_etab))||($affiche_nom_etab!='0')) {
+					echo "checked='checked'";
+				}
+				echo "/>&nbsp;<label for='affiche_nom_etab' style='cursor: pointer;'>Afficher le nom de l'établissement</label><br />\n";
+
+				// Afficher l'adresse de l'établissement
+				echo "<input name='affiche_adresse_etab' id='affiche_adresse_etab' style='border: 1px solid #74748F;' type='checkbox' value='1' ";
+				//if(!empty($affiche_adresse_etab) and $affiche_adresse_etab==='1') {
+				if((!isset($affiche_adresse_etab))||($affiche_adresse_etab!='0')) {
+					echo "checked='checked'";
+				}
+				echo "/>&nbsp;<label for='affiche_adresse_etab' style='cursor: pointer;'>Afficher l'adresse de l'établissement</label><br />\n";
+
+			?>
+
 			<input name="nom_etab_gras" id="nom_etab_gras" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($nom_etab_gras) and $nom_etab_gras==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="nom_etab_gras" style="cursor: pointer;">Nom de l'établissement en gras</label><br />
-			<input name="affiche_filigrame" id="filigrame" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_filigrame) and $affiche_filigrame==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="filigrame" style="cursor: pointer;">Filigramme</label><br />
-			&nbsp;&nbsp;&nbsp;&nbsp;<label for="text_fili" style="cursor: pointer;">texte du filigrame</label>&nbsp;<input name="texte_filigrame" id="text_fili" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($texte_filigrame)) { ?>value="<?php echo $texte_filigrame; ?>" <?php } ?> /><br />
+
+			<input name="affiche_filigrame" id="filigrame" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_filigrame) and $affiche_filigrame==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="filigrame" style="cursor: pointer;">Filigrane</label><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;<label for="text_fili" style="cursor: pointer;">texte du filigrane</label>&nbsp;<input name="texte_filigrame" id="text_fili" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($texte_filigrame)) { ?>value="<?php echo $texte_filigrame; ?>" <?php } ?> /><br />
+
 			<input name="entente_tel" id="telephone" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($entente_tel) and $entente_tel==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="telephone" style="cursor: pointer;">Téléphone</label><br />
 			&nbsp;&nbsp;&nbsp;Texte&nbsp;<input name="tel_texte" size="4" style="border: 1px solid #74748F;" type="text" <?php if(!empty($tel_texte)) { ?>value="<?php echo $tel_texte; ?>" <?php } ?> /> ou
 			<input name="tel_image" id="tel_image_1" value="tel1" type="radio" <?php if(!empty($tel_image) and $tel_image==='tel1') { ?>checked="checked"<?php } ?> /><label for="tel_image_1" style="cursor: pointer;"><img src="../images/imabulle/tel1.jpg" style="width: 6.5px; height: 15.5px; border: 0px" alt="" title="" /></label>

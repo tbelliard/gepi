@@ -1281,9 +1281,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		// Bloc identification etablissement
 		$logo = '../images/'.getSettingValue('logo_etab');
-		$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
+		$format_du_logo = strtolower(str_replace('.','',strstr(getSettingValue('logo_etab'), '.')));
 
 		// Logo
+		//if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 		if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 		{
 			$valeur=redimensionne_image($logo, $tab_modele_pdf["L_max_logo"][$classe_id], $tab_modele_pdf["H_max_logo"][$classe_id]);
@@ -1308,6 +1309,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
 		}
 
+		//$pdf->SetXY(100,5);
+		//$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+		//$pdf->Cell(90,7, "\$format_du_logo=$format_du_logo",0,2,'');
+
 		//=========================================
 
 		// Adresse établissement
@@ -1318,22 +1323,34 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		$pdf->SetXY($X_etab,$Y_etab);
 		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',14);
 
-		// mettre en gras le nom de l'établissement si $nom_etab_gras = 1
-		if ( $tab_modele_pdf["nom_etab_gras"][$classe_id] === '1' ) {
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',14);
+		//=========================
+		// AJOUT: boireaus 20081224
+		//        Ajout du test $tab_modele_pdf["affiche_nom_etab"][$classe_id] et $tab_modele_pdf["affiche_adresse_etab"][$classe_id]
+		//=========================
+		//$tab_modele_pdf["affiche_nom_etab"][$classe_id]=0;
+		if(((isset($tab_modele_pdf["affiche_nom_etab"][$classe_id]))&&($tab_modele_pdf["affiche_nom_etab"][$classe_id]!="0"))||
+			(!isset($tab_modele_pdf["affiche_nom_etab"][$classe_id]))) {
+			// mettre en gras le nom de l'établissement si $nom_etab_gras = 1
+			if ( $tab_modele_pdf["nom_etab_gras"][$classe_id] === '1' ) {
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',14);
+			}
+			$pdf->Cell(90,7, traite_accents_utf8($gepiSchoolName),0,2,'');
 		}
-		$pdf->Cell(90,7, traite_accents_utf8($gepiSchoolName),0,2,'');
 
-		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+		//$tab_modele_pdf["affiche_adresse_etab"][$classe_id]=0;
+		if(((isset($tab_modele_pdf["affiche_adresse_etab"][$classe_id]))&&($tab_modele_pdf["affiche_adresse_etab"][$classe_id]!="0"))||
+			(!isset($tab_modele_pdf["affiche_adresse_etab"][$classe_id]))) {
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 
-		if ( $gepiSchoolAdress1 != '' ) {
-			$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress1),0,2,'');
+			if ( $gepiSchoolAdress1 != '' ) {
+				$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress1),0,2,'');
+			}
+			if ( $gepiSchoolAdress2 != '' ) {
+				$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress2),0,2,'');
+			}
+
+			$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
 		}
-		if ( $gepiSchoolAdress2 != '' ) {
-			$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress2),0,2,'');
-		}
-
-		$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
 
 		$passealaligne = '0';
 		// entête téléphone

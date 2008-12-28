@@ -149,6 +149,12 @@
 	$champ_bull_pdf[]="affiche_date_edition";
 	$champ_bull_pdf[]="affiche_ine";
 
+	//=========================
+	// AJOUT: boireaus 20081224
+	$champ_bull_pdf[]="affiche_nom_etab";
+	$champ_bull_pdf[]="affiche_adresse_etab";
+	//=========================
+
 	/*
 		mysql> show fields from modele_bulletin;
 		+--------------------+--------------+------+-----+---------+-------+
@@ -312,6 +318,12 @@
 	$val_defaut_champ_bull_pdf["affiche_moyenne_maxi_general"]=1;
 	$val_defaut_champ_bull_pdf["affiche_date_edition"]=1;
 	$val_defaut_champ_bull_pdf["affiche_ine"]=0;
+
+	//=========================
+	// AJOUT: boireaus 20081224
+	$val_defaut_champ_bull_pdf["affiche_nom_etab"]=1;
+	$val_defaut_champ_bull_pdf["affiche_adresse_etab"]=1;
+	//=========================
 
 
 	for($loop_champs=0;$loop_champs<count($champ_bull_pdf);$loop_champs++) {
