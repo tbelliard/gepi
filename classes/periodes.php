@@ -172,7 +172,6 @@ if(mysql_num_rows($res_class_tmp)>0){
 }
 // =================================
 
-
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Gestion des classes - Gestion des périodes";
@@ -222,11 +221,30 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 // AJOUT: boireaus 20081224
 $titre="Navigation";
 $texte="";
+
 //$texte.="<img src='../images/icons/date.png' alt='' /> <a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Périodes</a><br />";
 $texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elèves</a><br />";
 $texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignements</a><br />";
 $texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiée</a><br />";
 $texte.="<img src='../images/icons/configure.png' alt='' /> <a href='modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramètres</a>";
+
+$ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
+
+if($ouvrir_infobulle_nav=="y") {
+	$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;'><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/vert.png' width='16' height='16' /></a></div>\n";
+}
+else {
+	$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;'><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/rouge.png' width='16' height='16' /></a></div>\n";
+}
+
+$texte.="<script type='text/javascript'>
+	// <![CDATA[
+	function modif_mode_infobulle_nav() {
+		new Ajax.Updater($('save_mode_nav'),'classes_ajax_lib.php?mode=ouvrir_infobulle_nav',{method: 'get'});
+	}
+	//]]>
+</script>\n";
+
 $tabdiv_infobulle[]=creer_div_infobulle('navigation_classe',$titre,"",$texte,"",14,0,'y','y','n','n');
 
 echo " | <a href='#' onclick=\"afficher_div('navigation_classe','y',-100,20);\"";
@@ -237,6 +255,7 @@ echo "</a>";
 
 echo "</p>\n";
 echo "</form>\n";
+
 ?>
 
 <form enctype="multipart/form-data" method="post" action="periodes.php">
@@ -307,4 +326,14 @@ if ($test_periode == 0) {
 <input type='hidden' name='is_posted' value="yes" />
 <input type='hidden' name='id_classe' value='<?php echo $id_classe; ?>' />
 </form>
-<?php require("../lib/footer.inc.php");?>
+<?php
+
+if($ouvrir_infobulle_nav=='y') {
+	echo "<script type='text/javascript'>
+	setTimeout(\"afficher_div('navigation_classe','y',-100,20);\",1000)
+</script>\n";
+}
+
+require("../lib/footer.inc.php");
+
+?>

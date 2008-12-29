@@ -45,31 +45,47 @@ if (!checkAccess()) {
 }
 
 
-//$cpt=isset($_GET['cpt']) ? $_GET['cpt'] : NULL;
-$matiere=isset($_GET['matiere']) ? $_GET['matiere'] : NULL;
-$matiere=ereg_replace("[^A-Za-z0-9_.-]","",$matiere);
+$mode=isset($_GET['mode']) ? $_GET['mode'] : NULL;
 
-if(isset($matiere)) {
-	if($matiere=="") {
-		echo "Pas de mati&egrave;re s&eacute;lectionn&eacute;e.";
+if($mode=='classes_param') {
+	//$cpt=isset($_GET['cpt']) ? $_GET['cpt'] : NULL;
+	$matiere=isset($_GET['matiere']) ? $_GET['matiere'] : NULL;
+	$matiere=ereg_replace("[^A-Za-z0-9_.-]","",$matiere);
+
+	if(isset($matiere)) {
+		if($matiere=="") {
+			echo "Pas de mati&egrave;re s&eacute;lectionn&eacute;e.";
+		}
+		else {
+			$sql="SELECT u.login,u.nom,u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND id_matiere='$matiere' ORDER BY u.nom,u.prenom;";
+			//echo "$sql<br />";
+			$res_prof=mysql_query($sql);
+
+			echo "<select name='professeur_nouvel_enseignement'>\n";
+			//echo "<option value=''>---</option>\n";
+			if(mysql_num_rows($res_prof)>0) {
+				while($lig_prof=mysql_fetch_object($res_prof)) {
+					echo "<option value='$lig_prof->login'>".strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom))."</option>\n";
+				}
+			}
+			echo "</select>\n";
+		}
 	}
 	else {
-		$sql="SELECT u.login,u.nom,u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND id_matiere='$matiere' ORDER BY u.nom,u.prenom;";
-		//echo "$sql<br />";
-		$res_prof=mysql_query($sql);
-
-		echo "<select name='professeur_nouvel_enseignement'>\n";
-		//echo "<option value=''>---</option>\n";
-		if(mysql_num_rows($res_prof)>0) {
-			while($lig_prof=mysql_fetch_object($res_prof)) {
-				echo "<option value='$lig_prof->login'>".strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom))."</option>\n";
-			}
-		}
-		echo "</select>\n";
+		echo "La variable \$matiere n'est pas d&eacute;finie.";
 	}
 }
-else {
-	echo "La variable \$matiere n'est pas d&eacute;finie.";
+
+if($mode=='ouvrir_infobulle_nav') {
+	$ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
+	if($ouvrir_infobulle_nav=='y') {
+		saveSetting("ouvrir_infobulle_nav", 'n');
+		echo "<a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/rouge.png' width='16' height='16' /></a>\n";
+	}
+	else {
+		saveSetting("ouvrir_infobulle_nav", 'y');
+		echo "<a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/vert.png' width='16' height='16' /></a>\n";
+	}
 }
 
 ?>

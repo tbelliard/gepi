@@ -595,7 +595,7 @@ while ($per < $max_periode) {
 				// <![CDATA[
 				function maj_prof_enseignement() {
 					matiere=document.getElementById('matiere_nouvel_enseignement').value;
-					new Ajax.Updater($('td_prof_nouvel_enseignement'),'classes_ajax_lib.php?matiere='+matiere,{method: 'get'});
+					new Ajax.Updater($('td_prof_nouvel_enseignement'),'classes_ajax_lib.php?mode=classes_param&matiere='+matiere,{method: 'get'});
 				}
 				//]]>
 			</script>\n";

@@ -306,6 +306,24 @@ $texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='../classes/
 $texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignements</a><br />";
 //$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiée</a><br />";
 $texte.="<img src='../images/icons/configure.png' alt='' /> <a href='../classes/modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramètres</a>";
+
+$ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
+
+if($ouvrir_infobulle_nav=="y") {
+	$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;'><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/vert.png' width='16' height='16' /></a></div>\n";
+}
+else {
+	$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;'><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/rouge.png' width='16' height='16' /></a></div>\n";
+}
+
+$texte.="<script type='text/javascript'>
+	// <![CDATA[
+	function modif_mode_infobulle_nav() {
+		new Ajax.Updater($('save_mode_nav'),'classes_ajax_lib.php?mode=ouvrir_infobulle_nav',{method: 'get'});
+	}
+	//]]>
+</script>\n";
+
 $tabdiv_infobulle[]=creer_div_infobulle('navigation_classe',$titre,"",$texte,"",14,0,'y','y','n','n');
 
 echo " | <a href='#' onclick=\"afficher_div('navigation_classe','y',-100,20);\"";
@@ -504,5 +522,13 @@ foreach($current_group["profs"]["list"] as $prof) {
 	$first = false;
 }
 */
+
+if($ouvrir_infobulle_nav=='y') {
+	echo "<script type='text/javascript'>
+	setTimeout(\"afficher_div('navigation_classe','y',-100,20);\",1000)
+</script>\n";
+}
+
 require("../lib/footer.inc.php");
+
 ?>
