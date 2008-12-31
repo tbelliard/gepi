@@ -260,6 +260,23 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_admin/modify_type_doc.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des cahier de texte', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte/index.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
     $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte/traite_doc.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/index.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_edition_compte_rendu.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_duplication_compte_rendu.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_affichage_duplication_devoir.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_duplication_devoir.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_affichage_duplication_compte_rendu.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_suppression_compte_rendu.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_enregistrement_compte_rendu.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_edition_devoir.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_suppression_devoir.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_suppression_document.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_suppression_devoir_document.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_enregistrement_devoir.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_affichages_liste_notices.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/ajax_affichage_dernieres_notices.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/traite_doc.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/exportcsv.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
     $tab_req[] = "INSERT INTO droits VALUES ('/classes/classes_ajout.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/classes/classes_const.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/classes/cpe_resp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Affectation des CPE aux classes', '');";
@@ -7502,6 +7519,32 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
         } else {
             $result .= "<font color=\"blue\">La table absences_repas existe déjà</font><br />";
         }
+
+	//module cahier de texte 2
+    $test = sql_query1("SHOW TABLES LIKE 'ct_devoirs_documents'");
+    if ($test == -1) {
+		$sql="CREATE TABLE ct_devoirs_documents
+		(
+			id INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Id document',
+			id_ct_devoir INTEGER default 0 NOT NULL COMMENT 'Id devoir du cahier de texte',
+			titre VARCHAR(255)  NOT NULL COMMENT 'titre du document',
+			taille INTEGER default 0 NOT NULL COMMENT 'Taille du document',
+			emplacement VARCHAR(255)  NOT NULL COMMENT 'chemin vers le document',
+			PRIMARY KEY (id),
+			INDEX ct_devoirs_documents_FI_1 (id_ct_devoir)
+		);";
+	}
+
+        $result_inter = traite_requete($sql);
+        if ($result_inter != '') {
+            $result .= "<br />Erreur sur la création de la table 'ct_devoirs_documents': ".$result_inter."<br />";
+        }
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiCahierTexteVersion'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiCahierTexteVersion', '1');");
+	//fin module cahier texte 2
 
 	//------------------------------------------------------------------------
 	// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion

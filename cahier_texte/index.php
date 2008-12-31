@@ -34,6 +34,10 @@ require_once("../lib/transform_functions.php");
 require_once("../public/lib/functions.inc");
 include("../fckeditor/fckeditor.php") ;
 
+if (getSettingValue("GepiCahierTexteVersion") == '2') {
+    header("Location: ../cahier_texte_2/index.php");
+    die();
+}
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {

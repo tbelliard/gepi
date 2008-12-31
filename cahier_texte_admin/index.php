@@ -41,6 +41,11 @@ if (!checkAccess()) {
 if (isset($_POST['activer'])) {
     if (!saveSetting("active_cahiers_texte", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 }
+
+if (isset($_POST['version'])) {
+    if (!saveSetting("GepiCahierTexteVersion", $_POST['version'])) $msg = "Erreur lors de l'enregistrement du numero de version du cahier de texte !";
+}
+
 if (isset($_POST['cahiers_texte_login_pub'])) {
     $mdp = $_POST['cahiers_texte_passwd_pub'];
     $user_ct = $_POST['cahiers_texte_login_pub'];
@@ -111,7 +116,17 @@ if (isset($_POST['delai_devoirs'])) {
 <label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_cahiers_texte")=='y') echo " checked='checked'"; ?> />
 &nbsp;Activer les cahiers de textes (consultation et édition)</label><br />
 <label for='activer_n' style='cursor: pointer;'><input type="radio" name="activer" id="activer_n" value="n" <?php if (getSettingValue("active_cahiers_texte")=='n') echo " checked='checked'"; ?> />
-&nbsp;Désactiver les cahiers de textes (consultation et édition)</label>
+
+&nbsp;Désactiver les cahiers de textes (consultation et édition)</label><br />
+<h2>Version des cahiers de textes</h2>
+<p style="font-style: italic;">La version 2 du cahier de texte necessite php 5.2.x minimum</p>
+	<label for='version_1' style='cursor: pointer;'>
+	<input type="radio" name="version" id="version_1" value="1" <?php if (getSettingValue("GepiCahierTexteVersion")=='1') echo " checked='checked'"; ?> />
+&nbsp;Cahier de texte version 1</label><br />
+	<label for='version_2' style='cursor: pointer;'>
+	<input type="radio" name="version" id="version_2" value="2" <?php if (getSettingValue("GepiCahierTexteVersion")=='2') echo " checked='checked'"; ?> />
+&nbsp;Cahier de texte version 2</label><br />
+
 <h2>Début et fin des cahiers de textes</h2>
 <i>Seules les rubriques dont la date est comprise entre la date de début et la date de fin des cahiers de textes sont visibles dans
 l'interface de consultation publique.
