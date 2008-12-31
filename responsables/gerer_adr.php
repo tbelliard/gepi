@@ -120,7 +120,7 @@ if(!getSettingValue('conv_new_resp_table')){
 }
 
 ?>
-<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="dedoublonnage_adresses.php">Dédoublonner les adresses</a></p>
 
 <?php
 	//debug_var();
@@ -143,7 +143,7 @@ if(!getSettingValue('conv_new_resp_table')){
 		$nb_adr=20;
 	}
 	$num_premier_adr_rech=isset($_POST['num_premier_adr_rech']) ? $_POST['num_premier_adr_rech'] : 0;
-	if(strlen(ereg_replace("[0-9]","",$num_premier_adr_rech))!=0) {
+	if((strlen(ereg_replace("[0-9]","",$num_premier_adr_rech))!=0)||($num_premier_adr_rech=="")) {
 		$num_premier_adr_rech=0;
 	}
 
