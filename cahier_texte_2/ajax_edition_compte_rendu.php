@@ -90,7 +90,7 @@ if ($id_ct != null) {
 		$criteria->add(JGroupesProfesseursPeer::ID_GROUPE, $groupe->getId(), "=");
 		if (count($utilisateur->getJGroupesProfesseurss($criteria)) == 0) {
 			//header("Location: ../logout.php?auto=1");
-			echo "le groupe n'appartient pas au professeur"; 
+			echo "le groupe n'appartient pas au professeur";
 			die();
 		}
 	}
@@ -101,7 +101,7 @@ if ($id_ct != null) {
 		$criteria->add(CtCompteRenduPeer::DATE_CT, $today, '=');
 		$criteria->add(CtCompteRenduPeer::ID_LOGIN, $utilisateur->getLogin());
 		$ctCompteRendus = $groupe->getCtCompteRendus($criteria);
-		$ctCompteRendu = $ctCompteRendus[0];
+		$ctCompteRendu = isset($ctCompteRendus[0]) ? $ctCompteRendus[0] : NULL;
 	}
 	if ($ctCompteRendu == null) {
 		//pas de notices, on initialise un nouvel objet
@@ -133,7 +133,7 @@ if ($ctCompteRendu->getDateCt() == null) {
 echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 			id_groupe = (\$A($('id_groupe_colonne_droite').options).find(function(option) { return option.selected; }).value);
 			getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?today=".$today."&id_groupe=' + id_groupe,
-      			{ onComplete: 
+      			{ onComplete:
       				function(transport) {
       					getWinEditionNotice().updateWidth();
       				}
@@ -159,8 +159,8 @@ echo "</select>&nbsp;&nbsp;";
 //fin affichage des groupes
 
 echo "<button style='background-color:".$color_fond_notices['t']."' onclick=\"javascript:
-						getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe='+ id_groupe + '&today='+getCalendarUnixDate(), 
-							{ onComplete: 
+						getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe='+ id_groupe + '&today='+getCalendarUnixDate(),
+							{ onComplete:
 								function(transport) {
 									new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
 								}
@@ -181,10 +181,10 @@ if (isset($info)) {
 	echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Compte rendu - ".$groupe->getNameAvecClasses();
 }
 if (!$ctCompteRendu->isNew() || isset($info)) {
-	echo " - <b><font color=\"red\">Modification de la notice</font></b> - 
+	echo " - <b><font color=\"red\">Modification de la notice</font></b> -
 			<a href=\"#\" onclick=\"javascript:
 				getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_groupe=".$groupe->getId()."&today=".$ctCompteRendu->getDateCt()."&ajout_nouvelle_notice=oui',
-					{ onComplete: 
+					{ onComplete:
 						function(transport) {
 							getWinEditionNotice().updateWidth();
 						}
@@ -197,7 +197,7 @@ if (!$ctCompteRendu->isNew() || isset($info)) {
 			</a> - ";
 	echo "<a href=\"#\" onclick=\"javascript:
 				new Ajax.Updater($('dupplication_notice'), 'ajax_affichage_duplication_compte_rendu.php?id_ct=".$ctCompteRendu->getIdCt()."&today=".$today."',
-					{ onComplete: 
+					{ onComplete:
 						function() {";
 	if (!isset($info)) {
 		//on affiche le calendrier de duplication uniquement si ce n'est pas une notice d'information generale
@@ -242,7 +242,7 @@ if (isset($info)) {
 
 //si on vient d'efftuer un enregistrement, le label du bonton enregistrer devient Succès
 $label_enregistrer = "Enregistrer";
-if ($succes_modification == oui) $label_enregistrer='Succès';
+if ($succes_modification == 'oui') $label_enregistrer='Succès';
 ?>
 <table border="0" width="100%" summary="Tableau de saisie de notice">
 	<tr>
@@ -279,7 +279,7 @@ if ($succes_modification == oui) $label_enregistrer='Succès';
 		$oFCKeditor->ToolbarSet = 'Basic' ;
 		$oFCKeditor->Value = $ctCompteRendu->getContenu() ;
 		$oFCKeditor->Create() ;
-		
+
 		//// gestion des fichiers attaché
 		echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">';
 		echo "<b>Fichier(s) attaché(s) : </b><br />";

@@ -56,8 +56,8 @@ class Groupe extends BaseGroupe {
 	 *
 	 */
 	public function getDescriptionAvecClasses() {
-		if ($descriptionAvecClasses != null) {
-			return $descriptionAvecClasses;
+		if (Groupe::$descriptionAvecClasses != null) {
+			return Groupe::$descriptionAvecClasses;
 		} else {
 			$str = $this->getDescription();
 			$str .= "&nbsp;(";
@@ -76,8 +76,8 @@ class Groupe extends BaseGroupe {
 	 *
 	 */
 	public function getNameAvecClasses() {
-		if ($nameAvecClasses != null) {
-			return $nameAvecClasses;
+		if (Groupe::$nameAvecClasses != null) {
+			return Groupe::$nameAvecClasses;
 		} else {
 			$str = $this->getName();
 			$str .= "&nbsp;-&nbsp;(";

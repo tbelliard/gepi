@@ -44,8 +44,8 @@ if ($ctTravailAFaire == null) {
 echo "<form enctype=\"multipart/form-data\" name=\"duplication_devoir_form\" id=\"duplication_devoir_form\" action=\"ajax_duplication_devoir.php\" method=\"post\" onsubmit=\"return true\">\n";
 echo "<input type='hidden' name='id_ct' value='".$id_ct."' />";
 echo "<input type='hidden' id='date_duplication' name='date_duplication'/>";
-echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; background: ".$color_fond_notices[$type_couleur].";\">\n";
-echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Duplication de devoir</legend> ";
+echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; background: ".$color_fond_notices['t'].";\">\n";
+echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices['t']."; font-variant: small-caps;\"> Duplication de devoir</legend> ";
 echo "<table style=\"border-style:solid; border-width:0px;\" cellspacing='20px'><tr><td>";
 $i = 0;
 
@@ -74,10 +74,10 @@ echo "<button onClick=\"javascript:
 			calendarDuplicationInstanciation.date.setSeconds(0);
 			calendarDuplicationInstanciation.date.setMilliseconds(0);
 			$('date_duplication').value = Math.round(calendarDuplicationInstanciation.date.getTime()/1000);
-			
+
 			$('duplication_devoir_form').request({onComplete: function(transport){ alert(transport.responseText) }});
 
-            getWinListesNotices().setAjaxContent( 
+            getWinListesNotices().setAjaxContent(
              						'./ajax_affichages_liste_notices.php?id_groupe=".$ctTravailAFaire->getIdGroupe()."&today=' + getCalendarUnixDate(),
              						{ method: 'get' ,
              							onComplete: function(transport) {

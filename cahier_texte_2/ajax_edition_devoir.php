@@ -57,7 +57,7 @@ if ($utilisateur == null) {
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_devoir"]) ? $_GET["id_devoir"] :NULL);
 $succes = isset($_POST["succes"]) ? $_POST["succes"] :(isset($_GET["succes"]) ? $_GET["succes"] :NULL);
 $today = isset($_POST["today"]) ? $_POST["today"] :(isset($_GET["today"]) ? $_GET["today"] :NULL);
-$ajout_nouvelle_notice = isset($_POST["$ajout_nouvelle_notice"]) ? $_POST["$ajout_nouvelle_notice"] :(isset($_GET["$ajout_nouvelle_notice"]) ? $_GET["$ajout_nouvelle_notice"] :NULL);
+$ajout_nouvelle_notice = isset($_POST["ajout_nouvelle_notice"]) ? $_POST["ajout_nouvelle_notice"] :(isset($_GET["ajout_nouvelle_notice"]) ? $_GET["ajout_nouvelle_notice"] : NULL);
 $ctTravailAFaire = CtTravailAFairePeer::retrieveByPK($id_devoir);
 if ($ctTravailAFaire != null) {
 	$groupe = $ctTravailAFaire->getGroupe();
@@ -117,7 +117,7 @@ $type_couleur = "t";
 echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 			id_groupe = (\$A($('id_groupe_colonne_droite').options).find(function(option) { return option.selected; }).value);
 			getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?today=".$today."&id_groupe=' + id_groupe,
-      			{ onComplete: 
+      			{ onComplete:
       				function(transport) {
       					new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
       				}
@@ -142,8 +142,8 @@ foreach ($utilisateur->getGroupes() as $group) {
 echo "</select>&nbsp;&nbsp;";
 
 echo "<button style='background-color:".$color_fond_notices['c']."' onclick=\"javascript:
-						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe='+ id_groupe + '&today='+getCalendarUnixDate(), 
-							{ onComplete: 
+						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe='+ id_groupe + '&today='+getCalendarUnixDate(),
+							{ onComplete:
 								function(transport) {
 									getWinEditionNotice().updateWidth();
 								}
@@ -163,7 +163,7 @@ if (!$ctTravailAFaire->isNew()) {
 	echo " - <b><font color=\"red\">Modification de la notice</font></b>";
 	echo " - <a href=\"#\" onclick=\"javascript:
 				new Ajax.Updater($('dupplication_notice'), 'ajax_affichage_duplication_devoir.php?id_ct=".$ctTravailAFaire->getIdCt()."',
-					{ onComplete: 
+					{ onComplete:
 						function(transport) {
 							calendarDuplicationInstanciation = Calendar.setup({
 									flat         : 'calendar-duplication-container', // ID of the parent element
@@ -195,7 +195,7 @@ echo("<input type='hidden' name='id_groupe' value='".$groupe->getId()."' />");
 //si on vient d'efftuer un enregistrement, le label du bonton enregistrer devient Succès
 $succes_modification = isset($_POST["succes_modification"]) ? $_POST["succes_modification"] :(isset($_GET["succes_modification"]) ? $_GET["succes_modification"] :NULL);
 $label_enregistrer = "Enregistrer";
-if ($succes_modification == oui) $label_enregistrer='Succès';
+if ($succes_modification == 'oui') $label_enregistrer='Succès';
 ?>
 <table border="0" width="100%" summary="Tableau de saisie de notice">
 	<tr>
@@ -203,7 +203,7 @@ if ($succes_modification == oui) $label_enregistrer='Succès';
 		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer"
 			style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 		<button type="submit" style='font-variant: small-caps;'
-			onClick="javascript:$('passer_a').value = 'passer_compte_rendu';">Enr. et 
+			onClick="javascript:$('passer_a').value = 'passer_compte_rendu';">Enr. et
 		passer aux comptes rendus</button>
 		<input type='hidden' id='passer_a' name='passer_a'
 			value='passer_devoir' /> <input type="hidden" name="date_devoir"
@@ -225,7 +225,7 @@ if ($succes_modification == oui) $label_enregistrer='Succès';
 
 	<tr>
 		<td colspan="5"><?php
-		
+
 		echo "<div style=\"background-color: white;\"><textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctTravailAFaire->getContenu()."</textarea></div>";
 
 		//// gestion des fichiers attaché

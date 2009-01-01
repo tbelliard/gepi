@@ -42,14 +42,14 @@ foreach ($groups as $group) {
 	//on affiche sur deux colonne : % est l'operateur pour modulo
 	if (($i % 2) == 1) echo "<tr>\n";
 	echo "<td valign=\"top\" ><table width='100%' cellspacing='5px'>\n";
-	
+
 	//affichage du groupe
 	echo "<tr><td colspan='2' width='50%'>\n";
 	echo "<br/>";
 	echo "<a href=\"#\" onclick=\"javascript:
 			            id_groupe = '".$group->getId()."';
 						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?&id_groupe=".$group->getId()."&today='+getCalendarUnixDate(),
-				            { onComplete : 
+				            { onComplete :
 			            		function() {
 			            			getWinEditionNotice().updateWidth();
 								}
@@ -60,10 +60,10 @@ foreach ($groups as $group) {
 						$('calendar-container').show();
 						return false;
 			       \">";
-	
+
 	echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $group->getDescriptionAvecClasses() . "</a></p>\n";
 	echo "</td></tr>";
-	
+
 	echo "<tr>";
 	//récupération et affichage du dernier compte rendu
 	$criteria = new Criteria(CtCompteRenduPeer::DATABASE_NAME);
@@ -79,7 +79,7 @@ foreach ($groups as $group) {
 		$compte_rendu = $ctCompteRendus[0];
 		//on affiche le compte rendu car il y en a un
 		echo("<b>" . strftime("%a %d %b %y", $compte_rendu->getDateCt()) . "</b><br /><br />\n");
-			
+
 		$html_balise = '<div style="margin: 0px; float: right;">';
 		if (($compte_rendu->getVise() != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')) {
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
@@ -87,11 +87,11 @@ foreach ($groups as $group) {
 								id_groupe = '".$group->getId()."';
 								object_en_cours_edition = 'compte_rendu';\n
 								getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_ct=".$compte_rendu->getIdCt()."',
-					            	{ onComplete : 
+					            	{ onComplete :
 					            		function() {
 					            			getWinEditionNotice().updateWidth();
 											getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."&today='+getCalendarUnixDate(),
-												{ onComplete : 
+												{ onComplete :
 													function() {
 														compte_rendu_en_cours_de_modification('compte_rendu_".$compte_rendu->getIdCt()."');
 													}
@@ -110,8 +110,8 @@ foreach ($groups as $group) {
 			$html_balise .=(" ");
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
 														if (confirmlink(this,'suppression de la notice du ".strftime("%a %d %b %y", $compte_rendu->getDateCt())." ?','Confirmez vous ')) {
-													    	new Ajax.Request('./ajax_suppression_compte_rendu.php?id_ct=".$compte_rendu->getIdCt()."', 
-													    		{ onComplete: 
+													    	new Ajax.Request('./ajax_suppression_compte_rendu.php?id_ct=".$compte_rendu->getIdCt()."',
+													    		{ onComplete:
 													    			function(transport) {
 							  										 	if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
 							      											alert(transport.responseText);
@@ -136,10 +136,10 @@ foreach ($groups as $group) {
 		}
 		$html_balise .= '</div>';
 		echo($html_balise);
-			
+
 		//affichage contenu
 		echo ($compte_rendu->getContenu());
-			
+
 		// Documents joints
 		$ctDocuments = $compte_rendu->getCtDocuments();
 		echo(afficheDocuments($ctDocuments));
@@ -166,11 +166,11 @@ foreach ($groups as $group) {
 								id_groupe = '".$group->getId()."';
 								object_en_cours_edition = 'devoir';
 								getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_devoir=".$devoir->getIdCt()."',
-						            { onComplete : 
+						            { onComplete :
 					            		function() {
 					            			new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
 											getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."&today='+getCalendarUnixDate(),
-												{ onComplete : 
+												{ onComplete :
 													function() {
 														compte_rendu_en_cours_de_modification('devoir_".$devoir->getIdCt()."');
 													}
@@ -216,7 +216,7 @@ foreach ($groups as $group) {
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
-	
+
 	echo "</table></td>\n";
 
 	//on affiche sur deux colonne : % est l'operateur pour modulo
@@ -225,6 +225,7 @@ foreach ($groups as $group) {
 echo "</table>";
 
 function afficheDocuments ($documents) {
+	$html = '';
 	if (($documents) and (count($documents)!=0)) {
 		$html = "<span class='petit'>Document(s) joint(s):</span>";
 		//$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
