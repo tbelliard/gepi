@@ -272,7 +272,7 @@ if(isset($style_screen_ajout)){
 		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
 		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
 		// Il faudra définir un nom de la forme style_screen_ajout_RNE.css pour le multisite
-		if ($GLOBALS['multisite'] == 'y') {
+		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout_".getSettingValue("gepiSchoolRne").".css' />\n";
 		}else{
 			echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
