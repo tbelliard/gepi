@@ -163,7 +163,7 @@ while (true) {
 		//vise
 		$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_devoir_".$devoir->getIdCt()."'></div>");
 		$html_balise .= '<div style="margin: 0px; float: right;">';
-		if (($devoir->getVise() != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')) {
+		if (($devoir->getVise() != 'y') or (isset($visa_cdt_inter_modif_notices_visees) AND $visa_cdt_inter_modif_notices_visees == 'no')) {
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$devoir->getIdCt()."',
 		    						{ onComplete: function(transport) {
@@ -221,7 +221,7 @@ while (true) {
 
 		$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_compte_rendu_".$compte_rendu->getIdCt()."'></div>");
 		$html_balise .= '<div style="margin: 0px; float: right;">';
-		if (($compte_rendu->getVise() != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')) {
+		if (($compte_rendu->getVise() != 'y') or (isset($visa_cdt_inter_modif_notices_visees) AND $visa_cdt_inter_modif_notices_visees == 'no')) {
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$compte_rendu->getIdCt()."',
 		    						{ onComplete: function(transport) {

@@ -25,7 +25,7 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 }
 
 // Vérification : est-ce que l'utilisateur a le droit d'être ici ?
-if (($current_group["id"] != "") ) {
+if (isset($current_group["id"]) AND ($current_group["id"] != "") ) {
     if (!check_prof_groupe($_SESSION['login'],$current_group["id"])) {
         header("Location: ../logout.php?auto=1");
         die();

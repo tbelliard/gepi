@@ -49,8 +49,8 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 }
 
 //recherche de l'utilisateur si non présent dans la session avec propel
-$utilisateur = $_SESSION['utilisateur'];
-if ($utilisateur == null) {
+$utilisateur = isset($_SESSION['utilisateur']) ? $_SESSION['utilisateur'] : NULL;
+if ($utilisateur === null) {
     $utilisateur = UtilisateurPeer::retrieveByPK( $_SESSION['login']);
     $_SESSION['utilisateur'] = $utilisateur;
 }
