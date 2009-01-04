@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'ct_devoirs_entry' table.
  *
- * Travail Ã  faire cahier de texte
+ * Travail Ã  faire (devoir) cahier de texte
  *
  * @package    gepi.om
  */
@@ -114,7 +114,7 @@ abstract class BaseCtTravailAFaire extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id_ct] column value.
-	 * Id compte rendu
+	 * Cle primaire du travail Ã  faire
 	 * @return     int
 	 */
 	public function getIdCt()
@@ -124,7 +124,7 @@ abstract class BaseCtTravailAFaire extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [date_ct] column value.
-	 * date_ct
+	 * date pour laquelle le travail est a faire
 	 * @return     int
 	 */
 	public function getDateCt()
@@ -134,7 +134,7 @@ abstract class BaseCtTravailAFaire extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [contenu] column value.
-	 * contenu du cahier de texte
+	 * contenu redactionnel du travail a faire
 	 * @return     string
 	 */
 	public function getContenu()
@@ -154,7 +154,7 @@ abstract class BaseCtTravailAFaire extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id_groupe] column value.
-	 * Foreign Key groupe
+	 * Cle etrangere du groupe auquel appartient ce travail a faire
 	 * @return     int
 	 */
 	public function getIdGroupe()
@@ -164,7 +164,7 @@ abstract class BaseCtTravailAFaire extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id_login] column value.
-	 * Foreign Key login
+	 * Cle etrangere du l'utilisateur auquel appartient ce travail a faire
 	 * @return     string
 	 */
 	public function getIdLogin()
@@ -174,7 +174,7 @@ abstract class BaseCtTravailAFaire extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id_ct] column.
-	 * Id compte rendu
+	 * Cle primaire du travail Ã  faire
 	 * @param      int $v new value
 	 * @return     CtTravailAFaire The current object (for fluent API support)
 	 */
@@ -194,7 +194,7 @@ abstract class BaseCtTravailAFaire extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [date_ct] column.
-	 * date_ct
+	 * date pour laquelle le travail est a faire
 	 * @param      int $v new value
 	 * @return     CtTravailAFaire The current object (for fluent API support)
 	 */
@@ -214,7 +214,7 @@ abstract class BaseCtTravailAFaire extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [contenu] column.
-	 * contenu du cahier de texte
+	 * contenu redactionnel du travail a faire
 	 * @param      string $v new value
 	 * @return     CtTravailAFaire The current object (for fluent API support)
 	 */
@@ -254,7 +254,7 @@ abstract class BaseCtTravailAFaire extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id_groupe] column.
-	 * Foreign Key groupe
+	 * Cle etrangere du groupe auquel appartient ce travail a faire
 	 * @param      int $v new value
 	 * @return     CtTravailAFaire The current object (for fluent API support)
 	 */
@@ -278,7 +278,7 @@ abstract class BaseCtTravailAFaire extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id_login] column.
-	 * Foreign Key login
+	 * Cle etrangere du l'utilisateur auquel appartient ce travail a faire
 	 * @param      string $v new value
 	 * @return     CtTravailAFaire The current object (for fluent API support)
 	 */

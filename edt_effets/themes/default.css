@@ -142,7 +142,7 @@
   border-spacing: 0;
   width: 100%;
 	margin: 0px;
-	padding:0px;
+	padding: 0;
 }
 
 .dialog table.table_window td , .dialog table.table_window th {

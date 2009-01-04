@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'j_groupes_classes' table.
  *
- * 
+ * Table permettant le jointure entre groupe d'eleves et une classe. Est rarement utilisÃ© directement dans le code.
  *
  * @package    gepi.om
  */
@@ -94,7 +94,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id_groupe] column value.
-	 * 
+	 * Cle primaire du groupe
 	 * @return     int
 	 */
 	public function getIdGroupe()
@@ -104,7 +104,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id_classe] column value.
-	 * 
+	 * Cle primaire de la classe
 	 * @return     int
 	 */
 	public function getIdClasse()
@@ -144,7 +144,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id_groupe] column.
-	 * 
+	 * Cle primaire du groupe
 	 * @param      int $v new value
 	 * @return     JGroupesClasses The current object (for fluent API support)
 	 */
@@ -168,7 +168,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id_classe] column.
-	 * 
+	 * Cle primaire de la classe
 	 * @param      int $v new value
 	 * @return     JGroupesClasses The current object (for fluent API support)
 	 */

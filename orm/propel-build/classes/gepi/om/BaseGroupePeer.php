@@ -3,7 +3,7 @@
 /**
  * Base static class for performing query and update operations on the 'groupes' table.
  *
- * table des groupes
+ * Groupe d'eleves permettant d'y affecter des matieres et des professeurs
  *
  * @package    gepi.om
  */

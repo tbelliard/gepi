@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'j_groupes_professeurs' table.
  *
- * 
+ * Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilisÃ© directement dans le code.
  *
  * @package    gepi.om
  */
@@ -76,7 +76,7 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [id_groupe] column value.
-	 * 
+	 * Cle primaire du groupe
 	 * @return     int
 	 */
 	public function getIdGroupe()
@@ -86,7 +86,7 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [login] column value.
-	 * 
+	 * Cle primaire de l'utilisateur
 	 * @return     string
 	 */
 	public function getLogin()
@@ -96,7 +96,7 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [id_groupe] column.
-	 * 
+	 * Cle primaire du groupe
 	 * @param      int $v new value
 	 * @return     JGroupesProfesseurs The current object (for fluent API support)
 	 */
@@ -120,7 +120,7 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [login] column.
-	 * 
+	 * Cle primaire de l'utilisateur
 	 * @param      string $v new value
 	 * @return     JGroupesProfesseurs The current object (for fluent API support)
 	 */

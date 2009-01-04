@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'ct_entry' table.
  *
- * Compte rendu cahier de texte
+ * Compte rendu du cahier de texte
  *
  * @package    gepi.om
  */
@@ -130,7 +130,7 @@ abstract class BaseCtCompteRendu extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id_ct] column value.
-	 * Id compte rendu
+	 * Cle primaire du compte rendu
 	 * @return     int
 	 */
 	public function getIdCt()
@@ -173,7 +173,7 @@ abstract class BaseCtCompteRendu extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [date_ct] column value.
-	 * date_ct
+	 * date du compte rendu
 	 * @return     int
 	 */
 	public function getDateCt()
@@ -183,7 +183,7 @@ abstract class BaseCtCompteRendu extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [contenu] column value.
-	 * contenu du cahier de texte
+	 * contenu redactionnel du compte rendu
 	 * @return     string
 	 */
 	public function getContenu()
@@ -213,7 +213,7 @@ abstract class BaseCtCompteRendu extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id_groupe] column value.
-	 * Foreign Key groupe
+	 * Cle etrangere du groupe auquel appartient le compte rendu
 	 * @return     int
 	 */
 	public function getIdGroupe()
@@ -223,7 +223,7 @@ abstract class BaseCtCompteRendu extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id_login] column value.
-	 * Foreign Key login
+	 * Cle etrangere de l'utilisateur auquel appartient le compte rendu
 	 * @return     string
 	 */
 	public function getIdLogin()
@@ -233,7 +233,7 @@ abstract class BaseCtCompteRendu extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id_ct] column.
-	 * Id compte rendu
+	 * Cle primaire du compte rendu
 	 * @param      int $v new value
 	 * @return     CtCompteRendu The current object (for fluent API support)
 	 */
@@ -303,7 +303,7 @@ abstract class BaseCtCompteRendu extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [date_ct] column.
-	 * date_ct
+	 * date du compte rendu
 	 * @param      int $v new value
 	 * @return     CtCompteRendu The current object (for fluent API support)
 	 */
@@ -323,7 +323,7 @@ abstract class BaseCtCompteRendu extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [contenu] column.
-	 * contenu du cahier de texte
+	 * contenu redactionnel du compte rendu
 	 * @param      string $v new value
 	 * @return     CtCompteRendu The current object (for fluent API support)
 	 */
@@ -383,7 +383,7 @@ abstract class BaseCtCompteRendu extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id_groupe] column.
-	 * Foreign Key groupe
+	 * Cle etrangere du groupe auquel appartient le compte rendu
 	 * @param      int $v new value
 	 * @return     CtCompteRendu The current object (for fluent API support)
 	 */
@@ -407,7 +407,7 @@ abstract class BaseCtCompteRendu extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id_login] column.
-	 * Foreign Key login
+	 * Cle etrangere de l'utilisateur auquel appartient le compte rendu
 	 * @param      string $v new value
 	 * @return     CtCompteRendu The current object (for fluent API support)
 	 */

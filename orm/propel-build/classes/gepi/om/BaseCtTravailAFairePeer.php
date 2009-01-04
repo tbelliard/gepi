@@ -3,7 +3,7 @@
 /**
  * Base static class for performing query and update operations on the 'ct_devoirs_entry' table.
  *
- * Travail Ã  faire cahier de texte
+ * Travail Ã  faire (devoir) cahier de texte
  *
  * @package    gepi.om
  */

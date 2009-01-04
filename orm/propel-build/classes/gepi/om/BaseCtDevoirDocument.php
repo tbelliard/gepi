@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'ct_devoirs_documents' table.
  *
- * Document des devoirs du cahier de texte
+ * Document (fichier joint) appartenant a un travail Ã  faire du cahier de texte
  *
  * @package    gepi.om
  */
@@ -93,7 +93,7 @@ abstract class BaseCtDevoirDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id] column value.
-	 * Id document
+	 * Cle primaire du document
 	 * @return     int
 	 */
 	public function getId()
@@ -103,7 +103,7 @@ abstract class BaseCtDevoirDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id_ct_devoir] column value.
-	 * Id devoir du cahier de texte
+	 * Cle etrangere du travail a faire auquel appartient ce document
 	 * @return     int
 	 */
 	public function getIdCtDevoir()
@@ -113,7 +113,7 @@ abstract class BaseCtDevoirDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [titre] column value.
-	 * titre du document
+	 * Titre du document (fichier joint)
 	 * @return     string
 	 */
 	public function getTitre()
@@ -123,7 +123,7 @@ abstract class BaseCtDevoirDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [taille] column value.
-	 * Taille du document
+	 * Taille du document (fichier joint)
 	 * @return     int
 	 */
 	public function getTaille()
@@ -133,7 +133,7 @@ abstract class BaseCtDevoirDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [emplacement] column value.
-	 * chemin vers le document
+	 * Chemin du systÃ¨me de fichier vers le document (fichier joint)
 	 * @return     string
 	 */
 	public function getEmplacement()
@@ -143,7 +143,7 @@ abstract class BaseCtDevoirDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id] column.
-	 * Id document
+	 * Cle primaire du document
 	 * @param      int $v new value
 	 * @return     CtDevoirDocument The current object (for fluent API support)
 	 */
@@ -163,7 +163,7 @@ abstract class BaseCtDevoirDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id_ct_devoir] column.
-	 * Id devoir du cahier de texte
+	 * Cle etrangere du travail a faire auquel appartient ce document
 	 * @param      int $v new value
 	 * @return     CtDevoirDocument The current object (for fluent API support)
 	 */
@@ -187,7 +187,7 @@ abstract class BaseCtDevoirDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [titre] column.
-	 * titre du document
+	 * Titre du document (fichier joint)
 	 * @param      string $v new value
 	 * @return     CtDevoirDocument The current object (for fluent API support)
 	 */
@@ -207,7 +207,7 @@ abstract class BaseCtDevoirDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [taille] column.
-	 * Taille du document
+	 * Taille du document (fichier joint)
 	 * @param      int $v new value
 	 * @return     CtDevoirDocument The current object (for fluent API support)
 	 */
@@ -227,7 +227,7 @@ abstract class BaseCtDevoirDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [emplacement] column.
-	 * chemin vers le document
+	 * Chemin du systÃ¨me de fichier vers le document (fichier joint)
 	 * @param      string $v new value
 	 * @return     CtDevoirDocument The current object (for fluent API support)
 	 */

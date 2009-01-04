@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'classes' table.
  *
- * table des classes
+ * Classe regroupant des eleves
  *
  * @package    gepi.om
  */
@@ -224,7 +224,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id] column value.
-	 * Classe Id
+	 * Cle primaire de la classe
 	 * @return     int
 	 */
 	public function getId()
@@ -244,7 +244,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [nom_complet] column value.
-	 * nom du groupe
+	 * nom complet de la classe
 	 * @return     string
 	 */
 	public function getNomComplet()
@@ -444,7 +444,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id] column.
-	 * Classe Id
+	 * Cle primaire de la classe
 	 * @param      int $v new value
 	 * @return     Classe The current object (for fluent API support)
 	 */
@@ -484,7 +484,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [nom_complet] column.
-	 * nom du groupe
+	 * nom complet de la classe
 	 * @param      string $v new value
 	 * @return     Classe The current object (for fluent API support)
 	 */

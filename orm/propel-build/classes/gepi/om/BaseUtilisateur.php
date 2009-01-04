@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'utilisateurs' table.
  *
- * Table utilisateurs
+ * Utilisateur de gepi
  *
  * @package    gepi.om
  */
@@ -204,7 +204,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [login] column value.
-	 * Login utilisateur
+	 * Login de l'utilisateur, et clÃ© primaire de la table utilisateur
 	 * @return     string
 	 */
 	public function getLogin()
@@ -214,7 +214,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [nom] column value.
-	 * Nom utilisateur
+	 * Nom de l'utilisateur
 	 * @return     string
 	 */
 	public function getNom()
@@ -224,7 +224,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [prenom] column value.
-	 * ISBN Number
+	 * Prenom de l'utilisateur
 	 * @return     string
 	 */
 	public function getPrenom()
@@ -244,7 +244,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [password] column value.
-	 * mot de passe
+	 * Mot de passe
 	 * @return     string
 	 */
 	public function getPassword()
@@ -254,7 +254,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [email] column value.
-	 * email de l'utilisateur
+	 * Email de l'utilisateur
 	 * @return     string
 	 */
 	public function getEmail()
@@ -264,7 +264,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [show_email] column value.
-	 * email de l'utilisateur
+	 * L'email de l'utilisateur est-il public (yes/no)
 	 * @return     string
 	 */
 	public function getShowEmail()
@@ -274,7 +274,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [statut] column value.
-	 * statut de l'utilisateur
+	 * Statut de l'utilisateur
 	 * @return     string
 	 */
 	public function getStatut()
@@ -284,7 +284,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [etat] column value.
-	 * etat de l'utilisateur
+	 * Etat de l'utilisateur (actif/inactif)
 	 * @return     string
 	 */
 	public function getEtat()
@@ -294,7 +294,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [change_mdp] column value.
-	 * statut de l'utilisateur
+	 * L'utilisateur doit-il changer son mot de passe (y/n) (Ã  la premiere connexion par exemple)
 	 * @return     string
 	 */
 	public function getChangeMdp()
@@ -304,7 +304,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [optionally formatted] temporal [date_verrouillage] column value.
-	 * date de verrouillage de l'utilisateur
+	 * Date de verrouillage de l'utilisateur
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
@@ -347,7 +347,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [optionally formatted] temporal [ticket_expiration] column value.
-	 * ticket_ticket de l'utilisateur
+	 * ticket_expiration de l'utilisateur
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
@@ -400,7 +400,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [temp_dir] column value.
-	 * temp_dir de l'utilisateur
+	 * RÃ©pertoire temporaire de l'utilisateur
 	 * @return     string
 	 */
 	public function getTempDir()
@@ -420,7 +420,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [auth_mode] column value.
-	 * auth_mode de l'utilisateur
+	 * auth_mode de l'utilisateur (gepi/cas/ldap)
 	 * @return     string
 	 */
 	public function getAuthMode()
@@ -430,7 +430,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [login] column.
-	 * Login utilisateur
+	 * Login de l'utilisateur, et clÃ© primaire de la table utilisateur
 	 * @param      string $v new value
 	 * @return     Utilisateur The current object (for fluent API support)
 	 */
@@ -450,7 +450,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [nom] column.
-	 * Nom utilisateur
+	 * Nom de l'utilisateur
 	 * @param      string $v new value
 	 * @return     Utilisateur The current object (for fluent API support)
 	 */
@@ -470,7 +470,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [prenom] column.
-	 * ISBN Number
+	 * Prenom de l'utilisateur
 	 * @param      string $v new value
 	 * @return     Utilisateur The current object (for fluent API support)
 	 */
@@ -510,7 +510,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [password] column.
-	 * mot de passe
+	 * Mot de passe
 	 * @param      string $v new value
 	 * @return     Utilisateur The current object (for fluent API support)
 	 */
@@ -530,7 +530,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [email] column.
-	 * email de l'utilisateur
+	 * Email de l'utilisateur
 	 * @param      string $v new value
 	 * @return     Utilisateur The current object (for fluent API support)
 	 */
@@ -550,7 +550,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [show_email] column.
-	 * email de l'utilisateur
+	 * L'email de l'utilisateur est-il public (yes/no)
 	 * @param      string $v new value
 	 * @return     Utilisateur The current object (for fluent API support)
 	 */
@@ -570,7 +570,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [statut] column.
-	 * statut de l'utilisateur
+	 * Statut de l'utilisateur
 	 * @param      string $v new value
 	 * @return     Utilisateur The current object (for fluent API support)
 	 */
@@ -590,7 +590,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [etat] column.
-	 * etat de l'utilisateur
+	 * Etat de l'utilisateur (actif/inactif)
 	 * @param      string $v new value
 	 * @return     Utilisateur The current object (for fluent API support)
 	 */
@@ -610,7 +610,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [change_mdp] column.
-	 * statut de l'utilisateur
+	 * L'utilisateur doit-il changer son mot de passe (y/n) (Ã  la premiere connexion par exemple)
 	 * @param      string $v new value
 	 * @return     Utilisateur The current object (for fluent API support)
 	 */
@@ -630,7 +630,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Sets the value of [date_verrouillage] column to a normalized version of the date/time value specified.
-	 * date de verrouillage de l'utilisateur
+	 * Date de verrouillage de l'utilisateur
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
 	 *						be treated as NULL for temporal objects.
 	 * @return     Utilisateur The current object (for fluent API support)
@@ -700,7 +700,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Sets the value of [ticket_expiration] column to a normalized version of the date/time value specified.
-	 * ticket_ticket de l'utilisateur
+	 * ticket_expiration de l'utilisateur
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
 	 *						be treated as NULL for temporal objects.
 	 * @return     Utilisateur The current object (for fluent API support)
@@ -789,7 +789,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [temp_dir] column.
-	 * temp_dir de l'utilisateur
+	 * RÃ©pertoire temporaire de l'utilisateur
 	 * @param      string $v new value
 	 * @return     Utilisateur The current object (for fluent API support)
 	 */
@@ -829,7 +829,7 @@ abstract class BaseUtilisateur extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [auth_mode] column.
-	 * auth_mode de l'utilisateur
+	 * auth_mode de l'utilisateur (gepi/cas/ldap)
 	 * @param      string $v new value
 	 * @return     Utilisateur The current object (for fluent API support)
 	 */

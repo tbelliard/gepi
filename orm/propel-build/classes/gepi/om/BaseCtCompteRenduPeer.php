@@ -3,7 +3,7 @@
 /**
  * Base static class for performing query and update operations on the 'ct_entry' table.
  *
- * Compte rendu cahier de texte
+ * Compte rendu du cahier de texte
  *
  * @package    gepi.om
  */

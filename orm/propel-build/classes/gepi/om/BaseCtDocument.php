@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'ct_documents' table.
  *
- * Document du cahier de texte
+ * Document (fichier joint) appartenant a un compte rendu du cahier de texte
  *
  * @package    gepi.om
  */
@@ -93,7 +93,7 @@ abstract class BaseCtDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id] column value.
-	 * Id document
+	 * Cle primaire du document
 	 * @return     int
 	 */
 	public function getId()
@@ -103,7 +103,7 @@ abstract class BaseCtDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id_ct] column value.
-	 * Id cahier de texte
+	 * Cle etrangere du compte rendu auquel appartient ce document
 	 * @return     int
 	 */
 	public function getIdCt()
@@ -113,7 +113,7 @@ abstract class BaseCtDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [titre] column value.
-	 * titre du document
+	 * Titre du document (fichier joint)
 	 * @return     string
 	 */
 	public function getTitre()
@@ -123,7 +123,7 @@ abstract class BaseCtDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [taille] column value.
-	 * Taille du document
+	 * Taille du document (fichier joint)
 	 * @return     int
 	 */
 	public function getTaille()
@@ -133,7 +133,7 @@ abstract class BaseCtDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [emplacement] column value.
-	 * chemin vers le document
+	 * Chemin du systÃ¨me de fichier vers le document (fichier joint)
 	 * @return     string
 	 */
 	public function getEmplacement()
@@ -143,7 +143,7 @@ abstract class BaseCtDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id] column.
-	 * Id document
+	 * Cle primaire du document
 	 * @param      int $v new value
 	 * @return     CtDocument The current object (for fluent API support)
 	 */
@@ -163,7 +163,7 @@ abstract class BaseCtDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id_ct] column.
-	 * Id cahier de texte
+	 * Cle etrangere du compte rendu auquel appartient ce document
 	 * @param      int $v new value
 	 * @return     CtDocument The current object (for fluent API support)
 	 */
@@ -187,7 +187,7 @@ abstract class BaseCtDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [titre] column.
-	 * titre du document
+	 * Titre du document (fichier joint)
 	 * @param      string $v new value
 	 * @return     CtDocument The current object (for fluent API support)
 	 */
@@ -207,7 +207,7 @@ abstract class BaseCtDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [taille] column.
-	 * Taille du document
+	 * Taille du document (fichier joint)
 	 * @param      int $v new value
 	 * @return     CtDocument The current object (for fluent API support)
 	 */
@@ -227,7 +227,7 @@ abstract class BaseCtDocument extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [emplacement] column.
-	 * chemin vers le document
+	 * Chemin du systÃ¨me de fichier vers le document (fichier joint)
 	 * @param      string $v new value
 	 * @return     CtDocument The current object (for fluent API support)
 	 */

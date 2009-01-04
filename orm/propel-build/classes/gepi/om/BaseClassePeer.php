@@ -3,7 +3,7 @@
 /**
  * Base static class for performing query and update operations on the 'classes' table.
  *
- * table des classes
+ * Classe regroupant des eleves
  *
  * @package    gepi.om
  */

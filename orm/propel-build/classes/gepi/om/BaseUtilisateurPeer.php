@@ -3,7 +3,7 @@
 /**
  * Base static class for performing query and update operations on the 'utilisateurs' table.
  *
- * Table utilisateurs
+ * Utilisateur de gepi
  *
  * @package    gepi.om
  */

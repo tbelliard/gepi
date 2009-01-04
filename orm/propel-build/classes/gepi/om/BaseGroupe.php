@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'groupes' table.
  *
- * table des groupes
+ * Groupe d'eleves permettant d'y affecter des matieres et des professeurs
  *
  * @package    gepi.om
  */
@@ -118,7 +118,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id] column value.
-	 * Groupe Id
+	 * Cle primaire du groupe
 	 * @return     int
 	 */
 	public function getId()
@@ -128,7 +128,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [name] column value.
-	 * nom du groupe
+	 * Nom du groupe
 	 * @return     string
 	 */
 	public function getName()
@@ -138,7 +138,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [description] column value.
-	 * description du groupe
+	 * Description du groupe
 	 * @return     string
 	 */
 	public function getDescription()
@@ -158,7 +158,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id] column.
-	 * Groupe Id
+	 * Cle primaire du groupe
 	 * @param      int $v new value
 	 * @return     Groupe The current object (for fluent API support)
 	 */
@@ -178,7 +178,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [name] column.
-	 * nom du groupe
+	 * Nom du groupe
 	 * @param      string $v new value
 	 * @return     Groupe The current object (for fluent API support)
 	 */
@@ -198,7 +198,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [description] column.
-	 * description du groupe
+	 * Description du groupe
 	 * @param      string $v new value
 	 * @return     Groupe The current object (for fluent API support)
 	 */
