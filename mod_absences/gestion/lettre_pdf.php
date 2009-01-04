@@ -227,6 +227,8 @@ if ( $lettre_action === 'originaux' ) {
 				$prenom_responsable[$cpt_parents][$i] = $donner_parents['prenom']; // prénom du responsable
 				$adresse_responsable[$cpt_parents][$i] = $donner_parents['adr1']; // adresse du responsable
 				$adressecomp_responsable[$cpt_parents][$i] = $donner_parents['adr2']; // adresse du responsable suite
+				$adressecomp2_responsable[$cpt_parents][$i] = $donner_parents['adr3']; // adresse du responsable suite
+				$adressecomp3_responsable[$cpt_parents][$i] = $donner_parents['adr4']; // adresse du responsable suite
 				$commune_responsable[$cpt_parents][$i] = $donner_parents['commune']; // ville du responsable
 				$cp_responsable[$cpt_parents][$i] = $donner_parents['cp']; // code postal du responsable
 				$cpt_parents = $cpt_parents + 1;
@@ -452,7 +454,8 @@ while($cpt_i_cadre<$i_cadre)
 
 
 
-	$variable = array("<sexe>", "<nom_eleve>", "<prenom_eleve>", "<date_naissance>", "<classe_eleve>", "<civilitee_court_responsable>", "<civilitee_long_responsable>", "<nom_responsable>", "<prenom_responsable>", "<adresse_responsable>", "<cp_responsable>", "<commune_responsable>", "<remarque_eleve>", "<date_debut>", "<heure_debut>", "<date_fin>", "<heure_fin>", "<liste>", "<courrier_signe_par_fonction>", "<courrier_signe_par>", "<civilitee_court_cpe>", "<civilitee_long_cpe>", "<nom_cpe>", "<prenom_cpe>", "<date_court>", "<date_long>");
+ // ajout des autres lignes pour l'adresse des responsables  didier
+	$variable = array("<sexe>", "<nom_eleve>", "<prenom_eleve>", "<date_naissance>", "<classe_eleve>", "<civilitee_court_responsable>", "<civilitee_long_responsable>", "<nom_responsable>", "<prenom_responsable>", "<adresse_responsable>","<adressecomp_responsable>","<adressecomp2_responsable>","<adressecomp3_responsable>","<cp_responsable>", "<commune_responsable>", "<remarque_eleve>", "<date_debut>", "<heure_debut>", "<date_fin>", "<heure_fin>", "<liste>", "<courrier_signe_par_fonction>", "<courrier_signe_par>", "<civilitee_court_cpe>", "<civilitee_long_cpe>", "<nom_cpe>", "<prenom_cpe>", "<date_court>", "<date_long>");
 		$civilite_long_responsable = 'Madame, Monsieur';
 	if( !isset($adresse_responsable[1][$i]) or $adresse_responsable[0][$i] != $adresse_responsable[1][$i]) {
 		if($civilite_responsable[0][$i] == 'M.') {
@@ -481,8 +484,8 @@ while($cpt_i_cadre<$i_cadre)
 	$civilite_responsable[0][$i] = (isset($civilite_responsable[0][$i]) AND $civilite_responsable[0][$i] != '') ? $civilite_responsable[0][$i] : 'M.Mme';
 	$civilite_long_responsable = ($civilite_long_responsable != '') ? $civilite_long_responsable : 'Madame, Monsieur';
 	$civilite_long_cpe = (isset($cpe_de_l_eleve[$i]['civilite']) AND $cpe_de_l_eleve[$i]['civilite'] != '') ? $cpe_de_l_eleve[$i]['civilite'] : 'M.';
-
-	$remplacer_par = array($sexe_eleve[$i], strtoupper($nom_eleve[$i]), ucfirst($prenom_eleve[$i]), $naissance_eleve[$i], $classe_eleve[$i], $civilite_responsable[0][$i], $civilite_long_responsable, $nom_responsable[0][$i], $prenom_responsable[0][$i], $adresse_responsable[0][$i], $cp_responsable[0][$i], $commune_responsable[0][$i], $remarque[$i], $date_debut[$i], $heure_debut[$i], $date_fin[$i], $heure_fin[$i], $liste_abs[$i], $signature_status[$i], $signature[$i], $cpe_de_l_eleve[$i]['civilite'], $civilite_long_cpe, $cpe_de_l_eleve[$i]['nom'], $cpe_de_l_eleve[$i]['prenom'], $date_ce_jour, date_frl($date_ce_jour_sql));
+    // ajout des autres lignes pour l'adresse des responsables  didier
+	$remplacer_par = array($sexe_eleve[$i], strtoupper($nom_eleve[$i]), ucfirst($prenom_eleve[$i]), $naissance_eleve[$i], $classe_eleve[$i], $civilite_responsable[0][$i], $civilite_long_responsable, $nom_responsable[0][$i], $prenom_responsable[0][$i], $adresse_responsable[0][$i],$adressecomp_responsable[0][$i],$adressecomp2_responsable[0][$i],$adressecomp3_responsable[0][$i],$cp_responsable[0][$i], $commune_responsable[0][$i], $remarque[$i], $date_debut[$i], $heure_debut[$i], $date_fin[$i], $heure_fin[$i], $liste_abs[$i], $signature_status[$i], $signature[$i], $cpe_de_l_eleve[$i]['civilite'], $civilite_long_cpe, $cpe_de_l_eleve[$i]['nom'], $cpe_de_l_eleve[$i]['prenom'], $date_ce_jour, date_frl($date_ce_jour_sql));
 	//print_r($remplacer_par);print_r($variable);
 
 	$text = str_replace($variable, $remplacer_par, $text);

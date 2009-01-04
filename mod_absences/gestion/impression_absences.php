@@ -1314,6 +1314,9 @@ if($sous_rubrique === 'gb') { ?>
 		   <option value="[nom_responsable]">Nom</option><?php echo "\n"; ?>
 		   <option value="[prenom_responsable]">Prénom</option><?php echo "\n"; ?>
 		   <option value="[adresse_responsable]">Adresse</option><?php echo "\n"; ?>
+		   <option value="[adressecomp_responsable]">Adresse ligne 2</option><?php echo "\n"; ?>
+		   <option value="[adressecomp2_responsable]">Adresse ligne 3</option><?php echo "\n"; ?>
+		   <option value="[adressecomp3_responsable]">Adresse ligne 4</option><?php echo "\n"; ?>
 		   <option value="[cp_responsable]">Code postal</option><?php echo "\n"; ?>
 		   <option value="[ville_responsable]">Ville</option><?php echo "\n"; ?>
 		</optgroup>
