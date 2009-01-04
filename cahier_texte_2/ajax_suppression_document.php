@@ -22,7 +22,7 @@
  */
 
 
-// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -42,22 +42,22 @@ if (!checkAccess()) {
     die();
 }
 
-//On vÃ©rifie si le module est activÃ©
+//On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
     die("Le module n'est pas activé.");
 }
 
-//rÃ©cupÃ©ration de la notice
+//récupération de la notice
 $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GET["id_document"]) ? $_GET["id_document"] :NULL);
 $ctDocument = CtDocumentPeer::retrieveByPK($id_document);
 
-//si pas de document prÃ©cisÃ©, erreur du script
+//si pas de document précisé, erreur du script
 if ($ctDocument == null) {
   echo("Erreur : pas de document trouvé.");
   die();
 }
 
-// VÃ©rification : est-ce que l'utilisateur a le droit de supprimer cette entré ?
+// Vérification : est-ce que l'utilisateur a le droit de supprimer cette entré ?
 $utilisateur = $_SESSION['utilisateur'];
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");

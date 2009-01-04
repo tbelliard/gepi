@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On d√©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÈsamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Initialisations files
@@ -43,19 +43,16 @@ if (!checkAccess()) {
     die();
 }
 
-//On v√©rifie si le module est activ√©
+//On vÈrifie si le module est activÈ
 if (getSettingValue("active_cahiers_texte")!='y') {
-    die("Le module n'est pas activ√©.");
+    die("Le module n'est pas activÈ.");
 }
 
-//recherche de l'utilisateur si non pr√©sent dans la session avec propel
-$utilisateur = isset($_SESSION['utilisateur']) ? $_SESSION['utilisateur'] : NULL;
-if ($utilisateur === null) {
-    $utilisateur = UtilisateurPeer::retrieveByPK( $_SESSION['login']);
-    $_SESSION['utilisateur'] = $utilisateur;
-}
+//recherche de l'utilisateur avec propel
+$utilisateur = UtilisateurPeer::retrieveByPK( $_SESSION['login']);
+$_SESSION['utilisateur'] = $utilisateur;
 
-// On met le header en petit par d√©faut
+// On met le header en petit par dÈfaut
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
@@ -71,12 +68,12 @@ require_once("../lib/header.inc");
 
 //-----------------------------------------------------------------------------------
 echo "<div id='compte_rendu_en_cours_'></div>";
-echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'ent√®te\">\n";
+echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entËte\">\n";
 echo "<tr>\n";
 
 // **********************************************
-// Affichage des diff√©rents groupes du professeur
-// R√©cup√©ration de toutes les infos sur le groupe
+// Affichage des diffÈrents groupes du professeur
+// RÈcupÈration de toutes les infos sur le groupe
 echo "<td width=\"65%\" valign='top'><br>\n";
 $groups = $utilisateur->getGroupes();
 if (empty($groups)) {
@@ -91,9 +88,11 @@ foreach($groups as $group) {
 	echo "<a href=\"#\" onclick=\"javascript:
 			id_groupe = '".$group->getId()."';
 			getWinDernieresNotices().hide();
-			getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."');
-			getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=".$group->getId()."&today='+getCalendarUnixDate(),
-	            	{ onComplete : 
+			getWinListeNotices();
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."', {encoding: 'ISO-8859-1'});
+			getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=".$group->getId()."&today='+getCalendarUnixDate(), { 
+	            		encoding: 'ISO-8859-1',
+	            		onComplete : 
 	            		function() {
 	            			getWinEditionNotice().updateWidth();
 						}
@@ -103,7 +102,7 @@ foreach($groups as $group) {
 			return false;
     	\">";
 	echo $group->getNameAvecClasses();
-    echo "</a>&nbsp;</span>\n";
+	echo "</a>&nbsp;</span>\n";
 
     if ($a == 3) {
     	$a = 1;
@@ -112,15 +111,27 @@ foreach($groups as $group) {
 	}
 }
 echo "</td>";
-// Fin Affichage des diff√©rents groupes du professeur
+// Fin Affichage des diffÈrents groupes du professeur
 // **********************************************
 
-// Deuxi√®me cellule de la premi√®re ligne du tableau
-echo "<td style=\"text-align: left; vertical-align: top; padding:0.25em;\">\n";
-echo "<br><button onclick=\"javascript:
-						getWinDernieresNotices().setAjaxContent('ajax_affichage_dernieres_notices.php');
+// DeuxiËme cellule de la premiËre ligne du tableau
+echo "<td>\n";
+echo "</td>\n";
+echo "</tr>\n";
+echo "<tr><td align='right' padding='10px'>\n";
+echo "<button onclick=\"javascript:
+						getWinDernieresNotices().show();
+						getWinDernieresNotices().toFront();
 						return false;
 				\">Voir les derniËres notices</button>\n";
-echo "</td>\n";
-echo "</tr>\n</table>\n<hr />";
+echo "<button onclick=\"javascript:
+						getWinDernieresNotices().setLocation(70, 200);
+						getWinDernieresNotices().hide();
+						getWinCalendar().setLocation(0, GetWidth() - 245);
+						getWinEditionNotice().setLocation(180, 340);
+						getWinListeNotices().setLocation(80, 0);
+						return false;
+				\">Repositionner les fenetres</button>\n";
+echo "</td><td></td></tr>\n";
+echo "</table>\n<hr />";
 ?>

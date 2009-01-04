@@ -1,5 +1,5 @@
 <?php
-// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Initialisations files
@@ -21,7 +21,7 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vÃ©rifie si le module est activÃ©
+//On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
 	die("Le module n'est pas activé.");
 }
@@ -74,20 +74,21 @@ echo "<button onClick=\"javascript:
 			calendarDuplicationInstanciation.date.setSeconds(0);
 			calendarDuplicationInstanciation.date.setMilliseconds(0);
 			$('date_duplication').value = Math.round(calendarDuplicationInstanciation.date.getTime()/1000);
-
 			$('duplication_devoir_form').request({onComplete: function(transport){ alert(transport.responseText) }});
-
-            getWinListesNotices().setAjaxContent(
-             						'./ajax_affichages_liste_notices.php?id_groupe=".$ctTravailAFaire->getIdGroupe()."&today=' + getCalendarUnixDate(),
-             						{ method: 'get' ,
-             							onComplete: function(transport) {
-             																compte_rendu_en_cours_de_modification('devoir_".$ctTravailAFaire->getIdCt()."');
-             															}
-             						}
-              					);
+            new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$ctTravailAFaire->getIdGroupe()."',
+             	{ onComplete: 
+             		function(transport) {
+             			compte_rendu_en_cours_de_modification('compte_rendu_".$ctTravailAFaire->getIdCt()."');
+             		}
+             	}
+            );
 			return false;\"
 			id=\"bouton_dupliquer\" name=\"Dupliquer\" style='font-variant: small-caps;'>Dupliquer</button>";
 
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onClick=\"javascript:
+			$('dupplication_notice').hide();
+			return false;\"
+			style='font-variant: small-caps;'>Cacher</button>";			
 echo "</td></tr></table>";
 echo "</fieldset>";
 echo "</form>";

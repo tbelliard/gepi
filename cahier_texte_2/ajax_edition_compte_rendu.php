@@ -22,7 +22,7 @@
  */
 
 
-// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -43,7 +43,7 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vÃ©rifie si le module est activÃ©
+//On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
 	die("Le module n'est pas activé.");
 }
@@ -70,13 +70,13 @@ if ($id_ct != null) {
 	$ctCompteRendus = $utilisateur->getCtCompteRendus($criteria);
 	$ctCompteRendu = $ctCompteRendus[0];
 	if ($ctCompteRendu == null) {
-		echo "Compte rendu non trouvé";
+		echo "Compte rendu non trouvé ou impossible à modifier car il ne vous appartient pas.";
 		die();
 	}
 	$groupe = $ctCompteRendu->getGroupe();
 	$today = $ctCompteRendu->getDateCt();
 } else {
-	//si pas de notice prÃ©cisÃ©, rÃ©cupÃ©ration du groupe dans la requete et recherche d'une notice pour la date prÃ©cisÃ©e ou crÃ©ation d'une nouvelle notice
+	//si pas de notice précisé, récupération du groupe dans la requete et recherche d'une notice pour la date précisée ou création d'une nouvelle notice
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
@@ -84,19 +84,14 @@ if ($id_ct != null) {
 		die;
 	}
 
-	// VÃ©rification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
-	if ($groupe != null) {
-		$criteria = new Criteria();
-		$criteria->add(JGroupesProfesseursPeer::ID_GROUPE, $groupe->getId(), "=");
-		if (count($utilisateur->getJGroupesProfesseurss($criteria)) == 0) {
-			//header("Location: ../logout.php?auto=1");
-			echo "le groupe n'appartient pas au professeur";
-			die();
-		}
+	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
+	if (!$groupe->belongsTo($utilisateur)) {
+		echo "le groupe n'appartient pas au professeur";
+		die();
 	}
 
 	if ($ajout_nouvelle_notice != "oui") {
-		//on cherche si il y a une notice pour le groupe Ã  la date prÃ©cisÃ©e
+		//on cherche si il y a une notice pour le groupe à la date précisée
 		$criteria = new Criteria(CtCompteRenduPeer::DATABASE_NAME);
 		$criteria->add(CtCompteRenduPeer::DATE_CT, $today, '=');
 		$criteria->add(CtCompteRenduPeer::ID_LOGIN, $utilisateur->getLogin());
@@ -119,7 +114,7 @@ if ($ctCompteRendu->getVise() == 'y') {
 
 // Initialisation du type de couleur (voir global.inc.php)
 if ($ctCompteRendu->getDateCt() == null) {
-	//CompteRendu information gÃ©nÃ©rale
+	//CompteRendu information générale
 	$info=yes;
 	$type_couleur = "i";
 } else {
@@ -142,17 +137,12 @@ echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 			compte_rendu_en_cours_de_modification('aucun');
 		\">");
 echo "<option value='-1'>(choisissez un groupe pour changer l'edition)</option>\n";
-foreach ($utilisateur->getGroupes() as $group) {
-	echo "<option id='colonne_droite_select_group_option_".$group->getId()."' value='".$group->getId()."'";
-	if ($groupe->getId() == $group->getId()) echo " SELECTED ";
+$groups = $utilisateur->getGroupes();
+foreach ($groups as $group_iter) {
+	echo "<option id='colonne_droite_select_group_option_".$group_iter->getId()."' value='".$group_iter->getId()."'";
+	if ($groupe->getId() == $group_iter->getId()) echo " SELECTED ";
 	echo ">";
-	echo $group->getDescription() . "&nbsp;-&nbsp;(";
-	$str = null;
-	foreach ($group->getClasses() as $classe) {
-		$str .= $classe->getClasse() . ", ";
-	}
-	$str = substr($str, 0, -2);
-	echo $str . ")&nbsp;\n";
+	echo $group_iter->getDescriptionAvecClasses();
 	echo "</option>\n";
 }
 echo "</select>&nbsp;&nbsp;";
@@ -181,7 +171,7 @@ if (isset($info)) {
 	echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Compte rendu - ".$groupe->getNameAvecClasses();
 }
 if (!$ctCompteRendu->isNew() || isset($info)) {
-	echo " - <b><font color=\"red\">Modification de la notice</font></b> -
+	echo " - <b><font color=\"red\">Modification de la notice</font></b> - 
 			<a href=\"#\" onclick=\"javascript:
 				getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_groupe=".$groupe->getId()."&today=".$ctCompteRendu->getDateCt()."&ajout_nouvelle_notice=oui',
 					{ onComplete:
@@ -249,9 +239,12 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		<td style="width: 80%"><b><?php echo $titre; ?></b>&nbsp;
 		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer"
 			style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
+		<?php if (!isset($info)) { ?>
+
 		<button type="submit" style='font-variant: small-caps;'
 			onClick="javascript:$('passer_a').value = 'passer_devoir';">Enr. et
-		passer aux devoirs</button>
+		passer aux devoirs du lendemain</button>
+		<?php } ?>
 		<input type='hidden' id='passer_a' name='passer_a'
 			value='compte_rendu' /> <input type="hidden" name="date_ct"
 			value="<?php echo $ctCompteRendu->getDateCt(); ?>" /> <input
@@ -338,7 +331,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 					style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 				<button type="submit" style='font-variant: small-caps;'
 					onClick="javascript:$('passer_a').value = 'passer_devoir';">Enr. et
-				passer aux devoirs</button>
+				passer aux devoirs du lendemain</button>
 				</td>
 			</tr>
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">

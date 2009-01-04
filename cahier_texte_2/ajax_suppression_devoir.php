@@ -22,7 +22,7 @@
  */
 
 
-// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -42,23 +42,23 @@ if (!checkAccess()) {
     die();
 }
 
-//On vÃ©rifie si le module est activÃ©
+//On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
-    die("Le module n'est pas activÃ©.");
+    die("Le module n'est pas activé.");
 }
 
-//rÃ©cupÃ©ration de la notice
+//récupération de la notice
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_devoir"]) ? $_GET["id_devoir"] :NULL);
 $ctTravailAFaire = CtTravailAFairePeer::retrieveByPK($id_devoir);
 
 
-//si pas de notice prÃ©cisÃ©, erreur du script
+//si pas de notice précisé, erreur du script
 if ($ctTravailAFaire == null) {
   echo("Erreur : pas de devoir trouvé.");
   die();
 }
 
-// VÃ©rification : est-ce que l'utilisateur a le droit de supprimer cette entré ?
+// Vérification : est-ce que l'utilisateur a le droit de supprimer cette entré ?
 $utilisateur = $_SESSION['utilisateur'];
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");

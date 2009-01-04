@@ -22,7 +22,7 @@
  */
 
 
-// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -42,12 +42,12 @@ if (!checkAccess()) {
     die();
 }
 
-//On vÃ©rifie si le module est activÃ©
+//On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
     die("Le module n'est pas activé.");
 }
 
-// VÃ©rification : est-ce que l'utilisateur a le droit de supprimer cette entré ?
+// Vérification : est-ce que l'utilisateur a le droit de supprimer cette entré ?
 //$utilisateur = new Utilisateur();
 $utilisateur = $_SESSION['utilisateur'];
 if ($utilisateur == null) {
@@ -55,7 +55,7 @@ if ($utilisateur == null) {
     die();
 }
 
-//rÃ©cupÃ©ration de la notice
+//récupération de la notice
 $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
 if ($id_ct != null) {
 	$criteria = new Criteria();
@@ -64,7 +64,7 @@ if ($id_ct != null) {
 	$ctCompteRendu = $ctCompteRendus[0];
 }
 
-//si pas de notice prÃ©cisÃ©, erreur du script
+//si pas de notice précisé, erreur du script
 if ($ctCompteRendu == null) {
   echo("Erreur : pas de devoir trouvé.");
   die();

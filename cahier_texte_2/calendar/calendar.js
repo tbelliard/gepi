@@ -813,7 +813,7 @@ Calendar.prototype.create = function (_par) {
 		}
 	}
 	this.firstdayname = (this.weekNumbers) ? row.firstChild.nextSibling : row.firstChild;
-	this._displayWeekdays();
+	//this._displayWeekdays();
 
 	var tbody = Calendar.createElement("tbody", table);
 	this.tbody = tbody;

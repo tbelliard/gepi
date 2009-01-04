@@ -19,12 +19,12 @@ echo   ("checkAccess") ;
     die();
 }
 
-//On vÃ©rifie si le module est activÃ©
+//On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
-    die("Le module n'est pas activÃ©.");
+    die("Le module n'est pas activé.");
 }
 
-// VÃ©rification : est-ce que l'utilisateur a le droit d'Ãªtre ici ?
+// Vérification : est-ce que l'utilisateur a le droit d'Ãªtre ici ?
 if (isset($current_group["id"]) AND ($current_group["id"] != "") ) {
     if (!check_prof_groupe($_SESSION['login'],$current_group["id"])) {
         header("Location: ../logout.php?auto=1");
@@ -40,7 +40,7 @@ if (is_numeric($id_groupe)) {
     die();
 }
 
-// Liste les donnÃ©es des tables ct_entry et ct_devoirs_entry
+// Liste les données des tables ct_entry et ct_devoirs_entry
 // -------------------------------------------
 $req_notices =
     "select 'Compte rendu' type, date_ct, contenu
@@ -58,7 +58,7 @@ $sql_union = mysql_query($req_union);
 //html header
 header("Content-Type: application/csv-tab-delimited-table");
 
-//nom du fichier Ã  telecharger
+//nom du fichier à telecharger
 $str = substr($current_group["description"],0 , 4);
 foreach ($current_group["classes"]["classes"] as $classe) {
     $str .= $classe["classe"];
@@ -66,13 +66,13 @@ foreach ($current_group["classes"]["classes"] as $classe) {
 header("Content-disposition: filename=".$str.date("dmY").".csv");
 
 if (mysql_num_rows($sql_union) == 0) {
-    echo("aucune donnÃ©e"); 
+    echo("aucune donnée"); 
 } else {
     // titre des colonnes
     echo ("Date,Type,Contenu");
     echo "\n";
 
-    // donnÃ©es de la table
+    // données de la table
     while ($arrSelect = mysql_fetch_array($sql_union, MYSQL_ASSOC)) {
     	if ($arrSelect["date_ct"] != 0) {
         echo (strftime("%d/%m/%y", $arrSelect["date_ct"]).",");

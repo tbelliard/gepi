@@ -1,5 +1,5 @@
 <?php
-// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Initialisations files
@@ -21,18 +21,18 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vÃ©rifie si le module est activÃ©
+//On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
 	die("Le module n'est pas activé.");
 }
 
-//rÃ©cupÃ©ration des paramÃ¨tres
+//récupération des paramètres
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 $affiche_tout = isset($_POST["affiche_tout"]) ? $_POST["affiche_tout"] :(isset($_GET["affiche_tout"]) ? $_GET["affiche_tout"] :NULL);
-//date prÃ©sente
+//date présente
 $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
 
-//rÃ©cupÃ©ration du groupe courant
+//récupération du groupe courant
 $utilisateur = $_SESSION['utilisateur'];
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
@@ -57,7 +57,7 @@ if ($current_group == null) {
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value javascript trick to get selected value.
 echo ("<select id=\"id_groupe_colonne_gauche\" onChange=\"javascript:
 			selected_group = (\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value);
-			getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=' + selected_group);
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + selected_group);
 		\">");
 echo "<option value='-1'>(choisissez un groupe pour changer la liste)</option>\n";
 foreach ($utilisateur->getGroupes() as $group) {
@@ -86,7 +86,7 @@ if(getSettingValue('cahier_texte_acces_public')!='no'){
 if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != ''))
 echo "<br />(Identifiant : ".getSettingValue("cahiers_texte_login_pub")." - Mot de passe : ".getSettingValue("cahiers_texte_passwd_pub").")\n";
 
-// recherche des "travaux Ã  faire" futurs, toute matieres confondues, pour afficher le nombre total de devoirs pour une classe
+// recherche des "travaux à faire" futurs, toute matieres confondues, pour afficher le nombre total de devoirs pour une classe
 $debutCdt = getSettingValue("begin_bookings");
 foreach ($current_group->getClasses() as $classe) {
 	$total[$classe->getId()] = null;
@@ -105,18 +105,18 @@ foreach ($current_group->getClasses() as $classe) {
 	}
 }
 
-// Affichage des travaux à  faire futurs, toutes matiÃ¨res confondues
+// Affichage des travaux à  faire futurs, toutes matières confondues
 foreach ($current_group->getClasses() as $classe) {
 	if ($total[$classe->getId()] > 0) {
 		echo"<p>La classe " . $classe->getClasse() . " a  <a href=\"javascript:centrerpopup('liste_tous_devoirs.php?classe=". $classe->getId()."&amp;debut=$aujourdhui',260,320,'scrollbars=yes,statusbar=no,resizable=yes');\"><strong>" . $total[$classe->getId()] . "</strong> ";
 		echo (($total[$classe->getId()] == 1) ? "travail personnel" : "travaux personnels");
-		echo "</a> jusqu'au <strong>" . strftime("%a %d %b %y", $date[$classe->getId()]) . "</strong>.</p>\n";
+		echo "</a> jusqu'au <strong>" . iconv('ISO-8859-1', 'UTF-8', strftime("%a %d %b %y", $date[$classe->getId()])) . "</strong>.</p>\n";
 	}
 }
 
 $compteur_nb_total_notices = 0;
 
-//rÃ©cupÃ©ration de $liste_comptes_rendus : comptes rendus pour la matiÃ¨re en cours
+//récupération de $liste_comptes_rendus : comptes rendus pour la matière en cours
 $criteria = new Criteria(CtCompteRenduPeer::DATABASE_NAME);
 $criteria->add(CtCompteRenduPeer::DATE_CT, "0", "!=");
 $criteria->add(CtCompteRenduPeer::DATE_CT, null, Criteria::ISNOTNULL);
@@ -126,18 +126,18 @@ $criteria->addAscendingOrderByColumn(CtCompteRenduPeer::HEURE_ENTRY);
 $liste_comptes_rendus = $current_group->getCtCompteRendus($criteria);
 $compteur_nb_total_notices = $compteur_nb_total_notices + count($liste_comptes_rendus);
 if ($affiche_tout != "oui") {
-	//limit Ã  7 devoirs
+	//limit à 7 devoirs
 	$liste_comptes_rendus = array_slice($liste_comptes_rendus, 0 , 7);
 }
 
-//rÃ©cupÃ©ration de $liste_devoir : devoirs pour la matiÃ¨re en cours
+//récupération de $liste_devoir : devoirs pour la matière en cours
 $criteria = new Criteria(CtTravailAFairePeer::DATABASE_NAME);
 $criteria->add(CtTravailAFairePeer::DATE_CT, $debutCdt, ">=");
 $criteria->addDescendingOrderByColumn(CtTravailAFairePeer::DATE_CT);
 $liste_devoir = $current_group->getCtTravailAFaires($criteria);
 $compteur_nb_total_notices = $compteur_nb_total_notices + count($liste_devoir);
 if ($affiche_tout != "oui") {
-	//limit Ã  7 devoirs
+	//limit à 7 devoirs
 	$liste_devoir = array_slice($liste_devoir, 0 , 7);
 }
 
@@ -205,12 +205,12 @@ while (true) {
 		echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["c"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
 		echo("<b>" . strftime("%a %d %b %y", $compte_rendu->getDateCt()) . "</b>\n");
 
-		// Numerotation des notices si plusieurs notice sur la mÃªme journÃ©e
+		// Numerotation des notices si plusieurs notice sur la mÃªme journée
 		if ($date_ct_old == $compte_rendu->getDateCt()) {
 			$num_notice++;
 			echo " <b><i>(notice N° ".$num_notice.")</i></b>";
 		} else {
-			// on affiche "(notice NÂ° 1)" uniquement s'il y a plusieurs notices dans la mÃªme journÃ©e
+			// on affiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
 			if (!empty($liste_comptes_rendus) && $liste_comptes_rendus[0]->getDateCt() == $compte_rendu->getDateCt()) {
 				echo " <b><i>(notice N° 1)</i></b>";
 			}
@@ -278,13 +278,13 @@ if ($compteur_nb_total_notices > $compteur_notices_affiches) {
 	echo "<fieldset style=\"border: 1px solid grey; font-size: 0.8em; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
 	echo "<legend style=\"font-variant: small-caps; border: 1px solid grey;\">".$legend."</legend>";
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"javascript:
-			getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?affiche_tout=oui&id_groupe=".$current_group->getId()."');
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?affiche_tout=oui&id_groupe=".$current_group->getId()."');
 			return false;\">";
 	echo "Afficher&nbsp;toutes&nbsp;les&nbsp;notices</a>\n";
 	echo "</fieldset>";
 }
 
-// Affichage des info gÃ©nÃ©rales
+// Affichage des info générales
 echo "<br>";
 $criteria = new Criteria(CtCompteRenduPeer::DATABASE_NAME);
 $criteria->add(CtCompteRenduPeer::DATE_CT, '0', '=');

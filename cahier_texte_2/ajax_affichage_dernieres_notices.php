@@ -1,5 +1,5 @@
 <?php
-// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Initialisations files
@@ -21,7 +21,7 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vÃ©rifie si le module est activÃ©
+//On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
 	die("Le module n'est pas activé.");
 }
@@ -36,7 +36,7 @@ $groups = $utilisateur->getGroupes();
 
 echo "<table width='100%' cellspacing='5px'>";
 $i = 0;
-//pour chaque groupe, on rÃ©cupÃ¨re un compte rendu et un travail Ã  faire
+//pour chaque groupe, on récupère un compte rendu et un travail à  faire
 foreach ($groups as $group) {
 	$i = $i + 1;
 	//on affiche sur deux colonne : % est l'operateur pour modulo
@@ -55,17 +55,17 @@ foreach ($groups as $group) {
 								}
 							}
 						);
-						getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_ct=&id_groupe=".$group->getId()."&today='+getCalendarUnixDate());
-						$('groupe_boutons_index').show();
-						$('calendar-container').show();
+						getWinListeNotices();
+						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_ct=&id_groupe=".$group->getId()."&today='+getCalendarUnixDate());
 						return false;
 			       \">";
 
-	echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $group->getDescriptionAvecClasses() . "</a></p>\n";
-	echo "</td></tr>";
+	echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $group->getDescriptionAvecClasses() . "\n";
+	echo "<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n";
+	echo "</p></td></tr>";
 
 	echo "<tr>";
-	//rÃ©cupÃ©ration et affichage du dernier compte rendu
+	//récupération et affichage du dernier compte rendu
 	$criteria = new Criteria(CtCompteRenduPeer::DATABASE_NAME);
 	$criteria->add(CtCompteRenduPeer::DATE_CT, "0", "!=");
 	$criteria->add(CtCompteRenduPeer::DATE_CT, null, Criteria::ISNOTNULL);
@@ -90,7 +90,8 @@ foreach ($groups as $group) {
 					            	{ onComplete :
 					            		function() {
 					            			getWinEditionNotice().updateWidth();
-											getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."&today='+getCalendarUnixDate(),
+					            			getWinListeNotices();
+											new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."&today='+getCalendarUnixDate(),
 												{ onComplete :
 													function() {
 														compte_rendu_en_cours_de_modification('compte_rendu_".$compte_rendu->getIdCt()."');
@@ -100,8 +101,6 @@ foreach ($groups as $group) {
 										}
 									}
 								);
-								$('groupe_boutons_index').show();
-								$('calendar-container').show();
 								return false;
 								");
 			$html_balise .=("\">");
@@ -131,7 +130,7 @@ foreach ($groups as $group) {
 			$html_balise = " ";
 		} else {
 			if ($compte_rendu->getVise() == 'y') {
-				$html_balise .= "<i><span  class=\"red\">Notice signÃ©e</span></i>";
+				$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 			}
 		}
 		$html_balise .= '</div>';
@@ -146,7 +145,7 @@ foreach ($groups as $group) {
 	}
 	echo "</td>";
 
-	//rÃ©cupÃ©ration et affichage du dernier travail Ã  faire
+	//récupération et affichage du dernier travail à faire
 	$criteria = new Criteria(CtTravailAFairePeer::DATABASE_NAME);
 	$criteria->add(CtTravailAFairePeer::DATE_CT, $debutCdt, ">=");
 	$criteria->addDescendingOrderByColumn(CtTravailAFairePeer::DATE_CT);
@@ -169,7 +168,8 @@ foreach ($groups as $group) {
 						            { onComplete :
 					            		function() {
 					            			new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-											getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."&today='+getCalendarUnixDate(),
+					            			getWinListeNotices();
+											new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."&today='+getCalendarUnixDate(),
 												{ onComplete :
 													function() {
 														compte_rendu_en_cours_de_modification('devoir_".$devoir->getIdCt()."');
@@ -179,8 +179,6 @@ foreach ($groups as $group) {
 										}
 									}
 								);
-								$('groupe_boutons_index').show();
-								$('calendar-container').show();
 								return false;
       						");
 			$html_balise .=("\">");
@@ -202,7 +200,7 @@ foreach ($groups as $group) {
 								\">
 			<img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
 		} else {
-			$html_balise .= "<i><span  class=\"red\">Notice signÃ©e</span></i>";
+			$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 		}
 		$html_balise .= '</div>';
 		echo($html_balise);
@@ -231,7 +229,7 @@ function afficheDocuments ($documents) {
 		//$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
 		$html .= "<ul style=\"padding-left: 15px;\">";
 		foreach ($documents as $document) {
-			// Ouverture dans une autre fenÃªtre conservÃ©e parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
+			// Ouverture dans une autre fenÃªtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
 			// alternative, utiliser un javascript
 			$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"".$document->getEmplacement()."\">".$document->getTitre()."</a></li>";
 

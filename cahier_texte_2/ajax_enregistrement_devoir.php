@@ -22,11 +22,11 @@
  */
 
 
-// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Dans le cas ou on poste une notice ou un devoir, pas de traitement anti_inject
-// Pour ne pas interfÃ©rer avec fckeditor
+// Pour ne pas interférer avec fckeditor
 $traite_anti_inject = 'no';
 
 require_once("../lib/initialisationsPropel.inc.php");
@@ -39,7 +39,7 @@ if ($utilisateur == null) {
 	die();
 }
 
-//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
+//récupération des paramètres de la requète
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_devoir"]) ? $_GET["id_devoir"] :NULL);
 $date_devoir = isset($_POST["date_devoir"]) ? $_POST["date_devoir"] :(isset($_GET["date_devoir"]) ? $_GET["date_devoir"] :NULL);
 $contenu = isset($_POST["contenu"]) ? $_POST["contenu"] :NULL;
@@ -63,36 +63,38 @@ if ($uid_post==$_SESSION['uid_prime']) {
 }
 $_SESSION['uid_prime'] = $uid_post;
 
-//rÃ©cupÃ©ration du compte rendu
+//récupération du compte rendu
 $ctTravailAFaire = CtTravailAFairePeer::retrieveByPK($id_devoir);
 if ($ctTravailAFaire != null) {
 	$groupe = $ctTravailAFaire->getGroupe();
 }
 
-//si pas  du compte rendu trouvé, rÃ©cupÃ©ration du groupe dans la requete et crÃ©ation d'un nouvel objet CtCompteRendu
+//si pas  du compte rendu trouvé, récupération du groupe dans la requete et création d'un nouvel objet CtCompteRendu
 if ($ctTravailAFaire == null) {
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
 		echo("Erreur : pas de groupe ou mauvais groupe spécifié");
 		die;
 	}
-	//pas de notices, on lance une crÃ©ation de notice
+
+	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
+	if (!$groupe->belongsTo($utilisateur)) {
+		echo "le groupe n'appartient pas au professeur";
+		die();
+	}
+
+	//pas de notices, on lance une création de notice
 	$ctTravailAFaire = new CtTravailAFaire();
 	$ctTravailAFaire->setIdGroupe($groupe->getId());
 	$ctTravailAFaire->setIdLogin($utilisateur->getLogin());
 }
 
-// VÃ©rification : est-ce que l'utilisateur a le droit de travailler sur ce devoir ?
+// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce devoir ?
 if ($ctTravailAFaire->getIdLogin() != $utilisateur->getLogin()) {
 	echo("Erreur : vous n'avez pas le droit de modifier cette notice.");
 	die();
 }
 
-// VÃ©rification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
-if (null == JGroupesProfesseursPeer::retrieveByPK($groupe->getId(), $utilisateur->getLogin())) {
-	echo("Erreur : vous n'avez pas le droit de modifier cette notice.");
-	die();
-}
 
 // interdire la modification d'un visa par le prof si c'est un visa
 if ($ctTravailAFaire->getVise() == 'y') {
@@ -100,7 +102,7 @@ if ($ctTravailAFaire->getVise() == 'y') {
 	die();
 }
 
-//affectation des parametres de la requete Ã  l'objet ctCompteRendu
+//affectation des parametres de la requete à l'objet ctCompteRendu
 $contenu_cor = traitement_magic_quotes(corriger_caracteres($contenu),'');
 $contenu_cor = str_replace("\\r","",$contenu_cor);
 $contenu_cor = str_replace("\\n","",$contenu_cor);

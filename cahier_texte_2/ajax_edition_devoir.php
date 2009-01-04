@@ -22,7 +22,7 @@
  */
 
 
-// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -42,7 +42,7 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vÃ©rifie si le module est activÃ©
+//On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
 	die("Le module n'est pas activé.");
 }
@@ -53,7 +53,7 @@ if ($utilisateur == null) {
 	die();
 }
 
-//rÃ©cupÃ©ration de la notice
+//récupération de la notice
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_devoir"]) ? $_GET["id_devoir"] :NULL);
 $succes = isset($_POST["succes"]) ? $_POST["succes"] :(isset($_GET["succes"]) ? $_GET["succes"] :NULL);
 $today = isset($_POST["today"]) ? $_POST["today"] :(isset($_GET["today"]) ? $_GET["today"] :NULL);
@@ -64,22 +64,23 @@ if ($ctTravailAFaire != null) {
 	$today = $ctTravailAFaire->getDateCt();
 }
 
-//si pas de notice prÃ©cisÃ©, rÃ©cupÃ©ration du groupe dans la requete et recherche d'une notice pour la date prÃ©cisÃ©e ou crÃ©ation d'une nouvelle notice
+//si pas de notice précisé, récupération du groupe dans la requete et recherche d'une notice pour la date précisée ou création d'une nouvelle notice
 if ($ctTravailAFaire == null) {
-	//pas de notices, on lance une crÃ©ation de notice
+	//pas de notices, on lance une création de notice
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
 		echo("Pas de groupe spécifié");
 		die;
 	}
-	// VÃ©rification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
-	if (null == JGroupesProfesseursPeer::retrieveByPK($groupe->getId(), $utilisateur->getLogin())) {
-		header("Location: ../logout.php?auto=1");
+
+	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
+	if (!$groupe->belongsTo($utilisateur)) {
+		echo "le groupe n'appartient pas au professeur";
 		die();
 	}
 
-	//on cherche si il y a une notice pour le groupe Ã  la date prÃ©cisÃ©e
+	//on cherche si il y a une notice pour le groupe à la date précisée
 	$criteria = new Criteria(CtTravailAFairePeer::DATABASE_NAME);
 	$criteria->add(CtTravailAFairePeer::DATE_CT, $today, '=');
 	$criteria->add(CtTravailAFairePeer::ID_LOGIN, $utilisateur->getLogin());
@@ -95,7 +96,7 @@ if ($ctTravailAFaire == null) {
 	}
 }
 
-// VÃ©rification : est-ce que l'utilisateur a le droit de supprimer cette entré ?
+// Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
 if ($ctTravailAFaire->getIdLogin() != $utilisateur->getLogin()) {
 	echo("Erreur : vous n'avez pas le droit de modifier cette notice.");
 	die();
@@ -126,17 +127,11 @@ echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 			compte_rendu_en_cours_de_modification('aucun');
 		\">");
 echo "<option value='-1'>(choisissez un groupe pour changer l'edition)</option>\n";
-foreach ($utilisateur->getGroupes() as $group) {
-	echo "<option id='colonne_droite_select_group_option_".$group->getId()."' value='".$group->getId()."'";
-	if ($groupe->getId() == $group->getId()) echo " SELECTED ";
+foreach ($utilisateur->getGroupes() as $group_iter) {
+	echo "<option id='colonne_droite_select_group_option_".$group_iter->getId()."' value='".$group_iter->getId()."'";
+	if ($groupe->getId() == $group_iter->getId()) echo " SELECTED ";
 	echo ">";
-	echo $group->getDescription() . "&nbsp;-&nbsp;(";
-	$str = null;
-	foreach ($group->getClasses() as $classe) {
-		$str .= $classe->getClasse() . ", ";
-	}
-	$str = substr($str, 0, -2);
-	echo $str . ")&nbsp;\n";
+	echo $group_iter->getDescriptionAvecClasses();
 	echo "</option>\n";
 }
 echo "</select>&nbsp;&nbsp;";
@@ -226,7 +221,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 	<tr>
 		<td colspan="5"><?php
 
-		echo "<div style=\"background-color: white;\"><textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctTravailAFaire->getContenu()."</textarea></div>";
+		echo "<div style=\"background-color: white;\"><textarea name=\"contenu\" style=\"background-color: white; width: 100%\" id=\"contenu\">".$ctTravailAFaire->getContenu()."</textarea></div>";
 
 		//// gestion des fichiers attaché
 		echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">';

@@ -1,8 +1,8 @@
 Event.observe(window, 'load', initPage);
 
 function initPage () {
-	getWinDernieresNotices().setAjaxContent('ajax_affichage_dernieres_notices.php');
 	getWinCalendar();
+	getWinDernieresNotices().show();
 }
 
 
@@ -43,6 +43,7 @@ function getWinListeNotices() {
 			fontSize: '12px',
 			color: '#000000'
 		});
+		winListeNotices.getContent().innerHTML= "<div id='affichage_liste_notice'><div>";
 	}
 	winListeNotices.show();
 	winListeNotices.toFront();
@@ -57,7 +58,7 @@ function getWinEditionNotice() {
 				showEffect: Element.show,
 				top:180, 
 				left:340,
-				width:GetWidth()-400,
+				width:GetWidth()-348,
 				height:GetHeight() - 240}
 			);
 		$('win_edition_notice_content').setStyle({	
@@ -80,7 +81,7 @@ function getWinDernieresNotices() {
 				showEffect: Element.show,
 				hideEffect: Element.hide,
 				top:130, 
-				left:200,
+				left:70,
 				width:GetWidth()-320,
 				height:GetHeight() - 240}
 			);
@@ -89,9 +90,18 @@ function getWinDernieresNotices() {
 			fontSize: '14px',
 			color: '#000000'
 		});
+		winDernieresNotices.getContent().innerHTML= "<div id='affichage_derniere_notice'><div>";
+		// Set up a windows observer to refresh the window when focused
+		 myObserver = { onFocus: function(eventName, win) { 
+			 	if (win == winDernieresNotices) {
+			 		new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php');
+			 		//win.setAjaxContent('ajax_affichage_dernieres_notices.php');
+			 	}
+		 	}
+		 }
+		 Windows.addObserver(myObserver);
+		 winDernieresNotices.show();
 	}
-	winDernieresNotices.show();
-	winDernieresNotices.toFront();
 	return winDernieresNotices;
 }
 
@@ -100,22 +110,26 @@ function getWinCalendar() {
 		winCalendar = new Window(
 				{id: 'win_calendar',
 				title: 'Calendrier',
+				closable: false,
+				minimizable: false,
+				maximizable: false,
 				showEffect: Element.show,
-				top:20, 
-				right:40,
-				width:270,
-				height:210}
+				top:0, 
+				right:85,
+				width:155,
+				height:157}
 			);
 		$('win_calendar_content').setStyle({	
 			backgroundColor: '#d0d0d0',
 			color: '#000000',
 		});
-		$('win_calendar_content').innerHTML = '<table><tr><td><div id="calendar-container-2"></div></td></tr></table>';
+		$('win_calendar_content').innerHTML = '<div id="calendar-container-2">';
 		calendarInstanciation = Calendar.setup(
 				{
 					flat         : "calendar-container-2", // ID of the parent element
 					flatCallback : dateChanged,          // our callback function
-					daFormat     : "%s"    			   //date format
+					daFormat     : "%s",    			   //date format
+					weekNumbers  : false
 				}
 			);
 	}

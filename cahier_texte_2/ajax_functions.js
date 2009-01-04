@@ -20,7 +20,7 @@ function suppressionCompteRendu(message, id_ct_a_supprimer) {
       							{ onComplete: 
       								function(transport) {
 										new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-				      					getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
+				      					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
 									} 
       							}
       						);
@@ -29,7 +29,7 @@ function suppressionCompteRendu(message, id_ct_a_supprimer) {
       							{ onComplete: 
       								function(transport) {
       									getWinEditionNotice().updateWidth();
-      			      					getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
+      			      					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
       								}
       							}
       						);
@@ -54,7 +54,7 @@ function suppressionDevoir(message, id_devoir_a_supprimer, id_groupe) {
       							{ onComplete: 
       								function(transport) {
 										new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-										getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
+										new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
 									}
       							}
       						);
@@ -63,7 +63,7 @@ function suppressionDevoir(message, id_devoir_a_supprimer, id_groupe) {
       							{ onComplete: 
       								function(transport) {
       									getWinEditionNotice().updateWidth();
-										getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
+										new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
 									}
       							}
       						);
@@ -87,7 +87,7 @@ function suppressionDocument(message, id_document_a_supprimer, id_ct) {
 	      					{ onComplete: 
 	      						function(transport) {
 	      							getWinEditionNotice().updateWidth();
-				  					getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
+				  					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
 				  						{ onComplete: 
 				  							function() {
 				  								compte_rendu_en_cours_de_modification('compte_rendu_' + id_ct);
@@ -116,7 +116,7 @@ function suppressionDevoirDocument(message, id_document_a_supprimer, id_devoir, 
 	      					{ onComplete: 
 	      						function(transport) {
 									new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-				  					getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
+				  					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
 				  						{ onComplete: 
 				  							function() {
 				  								compte_rendu_en_cours_de_modification('devoir_' + id_devoir);
@@ -165,11 +165,11 @@ function completeEnregistrementCompteRenduCallback(response) {
 		id_ct_en_cours = response;
 		if ($('passer_a').value == 'passer_devoir') {
 			object_en_cours_edition = 'devoir';
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
 			getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?today=' + getTomorrowCalendarUnixDate() +'&id_groupe=' + id_groupe, 
 				{ onComplete:
 					function(transport) {
 						new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-				      	getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
 					}
 				}
 			);
@@ -178,14 +178,14 @@ function completeEnregistrementCompteRenduCallback(response) {
       		getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?succes_modification=oui&id_ct=' + id_ct_en_cours,
       			{ onComplete: 
       				function(transport) {
-      					getWinEditionNotice().uptdateWidth();
-				      	getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
-				          	{ onComplete:
-				          		function(transport) {
-				      				compte_rendu_en_cours_de_modification('compte_rendu_'+id_ct_en_cours);
-				      			}
-				          	}
-				      	);
+      					getWinEditionNotice().updateWidth();
+      			      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
+      				          	{ onComplete:
+      				          		function(transport) {
+      				      				compte_rendu_en_cours_de_modification('compte_rendu_'+id_ct_en_cours);
+      				      			}
+      				          	}
+      				      	);
 					}
       			}
       		);
@@ -216,21 +216,20 @@ function completeEnregistrementDevoirCallback(response) {
 		id_ct_en_cours = response;
 		if ($('passer_a').value == 'passer_compte_rendu') {
 			object_en_cours_edition = 'compte_rendu';
-			getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?today=' + getTomorrowCalendarUnixDate() +'&id_groupe=' + id_groupe, 
+			getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?today=' + getCalendarUnixDate() +'&id_groupe=' + id_groupe, 
 				{ onComplete:
 					function(transport) {
 						getWinEditionNotice().updateWidth();
-				      	getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
+				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
 					}
 				}
 			);
-			updateCalendarWithUnixDate(getTomorrowCalendarUnixDate());
       	} else {
       		getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?succes_modification=oui&id_devoir=' + id_ct_en_cours,
       			{ onComplete: 
       				function(transport) {
 						new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-				      	getWinListeNotices().setAjaxContent('./ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
+				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
 				          	{ onComplete:
 				          		function(transport) {
 				      				compte_rendu_en_cours_de_modification('devoir_'+id_ct_en_cours);

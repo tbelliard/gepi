@@ -97,11 +97,11 @@ Calendar._TT["ABOUT_TIME"] = "\n\n" +
 "- ou Maj-clic pour decrementer\n" +
 "- ou clic et glisser-deplacer pour une selection plus rapide";
 
-Calendar._TT["PREV_YEAR"] = "Annee prec. (maintenir pour menu)";
-Calendar._TT["PREV_MONTH"] = "Mois prec. (maintenir pour menu)";
+Calendar._TT["PREV_YEAR"] = "Annee prec.";
+Calendar._TT["PREV_MONTH"] = "Mois prec.";
 Calendar._TT["GO_TODAY"] = "Atteindre la date du jour";
-Calendar._TT["NEXT_MONTH"] = "Mois suiv. (maintenir pour menu)";
-Calendar._TT["NEXT_YEAR"] = "Annee suiv. (maintenir pour menu)";
+Calendar._TT["NEXT_MONTH"] = "Mois suiv.";
+Calendar._TT["NEXT_YEAR"] = "Annee suiv.";
 Calendar._TT["SEL_DATE"] = "Selectionner une date";
 Calendar._TT["DRAG_TO_MOVE"] = "Deplacer";
 Calendar._TT["PART_TODAY"] = " (Aujourd'hui)";
