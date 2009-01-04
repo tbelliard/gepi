@@ -6,7 +6,7 @@ require 'gepi/om/BaseCtTravailAFairePeer.php';
 /**
  * Skeleton subclass for performing query and update operations on the 'ct_devoirs_entry' table.
  *
- * Travail Ã  faire cahier de texte
+ * Travail à  faire (devoir) cahier de texte
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as

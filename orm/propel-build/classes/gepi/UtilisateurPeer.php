@@ -6,7 +6,7 @@ require 'gepi/om/BaseUtilisateurPeer.php';
 /**
  * Skeleton subclass for performing query and update operations on the 'utilisateurs' table.
  *
- * Table utilisateurs
+ * Utilisateur de gepi
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as

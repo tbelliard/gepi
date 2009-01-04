@@ -6,7 +6,7 @@ require 'gepi/om/BaseCtCompteRendu.php';
 /**
  * Skeleton subclass for representing a row from the 'ct_entry' table.
  *
- * Compte rendu cahier de texte
+ * Compte rendu du cahier de texte
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as

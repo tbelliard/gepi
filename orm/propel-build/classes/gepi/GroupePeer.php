@@ -4,9 +4,9 @@ require 'gepi/om/BaseGroupePeer.php';
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'groupe' table.
+ * Skeleton subclass for performing query and update operations on the 'groupes' table.
  *
- * table des groupes
+ * Groupe d'eleves permettant d'y affecter des matieres et des professeurs
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as

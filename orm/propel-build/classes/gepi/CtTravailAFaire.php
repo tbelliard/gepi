@@ -6,7 +6,7 @@ require 'gepi/om/BaseCtTravailAFaire.php';
 /**
  * Skeleton subclass for representing a row from the 'ct_devoirs_entry' table.
  *
- * Travail Ã  faire cahier de texte
+ * Travail � faire (devoir) cahier de texte
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as

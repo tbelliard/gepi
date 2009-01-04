@@ -6,7 +6,7 @@ require 'gepi/om/BaseJGroupesClasses.php';
 /**
  * Skeleton subclass for representing a row from the 'j_groupes_classes' table.
  *
- * 
+ * Table permettant le jointure entre groupe d'eleves et une classe. Est rarement utilisé directement dans le code.
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as

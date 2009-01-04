@@ -4,9 +4,9 @@ require 'gepi/om/BaseGroupe.php';
 
 
 /**
- * Skeleton subclass for representing a row from the 'groupe' table.
+ * Skeleton subclass for representing a row from the 'groupes' table.
  *
- * table des groupes
+ * Groupe d'eleves permettant d'y affecter des matieres et des professeurs
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -18,15 +18,15 @@ class Groupe extends BaseGroupe {
 
 	/**
 	 * The value for DescriptionAvecClasses
-	 * 	 * @var        string
+	 * @var        string
 	 */
-	protected static $descriptionAvecClasses;
+	protected $descriptionAvecClasses;
 
 	/**
 	 * The value for NameAvecClasses
-	 * 	 * @var        string
+	 * @var        string
 	 */
-	protected static $nameAvecClasses;
+	protected $nameAvecClasses;
 
 	/**
 	 * Initializes internal state of Groupe object.
@@ -40,24 +40,29 @@ class Groupe extends BaseGroupe {
 	}
 
 	/**
+	 *
+	 * Renvoi sous forme d'un tableau la liste des classes d'un groupe.
 	 * Manually added for N:M relationship
 	 *
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     array Classes[]
+	 *
 	 */
-	public function getClasses($c = null) {
+	public function getClasses($con = null) {
 		$classes = array();
-		foreach($this->getJGroupesClassessJoinClasse($c) as $ref) {
+		foreach($this->getJGroupesClassessJoinClasse($con) as $ref) {
 			$classes[] = $ref->getClasse();
 		}
 		return $classes;
 	}
 
 	/**
-	 * Renvoi la description du groupe avec la liste des classes associ�es
-	 *
+	 * Renvoi la description du groupe avec la liste des classes associées
+	 * @return     String
 	 */
 	public function getDescriptionAvecClasses() {
-		if (Groupe::$descriptionAvecClasses != null) {
-			return Groupe::$descriptionAvecClasses;
+		if (isset($this->descriptionAvecClasses) && $this->descriptionAvecClasses != null) {
+			return $this->descriptionAvecClasses;
 		} else {
 			$str = $this->getDescription();
 			$str .= "&nbsp;(";
@@ -66,18 +71,18 @@ class Groupe extends BaseGroupe {
 			}
 			$str = substr($str, 0, -7);
 			$str.= ")";
-			$descriptionAvecClasses = $str;
+			$this->descriptionAvecClasses = $str;
 			return $str;
 		}
 	}
 
 	/**
-	 * Renvoi le nom du groupe avec la liste des classes associ�es
-	 *
+	 * Renvoi le nom du groupe avec la liste des classes associées
+	 * @return     string
 	 */
 	public function getNameAvecClasses() {
-		if (Groupe::$nameAvecClasses != null) {
-			return Groupe::$nameAvecClasses;
+		if (isset($this->nameAvecClasses) && $this->nameAvecClasses != null) {
+			return $this->nameAvecClasses;
 		} else {
 			$str = $this->getName();
 			$str .= "&nbsp;-&nbsp;(";
@@ -86,7 +91,7 @@ class Groupe extends BaseGroupe {
 			}
 			$str = substr($str, 0, -7);
 			$str.= ")";
-			$nameAvecClasses = $str;
+			$this->nameAvecClasses = $str;
 			return $str;
 		}
 	}
@@ -107,7 +112,7 @@ class Groupe extends BaseGroupe {
 		$nameAvecClasses = null;
 	}
 
-		/**
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -119,6 +124,32 @@ class Groupe extends BaseGroupe {
 	public function clearAllReferences($deep = false) {
 		parent::clearAllReferences($deep);
 		$this->clearJGroupesClassess();
+	}
+
+	/**
+	 * Manually added
+	 *
+	 * La méthode renvoi true si le Groupe est affecté à l'utilisateur.
+	 *
+	 * @param      Utilisateur $utilisateur l'utilisateur à qui appartient le groupe
+	 * @return     boolean true si le groupe appartient à l'utilisateur
+	 * @throws     PropelException  - Any caught Exception will be rewrapped as a PropelException.
+	 */
+	public function belongsTo($utilisateur) {
+		if (!isset($utilisateur) || $utilisateur == null) {
+			return false;
+		} elseif (!($utilisateur instanceof Utilisateur)) {
+			throw new PropelException("L'objet passé n'est pas de la classe Utilisateur");
+		} else {
+			$group_appartient_utilisateur = false;
+			foreach ($utilisateur->getGroupes() as $group_iter) {
+				if ($this->getId() == $group_iter->getId()) {
+					$group_appartient_utilisateur = true;
+					break;
+				}
+			}
+			return $group_appartient_utilisateur;	
+		}
 	}
 
 } // Groupe
