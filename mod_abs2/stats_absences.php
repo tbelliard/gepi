@@ -44,12 +44,24 @@ if ($resultat_session == 'c') {
 
 
 // ============== Code métier ===============================
-include("classes/absences.class.php");
-include("lib/erreurs.php");
-include("helpers/aff_listes_utilisateurs.inc.php");
+include("../lib/initialisationsPropel.inc.php");
 
 
 try{
+
+$test = new Utilisateur();
+$test = UtilisateurPeer::retrieveByPKs('all');
+$test->
+$test2 = $test->getGroupes();
+
+  foreach ($test2 as $group){
+    echo utf8_decode($group->getDescription());
+  }
+
+
+echo '<pre><br />' . $test3;
+print_r($test2);
+echo '</pre>';
 
 }catch(exception $e){
   affExceptions($e);

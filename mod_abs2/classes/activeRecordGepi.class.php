@@ -656,8 +656,8 @@ class ActiveRecordGepi{
       // On considère que les conventions sont respectées
       $join = 'j_' . $table_externe . '_' . $this->_table;
       $id_table = $id_table_ext = 'id';
-      $champ_join_table = 'id_' . $this->singularize($this->_table);
-      $champ_join_table_ext = 'id_' . $this->singularize($table_externe);
+      $champ_join_table     = $this->singularize($this->_table) . '_id';
+      $champ_join_table_ext = $this->singularize($table_externe) . '_id';
 
     }
 

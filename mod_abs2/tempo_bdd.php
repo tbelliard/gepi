@@ -37,6 +37,7 @@ $tab[] = "CREATE TABLE IF NOT EXISTS `abs_types` (`id` int(11) NOT NULL auto_inc
 $tab[] = "CREATE TABLE IF NOT EXISTS `abs_motifs` (`id` int(11) NOT NULL auto_increment, `type_motif` VARCHAR(250) NOT NULL, PRIMARY KEY ( `id` ) ) ENGINE = InnoDB";
 $tab[] = "CREATE TABLE IF NOT EXISTS `abs_justifications` (`id` int(11) NOT NULL auto_increment, `type_justification` VARCHAR(250) NOT NULL, PRIMARY KEY ( `id` ) ) ENGINE = InnoDB";
 $tab[] = "CREATE TABLE IF NOT EXISTS `abs_actions` (`id` int(11) NOT NULL auto_increment, `type_action` VARCHAR(250) NOT NULL, PRIMARY KEY ( `id` ) ) ENGINE = InnoDB";
+$tab[] = "CREATE TABLE IF NOT EXISTS `j_abs_informations_abs_traitements` (`abs_information_id` int(11) NOT NULL, `id_abs_traitement_id` int(11) NOT NULL)";
 
 $nbre = count($tab);
 
