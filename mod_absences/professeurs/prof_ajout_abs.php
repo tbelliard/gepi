@@ -930,7 +930,21 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		$execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL AID !'.$requete_liste_eleve.'<br />'.mysql_error());
 	}
 	else {
-		$requete_liste_eleve = "SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY eleves.login ORDER BY nom, prenom";
+    // Ajout d'un test sur la période active
+    $sql = "SELECT DISTINCT num_periode FROM periodes WHERE verouiller = 'N' ORDER BY num_periode";
+    $periode_active = mysql_query($sql) OR DIE('Impossible de récupérer le numéro de la période active' . $sql . '<br />--> ' . mysql_error());
+    $periode = mysql_fetch_array($periode_active);
+    //echo '<pre>'; print_r($periode); echo'</pre>'; exit();
+    $nbre_per = count($periode);
+    $_periode = isset($periode[0]) ? $periode[0] : '1';
+
+		$requete_liste_eleve = "SELECT * FROM eleves, groupes, j_eleves_groupes 
+                              WHERE eleves.login=j_eleves_groupes.login
+                              AND j_eleves_groupes.id_groupe=groupes.id
+                              AND j_eleves_groupes.periode = " . $_periode . "
+                              AND id = '".$classe."'
+                            GROUP BY eleves.login
+                            ORDER BY nom, prenom";
         $execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
     }
 	$cpt_eleve = '0';
