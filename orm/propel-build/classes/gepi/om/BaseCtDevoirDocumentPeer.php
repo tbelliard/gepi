@@ -3,7 +3,7 @@
 /**
  * Base static class for performing query and update operations on the 'ct_devoirs_documents' table.
  *
- * Document des devoirs du cahier de texte
+ * Document (fichier joint) appartenant a un travail Ã  faire du cahier de texte
  *
  * @package    gepi.om
  */

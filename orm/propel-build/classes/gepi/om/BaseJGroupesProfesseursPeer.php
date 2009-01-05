@@ -3,7 +3,7 @@
 /**
  * Base static class for performing query and update operations on the 'j_groupes_professeurs' table.
  *
- * 
+ * Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilisÃ© directement dans le code.
  *
  * @package    gepi.om
  */

@@ -3,7 +3,7 @@
 /**
  * Base static class for performing query and update operations on the 'ct_documents' table.
  *
- * Document du cahier de texte
+ * Document (fichier joint) appartenant a un compte rendu du cahier de texte
  *
  * @package    gepi.om
  */

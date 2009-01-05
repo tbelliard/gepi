@@ -41,7 +41,7 @@ return array_merge_recursive(array (
           array (
             'charset' =>
             array (
-              'value' => 'utf8',
+              'value' => 'Latin1',
             ),
           ),
         ),
