@@ -1075,7 +1075,10 @@ if(!empty($model_bulletin)) {
 			//=========================
 			// MODIF: boireaus 20071004
 			//$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
-			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY resp_legal ASC");
+			//$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY resp_legal ASC");
+			$sql="SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY resp_legal ASC";
+//echo "$sql<br />";
+			$requete_parents = mysql_query($sql);
 			//=========================
 
 			while ($donner_parents = mysql_fetch_array($requete_parents))
@@ -2232,6 +2235,8 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 			//=========================
 			// Modif: boireaus 20080312
 			//$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+//echo "\$nom_parents[$ident_eleve_aff][0]=".$nom_parents[$ident_eleve_aff][0]."<br />";
+//echo "\$nom_parents[$ident_eleve_aff][1]=".$nom_parents[$ident_eleve_aff][1]."<br />";
 			if($responsable_place==0) {
 				/*
 					$civilite_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['civilite'];
@@ -2253,6 +2258,9 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 					(isset($pays_parents[$ident_eleve_aff][1]))&&
 					(isset($cp_parents[$ident_eleve_aff][1]))
 				) {
+					// Il se passe un truc bizarre avec ces tests:
+					// Il arrive à considérer différentes des adresses identiques???
+					/*
 					if(($adresse1_parents[$ident_eleve_aff][0]==$adresse1_parents[$ident_eleve_aff][1])&&
 						($adresse2_parents[$ident_eleve_aff][0]==$adresse2_parents[$ident_eleve_aff][1])&&
 						($adresse3_parents[$ident_eleve_aff][0]==$adresse2_parents[$ident_eleve_aff][1])&&
@@ -2261,9 +2269,36 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 						($pays_parents[$ident_eleve_aff][0]==$pays_parents[$ident_eleve_aff][1])&&
 						($cp_parents[$ident_eleve_aff][0]==$cp_parents[$ident_eleve_aff][1])
 					) {
+					*/
+
+					$adr10=$adresse1_parents[$ident_eleve_aff][0];
+					$adr11=$adresse1_parents[$ident_eleve_aff][1];
+					$adr20=$adresse2_parents[$ident_eleve_aff][0];
+					$adr21=$adresse2_parents[$ident_eleve_aff][1];
+					$adr30=$adresse3_parents[$ident_eleve_aff][0];
+					$adr31=$adresse3_parents[$ident_eleve_aff][1];
+					$adr40=$adresse4_parents[$ident_eleve_aff][0];
+					$adr41=$adresse4_parents[$ident_eleve_aff][1];
+					$cp0=$cp_parents[$ident_eleve_aff][0];
+					$cp1=$cp_parents[$ident_eleve_aff][1];
+					$pays0=$pays_parents[$ident_eleve_aff][0];
+					$pays1=$pays_parents[$ident_eleve_aff][1];
+					$ville0=$ville_parents[$ident_eleve_aff][0];
+					$ville1=$ville_parents[$ident_eleve_aff][1];
+
+					if(($adr10==$adr11)&&
+						($adr20==$adr21)&&
+						($adr30==$adr31)&&
+						($adr40==$adr41)&&
+						($cp0==$cp1)&&
+						($ville0==$ville1)&&
+						($pays0==$pays1)
+					) {
+
 						if(($nom_parents[$ident_eleve_aff][0]!=$nom_parents[$ident_eleve_aff][1])&&($nom_parents[$ident_eleve_aff][1]!="")) {
 							//$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
 							$texte_1_responsable = $civilite_parents[$ident_eleve_aff][0]." ".$nom_parents[$ident_eleve_aff][0]." ".$prenom_parents[$ident_eleve_aff][0]." et ".$civilite_parents[$ident_eleve_aff][1]." ".$nom_parents[$ident_eleve_aff][1]." ".$prenom_parents[$ident_eleve_aff][1];
+//echo "1<br />\n";
 						}
 						else{
 							//$ligne1="M. et Mme. ".$nom_resp[1]." ".$prenom_resp[1];
@@ -2271,26 +2306,58 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 							if(($civilite_parents[$ident_eleve_aff][0]!="")&&($civilite_parents[$ident_eleve_aff][1]!="")) {
 								//$ligne1=$civilite_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[1]." ".$prenom_resp[1];
 								$texte_1_responsable = $civilite_parents[$ident_eleve_aff][0]." et ".$civilite_parents[$ident_eleve_aff][1]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+//echo "2<br />\n";
 							}
 							else {
 								$texte_1_responsable = "M. et Mme ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+//echo "3<br />\n";
 							}
 
 						}
 					}
 					else {
 						$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+/*
+echo "4<br />\n";
+if($adresse1_parents[$ident_eleve_aff][0]!=$adresse1_parents[$ident_eleve_aff][1]) {
+	echo $adresse1_parents[$ident_eleve_aff][0]."!=".$adresse1_parents[$ident_eleve_aff][1]."<br />";
+}
+if($adresse2_parents[$ident_eleve_aff][0]!=$adresse2_parents[$ident_eleve_aff][1]) {
+	echo $adresse2_parents[$ident_eleve_aff][0]."!=".$adresse2_parents[$ident_eleve_aff][1]."<br />";
+}
+if($adresse3_parents[$ident_eleve_aff][0]!=$adresse3_parents[$ident_eleve_aff][1]) {
+	echo $adresse3_parents[$ident_eleve_aff][0]."!=".$adresse3_parents[$ident_eleve_aff][1]."<br />";
+}
+if($adresse4_parents[$ident_eleve_aff][0]!=$adresse4_parents[$ident_eleve_aff][1]) {
+	echo $adresse4_parents[$ident_eleve_aff][0]."!=".$adresse4_parents[$ident_eleve_aff][1]."<br />";
+}
+if($ville_parents[$ident_eleve_aff][0]!=$ville_parents[$ident_eleve_aff][1]) {
+	echo $ville_parents[$ident_eleve_aff][0]."!=".$ville_parents[$ident_eleve_aff][1]."<br />";
+}
+if($cp_parents[$ident_eleve_aff][0]!=$cp_parents[$ident_eleve_aff][1]) {
+	echo $cp_parents[$ident_eleve_aff][0]."!=".$cp_parents[$ident_eleve_aff][1]."<br />";
+}
+if($pays_parents[$ident_eleve_aff][0]!=$pays_parents[$ident_eleve_aff][1]) {
+	echo $pays_parents[$ident_eleve_aff][0]."!=".$pays_parents[$ident_eleve_aff][1]."<br />";
+}
+*/
 					}
 
 				}
 				else {
+					// Il n'y a pas de deuxième parent.
 					$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+//echo "5<br />\n";
 				}
 			}
 			else {
+				// On n'est dans un deuxième passage pour afficher le bulletin pour le 2è parent
 				$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+//echo "6<br />\n";
 			}
 			//=========================
+//echo "$texte_1_responsable<br />\n";
+//echo "==============================<br />\n";
 
 			$texte_1_responsable = trim($texte_1_responsable);
 			$hauteur_caractere=12;
