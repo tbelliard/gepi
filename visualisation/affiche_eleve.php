@@ -149,6 +149,11 @@ tronquer_nom_court
 			else{save_params_graphe('graphe_temoin_image_escalier','non');}
 			if(isset($_POST['tronquer_nom_court'])){save_params_graphe('graphe_tronquer_nom_court',$_POST['tronquer_nom_court']);}
 
+			//========================
+			// AJOUT boireaus 20090115
+			if(isset($_POST['graphe_champ_saisie_avis_fixe'])){save_params_graphe('graphe_champ_saisie_avis_fixe',$_POST['graphe_champ_saisie_avis_fixe']);}
+			//========================
+
 			if($msg==''){
 				$msg="Paramètres enregistrés.";
 			}
@@ -1019,13 +1024,28 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	//echo "\$temoin_imageps=$temoin_imageps<br />";
 
+	//========================
+	// AJOUT boireaus 20090115
+	if(isset($_POST['graphe_champ_saisie_avis_fixe'])){
+		$graphe_champ_saisie_avis_fixe=$_POST['graphe_champ_saisie_avis_fixe'];
+	}
+	else{
+		if(getSettingValue('graphe_champ_saisie_avis_fixe')){
+			$graphe_champ_saisie_avis_fixe=getSettingValue('graphe_champ_saisie_avis_fixe');
+		}
+		else{
+			$graphe_champ_saisie_avis_fixe="n";
+		}
+	}
+	//========================
+
 
 	//======================================================================
 	//======================================================================
 	//======================================================================
 
-	if(isset($_POST['parametrer_affichage'])){
-		if($_POST['parametrer_affichage']=='y'){
+	if(isset($_POST['parametrer_affichage'])) {
+		if($_POST['parametrer_affichage']=='y') {
 			/*
 			foreach($_POST as $post => $val){
 				echo $post.' : '.$val."<br />\n";
@@ -1039,11 +1059,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 			echo "<input type='hidden' name='is_posted' value='y' />\n";
-			if($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable"){
+			if($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
 				echo "<input type='hidden' name='eleve1' value='".$login_eleve."'/>\n";
 				echo "<input type='hidden' name='login_eleve' value='".$login_eleve."'/>\n";
 			}
-			else{
+			else {
 				echo "<input type='hidden' name='eleve1' value='".$eleve1."'/>\n";
 				echo "<input type='hidden' name='numeleve1' value='".$_POST['numeleve1']."'/>\n";
 			}
@@ -1056,15 +1076,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<p><b>Moyennes et périodes</b></p>\n";
 			echo "<blockquote>\n";
 
-			if($affiche_mgen=='oui'){$checked=" checked='yes'";}else{$checked="";}
+			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<table border='0' summary='Paramètres'>\n";
 			echo "<tr valign='top'><td><label for='affiche_mgen' style='cursor: pointer;'>Afficher la moyenne générale:</label></td><td><input type='checkbox' name='affiche_mgen' id='affiche_mgen' value='oui'$checked /></td></tr>\n";
 
-			if($affiche_minmax=='oui'){$checked=" checked='yes'";}else{$checked="";}
+			if($affiche_minmax=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<tr valign='top'><td><label for='affiche_minmax' style='cursor: pointer;'>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</label></td><td><input type='checkbox' name='affiche_minmax' id='affiche_minmax' value='oui'$checked /></td></tr>\n";
 
 			//$affiche_moy_annuelle
-			if($affiche_moy_annuelle=='oui'){$checked=" checked='yes'";}else{$checked="";}
+			if($affiche_moy_annuelle=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<tr valign='top'><td><label for='affiche_moy_annuelle' style='cursor: pointer;'>Afficher les moyennes annuelles:<br />(<i>en mode 'Toutes_les_periodes' uniquement</i>)</label></td><td><input type='checkbox' name='affiche_moy_annuelle' id='affiche_moy_annuelle' value='oui'$checked /></td></tr>\n";
 
 			echo "</table>\n";
@@ -1079,9 +1099,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			// Graphe en courbe ou étoile
 			echo "<tr><td>Graphe en </td>\n";
-			if($type_graphe=='courbe'){$checked=" checked='yes'";}else{$checked="";}
+			if($type_graphe=='courbe') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<td><label for='type_graphe_courbe' style='cursor: pointer;'><input type='radio' name='type_graphe' id='type_graphe_courbe' value='courbe'$checked /> courbe</label><br />\n";
-			if($type_graphe=='etoile'){$checked=" checked='yes'";}else{$checked="";}
+			if($type_graphe=='etoile') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='type_graphe_etoile' style='cursor: pointer;'><input type='radio' name='type_graphe' id='type_graphe_etoile' value='etoile'$checked /> étoile</label>\n";
 			echo "</td></tr>\n";
 
@@ -1092,16 +1112,16 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			// - taille des polices
 			echo "<tr><td><label for='taille_police' style='cursor: pointer;'>Taille des polices:</label></td><td><select name='taille_police' id='taille_police'>\n";
-			for($i=1;$i<=6;$i++){
-				if($taille_police==$i){$selected=" selected='yes'";}else{$selected="";}
+			for($i=1;$i<=6;$i++) {
+				if($taille_police==$i) {$selected=" selected='yes'";} else {$selected="";}
 				echo "<option value='$i'$selected>$i</option>\n";
 			}
 			echo "</select></td></tr>\n";
 
 			// - epaisseur des traits
 			echo "<tr><td><label for='epaisseur_traits' style='cursor: pointer;'>Epaisseur des courbes:</label></td><td><select name='epaisseur_traits' id='epaisseur_traits'>\n";
-			for($i=1;$i<=6;$i++){
-				if($epaisseur_traits==$i){$selected=" selected='yes'";}else{$selected="";}
+			for($i=1;$i<=6;$i++) {
+				if($epaisseur_traits==$i) {$selected=" selected='yes'";} else {$selected="";}
 				echo "<option value='$i'$selected>$i</option>\n";
 			}
 			echo "</select></td></tr>\n";
@@ -1109,27 +1129,42 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			// - modèle de couleurs
 
 			//if($temoin_imageps=='oui'){$checked=" checked='yes'";}else{$checked="";}
-			if($temoin_image_escalier=='oui'){$checked=" checked='yes'";}else{$checked="";}
+			if($temoin_image_escalier=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			//echo "Utiliser ImagePs: <input type='checkbox' name='temoin_imageps' value='oui'$checked /><br />\n";
 			echo "<tr><td><label for='temoin_image_escalier' style='cursor: pointer;'>Afficher les noms longs de matières:<br />(<i>en légende sous le graphe</i>)</label></td><td><input type='checkbox' name='temoin_image_escalier' id='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
 
 			//echo "<tr><td>Tronquer le nom court<br />de matière à <a href='javascript:alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
 			echo "<tr><td><label for='tronquer_nom_court' style='cursor: pointer;'>Tronquer le nom court de la matière à <a href='#' onclick='alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:<br />(<i>pour éviter des collisions de légendes en haut du graphe</i>)</label></td><td><select name='tronquer_nom_court' id='tronquer_nom_court'>\n";
 			for($i=0;$i<=10;$i++){
-				if($tronquer_nom_court==$i){$selected=" selected='yes'";}else{$selected="";}
+				if($tronquer_nom_court==$i) {$selected=" selected='yes'";} else {$selected="";}
 				echo "<option value='$i'$selected>$i</option>\n";
 			}
 			echo "</select></td></tr>\n";
 
+
+			//========================
+			// AJOUT boireaus 20090115
+			if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
+				echo "<tr>\n";
+				echo "<td valign='top'>Permettre la saisie de l'avis du conseil:</td>\n";
+				echo "<td>\n";
+				if($graphe_champ_saisie_avis_fixe!="y") {$checked=" checked";} else {$checked="";}
+				echo "<input type='radio' name='graphe_champ_saisie_avis_fixe' id='graphe_champ_saisie_avis_fixe_n' value='n'$checked /> <label for='graphe_champ_saisie_avis_fixe_n' style='cursor: pointer;'>en infobulle</label><br />\n";
+				if($graphe_champ_saisie_avis_fixe=="y") {$checked=" checked";} else {$checked="";}
+				echo "<input type='radio' name='graphe_champ_saisie_avis_fixe' id='graphe_champ_saisie_avis_fixe_y' value='y'$checked /> <label for='graphe_champ_saisie_avis_fixe_y' style='cursor: pointer;'>en champ fixe sous le graphe</label>\n";
+				echo "</td>\n";
+				echo "</tr>\n";
+			}
+			//========================
 
 
 			// Graphe PNG ou SVG
 			echo "<tr><td valign='top'>Générer des graphes en PNG ou SVG<br />\n";
 			echo "(<i>Les graphes SVG donnent un aspect plus lissé,<br />mais nécessitent, avec certains navigateurs,<br />l'installation d'un plugin.<br />Uniquement disponible pour les graphes<br />en courbe pour le moment</i>)";
 			echo "</td>\n";
-			if($mode_graphe=='png'){$checked=" checked='yes'";}else{$checked="";}
+			if($mode_graphe=='png') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<td valign='top'><label for='mode_graphe_png' style='cursor: pointer;'><input type='radio' name='mode_graphe' id='mode_graphe_png' value='png'$checked /> PNG</label><br />\n";
-			if($mode_graphe=='svg'){$checked=" checked='yes'";}else{$checked="";}
+			if($mode_graphe=='svg') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='mode_graphe_svg' style='cursor: pointer;'><input type='radio' name='mode_graphe' id='mode_graphe_svg' value='svg'$checked /> SVG</label>\n";
 			echo "</td></tr>\n";
 
@@ -1143,9 +1178,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<p><b>Paramètres des photos</b></p>\n";
 			echo "<blockquote>\n";
 			echo "<table border='0' summary='Paramètres des photos'>\n";
-			if(($affiche_photo=='')||($affiche_photo=='oui')){$checked=" checked='yes'";}else{$checked="";}
+			if(($affiche_photo=='')||($affiche_photo=='oui')) {$checked=" checked='yes'";} else {$checked="";}
 			echo "<tr><td>Afficher la photo de l'élève si elle existe:</td><td><label for='affiche_photo_oui' style='cursor: pointer;'><input type='radio' name='affiche_photo' id='affiche_photo_oui' value='oui'$checked />Oui</label> / \n";
-			if($affiche_photo=='non'){$checked=" checked='yes'";}else{$checked="";}
+			if($affiche_photo=='non') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='affiche_photo_non' style='cursor: pointer;'>Non<input type='radio' name='affiche_photo' id='affiche_photo_non' value='non'$checked /></label></td></tr>\n";
 
 			// - Largeur imposée pour la photo
@@ -1156,7 +1191,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 
-			if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+			if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 				echo "<p><b>Couleurs</b></p>\n";
 				echo "<blockquote>\n";
 				//echo "<hr width='150' />\n";
@@ -1168,7 +1203,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 			echo "<p align='center'>";
-			if($_SESSION['statut']=='scolarite'){
+			if($_SESSION['statut']=='scolarite') {
 				//echo "<input type='checkbox' name='save_params' value='y' /> <b>Enregistrer les paramètres</b>\n";
 				echo "<input type='hidden' name='save_params' value='' />\n";
 				echo "<input type='button' onClick=\"document.forms['form_parametrage_affichage'].save_params.value='y';document.forms['form_parametrage_affichage'].submit();\" name='Enregistrer' value='Enregistrer les paramètres dans la base' />\n";
@@ -1664,7 +1699,11 @@ function eleve_suivant(){
 			}
 		}
 
-
+		//================
+		// Ajout: boireaus 20090115
+		// Initialisation:
+		$texte_saisie_avis_fixe="";
+		//================
 		if($droit_saisie_avis=="y") {
 			//if ($_POST['choix_periode']=="periode") {
 			if ($choix_periode=="periode") {
@@ -1675,7 +1714,6 @@ function eleve_suivant(){
 				$test_verr_per=mysql_query($sql);
 				$lig_verr_per=mysql_fetch_object($test_verr_per);
 				if($lig_verr_per->verouiller!='O') {
-					echo "<br />\n<a href=\"#graph\" onClick=\"afficher_div('saisie_avis','y',100,100);\">Saisir l'avis du conseil</a>\n";
 
 					$current_eleve_avis="";
 					$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode_choisie';";
@@ -1685,6 +1723,7 @@ function eleve_suivant(){
 						$lig_avis=mysql_fetch_object($res_avis);
 						$current_eleve_avis=$lig_avis->avis;
 					}
+
 
 					echo "<div style='display:none;'>
 <textarea name='no_anti_inject_current_eleve_login_ap' id='no_anti_inject_current_eleve_login_ap' rows='5' cols='20' wrap='virtual' onchange=\"changement()\">$current_eleve_avis</textarea>
@@ -1706,28 +1745,61 @@ function eleve_suivant(){
 	}
 </script>\n";
 
-					$titre="Avis du conseil de classe: $lig_verr_per->nom_periode";
+					//================
+					// Ajout: boireaus 20090115
 
-					//$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
-					$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
-					$texte.="<div style='text-align:center;'>\n";
-					$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
-					//$texte.="\n";
-					$texte.="$current_eleve_avis";
-					$texte.="</textarea>\n";
+					// Pour forcer la valeur avant de la mettre en choix dans les paramètres:
+					//$graphe_champ_saisie_avis_fixe="y";
 
-					//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
-					$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-					if($suivant<$nombreligne+1){
-						$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+					if($graphe_champ_saisie_avis_fixe!="y") {
+					//================
+						echo "<br />\n<a href=\"#graph\" onClick=\"afficher_div('saisie_avis','y',100,100);\">Saisir l'avis du conseil</a>\n";
+
+						$titre="Avis du conseil de classe: $lig_verr_per->nom_periode";
+
+						//$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+						$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+						$texte.="<div style='text-align:center;'>\n";
+						$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+						//$texte.="\n";
+						$texte.="$current_eleve_avis";
+						$texte.="</textarea>\n";
+
+						//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
+						$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
+						if($suivant<$nombreligne+1){
+							$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+						}
+
+						// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
+
+						$texte.="</div>\n";
+						$texte.="</form>\n";
+
+						$tabdiv_infobulle[]=creer_div_infobulle('saisie_avis',$titre,"",$texte,"",35,0,'y','y','n','n');
 					}
+					else {
+						$texte_saisie_avis_fixe="<div style='border:1px solid black;'>\n";
+						$texte_saisie_avis_fixe.="<p class='bold' style='text-align:center;'>Saisie de l'avis du conseil</p>\n";
+						$texte_saisie_avis_fixe.="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+						$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
+						$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+						//$texte_saisie_avis_fixe.="\n";
+						$texte_saisie_avis_fixe.="$current_eleve_avis";
+						$texte_saisie_avis_fixe.="</textarea>\n";
 
-					// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
+						//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
+						$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
+						if($suivant<$nombreligne+1){
+							$texte_saisie_avis_fixe.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+						}
 
-					$texte.="</div>\n";
-					$texte.="</form>\n";
+						// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
 
-					$tabdiv_infobulle[]=creer_div_infobulle('saisie_avis',$titre,"",$texte,"",35,0,'y','y','n','n');
+						$texte_saisie_avis_fixe.="</div>\n";
+						$texte_saisie_avis_fixe.="</form>\n";
+						$texte_saisie_avis_fixe.="</div>\n";
+					}
 				}
 			}
 			//elseif($_POST['choix_periode']=="toutes_periodes") {
@@ -1743,8 +1815,6 @@ function eleve_suivant(){
 
 					$num_periode_choisie=$lig_per->num_periode;
 
-					echo "<br />\n<a href=\"#graph\" onClick=\"afficher_div('saisie_avis','y',100,100);\">Saisir l'avis du conseil</a>\n";
-
 					$current_eleve_avis="";
 					$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode_choisie';";
 					//echo "$sql<br />";
@@ -1774,29 +1844,57 @@ function eleve_suivant(){
 	}
 </script>\n";
 
-					$titre="Avis du conseil de classe: $lig_per->nom_periode";
+					//================
+					// Ajout: boireaus 20090115
+					if($graphe_champ_saisie_avis_fixe!="y") {
+					//================
+						echo "<br />\n<a href=\"#graph\" onClick=\"afficher_div('saisie_avis','y',100,100);\">Saisir l'avis du conseil</a>\n";
 
-					//$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
-					$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
-					$texte.="<div style='text-align:center;'>\n";
-					$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
-					//$texte.="\n";
-					$texte.="$current_eleve_avis";
-					$texte.="</textarea>\n";
+						$titre="Avis du conseil de classe: $lig_per->nom_periode";
 
-					//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
-					$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-					if($suivant<$nombreligne+1){
-						$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+						//$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+						$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+						$texte.="<div style='text-align:center;'>\n";
+						$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+						//$texte.="\n";
+						$texte.="$current_eleve_avis";
+						$texte.="</textarea>\n";
+
+						//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
+						$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
+						if($suivant<$nombreligne+1){
+							$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+						}
+
+						// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
+
+						$texte.="</div>\n";
+						$texte.="</form>\n";
+
+						$tabdiv_infobulle[]=creer_div_infobulle('saisie_avis',$titre,"",$texte,"",35,0,'y','y','n','n');
 					}
+					else {
+						$texte_saisie_avis_fixe="<div style='border:1px solid black;'>\n";
+						$texte_saisie_avis_fixe.="<p class='bold' style='text-align:center;'>Saisie de l'avis du conseil: $lig_per->nom_periode</p>\n";
+						$texte_saisie_avis_fixe.="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+						$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
+						$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+						//$texte_saisie_avis_fixe.="\n";
+						$texte_saisie_avis_fixe.="$current_eleve_avis";
+						$texte_saisie_avis_fixe.="</textarea>\n";
 
-					// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
+						//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
+						$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
+						if($suivant<$nombreligne+1){
+							$texte_saisie_avis_fixe.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+						}
 
-					$texte.="</div>\n";
-					$texte.="</form>\n";
+						// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
 
-					$tabdiv_infobulle[]=creer_div_infobulle('saisie_avis',$titre,"",$texte,"",35,0,'y','y','n','n');
-
+						$texte_saisie_avis_fixe.="</div>\n";
+						$texte_saisie_avis_fixe.="</form>\n";
+						$texte_saisie_avis_fixe.="</div>\n";
+					}
 				}
 
 			}
@@ -3350,6 +3448,13 @@ function eleve_suivant(){
 			// A FAIRE:
 			// Faire apparaitre les absences...
 		}
+
+		//=========================
+		// AJOUT: boireaus 20090115
+		// La variable peut être vide si on n'a pas choisi ce mode d'affichage ou si on n'a pas le droit de saisie, ou péridoe close,...
+		echo $texte_saisie_avis_fixe;
+		//=========================
+
 	}
 	else{
 		if ($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
