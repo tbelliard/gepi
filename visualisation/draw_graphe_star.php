@@ -76,6 +76,7 @@
 	//============================================
 
 
+	writinfo('/tmp/infos_graphe.txt','a+',"\n");
 
 	$periode=isset($_GET['periode']) ? $_GET['periode'] : '';
 
@@ -121,6 +122,7 @@
 	if((strlen(ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
 		$epaisseur_traits=2;
 	}
+	writinfo('/tmp/infos_graphe.txt','a+',"\$epaisseur_traits=$epaisseur_traits\n");
 
 	$epaisseur_axes=2;
 	$epaisseur_grad=1;
@@ -547,6 +549,8 @@
 	//=================================
 
 
+	//Epaisseur des traits:
+	imagesetthickness($img,$epaisseur_traits);
 
 	//=================================
 	// Tracé des courbes des séries
