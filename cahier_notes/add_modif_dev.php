@@ -483,8 +483,12 @@ if($interface_simplifiee=="y"){
 	   		echo "<td><input type='text' name = 'note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" /></td>\n";
 			echo "</tr>\n";
 	    		echo "<tr>\n";
-			echo "<td style='background-color: #aae6aa; font-weight: bold;'>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : </td>";
-	    		echo "<td><input type='checkbox' name='ramener_sur_referentiel'"; if ($ramener_sur_referentiel == 'V') echo " checked"; echo " /></td>\n";
+			echo "<td style='background-color: #aae6aa; font-weight: bold;'>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : </td>\n";
+    		echo "<td><input type='checkbox' name='ramener_sur_referentiel'"; if ($ramener_sur_referentiel == 'V') echo " checked"; echo " /><BR />";
+			echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<BR />";
+			echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<BR />";
+			echo "Case non cochée : moyenne = 18/20 + 4/10 + 1/5 = 23/35 = 13,1/20</span><BR /><BR />";
+			echo "</td>\n";
 			echo "</tr>\n";
         	}
         } else {
@@ -615,9 +619,14 @@ else{
 	    echo "<h3 class='gepi'>Notation</h3>\n";
 	    echo "<table><tr><td>Note sur : </td>";
 	    echo "<td><input type='text' name = 'note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
-	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : </td>";
-	    echo "</td><td><input type='checkbox' name='ramener_sur_referentiel'"; if ($ramener_sur_referentiel == 'V') echo " checked"; echo " /></td></tr></table>\n";
-        } else {
+	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <BR />";
+		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<BR />";
+		echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<BR />";
+		echo "Case non cochée : moyenne = 18/20 + 4/10 + 1/5 = 23/35 = 13,1/20</span><BR /><BR />";
+		echo "</td>";
+		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel'"; if ($ramener_sur_referentiel == 'V') echo " checked"; echo " /><BR />";
+		echo "</td></tr>\n";
+		} else {
             echo("<input type='hidden' name = 'note_sur' value = '".getSettingValue("referentiel_note")."'/>");
             echo("<input type='hidden' name = 'ramener_sur_referentiel' value = 'F'/>");
         }
