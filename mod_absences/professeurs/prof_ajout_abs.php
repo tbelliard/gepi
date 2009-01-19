@@ -793,6 +793,15 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 <?php
 // Deuxième étape
 if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initial != '' ) AND $msg_erreur === '') {
+
+    // Ajout d'un test sur la période active
+    $sql = "SELECT DISTINCT num_periode FROM periodes WHERE verouiller = 'N' ORDER BY num_periode";
+    $periode_active = mysql_query($sql) OR DIE('Impossible de récupérer le numéro de la période active' . $sql . '<br />--> ' . mysql_error());
+    $periode = mysql_fetch_array($periode_active);
+    //echo '<pre>'; print_r($periode); echo'</pre>'; exit();
+    $nbre_per = count($periode);
+    $_periode = isset($periode[0]) ? $periode[0] : '1';
+
 	// on vérifie que l'enseignement envoyé n'est pas une AID
 	$test = explode("|", $classe);
 	if ($test[0] == "AID") {
@@ -803,7 +812,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		$nbre_eleves = mysql_num_rows(mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE id_aid = '".$test[1]."'"));
 	}else{
 		$current_groupe = get_group($classe);
-		$nbre_eleves = mysql_num_rows(mysql_query("SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe = '".$classe."'"));
+		$nbre_eleves = mysql_num_rows(mysql_query("SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe = '".$classe."' AND periode = '" . $_periode . "'"));
 	}
 
 ?>
@@ -930,13 +939,6 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		$execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL AID !'.$requete_liste_eleve.'<br />'.mysql_error());
 	}
 	else {
-    // Ajout d'un test sur la période active
-    $sql = "SELECT DISTINCT num_periode FROM periodes WHERE verouiller = 'N' ORDER BY num_periode";
-    $periode_active = mysql_query($sql) OR DIE('Impossible de récupérer le numéro de la période active' . $sql . '<br />--> ' . mysql_error());
-    $periode = mysql_fetch_array($periode_active);
-    //echo '<pre>'; print_r($periode); echo'</pre>'; exit();
-    $nbre_per = count($periode);
-    $_periode = isset($periode[0]) ? $periode[0] : '1';
 
 		$requete_liste_eleve = "SELECT * FROM eleves, groupes, j_eleves_groupes 
                               WHERE eleves.login=j_eleves_groupes.login
