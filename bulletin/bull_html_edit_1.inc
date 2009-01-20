@@ -212,7 +212,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 					}
 					else {
 						// Moyenne catégorie classe
-						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".$tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]]."</td>\n";
+						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
 					}
 
 					// Moyenne catégorie élève
