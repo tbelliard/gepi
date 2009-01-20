@@ -163,7 +163,11 @@ if ($bull_affiche_aid == 'y') {
 			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
 			if ($bull_affiche_appreciations == 'y'){
 				echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>";
-				echo "<b>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']."</b><br />";
+				echo "<b>";
+				if($tab_bull['eleve'][$i]['aid_b'][$z]['message']!='') {
+					echo $tab_bull['eleve'][$i]['aid_b'][$z]['message']." ";
+				}
+				echo $tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']."</b><br />";
 				echo texte_html_ou_pas($tab_bull['eleve'][$i]['aid_b'][$z]['aid_appreciation']);
 				echo "</span></td>\n";
 			}
@@ -202,10 +206,8 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 						// Min
 						//echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_min'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
-
 						// Moyenne catégorie classe
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
-
 						// Max
 						//echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_max'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
@@ -447,7 +449,11 @@ if ($bull_affiche_aid == 'y') {
 			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
 			if ($bull_affiche_appreciations == 'y'){
 				echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>";
-				echo "<b>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']."</b><br />";
+				echo "<b>";
+				if($tab_bull['eleve'][$i]['aid_e'][$z]['message']!='') {
+					echo $tab_bull['eleve'][$i]['aid_e'][$z]['message']." ";
+				}
+				echo $tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']."</b><br />";
 				echo texte_html_ou_pas($tab_bull['eleve'][$i]['aid_e'][$z]['aid_appreciation']);
 				echo "</span></td>\n";
 			}

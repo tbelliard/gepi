@@ -144,7 +144,12 @@ if ($bull_affiche_aid == 'y') {
 			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
 			if ($bull_affiche_appreciations == 'y'){
 				echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>";
-				echo "<b>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']."</b><br />";
+				//echo "<b>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']."</b><br />";
+				echo "<b>";
+				if($tab_bull['eleve'][$i]['aid_b'][$z]['message']!='') {
+					echo $tab_bull['eleve'][$i]['aid_b'][$z]['message']." ";
+				}
+				echo $tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']."</b><br />";
 				echo texte_html_ou_pas($tab_bull['eleve'][$i]['aid_b'][$z]['aid_appreciation']);
 				echo "</span></td>\n";
 			}
@@ -423,7 +428,12 @@ if ($bull_affiche_aid == 'y') {
 			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
 			if ($bull_affiche_appreciations == 'y'){
 				echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>";
-				echo "<b>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']."</b><br />";
+				//echo "<b>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']."</b><br />";
+				echo "<b>";
+				if($tab_bull['eleve'][$i]['aid_e'][$z]['message']!='') {
+					echo $tab_bull['eleve'][$i]['aid_e'][$z]['message']." ";
+				}
+				echo $tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']."</b><br />";
 				echo texte_html_ou_pas($tab_bull['eleve'][$i]['aid_e'][$z]['aid_appreciation']);
 				echo "</span></td>\n";
 			}
@@ -475,7 +485,6 @@ if($tab_bull['display_moy_gen']=='y') {
 				echo "<span class='bullminclasmax'><b>".nf($tab_bull['moy_generale_classe'])."</b></span><br />\n";
 				echo "<span class='bullminclasmax'>".nf($tab_bull['moy_max_classe'])."</span></td>\n";
 			}
-
 
 			echo "<td style='text-align: center; font-weight:bold;'><span class='bulletin'>".nf($tab_bull['moy_gen_eleve'][$i])."</span></td>\n";
 
