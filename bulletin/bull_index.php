@@ -972,12 +972,14 @@ else {
 		if (!isset($call_data_aid_b)){
 			$call_data_aid_b = mysql_query("SELECT * FROM aid_config WHERE (order_display1 ='b' and display_bulletin!='n') ORDER BY order_display2");
 			$nb_aid_b = mysql_num_rows($call_data_aid_b);
+			//echo "\$nb_aid_b=$nb_aid_b<br />";
 		}
 
 		// On prépare l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en fin des bulletins :
 		if (!isset($call_data_aid_e)){
 			$call_data_aid_e = mysql_query("SELECT * FROM aid_config WHERE (order_display1 ='e' and display_bulletin!='n') ORDER BY order_display2");
 			$nb_aid_e = mysql_num_rows($call_data_aid_e);
+			//echo "\$nb_aid_e=$nb_aid_e<br />";
 		}
 	}
 	//=========================================
@@ -2006,32 +2008,42 @@ else {
 
 						// On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en tête des bulletins :
 						//------------------------------
+						// $z est l'indice de $call_data_aid_b
 						$z=0;
+						// $zz est l'indice des AID effectivement utiles pour l'élève et la période
+						$zz=0;
 						while ($z < $nb_aid_b) {
 							$display_begin = @mysql_result($call_data_aid_b, $z, "display_begin");
 							$display_end = @mysql_result($call_data_aid_b, $z, "display_end");
 							$type_note = @mysql_result($call_data_aid_b, 0, "type_note");
 							$note_max = @mysql_result($call_data_aid_b, 0, "note_max");
+							/*
+							echo "\$z=$z<br />";
+							echo "\$display_begin=$display_begin<br />";
+							echo "\$display_end=$display_end<br />";
+							echo "\$type_note=$type_note<br />";
+							echo "\$note_max=$note_max<br />";
+							*/
 							if (($periode_num >= $display_begin) and ($periode_num <= $display_end)) {
 								$indice_aid = @mysql_result($call_data_aid_b, $z, "indice_aid");
 								$aid_query = mysql_query("SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid')");
 								$aid_id = @mysql_result($aid_query, 0, "id_aid");
 								if ($aid_id != '') {
 
-									$tab_ele['aid_b'][$z]['display_begin']=$display_begin;
-									$tab_ele['aid_b'][$z]['display_end']=$display_end;
+									$tab_ele['aid_b'][$zz]['display_begin']=$display_begin;
+									$tab_ele['aid_b'][$zz]['display_end']=$display_end;
 
-									$tab_ele['aid_b'][$z]['nom']=@mysql_result($call_data_aid_b, $z, "nom");
-									$tab_ele['aid_b'][$z]['nom_complet']=@mysql_result($call_data_aid_b, $z, "nom_complet");
-									$tab_ele['aid_b'][$z]['message']=@mysql_result($call_data_aid_b, $z, "message");
+									$tab_ele['aid_b'][$zz]['nom']=@mysql_result($call_data_aid_b, $z, "nom");
+									$tab_ele['aid_b'][$zz]['nom_complet']=@mysql_result($call_data_aid_b, $z, "nom_complet");
+									$tab_ele['aid_b'][$zz]['message']=@mysql_result($call_data_aid_b, $z, "message");
 
-									//echo "\$tab_ele['aid_b'][$z]['nom_complet']=".$tab_ele['aid_b'][$z]['nom_complet']."<br />";
+									//echo "\$tab_ele['aid_b'][$zz]['nom_complet']=".$tab_ele['aid_b'][$zz]['nom_complet']."<br />";
 									//echo "\$type_note=".$type_note."<br />";
 
 									$aid_nom_query = mysql_query("SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid');");
-									$tab_ele['aid_b'][$z]['aid_nom']=@mysql_result($aid_nom_query, 0, "nom");
+									$tab_ele['aid_b'][$zz]['aid_nom']=@mysql_result($aid_nom_query, 0, "nom");
 
-									//echo "\$tab_ele['aid_b'][$z]['aid_nom']=".$tab_ele['aid_b'][$z]['aid_nom']."<br />";
+									//echo "\$tab_ele['aid_b'][$zz]['aid_nom']=".$tab_ele['aid_b'][$z]['aid_nom']."<br />";
 
 									// On regarde maintenant quelle sont les profs responsables de cette AID
 									$aid_prof_resp_query = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
@@ -2039,9 +2051,9 @@ else {
 									$n = '0';
 									while ($n < $nb_lig) {
 										//$aid_prof_resp_login[$n] = mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
-										$tab_ele['aid_b'][$z]['aid_prof_resp_login'][$n]=mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+										$tab_ele['aid_b'][$zz]['aid_prof_resp_login'][$n]=mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
 
-										//echo "\$tab_ele['aid_b'][$z]['aid_prof_resp_login'][$n]=".$tab_ele['aid_b'][$z]['aid_prof_resp_login'][$n]."<br />";
+										//echo "\$tab_ele['aid_b'][$zz]['aid_prof_resp_login'][$n]=".$tab_ele['aid_b'][$zz]['aid_prof_resp_login'][$n]."<br />";
 
 										$n++;
 									}
@@ -2079,12 +2091,12 @@ else {
 												$quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
 												$quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
 
-												$tab_ele['aid_b'][$z]['quartile1_classe']=$quartile1_classe;
-												$tab_ele['aid_b'][$z]['quartile2_classe']=$quartile2_classe;
-												$tab_ele['aid_b'][$z]['quartile3_classe']=$quartile3_classe;
-												$tab_ele['aid_b'][$z]['quartile4_classe']=$quartile4_classe;
-												$tab_ele['aid_b'][$z]['quartile5_classe']=$quartile5_classe;
-												$tab_ele['aid_b'][$z]['quartile6_classe']=$quartile6_classe;
+												$tab_ele['aid_b'][$zz]['quartile1_classe']=$quartile1_classe;
+												$tab_ele['aid_b'][$zz]['quartile2_classe']=$quartile2_classe;
+												$tab_ele['aid_b'][$zz]['quartile3_classe']=$quartile3_classe;
+												$tab_ele['aid_b'][$zz]['quartile4_classe']=$quartile4_classe;
+												$tab_ele['aid_b'][$zz]['quartile5_classe']=$quartile5_classe;
+												$tab_ele['aid_b'][$zz]['quartile6_classe']=$quartile6_classe;
 
 											}
 											$current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
@@ -2114,20 +2126,22 @@ else {
 											$aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
 										}
 
-										$tab_ele['aid_b'][$z]['aid_note']=$current_eleve_aid_note;
-										$tab_ele['aid_b'][$z]['aid_statut']=$current_eleve_aid_statut;
-										$tab_ele['aid_b'][$z]['aid_note_moyenne']=$aid_note_moyenne;
-										$tab_ele['aid_b'][$z]['aid_note_max']=$aid_note_max;
-										$tab_ele['aid_b'][$z]['aid_note_min']=$aid_note_min;
-										$tab_ele['aid_b'][$z]['place_eleve']=$place_eleve;
+										$tab_ele['aid_b'][$zz]['aid_note']=$current_eleve_aid_note;
+										$tab_ele['aid_b'][$zz]['aid_statut']=$current_eleve_aid_statut;
+										$tab_ele['aid_b'][$zz]['aid_note_moyenne']=$aid_note_moyenne;
+										$tab_ele['aid_b'][$zz]['aid_note_max']=$aid_note_max;
+										$tab_ele['aid_b'][$zz]['aid_note_min']=$aid_note_min;
+										$tab_ele['aid_b'][$zz]['place_eleve']=$place_eleve;
 									}
-									$tab_ele['aid_b'][$z]['aid_appreciation']=$current_eleve_aid_appreciation;
+									$tab_ele['aid_b'][$zz]['aid_appreciation']=$current_eleve_aid_appreciation;
 
 									//echo "\$tab_ele['aid_b'][$z]['aid_appreciation']=".$tab_ele['aid_b'][$z]['aid_appreciation']."<br />";
 
 									// Vaut-il mieux un tableau $tab_ele['aid_b']
 									// ou calquer sur $tab_bulletin[$id_classe][$periode_num]['groupe']
 									// La deuxième solution réduirait sans doute le nombre de requêtes
+
+									$zz++;
 								}
 							}
 							$z++;
@@ -2137,7 +2151,10 @@ else {
 						//echo "<p>".$tab_ele['login']."<br />";
 						// On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en fin des bulletins :
 						//------------------------------
+						// $z est l'indice de $call_data_aid_e
 						$z=0;
+						// $zz est l'indice des AID effectivement utiles pour l'élève et la période
+						$zz=0;
 						while ($z < $nb_aid_e) {
 							$display_begin = @mysql_result($call_data_aid_e, $z, "display_begin");
 							$display_end = @mysql_result($call_data_aid_e, $z, "display_end");
@@ -2149,20 +2166,20 @@ else {
 								$aid_id = @mysql_result($aid_query, 0, "id_aid");
 								if ($aid_id != '') {
 
-									$tab_ele['aid_e'][$z]['display_begin']=$display_begin;
-									$tab_ele['aid_e'][$z]['display_end']=$display_end;
+									$tab_ele['aid_e'][$zz]['display_begin']=$display_begin;
+									$tab_ele['aid_e'][$zz]['display_end']=$display_end;
 
-									$tab_ele['aid_e'][$z]['nom']=@mysql_result($call_data_aid_e, $z, "nom");
-									$tab_ele['aid_e'][$z]['nom_complet']=@mysql_result($call_data_aid_e, $z, "nom_complet");
-									$tab_ele['aid_e'][$z]['message']=@mysql_result($call_data_aid_e, $z, "message");
+									$tab_ele['aid_e'][$zz]['nom']=@mysql_result($call_data_aid_e, $z, "nom");
+									$tab_ele['aid_e'][$zz]['nom_complet']=@mysql_result($call_data_aid_e, $z, "nom_complet");
+									$tab_ele['aid_e'][$zz]['message']=@mysql_result($call_data_aid_e, $z, "message");
 
-									//echo "\$tab_ele['aid_e'][$z]['nom_complet']=".$tab_ele['aid_e'][$z]['nom_complet']."<br />";
+									//echo "\$tab_ele['aid_e'][$zz]['nom_complet']=".$tab_ele['aid_e'][$zz]['nom_complet']."<br />";
 									//echo "\$type_note=".$type_note."<br />";
 
 									$aid_nom_query = mysql_query("SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid');");
-									$tab_ele['aid_e'][$z]['aid_nom']=@mysql_result($aid_nom_query, 0, "nom");
+									$tab_ele['aid_e'][$zz]['aid_nom']=@mysql_result($aid_nom_query, 0, "nom");
 
-									//echo "\$tab_ele['aid_e'][$z]['aid_nom']=".$tab_ele['aid_e'][$z]['aid_nom']."<br />";
+									//echo "\$tab_ele['aid_e'][$zz]['aid_nom']=".$tab_ele['aid_e'][$zz]['aid_nom']."<br />";
 
 									// On regarde maintenant quelle sont les profs responsables de cette AID
 									$aid_prof_resp_query = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
@@ -2170,9 +2187,9 @@ else {
 									$n = '0';
 									while ($n < $nb_lig) {
 										//$aid_prof_resp_login[$n] = mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
-										$tab_ele['aid_e'][$z]['aid_prof_resp_login'][$n]=mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+										$tab_ele['aid_e'][$zz]['aid_prof_resp_login'][$n]=mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
 
-										//echo "\$tab_ele['aid_e'][$z]['aid_prof_resp_login'][$n]=".$tab_ele['aid_e'][$z]['aid_prof_resp_login'][$n]."<br />";
+										//echo "\$tab_ele['aid_e'][$zz]['aid_prof_resp_login'][$n]=".$tab_ele['aid_e'][$zz]['aid_prof_resp_login'][$n]."<br />";
 
 										$n++;
 									}
@@ -2210,12 +2227,12 @@ else {
 												$quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
 												$quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
 
-												$tab_ele['aid_e'][$z]['quartile1_classe']=$quartile1_classe;
-												$tab_ele['aid_e'][$z]['quartile2_classe']=$quartile2_classe;
-												$tab_ele['aid_e'][$z]['quartile3_classe']=$quartile3_classe;
-												$tab_ele['aid_e'][$z]['quartile4_classe']=$quartile4_classe;
-												$tab_ele['aid_e'][$z]['quartile5_classe']=$quartile5_classe;
-												$tab_ele['aid_e'][$z]['quartile6_classe']=$quartile6_classe;
+												$tab_ele['aid_e'][$zz]['quartile1_classe']=$quartile1_classe;
+												$tab_ele['aid_e'][$zz]['quartile2_classe']=$quartile2_classe;
+												$tab_ele['aid_e'][$zz]['quartile3_classe']=$quartile3_classe;
+												$tab_ele['aid_e'][$zz]['quartile4_classe']=$quartile4_classe;
+												$tab_ele['aid_e'][$zz]['quartile5_classe']=$quartile5_classe;
+												$tab_ele['aid_e'][$zz]['quartile6_classe']=$quartile6_classe;
 
 											}
 											$current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
@@ -2245,20 +2262,22 @@ else {
 											$aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
 										}
 
-										$tab_ele['aid_e'][$z]['aid_note']=$current_eleve_aid_note;
-										$tab_ele['aid_e'][$z]['aid_statut']=$current_eleve_aid_statut;
-										$tab_ele['aid_e'][$z]['aid_note_moyenne']=$aid_note_moyenne;
-										$tab_ele['aid_e'][$z]['aid_note_max']=$aid_note_max;
-										$tab_ele['aid_e'][$z]['aid_note_min']=$aid_note_min;
-										$tab_ele['aid_e'][$z]['place_eleve']=$place_eleve;
+										$tab_ele['aid_e'][$zz]['aid_note']=$current_eleve_aid_note;
+										$tab_ele['aid_e'][$zz]['aid_statut']=$current_eleve_aid_statut;
+										$tab_ele['aid_e'][$zz]['aid_note_moyenne']=$aid_note_moyenne;
+										$tab_ele['aid_e'][$zz]['aid_note_max']=$aid_note_max;
+										$tab_ele['aid_e'][$zz]['aid_note_min']=$aid_note_min;
+										$tab_ele['aid_e'][$zz]['place_eleve']=$place_eleve;
 									}
-									$tab_ele['aid_e'][$z]['aid_appreciation']=$current_eleve_aid_appreciation;
+									$tab_ele['aid_e'][$zz]['aid_appreciation']=$current_eleve_aid_appreciation;
 
 									//echo "\$tab_ele['aid_e'][$z]['aid_appreciation']=".$tab_ele['aid_e'][$z]['aid_appreciation']."<br />";
 
 									// Vaut-il mieux un tableau $tab_ele['aid_b']
 									// ou calquer sur $tab_bulletin[$id_classe][$periode_num]['groupe']
 									// La deuxième solution réduirait sans doute le nombre de requêtes
+
+									$zz++;
 								}
 							}
 							$z++;
