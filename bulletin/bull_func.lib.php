@@ -2603,8 +2603,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								if($tab_bull['eleve'][$i]['aid_b'][$m]['message']!='') {
 									$app_aff.=$tab_bull['eleve'][$i]['aid_b'][$m]['message'];
 								}
-								if($app_aff!='') {$app_aff.=" ";}
-								if($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!='') {
+								//if($app_aff!='') {$app_aff.=" ";}
+								if(($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='y')&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!='')) {
+									if($app_aff!='') {$app_aff.=" ";}
 									$app_aff.=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
 								}
 								if($app_aff!='') {$app_aff.="\n";}
@@ -2686,7 +2687,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 				// si on affiche les catégories
 				if($tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
-					//si on affiche les moyenne des catégorie
+					//si on affiche les moyennes des catégories
 					//if($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']!=$categorie_passe)
 					//if($tab_bull['cat_id'][$m]!=$categorie_passe)
 					if($tab_bull['nom_cat_complet'][$m]!=$categorie_passe)
@@ -3856,8 +3857,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								if($tab_bull['eleve'][$i]['aid_e'][$m]['message']!='') {
 									$app_aff.=$tab_bull['eleve'][$i]['aid_e'][$m]['message'];
 								}
-								if($app_aff!='') {$app_aff.=" ";}
-								if($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!='') {
+								//if($app_aff!='') {$app_aff.=" ";}
+								//if($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!='') {
+								if(($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='y')&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!='')) {
+									if($app_aff!='') {$app_aff.=" ";}
 									$app_aff.=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
 								}
 								if($app_aff!='') {$app_aff.="\n";}

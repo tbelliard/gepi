@@ -163,11 +163,13 @@ if ($bull_affiche_aid == 'y') {
 			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
 			if ($bull_affiche_appreciations == 'y'){
 				echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>";
-				echo "<b>";
-				if($tab_bull['eleve'][$i]['aid_b'][$z]['message']!='') {
-					echo $tab_bull['eleve'][$i]['aid_b'][$z]['message']." ";
+				if(($tab_bull['eleve'][$i]['aid_b'][$z]['message']!='')||(($tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']!='')&&($tab_bull['eleve'][$i]['aid_b'][$z]['display_nom']=='y'))) {
+					echo "<b>";
+					if($tab_bull['eleve'][$i]['aid_b'][$z]['message']!='') {
+						echo $tab_bull['eleve'][$i]['aid_b'][$z]['message']." ";
+					}
+					echo $tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']."</b><br />";
 				}
-				echo $tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']."</b><br />";
 				echo texte_html_ou_pas($tab_bull['eleve'][$i]['aid_b'][$z]['aid_appreciation']);
 				echo "</span></td>\n";
 			}
@@ -449,11 +451,13 @@ if ($bull_affiche_aid == 'y') {
 			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
 			if ($bull_affiche_appreciations == 'y'){
 				echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>";
-				echo "<b>";
-				if($tab_bull['eleve'][$i]['aid_e'][$z]['message']!='') {
-					echo $tab_bull['eleve'][$i]['aid_e'][$z]['message']." ";
+				if(($tab_bull['eleve'][$i]['aid_e'][$z]['message']!='')||(($tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']!='')&&($tab_bull['eleve'][$i]['aid_e'][$z]['display_nom']=='y'))) {
+					echo "<b>";
+					if($tab_bull['eleve'][$i]['aid_e'][$z]['message']!='') {
+						echo $tab_bull['eleve'][$i]['aid_e'][$z]['message']." ";
+					}
+					echo $tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']."</b><br />";
 				}
-				echo $tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']."</b><br />";
 				echo texte_html_ou_pas($tab_bull['eleve'][$i]['aid_e'][$z]['aid_appreciation']);
 				echo "</span></td>\n";
 			}
