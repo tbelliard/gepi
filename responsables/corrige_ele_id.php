@@ -90,6 +90,9 @@ function maj_ini_prenom($prenom){
 $step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
 $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['stop'] :'n');
 
+$mysql_collate=getSettingValue("mysql_collate") ? getSettingValue("mysql_collate") : "";
+$chaine_mysql_collate="";
+if($mysql_collate!="") {$chaine_mysql_collate="COLLATE $mysql_collate";}
 
 //**************** EN-TETE *****************
 $titre_page = "Correction des ELE_ID d'apres Sconet";
@@ -281,6 +284,61 @@ else{
 				$dest_file="../temp/".$tempdir."/eleves.xml";
 				$res_copy=copy("$source_file" , "$dest_file");
 
+				//===============================================================
+				// ajout prise en compte des fichiers ZIP: Marc Leygnac
+
+				$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
+				// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
+				// $unzipped_max_filesize < 0    extraction zip désactivée
+				if($unzipped_max_filesize>=0) {
+					$fichier_emis=$xml_file['name'];
+					$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+					if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
+						{
+						require_once('../lib/pclzip.lib.php');
+						$archive = new PclZip($dest_file);
+
+						if (($list_file_zip = $archive->listContent()) == 0) {
+							echo "<p style='color:red;'>Erreur : ".$archive->errorInfo(true)."</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+
+						if(sizeof($list_file_zip)!=1) {
+							echo "<p style='color:red;'>Erreur : L'archive contient plus d'un fichier.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+
+						/*
+						echo "<p>\$list_file_zip[0]['filename']=".$list_file_zip[0]['filename']."<br />\n";
+						echo "\$list_file_zip[0]['size']=".$list_file_zip[0]['size']."<br />\n";
+						echo "\$list_file_zip[0]['compressed_size']=".$list_file_zip[0]['compressed_size']."</p>\n";
+						*/
+						//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
+
+						if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
+							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+
+						$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
+						if ($res_extract != 0) {
+							echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+							$fichier_extrait=$res_extract[0]['filename'];
+							$res_copy=rename("$fichier_extrait" , "$dest_file");
+						}
+						else {
+							echo "<p style='color:red'>Echec de l'extraction de l'archive ZIP.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+					}
+				}
+				//fin  ajout prise en compte des fichiers ZIP
+				//===============================================================
+
 				if(!$res_copy){
 					echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
 					// Il ne faut pas aller plus loin...
@@ -293,30 +351,31 @@ else{
 
 					$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
 					`ID_TEMPO` varchar(40) NOT NULL default '',
-					`LOGIN` varchar(40) NOT NULL default '',
-					`ELENOM` varchar(40) NOT NULL default '',
-					`ELEPRE` varchar(40) NOT NULL default '',
-					`ELESEXE` varchar(40) NOT NULL default '',
-					`ELEDATNAIS` varchar(40) NOT NULL default '',
-					`ELENOET` varchar(40) NOT NULL default '',
-					`ELE_ID` varchar(40) NOT NULL default '',
-					`ELEDOUBL` varchar(40) NOT NULL default '',
-					`ELENONAT` varchar(40) NOT NULL default '',
-					`ELEREG` varchar(40) NOT NULL default '',
-					`DIVCOD` varchar(40) NOT NULL default '',
-					`ETOCOD_EP` varchar(40) NOT NULL default '',
-					`ELEOPT1` varchar(40) NOT NULL default '',
-					`ELEOPT2` varchar(40) NOT NULL default '',
-					`ELEOPT3` varchar(40) NOT NULL default '',
-					`ELEOPT4` varchar(40) NOT NULL default '',
-					`ELEOPT5` varchar(40) NOT NULL default '',
-					`ELEOPT6` varchar(40) NOT NULL default '',
-					`ELEOPT7` varchar(40) NOT NULL default '',
-					`ELEOPT8` varchar(40) NOT NULL default '',
-					`ELEOPT9` varchar(40) NOT NULL default '',
-					`ELEOPT10` varchar(40) NOT NULL default '',
-					`ELEOPT11` varchar(40) NOT NULL default '',
-					`ELEOPT12` varchar(40) NOT NULL default ''
+					`LOGIN` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELENOM` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEPRE` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELESEXE` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEDATNAIS` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELENOET` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELE_ID` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEDOUBL` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELENONAT` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEREG` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`DIVCOD` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ETOCOD_EP` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT1` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT2` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT3` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT4` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT5` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT6` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT7` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT8` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT9` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT10` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT11` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default ''
 					);";
 					$create_table = mysql_query($sql);
 

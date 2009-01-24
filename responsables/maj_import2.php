@@ -162,6 +162,10 @@ $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['st
 
 $gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
 
+$mysql_collate=getSettingValue("mysql_collate") ? getSettingValue("mysql_collate") : "";
+$chaine_mysql_collate="";
+if($mysql_collate!="") {$chaine_mysql_collate="COLLATE $mysql_collate";}
+
 //**************** EN-TETE *****************
 $titre_page = "Mise à jour eleves/responsables";
 require_once("../lib/header.inc");
@@ -510,31 +514,31 @@ else{
 
 					$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
 					`ID_TEMPO` varchar(40) NOT NULL default '',
-					`LOGIN` varchar(40) NOT NULL default '',
-					`ELENOM` varchar(40) NOT NULL default '',
-					`ELEPRE` varchar(40) NOT NULL default '',
-					`ELESEXE` varchar(40) NOT NULL default '',
-					`ELEDATNAIS` varchar(40) NOT NULL default '',
-					`ELENOET` varchar(40) NOT NULL default '',
-					`ELE_ID` varchar(40) NOT NULL default '',
-					`ELEDOUBL` varchar(40) NOT NULL default '',
-					`ELENONAT` varchar(40) NOT NULL default '',
-					`ELEREG` varchar(40) NOT NULL default '',
-					`DIVCOD` varchar(40) NOT NULL default '',
-					`ETOCOD_EP` varchar(40) NOT NULL default '',
-					`ELEOPT1` varchar(40) NOT NULL default '',
-					`ELEOPT2` varchar(40) NOT NULL default '',
-					`ELEOPT3` varchar(40) NOT NULL default '',
-					`ELEOPT4` varchar(40) NOT NULL default '',
-					`ELEOPT5` varchar(40) NOT NULL default '',
-					`ELEOPT6` varchar(40) NOT NULL default '',
-					`ELEOPT7` varchar(40) NOT NULL default '',
-					`ELEOPT8` varchar(40) NOT NULL default '',
-					`ELEOPT9` varchar(40) NOT NULL default '',
-					`ELEOPT10` varchar(40) NOT NULL default '',
-					`ELEOPT11` varchar(40) NOT NULL default '',
-					`ELEOPT12` varchar(40) NOT NULL default '',
-					`LIEU_NAISSANCE` varchar(50) NOT NULL default ''
+					`LOGIN` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELENOM` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEPRE` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELESEXE` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEDATNAIS` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELENOET` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELE_ID` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEDOUBL` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELENONAT` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEREG` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`DIVCOD` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ETOCOD_EP` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT1` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT2` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT3` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT4` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT5` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT6` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT7` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT8` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT9` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT10` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT11` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
+					`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default ''
 					);";
 					$create_table = mysql_query($sql);
 
@@ -1357,6 +1361,7 @@ else{
 
 					// Est-ce un nouvel élève?
 					$sql="SELECT 1=1 FROM eleves e, temp_gep_import2 t WHERE e.ele_id=t.ELE_ID AND t.ELE_ID='$lig->ELE_ID'";
+					//echo "$sql<br />\n";
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)==0){
 						if($cpt>0){$chaine_nouveaux.=", ";}
@@ -1519,6 +1524,7 @@ else{
 									AND e.ele_id='$tab_ele_id[$i]';";
 				}
 				//echo "$sql<br />";
+				//if($tab_ele_id[$i]=='305034') {echo "$sql<br />";}
 				//$reserve_sql=$sql;
 				$test=mysql_query($sql);
 
@@ -2596,36 +2602,105 @@ else{
 					// Je ne pense pas qu'on puisse corriger un ELENOET manquant...
 					// Si on fait des imports avec Sconet, l'ELENOET n'est pas vide.
 					// Et l'interface ne permet pas actuellement de saisir/corriger un ELE_ID
-					$sql_tmp="SELECT elenoet,login FROM eleves WHERE ele_id='$lig->ELE_ID'";
+					$sql_tmp="SELECT elenoet,login FROM eleves WHERE ele_id='$lig->ELE_ID';";
+					//echo "$sql_tmp<br />";
 					$res_tmp=mysql_query($sql_tmp);
-					$lig_tmp=mysql_fetch_object($res_tmp);
-					if($lig_tmp->elenoet==""){
-						$sql.=", elenoet='".$lig->ELENOET."' ";
-					}
-					$login_eleve=$lig_tmp->login;
+					if(mysql_num_rows($res_tmp)>0) {
+						// L'élève a été trouvé dans la table 'eleves' d'après son ELE_ID
+						// L'ELE_ID était correctement renseigné
+						$lig_tmp=mysql_fetch_object($res_tmp);
+						if($lig_tmp->elenoet==""){
+							$sql.=", elenoet='".$lig->ELENOET."'";
+						}
+						$login_eleve=$lig_tmp->login;
 
-					$sql.="WHERE ele_id='".$lig->ELE_ID."';";
-					$update=mysql_query($sql);
-					if($update){
-						echo "\n<span style='color:darkgreen;'>";
-					}
-					else{
-						echo "\n<span style='color:red;'>";
-						$erreur++;
-					}
-					//echo "$sql<br />\n";
-					echo "$lig->ELEPRE $lig->ELENOM";
-					echo "</span>";
+						$sql.=" WHERE ele_id='".$lig->ELE_ID."';";
+						//echo "============<br />";
+						//echo "$sql<br />";
+						$update=mysql_query($sql);
+						if($update){
+							echo "\n<span style='color:darkgreen;'>";
+						}
+						else{
+							echo "\n<span style='color:red;'>";
+							$erreur++;
+						}
+						//echo "$sql<br />\n";
+						echo "$lig->ELEPRE $lig->ELENOM";
+						echo "</span>";
 
-					$sql="UPDATE j_eleves_regime SET doublant='$doublant'";
-					if("$regime"!="ERR"){
-						$sql.=", regime='$regime'";
+						$sql="UPDATE j_eleves_regime SET doublant='$doublant'";
+						if("$regime"!="ERR"){
+							$sql.=", regime='$regime'";
+						}
+						$sql.=" WHERE (login='$login_eleve');";
+						$res2=mysql_query($sql);
+						if(!$res2){
+							echo " <span style='color:red;'>(*)</span>";
+							$erreur++;
+						}
 					}
-					$sql.=" WHERE (login='$login_eleve');";
-					$res2=mysql_query($sql);
-					if(!$res2){
-						echo " <span style='color:red;'>(*)</span>";
-						$erreur++;
+					else {
+						// L'élève n'a pas été trouvé dans la table 'eleves' d'après son ELE_ID
+						// L'ELE_ID n'est pas correctement renseigné dans 'eleves'
+						// La reconnaissance de 'modif' a dû se faire sur l'ELENOET
+						$sql_tmp="SELECT ele_id,login FROM eleves WHERE elenoet='$lig->ELENOET';";
+						//echo "$sql_tmp<br />";
+						$res_tmp=mysql_query($sql_tmp);
+						if(mysql_num_rows($res_tmp)>0) {
+							$lig_tmp=mysql_fetch_object($res_tmp);
+							/*
+							if($lig_tmp->elenoet==""){
+								$sql.=", elenoet='".$lig->ELENOET."'";
+							}
+							*/
+							$old_ele_id=$lig_tmp->ele_id;
+							$sql.=", ele_id='".$lig->ELE_ID."'";
+
+							$login_eleve=$lig_tmp->login;
+
+							$sql.=" WHERE elenoet='".$lig->ELENOET."';";
+							//echo "============<br />";
+							//echo "$sql<br />";
+							$update=mysql_query($sql);
+							if($update){
+								echo "\n<span style='color:darkgreen;'>";
+							}
+							else{
+								echo "\n<span style='color:red;'>";
+								$erreur++;
+							}
+							//echo "$sql<br />\n";
+							echo "$lig->ELEPRE $lig->ELENOM";
+							echo "</span>";
+
+							$sql="UPDATE j_eleves_regime SET doublant='$doublant'";
+							if("$regime"!="ERR"){
+								$sql.=", regime='$regime'";
+							}
+							$sql.=" WHERE (login='$login_eleve');";
+							$res2=mysql_query($sql);
+							if(!$res2){
+								echo " <span style='color:red;'>(*)</span>";
+								$erreur++;
+							}
+
+							$sql="UPDATE responsables2 SET ele_id='$lig->ELE_ID' WHERE ele_id='$old_ele_id';";
+							$correction2=mysql_query($sql);
+							if(!$correction2){
+								echo " <span style='color:plum;'>(*)</span>";
+								$erreur++;
+							}
+
+						}
+						else {
+							// On ne devrait pas arriver là.
+							// Si la reconnaissance de modif a été réalisée, c'est qu'on avait une correspondance soit sur l'ELE_ID soit sur l'ELENOET
+							echo "\n<span style='color:purple;'>";
+							$erreur++;
+							echo "$lig->ELEPRE $lig->ELENOM";
+							echo "</span>";
+						}
 					}
 
 					if(strtolower($lig->ETOCOD_EP)!=strtolower($gepiSchoolRne)) {
@@ -2658,8 +2733,8 @@ else{
 			if(mysql_num_rows($res_new)>0){
 
 				$sql="CREATE TABLE IF NOT EXISTS temp_ele_classe (
-				`ele_id` varchar(40) NOT NULL default '',
-				`divcod` varchar(40) NOT NULL default ''
+				`ele_id` varchar(40) $chaine_mysql_collate NOT NULL default '',
+				`divcod` varchar(40) $chaine_mysql_collate NOT NULL default ''
 				);";
 				$create_table = mysql_query($sql);
 
@@ -3701,17 +3776,17 @@ else{
 					$nettoyage = mysql_query($sql);
 
 					$sql="CREATE TABLE IF NOT EXISTS temp_resp_pers_import (
-							`pers_id` varchar(10) NOT NULL,
-							`login` varchar(50) NOT NULL,
-							`nom` varchar(30) NOT NULL,
-							`prenom` varchar(30) NOT NULL,
-							`civilite` varchar(5) NOT NULL,
-							`tel_pers` varchar(255) NOT NULL,
-							`tel_port` varchar(255) NOT NULL,
-							`tel_prof` varchar(255) NOT NULL,
-							`mel` varchar(100) NOT NULL,
-							`adr_id` varchar(10) NOT NULL,
-							`statut` varchar(100) NOT NULL,
+							`pers_id` varchar(10) $chaine_mysql_collate NOT NULL,
+							`login` varchar(50) $chaine_mysql_collate NOT NULL,
+							`nom` varchar(30) $chaine_mysql_collate NOT NULL,
+							`prenom` varchar(30) $chaine_mysql_collate NOT NULL,
+							`civilite` varchar(5) $chaine_mysql_collate NOT NULL,
+							`tel_pers` varchar(255) $chaine_mysql_collate NOT NULL,
+							`tel_port` varchar(255) $chaine_mysql_collate NOT NULL,
+							`tel_prof` varchar(255) $chaine_mysql_collate NOT NULL,
+							`mel` varchar(100) $chaine_mysql_collate NOT NULL,
+							`adr_id` varchar(10) $chaine_mysql_collate NOT NULL,
+							`statut` varchar(100) $chaine_mysql_collate NOT NULL,
 						PRIMARY KEY  (`pers_id`));";
 					$create_table = mysql_query($sql);
 
@@ -3926,10 +4001,10 @@ else{
 
 				//$sql="CREATE TABLE IF NOT EXISTS responsables2 (
 				$sql="CREATE TABLE IF NOT EXISTS temp_responsables2_import (
-						`ele_id` varchar(10) NOT NULL,
-						`pers_id` varchar(10) NOT NULL,
-						`resp_legal` varchar(1) NOT NULL,
-						`pers_contact` varchar(1) NOT NULL
+						`ele_id` varchar(10) $chaine_mysql_collate NOT NULL,
+						`pers_id` varchar(10) $chaine_mysql_collate NOT NULL,
+						`resp_legal` varchar(1) $chaine_mysql_collate NOT NULL,
+						`pers_contact` varchar(1) $chaine_mysql_collate NOT NULL
 						);";
 				$create_table = mysql_query($sql);
 
@@ -4108,15 +4183,15 @@ else{
 				$nettoyage = mysql_query($sql);
 
 				$sql="CREATE TABLE IF NOT EXISTS temp_resp_adr_import (
-						`adr_id` varchar(10) NOT NULL,
-						`adr1` varchar(100) NOT NULL,
-						`adr2` varchar(100) NOT NULL,
-						`adr3` varchar(100) NOT NULL,
-						`adr4` varchar(100) NOT NULL,
-						`cp` varchar(6) NOT NULL,
-						`pays` varchar(50) NOT NULL,
-						`commune` varchar(50) NOT NULL,
-						`statut` varchar(100) NOT NULL,
+						`adr_id` varchar(10) $chaine_mysql_collate NOT NULL,
+						`adr1` varchar(100) $chaine_mysql_collate NOT NULL,
+						`adr2` varchar(100) $chaine_mysql_collate NOT NULL,
+						`adr3` varchar(100) $chaine_mysql_collate NOT NULL,
+						`adr4` varchar(100) $chaine_mysql_collate NOT NULL,
+						`cp` varchar(6) NOT $chaine_mysql_collate NULL,
+						`pays` varchar(50) $chaine_mysql_collate NOT NULL,
+						`commune` varchar(50) $chaine_mysql_collate NOT NULL,
+						`statut` varchar(100) $chaine_mysql_collate NOT NULL,
 					PRIMARY KEY  (`adr_id`));";
 				$create_table = mysql_query($sql);
 
