@@ -3253,7 +3253,10 @@ $cpt_ordre = $cpt_ordre + 1;
 								if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
 								{
 									// On va afficher la moyenne de l'élève pour la catégorie
-									if ($matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_eleve'] == "") {
+									//if ($matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_eleve'] == "") {
+									if (($matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_eleve'] == "")||
+										($matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego']==0)
+									) {
 										$valeur = "-";
 									} else {
 										$calcule_moyenne_eleve_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_eleve']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
