@@ -313,7 +313,8 @@ Dans le bulletin final, le titre complet apparaît et précède l'appréciation dans
 
 Dans le bulletin final, le message suivant précède le titre complet dans la case appréciation :<br />
 
-<input type="text" name="message" size="40" <?php if ($message) { echo "value=\"".$message."\"";}?> />
+<input type="text" name="message" size="40" maxlength="40" <?php if ($message) { echo "value=\"".$message."\"";}?> /><br />
+<span style='font-size:small;'>(Ce message prendra de la place dans la case appréciation sur le bulletin)</span>
 
 <hr />
 

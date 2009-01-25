@@ -7546,6 +7546,17 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiCahierTexteVersion', '1');");
 	//fin module cahier texte 2
 
+
+	$result .= "&nbsp;->On autorise 40 caractères pour le champ 'message' de la table 'aid_config'<br />";
+	$sql = "ALTER TABLE aid_config CHANGE message message VARCHAR( 40 ) NOT NULL;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur lors de l'augmentation à 40 caractères du champ 'message' de la table 'aid_config': ".$result_inter."<br />";
+	}
+
+
+
+
 	//------------------------------------------------------------------------
 	// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion
         // de la 1.5.2 stable doivent se situer au-dessus de cette ligne !
