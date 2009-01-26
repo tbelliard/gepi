@@ -420,6 +420,38 @@ if(isset($periode_cn)) {
 echo "</form>\n";
 
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" method=\"post\">\n";
+
+//=========================
+// AJOUT: boireaus 20090126
+$insert_mass_appreciation_type=getSettingValue("insert_mass_appreciation_type");
+if ($insert_mass_appreciation_type=="y") {
+	// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
+
+	$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '');";
+	$create_table=mysql_query($sql);
+
+	// Pour tester:
+	// INSERT INTO b_droits_divers SET login='toto', nom_droit='insert_mass_appreciation_type', valeur_droit='y';
+
+	$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
+	$res_droit=mysql_query($sql);
+	if(mysql_num_rows($res_droit)>0) {
+		$droit_insert_mass_appreciation_type="y";
+	}
+	else {
+		$droit_insert_mass_appreciation_type="n";
+	}
+
+	if($droit_insert_mass_appreciation_type=="y") {
+		echo "<div style='float:right; width:150px; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
+		echo "Insérer l'appréciation-type suivante pour toutes les appréciations vides: ";
+		echo "<input type='text' name='ajout_a_textarea_vide' id='ajout_a_textarea_vide' value='-' size='10' /><br />\n";
+		echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide()' /><br />\n";
+		echo "</div>\n";
+	}
+}
+//=========================
+
 echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 
 
@@ -944,6 +976,23 @@ if(document.getElementById('focus_courant')) {document.getElementById('focus_cou
 }
 
 echo "</script>\n";
+
+//=========================
+// AJOUT: boireaus 20090126
+if (($insert_mass_appreciation_type=="y")&&($droit_insert_mass_appreciation_type=="y")) {
+	echo "<script type='text/javascript'>
+	function ajoute_a_textarea_vide() {
+		champs_textarea=document.getElementsByTagName('textarea');
+		alert('champs_textarea.length='+champs_textarea.length);
+		for(i=0;i<champs_textarea.length;i++){
+			if(champs_textarea[i].value=='') {
+				champs_textarea[i].value=document.getElementById('ajout_a_textarea_vide').value;
+			}
+		}
+	}
+</script>\n";
+}
+//=========================
 
 ?>
 <p><br /></p>
