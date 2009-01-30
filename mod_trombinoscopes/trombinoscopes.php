@@ -719,7 +719,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	$execute_qui = mysql_query($requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.mysql_error());
 	if(mysql_num_rows($execute_qui)==0) {
 		// On doit être dans le cas d'un élève qui a tenté d'accéder aux photos d'une classe, groupe, équipe,... à laquelle il n'est pas associé.
-		echo "<p>La requête n'a retourné aucun enregistrment.</p>\n";
+		echo "<p>La requête n'a retourné aucun enregistrement.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -767,6 +767,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 								AND jgc.id_classe = c.id
 								AND u.login = jgp.login
 								AND c.id = "'.$equipepeda.'"
+								AND u.etat="actif"
 								GROUP BY u.nom, u.prenom
 								ORDER BY nom ASC, prenom ASC';
 	}
@@ -793,6 +794,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 			if($GepiAccesEleTrombiPersonnels=='yes') {
 				$requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u
 									WHERE u.statut = "'.$statusgepi.'"
+									AND u.etat="actif"
 									GROUP BY u.nom, u.prenom
 									ORDER BY nom ASC, prenom ASC';
 			}
@@ -802,6 +804,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 										jgp.id_groupe=jeg.id_groupe AND
 										jgp.login=u.login AND
 										jeg.login='".$_SESSION['login']."'
+										AND u.etat='actif'
 									GROUP BY u.nom, u.prenom
 									ORDER BY nom ASC, prenom ASC";
 			}
@@ -814,6 +817,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 		else {
 			$requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u
 								WHERE u.statut = "'.$statusgepi.'"
+								AND u.etat="actif"
 								GROUP BY u.nom, u.prenom
 								ORDER BY nom ASC, prenom ASC';
 		}

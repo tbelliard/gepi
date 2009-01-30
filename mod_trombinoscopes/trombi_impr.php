@@ -188,6 +188,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 									AND jgc.id_classe = c.id
 									AND u.login = jgp.login
 										AND c.id = "'.$equipepeda.'"
+										AND u.etat="actif"
 										GROUP BY u.nom, u.prenom
 										ORDER BY nom ASC, prenom ASC'; }
 
@@ -196,12 +197,14 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 										WHERE u.login = jpm.id_professeur
 									AND m.matiere = jpm.id_matiere
 										AND m.matiere = "'.$discipline.'"
+										AND u.etat="actif"
 										GROUP BY u.nom, u.prenom
 										ORDER BY nom ASC, prenom ASC'; }
 
 	// par statut cpe ou professeur
 		if ( $action_affiche === 'statusgepi' ) { $requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u
 										WHERE u.statut = "'.$statusgepi.'"
+										AND u.etat="actif"
 										GROUP BY u.nom, u.prenom
 										ORDER BY nom ASC, prenom ASC'; }
 
