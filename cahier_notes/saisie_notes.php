@@ -403,9 +403,128 @@ while ($j < $nb_dev) {
 	$j++;
 }
 
-echo "<p class=bold>";
+echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"index.php\" method=\"get\">\n";
+echo "<p class='bold'>\n";
 echo "<a href=\"../accueil.php\"  onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
 echo "<a href='index.php'  onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes enseignements </a>|";
+
+
+
+
+if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
+	if($_SESSION['statut']=='professeur') {
+		$login_prof_groupe_courant=$_SESSION["login"];
+	}
+	else {
+		$tmp_current_group=get_group($id_groupe);
+
+		$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
+	}
+
+	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+
+	if(!empty($tab_groups)) {
+
+		$chaine_options_classes="";
+
+		$num_groupe=-1;
+		$nb_groupes_suivies=count($tab_groups);
+
+		//echo "count(\$tab_groups)=".count($tab_groups)."<br />";
+
+		$id_grp_prec=0;
+		$id_grp_suiv=0;
+		$temoin_tmp=0;
+		//foreach($tab_groups as $tmp_group) {
+		for($loop=0;$loop<count($tab_groups);$loop++) {
+			// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
+			if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
+				if($tab_groups[$loop]['id']==$id_groupe){
+					$num_groupe=$loop;
+
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+
+					$temoin_tmp=1;
+					if(isset($tab_groups[$loop+1])){
+						$id_grp_suiv=$tab_groups[$loop+1]['id'];
+
+						//$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
+					}
+					else{
+						$id_grp_suiv=0;
+					}
+				}
+				else {
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+				}
+
+				if($temoin_tmp==0){
+					$id_grp_prec=$tab_groups[$loop]['id'];
+
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+				}
+			}
+		}
+		// =================================
+
+		/*
+		if(isset($id_grp_prec)){
+			if($id_grp_prec!=0){
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
+			}
+		}
+		*/
+
+		if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
+
+			echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_groupe').selectedIndex=$num_groupe;
+			}
+		}
+	}
+</script>\n";
+
+			echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
+			//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+			echo "Période $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+			echo $chaine_options_classes;
+			echo "</select> | \n";
+		}
+
+		/*
+		if(isset($id_grp_suiv)){
+			if($id_grp_suiv!=0){
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
+				}
+		}
+		*/
+	}
+	// =================================
+}
+
+
+
+
+
 echo "<a href=\"index.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes évaluations </a>|";
 if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
 	//echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\">Créer une boîte</a>|";
@@ -421,6 +540,8 @@ if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
 //echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" target=\"_blank\" onclick=\"return VerifChargement()\">Imprimer au format PDF</a>|";
 echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" onclick=\"return VerifChargement()\"> Imprimer au format PDF </a>|";
 echo "</p>\n";
+echo "</form>\n";
+
 
 // Affichage ou non les colonnes "commentaires"
 // Affichage ou non de tous les devoirs

@@ -46,6 +46,7 @@ if (getSettingValue("active_carnets_notes")!='y') {
 
 unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : (isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : NULL);
+//$periode_num = isset($_POST["periode_num"]) ? $_POST["periode_num"] : (isset($_GET["periode_num"]) ? $_GET["periode_num"] : NULL);
 
 if (is_numeric($id_groupe) && $id_groupe > 0) {
     $current_group = get_group($id_groupe);
@@ -68,6 +69,7 @@ require_once("../lib/header.inc");
 
 //-----------------------------------------------------------------------------------
 if (isset($_GET['id_groupe']) and isset($_GET['periode_num'])) {
+//if (isset($id_groupe) and isset($periode_num)) {
     $id_groupe = $_GET['id_groupe'];
     $periode_num = $_GET['periode_num'];
     $login_prof = $_SESSION['login'];
@@ -217,11 +219,127 @@ if  (isset($id_racine) and ($id_racine!='')) {
     }
 
     //echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"index.php\" method=\"POST\">\n";
-    echo "<div class='norme'><p class='bold'>\n";
+    echo "<div class='norme'>\n";
+	echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
+    echo "<p class='bold'>\n";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a> | \n";
     echo "<a href='index.php'> Mes enseignements </a> | \n";
+
+
+
+if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
+	if($_SESSION['statut']=='professeur') {
+		$login_prof_groupe_courant=$_SESSION["login"];
+	}
+	else {
+		$tmp_current_group=get_group($id_groupe);
+
+		$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
+	}
+
+	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+
+	if(!empty($tab_groups)) {
+
+		$chaine_options_classes="";
+
+		$num_groupe=-1;
+		$nb_groupes_suivies=count($tab_groups);
+
+		//echo "count(\$tab_groups)=".count($tab_groups)."<br />";
+
+		$id_grp_prec=0;
+		$id_grp_suiv=0;
+		$temoin_tmp=0;
+		//foreach($tab_groups as $tmp_group) {
+		for($loop=0;$loop<count($tab_groups);$loop++) {
+			// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
+			if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
+				if($tab_groups[$loop]['id']==$id_groupe){
+					$num_groupe=$loop;
+
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+
+					$temoin_tmp=1;
+					if(isset($tab_groups[$loop+1])){
+						$id_grp_suiv=$tab_groups[$loop+1]['id'];
+
+						//$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
+					}
+					else{
+						$id_grp_suiv=0;
+					}
+				}
+				else {
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+				}
+
+				if($temoin_tmp==0){
+					$id_grp_prec=$tab_groups[$loop]['id'];
+
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+				}
+			}
+		}
+		// =================================
+
+		/*
+		if(isset($id_grp_prec)){
+			if($id_grp_prec!=0){
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
+			}
+		}
+		*/
+
+		if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
+
+			echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_groupe').selectedIndex=$num_groupe;
+			}
+		}
+	}
+</script>\n";
+
+			echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
+			//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+			echo "Période $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+			echo $chaine_options_classes;
+			echo "</select> | \n";
+		}
+
+		/*
+		if(isset($id_grp_suiv)){
+			if($id_grp_suiv!=0){
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
+				}
+		}
+		*/
+	}
+	// =================================
+}
+
     //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'>" . $current_group["description"] . " : Choisir une autre période</a>|";
-    echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> " . htmlentities($current_group["description"]) . " : Choisir une autre période</a> | \n";
+    //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> " . htmlentities($current_group["description"]) . " : Choisir une autre période</a> | \n";
+    echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> Choisir une autre période</a> | \n";
 
 	//==================================
 	// AJOUT: boireaus EXPORT...
@@ -249,11 +367,14 @@ if  (isset($id_racine) and ($id_racine!='')) {
         if ($periode_num!='1')  {
             $themessage = 'En cliquant sur OK, vous allez créer la même structure de boîtes que celle de la période précédente. Si des boîtes existent déjà, elles ne seront pas supprimées.';
             //echo "<a href='index.php?id_groupe=$id_groupe&periode_num=$periode_num&creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Créer la même structure que la période précédent</a>|";
-            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente </a> | \n";
+            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente</a>\n";
+			//echo "&nbsp;| \n";
         }
     }
     //echo "</b>\n";
-    echo "</p></div>\n";
+    echo "</p>\n";
+	echo "</form>\n";
+	echo "</div>\n";
 
     //echo "<h2 class='gepi'>Carnet de notes : ". $current_group["description"] . " ($nom_periode[$periode_num])</h2>\n";
     echo "<h2 class='gepi'>Carnet de notes : ". htmlentities($current_group["description"]) . " ($nom_periode[$periode_num])</h2>\n";
