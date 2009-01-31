@@ -166,6 +166,8 @@ foreach($data1 as $key => $value) {
 $pdf->SetFont('Arial','',8);
 $pdf->FancyTable($w1,$header1,$data1,"v");
 
+//debug_var();
+
 //===============================================
 // AJOUT d'après les indications de Jacques Marot
 header('Content-Type: application/pdf');
@@ -175,7 +177,12 @@ if((!isset($_GET['id_groupe']))||(!isset($_GET['nom_pdf_en_detail']))){
 	$pdf->Output();
 }
 else{
-	$ident_plus = date("Ymd");
+	//$ident_plus = date("Ymd");
+	$ident_plus="";
+	if(isset($_GET['periode_num'])) {
+		$ident_plus .= "Periode_".$_GET['periode_num']."_";
+	}
+	$ident_plus .= date("Ymd");
 	$ident_plus = ereg_replace("[^A-Za-z0-9]","_",$current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus);
 	$ident_plus=str_replace(" ", "_", $ident_plus);
 	$pdf->Output($ident_plus.'.pdf','I');
