@@ -2849,6 +2849,26 @@ else{
 						}
 
 
+						if(strtolower($lig->ETOCOD_EP)!=strtolower($gepiSchoolRne)) {
+							$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
+							$test_ee=mysql_query($sql);
+							if(mysql_num_rows($test_ee)>0) {
+								if($lig->ETOCOD_EP!="") {
+									$sql="UPDATE j_eleves_etablissements SET id_etablissement='$lig->ETOCOD_EP' WHERE id_eleve='$lig->ELENOET';";
+									$update_ee=mysql_query($sql);
+								}
+								else {
+									$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
+									$del_ee=mysql_query($sql);
+								}
+							}
+							else {
+								$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$lig->ELENOET', id_etablissement='$lig->ETOCOD_EP';";
+								$insert_ee=mysql_query($sql);
+							}
+						}
+
+
 						// On remplit aussi une table pour l'association avec la classe:
 						// On fait le même traitement que dans step2.php
 						// (dans step1.php, on a fait le même traitement que pour le remplissage de temp_gep_import2 ici)
