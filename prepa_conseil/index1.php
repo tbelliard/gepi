@@ -284,7 +284,119 @@ if (!$current_group) {
 	*/
 
 } else if (!isset($choix_visu)) {
-    echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+	echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
+    echo "<p class='bold'>\n";
+	echo "<a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+
+	if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
+		if($_SESSION['statut']=='professeur') {
+			$login_prof_groupe_courant=$_SESSION["login"];
+		}
+		else {
+			$tmp_current_group=get_group($id_groupe);
+
+			$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
+		}
+
+		$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+
+		if(!empty($tab_groups)) {
+
+			$chaine_options_classes="";
+
+			$num_groupe=-1;
+			$nb_groupes_suivies=count($tab_groups);
+
+			//echo "count(\$tab_groups)=".count($tab_groups)."<br />";
+
+			$id_grp_prec=0;
+			$id_grp_suiv=0;
+			$temoin_tmp=0;
+			//foreach($tab_groups as $tmp_group) {
+			for($loop=0;$loop<count($tab_groups);$loop++) {
+				if($tab_groups[$loop]['id']==$id_groupe){
+					$num_groupe=$loop;
+
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+
+					$temoin_tmp=1;
+					if(isset($tab_groups[$loop+1])){
+						$id_grp_suiv=$tab_groups[$loop+1]['id'];
+
+						//$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
+					}
+					else{
+						$id_grp_suiv=0;
+					}
+				}
+				else {
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+				}
+
+				if($temoin_tmp==0){
+					$id_grp_prec=$tab_groups[$loop]['id'];
+
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+				}
+			}
+			// =================================
+
+			/*
+			if(isset($id_grp_prec)){
+				if($id_grp_prec!=0){
+					echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
+					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
+				}
+			}
+			*/
+
+			if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
+				/*
+				echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_groupe').selectedIndex=$num_groupe;
+			}
+		}
+	}
+</script>\n";
+				*/
+
+				echo " | <select name='id_groupe' onchange=\"document.forms['form1'].submit();\">\n";
+				//echo "<select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+				echo $chaine_options_classes;
+				echo "</select>\n";
+			}
+
+			/*
+			if(isset($id_grp_suiv)){
+				if($id_grp_suiv!=0){
+					echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num";
+					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
+					}
+			}
+			*/
+		}
+		// =================================
+	}
+
+	echo "</p>\n";
+	echo "</form>\n";
 
 	$test_acces_pp="n";
 	if(($_SESSION['statut']=='professeur')&&($acces_pp=="y")) {
@@ -387,7 +499,7 @@ if (!$current_group) {
     if ($order_by != "classe") {
         $liste_eleves = $current_group["eleves"]["all"]["list"];
     } else {
-        // Ici, on tri par classe
+        // Ici, on trie par classe
         // On va juste créer une liste des élèves pour chaque classe
         $tab_classes = array();
         foreach($current_group["classes"]["list"] as $classe_id) {
@@ -445,6 +557,8 @@ if (!$current_group) {
 		}
 	}
 	$nombre_eleves=$nb_eleves_avant_include;
+	//echo "\$nombre_eleves=$nombre_eleves<br />";
+
 	//==========================================
 
 
@@ -465,10 +579,12 @@ if (!$current_group) {
     $i = "0";
     $eleve_login = null;
     foreach($liste_eleves as $eleve_login) {
+		//echo "$eleve_login ";
         // La variable affiche_ligne teste si on affiche une ligne ou non : si l'élève suit la matière pour au moins une période, on affiche la ligne concernant l'élève. Si l'élève ne suit pas la matière pour aucune des périodes, on n'affiche pas la ligne conernant l'élève.
         $affiche_ligne[$i] = 'no';
         $login_eleve[$i] = $eleve_login;
         $k=0;
+		//echo "\$nb_periode=$nb_periode<br />";
         while ($k < $nb_periode) {
             $temp1 = "visu_note_".$k;
             $temp2 = "visu_app_".$k;
@@ -480,6 +596,7 @@ if (!$current_group) {
                     $option[$i][$k] = "oui";
                     $affiche_ligne[$i] = 'yes';
                 }
+				//echo "\$option[$i][$k]=".$option[$i][$k]."<br />";
             }
             $k++;
         }
@@ -1103,13 +1220,162 @@ if (!$current_group) {
     //
     if (!isset($larg_tab)) {$larg_tab = 680;}
     if (!isset($bord)) {$bord = 1;}
-	echo "\n<!-- Formulaire pour l'affichage sans entête -->\n";
-    echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
+	//echo "\n<!-- Formulaire pour l'affichage sans entête -->\n";
+    //echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
     //echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"";
     if ($en_tete == "yes") {
 		//echo " target=\"_blank\">\n";
 
-		echo "<p class=bold><a href=\"index1.php?id_groupe=$id_groupe\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type=\"submit\" value=\"Visualiser sans l'en-tête\" /></p>\n";
+		echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
+		echo "<p class='bold'><a href=\"index1.php?id_groupe=$id_groupe\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+
+		if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
+			if($_SESSION['statut']=='professeur') {
+				$login_prof_groupe_courant=$_SESSION["login"];
+			}
+			else {
+				$tmp_current_group=get_group($id_groupe);
+
+				$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
+			}
+
+			$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+
+			if(!empty($tab_groups)) {
+
+				$chaine_options_classes="";
+
+				$num_groupe=-1;
+				$nb_groupes_suivies=count($tab_groups);
+
+				//echo "count(\$tab_groups)=".count($tab_groups)."<br />";
+
+				$id_grp_prec=0;
+				$id_grp_suiv=0;
+				$temoin_tmp=0;
+				//foreach($tab_groups as $tmp_group) {
+				for($loop=0;$loop<count($tab_groups);$loop++) {
+					if($tab_groups[$loop]['id']==$id_groupe){
+						$num_groupe=$loop;
+
+						//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+
+						$temoin_tmp=1;
+						if(isset($tab_groups[$loop+1])){
+							$id_grp_suiv=$tab_groups[$loop+1]['id'];
+
+							//$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
+						}
+						else{
+							$id_grp_suiv=0;
+						}
+					}
+					else {
+						//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					}
+
+					if($temoin_tmp==0){
+						$id_grp_prec=$tab_groups[$loop]['id'];
+
+						//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					}
+				}
+				// =================================
+
+				/*
+				if(isset($id_grp_prec)){
+					if($id_grp_prec!=0){
+						echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
+						echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
+					}
+				}
+				*/
+
+				if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
+					/*
+					echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_groupe').selectedIndex=$num_groupe;
+			}
+		}
+	}
+</script>\n";
+					*/
+
+					//echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
+					echo " | <select name='id_groupe' onchange=\"document.forms['form1'].submit();\">\n";
+					//echo "Période $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+					echo $chaine_options_classes;
+					echo "</select> | \n";
+				}
+
+				/*
+				if(isset($id_grp_suiv)){
+					if($id_grp_suiv!=0){
+						echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num";
+						echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
+						}
+				}
+				*/
+			}
+			// =================================
+		}
+
+		// Insérer les mêmes choix:
+
+		$k=1;
+        while ($k < $nb_periode) {
+			$temp = "visu_note_".$k;
+			if (isset($_POST[$temp]) or isset($_GET[$temp])) {
+				echo "<input type='hidden' name='visu_note_$k' value='yes' />\n";
+			}
+
+			$temp = "visu_app_".$k;
+			if (isset($_POST[$temp]) or isset($_GET[$temp])) {
+				echo "<input type='hidden' name='visu_app_$k' value='yes' />\n";
+			}
+
+			$k++;
+		}
+
+		if (isset($_POST['afficher_rang']) or isset($_GET['afficher_rang'])) {
+			echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
+		}
+
+		if (isset($_POST['stat']) or isset($_GET['stat'])) {
+			echo "<input type='hidden' name='stat' value='yes' />\n";
+		}
+
+		if (isset($_POST['choix_visu']) or isset($_GET['choix_visu'])) {
+			echo "<input type='hidden' name='choix_visu' value='yes' />\n";
+		}
+
+		echo "</form>\n";
+
+		echo "\n<!-- Formulaire pour l'affichage sans entête -->\n";
+		echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
+		echo "<p><input type=\"submit\" value=\"Visualiser sans l'en-tête\" /></p>\n";
+	}
+	else {
+		// On ne place ici cette annonce de formulaire que pour avoir du code HTML valide:
+		echo "\n<!-- Formulaire pour l'affichage sans entête -->\n";
+		echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
 	}
 	/*
 	else {
@@ -1130,13 +1396,17 @@ if (!$current_group) {
     $i="1";
     while ($i < $nb_periode) {
         $name1 = "visu_note_".$i;
-        if (isset($_POST[$name1])) {
-            $temp1 = $_POST[$name1];
+        //if (isset($_POST[$name1])) {
+        if ((isset($_POST[$name1]))||(isset($_GET[$name1]))) {
+            //$temp1 = $_POST[$name1];
+            $temp1 = isset($_POST[$name1]) ? $_POST[$name1] : $_GET[$name1];
             echo "<input type='hidden' name='$name1' value='$temp1' />\n";
         }
         $name2 = "visu_app_".$i;
-        if (isset($_POST[$name2])) {
-            $temp2 = $_POST[$name2];
+        //if (isset($_POST[$name2])) {
+        if ((isset($_POST[$name2]))||(isset($_GET[$name2]))) {
+            //$temp2 = $_POST[$name2];
+            $temp2 = isset($_POST[$name2]) ? $_POST[$name2] : $_GET[$name2];
             echo "<input type='hidden' name='$name2' value='$temp2' />\n";
         }
 
@@ -1145,7 +1415,8 @@ if (!$current_group) {
 	//=========================
 	// MODIF: boireaus 20080421
 	// Pour avoir le rang sur le tableau sans entête
-	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+	//if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+	if(((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes"))||((isset($_GET['afficher_rang']))&&($_GET['afficher_rang']=="yes"))) {
 		echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
 	}
 	//=========================
