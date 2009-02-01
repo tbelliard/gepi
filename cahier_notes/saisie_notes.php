@@ -797,7 +797,9 @@ foreach ($liste_eleves as $eleve) {
 				// ========================
 				// MODIF: boireaus 20071010
 				//$mess_note[$i][$k] .= "<input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_note."\" value=\"";
-				$mess_note[$i][$k] .= "<input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve[$i]\" value=\"";
+				$mess_note[$i][$k] .= "<input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve[$i]\" ";
+				$mess_note[$i][$k] .= "autocomplete='off' ";
+				$mess_note[$i][$k] .= "value=\"";
 				// ========================
 			}
 
@@ -1666,5 +1668,6 @@ for(i=10;i<<?php echo $num_id; ?>;i++){
 if(document.getElementById('n10')){
 	document.getElementById('n10').focus();
 }
+
 </script>
 <?php require("../lib/footer.inc.php");?>

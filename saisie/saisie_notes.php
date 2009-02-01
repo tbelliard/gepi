@@ -832,7 +832,10 @@ foreach ($liste_eleves as $eleve_login) {
 					$mess[$k].="<td id=\"td_".$k.$num_id."\" ".$temp."><center>\n";
 					$mess[$k].="<input type='hidden' name=\"log_eleve_".$k."[$i]\" value=\"$eleve_login\" />\n";
 
-					$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve_".$k."[$i]\" value=";
+					//$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve_".$k."[$i]\" value=";
+					$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" ";
+					$mess[$k].="autocomplete=\"off\" ";
+					$mess[$k].="name=\"note_eleve_".$k."[$i]\" value=";
 					// ========================
 
 					if (($periode_cn == $k) and ($is_posted=='bascule')) {
