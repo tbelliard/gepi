@@ -2392,7 +2392,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									$valeur = "-";
 								}
 								elseif ($tab_bull['eleve'][$i]['aid_b'][$m]['aid_statut']!="") {
-									$valeur=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_statut'];
+									if($tab_bull['eleve'][$i]['aid_b'][$m]['aid_statut']=="other") {
+										$valeur = "-";
+									}
+									else {
+										$valeur=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_statut'];
+									}
 								}
 								else {
 									$valeur = present_nombre($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
@@ -3646,7 +3651,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									$valeur = "-";
 								}
 								elseif ($tab_bull['eleve'][$i]['aid_e'][$m]['aid_statut']!="") {
-									$valeur=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_statut'];
+									if($tab_bull['eleve'][$i]['aid_e'][$m]['aid_statut']=="other") {
+										$valeur = "-";
+									}
+									else {
+										$valeur=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_statut'];
+									}
 								}
 								else {
 									$valeur = present_nombre($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
