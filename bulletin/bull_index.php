@@ -2037,6 +2037,8 @@ else {
 									$tab_ele['aid_b'][$zz]['nom_complet']=@mysql_result($call_data_aid_b, $z, "nom_complet");
 									$tab_ele['aid_b'][$zz]['message']=@mysql_result($call_data_aid_b, $z, "message");
 
+									$tab_ele['aid_b'][$zz]['display_nom']=@mysql_result($call_data_aid_b, $z, "display_nom");
+
 									//echo "\$tab_ele['aid_b'][$zz]['nom_complet']=".$tab_ele['aid_b'][$zz]['nom_complet']."<br />";
 									//echo "\$type_note=".$type_note."<br />";
 
@@ -2172,6 +2174,8 @@ else {
 									$tab_ele['aid_e'][$zz]['nom']=@mysql_result($call_data_aid_e, $z, "nom");
 									$tab_ele['aid_e'][$zz]['nom_complet']=@mysql_result($call_data_aid_e, $z, "nom_complet");
 									$tab_ele['aid_e'][$zz]['message']=@mysql_result($call_data_aid_e, $z, "message");
+
+									$tab_ele['aid_e'][$zz]['display_nom']=@mysql_result($call_data_aid_e, $z, "display_nom");
 
 									//echo "\$tab_ele['aid_e'][$zz]['nom_complet']=".$tab_ele['aid_e'][$zz]['nom_complet']."<br />";
 									//echo "\$type_note=".$type_note."<br />";
