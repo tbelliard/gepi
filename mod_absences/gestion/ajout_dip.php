@@ -183,7 +183,7 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
                          } else { $verification = '3'; $erreur='1'; $texte_erreur = "Il y a une erreur dans la  spécificationr des jours."; }
                  }
 
-          if( $erreur!='1' ) { if( $fiche === 'oui' ) { header("Location:gestion_absences.php?type=$type&select_fiche_eleve=$eleve_absence_eleve"); } else { header("Location:gestion_absences.php?type=$type"); } }
+          if( $erreur!='1' ) { if( $fiche === 'oui' ) { header("Location:gestion_absences.php?type=$type&select_fiche_eleve=$eleve_absence_eleve&aff_fiche=abseleve#abseleve"); } else { header("Location:gestion_absences.php?type=$type"); } }
 
 }
 
@@ -195,13 +195,21 @@ if ($action === 'supprimer')
 
         $id_dispense_eleve = $_GET['id'];
         // Vérification des champs
+        $requete_sup = "SELECT eleve_absence_eleve FROM ".$prefix_base."absences_eleves
+								WHERE id_absence_eleve ='$id_dispense_eleve'";
+	   $resultat_sup = mysql_query($requete_sup) or die('Erreur SQL !'.$requete_sup.'<br />'.mysql_error());
+	   $login_eleve = mysql_fetch_array($resultat_sup);
         if($id_dispense_eleve != '')
         {
           //Requete d'insertion MYSQL
             $requete_del = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='$id_dispense_eleve'";
           // Execution de cette requete
             mysql_query($requete_del) or die('Erreur SQL !'.$requete_del.'<br />'.mysql_error());
-            header('Location:gestion_absences.php?type=D&date_ce_jour='.$date_ce_jour);
+            if($fiche === 'oui') {
+		 	header("Location:gestion_absences.php?type=A&select_fiche_eleve=$login_eleve[0]&aff_fiche=abseleve#abseleve");
+			} else {
+				header("Location:gestion_absences.php?type=A");
+			}
         }
 }
 
@@ -253,7 +261,7 @@ if(document.forms[form_action].elements[input_pass_id].value=='JJ/MM/AAAA' || do
  // -->
 </script>
 
-<p class=bold>|<a href='gestion_absences.php?type=<?php echo $type; ?><?php if($fiche==='oui') { ?>&select_fiche_eleve=<?php echo $eleve_absent[0]; } ?>'>Retour</a>|
+<p class=bold>|<a href='gestion_absences.php?type=<?php echo $type; ?><?php if($fiche==='oui') { ?>&select_fiche_eleve=<?php echo $eleve_absent[0];?>&aff_fiche=abseleve#abseleve<?php } ?>'>Retour</a>|
 </p><?php
 
 if ($action == "ajouter" or $action == "modifier" or $erreur = 1)

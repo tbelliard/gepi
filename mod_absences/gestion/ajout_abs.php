@@ -72,7 +72,6 @@ $id = isset($_GET['id']) ? $_GET['id'] : '';
 $action_sql = isset($_POST['action_sql']) ? $_POST['action_sql'] : '';
 $fiche = isset($_POST['fiche']) ? $_POST['fiche'] : (isset($_GET['fiche']) ? $_GET['fiche'] : '');
 
-
 // si pas de sélection on retourne à la sélection
 if((empty($classe_choix) or $classe_choix === 'tous') and empty($eleve_absent[0]) and empty($id) and $action_sql === '') {
 	header("Location:select.php?type=$type");
@@ -729,7 +728,7 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 		}
 		if ( $action_sql === "modifier" ) {
 			if($fiche === 'oui') {
-				header("Location:gestion_absences.php?type=A&select_fiche_eleve=$eleve_absence[0]");
+				header("Location:gestion_absences.php?type=A&select_fiche_eleve=$eleve_absence[0]&aff_fiche=abseleve#abseleve");
 			} else {
 				header("Location:gestion_absences.php?type=A");
 			}
@@ -738,9 +737,11 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 } // if($action_sql == "ajouter" or $action_sql == "modifier")
 //echo $erreur." ab ".$verification." ";
 
-$datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
-$datejour = date('d/m/Y');
-
+//$annee_en_cours_t=annee_en_cours_t($datej);
+//$datejour = date('d/m/Y');
+//$datej = $_SESSION['datej'];
+//$datejour=$_SESSION['datejour'];
+//$annee_en_cours_t=annee_en_cours_t($datej);
 
 if ($action === 'supprimer')
 {
@@ -758,7 +759,11 @@ if ($action === 'supprimer')
 	}
 
     $id_absence_eleve = $_GET['id'];
-    // si une réponse à un courrier expédié à était reçus alors on ne peut supprimer l'absences
+    $requete_sup = "SELECT eleve_absence_eleve FROM ".$prefix_base."absences_eleves
+								WHERE id_absence_eleve ='$id_absence_eleve'";
+	$resultat_sup = mysql_query($requete_sup) or die('Erreur SQL !'.$requete_sup.'<br />'.mysql_error());
+	$login_eleve = mysql_fetch_array($resultat_sup);
+	 // si une réponse à un courrier expédié à était reçus alors on ne peut supprimer l'absences
     $cpt_lettre_recus = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%' AND (statu_lettre_suivi = 'recus' OR envoye_date_lettre_suivi != '0000-00-00')"),0);
 
     if( $cpt_lettre_recus === '0' ) {
@@ -801,10 +806,18 @@ if ($action === 'supprimer')
 
 				mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 			}
- 			header('Location:gestion_absences.php?type=A&date_ce_jour='.$date_ce_jour);
+		    if($fiche === 'oui') {
+		 	header("Location:gestion_absences.php?type=A&select_fiche_eleve=$login_eleve[0]&aff_fiche=abseleve#abseleve");
+			} else {
+				header("Location:gestion_absences.php?type=A");
+			}
 		}
 	} else {
-		header('Location:gestion_absences.php?type=A');
+	        if($fiche === 'oui') {
+		 	header("Location:gestion_absences.php?type=A&select_fiche_eleve=$login_eleve[0]&aff_fiche=abseleve#abseleve");
+			} else {
+				header("Location:gestion_absences.php?type=A");
+			}
 		/* manque gestion d'erreur impossible de supprimer car il existe une lettre reçus sur cette absences */ }
 }
 
@@ -830,8 +843,6 @@ if ($action === "modifier")
         $i = $i + 1;
     }
 }
-
-
 // s'il y a eu un problème alors on réaffecte le donnée au nom des variables du formulaire
 $i = '0';
 if(isset($eleve_absence_eleve_erreur[0]) and !empty($eleve_absence_eleve_erreur[0]))
@@ -870,9 +881,23 @@ if(isset($eleve_absence_eleve_erreur[0]) and !empty($eleve_absence_eleve_erreur[
     }
 }
 
-$datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
+//$datej = $_SESSION['datej'];
+//$datejour=$_SESSION['datejour'];
+//$datej = date('Y-m-d');
 $datejour = date('d/m/Y');
-
+//recuperation date veille et date modification didier
+if ($action === "modifier"){
+$daterecup=explode('/',$d_date_absence_eleve[0]);
+}else{
+$daterecup=explode('-',date('d-m-Y'));	
+}
+$day=$daterecup[0];
+$month=$daterecup[1];
+$year=$daterecup[2];
+$datefab=getdate(mktime(0, 0, 0, $month , $day -1, $year)); 
+$datehier=$datefab['year']."-".$datefab['mon']."-".$datefab['mday'];
+$datej=$year."-".$month."-".$day;
+$annee_en_cours_t=annee_en_cours_t($datej);
 //**************** EN-TETE *****************
 $titre_page = "Gestion des absences";
 require_once("../../lib/header.inc");
@@ -901,7 +926,7 @@ if ($_SESSION["statut"] == 'autre') {
 	$retour = './select.php?type=A';
 }else{
 	if($fiche === 'oui') {
-		$aff_fiche = '&amp;select_fiche_eleve='.$eleve_absent[0];
+		$aff_fiche = '&amp;select_fiche_eleve='.$eleve_absent[0].'&aff_fiche=abseleve#abseleve';
 	}else{
 		$aff_fiche = '';
 	}
@@ -1034,8 +1059,7 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
 					<td>du&nbsp;<input name="d_date_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if(isset($d_date_absence_eleve) and !empty($d_date_absence_eleve)) { echo $d_date_absence_eleve[$i]; } else { echo $datejour; } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
 					<td>de&nbsp;<input name="d_heure_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if (isset($d_heure_absence_eleve[$i]) and !empty($d_heure_absence_eleve[$i])) { echo $d_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" size="5" maxlength="5" /></td>
 					<td>
-		<?php
-			if ( $action != "modifier" ) { ?>
+		
 						en
                      	<select name="dp_absence_eleve[<?php echo $i; ?>]">
 		<?php
@@ -1049,19 +1073,13 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
 		<?php
                 	} ?>
 						</select>
-		<?php
-			} else { ?>
-						<input type="hidden" name="dp_absence_eleve[<?php echo $i; ?>]" value="" />
-        <?php
-			} ?>
-                    </td>
+		           </td>
                 </tr>
                 <tr>
 					<td>au&nbsp;<input name="a_date_absence_eleve[<?php echo $i; ?>]"  onfocus="javascript:this.select()" type="text" value="<?php if (isset($a_date_absence_eleve[$i]) and !empty($a_date_absence_eleve[$i])) { echo $a_date_absence_eleve[$i]; } else { ?>JJ/MM/AAAA<?php } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php echo $cal_2->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a></td>
 					<td>&agrave;&nbsp;&nbsp;<input name="a_heure_absence_eleve[<?php echo $i; ?>]"  onfocus="javascript:this.select()" type="text" value="<?php if (isset($a_heure_absence_eleve[$i]) and !empty($a_heure_absence_eleve[$i])) { echo $a_heure_absence_eleve[$i]; } else { ?>00:00<?php } ?>" size="5" maxlength="5" /></td>
 					<td>
-		<?php
-			if ( $action != "modifier" ) { ?>
+		
 						en
                     	<select name="ap_absence_eleve[<?php echo $i; ?>]">
         <?php
@@ -1073,11 +1091,7 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
 				while ( $data_pe = mysql_fetch_array ($resultat_pe)) { ?>
 							<option value="<?php echo $data_pe['id_definie_periode']; ?>" <?php if(isset($ap_absence_eleve[$i]) and $ap_absence_eleve[$i] === $data_pe['id_definie_periode']) { ?>selected="selected"<?php } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heuredebut_definie_periode'])."-".heure_court($data_pe['heurefin_definie_periode']); ?></option><?php
                                   } ?>
-						</select>
-        <?php
-			} else { ?>
-						<input type="hidden" name="ap_absence_eleve[<?php echo $i; ?>]" value="" />
-		<?php } ?>
+						</select>        
                     </td>
                 </tr>
         <?php if($action!="modifier" and $erreur!='1') { ?>
@@ -1139,6 +1153,31 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
      </fieldset>
     </form>
     <?php
+            $requete_t = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$eleve_absent[$i]."' AND (d_date_absence_eleve = '".$datehier."' OR (d_date_absence_eleve <= '".$datehier."' AND  a_date_absence_eleve >= '".$datehier."')) AND type_absence_eleve = 'A'";
+            if ( $action === "ajouter" and $erreur === '1') { $requete_t = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$eleve_absence."' AND d_date_absence_eleve <= '".$d_date_absence_eleve."' AND  a_date_absence_eleve >= '".$d_date_absence_eleve."'  AND type_absence_eleve = 'A'"; }
+            if ( $action === "modifier" and $erreur === '1') { $requete_t = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$eleve_absence."' AND d_date_absence_eleve <= '".$d_date_absence_eleve."' AND  a_date_absence_eleve >= '".$d_date_absence_eleve."' AND id_absence_eleve <> '".$id."'  AND type_absence_eleve = 'A'"; }
+           $resultat = mysql_query($requete_t) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+    ?>
+
+                    <div class="norme_absence_orange";><strong>Absences de l'élève la veille</strong></div>
+                    <table style="margin: auto; width: 500px;" border="0" cellspacing="2" cellpadding="0">
+                        <tr class="fond_orange2">
+                          <td class="norme_absence_blanc_min"><strong>Du</strong></td>
+                          <td class="norme_absence_blanc_min"><strong>Au</strong></td>
+                          <td class="norme_absence_blanc_min"><strong>De</strong></td>
+                          <td class="norme_absence_blanc_min"><strong>A</strong></td>
+                        </tr>
+             <?php while ($data = mysql_fetch_array($resultat))
+                    { ?>
+                        <tr class="fond_orange">
+                          <td class="norme_absence_min"><?php echo date_fr($data['d_date_absence_eleve']); ?></td>
+                          <td class="norme_absence_min"><?php echo date_fr($data['a_date_absence_eleve']); ?></td>
+                          <td class="norme_absence_min"><?php echo $data['d_heure_absence_eleve']; ?></td>
+                          <td class="norme_absence_min"><?php echo $data['a_heure_absence_eleve']; ?></td>
+                        </tr>
+             <?php } ?>
+                    </table>
+    <?php
             $requete_t = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$eleve_absent[$i]."' AND (d_date_absence_eleve = '".$datej."' OR (d_date_absence_eleve <= '".$datej."' AND  a_date_absence_eleve >= '".$datej."')) AND type_absence_eleve = 'A'";
             if ( $action === "ajouter" and $erreur === '1') { $requete_t = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$eleve_absence."' AND d_date_absence_eleve <= '".$d_date_absence_eleve."' AND  a_date_absence_eleve >= '".$d_date_absence_eleve."'  AND type_absence_eleve = 'A'"; }
             if ( $action === "modifier" and $erreur === '1') { $requete_t = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$eleve_absence."' AND d_date_absence_eleve <= '".$d_date_absence_eleve."' AND  a_date_absence_eleve >= '".$d_date_absence_eleve."' AND id_absence_eleve <> '".$id."'  AND type_absence_eleve = 'A'"; }
@@ -1163,6 +1202,7 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
                         </tr>
              <?php } ?>
                     </table>
+                    
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php }
@@ -1232,7 +1272,19 @@ if (isset($eleve_absent[1]) and !empty($eleve_absent[1]) or $mode === 'classe') 
                   $resultat_id = mysql_query($requete_id) or die('Erreur SQL !'.$requete_id.'<br />'.mysql_error());
                   $data_id = mysql_fetch_array ($resultat_id);
               ?>
-              <strong><?php echo strtoupper($data_id['nom']); ?></strong><br /><?php echo ucfirst($data_id['prenom']); ?><br /><br /><?php echo classe_de($data_id['login']); $id_eleve = $data_id['login']; ?><input type="hidden" name="eleve_absence_eleve[<?php echo $i; ?>]" value="<?php echo $id_eleve; ?>" /></td>
+              <strong><?php echo strtoupper($data_id['nom']); ?></strong><br /><?php echo ucfirst($data_id['prenom']); ?><br /><br /><?php echo classe_de($data_id['login']); $id_eleve = $data_id['login']; ?><input type="hidden" name="eleve_absence_eleve[<?php echo $i; ?>]" value="<?php echo $id_eleve; ?>" />
+            <?php
+            $test_dispense = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='D'"),0);
+			if ($test_dispense != '0')
+			{  ?>
+				<div class="tableau_info_compt"><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $id_eleve; ?>&amp;type=D',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="voir les dispenses">Dispense détecté</a></div>
+                  
+			<?php
+			} ?>
+                
+             <div class="tableau_info_compt"><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $id_eleve; ?>&amp;type=<?php echo $type; ?>',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="voir les absences">voir absences</a></div>
+              </td>     
+            
             <td><?php if(($mode === "classe" and $i === '0') or $mode != "classe") { ?>
               du&nbsp;&nbsp;<a href="#calend" onClick="<?php echo $cal_a[$i]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br /><input name="d_date_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if(empty($d_date_absence_eleve)) { echo $datejour; } else { if($action == "modifier" ) { echo $d_date_absence_eleve[$i]; } else { if(isset($d_date_absence_eleve_erreur[$i])) { echo $d_date_absence_eleve_erreur[$i]; } else { echo date_fr($d_date_absence_eleve); } } } ?>" size="10" maxlength="10" /><br />
               au&nbsp;&nbsp;<a href="#calend" onClick="<?php echo $cal_b[$i]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br /><input name="a_date_absence_eleve[<?php echo $i; ?>]" onfocus="javascript:this.select()" type="text" value="<?php if(isset($a_date_absence_eleve_erreur[$i])) { echo $a_date_absence_eleve_erreur[$i]; } else { ?>JJ/MM/AAAA<?php } ?>" size="10" maxlength="10" />
@@ -1262,7 +1314,7 @@ if (isset($eleve_absent[1]) and !empty($eleve_absent[1]) or $mode === 'classe') 
                                <option value="<?php echo $data_pe['id_definie_periode']; ?>" <?php if(isset($dp_absence_eleve_erreur[$i]) and $dp_absence_eleve_erreur[$i] == $data_pe['id_definie_periode']) { ?>selected<?php } else { } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heuredebut_definie_periode'])."-".heure_court($data_pe['heurefin_definie_periode']); ?></option><?php
                            } ?>
               </select>
-            </td><?php } else { ?>IDEM<?php } ?>
+            </td><?php } else { ?> IDEM <?php } ?>
             <td><?php if(($mode === "classe" and $i === '0') or $mode != "classe") { ?>
               motif<br />
               <select name="motif_absence_eleve[<?php echo $i; ?>]">

@@ -192,13 +192,13 @@ if($action_sql === 'ajouter' or $action_sql === 'modifier')
                {
                   if ( $action_sql === "ajouter" ) { header("Location:select.php?type=R"); }
                   if ( $action_sql === "modifier" ) {
-                                                      if($fiche==='oui') { header("Location:gestion_absences.php?type=R&select_fiche_eleve=$id_absence_eleve_form"); } else { header("Location:gestion_absences.php?type=R"); }
+                                                      if($fiche==='oui') { header("Location:gestion_absences.php?type=R&select_fiche_eleve=$id_absence_eleve_form&aff_fiche=abseleve#abseleve"); } else { header("Location:gestion_absences.php?type=R"); }
                                                    }
                }
 }
 
- $datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
- $datejour = date('d/m/Y');
+$datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
+$datejour = date('d/m/Y');
 
 if ($action === "supprimer")
 {
@@ -209,7 +209,10 @@ if ($action === "supprimer")
 	   else { if (isset($_GET['date_ce_jour'])) { $date_ce_jour = $_GET['date_ce_jour']; } if (isset($_POST['date_ce_jour'])) { $date_ce_jour = $_POST['date_ce_jour']; } }
 
     $id_absence_eleve = $_GET['id'];
-
+    $requete_sup = "SELECT eleve_absence_eleve FROM ".$prefix_base."absences_eleves
+								WHERE id_absence_eleve ='$id_absence_eleve'";
+	$resultat_sup = mysql_query($requete_sup) or die('Erreur SQL !'.$requete_sup.'<br />'.mysql_error());
+	$login_eleve = mysql_fetch_array($resultat_sup); 
     // Vérification des champs
     if ( $id_absence_eleve != '' )
     {
@@ -221,9 +224,11 @@ if ($action === "supprimer")
         $requete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_absence_eleve."'";
         // Execution de cette requete
         mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-
+        if($fiche === 'oui') {
+		 	header("Location:gestion_absences.php?type=R&select_fiche_eleve=$login_eleve[0]&aff_fiche=abseleve#abseleve");
+			} else {
         header('Location:gestion_absences.php?type=R&date_ce_jour='.$date_ce_jour);
-
+			}
     }
 
 }
@@ -274,7 +279,7 @@ $titre_page = "Gestion des absences";
 require_once("../../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href='gestion_absences.php?type=<?php echo $type; ?><?php if($page == 2) { ?>&select_fiche_eleve=<?php echo $eleve_absent[0]; } ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" /> Retour</a>
+<p class="bold"><a href='gestion_absences.php?type=<?php echo $type; ?><?php if($fiche==='oui') { ?>&select_fiche_eleve=<?php echo $eleve_absent[0];?>&aff_fiche=abseleve#abseleve<?php }?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" /> Retour</a>
 </p><?php
 
 $i = '0';
@@ -383,5 +388,3 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
 </div>
 
 <?php mysql_close(); ?>
-</body>
-</html>

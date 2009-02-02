@@ -384,7 +384,17 @@ Pour éviter un centrage bizarre:
                 	 $execution_absences_nr = mysql_query($requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysql_error());
 	                 while ($data_absences_nr = mysql_fetch_array($execution_absences_nr))
         	         {
-                	      ?><li><a href="ajout_abs.php?action=modifier&amp;type=A&amp;id=<?php echo $data_absences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui">
+                	      ?><li><?php
+                	       $cpt_lettre_absence_recus = lettre_absence_envoye($data_absences_nr['id_absence_eleve']);
+                           if ( $cpt_lettre_absence_recus == 0 ) {?>
+                	      <a href="ajout_abs.php?action=supprimer&amp;type=A&amp;id=<?php echo $data_absences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui" onClick="return confirm('Etes-vous sur de vouloir le supprimer...')"><img src="../images/icons/delete.png" style="width: 16px; height: 16px;" title="supprimer l'absence" border="0" alt="" /></a>
+                	      <?php
+                          }else{?>
+                          <img src="../images/icons/delete_imp.png" style="width: 16px; height: 16px;" title="Impossible de supprimer l'absence" border="0" alt="" />
+                          <?php
+                          }
+                	      ?>                	      
+                	      <a href="ajout_abs.php?action=modifier&amp;type=A&amp;id=<?php echo $data_absences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui">
 			      <?php
 					if ( $data_absences_nr['d_date_absence_eleve'] != $data_absences_nr['a_date_absence_eleve'] ) { echo 'du '.date_fr($data_absences_nr['d_date_absence_eleve']).' au '.date_fr($data_absences_nr['a_date_absence_eleve']); }
 					elseif ( $data_absences_nr['d_date_absence_eleve'] === $data_absences_nr['a_date_absence_eleve'] ) { echo date_fr($data_absences_nr['d_date_absence_eleve'])." de ".$data_absences_nr['d_heure_absence_eleve']." à ".$data_absences_nr['a_heure_absence_eleve']; }
@@ -410,7 +420,10 @@ Pour éviter un centrage bizarre:
         	         $execution_retards_nr = mysql_query($requete_retards_nr) or die('Erreur SQL !'.$requete_retards_nr.'<br />'.mysql_error());
 	                 while ($data_retards_nr = mysql_fetch_array($execution_retards_nr))
 	                 {
-         	            //suppression d'un <li> inutile didier ?><li><a href="ajout_ret.php?action=modifier&amp;type=R&amp;id=<?php echo $data_retards_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><?php echo date_fr($data_retards_nr['d_date_absence_eleve'])." ".$data_retards_nr['d_heure_absence_eleve']; ?></a></li><?php
+         	            //suppression d'un <li> inutile didier ?>
+         	            <li>
+         	            <a href="ajout_ret.php?action=supprimer&amp;type=A&amp;id=<?php echo $data_retards_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui" onClick="return confirm('Etes-vous sur de vouloir le supprimer...')"><img src="../images/icons/delete.png" style="width: 16px; height: 16px;" title="supprimer le retard" border="0" alt="" /></a>
+         	            <a href="ajout_ret.php?action=modifier&amp;type=R&amp;id=<?php echo $data_retards_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><?php echo date_fr($data_retards_nr['d_date_absence_eleve'])." ".$data_retards_nr['d_heure_absence_eleve']; ?></a></li><?php
                 	 }
 	           ?>
 		   </ul>
@@ -429,7 +442,10 @@ Pour éviter un centrage bizarre:
         	         $execution_dispences_nr = mysql_query($requete_dispences_nr) or die('Erreur SQL !'.$requete_dispences_nr.'<br />'.mysql_error());
 	                 while ($data_dispences_nr = mysql_fetch_array($execution_dispences_nr))
         	         {
-                	      //suppression d'un <li> inutile didier?><li><a href="ajout_dip.php?action=modifier&amp;type=D&amp;id=<?php echo $data_dispences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><?php echo date_fr($data_dispences_nr['d_date_absence_eleve'])." ".$data_dispences_nr['d_heure_absence_eleve']; ?></a></li><?php
+                	      //suppression d'un <li> inutile didier?>
+                	      <li>
+                	      <a href="ajout_dip.php?action=supprimer&amp;type=A&amp;id=<?php echo $data_dispences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui" onClick="return confirm('Etes-vous sur de vouloir le supprimer...')"><img src="../images/icons/delete.png" style="width: 16px; height: 16px;" title="supprimer la dispense" border="0" alt="" /></a>
+                	      <a href="ajout_dip.php?action=modifier&amp;type=D&amp;id=<?php echo $data_dispences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><?php echo date_fr($data_dispences_nr['d_date_absence_eleve'])." ".$data_dispences_nr['d_heure_absence_eleve']; ?></a></li><?php
 	                 }
         	   ?>
 		   </ul>
@@ -448,12 +464,15 @@ Pour éviter un centrage bizarre:
 	</div>
 	<?php } ?>
 <?php /* DIV impression bilan  */ ?>
-	   <?php if ( $aff_fiche==='impbilan') { ?>
+	   <?php if ( $aff_fiche==='impbilan') {	?>
 		<a name="impbilan"></a>
 		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Impression bilan des absences</div>
 		<div style="border-top: 2px solid #2C7E8F; border-bottom: 2px solid #2C7E8F;">
 			<div style="background: transparent url(../images/grid_10.png); padding-top: 5px;">
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php
+$absencenj='';
+$retardnj=''; 
+?>
 <div style="text-align: center;">
    <form method="post" action="bilan_absence.php?type_impr=bda&amp;choix=<?php echo $choix; ?>" target="blank" name="form3">
       <fieldset style="width: 340px; margin: auto;" class="couleur_ligne_3">
@@ -493,7 +512,10 @@ Pour éviter un centrage bizarre:
 		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Impression fiche récapitulative</div>
 		<div style="border-top: 2px solid #2C7E8F; border-bottom: 2px solid #2C7E8F;">
 			<div style="background: transparent url(../images/grid_10.png); padding-top: 5px;">
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php
+$absencenj='';
+$retardnj=''; 
+?>
 <div style="text-align: center;">
    <form method="post" action="fiche_pdf.php" target="blank" name="form3">
       <fieldset style="width: 340px; margin: auto;" class="couleur_ligne_3">

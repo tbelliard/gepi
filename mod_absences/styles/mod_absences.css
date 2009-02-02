@@ -38,6 +38,11 @@ input:focus {
     font: normal 10pt Arial;
     text-align: center;
 }
+.norme_absence_orange {
+    color: #FFCC33;
+    font: normal 10pt Arial;
+    text-align: center;
+}
 
 .norme_absence_vert {
     color: #006600;
@@ -157,6 +162,12 @@ input:focus {
 
 .fond_rouge_2 {
     background: #FBDDD2;
+}
+.fond_orange2 {
+    background: #FFCC33;
+}
+.fond_orange {
+    background: #FFFF99;
 }
 
 .tableau_centre {
