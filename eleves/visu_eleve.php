@@ -1753,7 +1753,7 @@ Patientez pendant l'extraction des données... merci.
 				echo "<tr>\n";
 				echo "<th>Période</th>\n";
 				echo "<th>Nombre d'absences</th>\n";
-				echo "<th>Absences justifiées</th>\n";
+				echo "<th>Absences non justifiées</th>\n";
 				echo "<th>Nombre de retards</th>\n";
 				echo "<th>Appréciation</th>\n";
 				echo "</tr>\n";
