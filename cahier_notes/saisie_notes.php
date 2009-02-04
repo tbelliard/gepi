@@ -369,7 +369,8 @@ else{
 }
 
 //$titre_pdf = urlencode($titre);
-$titre_pdf = urlencode(traite_accents_utf8($titre));
+//$titre_pdf = urlencode(traite_accents_utf8($titre));
+$titre_pdf = urlencode(traite_accents_utf8(html_entity_decode($titre)));
 if ($id_devoir != 0) $titre .= " - SAISIE";  else $titre .= " - VISUALISATION";
 
 echo "<script type=\"text/javascript\" language=\"javascript\">";
