@@ -4401,16 +4401,34 @@ $hauteur_pris_app_abs=$hauteur_pris;
 		}
 		*/
 		if(count($tab_rel)!=0) {
+			$temoin_releve_trouve='n';
 			if(isset($tab_rel['eleve'])) {
-				for($k=0;$k<count($tab_rel['eleve']);$k++) {
-					if($tab_rel['eleve'][$k]['login']==$tab_bull['eleve'][$i]['login']) {
-						releve_pdf($tab_rel,$k);
-						break;
+				//echo "\$tab_bull['eleve'][$i]['login']=".$tab_bull['eleve'][$i]['login']."<br />";
+				//for($k=0;$k<count($tab_rel['eleve']);$k++) {
+				for($k=0;$k<$tab_bull['eff_total_classe'];$k++) {
+					//echo "\$tab_rel['eleve'][$k]['login']=".$tab_rel['eleve'][$k]['login']."<br />";
+					if(isset($tab_rel['eleve'][$k]['login'])) {
+						if($tab_rel['eleve'][$k]['login']==$tab_bull['eleve'][$i]['login']) {
+							releve_pdf($tab_rel,$k);
+							$temoin_releve_trouve='y';
+							break;
+						}
 					}
 				}
 			}
+			/*
 			else {
 				echo "<p style='color:red;'>Il semble que le tableau des relevés de notes soit vide.</p>\n";
+			}
+			*/
+
+			if($temoin_releve_trouve=='n') {
+				$pdf->AddPage("P");
+				$pdf->SetFontSize(10);
+				$pdf->SetXY(20,20);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',14);
+				$pdf->Cell(90,7,"Relevé de notes non trouvé pour ".strtoupper($tab_bull['eleve'][$i]['nom'])." ".ucfirst($tab_bull['eleve'][$i]['prenom']),0,2,'');
+
 			}
 		}
 

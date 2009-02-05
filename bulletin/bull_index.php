@@ -1296,6 +1296,10 @@ else {
 		$_SESSION['b_adr_pg']=$b_adr_pg;
 		//===========================================
 
+		$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='3' GROUP BY login;";
+		$res_eff_total_classe=mysql_query($sql);
+		$eff_total_classe=mysql_num_rows($res_eff_total_classe);
+
 		// Boucle sur les périodes
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
 
@@ -1638,6 +1642,9 @@ else {
 
 			// Variables simples
 			$tab_bulletin[$id_classe][$periode_num]['eff_classe']=$eff_classe;
+
+			// Effectif total sur l'année pour pouvoir parcourir tout $tab_rel pour intercaler bulletin/relevé
+			$tab_bulletin[$id_classe][$periode_num]['eff_total_classe']=$eff_total_classe;
 
 			// Variables simples
 			$tab_bulletin[$id_classe][$periode_num]['affiche_categories']=$affiche_categories;
