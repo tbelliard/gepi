@@ -399,6 +399,21 @@ if (isset($_POST['gepi_pmv'])) {
 	}
 }
 
+if (isset($_POST['delais_apres_cloture'])) {
+	$delais_apres_cloture=$_POST['delais_apres_cloture'];
+	if (!(ereg ("^[0-9]{1,}$", $delais_apres_cloture)) || $delais_apres_cloture < 0) {
+		//$delais_apres_cloture=0;
+		$msg .= "Erreur lors de l'enregistrement de delais_apres_cloture !";
+	}
+	else {
+		if (!saveSetting("delais_apres_cloture", $delais_apres_cloture)) {
+			$msg .= "Erreur lors de l'enregistrement de delais_apres_cloture !";
+		}
+	}
+}
+
+
+
 /*
 if(isset($_POST['is_posted'])){
 	if (isset($_POST['export_cn_ods'])) {
@@ -761,6 +776,29 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 		}
 		echo "</tr>\n";
 	?>
+
+	<tr>
+		<td style="font-variant: small-caps;">
+		<a name='delais_apres_cloture'></a>
+		Nombre de jours avant déverrouillage de l'accès aux appréciations des bulletins pour les responsables et les élèves une fois la période close&nbsp;:<br />
+		<div style='font-variant: normal; font-style: italic; font-size: small;'>Sous réserve:<br />
+		<ul>
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>de créer des comptes pour les responsables et élèves,</li>
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'autoriser l'accès aux bulletins simplifiés ou aux graphes dans <a href='droits_acces.php'>Droits d'accès</a></li>
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'opter pour le mode de déverrouillage automatique sur le critère "période close".</li>
+		</ul>
+		</div>
+		</td>
+		<td valign='top'>
+			<?php
+			$delais_apres_cloture=getSettingValue("delais_apres_cloture");
+			if($delais_apres_cloture=="") {$delais_apres_cloture=0;}
+			echo "<input type='text' name='delais_apres_cloture' size='2' value='$delais_apres_cloture' />\n";
+			?>
+		</td>
+	</tr>
+
+
 	<tr>
 		<td style="font-variant: small-caps;">
 		N° d'enregistrement à la CNIL : <br />

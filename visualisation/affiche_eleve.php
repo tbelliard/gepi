@@ -518,6 +518,36 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 							$tab_acces_app[$i]="n";
 						}
 					}
+					elseif($lig->acces=="d") {
+						$sql="SELECT verouiller,UNIX_TIMESTAMP(date_verrouillage) AS date_verrouillage FROM periodes WHERE id_classe='$id_classe' AND num_periode='$i';";
+						//echo "$sql<br />";
+						$res_dv=mysql_query($sql);
+
+						if(mysql_num_rows($res_dv)>0) {
+							$lig_dv=mysql_fetch_object($res_dv);
+
+							if($lig_dv->verouiller!='O') {
+								$tab_acces_app[$i]="n";
+							}
+							else {
+								$timestamp_limite=$lig_dv->date_verrouillage+$delais_apres_cloture*24*3600;
+								$timestamp_courant=time();
+								//echo "\$timestamp_limite=$timestamp_limite<br />";
+								//echo "\$timestamp_courant=$timestamp_courant<br />";
+
+								if($timestamp_courant>$timestamp_limite){
+									$tab_acces_app[$i]="y";
+								}
+								else {
+									$tab_acces_app[$i]="n";
+								}
+								//echo "\$tab_acces_app[$i]=$tab_acces_app[$i]<br />";
+							}
+						}
+						else {
+							$tab_acces_app[$i]="n";
+						}
+					}
 					else {
 						$tab_acces_app[$i]="n";
 					}

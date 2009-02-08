@@ -36,6 +36,7 @@ if ((isset($id_classe))||(isset($current_group))) {
   while ($i < $nb_periode) {
     $nom_periode[$i] = mysql_result($periode_query, $i-1, "nom_periode");
     $ver_periode[$i] = mysql_result($periode_query, $i-1, "verouiller");
+    $date_ver_periode[$i] = mysql_result($periode_query, $i-1, "date_verrouillage");
     $i++;
  }
 }

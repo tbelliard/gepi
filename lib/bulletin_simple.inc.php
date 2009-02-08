@@ -4,7 +4,11 @@
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
+$delais_apres_cloture=getSettingValue('delais_apres_cloture');
+//echo "\$delais_apres_cloture=$delais_apres_cloture<br />";
+
 function acces_appreciations($periode1, $periode2, $id_classe) {
+	global $delais_apres_cloture;
 
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 		for($i=$periode1;$i<=$periode2;$i++) {
@@ -16,6 +20,7 @@ function acces_appreciations($periode1, $periode2, $id_classe) {
 			if($res) {
 				if(mysql_num_rows($res)>0) {
 					$lig=mysql_fetch_object($res);
+					//echo "\$lig->acces=$lig->acces<br />";
 					if($lig->acces=="y") {
 						$tab_acces_app[$i]="y";
 					}
@@ -29,6 +34,36 @@ function acces_appreciations($periode1, $periode2, $id_classe) {
 
 						if($timestamp_courant>$timestamp_limite){
 							$tab_acces_app[$i]="y";
+						}
+						else {
+							$tab_acces_app[$i]="n";
+						}
+					}
+					elseif($lig->acces=="d") {
+						$sql="SELECT verouiller,UNIX_TIMESTAMP(date_verrouillage) AS date_verrouillage FROM periodes WHERE id_classe='$id_classe' AND num_periode='$i';";
+						//echo "$sql<br />";
+						$res_dv=mysql_query($sql);
+
+						if(mysql_num_rows($res_dv)>0) {
+							$lig_dv=mysql_fetch_object($res_dv);
+
+							if($lig_dv->verouiller!='O') {
+								$tab_acces_app[$i]="n";
+							}
+							else {
+								$timestamp_limite=$lig_dv->date_verrouillage+$delais_apres_cloture*24*3600;
+								$timestamp_courant=time();
+								//echo "\$timestamp_limite=$timestamp_limite<br />";
+								//echo "\$timestamp_courant=$timestamp_courant<br />";
+
+								if($timestamp_courant>$timestamp_limite){
+									$tab_acces_app[$i]="y";
+								}
+								else {
+									$tab_acces_app[$i]="n";
+								}
+								//echo "\$tab_acces_app[$i]=$tab_acces_app[$i]<br />";
+							}
 						}
 						else {
 							$tab_acces_app[$i]="n";
@@ -53,7 +88,7 @@ function acces_appreciations($periode1, $periode2, $id_classe) {
 			$tab_acces_app[$i]="y";
 		}
 	}
-  return $tab_acces_app;
+	return $tab_acces_app;
 } // function
 
 //function bulletin($current_eleve_login,$compteur,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories) {
@@ -481,6 +516,7 @@ while ($j < $nombre_groupes) {
 		//echo" width=\"$larg_col1\" class='bull_simpl'><b>$current_matiere_nom_complet</b>";
 		echo " width=\"$larg_col1\" class='bull_simpl'><b>".htmlentities($current_matiere_nom_complet)."</b>";
 		$k = 0;
+		//echo "(".$current_group['id'].")";
 		while ($k < count($current_matiere_professeur_login)) {
 			echo "<br /><i>".affiche_utilisateur($current_matiere_professeur_login[$k],$id_classe)."</i>";
 			$k++;

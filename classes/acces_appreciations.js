@@ -1,8 +1,10 @@
 // <![CDATA[
+/*
 function f_date(id_div,date) {
 	//new Ajax.Updater($('id_div'),'acces_appreciations_ajax.php?date=date',{method: 'get'});
 	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?date='+date,{method: 'get'});
 }
+*/
 
 /*
 function f_manuel(id_div,classe_periode,accessible) {
@@ -16,10 +18,31 @@ function f_manuel(id_div,classe_periode) {
 }
 */
 
+/*
 function f_manuel(id_div,classe_periode,statut) {
 	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?classe_periode='+classe_periode+'&statut='+statut,{method: 'get'});
 }
+*/
 
+function g_manuel(id_div,id_classe,periode,accessible,statut) {
+	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?id_div='+id_div+'&id_classe='+id_classe+'&periode='+periode+'&mode=manuel&accessible='+accessible+'&statut='+statut,{method: 'get'});
+}
+
+function g_date() {
+	id_div=$('choix_date_id_div').value;
+	id_classe=$('choix_date_id_classe').value;
+	periode=$('choix_date_periode').value;
+	statut=$('choix_date_statut').value;
+	choix_date=$('choix_date').value;
+	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?id_div='+id_div+'&id_classe='+id_classe+'&periode='+periode+'&mode=date&choix_date='+choix_date+'&statut='+statut,{method: 'get'});
+	$('infobulle_choix_date').style.display='none';
+}
+
+function g_periode_close(id_div,id_classe,periode,statut) {
+	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?id_div='+id_div+'&id_classe='+id_classe+'&periode='+periode+'&mode=d&statut='+statut,{method: 'get'});
+}
+
+/*
 function modif_couleur(id_check,id_span) {
 	if(document.getElementById(id_check)) {
 		if(document.getElementById(id_span)) {
@@ -32,4 +55,5 @@ function modif_couleur(id_check,id_span) {
 		}
 	}
 }
+*/
 //]]>
