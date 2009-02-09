@@ -68,7 +68,7 @@ CREATE TABLE `matieres_categories` (`id` int(11) NOT NULL AUTO_INCREMENT, `nom_c
 DROP TABLE IF EXISTS `messages`;
 CREATE TABLE `messages` ( `id` int(11) NOT NULL auto_increment, `texte` text NOT NULL, `date_debut` int(11) NOT NULL default '0', `date_fin` int(11) NOT NULL default '0', `auteur` varchar(50) NOT NULL default '', `destinataires` varchar(10) NOT NULL default '', PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS `periodes`;
-CREATE TABLE `periodes` ( `nom_periode` varchar(50) NOT NULL default '', `num_periode` int(11) NOT NULL default '0', `verouiller` char(1) NOT NULL default '', `id_classe` int(11) NOT NULL default '0', PRIMARY KEY  (`num_periode`,`id_classe`));
+CREATE TABLE `periodes` ( `nom_periode` varchar(50) NOT NULL default '', `num_periode` int(11) NOT NULL default '0', `verouiller` char(1) NOT NULL default '', `id_classe` int(11) NOT NULL default '0', `date_verrouillage` TIMESTAMP NOT NULL, PRIMARY KEY  (`num_periode`,`id_classe`));
 DROP TABLE IF EXISTS `responsables`;
 CREATE TABLE `responsables` ( `ereno` varchar(10) NOT NULL default '', `nom1` varchar(20) NOT NULL default '', `prenom1` varchar(20) NOT NULL default '', `adr1` varchar(100) NOT NULL default '', `adr1_comp` varchar(100) NOT NULL default '', `commune1` varchar(50) NOT NULL default '', `cp1` varchar(6) NOT NULL default '', `nom2` varchar(20) NOT NULL default '', `prenom2` varchar(20) NOT NULL default '', `adr2` varchar(100) NOT NULL default '', `adr2_comp` varchar(100) NOT NULL default '', `commune2` varchar(50) NOT NULL default '', `cp2` varchar(6) NOT NULL default '', PRIMARY KEY  (`ereno`));
 DROP TABLE IF EXISTS `setting`;

@@ -56,28 +56,36 @@ if (isset($_POST['deverouillage_auto_periode_suivante'])) {
 
 if (isset($_POST['ok'])) {
 
-   $pb_reg_ver = 'no';
-   //$calldata = sql_query("SELECT DISTINCT c.id, c.classe FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-   $calldata = sql_query("SELECT DISTINCT c.id, c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
-   if ($calldata) for ($k = 0; ($row = sql_row($calldata, $k)); $k++) {
-      $id_classe = $row[0];
-      $periode_query = sql_query("SELECT verouiller FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
-      $nb_periode = sql_count($periode_query) + 1 ;
-      if ($periode_query) for ($i = 0; ($row_per = sql_row($periode_query, $i)); $i++) {
-         $nom_classe = "cl_".$id_classe."_".$i;
-         $t = $i+1;
-         if (isset($_POST[$nom_classe]))  {
-            $register = sql_query("UPDATE periodes SET verouiller='".$_POST[$nom_classe]."' WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
-            if (!$register) {$pb_reg_ver = 'yes';}
-         }
-      }
-   }
+	$pb_reg_ver = 'no';
+	//$calldata = sql_query("SELECT DISTINCT c.id, c.classe FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+	$calldata = sql_query("SELECT DISTINCT c.id, c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+	if ($calldata) {
+		for ($k = 0; ($row = sql_row($calldata, $k)); $k++) {
+			$id_classe = $row[0];
+			$periode_query = sql_query("SELECT verouiller FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+			$nb_periode = sql_count($periode_query) + 1 ;
+			if ($periode_query) {
+				for ($i = 0; ($row_per = sql_row($periode_query, $i)); $i++) {
+					$nom_classe = "cl_".$id_classe."_".$i;
+					//echo "\$nom_classe=$nom_classe<br />";
+					//echo "\$row_per[0]=$row_per[0]<br />";
+					$t = $i+1;
+					//if (isset($_POST[$nom_classe]))  {
+					if ((isset($_POST[$nom_classe]))&&($_POST[$nom_classe]!=$row_per[0]))  {
+						//$register = sql_query("UPDATE periodes SET verouiller='".$_POST[$nom_classe]."' WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
+						$register = sql_query("UPDATE periodes SET verouiller='".$_POST[$nom_classe]."', date_verrouillage=NOW() WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
+						if (!$register) {$pb_reg_ver = 'yes';}
+					}
+				}
+			}
+		}
+	}
 
    // Déverrouillage de la période suivante si le bouton radio est à Oui.
    if ((($action_apres == 'retour') OR ($action_apres == 'imprime_html') OR ($action_apres == 'imprime_pdf') OR ($action_apres == 'rien')) AND isset($_POST['deverouillage_auto_periode_suivante'])) {
 		if (($_POST['deverouillage_auto_periode_suivante'])=='y') {
 		  //recherche du nombre de période pour la classe
-		  $sql_periode = "SELECT * FROM periodes WHERE id_classe=$classe";
+		  $sql_periode = "SELECT * FROM periodes WHERE id_classe='$classe';";
 		  $result_periode = mysql_query($sql_periode);
 		  $nb_periodes_classe = mysql_num_rows($result_periode);
           //echo $nb_periodes_classe;
@@ -92,7 +100,9 @@ if (isset($_POST['ok'])) {
 		  if (($etat_periode=='P') OR $etat_periode=='O') {
 		    if ($periode_en_cours  < $nb_periodes_classe) {
 			  //echo "<br/>On déverrouille $periode_suivante";
-			  $sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N' WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
+			  //$sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N' WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
+			  //$sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N', date_verrouillage='".time()."' WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
+			  $sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N', date_verrouillage=NOW() WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
 			  //echo "<br/>".$sql_maj_periode_suivante;
 			  $result_maj_periode_suivante = mysql_query($sql_maj_periode_suivante);
 			  if (!$result_maj_periode_suivante) {$pb_reg_ver = 'yes';}

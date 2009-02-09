@@ -7555,6 +7555,20 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	}
 
 
+	$result .= "&nbsp;->Ajout d'un champ 'date_verrouillage' à la table 'periodes': ";
+	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM periodes LIKE 'date_verrouillage'"));
+	if ($test1 == 0) {
+		$query = mysql_query("ALTER TABLE periodes ADD date_verrouillage TIMESTAMP NOT NULL ;");
+		if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+		}
+	}
+	else {
+		$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+	}
+
 
 
 	//------------------------------------------------------------------------
