@@ -670,6 +670,11 @@ elseif ($_SESSION['statut']=='professeur') {
 	}
 }
 
+/* ERIC a décommenter pour la gestion des modele ooo des rapport d'incident.
+if ($step==2) {   //Eric Ajout génération du modèle Ooo pour imprimer le rapport d'incident.
+    echo " | <a href='../mod_ooo/rapport_incident.php?mode=module_discipline&amp;id_incident=$id_incident' onclick=\"return confirm_abandon (this, change, '$themessage')\">Imprimer le rapport d'incident</a>\n";
+}
+*/
 echo "</p>\n";
 
 $etat_incident="";
@@ -772,6 +777,11 @@ if(isset($id_incident)) {
 		echo "<th>Statut</th>\n";
 		//echo "<th>Qualité dans l'incident</th>\n";
 		echo "<th>Rôle dans l'incident</th>\n";
+		
+//Eric modèle Ooo
+		if ($gepiSettings['active_mod_ooo'] == 'y') { 
+		echo "<th>Retenue</th>\n";
+		}		
 
 		if($_SESSION['statut']!='professeur') {
 			echo "<th>\n";
@@ -892,7 +902,16 @@ if(isset($id_incident)) {
 				}
 				echo "</td>\n";
 			}
-
+//Eric  modèle Ooo
+			if ($gepiSettings['active_mod_ooo'] == 'y') { 
+			    echo "<td>";
+				if ($lig->qualite=='Responsable') { //un retenue seulement pour un responsable !
+		            echo "<a href='../mod_ooo/retenue.php?mode=module_discipline&amp;id_incident=$id_incident&amp;ele_login=$lig->login' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
+				}
+                echo "</td>";
+		    }   
+			
+			
 			if($_SESSION['statut']!='professeur') {
 				echo "<td>\n";
 				if($lig->statut=='eleve') {

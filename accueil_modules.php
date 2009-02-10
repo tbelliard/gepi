@@ -133,6 +133,11 @@ $chemin[] = "/mod_discipline/discipline_admin.php";
 $titre[] = "Discipline";
 $expli[] = "Pour gérer le module Discipline.";
 
+//Module modèle Open_Office
+$chemin[] = "/mod_ooo/ooo_admin.php";
+$titre[] = "Modèle OpenOffice";
+$expli[] = "Pour gérer les modèles Open Office de Gepi.";
+
 $nb_ligne = count($chemin);
 //
 // Outils d'administration

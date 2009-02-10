@@ -1657,6 +1657,38 @@ if (getSettingValue("active_mod_discipline")=='y') {
 	Fin module discipline
 *****************************/
 
+/*************************
+	Module Modèle Open Office
+*************************/
+
+if (getSettingValue("active_mod_ooo")=='y') {
+
+	$chemin = array();
+	$chemin[]="/mod_ooo/index.php";
+	$titre = array();
+	$titre[] = "Modèle Open Office";
+
+	$expli = array();
+	$expli[] = "Gérer les modèles Open Office dans Gepi et Utiliser les formulaires de saisie";
+
+	$nb_ligne = count($chemin);
+	$affiche = 'no';
+	for ($i=0;$i<$nb_ligne;$i++) {
+		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+	}
+	if ($affiche=='yes') {
+			echo "<h2 class='accueil'><img src='./mod_ooo/images/ico_gene_ooo.png' alt=''/> - Modèles Open Office</h2>\n";
+			echo "<table class='menu' summary=\"Module Modèle Open Office. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+			for ($i=0;$i<$nb_ligne;$i++) {
+				affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+			}
+			echo "</table>";
+	}
+}
+
+/*****************************
+	Fin module modèle Open Office
+*****************************/
 
 /**************************************************************
 	Lien vers les flux rss pour les élèves s'ils sont activés
