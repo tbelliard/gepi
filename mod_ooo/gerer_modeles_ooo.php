@@ -43,6 +43,7 @@ if (!checkAccess()) {
 
 
 include_once('./lib/lib_mod_ooo.php'); //les fonctions
+$nom_fichier_modele_ooo =''; //variable à initialiser à blanc pour inclure le fichier suivant et éviter une notice. Pour les autres inclusions, cela est inutile.
 include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
 
 //Liste des fichiers à compléter à la main (2 données par fichier)

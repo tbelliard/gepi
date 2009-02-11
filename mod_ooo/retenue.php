@@ -190,30 +190,40 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 } //if mode = module discipline  
 
 if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire 
-   
-    $date = datemysql_to_jj_mois_aaaa($_SESSION['retenue_date'],'/','n');
-	session_unregister("retenue_date");
-	$nom_prenom_eleve =$_SESSION['retenue_nom_prenom_elv'];
-	session_unregister("retenue_nom_prenom_elv");
-	$classe = $_SESSION['retenue_classe_elv'];
-	session_unregister("retenue_classe_elv");	
-	
-	$motif = $_SESSION['retenue_motif'];
-	$motif=traitement_magic_quotes(corriger_caracteres($motif));
-	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-	$motif=ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
-	session_unregister("retenue_motif");
-	
-	$travail = $_SESSION['retenue_travail'];
-	$travail=traitement_magic_quotes(corriger_caracteres($travail));
-	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-	$travail=ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
-	session_unregister("retenue_travail");
-	
+    if (isset($_SESSION['retenue_date'])) {
+        $date = datemysql_to_jj_mois_aaaa($_SESSION['retenue_date'],'/','n');
+	    session_unregister("retenue_date");
+	}
+	if (isset($_SESSION['retenue_nom_prenom_elv'])) {
+		$nom_prenom_eleve =$_SESSION['retenue_nom_prenom_elv'];
+		session_unregister("retenue_nom_prenom_elv");
+	}
+	if (isset($_SESSION['retenue_classe_elv'])) {
+		$classe = $_SESSION['retenue_classe_elv'];
+		session_unregister("retenue_classe_elv");	
+	}
+	if (isset($_SESSION['retenue_date'])) {
+		$motif = $_SESSION['retenue_date'];
+		$motif=traitement_magic_quotes(corriger_caracteres($motif));
+		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+		$motif=ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
+		session_unregister("retenue_motif");
+	}
+	if (isset($_SESSION['retenue_travail'])) {
+		$travail = $_SESSION['retenue_travail'];
+		$travail=traitement_magic_quotes(corriger_caracteres($travail));
+		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+		$travail=ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+		session_unregister("retenue_travail");
+	}
+	if (isset($_SESSION['retenue_nom_resp'])) {
 	$nom_resp = $_SESSION['retenue_nom_resp'];
 	session_unregister("retenue_nom_resp");
-	$fct_resp = $_SESSION['retenue_fct_resp'];
-	session_unregister("retenue_fct_resp");
+	}
+	if (isset($_SESSION['retenue_fct_resp'])) {
+		$fct_resp = $_SESSION['retenue_fct_resp'];
+		session_unregister("retenue_fct_resp");
+	}
 
 	$date_retenue ='';
 	$duree ='';
