@@ -46,6 +46,7 @@ include_once('./lib/lib_mod_ooo.php');
 
 include_once('./lib/tbs_class.php');
 include_once('./lib/tbsooo_class.php');
+define( 'PCLZIP_TEMPORARY_DIR', '../mod_ooo/tmp/' );
 include_once('../lib/pclzip.lib.php');
 
 include_once('../mod_discipline/sanctions_func_lib.php'); // la librairie de fonction du module discipline pour la fonction p_nom , u_p_nom
@@ -252,10 +253,6 @@ $nom_fichier_xml_a_traiter ='content.xml';
 include_once ("./lib/chemin.inc.php");
 
 
-// Traitement des tableaux
-include_once ("./lib/chemin.inc.php");
-
-
 // instantiate a TBS OOo class
 $OOo = new clsTinyButStrongOOo;
 // setting the object
@@ -269,7 +266,6 @@ $OOo->LoadXmlFromDoc($nom_fichier_xml_a_traiter); //Le fichier qui contient les 
 //$OOo->MergeBlock('blk1',$array_type1) ;
 
 // Fin de traitement des tableaux
-
 
 $OOo->SaveXmlToDoc(); //traitement du fichier extrait
 // display
