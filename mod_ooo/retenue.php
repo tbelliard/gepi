@@ -267,20 +267,31 @@ $OOo->LoadXmlFromDoc($nom_fichier_xml_a_traiter); //Le fichier qui contient les 
 
 // Fin de traitement des tableaux
 
+
 $OOo->SaveXmlToDoc(); //traitement du fichier extrait
+
+
+//Génération du nom du fichier
+$now = gmdate('d_M_Y_H:i:s');
+$nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
+$nom_fic = $nom_fichier_modele[0]."_".$nom_prenom_eleve."_".$classe."_généré_le_".$now.".".$nom_fichier_modele[1];
+header('Expires: ' . $now);
+// lem9 & loic1: IE need specific headers
+
+if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+    header('Content-Disposition: inline; filename="' . $nom_fic . '"');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+} else {
+    header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
+    header('Pragma: no-cache');
+}
+
 // display
 header('Content-type: '.$OOo->GetMimetypeDoc());
 header('Content-Length: '.filesize($OOo->GetPathnameDoc()));
 $OOo->FlushDoc(); //envoi du fichier traité
 $OOo->RemoveDoc(); //suppression des fichiers de travail
 // Fin de traitement des tableaux
-
-
-$OOo->SaveXmlToDoc(); //traitement du fichier extrait
-// display
-header('Content-type: '.$OOo->GetMimetypeDoc());
-header('Content-Length: '.filesize($OOo->GetPathnameDoc()));
-$OOo->FlushDoc(); //envoi du fichier traité
-$OOo->RemoveDoc(); //suppression des fichiers de travail
 
 ?>
