@@ -1296,7 +1296,7 @@ else {
 		$_SESSION['b_adr_pg']=$b_adr_pg;
 		//===========================================
 
-		$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='3' GROUP BY login;";
+		$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' GROUP BY login;";
 		$res_eff_total_classe=mysql_query($sql);
 		$eff_total_classe=mysql_num_rows($res_eff_total_classe);
 
