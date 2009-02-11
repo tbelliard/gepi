@@ -4405,7 +4405,8 @@ $hauteur_pris_app_abs=$hauteur_pris;
 			if(isset($tab_rel['eleve'])) {
 				//echo "\$tab_bull['eleve'][$i]['login']=".$tab_bull['eleve'][$i]['login']."<br />";
 				//for($k=0;$k<count($tab_rel['eleve']);$k++) {
-				for($k=0;$k<$tab_bull['eff_total_classe'];$k++) {
+				//for($k=0;$k<$tab_bull['eff_total_classe'];$k++) {
+				for($k=0;$k<count($tab_rel['eleve']);$k++) {
 					//echo "\$tab_rel['eleve'][$k]['login']=".$tab_rel['eleve'][$k]['login']."<br />";
 					if(isset($tab_rel['eleve'][$k]['login'])) {
 						if($tab_rel['eleve'][$k]['login']==$tab_bull['eleve'][$i]['login']) {
