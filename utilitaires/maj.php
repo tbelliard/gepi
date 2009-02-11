@@ -696,7 +696,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/classes/classes_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Page appelée via ajax.', '');";
 
     $tab_req[] = "INSERT INTO `droits` VALUES ('/responsables/dedoublonnage_adresses.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Dédoublonnage des adresses responsables', '');";
-	
+
 	$tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/rapport_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo : Rapport Incident', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/gerer_modeles_ooo.php', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'F', 'Modèle Ooo : Gérer et utiliser les modèles', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/ooo_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modèle Ooo : Admin', '');";
@@ -704,6 +704,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/formulaire_retenue.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo : formulaire retenue', '');;";
 	$tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo: Index : Index', '');;";
 
+	$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/update_colonne_retenue.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Affichage d une imprimante pour le responsable d un incident', '');;";
 
     //$tab_req[] = "";
 
@@ -7577,13 +7578,13 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 		$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
 	}
 
-	
+
 	///Module OOO
     $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'active_mod_ooo'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('active_mod_ooo', 'n');");
-			
+
 
 
 	//------------------------------------------------------------------------

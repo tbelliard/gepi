@@ -777,11 +777,11 @@ if(isset($id_incident)) {
 		echo "<th>Statut</th>\n";
 		//echo "<th>Qualité dans l'incident</th>\n";
 		echo "<th>Rôle dans l'incident</th>\n";
-		
+
 //Eric modèle Ooo
-		if ($gepiSettings['active_mod_ooo'] == 'y') { 
+		if ($gepiSettings['active_mod_ooo'] == 'y') {
 		echo "<th>Retenue</th>\n";
-		}		
+		}
 
 		if($_SESSION['statut']!='professeur') {
 			echo "<th>\n";
@@ -834,7 +834,7 @@ if(isset($id_incident)) {
 					echo "<input type='hidden' name='ele_login[$cpt]' value=\"$lig->login\" />\n";
 
 					//echo "<select name='qualite[$cpt]' onchange='changement();'>\n";
-					echo "<select name='qualite[$cpt]' id='qualite_$cpt' onchange=\"sauve_role('$id_incident','$lig->login','$cpt');\">\n";
+					echo "<select name='qualite[$cpt]' id='qualite_$cpt' onchange=\"sauve_role('$id_incident','$lig->login','$cpt');update_colonne_retenue('$id_incident','$lig->login','$cpt');\">\n";
 					echo "<option value=''";
 					if($lig->qualite=="") {echo " selected='selected'";}
 					echo ">---</option>\n";
@@ -903,15 +903,15 @@ if(isset($id_incident)) {
 				echo "</td>\n";
 			}
 //Eric  modèle Ooo
-			if ($gepiSettings['active_mod_ooo'] == 'y') { 
-			    echo "<td>";
+			if ($gepiSettings['active_mod_ooo'] == 'y') {
+			    echo "<td id='td_retenue_$cpt'>";
 				if ($lig->qualite=='Responsable') { //un retenue seulement pour un responsable !
 		            echo "<a href='../mod_ooo/retenue.php?mode=module_discipline&amp;id_incident=$id_incident&amp;ele_login=$lig->login' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
 				}
                 echo "</td>";
-		    }   
-			
-			
+		    }
+
+
 			if($_SESSION['statut']!='professeur') {
 				echo "<td>\n";
 				if($lig->statut=='eleve') {
@@ -997,6 +997,13 @@ if(isset($id_incident)) {
 		qualite=document.getElementById('qualite_'+cpt).options[document.getElementById('qualite_'+cpt).selectedIndex].value;
 		//alert('qualite='+qualite);
 		new Ajax.Updater($('div_svg_qualite'),'sauve_role.php?id_incident='+id_incident+'&login='+login+'&qualite='+qualite,{method: 'get'});
+	}
+
+	function update_colonne_retenue(id_incident,login,cpt) {
+		//qualite=document.getElementById('qualite_'+cpt).selectedIndex;
+		qualite=document.getElementById('qualite_'+cpt).options[document.getElementById('qualite_'+cpt).selectedIndex].value;
+		//alert('qualite='+qualite);
+		new Ajax.Updater($('td_retenue_'+cpt),'update_colonne_retenue.php?id_incident='+id_incident+'&login='+login+'&qualite='+qualite,{method: 'get'});
 	}
 
 	function sauve_avertie(id_incident,login,avertie) {
