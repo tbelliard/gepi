@@ -84,7 +84,7 @@ function liste_sanctions($id_incident,$ele_login) {
 				$alt_b=$alt_b*(-1);
 				$retour.="<tr class='lig$alt_b'>\n";
 				//$retour.="<td>Retenue</td>\n";
-				if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
+				if(($etat_incident!='clos')&&(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))) {
 					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=retenue&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>Retenue</a></td>\n";
 				}
 				else {
@@ -140,7 +140,7 @@ function liste_sanctions($id_incident,$ele_login) {
 				$alt_b=$alt_b*(-1);
 				$retour.="<tr class='lig$alt_b'>\n";
 				//$retour.="<td>Exclusion</td>\n";
-				if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
+				if(($etat_incident!='clos')&&(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))) {
 					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=exclusion&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>Exclusion</a></td>\n";
 				}
 				else {
@@ -192,7 +192,7 @@ function liste_sanctions($id_incident,$ele_login) {
 			while($lig_sanction=mysql_fetch_object($res_sanction)) {
 				$alt_b=$alt_b*(-1);
 				$retour.="<tr class='lig$alt_b'>\n";
-				if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
+				if (($etat_incident!='clos')&&(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))) {
 					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=travail&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>Travail</a></td>\n";
 				}
 				else {

@@ -312,7 +312,8 @@ echo "</tr>\n";
 if(($_SESSION['statut']=='administrateur')||
 ($_SESSION['statut']=='cpe')||
 ($_SESSION['statut']=='scolarite') ||
-($_SESSION['statut']=='professeur')) {
+($_SESSION['statut']=='professeur') ||
+($_SESSION['statut']=='autre')) {
 
   $temoin = false;
   $sql="SELECT 1=1 FROM s_incidents si
@@ -393,30 +394,26 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
   echo "<td>Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<i>en précisant ou non le rôle dans l'incident</i>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,...</td>\n";
   echo "</tr>\n";
 
-} elseif ($_SESSION['statut']=='professeur') {
+} elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
   $sql="SELECT 1=1 FROM s_protagonistes WHERE login='".$_SESSION['login']."';";
   $test=mysql_query($sql);
-  if((mysql_num_rows($test)>0)) {
-
-	$sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp WHERE sp.login=jep.login AND jep.professeur='".$_SESSION['login']."';";
-	$test=mysql_query($sql);
-	if (!(mysql_num_rows($test)>0)) {
-	    echo "<tr>\n";
-		echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
-		echo "</td>\n";
-		echo "<td>Visualiser la liste des incidents déclarés et leurs traitements.</td>\n";
-		echo "</tr>\n";
-	}
+  if((mysql_num_rows($test)>0)) { 
+		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp WHERE sp.login=jep.login AND jep.professeur='".$_SESSION['login']."';";
+		$test=mysql_query($sql);
+		if (!(mysql_num_rows($test)>0)) {
+		    echo "<tr>\n";
+			echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
+			echo "</td>\n";
+			echo "<td>Visualiser la liste des incidents déclarés et leurs traitements.</td>\n";
+			echo "</tr>\n";
+		}
   } else {
-  echo "<tr>\n";
+		echo "<tr>\n";
 		echo "<td width='30%'>Consulter les suites des incidents</a>";
 		echo "</td>\n";
 		echo "<td><p>Aucun incident (<i>avec protagoniste</i>) vous concernant n'est encore déclaré.</td>\n";
 		echo "</tr>\n";
-
-
   }
-
 }
 echo "</table>\n";
 //Fin table afficher
