@@ -639,7 +639,8 @@ if(($_SESSION['statut']=='administrateur')||
 		echo " | <a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a>\n";
 	}
 }
-elseif ($_SESSION['statut']=='professeur') {
+elseif (($_SESSION['statut']=='professeur')||
+($_SESSION['statut']=='autre')) {
 	$sql="SELECT 1=1 FROM s_incidents si
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
 	WHERE sp.id_incident IS NULL;";
@@ -731,7 +732,7 @@ if($etat_incident!='clos') {
 		echo ">Préciser l'incident</a>";
 		echo "</li>\n";
 	}
-	if((isset($id_incident))&&($_SESSION['statut']!='professeur')) {
+	if((isset($id_incident))&&($_SESSION['statut']!='professeur')&&(($_SESSION['statut']!='autre'))) {
 		echo "<li>\n";
 		echo "<a href='saisie_sanction.php?id_incident=$id_incident";
 		echo "'";
@@ -1141,29 +1142,30 @@ if($step==0) {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
 	//echo "$sql<br />";
-	$res_clas=mysql_query($sql);
-	if(mysql_num_rows($res_clas)>0) {
-		echo "<p>Ou choisir un élève dans une classe:</p>\n";
+	if ($_SESSION['statut']!='autre') { //statut autre : ajout Eric de la condition 
+		$res_clas=mysql_query($sql);
+		if(mysql_num_rows($res_clas)>0) {
+			echo "<p>Ou choisir un élève dans une classe:</p>\n";
 
-		$tab_txt=array();
-		$tab_lien=array();
+			$tab_txt=array();
+			$tab_lien=array();
 
-		while($lig_clas=mysql_fetch_object($res_clas)) {
-			$tab_txt[]=$lig_clas->classe;
-			if(isset($id_incident)) {
-				//$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."&amp;id_incident=$id_incident";
-				$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."&amp;id_incident=$id_incident'onclick='return confirm_abandon (this, change, \"$themessage\")";
+			while($lig_clas=mysql_fetch_object($res_clas)) {
+				$tab_txt[]=$lig_clas->classe;
+				if(isset($id_incident)) {
+					//$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."&amp;id_incident=$id_incident";
+					$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."&amp;id_incident=$id_incident'onclick='return confirm_abandon (this, change, \"$themessage\")";
+				}
+				else {
+					$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
+				}
 			}
-			else {
-				$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
-			}
-		}
 
-		echo "<blockquote>\n";
-		tab_liste($tab_txt,$tab_lien,4);
-		echo "</blockquote>\n";
+			echo "<blockquote>\n";
+			tab_liste($tab_txt,$tab_lien,4);
+			echo "</blockquote>\n";
 	}
-
+}
 	echo "</blockquote>\n";
 
 }

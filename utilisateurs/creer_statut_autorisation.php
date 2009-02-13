@@ -50,6 +50,14 @@ $autorise[14]= array('/voir_bulle');
 $autorise[15]= array('/voir_abs');
 $autorise[16]= array('/voir_anna');
 $autorise[17]= array('/mod_trombinoscopes/trombinoscopes.php');
+$autorise[18]= array('/mod_discipline/index.php',
+					 '/mod_discipline/saisie_incident.php',
+					 '/mod_discipline/incidents_sans_protagonistes.php',
+					 '/mod_discipline/sauve_role.php',
+					 '/mod_discipline/update_colonne_retenue.php',
+					 '/mod_discipline/traiter_incident.php',
+					 '/mod_ooo/retenue.php');
+
 
 $iter = count($autorise);
 $nbre_menu = $iter - 1;
@@ -72,6 +80,7 @@ $menu_accueil[14] = array('Fiches : ', 'Fiches : voir les bulletins simplifiés',
 $menu_accueil[15] = array('Fiches : ', 'Fiches : voir les absences', 'vae');
 $menu_accueil[16] = array('Fiches : ', 'Fiches : voir année antérieure', 'anna');
 $menu_accueil[17] = array('Trombinoscope', 'Trombinoscope des élèves', 'tr');
+$menu_accueil[18] = array('Discipline', 'Discipline : Déclarer un incident et gérer ses incidents', 'dsi');
 
 
 ?>

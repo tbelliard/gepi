@@ -175,6 +175,7 @@ if ($action == 'modifier') {
 		$test[$a][15] = isset($_POST["vae|".$b]) ? $_POST["vae|".$b] : NULL;
 		$test[$a][16] = isset($_POST["anna|".$b]) ? $_POST["anna|".$b] : NULL;
 		$test[$a][17] = isset($_POST["tr|".$b]) ? $_POST["tr|".$b] : NULL;
+		$test[$a][18] = isset($_POST["dsi|".$b]) ? $_POST["dsi|".$b] : NULL;
 
 		// On assure les différents traitements
 		if ($test[$a][0] == 'on') {

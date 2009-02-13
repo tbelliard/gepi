@@ -307,7 +307,7 @@ $msg="";
 //}
 
 //if(isset($_POST['suppr_incident'])) {
-if((isset($_POST['suppr_incident']))&&($_SESSION['statut']!='professeur')) {
+if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_SESSION['statut']=='autre'))) {
 	$suppr_incident=$_POST['suppr_incident'];
 	for($i=0;$i<count($suppr_incident);$i++) {
 		$temoin_erreur="n";
@@ -362,7 +362,7 @@ if((isset($_POST['suppr_incident']))&&($_SESSION['statut']!='professeur')) {
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-if($_SESSION['statut']=='professeur') {
+if ($_SESSION['statut']=='professeur') {
 	$titre_page = "Discipline: Consulter un incident";
 }
 else {
@@ -397,7 +397,7 @@ if(($_SESSION['statut']=='administrateur')||
 		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a>\n";
 	}
 }
-elseif ($_SESSION['statut']=='professeur') {
+elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 	$sql="SELECT 1=1 FROM s_incidents si
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
 	WHERE sp.id_incident IS NULL;";
@@ -412,7 +412,7 @@ if(!isset($id_incident)) {
 	//$sql="SELECT * FROM s_incidents si, s_protagonistes sp ORDER BY date,heure,login;";
 	//$sql="SELECT si.* FROM s_incidents si WHERE 1";
 
-	if($_SESSION['statut']=='professeur') {
+	if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 		$sql="(SELECT DISTINCT si.* FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND sp.id_incident=si.id_incident";
 	}
 	else {
@@ -445,7 +445,7 @@ if(!isset($id_incident)) {
 	$sql2.=")";
 
 	//if($_SESSION['statut']=='professeur') {
-	if(($_SESSION['statut']=='professeur')&&($declarant_incident=="")) {
+	if((($_SESSION['statut']=='professeur'))&&($declarant_incident=="")) {
 		// Pour qu'un professeur principal puisse consulter les incidents mettant en cause ses élèves
 		$ajout2_sql=" UNION (SELECT DISTINCT si.* FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE sp.id_incident=si.id_incident AND sp.login=jep.login AND jep.professeur='".$_SESSION['login']."'";
 
@@ -546,7 +546,7 @@ if(!isset($id_incident)) {
 	echo "<br />\n";
 	echo "<select name='date_incident' onchange=\"document.formulaire.submit();\">\n";
 	echo "<option value=''>---</option>\n";
-	if($_SESSION['statut']=='professeur') {
+	if(($_SESSION['statut']=='professeur')) {
 		$sql="(SELECT DISTINCT si.date FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND sp.id_incident=si.id_incident)";
 
 		//$sql.=" UNION (SELECT DISTINCT si.date FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND si.nature!='' AND sp.id_incident=si.id_incident)";
@@ -570,7 +570,7 @@ if(!isset($id_incident)) {
 	echo "<br />\n";
 	echo "<select name='heure_incident' onchange=\"document.formulaire.submit();\">\n";
 	echo "<option value=''>---</option>\n";
-	if($_SESSION['statut']=='professeur') {
+	if(($_SESSION['statut']=='professeur')) {
 		$sql="(SELECT DISTINCT si.heure FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND sp.id_incident=si.id_incident)";
 
 		//$sql.=" UNION (SELECT DISTINCT si.heure FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND si.nature!='' AND sp.id_incident=si.id_incident)";
@@ -635,7 +635,7 @@ if(!isset($id_incident)) {
 	//$sql="SELECT DISTINCT sp.login FROM s_protagonistes sp, eleves e WHERE sp.login=e.login ORDER BY e.nom, e.prenom ASC;";
 
 	$sql="(SELECT DISTINCT sp.login FROM s_protagonistes sp, eleves e WHERE sp.login=e.login ORDER BY nom, prenom ASC)";
-	if($_SESSION['statut']!='professeur') {
+	if(($_SESSION['statut']!='professeur')||($_SESSION['statut']!='autre')) {
 		$sql.=" UNION (SELECT DISTINCT sp.login FROM s_protagonistes sp, utilisateurs u WHERE sp.login=u.login ORDER BY u.statut, u.nom, u.prenom ASC)";
 		//$sql.=" ORDER BY nom, prenom ASC;";
 	}
@@ -643,7 +643,7 @@ if(!isset($id_incident)) {
 	$res_protagonistes=mysql_query($sql);
 	while($lig_protagoniste=mysql_fetch_object($res_protagonistes)) {
 		$affiche_option_protagoniste="y";
-		if($_SESSION['statut']=='professeur') {
+		if(($_SESSION['statut']=='professeur') ||($_SESSION['statut']=='autre')){
 			$affiche_option_protagoniste="n";
 
 			$sql="SELECT 1=1 FROM j_eleves_professeurs jep WHERE jep.professeur='".$_SESSION['login']."' AND jep.login='$lig_protagoniste->login';";
@@ -752,7 +752,7 @@ if(!isset($id_incident)) {
 	echo "</th>\n";
 	// Ne proposer le bouton pour supprimer qu'à certains utilisateurs?
 	//echo "<th><input type='submit' name='supprimer' value='Suppr' /></th>\n";
-	if(($_SESSION['statut']!='professeur')) {
+	if(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre')) {
 		echo "<th>Suppr</th>\n";
 	}
 	//echo "<th></th>\n";
@@ -1000,7 +1000,7 @@ if(!isset($id_incident)) {
 			$tabdiv_infobulle[]=creer_div_infobulle("incident_".$lig->id_incident,"Incident n°$lig->id_incident","",$texte,"",30,0,'y','y','n','n');
 
 			//if($lig->etat=='clos') {
-			if(($lig->etat=='clos')||(($_SESSION['statut']=='professeur')&&($lig->declarant!=$_SESSION['login']))) {
+			if(($lig->etat=='clos')||(($_SESSION['statut']=='professeur')&&($lig->declarant!=$_SESSION['login']))||(($_SESSION['statut']=='autre')&&($lig->declarant!=$_SESSION['login']))) {
 				echo "<a href='#'";
 				//echo " onmouseover=\"delais_afficher_div('incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 				echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('incident_".$lig->id_incident."','y',20,20);\"";
@@ -1056,7 +1056,7 @@ if(!isset($id_incident)) {
 				$txt_lien="Saisir";
 			}
 
-			if(($lig->etat=='clos')||($_SESSION['statut']=='professeur')) {
+			if(($lig->etat=='clos')||($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 				echo "<a href='#'";
 				//echo " onmouseover=\"delais_afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 				echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20);\"";
@@ -1075,8 +1075,9 @@ if(!isset($id_incident)) {
 			//=================================================
 			// Colonne cloture d'incident
 			echo "<td>\n";
-			if(($_SESSION['statut']!='professeur')||
-				(($_SESSION['statut']=='professeur')&&($possibilite_prof_clore_incident=='y'))
+			if((($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))||
+				(($_SESSION['statut']=='professeur')&&($possibilite_prof_clore_incident=='y'))||
+				(($_SESSION['statut']=='autre')&&($possibilite_prof_clore_incident=='y')&&($lig->declarant==$_SESSION['login']))
 			) {
 				echo "<input type='checkbox' name='etat_incident[$lig->id_incident]' value='clos' ";
 				if($lig->etat=='clos') {echo "checked='checked' ";}
@@ -1090,7 +1091,7 @@ if(!isset($id_incident)) {
 
 			//=================================================
 			// Colonne suppression
-			if(($_SESSION['statut']!='professeur')) {
+			if(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre')) {
 				echo "<td>\n";
 				if($lig->etat!='clos') {
 					echo "<input type='checkbox' name='suppr_incident[]' value='$lig->id_incident' onchange='changement()' />\n";
