@@ -53,11 +53,11 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $fich[]="retenue.odt"; 
     $utilisation[]="Formulaire de retenue";
 
-/*
+
     //rapport incident
     $fich[]="rapport_incident.odt";
     $utilisation[]="Formulaire de rapport d'incident";
-*/
+
 	
     $nbfich=sizeof($fich);
 // Fin liste des fichiers

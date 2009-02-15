@@ -56,7 +56,8 @@ $autorise[18]= array('/mod_discipline/index.php',
 					 '/mod_discipline/sauve_role.php',
 					 '/mod_discipline/update_colonne_retenue.php',
 					 '/mod_discipline/traiter_incident.php',
-					 '/mod_ooo/retenue.php');
+					 '/mod_ooo/retenue.php',
+					 '/mod_ooo/rapport_incident.php');
 
 
 $iter = count($autorise);
@@ -80,7 +81,7 @@ $menu_accueil[14] = array('Fiches : ', 'Fiches : voir les bulletins simplifiés',
 $menu_accueil[15] = array('Fiches : ', 'Fiches : voir les absences', 'vae');
 $menu_accueil[16] = array('Fiches : ', 'Fiches : voir année antérieure', 'anna');
 $menu_accueil[17] = array('Trombinoscope', 'Trombinoscope des élèves', 'tr');
-$menu_accueil[18] = array('Discipline', 'Discipline : Déclarer un incident et gérer ses incidents', 'dsi');
+$menu_accueil[18] = array('Discipline', 'Accéder au module Discipline : Déclarer et gérer ses incidents', 'dsi');
 
 
 ?>

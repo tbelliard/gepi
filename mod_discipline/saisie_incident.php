@@ -671,11 +671,11 @@ elseif (($_SESSION['statut']=='professeur')||
 	}
 }
 
-/* ERIC a décommenter pour la gestion des modele ooo des rapport d'incident.
+// ERIC a décommenter pour la gestion des modele ooo des rapport d'incident.
 if ($step==2) {   //Eric Ajout génération du modèle Ooo pour imprimer le rapport d'incident.
     echo " | <a href='../mod_ooo/rapport_incident.php?mode=module_discipline&amp;id_incident=$id_incident' onclick=\"return confirm_abandon (this, change, '$themessage')\">Imprimer le rapport d'incident</a>\n";
 }
-*/
+
 echo "</p>\n";
 
 $etat_incident="";
@@ -1539,7 +1539,12 @@ elseif($step==2) {
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>\n";
-	echo "Description de l'incident&nbsp;:";
+	echo "Description de l'incident&nbsp;:&nbsp;";
+	echo "<div id='div_avertissement_description' style='float:right;'>\n";
+	echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_description','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_description')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Description' /></a>";
+    echo "</div>";
+	$texte="Récit détaillé des faits (paroles prononcées, gestes, réactions, ...)<br />";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_explication_description',"Description de l'incident","",$texte,"",18,0,'y','y','n','n');
 	echo "</td>\n";
 	echo "<td style='text-align:left;'";
 	if($etat_incident!='clos') {echo " colspan='2'";}
@@ -1551,6 +1556,7 @@ elseif($step==2) {
 	else {
 		echo nl2br($description);
 	}
+	
 
 	echo "</td>\n";
 
