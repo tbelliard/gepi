@@ -277,6 +277,13 @@ if($_SESSION['statut']=='administrateur') {
   echo "<tr>\n";
   echo "<th colspan='2'><img src='../images/icons/control-center.png' alt='Configuration du module discipline' class='link'/> - Configuration du module</th>\n";
   echo "</tr>\n";
+  
+  echo "<tr>\n";
+  echo "<td width='30%'><a href='../mod_discipline/definir_lieux.php'>Définition des lieux</a>";
+  echo "</td>\n";
+  echo "<td>Définir la liste des lieux des incidents.</td>\n";
+  echo "</tr>\n";
+
   echo "<tr>\n";
   echo "<td width='30%'><a href='../mod_discipline/definir_roles.php'>Définition des rôles</a>";
   echo "</td>\n";
