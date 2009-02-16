@@ -8,19 +8,23 @@ $Id$
 //Configuration du calendrier
 include("../lib/calendrier/calendrier.class.php");
 
-function choix_heure2($champ_heure,$selected) {
+//Variable : $dernier  on afficher le dernier créneau si $dernier='o' (paramètre pour une exclusion)
+function choix_heure2($champ_heure,$selected,$dernier) {
 	$sql="SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode;";
 	$res_abs_cren=mysql_query($sql);
-	if(mysql_num_rows($res_abs_cren)==0) {
+	$num_row = mysql_num_rows($res_abs_cren); //le nombre de ligne de la requète
+	if($num_row==0) {
 		echo "La table absences_creneaux n'est pas renseignée!";
 	}
 	else {
+        $cpt=1;
 		echo "<select name='$champ_heure' id='$champ_heure' onchange='changement();'>\n";
 
 		while($lig_ac=mysql_fetch_object($res_abs_cren)) {
 			echo "<option value='$lig_ac->nom_definie_periode'";
-			if($lig_ac->nom_definie_periode==$selected) {echo " selected='selected'";}
+			if(($lig_ac->nom_definie_periode==$selected)||(($dernier=='o')&&($cpt==$num_row))) {echo " selected='selected'";}
 			echo ">$lig_ac->nom_definie_periode&nbsp;: $lig_ac->heuredebut_definie_periode à $lig_ac->heurefin_definie_periode</option>\n";
+			$cpt++;
 		}
 		echo "</select>\n";
 	}
@@ -68,7 +72,7 @@ if($valeur=='travail') {
 	echo "<tr class='lig-1'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de retour&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
-	choix_heure2('heure_retour',$heure_retour);
+	choix_heure2('heure_retour',$heure_retour,'');
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -140,7 +144,7 @@ elseif($valeur=='retenue') {
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de début&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='heure_debut' value='' />\n";
-	choix_heure2('heure_debut',$heure_debut);
+	choix_heure2('heure_debut',$heure_debut,'');
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -216,6 +220,7 @@ elseif($valeur=='exclusion') {
 
 	$heure_debut=strftime("%H").":".strftime("%M");
 	$heure_fin=$heure_debut;
+	$afficher_creneau_final = 'o';
 
 	$lieu_exclusion="";
 	$travail="";
@@ -230,9 +235,9 @@ elseif($valeur=='exclusion') {
 			$heure_fin=$lig_sanction->heure_fin;
 			$lieu_exclusion=$lig_sanction->lieu;
 			$travail=$lig_sanction->travail;
-		}
+			$afficher_creneau_final='';
+		} 
 	}
-
 	echo "<tr class='lig1'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date de début&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
@@ -247,7 +252,7 @@ elseif($valeur=='exclusion') {
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de début&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='heure_debut' value='' />\n";
-	choix_heure2('heure_debut',$heure_debut);
+	choix_heure2('heure_debut',$heure_debut,'');
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -267,7 +272,7 @@ elseif($valeur=='exclusion') {
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de fin&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='heure_debut' value='' />\n";
-	choix_heure2('heure_fin',$heure_fin);
+	choix_heure2('heure_fin',$heure_fin,$afficher_creneau_final);
 	echo "</td>\n";
 	echo "</tr>\n";
 
