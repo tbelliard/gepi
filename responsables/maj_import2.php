@@ -301,7 +301,9 @@ if(!isset($step)) {
 	//echo "<input type=hidden name='mode' value='1' />\n";
 	echo "<p>Sélectionnez le fichier <b>ElevesAvecAdresses.xml</b> (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
 	echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" /><br />\n";
-
+	if ($gepiSettings['unzipped_max_filesize']>=0) {
+		echo "<p style=\"color: red;\">REMARQUE : Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ElevesAvecAdresses.zip)</p>";
+	}
 	//==============================
 	// AJOUT pour tenir compte de l'automatisation ou non:
 	//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
@@ -3634,6 +3636,9 @@ else{
 			echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" /><br />\n";
 			echo "<input type='hidden' name='step' value='10' />\n";
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
+	        if ($gepiSettings['unzipped_max_filesize']>=0) {
+	        	echo "<p style=\"color: red;\">REMARQUE : Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ResponsablesAvecAdresses.zip)</p>";
+			}
 
 			echo "<input type='checkbox' name='ne_pas_proposer_resp_sans_eleve' id='ne_pas_proposer_resp_sans_eleve' value='non' checked />\n";
 			//$ne_pas_proposer_resp_sans_eleve
