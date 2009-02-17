@@ -274,7 +274,7 @@ $OOo->SaveXmlToDoc(); //traitement du fichier extrait
 //Génération du nom du fichier
 $now = gmdate('d_M_Y_H:i:s');
 $nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
-$nom_fic = $nom_fichier_modele[0]."_".$nom_prenom_eleve."_".$classe."_généré_le_".$now.".".$nom_fichier_modele[1];
+$nom_fic = $nom_fichier_modele[0]."_".$classe."_".$nom_prenom_eleve."_généré_le_".$now.".".$nom_fichier_modele[1];
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
 
