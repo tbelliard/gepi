@@ -126,39 +126,39 @@ if ($id_choix_periode != 0) {
 if($_SESSION['statut']=='professeur'){
 echo "<h3>Liste des enseignements : </h3>\n";
 
+$groups=get_groups_for_prof($_SESSION["login"]);
+
+/*
+echo "<pre>";
+	print_r($groups);
+echo "</pre>";
+*/
+
 // sélection multiple avec choix de la période
-echo "<div style=\"text-align: center;\">\n";
-echo "   <fieldset>\n
-     <legend>Sélectionnez le (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
+	echo "<div style=\"text-align: center;\">\n";
+	echo "   <fieldset>\n
+    <legend>Sélectionnez le (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
+	 
 	//echo "<form method=\"post\" action=\"liste_pdf.php\" name=\"imprime_pdf\">\n";
 	echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf2\">\n";
-				echo "<br />\n";
-				//echo "<select id='liste_classes' name='id_liste_groupes[]' multiple='yes' size='5'>\n";
-				echo "<select id='liste_groupes' name='id_liste_groupes[]' multiple='yes' size='5'>\n";
-               		$requete_groupe = "SELECT *
-									   FROM j_groupes_professeurs, groupes, j_groupes_classes, classes, periodes
-									   WHERE j_groupes_professeurs.id_groupe = groupes.id
-									   AND j_groupes_professeurs.login = '".$_SESSION['login']."'
-									   AND groupes.id = j_groupes_classes.id_groupe
-									   AND j_groupes_classes.id_classe = classes.id
-									   AND classes.id=periodes.id_classe
-									   AND periodes.num_periode=".$id_choix_periode."
-									   ORDER BY description, classe  ASC ";
-
-		           	$resultat_groupe = mysql_query($requete_groupe) or die('Erreur SQL !'.$requete_groupe.'<br />'.mysql_error());
-					echo "		<optgroup label=\"-- Les enseignements --\">\n";
-					While ( $data_groupe = mysql_fetch_array ($resultat_groupe)) {
-								   echo "		<option value=\"";
-								   echo $data_groupe['id_groupe'];
-								   echo "\">";
-								   echo $data_groupe['description']." (".$data_groupe['classe'].")";
-								   echo "</option>\n";
-					}
-					echo "		</optgroup>\n";
-				echo "	</select>\n";
-     echo "<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />\n";
-     echo "<br /><br /> <input value=\"Valider les enseignements\" name=\"Valider\" type=\"submit\" />\n";
-	 }
+	echo "<br />\n";
+	//echo "<select id='liste_classes' name='id_liste_groupes[]' multiple='yes' size='5'>\n";
+	echo "<select id='liste_groupes' name='id_liste_groupes[]' multiple='yes' size='5'>\n";
+	echo "		<optgroup label=\"-- Les enseignements --\">\n";
+	
+	for($i=0;$i<count($groups);$i++){				
+		echo "		<option value=\"";
+		echo $groups[$i]['id'];
+		echo "\">";
+		echo $groups[$i]['matiere']['nom_complet']." (".$groups[$i]['classlist_string'].")";
+		echo "</option>\n";			
+	}	
+	echo "		</optgroup>\n";
+	echo "	</select>\n";
+	echo "<br />Option de tri :<input type=\"radio\" name=\"tri\" value=\"classes\" />Par classe puis alphabétique<input type=\"radio\" name=\"tri\" value=\"alpha\" checked /> Alphabétique<br />\n";
+    echo "<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />\n";
+    echo "<br /><br /> <input value=\"Valider les enseignements\" name=\"Valider\" type=\"submit\" />\n";
+}
       echo "<br />\n
      </form>\n
    </fieldset>\n

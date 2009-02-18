@@ -39,6 +39,7 @@ define('FPDF_FONTPATH','../fpdf/font/');
 define('LargeurPage','210');
 define('HauteurPage','297');
 
+//debug_var();
 
 /*
 // Initialisations files
@@ -172,6 +173,8 @@ if (!(is_numeric($id_periode))) {
 	$id_periode=1;
 }
 
+$tri=isset($_POST['tri']) ? $_POST['tri'] : (isset($_GET['tri']) ? $_GET['tri'] : '');
+
 $nb_pages = 0;
 $nb_eleves = 0;
 $flag_groupe = FALSE;
@@ -204,17 +207,17 @@ if ($id_liste_groupes!=NULL) {
 	for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		// Impressions RAPIDES
 		if ($id_groupe!=NULL) { // C'est un groupe
-			$donnees_eleves = traite_donnees_groupe($id_groupe,$id_periode,$nb_eleves);
-			$id_classe=$donnees_eleves['id_classe'][0];
+			$donnees_eleves = traite_donnees_groupe($id_groupe,$id_periode,$nb_eleves,$tri);
+			$id_classe=$donnees_eleves[0]['id_classe'];
 		} elseif ($id_classe!=NULL) { // C'est une classe
 			$donnees_eleves = traite_donnees_classe($id_classe,$id_periode,$nb_eleves);
 		} //fin c'est une classe
 
 		//IMPRESSION A LA CHAINE
 		if ($id_liste_groupes!=NULL) {
-			$donnees_eleves = traite_donnees_groupe($id_liste_groupes[$i_pdf],$id_periode,$nb_eleves);
+			$donnees_eleves = traite_donnees_groupe($id_liste_groupes[$i_pdf],$id_periode,$nb_eleves,$tri);
 			$id_groupe=$id_liste_groupes[$i_pdf];
-			$id_classe=$donnees_eleves['id_classe'][0];
+			$id_classe=$donnees_eleves[0]['id_classe'];
 		}
 
 		if ($id_liste_classes!=NULL) {
@@ -301,7 +304,7 @@ if ($id_liste_groupes!=NULL) {
 					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$periode,'TLBR',2,'C');
 				}
 			   } else {
-				   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves['login'][0]."' and id_classe='$id_classe')";
+				   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves[0]['login']."' and id_classe='$id_classe')";
 				   $call_profsuivi_eleve = mysql_query($sql);
 				   $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
 
@@ -464,9 +467,9 @@ if ($id_liste_groupes!=NULL) {
 				$pdf->Setxy($X_tableau,$y_tmp);
 				$pdf->SetFont($caractere_utilise,'B',9);
 				if ($flag_groupe==true) {
-					$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]." (".$donnees_eleves['nom_court'][$nb_eleves_i].")");
+					$texte = strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".ucfirst($donnees_eleves[$nb_eleves_i]['prenom']." (".$donnees_eleves[$nb_eleves_i]['nom_court'].")");
 				} else {
-					$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
+					$texte = strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".ucfirst($donnees_eleves[$nb_eleves_i]['prenom']);
 				}
 				$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
 				for($i=0; $i < $nb_colonne ; $i++) {

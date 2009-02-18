@@ -18,15 +18,15 @@ $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
 	$cpt_i = 0;
 	while ( $donner = @mysql_fetch_array( $call_eleve ))
 	{
-	    $donnees_eleves['login'][$cpt_i] = $donner['login']; 
-		$donnees_eleves['ereno'][$cpt_i] = $donner['ereno']; 
-		$donnees_eleves['nom'][$cpt_i] = $donner['nom'];
-		$donnees_eleves['prenom'][$cpt_i] = $donner['prenom'];
-		$donnees_eleves['naissance'][$cpt_i] = $donner['naissance'];
-		$donnees_eleves['nom_complet'][$cpt_i] =  $donner['nom_complet'];
-		$donnees_eleves['doublant'][$cpt_i] = $donner['doublant'];
-		$donnees_eleves['regime'][$cpt_i] = $donner['regime'];
-		$donnees_eleves['id_classe'][$cpt_i] = $donner['id']; // ID de la classe
+	    $donnees_eleves[$cpt_i]['login'] = $donner['login']; 
+		$donnees_eleves[$cpt_i]['ereno'] = $donner['ereno']; 
+		$donnees_eleves[$cpt_i]['nom'] = $donner['nom'];
+		$donnees_eleves[$cpt_i]['prenom'] = $donner['prenom'];
+		$donnees_eleves[$cpt_i]['naissance'] = $donner['naissance'];
+		$donnees_eleves[$cpt_i]['nom_complet'] =  $donner['nom_complet'];
+		$donnees_eleves[$cpt_i]['doublant'] = $donner['doublant'];
+		$donnees_eleves[$cpt_i]['regime'] = $donner['regime'];
+		$donnees_eleves[$cpt_i]['id_classe'] = $donner['id']; // ID de la classe
 		 
 		$ident_eleve_sel1=$donner['login'];
 	    
@@ -72,7 +72,8 @@ $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
 // Traitement des données pour un groupe référencé par id_groupe et id_periode
 // retourne un tableau avec les données de la base
 // modifie la variable nombre_eleve
-function traite_donnees_groupe($id_groupe,$id_periode,&$nombre_eleves)
+//variable $tri  ==> 'classe' tri des groupe par classe puis nom er prénom / autrement par liste alpha
+function traite_donnees_groupe($id_groupe,$id_periode,&$nombre_eleves,$tri)
 {
 global $prefix_base ;
 
@@ -111,24 +112,39 @@ global $prefix_base ;
 			$eleve_id_classe=$lig_tmp->id_classe;	
 		}
         //pour rendre compatible groupe et classe  par la suite
-		$donnees_eleves['login'][$cpt_i] = $eleve_login; 
-		$donnees_eleves['ereno'][$cpt_i] = $eleve_ereno;
-		$donnees_eleves['nom'][$cpt_i] = $eleve_nom;
-		$donnees_eleves['prenom'][$cpt_i] = $eleve_prenom;
-		$donnees_eleves['naissance'][$cpt_i] = $eleve_naissance;
-		$donnees_eleves['nom_complet'][$cpt_i] =  $eleve_classe_nom_complet;
-		$donnees_eleves['nom_court'][$cpt_i] =  $eleve_classe;
-		$donnees_eleves['doublant'][$cpt_i] = $eleve_doublant;
-		$donnees_eleves['regime'][$cpt_i] = $eleve_regime;
-		$donnees_eleves['id_classe'][$cpt_i] = $eleve_id_classe; 
-		
+		$donnees_eleves[$cpt_i]['login'] = $eleve_login; 
+		$donnees_eleves[$cpt_i]['ereno'] = $eleve_ereno;
+		$donnees_eleves[$cpt_i]['nom'] = $eleve_nom;
+		$donnees_eleves[$cpt_i]['prenom'] = $eleve_prenom;
+		$donnees_eleves[$cpt_i]['naissance'] = $eleve_naissance;
+		$donnees_eleves[$cpt_i]['nom_complet'] =  $eleve_classe_nom_complet;
+		$donnees_eleves[$cpt_i]['nom_court'] =  $eleve_classe;
+		$donnees_eleves[$cpt_i]['doublant'] = $eleve_doublant;
+		$donnees_eleves[$cpt_i]['regime'] = $eleve_regime;
+		$donnees_eleves[$cpt_i]['id_classe'] = $eleve_id_classe; 
 				
-		$ident_eleve_sel1=$donnees_eleves['login'][$cpt_i];
+		$ident_eleve_sel1=$donnees_eleves[$cpt_i]['login'];
 		
         $cpt_i++;
 	}
     $nombre_eleves = $cpt_i; // parametre de la fonction
-	
+/*	
+	echo "<pre>";
+	print_r($donnees_eleves);
+	echo "</pre>";
+*/	
+    if ($tri=='classes') {
+		foreach($donnees_eleves as $sortarray)
+		{
+			$column[] = $sortarray['id_classe'];
+			@array_multisort($column, SORT_ASC, $donnees_eleves);
+		}
+	}
+/*	
+	echo "<pre>";
+	print_r($donnees_eleves);
+	echo "</pre>";
+*/
     return $donnees_eleves;
 }
 ?>

@@ -125,7 +125,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 // Module toutes les classes
 
 	if($_SESSION['statut']=='professeur'){
-		echo "<p>Séléctionnez l'enseignement et la période pour lesquels vous souhaitez imprimer une liste d'élèves au format PDF :</p>\n";
+		echo "<p>Séléctionnez l'enseignement et la période pour lesquels vous souhaitez imprimer une liste alphabétique d'élèves au format PDF :</p>\n";
 		$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp WHERE
 			jgp.login = '".$_SESSION['login']."' AND
 			g.id=jgp.id_groupe
