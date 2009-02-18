@@ -1290,6 +1290,7 @@ if (isset($action) and ($action == 'dump'))  {
 				//=================================
 				// AJOUT: boireaus
 				and ($file != 'csv')
+				and ($file != 'notanet')  //le dossier notanet à ne pas afficher dans la liste
 				//=================================
 				and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')) {
 					$tab_file[] = $file;
@@ -1474,6 +1475,7 @@ while ($file = readdir($handle)) {
     //=================================
     // AJOUT: boireaus
     and ($file != 'csv')
+	and ($file != 'notanet') //ne pas afficher le dossier notanet
     //=================================
     and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')) {
         $tab_file[] = $file;
