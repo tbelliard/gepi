@@ -1368,6 +1368,20 @@ if (isset($action) and ($action == 'system_dump'))  {
 }
 
 
+//Ajout Eric
+if (isset($action) and ($action == 'zip'))  {
+  require_once('../lib/pclzip.lib.php');
+  $chemin_stockage = "../backup/".$dirname."/photos.zip";
+  $archive = new PclZip($chemin_stockage);
+  $v_list = $archive->create('../photos/',
+                             PCLZIP_OPT_REMOVE_PATH, '../photos/',
+                             PCLZIP_OPT_ADD_PATH, 'photos');
+  if ($v_list == 0) {
+    die("Error : ".$archive->errorInfo(true));
+  }
+}
+
+
 ?><b><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></b>
 <?php
 // Test présence de fichiers htaccess
@@ -1481,7 +1495,11 @@ if ($n > 0) {
         $alt=$alt*(-1);
 		echo "<tr class='lig$alt'><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>\n";
         echo "<td><a href='accueil_sauve.php?action=sup&amp;file=$value'>Supprimer</a></td>\n";
-        echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value'>Restaurer</a></td>\n";
+		if ($value=='photos.zip'){
+		   echo "<td> </td>\n";
+		} else {
+            echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value'>Restaurer</a></td>\n";
+		}
         echo "<td><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
         echo "<td><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>\n";
         echo "</tr>\n";
@@ -1525,5 +1543,13 @@ echo "<tr class='lig1'><td style='font-weight: bold; text-align: center;'>post_m
 echo "<tr class='lig-1'><td style='font-weight: bold; text-align: center;'>upload_max_filesize</td><td style='text-align: center;'>$upload_max_filesize</td></tr>\n";
 echo "</table>\n";
 
+echo "<br /><hr />";
+echo "<h3>Créer une archive (Zip) du dossier Photos de Gepi</h3>\n";
+echo "Une fois créée, pour télécharger l'archive, rendez-vous à la section \"Fichiers de restauration\" de cette page. <br/> Le fichier se nomme photos.zip<br />";
+echo "<br />";
+echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
+echo "<input type=\"hidden\" name=\"action\" value=\"zip\" />\n
+	  <input type=\"submit\" value=\"Créer l'archive\" name=\"bouton3\" />\n
+	  </form>\n";
 require("../lib/footer.inc.php");
 ?>
