@@ -1,10 +1,13 @@
 <?PHP
-//il reste à traiter le numéro RNE de l'établissement
-//==> session si multi site ???
 
+//multisite
 //Les dossiers contenant les modèles Gepi et mes modèles. Il faut un / à la fin du chemin.
 //$rne='0610559L/';
-$rne='';
+if ($_SESSION['rne']!='') {
+	$rne=$_SESSION['rne']."/";
+} else {
+	$rne='';
+}
 $nom_dossier_modeles_ooo_par_defaut='modeles_gepi/'; 
 $nom_dossier_modeles_ooo_mes_modeles='mes_modeles/';
 
