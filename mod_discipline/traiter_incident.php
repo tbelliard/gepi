@@ -362,7 +362,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-if ($_SESSION['statut']=='professeur') {
+if (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre'))  {
 	$titre_page = "Discipline: Consulter un incident";
 }
 else {
