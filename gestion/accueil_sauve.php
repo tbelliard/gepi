@@ -33,6 +33,10 @@ require_once("../lib/initialisations.inc.php");
 unset($action);
 $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ? $_GET["action"] : NULL);
 
+$dossier_a_archiver=isset($_POST['dossier']) ? $_POST['dossier'] : (isset($_GET['dossier']) ? $_GET['dossier'] : '');
+
+debug_var();
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 //Décommenter la ligne suivante pour le mode "manuel et bavard"
@@ -1371,14 +1375,35 @@ if (isset($action) and ($action == 'system_dump'))  {
 
 //Ajout Eric
 if (isset($action) and ($action == 'zip'))  {
+  define( 'PCLZIP_TEMPORARY_DIR', '../backup/' );
   require_once('../lib/pclzip.lib.php');
-  $chemin_stockage = "../backup/".$dirname."/photos.zip";
-  $archive = new PclZip($chemin_stockage);
-  $v_list = $archive->create('../photos/',
-                             PCLZIP_OPT_REMOVE_PATH, '../photos/',
-                             PCLZIP_OPT_ADD_PATH, 'photos');
-  if ($v_list == 0) {
-    die("Error : ".$archive->errorInfo(true));
+  
+  if (isset($dossier_a_archiver)) {
+  
+        switch ($dossier_a_archiver) {
+        case "cdt":
+			$chemin_stockage = $path."/_cdt.zip"; //l'endroit où sera stockée l'archive
+			$dossier_a_traiter = '../documents/'; //le dossier à traiter
+			$dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
+			break;
+		case "photos":
+			$chemin_stockage = $path."/_photos.zip";
+			$dossier_a_traiter = '../photos/'; //le dossier à traiter
+			$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créer
+			break;
+		default:
+			$chemin_stockage = '';
+		}
+
+        if ($chemin_stockage !='') {
+			$archive = new PclZip($chemin_stockage);
+			$v_list = $archive->create($dossier_a_traiter,
+										PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+										PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+			if ($v_list == 0) {
+				die("Error : ".$archive->errorInfo(true));
+			}
+	    }
   }
 }
 
@@ -1497,7 +1522,7 @@ if ($n > 0) {
         $alt=$alt*(-1);
 		echo "<tr class='lig$alt'><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>\n";
         echo "<td><a href='accueil_sauve.php?action=sup&amp;file=$value'>Supprimer</a></td>\n";
-		if ($value=='photos.zip'){
+		if (($value=='_photos.zip')||($value=='_cdt.zip')){
 		   echo "<td> </td>\n";
 		} else {
             echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value'>Restaurer</a></td>\n";
@@ -1546,12 +1571,16 @@ echo "<tr class='lig-1'><td style='font-weight: bold; text-align: center;'>uploa
 echo "</table>\n";
 
 echo "<br /><hr />";
-echo "<h3>Créer une archive (Zip) du dossier Photos de Gepi</h3>\n";
-echo "Une fois créée, pour télécharger l'archive, rendez-vous à la section \"Fichiers de restauration\" de cette page. <br/> Le fichier se nomme photos.zip<br />";
-echo "<br />";
+echo "<h3>Créer une archive (Zip) de dossiers de Gepi</h3>\n";
+echo "Une fois créée, pour télécharger l'archive, rendez-vous à la section \"Fichiers de restauration\" de cette page. <br />";
+echo "<p style=\"color: red;\">ATTENTION : veillez à supprimer le fichier créé une fois l'archive téléchargée.</p>";
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
+echo "<br />Dossier à sauvegarder :<br /><input type=\"radio\" name=\"dossier\" value=\"photos\" checked/> Dossier Photos (_photos.zip)<br/><input type=\"radio\" name=\"dossier\" value=\"cdt\" /> Dossier documents du cahiers de textes (_cdt.zip)<br />\n";
+echo "<br />\n";
 echo "<input type=\"hidden\" name=\"action\" value=\"zip\" />\n
 	  <input type=\"submit\" value=\"Créer l'archive\" name=\"bouton3\" />\n
 	  </form>\n";
+echo "<br />";
+
 require("../lib/footer.inc.php");
 ?>
