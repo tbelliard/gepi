@@ -182,7 +182,9 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 				//remplacement des : par H dans la chaine
 				$h_deb=str_replace(":","H", $h_deb);
 			} else {
-			  return "LE CRENEAU EST INCONNU";
+			  
+			  // LE CRENEAU EST INCONNU on se retrouve dans le cas d'une heure saisie à la main.
+			  $h_deb = $lig_sanction->heure_debut;
 			}	
 	    } else {
 			return "LA RETENUE EST INCONNUE";

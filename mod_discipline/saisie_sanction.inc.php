@@ -6,6 +6,7 @@ $Id$
 // Page incluse dans saisie_sanction.php ou appelée via ajax depuis saisie_sanction.php->ajout_sanction.php
 
 //Configuration du calendrier
+
 include("../lib/calendrier/calendrier.class.php");
 
 //Variable : $dernier  on afficher le dernier créneau si $dernier='o' (paramètre pour une exclusion)
@@ -17,9 +18,9 @@ function choix_heure2($champ_heure,$selected,$dernier) {
 		echo "La table absences_creneaux n'est pas renseignée!";
 	}
 	else {
-        $cpt=1;
-		echo "<select name='$champ_heure' id='$champ_heure' onchange='changement();'>\n";
-
+        $cpt=1;	
+		echo "<select name='$champ_heure' id='$champ_heure' onchange='changement();' >\n";
+		
 		while($lig_ac=mysql_fetch_object($res_abs_cren)) {
 			echo "<option value='$lig_ac->nom_definie_periode'";
 			if(($lig_ac->nom_definie_periode==$selected)||(($dernier=='o')&&($cpt==$num_row))) {echo " selected='selected'";}
@@ -99,7 +100,8 @@ elseif($valeur=='retenue') {
 	$jour = strftime("%d");
 	$date_retenue=$jour."/".$mois."/".$annee;
 
-	$heure_debut=strftime("%H").":".strftime("%M");
+	//$heure_debut=strftime("%H").":".strftime("%M");
+	$heure_debut='00:00';
 	$duree_retenue=1;
 	$lieu_retenue="";
 	$travail="";
@@ -144,7 +146,12 @@ elseif($valeur=='retenue') {
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de début&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='heure_debut' value='' />\n";
+	echo "<input type='text' name='heure_debut_main' id='display_heure_main' size='5' value=\"$heure_debut\" /> ou \n";
 	choix_heure2('heure_debut',$heure_debut,'');
+	
+	//pour infobulle
+	$texte="- 2 choix possible pour inscrire l'heure de début de la retenue<br />Le premier grace à la liste déroulante. Vous choisissez un créneau. Dans ce cas, c'est l'heure début de créenaux HH:MM qui sera pris en compte pour l'impression de la retenue.<br/>Dans l'autre cas, vous saisisssez l'heure à la place de '00:00' sous ce format.";
+	
 	echo "</td>\n";
 	echo "</tr>\n";
 

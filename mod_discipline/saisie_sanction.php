@@ -58,6 +58,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 
 		$date_retenue=isset($_POST['date_retenue']) ? $_POST['date_retenue'] : NULL;
 		$heure_debut=isset($_POST['heure_debut']) ? $_POST['heure_debut'] : NULL;
+		$heure_debut_main=isset($_POST['heure_debut_main']) ? $_POST['heure_debut_main'] : '00:00';
 		$duree_retenue=isset($_POST['duree_retenue']) ? $_POST['duree_retenue'] : 1;
 		$lieu_retenue=isset($_POST['lieu_retenue']) ? $_POST['lieu_retenue'] : NULL;
 
@@ -114,6 +115,12 @@ if(isset($_POST['enregistrer_sanction'])) {
 					$msg.="La retenue n°$id_sanction n'existe pas dans 's_retenues'.<br />Elle ne peut pas être mise à jour.<br />";
 				}
 				else {
+					//Eric
+					//choix de l'heure de retenue à conserver (champs sasie manuellement ou par la liste déroulante
+					//par defaut la liste déroulante
+					if ($heure_debut_main !='00:00') {
+					   $heure_debut=$heure_debut_main;
+					}
 					//$sql="UPDATE s_retenues SET date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', effectuee='N' WHERE id_sanction='$id_sanction';";
 					$sql="UPDATE s_retenues SET date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue' WHERE id_sanction='$id_sanction';";
 					//echo "$sql<br />\n";
@@ -134,7 +141,12 @@ if(isset($_POST['enregistrer_sanction'])) {
 			}
 			else {
 				$id_sanction=mysql_insert_id();
-
+				//Eric
+				//choix de l'heure de retenue à conserver (champs sasie manuellement ou par la liste déroulante
+				//par defaut la liste déroulante
+				if ($heure_debut_main !='00:00') {
+					   $heure_debut=$heure_debut_main;
+				}
 				//$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', effectuee='N';";
 				$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue';";
 				//echo "$sql<br />\n";
