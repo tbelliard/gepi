@@ -63,28 +63,26 @@ require_once("../lib/header.inc");
 <input type="radio" name="activer" id='activer_n' value="n" <?php if (getSettingValue("active_mod_ooo")=='n') echo " checked"; ?> />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver le module modèle Open Office</label>
 </p>
 
+<input type="hidden" name="is_posted" value="1" />
+<center><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></center>
+</form>
 <?php
 $nom_fichier_modele_ooo =''; //pour éviter un notice (la variable ne sert pas ici ..
 include_once ("./lib/chemin.inc.php");
 // test d'écriture dans le dossier mes_modeles
 $dossier_test = "./".$nom_dossier_modeles_ooo_mes_modeles."dossier_test";
-$resultat_mkdir = mkdir($dossier_test);
+$resultat_mkdir = @mkdir($dossier_test);
 if (!($resultat_mkdir)) {
 	echo "<p style=\"color: red;\">ATTENTION : Les droits d'écriture sur le dossier /mod_ooo/$nom_dossier_modeles_ooo_mes_modeles sont incorrects. Gepi doit avoir les droits de création de dossiers et de fichiers dans ce dossier pour assurer le bon fonctionnement du module</p>";
-	rmdir($dossier_test);
+	@rmdir($dossier_test);
 }
 $dossier_test = "./tmp/dossier_test";
-$resultat_mkdir = mkdir($dossier_test);
+$resultat_mkdir = @mkdir($dossier_test);
 if (!($resultat_mkdir)) {
 	echo "<p style=\"color: red;\">ATTENTION : Les droits d'écriture sur le dossier /mod_ooo/tmp/ sont incorrects. Gepi doit avoir les droits de création de dossiers et de fichiers dans ce dossier pour assurer le bon fonctionnement du module</p>";
-	rmdir($dossier_test);
+	@rmdir($dossier_test);
 }
-?>
 
-<input type="hidden" name="is_posted" value="1" />
-<center><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></center>
-</form>
-<?php
-	echo "<p><br /></p>\n";
-	require("../lib/footer.inc.php");
+echo "<p><br /></p>\n";
+require("../lib/footer.inc.php");
 ?>
