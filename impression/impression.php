@@ -179,12 +179,12 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 				}
 
 				echo "<td>\n";
-				echo "<b>$chaine_class</b>: ".htmlentities($lig_grp->description);
+				echo "<b>".htmlentities($lig_grp->description)."</b> ($chaine_class) : ";
 				echo "</td>\n";
 				for($i=0;$i<count($tabnumper);$i++){
 					if($i>0){echo "<td> - </td>\n";}
 					echo "<td>\n";
-					echo "<a href='liste_pdf.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' target='_blank'>".htmlentities($tabnomper[$i])."</a>\n";
+					echo htmlentities($tabnomper[$i])." : Tri <a href='liste_pdf.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' target='_blank'>Alpha</a> - <a href='liste_pdf.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]&amp;tri=classes' target='_blank'>Classe</a>\n";
 					echo "</td>\n";
 				}
 				echo "</tr>\n";
