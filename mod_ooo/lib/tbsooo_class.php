@@ -31,7 +31,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
   var $_ooo_file_ext = '';
   var $_xml_filename = '';
 
-  private $archive = null;
+  var $archive = null;
 
   // public method
 
