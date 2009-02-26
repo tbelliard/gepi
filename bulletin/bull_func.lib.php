@@ -1655,6 +1655,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				}
 			}
 
+
 			$rdbt = '';
 			if($tab_modele_pdf["affiche_dp"][$classe_id]==='1') {
 				if($tab_modele_pdf["affiche_doublement"][$classe_id]==='1') {
@@ -1669,7 +1670,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					}
 					//if(isset($tab_bull['eleve'][$i]['regime'])) {
 					if((isset($tab_bull['eleve'][$i]['regime']))&&($tab_bull['eleve'][$i]['regime']!="")) {
-						$pdf->Cell(90,4, traite_accents_utf8(regime($tab_bull['eleve'][$i]['regime'])."; ".$rdbt),0,2,'');
+						if($rdbt=="") {
+							$pdf->Cell(90,4, traite_accents_utf8(regime($tab_bull['eleve'][$i]['regime'])),0,2,'');
+						}
+						else {
+							$pdf->Cell(90,4, traite_accents_utf8(regime($tab_bull['eleve'][$i]['regime'])."; ".$rdbt),0,2,'');
+						}
 					} else {
 						$pdf->Cell(90,4,traite_accents_utf8($rdbt),0,2,'');
 					}
@@ -1679,7 +1685,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					//if($tab_bull['eleve'][$i]['doublant']!="") {
 					if($tab_bull['eleve'][$i]['doublant']=="R") {
 						//$pdf->Cell(90,4.5, $doublement[$i],0,2,'');
-						$rdbt=" ; redoublant";
+						//$rdbt=" ; redoublant";
+						$rdbt="redoublant";
 						if($tab_bull['eleve'][$i]['sexe']=="F") {
 							$rdbt.="e";
 						}
