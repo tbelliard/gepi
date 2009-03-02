@@ -68,7 +68,9 @@ require_once("../lib/header.inc");
 // On récupère du header les infos sur les enfants : $tab_tmp_ele
 // Sécurité supplémentaire car il faut nécessairement être un responsable pour avoir ces infos
 $aff_absences = array();
-for($i = 0; $i < count($tab_tmp_ele); ){
+$nbre = count($tab_tmp_ele);
+
+for($i = 0; $i < $nbre; ){
 	$aff_absences[$i] = '';
 	$n = $i + 1; // pour le nom et le prénom de l'élève
 
@@ -168,13 +170,13 @@ for($i = 0; $i < count($tab_tmp_ele); ){
 
 
 	$i = $i + 2;
-} // fin for($i = 0; $i < count($tab_tmp_ele); ...
+// MODIF } // fin for($i = 0; $i < count($tab_tmp_ele); ...
 
 // =============================== Fin des opérations php =======================
 
 ?>
 <!-- Debut de la page absences parents -->
-<h2>Les Absences</h2>
+<h2>Les Absences de <?php echo $tab_tmp_ele[$n]; ?></h2>
 
 <table id="abs">
 	<caption title="Ces absences sont l'ensemble des saisies enregistr&eacute;es avant v&eacute;rification">Les absences enregistr&eacute;es dans l'&eacute;tablissement</caption>
@@ -200,10 +202,10 @@ for($c = 0; $c < $nbre_absence; $c++){
 </table>
 
 <?php // Si les bulletins sont renseignés, on affiche les infos relatives aux absences
-if (isset($aff_absences_bulletin) AND $aff_absences_bulletin != "") {
-	echo $aff_absences_bulletin;
-}
-
+  if (isset($aff_absences_bulletin) AND $aff_absences_bulletin != "") {
+    echo $aff_absences_bulletin;
+  }
+} // fin for($i = 0; $i < count($tab_tmp_ele)
 echo "<!-- fin de la page absences parents -->";
 // on inclut le footer
 require("../lib/footer.inc.php");
