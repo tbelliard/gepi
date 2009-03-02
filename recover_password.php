@@ -92,7 +92,8 @@ if (isset($_POST['login'])) {
 	        if ($res) {
 	        	// Si l'enregistrement s'est bien passé, on envoi le mail
 	        	$ticket_url = "";
-	        	if (!empty($_SERVER['HTTPS']) and $_SERVER['HTTPS'] != "Off") {
+            // avec la possibilité de forcer le https si le serveur le cache
+            if ((!empty($_SERVER['HTTPS']) and $_SERVER['HTTPS'] != "Off") OR (getSettingValue("use_https") == "y")) {
 	        		$ticket_url .= "https://";
 	        	} else {
 	        		$ticket_url .= "http://";
