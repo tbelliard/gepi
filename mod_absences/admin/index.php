@@ -61,7 +61,28 @@ if (isset($_POST['activer_resp'])) {
 	}
 }
 
+if (isset($_POST['classement'])) {
+	if (!saveSetting("absence_classement_top", $_POST['classement'])) {
+		$msg = "Erreur lors de l'enregistrement du paramètre de classementdes absences (TOP 10) !";
+	}
+}
+
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+
+// A propos du TOP 10 : récupération du setting pour le select en bas de page
+$selected10 = $selected20 = $selected30 = $selected40 = $selected50 = NULL;
+
+if (getSettingValue("absence_classement_top") == '10'){
+  $selected10 = ' selected="selected"';
+}elseif (getSettingValue("absence_classement_top") == '20') {
+  $selected20 = ' selected="selected"';
+}elseif (getSettingValue("absence_classement_top") == '30') {
+  $selected30 = ' selected="selected"';
+}elseif (getSettingValue("absence_classement_top") == '40') {
+  $selected40 = ' selected="selected"';
+}elseif (getSettingValue("absence_classement_top") == '50') {
+  $selected50 = ' selected="selected"';
+}
 
 // header
 $titre_page = "Gestion du module absence";
@@ -116,6 +137,18 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 	<input type="radio" id="activerRespKo" name="activer_resp" value="n"
 	<?php if (getSettingValue("active_absences_parents") == 'n') echo ' checked="checked"'; ?> />
 	<label for="activerRespKo">Ne pas permettre cet acc&egrave;s</label>
+</p>
+
+<h2>Param&eacute;trer le classement des absences (par d&eacute;faut TOP 10)</h2>
+<p>
+  <label for="idClass">Nombre de lignes pour le classement</label>
+  <select id="idCLass" name="classement">
+    <option value="10"<?php echo $selected10; ?>>10</option>
+    <option value="20"<?php echo $selected20; ?>>20</option>
+    <option value="30"<?php echo $selected30; ?>>30</option>
+    <option value="40"<?php echo $selected40; ?>>40</option>
+    <option value="50"<?php echo $selected50; ?>>50</option>
+  </select>
 </p>
 
 <div class="centre"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></div>

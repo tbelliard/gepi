@@ -83,6 +83,10 @@ if (empty($_GET['du']) and empty($_POST['du'])) {$du='';$du2=$date_ce_jour2;}
 	 if(isset($du) and !empty($du)) { $date_ce_jour = date_sql($du); }
 // fin de gestion des dates
 
+// Gestion de l'affichage du TOP10 qui peut être autre chose que 10
+$test_TOP = getSettingValue("absence_classement_top");
+$TOP = isset($test_TOP) ? $test_TOP : '10'; // Par défaut on conserve le top10
+
 function age($date_de_naissance_fr)
           {
             //à partir de la date de naissance, retourne l'âge dans la variable $age
@@ -349,18 +353,19 @@ function pagin(numpage){
 <div class="centre">
 <?php if($type == "A" and $fiche_eleve == "") { ?>
 <?php //modification de l'affichage didier?>
-[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences non justifiées</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences justifiées</a> ]
+[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type ?>">Top <?php echo $TOP; ?></a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences non justifiées</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences justifiées</a> ]
 <?php } if($type == "R" and $fiche_eleve == "") { ?>
-[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retards non justifiés</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retards justifiés</a> ]
+[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top <?php echo $TOP; ?></a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retards non justifiés</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retards justifiés</a> ]
 <?php } if($type == "I" and $fiche_eleve == "") { ?>
-[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Infirmerie avec motif</a> ]
+[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top <?php echo $TOP; ?></a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Infirmerie avec motif</a> ]
 <?php } if($type == "D" and $fiche_eleve == "") { ?>
-[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispenses non justifiées</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispenses justifiées</a> ]
+[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top <?php echo $TOP; ?></a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispenses non justifiées</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispenses justifiées</a> ]
 <?php } ?>
 </div>
 
 <?php
-	// On crée l'affichage du top10 des absences
+	// On crée l'affichage du top10 des absences en tenant compte du réglage pour le TOP
+
 	if ($choix=="top10" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 		$i = 0;
 		if ($type == "A" or $type == "I" or $type == "R" or $type == "D") {
@@ -369,11 +374,11 @@ function pagin(numpage){
 				$requete_top10 = "SELECT e.login, e.elenoet, e.nom, e.prenom, e.sexe, COUNT(DISTINCT(ae.id_absence_eleve)) AS count
 				FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes ec
 				WHERE e.login = ae.eleve_absence_eleve AND ae.type_absence_eleve = '".$type."' AND ec.login = e.login AND ec.id_classe = '".$classe_choix."'
-				GROUP BY e.login ORDER BY count DESC LIMIT 0, 10";
+				GROUP BY e.login ORDER BY count DESC LIMIT 0, ".$TOP;
 			}elseif ($classe_choix == "") {
 				$requete_top10 = "SELECT e.login, e.elenoet, e.nom, e.prenom, e.sexe, COUNT(ae.id_absence_eleve) AS count
 				FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."eleves e WHERE ( e.login = ae.eleve_absence_eleve AND ae.type_absence_eleve = '".$type."' )
-				GROUP BY e.login ORDER BY count DESC LIMIT 0, 10";
+				GROUP BY e.login ORDER BY count DESC LIMIT 0, ".$TOP;
 			}
 		}
 		$execution_top10 = mysql_query($requete_top10)
@@ -415,7 +420,7 @@ function pagin(numpage){
     <br />
       <table class="td_tableau_gestion" style="margin: auto; margin-top:15px; width: 600px; border: 0 0 0 0;">
         <tr>
-          <td colspan="2" class="titre_tableau_gestion" nowrap><b>TOP 10</b></td>
+          <td colspan="2" class="titre_tableau_gestion" nowrap><b>TOP <?php echo $TOP; ?></b></td>
         </tr>
         <?php
          $i = 0;
@@ -484,7 +489,7 @@ function pagin(numpage){
                <input type="checkbox" name="photo" value="avec_photo" id="avecphoto" onClick="javascript:document.form1.submit()" <?php  if ($photo=="avec_photo") { ?>checked="checked"<?php } ?> /><label for="avecphoto" style="cursor: pointer;">Avec photo</label><br />
            <?php } ?>
                <br />
-          TOP 10 des <?php if($type == "A") { ?>absences.<?php } if($type == "R") { ?>retards.<?php } if($type == "I") { ?>passages à l'infirmerie.<?php } if($type == "D") { ?>dispenses.<?php } ?>
+          TOP <?php echo $TOP; ?> des <?php if($type == "A") { ?>absences.<?php } if($type == "R") { ?>retards.<?php } if($type == "I") { ?>passages à l'infirmerie.<?php } if($type == "D") { ?>dispenses.<?php } ?>
 	    </fieldset>
           </form>
     </td>
