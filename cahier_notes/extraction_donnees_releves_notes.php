@@ -696,7 +696,8 @@
 						}
 
 						// On affecte la partie élève $tab_ele dans $tab_releve
-						$tab_releve[$id_classe][$periode_num]['eleve'][$i]=$tab_ele;
+						//$tab_releve[$id_classe][$periode_num]['eleve'][$i]=$tab_ele;
+						$tab_releve[$id_classe][$periode_num]['eleve'][]=$tab_ele;
 						//echo "On affecte \$tab_releve[$id_classe][$periode_num]['eleve'][$i]<br />";
 					}
 				}
