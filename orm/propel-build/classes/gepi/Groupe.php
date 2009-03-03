@@ -138,8 +138,8 @@ class Groupe extends BaseGroupe {
 	public function belongsTo($utilisateur) {
 		if (!isset($utilisateur) || $utilisateur == null) {
 			return false;
-		} elseif (!($utilisateur instanceof Utilisateur)) {
-			throw new PropelException("L'objet passÃ© n'est pas de la classe Utilisateur");
+		} elseif (!($utilisateur instanceof UtilisateurProfessionnel)) {
+			throw new PropelException("L'objet passé n'est pas de la classe Utilisateur");
 		} else {
 			$group_appartient_utilisateur = false;
 			foreach ($utilisateur->getGroupes() as $group_iter) {
@@ -148,8 +148,47 @@ class Groupe extends BaseGroupe {
 					break;
 				}
 			}
-			return $group_appartient_utilisateur;	
+			return $group_appartient_utilisateur;
 		}
+	}
+
+	/**
+	 *
+	 * Renvoi sous forme d'un tableau la liste des eles d'une classe.
+	 * Manually added for N:M relationship
+	 *
+	 * @periode integer numero de la periode
+	 * @return     array Eleves[]
+	 *
+	 */
+	public function getEleves($periode) {
+		$eleves = array();
+		$criteria = new Criteria();
+		$criteria->add(JEleveGroupePeer::PERIODE,$periode);
+		foreach($this->getJEleveGroupesJoinEleve($criteria) as $ref) {
+			$eleves[] = $ref->getEleve();
+		}
+		return $eleves;
+	}
+
+	/**
+	 *
+	 * Ajoute un eleve a un groupe
+	 * Manually added for N:M relationship
+	 * It seems that the groupes are passed by values and not by references.
+	 *
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     array Eleves[]
+	 */
+	public function addEleve(Eleve $eleve, $periode) {
+		if ($eleve->getIdEleve() == null) {
+			throw new PropelException("Eleve id ne doit pas etre null");
+		}
+		$jEleveGroupe = new JEleveGroupe();
+		$jEleveGroupe->setEleve($eleve);
+		$jEleveGroupe->setPeriode($periode);
+		$this->addJEleveGroupe($jEleveGroupe);
+		$jEleveGroupe->save();
 	}
 
 } // Groupe

@@ -33,7 +33,7 @@ require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 require_once("../lib/traitement_data.inc.php");
 
-$utilisateur = $_SESSION['utilisateur'];
+$utilisateur = $_SESSION['utilisateurProfessionnel'];
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -64,11 +64,11 @@ if ($uid_post==$_SESSION['uid_prime']) {
 $_SESSION['uid_prime'] = $uid_post;
 
 //récupération du compte rendu
-//$ctCompteRendu = new CtCompteRendu();
+//$ctCompteRendu = new CahierTexteCompteRendu();
 if ($id_ct != null) {
 	$criteria = new Criteria();
-	$criteria->add(CtCompteRenduPeer::ID_CT, $id_ct, "=");
-	$ctCompteRendus = $utilisateur->getCtCompteRendus($criteria);
+	$criteria->add(CahierTexteCompteRenduPeer::ID_CT, $id_ct, "=");
+	$ctCompteRendus = $utilisateur->getCahierTexteCompteRendus($criteria);
 	$ctCompteRendu = $ctCompteRendus[0];
 	if ($ctCompteRendu == null) {
 		echo "Compte rendu non trouvé";
@@ -76,7 +76,7 @@ if ($id_ct != null) {
 	}
 	$groupe = $ctCompteRendu->getGroupe();
 } else {
-	//si pas  du compte rendu précisé, récupération du groupe dans la requete et création d'un nouvel objet CtCompteRendu
+	//si pas  du compte rendu précisé, récupération du groupe dans la requete et création d'un nouvel objet CahierTexteCompteRendu
 	foreach ($utilisateur->getGroupes() as $group) {
 		if ($id_groupe == $group->getId()) {
 			$groupe = $group;
@@ -88,7 +88,7 @@ if ($id_ct != null) {
 		die;
 	}
 	//pas de notices, on lance une création de notice
-	$ctCompteRendu = new CtCompteRendu();
+	$ctCompteRendu = new CahierTexteCompteRendu();
 	$ctCompteRendu->setIdGroupe($groupe->getId());
 	$ctCompteRendu->setIdLogin($utilisateur->getLogin());
 }
@@ -126,7 +126,7 @@ if (!empty($doc_file['name'][0])) {
 			$file_path = ajout_fichier($doc_file, $dest_dir, $index_doc);
 			if ($file_path != null) {
 				//création de l'objet ctDocument
-				$ctDocument = new CtDocument();
+				$ctDocument = new CahierTexteCompteRenduFichierJoint();
 				$ctDocument->setIdCt($ctCompteRendu->getIdCt());
 				$ctDocument->setTaille($doc_file['size'][$index_doc]);
 				$ctDocument->setEmplacement($file_path);
@@ -146,9 +146,9 @@ if (!empty($doc_file['name'][0])) {
 //traitement de changement de nom de fichiers joint
 // Changement de nom
 if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_document)) {
-	$criteria = new Criteria(CtDocumentPeer::DATABASE_NAME);
-	$criteria->add(CtDocumentPeer::ID, $id_document, '=');
-	$documents = $ctCompteRendu->getCtDocuments($criteria);
+	$criteria = new Criteria(CahierTexteCompteRenduFichierJointPeer::DATABASE_NAME);
+	$criteria->add(CahierTexteCompteRenduFichierJointPeer::ID, $id_document, '=');
+	$documents = $ctCompteRendu->getCahierTexteCompteRenduFichierJoints($criteria);
 
 	if (empty($documents)) {
 		echo "Erreur : document non trouvé.";

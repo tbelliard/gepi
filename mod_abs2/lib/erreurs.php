@@ -1,5 +1,9 @@
 <?php
-
+  function aff_debug($tableau){
+    echo '<pre>';
+    print_r($tableau);
+    echo '</pre>';
+  }
 /**
  *
  *

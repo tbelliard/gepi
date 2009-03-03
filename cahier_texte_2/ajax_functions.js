@@ -7,67 +7,91 @@ id_devoir_en_cours = '';
 //objet en cours de modification (devoir ou compte rendu)
 object_en_cours_edition = 'compte_rendu';
 
+//update div modification dans la liste des notices
+function updateDivModification() {
+	if ($('div_id_ct') != null) {
+		compte_rendu_en_cours_de_modification($F('div_id_ct'));
+	}
+}
+function compte_rendu_en_cours_de_modification(id_ct) {
+	var tabdiv=document.getElementsByTagName("div");
+    for(var i=0; i < tabdiv.length; i++){
+      if (tabdiv[i].identify().match('compte_rendu_en_cours_')) {
+      	tabdiv[i].hide();
+      }
+    }
+
+    divElement = document.getElementById('compte_rendu_en_cours_' + id_ct);
+    if (divElement != null) {
+    	divElement.update('en modification');
+    	divElement.show();
+    }
+}
+
+
+//Effectue les fonctions javascript necessaires apres la mise a jour de la fenetre edition de notice
+function initWysiwyg() {
+	updateDivModification();
+
+	if ($('contenu') != null) {
+		var editorHeight = winEditionNotice.getSize()['height'] - 390;
+		if (editorHeight < 170) editorHeight = 170;
+
+		//$('contenu').setStyle({width: '100%', height : editorHeight + 'px'});
+		//new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
+
+		if (typeof oFCKeditor=="undefined") {
+			oFCKeditor = new FCKeditor( 'contenu' ) ;
+			oFCKeditor.BasePath = '../fckeditor/' ;
+			oFCKeditor.StylesXmlPath = null ;
+			oFCKeditor.Config['DefaultLanguage']  = 'fr' ;
+			oFCKeditor.ToolbarSet = 'Basic' ;
+			oFCKeditor.Width = '100%' ;
+		}
+		oFCKeditor.Height = editorHeight ;
+		oFCKeditor.ReplaceTextarea() ;
+	}
+}
+
 function suppressionCompteRendu(message, id_ct_a_supprimer) {
 	if (confirmlink(this,'suppression de la notice du ' + message + ' ?','Confirmez vous ')) {
-    	new Ajax.Request('./ajax_suppression_compte_rendu.php?id_ct='+id_ct_a_supprimer, 
+    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteCompteRendu&id_objet='+id_ct_a_supprimer,
     		{ onComplete: 
     			function(transport) {
     				if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
     					alert(transport.responseText);
       				} else {
+						var url;
       					if (object_en_cours_edition == 'devoir') {
-      						getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), 
-      							{ onComplete: 
-      								function(transport) {
-										new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-				      					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
-									} 
-      							}
-      						);
-      					} else {
-      						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), 
-      							{ onComplete: 
-      								function(transport) {
-      									getWinEditionNotice().updateWidth();
-      			      					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
-      								}
-      							}
-      						);
-      					}
-      				}
-    			}
+							url = './ajax_edition_devoir.php?';
+						} else {
+							url = './ajax_edition_compte_rendu.php?';
+						}
+						getWinEditionNotice().setAjaxContent(url + 'id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:	function() {initWysiwyg();}});
+				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe, { onComplete: function() {updateDivModification();}});
+					}
+				}
 			}
-    	);
+		);
 	}
 }
 
 function suppressionDevoir(message, id_devoir_a_supprimer, id_groupe) {
 	if (confirmlink(this,'suppression du travail à faire pour le ' + message + ' ?','Confirmez vous ')) {
-    	new Ajax.Request('./ajax_suppression_devoir.php?id_devoir='+id_devoir_a_supprimer, 
+    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteTravailAFaire&id_objet='+id_devoir_a_supprimer,
     		{ onComplete: 
     			function(transport) {
   					if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
       					alert(transport.responseText);
       				} else {
+						var url;
       					if (object_en_cours_edition == 'devoir') {
-      						getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), 
-      							{ onComplete: 
-      								function(transport) {
-										new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-										new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
-									}
-      							}
-      						);
-      					} else {
-      						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(),
-      							{ onComplete: 
-      								function(transport) {
-      									getWinEditionNotice().updateWidth();
-										new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
-									}
-      							}
-      						);
-      					}
+							url = './ajax_edition_devoir.php?';
+						} else {
+							url = './ajax_edition_compte_rendu.php?';
+						}
+						getWinEditionNotice().setAjaxContent(url + 'id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:	function() {initWysiwyg();}});
+				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe, { onComplete: function() {updateDivModification();}});
       				}
     			}
     		}
@@ -77,26 +101,14 @@ function suppressionDevoir(message, id_devoir_a_supprimer, id_groupe) {
 
 function suppressionDocument(message, id_document_a_supprimer, id_ct) {
 	if (confirmlink(this,message,'Confirmez vous ')) {
-    	new Ajax.Request('./ajax_suppression_document.php?id_document='+id_document_a_supprimer,
+    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteCompteRenduFichierJoint&id_objet='+id_document_a_supprimer,
     		{ onComplete: 
     			function(transport) {
 					if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
 						alert(transport.responseText);
 					} else {
-	      				getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_ct=' + id_ct, 
-	      					{ onComplete: 
-	      						function(transport) {
-	      							getWinEditionNotice().updateWidth();
-				  					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
-				  						{ onComplete: 
-				  							function() {
-				  								compte_rendu_en_cours_de_modification('compte_rendu_' + id_ct);
-				  							}
-				  						}
-				  					);									
-								}
-	      					}
-	      				);
+	      				getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_ct=' + id_ct, { onComplete: function() {initWysiwyg();}});
+						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();}});
 					}
     			}
 			}
@@ -106,26 +118,14 @@ function suppressionDocument(message, id_document_a_supprimer, id_ct) {
 
 function suppressionDevoirDocument(message, id_document_a_supprimer, id_devoir, id_groupe) {
 	if (confirmlink(this,message,'Confirmez vous ')) {
-    	new Ajax.Request('./ajax_suppression_devoir_document.php?id_document='+id_document_a_supprimer,
+    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteTravailAFaireFichierJoint&id_objet='+id_document_a_supprimer,
     		{ onComplete: 
     			function(transport) {
 					if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
 						alert(transport.responseText);
 					} else {
-	      				getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_devoir=' + id_devoir, 
-	      					{ onComplete: 
-	      						function(transport) {
-									new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-				  					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
-				  						{ onComplete: 
-				  							function() {
-				  								compte_rendu_en_cours_de_modification('devoir_' + id_devoir);
-				  							}
-				  						}
-				  					);									
-								}
-	      					}
-	      				);
+	      				getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_devoir=' + id_devoir, { onComplete: function(transport) {initWysiwyg();}});
+						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();}});
 					}
     			}
 			}
@@ -133,63 +133,24 @@ function suppressionDevoirDocument(message, id_document_a_supprimer, id_devoir, 
 	}
 }
 
-//script pour afficher une notification de modification pour les compte rendu
-function compte_rendu_en_cours_de_modification(id_ct) {
-	var tabdiv=document.getElementsByTagName("div");
-    for(var i=0; i < tabdiv.length; i++){
-      if (tabdiv[i].identify().match('compte_rendu_en_cours_')) {
-      	tabdiv[i].hide();
-      }
-    } 
-    
-    divElement = document.getElementById('compte_rendu_en_cours_' + id_ct);
-    if (divElement != null) {
-    	divElement.update('en modification');
-    	divElement.show();
-    }
-}
-
 //webtoolkit aim (ajax iframe method for file uploading)
 function completeEnregistrementCompteRenduCallback(response) {
 	if (response.match('Erreur') || response.match('error')) {
 		alert(response);
-		getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), 
-			{ onComplete:
-				function(transport) {
-					getWinEditionNotice().updateWidth();
-				}
-			}
-		);
+		getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:function() {iniWysiwyg();}});
 	} else {
 		//si response ne contient pas le mot erreur, il contient l'id du compte rendu
 		id_ct_en_cours = response;
-		if ($('passer_a').value == 'passer_devoir') {
+		var url;
+		if ($F('passer_a') == 'passer_devoir') {
+			url = './ajax_edition_devoir.php?today=' + getTomorrowCalendarUnixDate() +'&id_groupe=' + id_groupe;
 			object_en_cours_edition = 'devoir';
-			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
-			getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?today=' + getTomorrowCalendarUnixDate() +'&id_groupe=' + id_groupe, 
-				{ onComplete:
-					function(transport) {
-						new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-					}
-				}
-			);
 			updateCalendarWithUnixDate(getTomorrowCalendarUnixDate());
-      	} else {
-      		getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?succes_modification=oui&id_ct=' + id_ct_en_cours,
-      			{ onComplete: 
-      				function(transport) {
-      					getWinEditionNotice().updateWidth();
-      			      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
-      				          	{ onComplete:
-      				          		function(transport) {
-      				      				compte_rendu_en_cours_de_modification('compte_rendu_'+id_ct_en_cours);
-      				      			}
-      				          	}
-      				      	);
-					}
-      			}
-      		);
-      	}
+		} else {
+			url = './ajax_edition_compte_rendu.php?succes_modification=oui&id_ct=' + id_ct_en_cours;
+		}
+		new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();}});
+		getWinEditionNotice().setAjaxContent(url ,{ onComplete:	function(transport) {initWysiwyg();	}});
 
 		//on attend 5 secondes et on enleve les messages de confirmation d'enregistrement.
       	$('bouton_enregistrer_1');
@@ -204,43 +165,20 @@ function completeEnregistrementCompteRenduCallback(response) {
 function completeEnregistrementDevoirCallback(response) {
 	if (response.match('Erreur') || response.match('error')) {
 		alert(response);
-		getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), 
-			{ onComplete:
-				function(transport) {
-					new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-				}
-			}
-		);
+		getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:function() {initWysiwyg();}});
 	} else {
 		//si response ne contient pas le mot erreur, il contient l'id du compte rendu
 		id_ct_en_cours = response;
-		if ($('passer_a').value == 'passer_compte_rendu') {
+		var url;
+		if ($F('passer_a') == 'passer_compte_rendu') {
 			object_en_cours_edition = 'compte_rendu';
-			getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?today=' + getCalendarUnixDate() +'&id_groupe=' + id_groupe, 
-				{ onComplete:
-					function(transport) {
-						getWinEditionNotice().updateWidth();
-				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe);
-					}
-				}
-			);
-      	} else {
-      		getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?succes_modification=oui&id_devoir=' + id_ct_en_cours,
-      			{ onComplete: 
-      				function(transport) {
-						new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,
-				          	{ onComplete:
-				          		function(transport) {
-				      				compte_rendu_en_cours_de_modification('devoir_'+id_ct_en_cours);
-				      			}
-				          	}
-				      	);
-					}
-      			}
-      		);
-      	}
-
+			url = './ajax_edition_compte_rendu.php?today=' + getCalendarUnixDate() +'&id_groupe=' + id_groupe;
+		} else {
+			url = './ajax_edition_devoir.php?succes_modification=oui&id_devoir=' + id_ct_en_cours;
+		}
+		new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();}});
+		getWinEditionNotice().setAjaxContent(url ,{ onComplete:	function(transport) {initWysiwyg();	}});
+		
 		//on attend 5 secondes et on enleve les messages de confirmation d'enregistrement.
       	$('bouton_enregistrer_1');
       	$('bouton_enregistrer_2');
@@ -265,24 +203,15 @@ function dateChanged(calendar) {
 
   	// redirect...
   	compte_rendu_en_cours_de_modification('aucun');
+	var url;
 	if (object_en_cours_edition == 'compte_rendu') {
-		getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?&id_groupe='+ id_groupe + '&today='+unixdate, 
-  			{ onComplete: 
-  				function(transport) {
-				getWinEditionNotice().updateWidth();
-  				}
-  			}
-  		);
+		url = './ajax_edition_compte_rendu.php?';
 	} else {
-		getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?&id_groupe='+ id_groupe + '&today='+unixdate,
-  			{ onComplete: 
-  				function(transport) {
-  					new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-  				}
-  			}
-  		);
+		url = './ajax_edition_devoir.php?';
 	}
-};
+	getWinListeNotices().toFront();
+	getWinEditionNotice().setAjaxContent(url + '&id_groupe='+ id_groupe + '&today='+unixdate,{ onComplete:	function() {initWysiwyg();}});
+}
 
 function updateCalendarWithUnixDate(dateStamp) {
 	var nouvelleDate = new Date();

@@ -277,7 +277,7 @@ class Propel
 	 * Configure the logging system, if config is specified in the runtime configuration.
 	 */
 	protected static function configureLogging()
-	{
+	{return false;
 		if (self::$logger === null) {
 			if (isset(self::$configuration['log']) && is_array(self::$configuration['log']) && count(self::$configuration['log'])) {
 				include_once 'Log.php'; // PEAR Log class

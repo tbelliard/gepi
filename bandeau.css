@@ -11,7 +11,7 @@ Mise en page du bandeau
 #bandeau {
 	width:100%;
 	min-width: 40em;
-	padding: 0.1em;
+	padding: 0em;
 	margin: 0 auto;
 	position: relative;
 	overflow: auto;

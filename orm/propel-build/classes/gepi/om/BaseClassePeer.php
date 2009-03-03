@@ -611,6 +611,7 @@ abstract class BaseClassePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
+			$affectedRows += ClassePeer::doOnDeleteCascade(new Criteria(ClassePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(ClassePeer::TABLE_NAME, $con);
 			$con->commit();
 			return $affectedRows;
@@ -673,11 +674,24 @@ abstract class BaseClassePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
+			$affectedRows += ClassePeer::doOnDeleteCascade($criteria, $con);
+			
+				// Because this db requires some delete cascade/set null emulation, we have to
+				// clear the cached instance *after* the emulation has happened (since
+				// instances get re-added by the select statement contained therein).
+				if ($values instanceof Criteria) {
+					ClassePeer::clearInstancePool();
+				} else { // it's a PK or object
+					ClassePeer::removeInstanceFromPool($values);
+				}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
 
 			// invalidate objects in JGroupesClassesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 			JGroupesClassesPeer::clearInstancePool();
+
+			// invalidate objects in JEleveClassePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			JEleveClassePeer::clearInstancePool();
 
 			$con->commit();
 			return $affectedRows;
@@ -685,6 +699,44 @@ abstract class BaseClassePeer {
 			$con->rollBack();
 			throw $e;
 		}
+	}
+
+	/**
+	 * This is a method for emulating ON DELETE CASCADE for DBs that don't support this
+	 * feature (like MySQL or SQLite).
+	 *
+	 * This method is not very speedy because it must perform a query first to get
+	 * the implicated records and then perform the deletes by calling those Peer classes.
+	 *
+	 * This method should be used within a transaction if possible.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     int The number of affected rows (if supported by underlying database driver).
+	 */
+	protected static function doOnDeleteCascade(Criteria $criteria, PropelPDO $con)
+	{
+		// initialize var to track total num of affected rows
+		$affectedRows = 0;
+
+		// first find the objects that are implicated by the $criteria
+		$objects = ClassePeer::doSelect($criteria, $con);
+		foreach ($objects as $obj) {
+
+
+			// delete related JGroupesClasses objects
+			$c = new Criteria(JGroupesClassesPeer::DATABASE_NAME);
+			
+			$c->add(JGroupesClassesPeer::ID_CLASSE, $obj->getId());
+			$affectedRows += JGroupesClassesPeer::doDelete($c, $con);
+
+			// delete related JEleveClasse objects
+			$c = new Criteria(JEleveClassePeer::DATABASE_NAME);
+			
+			$c->add(JEleveClassePeer::ID_CLASSE, $obj->getId());
+			$affectedRows += JEleveClassePeer::doDelete($c, $con);
+		}
+		return $affectedRows;
 	}
 
 	/**

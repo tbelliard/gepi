@@ -45,6 +45,7 @@
  *   disableFunc   | function that receives a JS Date object and should return true if that date has to be disabled in the calendar
  *   onSelect      | function that gets called when a date is selected.  You don't _have_ to supply this (the default is generally okay)
  *   onClose       | function that gets called when the calendar is closed.  [default]
+ *   dayMouseOverCalendarToFront      | indicateur specific pour savoir si la fenetre calendar doit etre mise au premier plan quand la souris passe sur un jour du calendrier. (default false)
  *   onUpdate      | function that gets called after the date is updated in the input field.  Receives a reference to the calendar.
  *   date          | the date that the calendar will be initially displayed to
  *   showsTime     | default: false; if true the calendar will include a time selector
@@ -81,6 +82,7 @@ Calendar.setup = function (params) {
 	param_default("onSelect",       null);
 	param_default("onClose",        null);
 	param_default("onUpdate",       null);
+	param_default("dayMouseOverCalendarToFront",       false);
 	param_default("date",           null);
 	param_default("showsTime",      false);
 	param_default("timeFormat",     "24");
@@ -135,6 +137,7 @@ Calendar.setup = function (params) {
 		cal.time24 = (params.timeFormat == "24");
 		cal.params = params;
 		cal.weekNumbers = params.weekNumbers;
+		cal.dayMouseOverCalendarToFront = params.dayMouseOverCalendarToFront;
 		cal.setRange(params.range[0], params.range[1]);
 		cal.setDateStatusHandler(params.dateStatusFunc);
 		cal.getDateText = params.dateText;
@@ -165,6 +168,7 @@ Calendar.setup = function (params) {
 			cal.showsTime = params.showsTime;
 			cal.time24 = (params.timeFormat == "24");
 			cal.weekNumbers = params.weekNumbers;
+			cal.dayMouseOverCalendarToFront = params.dayMouseOverCalendarToFront;
 			mustCreate = true;
 		} else {
 			if (params.date)

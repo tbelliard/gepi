@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'j_groupes_classes' table.
  *
- * Table permettant le jointure entre groupe d'eleves et une classe. Est rarement utilisÃ© directement dans le code.
+ * Table permettant le jointure entre groupe d'eleves et une classe. Est rarement utilise directement dans le code.
  *
  * @package    gepi.om
  */

@@ -57,6 +57,9 @@ Calendar = function (firstDayOfWeek, dateStr, onSelected, onClose) {
 	// Information
 	this.dateClicked = false;
 
+	//indicateur specific pour savoir si la fenetre calendar doit etre mise au premier plan quand la souris passe sur un jour du calendrier.
+	this.dayMouseOverCalendarToFront = false;
+
 	// one-time initializations
 	if (typeof Calendar._SDN == "undefined") {
 		// table of short day names
@@ -554,6 +557,10 @@ Calendar.dayMouseOver = function(ev) {
 			Calendar.addClass(el.parentNode, "rowhilite");
 		}
 	}
+	var cal = el.calendar;
+	if (cal.dayMouseOverCalendarToFront) {
+		winCalendar.toFront();
+	}
 	return Calendar.stopEvent(ev);
 };
 
@@ -924,7 +931,7 @@ Calendar.prototype.create = function (_par) {
 
 	var tfoot = Calendar.createElement("tfoot", table);
 
-	row = Calendar.createElement("tr", tfoot);
+	row = Calendar.createElement("tr", thead);
 	row.className = "footrow";
 
 	cell = hh(Calendar._TT["SEL_DATE"], this.weekNumbers ? 8 : 7, 300);

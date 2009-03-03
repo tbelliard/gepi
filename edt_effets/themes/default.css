@@ -145,7 +145,16 @@
 	padding: 0;
 }
 
-.dialog table.table_window td , .dialog table.table_window th {
+.dialog table.table_window td.dialog_n,
+.dialog table.table_window td.dialog_ne,
+.dialog table.table_window td.dialog_e,
+.dialog table.table_window td.dialog_sizer,
+.dialog table.table_window td.dialog_s,
+.dialog table.table_window td.dialog_sw,
+.dialog table.table_window td.dialog_w,
+.dialog table.table_window td.dialog_nw,
+.dialog table.table_window td.dialog_content,
+.dialog table.table_window th {
   padding: 0;
 }
 

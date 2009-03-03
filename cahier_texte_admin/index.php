@@ -125,7 +125,7 @@ if (isset($_POST['delai_devoirs'])) {
 &nbsp;Cahier de texte version 1</label><br />
 	<label for='version_2' style='cursor: pointer;'>
 	<input type="radio" name="version" id="version_2" value="2" <?php if (getSettingValue("GepiCahierTexteVersion")=='2') echo " checked='checked'"; ?> />
-&nbsp;Cahier de texte version 2</label><br />
+&nbsp;Cahier de texte version 2 (beta)</label><br />
 
 <h2>Début et fin des cahiers de textes</h2>
 <i>Seules les rubriques dont la date est comprise entre la date de début et la date de fin des cahiers de textes sont visibles dans

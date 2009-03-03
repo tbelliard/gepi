@@ -33,7 +33,7 @@ require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 require_once("../lib/traitement_data.inc.php");
 
-$utilisateur = $_SESSION['utilisateur'];
+$utilisateur = $_SESSION['utilisateurProfessionnel'];
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -64,12 +64,12 @@ if ($uid_post==$_SESSION['uid_prime']) {
 $_SESSION['uid_prime'] = $uid_post;
 
 //récupération du compte rendu
-$ctTravailAFaire = CtTravailAFairePeer::retrieveByPK($id_devoir);
+$ctTravailAFaire = CahierTexteTravailAFairePeer::retrieveByPK($id_devoir);
 if ($ctTravailAFaire != null) {
 	$groupe = $ctTravailAFaire->getGroupe();
 }
 
-//si pas  du compte rendu trouvé, récupération du groupe dans la requete et création d'un nouvel objet CtCompteRendu
+//si pas  du compte rendu trouvé, récupération du groupe dans la requete et création d'un nouvel objet CahierTexteCompteRendu
 if ($ctTravailAFaire == null) {
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
@@ -84,7 +84,7 @@ if ($ctTravailAFaire == null) {
 	}
 
 	//pas de notices, on lance une création de notice
-	$ctTravailAFaire = new CtTravailAFaire();
+	$ctTravailAFaire = new CahierTexteTravailAFaire();
 	$ctTravailAFaire->setIdGroupe($groupe->getId());
 	$ctTravailAFaire->setIdLogin($utilisateur->getLogin());
 }
@@ -125,10 +125,10 @@ if (!empty($doc_file['name'][0])) {
 	//il y a au plus trois documents joints dans l'interface de saisie
 	for ($index_doc=0; $index_doc < 3; $index_doc++) {
 		if(!empty($doc_file['tmp_name'][$index_doc])) {
-			$file_path = ajout_fichier($doc_file, $dest_dir, $index_doc);
+			$file_path = ajout_fichier($doc_file, $dest_dir, $index_doc, $id_groupe);
 			if ($file_path != null) {
 				//création de l'objet ctDocument
-				$ctDocument = new CtDevoirDocument();
+				$ctDocument = new CahierTexteTravailAFaireFichierJoint();
 				$ctDocument->setIdCtDevoir($ctTravailAFaire->getIdCt());
 				$ctDocument->setTaille($doc_file['size'][$index_doc]);
 				$ctDocument->setEmplacement($file_path);
@@ -138,7 +138,7 @@ if (!empty($doc_file['name'][0])) {
 					$ctDocument->setTitre(basename($file_path));
 				}
 				$ctDocument->save();
-				$ctTravailAFaire->addCtDevoirDocument($ctDocument);
+				$ctTravailAFaire->addCahierTexteTravailAFaireFichierJoint($ctDocument);
 				$ctTravailAFaire->save();
 			}
 		}

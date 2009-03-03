@@ -26,7 +26,7 @@
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
-include("../fckeditor/fckeditor.php") ;
+echo("Debug Locale : ".setLocale(LC_TIME,0));
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -48,7 +48,7 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 	die("Le module n'est pas activé.");
 }
 //$utilisateur = new Utilisateur();
-$utilisateur = $_SESSION['utilisateur'];
+$utilisateur = $_SESSION['utilisateurProfessionnel'];
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -63,11 +63,13 @@ $succes_modification = isset($_POST["succes_modification"]) ? $_POST["succes_mod
 $today = isset($_POST["today"]) ? $_POST["today"] :(isset($_GET["today"]) ? $_GET["today"] :NULL);
 $ajout_nouvelle_notice = isset($_POST["ajout_nouvelle_notice"]) ? $_POST["ajout_nouvelle_notice"] :(isset($_GET["ajout_nouvelle_notice"]) ? $_GET["ajout_nouvelle_notice"] :NULL);
 
-//$ctCompteRendu = new CtCompteRendu();
+$ctCompteRendu = null;
+//$ctCompteRendu = new CahierTexteCompteRendu();
 if ($id_ct != null) {
 	$criteria = new Criteria();
-	$criteria->add(CtCompteRenduPeer::ID_CT, $id_ct, "=");
-	$ctCompteRendus = $utilisateur->getCtCompteRendus($criteria);
+	$criteria->add(CahierTexteCompteRenduPeer::ID_CT, $id_ct, "=");
+	$ctCompteRendus = $utilisateur->getCahierTexteCompteRendus($criteria);
+	if (!isset($ctCompteRendus[0])) $ctCompteRendus[0] = null;
 	$ctCompteRendu = $ctCompteRendus[0];
 	if ($ctCompteRendu == null) {
 		echo "Compte rendu non trouvé ou impossible à modifier car il ne vous appartient pas.";
@@ -92,15 +94,15 @@ if ($id_ct != null) {
 
 	if ($ajout_nouvelle_notice != "oui") {
 		//on cherche si il y a une notice pour le groupe à la date précisée
-		$criteria = new Criteria(CtCompteRenduPeer::DATABASE_NAME);
-		$criteria->add(CtCompteRenduPeer::DATE_CT, $today, '=');
-		$criteria->add(CtCompteRenduPeer::ID_LOGIN, $utilisateur->getLogin());
-		$ctCompteRendus = $groupe->getCtCompteRendus($criteria);
+		$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
+		$criteria->add(CahierTexteCompteRenduPeer::DATE_CT, $today, '=');
+		$criteria->add(CahierTexteCompteRenduPeer::ID_LOGIN, $utilisateur->getLogin());
+		$ctCompteRendus = $groupe->getCahierTexteCompteRendus($criteria);
 		$ctCompteRendu = isset($ctCompteRendus[0]) ? $ctCompteRendus[0] : NULL;
 	}
 	if ($ctCompteRendu == null) {
 		//pas de notices, on initialise un nouvel objet
-		$ctCompteRendu = new CtCompteRendu();
+		$ctCompteRendu = new CahierTexteCompteRendu();
 		$ctCompteRendu->setIdGroupe($groupe->getId());
 		$ctCompteRendu->setDateCt($today);
 	}
@@ -115,7 +117,7 @@ if ($ctCompteRendu->getVise() == 'y') {
 // Initialisation du type de couleur (voir global.inc.php)
 if ($ctCompteRendu->getDateCt() == null) {
 	//CompteRendu information générale
-	$info=yes;
+	$info='yes';
 	$type_couleur = "i";
 } else {
 	//CompteRendu normal
@@ -149,16 +151,8 @@ echo "</select>&nbsp;&nbsp;";
 //fin affichage des groupes
 
 echo "<button style='background-color:".$color_fond_notices['t']."' onclick=\"javascript:
-						getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe='+ id_groupe + '&today='+getCalendarUnixDate(),
-							{ onComplete:
-								function(transport) {
-									new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-								}
-							}
-						);
-						getWinEditionNotice().updateWidth();
+						getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'devoir';
-						compte_rendu_en_cours_de_modification('aucun');
 					\">Editer les devoirs</button><br><br>\n";
 
 // Nombre de notices pour ce jour :
@@ -186,35 +180,63 @@ if (!$ctCompteRendu->isNew() || isset($info)) {
 			Ajouter une notice
 			</a> - ";
 	echo "<a href=\"#\" onclick=\"javascript:
-				new Ajax.Updater($('dupplication_notice'), 'ajax_affichage_duplication_compte_rendu.php?id_ct=".$ctCompteRendu->getIdCt()."&today=".$today."',
+				new Ajax.Updater($('dupplication_notice'), 'ajax_affichage_duplication_notice.php?id_groupe=".$groupe->getId()."&type=CahierTexteCompteRendu&id_ct=".$ctCompteRendu->getIdCt()."',
 					{ onComplete:
-						function() {";
+						function() {
+							$('dupplication_notice').show();
+							calendarDuplicationInstanciation = null;";
 	if (!isset($info)) {
 		//on affiche le calendrier de duplication uniquement si ce n'est pas une notice d'information generale
 		echo "calendarDuplicationInstanciation = Calendar.setup({
 										flat         : 'calendar-duplication-container', // ID of the parent element
-										daFormat     : '%s'    			   //date format
+										daFormat     : '%s' ,   			   //date format
+										weekNumbers  : false
 								})
 								calendarDuplicationInstanciation.setDate(calendarInstanciation.date);";
 	}
-	echo "$('dupplication_notice').show();
+	echo "					
 						}
 					}
 				);
 				return false;
 				\">
-		Dupliquer la notice</a>";
+		Dupliquer la notice</a> - ";
+	echo "<a href=\"#\" onclick=\"javascript:
+				new Ajax.Updater($('deplacement_notice'), 'ajax_affichage_deplacement_notice.php?id_groupe=".$groupe->getId()."&type=CahierTexteCompteRendu&id_ct=".$ctCompteRendu->getIdCt()."',
+					{ onComplete:
+						function() {
+							$('deplacement_notice').show();
+							calendarDeplacementInstanciation = null;";
+	if (!isset($info)) {
+		//on affiche le calendrier de duplication uniquement si ce n'est pas une notice d'information generale
+		echo "calendarDeplacementInstanciation = Calendar.setup({
+										flat         : 'calendar-deplacement-container', // ID of the parent element
+										daFormat     : '%s' ,   			   //date format
+										weekNumbers  : false
+								})
+								calendarDeplacementInstanciation.setDate(calendarInstanciation.date);";
+	}
+	echo "
+						}
+					}
+				);
+				return false;
+				\">
+		Deplacer la notice</a>";
 } else {
 	echo " - <b><font color=\"red\">Nouvelle notice</font></b>\n";
 }
 echo "</legend>\n";
 
 echo "<div id=\"dupplication_notice\" style='display: none;'>oulalala</div>";
+echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>";
 echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu_form\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_compte_rendu.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementCompteRenduCallback})\" style=\"width: 100%;\">\n";
 // uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid = md5(uniqid(microtime(), 1));
 echo("<input type='hidden' name='uid_post' value='".$uid."' />");
+//hidden input utilise pour indiquer a la fenetre ListeNotice a quel endroit mettre un petit texte rouge "modification"
+echo("<input type='hidden' id='div_id_ct' value='compte_rendu_".$ctCompteRendu->getIdCt()."' />");
 echo("<input type='hidden' name='id_groupe' value='".$groupe->getId()."' />");
 echo("<input type='hidden' name='heure_entry' value=\"");
 if ($ctCompteRendu->getHeureEntry() == null) {
@@ -239,12 +261,13 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		<td style="width: 80%"><b><?php echo $titre; ?></b>&nbsp;
 		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer"
 			style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
+			
 		<?php if (!isset($info)) { ?>
-
 		<button type="submit" style='font-variant: small-caps;'
 			onClick="javascript:$('passer_a').value = 'passer_devoir';">Enr. et
 		passer aux devoirs du lendemain</button>
 		<?php } ?>
+	
 		<input type='hidden' id='passer_a' name='passer_a'
 			value='compte_rendu' /> <input type="hidden" name="date_ct"
 			value="<?php echo $ctCompteRendu->getDateCt(); ?>" /> <input
@@ -263,15 +286,15 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		echo "<tr>
 				<td colspan='5'>";
 
-		//echo "<div style=\"background-color: white;\"><textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctCompteRendu->getContenu()."</textarea></div>";
+		echo "<div style=\"background-color: white;\"><textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctCompteRendu->getContenu()."</textarea></div>";
 
 		// lancement de FCKeditor
-		$oFCKeditor = new FCKeditor('contenu') ;
-		$oFCKeditor->BasePath = '../fckeditor/' ;
-		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-		$oFCKeditor->ToolbarSet = 'Basic' ;
-		$oFCKeditor->Value = $ctCompteRendu->getContenu() ;
-		$oFCKeditor->Create() ;
+//		$oFCKeditor = new FCKeditor('contenu') ;
+//		$oFCKeditor->BasePath = '../fckeditor/' ;
+//		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
+//		$oFCKeditor->ToolbarSet = 'Basic' ;
+//		$oFCKeditor->Value = $ctCompteRendu->getContenu() ;
+//		$oFCKeditor->Create() ;
 
 		//// gestion des fichiers attaché
 		echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">';
@@ -280,14 +303,13 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		$architecture= "/documents/cl_dev".$groupe->getId();
 		// Affichage des documents joints
 		//$document = new CtDocument(); //for ide completion
-		$documents = $ctCompteRendu->getCtDocuments();
+		$documents = $ctCompteRendu->getCahierTexteCompteRenduFichierJoints();
 		echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; background-color: #000000; width: 100%\" cellspacing=\"1\" summary=\"Tableau des documents joints\">\n";
 		"<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: $couleur_entete_fond[$type_couleur];\"><td style=\"text-align: center;\"><b>Titre</b></td><td style=\"text-align: center; width: 100px\"><b>Taille en Ko</b></td><td style=\"text-align: center; width: 100px\"></td></tr>\n";
 		if (!empty($documents)) {
-			echo $nb_doc;
 			foreach ($documents as $document) {
-				if ($ic=='1') { $ic='2'; $couleur_cellule_=$couleur_cellule[$type_couleur]; } else { $couleur_cellule_=$couleur_cellule_alt[$type_couleur]; $ic='1'; }
-				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: $couleur_cellule_;\"><td>
+				//if ($ic=='1') { $ic='2'; $couleur_cellule_=$couleur_cellule[$type_couleur]; } else { $couleur_cellule_=$couleur_cellule_alt[$type_couleur]; $ic='1'; }
+				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\"><td>
 						<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a></td>
 						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>
 						<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctCompteRendu->getIdCt()."')\">Supprimer</a></td></tr>\n";
@@ -329,9 +351,11 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 				<td colspan="2" style="text-align: center;">
 				<button type="submit" id="bouton_enregistrer_2" name="Enregistrer"
 					style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
+				<?php if (!isset($info)) { ?>
 				<button type="submit" style='font-variant: small-caps;'
 					onClick="javascript:$('passer_a').value = 'passer_devoir';">Enr. et
 				passer aux devoirs du lendemain</button>
+				<?php } ?>
 				</td>
 			</tr>
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">

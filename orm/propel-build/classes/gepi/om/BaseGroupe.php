@@ -43,26 +43,6 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 	protected $recalcul_rang;
 
 	/**
-	 * @var        array CtCompteRendu[] Collection to store aggregation of CtCompteRendu objects.
-	 */
-	protected $collCtCompteRendus;
-
-	/**
-	 * @var        Criteria The criteria used to select the current contents of collCtCompteRendus.
-	 */
-	private $lastCtCompteRenduCriteria = null;
-
-	/**
-	 * @var        array CtTravailAFaire[] Collection to store aggregation of CtTravailAFaire objects.
-	 */
-	protected $collCtTravailAFaires;
-
-	/**
-	 * @var        Criteria The criteria used to select the current contents of collCtTravailAFaires.
-	 */
-	private $lastCtTravailAFaireCriteria = null;
-
-	/**
 	 * @var        array JGroupesProfesseurs[] Collection to store aggregation of JGroupesProfesseurs objects.
 	 */
 	protected $collJGroupesProfesseurss;
@@ -81,6 +61,46 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 	 * @var        Criteria The criteria used to select the current contents of collJGroupesClassess.
 	 */
 	private $lastJGroupesClassesCriteria = null;
+
+	/**
+	 * @var        array CahierTexteCompteRendu[] Collection to store aggregation of CahierTexteCompteRendu objects.
+	 */
+	protected $collCahierTexteCompteRendus;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collCahierTexteCompteRendus.
+	 */
+	private $lastCahierTexteCompteRenduCriteria = null;
+
+	/**
+	 * @var        array CahierTexteTravailAFaire[] Collection to store aggregation of CahierTexteTravailAFaire objects.
+	 */
+	protected $collCahierTexteTravailAFaires;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collCahierTexteTravailAFaires.
+	 */
+	private $lastCahierTexteTravailAFaireCriteria = null;
+
+	/**
+	 * @var        array CahierTexteNoticePrivee[] Collection to store aggregation of CahierTexteNoticePrivee objects.
+	 */
+	protected $collCahierTexteNoticePrivees;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collCahierTexteNoticePrivees.
+	 */
+	private $lastCahierTexteNoticePriveeCriteria = null;
+
+	/**
+	 * @var        array JEleveGroupe[] Collection to store aggregation of JEleveGroupe objects.
+	 */
+	protected $collJEleveGroupes;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collJEleveGroupes.
+	 */
+	private $lastJEleveGroupeCriteria = null;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -118,7 +138,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [id] column value.
-	 * Cle primaire du groupe
+	 * Clee primaire du groupe
 	 * @return     int
 	 */
 	public function getId()
@@ -158,7 +178,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [id] column.
-	 * Cle primaire du groupe
+	 * Clee primaire du groupe
 	 * @param      int $v new value
 	 * @return     Groupe The current object (for fluent API support)
 	 */
@@ -348,17 +368,23 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 		if ($deep) {  // also de-associate any related objects?
 
-			$this->collCtCompteRendus = null;
-			$this->lastCtCompteRenduCriteria = null;
-
-			$this->collCtTravailAFaires = null;
-			$this->lastCtTravailAFaireCriteria = null;
-
 			$this->collJGroupesProfesseurss = null;
 			$this->lastJGroupesProfesseursCriteria = null;
 
 			$this->collJGroupesClassess = null;
 			$this->lastJGroupesClassesCriteria = null;
+
+			$this->collCahierTexteCompteRendus = null;
+			$this->lastCahierTexteCompteRenduCriteria = null;
+
+			$this->collCahierTexteTravailAFaires = null;
+			$this->lastCahierTexteTravailAFaireCriteria = null;
+
+			$this->collCahierTexteNoticePrivees = null;
+			$this->lastCahierTexteNoticePriveeCriteria = null;
+
+			$this->collJEleveGroupes = null;
+			$this->lastJEleveGroupeCriteria = null;
 
 		} // if (deep)
 	}
@@ -467,22 +493,6 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
-			if ($this->collCtCompteRendus !== null) {
-				foreach ($this->collCtCompteRendus as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
-			if ($this->collCtTravailAFaires !== null) {
-				foreach ($this->collCtTravailAFaires as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
 			if ($this->collJGroupesProfesseurss !== null) {
 				foreach ($this->collJGroupesProfesseurss as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -493,6 +503,38 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 			if ($this->collJGroupesClassess !== null) {
 				foreach ($this->collJGroupesClassess as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collCahierTexteCompteRendus !== null) {
+				foreach ($this->collCahierTexteCompteRendus as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collCahierTexteTravailAFaires !== null) {
+				foreach ($this->collCahierTexteTravailAFaires as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collCahierTexteNoticePrivees !== null) {
+				foreach ($this->collCahierTexteNoticePrivees as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collJEleveGroupes !== null) {
+				foreach ($this->collJEleveGroupes as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -570,22 +612,6 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 			}
 
 
-				if ($this->collCtCompteRendus !== null) {
-					foreach ($this->collCtCompteRendus as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-				if ($this->collCtTravailAFaires !== null) {
-					foreach ($this->collCtTravailAFaires as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
 				if ($this->collJGroupesProfesseurss !== null) {
 					foreach ($this->collJGroupesProfesseurss as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
@@ -596,6 +622,38 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 				if ($this->collJGroupesClassess !== null) {
 					foreach ($this->collJGroupesClassess as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collCahierTexteCompteRendus !== null) {
+					foreach ($this->collCahierTexteCompteRendus as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collCahierTexteTravailAFaires !== null) {
+					foreach ($this->collCahierTexteTravailAFaires as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collCahierTexteNoticePrivees !== null) {
+					foreach ($this->collCahierTexteNoticePrivees as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJEleveGroupes !== null) {
+					foreach ($this->collJEleveGroupes as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -824,18 +882,6 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
 
-			foreach ($this->getCtCompteRendus() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addCtCompteRendu($relObj->copy($deepCopy));
-				}
-			}
-
-			foreach ($this->getCtTravailAFaires() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addCtTravailAFaire($relObj->copy($deepCopy));
-				}
-			}
-
 			foreach ($this->getJGroupesProfesseurss() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addJGroupesProfesseurs($relObj->copy($deepCopy));
@@ -845,6 +891,30 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 			foreach ($this->getJGroupesClassess() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addJGroupesClasses($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getCahierTexteCompteRendus() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addCahierTexteCompteRendu($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getCahierTexteTravailAFaires() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addCahierTexteTravailAFaire($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getCahierTexteNoticePrivees() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addCahierTexteNoticePrivee($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getJEleveGroupes() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJEleveGroupe($relObj->copy($deepCopy));
 				}
 			}
 
@@ -893,410 +963,6 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 			self::$peer = new GroupePeer();
 		}
 		return self::$peer;
-	}
-
-	/**
-	 * Clears out the collCtCompteRendus collection (array).
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addCtCompteRendus()
-	 */
-	public function clearCtCompteRendus()
-	{
-		$this->collCtCompteRendus = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collCtCompteRendus collection (array).
-	 *
-	 * By default this just sets the collCtCompteRendus collection to an empty array (like clearcollCtCompteRendus());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initCtCompteRendus()
-	{
-		$this->collCtCompteRendus = array();
-	}
-
-	/**
-	 * Gets an array of CtCompteRendu objects which contain a foreign key that references this object.
-	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this Groupe has previously been saved, it will retrieve
-	 * related CtCompteRendus from storage. If this Groupe is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
-	 *
-	 * @param      PropelPDO $con
-	 * @param      Criteria $criteria
-	 * @return     array CtCompteRendu[]
-	 * @throws     PropelException
-	 */
-	public function getCtCompteRendus($criteria = null, PropelPDO $con = null)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collCtCompteRendus === null) {
-			if ($this->isNew()) {
-			   $this->collCtCompteRendus = array();
-			} else {
-
-				$criteria->add(CtCompteRenduPeer::ID_GROUPE, $this->id);
-
-				CtCompteRenduPeer::addSelectColumns($criteria);
-				$this->collCtCompteRendus = CtCompteRenduPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(CtCompteRenduPeer::ID_GROUPE, $this->id);
-
-				CtCompteRenduPeer::addSelectColumns($criteria);
-				if (!isset($this->lastCtCompteRenduCriteria) || !$this->lastCtCompteRenduCriteria->equals($criteria)) {
-					$this->collCtCompteRendus = CtCompteRenduPeer::doSelect($criteria, $con);
-				}
-			}
-		}
-		$this->lastCtCompteRenduCriteria = $criteria;
-		return $this->collCtCompteRendus;
-	}
-
-	/**
-	 * Returns the number of related CtCompteRendu objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related CtCompteRendu objects.
-	 * @throws     PropelException
-	 */
-	public function countCtCompteRendus(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collCtCompteRendus === null) {
-			if ($this->isNew()) {
-				$count = 0;
-			} else {
-
-				$criteria->add(CtCompteRenduPeer::ID_GROUPE, $this->id);
-
-				$count = CtCompteRenduPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(CtCompteRenduPeer::ID_GROUPE, $this->id);
-
-				if (!isset($this->lastCtCompteRenduCriteria) || !$this->lastCtCompteRenduCriteria->equals($criteria)) {
-					$count = CtCompteRenduPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collCtCompteRendus);
-				}
-			} else {
-				$count = count($this->collCtCompteRendus);
-			}
-		}
-		$this->lastCtCompteRenduCriteria = $criteria;
-		return $count;
-	}
-
-	/**
-	 * Method called to associate a CtCompteRendu object to this object
-	 * through the CtCompteRendu foreign key attribute.
-	 *
-	 * @param      CtCompteRendu $l CtCompteRendu
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addCtCompteRendu(CtCompteRendu $l)
-	{
-		if ($this->collCtCompteRendus === null) {
-			$this->initCtCompteRendus();
-		}
-		if (!in_array($l, $this->collCtCompteRendus, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collCtCompteRendus, $l);
-			$l->setGroupe($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Groupe is new, it will return
-	 * an empty collection; or if this Groupe has previously
-	 * been saved, it will retrieve related CtCompteRendus from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Groupe.
-	 */
-	public function getCtCompteRendusJoinUtilisateur($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collCtCompteRendus === null) {
-			if ($this->isNew()) {
-				$this->collCtCompteRendus = array();
-			} else {
-
-				$criteria->add(CtCompteRenduPeer::ID_GROUPE, $this->id);
-
-				$this->collCtCompteRendus = CtCompteRenduPeer::doSelectJoinUtilisateur($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(CtCompteRenduPeer::ID_GROUPE, $this->id);
-
-			if (!isset($this->lastCtCompteRenduCriteria) || !$this->lastCtCompteRenduCriteria->equals($criteria)) {
-				$this->collCtCompteRendus = CtCompteRenduPeer::doSelectJoinUtilisateur($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastCtCompteRenduCriteria = $criteria;
-
-		return $this->collCtCompteRendus;
-	}
-
-	/**
-	 * Clears out the collCtTravailAFaires collection (array).
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addCtTravailAFaires()
-	 */
-	public function clearCtTravailAFaires()
-	{
-		$this->collCtTravailAFaires = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collCtTravailAFaires collection (array).
-	 *
-	 * By default this just sets the collCtTravailAFaires collection to an empty array (like clearcollCtTravailAFaires());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initCtTravailAFaires()
-	{
-		$this->collCtTravailAFaires = array();
-	}
-
-	/**
-	 * Gets an array of CtTravailAFaire objects which contain a foreign key that references this object.
-	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this Groupe has previously been saved, it will retrieve
-	 * related CtTravailAFaires from storage. If this Groupe is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
-	 *
-	 * @param      PropelPDO $con
-	 * @param      Criteria $criteria
-	 * @return     array CtTravailAFaire[]
-	 * @throws     PropelException
-	 */
-	public function getCtTravailAFaires($criteria = null, PropelPDO $con = null)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collCtTravailAFaires === null) {
-			if ($this->isNew()) {
-			   $this->collCtTravailAFaires = array();
-			} else {
-
-				$criteria->add(CtTravailAFairePeer::ID_GROUPE, $this->id);
-
-				CtTravailAFairePeer::addSelectColumns($criteria);
-				$this->collCtTravailAFaires = CtTravailAFairePeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(CtTravailAFairePeer::ID_GROUPE, $this->id);
-
-				CtTravailAFairePeer::addSelectColumns($criteria);
-				if (!isset($this->lastCtTravailAFaireCriteria) || !$this->lastCtTravailAFaireCriteria->equals($criteria)) {
-					$this->collCtTravailAFaires = CtTravailAFairePeer::doSelect($criteria, $con);
-				}
-			}
-		}
-		$this->lastCtTravailAFaireCriteria = $criteria;
-		return $this->collCtTravailAFaires;
-	}
-
-	/**
-	 * Returns the number of related CtTravailAFaire objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related CtTravailAFaire objects.
-	 * @throws     PropelException
-	 */
-	public function countCtTravailAFaires(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collCtTravailAFaires === null) {
-			if ($this->isNew()) {
-				$count = 0;
-			} else {
-
-				$criteria->add(CtTravailAFairePeer::ID_GROUPE, $this->id);
-
-				$count = CtTravailAFairePeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(CtTravailAFairePeer::ID_GROUPE, $this->id);
-
-				if (!isset($this->lastCtTravailAFaireCriteria) || !$this->lastCtTravailAFaireCriteria->equals($criteria)) {
-					$count = CtTravailAFairePeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collCtTravailAFaires);
-				}
-			} else {
-				$count = count($this->collCtTravailAFaires);
-			}
-		}
-		$this->lastCtTravailAFaireCriteria = $criteria;
-		return $count;
-	}
-
-	/**
-	 * Method called to associate a CtTravailAFaire object to this object
-	 * through the CtTravailAFaire foreign key attribute.
-	 *
-	 * @param      CtTravailAFaire $l CtTravailAFaire
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addCtTravailAFaire(CtTravailAFaire $l)
-	{
-		if ($this->collCtTravailAFaires === null) {
-			$this->initCtTravailAFaires();
-		}
-		if (!in_array($l, $this->collCtTravailAFaires, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collCtTravailAFaires, $l);
-			$l->setGroupe($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Groupe is new, it will return
-	 * an empty collection; or if this Groupe has previously
-	 * been saved, it will retrieve related CtTravailAFaires from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Groupe.
-	 */
-	public function getCtTravailAFairesJoinUtilisateur($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collCtTravailAFaires === null) {
-			if ($this->isNew()) {
-				$this->collCtTravailAFaires = array();
-			} else {
-
-				$criteria->add(CtTravailAFairePeer::ID_GROUPE, $this->id);
-
-				$this->collCtTravailAFaires = CtTravailAFairePeer::doSelectJoinUtilisateur($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(CtTravailAFairePeer::ID_GROUPE, $this->id);
-
-			if (!isset($this->lastCtTravailAFaireCriteria) || !$this->lastCtTravailAFaireCriteria->equals($criteria)) {
-				$this->collCtTravailAFaires = CtTravailAFairePeer::doSelectJoinUtilisateur($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastCtTravailAFaireCriteria = $criteria;
-
-		return $this->collCtTravailAFaires;
 	}
 
 	/**
@@ -1466,7 +1132,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Groupe.
 	 */
-	public function getJGroupesProfesseurssJoinUtilisateur($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getJGroupesProfesseurssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
@@ -1483,7 +1149,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 				$criteria->add(JGroupesProfesseursPeer::ID_GROUPE, $this->id);
 
-				$this->collJGroupesProfesseurss = JGroupesProfesseursPeer::doSelectJoinUtilisateur($criteria, $con, $join_behavior);
+				$this->collJGroupesProfesseurss = JGroupesProfesseursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
@@ -1493,7 +1159,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 			$criteria->add(JGroupesProfesseursPeer::ID_GROUPE, $this->id);
 
 			if (!isset($this->lastJGroupesProfesseursCriteria) || !$this->lastJGroupesProfesseursCriteria->equals($criteria)) {
-				$this->collJGroupesProfesseurss = JGroupesProfesseursPeer::doSelectJoinUtilisateur($criteria, $con, $join_behavior);
+				$this->collJGroupesProfesseurss = JGroupesProfesseursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
 			}
 		}
 		$this->lastJGroupesProfesseursCriteria = $criteria;
@@ -1704,6 +1370,814 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Clears out the collCahierTexteCompteRendus collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addCahierTexteCompteRendus()
+	 */
+	public function clearCahierTexteCompteRendus()
+	{
+		$this->collCahierTexteCompteRendus = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collCahierTexteCompteRendus collection (array).
+	 *
+	 * By default this just sets the collCahierTexteCompteRendus collection to an empty array (like clearcollCahierTexteCompteRendus());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initCahierTexteCompteRendus()
+	{
+		$this->collCahierTexteCompteRendus = array();
+	}
+
+	/**
+	 * Gets an array of CahierTexteCompteRendu objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this Groupe has previously been saved, it will retrieve
+	 * related CahierTexteCompteRendus from storage. If this Groupe is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array CahierTexteCompteRendu[]
+	 * @throws     PropelException
+	 */
+	public function getCahierTexteCompteRendus($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCahierTexteCompteRendus === null) {
+			if ($this->isNew()) {
+			   $this->collCahierTexteCompteRendus = array();
+			} else {
+
+				$criteria->add(CahierTexteCompteRenduPeer::ID_GROUPE, $this->id);
+
+				CahierTexteCompteRenduPeer::addSelectColumns($criteria);
+				$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(CahierTexteCompteRenduPeer::ID_GROUPE, $this->id);
+
+				CahierTexteCompteRenduPeer::addSelectColumns($criteria);
+				if (!isset($this->lastCahierTexteCompteRenduCriteria) || !$this->lastCahierTexteCompteRenduCriteria->equals($criteria)) {
+					$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastCahierTexteCompteRenduCriteria = $criteria;
+		return $this->collCahierTexteCompteRendus;
+	}
+
+	/**
+	 * Returns the number of related CahierTexteCompteRendu objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related CahierTexteCompteRendu objects.
+	 * @throws     PropelException
+	 */
+	public function countCahierTexteCompteRendus(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collCahierTexteCompteRendus === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(CahierTexteCompteRenduPeer::ID_GROUPE, $this->id);
+
+				$count = CahierTexteCompteRenduPeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(CahierTexteCompteRenduPeer::ID_GROUPE, $this->id);
+
+				if (!isset($this->lastCahierTexteCompteRenduCriteria) || !$this->lastCahierTexteCompteRenduCriteria->equals($criteria)) {
+					$count = CahierTexteCompteRenduPeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collCahierTexteCompteRendus);
+				}
+			} else {
+				$count = count($this->collCahierTexteCompteRendus);
+			}
+		}
+		$this->lastCahierTexteCompteRenduCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a CahierTexteCompteRendu object to this object
+	 * through the CahierTexteCompteRendu foreign key attribute.
+	 *
+	 * @param      CahierTexteCompteRendu $l CahierTexteCompteRendu
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addCahierTexteCompteRendu(CahierTexteCompteRendu $l)
+	{
+		if ($this->collCahierTexteCompteRendus === null) {
+			$this->initCahierTexteCompteRendus();
+		}
+		if (!in_array($l, $this->collCahierTexteCompteRendus, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collCahierTexteCompteRendus, $l);
+			$l->setGroupe($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related CahierTexteCompteRendus from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getCahierTexteCompteRendusJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCahierTexteCompteRendus === null) {
+			if ($this->isNew()) {
+				$this->collCahierTexteCompteRendus = array();
+			} else {
+
+				$criteria->add(CahierTexteCompteRenduPeer::ID_GROUPE, $this->id);
+
+				$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(CahierTexteCompteRenduPeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastCahierTexteCompteRenduCriteria) || !$this->lastCahierTexteCompteRenduCriteria->equals($criteria)) {
+				$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastCahierTexteCompteRenduCriteria = $criteria;
+
+		return $this->collCahierTexteCompteRendus;
+	}
+
+	/**
+	 * Clears out the collCahierTexteTravailAFaires collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addCahierTexteTravailAFaires()
+	 */
+	public function clearCahierTexteTravailAFaires()
+	{
+		$this->collCahierTexteTravailAFaires = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collCahierTexteTravailAFaires collection (array).
+	 *
+	 * By default this just sets the collCahierTexteTravailAFaires collection to an empty array (like clearcollCahierTexteTravailAFaires());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initCahierTexteTravailAFaires()
+	{
+		$this->collCahierTexteTravailAFaires = array();
+	}
+
+	/**
+	 * Gets an array of CahierTexteTravailAFaire objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this Groupe has previously been saved, it will retrieve
+	 * related CahierTexteTravailAFaires from storage. If this Groupe is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array CahierTexteTravailAFaire[]
+	 * @throws     PropelException
+	 */
+	public function getCahierTexteTravailAFaires($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCahierTexteTravailAFaires === null) {
+			if ($this->isNew()) {
+			   $this->collCahierTexteTravailAFaires = array();
+			} else {
+
+				$criteria->add(CahierTexteTravailAFairePeer::ID_GROUPE, $this->id);
+
+				CahierTexteTravailAFairePeer::addSelectColumns($criteria);
+				$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(CahierTexteTravailAFairePeer::ID_GROUPE, $this->id);
+
+				CahierTexteTravailAFairePeer::addSelectColumns($criteria);
+				if (!isset($this->lastCahierTexteTravailAFaireCriteria) || !$this->lastCahierTexteTravailAFaireCriteria->equals($criteria)) {
+					$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastCahierTexteTravailAFaireCriteria = $criteria;
+		return $this->collCahierTexteTravailAFaires;
+	}
+
+	/**
+	 * Returns the number of related CahierTexteTravailAFaire objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related CahierTexteTravailAFaire objects.
+	 * @throws     PropelException
+	 */
+	public function countCahierTexteTravailAFaires(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collCahierTexteTravailAFaires === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(CahierTexteTravailAFairePeer::ID_GROUPE, $this->id);
+
+				$count = CahierTexteTravailAFairePeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(CahierTexteTravailAFairePeer::ID_GROUPE, $this->id);
+
+				if (!isset($this->lastCahierTexteTravailAFaireCriteria) || !$this->lastCahierTexteTravailAFaireCriteria->equals($criteria)) {
+					$count = CahierTexteTravailAFairePeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collCahierTexteTravailAFaires);
+				}
+			} else {
+				$count = count($this->collCahierTexteTravailAFaires);
+			}
+		}
+		$this->lastCahierTexteTravailAFaireCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a CahierTexteTravailAFaire object to this object
+	 * through the CahierTexteTravailAFaire foreign key attribute.
+	 *
+	 * @param      CahierTexteTravailAFaire $l CahierTexteTravailAFaire
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addCahierTexteTravailAFaire(CahierTexteTravailAFaire $l)
+	{
+		if ($this->collCahierTexteTravailAFaires === null) {
+			$this->initCahierTexteTravailAFaires();
+		}
+		if (!in_array($l, $this->collCahierTexteTravailAFaires, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collCahierTexteTravailAFaires, $l);
+			$l->setGroupe($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related CahierTexteTravailAFaires from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getCahierTexteTravailAFairesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCahierTexteTravailAFaires === null) {
+			if ($this->isNew()) {
+				$this->collCahierTexteTravailAFaires = array();
+			} else {
+
+				$criteria->add(CahierTexteTravailAFairePeer::ID_GROUPE, $this->id);
+
+				$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(CahierTexteTravailAFairePeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastCahierTexteTravailAFaireCriteria) || !$this->lastCahierTexteTravailAFaireCriteria->equals($criteria)) {
+				$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastCahierTexteTravailAFaireCriteria = $criteria;
+
+		return $this->collCahierTexteTravailAFaires;
+	}
+
+	/**
+	 * Clears out the collCahierTexteNoticePrivees collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addCahierTexteNoticePrivees()
+	 */
+	public function clearCahierTexteNoticePrivees()
+	{
+		$this->collCahierTexteNoticePrivees = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collCahierTexteNoticePrivees collection (array).
+	 *
+	 * By default this just sets the collCahierTexteNoticePrivees collection to an empty array (like clearcollCahierTexteNoticePrivees());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initCahierTexteNoticePrivees()
+	{
+		$this->collCahierTexteNoticePrivees = array();
+	}
+
+	/**
+	 * Gets an array of CahierTexteNoticePrivee objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this Groupe has previously been saved, it will retrieve
+	 * related CahierTexteNoticePrivees from storage. If this Groupe is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array CahierTexteNoticePrivee[]
+	 * @throws     PropelException
+	 */
+	public function getCahierTexteNoticePrivees($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCahierTexteNoticePrivees === null) {
+			if ($this->isNew()) {
+			   $this->collCahierTexteNoticePrivees = array();
+			} else {
+
+				$criteria->add(CahierTexteNoticePriveePeer::ID_GROUPE, $this->id);
+
+				CahierTexteNoticePriveePeer::addSelectColumns($criteria);
+				$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(CahierTexteNoticePriveePeer::ID_GROUPE, $this->id);
+
+				CahierTexteNoticePriveePeer::addSelectColumns($criteria);
+				if (!isset($this->lastCahierTexteNoticePriveeCriteria) || !$this->lastCahierTexteNoticePriveeCriteria->equals($criteria)) {
+					$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastCahierTexteNoticePriveeCriteria = $criteria;
+		return $this->collCahierTexteNoticePrivees;
+	}
+
+	/**
+	 * Returns the number of related CahierTexteNoticePrivee objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related CahierTexteNoticePrivee objects.
+	 * @throws     PropelException
+	 */
+	public function countCahierTexteNoticePrivees(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collCahierTexteNoticePrivees === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(CahierTexteNoticePriveePeer::ID_GROUPE, $this->id);
+
+				$count = CahierTexteNoticePriveePeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(CahierTexteNoticePriveePeer::ID_GROUPE, $this->id);
+
+				if (!isset($this->lastCahierTexteNoticePriveeCriteria) || !$this->lastCahierTexteNoticePriveeCriteria->equals($criteria)) {
+					$count = CahierTexteNoticePriveePeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collCahierTexteNoticePrivees);
+				}
+			} else {
+				$count = count($this->collCahierTexteNoticePrivees);
+			}
+		}
+		$this->lastCahierTexteNoticePriveeCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a CahierTexteNoticePrivee object to this object
+	 * through the CahierTexteNoticePrivee foreign key attribute.
+	 *
+	 * @param      CahierTexteNoticePrivee $l CahierTexteNoticePrivee
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addCahierTexteNoticePrivee(CahierTexteNoticePrivee $l)
+	{
+		if ($this->collCahierTexteNoticePrivees === null) {
+			$this->initCahierTexteNoticePrivees();
+		}
+		if (!in_array($l, $this->collCahierTexteNoticePrivees, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collCahierTexteNoticePrivees, $l);
+			$l->setGroupe($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related CahierTexteNoticePrivees from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getCahierTexteNoticePriveesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCahierTexteNoticePrivees === null) {
+			if ($this->isNew()) {
+				$this->collCahierTexteNoticePrivees = array();
+			} else {
+
+				$criteria->add(CahierTexteNoticePriveePeer::ID_GROUPE, $this->id);
+
+				$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(CahierTexteNoticePriveePeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastCahierTexteNoticePriveeCriteria) || !$this->lastCahierTexteNoticePriveeCriteria->equals($criteria)) {
+				$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastCahierTexteNoticePriveeCriteria = $criteria;
+
+		return $this->collCahierTexteNoticePrivees;
+	}
+
+	/**
+	 * Clears out the collJEleveGroupes collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJEleveGroupes()
+	 */
+	public function clearJEleveGroupes()
+	{
+		$this->collJEleveGroupes = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJEleveGroupes collection (array).
+	 *
+	 * By default this just sets the collJEleveGroupes collection to an empty array (like clearcollJEleveGroupes());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initJEleveGroupes()
+	{
+		$this->collJEleveGroupes = array();
+	}
+
+	/**
+	 * Gets an array of JEleveGroupe objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this Groupe has previously been saved, it will retrieve
+	 * related JEleveGroupes from storage. If this Groupe is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array JEleveGroupe[]
+	 * @throws     PropelException
+	 */
+	public function getJEleveGroupes($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collJEleveGroupes === null) {
+			if ($this->isNew()) {
+			   $this->collJEleveGroupes = array();
+			} else {
+
+				$criteria->add(JEleveGroupePeer::ID_GROUPE, $this->id);
+
+				JEleveGroupePeer::addSelectColumns($criteria);
+				$this->collJEleveGroupes = JEleveGroupePeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(JEleveGroupePeer::ID_GROUPE, $this->id);
+
+				JEleveGroupePeer::addSelectColumns($criteria);
+				if (!isset($this->lastJEleveGroupeCriteria) || !$this->lastJEleveGroupeCriteria->equals($criteria)) {
+					$this->collJEleveGroupes = JEleveGroupePeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastJEleveGroupeCriteria = $criteria;
+		return $this->collJEleveGroupes;
+	}
+
+	/**
+	 * Returns the number of related JEleveGroupe objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JEleveGroupe objects.
+	 * @throws     PropelException
+	 */
+	public function countJEleveGroupes(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collJEleveGroupes === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(JEleveGroupePeer::ID_GROUPE, $this->id);
+
+				$count = JEleveGroupePeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(JEleveGroupePeer::ID_GROUPE, $this->id);
+
+				if (!isset($this->lastJEleveGroupeCriteria) || !$this->lastJEleveGroupeCriteria->equals($criteria)) {
+					$count = JEleveGroupePeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collJEleveGroupes);
+				}
+			} else {
+				$count = count($this->collJEleveGroupes);
+			}
+		}
+		$this->lastJEleveGroupeCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a JEleveGroupe object to this object
+	 * through the JEleveGroupe foreign key attribute.
+	 *
+	 * @param      JEleveGroupe $l JEleveGroupe
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addJEleveGroupe(JEleveGroupe $l)
+	{
+		if ($this->collJEleveGroupes === null) {
+			$this->initJEleveGroupes();
+		}
+		if (!in_array($l, $this->collJEleveGroupes, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collJEleveGroupes, $l);
+			$l->setGroupe($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related JEleveGroupes from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getJEleveGroupesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collJEleveGroupes === null) {
+			if ($this->isNew()) {
+				$this->collJEleveGroupes = array();
+			} else {
+
+				$criteria->add(JEleveGroupePeer::ID_GROUPE, $this->id);
+
+				$this->collJEleveGroupes = JEleveGroupePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(JEleveGroupePeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastJEleveGroupeCriteria) || !$this->lastJEleveGroupeCriteria->equals($criteria)) {
+				$this->collJEleveGroupes = JEleveGroupePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastJEleveGroupeCriteria = $criteria;
+
+		return $this->collJEleveGroupes;
+	}
+
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -1715,16 +2189,6 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
-			if ($this->collCtCompteRendus) {
-				foreach ((array) $this->collCtCompteRendus as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collCtTravailAFaires) {
-				foreach ((array) $this->collCtTravailAFaires as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
 			if ($this->collJGroupesProfesseurss) {
 				foreach ((array) $this->collJGroupesProfesseurss as $o) {
 					$o->clearAllReferences($deep);
@@ -1735,12 +2199,34 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collCahierTexteCompteRendus) {
+				foreach ((array) $this->collCahierTexteCompteRendus as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collCahierTexteTravailAFaires) {
+				foreach ((array) $this->collCahierTexteTravailAFaires as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collCahierTexteNoticePrivees) {
+				foreach ((array) $this->collCahierTexteNoticePrivees as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collJEleveGroupes) {
+				foreach ((array) $this->collJEleveGroupes as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
-		$this->collCtCompteRendus = null;
-		$this->collCtTravailAFaires = null;
 		$this->collJGroupesProfesseurss = null;
 		$this->collJGroupesClassess = null;
+		$this->collCahierTexteCompteRendus = null;
+		$this->collCahierTexteTravailAFaires = null;
+		$this->collCahierTexteNoticePrivees = null;
+		$this->collJEleveGroupes = null;
 	}
 
 } // BaseGroupe

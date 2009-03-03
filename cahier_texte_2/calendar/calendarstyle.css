@@ -7,7 +7,7 @@
   border-right: 2px solid #000;
   border-bottom: 2px solid #000;
   border-left: 2px solid #fff;
-  font-size: 11px;
+  font-size: 10px;
   color: #000;
   cursor: default;
   background: #c8d0d4;
@@ -15,12 +15,11 @@
 }
 
 .calendar table {
-  font-size: 11px;
+  font-size: 10px;
   border-top: 1px solid #000;
   border-right: 1px solid #fff;
   border-bottom: 1px solid #fff;
   border-left: 1px solid #000;
-  font-size: 11px;
   color: #000;
   cursor: default;
   background: #c8d0d4;
@@ -30,7 +29,7 @@
 /* Header part -- contains navigation buttons and day names. */
 
 .calendar .button { /* "<<", "<", ">", ">>" buttons have this class */
-  font-size: 11px;
+  font-size: 10px;
   text-align: center;
   padding: 1px;
   border-top: 1px solid #fff;
@@ -94,7 +93,7 @@
   width: 1em;
   text-align: left;
   padding: 2px 4px 2px 2px;
-  font-size: 11px;
+  font-size: 10px;
 }
 .calendar tbody .day.othermonth {
   font-size: 80%;
@@ -162,8 +161,8 @@
 .calendar tfoot .footrow { /* The <TR> in footer (only one right now) */
 }
 
-.calendar tfoot .ttip { /* Tooltip (status bar) cell <TD> */
-  font-size: 11px;
+.calendar thead .ttip { /* Tooltip (status bar) cell <TD> */
+  font-size: 9px;
   background: #e8f0f4;
   padding: 1px;
   border: 1px solid #000;

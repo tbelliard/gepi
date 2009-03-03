@@ -23,12 +23,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-$utiliser_pdo = 'on';
-//error_reporting(0);
+
 // Initialisation des feuilles de style après modification pour améliorer l'accessibilité
 $accessibilite="y";
 
 // Initialisations files
+include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -47,13 +47,9 @@ $_ok = 'oui';
 $aff_coche = '';
 $test_aff_fiche = "ok";
 $aff_creneaux = NULL;
+$aff_motifs = $aff_justifications = NULL;
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
-include("classes/activeRecordGepi.class.php");
-include("classes/absences.class.php");
-include("classes/abs_gestion.class.php");
-include("classes/abs_creneaux.class.php");
-include("helpers/aff_listes_utilisateurs.inc.php");
 include("lib/erreurs.php");
 
 try{
@@ -73,7 +69,7 @@ try{
     case 'Groupes':
       $liste = $_id;
       break;
-    case 'Eleve':
+    case 'Eleves':
       $liste = $_id;
       $_ok = 'non';
       break;
@@ -85,30 +81,54 @@ try{
   } // switch
 
   if ($_ok == 'oui') {
-    $aff_liste[0] = ListeEleves(array('classes'=>$liste));
-  }else{
-    // On vérifie le nombre d'_id envoyés
-    if ($test_aff_fiche == 'no') {
-      // Il y a plus d'un élève à afficher
-      for($i = 0 ; $i < $test_nbre ; $i++){
-
-        // On charge les fiches de tous ces élèves pour l'affichage
-        $aff_liste[$i] = infosEleve($test_id[$i]);
-        $aff_coche = ' checked="checked"'; // pour cocher par défaut l'absence de tous ces élèves sur la journée
-
-      }
+    $aff_liste = GroupePeer::retrieveByPK($_id);
+    //aff_debug();
+    $nom_classe = $aff_liste->getClasses();
+    $test_type = 'Classe : ';
+    foreach($nom_classe as $classe){
+      $test_type .= $classe->getNomComplet() . ' ';
     }
-    // Il s'agit d'afficher les infos sur un seul élève pour l'affichage
-    $aff_liste[0] = infosEleve($liste);
+    //aff_debug($aff_liste); exit();
+  }else{
+    // On récupère les infos sur tous les élèves sélectionnés (qu'il y en ait un ou plusieurs)
+    $aff_coche = ' checked="checked"';
+    $aff_liste = ElevePeer::retrieveByPKs($test_id);
+    
   }
 
-  // CRENEAUX : On crée les options pour les selects des créneaux
-  $creneaux = new Abs_creneau();
-  $liste_creneaux = $creneaux->findAll(array('where' => 'type_creneau != "pause" AND type_creneau != "repas"'));
-  foreach($liste_creneaux as $aff_liste_creneaux){
-    $aff_creneaux .= '<option value="' . $aff_liste_creneaux->id . '">' . $aff_liste_creneaux->nom_creneau . '</option>';
+  // *********************************************************************************** //
+  // ************** CRENEAUX : On crée les options pour les selects des créneaux ******* //
+  $critere = new Criteria();
+  $critere->add(CreneauPeer::TYPE_CRENEAU, 'pause', Criteria::NOT_EQUAL);
+  $liste_creneaux = CreneauPeer::doSelect($critere);
 
+  foreach($liste_creneaux as $creneaux){
+    $aff_creneaux .= '<option value="' . $creneaux->getId() . '">' . $creneaux->getNomCreneau() . '</option>'."\n";
   }
+  // ****************************** Fin de la liste des créneaux *********************** //
+  // *********************************************************************************** //
+  // ************** MOTIFS : On crée les options pour les selects des motifs *********** //
+  $liste_motifs = AbsenceMotifPeer::doSelect(new Criteria);
+
+  foreach($liste_motifs as $motifs){
+    $aff_motifs .= '<option value="' . $motifs->getId() . '">' . $motifs->getNom() . '</option>'."\n";
+  }
+  if (!isset($aff_motifs)){
+    $aff_motifs = '<option value="rien">Aucun motif dans la base</option>';
+  }
+  // ****************************** Fin de la liste des motifs ************************* //
+  // *********************************************************************************** //
+  // **** JUSTIFICATIONS : On crée les options pour les selects des justifications ***** //
+  $liste_justifications = AbsenceJustificationPeer::doSelect(new Criteria);
+
+  foreach($liste_justifications as $justifications){
+    $aff_justifications .= '<option value="' . $justifications->getId() . '">' . $justifications->getNom() . '</option>' . "\n";
+  }
+  if (!isset($aff_justifications)){
+    $aff_justifications = '<option value="rien">Aucune justification dans la base</option>';
+  }
+  // ****************************** Fin de la liste des motifs ************************* //
+  // *********************************************************************************** //
 
 
 }catch(exception $e){
@@ -129,23 +149,22 @@ header('Content-Type: text/html; charset:utf-8');
     <table class="_center">
       <tr><th>Absents</th><th>Nom Pr&eacute;nom</th><th>Abs. Journ.</th><th>D&eacute;but</th><th>Fin</th><th>Justification</th><th>Motif</th></tr>
 
-      <?php foreach($aff_liste as $tab): ?>
-
-        <?php $a = 0; foreach($tab as $aff_tab): ?>
+      <?php $a = 0; foreach($aff_liste as $eleve): ?>
+        <?php ($classes = $eleve->getJEleveClasses()); $classe = $classes[0]->getClasse(); ?>
+        
         <tr>
 
-          <td><input type="checkbox" name="_eleve[<?php echo $a; ?>]" id="el<?php echo $a; ?>" value="<?php echo $aff_tab->id_eleve; ?>"<?php echo $aff_coche; ?> /></td>
-          <td><label for="el<?php echo $a; ?>"><?php echo utf8_encode($aff_tab->nom) . ' ' . utf8_encode($aff_tab->prenom); ?></label></td>
-          <td><input type="checkbox" name="_jourentier[<?php echo $a; ?>]" id="el<?php echo $a; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
-          <td><select name="_deb[<?php echo $a; ?>]"><?php echo $aff_creneaux; ?></select></td>
-          <td><select name="_fin[<?php echo $a; ?>]"><?php echo $aff_creneaux; ?></select></td>
-          <td><?php echo AffSelectParametres(array('_type'=>'justifications', 'name'=>'_justifications['.$a.']')); ?></td>
-          <td><?php echo AffSelectParametres(array('_type'=>'motifs', 'name'=>'_motifs['.$a.']')); ?></td>
+          <td><input type="checkbox" name="_eleve[<?php echo $a; ?>]" id="el<?php echo $a; ?>" value="<?php echo $eleve->getIdEleve(); ?>"<?php echo $aff_coche; ?> /></td>
+          <td><label for="el<?php echo $a; ?>"><?php echo htmlentities($eleve->getNom()) . ' ' . htmlentities($eleve->getPrenom()); ?> (<?php  echo $classe->getClasse(); ?>)</label></td>
+          <td><input type="checkbox" name="_jourentier[<?php echo $a; ?>]" id="j<?php echo $a; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
+          <td><select name="_deb[<?php echo $a; ?>]" onclick="decoche('j<?php echo $a; ?>');"><?php echo $aff_creneaux; ?></select></td>
+          <td><select name="_fin[<?php echo $a; ?>]" onclick="decoche('j<?php echo $a; ?>');"><?php echo $aff_creneaux; ?></select></td>
+          <td><select name="_justifications[<?php echo $a; ?>]"><?php echo $aff_justifications; ?></select></td>
+          <td><select name="_motifs[<?php echo $a; ?>]"><?php echo $aff_motifs; ?></select></td>
 
         </tr>
-        <?php $a++; endforeach; ?>
 
-      <?php endforeach; ?>
+      <?php $a++; endforeach; ?>
 
     </table>
 
@@ -153,7 +172,7 @@ header('Content-Type: text/html; charset:utf-8');
 
   </form>
 
-<?php /* A partir d'ici, on affiche la fiche de l'élève si on la demande (uniquement dans le cas où un seul élève est demandé */
+<?php /* A partir d'ici, on affiche la fiche de l'élève si on la demande (uniquement dans le cas où un seul élève est demandé 
 if (isset($aff_liste[0]->fiche_eleve) AND $test_aff_fiche == 'ok') { ?>
   <hr style="width: 1000px;" />
   <!-- fiche des responsables -->
@@ -207,6 +226,6 @@ if (isset($aff_liste[0]->fiche_eleve) AND $test_aff_fiche == 'ok') { ?>
   </div>
 
 
-<?php } // Fin de la fiche de l'élève?>
+<?php }*/ // Fin de la fiche de l'élève ?>
 </div>
 

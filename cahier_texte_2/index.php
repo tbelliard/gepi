@@ -22,11 +22,12 @@
  */
 
 // On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
-if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
+if (isset($_GET['traite_anti_inject']) || isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Initialisations files
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
+echo("Debug Locale : ".setLocale(LC_TIME,0));
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -49,8 +50,8 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 }
 
 //recherche de l'utilisateur avec propel
-$utilisateur = UtilisateurPeer::retrieveByPK( $_SESSION['login']);
-$_SESSION['utilisateur'] = $utilisateur;
+$utilisateur = UtilisateurProfessionnelPeer::retrieveByPK( $_SESSION['login']);
+$_SESSION['utilisateurProfessionnel'] = $utilisateur;
 
 // On met le header en petit par défaut
 $_SESSION['cacher_header'] = "y";
@@ -67,14 +68,30 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
 //-----------------------------------------------------------------------------------
-echo "<div id='compte_rendu_en_cours_'></div>";
 echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entète\">\n";
 echo "<tr>\n";
+echo "<td valign='center'>\n";
+echo "<button style='width: 200px;' onclick=\"javascript:
+						getWinDernieresNotices().show();
+						getWinDernieresNotices().toFront();
+						return false;
+				\">Voir les dernières notices</button>\n";
+echo "<br />";
+echo "<button style='width: 200px;' onclick=\"javascript:
+						getWinDernieresNotices().setLocation(105, 40);
+						getWinDernieresNotices().hide();
+						getWinCalendar().setLocation(0, GetWidth() - 245);
+						getWinEditionNotice().setLocation(110, 334);
+						getWinListeNotices().setLocation(110, 0);
+						return false;
+				\">Repositionner les fenetres</button>\n";
+echo "</td>";
 
+echo "<td width='20 px'></td>";
 // **********************************************
 // Affichage des différents groupes du professeur
 // Récupération de toutes les infos sur le groupe
-echo "<td width=\"65%\" valign='top'><br>\n";
+echo "<td valign='center'>";
 $groups = $utilisateur->getGroupes();
 if (empty($groups)) {
     echo "<br /><br />";
@@ -83,9 +100,8 @@ if (empty($groups)) {
 }
 
 $a = 1;
-foreach($groups as $group) {
-	echo "<span style=\"font-weight: bold;\">";
-	echo "<a href=\"#\" onclick=\"javascript:
+	foreach($groups as $group) {
+	echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
 			id_groupe = '".$group->getId()."';
 			getWinDernieresNotices().hide();
 			getWinListeNotices();
@@ -94,15 +110,15 @@ foreach($groups as $group) {
 	            		encoding: 'ISO-8859-1',
 	            		onComplete : 
 	            		function() {
-	            			getWinEditionNotice().updateWidth();
+	            			initWysiwyg();
 						}
 					}
 			);
-			getWinEditionNotice().updateWidth();
 			return false;
     	\">";
+
 	echo $group->getNameAvecClasses();
-	echo "</a>&nbsp;</span>\n";
+	echo "</a>&nbsp;\n";
 
     if ($a == 3) {
     	$a = 1;
@@ -113,25 +129,7 @@ foreach($groups as $group) {
 echo "</td>";
 // Fin Affichage des différents groupes du professeur
 // **********************************************
-
-// Deuxième cellule de la première ligne du tableau
-echo "<td>\n";
-echo "</td>\n";
+echo "<td width='250 px'></td>";
 echo "</tr>\n";
-echo "<tr><td align='right' padding='10px'>\n";
-echo "<button onclick=\"javascript:
-						getWinDernieresNotices().show();
-						getWinDernieresNotices().toFront();
-						return false;
-				\">Voir les dernières notices</button>\n";
-echo "<button onclick=\"javascript:
-						getWinDernieresNotices().setLocation(70, 200);
-						getWinDernieresNotices().hide();
-						getWinCalendar().setLocation(0, GetWidth() - 245);
-						getWinEditionNotice().setLocation(180, 340);
-						getWinListeNotices().setLocation(80, 0);
-						return false;
-				\">Repositionner les fenetres</button>\n";
-echo "</td><td></td></tr>\n";
 echo "</table>\n<hr />";
 ?>

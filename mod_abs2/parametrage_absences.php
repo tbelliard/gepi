@@ -23,12 +23,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-$utiliser_pdo = 'on';
-// error_reporting(0);
+
 // Initialisation des feuilles de style après modification pour améliorer l'accessibilité
 $accessibilite="y";
 
 // Initialisations files
+//include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -48,8 +48,7 @@ include("lib/erreurs.php");
 
 try{
 
-  // ICI, on peut appliquer tout le code nécessaire mais sans utiliser de SQL
-  // On préfèrera mettre tout le SQL dans les classes adéquates même s'il faut en créer de nouvelles
+
 
 }catch(exception $e){
   affExceptions($e);

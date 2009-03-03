@@ -5,6 +5,7 @@ if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $
 // Initialisations files
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
+echo("Debug Locale : ".setLocale(LC_TIME,0));
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -33,7 +34,7 @@ $affiche_tout = isset($_POST["affiche_tout"]) ? $_POST["affiche_tout"] :(isset($
 $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
 
 //récupération du groupe courant
-$utilisateur = $_SESSION['utilisateur'];
+$utilisateur = $_SESSION['utilisateurProfessionnel'];
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -110,20 +111,20 @@ foreach ($current_group->getClasses() as $classe) {
 	if ($total[$classe->getId()] > 0) {
 		echo"<p>La classe " . $classe->getClasse() . " a  <a href=\"javascript:centrerpopup('liste_tous_devoirs.php?classe=". $classe->getId()."&amp;debut=$aujourdhui',260,320,'scrollbars=yes,statusbar=no,resizable=yes');\"><strong>" . $total[$classe->getId()] . "</strong> ";
 		echo (($total[$classe->getId()] == 1) ? "travail personnel" : "travaux personnels");
-		echo "</a> jusqu'au <strong>" . iconv('ISO-8859-1', 'UTF-8', strftime("%a %d %b %y", $date[$classe->getId()])) . "</strong>.</p>\n";
+		echo "</a> jusqu'au <strong>" . strftime("%A %d %B %Y", $date[$classe->getId()]) . "</strong>.</p>\n";
 	}
 }
 
 $compteur_nb_total_notices = 0;
 
 //récupération de $liste_comptes_rendus : comptes rendus pour la matière en cours
-$criteria = new Criteria(CtCompteRenduPeer::DATABASE_NAME);
-$criteria->add(CtCompteRenduPeer::DATE_CT, "0", "!=");
-$criteria->add(CtCompteRenduPeer::DATE_CT, null, Criteria::ISNOTNULL);
-$criteria->add(CtCompteRenduPeer::DATE_CT, $debutCdt, ">=");
-$criteria->addDescendingOrderByColumn(CtCompteRenduPeer::DATE_CT);
-$criteria->addAscendingOrderByColumn(CtCompteRenduPeer::HEURE_ENTRY);
-$liste_comptes_rendus = $current_group->getCtCompteRendus($criteria);
+$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
+$criteria->add(CahierTexteCompteRenduPeer::DATE_CT, "0", "!=");
+$criteria->add(CahierTexteCompteRenduPeer::DATE_CT, null, Criteria::ISNOTNULL);
+$criteria->add(CahierTexteCompteRenduPeer::DATE_CT, $debutCdt, ">=");
+$criteria->addDescendingOrderByColumn(CahierTexteCompteRenduPeer::DATE_CT);
+$criteria->addAscendingOrderByColumn(CahierTexteCompteRenduPeer::HEURE_ENTRY);
+$liste_comptes_rendus = $current_group->getCahierTexteCompteRendus($criteria);
 $compteur_nb_total_notices = $compteur_nb_total_notices + count($liste_comptes_rendus);
 if ($affiche_tout != "oui") {
 	//limit à 7 devoirs
@@ -131,10 +132,10 @@ if ($affiche_tout != "oui") {
 }
 
 //récupération de $liste_devoir : devoirs pour la matière en cours
-$criteria = new Criteria(CtTravailAFairePeer::DATABASE_NAME);
-$criteria->add(CtTravailAFairePeer::DATE_CT, $debutCdt, ">=");
-$criteria->addDescendingOrderByColumn(CtTravailAFairePeer::DATE_CT);
-$liste_devoir = $current_group->getCtTravailAFaires($criteria);
+$criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
+$criteria->add(CahierTexteTravailAFairePeer::DATE_CT, $debutCdt, ">=");
+$criteria->addDescendingOrderByColumn(CahierTexteTravailAFairePeer::DATE_CT);
+$liste_devoir = $current_group->getCahierTexteTravailAFaires($criteria);
 $compteur_nb_total_notices = $compteur_nb_total_notices + count($liste_devoir);
 if ($affiche_tout != "oui") {
 	//limit à 7 devoirs
@@ -165,20 +166,15 @@ while (true) {
 		$html_balise .= '<div style="margin: 0px; float: right;">';
 		if (($devoir->getVise() != 'y') or (isset($visa_cdt_inter_modif_notices_visees) AND $visa_cdt_inter_modif_notices_visees == 'no')) {
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-								getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$devoir->getIdCt()."',
-		    						{ onComplete: function(transport) {
-										new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');}
-      								}
-      							);
+								getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$devoir->getIdCt()."',{ onComplete: function(transport) {	initWysiwyg();}});
       							updateCalendarWithUnixDate(".$devoir->getDateCt().");
       							object_en_cours_edition = 'devoir';
-								compte_rendu_en_cours_de_modification('devoir_".$devoir->getIdCt()."');
       							");
 			$html_balise .=("\">");
 			$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
 			$html_balise .=(" ");
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-								suppressionDevoir('".strftime("%a %d %b %y", $devoir->getDateCt())."','".$devoir->getIdCt()."', '".$current_group->getId()."');
+								suppressionDevoir('".strftime("%A %d %B %Y", $devoir->getDateCt())."','".$devoir->getIdCt()."', '".$current_group->getId()."');
 								return false;
 							\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
 		} else {
@@ -191,7 +187,7 @@ while (true) {
 		echo ($devoir->getContenu());
 
 		//Documents joints
-		$ctDevoirDocuments = $devoir->getCtDevoirDocuments();
+		$ctDevoirDocuments = $devoir->getCahierTexteTravailAFaireFichierJoints();
 		echo(afficheDocuments($ctDevoirDocuments));
 
 		echo("</td>\n</tr>\n</table>\n<br/>\n");
@@ -205,14 +201,14 @@ while (true) {
 		echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["c"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
 		echo("<b>" . strftime("%a %d %b %y", $compte_rendu->getDateCt()) . "</b>\n");
 
-		// Numerotation des notices si plusieurs notice sur la mÃªme journée
+		// Numerotation des notices si plusieurs notice sur la meme journée
 		if ($date_ct_old == $compte_rendu->getDateCt()) {
 			$num_notice++;
-			echo " <b><i>(notice N° ".$num_notice.")</i></b>";
+			echo " <div style='font-size: 10; font-style: italic'>(notice N° ".$num_notice.")</div>";
 		} else {
 			// on affiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
 			if (!empty($liste_comptes_rendus) && $liste_comptes_rendus[0]->getDateCt() == $compte_rendu->getDateCt()) {
-				echo " <b><i>(notice N° 1)</i></b>";
+				echo " <div style='font-size: 10; font-style: italic'>(notice N° 1)</div>";
 			}
 			// On reinitialise le compteur
 			$num_notice = 1;
@@ -225,19 +221,18 @@ while (true) {
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$compte_rendu->getIdCt()."',
 		    						{ onComplete: function(transport) {
-											getWinEditionNotice().uptdateWidth();
+											initWysiwyg();
 										}
 									});
 								updateCalendarWithUnixDate(".$compte_rendu->getDateCt().");
 								object_en_cours_edition = 'compte_rendu';
-								compte_rendu_en_cours_de_modification('compte_rendu_".$compte_rendu->getIdCt()."');
 							");
 			$html_balise .=("\">");
 			$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
 
 			$html_balise .=(" ");
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-							suppressionCompteRendu('".strftime("%a %d %b %y", $compte_rendu->getDateCt())."',".$compte_rendu->getIdCt().");
+							suppressionCompteRendu('".strftime("%A %d %B %Y", $compte_rendu->getDateCt())."',".$compte_rendu->getIdCt().");
 							return false;
 						\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
 		}
@@ -257,7 +252,7 @@ while (true) {
 		echo ($compte_rendu->getContenu());
 
 		// Documents joints
-		$ctDocuments = $compte_rendu->getCtDocuments();
+		$ctDocuments = $compte_rendu->getCahierTexteCompteRenduFichierJoints();
 		echo(afficheDocuments($ctDocuments));
 
 		echo("</td>\n</tr>\n</table>\n<br/>\n");
@@ -278,7 +273,13 @@ if ($compteur_nb_total_notices > $compteur_notices_affiches) {
 	echo "<fieldset style=\"border: 1px solid grey; font-size: 0.8em; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
 	echo "<legend style=\"font-variant: small-caps; border: 1px solid grey;\">".$legend."</legend>";
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"javascript:
-			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?affiche_tout=oui&id_groupe=".$current_group->getId()."');
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?affiche_tout=oui&id_groupe=".$current_group->getId()."',
+					{ onComplete:
+						function(transport) {
+							updateDivModification();
+						}
+					}
+				);;
 			return false;\">";
 	echo "Afficher&nbsp;toutes&nbsp;les&nbsp;notices</a>\n";
 	echo "</fieldset>";
@@ -286,37 +287,47 @@ if ($compteur_nb_total_notices > $compteur_notices_affiches) {
 
 // Affichage des info générales
 echo "<br>";
-$criteria = new Criteria(CtCompteRenduPeer::DATABASE_NAME);
-$criteria->add(CtCompteRenduPeer::DATE_CT, '0', '=');
-$ctCompteRenduInfoGenerales = $current_group->getCtCompteRendus($criteria);
+$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
+$criteria->add(CahierTexteCompteRenduPeer::DATE_CT, '0', '=');
+$ctCompteRenduInfoGenerales = $current_group->getCahierTexteCompteRendus($criteria);
 $ctCompteRenduInfoGenerale = isset($ctCompteRenduInfoGenerales[0]) ? $ctCompteRenduInfoGenerales[0] : '';
 if (empty($ctCompteRenduInfoGenerales)) {
-	$ctCompteRenduInfoGenerales[0] = new CtCompteRendu();
+	$ctCompteRenduInfoGenerales[0] = new CahierTexteCompteRendu();
 }
+echo "<b>Informations Générales</b><br>\n";
+$i = 1;
 foreach ($ctCompteRenduInfoGenerales as $ctCompteRenduInfoGenerale) {
-$html =$ctCompteRenduInfoGenerale->getContenu();
-$html .=afficheDocuments($ctCompteRenduInfoGenerale->getCtDocuments());
-
-echo "<b>Informations Générales</b>\n";
-$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_info_".$ctCompteRenduInfoGenerale->getIdCt()."'></div>");
-$html_balise .= "<div style=\"margin: 0px; float: right;\">";
-$html_balise .=("<a href=\"#\" onclick=\"javascript:
-					getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$ctCompteRenduInfoGenerale->getIdCt()."&today=0&id_groupe=".$id_groupe."',
-						{ onComplete:
-							function(transport) {
-								getWinEditionNotice().uptdateWidth();
-							}
-      					}
-      				);
-					object_en_cours_edition = 'compte_rendu';
-					compte_rendu_en_cours_de_modification('info_".$ctCompteRenduInfoGenerale->getIdCt()."');
-      				");
-$html_balise .=("\">");
-$html_balise .= "<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>";
-
-$html_balise .= "<a href=\"#\" onclick=\"suppressionCompteRendu('Information générale',".$ctCompteRenduInfoGenerale->getIdCt()."); return false;\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a></div>\n";
-echo "<table style=\"border-style:solid; border-width:0px; background-color: ".$color_fond_notices["i"] ."; padding: 2px; margin: 0px;\" width=\"100%\" cellpadding=\"2\" summary=\"Tableau de...\">\n<tr style=\"border-style:solid; border-width:1px; background-color: ".$couleur_cellule["i"]."; padding: 0px; margin: 0px;\">\n<td>\n".$html_balise.$html."</td>\n</tr>\n</table>\n";
+	if (count($ctCompteRenduInfoGenerales) != 1) {
+		echo("Notice n° " . $i);
+		$i = $i + 1;
+	}
+	echo "<table style=\"border-style:solid; border-width:0px; background-color: ".$color_fond_notices["i"] ."; padding: 2px; margin: 0px;\" width=\"100%\" cellpadding=\"2\" summary=\"Tableau d'information generale...\">";
+	echo "<tr style=\"border-style:solid; border-width:1px; background-color: ".$couleur_cellule["i"]."; padding: 0px; margin: 0px;\">\n<td>\n";
+	
+	echo("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_info_".$ctCompteRenduInfoGenerale->getIdCt()."'></div>");
+	echo("<div style=\"margin: 0px; float: right;\">");
+	echo("<a href=\"#\" onclick=\"javascript:
+						getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$ctCompteRenduInfoGenerale->getIdCt()."&today=0&id_groupe=".$id_groupe."',
+							{ onComplete:
+								function(transport) {
+									initWysiwyg();
+								}
+	      					}
+	      				);
+						object_en_cours_edition = 'compte_rendu';
+	      \">
+	      		<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" />
+	      </a>");
+	echo("<a href=\"#\" onclick=\"suppressionCompteRendu('Information générale',".$ctCompteRenduInfoGenerale->getIdCt()."); return false;\">
+			<img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" />
+		</a></div>\n");
+	
+	echo($ctCompteRenduInfoGenerale->getContenu());
+	echo(afficheDocuments($ctCompteRenduInfoGenerale->getCahierTexteCompteRenduFichierJoints()));
+	
+	echo "</td>\n</tr>\n</table>\n";
 }
+
 function afficheDocuments ($documents) {
 	$html = '';
 	if (($documents) and (count($documents)!=0)) {
@@ -342,8 +353,7 @@ echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom
 echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\">Export</legend>";
 echo "<table border='0' width='100%' summary=\"Tableau de...\">\n";
 echo "<tr><td>";
-echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a> Note : pour ouvrir ce fichier csv avec oppenoffice, garder les réglages par défaut lors de l'ouverture du fichier.";
+echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a> Note : pour ouvrir ce fichier csv avec oppenoffice, garder les réglages par défaut lors de l'ouverture du fichier.</a>";
 echo "</td></tr></table></fieldset>";
 // fin export
-
 ?>

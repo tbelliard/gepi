@@ -47,7 +47,7 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 	die("Le module n'est pas activé.");
 }
 
-$utilisateur = $_SESSION['utilisateur'];
+$utilisateur = $_SESSION['utilisateurProfessionnel'];
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -58,7 +58,7 @@ $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_
 $succes = isset($_POST["succes"]) ? $_POST["succes"] :(isset($_GET["succes"]) ? $_GET["succes"] :NULL);
 $today = isset($_POST["today"]) ? $_POST["today"] :(isset($_GET["today"]) ? $_GET["today"] :NULL);
 $ajout_nouvelle_notice = isset($_POST["ajout_nouvelle_notice"]) ? $_POST["ajout_nouvelle_notice"] :(isset($_GET["ajout_nouvelle_notice"]) ? $_GET["ajout_nouvelle_notice"] : NULL);
-$ctTravailAFaire = CtTravailAFairePeer::retrieveByPK($id_devoir);
+$ctTravailAFaire = CahierTexteTravailAFairePeer::retrieveByPK($id_devoir);
 if ($ctTravailAFaire != null) {
 	$groupe = $ctTravailAFaire->getGroupe();
 	$today = $ctTravailAFaire->getDateCt();
@@ -81,15 +81,16 @@ if ($ctTravailAFaire == null) {
 	}
 
 	//on cherche si il y a une notice pour le groupe à la date précisée
-	$criteria = new Criteria(CtTravailAFairePeer::DATABASE_NAME);
-	$criteria->add(CtTravailAFairePeer::DATE_CT, $today, '=');
-	$criteria->add(CtTravailAFairePeer::ID_LOGIN, $utilisateur->getLogin());
-	$ctTravailAFaires = $groupe->getCtTravailAFaires($criteria);
+	$criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
+	$criteria->add(CahierTexteTravailAFairePeer::DATE_CT, $today, '=');
+	$criteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $utilisateur->getLogin());
+	$ctTravailAFaires = $groupe->getCahierTexteTravailAFaires($criteria);
+	if (!isset($ctTravailAFaires[0])) $ctTravailAFaires[0] = null;
 	$ctTravailAFaire = $ctTravailAFaires[0];
 
 	if ($ctTravailAFaire == null) {
 		//pas de notices, on initialise un nouvel objet
-		$ctTravailAFaire = new CtTravailAFaire();
+		$ctTravailAFaire = new CahierTexteTravailAFaire();
 		$ctTravailAFaire->setIdGroupe($groupe->getId());
 		$ctTravailAFaire->setDateCt($today);
 		$ctTravailAFaire->setIdLogin($utilisateur->getLogin());
@@ -137,16 +138,8 @@ foreach ($utilisateur->getGroupes() as $group_iter) {
 echo "</select>&nbsp;&nbsp;";
 
 echo "<button style='background-color:".$color_fond_notices['c']."' onclick=\"javascript:
-						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe='+ id_groupe + '&today='+getCalendarUnixDate(),
-							{ onComplete:
-								function(transport) {
-									getWinEditionNotice().updateWidth();
-								}
-      						}
-						);
-						getWinEditionNotice().updateWidth();
+						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'compte_rendu';
-						compte_rendu_en_cours_de_modification('aucun');
 					\">Editer les comptes rendus</button><br><br>\n";
 
 //fin affichage des groupes
@@ -157,12 +150,14 @@ echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[
 if (!$ctTravailAFaire->isNew()) {
 	echo " - <b><font color=\"red\">Modification de la notice</font></b>";
 	echo " - <a href=\"#\" onclick=\"javascript:
-				new Ajax.Updater($('dupplication_notice'), 'ajax_affichage_duplication_devoir.php?id_ct=".$ctTravailAFaire->getIdCt()."',
+				$('dupplication_notice').show();
+				new Ajax.Updater($('dupplication_notice'), 'ajax_affichage_duplication_notice.php?id_groupe=".$groupe->getId()."&type=CahierTexteTravailAFaire&id_ct=".$ctTravailAFaire->getIdCt()."',
 					{ onComplete:
 						function(transport) {
 							calendarDuplicationInstanciation = Calendar.setup({
 									flat         : 'calendar-duplication-container', // ID of the parent element
-									daFormat     : '%s'    			   //date format
+									daFormat     : '%s' ,   			   //date format
+									weekNumbers  : false
 							})
 							calendarDuplicationInstanciation.setDate(calendarInstanciation.date);
 							$('dupplication_notice').show();
@@ -171,7 +166,30 @@ if (!$ctTravailAFaire->isNew()) {
 				);
 				return false;
 				\">
-		Dupliquer la notice</a>";
+		Dupliquer la notice</a> - ";
+
+	echo "<a href=\"#\" onclick=\"javascript:
+				new Ajax.Updater($('deplacement_notice'), 'ajax_affichage_deplacement_notice.php?id_groupe=".$groupe->getId()."&type=CahierTexteTravailAFaire&id_ct=".$ctTravailAFaire->getIdCt()."',
+					{ onComplete:
+						function() {
+							$('deplacement_notice').show();
+							calendarDeplacementInstanciation = null;";
+	if (!isset($info)) {
+		//on affiche le calendrier de duplication uniquement si ce n'est pas une notice d'information generale
+		echo "calendarDeplacementInstanciation = Calendar.setup({
+										flat         : 'calendar-deplacement-container', // ID of the parent element
+										daFormat     : '%s' ,   			   //date format
+										weekNumbers  : false
+								})
+								calendarDeplacementInstanciation.setDate(calendarInstanciation.date);";
+	}
+	echo "
+						}
+					}
+				);
+				return false;
+				\">
+		Deplacer la notice</a>";
 } else {
 	echo " - <b><font color=\"red\">Nouvelle notice</font></b>\n";
 }
@@ -179,20 +197,24 @@ if (!$ctTravailAFaire->isNew()) {
 echo "</legend>\n";
 
 echo "<div id=\"dupplication_notice\" style='display: none;'></div>";
+echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>";
 
 echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu_form\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_devoir.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementDevoirCallback})\" style=\"width: 100%;\">\n";
-// uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
+// uid de pour ne pas refaire renvoyer plusieurs fois le meme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid = md5(uniqid(microtime(), 1));
 echo("<input type='hidden' name='uid_post' value='".$uid."' />");
 echo("<input type='hidden' name='id_groupe' value='".$groupe->getId()."' />");
+
+//hidden input utilise pour indiquer a la fenetre ListeNotice a quel endroit mettre un petit texte rouge "modification"
+echo("<input type='hidden' id='div_id_ct' value='devoir_".$ctTravailAFaire->getIdCt()."' />");
 
 //si on vient d'efftuer un enregistrement, le label du bonton enregistrer devient Succès
 $succes_modification = isset($_POST["succes_modification"]) ? $_POST["succes_modification"] :(isset($_GET["succes_modification"]) ? $_GET["succes_modification"] :NULL);
 $label_enregistrer = "Enregistrer";
 if ($succes_modification == 'oui') $label_enregistrer='Succès';
 ?>
-<table border="0" width="100%" summary="Tableau de saisie de notice">
+<table border="0" width="99%" summary="Tableau de saisie de notice">
 	<tr>
 		<td style="width: 80%"><b>Pour le <?php echo strftime("%A %d %B %Y", $ctTravailAFaire->getDateCt()); ?></b>&nbsp;
 		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer"
@@ -221,30 +243,28 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 	<tr>
 		<td colspan="5"><?php
 
-		echo "<div style=\"background-color: white;\"><textarea name=\"contenu\" style=\"background-color: white; width: 100%\" id=\"contenu\">".$ctTravailAFaire->getContenu()."</textarea></div>";
+		echo "<div style=\"background-color: white;\"><textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctTravailAFaire->getContenu()."</textarea></div>";
 
 		//// gestion des fichiers attaché
 		echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">';
 		echo "<b>Fichier(s) attaché(s) : </b><br />";
 		echo '<div id="div_fichier">';
-		$architecture= "/documents/cl_dev".$groupe->getId();
 		// Affichage des documents joints
-		$document = new CtDocument(); //for ide completion
-		$documents = $ctTravailAFaire->getCtDevoirDocuments();
+		$document = new CahierTexteTravailAFaireFichierJoint(); //for ide completion
+		$documents = $ctTravailAFaire->getCahierTexteTravailAFaireFichierJoints();
 		echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; background-color: #000000; width: 100%\" cellspacing=\"1\" summary=\"Tableau des documents joints\">\n";
 		"<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: $couleur_entete_fond[$type_couleur];\"><td style=\"text-align: center;\"><b>Titre</b></td><td style=\"text-align: center; width: 100px\"><b>Taille en Ko</b></td><td style=\"text-align: center; width: 100px\"></td></tr>\n";
 		if (!empty($documents)) {
-			echo $nb_doc;
 			foreach ($documents as $document) {
-				if ($ic=='1') { $ic='2'; $couleur_cellule_=$couleur_cellule[$type_couleur]; } else { $couleur_cellule_=$couleur_cellule_alt[$type_couleur]; $ic='1'; }
+				//if ($ic=='1') { $ic='2'; $couleur_cellule_=$couleur_cellule[$type_couleur]; } else { $couleur_cellule_=$couleur_cellule_alt[$type_couleur]; $ic='1'; }
 				//			$id_document[$i] = $document->getId();
 				//			$titre_[$i] = $document->getTitre();
 				//			$taille = round( $document->getTaille()/1024,1);
 				//			$emplacement =  $document->getEmplacement();
-				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: $couleur_cellule_;\"><td>
+				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\"><td>
 						<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a></td>
 						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>
-						<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDevoirDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctTravailAFaire->getIdCt()."')\">Supprimer</a></td></tr>\n";
+						<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDevoirDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctTravailAFaire->getIdCt()."', '".$ctTravailAFaire->getIdGroupe()."')\">Supprimer</a></td></tr>\n";
 			}
 			echo "</table>\n";
 			//gestion de modification du nom d'un document

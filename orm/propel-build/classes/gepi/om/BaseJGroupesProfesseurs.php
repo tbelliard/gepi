@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'j_groupes_professeurs' table.
  *
- * Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilisÃ© directement dans le code.
+ * Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilise directement dans le code.
  *
  * @package    gepi.om
  */
@@ -36,9 +36,9 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 	protected $aGroupe;
 
 	/**
-	 * @var        Utilisateur
+	 * @var        UtilisateurProfessionnel
 	 */
-	protected $aUtilisateur;
+	protected $aUtilisateurProfessionnel;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -135,8 +135,8 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 			$this->modifiedColumns[] = JGroupesProfesseursPeer::LOGIN;
 		}
 
-		if ($this->aUtilisateur !== null && $this->aUtilisateur->getLogin() !== $v) {
-			$this->aUtilisateur = null;
+		if ($this->aUtilisateurProfessionnel !== null && $this->aUtilisateurProfessionnel->getLogin() !== $v) {
+			$this->aUtilisateurProfessionnel = null;
 		}
 
 		return $this;
@@ -216,8 +216,8 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 		if ($this->aGroupe !== null && $this->id_groupe !== $this->aGroupe->getId()) {
 			$this->aGroupe = null;
 		}
-		if ($this->aUtilisateur !== null && $this->login !== $this->aUtilisateur->getLogin()) {
-			$this->aUtilisateur = null;
+		if ($this->aUtilisateurProfessionnel !== null && $this->login !== $this->aUtilisateurProfessionnel->getLogin()) {
+			$this->aUtilisateurProfessionnel = null;
 		}
 	} // ensureConsistency
 
@@ -259,7 +259,7 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->aGroupe = null;
-			$this->aUtilisateur = null;
+			$this->aUtilisateurProfessionnel = null;
 		} // if (deep)
 	}
 
@@ -357,11 +357,11 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 				$this->setGroupe($this->aGroupe);
 			}
 
-			if ($this->aUtilisateur !== null) {
-				if ($this->aUtilisateur->isModified() || $this->aUtilisateur->isNew()) {
-					$affectedRows += $this->aUtilisateur->save($con);
+			if ($this->aUtilisateurProfessionnel !== null) {
+				if ($this->aUtilisateurProfessionnel->isModified() || $this->aUtilisateurProfessionnel->isNew()) {
+					$affectedRows += $this->aUtilisateurProfessionnel->save($con);
 				}
-				$this->setUtilisateur($this->aUtilisateur);
+				$this->setUtilisateurProfessionnel($this->aUtilisateurProfessionnel);
 			}
 
 
@@ -458,9 +458,9 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->aUtilisateur !== null) {
-				if (!$this->aUtilisateur->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aUtilisateur->getValidationFailures());
+			if ($this->aUtilisateurProfessionnel !== null) {
+				if (!$this->aUtilisateurProfessionnel->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aUtilisateurProfessionnel->getValidationFailures());
 				}
 			}
 
@@ -771,13 +771,13 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Declares an association between this object and a Utilisateur object.
+	 * Declares an association between this object and a UtilisateurProfessionnel object.
 	 *
-	 * @param      Utilisateur $v
+	 * @param      UtilisateurProfessionnel $v
 	 * @return     JGroupesProfesseurs The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setUtilisateur(Utilisateur $v = null)
+	public function setUtilisateurProfessionnel(UtilisateurProfessionnel $v = null)
 	{
 		if ($v === null) {
 			$this->setLogin(NULL);
@@ -785,10 +785,10 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 			$this->setLogin($v->getLogin());
 		}
 
-		$this->aUtilisateur = $v;
+		$this->aUtilisateurProfessionnel = $v;
 
 		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the Utilisateur object, it will not be re-added.
+		// If this object has already been added to the UtilisateurProfessionnel object, it will not be re-added.
 		if ($v !== null) {
 			$v->addJGroupesProfesseurs($this);
 		}
@@ -798,25 +798,25 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 
 
 	/**
-	 * Get the associated Utilisateur object
+	 * Get the associated UtilisateurProfessionnel object
 	 *
 	 * @param      PropelPDO Optional Connection object.
-	 * @return     Utilisateur The associated Utilisateur object.
+	 * @return     UtilisateurProfessionnel The associated UtilisateurProfessionnel object.
 	 * @throws     PropelException
 	 */
-	public function getUtilisateur(PropelPDO $con = null)
+	public function getUtilisateurProfessionnel(PropelPDO $con = null)
 	{
-		if ($this->aUtilisateur === null && (($this->login !== "" && $this->login !== null))) {
-			$this->aUtilisateur = UtilisateurPeer::retrieveByPK($this->login, $con);
+		if ($this->aUtilisateurProfessionnel === null && (($this->login !== "" && $this->login !== null))) {
+			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelPeer::retrieveByPK($this->login, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aUtilisateur->addJGroupesProfesseurss($this);
+			   $this->aUtilisateurProfessionnel->addJGroupesProfesseurss($this);
 			 */
 		}
-		return $this->aUtilisateur;
+		return $this->aUtilisateurProfessionnel;
 	}
 
 	/**
@@ -834,7 +834,7 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 		} // if ($deep)
 
 			$this->aGroupe = null;
-			$this->aUtilisateur = null;
+			$this->aUtilisateurProfessionnel = null;
 	}
 
 } // BaseJGroupesProfesseurs

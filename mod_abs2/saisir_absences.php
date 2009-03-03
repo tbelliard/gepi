@@ -23,12 +23,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-$utiliser_pdo = 'on';
-//error_reporting(0);
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
-$accessibilite="y";
+// L'utilisation d'un observeur javascript
+$use_observeur = 'ok';
 
 // Initialisations files
+include("../lib/initialisationsPropel.inc.php");
 include("../lib/initialisations.inc.php");
 
 
@@ -43,51 +42,79 @@ if ($resultat_session == 'c') {
 }
 
 // ============== traitement des variables ==================
+$test = array();
 $_SESSION["type_aff_abs"] = isset($_SESSION["type_aff_abs"]) ? $_SESSION["type_aff_abs"] : 'alpha';
 $_SESSION["type_aff_abs"] = (isset($_GET["type_aff_abs"]) AND ($_GET["type_aff_abs"] == 'alpha' OR $_GET["type_aff_abs"] == 'classe'))
                             ? $_GET["type_aff_abs"] : $_SESSION["type_aff_abs"];
 
-# Enregistrement de nouvelles absences
-$action               = isset($_POST['action']) ? $_POST['action'] : NULL;
-$_eleve               = isset ($_POST['_eleve']) ? $_POST['_eleve'] : NULL;
-$_jourentier          = isset($_POST["_jourentier"]) ? $_POST["_jourentier"] : NULL;
-$_deb                 = isset ($_POST['_deb']) ? $_POST['_deb'] : NULL;
-$_fin                 = isset ($_POST['_fin']) ? $_POST['_fin'] : NULL;
-$_justifications      = isset ($_POST['_justifications']) ? $_POST['_justifications'] : NULL;
-$_motifs              = isset ($_POST['_motifs']) ? $_POST['_motifs'] : NULL;
-$nombre              = isset ($_POST['nombre']) ? $_POST['nombre'] : NULL;
-$enregistrer_absences = isset ($_POST['enregistrer_absences']) ? $_POST['enregistrer_absences'] : NULL;
-
-
 
 // ============== Code métier ===============================
-//include("classes/absences.class.php");
-include("helpers/aff_listes_utilisateurs.inc.php");
 include("lib/erreurs.php");
-require_once("classes/activeRecordGepi.class.php");
-include("classes/abs_informations.class.php");
+include("../orm/helpers/EleveHelper.php");
+
 
 try{
 
-  // Un edemande d'enregistrement des absences est lancée
-  if ($action == '' AND $enregistrer_absences == 'ok'){
-    $test = new Abs_information();
+// ************************************************************************************ //
+// *************************** Liste des élèves de l'établissement ******************** //
 
-    $test->setChamp("utilisateurs_id", $_SESSION["login"]);
-    $test->setChamp("eleve_id", "eleve_test");
-    $test->setChamp("date_saisie", date("U"));
-    $test->setChamp("debut_abs", date("U"));
-    $test->setChamp("fin_abs", date("U"));
-
-    $test->save();
+  if ($_SESSION["type_aff_abs"] == "alpha"){
+    // La liste de tous les élèves de l'établissement
+    $liste_eleves = ElevePeer::FindAllEleves();
+  }else{
+    // La même liste mais enrichie par Propel (classe, ...)
+    $liste_eleves = ElevePeer::FindAllElevesAvecCLasse();
   }
 
+// ******************** fin de la liste des élèves de l'établissement ***************** //
+// ************************************************************************************ //
+// ******* Liste des groupes (enseignements) et des classes de l'établissement ******** //
 
-  // le tableau des élèves en vue de son affichage sous différentes formes
-  $options = array('classes'=>'toutes', 'eleves'=>$_SESSION["type_aff_abs"]);
-  $liste_eleves = ListeEleves($options);
-  $reglages = array('classe'=>"debut", 'label'=>'Elève (nom)', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php', 'multiple'=>'on', 'size'=>'10');
+  $c_grp = new Criteria();
+  $c_grp->addDescendingOrderByColumn(ClassePeer::NOM_COMPLET);
+  $liste_classes = ClassePeer::doSelect($c_grp);
 
+  $afficheHtmlSelectListeGroupes = '<label for="ListeGroupeId">Les enseignements</label>
+  <select id="ListeGroupeId" name="choix_groupe" onchange="gestionaffAbs(\'aff_result\',\'ListeGroupeId\',\'saisir_ajax.php\');">
+    <option value="rien">-- -- --</option>';
+  $afficheHtmlSelectListeClasses = '<label for="ListeClasseId">Les classes</label>
+  <select id="ListeClasseId" name="choix_classe" onchange="gestionaffAbs(\'aff_result\',\'ListeClasseId\',\'saisir_ajax.php\');">
+    <option value="rien">-- -- --</option>';
+  foreach($liste_classes as $classes){
+
+    $afficheHtmlSelectListeClasses .= '<option value="'.$classes->getId().'">'.$classes->getNomComplet().'</option>' . "\n";
+
+    foreach($classes->getGroupes() as $groupes_de_la_classe){
+      $afficheHtmlSelectListeGroupes .= '<option value="' . $groupes_de_la_classe->getId() . '">' . $classes->getNomComplet() . ' ' . $groupes_de_la_classe->getDescription() . '</option>'."\n";
+    }
+
+  }
+  $afficheHtmlSelectListeGroupes .= '</select>';
+  $afficheHtmlSelectListeClasses .= '</select>';
+
+// ******************* fin de la liste des groupes de l'établissement ***************** //
+// ************************************************************************************ //
+// *************************** Liste des AID de l'établissement *********************** //
+
+  $c_aid = new Criteria();
+  $liste_aids = AidDetailsPeer::doSelect($c_aid);
+
+  $afficheHtmlSelectListeAids = '<label for="ListeAidId" title="Activit&eacute; inter-disciplinaires">Les A.I.D.</label>
+  <select id="ListeAidId" name="choix_aid">
+    <option value="rien">-- -- --</option>';
+  foreach($liste_aids as $aids){
+
+    //foreach($aids->getAidConfiguration() as $categorie_aid){
+      $afficheHtmlSelectListeAids .= '<option value="' . $aids->getId() . '">' . $aids->getNom() . '   (' . $aids->getAidConfiguration()->getNomComplet() . ')</option>'."\n";
+    //}
+
+  }
+  $afficheHtmlSelectListeAids .= '</select>';
+
+//  $test = $liste_aid[0]->getAidConfiguration();
+
+// ******************* fin de la liste des AID de l'établissement ********************* //
+// ************************************************************************************ //
 
 }catch(exception $e){
   // Cette fonction est présente dans /lib/erreurs.php
@@ -101,7 +128,10 @@ require_once("../lib/header.inc");
 $menu = 'saisir';
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
-debug_var();
+//debug_var();
+if (isset($_SESSION['msg_abs'])){
+  echo $_SESSION['msg_abs'];
+}
 ?>
 <p><a href="saisir_absences.php?type_aff_abs=alpha">Afficher tous les &eacute;l&egrave;ves</a> -
 <a href="saisir_absences.php?type_aff_abs=classe">Afficher par classe</a></p>
@@ -114,13 +144,13 @@ debug_var();
 <fieldset id="espace_saisie2" style="position: absolute; border: 1px solid grey; padding: 5px 5px 5px 5px; width: 500px; margin-left: 520px;">
   <legend> - Afficher une liste pr&eacute;cise - </legend>
     <p style="text-align: right;">
-      <?php echo affSelectClasses(array('label'=>'Classes', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php')); ?>
+      <?php echo $afficheHtmlSelectListeGroupes; ?>
     </p>
     <p style="text-align: right;">
-      <?php echo affSelectEnseignements(array('label'=>'Enseignements', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php')); ?>
+      <?php echo $afficheHtmlSelectListeAids; ?>
     </p>
     <p style="text-align: right;">
-      <?php echo affSelectAid(array('label'=>'Par AID', 'width'=>'380px', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php')); ?>
+      <?php echo $afficheHtmlSelectListeClasses; ?>
     </p>
 
     <p style="position: relative; margin-left: 1%;">
@@ -133,7 +163,7 @@ debug_var();
   <legend> - Saisir un ou plusieurs &eacute;l&egrave;ves - </legend>
 
     <p>
-      <?php echo affSelectEleves($liste_eleves, $reglages); ?>
+      <?php echo EleveHelper::afficheHtmlSelectListeEleves(array ('label'=>'Elève (nom)', 'size'=>10, 'multiple'=>'on', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php'), $liste_eleves); ?>
     </p>
 </fieldset>
 
@@ -147,4 +177,4 @@ debug_var();
 </div>
 
 
-<?php require("../lib/footer.inc.php"); //debug_var(); ?>
+<?php require("../lib/footer.inc.php"); //aff_debug($test); ?>

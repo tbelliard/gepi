@@ -48,22 +48,31 @@ $req_notices =
     where contenu != ''
     and id_groupe = '" . $current_group["id"] . "'";
 $req_devoirs = 
-    "select 'Devoir' type, date_ct, contenu
+    "select 'Travail a faire' type, date_ct, contenu
     from ct_devoirs_entry
     where contenu != ''
     and id_groupe = '" . $current_group["id"] ."'";
 $req_union = "select * from (" . $req_notices . ") as notices UNION (" . $req_devoirs . ") order by date_ct desc";
 $sql_union = mysql_query($req_union);
 
-//html header
-header("Content-Type: application/csv-tab-delimited-table");
-
+header('Content-Type:  text/x-csv');
+$now = gmdate('D, d M Y H:i:s') . ' GMT';
+header('Expires: ' . $now);
+// lem9 & loic1: IE need specific headers
 //nom du fichier à telecharger
 $str = substr($current_group["description"],0 , 4);
 foreach ($current_group["classes"]["classes"] as $classe) {
     $str .= $classe["classe"];
 }
-header("Content-disposition: filename=".$str.date("dmY").".csv");
+
+if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+    header('Content-Disposition: inline; filename="' . $str.date("dmY") . '.csv"');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+} else {
+    header('Content-Disposition: attachment; filename="' . $str.date("dmY") . '.csv"');
+    header('Pragma: no-cache');
+}
 
 if (mysql_num_rows($sql_union) == 0) {
     echo("aucune donnée"); 
@@ -77,7 +86,7 @@ if (mysql_num_rows($sql_union) == 0) {
     	if ($arrSelect["date_ct"] != 0) {
         echo (strftime("%d/%m/%y", $arrSelect["date_ct"]).",");
     	} else {
-    		echo "info générale ,";
+    		echo "info generale ,";
     	}
         echo ($arrSelect["type"].",");
         echo ("\"".strip_tags(html_entity_decode($arrSelect["contenu"], ENT_NOQUOTES, 'UTF-8'))."\"");

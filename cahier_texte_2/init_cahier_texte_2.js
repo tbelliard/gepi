@@ -1,3 +1,5 @@
+
+//page initialisation
 Event.observe(window, 'load', initPage);
 
 function initPage () {
@@ -20,11 +22,10 @@ function include(filename)
 
 include('./webtoolkit.aim.js');
 include('./ajax_functions.js');
-include('./nicEdit/nicEdit.js');
 include('./calendar/calendar.js');
 include('./calendar/lang/calendar-fr.js');
 include('./calendar/calendar-setup.js');
-include('../lib/clock_fr.js');
+include('../fckeditor/fckeditor.js');
 include('../edt_effets/javascripts/window.js');
 
 function getWinListeNotices() {
@@ -33,17 +34,17 @@ function getWinListeNotices() {
 				{id: 'win_liste_notices',
 				title: 'Liste des Notices',
 				showEffect: Element.show,
-				top:80, 
+				top:110,
 				left:0,
 				width:330,
-				height:GetHeight() - 140}
+				height:GetHeight() - 160}
 			);
 		$('win_liste_notices_content').setStyle({	
 			backgroundColor: '#d0d0d0',
 			fontSize: '12px',
 			color: '#000000'
 		});
-		winListeNotices.getContent().innerHTML= "<div id='affichage_liste_notice'><div>";
+		winListeNotices.getContent().innerHTML= "<div id='affichage_liste_notice' style='padding: 3px'><div>";
 	}
 	winListeNotices.show();
 	winListeNotices.toFront();
@@ -56,17 +57,16 @@ function getWinEditionNotice() {
 				{id: 'win_edition_notice',
 				title: 'Edition de Notice',
 				showEffect: Element.show,
-				top:180, 
-				left:340,
-				width:GetWidth()-348,
-				height:GetHeight() - 240}
+				top:110,
+				left:334,
+				width:GetWidth()-360,
+				height:GetHeight() - 160}
 			);
 		$('win_edition_notice_content').setStyle({	
 			backgroundColor: '#d0d0d0',
 			fontSize: '14px',
 			color: '#000000'
 		});
-
 	}
 	winEditionNotice.show();
 	winEditionNotice.toFront();
@@ -80,10 +80,10 @@ function getWinDernieresNotices() {
 				title: 'Dernières Notices',
 				showEffect: Element.show,
 				hideEffect: Element.hide,
-				top:130, 
-				left:70,
-				width:GetWidth()-320,
-				height:GetHeight() - 240}
+				top:105,
+				left:40,
+				width:GetWidth()-100,
+				height:GetHeight() - 170}
 			);
 		$('win_dernieres_notices_content').setStyle({	
 			backgroundColor: '#d0d0d0',
@@ -92,7 +92,7 @@ function getWinDernieresNotices() {
 		});
 		winDernieresNotices.getContent().innerHTML= "<div id='affichage_derniere_notice'><div>";
 		// Set up a windows observer to refresh the window when focused
-		 myObserver = { onFocus: function(eventName, win) { 
+		var  myObserver = { onFocus: function(eventName, win) {
 			 	if (win == winDernieresNotices) {
 			 		new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php');
 			 		//win.setAjaxContent('ajax_affichage_dernieres_notices.php');
@@ -116,20 +116,21 @@ function getWinCalendar() {
 				showEffect: Element.show,
 				top:0, 
 				right:85,
-				width:155,
-				height:157}
+				width:154,
+				height:150}
 			);
 		$('win_calendar_content').setStyle({	
 			backgroundColor: '#d0d0d0',
-			color: '#000000',
+			color: '#000000'
 		});
-		$('win_calendar_content').innerHTML = '<div id="calendar-container-2">';
+		$('win_calendar_content').innerHTML = '<div id="calendar-container-2" onmouseover="winCalendar.toFront();">';
 		calendarInstanciation = Calendar.setup(
 				{
 					flat         : "calendar-container-2", // ID of the parent element
 					flatCallback : dateChanged,          // our callback function
 					daFormat     : "%s",    			   //date format
-					weekNumbers  : false
+					weekNumbers  : false,
+					dayMouseOverCalendarToFront : true
 				}
 			);
 	}

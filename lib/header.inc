@@ -61,7 +61,7 @@ function last_connection() {
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
-<!--correction Regis html xmlns + majuscules -->
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="Pragma" content="no-cache" />
@@ -290,12 +290,18 @@ echo '	<!-- Fin des styles -->'."\n\n";
 include 'maj_coul_global.inc';
 
 // ============================== FIN des feuilles de style =======================
+// *********** sur le onload *************** //
+if (isset($use_observeur) AND $use_observeur == 'ok'){
+  $charger_observeur = ' observeur();';
+}else{
+  $charger_observeur = NULL;
+}
 ?>
 </head>
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
-<body onload="show_message_deconnexion()">
+<body onload="show_message_deconnexion();<?php echo $charger_observeur; ?>">
 
 <?php
 if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {

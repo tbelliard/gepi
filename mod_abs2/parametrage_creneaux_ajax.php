@@ -26,6 +26,7 @@
 $utiliser_pdo = 'on';
 
 // Initialisations files
+include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -44,8 +45,7 @@ $type = isset($_POST["type"]) ? $_POST["type"] : NULL;
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("lib/erreurs.php");
-include("classes/activeRecordGepi.class.php");
-include("classes/abs_creneaux.class.php");
+include('../orm/helpers/CreneauHelper.php');
 
 
 try{
@@ -60,13 +60,13 @@ try{
     if (isset ($tester_id[4]) AND $tester_id[4] == "enregistrer"){
       // On vérifie les informations envoyées avant de sauvegarder
 
-      $new_creneau = new Abs_creneau();
+      $new_creneau = new Creneau();
 
-      if ($deb = $new_creneau->heureBdd($tester_id[1]) AND $fin = $new_creneau->heureBdd($tester_id[2]) AND $tester_id[0] != '') {
-        $new_creneau->setChamp('nom_creneau', $tester_id[0]);
-        $new_creneau->setChamp('debut_creneau', $deb);
-        $new_creneau->setChamp('fin_creneau', $fin);
-        $new_creneau->setChamp('type_creneau', $tester_id[3]);
+      if ($new_creneau->setDebutHeureFr($tester_id[1]) AND $new_creneau->setFinHeureFr($tester_id[2]) AND $tester_id[0] != '') {
+        $new_creneau->setNomCreneau($tester_id[0]);
+        //$new_creneau->setDebutCreneau($deb);
+        //$new_creneau->setFinCreneau($fin);
+        $new_creneau->setTypeCreneau($tester_id[3]);
         if ($new_creneau->save()){
           $msg = '<p style="color: green;">Le nouveau cr&eacute;neau est enregistr&eacute</p>';
         }else{
@@ -79,26 +79,20 @@ try{
 
 
     }
-  }elseif($tester_type[1] == 'action2'){
+  }elseif(isset($tester_type[1]) AND $tester_type[1] == 'action2'){
     // Dans ce cas, l'utilisateur demande à effacer un créneau
     $tester_id = explode("||", $_id);
       if ($tester_id[1] == 'effacer'){
-        $del_creneau = new Abs_creneau();
-        $del_creneau->_delete($tester_id[0]); // et c'est effacé
+
+        CreneauPeer::doDelete($tester_id[0]);
 
       }
 
   }
 
-
-  $creneaux = new Abs_creneau();
-  $liste_creneaux = $creneaux->findAll(array('order_by' => 'debut_creneau'));
-
-/*
-  echo '<pre>';
-  print_r($tester_type);
-  echo '</pre>';
-*/
+  $c = new Criteria();
+  $c->addAscendingOrderByColumn(CreneauPeer::DEBUT_CRENEAU);
+  $liste_creneaux = CreneauPeer::doSelect($c);
 
 
 }catch(exception $e){
@@ -122,13 +116,13 @@ header('Content-Type: text/html; charset:utf-8');
     <?php foreach($liste_creneaux as $aff_creneau): ?>
 
     <tr>
-      <td><?php echo $aff_creneau->nom_creneau ; ?></td>
-      <td><?php echo Abs_creneau::heureFr($aff_creneau->debut_creneau); ?></td>
-      <td><?php echo Abs_creneau::heureFr($aff_creneau->fin_creneau); ?></td>
-      <td><?php echo $aff_creneau->type_creneau ; ?></td>
+      <td><?php echo $aff_creneau->getNomCreneau() ; ?></td>
+      <td><?php echo date("H:i", $aff_creneau->getDebutCreneau() - 3600); ?></td>
+      <td><?php echo date("H:i", $aff_creneau->getFinCreneau() - 3600); ?></td>
+      <td><?php echo $aff_creneau->getTypeCreneau() ; ?></td>
       <td>
-        <input type="hidden" name="del<?php echo $aff_creneau->id; ?>" id="del<?php echo $aff_creneau->id; ?>" value="<?php echo $aff_creneau->id; ?>" />
-        <img src="../images/icons/delete.png" alt="effacer" title="Effacer" onclick="gestionaffAbs('aff_result', 'del<?php echo $aff_creneau->id; ?>||action2', 'parametrage_creneaux_ajax.php');" /></td>
+        <input type="hidden" name="del<?php echo $aff_creneau->getId(); ?>" id="del<?php echo $aff_creneau->getId(); ?>" value="<?php echo $aff_creneau->getId(); ?>" />
+        <img src="../images/icons/delete.png" alt="effacer" title="Effacer" onclick="gestionaffAbs('aff_result', 'del<?php echo $aff_creneau->getId(); ?>||action2', 'parametrage_creneaux_ajax.php');" /></td>
     </tr>
 
     <?php endforeach; ?>

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
  * Copyright (C) 2003-2008 Frederico Caldeira Knabben
  *
@@ -59,7 +59,7 @@ FCKConfig.AutoGrowMax = 400 ;
 // FCKConfig.ProtectedSource.Add( /(<asp:[^\>]+>[\s|\S]*?<\/asp:[^\>]+>)|(<asp:[^\>]+\/>)/gi ) ;	// ASP.Net style tags <asp:control>
 
 FCKConfig.AutoDetectLanguage	= true ;
-FCKConfig.DefaultLanguage		= 'en' ;
+FCKConfig.DefaultLanguage		= 'fr' ;
 FCKConfig.ContentLangDirection	= 'ltr' ;
 
 FCKConfig.ProcessHTMLEntities	= true ;
@@ -76,7 +76,7 @@ FCKConfig.FormatSource		= true ;
 FCKConfig.FormatOutput		= true ;
 FCKConfig.FormatIndentator	= '    ' ;
 
-FCKConfig.StartupFocus	= false ;
+FCKConfig.StartupFocus	= true ;
 FCKConfig.ForcePasteAsPlainText	= false ;
 FCKConfig.AutoDetectPasteFromWord = true ;	// IE only.
 FCKConfig.ShowDropDialog = true ;
@@ -115,12 +115,12 @@ FCKConfig.ToolbarSets["Default"] = [
 FCKConfig.ToolbarSets["Basic"] = [
     ['Source','Cut','Copy','Paste','PasteText','PasteWord','-'],
     ['Undo','Redo','-'],
-    ['Bold','Italic','Underline','TextColor','Subscript','Superscript'],
+   ['Bold','Italic','Underline','TextColor','Subscript','Superscript'],
     ['OrderedList','UnorderedList','-','Outdent','Indent'],
     ['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
     ['Link','Unlink'],
     ['Table','Rule','SpecialChar'],
-    ['Style','FontFormat','FontName','FontSize'],
+	['Style','FontFormat','FontName','FontSize'],
     ['About']
 ] ;
 
@@ -160,8 +160,9 @@ FCKConfig.FontFormats	= 'p;h1;h2;h3;h4;h5;h6;pre;address;div' ;
 FCKConfig.FontNames		= 'Arial;Comic Sans MS;Courier New;Tahoma;Times New Roman;Verdana' ;
 FCKConfig.FontSizes		= 'smaller;larger;xx-small;x-small;small;medium;large;x-large;xx-large' ;
 
-FCKConfig.StylesXmlPath		= FCKConfig.EditorPath + 'fckstyles.xml' ;
-FCKConfig.TemplatesXmlPath	= FCKConfig.EditorPath + 'fcktemplates.xml' ;
+//Le chargement des styles et templates avec 'fckstyles.xml' provoque une requete supplementaire
+//FCKConfig.StylesXmlPath		= FCKConfig.EditorPath + 'fckstyles.xml' ;
+//FCKConfig.TemplatesXmlPath	= FCKConfig.EditorPath + 'fcktemplates.xml' ;
 
 FCKConfig.SpellChecker			= 'ieSpell' ;	// 'ieSpell' | 'SpellerPages'
 FCKConfig.IeSpellDownloadUrl	= 'http://www.iespell.com/download.php' ;
@@ -205,7 +206,15 @@ FCKConfig.RemoveAttributes = 'class,style,lang,width,height,align,hspace,valign'
 
 FCKConfig.CustomStyles =
 {
-	'Red Title'	: { Element : 'h3', Styles : { 'color' : 'Red' } }
+	'Normal'		:	{ Element : 'p' , Styles : {} },
+	'Titre rouge'				:	{ Element : 'h3', Styles : { 'color' : 'Red' } },
+	'Gros caracteres'		:	{ Element : 'big' },
+	'Petits caracteres'		:	{ Element : 'small' },
+	'Caracteres d\'imprimerie'		:	{ Element : 'tt' },
+	'Surligneur: Jaune'		:	{ Element : 'span', Styles : { 'background-color' : 'Yellow' } },
+	'Surligneur: Vert'		:	{ Element : 'span', Styles : { 'background-color' : 'Green' } },
+	'Citation'					:	{ Element : 'cite' },
+	'Citation en apostrophes'		:	{ Element : 'q' }
 };
 
 // Do not add, rename or remove styles here. Only apply definition changes.

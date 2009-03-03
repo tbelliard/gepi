@@ -56,7 +56,7 @@ function creer_repertoire($path) {
 }
 
 
-function ajout_fichier($doc_file, $dest, $cpt_doc) {
+function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 	global $max_size, $total_max_size;
 	/* Vérification du type de fichier */
 	$ext = '';

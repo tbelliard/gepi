@@ -17,11 +17,17 @@ color: green;
 color: red;
 }
 #presentations{
-padding: 10px 5px 10px 5px; witdh: 200px;
+padding: 10px 5px 10px 5px; width: 200px;
 }
 #presentations td{
 padding: 10px 5px 10px 5px; background-color: silver; color: white; font-weight: bold; text-align: center;
 }
 ._center td{
 text-align: center; border: 1px solid pink;
+}
+#table_liste_absents th {
+text-align: center; color: white; background-color: silver;
+}
+#table_liste_absents tr td {
+border: 1px solid grey; text-align: center; padding: 2px 2px 2px 2px;
 }

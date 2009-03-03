@@ -24,12 +24,11 @@
  */
 
 
-$utiliser_pdo = 'on';
-//error_reporting(0);
 // Initialisation des feuilles de style après modification pour améliorer l'accessibilité
 $accessibilite="y";
 
 // Initialisations files
+include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -45,18 +44,13 @@ if ($resultat_session == 'c') {
 $type_req = isset($_POST["type"]) ? $_POST["type"] : NULL;
 $_table = $_champ = NULL;
 $_id = isset($_POST["_id"]) ? $_POST["_id"] : NULL;
-$prefix = 'abs_';
-$prefix_c = 'Abs_';
-$_classe = NULL;
+$_classe = $tout = NULL;
 $ajouter = $modifier = $effacer = NULL;
+$del = false;
 $action = 'ajouter';
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("lib/erreurs.php");
-include("classes/activeRecordGepi.class.php");
-/* #@TODO A enlever
-include("classes/abs_gestion.class.php");
-# @TODO */
 
 
 try{
@@ -83,91 +77,90 @@ try{
 
   switch($type_req){
     case 'types':
-    $_table = $prefix . $type_req;
-    $_classe = $prefix_c . substr($type_req, 0, -1);
-    $_champ = 'type_absence';
+    $_classe = 'AbsenceType';
+    $tout = AbsenceTypePeer::doSelect(new Criteria);
+
       break;
     case 'motifs':
-    $_table = $prefix . $type_req;
-    $_classe = $prefix_c . $type_req;
-    $_champ = 'type_motif';
+    $_classe = 'AbsenceMotif';
+    $tout = AbsenceMotifPeer::doSelect(new Criteria);
+
       break;
     case 'actions':
-    $_table = $prefix . $type_req;
-    $_classe = $prefix_c . $type_req;
-    $_champ = 'type_action';
+    $_classe = 'AbsenceAction';
+    $tout = AbsenceActionPeer::doSelect(new Criteria);
+
       break;
     case 'justifications':
-    $_table = $prefix . $type_req;
-    $_classe = $prefix_c . $type_req;
-    $_champ = 'type_justification';
+    $_classe = 'AbsenceJustification';
+    $tout = AbsenceJustificationPeer::doSelect(new Criteria);
+
       break;
     default:
-      $_table = $_champ = $_classe = NULL;
+    $_table = $_champ = $_classe = NULL;
   } // switch
 
-/*# @TODO : à enlever après avoir terminé l'utilisation de $action
-  $test = new abs_gestion();
-  $test->setChamps($_champ); // on donne le nom du champ de cette table (définie ci-dessous)
-  $test->setTable($_table); // On choisit la bonne table
-  $test->setEncodage("utf8"); // On précise l'encodage s'il est différent de l'ISO-8859-1
-# @TODO */
 
-  if ($_classe !== NULL){
-    include("classes/". $_table . ".class.php");
-  }
-  $action = ($_classe !== NULL) ? new $_classe : NULL; // On instancie la bonne classe si elle existe
-
+  /******************* AJOUTER ******************************/
   if ($type_req != $_id AND $action == 'ajouter') {
 
+    // On instancie la bonne classe si elle existe
+    $_objet = ($_classe !== NULL) ? new $_classe : NULL;
+
     // On est dans le cas d'une demande d'ajout dans la base
-    $action->setChamp($_champ, $_id);
-    if ($action->save()) {
+    $_objet->setNom($_id);
+
+    if ($_objet->save()) {
       $ajouter = 'ok';
     }else{
       $ajouter = 'no';
     }
 
-
-    /*# @TODO : A enlever
-    if ($test->_saveNew($_id)) {
-      $ajouter = 'ok';
-    }else{
-      $ajouter = 'no';
-    }
-    # @TODO*/
-
+  /******************* EFFACER ******************************/
   }elseif($type_req != $_id AND $action == 'effacer'){
 
-    if ($action->_delete($del_id)) {
-      $effacer = 'ok';
-    }else{
-      $effacer = 'no';
-    }
+    switch($type_req){
+      case 'types':
+        $del = AbsenceTypePeer::doDelete($del_id);
+        break;
+      case 'motifs':
+        $del = AbsenceMotifPeer::doDelete($del_id);
+        break;
+      case 'actions':
+        $del = AbsenceActionPeer::doDelete($del_id);
+        break;
+      case 'justifications':
+        $del = AbsenceJustificationPeer::doDelete($del_id);
+        break;
+      default:
+        $del = FALSE;
+    } // switch
 
-    /*# @TODO : à enlever
-    if ($test->_deleteById($del_id)) {
+    if ($del) {
       $effacer = 'ok';
     }else{
       $effacer = 'no';
     }
-    # @TODO */
 
   }
 
-  $tout = $action->findAll(); // on liste toutes les entrées de la table $_table.
-
-  /* # @TODO à enlever
-  $tout = $test->voirTout(); // on liste toutes les entrées de la table $_table.
-   # @TODO */
-
-
-/*
-  echo '<pre>';
-  print_r($tout);
-  echo '</pre>';
-*/
-
+  /******************* LISTER ******************************/
+  switch($type_req){
+    case 'types':
+    $tout = AbsenceTypePeer::doSelect(new Criteria);
+      break;
+    case 'motifs':
+    $tout = AbsenceMotifPeer::doSelect(new Criteria);
+      break;
+    case 'actions':
+    $tout = AbsenceActionPeer::doSelect(new Criteria);
+      break;
+    case 'justifications':
+    $tout = AbsenceJustificationPeer::doSelect(new Criteria);
+      break;
+    default:
+    $tout = NULL;
+  } // switch
 
 }catch(exception $e){
   // Cette fonction est présente dans /lib/erreurs.php
@@ -185,11 +178,11 @@ header('Content-Type: text/html; charset:utf-8');
   </tr>
 
   <?php foreach($tout as $aff): ?>
-    <?php $effacer_id = 'effacer' . $aff->id ; ?>
+    <?php $effacer_id = 'effacer' . $aff->getId() ; ?>
     <tr>
-      <td><?php echo $aff->$_champ; ?></td>
+      <td><?php echo $aff->getNom(); ?></td>
       <td>
-        <input type="hidden" name="effacer" id="<?php echo $effacer_id; ?>" value="<?php echo $type_req.'|||'.$aff->id ; ?>" />
+        <input type="hidden" name="effacer" id="<?php echo $effacer_id; ?>" value="<?php echo $type_req.'|||'.$aff->getId() ; ?>" />
         <img src="../images/icons/delete.png" alt="effacer" title="Effacer" onclick="gestionaffAbs('aff_result', '<?php echo $effacer_id; ?>', 'parametrage_ajax.php');" /></td>
     </tr>
 

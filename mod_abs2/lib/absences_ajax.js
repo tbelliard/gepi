@@ -1,3 +1,14 @@
+function observeur(){
+	Event.observe(document, 'click', voirElementHTML);
+	function voirElementHTML(event)	{
+		var elementCliquer = Event.element(event);
+    var premierSelectCliquer = Event.findElement(event,"select") ? Event.findElement(event,"select") : null;
+    var affPremierSelectCliquer = premierSelectCliquer ? premierSelectCliquer.name : 'aucun';
+    var aff = ('<br />'+elementCliquer.tagName+' et la valeur --> '+elementCliquer.value+' et le name --> '+elementCliquer.name+' et le select --> '+affPremierSelectCliquer);
+    var insertion = new Insertion.After("aff_result",aff);
+	}
+}
+
 function gestionaffAbs(id, reglage, url){
 	elementHTML = $(id);
   var test = reglage.split("||");
@@ -17,6 +28,9 @@ function gestionaffAbs(id, reglage, url){
 function afficherDiv(id){
   Element.show(id);
 }
+function cacherDiv(id){
+  Element.hide(id);
+}
 function utiliseAjaxAbs(id, reglage, url){
 	elementHTML = $(id);
 	var info = reglage;
@@ -31,4 +45,8 @@ function func_KeyDown(event, script, type){
       gestionaffAbs('aff_result', type, 'parametrage_ajax.php');
     }
   }
+}
+function decoche(id){
+  var radio = document.getElementById(id);
+  radio.checked = false;
 }

@@ -27,6 +27,7 @@ $utiliser_pdo = 'on';
 //error_reporting(0);
 
 // Initialisations files
+include("../lib/initialisationsPropel.inc.php");
 include("../lib/initialisations.inc.php");
 
 // Resume session
@@ -42,62 +43,56 @@ if ($resultat_session == 'c') {
 // ============== traitement des variables ==================
 # Enregistrement de nouvelles absences
 $action               = isset($_POST['action']) ? $_POST['action'] : NULL;
-$_eleve               = isset ($_POST['_eleve']) ? $_POST['_eleve'] : NULL;
+$_eleve               = isset($_POST['_eleve']) ? $_POST['_eleve'] : NULL;
 $_jourentier          = isset($_POST["_jourentier"]) ? $_POST["_jourentier"] : NULL;
-$_deb                 = isset ($_POST['_deb']) ? $_POST['_deb'] : NULL;
-$_fin                 = isset ($_POST['_fin']) ? $_POST['_fin'] : NULL;
-$_justifications      = isset ($_POST['_justifications']) ? $_POST['_justifications'] : NULL;
-$_motifs              = isset ($_POST['_motifs']) ? $_POST['_motifs'] : NULL;
-$nombre               = isset ($_POST['nombre']) ? $_POST['nombre'] : NULL;
-$enregistrer_absences = isset ($_POST['enregistrer_absences']) ? $_POST['enregistrer_absences'] : NULL;
+$_deb                 = isset($_POST['_deb']) ? $_POST['_deb'] : NULL;
+$_fin                 = isset($_POST['_fin']) ? $_POST['_fin'] : NULL;
+$_justifications      = isset($_POST['_justifications']) ? $_POST['_justifications'] : NULL;
+$_motifs              = isset($_POST['_motifs']) ? $_POST['_motifs'] : NULL;
+$nombre               = isset($_POST['nombre']) ? $_POST['nombre'] : NULL;
+$enregistrer_absences = isset($_POST['enregistrer_absences']) ? $_POST['enregistrer_absences'] : NULL;
 
-
+//debug_var();
 
 // ============== Code métier ===============================
-//include("absences.class.php");
-//include("helpers/aff_listes_utilisateurs.inc.php");
 include("lib/erreurs.php");
-include("classes/activeRecordGepi.class.php");
-include("classes/abs_creneaux.class.php");
-include("classes/abs_informations.class.php");
+
 
 try{
 
   // Une demande d'enregistrement des absences est lancée
   if ($action == 'eleves' AND $enregistrer_absences == 'Enregistrer'){
-/*
-echo '<pre>' . count($_eleve);
-print_r($_POST);
-echo '</pre>';
-*/
+
     $nbre = count($_eleve);
-    $test = new Abs_information();
-    $creneau = new Abs_creneau();
+    $creneau = new Creneau();
     $increment = 0;
 
     for($a = 0 ; $a < $nbre ; $a++){
 
-      $test->setChamp("utilisateurs_id", $_SESSION["login"]);
-      $test->setChamp("eleves_id", $_eleve[$a]);
-      // SI on demande la journée entière
+      $saisie = new AbsenceSaisie();
+      $saisie->setUtilisateurId($_SESSION["login"]);
+      $saisie->setEleveId($_eleve[$a]);
+      // SI on demande la journée entière ...
       if (isset($_jourentier[$a]) AND $_jourentier[$a] != ''){
 
-        // On indique le premier et le dernier créneau de la journée
-        $test->setChamp("debut_abs", $creneau->getFirstCreneau());
-        $test->setChamp("fin_abs", $creneau->getLastCreneau());
+        // ... On indique le premier et le dernier créneau de la journée
+        $saisie->setDebutAbs(CreneauPeer::getFirstCreneau()->getId());
+        $saisie->setFinAbs(CreneauPeer::getLastCreneau()->getId());
 
       }else{
-
-        $test->setChamp("debut_abs", $_deb[$a]);
-        $test->setChamp("fin_abs", $_fin[$a]);
+        //echo '<pre>';print_r($_deb);echo'</pre>';
+        $saisie->setDebutAbs($_deb[$a]);
+        $saisie->setFinAbs($_fin[$a]);
 
       }
-      $test->setChamp("date_saisie", date("U"));
+      $saisie->setCreatedOn(date("U"));
       
 
-      if ($_last_id = $test->save()){
+      if ($_last_id = $saisie->save()){
         // $_last_id est donc l'id de l'enregistrement qui vient d'avoir lieu
         $increment++;
+      }else{
+        $_SESSION['msg_abs'] .= '||' . $_last_id;
       }
     }
 

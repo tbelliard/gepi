@@ -3,7 +3,7 @@
 /**
  * Base static class for performing query and update operations on the 'j_groupes_professeurs' table.
  *
- * Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilisÃ© directement dans le code.
+ * Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilise directement dans le code.
  *
  * @package    gepi.om
  */
@@ -444,7 +444,7 @@ abstract class BaseJGroupesProfesseursPeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related Utilisateur table
+	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
 	 *
 	 * @param      Criteria $c
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -452,7 +452,7 @@ abstract class BaseJGroupesProfesseursPeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinUtilisateur(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinUtilisateurProfessionnel(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -479,7 +479,7 @@ abstract class BaseJGroupesProfesseursPeer {
 			$con = Propel::getConnection(JGroupesProfesseursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -560,7 +560,7 @@ abstract class BaseJGroupesProfesseursPeer {
 
 
 	/**
-	 * Selects a collection of JGroupesProfesseurs objects pre-filled with their Utilisateur objects.
+	 * Selects a collection of JGroupesProfesseurs objects pre-filled with their UtilisateurProfessionnel objects.
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -568,7 +568,7 @@ abstract class BaseJGroupesProfesseursPeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinUtilisateur(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$c = clone $c;
 
@@ -579,9 +579,9 @@ abstract class BaseJGroupesProfesseursPeer {
 
 		JGroupesProfesseursPeer::addSelectColumns($c);
 		$startcol = (JGroupesProfesseursPeer::NUM_COLUMNS - JGroupesProfesseursPeer::NUM_LAZY_LOAD_COLUMNS);
-		UtilisateurPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($c);
 
-		$c->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurPeer::LOGIN,), $join_behavior);
+		$c->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
@@ -601,20 +601,20 @@ abstract class BaseJGroupesProfesseursPeer {
 				JGroupesProfesseursPeer::addInstanceToPool($obj1, $key1);
 			} // if $obj1 already loaded
 
-			$key2 = UtilisateurPeer::getPrimaryKeyHashFromRow($row, $startcol);
+			$key2 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol);
 			if ($key2 !== null) {
-				$obj2 = UtilisateurPeer::getInstanceFromPool($key2);
+				$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = UtilisateurPeer::getOMClass();
+					$omClass = UtilisateurProfessionnelPeer::getOMClass();
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
-					UtilisateurPeer::addInstanceToPool($obj2, $key2);
+					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 already loaded
 
-				// Add the $obj1 (JGroupesProfesseurs) to $obj2 (Utilisateur)
+				// Add the $obj1 (JGroupesProfesseurs) to $obj2 (UtilisateurProfessionnel)
 				$obj2->addJGroupesProfesseurs($obj1);
 
 			} // if joined row was not null
@@ -663,7 +663,7 @@ abstract class BaseJGroupesProfesseursPeer {
 		}
 
 		$criteria->addJoin(array(JGroupesProfesseursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$criteria->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -700,11 +700,11 @@ abstract class BaseJGroupesProfesseursPeer {
 		GroupePeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurPeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + (UtilisateurPeer::NUM_COLUMNS - UtilisateurPeer::NUM_LAZY_LOAD_COLUMNS);
+		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
 		$c->addJoin(array(JGroupesProfesseursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$c->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurPeer::LOGIN,), $join_behavior);
+		$c->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
@@ -743,23 +743,23 @@ abstract class BaseJGroupesProfesseursPeer {
 				$obj2->addJGroupesProfesseurs($obj1);
 			} // if joined row not null
 
-			// Add objects for joined Utilisateur rows
+			// Add objects for joined UtilisateurProfessionnel rows
 
-			$key3 = UtilisateurPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+			$key3 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol3);
 			if ($key3 !== null) {
-				$obj3 = UtilisateurPeer::getInstanceFromPool($key3);
+				$obj3 = UtilisateurProfessionnelPeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$omClass = UtilisateurPeer::getOMClass();
+					$omClass = UtilisateurProfessionnelPeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
-					UtilisateurPeer::addInstanceToPool($obj3, $key3);
+					UtilisateurProfessionnelPeer::addInstanceToPool($obj3, $key3);
 				} // if obj3 loaded
 
-				// Add the $obj1 (JGroupesProfesseurs) to the collection in $obj3 (Utilisateur)
+				// Add the $obj1 (JGroupesProfesseurs) to the collection in $obj3 (UtilisateurProfessionnel)
 				$obj3->addJGroupesProfesseurs($obj1);
 			} // if joined row not null
 
@@ -806,7 +806,7 @@ abstract class BaseJGroupesProfesseursPeer {
 			$con = Propel::getConnection(JGroupesProfesseursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurPeer::LOGIN,), $join_behavior);
+				$criteria->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -820,7 +820,7 @@ abstract class BaseJGroupesProfesseursPeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related Utilisateur table
+	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
 	 *
 	 * @param      Criteria $c
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -828,7 +828,7 @@ abstract class BaseJGroupesProfesseursPeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAllExceptUtilisateur(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinAllExceptUtilisateurProfessionnel(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -892,10 +892,10 @@ abstract class BaseJGroupesProfesseursPeer {
 		JGroupesProfesseursPeer::addSelectColumns($c);
 		$startcol2 = (JGroupesProfesseursPeer::NUM_COLUMNS - JGroupesProfesseursPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurPeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + (UtilisateurPeer::NUM_COLUMNS - UtilisateurPeer::NUM_LAZY_LOAD_COLUMNS);
+		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurPeer::LOGIN,), $join_behavior);
+				$c->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
 
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
@@ -915,23 +915,23 @@ abstract class BaseJGroupesProfesseursPeer {
 				JGroupesProfesseursPeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
-				// Add objects for joined Utilisateur rows
+				// Add objects for joined UtilisateurProfessionnel rows
 
-				$key2 = UtilisateurPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				$key2 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol2);
 				if ($key2 !== null) {
-					$obj2 = UtilisateurPeer::getInstanceFromPool($key2);
+					$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = UtilisateurPeer::getOMClass();
+						$omClass = UtilisateurProfessionnelPeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
-					UtilisateurPeer::addInstanceToPool($obj2, $key2);
+					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
 				} // if $obj2 already loaded
 
-				// Add the $obj1 (JGroupesProfesseurs) to the collection in $obj2 (Utilisateur)
+				// Add the $obj1 (JGroupesProfesseurs) to the collection in $obj2 (UtilisateurProfessionnel)
 				$obj2->addJGroupesProfesseurs($obj1);
 
 			} // if joined row is not null
@@ -944,7 +944,7 @@ abstract class BaseJGroupesProfesseursPeer {
 
 
 	/**
-	 * Selects a collection of JGroupesProfesseurs objects pre-filled with all related objects except Utilisateur.
+	 * Selects a collection of JGroupesProfesseurs objects pre-filled with all related objects except UtilisateurProfessionnel.
 	 *
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
@@ -953,7 +953,7 @@ abstract class BaseJGroupesProfesseursPeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptUtilisateur(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$c = clone $c;
 
