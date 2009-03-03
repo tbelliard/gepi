@@ -52,6 +52,8 @@ $_motifs              = isset($_POST['_motifs']) ? $_POST['_motifs'] : NULL;
 $nombre               = isset($_POST['nombre']) ? $_POST['nombre'] : NULL;
 $enregistrer_absences = isset($_POST['enregistrer_absences']) ? $_POST['enregistrer_absences'] : NULL;
 
+$_SESSION['msg_abs']  = isset($_SESSION['msg_abs']) ? $_SESSION['msg_abs'] : NULL;
+
 //debug_var();
 
 // ============== Code métier ===============================
@@ -85,7 +87,7 @@ try{
         $saisie->setFinAbs($_fin[$a]);
 
       }
-      $saisie->setCreatedOn(date("U"));
+      //$saisie->setCreatedOn(date("U"));
       
 
       if ($_last_id = $saisie->save()){

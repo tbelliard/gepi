@@ -60,12 +60,12 @@ class AbsenceSaisie extends BaseAbsenceSaisie {
 	 * @see        doSave()
 	 */
 	public function save(PropelPDO $con = null) {
-		$currentDate = mktime(0,0,0,date("m"),date("d"),date("Y"));
+		$currentDate = date("U"); //mktime(0,0,0,date("m"),date("d"),date("Y"));
 		$this->setUpdatedOn($currentDate);
 		if ($this->isNew()) {
 			$this->setCreatedOn($currentDate);
 		}
-		parent::save($con);
+		return parent::save($con);
 	}
 
 	/**

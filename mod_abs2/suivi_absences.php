@@ -96,13 +96,17 @@ require("lib/abs_menu.php");
           $creneau_fin    = CreneauPeer::retrieveByPK($absents->getFinAbs());
 
           /******* On construit une petite fiche de l'élève en question (téléphone du parent 1) *****/
+          // On ne garde que le responsable 1 qui est en principe le premier du tableau envoyé
+          $_responsable = $absents->getEleve()->getResponsableInformations();
+          $responsable = $_responsable[0];
+
           $_id_fiche = 'fiche' . $absents->getId();
           $fiche_eleve = '<div id="' . $_id_fiche . '" style="display: none; position: absolute; border: 2px solid yellow; background-color: lightblue;">
-                          ' . $absents->getEleve()->getResponsablesInformation()->getResponsableEleve()->getCivilite() . '
-                          ' . $absents->getEleve()->getResponsablesInformation()->getResponsableEleve()->getNom() . ' ' . $absents->getEleve()->getResponsablesInformation()->getResponsableEleve()->getPrenom() . '<br />
-                          Tel. pers. :' . $absents->getEleve()->getResponsablesInformation()->getResponsableEleve()->getTelPers() . '<br />
-                          Tel. port. :' . $absents->getEleve()->getResponsablesInformation()->getResponsableEleve()->getTelPort() . '<br />
-                          Tel. prof. :' . $absents->getEleve()->getResponsablesInformation()->getResponsableEleve()->getTelProf() . '<br />
+                          ' . $responsable->getResponsableEleve()->getCivilite() . '
+                          ' . $responsable->getResponsableEleve()->getNom() . ' ' . $responsable->getResponsableEleve()->getPrenom() . '<br />
+                          Tel. pers. :' . $responsable->getResponsableEleve()->getTelPers() . '<br />
+                          Tel. port. :' . $responsable->getResponsableEleve()->getTelPort() . '<br />
+                          Tel. prof. :' . $responsable->getResponsableEleve()->getTelProf() . '<br />
 
                           </div>';
           /******* On construit une petite fiche de l'élève en question (hsitorique des saisies de ses absences) *****/
