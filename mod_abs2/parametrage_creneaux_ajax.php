@@ -64,8 +64,6 @@ try{
 
       if ($new_creneau->setDebutHeureFr($tester_id[1]) AND $new_creneau->setFinHeureFr($tester_id[2]) AND $tester_id[0] != '') {
         $new_creneau->setNomCreneau($tester_id[0]);
-        //$new_creneau->setDebutCreneau($deb);
-        //$new_creneau->setFinCreneau($fin);
         $new_creneau->setTypeCreneau($tester_id[3]);
         if ($new_creneau->save()){
           $msg = '<p style="color: green;">Le nouveau cr&eacute;neau est enregistr&eacute</p>';
@@ -122,7 +120,7 @@ header('Content-Type: text/html; charset:utf-8');
       <td><?php echo $aff_creneau->getTypeCreneau() ; ?></td>
       <td>
         <input type="hidden" name="del<?php echo $aff_creneau->getId(); ?>" id="del<?php echo $aff_creneau->getId(); ?>" value="<?php echo $aff_creneau->getId(); ?>" />
-        <img src="../images/icons/delete.png" alt="effacer" title="Effacer" onclick="gestionaffAbs('aff_result', 'del<?php echo $aff_creneau->getId(); ?>||action2', 'parametrage_creneaux_ajax.php');" /></td>
+        <img src="../images/icons/delete.png" alt="effacer" title="Si vous avez d&eacute;j&agrave; saisi des absences sur ce cr&eacute;neau, ne l'effacez pas !" onclick="gestionaffAbs('aff_result', 'del<?php echo $aff_creneau->getId(); ?>||action2', 'parametrage_creneaux_ajax.php');" /></td>
     </tr>
 
     <?php endforeach; ?>

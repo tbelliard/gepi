@@ -109,6 +109,7 @@ try{
 
     // On est dans le cas d'une demande d'ajout dans la base
     $_objet->setNom($_id);
+    $_objet->setOrdre();
 
     if ($_objet->save()) {
       $ajouter = 'ok';
@@ -145,18 +146,20 @@ try{
   }
 
   /******************* LISTER ******************************/
+      $c = new Criteria();
+      $c->addDescendingOrderByColumn('ordre');
   switch($type_req){
     case 'types':
-    $tout = AbsenceTypePeer::doSelect(new Criteria);
+    $tout = AbsenceTypePeer::doSelect($c);
       break;
     case 'motifs':
-    $tout = AbsenceMotifPeer::doSelect(new Criteria);
+    $tout = AbsenceMotifPeer::doSelect($c);
       break;
     case 'actions':
-    $tout = AbsenceActionPeer::doSelect(new Criteria);
+    $tout = AbsenceActionPeer::doSelect($c);
       break;
     case 'justifications':
-    $tout = AbsenceJustificationPeer::doSelect(new Criteria);
+    $tout = AbsenceJustificationPeer::doSelect($c);
       break;
     default:
     $tout = NULL;
@@ -180,7 +183,7 @@ header('Content-Type: text/html; charset:utf-8');
   <?php foreach($tout as $aff): ?>
     <?php $effacer_id = 'effacer' . $aff->getId() ; ?>
     <tr>
-      <td><?php echo $aff->getNom(); ?></td>
+      <td><?php echo '(' . $aff->getOrdre() . ') ' . $aff->getNom(); ?></td>
       <td>
         <input type="hidden" name="effacer" id="<?php echo $effacer_id; ?>" value="<?php echo $type_req.'|||'.$aff->getId() ; ?>" />
         <img src="../images/icons/delete.png" alt="effacer" title="Effacer" onclick="gestionaffAbs('aff_result', '<?php echo $effacer_id; ?>', 'parametrage_ajax.php');" /></td>
