@@ -109,7 +109,7 @@ try{
 
     // On est dans le cas d'une demande d'ajout dans la base
     $_objet->setNom($_id);
-    $_objet->setOrdre();
+    $_objet->setOrdre('0');
 
     if ($_objet->save()) {
       $ajouter = 'ok';

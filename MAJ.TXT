@@ -1,1 +1,67 @@
-premier commit de Julien, trop naze de suivre tes commandes comme cela mais au moins je comprends ce que je fais.
+GEPI-1.5.1-rc2 -- Procédure de mise à jour
+==========================================
+
+*************
+Mise en garde
+*************
+
+La procédure de mise à jour vers cette version de Gepi est utilisable à partir d'une version GEPI-1.2 ou plus récente.
+Si vous travaillez actuellement sur une version plus ancienne que GEPI-1.2, cette procédure de mise à jour ne fonctionnera pas.
+
+Ne prenez pas de risque, n'utilisez *que* des versions estampillées *stable* pour une utilisation en production.
+
+Les changements dans la gestion des groupes entre la version 1.4.2 et la version 1.4.3 sont très importants
+et altèrent en profondeur le fonctionnement de Gepi. Il est donc indispensable de faire une sauvegarde de votre base
+de données avant d'effectuer la mise à jour, et d'en faire une nouvelle immédiatement après la mise à jour (il n'est
+pas du tout conseillé de tenter la restauration d'une sauvegarde effectuée avec une version 1.4.2 sur une version 1.4.3 ou supérieure,
+étant donné les changements profonds opérés sur la structure de la base de données lors du passage à la 1.4.3.
+
+****************************************************
+Installation - Etape 0 : téléchargement de l'archive
+****************************************************
+
+L'ensemble des fichiers nécessaires à la mise à jour sont rassemblés dans
+l'archive que vous avez téléchargée.
+
+************************************************
+Installation - Etape 1 : transfert des fichiers
+************************************************
+
+La première étape de la mise à jour consiste à transférer tous les fichiers de
+l'archive que vous avez téléchargée vers le serveur web/php en écrasant les fichiers de la version GEPI précédente.
+
+Pour cela, munissez-vous des codes des paramètres de connexion au serveur et
+utilisez un logiciel de transfert de fichiers (FTP).
+Vous aurez besoin de l'adresse du serveur ftp, de votre login, et de votre  mot de passe (fournis par l'hébergeur si vous utilisez un service extérieur, par l'administrateur système si vous utilisez un serveur au sein de l'établissement).
+Faire les sauvegardes nécessaires de la base de données
+Puis, dans le répertoire hôte de Gepi :
+- "mettre de côté" les répertoires existants "documents", "backup" et "photos" (recopier en un endroit sûr, extérieur au répertoire hôte de Gepi, mais provisoire, en cas de fausse manoeuvre).
+- "mettre de côté" le fichier servant de logo personnalisé situé dans le répertoire "images" (ce fichier porte le nom donné par l'admin lors de la configuration générale)
+- "mettre de côté" le fichier "connect.inc.php" situé dans le répertoire "secure"
+- vider tout le répertoire hôte, sauf les éléments cités ci-dessus (soit les répertoires "documents", "backup", "photos", le logo dans le répertoire "images", et "connect.inc.php" dans "secure")
+- copier dans le répertoire hôte l'intégralité de l'archive de la nouvelle version de Gepi. L'outil ftp va sans doute demander l'autorisation d'écraser quelques fichiers dans les répertoires conservés : accepter cet écrasement. Le logo (si l'admin lui a donné un nom différent de "logo.gif" ou "logo.png") et "connect.inc.php" ne devraient pas être écrasés : ils n'existent pas dans l'archive, de même que les documents attachés par les profs au cahier de texte ("documents"), vos sauvegardes précédentes ("backup") et les photos de vos élèves ("photos").
+- ne pas oublier de restaurer les droits d'écriture-exécution aux répertoires "documents", "images", "photos" et "backup"
+
+*********************************************************************
+Installation - Etape 2 : Renommer le fichier connect.inc si nécessaire
+**********************************************************************
+
+* UNIQUEMENT SI VOUS METTEZ A JOUR UNE VERSION ANTERIEURE A LA 1.3.4 *
+
+Depuis la version GEPI-1.3.4, le fichier "connect.inc" situé dans le répertoire /secure, s'appelle désormais "connect.inc.php".
+Vous devez donc renommer votre ancien fichier "connect.inc" actuellement présent dans le répertoire /secure en "connect.inc.php".
+Attention, si vous avez déjà un fichier "connect.inc.php", ne cherchez pas à renommer le "connect.inc" ! Cela constituerait une faille de sécurité.
+
+*****************************************************
+Installation - Etape 3 : mise à jour de la base MySql
+*****************************************************
+
+Une fois que les fichiers php sont en place sur le serveur web/php (étape 1),
+lancez un navigateur et connectez-vous au site en tant qu'administrateur.
+Si une mise à jour de la base de donnée est nécessaire, vous serez immédiatement renvoyé sur une page vous permettant d'un seul clic d'effectuer la mise à jour de votre base de donnée.
+Il est possible que certains messages d'erreurs s'affichent mais soit non fatals. Après toute mise à jour, faite une vérification en profondeur
+du bon fonctionnement du logiciel.
+
+Dans certains cas la connexion au site peut échouer tant que la mise àjour n'a pas été effectuée.
+Si vous êtes dans cette situation, connectez-vous directement à l'interface de mise à jour de la base en tapant :
+http://www.monsite.fr/gepi/utilitaires/maj.php  (dans le cas où l'adresse serait http://www.monsite.fr/gepi)
