@@ -402,24 +402,32 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
   echo "</tr>\n";
 
 } elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
-  $sql="SELECT 1=1 FROM s_protagonistes WHERE login='".$_SESSION['login']."';";
+  //$sql="SELECT 1=1 FROM s_protagonistes WHERE login='".$_SESSION['login']."';";
+  // declarant ou protagoniste
+  $sql="SELECT 1=1 FROM s_protagonistes, s_incidents WHERE ((login='".$_SESSION['login']."')||(declarant='".$_SESSION['login']."'));";
   $test=mysql_query($sql);
-  if((mysql_num_rows($test)>0)) { 
-		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp WHERE sp.login=jep.login AND jep.professeur='".$_SESSION['login']."';";
+  if((mysql_num_rows($test)>0)) { //on a bien un prof ou statut autre comme déclarant ou un protagoniste 
+	echo "<tr>\n";
+	echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
+	echo "</td>\n";
+	echo "<td>Visualiser la liste des incidents déclarés et leurs traitements.</td>\n";
+	echo "</tr>\n";
+  } else { //le prof n'est ni déclarant ni protagoniste. Pour un elv dont il est PP y a t--il des incidents de déclaré ?
+        $sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp WHERE sp.login=jep.login AND jep.professeur='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
-		if (!(mysql_num_rows($test)>0)) {
+		if ((mysql_num_rows($test)>0)) { //Oui
 		    echo "<tr>\n";
 			echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
 			echo "</td>\n";
 			echo "<td>Visualiser la liste des incidents déclarés et leurs traitements.</td>\n";
 			echo "</tr>\n";
+        } else { //non
+			echo "<tr>\n";
+			echo "<td width='30%'>Consulter les suites des incidents</a>";
+			echo "</td>\n";
+			echo "<td><p>Aucun incident (<i>avec protagoniste</i>) vous concernant n'est encore déclaré.</td>\n";
+			echo "</tr>\n";
 		}
-  } else {
-		echo "<tr>\n";
-		echo "<td width='30%'>Consulter les suites des incidents</a>";
-		echo "</td>\n";
-		echo "<td><p>Aucun incident (<i>avec protagoniste</i>) vous concernant n'est encore déclaré.</td>\n";
-		echo "</tr>\n";
   }
 }
 echo "</table>\n";
