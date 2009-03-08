@@ -1361,6 +1361,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) order by nom,prenom");
 		$nombreligne = mysql_num_rows($call_eleve);
 
+		// Pour afficher le nom/prénom plutôt que le login:
+		$tab_nom_prenom_eleve=array();
+
 		echo "Choisir l'élève:<br />\n";
 		echo "<select name='eleve1' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 		$cpt=1;
@@ -1369,6 +1372,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			// Le login est la clé liant les tables eleves et j_eleves_classes
 			$tab_login_eleve[$cpt]="$ligne->login";
 			$tab_nomprenom_eleve[$cpt]="$ligne->nom $ligne->prenom";
+
+			$tab_nom_prenom_eleve["$ligne->login"]=$tab_nomprenom_eleve[$cpt];
+
 			if($tab_login_eleve[$cpt]==$eleve1){
 				$selected=" selected='yes'";
 				$numeleve1=$cpt;
@@ -2086,7 +2092,22 @@ function eleve_suivant(){
 			}
 
 			if($indice_eleve1==-1) {
-				echo "<p><span style='font-weight:bold; color:red;'>ERREUR:</span> L'élève $eleve1 n'a pas été trouvé lors de l'extraction des moyennes sur la période $periode.<br />Cela peut s'expliquer si l'élève a changé de classe ou quitté l'établissement.</p>\n";
+				//echo "<p><span style='font-weight:bold; color:red;'>ERREUR:</span> L'élève $eleve1 n'a pas été trouvé lors de l'extraction des moyennes sur la période $periode.<br />Cela peut s'expliquer si l'élève a changé de classe ou quitté l'établissement.</p>\n";
+
+				echo "<div style='margin: 5% 2em; padding: 1em; border: 1px dotted #2a6167'>\n";
+				echo "<div style='text-align: center; margin-bottom: 1em; font-weight: bold; color: #ee2222'>";
+				if((isset($tab_nom_prenom_eleve))&&isset($tab_nom_prenom_eleve["$eleve1"])) {
+					echo $tab_nom_prenom_eleve["$eleve1"];
+				}
+				else {
+					echo $eleve1;
+				}
+				echo "</div>\n";
+				echo "<p>L'élève a changé de classe, est arrivé en cours d'année<br />ou a quitté l'établissement, mais il n'est pas dans la classe de $classe<br />pour la période $periode.</p>\n";
+				echo "<p>Si ces informations vous semblent erronées,<br />\n";
+				echo "vous pouvez <a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600, 480,'scrollbars=yes,statusbar=no,resizable=yes')\">contacter l'administrateur</a>.</p>\n";
+				echo "</div>\n";
+
 				require("../lib/footer.inc.php");
 				die();
 			}
