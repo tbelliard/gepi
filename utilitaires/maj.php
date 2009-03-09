@@ -7612,9 +7612,9 @@ commentaire TEXT NOT NULL
 	///Module OOO
     	$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'active_mod_ooo'");
         $res_test = mysql_num_rows($req_test);
-        if ($res_test == 0)
+        if ($res_test == 0){
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('active_mod_ooo', 'n');");
-	}
+        }
 
 
 
