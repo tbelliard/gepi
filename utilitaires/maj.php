@@ -24,6 +24,7 @@
 // On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
 // cela ici concerne le mot de passe
 $variables_non_protegees = 'yes';
+$pb_maj = '';
 
 // Initialisations files
 require_once ("../lib/initialisations.inc.php");
@@ -6670,22 +6671,22 @@ id_classe INT NOT NULL
 				//echo "\$id_model[$cpt]=\$tab_model[$cpt]['id_model_bulletin']=".$tab_model[$cpt]['id_model_bulletin']."<br />";
 				$cpt++;
 			}
-/*
-for($i=0;$i<count($tab_model);$i++) {
-	if(!empty($tab_model[$i])) {
-		//echo "<p>\$tab_model[$i]</p>";
-		echo "<p>Enregistrement \$tab_model[$i] de l'ancienne table 'model_bulletin'.</p>\n";
-		echo "<table border='1'>\n";
-		foreach($tab_model[$i] as $key => $value) {
-			echo "<tr>\n";
-			echo "<th>$key</th>\n";
-			echo "<td>$value</td>\n";
-			echo "</tr>\n";
-		}
-		echo "</table>\n";
-	}
-}
-*/
+
+		//	for($i=0;$i<count($tab_model);$i++) {
+		//		if(!empty($tab_model[$i])) {
+		//			//echo "<p>\$tab_model[$i]</p>";
+		//			echo "<p>Enregistrement \$tab_model[$i] de l'ancienne table 'model_bulletin'.</p>\n";
+		//			echo "<table border='1'>\n";
+		//			foreach($tab_model[$i] as $key => $value) {
+		//				echo "<tr>\n";
+		//				echo "<th>$key</th>\n";
+		//				echo "<td>$value</td>\n";
+		//				echo "</tr>\n";
+		//			}
+		//			echo "</table>\n";
+		//		}
+		//	}
+
 			//$sql="DROP TABLE modele_bulletin;";
 			//$nettoyage=mysql_query($sql);
 
@@ -7608,21 +7609,26 @@ commentaire TEXT NOT NULL
 		$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
 	}
 
-	///Module OOO
-    	$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'active_mod_ooo'");
+        // Module OOO
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'active_mod_ooo'");
         $res_test = mysql_num_rows($req_test);
-        if ($res_test == 0){
+        if ($res_test == 0) {
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('active_mod_ooo', 'n');");
         }
 
+	// Suite des éléments pour la 1.5.2 à mettre ci-dessous...
 
 
 
-	//------------------------------------------------------------------------
-	// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion
-	// de la 1.5.2 stable doivent se situer au-dessus de cette ligne !
-	//------------------------------------------------------------------------
+
+
 }
+//------------------------------------------------------------------------
+// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion
+// de la 1.5.2 stable doivent se situer au-dessus de cette ligne !
+//------------------------------------------------------------------------
+
+} // Fin du isset($_POST['maj'])
 
 
 
@@ -7631,7 +7637,7 @@ saveSetting("version", $gepiVersion);
 saveSetting("versionRc", $gepiRcVersion);
 saveSetting("versionBeta", $gepiBetaVersion);
 saveSetting("pb_maj", $pb_maj);
-}
+
 
 
 // Load settings
