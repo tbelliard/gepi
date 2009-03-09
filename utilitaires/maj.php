@@ -24,7 +24,6 @@
 // On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
 // cela ici concerne le mot de passe
 $variables_non_protegees = 'yes';
-$pb_maj = '';
 
 // Initialisations files
 require_once ("../lib/initialisations.inc.php");
@@ -7632,7 +7631,7 @@ saveSetting("version", $gepiVersion);
 saveSetting("versionRc", $gepiRcVersion);
 saveSetting("versionBeta", $gepiBetaVersion);
 saveSetting("pb_maj", $pb_maj);
-
+}
 
 
 // Load settings
