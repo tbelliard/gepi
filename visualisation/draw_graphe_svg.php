@@ -2,6 +2,9 @@
 /*
  $Id$
 */
+	// Initialisations files
+	require_once("../lib/initialisations.inc.php");
+
 	header("Content-type: image/svg+xml");
 	echo '<?xml version="1.0" encoding="iso-8859-1"?>';
 	echo "\n";
@@ -11,7 +14,7 @@
 	// En quoi cela consiste-t-il?
 
 	// Initialisations files
-	require_once("../lib/initialisations.inc.php");
+	//require_once("../lib/initialisations.inc.php");
 
 	// Récupération des valeurs:
 	//$nb_data = $_GET['nb_data'];
@@ -878,14 +881,16 @@ BLA
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
 			$ytmp=$ytmp+15;
-			$largeur_texte = strlen($mgen[$k]) * $l_txt_px;
+			//$largeur_texte = strlen($mgen[$k]) * $l_txt_px;
+			$largeur_texte = strlen(nf($mgen[$k])) * $l_txt_px;
 			//imagestring ($img, $taille_police, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $mgen[$k], $couleureleve[$k]);
 
 			$xtext=$x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
 			//$ytext=$ytmp;
 			$ytext=$ytmp+$fontsizetext;
 			//$fontsizetext=Floor($taille_police*3.5);
-			echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".$mgen[$k]."</text>\n";
+			//echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".$mgen[$k]."</text>\n";
+			echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".nf($mgen[$k])."</text>\n";
 
 
 			if($mgen[$k]!="-"){
@@ -903,7 +908,8 @@ BLA
 			}
 
 			$ytmp=$ytmp+15;
-			$largeur_texte = strlen($mgen_annuelle) * $l_txt_px;
+			//$largeur_texte = strlen($mgen_annuelle) * $l_txt_px;
+			$largeur_texte = strlen(nf($mgen_annuelle)) * $l_txt_px;
 			//imagestring ($img, $taille_police, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $mgen_annuelle, $couleureleve[$nb_series_bis]);
 
 
@@ -911,7 +917,8 @@ BLA
 			//$ytext=$ytmp;
 			$ytext=$ytmp+$fontsizetext;
 			//$fontsizetext=Floor($taille_police*3.5);
-			echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$nb_series_bis]."; font-size:$fontsizetext;\">".$mgen_annuelle."</text>\n";
+			//echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$nb_series_bis]."; font-size:$fontsizetext;\">".$mgen_annuelle."</text>\n";
+			echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$nb_series_bis]."; font-size:$fontsizetext;\">".nf($mgen_annuelle)."</text>\n";
 		}
 
 	}
