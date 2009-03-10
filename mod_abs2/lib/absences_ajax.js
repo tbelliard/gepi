@@ -1,14 +1,33 @@
 function observeur(){
 	Event.observe(document, 'click', voirElementHTML);
-	function voirElementHTML(event)	{
-		var elementCliquer = Event.element(event);
-    var premierSelectCliquer = Event.findElement(event,"select") ? Event.findElement(event,"select") : null;
-    var affPremierSelectCliquer = premierSelectCliquer ? premierSelectCliquer.name : 'aucun';
-    var aff = ('<br />'+elementCliquer.tagName+' et la valeur --> '+elementCliquer.value+' et le name --> '+elementCliquer.name+' et le select --> '+affPremierSelectCliquer);
-    var insertion = new Insertion.After("aff_result",aff);
-	}
+  Event.observe(document, 'click', traiterEvenement);
 }
-
+/* Fonction utilisee pour debugguer */
+function voirElementHTML(event)	{
+  var elementCliquer = Event.element(event);
+  var premierSelectCliquer = Event.findElement(event,"select") ? Event.findElement(event,"select") : null;
+  var affPremierSelectCliquer = premierSelectCliquer ? premierSelectCliquer.name : 'aucun';
+  var aff = ('<br />'+elementCliquer.tagName+' et la valeur --> '+elementCliquer.value+' et le name --> '+elementCliquer.name+' et le select --> '+affPremierSelectCliquer);
+  var insertion = new Insertion.After("aff_result",aff);
+}
+function traiterEvenement(event){
+  var elementCliquer = Event.element(event);
+  var premierSelectCliquer = Event.findElement(event,"select") ? Event.findElement(event,"select") : null;
+  var affPremierSelectCliquer = premierSelectCliquer ? premierSelectCliquer.name : 'aucun';
+  if (elementCliquer.value != 'rien'){
+    var tabChoix = new Array();
+    tabChoix = ["choix_classe", "choix_aid", "choix_groupe"];
+    if (tabChoix.indexOf(affPremierSelectCliquer) != '-1'){
+      ajaxAbsence('aff_result', affPremierSelectCliquer, elementCliquer.value, 'saisir_ajax.php');
+    }
+  }
+}
+function ajaxAbsence(id, type, info, url){
+	elementHTML = $(id);
+	o_options = new Object();
+	o_options = {postBody: '_id='+info+'&type='+type, onComplete:afficherDiv(id)};
+	var laRequete = new Ajax.Updater(elementHTML,url,o_options);
+}
 function gestionaffAbs(id, reglage, url){
 	elementHTML = $(id);
   var test = reglage.split("||");

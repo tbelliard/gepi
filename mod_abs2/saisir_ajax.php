@@ -61,19 +61,20 @@ try{
     $test_aff_fiche = 'no'; // Il y a plus d'un élève appelé, donc, pas de fiche élève
   }
 
-  $test_type = substr($type, 7); // permet de savoir quel type d'info il faut renvoyer
+  $test_type = substr($type, 6); // permet de savoir quel type d'info il faut renvoyer
+
   switch($test_type){
-    case 'Aid':
+    case 'aid':
       $liste = 'AID|' . $_id;
       break;
-    case 'Groupes':
+    case 'groupe':
       $liste = $_id;
       break;
     case 'Eleves':
       $liste = $_id;
       $_ok = 'non';
       break;
-    case 'Classes':
+    case 'classe':
       $liste = 'CLA|'.$_id;
       break;
     default:
@@ -81,9 +82,10 @@ try{
   } // switch
 
   if ($_ok == 'oui') {
-    $aff_liste = GroupePeer::retrieveByPK($_id);
-    //aff_debug();
-    $nom_classe = $aff_liste->getClasses();
+    $test_liste = GroupePeer::retrieveByPK($_id);
+    $aff_liste = $test_liste->getJEleveGroupes();
+    //aff_debug($aff_liste->getJEleveGroupes());exit();
+    $nom_classe = $test_liste->getClasses();
     $test_type = 'Classe : ';
     foreach($nom_classe as $classe){
       $test_type .= $classe->getNomComplet() . ' ';
@@ -141,14 +143,13 @@ header('Content-Type: text/html; charset:utf-8');
 
 <div id="div_saisie_abs" style="border: 1px solid grey; height: 200%; margin: 5px 5px 5px 5px; padding: 5px 5px 5px 5px; background-color: #99FFFF;">
 
-  <!--<form method="post" action="saisir_absences.php">-->
   <form method="post" action="saisir_enregistrer.php">
 
     <p><input type="hidden" name="action" value="eleves" /></p>
     <p><input type="submit" name="enregistrer_absences" value="Enregistrer" /> - <?php echo $test_type; ?></p>
     <table class="_center">
       <tr><th>Absents</th><th>Nom Pr&eacute;nom</th><th>Abs. Journ.</th><th>D&eacute;but</th><th>Fin</th><th>Justification</th><th>Motif</th></tr>
-
+      <?php aff_debug($aff_liste);exit (); ?>
       <?php $a = 0; foreach($aff_liste as $eleve): ?>
         <?php ($classes = $eleve->getJEleveClasses()); $classe = $classes[0]->getClasse(); ?>
         
