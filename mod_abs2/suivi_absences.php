@@ -40,6 +40,7 @@ if ($resultat_session == 'c') {
 };
 //debug_var();
 // ============== traitement des variables ==================
+$ordre      = isset($_POST["ordre"]) ? $_POST["ordre"] : NULL;
 $fusionner  = isset($_POST["fusionner"]) ? $_POST["fusionner"] : NULL;
 $_fusion    = isset($_POST["fusion"]) ? $_POST["fusion"] : NULL;
 $aff_fusion = NULL;
@@ -60,9 +61,37 @@ try{
 
   // On récupère la liste des absences (brutes pour le moment)
   $c = new Criteria();
-  $c->addAscendingOrderByColumn(AbsenceSaisiePeer::CREATED_ON);
-  $liste_absents_brute = AbsenceSaisiePeer::doSelect($c);
+  $tab_ordre = array ('ELEVE_ID', 'DEBUT_ABS', 'FIN_ABS', 'UTILISATEUR_ID');
+  if (in_array($ordre, $tab_ordre)){
 
+    switch ($ordre){
+      case 'ELEVE_ID':
+        //$c->addAscendingOrderByColumn(AbsenceSaisiePeer::ELEVE_ID);
+        $c->addJoin(AbsenceSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, Criteria::INNER_JOIN);
+        $c->addAscendingOrderByColumn(ElevePeer::NOM);
+        break;
+      case 'DEBUT_ABS':
+        $c->addAscendingOrderByColumn(AbsenceSaisiePeer::DEBUT_ABS);
+        break;
+      case 'FIN_ABS':
+        $c->addAscendingOrderByColumn(AbsenceSaisiePeer::FIN_ABS);
+        break;
+      case 'UTILISATEUR_ID':
+        $c->addAscendingOrderByColumn(AbsenceSaisiePeer::UTILISATEUR_ID);
+        break;
+    }
+
+  }else{
+    $c->addAscendingOrderByColumn(AbsenceSaisiePeer::CREATED_ON);
+  }
+
+  // On ne veut que les absences qui concerne le jour d'aujourd'hui :
+  $deb_creneau  = CreneauPeer::getFirstCreneau();
+  $_ts          = $deb_creneau->getDebutCreneau() + mktime(0, 0, 0, date("m"), date("d"), date("Y")) - 3600; // onconserve une marge de 1 heure avant le premier creneau
+  $c->add(AbsenceSaisiePeer::FIN_ABS, $_ts, Criteria::GREATER_EQUAL);
+
+  $liste_absents_brute = AbsenceSaisiePeer::doSelect($c);
+//  aff_debug($liste_absents_brute);exit();
 }catch(exception $e){
   affExceptions($e);
 }
@@ -77,23 +106,25 @@ require("lib/abs_menu.php");
 //debug_var();
 
 ?>
-<form id="fusionner" action="suivi_absences.php" method="post">
-  <p><input type="submit" name="fusionner" value="Fusionner les saisies sélectionnées" />
-  <input type="hidden" name="fusionner" value="ok" /><?php echo $aff_fusion; ?></p>
+
 <table id="table_liste_absents">
   <tr>
-    <th>Absence saisie par :</th>
-    <th>Eleve absent</th>
+    <th><form method="post" action="suivi_absences.php"><input type="hidden" name="ordre" value="UTILISATEUR_ID" /><input type="submit" name="enr" value="Absence saisie par :" /></form></th>
+    <th><form method="post" action="suivi_absences.php"><input type="hidden" name="ordre" value="ELEVE_ID" /><input type="submit" name="enr" value="Eleve absent" /></form></th>
     <th>Saisie effectuée le</th>
-    <th>Heure de début de l'absence</th>
-    <th>Heure de fin de l'absence</th>
+    <th><form method="post" action="suivi_absences.php"><input type="hidden" name="ordre" value="DEBUT_ABS" /><input type="submit" name="enr" value="Heure de d&eacute;but de l'absence" /></form></th>
+    <th><form method="post" action="suivi_absences.php"><input type="hidden" name="ordre" value="FIN_ABS" /><input type="submit" name="enr" value="Heure de fin de l'absence" /></form></th>
     <th>Fus.</th>
+  </tr>
+  <tr>
+    <td colspan="6">
+      <form id="fusionner" action="suivi_absences.php" method="post">
+      <p><input type="submit" name="fusionner" value="Fusionner les saisies sélectionnées" />
+      <input type="hidden" name="fusionner" value="ok" /><?php echo $aff_fusion; ?></p>
+  </td>
   </tr>
   <?php $increment = 0;
       foreach($liste_absents_brute as $absents):
-
-          $creneau_debut  = CreneauPeer::retrieveByPK($absents->getDebutAbs()); // On enlèvera 3600 secondes car en 1970, il n'y avait pas d'heure d'hiver/ete
-          $creneau_fin    = CreneauPeer::retrieveByPK($absents->getFinAbs());
 
           /******* On construit une petite fiche de l'élève en question (téléphone du parent 1) *****/
           // On ne garde que le responsable 1 qui est en principe le premier du tableau envoyé
@@ -103,7 +134,7 @@ require("lib/abs_menu.php");
           $_id_fiche = 'fiche' . $absents->getId();
           $fiche_eleve = '<div id="' . $_id_fiche . '" style="display: none; position: absolute; border: 2px solid yellow; background-color: lightblue;">
                           ' . $responsable->getResponsableEleve()->getCivilite() . '
-                          ' . $responsable->getResponsableEleve()->getNom() . ' ' . $responsable->getResponsableEleve()->getPrenom() . '<br />
+                          ' . $responsable->getResponsableEleve()->getNom() . ' ' . $responsable->getResponsableEleve()->getPrenom() . '(resp.leg. '.$responsable->getRespLegal().')<br />
                           Tel. pers. :' . $responsable->getResponsableEleve()->getTelPers() . '<br />
                           Tel. port. :' . $responsable->getResponsableEleve()->getTelPort() . '<br />
                           Tel. prof. :' . $responsable->getResponsableEleve()->getTelProf() . '<br />
@@ -114,7 +145,7 @@ require("lib/abs_menu.php");
           $_fiche_recap_abs = '<div id="' . $_id_recap . '" style="display: none; position: absolute; border: 2px solid pink; background-color: green;">
                         Absences de ' . $absents->getEleve()->getNom() . ' ' . $absents->getEleve()->getPrenom() . '<br />';
           foreach($absents->getEleve()->getAbsenceSaisies() as $absences){
-            $_fiche_recap_abs .= '--> Saisie le ' . date("d-m-Y H:i", $absences->getCreatedOn()) . ' (de '.$absences->getDebutAbs().' à '.$absences->getFinAbs().' )<br />';
+            $_fiche_recap_abs .= '--> Saisie le ' . date("d/m/Y H:i", $absences->getCreatedOn()) . ' (de '.date("d/m/Y H:i", $absences->getDebutAbs()).' à '.date("d/m/Y H:i", $absences->getFinAbs()).' )<br />';
           }
           $_fiche_recap_abs .= '</div>';
 
@@ -125,8 +156,8 @@ require("lib/abs_menu.php");
     <td><?php echo $absents->getUtilisateurProfessionnel()->getNom() . ' ' . $absents->getUtilisateurProfessionnel()->getPrenom(); ?></td>
     <td onmouseover="afficherDiv('<?php echo $_id_fiche; ?>');" onmouseout="cacherDiv('<?php echo $_id_fiche; ?>');"><?php echo $absents->getEleve()->getNom() . ' ' . $absents->getEleve()->getPrenom(); ?></td>
     <td ondblclick="afficherDiv('<?php echo $_id_recap; ?>');" onmouseout="cacherDiv('<?php echo $_id_recap; ?>');"><?php echo date("d/m/Y H:i", $absents->getCreatedOn()) . $fiche_eleve; ?></td>
-    <td><?php echo date("H:i", ($creneau_debut->getDebutCreneau() - 3600)) . $_fiche_recap_abs; ?></td>
-    <td><?php echo date("H:i", ($creneau_fin->getFinCreneau() - 3600)); ?></td>
+    <td><?php echo date("d/m/Y", $absents->getDebutAbs()).' <span class="gras">'.date("H:i", $absents->getDebutAbs()).'</span>'. $_fiche_recap_abs; ?></td>
+    <td><?php echo date("d/m/Y", $absents->getFinAbs()).' <span class="gras">'.date("H:i", $absents->getFinAbs()).'</span>'; ?></td>
     <td><input type="checkbox" name="fusion[<?php echo $increment; ?>]" value="<?php echo $absents->getId(); ?>"></td>
   </tr>
 

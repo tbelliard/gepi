@@ -78,13 +78,22 @@ try{
       if (isset($_jourentier[$a]) AND $_jourentier[$a] != ''){
 
         // ... On indique le premier et le dernier créneau de la journée
-        $saisie->setDebutAbs(CreneauPeer::getFirstCreneau()->getId());
-        $saisie->setFinAbs(CreneauPeer::getLastCreneau()->getId());
+        $_deb = CreneauPeer::getFirstCreneau()->getDebutCreneau();
+        $deb  = $_deb + mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+        $_fin = CreneauPeer::getLastCreneau()->getFinCreneau();
+        $fin  = $_fin + mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+
+        $saisie->setDebutAbs($deb);
+        $saisie->setFinAbs($fin);
 
       }else{
         //echo '<pre>';print_r($_deb);echo'</pre>';
-        $saisie->setDebutAbs($_deb[$a]);
-        $saisie->setFinAbs($_fin[$a]);
+        $cre_deb  = CreneauPeer::retrieveByPK($_deb[$a]);
+        $creDeb   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_deb->getDebutCreneau();
+        $cre_fin  = CreneauPeer::retrieveByPK($_fin[$a]);
+        $creFin   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_fin->getFinCreneau();
+        $saisie->setDebutAbs($creDeb);
+        $saisie->setFinAbs($creFin);
 
       }
       //$saisie->setCreatedOn(date("U"));

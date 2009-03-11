@@ -70,7 +70,7 @@ try{
     case 'groupe':
       $liste = $_id;
       break;
-    case 'Eleves':
+    case 'dEleves':
       $liste = $_id;
       $_ok = 'non';
       break;
@@ -149,7 +149,7 @@ header('Content-Type: text/html; charset:utf-8');
     <p><input type="submit" name="enregistrer_absences" value="Enregistrer" /> - <?php echo $test_type; ?></p>
     <table class="_center">
       <tr><th>Absents</th><th>Nom Pr&eacute;nom</th><th>Abs. Journ.</th><th>D&eacute;but</th><th>Fin</th><th>Justification</th><th>Motif</th></tr>
-      <?php aff_debug($aff_liste);exit (); ?>
+      <?php //aff_debug($aff_liste);exit (); ?>
       <?php $a = 0; foreach($aff_liste as $eleve): ?>
         <?php ($classes = $eleve->getJEleveClasses()); $classe = $classes[0]->getClasse(); ?>
         
