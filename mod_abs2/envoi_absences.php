@@ -29,6 +29,7 @@ $utiliser_pdo = 'on';
 $accessibilite="y";
 
 // Initialisations files
+include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -41,7 +42,7 @@ if ($resultat_session == 'c') {
 };
 //debug_var();
 // ============== traitement des variables ==================
-
+$action = isset($_POST['action']) ? $_POST['action'] : NULL;
 
 // ============== Code métier ===============================
 include("classes/courrier_ooo.class.php");
@@ -50,6 +51,13 @@ include("helpers/aff_listes_utilisateurs.inc.php");
 
 
 try{
+
+    // On teste Propel pour récupérer la liste des élèves
+    $criteria = new Criteria();
+    $criteria->setLimit(1);
+    $eleves = ElevePeer::doSelect($criteria);
+
+
 
   if ($action == "odt") {
     $odf = new odfDoc("test.odt");
@@ -69,7 +77,17 @@ require_once("../lib/header.inc");
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
 
-
+//aff_debug($eleves[0]->getResponsableInformations());
+$responsable = $eleves[0]->getResponsableInformations();
+aff_debug($responsable[0]->getResponsableEleve()->getResponsableEleveAdresse());
+echo '
+    L\'élève ' . $eleves[0]->getNom() . ' ' . $eleves[0]->getPrenom() . '<br />
+Dont le responsable 1 est : ' . $responsable[0]->getResponsableEleve()->getNom() . ' ' . $responsable[0]->getResponsableEleve()->getPrenom() . '
+<br />
+Adresse : ' . $responsable[0]->getResponsableEleve()->getResponsableEleveAdresse()->getAdr1() . '<br />
+          ' . $responsable[0]->getResponsableEleve()->getResponsableEleveAdresse()->getAdr2() . '<br />
+          ' . $responsable[0]->getResponsableEleve()->getResponsableEleveAdresse()->getCp() . ' ' . $responsable[0]->getResponsableEleve()->getResponsableEleveAdresse()->getCommune() . '<br />
+';
 ?>
 
 

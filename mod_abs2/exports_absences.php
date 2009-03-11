@@ -29,7 +29,9 @@ $utiliser_pdo = 'on';
 $accessibilite="y";
 
 // Initialisations files
+include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -44,7 +46,6 @@ if ($resultat_session == 'c') {
 
 
 // ============== Code métier ===============================
-include("classes/absences.class.php");
 include("lib/erreurs.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
 

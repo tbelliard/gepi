@@ -29,7 +29,9 @@ $utiliser_pdo = 'on';
 $accessibilite="y";
 
 // Initialisations files
+include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -44,24 +46,12 @@ if ($resultat_session == 'c') {
 
 
 // ============== Code métier ===============================
-include("../lib/initialisationsPropel.inc.php");
+include("lib/erreurs.php");
 
 
 try{
 
-$test = new Utilisateur();
-$test = UtilisateurPeer::retrieveByPKs('all');
-$test->
-$test2 = $test->getGroupes();
-
-  foreach ($test2 as $group){
-    echo utf8_decode($group->getDescription());
-  }
-
-
-echo '<pre><br />' . $test3;
-print_r($test2);
-echo '</pre>';
+    $test = UtilisateurProfessionnelPeer::retrieveByPK('admin');
 
 }catch(exception $e){
   affExceptions($e);
@@ -72,7 +62,7 @@ require_once("../lib/header.inc");
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
 
-
+aff_debug($test);
 ?>
 
 
