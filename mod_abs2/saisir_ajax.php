@@ -65,32 +65,31 @@ try{
 
   switch($test_type){
     case 'aid':
-      $liste = 'AID|' . $_id;
+      $liste = 'AID';
       break;
     case 'groupe':
-      $liste = $_id;
+      $liste = 'GRP';
       break;
     case 'dEleves':
       $liste = $_id;
       $_ok = 'non';
       break;
     case 'classe':
-      $liste = 'CLA|'.$_id;
+      $liste = 'CLA';
       break;
     default:
       $liste = '';
   } // switch
 
   if ($_ok == 'oui') {
+
+    $criteres_groupes = new Criteria();
+    $criteres_groupes->add(JEleveGroupePeer::PERIODE, 2);
     $test_liste = GroupePeer::retrieveByPK($_id);
-    $aff_liste = $test_liste->getJEleveGroupes();
-    //aff_debug($aff_liste->getJEleveGroupes());exit();
-    $nom_classe = $test_liste->getClasses();
-    $test_type = 'Classe : ';
-    foreach($nom_classe as $classe){
-      $test_type .= $classe->getNomComplet() . ' ';
-    }
-    //aff_debug($aff_liste); exit();
+    $aff_liste = $test_liste->getJEleveGroupesJoinEleve($criteres_groupes);
+    //aff_debug($test_liste->getJEleveGroupesJoinEleve($criteres_groupes));exit();
+    $test_type = '';//$test_type = 'Classe : ' . $test_liste[0]->getGroupe()->getNameAvecClasses();
+
   }else{
     // On récupère les infos sur tous les élèves sélectionnés (qu'il y en ait un ou plusieurs)
     $aff_coche = ' checked="checked"';
@@ -149,9 +148,15 @@ header('Content-Type: text/html; charset:utf-8');
     <p><input type="submit" name="enregistrer_absences" value="Enregistrer" /> - <?php echo $test_type; ?></p>
     <table class="_center">
       <tr><th>Absents</th><th>Nom Pr&eacute;nom</th><th>Abs. Journ.</th><th>D&eacute;but</th><th>Fin</th><th>Justification</th><th>Motif</th></tr>
-      <?php //aff_debug($aff_liste);exit (); ?>
-      <?php $a = 0; foreach($aff_liste as $eleve): ?>
-        <?php ($classes = $eleve->getJEleveClasses()); $classe = $classes[0]->getClasse(); ?>
+
+      <?php $a = 0;
+
+        foreach($aff_liste as $eleve):
+
+            if ($liste == 'GRP'){$eleve = $eleve->getEleve();}
+            //aff_debug($eleve->getJEleveClasses());exit();
+            $classes = $eleve->getJEleveClasses();
+            $classe = $classes[0]->getClasse(); ?>
         
         <tr>
 
