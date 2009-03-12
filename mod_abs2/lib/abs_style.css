@@ -34,3 +34,9 @@ border: 1px solid grey; text-align: center; padding: 2px 2px 2px 2px;
 .gras {
 font-weight: bold;
 }
+.lig1{
+background-color:inherit;
+}
+.lig2{
+background-color:white;
+}

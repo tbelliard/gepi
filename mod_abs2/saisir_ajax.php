@@ -46,13 +46,16 @@ $type = isset($_POST["type"]) ? $_POST["type"] : NULL;
 $_ok = 'oui';
 $aff_coche = '';
 $test_aff_fiche = "ok";
-$aff_creneaux = NULL;
+$aff_creneaux_deb = $aff_creneaux_fin = NULL;
 $aff_motifs = $aff_justifications = NULL;
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("lib/erreurs.php");
 
 try{
+
+  // Quelle est la période active actuellement
+  $periode = 2;
 
   // On teste $_id pour savoir s'il renvoie qu'un seul numéro d'élève ou plusieurs
   $test_id = explode(",", $_id);
@@ -66,50 +69,67 @@ try{
   switch($test_type){
     case 'aid':
       $liste = 'AID';
+      $c_aid = new Criteria();
+      $c_aid->addAscendingOrderByColumn(ElevePeer::NOM);
+      $test_liste = AidDetailsPeer::retrieveByPK($_id);
+      $aff_liste = $test_liste->getJAidElevessJoinEleve($c_aid);
+      //aff_debug($test_liste);exit();
+      $test_type = 'AID : ' . $test_liste->getNom();
       break;
     case 'groupe':
       $liste = 'GRP';
+      $criteres_groupes = new Criteria();
+      $criteres_groupes->add(JEleveGroupePeer::PERIODE, $periode);
+      $test_liste = GroupePeer::retrieveByPK($_id);
+      $aff_liste = $test_liste->getJEleveGroupesJoinEleve($criteres_groupes);
+      //aff_debug($test_liste->getJEleveGroupesJoinEleve($criteres_groupes));exit();
+      $test_type = 'Enseignement : ' . $test_liste->getDescriptionAvecClasses();//$test_type = 'Classe : ' . $test_liste[0]->getGroupe()->getNameAvecClasses();
       break;
     case 'dEleves':
       $liste = $_id;
-      $_ok = 'non';
+         // On récupère les infos sur tous les élèves sélectionnés (qu'il y en ait un ou plusieurs)
+      $aff_coche = ' checked="checked"';
+      $aff_liste = ElevePeer::retrieveByPKs($test_id);
       break;
     case 'classe':
       $liste = 'CLA';
+      $c_cla = new Criteria();
+      $c_cla->add(JEleveClassePeer::PERIODE, $periode);
+      $c_cla->addAscendingOrderByColumn(ElevePeer::NOM);
+      $test_liste = ClassePeer::retrieveByPK($_id);
+      $aff_liste = $test_liste->getJEleveClassesJoinEleve($c_cla);
+      //aff_debug($test_liste);exit();
+      $test_type = 'CLASSE : ' . $test_liste->getNomComplet();
       break;
     default:
       $liste = '';
   } // switch
 
-  if ($_ok == 'oui') {
-
-    $criteres_groupes = new Criteria();
-    $criteres_groupes->add(JEleveGroupePeer::PERIODE, 2);
-    $test_liste = GroupePeer::retrieveByPK($_id);
-    $aff_liste = $test_liste->getJEleveGroupesJoinEleve($criteres_groupes);
-    //aff_debug($test_liste->getJEleveGroupesJoinEleve($criteres_groupes));exit();
-    $test_type = '';//$test_type = 'Classe : ' . $test_liste[0]->getGroupe()->getNameAvecClasses();
-
-  }else{
-    // On récupère les infos sur tous les élèves sélectionnés (qu'il y en ait un ou plusieurs)
-    $aff_coche = ' checked="checked"';
-    $aff_liste = ElevePeer::retrieveByPKs($test_id);
-    
-  }
 
   // *********************************************************************************** //
   // ************** CRENEAUX : On crée les options pour les selects des créneaux ******* //
   $critere = new Criteria();
   $critere->add(CreneauPeer::TYPE_CRENEAU, 'pause', Criteria::NOT_EQUAL);
+  $critere->addAscendingOrderByColumn(CreneauPeer::DEBUT_CRENEAU);
   $liste_creneaux = CreneauPeer::doSelect($critere);
 
   foreach($liste_creneaux as $creneaux){
-    $aff_creneaux .= '<option value="' . $creneaux->getId() . '">' . $creneaux->getNomCreneau() . '</option>'."\n";
+    // On détermine le selected
+    $heure_actu = mktime(date("H"), date("i"), date("s"), 1, 1, 1970) + 3600;
+    if ($creneaux->getDebutCreneau() <= $heure_actu AND $creneaux->getFinCreneau() >= $heure_actu){
+      $selected = ' selected="selected" ';
+    }else{
+      $selected = '';
+    }
+    $aff_creneaux_deb .= '<option value="' . $creneaux->getId() . '"'.$selected.'>' . $creneaux->getNomCreneau() . ' <span class="gras">'.date("H:i", $creneaux->getDebutCreneau()).'</span></option>'."\n";
+    $aff_creneaux_fin .= '<option value="' . $creneaux->getId() . '"'.$selected.'>' . $creneaux->getNomCreneau() . ' <span class="gras">'.date("H:i", $creneaux->getFinCreneau()).'</span></option>'."\n";
   }
   // ****************************** Fin de la liste des créneaux *********************** //
   // *********************************************************************************** //
   // ************** MOTIFS : On crée les options pour les selects des motifs *********** //
-  $liste_motifs = AbsenceMotifPeer::doSelect(new Criteria);
+  $c_mot = new Criteria();
+  $c_mot->addAscendingOrderByColumn(AbsenceMotifPeer::ORDRE);
+  $liste_motifs = AbsenceMotifPeer::doSelect($c_mot);
 
   foreach($liste_motifs as $motifs){
     $aff_motifs .= '<option value="' . $motifs->getId() . '">' . $motifs->getNom() . '</option>'."\n";
@@ -120,7 +140,9 @@ try{
   // ****************************** Fin de la liste des motifs ************************* //
   // *********************************************************************************** //
   // **** JUSTIFICATIONS : On crée les options pour les selects des justifications ***** //
-  $liste_justifications = AbsenceJustificationPeer::doSelect(new Criteria);
+  $c_just = new Criteria();
+  $c_just->addAscendingOrderByColumn(AbsenceJustificationPeer::ORDRE);
+  $liste_justifications = AbsenceJustificationPeer::doSelect($c_just);
 
   foreach($liste_justifications as $justifications){
     $aff_justifications .= '<option value="' . $justifications->getId() . '">' . $justifications->getNom() . '</option>' . "\n";
@@ -137,7 +159,7 @@ try{
   affExceptions($e);
 }
 // On précise l'entête HTML pour que le navigateur ne se perde pas .
-header('Content-Type: text/html; charset:utf-8');
+header('Content-Type: text/html; charset:iso-8859-1');
 ?>
 
 <div id="div_saisie_abs" style="border: 1px solid grey; height: 200%; margin: 5px 5px 5px 5px; padding: 5px 5px 5px 5px; background-color: #99FFFF;">
@@ -154,6 +176,8 @@ header('Content-Type: text/html; charset:utf-8');
         foreach($aff_liste as $eleve):
 
             if ($liste == 'GRP'){$eleve = $eleve->getEleve();}
+            if ($liste == 'AID'){$eleve = $eleve->getEleve();}
+            if ($liste == 'CLA'){$eleve = $eleve->getEleve();}
             //aff_debug($eleve->getJEleveClasses());exit();
             $classes = $eleve->getJEleveClasses();
             $classe = $classes[0]->getClasse(); ?>
@@ -163,8 +187,8 @@ header('Content-Type: text/html; charset:utf-8');
           <td><input type="checkbox" name="_eleve[<?php echo $a; ?>]" id="el<?php echo $a; ?>" value="<?php echo $eleve->getIdEleve(); ?>"<?php echo $aff_coche; ?> /></td>
           <td><label for="el<?php echo $a; ?>"><?php echo htmlentities($eleve->getNom()) . ' ' . htmlentities($eleve->getPrenom()); ?> (<?php  echo $classe->getClasse(); ?>)</label></td>
           <td><input type="checkbox" name="_jourentier[<?php echo $a; ?>]" id="j<?php echo $a; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
-          <td><select name="_deb[<?php echo $a; ?>]" onclick="decoche('j<?php echo $a; ?>');"><?php echo $aff_creneaux; ?></select></td>
-          <td><select name="_fin[<?php echo $a; ?>]" onclick="decoche('j<?php echo $a; ?>');"><?php echo $aff_creneaux; ?></select></td>
+          <td><select name="_deb[<?php echo $a; ?>]" onclick="decoche('j<?php echo $a; ?>');"><?php echo $aff_creneaux_deb; ?></select></td>
+          <td><select name="_fin[<?php echo $a; ?>]" onclick="decoche('j<?php echo $a; ?>');"><?php echo $aff_creneaux_fin; ?></select></td>
           <td><select name="_justifications[<?php echo $a; ?>]"><?php echo $aff_justifications; ?></select></td>
           <td><select name="_motifs[<?php echo $a; ?>]"><?php echo $aff_motifs; ?></select></td>
 

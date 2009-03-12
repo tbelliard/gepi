@@ -149,10 +149,16 @@ require("lib/abs_menu.php");
           }
           $_fiche_recap_abs .= '</div>';
 
+          if (is_integer($increment/2)){
 
+            $class_couleur = 'lig1';
+
+          }else{
+            $class_couleur = 'lig2';
+          }
 ?>
 
-  <tr>
+  <tr class="<?php echo $class_couleur; ?>">
     <td><?php echo $absents->getUtilisateurProfessionnel()->getNom() . ' ' . $absents->getUtilisateurProfessionnel()->getPrenom(); ?></td>
     <td onmouseover="afficherDiv('<?php echo $_id_fiche; ?>');" onmouseout="cacherDiv('<?php echo $_id_fiche; ?>');"><?php echo $absents->getEleve()->getNom() . ' ' . $absents->getEleve()->getPrenom(); ?></td>
     <td ondblclick="afficherDiv('<?php echo $_id_recap; ?>');" onmouseout="cacherDiv('<?php echo $_id_recap; ?>');"><?php echo date("d/m/Y H:i", $absents->getCreatedOn()) . $fiche_eleve; ?></td>

@@ -131,6 +131,7 @@ require("lib/abs_menu.php");
 //debug_var();
 if (isset($_SESSION['msg_abs'])){
   echo $_SESSION['msg_abs'];
+  $_SESSION['msg_abs'] = NULL; // On efface le message après l'avoir affiché
 }
 ?>
 <p><a href="saisir_absences.php?type_aff_abs=alpha">Afficher tous les &eacute;l&egrave;ves</a> -

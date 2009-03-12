@@ -1,6 +1,7 @@
 function observeur(){
 	Event.observe(document, 'click', voirElementHTML);
   Event.observe(document, 'click', traiterEvenement);
+  Event.observe(document, 'keydown', voirElementTouch);
 }
 /* Fonction utilisee pour debugguer */
 function voirElementHTML(event)	{
@@ -9,6 +10,10 @@ function voirElementHTML(event)	{
   var affPremierSelectCliquer = premierSelectCliquer ? premierSelectCliquer.name : 'aucun';
   var aff = ('<br />'+elementCliquer.tagName+' et la valeur --> '+elementCliquer.value+' et le name --> '+elementCliquer.name+' et le select --> '+affPremierSelectCliquer);
   var insertion = new Insertion.After("aff_result",aff);
+}
+function voirElementTouch(event){
+  TouchKeyDown = (window.Event) ? event.which : event.keyDown;
+  alert(TouchKeyDown);
 }
 function traiterEvenement(event){
   var elementCliquer = Event.element(event);

@@ -54,7 +54,7 @@ $enregistrer_absences = isset($_POST['enregistrer_absences']) ? $_POST['enregist
 
 $_SESSION['msg_abs']  = isset($_SESSION['msg_abs']) ? $_SESSION['msg_abs'] : NULL;
 
-//debug_var();
+//debug_var();//exit();
 
 // ============== Code métier ===============================
 include("lib/erreurs.php");
@@ -65,49 +65,51 @@ try{
   // Une demande d'enregistrement des absences est lancée
   if ($action == 'eleves' AND $enregistrer_absences == 'Enregistrer'){
 
-    $nbre = count($_eleve);
-    $creneau = new Creneau();
+    $nbre = count($_fin); // On compte le nombre de ligne qui ont été envoyées
+    $nbre_el = count($_eleve); // On compte le nombre d'élèves à enregistrer
+    //$creneau = new Creneau();
     $increment = 0;
 
     for($a = 0 ; $a < $nbre ; $a++){
 
-      $saisie = new AbsenceSaisie();
-      $saisie->setUtilisateurId($_SESSION["login"]);
-      $saisie->setEleveId($_eleve[$a]);
-      // SI on demande la journée entière ...
-      if (isset($_jourentier[$a]) AND $_jourentier[$a] != ''){
+      if (isset ($_eleve[$a])){
+        // Alors on propose d'enregistrer l'absence
+        $saisie = new AbsenceSaisie();
+        $saisie->setUtilisateurId($_SESSION["login"]);
+        $saisie->setEleveId($_eleve[$a]);
+        // SI on demande la journée entière ...
+        if (isset($_jourentier[$a]) AND $_jourentier[$a] != ''){
 
-        // ... On indique le premier et le dernier créneau de la journée
-        $_deb = CreneauPeer::getFirstCreneau()->getDebutCreneau();
-        $deb  = $_deb + mktime(0, 0, 0, date("m"), date("d"), date("Y"));
-        $_fin = CreneauPeer::getLastCreneau()->getFinCreneau();
-        $fin  = $_fin + mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+          // ... On indique le premier et le dernier créneau de la journée
+          $_deb = CreneauPeer::getFirstCreneau()->getDebutCreneau();
+          $deb  = $_deb + mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+          $_fin = CreneauPeer::getLastCreneau()->getFinCreneau();
+          $fin  = $_fin + mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 
-        $saisie->setDebutAbs($deb);
-        $saisie->setFinAbs($fin);
+          $saisie->setDebutAbs($deb);
+          $saisie->setFinAbs($fin);
 
-      }else{
-        //echo '<pre>';print_r($_deb);echo'</pre>';
-        $cre_deb  = CreneauPeer::retrieveByPK($_deb[$a]);
-        $creDeb   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_deb->getDebutCreneau();
-        $cre_fin  = CreneauPeer::retrieveByPK($_fin[$a]);
-        $creFin   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_fin->getFinCreneau();
-        $saisie->setDebutAbs($creDeb);
-        $saisie->setFinAbs($creFin);
+        }else{
+          echo '<pre>';print_r($_deb);echo'</pre>';
+          $cre_deb  = CreneauPeer::retrieveByPK($_deb[$a]);
+          $creDeb   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_deb->getDebutCreneau();
+          $cre_fin  = CreneauPeer::retrieveByPK($_fin[$a]);
+          $creFin   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_fin->getFinCreneau();
+          $saisie->setDebutAbs($creDeb);
+          $saisie->setFinAbs($creFin);
 
-      }
-      //$saisie->setCreatedOn(date("U"));
-      
+        }
 
-      if ($_last_id = $saisie->save()){
-        // $_last_id est donc l'id de l'enregistrement qui vient d'avoir lieu
-        $increment++;
-      }else{
-        $_SESSION['msg_abs'] .= '||' . $_last_id;
-      }
+        if ($_last_id = $saisie->save()){
+          // $_last_id est donc l'id de l'enregistrement qui vient d'avoir lieu
+          $increment++;
+        }else{
+          $_SESSION['msg_abs'] .= '||' . $_last_id;
+        }
+      } // fin du if (isset ($_eleve[$a])){
     }
 
-    if ($increment == $nbre){
+    if ($increment == $nbre_el){
       header("Location: saisir_absences.php");
     }else{
       throw new Exception('Il y a une erreur dans la saisie des absences, au moins une d\'entre elles ne peut pas être enregistrée.||' . $increment . '+' . $nbre);
