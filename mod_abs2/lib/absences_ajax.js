@@ -1,7 +1,8 @@
 function observeur(){
 	Event.observe(document, 'click', voirElementHTML);
   Event.observe(document, 'click', traiterEvenement);
-  Event.observe(document, 'keydown', voirElementTouch);
+  //Event.observe(document, 'keydown', voirElementTouch);
+  Event.observe(document, 'keydown', func_KeyDown);
 }
 /* Fonction utilisee pour debugguer */
 function voirElementHTML(event)	{
@@ -49,11 +50,9 @@ function gestionaffAbs(id, reglage, url){
 	o_options = {postBody: '_id='+info+'&type='+reglage, onComplete:afficherDiv(id)};
 	var laRequete = new Ajax.Updater(elementHTML,url,o_options);
 }
-function afficherDiv(id){
-  Element.show(id);
-}
-function cacherDiv(id){
-  Element.hide(id);
+function afficherDiv(id){Element.show(id);}
+function cacherDiv(id){Element.hide(id);}
+function inverserDiv(id){Element.toggle(id);
 }
 function utiliseAjaxAbs(id, reglage, url){
 	elementHTML = $(id);
@@ -68,6 +67,11 @@ function func_KeyDown(event, script, type){
     if (script == 1) {
       gestionaffAbs('aff_result', type, 'parametrage_ajax.php');
     }
+  }else if(TouchKeyDown == 113){
+    //alert("ok");
+    inverserDiv('idAidAbs');
+  }else if(TouchKeyDown == 17){
+    alert('On appuie sur le touche CTRL, argh !!');
   }
 }
 function decoche(id){

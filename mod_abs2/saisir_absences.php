@@ -134,8 +134,10 @@ if (isset($_SESSION['msg_abs'])){
   $_SESSION['msg_abs'] = NULL; // On efface le message après l'avoir affiché
 }
 ?>
+<div id="idAidAbs" style="display: none; position: absolute; background-color: gray; color: white; width: 500px;">
+  Projet d'aide sur le module absence accessible par la touche [F2]. On pourrait imaginer travailler sur une aide dynamique avec des tables et des infos particulières</div>
 <p><a href="saisir_absences.php?type_aff_abs=alpha">Afficher tous les &eacute;l&egrave;ves</a> -
-<a href="saisir_absences.php?type_aff_abs=classe">Afficher par classe</a></p>
+<a href="saisir_absences.php?type_aff_abs=classe">Afficher par classe</a> - aide [F2]</p>
 
 <div id="saisie_abs" style="border: 2px solid silver; background-color: lightblue; padding: 10px 10px 10px 10px;">
 

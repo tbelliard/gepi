@@ -48,6 +48,7 @@ $aff_coche = '';
 $test_aff_fiche = "ok";
 $aff_creneaux_deb = $aff_creneaux_fin = NULL;
 $aff_motifs = $aff_justifications = NULL;
+$aff_liste = array ();
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("lib/erreurs.php");
@@ -180,12 +181,12 @@ header('Content-Type: text/html; charset:iso-8859-1');
             if ($liste == 'CLA'){$eleve = $eleve->getEleve();}
             //aff_debug($eleve->getJEleveClasses());exit();
             $classes = $eleve->getJEleveClasses();
-            $classe = $classes[0]->getClasse(); ?>
+            $classe = isset($classes[0]) ? $classes[0]->getClasse() : NULL; ?>
         
         <tr>
 
           <td><input type="checkbox" name="_eleve[<?php echo $a; ?>]" id="el<?php echo $a; ?>" value="<?php echo $eleve->getIdEleve(); ?>"<?php echo $aff_coche; ?> /></td>
-          <td><label for="el<?php echo $a; ?>"><?php echo htmlentities($eleve->getNom()) . ' ' . htmlentities($eleve->getPrenom()); ?> (<?php  echo $classe->getClasse(); ?>)</label></td>
+          <td><label for="el<?php echo $a; ?>"><?php echo htmlentities($eleve->getNom()) . ' ' . htmlentities($eleve->getPrenom()); ?> (<?php  if (is_a($classe, "Classe")){echo $classe->getClasse();} ?>)</label></td>
           <td><input type="checkbox" name="_jourentier[<?php echo $a; ?>]" id="j<?php echo $a; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
           <td><select name="_deb[<?php echo $a; ?>]" onclick="decoche('j<?php echo $a; ?>');"><?php echo $aff_creneaux_deb; ?></select></td>
           <td><select name="_fin[<?php echo $a; ?>]" onclick="decoche('j<?php echo $a; ?>');"><?php echo $aff_creneaux_fin; ?></select></td>
