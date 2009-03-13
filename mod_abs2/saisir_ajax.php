@@ -122,8 +122,8 @@ try{
     }else{
       $selected = '';
     }
-    $aff_creneaux_deb .= '<option value="' . $creneaux->getId() . '"'.$selected.'>' . $creneaux->getNomCreneau() . ' <span class="gras">'.date("H:i", $creneaux->getDebutCreneau()).'</span></option>'."\n";
-    $aff_creneaux_fin .= '<option value="' . $creneaux->getId() . '"'.$selected.'>' . $creneaux->getNomCreneau() . ' <span class="gras">'.date("H:i", $creneaux->getFinCreneau()).'</span></option>'."\n";
+    $aff_creneaux_deb .= '<option value="' . $creneaux->getId() . '"'.$selected.'>' . $creneaux->getNomCreneau() . ' <span class="gras">'.(date("H:i", $creneaux->getDebutCreneau() - 3600)).'</span></option>'."\n";
+    $aff_creneaux_fin .= '<option value="' . $creneaux->getId() . '"'.$selected.'>' . $creneaux->getNomCreneau() . ' <span class="gras">'.(date("H:i", $creneaux->getFinCreneau() - 3600)).'</span></option>'."\n";
   }
   // ****************************** Fin de la liste des créneaux *********************** //
   // *********************************************************************************** //
