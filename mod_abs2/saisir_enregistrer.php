@@ -90,7 +90,7 @@ try{
           $saisie->setFinAbs($fin);
 
         }else{
-          echo '<pre>';print_r($_deb);echo'</pre>';
+          //echo '<pre>';print_r($_deb);echo'</pre>';
           $cre_deb  = CreneauPeer::retrieveByPK($_deb[$a]);
           $creDeb   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_deb->getDebutCreneau();
           $cre_fin  = CreneauPeer::retrieveByPK($_fin[$a]);

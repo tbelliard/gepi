@@ -1,17 +1,17 @@
 function observeur(){
-	Event.observe(document, 'click', voirElementHTML);
+	//Event.observe(document, 'click', voirElementHTML);
   Event.observe(document, 'click', traiterEvenement);
   //Event.observe(document, 'keydown', voirElementTouch);
   Event.observe(document, 'keydown', func_KeyDown);
 }
-/* Fonction utilisee pour debugguer */
+/* Fonction utilisee pour debugguer 
 function voirElementHTML(event)	{
   var elementCliquer = Event.element(event);
   var premierSelectCliquer = Event.findElement(event,"select") ? Event.findElement(event,"select") : null;
   var affPremierSelectCliquer = premierSelectCliquer ? premierSelectCliquer.name : 'aucun';
   var aff = ('<br />'+elementCliquer.tagName+' et la valeur --> '+elementCliquer.value+' et le name --> '+elementCliquer.name+' et le select --> '+affPremierSelectCliquer);
   var insertion = new Insertion.After("aff_result",aff);
-}
+}*/
 function voirElementTouch(event){
   TouchKeyDown = (window.Event) ? event.which : event.keyDown;
   alert(TouchKeyDown);
@@ -25,6 +25,10 @@ function traiterEvenement(event){
     tabChoix = ["choix_classe", "choix_aid", "choix_groupe"];
     if (tabChoix.indexOf(affPremierSelectCliquer) != '-1'){
       ajaxAbsence('aff_result', affPremierSelectCliquer, elementCliquer.value, 'saisir_ajax.php');
+    }else if(elementCliquer.id.substr(0, 6) == 'winAbs'){
+      var _id = elementCliquer.id;
+      var var2 = elementCliquer.id.substr(6, 30);
+      ouvrirResp(_id, var2);
     }
   }
 }
@@ -71,10 +75,14 @@ function func_KeyDown(event, script, type){
     //alert("ok");
     inverserDiv('idAidAbs');
   }else if(TouchKeyDown == 17){
-    alert('On appuie sur le touche CTRL, argh !!');
+    var insertion = new Insertion.After('aff_result', '<br />On appuie sur le touche CTRL, argh !!');
   }
 }
 function decoche(id){
   var radio = document.getElementById(id);
   radio.checked = false;
+}
+function ouvrirResp(id, var2){
+	var win = new Window({className: "alphacube", title: "Tests sur la fiche responsables", top:170, left:100, width:700, height:500, url: "ajax_responsable.php?var="+id+"&var2="+var2, showEffectOptions: {duration:0.5}, opacity:0.95});
+	win.show();
 }

@@ -23,6 +23,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// L'utilisation d'un observeur javascript
+$use_observeur = 'ok';
+
+
 // Initialisation des feuilles de style après modification pour améliorer l'accessibilité
 $accessibilite="y";
 
@@ -52,7 +56,7 @@ include("lib/erreurs.php");
 try{
 
   // Une demande de fusion est lancée
-  if ($fusionner == 'ok'){
+  if ($fusionner == 'ok' AND $_fusion !== NULL){
     $aff_fusion = 'Une demande de fusion a été effectuée pour les a_saisie:id ';
     foreach ($_fusion as $a_fuse){
       $aff_fusion .= ' - ' . $a_fuse;
@@ -98,6 +102,7 @@ try{
 //**************** EN-TETE *****************
 $javascript_specifique = "mod_abs2/lib/absences_ajax";
 $style_specifique = "mod_abs2/lib/abs_style";
+$utilisation_win = 'oui';
 $titre_page = "Les absences";
 require_once("../lib/header.inc");
 require("lib/abs_menu.php");
@@ -160,7 +165,7 @@ require("lib/abs_menu.php");
 
   <tr class="<?php echo $class_couleur; ?>">
     <td><?php echo $absents->getUtilisateurProfessionnel()->getNom() . ' ' . $absents->getUtilisateurProfessionnel()->getPrenom(); ?></td>
-    <td onmouseover="afficherDiv('<?php echo $_id_fiche; ?>');" onmouseout="cacherDiv('<?php echo $_id_fiche; ?>');"><?php echo $absents->getEleve()->getNom() . ' ' . $absents->getEleve()->getPrenom(); ?></td>
+    <td id="winAbs<?php echo $absents->getEleve()->getIdEleve(); ?>" onmouseover="afficherDiv('<?php echo $_id_fiche; ?>');" onmouseout="cacherDiv('<?php echo $_id_fiche; ?>');"><?php echo $absents->getEleve()->getNom() . ' ' . $absents->getEleve()->getPrenom(); ?></td>
     <td ondblclick="afficherDiv('<?php echo $_id_recap; ?>');" onmouseout="cacherDiv('<?php echo $_id_recap; ?>');"><?php echo date("d/m/Y H:i", $absents->getCreatedOn()) . $fiche_eleve; ?></td>
     <td><?php echo date("d/m/Y", $absents->getDebutAbs()).' <span class="gras">'.date("H:i", $absents->getDebutAbs()).'</span>'. $_fiche_recap_abs; ?></td>
     <td><?php echo date("d/m/Y", $absents->getFinAbs()).' <span class="gras">'.date("H:i", $absents->getFinAbs()).'</span>'; ?></td>
@@ -172,6 +177,7 @@ require("lib/abs_menu.php");
 </table>
 </form>
 
+<div id="aff_result"></div>
 
 
 <?php require_once("../lib/footer.inc.php"); ?>
