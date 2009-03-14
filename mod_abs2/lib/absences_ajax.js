@@ -83,6 +83,6 @@ function decoche(id){
   radio.checked = false;
 }
 function ouvrirResp(id, var2){
-	var win = new Window({className: "alphacube", title: "Tests sur la fiche responsables", top:170, left:100, width:700, height:500, url: "ajax_responsable.php?var="+id+"&var2="+var2, showEffectOptions: {duration:0.5}, opacity:0.95});
+	var win = new Window({className: "alphacube", title: "Tests sur la fiche responsables", top:170, left:100, width:700, height:500, url: "ajax_responsable.php?var="+id+"&var2="+var2, showEffectOptions: {duration:0.1}, opacity:0.98});
 	win.show();
 }

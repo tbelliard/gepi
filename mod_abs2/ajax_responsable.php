@@ -57,7 +57,7 @@ if (is_numeric($var2) AND substr($var, 0, 6) == "winAbs"){
 
 ?>
 <p>La fiche parent ;)</p>
-<?php aff_debug($eleve->getResponsableInformations()->getResponsableEleves()); /*/ A partir d'ici, on affiche la fiche de l'élève si on la demande (uniquement dans le cas où un seul élève est demandé
+<?php aff_debug($eleve->getResponsableInformations()->getResponsablesEleves()); /*/ A partir d'ici, on affiche la fiche de l'élève si on la demande (uniquement dans le cas où un seul élève est demandé
 if (isset($aff_liste[0]->fiche_eleve) AND $test_aff_fiche == 'ok') { ?>
   <hr style="width: 1000px;" />
   <!-- fiche des responsables -->
