@@ -182,7 +182,11 @@ require("lib/abs_menu.php");
       if ($creneaux->getTypeCreneau() == 'cours'){
         $duree_cren_d = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $creneaux->getDebutCreneau();
         $duree_cren_f = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $creneaux->getFinCreneau();
-        $color = 'red';
+        if ($duree_cren_d >= $absents->getDebutAbs() AND $duree_cren_f <= $absents->getFinAbs()){
+          $color = 'red';
+        }else{
+          $color = 'silver';
+        }
 
         $aff_suivi_creneaux .= '<td style="font-weight: bold; background-color: '.$color.';">'.$creneaux->getNomCreneau().'</td>';
       }
@@ -204,7 +208,7 @@ require("lib/abs_menu.php");
     <td ondblclick="afficherDiv('<?php echo $_id_recap; ?>');" onmouseout="cacherDiv('<?php echo $_id_recap; ?>');"><?php echo date("d/m/Y H:i", $absents->getCreatedOn()) . $fiche_eleve; ?></td>
     <td><?php echo date("d/m/Y", $absents->getDebutAbs()).' <span class="gras">'.date("H:i", $absents->getDebutAbs()).'</span>'. $_fiche_recap_abs; ?></td>
     <td><?php echo date("d/m/Y", $absents->getFinAbs()).' <span class="gras">'.date("H:i", $absents->getFinAbs()).'</span>'; ?></td>
-    <td><input type="checkbox" name="fusion[<?php echo $increment; ?>]" value="<?php echo $absents->getId(); ?>" /></td>
+    <td><input type="checkbox" name="fusion[<?php echo $increment; ?>]" value="<?php echo $absents->getId(); ?>" title="Attention vous allez fusionner des absences !" /></td>
     <td><?php echo $aff_suivi_creneaux; ?></td>
   </tr>
 
