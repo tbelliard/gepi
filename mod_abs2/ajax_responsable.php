@@ -53,11 +53,30 @@ if (is_numeric($var2) AND substr($var, 0, 6) == "winAbs"){
   $eleve = ElevePeer::retrieveByPK($_id_eleve);
 }
 
+ /*
+  * A partir d'ici, on affiche la fiche de l'élève si on la demande (uniquement dans le cas où un seul élève est demandé
+  */
 
+foreach ($eleve->getResponsableInformations() as $responsables):
 
-?>
-<p>La fiche parent ;)</p>
-<?php aff_debug($eleve->getResponsableInformations()->getResponsablesEleves()); /*/ A partir d'ici, on affiche la fiche de l'élève si on la demande (uniquement dans le cas où un seul élève est demandé
+  //aff_debug($responsables);
+  $responsable  = $responsables->getResponsableEleve();
+  $adresse      = $responsable->getResponsableEleveAdresse();
+  $resp_legal = ($responsables->getRespLegal() == '0') ? '<span style="color: red;">simple contact</span>' : $responsables->getRespLegal();
+  echo '<table style="border: 1px solid gray;">
+          <tr><td>Responsable ' . $resp_legal . '</td></tr>
+          <tr><td>' . $responsable->getNom() . ' ' . $responsable->getPrenom() . '</td></tr>
+          <tr><td>' . $responsable->getTelPers() . '</td></tr>
+          <tr><td>' . $responsable->getTelPort() . '</td></tr>
+          <tr><td>' . $responsable->getTelProf() . '</td></tr>
+          <tr><td>' . $adresse->getAdr1() . '</td></tr>
+          <tr><td>' . $adresse->getAdr2() . '</td></tr>
+          <tr><td>' . $adresse->getCp() . ' ' . $adresse->getCommune() . '</td></tr>
+        </table>
+      <hr />';
+
+endforeach;
+/*
 if (isset($aff_liste[0]->fiche_eleve) AND $test_aff_fiche == 'ok') { ?>
   <hr style="width: 1000px;" />
   <!-- fiche des responsables -->
@@ -98,7 +117,7 @@ if (isset($aff_liste[0]->fiche_eleve) AND $test_aff_fiche == 'ok') { ?>
   <?php endforeach; ?>
     </table>
   </div>
-/*  <!-- Fiche de l'eleve -->
+  <!-- Fiche de l'eleve -->
   <div id="perso_eleve" style="position: absolute; height: 200px; width: 500px; background-color: lightblue;">
     <p>-- @ -- L'&eacute;l&egrave;ve --</p>
     <p style="font-weight: bold; background-color: #99AAEE;"><?php echo $aff_liste[0]->nom . ' ' . $aff_liste[0]->prenom . ' - ' . $aff_liste[0]->classe; ?></p>
