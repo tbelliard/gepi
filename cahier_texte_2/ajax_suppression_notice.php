@@ -69,6 +69,8 @@ if ($type == 'CahierTexteTravailAFaire') {
 	$objet = CahierTexteCompteRenduFichierJointPeer::retrieveByPK($id_objet);
 } elseif ($type == 'CahierTexteTravailAFaireFichierJoint') {
 	$objet = CahierTexteTravailAFaireFichierJointPeer::retrieveByPK($id_objet);
+} elseif ($type == 'CahierTexteNoticePrivee') {
+	$objet = CahierTexteNoticePriveePeer::retrieveByPK($id_objet);
 }
 
 //si pas d'objet trouve, erreur du script

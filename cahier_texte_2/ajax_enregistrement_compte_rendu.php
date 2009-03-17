@@ -164,4 +164,5 @@ if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_docum
 }
 
 echo ($ctCompteRendu->getIdCt());
+$utilisateur->clearAllReferences();
 ?>

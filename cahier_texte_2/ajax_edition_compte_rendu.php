@@ -26,7 +26,7 @@
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
-echo("Debug Locale : ".setLocale(LC_TIME,0));
+//echo("Debug Locale : ".setLocale(LC_TIME,0));
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -127,18 +127,16 @@ if ($ctCompteRendu->getDateCt() == null) {
 // **********************************************
 // Affichage des différents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
+echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" HEIGHT=\"16\" WIDTH=\"16\" style=\"border: 0px; vertical-align : middle\" src=\"../images/blank.gif\"  alt=\"Lier\" title=\"Lier la liste avec la liste des notices\" /></div>&nbsp;";
 echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
+			updateListeNoticesChaine();
 			id_groupe = (\$A($('id_groupe_colonne_droite').options).find(function(option) { return option.selected; }).value);
 			getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?today=".$today."&id_groupe=' + id_groupe,
-      			{ onComplete:
-      				function(transport) {
-      					getWinEditionNotice().updateWidth();
-      				}
-      			}
+      			 { onComplete:function() {initWysiwyg();}}
       		);
 			compte_rendu_en_cours_de_modification('aucun');
 		\">");
-echo "<option value='-1'>(choisissez un groupe pour changer l'edition)</option>\n";
+echo "<option value='-1'>choisissez un groupe</option>\n";
 $groups = $utilisateur->getGroupes();
 foreach ($groups as $group_iter) {
 	echo "<option id='colonne_droite_select_group_option_".$group_iter->getId()."' value='".$group_iter->getId()."'";
@@ -153,7 +151,12 @@ echo "</select>&nbsp;&nbsp;";
 echo "<button style='background-color:".$color_fond_notices['t']."' onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'devoir';
-					\">Editer les devoirs</button><br><br>\n";
+					\">Editer les devoirs</button>";
+
+echo "<button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
+						getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
+						object_en_cours_edition = 'notice_privee';
+					\">Editer les notices priv&eacute;e</button><br><br>\n";
 
 // Nombre de notices pour ce jour :
 $num_notice = NULL;

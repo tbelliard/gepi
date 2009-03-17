@@ -27,7 +27,7 @@ if (isset($_GET['traite_anti_inject']) || isset($_POST['traite_anti_inject'])) $
 // Initialisations files
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
-echo("Debug Locale : ".setLocale(LC_TIME,0));
+//echo("Debug Locale : ".setLocale(LC_TIME,0));
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -61,6 +61,10 @@ $titre_page = "Cahier de textes";
 $style_specifique = "cahier_texte_2/calendar/calendarstyle";
 $javascript_specifique = "cahier_texte_2/init_cahier_texte_2";
 $utilisation_win = 'oui';
+$utilisation_jsdivdrag = "non";
+$windows_effects = "non";
+$message_deconnexion = "non";
+
 //$utilisation_scriptaculous = "ok";
 //$scriptaculous_effet = "effects";
 
@@ -82,7 +86,9 @@ echo "<button style='width: 200px;' onclick=\"javascript:
 						getWinDernieresNotices().hide();
 						getWinCalendar().setLocation(0, GetWidth() - 245);
 						getWinEditionNotice().setLocation(110, 334);
+						getWinEditionNotice().setSize(GetWidth()-360, GetHeight() - 160);
 						getWinListeNotices().setLocation(110, 0);
+						getWinListeNotices().setSize(330, GetHeight() - 160)
 						return false;
 				\">Repositionner les fenetres</button>\n";
 echo "</td>";

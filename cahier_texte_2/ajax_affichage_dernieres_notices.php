@@ -5,7 +5,8 @@ if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $
 // Initialisations files
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
-echo("Debug Locale : ".setLocale(LC_TIME,0));
+include("include_affiche_notices_vignettes.php");
+//echo("Debug Locale : ".setLocale(LC_TIME,0));
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -49,22 +50,16 @@ foreach ($groups as $group) {
 	echo "<a href=\"#\" onclick=\"javascript:
 			            id_groupe = '".$group->getId()."';
 						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?&id_groupe=".$group->getId()."&today='+getCalendarUnixDate(),
-				            { encoding: 'ISO-8859-1', onComplete :
-			            		function() {
-			            			initWysiwyg();
-								}
-							}
-						);
+				            {onComplete : function() { initWysiwyg();}});
 						getWinListeNotices();
-						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_ct=&id_groupe=".$group->getId()."&today='+getCalendarUnixDate(), encoding: 'ISO-8859-1');
+						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."');
 						return false;
 			       \">";
 	echo "<img style=\"border: 0px;\" src=\"../images/ico_edit16plus.png\" alt=\"modifier\" title=\"modifier\" />&nbsp;";
 	echo $group->getDescriptionAvecClasses();
 	echo "</a></td></tr>";
 
-	echo "<tr>";
-	//récupération et affichage du dernier compte rendu
+	//récupération des derniers compte rendu
 	$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
 	$criteria->add(CahierTexteCompteRenduPeer::DATE_CT, "0", "!=");
 	$criteria->add(CahierTexteCompteRenduPeer::DATE_CT, null, Criteria::ISNOTNULL);
@@ -72,75 +67,15 @@ foreach ($groups as $group) {
 	$criteria->add(CahierTexteCompteRenduPeer::DATE_CT, $debutCdt, ">=");
 	$criteria->addDescendingOrderByColumn(CahierTexteCompteRenduPeer::DATE_CT);
 	$criteria->addAscendingOrderByColumn(CahierTexteCompteRenduPeer::HEURE_ENTRY);
+	$criteria->setLimit(2);
 	$ctCompteRendus = $group->getCahierTexteCompteRendus($criteria);
-	echo "<td style=\"border-style:solid; border-width:1px; width:50%;\" valign=\"top\" bgcolor=\"".$color_fond_notices["c"]."\">";
-	if (!empty($ctCompteRendus)) {
+
+	echo "<tr>";
+	//afichage du dernier compte rendu
+	echo "<td style=\"width:50%;\" valign=\"top\">";
+	if (isset($ctCompteRendus[0]) && $ctCompteRendus[0] != null) {
 		$compte_rendu = $ctCompteRendus[0];
-		//on affiche le compte rendu car il y en a un
-		echo("<b>" . strftime("%A %d %B %Y", $compte_rendu->getDateCt()) . "</b><br /><br />\n");
-
-		$html_balise = '<div style="margin: 0px; float: right;">';
-		if (($compte_rendu->getVise() != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')) {
-			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-      							updateCalendarWithUnixDate(".$compte_rendu->getDateCt().");
-								id_groupe = '".$group->getId()."';
-								object_en_cours_edition = 'compte_rendu';\n
-								getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_ct=".$compte_rendu->getIdCt()."',
-					            	{ encoding: 'ISO-8859-1', onComplete :
-					            		function() {
-											initWysiwyg();
-										}
-									}
-								);
-								getWinListeNotices();
-								new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."&today='+getCalendarUnixDate(),
-									{ encoding: 'ISO-8859-1', onComplete :
-										function() {
-											updateDivModification();
-										}
-									}
-								);
-								return false;
-								");
-			$html_balise .=("\">");
-			$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
-
-			$html_balise .=(" ");
-			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-														if (confirmlink(this,'suppression de la notice du ".strftime("%A %d %B %Y", $compte_rendu->getDateCt())." ?','Confirmez vous ')) {
-													    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteCompteRendu&id_objet=".$compte_rendu->getIdCt()."',
-													    		{ encoding: 'ISO-8859-1', onComplete:
-													    			function(transport) {
-							  										 	if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
-							      											alert(transport.responseText);
-							      										} else {
-							      											new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php');
-																		}
-																	}
-																}
-															);
-														}
-														return false;
-								\">
-			<img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
-		}
-		// cas d'un visa, on n'affiche rien
-		if ($compte_rendu->getVisa() == 'y') {
-			$html_balise = " ";
-		} else {
-			if ($compte_rendu->getVise() == 'y') {
-				$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
-			}
-		}
-		$html_balise .= '</div>';
-		echo($html_balise);
-
-		//affichage contenu
-		echo ($compte_rendu->getContenu());
-
-		// Documents joints
-		$ctDocuments = $compte_rendu->getCahierTexteCompteRenduFichierJoints();
-		echo(afficheDocuments($ctDocuments));
+		affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_notice, $color_fond_notices);
 	}
 	echo "</td>";
 
@@ -148,71 +83,41 @@ foreach ($groups as $group) {
 	$criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
 	$criteria->add(CahierTexteTravailAFairePeer::DATE_CT, $debutCdt, ">=");
 	$criteria->addDescendingOrderByColumn(CahierTexteTravailAFairePeer::DATE_CT);
+	$criteria->setLimit(1);
 	$ctTravailAFaires = $group->getCahierTexteTravailAFaires($criteria);
-	echo "<td style=\"border-style:solid; border-width:1px; width:50%;\" valign=\"top\" bgcolor=\"".$color_fond_notices["t"]."\">";
-		if (!empty($ctTravailAFaires)) {
+	echo "<td style=\"width:50%;\" valign=\"top\">";
+	if (!empty($ctTravailAFaires)) {
 		$devoir = $ctTravailAFaires[0];
 		//on affiche le devoir car il y en a un
-		echo("<strong>A faire pour le :</strong>\n");
-		echo("<b>" . strftime("%A %d %B %Y", $devoir->getDateCt()) . "</b><br /><br />\n");
-
-		//vise
-		$html_balise = '<div style="margin: 0px; float: right;">';
-		if (($devoir->getVise() != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')) {
-			$html_balise .=("<a href=\"#\" onclick=\"javascript:\n
-      							updateCalendarWithUnixDate(".$devoir->getDateCt().");
-								id_groupe = '".$group->getId()."';
-								object_en_cours_edition = 'devoir';
-								getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_devoir=".$devoir->getIdCt()."',
-						            { encoding: 'ISO-8859-1', onComplete :
-					            		function() {
-											initWysiwyg();
-					            			getWinListeNotices();
-											new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."&today='+getCalendarUnixDate(),
-												{ onComplete :
-													function() {
-														updateDivModification();
-													}
-												}
-											);
-										}
-									}
-								);
-								return false;
-      						");
-			$html_balise .=("\">");
-			$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
-			$html_balise .=(" ");
-			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-								if (confirmlink(this,'suppression de la notice du ".strftime("%A %d %B %Y", $devoir->getDateCt())." ?','Confirmez vous ')) {
-									new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteTravailAFaire&id_objet=".$devoir->getIdCt()."', {
-										encoding: 'ISO-8859-1', onComplete: function(transport) {
-											if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
-												alert(transport.responseText);
-											} else {
-												new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php');
-											}
-										}
-									});
-								}
-								return false;
-								\">
-			<img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
-		} else {
-			$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
-		}
-		$html_balise .= '</div>';
-		echo($html_balise);
-
-		//affichage contenu
-		echo ($devoir->getContenu());
-
-		//Documents joints
-		$ctDevoirDocuments = $devoir->getCahierTexteTravailAFaireFichierJoints();
-		echo(afficheDocuments($ctDevoirDocuments));
+		affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_fond_notices);
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	echo "<tr>";
+	//récupération et affichage du deuxieme compte rendu
+	echo "<td style=\"width:50%;\" valign=\"top\">";
+	if (isset($ctCompteRendus[1]) && $ctCompteRendus[0] != null) {
+		$compte_rendu = $ctCompteRendus[1];
+		affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_notice, $color_fond_notices);
+	}
+	echo "</td>";
+
+	//récupération et affichage de la derniere notice privee
+	$criteria = new Criteria();
+	$criteria->add(CahierTexteNoticePriveePeer::DATE_CT, $debutCdt, ">=");
+	$criteria->addDescendingOrderByColumn(CahierTexteNoticePriveePeer::DATE_CT);
+	$criteria->setLimit(1);
+	$noticePrivees = $group->getCahierTexteNoticePrivees($criteria);
+	echo "<td style=\"width:50%;\" valign=\"top\">";
+	if (isset($noticePrivees[0]) && $noticePrivees[0] != null) {
+		$noticePrivee = $noticePrivees[0];
+		//on affiche le devoir car il y en a un
+		affiche_notice_privee_vignette($noticePrivee, $couleur_bord_tableau_notice, $color_fond_notices);
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+
 
 	echo "</table></td>\n";
 
@@ -220,21 +125,4 @@ foreach ($groups as $group) {
 	if (($i % 2) == 0) echo "</tr>\n";
 }
 echo "</table>";
-
-function afficheDocuments ($documents) {
-	$html = '';
-	if (($documents) and (count($documents)!=0)) {
-		$html = "<span class='petit'>Document(s) joint(s):</span>";
-		//$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
-		$html .= "<ul style=\"padding-left: 15px;\">";
-		foreach ($documents as $document) {
-			// Ouverture dans une autre fenÃªtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
-			// alternative, utiliser un javascript
-			$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"".$document->getEmplacement()."\">".$document->getTitre()."</a></li>";
-
-		}
-		$html .= "</ul>";
-	}
-	return $html;
-}
 ?>

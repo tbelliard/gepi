@@ -65,7 +65,6 @@ echo "</td><td>";
 echo "<button onClick=\"javascript:
 			if (typeof calendarDuplicationInstanciation != 'undefined' && calendarDuplicationInstanciation != null) {
 				//get the unix date
-alert('test1');
 				calendarDuplicationInstanciation.date.setHours(0);
 				calendarDuplicationInstanciation.date.setMinutes(0);
 				calendarDuplicationInstanciation.date.setSeconds(0);

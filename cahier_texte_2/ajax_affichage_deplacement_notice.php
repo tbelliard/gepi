@@ -106,7 +106,7 @@ echo "<button onClick=\"javascript:
 			id=\"bouton_deplacer\" name=\"Deplacer\" style='font-variant: small-caps;'>Deplacer</button>";
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onClick=\"javascript:
-			$('dupplication_notice').hide();
+			$('deplacement_notice').hide();
 			return false;\"
 			style='font-variant: small-caps;'>Cacher</button>";			
 echo "</td></tr></table>";

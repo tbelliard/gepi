@@ -5,7 +5,8 @@ if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $
 // Initialisations files
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
-echo("Debug Locale : ".setLocale(LC_TIME,0));
+include("include_affiche_notices_vignettes.php");
+//echo("Debug Locale : ".setLocale(LC_TIME,0));
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -13,7 +14,7 @@ if ($resultat_session == 'c') {
 	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 	die();
 } else if ($resultat_session == '0') {
-	header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=3");
 	die();
 };
 
@@ -57,10 +58,11 @@ if ($current_group == null) {
 // Affichage des différents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value javascript trick to get selected value.
 echo ("<select id=\"id_groupe_colonne_gauche\" onChange=\"javascript:
+			updateEditionNoticeChaine();
 			selected_group = (\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value);
 			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + selected_group);
 		\">");
-echo "<option value='-1'>(choisissez un groupe pour changer la liste)</option>\n";
+echo "<option value='-1'>choisissez un groupe</option>\n";
 foreach ($utilisateur->getGroupes() as $group) {
 	echo "<option id='colonne_gauche_select_group_option_".$group->getId()."' value='".$group->getId()."'";
 	if ($current_group->getId() == $group->getId()) echo " SELECTED ";
@@ -74,11 +76,13 @@ foreach ($utilisateur->getGroupes() as $group) {
 	echo $str . ")&nbsp;\n";
 	echo "</option>\n";
 }
-echo "</select><br><br>";
+echo "</select>&nbsp;";
+echo "<div id=\"div_chaine_liste_notices\" style=\"display:inline;\"><img id=\"chaine_liste_notice\" onLoad=\"updateChaineIcones()\" HEIGHT=\"16\" WIDTH=\"16\" style=\"border: 0px; vertical-align : middle\" src=\"../images/blank.gif\"  alt=\"Lier\" title=\"Lier la liste avec la fenetre edition de notices\" /></div>";
+echo "<br><br>";
 //fin affichage des groupes
 
 if(getSettingValue('cahier_texte_acces_public')!='no'){
-    echo "<a href='../public/index.php?id_groupe=" . $current_group->getId() ."' target='_blank'>Visualiser le cahier de textes en accès public</a>\n<br><br>";
+	echo "<a href='../public/index.php?id_groupe=" . $current_group->getId() ."' target='_blank'>Visualiser le cahier de textes en accès public</a>\n<br><br>";
 } else {
 	echo "<a href='./see_all.php'>Visualiser les cahiers de textes (accès restreint)</a>\n<br><br>";
 }
@@ -95,10 +99,10 @@ foreach ($current_group->getClasses() as $classe) {
 	$groups = $classe->getGroupes();
 	foreach ($groups as $group) {
 		$req_total =
-            "select count(id_ct) total, max(date_ct) date
-            from ct_devoirs_entry
-            where (id_groupe = '" . $group->getId() . "'
-            and date_ct > $aujourdhui)";
+			"select count(id_ct) total, max(date_ct) date
+			from ct_devoirs_entry
+			where (id_groupe = '" . $group->getId() . "'
+			and date_ct > $aujourdhui)";
 		$res_total = mysql_query($req_total);
 		$sum = mysql_fetch_object($res_total);
 		$total[$classe->getId()] += $sum->total;
@@ -142,120 +146,45 @@ if ($affiche_tout != "oui") {
 	$liste_devoir = array_slice($liste_devoir, 0 , 7);
 }
 
+//récupération de $liste_notice_privee :
+$criteria = new Criteria();
+$criteria->add(CahierTexteNoticePriveePeer::DATE_CT, $debutCdt, ">=");
+$criteria->addDescendingOrderByColumn(CahierTexteNoticePriveePeer::DATE_CT);
+$liste_notice_privee = $current_group->getCahierTexteNoticePrivees($criteria);
+$compteur_nb_total_notices = $compteur_nb_total_notices + count($liste_notice_privee);
+if ($affiche_tout != "oui") {
+	//limit à 7 devoirs
+	$liste_notice_privee = array_slice($liste_notice_privee, 0 , 7);
+}
+
 // Boucle d'affichage des notices dans la colonne de gauche
 $compteur_notices_affiches = 0;
 $date_ct_old = -1;
 while (true) {
 	$devoir = isset($liste_devoir[0]) ? $liste_devoir[0] : NULL;
 	$compte_rendu = isset($liste_comptes_rendus[0]) ? $liste_comptes_rendus[0] : NULL;
+	$notice_privee = isset($liste_notice_privee[0]) ? $liste_notice_privee[0] : NULL;
 
 	//si $devoir n'est pas nul et que la date du devoir est posterieure à celle du compte rendu
-	if ($devoir != null && ($compte_rendu == null || $compte_rendu->getDateCt() < $devoir->getDateCt() )) {
+	if ($compte_rendu != null && ($devoir == null || $compte_rendu->getDateCt() >= $devoir->getDateCt() ) && ($notice_privee == null || $compte_rendu->getDateCt() >= $notice_privee->getDateCt() )) {
+
+		//si $compte_rendu n'est pas nul et que la date du $compte_rendu est posterieure à celle du devoir
+		$liste_comptes_rendus = array_slice($liste_comptes_rendus, 1);
+		$compteur_notices_affiches = $compteur_notices_affiches + 1;
+		 affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_notice, $color_fond_notices);
+
+	} elseif ($notice_privee != null && ($compte_rendu == null || $notice_privee->getDateCt() >= $compte_rendu->getDateCt()) && ($devoir == null || $notice_privee->getDateCt() >= $devoir->getDateCt() )) {
+
+		$liste_notice_privee = array_slice($liste_notice_privee, 1);
+		$compteur_notices_affiches = $compteur_notices_affiches + 1;
+		affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_notice, $color_fond_notices);
+
+	} elseif ($devoir != null && ($compte_rendu == null || $devoir->getDateCt() >= $compte_rendu->getDateCt()) && ($notice_privee == null || $devoir->getDateCt() >= $notice_privee->getDateCt() )) {
 
 		$liste_devoir = array_slice($liste_devoir, 1);
 		$compteur_notices_affiches = $compteur_notices_affiches + 1;
-		//on affiche le devoir car il y en a un
-		echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["t"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
+		affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_fond_notices);
 
-		echo("<strong>A faire pour le :</strong>\n");
-		echo("<b>" . strftime("%a %d %b %y", $devoir->getDateCt()) . "</b>\n");
-		echo("&nbsp;&nbsp;&nbsp;&nbsp;");
-
-		//vise
-		$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_devoir_".$devoir->getIdCt()."'></div>");
-		$html_balise .= '<div style="margin: 0px; float: right;">';
-		if (($devoir->getVise() != 'y') or (isset($visa_cdt_inter_modif_notices_visees) AND $visa_cdt_inter_modif_notices_visees == 'no')) {
-			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-								getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$devoir->getIdCt()."',{ onComplete: function(transport) {	initWysiwyg();}});
-      							updateCalendarWithUnixDate(".$devoir->getDateCt().");
-      							object_en_cours_edition = 'devoir';
-      							");
-			$html_balise .=("\">");
-			$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
-			$html_balise .=(" ");
-			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-								suppressionDevoir('".strftime("%A %d %B %Y", $devoir->getDateCt())."','".$devoir->getIdCt()."', '".$current_group->getId()."');
-								return false;
-							\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
-		} else {
-			$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
-		}
-		$html_balise .= '</div>';
-		echo($html_balise);
-		echo "<br/>";
-		//affichage contenu
-		echo ($devoir->getContenu());
-
-		//Documents joints
-		$ctDevoirDocuments = $devoir->getCahierTexteTravailAFaireFichierJoints();
-		echo(afficheDocuments($ctDevoirDocuments));
-
-		echo("</td>\n</tr>\n</table>\n<br/>\n");
-
-	} elseif ($compte_rendu != null && ($devoir == null || $compte_rendu->getDateCt() >= $devoir->getDateCt() )) {
-		//si $compte_rendu n'est pas nul et que la date du $compte_rendu est posterieure à celle du devoir
-
-		$liste_comptes_rendus = array_slice($liste_comptes_rendus, 1);
-		$compteur_notices_affiches = $compteur_notices_affiches + 1;
-		//on affiche le compte rendu car il y en a un
-		echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["c"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
-		echo("<b>" . strftime("%a %d %b %y", $compte_rendu->getDateCt()) . "</b>\n");
-
-		// Numerotation des notices si plusieurs notice sur la meme journée
-		if ($date_ct_old == $compte_rendu->getDateCt()) {
-			$num_notice++;
-			echo " <div style='font-size: 10; font-style: italic'>(notice N° ".$num_notice.")</div>";
-		} else {
-			// on affiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
-			if (!empty($liste_comptes_rendus) && $liste_comptes_rendus[0]->getDateCt() == $compte_rendu->getDateCt()) {
-				echo " <div style='font-size: 10; font-style: italic'>(notice N° 1)</div>";
-			}
-			// On reinitialise le compteur
-			$num_notice = 1;
-		}
-		$date_ct_old = $compte_rendu->getDateCt();
-
-		$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_compte_rendu_".$compte_rendu->getIdCt()."'></div>");
-		$html_balise .= '<div style="margin: 0px; float: right;">';
-		if (($compte_rendu->getVise() != 'y') or (isset($visa_cdt_inter_modif_notices_visees) AND $visa_cdt_inter_modif_notices_visees == 'no')) {
-			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-								getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$compte_rendu->getIdCt()."',
-		    						{ onComplete: function(transport) {
-											initWysiwyg();
-										}
-									});
-								updateCalendarWithUnixDate(".$compte_rendu->getDateCt().");
-								object_en_cours_edition = 'compte_rendu';
-							");
-			$html_balise .=("\">");
-			$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
-
-			$html_balise .=(" ");
-			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-							suppressionCompteRendu('".strftime("%A %d %B %Y", $compte_rendu->getDateCt())."',".$compte_rendu->getIdCt().");
-							return false;
-						\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
-		}
-		// cas d'un visa, on n'affiche rien
-		if ($compte_rendu->getVisa() == 'y') {
-			$html_balise = " ";
-		} else {
-			if ($compte_rendu->getVise() == 'y') {
-				$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
-			}
-		}
-		$html_balise .= '</div>';
-		echo($html_balise);
-
-		//affichage contenu
-		echo "<br/>";
-		echo ($compte_rendu->getContenu());
-
-		// Documents joints
-		$ctDocuments = $compte_rendu->getCahierTexteCompteRenduFichierJoints();
-		echo(afficheDocuments($ctDocuments));
-
-		echo("</td>\n</tr>\n</table>\n<br/>\n");
 	} else {
 		//on a tout affiché
 		break;
@@ -303,7 +232,7 @@ foreach ($ctCompteRenduInfoGenerales as $ctCompteRenduInfoGenerale) {
 	}
 	echo "<table style=\"border-style:solid; border-width:0px; background-color: ".$color_fond_notices["i"] ."; padding: 2px; margin: 0px;\" width=\"100%\" cellpadding=\"2\" summary=\"Tableau d'information generale...\">";
 	echo "<tr style=\"border-style:solid; border-width:1px; background-color: ".$couleur_cellule["i"]."; padding: 0px; margin: 0px;\">\n<td>\n";
-	
+
 	echo("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_info_".$ctCompteRenduInfoGenerale->getIdCt()."'></div>");
 	echo("<div style=\"margin: 0px; float: right;\">");
 	echo("<a href=\"#\" onclick=\"javascript:
@@ -312,37 +241,20 @@ foreach ($ctCompteRenduInfoGenerales as $ctCompteRenduInfoGenerale) {
 								function(transport) {
 									initWysiwyg();
 								}
-	      					}
-	      				);
+							}
+						);
 						object_en_cours_edition = 'compte_rendu';
-	      \">
-	      		<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" />
-	      </a>");
+		  \">
+				<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" />
+		  </a>");
 	echo("<a href=\"#\" onclick=\"suppressionCompteRendu('Information générale',".$ctCompteRenduInfoGenerale->getIdCt()."); return false;\">
 			<img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" />
 		</a></div>\n");
-	
+
 	echo($ctCompteRenduInfoGenerale->getContenu());
 	echo(afficheDocuments($ctCompteRenduInfoGenerale->getCahierTexteCompteRenduFichierJoints()));
-	
+
 	echo "</td>\n</tr>\n</table>\n";
-}
-
-function afficheDocuments ($documents) {
-	$html = '';
-	if (($documents) and (count($documents)!=0)) {
-		$html = "<br><span class='petit'>Document(s) joint(s):</span>";
-		//$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
-		$html .= "<ul style=\"padding-left: 15px;\">";
-		foreach ($documents as $document) {
-			// Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
-			// alternative, utiliser un javascript
-			$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"".$document->getEmplacement()."\">".$document->getTitre()."</a></li>";
-
-		}
-		$html .= "</ul>";
-	}
-	return $html;
 }
 
 //

@@ -116,18 +116,16 @@ $type_couleur = "t";
 // **********************************************
 // Affichage des différents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
+echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" HEIGHT=\"16\" WIDTH=\"16\" style=\"border: 0px; vertical-align : middle\" src=\"../images/blank.gif\"  alt=\"Lier\" title=\"Lier la liste avec la liste des de notices\" /></div>&nbsp;";
 echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
+			updateListeNoticesChaine();
 			id_groupe = (\$A($('id_groupe_colonne_droite').options).find(function(option) { return option.selected; }).value);
 			getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?today=".$today."&id_groupe=' + id_groupe,
-      			{ onComplete:
-      				function(transport) {
-      					new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-      				}
-      			}
+      			 { onComplete:function() {initWysiwyg();}}
       		);
 			compte_rendu_en_cours_de_modification('aucun');
 		\">");
-echo "<option value='-1'>(choisissez un groupe pour changer l'edition)</option>\n";
+echo "<option value='-1'>choisissez un groupe</option>\n";
 foreach ($utilisateur->getGroupes() as $group_iter) {
 	echo "<option id='colonne_droite_select_group_option_".$group_iter->getId()."' value='".$group_iter->getId()."'";
 	if ($groupe->getId() == $group_iter->getId()) echo " SELECTED ";
@@ -140,7 +138,11 @@ echo "</select>&nbsp;&nbsp;";
 echo "<button style='background-color:".$color_fond_notices['c']."' onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'compte_rendu';
-					\">Editer les comptes rendus</button><br><br>\n";
+					\">Editer les comptes rendus</button>";
+echo "<button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
+						getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
+						object_en_cours_edition = 'notice_privee';
+					\">Editer les notices priv&eacute;e</button><br><br>\n";
 
 //fin affichage des groupes
 
