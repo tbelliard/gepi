@@ -102,6 +102,12 @@ $couleur_entete_fond["i"] = "#EFEFFF";
 $couleur_cellule["i"]="#EFEFFF";
 $couleur_cellule_alt["i"] = "#C8C8FF";
 
+// Notice privee
+$color_fond_notices["p"] = "#f6f3a8";
+$couleur_entete_fond["p"] = "#f6f3a8";
+$couleur_cellule["p"]="#f6f3a8";
+$couleur_cellule_alt["p"] = "#f6f3a8";
+
 // Travaux à faire "futurs"
 $color_fond_notices["f"] = "#FFFF80";
 $couleur_cellule["f"] = "#FFFFDF";
