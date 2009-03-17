@@ -48,6 +48,7 @@ $ordre      = isset($_GET["ordre"]) ? $_GET["ordre"] : NULL;
 $fusionner  = isset($_POST["fusionner"]) ? $_POST["fusionner"] : NULL;
 $_fusion    = isset($_POST["fusion"]) ? $_POST["fusion"] : NULL;
 $aff_fusion = NULL;
+$tab_absents = array();
 
 // ============== Code métier ===============================
 include("lib/erreurs.php");
@@ -172,11 +173,12 @@ require("lib/abs_menu.php");
     $_fiche_recap_abs = '<div id="' . $_id_recap . '" style="display: none; position: absolute; border: 2px solid pink; background-color: green;">
                   Absences de ' . $absents->getEleve()->getNom() . ' ' . $absents->getEleve()->getPrenom() . '<br />';
     foreach($absents->getEleve()->getAbsenceSaisies() as $absences){
-      $_fiche_recap_abs .= '--> Saisie le ' . date("d/m/Y H:i", $absences->getCreatedOn()) . ' (de '.date("d/m/Y H:i", $absences->getDebutAbs()).' à '.date("d/m/Y H:i", $absences->getFinAbs()).' )<br />';
+      $_fiche_recap_abs .= '--> Saisie le ' . date("d/m/Y H:i", $absences->getCreatedOn()) .
+    ' (de '.date("d/m/Y H:i", $absences->getDebutAbs()).' à '.date("d/m/Y H:i", $absences->getFinAbs()).' )<br />';
     }
     $_fiche_recap_abs .= '</div>';
 
-    /************************** Gestion du suivi sur les créneaux ***********************************/
+    /*********************************** Gestion du suivi sur les créneaux ************************************/
     $aff_suivi_creneaux = '<table><tr>';
     foreach ($tab_creneaux as $creneaux){
       if ($creneaux->getTypeCreneau() == 'cours'){
@@ -184,14 +186,35 @@ require("lib/abs_menu.php");
         $duree_cren_f = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $creneaux->getFinCreneau();
         if ($duree_cren_d >= $absents->getDebutAbs() AND $duree_cren_f <= $absents->getFinAbs()){
           $color = 'red';
+          $title = 'Absence saisie par '.$absents->getUtilisateurProfessionnel()->getNom() . ' ' . $absents->getUtilisateurProfessionnel()->getPrenom();
         }else{
           $color = 'silver';
+          $title = 'Aucune saisie';
         }
 
-        $aff_suivi_creneaux .= '<td style="font-weight: bold; background-color: '.$color.';">'.$creneaux->getNomCreneau().'</td>';
+        $aff_suivi_creneaux .= '
+        <td style="font-weight: bold; background-color: '.$color.';" title="'.$title.'">'.$creneaux->getNomCreneau().'</td>';
       }
     }
     $aff_suivi_creneaux .= '</tr></table>';
+    /************************** Fin de la gestion du suivi sur les créneaux ***********************************/
+
+    /*
+     * ====================== TESTONS TESTONS ================================================================
+     * Il faudrait maintenant traité toutes les absences pour les ranger avant enregistrement dans la table de traitement
+     *
+     */
+
+     if (!in_array($absents->getEleve()->getIdEleve(), $tab_absents)){
+       $tab_absents[$absents->getEleve()->getIdEleve()][] = $absents;
+     }else{
+       $place = array_key($tab_absents, $absents->getEleve()->getIdEleve());
+       $tab_absents[$place][] = $absents;
+     }
+
+
+
+     // ==================== Fin du TESTONS TESTONS =========== fin du TESTONS TESTONS =======================//
 
     if (is_integer($increment/2)){
 
@@ -215,6 +238,25 @@ require("lib/abs_menu.php");
 <?php
   $increment++;
   endforeach;
+
+echo '<table>';
+     foreach($tab_absents as $abs){
+       foreach ($abs as $absents){
+$_id_fiche++;
+        echo '  <tr class="'.$class_couleur.'">
+    <td>'.$absents->getUtilisateurProfessionnel()->getNom() . ' ' . $absents->getUtilisateurProfessionnel()->getPrenom().'</td>
+    <td id="winAbs'.$absents->getEleve()->getIdEleve().'" onmouseover="afficherDiv(\''.$_id_fiche.'\');" onmouseout="cacherDiv(\''.$_id_fiche.'\');">'.$absents->getEleve()->getNom() . ' ' . $absents->getEleve()->getPrenom().'</td>
+    <td></td>
+    <td>'.date("d/m/Y", $absents->getDebutAbs()).' <span class="gras">'.date("H:i", $absents->getDebutAbs()).'</span>'. $_fiche_recap_abs.'</td>
+    <td>'.date("d/m/Y", $absents->getFinAbs()).' <span class="gras">'.date("H:i", $absents->getFinAbs()).'</span></td>
+    <td><input type="checkbox" name="fusion[]" value="'.$absents->getId().'" title="Attention vous allez fusionner des absences !" /></td>
+    <td>'.$aff_suivi_creneaux.'</td>
+  </tr>';
+
+       }
+     }
+     echo '</table>';
+
 ?>
 
 </table>

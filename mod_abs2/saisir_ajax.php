@@ -188,8 +188,8 @@ header('Content-Type: text/html; charset:iso-8859-1');
           <td><input type="checkbox" name="_eleve[<?php echo $a; ?>]" id="el<?php echo $a; ?>" value="<?php echo $eleve->getIdEleve(); ?>"<?php echo $aff_coche; ?> /></td>
           <td><label for="el<?php echo $a; ?>"><?php echo htmlentities($eleve->getNom()) . ' ' . htmlentities($eleve->getPrenom()); ?> (<?php  if (is_a($classe, "Classe")){echo $classe->getClasse();} ?>)</label></td>
           <td><input type="checkbox" name="_jourentier[<?php echo $a; ?>]" id="j<?php echo $a; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
-          <td><select name="_deb[<?php echo $a; ?>]" onclick="decoche('j<?php echo $a; ?>');"><?php echo $aff_creneaux_deb; ?></select></td>
-          <td><select name="_fin[<?php echo $a; ?>]" onclick="decoche('j<?php echo $a; ?>');"><?php echo $aff_creneaux_fin; ?></select></td>
+          <td><select name="_deb[<?php echo $a; ?>]" id="decod<?php echo $a; ?>"><?php echo $aff_creneaux_deb; ?></select></td>
+          <td><select name="_fin[<?php echo $a; ?>]" id="decof<?php echo $a; ?>"><?php echo $aff_creneaux_fin; ?></select></td>
           <td><select name="_justifications[<?php echo $a; ?>]"><?php echo $aff_justifications; ?></select></td>
           <td><select name="_motifs[<?php echo $a; ?>]"><?php echo $aff_motifs; ?></select></td>
 

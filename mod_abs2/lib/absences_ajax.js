@@ -29,6 +29,11 @@ function traiterEvenement(event){
       var _id = elementCliquer.id;
       var var2 = elementCliquer.id.substr(6, 30);
       ouvrirResp(_id, var2);
+    }else if(elementCliquer.id.substr(0, 5) == 'decod' || elementCliquer.id.substr(0, 5) == 'decof'){
+      var _id1 = 'j'+elementCliquer.id.substr(5, 10);
+      var _id2 = 'el'+elementCliquer.id.substr(5, 10);
+      decoche(_id1);
+      coche(_id2);
     }
   }
 }
@@ -81,6 +86,10 @@ function func_KeyDown(event, script, type){
 function decoche(id){
   var radio = document.getElementById(id);
   radio.checked = false;
+}
+function coche(id){
+  var radio = document.getElementById(id);
+  radio.checked = true;
 }
 function ouvrirResp(id, var2){
 	var win = new Window({className: "alphacube", title: "Tests sur la fiche responsables", top:170, left:100, width:700, height:500, url: "ajax_responsable.php?var="+id+"&var2="+var2, showEffectOptions: {duration:0.1}, opacity:0.98});
