@@ -205,9 +205,10 @@ header('Content-Type: text/html; charset:utf-8');
   <p>Ajouter une entr&eacute;e dans la base</p>
 
 
-
-    <label for="' . $type_req . '">Entrez un ' . substr($type_req, 0, (strlen($type_req) - 1)) . ' :</label>
-    <input onkeydown="func_KeyDown(event, \'1\', \'' . $type_req . '\');" type="text" id="' . $type_req . '" name="nom" value="" />
+    <p><label for="idOrder" title="Pr&eacute;cisez un nombre de 0 &agrave; ...">Ordre d\'affichage</label>
+    <input type="text" id="idOrder" name="ordre" value="" /></p>
+    <p><label for="' . $type_req . '">Entrez un ' . substr($type_req, 0, (strlen($type_req) - 1)) . ' :</label>
+    <input onkeydown="func_KeyDown(event, \'1\', \'' . $type_req . '\');" type="text" id="' . $type_req . '" name="nom" value="" /></p>
     <p onclick="gestionaffAbs(\'aff_result\', \'' . $type_req . '\', \'parametrage_ajax.php\');" class="lienWeb">Enregistrer</p>
 
 ' . $effacer . '
