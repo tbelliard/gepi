@@ -99,8 +99,8 @@ function affiche_ligne($chemin_, $titre_, $expli_, $statut_) {
 	if (acces($chemin_,$statut_)==1)  {
 		$temp = substr($chemin_,1);
 		echo "<tr>\n";
-		echo "<td><a href=\"$temp\" title=\"$expli_\" >$titre_";
-		echo "&nbsp; <img src=\"./images/bulle.png\" alt=\"En savoir plus\" title=\"$expli_\" /></a></td>\n";
+		echo "<td class='acc_prof'><a href=\"$temp\" title=\"$expli_\" >";
+		echo "&nbsp; <img src=\"./images/info_p1.png\" alt=\"En savoir plus\" title=\"$expli_\" /> - $titre_</a></td>\n";
 		echo "</tr>\n";
 	}
 }
@@ -116,13 +116,13 @@ echo '<table align="center"><tr><td	valign=top>';
 echo "<div class='bloc_page_acceuil_professeur'>";
 echo '<table class="table_acceuil">';
 echo '<tbody>';
-echo '<th align=left>&nbsp;&nbsp;<img src="./images/icons/saisie.png" alt="Saisie" class="link" />&nbsp;- au quotidien&nbsp;:</th>';
+echo '<th class="accueil">&nbsp;&nbsp;<img src="./images/icons/saisie.png" alt="Saisie" class="link" />&nbsp;- Au quotidien&nbsp;:</th>';
 
 // On teste si on l'utilisateur est un prof avec des matières. Si oui, on affiche les lignes relatives au cahier de texte et au carnet de notes
 $test_prof_matiere = sql_count(sql_query("SELECT login FROM j_groupes_professeurs WHERE login = '".$_SESSION['login']."'"));
 if (($test_prof_matiere != "0") and (getSettingValue("active_cahiers_texte")=='y')) {
-	affiche_ligne( "/cahier_texte/index.php", "Cahier de texte",  "Cet outil vous permet de constituer un cahier de texte pour chacune de vos classes.", $_SESSION['statut']);
-	affiche_ligne( "/cahier_notes/index.php", "Cahier de notes",  "Cet outil vous permet de constituer un carnet de notes pour chaque p&eacute;riode et de saisir les notes de toutes vos &eacute;valuations.", $_SESSION['statut']);
+	affiche_ligne( "/cahier_texte/index.php", "Cahier de textes",  "Cet outil vous permet de constituer un cahier de texte pour chacune de vos classes.", $_SESSION['statut']);
+	affiche_ligne( "/cahier_notes/index.php", "Carnet de notes",  "Cet outil vous permet de constituer un carnet de notes pour chaque p&eacute;riode et de saisir les notes de toutes vos &eacute;valuations.", $_SESSION['statut']);
 }
 if (getSettingValue("active_module_absence_professeur")=='y') {
 	affiche_ligne( "/mod_absences/professeurs/prof_ajout_abs.php", "Absences",  "Cet outil vous permet de g&eacute;rer les absences durant vos cours.", $_SESSION['statut']);
@@ -141,7 +141,7 @@ if ($test_prof_matiere != "0") {
 	echo "<div class='bloc_page_acceuil_professeur'>";
 	echo '<table class="table_acceuil">';
 	echo '<tbody>';
-	echo '<th align=left>&nbsp;&nbsp;<img src="./images/icons/saisie.png" alt="" class="link" /> - en fin de p&eacute;riode&nbsp;:</th>';
+	echo '<th class="accueil">&nbsp;&nbsp;<img src="./images/icons/saisie.png" alt="" class="link" /> - En fin de p&eacute;riode&nbsp;:</th>';
 	affiche_ligne( "/saisie/index.php", "Remplir les bulletins pour mes mati&egrave;res",  "Cet outil permet de remplir les bulletins pour votre mati&egrave;re.", $_SESSION['statut']);
 	affiche_ligne( "/prepa_conseil/index1.php", "Recapituler mes moyennes et appr&eacute;ciations",  "Cet outil permet de r&eacute;capituler mes moyennes et appr&eacute;ciations pour pr&eacute;parer le conseil de classe.", $_SESSION['statut']);
 	echo '</tbody>';
@@ -160,7 +160,7 @@ echo '<tr><td valign=top>';
 echo "<div class='bloc_page_acceuil_professeur'>";
 echo '<table class="table_acceuil">';
 echo '<tbody>';
-echo '<th align=left>&nbsp;&nbsp;<img src="./images/icons/contact.png" alt="Trombi" class="link" /><img src="./images/icons/print.png" alt="Imprimer" class="link" />- visualiser/imprimer :</th>';
+echo '<th class="accueil">&nbsp;&nbsp;<img src="./images/icons/contact.png" alt="Trombi" class="link" /><img src="./images/icons/print.png" alt="Imprimer" class="link" />- Visualiser/Imprimer :</th>';
 
 /** relevés de notes**/
 $test_prof_suivi = sql_count(sql_query("SELECT professeur FROM j_eleves_professeurs  WHERE professeur = '".$_SESSION['login']."'"));
@@ -282,7 +282,7 @@ if (($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')
 	echo "<div class='bloc_page_acceuil_professeur'>";
 	echo '<table class="table_acceuil">';
 	echo '<tbody>';
-	echo '<th align=left>&nbsp;&nbsp;<img src="./images/icons/saisie.png" alt="Saisie" class="link" /> - pr&eacute;parer le conseil&nbsp;:</th>';
+	echo '<th class="accueil">&nbsp;&nbsp;<img src="./images/icons/saisie.png" alt="Saisie" class="link" /> - Pr&eacute;parer le conseil&nbsp;:</th>';
 	affiche_ligne( "/prepa_conseil/index2.php", "Moyennes d'une classe",  "Cet outil permet de r&eacute;capituler les moyennes d'une classe pour pr&eacute;parer le conseil.", $_SESSION['statut']);
 	affiche_ligne( "/saisie/saisie_avis.php", "Remplir les pieds de bulletins",  "Cet outil permet de remplir les pieds de bulletins en tant que professeur principal.", $_SESSION['statut']);
 	affiche_ligne( "/visualisation/index.php", "Comparatifs (graphiques)",  "Cet outil permet d'avoir des comparatifs graphiques.", $_SESSION['statut']);
@@ -303,9 +303,9 @@ echo '<tr><td>';
 echo "<div class='bloc_page_acceuil_professeur'>";
 echo '<table class="table_acceuil">';
 echo '<tbody>';
-echo '<th align=left>&nbsp;&nbsp;<img src="./images/icons/saisie.png" alt="saisie" class="link" />- outils&nbsp;:</th>';
+echo '<th class="accueil">&nbsp;&nbsp;<img src="./images/icons/saisie.png" alt="saisie" class="link" />- Outils&nbsp;:</th>';
 affiche_ligne( "/groupes/mes_listes.php", "Listes d'&eacute;l&egrave;ves",  "Vos listes d'&eacute;l&egrave;ves au format CSV avec les champs CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS.", $_SESSION['statut']);
-affiche_ligne( "/impression/impression_serie.php", "Listes d'&eacute;l&egrave;ves (au format pdf)",  "Vos listes d'&eacute;l&egrave;ves au format PDF", $_SESSION['statut']);
+affiche_ligne( "/impression/impression_serie.php", "Listes d'&eacute;l&egrave;ves (<img src='./images/icons/pdf.png' alt='au format pdf' />)",  "Vos listes d'&eacute;l&egrave;ves au format PDF", $_SESSION['statut']);
 if (($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) {
 	affiche_ligne( "/saisie/impression_avis.php", "Avis du conseil de classe",  "Cet outil donne une synth&egrave;se des avis du conseil de classe.", $_SESSION['statut']);
 }
@@ -323,7 +323,7 @@ if (getSettingValue("active_inscription")=='y' && getSettingValue("active_inscri
 	echo "<div class='bloc_page_acceuil_professeur'>";
 	echo '<table class="table_acceuil">';
 	echo '<tbody>';
-	echo '<th align=left>&nbsp;&nbsp;<img src="./images/icons/saisie.png" alt="" class="link" />- gestion de projets&nbsp;:</th>';
+	echo '<th class="accueil">&nbsp;&nbsp;<img src="./images/icons/saisie.png" alt="" class="link" /> - Gestion de projets&nbsp;:</th>';
 	affiche_ligne("/mod_inscription/inscription_index.php",  "Acc&egrave;s au module d'inscription/visualisation", "S'inscrire ou se d&eacute;sinscrire - Consulter les inscriptions", $_SESSION['statut']);
 	echo '</tbody>';
 	echo '</table>';
