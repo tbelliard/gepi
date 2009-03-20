@@ -33,6 +33,7 @@ if (!$_SESSION["login"]) {
 // On permet de modifier la couleur du menu pour savoir où on est
 $menu = isset($menu) ? $menu : '';
 $aff_saisir = $aff_suivre = $aff_envoyer = $aff_stats = $aff_exporter = $aff_parametrer = NULL;
+$aff_aide = NULL;
 switch($menu){
   case 'saisir':
     $aff_saisir = ' style="background-color: red;"';
@@ -56,14 +57,22 @@ switch($menu){
     $aff_saisir = $aff_suivre = $aff_envoyer = $aff_stats = $aff_exporter = $aff_parametrer = NULL;;
 } // switch
 
+// intégration du module discipline
+if (getSettingValue("active_mod_discipline") == "y"){
+  $_discipline = '<li><a href="../mod_discipline/index.php"><img src="../images/icons/document.png" alt="Discipline" /> - Discipline</a></li>';
+}else{
+  $_discipline = '';
+}
+
 echo '
 	<ol id="essaiMenu">
     <li' . $aff_saisir . '><a href="saisir_absences.php"><img src="../images/edit16.png" alt="Saisie" /> - Saisie</a></li>
 		<li' . $aff_suivre . '><a href="suivi_absences.php"><img src="../images/icons/releve.png" alt="Suivi" /> - Suivi</a></li>
+    ' . $_discipline . '
 		<li' . $aff_envoyer . '><a href="envoi_absences.php"><img src="../images/icons/mail.png" alt="courrier" /> - Envoi aux familles</a></li>
 		<li' . $aff_stats . '><a href="stats_absences.php"><img src="../images/icons/stats.png" alt="Stats" /> - Statistiques</a></li>
 		<li' . $aff_exporter . '><a href="exports_absences.php"><img src="../images/icons/absences.png" alt="Exports" /> - Exports</a></li>
 		<li' . $aff_parametrer . '><a href="parametrage_absences.php"><img src="../images/icons/configure.png" alt="param&eacute;trer" /> - Param&egrave;tres</a></li>
 	</ol>
-	';
+	<div id="aidmenu" style="display: none;">' . $aff_aide . '</div>';
 ?>
