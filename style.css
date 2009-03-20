@@ -793,3 +793,10 @@ td.menu_droit {
 	width:48px;
 	height: 48px;
 }
+.acc_prof {
+  font-weight: bold;
+}
+.acc_prof :hover {
+  background-color: white;
+  color: blue;
+}
