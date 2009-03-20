@@ -587,8 +587,6 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += UtilisateurProfessionnelPeer::doOnDeleteCascade(new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME), $con);
-			UtilisateurProfessionnelPeer::doOnDeleteSetNull(new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(UtilisateurProfessionnelPeer::TABLE_NAME, $con);
 			$con->commit();
 			return $affectedRows;
@@ -651,17 +649,6 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += UtilisateurProfessionnelPeer::doOnDeleteCascade($criteria, $con);
-			UtilisateurProfessionnelPeer::doOnDeleteSetNull($criteria, $con);
-			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					UtilisateurProfessionnelPeer::clearInstancePool();
-				} else { // it's a PK or object
-					UtilisateurProfessionnelPeer::removeInstanceFromPool($values);
-				}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
 
@@ -692,124 +679,14 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			// invalidate objects in AbsenceTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 			AbsenceTraitementPeer::clearInstancePool();
 
+			// invalidate objects in AbsenceAbsencePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			AbsenceAbsencePeer::clearInstancePool();
+
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
-		}
-	}
-
-	/**
-	 * This is a method for emulating ON DELETE CASCADE for DBs that don't support this
-	 * feature (like MySQL or SQLite).
-	 *
-	 * This method is not very speedy because it must perform a query first to get
-	 * the implicated records and then perform the deletes by calling those Peer classes.
-	 *
-	 * This method should be used within a transaction if possible.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
-	 * @return     int The number of affected rows (if supported by underlying database driver).
-	 */
-	protected static function doOnDeleteCascade(Criteria $criteria, PropelPDO $con)
-	{
-		// initialize var to track total num of affected rows
-		$affectedRows = 0;
-
-		// first find the objects that are implicated by the $criteria
-		$objects = UtilisateurProfessionnelPeer::doSelect($criteria, $con);
-		foreach ($objects as $obj) {
-
-
-			// delete related JGroupesProfesseurs objects
-			$c = new Criteria(JGroupesProfesseursPeer::DATABASE_NAME);
-			
-			$c->add(JGroupesProfesseursPeer::LOGIN, $obj->getLogin());
-			$affectedRows += JGroupesProfesseursPeer::doDelete($c, $con);
-
-			// delete related JEleveCpe objects
-			$c = new Criteria(JEleveCpePeer::DATABASE_NAME);
-			
-			$c->add(JEleveCpePeer::CPE_LOGIN, $obj->getLogin());
-			$affectedRows += JEleveCpePeer::doDelete($c, $con);
-
-			// delete related JEleveProfesseurPrincipal objects
-			$c = new Criteria(JEleveProfesseurPrincipalPeer::DATABASE_NAME);
-			
-			$c->add(JEleveProfesseurPrincipalPeer::PROFESSEUR, $obj->getLogin());
-			$affectedRows += JEleveProfesseurPrincipalPeer::doDelete($c, $con);
-
-			// delete related JAidUtilisateursProfessionnels objects
-			$c = new Criteria(JAidUtilisateursProfessionnelsPeer::DATABASE_NAME);
-			
-			$c->add(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $obj->getLogin());
-			$affectedRows += JAidUtilisateursProfessionnelsPeer::doDelete($c, $con);
-		}
-		return $affectedRows;
-	}
-
-	/**
-	 * This is a method for emulating ON DELETE SET NULL DBs that don't support this
-	 * feature (like MySQL or SQLite).
-	 *
-	 * This method is not very speedy because it must perform a query first to get
-	 * the implicated records and then perform the deletes by calling those Peer classes.
-	 *
-	 * This method should be used within a transaction if possible.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
-	 * @return     void
-	 */
-	protected static function doOnDeleteSetNull(Criteria $criteria, PropelPDO $con)
-	{
-
-		// first find the objects that are implicated by the $criteria
-		$objects = UtilisateurProfessionnelPeer::doSelect($criteria, $con);
-		foreach ($objects as $obj) {
-
-			// set fkey col in related CahierTexteCompteRendu rows to NULL
-			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(CahierTexteCompteRenduPeer::ID_LOGIN, $obj->getLogin());
-			$updateValues->add(CahierTexteCompteRenduPeer::ID_LOGIN, null);
-
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
-
-			// set fkey col in related CahierTexteTravailAFaire rows to NULL
-			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $obj->getLogin());
-			$updateValues->add(CahierTexteTravailAFairePeer::ID_LOGIN, null);
-
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
-
-			// set fkey col in related CahierTexteNoticePrivee rows to NULL
-			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(CahierTexteNoticePriveePeer::ID_LOGIN, $obj->getLogin());
-			$updateValues->add(CahierTexteNoticePriveePeer::ID_LOGIN, null);
-
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
-
-			// set fkey col in related AbsenceSaisie rows to NULL
-			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceSaisiePeer::UTILISATEUR_ID, $obj->getLogin());
-			$updateValues->add(AbsenceSaisiePeer::UTILISATEUR_ID, null);
-
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
-
-			// set fkey col in related AbsenceTraitement rows to NULL
-			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $obj->getLogin());
-			$updateValues->add(AbsenceTraitementPeer::UTILISATEUR_ID, null);
-
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
-
 		}
 	}
 

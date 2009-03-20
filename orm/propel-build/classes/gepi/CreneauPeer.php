@@ -78,4 +78,31 @@ class CreneauPeer extends BaseCreneauPeer {
     return self::$_liste_creneaux;
   }
 
+  /**
+   * Renvoie le creneau précédent de celui passé en argument
+   * Si l'id du creneau dépasse 3600 (ce qui parait peu probable tout de même), on teste sur l'heure de début
+   *
+   * @var $creneau id du creneau ou heure de début
+   * @return object CreneauPeer precedent
+   */
+  public static function getCreneauPrecedent($creneau){
+    $creneaux = self::getListeCreneaux();
+    $nbre = count($creneaux);
+    if (is_numeric($creneau) AND $creneau < 3600){
+      // On peut rechercher par rapport à l'id
+      for($a = 0 ; $a < $nbre ; $a++){
+        if ($creneaux[$a]->getId() == $creneau){
+          return($creneaux[$a - 1]);
+        }
+      }
+    }elseif($creneau > 3600){
+      // On peut rechercher par rapport à l'heure de debut
+      for($a = 0 ; $a < $nbre ; $a++){
+        if ($creneaux[$a]->getDebutCreneau() <= $creneau AND $creneaux[$a]->getFinCreneau() >= $creneau){
+          return($creneaux[$a - 1]);
+        }
+      }
+    }
+  }
+
 } // CreneauPeer

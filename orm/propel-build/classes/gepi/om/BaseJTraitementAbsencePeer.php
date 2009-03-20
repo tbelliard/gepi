@@ -1,22 +1,22 @@
 <?php
 
 /**
- * Base static class for performing query and update operations on the 'j_traitement_saisie' table.
+ * Base static class for performing query and update operations on the 'j_traitement_absence' table.
  *
  * Table de jointure entre la saisie et le traitement des absences
  *
  * @package    gepi.om
  */
-abstract class BaseJTraitementSaisieAbsencePeer {
+abstract class BaseJTraitementAbsencePeer {
 
 	/** the default database name for this class */
 	const DATABASE_NAME = 'gepi';
 
 	/** the table name for this class */
-	const TABLE_NAME = 'j_traitement_saisie';
+	const TABLE_NAME = 'j_traitement_absence';
 
 	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'gepi.JTraitementSaisieAbsence';
+	const CLASS_DEFAULT = 'gepi.JTraitementAbsence';
 
 	/** The total number of columns. */
 	const NUM_COLUMNS = 2;
@@ -24,17 +24,17 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
-	/** the column name for the A_SAISIE_ID field */
-	const A_SAISIE_ID = 'j_traitement_saisie.A_SAISIE_ID';
+	/** the column name for the A_ABSENCE_ID field */
+	const A_ABSENCE_ID = 'j_traitement_absence.A_ABSENCE_ID';
 
 	/** the column name for the A_TRAITEMENT_ID field */
-	const A_TRAITEMENT_ID = 'j_traitement_saisie.A_TRAITEMENT_ID';
+	const A_TRAITEMENT_ID = 'j_traitement_absence.A_TRAITEMENT_ID';
 
 	/**
-	 * An identiy map to hold any loaded instances of JTraitementSaisieAbsence objects.
+	 * An identiy map to hold any loaded instances of JTraitementAbsence objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
 	 * queries.
-	 * @var        array JTraitementSaisieAbsence[]
+	 * @var        array JTraitementAbsence[]
 	 */
 	public static $instances = array();
 
@@ -51,10 +51,10 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('ASaisieId', 'ATraitementId', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('aSaisieId', 'aTraitementId', ),
-		BasePeer::TYPE_COLNAME => array (self::A_SAISIE_ID, self::A_TRAITEMENT_ID, ),
-		BasePeer::TYPE_FIELDNAME => array ('a_saisie_id', 'a_traitement_id', ),
+		BasePeer::TYPE_PHPNAME => array ('AAbsenceId', 'ATraitementId', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('aAbsenceId', 'aTraitementId', ),
+		BasePeer::TYPE_COLNAME => array (self::A_ABSENCE_ID, self::A_TRAITEMENT_ID, ),
+		BasePeer::TYPE_FIELDNAME => array ('a_absence_id', 'a_traitement_id', ),
 		BasePeer::TYPE_NUM => array (0, 1, )
 	);
 
@@ -65,10 +65,10 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('ASaisieId' => 0, 'ATraitementId' => 1, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('aSaisieId' => 0, 'aTraitementId' => 1, ),
-		BasePeer::TYPE_COLNAME => array (self::A_SAISIE_ID => 0, self::A_TRAITEMENT_ID => 1, ),
-		BasePeer::TYPE_FIELDNAME => array ('a_saisie_id' => 0, 'a_traitement_id' => 1, ),
+		BasePeer::TYPE_PHPNAME => array ('AAbsenceId' => 0, 'ATraitementId' => 1, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('aAbsenceId' => 0, 'aTraitementId' => 1, ),
+		BasePeer::TYPE_COLNAME => array (self::A_ABSENCE_ID => 0, self::A_TRAITEMENT_ID => 1, ),
+		BasePeer::TYPE_FIELDNAME => array ('a_absence_id' => 0, 'a_traitement_id' => 1, ),
 		BasePeer::TYPE_NUM => array (0, 1, )
 	);
 
@@ -79,7 +79,7 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	public static function getMapBuilder()
 	{
 		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new JTraitementSaisieAbsenceMapBuilder();
+			self::$mapBuilder = new JTraitementAbsenceMapBuilder();
 		}
 		return self::$mapBuilder;
 	}
@@ -129,12 +129,12 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
 	 * </code>
 	 * @param      string $alias The alias for the current table.
-	 * @param      string $column The column name for current table. (i.e. JTraitementSaisieAbsencePeer::COLUMN_NAME).
+	 * @param      string $column The column name for current table. (i.e. JTraitementAbsencePeer::COLUMN_NAME).
 	 * @return     string
 	 */
 	public static function alias($alias, $column)
 	{
-		return str_replace(JTraitementSaisieAbsencePeer::TABLE_NAME.'.', $alias.'.', $column);
+		return str_replace(JTraitementAbsencePeer::TABLE_NAME.'.', $alias.'.', $column);
 	}
 
 	/**
@@ -151,9 +151,9 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	public static function addSelectColumns(Criteria $criteria)
 	{
 
-		$criteria->addSelectColumn(JTraitementSaisieAbsencePeer::A_SAISIE_ID);
+		$criteria->addSelectColumn(JTraitementAbsencePeer::A_ABSENCE_ID);
 
-		$criteria->addSelectColumn(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID);
+		$criteria->addSelectColumn(JTraitementAbsencePeer::A_TRAITEMENT_ID);
 
 	}
 
@@ -173,21 +173,21 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementSaisieAbsencePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JTraitementAbsencePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementSaisieAbsencePeer::addSelectColumns($criteria);
+			JTraitementAbsencePeer::addSelectColumns($criteria);
 		}
 
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 		// BasePeer returns a PDOStatement
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -205,7 +205,7 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
-	 * @return     JTraitementSaisieAbsence
+	 * @return     JTraitementAbsence
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -213,7 +213,7 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
-		$objects = JTraitementSaisieAbsencePeer::doSelect($critcopy, $con);
+		$objects = JTraitementAbsencePeer::doSelect($critcopy, $con);
 		if ($objects) {
 			return $objects[0];
 		}
@@ -230,7 +230,7 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 */
 	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return JTraitementSaisieAbsencePeer::populateObjects(JTraitementSaisieAbsencePeer::doSelectStmt($criteria, $con));
+		return JTraitementAbsencePeer::populateObjects(JTraitementAbsencePeer::doSelectStmt($criteria, $con));
 	}
 	/**
 	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -248,12 +248,12 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
-			JTraitementSaisieAbsencePeer::addSelectColumns($criteria);
+			JTraitementAbsencePeer::addSelectColumns($criteria);
 		}
 
 		// Set the correct dbName
@@ -271,14 +271,14 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
 	 * and retrieveByPK*() calls.
 	 *
-	 * @param      JTraitementSaisieAbsence $value A JTraitementSaisieAbsence object.
+	 * @param      JTraitementAbsence $value A JTraitementAbsence object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(JTraitementSaisieAbsence $obj, $key = null)
+	public static function addInstanceToPool(JTraitementAbsence $obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = serialize(array((string) $obj->getASaisieId(), (string) $obj->getATraitementId()));
+				$key = serialize(array((string) $obj->getAAbsenceId(), (string) $obj->getATraitementId()));
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -292,18 +292,18 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 * methods in your stub classes -- you may need to explicitly remove objects
 	 * from the cache in order to prevent returning objects that no longer exist.
 	 *
-	 * @param      mixed $value A JTraitementSaisieAbsence object or a primary key value.
+	 * @param      mixed $value A JTraitementAbsence object or a primary key value.
 	 */
 	public static function removeInstanceFromPool($value)
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
-			if (is_object($value) && $value instanceof JTraitementSaisieAbsence) {
-				$key = serialize(array((string) $value->getASaisieId(), (string) $value->getATraitementId()));
+			if (is_object($value) && $value instanceof JTraitementAbsence) {
+				$key = serialize(array((string) $value->getAAbsenceId(), (string) $value->getATraitementId()));
 			} elseif (is_array($value) && count($value) === 2) {
 				// assume we've been passed a primary key
 				$key = serialize(array((string) $value[0], (string) $value[1]));
 			} else {
-				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or JTraitementSaisieAbsence object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or JTraitementAbsence object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
 			}
 
@@ -318,7 +318,7 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
 	 *
 	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-	 * @return     JTraitementSaisieAbsence Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @return     JTraitementAbsence Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
 	 * @see        getPrimaryKeyHash()
 	 */
 	public static function getInstanceFromPool($key)
@@ -372,12 +372,12 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = JTraitementSaisieAbsencePeer::getOMClass();
+		$cls = JTraitementAbsencePeer::getOMClass();
 		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key = JTraitementSaisieAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj = JTraitementSaisieAbsencePeer::getInstanceFromPool($key))) {
+			$key = JTraitementAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = JTraitementAbsencePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
@@ -387,7 +387,7 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
-				JTraitementSaisieAbsencePeer::addInstanceToPool($obj, $key);
+				JTraitementAbsencePeer::addInstanceToPool($obj, $key);
 			} // if key exists
 		}
 		$stmt->closeCursor();
@@ -395,7 +395,7 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	}
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related AbsenceSaisie table
+	 * Returns the number of rows matching criteria, joining the related AbsenceAbsence table
 	 *
 	 * @param      Criteria $c
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -403,7 +403,7 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAbsenceSaisie(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinAbsenceAbsence(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -411,14 +411,14 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementSaisieAbsencePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JTraitementAbsencePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementSaisieAbsencePeer::addSelectColumns($criteria);
+			JTraitementAbsencePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -427,10 +427,10 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(JTraitementSaisieAbsencePeer::A_SAISIE_ID,), array(AbsenceSaisiePeer::ID,), $join_behavior);
+		$criteria->addJoin(array(JTraitementAbsencePeer::A_ABSENCE_ID,), array(AbsenceAbsencePeer::ID,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -460,14 +460,14 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementSaisieAbsencePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JTraitementAbsencePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementSaisieAbsencePeer::addSelectColumns($criteria);
+			JTraitementAbsencePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -476,10 +476,10 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
+		$criteria->addJoin(array(JTraitementAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -493,15 +493,15 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 
 
 	/**
-	 * Selects a collection of JTraitementSaisieAbsence objects pre-filled with their AbsenceSaisie objects.
+	 * Selects a collection of JTraitementAbsence objects pre-filled with their AbsenceAbsence objects.
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JTraitementSaisieAbsence objects.
+	 * @return     array Array of JTraitementAbsence objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAbsenceSaisie(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAbsenceAbsence(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$c = clone $c;
 
@@ -510,45 +510,45 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 			$c->setDbName(self::DATABASE_NAME);
 		}
 
-		JTraitementSaisieAbsencePeer::addSelectColumns($c);
-		$startcol = (JTraitementSaisieAbsencePeer::NUM_COLUMNS - JTraitementSaisieAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
-		AbsenceSaisiePeer::addSelectColumns($c);
+		JTraitementAbsencePeer::addSelectColumns($c);
+		$startcol = (JTraitementAbsencePeer::NUM_COLUMNS - JTraitementAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
+		AbsenceAbsencePeer::addSelectColumns($c);
 
-		$c->addJoin(array(JTraitementSaisieAbsencePeer::A_SAISIE_ID,), array(AbsenceSaisiePeer::ID,), $join_behavior);
+		$c->addJoin(array(JTraitementAbsencePeer::A_ABSENCE_ID,), array(AbsenceAbsencePeer::ID,), $join_behavior);
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JTraitementSaisieAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JTraitementSaisieAbsencePeer::getInstanceFromPool($key1))) {
+			$key1 = JTraitementAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = JTraitementAbsencePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = JTraitementSaisieAbsencePeer::getOMClass();
+				$omClass = JTraitementAbsencePeer::getOMClass();
 
 				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				JTraitementSaisieAbsencePeer::addInstanceToPool($obj1, $key1);
+				JTraitementAbsencePeer::addInstanceToPool($obj1, $key1);
 			} // if $obj1 already loaded
 
-			$key2 = AbsenceSaisiePeer::getPrimaryKeyHashFromRow($row, $startcol);
+			$key2 = AbsenceAbsencePeer::getPrimaryKeyHashFromRow($row, $startcol);
 			if ($key2 !== null) {
-				$obj2 = AbsenceSaisiePeer::getInstanceFromPool($key2);
+				$obj2 = AbsenceAbsencePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = AbsenceSaisiePeer::getOMClass();
+					$omClass = AbsenceAbsencePeer::getOMClass();
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
-					AbsenceSaisiePeer::addInstanceToPool($obj2, $key2);
+					AbsenceAbsencePeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 already loaded
 
-				// Add the $obj1 (JTraitementSaisieAbsence) to $obj2 (AbsenceSaisie)
-				$obj2->addJTraitementSaisieAbsence($obj1);
+				// Add the $obj1 (JTraitementAbsence) to $obj2 (AbsenceAbsence)
+				$obj2->addJTraitementAbsence($obj1);
 
 			} // if joined row was not null
 
@@ -560,11 +560,11 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 
 
 	/**
-	 * Selects a collection of JTraitementSaisieAbsence objects pre-filled with their AbsenceTraitement objects.
+	 * Selects a collection of JTraitementAbsence objects pre-filled with their AbsenceTraitement objects.
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JTraitementSaisieAbsence objects.
+	 * @return     array Array of JTraitementAbsence objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -577,28 +577,28 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 			$c->setDbName(self::DATABASE_NAME);
 		}
 
-		JTraitementSaisieAbsencePeer::addSelectColumns($c);
-		$startcol = (JTraitementSaisieAbsencePeer::NUM_COLUMNS - JTraitementSaisieAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
+		JTraitementAbsencePeer::addSelectColumns($c);
+		$startcol = (JTraitementAbsencePeer::NUM_COLUMNS - JTraitementAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
 		AbsenceTraitementPeer::addSelectColumns($c);
 
-		$c->addJoin(array(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
+		$c->addJoin(array(JTraitementAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JTraitementSaisieAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JTraitementSaisieAbsencePeer::getInstanceFromPool($key1))) {
+			$key1 = JTraitementAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = JTraitementAbsencePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = JTraitementSaisieAbsencePeer::getOMClass();
+				$omClass = JTraitementAbsencePeer::getOMClass();
 
 				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				JTraitementSaisieAbsencePeer::addInstanceToPool($obj1, $key1);
+				JTraitementAbsencePeer::addInstanceToPool($obj1, $key1);
 			} // if $obj1 already loaded
 
 			$key2 = AbsenceTraitementPeer::getPrimaryKeyHashFromRow($row, $startcol);
@@ -614,8 +614,8 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 					AbsenceTraitementPeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 already loaded
 
-				// Add the $obj1 (JTraitementSaisieAbsence) to $obj2 (AbsenceTraitement)
-				$obj2->addJTraitementSaisieAbsence($obj1);
+				// Add the $obj1 (JTraitementAbsence) to $obj2 (AbsenceTraitement)
+				$obj2->addJTraitementAbsence($obj1);
 
 			} // if joined row was not null
 
@@ -643,14 +643,14 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementSaisieAbsencePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JTraitementAbsencePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementSaisieAbsencePeer::addSelectColumns($criteria);
+			JTraitementAbsencePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -659,11 +659,11 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(JTraitementSaisieAbsencePeer::A_SAISIE_ID,), array(AbsenceSaisiePeer::ID,), $join_behavior);
-		$criteria->addJoin(array(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
+		$criteria->addJoin(array(JTraitementAbsencePeer::A_ABSENCE_ID,), array(AbsenceAbsencePeer::ID,), $join_behavior);
+		$criteria->addJoin(array(JTraitementAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -676,12 +676,12 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	}
 
 	/**
-	 * Selects a collection of JTraitementSaisieAbsence objects pre-filled with all related objects.
+	 * Selects a collection of JTraitementAbsence objects pre-filled with all related objects.
 	 *
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JTraitementSaisieAbsence objects.
+	 * @return     array Array of JTraitementAbsence objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -694,53 +694,53 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 			$c->setDbName(self::DATABASE_NAME);
 		}
 
-		JTraitementSaisieAbsencePeer::addSelectColumns($c);
-		$startcol2 = (JTraitementSaisieAbsencePeer::NUM_COLUMNS - JTraitementSaisieAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
+		JTraitementAbsencePeer::addSelectColumns($c);
+		$startcol2 = (JTraitementAbsencePeer::NUM_COLUMNS - JTraitementAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceSaisiePeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + (AbsenceSaisiePeer::NUM_COLUMNS - AbsenceSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		AbsenceAbsencePeer::addSelectColumns($c);
+		$startcol3 = $startcol2 + (AbsenceAbsencePeer::NUM_COLUMNS - AbsenceAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
 
 		AbsenceTraitementPeer::addSelectColumns($c);
 		$startcol4 = $startcol3 + (AbsenceTraitementPeer::NUM_COLUMNS - AbsenceTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(JTraitementSaisieAbsencePeer::A_SAISIE_ID,), array(AbsenceSaisiePeer::ID,), $join_behavior);
-		$c->addJoin(array(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
+		$c->addJoin(array(JTraitementAbsencePeer::A_ABSENCE_ID,), array(AbsenceAbsencePeer::ID,), $join_behavior);
+		$c->addJoin(array(JTraitementAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JTraitementSaisieAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JTraitementSaisieAbsencePeer::getInstanceFromPool($key1))) {
+			$key1 = JTraitementAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = JTraitementAbsencePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = JTraitementSaisieAbsencePeer::getOMClass();
+				$omClass = JTraitementAbsencePeer::getOMClass();
 
 				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				JTraitementSaisieAbsencePeer::addInstanceToPool($obj1, $key1);
+				JTraitementAbsencePeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
-			// Add objects for joined AbsenceSaisie rows
+			// Add objects for joined AbsenceAbsence rows
 
-			$key2 = AbsenceSaisiePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+			$key2 = AbsenceAbsencePeer::getPrimaryKeyHashFromRow($row, $startcol2);
 			if ($key2 !== null) {
-				$obj2 = AbsenceSaisiePeer::getInstanceFromPool($key2);
+				$obj2 = AbsenceAbsencePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = AbsenceSaisiePeer::getOMClass();
+					$omClass = AbsenceAbsencePeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
-					AbsenceSaisiePeer::addInstanceToPool($obj2, $key2);
+					AbsenceAbsencePeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 loaded
 
-				// Add the $obj1 (JTraitementSaisieAbsence) to the collection in $obj2 (AbsenceSaisie)
-				$obj2->addJTraitementSaisieAbsence($obj1);
+				// Add the $obj1 (JTraitementAbsence) to the collection in $obj2 (AbsenceAbsence)
+				$obj2->addJTraitementAbsence($obj1);
 			} // if joined row not null
 
 			// Add objects for joined AbsenceTraitement rows
@@ -759,8 +759,8 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 					AbsenceTraitementPeer::addInstanceToPool($obj3, $key3);
 				} // if obj3 loaded
 
-				// Add the $obj1 (JTraitementSaisieAbsence) to the collection in $obj3 (AbsenceTraitement)
-				$obj3->addJTraitementSaisieAbsence($obj1);
+				// Add the $obj1 (JTraitementAbsence) to the collection in $obj3 (AbsenceTraitement)
+				$obj3->addJTraitementAbsence($obj1);
 			} // if joined row not null
 
 			$results[] = $obj1;
@@ -771,7 +771,7 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related AbsenceSaisie table
+	 * Returns the number of rows matching criteria, joining the related AbsenceAbsence table
 	 *
 	 * @param      Criteria $c
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -779,7 +779,7 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAllExceptAbsenceSaisie(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinAllExceptAbsenceAbsence(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -787,14 +787,14 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementSaisieAbsencePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JTraitementAbsencePeer::TABLE_NAME);
 		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementSaisieAbsencePeer::addSelectColumns($criteria);
+			JTraitementAbsencePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
@@ -803,10 +803,10 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
+				$criteria->addJoin(array(JTraitementAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -836,14 +836,14 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementSaisieAbsencePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JTraitementAbsencePeer::TABLE_NAME);
 		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementSaisieAbsencePeer::addSelectColumns($criteria);
+			JTraitementAbsencePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
@@ -852,10 +852,10 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(JTraitementSaisieAbsencePeer::A_SAISIE_ID,), array(AbsenceSaisiePeer::ID,), $join_behavior);
+				$criteria->addJoin(array(JTraitementAbsencePeer::A_ABSENCE_ID,), array(AbsenceAbsencePeer::ID,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -869,16 +869,16 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 
 
 	/**
-	 * Selects a collection of JTraitementSaisieAbsence objects pre-filled with all related objects except AbsenceSaisie.
+	 * Selects a collection of JTraitementAbsence objects pre-filled with all related objects except AbsenceAbsence.
 	 *
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JTraitementSaisieAbsence objects.
+	 * @return     array Array of JTraitementAbsence objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptAbsenceSaisie(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptAbsenceAbsence(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$c = clone $c;
 
@@ -889,30 +889,30 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 			$c->setDbName(self::DATABASE_NAME);
 		}
 
-		JTraitementSaisieAbsencePeer::addSelectColumns($c);
-		$startcol2 = (JTraitementSaisieAbsencePeer::NUM_COLUMNS - JTraitementSaisieAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
+		JTraitementAbsencePeer::addSelectColumns($c);
+		$startcol2 = (JTraitementAbsencePeer::NUM_COLUMNS - JTraitementAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
 
 		AbsenceTraitementPeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + (AbsenceTraitementPeer::NUM_COLUMNS - AbsenceTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
+				$c->addJoin(array(JTraitementAbsencePeer::A_TRAITEMENT_ID,), array(AbsenceTraitementPeer::ID,), $join_behavior);
 
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JTraitementSaisieAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JTraitementSaisieAbsencePeer::getInstanceFromPool($key1))) {
+			$key1 = JTraitementAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = JTraitementAbsencePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = JTraitementSaisieAbsencePeer::getOMClass();
+				$omClass = JTraitementAbsencePeer::getOMClass();
 
 				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				JTraitementSaisieAbsencePeer::addInstanceToPool($obj1, $key1);
+				JTraitementAbsencePeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
 				// Add objects for joined AbsenceTraitement rows
@@ -931,8 +931,8 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 					AbsenceTraitementPeer::addInstanceToPool($obj2, $key2);
 				} // if $obj2 already loaded
 
-				// Add the $obj1 (JTraitementSaisieAbsence) to the collection in $obj2 (AbsenceTraitement)
-				$obj2->addJTraitementSaisieAbsence($obj1);
+				// Add the $obj1 (JTraitementAbsence) to the collection in $obj2 (AbsenceTraitement)
+				$obj2->addJTraitementAbsence($obj1);
 
 			} // if joined row is not null
 
@@ -944,12 +944,12 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 
 
 	/**
-	 * Selects a collection of JTraitementSaisieAbsence objects pre-filled with all related objects except AbsenceTraitement.
+	 * Selects a collection of JTraitementAbsence objects pre-filled with all related objects except AbsenceTraitement.
 	 *
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JTraitementSaisieAbsence objects.
+	 * @return     array Array of JTraitementAbsence objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -964,50 +964,50 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 			$c->setDbName(self::DATABASE_NAME);
 		}
 
-		JTraitementSaisieAbsencePeer::addSelectColumns($c);
-		$startcol2 = (JTraitementSaisieAbsencePeer::NUM_COLUMNS - JTraitementSaisieAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
+		JTraitementAbsencePeer::addSelectColumns($c);
+		$startcol2 = (JTraitementAbsencePeer::NUM_COLUMNS - JTraitementAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceSaisiePeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + (AbsenceSaisiePeer::NUM_COLUMNS - AbsenceSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		AbsenceAbsencePeer::addSelectColumns($c);
+		$startcol3 = $startcol2 + (AbsenceAbsencePeer::NUM_COLUMNS - AbsenceAbsencePeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(JTraitementSaisieAbsencePeer::A_SAISIE_ID,), array(AbsenceSaisiePeer::ID,), $join_behavior);
+				$c->addJoin(array(JTraitementAbsencePeer::A_ABSENCE_ID,), array(AbsenceAbsencePeer::ID,), $join_behavior);
 
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JTraitementSaisieAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JTraitementSaisieAbsencePeer::getInstanceFromPool($key1))) {
+			$key1 = JTraitementAbsencePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = JTraitementAbsencePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = JTraitementSaisieAbsencePeer::getOMClass();
+				$omClass = JTraitementAbsencePeer::getOMClass();
 
 				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				JTraitementSaisieAbsencePeer::addInstanceToPool($obj1, $key1);
+				JTraitementAbsencePeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
-				// Add objects for joined AbsenceSaisie rows
+				// Add objects for joined AbsenceAbsence rows
 
-				$key2 = AbsenceSaisiePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				$key2 = AbsenceAbsencePeer::getPrimaryKeyHashFromRow($row, $startcol2);
 				if ($key2 !== null) {
-					$obj2 = AbsenceSaisiePeer::getInstanceFromPool($key2);
+					$obj2 = AbsenceAbsencePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = AbsenceSaisiePeer::getOMClass();
+						$omClass = AbsenceAbsencePeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
-					AbsenceSaisiePeer::addInstanceToPool($obj2, $key2);
+					AbsenceAbsencePeer::addInstanceToPool($obj2, $key2);
 				} // if $obj2 already loaded
 
-				// Add the $obj1 (JTraitementSaisieAbsence) to the collection in $obj2 (AbsenceSaisie)
-				$obj2->addJTraitementSaisieAbsence($obj1);
+				// Add the $obj1 (JTraitementAbsence) to the collection in $obj2 (AbsenceAbsence)
+				$obj2->addJTraitementAbsence($obj1);
 
 			} // if joined row is not null
 
@@ -1040,13 +1040,13 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 */
 	public static function getOMClass()
 	{
-		return JTraitementSaisieAbsencePeer::CLASS_DEFAULT;
+		return JTraitementAbsencePeer::CLASS_DEFAULT;
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a JTraitementSaisieAbsence or Criteria object.
+	 * Method perform an INSERT on the database, given a JTraitementAbsence or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or JTraitementSaisieAbsence object containing data that is used to create the INSERT statement.
+	 * @param      mixed $values Criteria or JTraitementAbsence object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -1055,13 +1055,13 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 		} else {
-			$criteria = $values->buildCriteria(); // build Criteria from JTraitementSaisieAbsence object
+			$criteria = $values->buildCriteria(); // build Criteria from JTraitementAbsence object
 		}
 
 
@@ -1083,9 +1083,9 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a JTraitementSaisieAbsence or Criteria object.
+	 * Method perform an UPDATE on the database, given a JTraitementAbsence or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or JTraitementSaisieAbsence object containing data that is used to create the UPDATE statement.
+	 * @param      mixed $values Criteria or JTraitementAbsence object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -1094,7 +1094,7 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -1102,13 +1102,13 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(JTraitementSaisieAbsencePeer::A_SAISIE_ID);
-			$selectCriteria->add(JTraitementSaisieAbsencePeer::A_SAISIE_ID, $criteria->remove(JTraitementSaisieAbsencePeer::A_SAISIE_ID), $comparison);
+			$comparison = $criteria->getComparison(JTraitementAbsencePeer::A_ABSENCE_ID);
+			$selectCriteria->add(JTraitementAbsencePeer::A_ABSENCE_ID, $criteria->remove(JTraitementAbsencePeer::A_ABSENCE_ID), $comparison);
 
-			$comparison = $criteria->getComparison(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID);
-			$selectCriteria->add(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID, $criteria->remove(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID), $comparison);
+			$comparison = $criteria->getComparison(JTraitementAbsencePeer::A_TRAITEMENT_ID);
+			$selectCriteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $criteria->remove(JTraitementAbsencePeer::A_TRAITEMENT_ID), $comparison);
 
-		} else { // $values is JTraitementSaisieAbsence object
+		} else { // $values is JTraitementAbsence object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
 		}
@@ -1120,21 +1120,21 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the j_traitement_saisie table.
+	 * Method to DELETE all rows from the j_traitement_absence table.
 	 *
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
 	public static function doDeleteAll($con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += BasePeer::doDeleteAll(JTraitementSaisieAbsencePeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(JTraitementAbsencePeer::TABLE_NAME, $con);
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1144,9 +1144,9 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a JTraitementSaisieAbsence or Criteria object OR a primary key value.
+	 * Method perform a DELETE on the database, given a JTraitementAbsence or Criteria object OR a primary key value.
 	 *
-	 * @param      mixed $values Criteria or JTraitementSaisieAbsence object or primary key or array of primary keys
+	 * @param      mixed $values Criteria or JTraitementAbsence object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
 	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -1157,20 +1157,20 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			// invalidate the cache for all objects of this type, since we have no
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
-			JTraitementSaisieAbsencePeer::clearInstancePool();
+			JTraitementAbsencePeer::clearInstancePool();
 
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof JTraitementSaisieAbsence) {
+		} elseif ($values instanceof JTraitementAbsence) {
 			// invalidate the cache for this single object
-			JTraitementSaisieAbsencePeer::removeInstanceFromPool($values);
+			JTraitementAbsencePeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
 		} else {
@@ -1189,12 +1189,12 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 
 			foreach ($values as $value) {
 
-				$criterion = $criteria->getNewCriterion(JTraitementSaisieAbsencePeer::A_SAISIE_ID, $value[0]);
-				$criterion->addAnd($criteria->getNewCriterion(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID, $value[1]));
+				$criterion = $criteria->getNewCriterion(JTraitementAbsencePeer::A_ABSENCE_ID, $value[0]);
+				$criterion->addAnd($criteria->getNewCriterion(JTraitementAbsencePeer::A_TRAITEMENT_ID, $value[1]));
 				$criteria->addOr($criterion);
 
 				// we can invalidate the cache for this single PK
-				JTraitementSaisieAbsencePeer::removeInstanceFromPool($value);
+				JTraitementAbsencePeer::removeInstanceFromPool($value);
 			}
 		}
 
@@ -1219,24 +1219,24 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 	}
 
 	/**
-	 * Validates all modified columns of given JTraitementSaisieAbsence object.
+	 * Validates all modified columns of given JTraitementAbsence object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.
 	 *
 	 * NOTICE: This does not apply to primary or foreign keys for now.
 	 *
-	 * @param      JTraitementSaisieAbsence $obj The object to validate.
+	 * @param      JTraitementAbsence $obj The object to validate.
 	 * @param      mixed $cols Column name or array of column names.
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(JTraitementSaisieAbsence $obj, $cols = null)
+	public static function doValidate(JTraitementAbsence $obj, $cols = null)
 	{
 		$columns = array();
 
 		if ($cols) {
-			$dbMap = Propel::getDatabaseMap(JTraitementSaisieAbsencePeer::DATABASE_NAME);
-			$tableMap = $dbMap->getTable(JTraitementSaisieAbsencePeer::TABLE_NAME);
+			$dbMap = Propel::getDatabaseMap(JTraitementAbsencePeer::DATABASE_NAME);
+			$tableMap = $dbMap->getTable(JTraitementAbsencePeer::TABLE_NAME);
 
 			if (! is_array($cols)) {
 				$cols = array($cols);
@@ -1252,43 +1252,43 @@ abstract class BaseJTraitementSaisieAbsencePeer {
 
 		}
 
-		return BasePeer::doValidate(JTraitementSaisieAbsencePeer::DATABASE_NAME, JTraitementSaisieAbsencePeer::TABLE_NAME, $columns);
+		return BasePeer::doValidate(JTraitementAbsencePeer::DATABASE_NAME, JTraitementAbsencePeer::TABLE_NAME, $columns);
 	}
 
 	/**
 	 * Retrieve object using using composite pkey values.
-	 * @param      int $a_saisie_id
+	 * @param      int $a_absence_id
 	   @param      int $a_traitement_id
 	   
 	 * @param      PropelPDO $con
-	 * @return     JTraitementSaisieAbsence
+	 * @return     JTraitementAbsence
 	 */
-	public static function retrieveByPK($a_saisie_id, $a_traitement_id, PropelPDO $con = null) {
-		$key = serialize(array((string) $a_saisie_id, (string) $a_traitement_id));
- 		if (null !== ($obj = JTraitementSaisieAbsencePeer::getInstanceFromPool($key))) {
+	public static function retrieveByPK($a_absence_id, $a_traitement_id, PropelPDO $con = null) {
+		$key = serialize(array((string) $a_absence_id, (string) $a_traitement_id));
+ 		if (null !== ($obj = JTraitementAbsencePeer::getInstanceFromPool($key))) {
  			return $obj;
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
-		$criteria = new Criteria(JTraitementSaisieAbsencePeer::DATABASE_NAME);
-		$criteria->add(JTraitementSaisieAbsencePeer::A_SAISIE_ID, $a_saisie_id);
-		$criteria->add(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID, $a_traitement_id);
-		$v = JTraitementSaisieAbsencePeer::doSelect($criteria, $con);
+		$criteria = new Criteria(JTraitementAbsencePeer::DATABASE_NAME);
+		$criteria->add(JTraitementAbsencePeer::A_ABSENCE_ID, $a_absence_id);
+		$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $a_traitement_id);
+		$v = JTraitementAbsencePeer::doSelect($criteria, $con);
 
 		return !empty($v) ? $v[0] : null;
 	}
-} // BaseJTraitementSaisieAbsencePeer
+} // BaseJTraitementAbsencePeer
 
 // This is the static code needed to register the MapBuilder for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the JTraitementSaisieAbsencePeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the JTraitementSaisieAbsencePeer class:
+// NOTE: This static code cannot call methods on the JTraitementAbsencePeer class, because it is not defined yet.
+// If you need to use overridden methods, you can add this code to the bottom of the JTraitementAbsencePeer class:
 //
-// Propel::getDatabaseMap(JTraitementSaisieAbsencePeer::DATABASE_NAME)->addTableBuilder(JTraitementSaisieAbsencePeer::TABLE_NAME, JTraitementSaisieAbsencePeer::getMapBuilder());
+// Propel::getDatabaseMap(JTraitementAbsencePeer::DATABASE_NAME)->addTableBuilder(JTraitementAbsencePeer::TABLE_NAME, JTraitementAbsencePeer::getMapBuilder());
 //
 // Doing so will effectively overwrite the registration below.
 
-Propel::getDatabaseMap(BaseJTraitementSaisieAbsencePeer::DATABASE_NAME)->addTableBuilder(BaseJTraitementSaisieAbsencePeer::TABLE_NAME, BaseJTraitementSaisieAbsencePeer::getMapBuilder());
+Propel::getDatabaseMap(BaseJTraitementAbsencePeer::DATABASE_NAME)->addTableBuilder(BaseJTraitementAbsencePeer::TABLE_NAME, BaseJTraitementAbsencePeer::getMapBuilder());
 

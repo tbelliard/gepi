@@ -75,16 +75,6 @@ abstract class BaseAbsenceSaisie extends BaseObject  implements Persistent {
 	protected $aEleve;
 
 	/**
-	 * @var        array JTraitementSaisieAbsence[] Collection to store aggregation of JTraitementSaisieAbsence objects.
-	 */
-	protected $collJTraitementSaisieAbsences;
-
-	/**
-	 * @var        Criteria The criteria used to select the current contents of collJTraitementSaisieAbsences.
-	 */
-	private $lastJTraitementSaisieAbsenceCriteria = null;
-
-	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -479,9 +469,6 @@ abstract class BaseAbsenceSaisie extends BaseObject  implements Persistent {
 
 			$this->aUtilisateurProfessionnel = null;
 			$this->aEleve = null;
-			$this->collJTraitementSaisieAbsences = null;
-			$this->lastJTraitementSaisieAbsenceCriteria = null;
-
 		} // if (deep)
 	}
 
@@ -608,14 +595,6 @@ abstract class BaseAbsenceSaisie extends BaseObject  implements Persistent {
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
-			if ($this->collJTraitementSaisieAbsences !== null) {
-				foreach ($this->collJTraitementSaisieAbsences as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
 			$this->alreadyInSave = false;
 
 		}
@@ -704,14 +683,6 @@ abstract class BaseAbsenceSaisie extends BaseObject  implements Persistent {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
-
-				if ($this->collJTraitementSaisieAbsences !== null) {
-					foreach ($this->collJTraitementSaisieAbsences as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
 
 
 			$this->alreadyInValidation = false;
@@ -963,20 +934,6 @@ abstract class BaseAbsenceSaisie extends BaseObject  implements Persistent {
 		$copyObj->setFinAbs($this->fin_abs);
 
 
-		if ($deepCopy) {
-			// important: temporarily setNew(false) because this affects the behavior of
-			// the getter/setter methods for fkey referrer objects.
-			$copyObj->setNew(false);
-
-			foreach ($this->getJTraitementSaisieAbsences() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addJTraitementSaisieAbsence($relObj->copy($deepCopy));
-				}
-			}
-
-		} // if ($deepCopy)
-
-
 		$copyObj->setNew(true);
 
 		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1120,208 +1077,6 @@ abstract class BaseAbsenceSaisie extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Clears out the collJTraitementSaisieAbsences collection (array).
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addJTraitementSaisieAbsences()
-	 */
-	public function clearJTraitementSaisieAbsences()
-	{
-		$this->collJTraitementSaisieAbsences = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collJTraitementSaisieAbsences collection (array).
-	 *
-	 * By default this just sets the collJTraitementSaisieAbsences collection to an empty array (like clearcollJTraitementSaisieAbsences());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initJTraitementSaisieAbsences()
-	{
-		$this->collJTraitementSaisieAbsences = array();
-	}
-
-	/**
-	 * Gets an array of JTraitementSaisieAbsence objects which contain a foreign key that references this object.
-	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this AbsenceSaisie has previously been saved, it will retrieve
-	 * related JTraitementSaisieAbsences from storage. If this AbsenceSaisie is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
-	 *
-	 * @param      PropelPDO $con
-	 * @param      Criteria $criteria
-	 * @return     array JTraitementSaisieAbsence[]
-	 * @throws     PropelException
-	 */
-	public function getJTraitementSaisieAbsences($criteria = null, PropelPDO $con = null)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AbsenceSaisiePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collJTraitementSaisieAbsences === null) {
-			if ($this->isNew()) {
-			   $this->collJTraitementSaisieAbsences = array();
-			} else {
-
-				$criteria->add(JTraitementSaisieAbsencePeer::A_SAISIE_ID, $this->id);
-
-				JTraitementSaisieAbsencePeer::addSelectColumns($criteria);
-				$this->collJTraitementSaisieAbsences = JTraitementSaisieAbsencePeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(JTraitementSaisieAbsencePeer::A_SAISIE_ID, $this->id);
-
-				JTraitementSaisieAbsencePeer::addSelectColumns($criteria);
-				if (!isset($this->lastJTraitementSaisieAbsenceCriteria) || !$this->lastJTraitementSaisieAbsenceCriteria->equals($criteria)) {
-					$this->collJTraitementSaisieAbsences = JTraitementSaisieAbsencePeer::doSelect($criteria, $con);
-				}
-			}
-		}
-		$this->lastJTraitementSaisieAbsenceCriteria = $criteria;
-		return $this->collJTraitementSaisieAbsences;
-	}
-
-	/**
-	 * Returns the number of related JTraitementSaisieAbsence objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related JTraitementSaisieAbsence objects.
-	 * @throws     PropelException
-	 */
-	public function countJTraitementSaisieAbsences(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AbsenceSaisiePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collJTraitementSaisieAbsences === null) {
-			if ($this->isNew()) {
-				$count = 0;
-			} else {
-
-				$criteria->add(JTraitementSaisieAbsencePeer::A_SAISIE_ID, $this->id);
-
-				$count = JTraitementSaisieAbsencePeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(JTraitementSaisieAbsencePeer::A_SAISIE_ID, $this->id);
-
-				if (!isset($this->lastJTraitementSaisieAbsenceCriteria) || !$this->lastJTraitementSaisieAbsenceCriteria->equals($criteria)) {
-					$count = JTraitementSaisieAbsencePeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collJTraitementSaisieAbsences);
-				}
-			} else {
-				$count = count($this->collJTraitementSaisieAbsences);
-			}
-		}
-		$this->lastJTraitementSaisieAbsenceCriteria = $criteria;
-		return $count;
-	}
-
-	/**
-	 * Method called to associate a JTraitementSaisieAbsence object to this object
-	 * through the JTraitementSaisieAbsence foreign key attribute.
-	 *
-	 * @param      JTraitementSaisieAbsence $l JTraitementSaisieAbsence
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addJTraitementSaisieAbsence(JTraitementSaisieAbsence $l)
-	{
-		if ($this->collJTraitementSaisieAbsences === null) {
-			$this->initJTraitementSaisieAbsences();
-		}
-		if (!in_array($l, $this->collJTraitementSaisieAbsences, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collJTraitementSaisieAbsences, $l);
-			$l->setAbsenceSaisie($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this AbsenceSaisie is new, it will return
-	 * an empty collection; or if this AbsenceSaisie has previously
-	 * been saved, it will retrieve related JTraitementSaisieAbsences from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in AbsenceSaisie.
-	 */
-	public function getJTraitementSaisieAbsencesJoinAbsenceTraitement($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AbsenceSaisiePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collJTraitementSaisieAbsences === null) {
-			if ($this->isNew()) {
-				$this->collJTraitementSaisieAbsences = array();
-			} else {
-
-				$criteria->add(JTraitementSaisieAbsencePeer::A_SAISIE_ID, $this->id);
-
-				$this->collJTraitementSaisieAbsences = JTraitementSaisieAbsencePeer::doSelectJoinAbsenceTraitement($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JTraitementSaisieAbsencePeer::A_SAISIE_ID, $this->id);
-
-			if (!isset($this->lastJTraitementSaisieAbsenceCriteria) || !$this->lastJTraitementSaisieAbsenceCriteria->equals($criteria)) {
-				$this->collJTraitementSaisieAbsences = JTraitementSaisieAbsencePeer::doSelectJoinAbsenceTraitement($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastJTraitementSaisieAbsenceCriteria = $criteria;
-
-		return $this->collJTraitementSaisieAbsences;
-	}
-
-	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -1333,14 +1088,8 @@ abstract class BaseAbsenceSaisie extends BaseObject  implements Persistent {
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
-			if ($this->collJTraitementSaisieAbsences) {
-				foreach ((array) $this->collJTraitementSaisieAbsences as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
 		} // if ($deep)
 
-		$this->collJTraitementSaisieAbsences = null;
 			$this->aUtilisateurProfessionnel = null;
 			$this->aEleve = null;
 	}

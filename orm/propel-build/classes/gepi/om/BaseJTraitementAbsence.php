@@ -1,28 +1,28 @@
 <?php
 
 /**
- * Base class that represents a row from the 'j_traitement_saisie' table.
+ * Base class that represents a row from the 'j_traitement_absence' table.
  *
  * Table de jointure entre la saisie et le traitement des absences
  *
  * @package    gepi.om
  */
-abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persistent {
+abstract class BaseJTraitementAbsence extends BaseObject  implements Persistent {
 
 
 	/**
 	 * The Peer class.
 	 * Instance provides a convenient way of calling static methods on a class
 	 * that calling code may not be able to identify.
-	 * @var        JTraitementSaisieAbsencePeer
+	 * @var        JTraitementAbsencePeer
 	 */
 	protected static $peer;
 
 	/**
-	 * The value for the a_saisie_id field.
+	 * The value for the a_absence_id field.
 	 * @var        int
 	 */
-	protected $a_saisie_id;
+	protected $a_absence_id;
 
 	/**
 	 * The value for the a_traitement_id field.
@@ -31,9 +31,9 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	protected $a_traitement_id;
 
 	/**
-	 * @var        AbsenceSaisie
+	 * @var        AbsenceAbsence
 	 */
-	protected $aAbsenceSaisie;
+	protected $aAbsenceAbsence;
 
 	/**
 	 * @var        AbsenceTraitement
@@ -55,7 +55,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Initializes internal state of BaseJTraitementSaisieAbsence object.
+	 * Initializes internal state of BaseJTraitementAbsence object.
 	 * @see        applyDefaults()
 	 */
 	public function __construct()
@@ -75,13 +75,13 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	}
 
 	/**
-	 * Get the [a_saisie_id] column value.
+	 * Get the [a_absence_id] column value.
 	 * cle etrangere de l'absence saisie
 	 * @return     int
 	 */
-	public function getASaisieId()
+	public function getAAbsenceId()
 	{
-		return $this->a_saisie_id;
+		return $this->a_absence_id;
 	}
 
 	/**
@@ -95,34 +95,34 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	}
 
 	/**
-	 * Set the value of [a_saisie_id] column.
+	 * Set the value of [a_absence_id] column.
 	 * cle etrangere de l'absence saisie
 	 * @param      int $v new value
-	 * @return     JTraitementSaisieAbsence The current object (for fluent API support)
+	 * @return     JTraitementAbsence The current object (for fluent API support)
 	 */
-	public function setASaisieId($v)
+	public function setAAbsenceId($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->a_saisie_id !== $v) {
-			$this->a_saisie_id = $v;
-			$this->modifiedColumns[] = JTraitementSaisieAbsencePeer::A_SAISIE_ID;
+		if ($this->a_absence_id !== $v) {
+			$this->a_absence_id = $v;
+			$this->modifiedColumns[] = JTraitementAbsencePeer::A_ABSENCE_ID;
 		}
 
-		if ($this->aAbsenceSaisie !== null && $this->aAbsenceSaisie->getId() !== $v) {
-			$this->aAbsenceSaisie = null;
+		if ($this->aAbsenceAbsence !== null && $this->aAbsenceAbsence->getId() !== $v) {
+			$this->aAbsenceAbsence = null;
 		}
 
 		return $this;
-	} // setASaisieId()
+	} // setAAbsenceId()
 
 	/**
 	 * Set the value of [a_traitement_id] column.
 	 * cle etrangere du traitement de ces absences
 	 * @param      int $v new value
-	 * @return     JTraitementSaisieAbsence The current object (for fluent API support)
+	 * @return     JTraitementAbsence The current object (for fluent API support)
 	 */
 	public function setATraitementId($v)
 	{
@@ -132,7 +132,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 
 		if ($this->a_traitement_id !== $v) {
 			$this->a_traitement_id = $v;
-			$this->modifiedColumns[] = JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID;
+			$this->modifiedColumns[] = JTraitementAbsencePeer::A_TRAITEMENT_ID;
 		}
 
 		if ($this->aAbsenceTraitement !== null && $this->aAbsenceTraitement->getId() !== $v) {
@@ -179,7 +179,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	{
 		try {
 
-			$this->a_saisie_id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
+			$this->a_absence_id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->a_traitement_id = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
 			$this->resetModified();
 
@@ -190,10 +190,10 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 			}
 
 			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 2; // 2 = JTraitementSaisieAbsencePeer::NUM_COLUMNS - JTraitementSaisieAbsencePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 2; // 2 = JTraitementAbsencePeer::NUM_COLUMNS - JTraitementAbsencePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
-			throw new PropelException("Error populating JTraitementSaisieAbsence object", $e);
+			throw new PropelException("Error populating JTraitementAbsence object", $e);
 		}
 	}
 
@@ -213,8 +213,8 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	public function ensureConsistency()
 	{
 
-		if ($this->aAbsenceSaisie !== null && $this->a_saisie_id !== $this->aAbsenceSaisie->getId()) {
-			$this->aAbsenceSaisie = null;
+		if ($this->aAbsenceAbsence !== null && $this->a_absence_id !== $this->aAbsenceAbsence->getId()) {
+			$this->aAbsenceAbsence = null;
 		}
 		if ($this->aAbsenceTraitement !== null && $this->a_traitement_id !== $this->aAbsenceTraitement->getId()) {
 			$this->aAbsenceTraitement = null;
@@ -242,13 +242,13 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		// We don't need to alter the object instance pool; we're just modifying this instance
 		// already in the pool.
 
-		$stmt = JTraitementSaisieAbsencePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$stmt = JTraitementAbsencePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
 		$row = $stmt->fetch(PDO::FETCH_NUM);
 		$stmt->closeCursor();
 		if (!$row) {
@@ -258,7 +258,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 
 		if ($deep) {  // also de-associate any related objects?
 
-			$this->aAbsenceSaisie = null;
+			$this->aAbsenceAbsence = null;
 			$this->aAbsenceTraitement = null;
 		} // if (deep)
 	}
@@ -279,12 +279,12 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
 		try {
-			JTraitementSaisieAbsencePeer::doDelete($this, $con);
+			JTraitementAbsencePeer::doDelete($this, $con);
 			$this->setDeleted(true);
 			$con->commit();
 		} catch (PropelException $e) {
@@ -313,14 +313,14 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementSaisieAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JTraitementAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
 		try {
 			$affectedRows = $this->doSave($con);
 			$con->commit();
-			JTraitementSaisieAbsencePeer::addInstanceToPool($this);
+			JTraitementAbsencePeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -350,11 +350,11 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aAbsenceSaisie !== null) {
-				if ($this->aAbsenceSaisie->isModified() || $this->aAbsenceSaisie->isNew()) {
-					$affectedRows += $this->aAbsenceSaisie->save($con);
+			if ($this->aAbsenceAbsence !== null) {
+				if ($this->aAbsenceAbsence->isModified() || $this->aAbsenceAbsence->isNew()) {
+					$affectedRows += $this->aAbsenceAbsence->save($con);
 				}
-				$this->setAbsenceSaisie($this->aAbsenceSaisie);
+				$this->setAbsenceAbsence($this->aAbsenceAbsence);
 			}
 
 			if ($this->aAbsenceTraitement !== null) {
@@ -368,14 +368,14 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = JTraitementSaisieAbsencePeer::doInsert($this, $con);
+					$pk = JTraitementAbsencePeer::doInsert($this, $con);
 					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
 										 // should always be true here (even though technically
 										 // BasePeer::doInsert() can insert multiple rows).
 
 					$this->setNew(false);
 				} else {
-					$affectedRows += JTraitementSaisieAbsencePeer::doUpdate($this, $con);
+					$affectedRows += JTraitementAbsencePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -452,9 +452,9 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aAbsenceSaisie !== null) {
-				if (!$this->aAbsenceSaisie->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aAbsenceSaisie->getValidationFailures());
+			if ($this->aAbsenceAbsence !== null) {
+				if (!$this->aAbsenceAbsence->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aAbsenceAbsence->getValidationFailures());
 				}
 			}
 
@@ -465,7 +465,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 			}
 
 
-			if (($retval = JTraitementSaisieAbsencePeer::doValidate($this, $columns)) !== true) {
+			if (($retval = JTraitementAbsencePeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
@@ -488,7 +488,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = JTraitementSaisieAbsencePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = JTraitementAbsencePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		$field = $this->getByPosition($pos);
 		return $field;
 	}
@@ -504,7 +504,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	{
 		switch($pos) {
 			case 0:
-				return $this->getASaisieId();
+				return $this->getAAbsenceId();
 				break;
 			case 1:
 				return $this->getATraitementId();
@@ -528,9 +528,9 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
-		$keys = JTraitementSaisieAbsencePeer::getFieldNames($keyType);
+		$keys = JTraitementAbsencePeer::getFieldNames($keyType);
 		$result = array(
-			$keys[0] => $this->getASaisieId(),
+			$keys[0] => $this->getAAbsenceId(),
 			$keys[1] => $this->getATraitementId(),
 		);
 		return $result;
@@ -548,7 +548,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = JTraitementSaisieAbsencePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = JTraitementAbsencePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		return $this->setByPosition($pos, $value);
 	}
 
@@ -564,7 +564,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	{
 		switch($pos) {
 			case 0:
-				$this->setASaisieId($value);
+				$this->setAAbsenceId($value);
 				break;
 			case 1:
 				$this->setATraitementId($value);
@@ -591,9 +591,9 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	 */
 	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
 	{
-		$keys = JTraitementSaisieAbsencePeer::getFieldNames($keyType);
+		$keys = JTraitementAbsencePeer::getFieldNames($keyType);
 
-		if (array_key_exists($keys[0], $arr)) $this->setASaisieId($arr[$keys[0]]);
+		if (array_key_exists($keys[0], $arr)) $this->setAAbsenceId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setATraitementId($arr[$keys[1]]);
 	}
 
@@ -604,10 +604,10 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	 */
 	public function buildCriteria()
 	{
-		$criteria = new Criteria(JTraitementSaisieAbsencePeer::DATABASE_NAME);
+		$criteria = new Criteria(JTraitementAbsencePeer::DATABASE_NAME);
 
-		if ($this->isColumnModified(JTraitementSaisieAbsencePeer::A_SAISIE_ID)) $criteria->add(JTraitementSaisieAbsencePeer::A_SAISIE_ID, $this->a_saisie_id);
-		if ($this->isColumnModified(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID)) $criteria->add(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID, $this->a_traitement_id);
+		if ($this->isColumnModified(JTraitementAbsencePeer::A_ABSENCE_ID)) $criteria->add(JTraitementAbsencePeer::A_ABSENCE_ID, $this->a_absence_id);
+		if ($this->isColumnModified(JTraitementAbsencePeer::A_TRAITEMENT_ID)) $criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->a_traitement_id);
 
 		return $criteria;
 	}
@@ -622,10 +622,10 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	 */
 	public function buildPkeyCriteria()
 	{
-		$criteria = new Criteria(JTraitementSaisieAbsencePeer::DATABASE_NAME);
+		$criteria = new Criteria(JTraitementAbsencePeer::DATABASE_NAME);
 
-		$criteria->add(JTraitementSaisieAbsencePeer::A_SAISIE_ID, $this->a_saisie_id);
-		$criteria->add(JTraitementSaisieAbsencePeer::A_TRAITEMENT_ID, $this->a_traitement_id);
+		$criteria->add(JTraitementAbsencePeer::A_ABSENCE_ID, $this->a_absence_id);
+		$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->a_traitement_id);
 
 		return $criteria;
 	}
@@ -639,7 +639,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	{
 		$pks = array();
 
-		$pks[0] = $this->getASaisieId();
+		$pks[0] = $this->getAAbsenceId();
 
 		$pks[1] = $this->getATraitementId();
 
@@ -655,7 +655,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	public function setPrimaryKey($keys)
 	{
 
-		$this->setASaisieId($keys[0]);
+		$this->setAAbsenceId($keys[0]);
 
 		$this->setATraitementId($keys[1]);
 
@@ -667,14 +667,14 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	 * If desired, this method can also make copies of all associated (fkey referrers)
 	 * objects.
 	 *
-	 * @param      object $copyObj An object of JTraitementSaisieAbsence (or compatible) type.
+	 * @param      object $copyObj An object of JTraitementAbsence (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
 	 * @throws     PropelException
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
 
-		$copyObj->setASaisieId($this->a_saisie_id);
+		$copyObj->setAAbsenceId($this->a_absence_id);
 
 		$copyObj->setATraitementId($this->a_traitement_id);
 
@@ -692,7 +692,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	 * objects.
 	 *
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-	 * @return     JTraitementSaisieAbsence Clone of current object.
+	 * @return     JTraitementAbsence Clone of current object.
 	 * @throws     PropelException
 	 */
 	public function copy($deepCopy = false)
@@ -711,37 +711,37 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 	 * same instance for all member of this class. The method could therefore
 	 * be static, but this would prevent one from overriding the behavior.
 	 *
-	 * @return     JTraitementSaisieAbsencePeer
+	 * @return     JTraitementAbsencePeer
 	 */
 	public function getPeer()
 	{
 		if (self::$peer === null) {
-			self::$peer = new JTraitementSaisieAbsencePeer();
+			self::$peer = new JTraitementAbsencePeer();
 		}
 		return self::$peer;
 	}
 
 	/**
-	 * Declares an association between this object and a AbsenceSaisie object.
+	 * Declares an association between this object and a AbsenceAbsence object.
 	 *
-	 * @param      AbsenceSaisie $v
-	 * @return     JTraitementSaisieAbsence The current object (for fluent API support)
+	 * @param      AbsenceAbsence $v
+	 * @return     JTraitementAbsence The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setAbsenceSaisie(AbsenceSaisie $v = null)
+	public function setAbsenceAbsence(AbsenceAbsence $v = null)
 	{
 		if ($v === null) {
-			$this->setASaisieId(NULL);
+			$this->setAAbsenceId(NULL);
 		} else {
-			$this->setASaisieId($v->getId());
+			$this->setAAbsenceId($v->getId());
 		}
 
-		$this->aAbsenceSaisie = $v;
+		$this->aAbsenceAbsence = $v;
 
 		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the AbsenceSaisie object, it will not be re-added.
+		// If this object has already been added to the AbsenceAbsence object, it will not be re-added.
 		if ($v !== null) {
-			$v->addJTraitementSaisieAbsence($this);
+			$v->addJTraitementAbsence($this);
 		}
 
 		return $this;
@@ -749,32 +749,32 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 
 
 	/**
-	 * Get the associated AbsenceSaisie object
+	 * Get the associated AbsenceAbsence object
 	 *
 	 * @param      PropelPDO Optional Connection object.
-	 * @return     AbsenceSaisie The associated AbsenceSaisie object.
+	 * @return     AbsenceAbsence The associated AbsenceAbsence object.
 	 * @throws     PropelException
 	 */
-	public function getAbsenceSaisie(PropelPDO $con = null)
+	public function getAbsenceAbsence(PropelPDO $con = null)
 	{
-		if ($this->aAbsenceSaisie === null && ($this->a_saisie_id !== null)) {
-			$this->aAbsenceSaisie = AbsenceSaisiePeer::retrieveByPK($this->a_saisie_id, $con);
+		if ($this->aAbsenceAbsence === null && ($this->a_absence_id !== null)) {
+			$this->aAbsenceAbsence = AbsenceAbsencePeer::retrieveByPK($this->a_absence_id, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aAbsenceSaisie->addJTraitementSaisieAbsences($this);
+			   $this->aAbsenceAbsence->addJTraitementAbsences($this);
 			 */
 		}
-		return $this->aAbsenceSaisie;
+		return $this->aAbsenceAbsence;
 	}
 
 	/**
 	 * Declares an association between this object and a AbsenceTraitement object.
 	 *
 	 * @param      AbsenceTraitement $v
-	 * @return     JTraitementSaisieAbsence The current object (for fluent API support)
+	 * @return     JTraitementAbsence The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
 	public function setAbsenceTraitement(AbsenceTraitement $v = null)
@@ -790,7 +790,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 		// Add binding for other direction of this n:n relationship.
 		// If this object has already been added to the AbsenceTraitement object, it will not be re-added.
 		if ($v !== null) {
-			$v->addJTraitementSaisieAbsence($this);
+			$v->addJTraitementAbsence($this);
 		}
 
 		return $this;
@@ -813,7 +813,7 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aAbsenceTraitement->addJTraitementSaisieAbsences($this);
+			   $this->aAbsenceTraitement->addJTraitementAbsences($this);
 			 */
 		}
 		return $this->aAbsenceTraitement;
@@ -833,8 +833,8 @@ abstract class BaseJTraitementSaisieAbsence extends BaseObject  implements Persi
 		if ($deep) {
 		} // if ($deep)
 
-			$this->aAbsenceSaisie = null;
+			$this->aAbsenceAbsence = null;
 			$this->aAbsenceTraitement = null;
 	}
 
-} // BaseJTraitementSaisieAbsence
+} // BaseJTraitementAbsence

@@ -31,7 +31,7 @@ CREATE TABLE utilisateurs
 	numind VARCHAR(255)  NOT NULL COMMENT 'numind de l\'utilisateur',
 	auth_mode VARCHAR(255) default 'gepi' NOT NULL COMMENT 'auth_mode de l\'utilisateur (gepi/cas/ldap)',
 	PRIMARY KEY (login)
-)Type=MyISAM COMMENT='Utilisateur de gepi';
+)Type=InnoDB COMMENT='Utilisateur de gepi';
 
 #-----------------------------------------------------------------------------
 #-- groupes
@@ -47,7 +47,7 @@ CREATE TABLE groupes
 	description TEXT  NOT NULL COMMENT 'Description du groupe',
 	recalcul_rang VARCHAR(10) COMMENT 'recalcul_rang',
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Groupe d\'eleves permettant d\'y affecter des matieres et des professeurs';
+)Type=InnoDB COMMENT='Groupe d\'eleves permettant d\'y affecter des matieres et des professeurs';
 
 #-----------------------------------------------------------------------------
 #-- j_groupes_professeurs
@@ -70,7 +70,7 @@ CREATE TABLE j_groupes_professeurs
 		FOREIGN KEY (login)
 		REFERENCES utilisateurs (login)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table permettant le jointure entre groupe d\'eleves et professeurs. Est rarement utilise directement dans le code.';
+)Type=InnoDB COMMENT='Table permettant le jointure entre groupe d\'eleves et professeurs. Est rarement utilise directement dans le code.';
 
 #-----------------------------------------------------------------------------
 #-- classes
@@ -104,7 +104,7 @@ CREATE TABLE classes
 	rn_sign_nblig INTEGER default 3 NOT NULL,
 	rn_formule TEXT  NOT NULL,
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Classe regroupant des eleves';
+)Type=InnoDB COMMENT='Classe regroupant des eleves';
 
 #-----------------------------------------------------------------------------
 #-- j_groupes_classes
@@ -130,7 +130,7 @@ CREATE TABLE j_groupes_classes
 		FOREIGN KEY (id_classe)
 		REFERENCES classes (id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table permettant le jointure entre groupe d\'eleves et une classe. Est rarement utilise directement dans le code.';
+)Type=InnoDB COMMENT='Table permettant le jointure entre groupe d\'eleves et une classe. Est rarement utilise directement dans le code.';
 
 #-----------------------------------------------------------------------------
 #-- ct_entry
@@ -160,7 +160,7 @@ CREATE TABLE ct_entry
 		FOREIGN KEY (id_login)
 		REFERENCES utilisateurs (login)
 		ON DELETE SET NULL
-)Type=MyISAM COMMENT='Compte rendu du cahier de texte';
+)Type=InnoDB COMMENT='Compte rendu du cahier de texte';
 
 #-----------------------------------------------------------------------------
 #-- ct_documents
@@ -182,7 +182,7 @@ CREATE TABLE ct_documents
 		FOREIGN KEY (id_ct)
 		REFERENCES ct_entry (id_ct)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Document (fichier joint) appartenant a un compte rendu du cahier de texte';
+)Type=InnoDB COMMENT='Document (fichier joint) appartenant a un compte rendu du cahier de texte';
 
 #-----------------------------------------------------------------------------
 #-- ct_devoirs_entry
@@ -210,7 +210,7 @@ CREATE TABLE ct_devoirs_entry
 		FOREIGN KEY (id_login)
 		REFERENCES utilisateurs (login)
 		ON DELETE SET NULL
-)Type=MyISAM COMMENT='Travail Ã  faire (devoir) cahier de texte';
+)Type=InnoDB COMMENT='Travail Ã  faire (devoir) cahier de texte';
 
 #-----------------------------------------------------------------------------
 #-- ct_devoirs_documents
@@ -232,7 +232,7 @@ CREATE TABLE ct_devoirs_documents
 		FOREIGN KEY (id_ct_devoir)
 		REFERENCES ct_devoirs_entry (id_ct)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Document (fichier joint) appartenant a un travail Ã  faire du cahier de texte';
+)Type=InnoDB COMMENT='Document (fichier joint) appartenant a un travail Ã  faire du cahier de texte';
 
 #-----------------------------------------------------------------------------
 #-- ct_private_entry
@@ -260,7 +260,7 @@ CREATE TABLE ct_private_entry
 		FOREIGN KEY (id_login)
 		REFERENCES utilisateurs (login)
 		ON DELETE SET NULL
-)Type=MyISAM COMMENT='Notice privee du cahier de texte';
+)Type=InnoDB COMMENT='Notice privee du cahier de texte';
 
 #-----------------------------------------------------------------------------
 #-- eleves
@@ -291,7 +291,7 @@ CREATE TABLE eleves
 	INDEX I_referenced_j_eleves_regime_FK_1_5 (login),
 	INDEX I_referenced_responsables2_FK_1_6 (ele_id),
 	INDEX I_referenced_j_aid_eleves_FK_2_7 (login)
-)Type=MyISAM COMMENT='Liste des eleves de l\'etablissement';
+)Type=InnoDB COMMENT='Liste des eleves de l\'etablissement';
 
 #-----------------------------------------------------------------------------
 #-- j_eleves_classes
@@ -316,7 +316,7 @@ CREATE TABLE j_eleves_classes
 		FOREIGN KEY (id_classe)
 		REFERENCES classes (id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de jointure entre les eleves et leur classe en fonction de la periode';
+)Type=InnoDB COMMENT='Table de jointure entre les eleves et leur classe en fonction de la periode';
 
 #-----------------------------------------------------------------------------
 #-- j_eleves_cpe
@@ -339,7 +339,7 @@ CREATE TABLE j_eleves_cpe
 		FOREIGN KEY (cpe_login)
 		REFERENCES utilisateurs (login)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de jointure entre les CPE et les eleves';
+)Type=InnoDB COMMENT='Table de jointure entre les CPE et les eleves';
 
 #-----------------------------------------------------------------------------
 #-- j_eleves_groupes
@@ -363,7 +363,7 @@ CREATE TABLE j_eleves_groupes
 		FOREIGN KEY (id_groupe)
 		REFERENCES groupes (id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de jointure entre les eleves et leurs enseignements (groupes)';
+)Type=InnoDB COMMENT='Table de jointure entre les eleves et leurs enseignements (groupes)';
 
 #-----------------------------------------------------------------------------
 #-- j_eleves_professeurs
@@ -386,7 +386,7 @@ CREATE TABLE j_eleves_professeurs
 		FOREIGN KEY (professeur)
 		REFERENCES utilisateurs (login)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de jointure entre les professeurs principaux et les eleves';
+)Type=InnoDB COMMENT='Table de jointure entre les professeurs principaux et les eleves';
 
 #-----------------------------------------------------------------------------
 #-- j_eleves_regime
@@ -405,7 +405,7 @@ CREATE TABLE j_eleves_regime
 		FOREIGN KEY (login)
 		REFERENCES eleves (login)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Mention du redoublement eventuel de l\'eleve ainsi que son regime de presence (externe, demi-pensionnaire, ...)';
+)Type=InnoDB COMMENT='Mention du redoublement eventuel de l\'eleve ainsi que son regime de presence (externe, demi-pensionnaire, ...)';
 
 #-----------------------------------------------------------------------------
 #-- responsables2
@@ -430,7 +430,7 @@ CREATE TABLE responsables2
 		FOREIGN KEY (pers_id)
 		REFERENCES resp_pers (pers_id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de jointure entre les eleves et leurs responsables legaux avec mention du niveau de ces responsables';
+)Type=InnoDB COMMENT='Table de jointure entre les eleves et leurs responsables legaux avec mention du niveau de ces responsables';
 
 #-----------------------------------------------------------------------------
 #-- resp_pers
@@ -457,7 +457,7 @@ CREATE TABLE resp_pers
 		FOREIGN KEY (adr_id)
 		REFERENCES resp_adr (adr_id)
 		ON DELETE SET NULL
-)Type=MyISAM COMMENT='Liste des responsables legaux des eleves';
+)Type=InnoDB COMMENT='Liste des responsables legaux des eleves';
 
 #-----------------------------------------------------------------------------
 #-- resp_adr
@@ -477,7 +477,7 @@ CREATE TABLE resp_adr
 	pays VARCHAR(50)  NOT NULL COMMENT 'Pays (quand il est autre que France)',
 	commune VARCHAR(50)  NOT NULL COMMENT 'Commune de residence',
 	PRIMARY KEY (adr_id)
-)Type=MyISAM COMMENT='Table de jointure entre les responsables legaux et leur adresse';
+)Type=InnoDB COMMENT='Table de jointure entre les responsables legaux et leur adresse';
 
 #-----------------------------------------------------------------------------
 #-- j_eleves_etablissements
@@ -500,7 +500,7 @@ CREATE TABLE j_eleves_etablissements
 		FOREIGN KEY (id_etablissement)
 		REFERENCES etablissements (id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de jointure pour connaitre l\'etablissement precedent de l\'eleve';
+)Type=InnoDB COMMENT='Table de jointure pour connaitre l\'etablissement precedent de l\'eleve';
 
 #-----------------------------------------------------------------------------
 #-- etablissements
@@ -518,7 +518,7 @@ CREATE TABLE etablissements
 	cp INTEGER(10)  NOT NULL COMMENT 'code postal de l\'etablissement',
 	ville VARCHAR(50) default '' NOT NULL COMMENT 'Ville de l\'etablissement',
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Liste des etablissements precedents des eleves';
+)Type=InnoDB COMMENT='Liste des etablissements precedents des eleves';
 
 #-----------------------------------------------------------------------------
 #-- aid
@@ -559,7 +559,7 @@ CREATE TABLE aid
 		FOREIGN KEY (indice_aid)
 		REFERENCES aid_config (indice_aid)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Liste des AID (Activites Inter-Disciplinaires)';
+)Type=InnoDB COMMENT='Liste des AID (Activites Inter-Disciplinaires)';
 
 #-----------------------------------------------------------------------------
 #-- aid_config
@@ -586,7 +586,7 @@ CREATE TABLE aid_config
 	outils_complementaires CHAR(1) default 'n' NOT NULL,
 	feuille_presence CHAR(1) default 'n' NOT NULL,
 	PRIMARY KEY (indice_aid)
-)Type=MyISAM COMMENT='Liste des categories d\'AID (Activites inter-Disciplinaires)';
+)Type=InnoDB COMMENT='Liste des categories d\'AID (Activites inter-Disciplinaires)';
 
 #-----------------------------------------------------------------------------
 #-- j_aid_utilisateurs
@@ -615,7 +615,7 @@ CREATE TABLE j_aid_utilisateurs
 		FOREIGN KEY (indice_aid)
 		REFERENCES aid_config (indice_aid)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de liaison entre les AID et les utilisateurs professionnels';
+)Type=InnoDB COMMENT='Table de liaison entre les AID et les utilisateurs professionnels';
 
 #-----------------------------------------------------------------------------
 #-- j_aid_eleves
@@ -644,7 +644,7 @@ CREATE TABLE j_aid_eleves
 		FOREIGN KEY (indice_aid)
 		REFERENCES aid_config (indice_aid)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de liaison entre les AID et les eleves qui en sont membres';
+)Type=InnoDB COMMENT='Table de liaison entre les AID et les eleves qui en sont membres';
 
 #-----------------------------------------------------------------------------
 #-- a_creneaux
@@ -662,7 +662,7 @@ CREATE TABLE a_creneaux
 	jour_creneau INTEGER(2) default 9 NOT NULL COMMENT 'Par defaut, aucun jour en particulier mais on peut imposer que des creneaux soient specifiques a un jour en particulier',
 	type_creneau VARCHAR(15)  NOT NULL COMMENT '3 types : cours, pause, repas',
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Les creneaux sont la base du temps des eleves et des cours';
+)Type=InnoDB COMMENT='Les creneaux sont la base du temps des eleves et des cours';
 
 #-----------------------------------------------------------------------------
 #-- a_actions
@@ -677,7 +677,7 @@ CREATE TABLE a_actions
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom de l\'action',
 	ordre INTEGER(3)  NOT NULL COMMENT 'Ordre d\'affichage de l\'action dans la liste déroulante',
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Liste des actions possibles sur une absence';
+)Type=InnoDB COMMENT='Liste des actions possibles sur une absence';
 
 #-----------------------------------------------------------------------------
 #-- a_motifs
@@ -692,7 +692,7 @@ CREATE TABLE a_motifs
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom du motif',
 	ordre INTEGER(3)  NOT NULL COMMENT 'Ordre d\'affichage du motif dans la liste déroulante',
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Liste des motifs possibles pour une absence';
+)Type=InnoDB COMMENT='Liste des motifs possibles pour une absence';
 
 #-----------------------------------------------------------------------------
 #-- a_justifications
@@ -707,7 +707,7 @@ CREATE TABLE a_justifications
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom de la justification',
 	ordre INTEGER(3)  NOT NULL COMMENT 'Ordre d\'affichage de la justification dans la liste déroulante',
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Liste des justifications possibles pour une absence';
+)Type=InnoDB COMMENT='Liste des justifications possibles pour une absence';
 
 #-----------------------------------------------------------------------------
 #-- a_types
@@ -722,7 +722,7 @@ CREATE TABLE a_types
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom du type d\'absence',
 	ordre INTEGER(3)  NOT NULL COMMENT 'Ordre d\'affichage du type dans la liste déroulante',
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Liste des types d\'absences possibles dans l\'etablissement';
+)Type=InnoDB COMMENT='Liste des types d\'absences possibles dans l\'etablissement';
 
 #-----------------------------------------------------------------------------
 #-- a_saisies
@@ -751,7 +751,7 @@ CREATE TABLE a_saisies
 		FOREIGN KEY (eleve_id)
 		REFERENCES eleves (id_eleve)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Chaque saisie d\'absence doit faire l\'objet d\'une ligne dans la table a_saisies';
+)Type=InnoDB COMMENT='Chaque saisie d\'absence doit faire l\'objet d\'une ligne dans la table a_saisies';
 
 #-----------------------------------------------------------------------------
 #-- a_traitements
@@ -797,30 +797,53 @@ CREATE TABLE a_traitements
 		FOREIGN KEY (a_action_id)
 		REFERENCES a_actions (id)
 		ON DELETE SET NULL
-)Type=MyISAM COMMENT='Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies';
+)Type=InnoDB COMMENT='Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies';
 
 #-----------------------------------------------------------------------------
-#-- j_traitement_saisie
+#-- a_absences
 #-----------------------------------------------------------------------------
 
-DROP TABLE IF EXISTS j_traitement_saisie;
+DROP TABLE IF EXISTS a_absences;
 
 
-CREATE TABLE j_traitement_saisie
+CREATE TABLE a_absences
 (
-	a_saisie_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de l\'absence saisie',
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incremente',
+	utilisateur_id VARCHAR(100) COMMENT 'Login du dernier utilisateur professionnel compile',
+	created_on INTEGER(13)  NOT NULL COMMENT 'Date de la premiere compilation des absences en timestamp UNIX',
+	updated_on INTEGER(13)  NOT NULL COMMENT 'Date de la derniere compilation des absences en timestamp UNIX',
+	debut_abs INTEGER(12) default 0 NOT NULL COMMENT 'Debut de la compilation en timestamp UNIX',
+	fin_abs INTEGER(12) default 0 NOT NULL COMMENT 'Fin de la compilation en timestamp UNIX',
+	PRIMARY KEY (id),
+	INDEX a_absences_FI_1 (utilisateur_id),
+	CONSTRAINT a_absences_FK_1
+		FOREIGN KEY (utilisateur_id)
+		REFERENCES utilisateurs (login)
+		ON DELETE SET NULL
+)Type=InnoDB COMMENT='Une absence est la compilation des saisies pour un meme eleve, cette compilation est faite automatiquement par Gepi';
+
+#-----------------------------------------------------------------------------
+#-- j_traitement_absence
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS j_traitement_absence;
+
+
+CREATE TABLE j_traitement_absence
+(
+	a_absence_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de l\'absence saisie',
 	a_traitement_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere du traitement de ces absences',
-	PRIMARY KEY (a_saisie_id,a_traitement_id),
-	CONSTRAINT j_traitement_saisie_FK_1
-		FOREIGN KEY (a_saisie_id)
-		REFERENCES a_saisies (id)
+	PRIMARY KEY (a_absence_id,a_traitement_id),
+	CONSTRAINT j_traitement_absence_FK_1
+		FOREIGN KEY (a_absence_id)
+		REFERENCES a_absences (id)
 		ON DELETE CASCADE,
-	INDEX j_traitement_saisie_FI_2 (a_traitement_id),
-	CONSTRAINT j_traitement_saisie_FK_2
+	INDEX j_traitement_absence_FI_2 (a_traitement_id),
+	CONSTRAINT j_traitement_absence_FK_2
 		FOREIGN KEY (a_traitement_id)
 		REFERENCES a_traitements (id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de jointure entre la saisie et le traitement des absences';
+)Type=InnoDB COMMENT='Table de jointure entre la saisie et le traitement des absences';
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

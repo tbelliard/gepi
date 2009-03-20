@@ -90,13 +90,22 @@ try{
     $c->addAscendingOrderByColumn(AbsenceSaisiePeer::CREATED_ON);
   }
 
-  // On ne veut que les absences qui concerne le jour d'aujourd'hui :
+  // On ne veut que les absences qui concernent le jour d'aujourd'hui :
   $deb_creneau  = CreneauPeer::getFirstCreneau();
   $_ts          = $deb_creneau->getDebutCreneau() + mktime(0, 0, 0, date("m"), date("d"), date("Y")) - 3600; // onconserve une marge de 1 heure avant le premier creneau
   $c->add(AbsenceSaisiePeer::FIN_ABS, $_ts, Criteria::GREATER_EQUAL);
-
+  
   $liste_absents_brute = AbsenceSaisiePeer::doSelect($c);
-//  aff_debug($liste_absents_brute);exit();
+  //aff_debug($liste_absents_brute[0]->getEleve());exit();
+
+  foreach ($liste_absents_brute as $absents){
+     if (!in_array($absents->getEleve()->getIdEleve(), $tab_absents)){
+       $tab_absents[$absents->getEleve()->getIdEleve()][] = $absents;
+     }else{
+       $place = array_key($tab_absents, $absents->getEleve()->getIdEleve());
+       $tab_absents[$place][] = $absents;
+     }
+  }
 
 
   /***************** On élabore un petit tableau du suivi créneau par créneau *******************/
@@ -201,7 +210,7 @@ require("lib/abs_menu.php");
 
     /*
      * ====================== TESTONS TESTONS ================================================================
-     * Il faudrait maintenant traité toutes les absences pour les ranger avant enregistrement dans la table de traitement
+     * Il faudrait maintenant traiter toutes les absences pour les ranger avant enregistrement dans la table de traitement
      *
      */
 
@@ -239,23 +248,7 @@ require("lib/abs_menu.php");
   $increment++;
   endforeach;
 
-echo '<table>';
-     foreach($tab_absents as $abs){
-       foreach ($abs as $absents){
-$_id_fiche++;
-        echo '  <tr class="'.$class_couleur.'">
-    <td>'.$absents->getUtilisateurProfessionnel()->getNom() . ' ' . $absents->getUtilisateurProfessionnel()->getPrenom().'</td>
-    <td id="winAbs'.$absents->getEleve()->getIdEleve().'" onmouseover="afficherDiv(\''.$_id_fiche.'\');" onmouseout="cacherDiv(\''.$_id_fiche.'\');">'.$absents->getEleve()->getNom() . ' ' . $absents->getEleve()->getPrenom().'</td>
-    <td></td>
-    <td>'.date("d/m/Y", $absents->getDebutAbs()).' <span class="gras">'.date("H:i", $absents->getDebutAbs()).'</span>'. $_fiche_recap_abs.'</td>
-    <td>'.date("d/m/Y", $absents->getFinAbs()).' <span class="gras">'.date("H:i", $absents->getFinAbs()).'</span></td>
-    <td><input type="checkbox" name="fusion[]" value="'.$absents->getId().'" title="Attention vous allez fusionner des absences !" /></td>
-    <td>'.$aff_suivi_creneaux.'</td>
-  </tr>';
-
-       }
-     }
-     echo '</table>';
+$test = CreneauPeer::getCreneauPrecedent(8);
 
 ?>
 

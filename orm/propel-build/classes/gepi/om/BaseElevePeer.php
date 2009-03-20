@@ -561,7 +561,6 @@ abstract class BaseElevePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += ElevePeer::doOnDeleteCascade(new Criteria(ElevePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(ElevePeer::TABLE_NAME, $con);
 			$con->commit();
 			return $affectedRows;
@@ -624,16 +623,6 @@ abstract class BaseElevePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += ElevePeer::doOnDeleteCascade($criteria, $con);
-			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					ElevePeer::clearInstancePool();
-				} else { // it's a PK or object
-					ElevePeer::removeInstanceFromPool($values);
-				}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
 
@@ -670,86 +659,6 @@ abstract class BaseElevePeer {
 			$con->rollBack();
 			throw $e;
 		}
-	}
-
-	/**
-	 * This is a method for emulating ON DELETE CASCADE for DBs that don't support this
-	 * feature (like MySQL or SQLite).
-	 *
-	 * This method is not very speedy because it must perform a query first to get
-	 * the implicated records and then perform the deletes by calling those Peer classes.
-	 *
-	 * This method should be used within a transaction if possible.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
-	 * @return     int The number of affected rows (if supported by underlying database driver).
-	 */
-	protected static function doOnDeleteCascade(Criteria $criteria, PropelPDO $con)
-	{
-		// initialize var to track total num of affected rows
-		$affectedRows = 0;
-
-		// first find the objects that are implicated by the $criteria
-		$objects = ElevePeer::doSelect($criteria, $con);
-		foreach ($objects as $obj) {
-
-
-			// delete related JEleveClasse objects
-			$c = new Criteria(JEleveClassePeer::DATABASE_NAME);
-			
-			$c->add(JEleveClassePeer::LOGIN, $obj->getLogin());
-			$affectedRows += JEleveClassePeer::doDelete($c, $con);
-
-			// delete related JEleveCpe objects
-			$c = new Criteria(JEleveCpePeer::DATABASE_NAME);
-			
-			$c->add(JEleveCpePeer::E_LOGIN, $obj->getLogin());
-			$affectedRows += JEleveCpePeer::doDelete($c, $con);
-
-			// delete related JEleveGroupe objects
-			$c = new Criteria(JEleveGroupePeer::DATABASE_NAME);
-			
-			$c->add(JEleveGroupePeer::LOGIN, $obj->getLogin());
-			$affectedRows += JEleveGroupePeer::doDelete($c, $con);
-
-			// delete related JEleveProfesseurPrincipal objects
-			$c = new Criteria(JEleveProfesseurPrincipalPeer::DATABASE_NAME);
-			
-			$c->add(JEleveProfesseurPrincipalPeer::LOGIN, $obj->getLogin());
-			$affectedRows += JEleveProfesseurPrincipalPeer::doDelete($c, $con);
-
-			// delete related EleveRegimeDoublant objects
-			$c = new Criteria(EleveRegimeDoublantPeer::DATABASE_NAME);
-			
-			$c->add(EleveRegimeDoublantPeer::LOGIN, $obj->getLogin());
-			$affectedRows += EleveRegimeDoublantPeer::doDelete($c, $con);
-
-			// delete related ResponsableInformation objects
-			$c = new Criteria(ResponsableInformationPeer::DATABASE_NAME);
-			
-			$c->add(ResponsableInformationPeer::ELE_ID, $obj->getEleId());
-			$affectedRows += ResponsableInformationPeer::doDelete($c, $con);
-
-			// delete related JEleveAncienEtablissement objects
-			$c = new Criteria(JEleveAncienEtablissementPeer::DATABASE_NAME);
-			
-			$c->add(JEleveAncienEtablissementPeer::ID_ELEVE, $obj->getIdEleve());
-			$affectedRows += JEleveAncienEtablissementPeer::doDelete($c, $con);
-
-			// delete related JAidEleves objects
-			$c = new Criteria(JAidElevesPeer::DATABASE_NAME);
-			
-			$c->add(JAidElevesPeer::LOGIN, $obj->getLogin());
-			$affectedRows += JAidElevesPeer::doDelete($c, $con);
-
-			// delete related AbsenceSaisie objects
-			$c = new Criteria(AbsenceSaisiePeer::DATABASE_NAME);
-			
-			$c->add(AbsenceSaisiePeer::ELEVE_ID, $obj->getIdEleve());
-			$affectedRows += AbsenceSaisiePeer::doDelete($c, $con);
-		}
-		return $affectedRows;
 	}
 
 	/**

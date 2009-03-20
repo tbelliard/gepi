@@ -1,20 +1,20 @@
 <?php
 
 /**
- * Base class that represents a row from the 'a_traitements' table.
+ * Base class that represents a row from the 'a_absences' table.
  *
- * Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies
+ * Une absence est la compilation des saisies pour un meme eleve, cette compilation est faite automatiquement par Gepi
  *
  * @package    gepi.om
  */
-abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
+abstract class BaseAbsenceAbsence extends BaseObject  implements Persistent {
 
 
 	/**
 	 * The Peer class.
 	 * Instance provides a convenient way of calling static methods on a class
 	 * that calling code may not be able to identify.
-	 * @var        AbsenceTraitementPeer
+	 * @var        AbsenceAbsencePeer
 	 */
 	protected static $peer;
 
@@ -43,59 +43,23 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	protected $updated_on;
 
 	/**
-	 * The value for the a_type_id field.
+	 * The value for the debut_abs field.
+	 * Note: this column has a database default value of: 0
 	 * @var        int
 	 */
-	protected $a_type_id;
+	protected $debut_abs;
 
 	/**
-	 * The value for the a_motif_id field.
+	 * The value for the fin_abs field.
+	 * Note: this column has a database default value of: 0
 	 * @var        int
 	 */
-	protected $a_motif_id;
-
-	/**
-	 * The value for the a_justification_id field.
-	 * @var        int
-	 */
-	protected $a_justification_id;
-
-	/**
-	 * The value for the texte_justification field.
-	 * @var        string
-	 */
-	protected $texte_justification;
-
-	/**
-	 * The value for the a_action_id field.
-	 * @var        int
-	 */
-	protected $a_action_id;
+	protected $fin_abs;
 
 	/**
 	 * @var        UtilisateurProfessionnel
 	 */
 	protected $aUtilisateurProfessionnel;
-
-	/**
-	 * @var        AbsenceType
-	 */
-	protected $aAbsenceType;
-
-	/**
-	 * @var        AbsenceMotif
-	 */
-	protected $aAbsenceMotif;
-
-	/**
-	 * @var        AbsenceJustification
-	 */
-	protected $aAbsenceJustification;
-
-	/**
-	 * @var        AbsenceAction
-	 */
-	protected $aAbsenceAction;
 
 	/**
 	 * @var        array JTraitementAbsence[] Collection to store aggregation of JTraitementAbsence objects.
@@ -122,7 +86,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Initializes internal state of BaseAbsenceTraitement object.
+	 * Initializes internal state of BaseAbsenceAbsence object.
 	 * @see        applyDefaults()
 	 */
 	public function __construct()
@@ -139,6 +103,8 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 */
 	public function applyDefaultValues()
 	{
+		$this->debut_abs = 0;
+		$this->fin_abs = 0;
 	}
 
 	/**
@@ -153,7 +119,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [utilisateur_id] column value.
-	 * Login de l'utilisateur professionnel qui a fait le traitement
+	 * Login du dernier utilisateur professionnel compile
 	 * @return     string
 	 */
 	public function getUtilisateurId()
@@ -163,7 +129,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [created_on] column value.
-	 * Date du traitement de ou des absences en timestamp UNIX
+	 * Date de la premiere compilation des absences en timestamp UNIX
 	 * @return     int
 	 */
 	public function getCreatedOn()
@@ -173,7 +139,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 	/**
 	 * Get the [updated_on] column value.
-	 * Date de la modification du traitement de ou des absences en timestamp UNIX
+	 * Date de la derniere compilation des absences en timestamp UNIX
 	 * @return     int
 	 */
 	public function getUpdatedOn()
@@ -182,60 +148,30 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Get the [a_type_id] column value.
-	 * cle etrangere du type d'absence
+	 * Get the [debut_abs] column value.
+	 * Debut de la compilation en timestamp UNIX
 	 * @return     int
 	 */
-	public function getATypeId()
+	public function getDebutAbs()
 	{
-		return $this->a_type_id;
+		return $this->debut_abs;
 	}
 
 	/**
-	 * Get the [a_motif_id] column value.
-	 * cle etrangere du motif d'absence
+	 * Get the [fin_abs] column value.
+	 * Fin de la compilation en timestamp UNIX
 	 * @return     int
 	 */
-	public function getAMotifId()
+	public function getFinAbs()
 	{
-		return $this->a_motif_id;
-	}
-
-	/**
-	 * Get the [a_justification_id] column value.
-	 * cle etrangere de la justification de l'absence
-	 * @return     int
-	 */
-	public function getAJustificationId()
-	{
-		return $this->a_justification_id;
-	}
-
-	/**
-	 * Get the [texte_justification] column value.
-	 * Texte additionnel à ce traitement
-	 * @return     string
-	 */
-	public function getTexteJustification()
-	{
-		return $this->texte_justification;
-	}
-
-	/**
-	 * Get the [a_action_id] column value.
-	 * cle etrangere de l'action sur ce traitement
-	 * @return     int
-	 */
-	public function getAActionId()
-	{
-		return $this->a_action_id;
+		return $this->fin_abs;
 	}
 
 	/**
 	 * Set the value of [id] column.
 	 * cle primaire auto-incremente
 	 * @param      int $v new value
-	 * @return     AbsenceTraitement The current object (for fluent API support)
+	 * @return     AbsenceAbsence The current object (for fluent API support)
 	 */
 	public function setId($v)
 	{
@@ -245,7 +181,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 		if ($this->id !== $v) {
 			$this->id = $v;
-			$this->modifiedColumns[] = AbsenceTraitementPeer::ID;
+			$this->modifiedColumns[] = AbsenceAbsencePeer::ID;
 		}
 
 		return $this;
@@ -253,9 +189,9 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [utilisateur_id] column.
-	 * Login de l'utilisateur professionnel qui a fait le traitement
+	 * Login du dernier utilisateur professionnel compile
 	 * @param      string $v new value
-	 * @return     AbsenceTraitement The current object (for fluent API support)
+	 * @return     AbsenceAbsence The current object (for fluent API support)
 	 */
 	public function setUtilisateurId($v)
 	{
@@ -265,7 +201,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 		if ($this->utilisateur_id !== $v) {
 			$this->utilisateur_id = $v;
-			$this->modifiedColumns[] = AbsenceTraitementPeer::UTILISATEUR_ID;
+			$this->modifiedColumns[] = AbsenceAbsencePeer::UTILISATEUR_ID;
 		}
 
 		if ($this->aUtilisateurProfessionnel !== null && $this->aUtilisateurProfessionnel->getLogin() !== $v) {
@@ -277,9 +213,9 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [created_on] column.
-	 * Date du traitement de ou des absences en timestamp UNIX
+	 * Date de la premiere compilation des absences en timestamp UNIX
 	 * @param      int $v new value
-	 * @return     AbsenceTraitement The current object (for fluent API support)
+	 * @return     AbsenceAbsence The current object (for fluent API support)
 	 */
 	public function setCreatedOn($v)
 	{
@@ -289,7 +225,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 		if ($this->created_on !== $v) {
 			$this->created_on = $v;
-			$this->modifiedColumns[] = AbsenceTraitementPeer::CREATED_ON;
+			$this->modifiedColumns[] = AbsenceAbsencePeer::CREATED_ON;
 		}
 
 		return $this;
@@ -297,9 +233,9 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 	/**
 	 * Set the value of [updated_on] column.
-	 * Date de la modification du traitement de ou des absences en timestamp UNIX
+	 * Date de la derniere compilation des absences en timestamp UNIX
 	 * @param      int $v new value
-	 * @return     AbsenceTraitement The current object (for fluent API support)
+	 * @return     AbsenceAbsence The current object (for fluent API support)
 	 */
 	public function setUpdatedOn($v)
 	{
@@ -309,127 +245,51 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 		if ($this->updated_on !== $v) {
 			$this->updated_on = $v;
-			$this->modifiedColumns[] = AbsenceTraitementPeer::UPDATED_ON;
+			$this->modifiedColumns[] = AbsenceAbsencePeer::UPDATED_ON;
 		}
 
 		return $this;
 	} // setUpdatedOn()
 
 	/**
-	 * Set the value of [a_type_id] column.
-	 * cle etrangere du type d'absence
+	 * Set the value of [debut_abs] column.
+	 * Debut de la compilation en timestamp UNIX
 	 * @param      int $v new value
-	 * @return     AbsenceTraitement The current object (for fluent API support)
+	 * @return     AbsenceAbsence The current object (for fluent API support)
 	 */
-	public function setATypeId($v)
+	public function setDebutAbs($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->a_type_id !== $v) {
-			$this->a_type_id = $v;
-			$this->modifiedColumns[] = AbsenceTraitementPeer::A_TYPE_ID;
-		}
-
-		if ($this->aAbsenceType !== null && $this->aAbsenceType->getId() !== $v) {
-			$this->aAbsenceType = null;
+		if ($this->debut_abs !== $v || $v === 0) {
+			$this->debut_abs = $v;
+			$this->modifiedColumns[] = AbsenceAbsencePeer::DEBUT_ABS;
 		}
 
 		return $this;
-	} // setATypeId()
+	} // setDebutAbs()
 
 	/**
-	 * Set the value of [a_motif_id] column.
-	 * cle etrangere du motif d'absence
+	 * Set the value of [fin_abs] column.
+	 * Fin de la compilation en timestamp UNIX
 	 * @param      int $v new value
-	 * @return     AbsenceTraitement The current object (for fluent API support)
+	 * @return     AbsenceAbsence The current object (for fluent API support)
 	 */
-	public function setAMotifId($v)
+	public function setFinAbs($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->a_motif_id !== $v) {
-			$this->a_motif_id = $v;
-			$this->modifiedColumns[] = AbsenceTraitementPeer::A_MOTIF_ID;
-		}
-
-		if ($this->aAbsenceMotif !== null && $this->aAbsenceMotif->getId() !== $v) {
-			$this->aAbsenceMotif = null;
+		if ($this->fin_abs !== $v || $v === 0) {
+			$this->fin_abs = $v;
+			$this->modifiedColumns[] = AbsenceAbsencePeer::FIN_ABS;
 		}
 
 		return $this;
-	} // setAMotifId()
-
-	/**
-	 * Set the value of [a_justification_id] column.
-	 * cle etrangere de la justification de l'absence
-	 * @param      int $v new value
-	 * @return     AbsenceTraitement The current object (for fluent API support)
-	 */
-	public function setAJustificationId($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->a_justification_id !== $v) {
-			$this->a_justification_id = $v;
-			$this->modifiedColumns[] = AbsenceTraitementPeer::A_JUSTIFICATION_ID;
-		}
-
-		if ($this->aAbsenceJustification !== null && $this->aAbsenceJustification->getId() !== $v) {
-			$this->aAbsenceJustification = null;
-		}
-
-		return $this;
-	} // setAJustificationId()
-
-	/**
-	 * Set the value of [texte_justification] column.
-	 * Texte additionnel à ce traitement
-	 * @param      string $v new value
-	 * @return     AbsenceTraitement The current object (for fluent API support)
-	 */
-	public function setTexteJustification($v)
-	{
-		if ($v !== null) {
-			$v = (string) $v;
-		}
-
-		if ($this->texte_justification !== $v) {
-			$this->texte_justification = $v;
-			$this->modifiedColumns[] = AbsenceTraitementPeer::TEXTE_JUSTIFICATION;
-		}
-
-		return $this;
-	} // setTexteJustification()
-
-	/**
-	 * Set the value of [a_action_id] column.
-	 * cle etrangere de l'action sur ce traitement
-	 * @param      int $v new value
-	 * @return     AbsenceTraitement The current object (for fluent API support)
-	 */
-	public function setAActionId($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->a_action_id !== $v) {
-			$this->a_action_id = $v;
-			$this->modifiedColumns[] = AbsenceTraitementPeer::A_ACTION_ID;
-		}
-
-		if ($this->aAbsenceAction !== null && $this->aAbsenceAction->getId() !== $v) {
-			$this->aAbsenceAction = null;
-		}
-
-		return $this;
-	} // setAActionId()
+	} // setFinAbs()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -442,7 +302,15 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	public function hasOnlyDefaultValues()
 	{
 			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array())) {
+			if (array_diff($this->modifiedColumns, array(AbsenceAbsencePeer::DEBUT_ABS,AbsenceAbsencePeer::FIN_ABS))) {
+				return false;
+			}
+
+			if ($this->debut_abs !== 0) {
+				return false;
+			}
+
+			if ($this->fin_abs !== 0) {
 				return false;
 			}
 
@@ -472,11 +340,8 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 			$this->utilisateur_id = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->created_on = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
 			$this->updated_on = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
-			$this->a_type_id = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-			$this->a_motif_id = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-			$this->a_justification_id = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
-			$this->texte_justification = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-			$this->a_action_id = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+			$this->debut_abs = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
+			$this->fin_abs = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -486,10 +351,10 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 			}
 
 			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 9; // 9 = AbsenceTraitementPeer::NUM_COLUMNS - AbsenceTraitementPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 6; // 6 = AbsenceAbsencePeer::NUM_COLUMNS - AbsenceAbsencePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
-			throw new PropelException("Error populating AbsenceTraitement object", $e);
+			throw new PropelException("Error populating AbsenceAbsence object", $e);
 		}
 	}
 
@@ -511,18 +376,6 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 		if ($this->aUtilisateurProfessionnel !== null && $this->utilisateur_id !== $this->aUtilisateurProfessionnel->getLogin()) {
 			$this->aUtilisateurProfessionnel = null;
-		}
-		if ($this->aAbsenceType !== null && $this->a_type_id !== $this->aAbsenceType->getId()) {
-			$this->aAbsenceType = null;
-		}
-		if ($this->aAbsenceMotif !== null && $this->a_motif_id !== $this->aAbsenceMotif->getId()) {
-			$this->aAbsenceMotif = null;
-		}
-		if ($this->aAbsenceJustification !== null && $this->a_justification_id !== $this->aAbsenceJustification->getId()) {
-			$this->aAbsenceJustification = null;
-		}
-		if ($this->aAbsenceAction !== null && $this->a_action_id !== $this->aAbsenceAction->getId()) {
-			$this->aAbsenceAction = null;
 		}
 	} // ensureConsistency
 
@@ -547,13 +400,13 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceAbsencePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		// We don't need to alter the object instance pool; we're just modifying this instance
 		// already in the pool.
 
-		$stmt = AbsenceTraitementPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$stmt = AbsenceAbsencePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
 		$row = $stmt->fetch(PDO::FETCH_NUM);
 		$stmt->closeCursor();
 		if (!$row) {
@@ -564,10 +417,6 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->aUtilisateurProfessionnel = null;
-			$this->aAbsenceType = null;
-			$this->aAbsenceMotif = null;
-			$this->aAbsenceJustification = null;
-			$this->aAbsenceAction = null;
 			$this->collJTraitementAbsences = null;
 			$this->lastJTraitementAbsenceCriteria = null;
 
@@ -590,12 +439,12 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceTraitementPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
 		try {
-			AbsenceTraitementPeer::doDelete($this, $con);
+			AbsenceAbsencePeer::doDelete($this, $con);
 			$this->setDeleted(true);
 			$con->commit();
 		} catch (PropelException $e) {
@@ -624,14 +473,14 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceTraitementPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceAbsencePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
 		try {
 			$affectedRows = $this->doSave($con);
 			$con->commit();
-			AbsenceTraitementPeer::addInstanceToPool($this);
+			AbsenceAbsencePeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -668,42 +517,14 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				$this->setUtilisateurProfessionnel($this->aUtilisateurProfessionnel);
 			}
 
-			if ($this->aAbsenceType !== null) {
-				if ($this->aAbsenceType->isModified() || $this->aAbsenceType->isNew()) {
-					$affectedRows += $this->aAbsenceType->save($con);
-				}
-				$this->setAbsenceType($this->aAbsenceType);
-			}
-
-			if ($this->aAbsenceMotif !== null) {
-				if ($this->aAbsenceMotif->isModified() || $this->aAbsenceMotif->isNew()) {
-					$affectedRows += $this->aAbsenceMotif->save($con);
-				}
-				$this->setAbsenceMotif($this->aAbsenceMotif);
-			}
-
-			if ($this->aAbsenceJustification !== null) {
-				if ($this->aAbsenceJustification->isModified() || $this->aAbsenceJustification->isNew()) {
-					$affectedRows += $this->aAbsenceJustification->save($con);
-				}
-				$this->setAbsenceJustification($this->aAbsenceJustification);
-			}
-
-			if ($this->aAbsenceAction !== null) {
-				if ($this->aAbsenceAction->isModified() || $this->aAbsenceAction->isNew()) {
-					$affectedRows += $this->aAbsenceAction->save($con);
-				}
-				$this->setAbsenceAction($this->aAbsenceAction);
-			}
-
 			if ($this->isNew() ) {
-				$this->modifiedColumns[] = AbsenceTraitementPeer::ID;
+				$this->modifiedColumns[] = AbsenceAbsencePeer::ID;
 			}
 
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = AbsenceTraitementPeer::doInsert($this, $con);
+					$pk = AbsenceAbsencePeer::doInsert($this, $con);
 					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
 										 // should always be true here (even though technically
 										 // BasePeer::doInsert() can insert multiple rows).
@@ -712,7 +533,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 					$this->setNew(false);
 				} else {
-					$affectedRows += AbsenceTraitementPeer::doUpdate($this, $con);
+					$affectedRows += AbsenceAbsencePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -803,32 +624,8 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				}
 			}
 
-			if ($this->aAbsenceType !== null) {
-				if (!$this->aAbsenceType->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aAbsenceType->getValidationFailures());
-				}
-			}
 
-			if ($this->aAbsenceMotif !== null) {
-				if (!$this->aAbsenceMotif->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aAbsenceMotif->getValidationFailures());
-				}
-			}
-
-			if ($this->aAbsenceJustification !== null) {
-				if (!$this->aAbsenceJustification->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aAbsenceJustification->getValidationFailures());
-				}
-			}
-
-			if ($this->aAbsenceAction !== null) {
-				if (!$this->aAbsenceAction->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aAbsenceAction->getValidationFailures());
-				}
-			}
-
-
-			if (($retval = AbsenceTraitementPeer::doValidate($this, $columns)) !== true) {
+			if (($retval = AbsenceAbsencePeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
@@ -859,7 +656,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = AbsenceTraitementPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = AbsenceAbsencePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		$field = $this->getByPosition($pos);
 		return $field;
 	}
@@ -887,19 +684,10 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				return $this->getUpdatedOn();
 				break;
 			case 4:
-				return $this->getATypeId();
+				return $this->getDebutAbs();
 				break;
 			case 5:
-				return $this->getAMotifId();
-				break;
-			case 6:
-				return $this->getAJustificationId();
-				break;
-			case 7:
-				return $this->getTexteJustification();
-				break;
-			case 8:
-				return $this->getAActionId();
+				return $this->getFinAbs();
 				break;
 			default:
 				return null;
@@ -920,17 +708,14 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
-		$keys = AbsenceTraitementPeer::getFieldNames($keyType);
+		$keys = AbsenceAbsencePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getUtilisateurId(),
 			$keys[2] => $this->getCreatedOn(),
 			$keys[3] => $this->getUpdatedOn(),
-			$keys[4] => $this->getATypeId(),
-			$keys[5] => $this->getAMotifId(),
-			$keys[6] => $this->getAJustificationId(),
-			$keys[7] => $this->getTexteJustification(),
-			$keys[8] => $this->getAActionId(),
+			$keys[4] => $this->getDebutAbs(),
+			$keys[5] => $this->getFinAbs(),
 		);
 		return $result;
 	}
@@ -947,7 +732,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = AbsenceTraitementPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = AbsenceAbsencePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		return $this->setByPosition($pos, $value);
 	}
 
@@ -975,19 +760,10 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				$this->setUpdatedOn($value);
 				break;
 			case 4:
-				$this->setATypeId($value);
+				$this->setDebutAbs($value);
 				break;
 			case 5:
-				$this->setAMotifId($value);
-				break;
-			case 6:
-				$this->setAJustificationId($value);
-				break;
-			case 7:
-				$this->setTexteJustification($value);
-				break;
-			case 8:
-				$this->setAActionId($value);
+				$this->setFinAbs($value);
 				break;
 		} // switch()
 	}
@@ -1011,17 +787,14 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 */
 	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
 	{
-		$keys = AbsenceTraitementPeer::getFieldNames($keyType);
+		$keys = AbsenceAbsencePeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setUtilisateurId($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setCreatedOn($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setUpdatedOn($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setATypeId($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setAMotifId($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setAJustificationId($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setTexteJustification($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setAActionId($arr[$keys[8]]);
+		if (array_key_exists($keys[4], $arr)) $this->setDebutAbs($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setFinAbs($arr[$keys[5]]);
 	}
 
 	/**
@@ -1031,17 +804,14 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 */
 	public function buildCriteria()
 	{
-		$criteria = new Criteria(AbsenceTraitementPeer::DATABASE_NAME);
+		$criteria = new Criteria(AbsenceAbsencePeer::DATABASE_NAME);
 
-		if ($this->isColumnModified(AbsenceTraitementPeer::ID)) $criteria->add(AbsenceTraitementPeer::ID, $this->id);
-		if ($this->isColumnModified(AbsenceTraitementPeer::UTILISATEUR_ID)) $criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->utilisateur_id);
-		if ($this->isColumnModified(AbsenceTraitementPeer::CREATED_ON)) $criteria->add(AbsenceTraitementPeer::CREATED_ON, $this->created_on);
-		if ($this->isColumnModified(AbsenceTraitementPeer::UPDATED_ON)) $criteria->add(AbsenceTraitementPeer::UPDATED_ON, $this->updated_on);
-		if ($this->isColumnModified(AbsenceTraitementPeer::A_TYPE_ID)) $criteria->add(AbsenceTraitementPeer::A_TYPE_ID, $this->a_type_id);
-		if ($this->isColumnModified(AbsenceTraitementPeer::A_MOTIF_ID)) $criteria->add(AbsenceTraitementPeer::A_MOTIF_ID, $this->a_motif_id);
-		if ($this->isColumnModified(AbsenceTraitementPeer::A_JUSTIFICATION_ID)) $criteria->add(AbsenceTraitementPeer::A_JUSTIFICATION_ID, $this->a_justification_id);
-		if ($this->isColumnModified(AbsenceTraitementPeer::TEXTE_JUSTIFICATION)) $criteria->add(AbsenceTraitementPeer::TEXTE_JUSTIFICATION, $this->texte_justification);
-		if ($this->isColumnModified(AbsenceTraitementPeer::A_ACTION_ID)) $criteria->add(AbsenceTraitementPeer::A_ACTION_ID, $this->a_action_id);
+		if ($this->isColumnModified(AbsenceAbsencePeer::ID)) $criteria->add(AbsenceAbsencePeer::ID, $this->id);
+		if ($this->isColumnModified(AbsenceAbsencePeer::UTILISATEUR_ID)) $criteria->add(AbsenceAbsencePeer::UTILISATEUR_ID, $this->utilisateur_id);
+		if ($this->isColumnModified(AbsenceAbsencePeer::CREATED_ON)) $criteria->add(AbsenceAbsencePeer::CREATED_ON, $this->created_on);
+		if ($this->isColumnModified(AbsenceAbsencePeer::UPDATED_ON)) $criteria->add(AbsenceAbsencePeer::UPDATED_ON, $this->updated_on);
+		if ($this->isColumnModified(AbsenceAbsencePeer::DEBUT_ABS)) $criteria->add(AbsenceAbsencePeer::DEBUT_ABS, $this->debut_abs);
+		if ($this->isColumnModified(AbsenceAbsencePeer::FIN_ABS)) $criteria->add(AbsenceAbsencePeer::FIN_ABS, $this->fin_abs);
 
 		return $criteria;
 	}
@@ -1056,9 +826,9 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 */
 	public function buildPkeyCriteria()
 	{
-		$criteria = new Criteria(AbsenceTraitementPeer::DATABASE_NAME);
+		$criteria = new Criteria(AbsenceAbsencePeer::DATABASE_NAME);
 
-		$criteria->add(AbsenceTraitementPeer::ID, $this->id);
+		$criteria->add(AbsenceAbsencePeer::ID, $this->id);
 
 		return $criteria;
 	}
@@ -1089,7 +859,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 * If desired, this method can also make copies of all associated (fkey referrers)
 	 * objects.
 	 *
-	 * @param      object $copyObj An object of AbsenceTraitement (or compatible) type.
+	 * @param      object $copyObj An object of AbsenceAbsence (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
 	 * @throws     PropelException
 	 */
@@ -1102,15 +872,9 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 		$copyObj->setUpdatedOn($this->updated_on);
 
-		$copyObj->setATypeId($this->a_type_id);
+		$copyObj->setDebutAbs($this->debut_abs);
 
-		$copyObj->setAMotifId($this->a_motif_id);
-
-		$copyObj->setAJustificationId($this->a_justification_id);
-
-		$copyObj->setTexteJustification($this->texte_justification);
-
-		$copyObj->setAActionId($this->a_action_id);
+		$copyObj->setFinAbs($this->fin_abs);
 
 
 		if ($deepCopy) {
@@ -1142,7 +906,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 * objects.
 	 *
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-	 * @return     AbsenceTraitement Clone of current object.
+	 * @return     AbsenceAbsence Clone of current object.
 	 * @throws     PropelException
 	 */
 	public function copy($deepCopy = false)
@@ -1161,12 +925,12 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 * same instance for all member of this class. The method could therefore
 	 * be static, but this would prevent one from overriding the behavior.
 	 *
-	 * @return     AbsenceTraitementPeer
+	 * @return     AbsenceAbsencePeer
 	 */
 	public function getPeer()
 	{
 		if (self::$peer === null) {
-			self::$peer = new AbsenceTraitementPeer();
+			self::$peer = new AbsenceAbsencePeer();
 		}
 		return self::$peer;
 	}
@@ -1175,7 +939,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 * Declares an association between this object and a UtilisateurProfessionnel object.
 	 *
 	 * @param      UtilisateurProfessionnel $v
-	 * @return     AbsenceTraitement The current object (for fluent API support)
+	 * @return     AbsenceAbsence The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
 	public function setUtilisateurProfessionnel(UtilisateurProfessionnel $v = null)
@@ -1191,7 +955,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 		// Add binding for other direction of this n:n relationship.
 		// If this object has already been added to the UtilisateurProfessionnel object, it will not be re-added.
 		if ($v !== null) {
-			$v->addAbsenceTraitement($this);
+			$v->addAbsenceAbsence($this);
 		}
 
 		return $this;
@@ -1214,206 +978,10 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aUtilisateurProfessionnel->addAbsenceTraitements($this);
+			   $this->aUtilisateurProfessionnel->addAbsenceAbsences($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
-	}
-
-	/**
-	 * Declares an association between this object and a AbsenceType object.
-	 *
-	 * @param      AbsenceType $v
-	 * @return     AbsenceTraitement The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setAbsenceType(AbsenceType $v = null)
-	{
-		if ($v === null) {
-			$this->setATypeId(NULL);
-		} else {
-			$this->setATypeId($v->getId());
-		}
-
-		$this->aAbsenceType = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the AbsenceType object, it will not be re-added.
-		if ($v !== null) {
-			$v->addAbsenceTraitement($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated AbsenceType object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     AbsenceType The associated AbsenceType object.
-	 * @throws     PropelException
-	 */
-	public function getAbsenceType(PropelPDO $con = null)
-	{
-		if ($this->aAbsenceType === null && ($this->a_type_id !== null)) {
-			$this->aAbsenceType = AbsenceTypePeer::retrieveByPK($this->a_type_id, $con);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAbsenceType->addAbsenceTraitements($this);
-			 */
-		}
-		return $this->aAbsenceType;
-	}
-
-	/**
-	 * Declares an association between this object and a AbsenceMotif object.
-	 *
-	 * @param      AbsenceMotif $v
-	 * @return     AbsenceTraitement The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setAbsenceMotif(AbsenceMotif $v = null)
-	{
-		if ($v === null) {
-			$this->setAMotifId(NULL);
-		} else {
-			$this->setAMotifId($v->getId());
-		}
-
-		$this->aAbsenceMotif = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the AbsenceMotif object, it will not be re-added.
-		if ($v !== null) {
-			$v->addAbsenceTraitement($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated AbsenceMotif object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     AbsenceMotif The associated AbsenceMotif object.
-	 * @throws     PropelException
-	 */
-	public function getAbsenceMotif(PropelPDO $con = null)
-	{
-		if ($this->aAbsenceMotif === null && ($this->a_motif_id !== null)) {
-			$this->aAbsenceMotif = AbsenceMotifPeer::retrieveByPK($this->a_motif_id, $con);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAbsenceMotif->addAbsenceTraitements($this);
-			 */
-		}
-		return $this->aAbsenceMotif;
-	}
-
-	/**
-	 * Declares an association between this object and a AbsenceJustification object.
-	 *
-	 * @param      AbsenceJustification $v
-	 * @return     AbsenceTraitement The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setAbsenceJustification(AbsenceJustification $v = null)
-	{
-		if ($v === null) {
-			$this->setAJustificationId(NULL);
-		} else {
-			$this->setAJustificationId($v->getId());
-		}
-
-		$this->aAbsenceJustification = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the AbsenceJustification object, it will not be re-added.
-		if ($v !== null) {
-			$v->addAbsenceTraitement($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated AbsenceJustification object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     AbsenceJustification The associated AbsenceJustification object.
-	 * @throws     PropelException
-	 */
-	public function getAbsenceJustification(PropelPDO $con = null)
-	{
-		if ($this->aAbsenceJustification === null && ($this->a_justification_id !== null)) {
-			$this->aAbsenceJustification = AbsenceJustificationPeer::retrieveByPK($this->a_justification_id, $con);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAbsenceJustification->addAbsenceTraitements($this);
-			 */
-		}
-		return $this->aAbsenceJustification;
-	}
-
-	/**
-	 * Declares an association between this object and a AbsenceAction object.
-	 *
-	 * @param      AbsenceAction $v
-	 * @return     AbsenceTraitement The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setAbsenceAction(AbsenceAction $v = null)
-	{
-		if ($v === null) {
-			$this->setAActionId(NULL);
-		} else {
-			$this->setAActionId($v->getId());
-		}
-
-		$this->aAbsenceAction = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the AbsenceAction object, it will not be re-added.
-		if ($v !== null) {
-			$v->addAbsenceTraitement($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated AbsenceAction object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     AbsenceAction The associated AbsenceAction object.
-	 * @throws     PropelException
-	 */
-	public function getAbsenceAction(PropelPDO $con = null)
-	{
-		if ($this->aAbsenceAction === null && ($this->a_action_id !== null)) {
-			$this->aAbsenceAction = AbsenceActionPeer::retrieveByPK($this->a_action_id, $con);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAbsenceAction->addAbsenceTraitements($this);
-			 */
-		}
-		return $this->aAbsenceAction;
 	}
 
 	/**
@@ -1448,8 +1016,8 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 * Gets an array of JTraitementAbsence objects which contain a foreign key that references this object.
 	 *
 	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this AbsenceTraitement has previously been saved, it will retrieve
-	 * related JTraitementAbsences from storage. If this AbsenceTraitement is new, it will return
+	 * Otherwise if this AbsenceAbsence has previously been saved, it will retrieve
+	 * related JTraitementAbsences from storage. If this AbsenceAbsence is new, it will return
 	 * an empty collection or the current collection, the criteria is ignored on a new object.
 	 *
 	 * @param      PropelPDO $con
@@ -1460,7 +1028,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	public function getJTraitementAbsences($criteria = null, PropelPDO $con = null)
 	{
 		if ($criteria === null) {
-			$criteria = new Criteria(AbsenceTraitementPeer::DATABASE_NAME);
+			$criteria = new Criteria(AbsenceAbsencePeer::DATABASE_NAME);
 		}
 		elseif ($criteria instanceof Criteria)
 		{
@@ -1472,7 +1040,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 			   $this->collJTraitementAbsences = array();
 			} else {
 
-				$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+				$criteria->add(JTraitementAbsencePeer::A_ABSENCE_ID, $this->id);
 
 				JTraitementAbsencePeer::addSelectColumns($criteria);
 				$this->collJTraitementAbsences = JTraitementAbsencePeer::doSelect($criteria, $con);
@@ -1485,7 +1053,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				// one, just return the collection.
 
 
-				$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+				$criteria->add(JTraitementAbsencePeer::A_ABSENCE_ID, $this->id);
 
 				JTraitementAbsencePeer::addSelectColumns($criteria);
 				if (!isset($this->lastJTraitementAbsenceCriteria) || !$this->lastJTraitementAbsenceCriteria->equals($criteria)) {
@@ -1509,7 +1077,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	public function countJTraitementAbsences(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
 		if ($criteria === null) {
-			$criteria = new Criteria(AbsenceTraitementPeer::DATABASE_NAME);
+			$criteria = new Criteria(AbsenceAbsencePeer::DATABASE_NAME);
 		} else {
 			$criteria = clone $criteria;
 		}
@@ -1525,7 +1093,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				$count = 0;
 			} else {
 
-				$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+				$criteria->add(JTraitementAbsencePeer::A_ABSENCE_ID, $this->id);
 
 				$count = JTraitementAbsencePeer::doCount($criteria, $con);
 			}
@@ -1537,7 +1105,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				// one, just return count of the collection.
 
 
-				$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+				$criteria->add(JTraitementAbsencePeer::A_ABSENCE_ID, $this->id);
 
 				if (!isset($this->lastJTraitementAbsenceCriteria) || !$this->lastJTraitementAbsenceCriteria->equals($criteria)) {
 					$count = JTraitementAbsencePeer::doCount($criteria, $con);
@@ -1567,7 +1135,7 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 		}
 		if (!in_array($l, $this->collJTraitementAbsences, true)) { // only add it if the **same** object is not already associated
 			array_push($this->collJTraitementAbsences, $l);
-			$l->setAbsenceTraitement($this);
+			$l->setAbsenceAbsence($this);
 		}
 	}
 
@@ -1575,18 +1143,18 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	/**
 	 * If this collection has already been initialized with
 	 * an identical criteria, it returns the collection.
-	 * Otherwise if this AbsenceTraitement is new, it will return
-	 * an empty collection; or if this AbsenceTraitement has previously
+	 * Otherwise if this AbsenceAbsence is new, it will return
+	 * an empty collection; or if this AbsenceAbsence has previously
 	 * been saved, it will retrieve related JTraitementAbsences from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
-	 * actually need in AbsenceTraitement.
+	 * actually need in AbsenceAbsence.
 	 */
-	public function getJTraitementAbsencesJoinAbsenceAbsence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getJTraitementAbsencesJoinAbsenceTraitement($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
-			$criteria = new Criteria(AbsenceTraitementPeer::DATABASE_NAME);
+			$criteria = new Criteria(AbsenceAbsencePeer::DATABASE_NAME);
 		}
 		elseif ($criteria instanceof Criteria)
 		{
@@ -1598,19 +1166,19 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				$this->collJTraitementAbsences = array();
 			} else {
 
-				$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+				$criteria->add(JTraitementAbsencePeer::A_ABSENCE_ID, $this->id);
 
-				$this->collJTraitementAbsences = JTraitementAbsencePeer::doSelectJoinAbsenceAbsence($criteria, $con, $join_behavior);
+				$this->collJTraitementAbsences = JTraitementAbsencePeer::doSelectJoinAbsenceTraitement($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
 			// called for.  If the criteria is the same as the last
 			// one, just return the collection.
 
-			$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+			$criteria->add(JTraitementAbsencePeer::A_ABSENCE_ID, $this->id);
 
 			if (!isset($this->lastJTraitementAbsenceCriteria) || !$this->lastJTraitementAbsenceCriteria->equals($criteria)) {
-				$this->collJTraitementAbsences = JTraitementAbsencePeer::doSelectJoinAbsenceAbsence($criteria, $con, $join_behavior);
+				$this->collJTraitementAbsences = JTraitementAbsencePeer::doSelectJoinAbsenceTraitement($criteria, $con, $join_behavior);
 			}
 		}
 		$this->lastJTraitementAbsenceCriteria = $criteria;
@@ -1639,10 +1207,6 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 		$this->collJTraitementAbsences = null;
 			$this->aUtilisateurProfessionnel = null;
-			$this->aAbsenceType = null;
-			$this->aAbsenceMotif = null;
-			$this->aAbsenceJustification = null;
-			$this->aAbsenceAction = null;
 	}
 
-} // BaseAbsenceTraitement
+} // BaseAbsenceAbsence

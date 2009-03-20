@@ -521,7 +521,6 @@ abstract class BaseGroupePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += GroupePeer::doOnDeleteCascade(new Criteria(GroupePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(GroupePeer::TABLE_NAME, $con);
 			$con->commit();
 			return $affectedRows;
@@ -584,16 +583,6 @@ abstract class BaseGroupePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += GroupePeer::doOnDeleteCascade($criteria, $con);
-			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					GroupePeer::clearInstancePool();
-				} else { // it's a PK or object
-					GroupePeer::removeInstanceFromPool($values);
-				}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
 
@@ -621,68 +610,6 @@ abstract class BaseGroupePeer {
 			$con->rollBack();
 			throw $e;
 		}
-	}
-
-	/**
-	 * This is a method for emulating ON DELETE CASCADE for DBs that don't support this
-	 * feature (like MySQL or SQLite).
-	 *
-	 * This method is not very speedy because it must perform a query first to get
-	 * the implicated records and then perform the deletes by calling those Peer classes.
-	 *
-	 * This method should be used within a transaction if possible.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
-	 * @return     int The number of affected rows (if supported by underlying database driver).
-	 */
-	protected static function doOnDeleteCascade(Criteria $criteria, PropelPDO $con)
-	{
-		// initialize var to track total num of affected rows
-		$affectedRows = 0;
-
-		// first find the objects that are implicated by the $criteria
-		$objects = GroupePeer::doSelect($criteria, $con);
-		foreach ($objects as $obj) {
-
-
-			// delete related JGroupesProfesseurs objects
-			$c = new Criteria(JGroupesProfesseursPeer::DATABASE_NAME);
-			
-			$c->add(JGroupesProfesseursPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += JGroupesProfesseursPeer::doDelete($c, $con);
-
-			// delete related JGroupesClasses objects
-			$c = new Criteria(JGroupesClassesPeer::DATABASE_NAME);
-			
-			$c->add(JGroupesClassesPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += JGroupesClassesPeer::doDelete($c, $con);
-
-			// delete related CahierTexteCompteRendu objects
-			$c = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
-			
-			$c->add(CahierTexteCompteRenduPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += CahierTexteCompteRenduPeer::doDelete($c, $con);
-
-			// delete related CahierTexteTravailAFaire objects
-			$c = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
-			
-			$c->add(CahierTexteTravailAFairePeer::ID_GROUPE, $obj->getId());
-			$affectedRows += CahierTexteTravailAFairePeer::doDelete($c, $con);
-
-			// delete related CahierTexteNoticePrivee objects
-			$c = new Criteria(CahierTexteNoticePriveePeer::DATABASE_NAME);
-			
-			$c->add(CahierTexteNoticePriveePeer::ID_GROUPE, $obj->getId());
-			$affectedRows += CahierTexteNoticePriveePeer::doDelete($c, $con);
-
-			// delete related JEleveGroupe objects
-			$c = new Criteria(JEleveGroupePeer::DATABASE_NAME);
-			
-			$c->add(JEleveGroupePeer::ID_GROUPE, $obj->getId());
-			$affectedRows += JEleveGroupePeer::doDelete($c, $con);
-		}
-		return $affectedRows;
 	}
 
 	/**
