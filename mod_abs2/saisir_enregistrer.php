@@ -75,10 +75,17 @@ try{
 
       if (isset ($_eleve[$a])){
 
-        // Alors on propose d'enregistrer l'absence pour garder une trace de la saisie (raisons légales et vérification)
+        // Alors on propose d'enregistrer l'absence pour garder une trace de la saisie (raisons légales et vérification)...
         $saisie = new AbsenceSaisie();
         $saisie->setUtilisateurId($_SESSION["login"]);
         $saisie->setEleveId($_eleve[$a]);
+
+        // ...et on propose également d'enregistrer cette saisie en complément de celles déjà effectuée pour le même élève.
+        // Donc on vérifie d'abord si une absence existe sur le creneau précédent pour cet élève
+        $absence = new AbsenceAbsence();
+        $absence->verifAvantEnregistrement();
+        $absence->setUtilisateurId($_SESSION["login"]);
+
         // Si on demande la journée entière ...
         if (isset($_jourentier[$a]) AND $_jourentier[$a] != ''){
 
@@ -88,19 +95,17 @@ try{
           $_fin = CreneauPeer::getLastCreneau()->getFinCreneau();
           $fin  = $_fin + mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 
-          $saisie->setDebutAbs($deb);
-          $saisie->setFinAbs($fin);
-
         }else{
 
-          $cre_deb  = CreneauPeer::retrieveByPK($_deb[$a]);
-          $creDeb   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_deb->getDebutCreneau();
-          $cre_fin  = CreneauPeer::retrieveByPK($_fin[$a]);
-          $creFin   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_fin->getFinCreneau();
-          $saisie->setDebutAbs($creDeb);
-          $saisie->setFinAbs($creFin);
+          $_deb  = CreneauPeer::retrieveByPK($_deb[$a]);
+          $Deb   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_deb->getDebutCreneau();
+          $_fin  = CreneauPeer::retrieveByPK($_fin[$a]);
+          $Fin   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_fin->getFinCreneau();
 
         }
+
+        $saisie->setDebutAbs($deb);
+        $saisie->setFinAbs($fin);
 
         if ($_last_id = $saisie->save()){
           // $_last_id est donc l'id de l'enregistrement qui vient d'avoir lieu => A vérifier, il semblerait que non

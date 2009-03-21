@@ -94,7 +94,8 @@ $liste_scripts_non_traites = array(
 "/gestion/accueil_sauve.php",
 "/cahier_texte/index.php",
 "/cahier_texte_2/ajax_enregistrement_compte_rendu.php",
-"/cahier_texte_2/ajax_enregistrement_devoir.php"
+"/cahier_texte_2/ajax_enregistrement_devoir.php",
+"/cahier_texte_2/ajax_enregistrement_notice_privee.php"
 );
 
 $url = parse_url($_SERVER['REQUEST_URI']);

@@ -249,9 +249,6 @@ require("lib/abs_menu.php");
 <?php
   $increment++;
   endforeach;
-
-$test = CreneauPeer::getCreneauPrecedentCours(4); aff_debug($test);
-
 ?>
 
 </table>
