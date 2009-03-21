@@ -104,14 +104,10 @@ try{
     <option value="rien">-- -- --</option>';
   foreach($liste_aids as $aids){
 
-    //foreach($aids->getAidConfiguration() as $categorie_aid){
       $afficheHtmlSelectListeAids .= '<option value="' . $aids->getId() . '">' . $aids->getNom() . '   (' . $aids->getAidConfiguration()->getNomComplet() . ')</option>'."\n";
-    //}
 
   }
   $afficheHtmlSelectListeAids .= '</select>';
-
-//  $test = $liste_aid[0]->getAidConfiguration();
 
 // ******************* fin de la liste des AID de l'établissement ********************* //
 // ************************************************************************************ //
@@ -120,6 +116,7 @@ try{
   // Cette fonction est présente dans /lib/erreurs.php
   affExceptions($e);
 }
+
 //**************** EN-TETE *****************
 $javascript_specifique = "mod_abs2/lib/absences_ajax";
 $style_specifique = "mod_abs2/lib/abs_style";
@@ -129,10 +126,7 @@ $menu = 'saisir';
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
-if (isset($_SESSION['msg_abs'])){
-  echo $_SESSION['msg_abs'];
-  $_SESSION['msg_abs'] = NULL; // On efface le message après l'avoir affiché
-}
+
 ?>
 <div id="idAidAbs" style="display: none; position: absolute; background-color: gray; color: white; width: 500px;">
   Projet d'aide sur le module absence accessible par la touche [F2]. On pourrait imaginer travailler sur une aide dynamique avec des tables et des infos particulières</div>
@@ -143,32 +137,41 @@ if (isset($_SESSION['msg_abs'])){
 
 
   <form action="saisir_absences.php" method="post">
+  <!-- Selects des classes, enseignements et AID -->
+  <div style="position: absolute; padding: 5px 5px 5px 5px; width: 500px; margin-left: 520px;">
+    <fieldset id="espace_saisie2" style="border: 1px solid grey;">
+      <legend> - Afficher une liste pr&eacute;cise - </legend>
+      <p style="text-align: right;">
+        <?php echo $afficheHtmlSelectListeGroupes; ?>
+      </p>
+      <p style="text-align: right;">
+        <?php echo $afficheHtmlSelectListeAids; ?>
+      </p>
+      <p style="text-align: right;">
+        <?php echo $afficheHtmlSelectListeClasses; ?>
+      </p>
 
-<fieldset id="espace_saisie2" style="position: absolute; border: 1px solid grey; padding: 5px 5px 5px 5px; width: 500px; margin-left: 520px;">
-  <legend> - Afficher une liste pr&eacute;cise - </legend>
-    <p style="text-align: right;">
-      <?php echo $afficheHtmlSelectListeGroupes; ?>
-    </p>
-    <p style="text-align: right;">
-      <?php echo $afficheHtmlSelectListeAids; ?>
-    </p>
-    <p style="text-align: right;">
-      <?php echo $afficheHtmlSelectListeClasses; ?>
-    </p>
+      <p style="position: relative; margin-left: 1%;">
+        <input type="submit" name="valider" value="&nbsp;>>&nbsp;" />
+      </p>
 
-    <p style="position: relative; margin-left: 1%;">
-      <input type="submit" name="valider" value="&nbsp;>>&nbsp;" />
-    </p>
+    </fieldset>
+    <?php
+    if (isset($_SESSION['msg_abs'])){
+      echo $_SESSION['msg_abs'];
+      $_SESSION['msg_abs'] = NULL; // On efface le message après l'avoir affiché
+    }
+    ?>
+  </div>
 
-</fieldset>
+  <!-- select de la liste des élèves de l'établissement -->
+  <fieldset id="espace_saisie" style="border: 1px solid grey; padding: 5px 5px 5px 5px; width: 500px;">
+    <legend> - Saisir un ou plusieurs &eacute;l&egrave;ves - </legend>
 
-<fieldset id="espace_saisie" style="border: 1px solid grey; padding: 5px 5px 5px 5px; width: 500px;">
-  <legend> - Saisir un ou plusieurs &eacute;l&egrave;ves - </legend>
-
-    <p>
-      <?php echo EleveHelper::afficheHtmlSelectListeEleves(array ('label'=>'Elève (nom)', 'size'=>10, 'multiple'=>'on', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php'), $liste_eleves); ?>
-    </p>
-</fieldset>
+      <p>
+        <?php echo EleveHelper::afficheHtmlSelectListeEleves(array ('label'=>'Elève (nom)', 'size'=>10, 'multiple'=>'on', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php'), $liste_eleves); ?>
+      </p>
+  </fieldset>
 
 
   </form>
@@ -176,8 +179,8 @@ if (isset($_SESSION['msg_abs'])){
 </div>
 
 <div id="aff_result" style="display: none;">
-  <!-- Affichage des données AJAX -->
+  <!-- Affichage des données AJAX sur les élèves sélectionnés -->
 </div>
 
 
-<?php require("../lib/footer.inc.php"); //aff_debug($test); ?>
+<?php require("../lib/footer.inc.php"); ?>

@@ -28,7 +28,7 @@ class Creneau extends BaseCreneau {
 	}
 
   /**
-   * Méthode qui renvoi un horaire de debut de creneau formatte hh:mm
+   * Méthode qui renvoie un horaire de debut de creneau formatte hh:mm
    * 
    * @return string hh:mm
    */
@@ -37,7 +37,7 @@ class Creneau extends BaseCreneau {
 	}
 
   /**
-   * Méthode qui renvoi un horaire de debut de creneau formatte hh:mm
+   * Méthode qui renvoie un horaire de debut de creneau formatte hh:mm
    *
    * @return string hh:mm
    */

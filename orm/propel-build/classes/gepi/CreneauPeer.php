@@ -23,6 +23,16 @@ class CreneauPeer extends BaseCreneauPeer {
    */
 	private static $_liste_creneaux = NULL;
 
+  /**
+   * Les types de creneaux possibles
+   */
+  private static $_type_creneaux = array("cours", "pause", "repas");
+
+  /**
+   * Renvoie la liste des creneaux de la journee
+   *
+   * @return array tableau d'objets creneau
+   */
 	public static function getAllCreneauxOrderByTime(){
 		if (self::$_liste_creneaux == null) {
 			$criteria = new Criteria();
@@ -85,24 +95,49 @@ class CreneauPeer extends BaseCreneauPeer {
    * @var $creneau id du creneau ou heure de début
    * @return object CreneauPeer precedent
    */
-  public static function getCreneauPrecedent($creneau){
+  public static function getCreneauPrecedentCours($creneau){
+    $creneau_precedent = false;
     $creneaux = self::getListeCreneaux();
     $nbre = count($creneaux);
-    if (is_numeric($creneau) AND $creneau < 3600){
-      // On peut rechercher par rapport à l'id
-      for($a = 0 ; $a < $nbre ; $a++){
+    $i = -1;
+
+    for($a = 0 ; $a < $nbre ; $a++){
+
+      if (is_numeric($creneau) AND $creneau < 3600){
+        // On peut rechercher par rapport à l'id
         if ($creneaux[$a]->getId() == $creneau){
-          return($creneaux[$a - 1]);
+          // Il faut vérifier que le creneau précédent existe vraiment et s'il s'agit d'un creneau de cours
+          $creneau_precedent_tempo = ($a > 0) ? $creneaux[$a - 1] : NULL;
+          $i = $a-1; // un marqueur
         }
-      }
-    }elseif($creneau > 3600){
-      // On peut rechercher par rapport à l'heure de debut
-      for($a = 0 ; $a < $nbre ; $a++){
+
+      }elseif($creneau > 3600){
+        // On peut rechercher par rapport à l'heure de debut
         if ($creneaux[$a]->getDebutCreneau() <= $creneau AND $creneaux[$a]->getFinCreneau() >= $creneau){
-          return($creneaux[$a - 1]);
+          // Il faut vérifier que le creneau précédent existe vraiment et s'il s'agit d'un creneau de cours
+          $creneau_precedent_tempo = ($a > 0) ? $creneaux[$a - 1] : NULL;
+          $i = $a-1; // un marqueur
+        }
+
+      }
+    } // boucle for
+
+    // On vérifie le creneau precedent et on teste le premier qui correspond à un cours
+    if ($creneau_precedent_tempo === NULL){
+      $creneau_precedent = false;
+    }else if($creneau_precedent_tempo->getTypeCreneau() == 'cours'){
+      $creneau_precedent = $creneau_precedent_tempo;
+    }else{
+      // il faut rechercher le bon créneau précédent
+      for($t = $i ; $t !== 0 ; $t--){
+        if ($creneaux[$t]->getTypeCreneau() == 'cours'){
+          $creneau_precedent = $creneaux[$t];
+          break; // on arrête là la boucle
         }
       }
     }
+
+    return $creneau_precedent;
   }
 
 } // CreneauPeer

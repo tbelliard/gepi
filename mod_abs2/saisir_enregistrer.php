@@ -62,22 +62,24 @@ include("lib/erreurs.php");
 
 try{
 
-  // Une demande d'enregistrement des absences est lancée
+  /* @@@@@@@@@@@@@@@@@@@@@@@@@@ Une demande d'enregistrement des absences est lancée @@@@@@@@@@@@@@@@@@@@@@@ */
+
   if ($action == 'eleves' AND $enregistrer_absences == 'Enregistrer'){
 
     $nbre = count($_fin); // On compte le nombre de ligne qui ont été envoyées
     $nbre_el = count($_eleve); // On compte le nombre d'élèves à enregistrer
-    //$creneau = new Creneau();
-    $increment = 0;
+
+    $increment = 0; // utile pour itérer
 
     for($a = 0 ; $a < $nbre ; $a++){
 
       if (isset ($_eleve[$a])){
-        // Alors on propose d'enregistrer l'absence
+
+        // Alors on propose d'enregistrer l'absence pour garder une trace de la saisie (raisons légales et vérification)
         $saisie = new AbsenceSaisie();
         $saisie->setUtilisateurId($_SESSION["login"]);
         $saisie->setEleveId($_eleve[$a]);
-        // SI on demande la journée entière ...
+        // Si on demande la journée entière ...
         if (isset($_jourentier[$a]) AND $_jourentier[$a] != ''){
 
           // ... On indique le premier et le dernier créneau de la journée
@@ -90,7 +92,7 @@ try{
           $saisie->setFinAbs($fin);
 
         }else{
-          //echo '<pre>';print_r($_deb);echo'</pre>';
+
           $cre_deb  = CreneauPeer::retrieveByPK($_deb[$a]);
           $creDeb   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_deb->getDebutCreneau();
           $cre_fin  = CreneauPeer::retrieveByPK($_fin[$a]);
@@ -101,23 +103,31 @@ try{
         }
 
         if ($_last_id = $saisie->save()){
-          // $_last_id est donc l'id de l'enregistrement qui vient d'avoir lieu
+          // $_last_id est donc l'id de l'enregistrement qui vient d'avoir lieu => A vérifier, il semblerait que non
           $increment++;
         }else{
           $_SESSION['msg_abs'] .= '||' . $_last_id;
         }
+
       } // fin du if (isset ($_eleve[$a])){
-    }
+    } // fin de la boucle for
 
+    // Si tout est bon, on renvoie vers l'interface de saisie, sinon on renvoie une exception
     if ($increment == $nbre_el){
+
+      $_SESSION['msg_abs'] = '<h3 class="ok">Saisies enregistr&eacute;es.</h3>';
       header("Location: saisir_absences.php");
+      die();
+
     }else{
+
       throw new Exception('Il y a une erreur dans la saisie des absences, au moins une d\'entre elles ne peut pas être enregistrée.||' . $increment . '+' . $nbre);
+
     }
 
 
 
-  }
+  } // fin du if ($action == 'eleves'...
 
 }catch(exception $e){
   // Cette fonction est présente dans /lib/erreurs.php

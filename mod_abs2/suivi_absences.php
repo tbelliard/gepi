@@ -187,6 +187,8 @@ require("lib/abs_menu.php");
     }
     $_fiche_recap_abs .= '</div>';
 
+
+
     /*********************************** Gestion du suivi sur les créneaux ************************************/
     $aff_suivi_creneaux = '<table><tr>';
     foreach ($tab_creneaux as $creneaux){
@@ -248,7 +250,7 @@ require("lib/abs_menu.php");
   $increment++;
   endforeach;
 
-$test = CreneauPeer::getCreneauPrecedent(8);
+$test = CreneauPeer::getCreneauPrecedentCours(4); aff_debug($test);
 
 ?>
 
