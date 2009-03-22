@@ -80,11 +80,6 @@ try{
         $saisie->setUtilisateurId($_SESSION["login"]);
         $saisie->setEleveId($_eleve[$a]);
 
-        // ...et on propose également d'enregistrer cette saisie en complément de celles déjà effectuée pour le même élève.
-        // Donc on vérifie d'abord si une absence existe sur le creneau précédent pour cet élève
-        $absence = new AbsenceAbsence();
-        $absence->verifAvantEnregistrement();
-        $absence->setUtilisateurId($_SESSION["login"]);
 
         // Si on demande la journée entière ...
         if (isset($_jourentier[$a]) AND $_jourentier[$a] != ''){
@@ -97,10 +92,10 @@ try{
 
         }else{
 
-          $_deb  = CreneauPeer::retrieveByPK($_deb[$a]);
-          $Deb   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_deb->getDebutCreneau();
-          $_fin  = CreneauPeer::retrieveByPK($_fin[$a]);
-          $Fin   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $cre_fin->getFinCreneau();
+          $t_deb  = CreneauPeer::retrieveByPK($_deb[$a]);
+          $deb   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $t_deb->getDebutCreneau();
+          $t_fin  = CreneauPeer::retrieveByPK($_fin[$a]);
+          $fin   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $t_fin->getFinCreneau();
 
         }
 
@@ -114,13 +109,40 @@ try{
           $_SESSION['msg_abs'] .= '||' . $_last_id;
         }
 
+        // ...et on propose également d'enregistrer cette saisie en complément de celles déjà effectuée pour le même élève.
+        // Donc on vérifie d'abord si une absence existe sur le creneau précédent pour cet élève
+
+        $new_abs = array('eleve_id'=>$_eleve[$a], 'debut_abs'=>$deb, 'fin_abs'=>$fin);
+        $verif = AbsenceAbsencePeer::verifAvantEnregistrement($new_abs);
+        if (isset($verif["rien"]) AND $verif["rien"] == "rien"){
+          // C'est donc une nouvelle absence
+          $abs = new AbsenceAbsence();
+          $abs->setUtilisateurId($_SESSION["login"]);
+          $abs->setEleveId($_eleve[$a]);
+          $abs->setDebutAbs($deb);
+          $abs->setFinAbs($fin);
+          $abs->setCreatedOn(date("U"));
+          $abs->setUpdatedOn(date("U"));
+          $abs->save();
+        }else{
+          // $verif['id'] renvoie l'id de l'absence à mettre à jour et on ne modifie pas la date de création mais seulement celle de mise à jour
+          $abs = new AbsenceAbsence();
+          $abs->setId($verif["id"]);
+          $abs->setUpdatedOn(date("U"));
+          $abs->setUtilisateurId($_SESSION["login"]);
+          $abs->setFinAbs($fin);
+
+        }
+
+        $_SESSION['msg_abs'] = $verif;
+
       } // fin du if (isset ($_eleve[$a])){
     } // fin de la boucle for
 
     // Si tout est bon, on renvoie vers l'interface de saisie, sinon on renvoie une exception
     if ($increment == $nbre_el){
 
-      $_SESSION['msg_abs'] = '<h3 class="ok">Saisies enregistr&eacute;es.</h3>';
+      //$_SESSION['msg_abs'] .= '<h3 class="ok">Saisies enregistr&eacute;es.</h3>';
       header("Location: saisir_absences.php");
       die();
 

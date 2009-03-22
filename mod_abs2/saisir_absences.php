@@ -158,7 +158,8 @@ require("lib/abs_menu.php");
     </fieldset>
     <?php
     if (isset($_SESSION['msg_abs'])){
-      echo $_SESSION['msg_abs'];
+      //echo $_SESSION['msg_abs'];
+      aff_debug($_SESSION['msg_abs']);
       $_SESSION['msg_abs'] = NULL; // On efface le message après l'avoir affiché
     }
     ?>

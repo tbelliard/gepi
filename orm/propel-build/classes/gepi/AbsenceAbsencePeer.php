@@ -23,7 +23,30 @@ class AbsenceAbsencePeer extends BaseAbsenceAbsencePeer {
    * @return integer Niveau de réponse (-1 s'il n'y a pas déjà une absence sinon ce sera l'id de l'absence à updater).
    */
   public static function verifAvantEnregistrement($new_abs){
-    return true;
+    if (is_array($new_abs)){
+      // On recherche toutes les absences de cet élève sur la semaine passée
+
+      $test_deb = $new_abs["debut_abs"] - (7*24*3600);
+      $criteria = new Criteria();
+      $criteria->add(AbsenceAbsencePeer::ELEVE_ID, $new_abs["eleve_id"], Criteria::EQUAL);
+      $criteria->add(AbsenceAbsencePeer::DEBUT_ABS, $test_deb, Criteria::GREATER_EQUAL);
+      $test = self::doSelect($criteria);
+
+      // Pour chacune de ces absences, on teste si il y a continuité avec l'absences saisie $new_abs
+      if (empty ($test)){
+        // Il n'y a aucune réponse, donc la saisie est une nouvelle absence
+        $retour = array('rien'=>'rien');
+      }else{
+        $retour = array();
+        // On traite les réponses présentes dans la table
+        foreach ($test as $absence){
+          $retour[] = $absence->getEleveId();
+        }
+      }
+    }
+
+    //$retour = $test; // en debug, on renvoie la requête
+    return $retour;
   }
 
 } // AbsenceAbsencePeer

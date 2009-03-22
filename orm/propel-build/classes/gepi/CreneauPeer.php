@@ -88,6 +88,17 @@ class CreneauPeer extends BaseCreneauPeer {
     return self::$_liste_creneaux;
   }
 
+/**
+ * Methode qui renvoie le timestamp UNIX de ce jour à minuit (00:00:00)
+ *
+ * @return integer Timestamp UNIX de ce jour à 00:00:00 
+ */
+  public static function timestampMinuit(){
+
+    return mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+
+  }
+
   /**
    * Renvoie le creneau précédent de celui passé en argument
    * Si l'id du creneau dépasse 3600 (ce qui parait peu probable tout de même), on teste sur l'heure de début
@@ -119,6 +130,14 @@ class CreneauPeer extends BaseCreneauPeer {
           $i = $a-1; // un marqueur
         }
 
+      }elseif($creneau > 172800){
+        // On est donc dans le cas d'un timestamp UNIX complet qu'il faut convertir avant de tester
+        $test = $creneau - self::timestampMinuit();
+        if ($creneaux[$a]->getDebutCreneau() <= $test AND $creneaux[$a]->getFinCreneau() >= $test){
+          // Il faut vérifier que le creneau précédent existe vraiment et s'il s'agit d'un creneau de cours
+          $creneau_precedent_tempo = ($a > 0) ? $creneaux[$a - 1] : NULL;
+          $i = $a-1; // un marqueur
+        }
       }
     } // boucle for
 
