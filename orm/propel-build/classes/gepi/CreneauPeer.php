@@ -88,6 +88,16 @@ class CreneauPeer extends BaseCreneauPeer {
     return self::$_liste_creneaux;
   }
 
+  /**
+   * Methode qui renvoie un objet du dernier creneau du jour precedent
+   *
+   * @todo Donner la possibilité de définir le jour precedent
+   * @return object Creneau
+   */
+  public static function getLastCreneauJourPrecendent(){
+    return self::getLastCreneau();
+  }
+
 /**
  * Methode qui renvoie le timestamp UNIX de ce jour à minuit (00:00:00)
  *
@@ -96,6 +106,19 @@ class CreneauPeer extends BaseCreneauPeer {
   public static function timestampMinuit(){
 
     return mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+
+  }
+
+  /**
+   * Méthode qui renvoie le nombre de secondes écoulées depuis minuit (00:00:00)
+   * La methode tient compte du jour du timestamp demande
+   *
+   * @param integer $timestamp un timestamp UNIX valide
+   * @return string Nombre de secondes écoulées depuis minuit (00:00:00)
+   */
+  public static function nombreSecondesMinuit($timestamp){
+
+    return $timestamp - mktime(0, 0, 0, date("m", $timestamp), date("d", $timestamp), date("Y", $timestamp));
 
   }
 
@@ -122,7 +145,7 @@ class CreneauPeer extends BaseCreneauPeer {
           $i = $a-1; // un marqueur
         }
 
-      }elseif($creneau > 3600){
+      }elseif($creneau > 3600 AND $creneau < 172800){
         // On peut rechercher par rapport à l'heure de debut
         if ($creneaux[$a]->getDebutCreneau() <= $creneau AND $creneaux[$a]->getFinCreneau() >= $creneau){
           // Il faut vérifier que le creneau précédent existe vraiment et s'il s'agit d'un creneau de cours
@@ -133,9 +156,11 @@ class CreneauPeer extends BaseCreneauPeer {
       }elseif($creneau > 172800){
         // On est donc dans le cas d'un timestamp UNIX complet qu'il faut convertir avant de tester
         $test = $creneau - self::timestampMinuit();
-        if ($creneaux[$a]->getDebutCreneau() <= $test AND $creneaux[$a]->getFinCreneau() >= $test){
+        //echo '['.$a.'] - '.$test.' : de '.$creneaux[$a]->getDebutCreneau().' à '.$creneaux[$a]->getFinCreneau();
+        if ($test >= $creneaux[$a]->getDebutCreneau() AND $test < $creneaux[$a]->getFinCreneau()){
           // Il faut vérifier que le creneau précédent existe vraiment et s'il s'agit d'un creneau de cours
           $creneau_precedent_tempo = ($a > 0) ? $creneaux[$a - 1] : NULL;
+          //echo ' tempo : '.$creneau_precedent_tempo->getId().'<br />';
           $i = $a-1; // un marqueur
         }
       }

@@ -123,6 +123,56 @@ try{
   $aff_creneaux .= '</tr></table>';
   /********************* Fin du petit tableau des créneaux **************************************/
 
+  // ************ La même chose mais sur la table a_absences ************************************/
+  // On récupère la liste des absences (brutes pour le moment)
+  $c = new Criteria();
+  $tab_ordre = array ('ELEVE_ID', 'DEBUT_ABS', 'FIN_ABS', 'UTILISATEUR_ID');
+  if (in_array($ordre, $tab_ordre)){
+
+    switch ($ordre){
+      case 'ELEVE_ID':
+        //$c->addAscendingOrderByColumn(AbsenceSaisiePeer::ELEVE_ID);
+        $c->addJoin(AbsenceAbsencePeer::ELEVE_ID, ElevePeer::ID_ELEVE, Criteria::INNER_JOIN);
+        $c->addAscendingOrderByColumn(ElevePeer::NOM);
+        break;
+      case 'DEBUT_ABS':
+        $c->addAscendingOrderByColumn(AbsenceAbsencePeer::DEBUT_ABS);
+        break;
+      case 'FIN_ABS':
+        $c->addAscendingOrderByColumn(AbsenceAbsencePeer::FIN_ABS);
+        break;
+      case 'UTILISATEUR_ID':
+        $c->addAscendingOrderByColumn(AbsenceAbsencePeer::UTILISATEUR_ID);
+        break;
+    }
+
+  }else{
+    $c->addAscendingOrderByColumn(AbsenceAbsencePeer::CREATED_ON);
+  }
+
+  // On ne veut que les absences qui concernent le jour d'aujourd'hui :
+  $deb_creneau  = CreneauPeer::getFirstCreneau();
+  $_ts          = $deb_creneau->getDebutCreneau() + mktime(0, 0, 0, date("m"), date("d"), date("Y")) - 3600; // onconserve une marge de 1 heure avant le premier creneau
+  $c->add(AbsenceAbsencePeer::FIN_ABS, $_ts, Criteria::GREATER_EQUAL);
+
+  $liste_absentsABS_brute = AbsenceAbsencePeer::doSelect($c);
+
+
+
+  /***************** On élabore un petit tableau du suivi créneau par créneau *******************/
+  $criteria = new Criteria();
+  $tab_creneaux = CreneauPeer::getAllCreneauxOrderByTime();
+  //aff_debug($tab_creneaux);
+  $aff_creneaux = '<table><tr>';
+  foreach ($tab_creneaux as $creneaux){
+    // S'il s'agit d'un créneau de cours, on l'affiche
+    if ($creneaux->getTypeCreneau() == 'cours'){
+      $aff_creneaux .= '
+                    <td style="color: red; font-weight: bold; background-color: silver;">' . $creneaux->getNomCreneau() . '</td>';
+      }
+  }
+  $aff_creneaux .= '</tr></table>';
+  /********************* Fin du petit tableau des créneaux **************************************/
 
 }catch(exception $e){
   affExceptions($e);
@@ -251,9 +301,20 @@ require("lib/abs_menu.php");
   endforeach;
 ?>
 
+
 </table>
 </form>
+<?php
+ /**
+  * TEST sur la table a_absences
+  *
+  */
 
+foreach ($liste_absentsABS_brute as $ABS){
+  echo $ABS->getEleve()->getNom() . ' absent du ' . date("d/m/Y H:i", $ABS->getDebutAbs()) . ' à ' . date("d/m/Y H:i", $ABS->getFinAbs()) . '<br />';
+}
+
+?>
 <div id="aff_result"></div>
 
 <?php require_once("../lib/footer.inc.php"); ?>

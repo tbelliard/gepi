@@ -20,7 +20,7 @@ class AbsenceAbsencePeer extends BaseAbsenceAbsencePeer {
    * Methode statique qui recherche si la saisie continue une absence ou pas
    *
    * @param array $new_abs Tableau des informations sur la nouvelle absence
-   * @return integer Niveau de réponse (-1 s'il n'y a pas déjà une absence sinon ce sera l'id de l'absence à updater).
+   * @return object Niveau de réponse (array("rien"=>"rien") s'il n'y a pas déjà une absence sinon ce sera un objet de l'absence à mettre à jour).
    */
   public static function verifAvantEnregistrement($new_abs){
     if (is_array($new_abs)){
@@ -38,14 +38,31 @@ class AbsenceAbsencePeer extends BaseAbsenceAbsencePeer {
         $retour = array('rien'=>'rien');
       }else{
         $retour = array();
-        // On traite les réponses présentes dans la table
-        foreach ($test as $absence){
-          $retour[] = $absence->getEleveId();
+        $test_du_creneau = CreneauPeer::getCreneauPrecedentCours($new_abs["debut_abs"]); // $test_du_creneau est un objet
+
+        if ($test_du_creneau){
+          // On recherche s'il existe une absence pour cet élève sur ce créneau
+          foreach ($test as $absent){
+            if ($absent->getFinAbs() >= $test_du_creneau->getFinCreneau()){
+              $retour = $absent; // On retourne l'objet absence à mettre à jour
+              break;
+            }
+          }
+          if (empty ($retour)){
+            $retour["rien"] = "rien2";
+          }
+
+        }else{
+          // Il faut donc rechercher s'il existe une absence pour le jour precedent
+          // Quel est le dernier créneau du jour précédent
+          $aujourdhui = date("N");
+          $retour["rien"] = "rien3";
+
         }
       }
+    }else{
+      $retour = false;
     }
-
-    //$retour = $test; // en debug, on renvoie la requête
     return $retour;
   }
 

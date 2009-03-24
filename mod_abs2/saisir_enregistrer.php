@@ -114,7 +114,8 @@ try{
 
         $new_abs = array('eleve_id'=>$_eleve[$a], 'debut_abs'=>$deb, 'fin_abs'=>$fin);
         $verif = AbsenceAbsencePeer::verifAvantEnregistrement($new_abs);
-        if (isset($verif["rien"]) AND $verif["rien"] == "rien"){
+
+        if (!is_object($verif) AND $verif["rien"] == "rien"){
           // C'est donc une nouvelle absence
           $abs = new AbsenceAbsence();
           $abs->setUtilisateurId($_SESSION["login"]);
@@ -124,18 +125,19 @@ try{
           $abs->setCreatedOn(date("U"));
           $abs->setUpdatedOn(date("U"));
           $abs->save();
+        }elseif(is_object($verif)){
+          // $verif renvoie un objet de l'absence à mettre à jour et on ne modifie pas la date de création mais seulement celle de mise à jour
+          //$abs = new AbsenceAbsence();
+          //$abs->setId($verif->getId());
+          $verif->setUpdatedOn(date("U"));
+          $verif->setUtilisateurId($_SESSION["login"]);
+          $verif->setFinAbs($fin);
+          $verif->save();
+
         }else{
-          // $verif['id'] renvoie l'id de l'absence à mettre à jour et on ne modifie pas la date de création mais seulement celle de mise à jour
-          $abs = new AbsenceAbsence();
-          $abs->setId($verif["id"]);
-          $abs->setUpdatedOn(date("U"));
-          $abs->setUtilisateurId($_SESSION["login"]);
-          $abs->setFinAbs($fin);
 
+          $_SESSION['msg_abs'] = $verif;
         }
-
-        $_SESSION['msg_abs'] = $verif;
-
       } // fin du if (isset ($_eleve[$a])){
     } // fin de la boucle for
 
