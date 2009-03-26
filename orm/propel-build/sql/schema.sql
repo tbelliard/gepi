@@ -800,49 +800,26 @@ CREATE TABLE a_traitements
 )Type=InnoDB COMMENT='Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies';
 
 #-----------------------------------------------------------------------------
-#-- a_absences
+#-- j_traitements_saisies
 #-----------------------------------------------------------------------------
 
-DROP TABLE IF EXISTS a_absences;
+DROP TABLE IF EXISTS j_traitements_saisies;
 
 
-CREATE TABLE a_absences
+CREATE TABLE j_traitements_saisies
 (
-	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incremente',
-	utilisateur_id VARCHAR(100) COMMENT 'Login du dernier utilisateur professionnel compile',
-	created_on INTEGER(13)  NOT NULL COMMENT 'Date de la premiere compilation des absences en timestamp UNIX',
-	updated_on INTEGER(13)  NOT NULL COMMENT 'Date de la derniere compilation des absences en timestamp UNIX',
-	debut_abs INTEGER(12) default 0 NOT NULL COMMENT 'Debut de la compilation en timestamp UNIX',
-	fin_abs INTEGER(12) default 0 NOT NULL COMMENT 'Fin de la compilation en timestamp UNIX',
-	PRIMARY KEY (id),
-	INDEX a_absences_FI_1 (utilisateur_id),
-	CONSTRAINT a_absences_FK_1
-		FOREIGN KEY (utilisateur_id)
-		REFERENCES utilisateurs (login)
-		ON DELETE SET NULL
-)Type=InnoDB COMMENT='Une absence est la compilation des saisies pour un meme eleve, cette compilation est faite automatiquement par Gepi';
-
-#-----------------------------------------------------------------------------
-#-- j_traitement_absence
-#-----------------------------------------------------------------------------
-
-DROP TABLE IF EXISTS j_traitement_absence;
-
-
-CREATE TABLE j_traitement_absence
-(
-	a_absence_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de l\'absence saisie',
+	a_saisie_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de l\'absence saisie',
 	a_traitement_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere du traitement de ces absences',
-	PRIMARY KEY (a_absence_id,a_traitement_id),
-	CONSTRAINT j_traitement_absence_FK_1
-		FOREIGN KEY (a_absence_id)
-		REFERENCES a_absences (id)
-		ON DELETE CASCADE,
-	INDEX j_traitement_absence_FI_2 (a_traitement_id),
-	CONSTRAINT j_traitement_absence_FK_2
+	PRIMARY KEY (a_saisie_id,a_traitement_id),
+	CONSTRAINT j_traitements_saisies_FK_1
+		FOREIGN KEY (a_saisie_id)
+		REFERENCES a_saisies (id)
+		ON DELETE SET NULL,
+	INDEX j_traitements_saisies_FI_2 (a_traitement_id),
+	CONSTRAINT j_traitements_saisies_FK_2
 		FOREIGN KEY (a_traitement_id)
 		REFERENCES a_traitements (id)
-		ON DELETE CASCADE
+		ON DELETE SET NULL
 )Type=InnoDB COMMENT='Table de jointure entre la saisie et le traitement des absences';
 
 # This restores the fkey checks, after having unset them earlier

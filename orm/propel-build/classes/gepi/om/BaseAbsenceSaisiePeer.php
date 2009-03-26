@@ -1225,6 +1225,9 @@ abstract class BaseAbsenceSaisiePeer {
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
 
+			// invalidate objects in JTraitementSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			JTraitementSaisiePeer::clearInstancePool();
+
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {

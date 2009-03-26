@@ -127,32 +127,14 @@ CREATE TABLE a_traitements
 #-----------------------------------------------------------------------------
 
 DROP TABLE IF EXISTS a_absences;
-
-
-CREATE TABLE a_absences
-(
-	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incremente',
-	utilisateur_id VARCHAR(100) COMMENT 'Login du dernier utilisateur professionnel compile',
-	created_on INTEGER(13)  NOT NULL COMMENT 'Date de la premiere compilation des absences en timestamp UNIX',
-	updated_on INTEGER(13)  NOT NULL COMMENT 'Date de la derniere compilation des absences en timestamp UNIX',
-	debut_abs INTEGER(12) default 0 NOT NULL COMMENT 'Debut de la compilation en timestamp UNIX',
-	fin_abs INTEGER(12) default 0 NOT NULL COMMENT 'Fin de la compilation en timestamp UNIX',
-	PRIMARY KEY (id),
-	INDEX a_absences_FI_1 (utilisateur_id)
-)Type=InnoDB COMMENT='Une absence est la compilation des saisies pour un meme eleve, cette compilation est faite automatiquement par Gepi';
-
-#-----------------------------------------------------------------------------
-#-- j_traitement_absence
-#-----------------------------------------------------------------------------
-
 DROP TABLE IF EXISTS j_traitement_absence;
 
-
-CREATE TABLE j_traitement_absence
+DROP TABLE IF EXISTS j_traitements_saisies;
+ CREATE TABLE j_traitements_saisies
 (
-	a_absence_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de l\'absence saisie',
-	a_traitement_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere du traitement de ces absences',
-	PRIMARY KEY (a_absence_id,a_traitement_id),
-	INDEX j_traitement_absence_FI_1 (a_absence_id),
-	INDEX j_traitement_absence_FI_2 (a_traitement_id)
-)Type=InnoDB COMMENT='Table de jointure entre la saisie et le traitement des absences';
+`a_traitement_id` INT( 12 ) NOT NULL COMMENT 'identifiant du traitement',
+`a_saisie_id` INT( 12 ) NOT NULL COMMENT 'identifiant de la saisie',
+PRIMARY KEY ( `a_traitement_id` , `a_saisie_id` ),
+INDEX j_traitements_saisies_FI_1 (a_traitement_id),
+INDEX j_traitements_saisies_FI_2 (a_saisie_id)
+) ENGINE = InnoDB COMMENT = 'Table de jointure entre les traitements et la saisie des absences';

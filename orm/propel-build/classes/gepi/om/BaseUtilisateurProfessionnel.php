@@ -223,16 +223,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	private $lastAbsenceTraitementCriteria = null;
 
 	/**
-	 * @var        array AbsenceAbsence[] Collection to store aggregation of AbsenceAbsence objects.
-	 */
-	protected $collAbsenceAbsences;
-
-	/**
-	 * @var        Criteria The criteria used to select the current contents of collAbsenceAbsences.
-	 */
-	private $lastAbsenceAbsenceCriteria = null;
-
-	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -1094,9 +1084,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->collAbsenceTraitements = null;
 			$this->lastAbsenceTraitementCriteria = null;
 
-			$this->collAbsenceAbsences = null;
-			$this->lastAbsenceAbsenceCriteria = null;
-
 		} // if (deep)
 	}
 
@@ -1271,14 +1258,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
-			if ($this->collAbsenceAbsences !== null) {
-				foreach ($this->collAbsenceAbsences as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
 			$this->alreadyInSave = false;
 
 		}
@@ -1416,14 +1395,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 				if ($this->collAbsenceTraitements !== null) {
 					foreach ($this->collAbsenceTraitements as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-				if ($this->collAbsenceAbsences !== null) {
-					foreach ($this->collAbsenceAbsences as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1859,12 +1830,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			foreach ($this->getAbsenceTraitements() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addAbsenceTraitement($relObj->copy($deepCopy));
-				}
-			}
-
-			foreach ($this->getAbsenceAbsences() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addAbsenceAbsence($relObj->copy($deepCopy));
 				}
 			}
 
@@ -3920,208 +3885,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
-	 * Clears out the collAbsenceAbsences collection (array).
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addAbsenceAbsences()
-	 */
-	public function clearAbsenceAbsences()
-	{
-		$this->collAbsenceAbsences = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collAbsenceAbsences collection (array).
-	 *
-	 * By default this just sets the collAbsenceAbsences collection to an empty array (like clearcollAbsenceAbsences());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initAbsenceAbsences()
-	{
-		$this->collAbsenceAbsences = array();
-	}
-
-	/**
-	 * Gets an array of AbsenceAbsence objects which contain a foreign key that references this object.
-	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this UtilisateurProfessionnel has previously been saved, it will retrieve
-	 * related AbsenceAbsences from storage. If this UtilisateurProfessionnel is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
-	 *
-	 * @param      PropelPDO $con
-	 * @param      Criteria $criteria
-	 * @return     array AbsenceAbsence[]
-	 * @throws     PropelException
-	 */
-	public function getAbsenceAbsences($criteria = null, PropelPDO $con = null)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collAbsenceAbsences === null) {
-			if ($this->isNew()) {
-			   $this->collAbsenceAbsences = array();
-			} else {
-
-				$criteria->add(AbsenceAbsencePeer::UTILISATEUR_ID, $this->login);
-
-				AbsenceAbsencePeer::addSelectColumns($criteria);
-				$this->collAbsenceAbsences = AbsenceAbsencePeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(AbsenceAbsencePeer::UTILISATEUR_ID, $this->login);
-
-				AbsenceAbsencePeer::addSelectColumns($criteria);
-				if (!isset($this->lastAbsenceAbsenceCriteria) || !$this->lastAbsenceAbsenceCriteria->equals($criteria)) {
-					$this->collAbsenceAbsences = AbsenceAbsencePeer::doSelect($criteria, $con);
-				}
-			}
-		}
-		$this->lastAbsenceAbsenceCriteria = $criteria;
-		return $this->collAbsenceAbsences;
-	}
-
-	/**
-	 * Returns the number of related AbsenceAbsence objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related AbsenceAbsence objects.
-	 * @throws     PropelException
-	 */
-	public function countAbsenceAbsences(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collAbsenceAbsences === null) {
-			if ($this->isNew()) {
-				$count = 0;
-			} else {
-
-				$criteria->add(AbsenceAbsencePeer::UTILISATEUR_ID, $this->login);
-
-				$count = AbsenceAbsencePeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(AbsenceAbsencePeer::UTILISATEUR_ID, $this->login);
-
-				if (!isset($this->lastAbsenceAbsenceCriteria) || !$this->lastAbsenceAbsenceCriteria->equals($criteria)) {
-					$count = AbsenceAbsencePeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collAbsenceAbsences);
-				}
-			} else {
-				$count = count($this->collAbsenceAbsences);
-			}
-		}
-		$this->lastAbsenceAbsenceCriteria = $criteria;
-		return $count;
-	}
-
-	/**
-	 * Method called to associate a AbsenceAbsence object to this object
-	 * through the AbsenceAbsence foreign key attribute.
-	 *
-	 * @param      AbsenceAbsence $l AbsenceAbsence
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addAbsenceAbsence(AbsenceAbsence $l)
-	{
-		if ($this->collAbsenceAbsences === null) {
-			$this->initAbsenceAbsences();
-		}
-		if (!in_array($l, $this->collAbsenceAbsences, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collAbsenceAbsences, $l);
-			$l->setUtilisateurProfessionnel($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this UtilisateurProfessionnel is new, it will return
-	 * an empty collection; or if this UtilisateurProfessionnel has previously
-	 * been saved, it will retrieve related AbsenceAbsences from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in UtilisateurProfessionnel.
-	 */
-	public function getAbsenceAbsencesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		if ($criteria === null) {
-			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collAbsenceAbsences === null) {
-			if ($this->isNew()) {
-				$this->collAbsenceAbsences = array();
-			} else {
-
-				$criteria->add(AbsenceAbsencePeer::UTILISATEUR_ID, $this->login);
-
-				$this->collAbsenceAbsences = AbsenceAbsencePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(AbsenceAbsencePeer::UTILISATEUR_ID, $this->login);
-
-			if (!isset($this->lastAbsenceAbsenceCriteria) || !$this->lastAbsenceAbsenceCriteria->equals($criteria)) {
-				$this->collAbsenceAbsences = AbsenceAbsencePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastAbsenceAbsenceCriteria = $criteria;
-
-		return $this->collAbsenceAbsences;
-	}
-
-	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -4178,11 +3941,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collAbsenceAbsences) {
-				foreach ((array) $this->collAbsenceAbsences as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
 		} // if ($deep)
 
 		$this->collJGroupesProfesseurss = null;
@@ -4194,7 +3952,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$this->collJAidUtilisateursProfessionnelss = null;
 		$this->collAbsenceSaisies = null;
 		$this->collAbsenceTraitements = null;
-		$this->collAbsenceAbsences = null;
 	}
 
 } // BaseUtilisateurProfessionnel

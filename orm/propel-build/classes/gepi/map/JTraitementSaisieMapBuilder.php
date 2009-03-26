@@ -2,7 +2,7 @@
 
 
 /**
- * This class adds structure of 'a_absences' table to 'gepi' DatabaseMap object.
+ * This class adds structure of 'j_traitements_saisies' table to 'gepi' DatabaseMap object.
  *
  *
  *
@@ -13,12 +13,12 @@
  *
  * @package    gepi.map
  */
-class AbsenceAbsenceMapBuilder implements MapBuilder {
+class JTraitementSaisieMapBuilder implements MapBuilder {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'gepi.map.AbsenceAbsenceMapBuilder';
+	const CLASS_NAME = 'gepi.map.JTraitementSaisieMapBuilder';
 
 	/**
 	 * The database map.
@@ -54,26 +54,18 @@ class AbsenceAbsenceMapBuilder implements MapBuilder {
 	 */
 	public function doBuild()
 	{
-		$this->dbMap = Propel::getDatabaseMap(AbsenceAbsencePeer::DATABASE_NAME);
+		$this->dbMap = Propel::getDatabaseMap(JTraitementSaisiePeer::DATABASE_NAME);
 
-		$tMap = $this->dbMap->addTable(AbsenceAbsencePeer::TABLE_NAME);
-		$tMap->setPhpName('AbsenceAbsence');
-		$tMap->setClassname('AbsenceAbsence');
+		$tMap = $this->dbMap->addTable(JTraitementSaisiePeer::TABLE_NAME);
+		$tMap->setPhpName('JTraitementSaisie');
+		$tMap->setClassname('JTraitementSaisie');
 
-		$tMap->setUseIdGenerator(true);
+		$tMap->setUseIdGenerator(false);
 
-		$tMap->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11);
+		$tMap->addForeignPrimaryKey('A_SAISIE_ID', 'ASaisieId', 'INTEGER' , 'a_saisies', 'ID', true, 12);
 
-		$tMap->addForeignKey('UTILISATEUR_ID', 'UtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100);
-
-		$tMap->addColumn('CREATED_ON', 'CreatedOn', 'INTEGER', true, 13);
-
-		$tMap->addColumn('UPDATED_ON', 'UpdatedOn', 'INTEGER', true, 13);
-
-		$tMap->addColumn('DEBUT_ABS', 'DebutAbs', 'INTEGER', true, 12);
-
-		$tMap->addColumn('FIN_ABS', 'FinAbs', 'INTEGER', true, 12);
+		$tMap->addForeignPrimaryKey('A_TRAITEMENT_ID', 'ATraitementId', 'INTEGER' , 'a_traitements', 'ID', true, 12);
 
 	} // doBuild()
 
-} // AbsenceAbsenceMapBuilder
+} // JTraitementSaisieMapBuilder

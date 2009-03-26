@@ -98,14 +98,14 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	protected $aAbsenceAction;
 
 	/**
-	 * @var        array JTraitementAbsence[] Collection to store aggregation of JTraitementAbsence objects.
+	 * @var        array JTraitementSaisie[] Collection to store aggregation of JTraitementSaisie objects.
 	 */
-	protected $collJTraitementAbsences;
+	protected $collJTraitementSaisies;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collJTraitementAbsences.
+	 * @var        Criteria The criteria used to select the current contents of collJTraitementSaisies.
 	 */
-	private $lastJTraitementAbsenceCriteria = null;
+	private $lastJTraitementSaisieCriteria = null;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -568,8 +568,8 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 			$this->aAbsenceMotif = null;
 			$this->aAbsenceJustification = null;
 			$this->aAbsenceAction = null;
-			$this->collJTraitementAbsences = null;
-			$this->lastJTraitementAbsenceCriteria = null;
+			$this->collJTraitementSaisies = null;
+			$this->lastJTraitementSaisieCriteria = null;
 
 		} // if (deep)
 	}
@@ -718,8 +718,8 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
-			if ($this->collJTraitementAbsences !== null) {
-				foreach ($this->collJTraitementAbsences as $referrerFK) {
+			if ($this->collJTraitementSaisies !== null) {
+				foreach ($this->collJTraitementSaisies as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -833,8 +833,8 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 			}
 
 
-				if ($this->collJTraitementAbsences !== null) {
-					foreach ($this->collJTraitementAbsences as $referrerFK) {
+				if ($this->collJTraitementSaisies !== null) {
+					foreach ($this->collJTraitementSaisies as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1118,9 +1118,9 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
 
-			foreach ($this->getJTraitementAbsences() as $relObj) {
+			foreach ($this->getJTraitementSaisies() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addJTraitementAbsence($relObj->copy($deepCopy));
+					$copyObj->addJTraitementSaisie($relObj->copy($deepCopy));
 				}
 			}
 
@@ -1417,47 +1417,47 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Clears out the collJTraitementAbsences collection (array).
+	 * Clears out the collJTraitementSaisies collection (array).
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
 	 *
 	 * @return     void
-	 * @see        addJTraitementAbsences()
+	 * @see        addJTraitementSaisies()
 	 */
-	public function clearJTraitementAbsences()
+	public function clearJTraitementSaisies()
 	{
-		$this->collJTraitementAbsences = null; // important to set this to NULL since that means it is uninitialized
+		$this->collJTraitementSaisies = null; // important to set this to NULL since that means it is uninitialized
 	}
 
 	/**
-	 * Initializes the collJTraitementAbsences collection (array).
+	 * Initializes the collJTraitementSaisies collection (array).
 	 *
-	 * By default this just sets the collJTraitementAbsences collection to an empty array (like clearcollJTraitementAbsences());
+	 * By default this just sets the collJTraitementSaisies collection to an empty array (like clearcollJTraitementSaisies());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
 	 * @return     void
 	 */
-	public function initJTraitementAbsences()
+	public function initJTraitementSaisies()
 	{
-		$this->collJTraitementAbsences = array();
+		$this->collJTraitementSaisies = array();
 	}
 
 	/**
-	 * Gets an array of JTraitementAbsence objects which contain a foreign key that references this object.
+	 * Gets an array of JTraitementSaisie objects which contain a foreign key that references this object.
 	 *
 	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
 	 * Otherwise if this AbsenceTraitement has previously been saved, it will retrieve
-	 * related JTraitementAbsences from storage. If this AbsenceTraitement is new, it will return
+	 * related JTraitementSaisies from storage. If this AbsenceTraitement is new, it will return
 	 * an empty collection or the current collection, the criteria is ignored on a new object.
 	 *
 	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array JTraitementAbsence[]
+	 * @return     array JTraitementSaisie[]
 	 * @throws     PropelException
 	 */
-	public function getJTraitementAbsences($criteria = null, PropelPDO $con = null)
+	public function getJTraitementSaisies($criteria = null, PropelPDO $con = null)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(AbsenceTraitementPeer::DATABASE_NAME);
@@ -1467,15 +1467,15 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collJTraitementAbsences === null) {
+		if ($this->collJTraitementSaisies === null) {
 			if ($this->isNew()) {
-			   $this->collJTraitementAbsences = array();
+			   $this->collJTraitementSaisies = array();
 			} else {
 
-				$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+				$criteria->add(JTraitementSaisiePeer::A_TRAITEMENT_ID, $this->id);
 
-				JTraitementAbsencePeer::addSelectColumns($criteria);
-				$this->collJTraitementAbsences = JTraitementAbsencePeer::doSelect($criteria, $con);
+				JTraitementSaisiePeer::addSelectColumns($criteria);
+				$this->collJTraitementSaisies = JTraitementSaisiePeer::doSelect($criteria, $con);
 			}
 		} else {
 			// criteria has no effect for a new object
@@ -1485,28 +1485,28 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				// one, just return the collection.
 
 
-				$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+				$criteria->add(JTraitementSaisiePeer::A_TRAITEMENT_ID, $this->id);
 
-				JTraitementAbsencePeer::addSelectColumns($criteria);
-				if (!isset($this->lastJTraitementAbsenceCriteria) || !$this->lastJTraitementAbsenceCriteria->equals($criteria)) {
-					$this->collJTraitementAbsences = JTraitementAbsencePeer::doSelect($criteria, $con);
+				JTraitementSaisiePeer::addSelectColumns($criteria);
+				if (!isset($this->lastJTraitementSaisieCriteria) || !$this->lastJTraitementSaisieCriteria->equals($criteria)) {
+					$this->collJTraitementSaisies = JTraitementSaisiePeer::doSelect($criteria, $con);
 				}
 			}
 		}
-		$this->lastJTraitementAbsenceCriteria = $criteria;
-		return $this->collJTraitementAbsences;
+		$this->lastJTraitementSaisieCriteria = $criteria;
+		return $this->collJTraitementSaisies;
 	}
 
 	/**
-	 * Returns the number of related JTraitementAbsence objects.
+	 * Returns the number of related JTraitementSaisie objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
 	 * @param      PropelPDO $con
-	 * @return     int Count of related JTraitementAbsence objects.
+	 * @return     int Count of related JTraitementSaisie objects.
 	 * @throws     PropelException
 	 */
-	public function countJTraitementAbsences(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	public function countJTraitementSaisies(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(AbsenceTraitementPeer::DATABASE_NAME);
@@ -1520,14 +1520,14 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 		$count = null;
 
-		if ($this->collJTraitementAbsences === null) {
+		if ($this->collJTraitementSaisies === null) {
 			if ($this->isNew()) {
 				$count = 0;
 			} else {
 
-				$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+				$criteria->add(JTraitementSaisiePeer::A_TRAITEMENT_ID, $this->id);
 
-				$count = JTraitementAbsencePeer::doCount($criteria, $con);
+				$count = JTraitementSaisiePeer::doCount($criteria, $con);
 			}
 		} else {
 			// criteria has no effect for a new object
@@ -1537,36 +1537,36 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				// one, just return count of the collection.
 
 
-				$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+				$criteria->add(JTraitementSaisiePeer::A_TRAITEMENT_ID, $this->id);
 
-				if (!isset($this->lastJTraitementAbsenceCriteria) || !$this->lastJTraitementAbsenceCriteria->equals($criteria)) {
-					$count = JTraitementAbsencePeer::doCount($criteria, $con);
+				if (!isset($this->lastJTraitementSaisieCriteria) || !$this->lastJTraitementSaisieCriteria->equals($criteria)) {
+					$count = JTraitementSaisiePeer::doCount($criteria, $con);
 				} else {
-					$count = count($this->collJTraitementAbsences);
+					$count = count($this->collJTraitementSaisies);
 				}
 			} else {
-				$count = count($this->collJTraitementAbsences);
+				$count = count($this->collJTraitementSaisies);
 			}
 		}
-		$this->lastJTraitementAbsenceCriteria = $criteria;
+		$this->lastJTraitementSaisieCriteria = $criteria;
 		return $count;
 	}
 
 	/**
-	 * Method called to associate a JTraitementAbsence object to this object
-	 * through the JTraitementAbsence foreign key attribute.
+	 * Method called to associate a JTraitementSaisie object to this object
+	 * through the JTraitementSaisie foreign key attribute.
 	 *
-	 * @param      JTraitementAbsence $l JTraitementAbsence
+	 * @param      JTraitementSaisie $l JTraitementSaisie
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addJTraitementAbsence(JTraitementAbsence $l)
+	public function addJTraitementSaisie(JTraitementSaisie $l)
 	{
-		if ($this->collJTraitementAbsences === null) {
-			$this->initJTraitementAbsences();
+		if ($this->collJTraitementSaisies === null) {
+			$this->initJTraitementSaisies();
 		}
-		if (!in_array($l, $this->collJTraitementAbsences, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collJTraitementAbsences, $l);
+		if (!in_array($l, $this->collJTraitementSaisies, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collJTraitementSaisies, $l);
 			$l->setAbsenceTraitement($this);
 		}
 	}
@@ -1577,13 +1577,13 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this AbsenceTraitement is new, it will return
 	 * an empty collection; or if this AbsenceTraitement has previously
-	 * been saved, it will retrieve related JTraitementAbsences from storage.
+	 * been saved, it will retrieve related JTraitementSaisies from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in AbsenceTraitement.
 	 */
-	public function getJTraitementAbsencesJoinAbsenceAbsence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getJTraitementSaisiesJoinAbsenceSaisie($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(AbsenceTraitementPeer::DATABASE_NAME);
@@ -1593,29 +1593,29 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collJTraitementAbsences === null) {
+		if ($this->collJTraitementSaisies === null) {
 			if ($this->isNew()) {
-				$this->collJTraitementAbsences = array();
+				$this->collJTraitementSaisies = array();
 			} else {
 
-				$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+				$criteria->add(JTraitementSaisiePeer::A_TRAITEMENT_ID, $this->id);
 
-				$this->collJTraitementAbsences = JTraitementAbsencePeer::doSelectJoinAbsenceAbsence($criteria, $con, $join_behavior);
+				$this->collJTraitementSaisies = JTraitementSaisiePeer::doSelectJoinAbsenceSaisie($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
 			// called for.  If the criteria is the same as the last
 			// one, just return the collection.
 
-			$criteria->add(JTraitementAbsencePeer::A_TRAITEMENT_ID, $this->id);
+			$criteria->add(JTraitementSaisiePeer::A_TRAITEMENT_ID, $this->id);
 
-			if (!isset($this->lastJTraitementAbsenceCriteria) || !$this->lastJTraitementAbsenceCriteria->equals($criteria)) {
-				$this->collJTraitementAbsences = JTraitementAbsencePeer::doSelectJoinAbsenceAbsence($criteria, $con, $join_behavior);
+			if (!isset($this->lastJTraitementSaisieCriteria) || !$this->lastJTraitementSaisieCriteria->equals($criteria)) {
+				$this->collJTraitementSaisies = JTraitementSaisiePeer::doSelectJoinAbsenceSaisie($criteria, $con, $join_behavior);
 			}
 		}
-		$this->lastJTraitementAbsenceCriteria = $criteria;
+		$this->lastJTraitementSaisieCriteria = $criteria;
 
-		return $this->collJTraitementAbsences;
+		return $this->collJTraitementSaisies;
 	}
 
 	/**
@@ -1630,14 +1630,14 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
-			if ($this->collJTraitementAbsences) {
-				foreach ((array) $this->collJTraitementAbsences as $o) {
+			if ($this->collJTraitementSaisies) {
+				foreach ((array) $this->collJTraitementSaisies as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
-		$this->collJTraitementAbsences = null;
+		$this->collJTraitementSaisies = null;
 			$this->aUtilisateurProfessionnel = null;
 			$this->aAbsenceType = null;
 			$this->aAbsenceMotif = null;

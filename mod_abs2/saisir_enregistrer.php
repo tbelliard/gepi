@@ -109,42 +109,13 @@ try{
           $_SESSION['msg_abs'] .= '||' . $_last_id;
         }
 
-        // ...et on propose également d'enregistrer cette saisie en complément de celles déjà effectuée pour le même élève.
-        // Donc on vérifie d'abord si une absence existe sur le creneau précédent pour cet élève
-
-        $new_abs = array('eleve_id'=>$_eleve[$a], 'debut_abs'=>$deb, 'fin_abs'=>$fin);
-        $verif = AbsenceAbsencePeer::verifAvantEnregistrement($new_abs);
-
-        if (!is_object($verif) AND $verif["rien"] == "rien"){
-          // C'est donc une nouvelle absence
-          $abs = new AbsenceAbsence();
-          $abs->setUtilisateurId($_SESSION["login"]);
-          $abs->setEleveId($_eleve[$a]);
-          $abs->setDebutAbs($deb);
-          $abs->setFinAbs($fin);
-          $abs->setCreatedOn(date("U"));
-          $abs->setUpdatedOn(date("U"));
-          $abs->save();
-        }elseif(is_object($verif)){
-          // $verif renvoie un objet de l'absence à mettre à jour et on ne modifie pas la date de création mais seulement celle de mise à jour
-          //$abs = new AbsenceAbsence();
-          //$abs->setId($verif->getId());
-          $verif->setUpdatedOn(date("U"));
-          $verif->setUtilisateurId($_SESSION["login"]);
-          $verif->setFinAbs($fin);
-          $verif->save();
-
-        }else{
-
-          $_SESSION['msg_abs'] = $verif;
-        }
       } // fin du if (isset ($_eleve[$a])){
     } // fin de la boucle for
 
     // Si tout est bon, on renvoie vers l'interface de saisie, sinon on renvoie une exception
     if ($increment == $nbre_el){
 
-      //$_SESSION['msg_abs'] .= '<h3 class="ok">Saisies enregistr&eacute;es.</h3>';
+      $_SESSION['msg_abs'] .= '<h3 class="ok">Saisies enregistr&eacute;es.</h3>';
       header("Location: saisir_absences.php");
       die();
 

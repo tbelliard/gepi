@@ -679,9 +679,6 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			// invalidate objects in AbsenceTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 			AbsenceTraitementPeer::clearInstancePool();
 
-			// invalidate objects in AbsenceAbsencePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceAbsencePeer::clearInstancePool();
-
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {

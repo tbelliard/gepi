@@ -384,24 +384,11 @@
     <foreign-key foreignTable="a_actions" onDelete="SETNULL"><reference local="a_action_id" foreign="id"/></foreign-key>
   </table>
 
-  <table name="a_absences" phpName="AbsenceAbsence" description="Une absence est la compilation des saisies pour un meme eleve, cette compilation est faite automatiquement par Gepi">
-    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incremente"/>
-    <column name="utilisateur_id" type="VARCHAR" size="100" description="Login du dernier utilisateur professionnel compile"/>
-	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
-    <foreign-key foreignTable="utilisateurs" onDelete="SETNULL"><reference local="utilisateur_id" foreign="login"/></foreign-key>
-    <column name="eleve_id" required="true" type="INTEGER" size="4" description="id_eleve de l'eleve objet de la saisie"/>
-    <foreign-key foreignTable="eleves" onDelete="CASCADE"><reference local="eleve_id" foreign="id_eleve"/></foreign-key>
-    <column name="created_on" required="true" type="INTEGER" size="13" description="Date de la premiere compilation des absences en timestamp UNIX"/>
-    <column name="updated_on" required="true" type="INTEGER" size="13" description="Date de la derniere compilation des absences en timestamp UNIX"/>
-    <column name="debut_abs" required="true" type="INTEGER" size="12" default="0" description="Debut de la compilation en timestamp UNIX"/>
-    <column name="fin_abs" required="true" type="INTEGER" size="12" default="0" description="Fin de la compilation en timestamp UNIX"/>
-  </table>
-
-  <table name="j_traitement_absence" phpName="JTraitementAbsence" description="Table de jointure entre la saisie et le traitement des absences">
-    <column name="a_absence_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de l'absence saisie"/>
-    <foreign-key foreignTable="a_absences" onDelete="CASCADE"><reference local="a_absence_id" foreign="id"/></foreign-key>
+  <table name="j_traitements_saisies" phpName="JTraitementSaisie" description="Table de jointure entre la saisie et le traitement des absences">
+    <column name="a_saisie_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de l'absence saisie"/>
+    <foreign-key foreignTable="a_saisies" onDelete="SETNULL"><reference local="a_saisie_id" foreign="id"/></foreign-key>
     <column name="a_traitement_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere du traitement de ces absences"/>
-    <foreign-key foreignTable="a_traitements" onDelete="CASCADE"><reference local="a_traitement_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_traitements" onDelete="SETNULL"><reference local="a_traitement_id" foreign="id"/></foreign-key>
   </table>
 
 <!-- fin objets propel generes pour absence2-->
