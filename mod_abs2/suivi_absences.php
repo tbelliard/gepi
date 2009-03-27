@@ -165,18 +165,23 @@ require("lib/abs_menu.php");
 
     /******* On construit une petite fiche de l'élève en question (téléphone du parent 1) *****/
     // On ne garde que le responsable 1 qui est en principe le premier du tableau envoyé
-    $_responsable = $absents->getEleve()->getResponsableInformations();
-    $responsable = $_responsable[0];
+    $_responsables = $absents->getEleve()->getResponsableInformations();
 
     $_id_fiche = 'fiche' . $absents->getId();
-    $fiche_eleve = '<div id="' . $_id_fiche . '" style="display: none; position: absolute; border: 2px solid yellow; background-color: lightblue;">
-                      ' . $responsable->getResponsableEleve()->getCivilite() . '
-                      ' . $responsable->getResponsableEleve()->getNom() . ' ' . $responsable->getResponsableEleve()->getPrenom() . '(resp.leg. '.$responsable->getRespLegal().')<br />
+    $fiche_eleve = '<div id="' . $_id_fiche . '" style="display: none; position: absolute; border: 2px solid yellow; background-color: lightblue;">';
+
+    foreach ($_responsables as $responsable){
+      if ($responsable->getRespLegal() != 0){
+
+        $fiche_eleve .=
+                      '<p>' . $responsable->getResponsableEleve()->getCivilite() . '
+                      ' . $responsable->getResponsableEleve()->getNom() . ' ' . $responsable->getResponsableEleve()->getPrenom() . '(resp.leg. '.$responsable->getRespLegal().')</p>
                       Tel. pers. :' . $responsable->getResponsableEleve()->getTelPers() . '<br />
                       Tel. port. :' . $responsable->getResponsableEleve()->getTelPort() . '<br />
-                      Tel. prof. :' . $responsable->getResponsableEleve()->getTelProf() . '<br />
-
-                    </div>';
+                      Tel. prof. :' . $responsable->getResponsableEleve()->getTelProf() . '<br /><hr />';
+      }
+    }
+    $fiche_eleve .= '</div>';
     /******* On construit une petite fiche de l'élève en question (historique des saisies de ses absences) *****/
     $_id_recap = 'recap' . $absents->getId();
     $_fiche_recap_abs = '<div id="' . $_id_recap . '" style="display: none; position: absolute; border: 2px solid pink; background-color: green;">
