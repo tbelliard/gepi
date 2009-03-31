@@ -48,6 +48,7 @@ if ($resultat_session == 'c') {
 // ============== Code métier ===============================
 include("lib/erreurs.php");
 include("../orm/helpers/CreneauHelper.php");
+include("../orm/helpers/AbsencesParametresHelper.php");
 
 
 try{
@@ -76,14 +77,67 @@ require_once("../lib/header.inc");
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
 
+echo '
+  <p>Liste des traitements en cours</p>
+<table id="table_liste_absents">
+  <tr>
+    <th>Eleve</th>
+    <th>Absence de - &agrave;</th>
+    <th>Type</th>
+    <th>Motif</th>
+    <th>Justification</th>
+    <th>Action</th>
+  </tr>';
+
+
 foreach ($liste_traitements_en_cours as $traitements){
-  //aff_debug($traitements->getJTraitementSaisies());
+
+  $_debut_abs = 999999999999;
+  $_fin_abs   = 0;
+  $_id_traitement = $traitements->getId();
+
+  $_type    = $traitements->getATypeId();
+  $aff_type = AbsencesParametresHelper::AfficherListeDeroulanteTypes(array('id'=>'type'.$_id_traitement, 'name'=>'type[]', 'selected'=>$_type));
+
+  $_motif     = $traitements->getAMotifId();
+  $aff_motif  = AbsencesParametresHelper::AfficherListeDeroulanteMotifs(array('id'=>'motif'.$_id_traitement, 'name'=>'motif[]', 'selected'=>$_motif));
+
+  $_justification     = $traitements->getAJustificationId();
+  $aff_justification = AbsencesParametresHelper::AfficherListeDeroulanteJustifications(array('id'=>'justif'.$_id_traitement, 'name'=>'justif[]', 'selected'=>$_justification));
+
+  $_action    = $traitements->getAActionId();
+  $aff_action = AbsencesParametresHelper::AfficherListeDeroulanteActions(array('id'=>'action'.$_id_traitement, 'name'=>'action[]', 'selected'=>$_action));
+
   foreach($traitements->getJTraitementSaisies() as $saisies){
-    //aff_debug($saisies->getAbsenceSaisie());
-    echo($saisies->getAbsenceSaisie()->getEleve()->getLogin()) . ' ' . date("d/m/Y H:i", $saisies->getAbsenceSaisie()->getDebutAbs()) . ' - ' .date("d/m/Y H:i", $saisies->getAbsenceSaisie()->getFinAbs()) . '<br />';
+
+    // On teste sur le début de l'absence
+    if ($saisies->getAbsenceSaisie()->getDebutAbs() < $_debut_abs){
+      $_debut_abs = $saisies->getAbsenceSaisie()->getDebutAbs();
+    }
+    // On teste également sur la fin de l'absence
+    if ($saisies->getAbsenceSaisie()->getFinAbs() > $_fin_abs){
+      $_fin_abs = $saisies->getAbsenceSaisie()->getFinAbs();
+    }
+
+    // Peut-être faudrait-il vérifier qu'il s'agit toujours du même utilisateur sur toutes les saisies liées à ce traitement
+    $_nom     = $saisies->getAbsenceSaisie()->getEleve()->getNom();
+    $_prenom  = $saisies->getAbsenceSaisie()->getEleve()->getPrenom();
+
   }
-  echo '<hr />';
-}
+
+  echo'
+    <tr>
+      <td>'.$_nom . ' ' . $_prenom . '</td>
+      <td>' . date("d/m/Y H:i", $_debut_abs) . ' - ' .date("d/m/Y H:i", $_fin_abs) . '</td>
+      <td>'.$aff_type.'</td>
+      <td>'.$aff_motif.'</td>
+      <td>'.$aff_justification.'</td>
+      <td>'.$aff_action.'</td>
+    </tr>';
+
+} // fin du foreach ($liste_traitements_en_cours as $traitements)
+
+echo '</table>';
 
 ?>
 
