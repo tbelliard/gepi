@@ -32,7 +32,7 @@ if (!$_SESSION["login"]) {
 
 // On permet de modifier la couleur du menu pour savoir où on est
 $menu = isset($menu) ? $menu : '';
-$aff_saisir = $aff_suivre = $aff_envoyer = $aff_stats = $aff_exporter = $aff_parametrer = NULL;
+$aff_saisir = $aff_suivre = $aff_traiter = $aff_envoyer = $aff_stats = $aff_exporter = $aff_parametrer = NULL;
 $aff_aide = NULL;
 switch($menu){
   case 'saisir':
@@ -40,6 +40,9 @@ switch($menu){
     break;
   case 'suivre':
     $aff_suivre = ' style="background-color: red;"';
+    break;
+  case 'traiter':
+    $aff_traiter = ' style="background-color: red;"';
     break;
   case 'envoyer':
     $aff_envoyer = ' style="background-color: red;"';
@@ -54,7 +57,7 @@ switch($menu){
     $aff_parametrer = ' style="background-color: red;"';
     break;
   default:
-    $aff_saisir = $aff_suivre = $aff_envoyer = $aff_stats = $aff_exporter = $aff_parametrer = NULL;;
+    $aff_saisir = $aff_suivre = $aff_traiter = $aff_envoyer = $aff_stats = $aff_exporter = $aff_parametrer = NULL;;
 } // switch
 
 // intégration du module discipline
@@ -68,6 +71,7 @@ echo '
 	<ol id="essaiMenu">
     <li' . $aff_saisir . '><a href="saisir_absences.php"><img src="../images/edit16.png" alt="Saisie" /> - Saisie</a></li>
 		<li' . $aff_suivre . '><a href="suivi_absences.php"><img src="../images/icons/releve.png" alt="Suivi" /> - Suivi</a></li>
+    <li' . $aff_traiter . '><a href="traitement_absences.php"><img src="../images/icons/releve.png" alt="Suivi" /> - Traitement</a></li>
     ' . $_discipline . '
 		<li' . $aff_envoyer . '><a href="envoi_absences.php"><img src="../images/icons/mail.png" alt="courrier" /> - Envoi aux familles</a></li>
 		<li' . $aff_stats . '><a href="stats_absences.php"><img src="../images/icons/stats.png" alt="Stats" /> - Statistiques</a></li>

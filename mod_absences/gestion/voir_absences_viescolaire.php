@@ -213,6 +213,13 @@ $aff_classe = array();
 	}
 
 $nbre_abs_cren = 0; // On initialise le nombre d'absents du créneau
+// On détermine la période active :
+$sql = "SELECT DISTINCT num_periode FROM periodes WHERE verouiller = 'N' ORDER BY num_periode";
+$periode_active = mysql_query($sql) OR DIE('Impossible de récupérer le numéro de la période active' . $sql . '<br />--> ' . mysql_error());
+$periode = mysql_fetch_array($periode_active);
+
+$nbre_per = count($periode);
+$_periode = isset($periode[0]) ? $periode[0] : '1';
 
 for($i = 0; $i < $nbre_rep; $i++) {
 	//$req_prof = mysql_fetch_array(mysql_query("SELECT login_saisie FROM absences_rb WHERE id = '".$rep_absences[$i]["id_abs"]."'")) or die ('erreur 1a : '.mysql_error());
@@ -232,7 +239,7 @@ for($i = 0; $i < $nbre_rep; $i++) {
 				$int++;
 			}
 
-		$req_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$i]["eleve_id"]."'"));
+		$req_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$i]["eleve_id"]."' AND periode = '".$_periode."'"));
 		$rep_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$req_classe[0]."'"));
 	}
 	else if ($rep_absences[$i]["eleve_id"] == "appel") {

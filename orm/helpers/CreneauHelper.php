@@ -51,5 +51,25 @@ class CreneauHelper {
 			return false;
 		}
 	}
+
+  public static function afficherPetitTableauDesCreneaux($options = NULL){
+    $_color = isset($options["couleur"]) ? $options["couleur"] : 'red';
+    $_background = isset($options["background"]) ? $options["background"] : 'silver';
+
+    $criteria = new Criteria();
+    $tab_creneaux = CreneauPeer::getAllCreneauxOrderByTime();
+
+    $aff_creneaux = '<table><tr>';
+    foreach ($tab_creneaux as $creneaux){
+      // S'il s'agit d'un créneau de cours, on l'affiche
+      if ($creneaux->getTypeCreneau() == 'cours'){
+        $aff_creneaux .= '
+                    <td style="color: '.$_color.'; font-weight: bold; background-color: '.$_background.';">' . $creneaux->getNomCreneau() . '</td>';
+      }
+    }
+    $aff_creneaux .= '</tr></table>';
+    return $aff_creneaux;
+  }
+
 }
 ?>

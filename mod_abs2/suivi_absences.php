@@ -45,24 +45,15 @@ if ($resultat_session == 'c') {
 //debug_var();
 // ============== traitement des variables ==================
 $ordre      = isset($_GET["ordre"]) ? $_GET["ordre"] : NULL;
-$fusionner  = isset($_POST["fusionner"]) ? $_POST["fusionner"] : NULL;
-$_fusion    = isset($_POST["fusion"]) ? $_POST["fusion"] : NULL;
-$aff_fusion = NULL;
 $tab_absents = array();
 
 // ============== Code métier ===============================
 include("lib/erreurs.php");
+include("../orm/helpers/CreneauHelper.php");
 
 
 try{
 
-  // Une demande de fusion est lancée
-  if ($fusionner == 'ok' AND $_fusion !== NULL){
-    $aff_fusion = 'Une demande de fusion a été effectuée pour les a_saisie:id ';
-    foreach ($_fusion as $a_fuse){
-      $aff_fusion .= ' - ' . $a_fuse;
-    }
-  }
 
   // On récupère la liste des absences (brutes pour le moment)
   $c = new Criteria();
@@ -96,7 +87,7 @@ try{
   $c->add(AbsenceSaisiePeer::FIN_ABS, $_ts, Criteria::GREATER_EQUAL);
   
   $liste_absents_brute = AbsenceSaisiePeer::doSelect($c);
-  //aff_debug($liste_absents_brute[0]->getEleve());exit();
+  //aff_debug($liste_absents_brute[3]->getJTraitementSaisies());exit();
 
   foreach ($liste_absents_brute as $absents){
      if (!in_array($absents->getEleve()->getIdEleve(), $tab_absents)){
@@ -109,18 +100,8 @@ try{
 
 
   /***************** On élabore un petit tableau du suivi créneau par créneau *******************/
-  $criteria = new Criteria();
+  $aff_creneaux = CreneauHelper::afficherPetitTableauDesCreneaux();
   $tab_creneaux = CreneauPeer::getAllCreneauxOrderByTime();
-  //aff_debug($tab_creneaux);
-  $aff_creneaux = '<table><tr>';
-  foreach ($tab_creneaux as $creneaux){
-    // S'il s'agit d'un créneau de cours, on l'affiche
-    if ($creneaux->getTypeCreneau() == 'cours'){
-      $aff_creneaux .= '
-                    <td style="color: red; font-weight: bold; background-color: silver;">' . $creneaux->getNomCreneau() . '</td>';
-      }
-  }
-  $aff_creneaux .= '</tr></table>';
   /********************* Fin du petit tableau des créneaux **************************************/
 
 
@@ -137,10 +118,14 @@ require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
 //aff_debug($liste_absents_brute[0]->getEleve()->getAbsenceSaisies());
 //debug_var();
-
+if (isset($_SESSION["msg_fusions"])){
+  echo $_SESSION["msg_fusions"];
+  $_SESSION["msg_fusions"] = NULL;
+}
 ?>
 
-<form id="fusionner" action="suivi_absences.php?ordre=<?php echo $ordre; ?>" method="post">
+<form id="fusionner" action="suivi_absences_fusionner.php" method="post">
+  <input type="hidden" name="ordre" value="<?php echo $ordre; ?>" />
 <table id="table_liste_absents">
   <tr>
     <th><a href="suivi_absences.php?ordre=UTILISATEUR_ID">Saisie :</a></th>
@@ -154,7 +139,7 @@ require("lib/abs_menu.php");
   <tr>
     <td colspan="6">
       <p><input type="submit" name="fusionner" value="Fusionner les saisies sélectionnées" />
-      <input type="hidden" name="fusionner" value="ok" /><?php echo $aff_fusion; ?></p>
+      <input type="hidden" name="fusionner" value="ok" /></p>
     </td>
     <td>
       <?php echo $aff_creneaux; ?>
@@ -162,6 +147,12 @@ require("lib/abs_menu.php");
   </tr>
 <?php $increment = 0;
   foreach($liste_absents_brute as $absents):
+
+    $test2 = $absents->getJTraitementSaisies();
+
+    if (empty($test2)){
+      // On n'affiche que les saisies qui ne font pas déjà l'objet d'un traitement
+
 
     /******* On construit une petite fiche de l'élève en question (téléphone du parent 1) *****/
     // On ne garde que le responsable 1 qui est en principe le premier du tableau envoyé
@@ -253,6 +244,7 @@ require("lib/abs_menu.php");
 
 <?php
   $increment++;
+  } // fin du if qui détermine si la saisie fait l'objet d'un traitement ou pas
   endforeach;
 ?>
 
