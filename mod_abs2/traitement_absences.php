@@ -92,34 +92,41 @@ echo '
 
 foreach ($liste_traitements_en_cours as $traitements){
 
-  $_debut_abs = 999999999999;
-  $_fin_abs   = 0;
+  $_debut_abs     = 999999999999;
+  $_fin_abs       = 0;
   $_id_traitement = $traitements->getId();
 
-  $_type    = $traitements->getATypeId();
-  $aff_type = AbsencesParametresHelper::AfficherListeDeroulanteTypes(array('id'=>'type'.$_id_traitement, 'name'=>'type[]', 'selected'=>$_type));
+  $_type          = $traitements->getATypeId();
+  $options_type   = array('id'=>'type'.$_id_traitement, 'name'=>'type[]', 'selected'=>$_type);
+  $aff_type       = AbsencesParametresHelper::AfficherListeDeroulanteTypes($options_type);
 
-  $_motif     = $traitements->getAMotifId();
-  $aff_motif  = AbsencesParametresHelper::AfficherListeDeroulanteMotifs(array('id'=>'motif'.$_id_traitement, 'name'=>'motif[]', 'selected'=>$_motif));
+  $_motif         = $traitements->getAMotifId();
+  $options_motif  = array('id'=>'motif'.$_id_traitement, 'name'=>'motif[]', 'selected'=>$_motif);
+  $aff_motif      = AbsencesParametresHelper::AfficherListeDeroulanteMotifs($options_motif);
 
   $_justification     = $traitements->getAJustificationId();
-  $aff_justification = AbsencesParametresHelper::AfficherListeDeroulanteJustifications(array('id'=>'justif'.$_id_traitement, 'name'=>'justif[]', 'selected'=>$_justification));
+  $options_justif     = array('id'=>'justif'.$_id_traitement, 'name'=>'justif[]', 'selected'=>$_justification);
+  $aff_justification  = AbsencesParametresHelper::AfficherListeDeroulanteJustifications($options_justif);
 
-  $_action    = $traitements->getAActionId();
-  $aff_action = AbsencesParametresHelper::AfficherListeDeroulanteActions(array('id'=>'action'.$_id_traitement, 'name'=>'action[]', 'selected'=>$_action));
+  $_action        = $traitements->getAActionId();
+  $options_action = array('id'=>'action'.$_id_traitement, 'name'=>'action[]', 'selected'=>$_action);
+  $aff_action     = AbsencesParametresHelper::AfficherListeDeroulanteActions($options_action);
 
   foreach($traitements->getJTraitementSaisies() as $saisies){
 
     // On teste sur le début de l'absence
-    if ($saisies->getAbsenceSaisie()->getDebutAbs() < $_debut_abs){
-      $_debut_abs = $saisies->getAbsenceSaisie()->getDebutAbs();
+    $getDebutAbs = $saisies->getAbsenceSaisie()->getDebutAbs();
+    if ($getDebutAbs < $_debut_abs){
+      $_debut_abs = $getDebutAbs;
     }
     // On teste également sur la fin de l'absence
-    if ($saisies->getAbsenceSaisie()->getFinAbs() > $_fin_abs){
-      $_fin_abs = $saisies->getAbsenceSaisie()->getFinAbs();
+    $getFinAbs = $saisies->getAbsenceSaisie()->getFinAbs();
+    if ($getFinAbs > $_fin_abs){
+      $_fin_abs = $getFinAbs;
     }
 
-    // Peut-être faudrait-il vérifier qu'il s'agit toujours du même utilisateur sur toutes les saisies liées à ce traitement
+    // Peut-être faudrait-il vérifier qu'il s'agit toujours du même utilisateur sur toutes
+    // les saisies liées à ce traitement
     $_nom     = $saisies->getAbsenceSaisie()->getEleve()->getNom();
     $_prenom  = $saisies->getAbsenceSaisie()->getEleve()->getPrenom();
 
