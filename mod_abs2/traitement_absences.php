@@ -44,6 +44,13 @@ if ($resultat_session == 'c') {
 };
 //debug_var();
 // ============== traitement des variables ==================
+$_enregistrer = isset($_POST["enregistrer"]) ? $_POST["enregistrer"] : NULL;
+$_traite       = isset($_POST["traite"]) ? $_POST["traite"] : NULL;
+$_type         = isset($_POST["type"]) ? $_POST["type"] : NULL;
+$_motif        = isset($_POST["motif"]) ? $_POST["motif"] : NULL;
+$_justif       = isset($_POST["justif"]) ? $_POST["justif"] : NULL;
+$_action       = isset($_POST["action"]) ? $_POST["action"] : NULL;
+
 
 // ============== Code métier ===============================
 include("lib/erreurs.php");
@@ -52,6 +59,19 @@ include("../orm/helpers/AbsencesParametresHelper.php");
 
 
 try{
+
+  if ($_enregistrer == 'Enregistrer'){
+    // On revoit tous les traitements pour les mettre à jour
+    $nbre = count($_traite);
+    for($i = 0 ; $i < $nbre ; $i++){
+      $traitement = AbsenceTraitementPeer::retrieveByPK($_traite[$i]);
+      $traitement->setATypeId($_type[$i]);
+      $traitement->setAMotifId($_motif[$i]);
+      $traitement->setAJustificationId($_justif[$i]);
+      $traitement->setAActionId($_action[$i]);
+      $traitement->save();
+    }
+  }
 
   // On récupère toutes les absences dont le traitement n'est pas clos
   $c = new Criteria();
@@ -76,9 +96,10 @@ $titre_page = "Le traitement des absences";
 require_once("../lib/header.inc");
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
-
+debug_var();
 echo '
   <p>Liste des traitements en cours</p>
+<form action="traitement_absences.php" method="post">
 <table id="table_liste_absents">
   <tr>
     <th>Eleve</th>
@@ -89,27 +110,36 @@ echo '
     <th>Action</th>
   </tr>';
 
-
+$a = 0; // incrémenteur
 foreach ($liste_traitements_en_cours as $traitements){
+
+  if (substr($a, -1) == "0"){
+    // Alors on afficher un "enregistrer" toutes les 10 lignes
+    echo '
+    <tr>
+      <td colspan="5">Valider toutes les modifications</td>
+      <td style="background-color: red;"><input type="submit" name="enregistrer" value="Enregistrer" /></td>
+    </tr>';
+  }
 
   $_debut_abs     = 999999999999;
   $_fin_abs       = 0;
   $_id_traitement = $traitements->getId();
 
   $_type          = $traitements->getATypeId();
-  $options_type   = array('id'=>'type'.$_id_traitement, 'name'=>'type[]', 'selected'=>$_type);
+  $options_type   = array('id'=>'type'.$_id_traitement, 'name'=>'type['.$a.']', 'selected'=>$_type);
   $aff_type       = AbsencesParametresHelper::AfficherListeDeroulanteTypes($options_type);
 
   $_motif         = $traitements->getAMotifId();
-  $options_motif  = array('id'=>'motif'.$_id_traitement, 'name'=>'motif[]', 'selected'=>$_motif);
+  $options_motif  = array('id'=>'motif'.$_id_traitement, 'name'=>'motif['.$a.']', 'selected'=>$_motif);
   $aff_motif      = AbsencesParametresHelper::AfficherListeDeroulanteMotifs($options_motif);
 
   $_justification     = $traitements->getAJustificationId();
-  $options_justif     = array('id'=>'justif'.$_id_traitement, 'name'=>'justif[]', 'selected'=>$_justification);
+  $options_justif     = array('id'=>'justif'.$_id_traitement, 'name'=>'justif['.$a.']', 'selected'=>$_justification);
   $aff_justification  = AbsencesParametresHelper::AfficherListeDeroulanteJustifications($options_justif);
 
   $_action        = $traitements->getAActionId();
-  $options_action = array('id'=>'action'.$_id_traitement, 'name'=>'action[]', 'selected'=>$_action);
+  $options_action = array('id'=>'action'.$_id_traitement, 'name'=>'action['.$a.']', 'selected'=>$_action);
   $aff_action     = AbsencesParametresHelper::AfficherListeDeroulanteActions($options_action);
 
   foreach($traitements->getJTraitementSaisies() as $saisies){
@@ -134,7 +164,7 @@ foreach ($liste_traitements_en_cours as $traitements){
 
   echo'
     <tr>
-      <td>'.$_nom . ' ' . $_prenom . '</td>
+      <td>'.$_nom . ' ' . $_prenom . '<input type="hidden" name="traite['.$a.']" value="'.$_id_traitement.'" /></td>
       <td>' . date("d/m/Y H:i", $_debut_abs) . ' - ' .date("d/m/Y H:i", $_fin_abs) . '</td>
       <td>'.$aff_type.'</td>
       <td>'.$aff_motif.'</td>
@@ -142,9 +172,15 @@ foreach ($liste_traitements_en_cours as $traitements){
       <td>'.$aff_action.'</td>
     </tr>';
 
+  $a++; // On incrémente
+
+
 } // fin du foreach ($liste_traitements_en_cours as $traitements)
 
-echo '</table>';
+
+echo '
+  </table>
+</form>';
 
 ?>
 

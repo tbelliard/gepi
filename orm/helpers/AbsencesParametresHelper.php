@@ -45,10 +45,11 @@ class AbsencesParametresHelper {
     $_selected  = isset($options["selected"]) ? $options["selected"] : '';
 
     $retour = '<select id="'.$_id.'" name="'.$_name.'">'."\n";
+    $retour .= '<option value="0">---</option>'."\n";
     foreach($liste as $type){
       $aff_selected = '';
       if ($type->getId() == $_selected){
-        $aff_selected = ' selected="selected';
+        $aff_selected = ' selected="selected"';
       }
       $retour .= '<option value="'.$type->getId().'"'.$aff_selected.'>'.$type->getNom().'</option>'."\n";
     }
@@ -74,10 +75,11 @@ class AbsencesParametresHelper {
     $_selected  = isset($options["selected"]) ? $options["selected"] : '';
 
     $retour = '<select id="'.$_id.'" name="'.$_name.'">'."\n";
+    $retour .= '<option value="0">---</option>'."\n";
     foreach($liste as $type){
       $aff_selected = '';
       if ($type->getId() == $_selected){
-        $aff_selected = ' selected="selected';
+        $aff_selected = ' selected="selected"';
       }
       $retour .= '<option value="'.$type->getId().'"'.$aff_selected.'>'.$type->getNom().'</option>'."\n";
     }
@@ -103,10 +105,11 @@ class AbsencesParametresHelper {
     $_selected  = isset($options["selected"]) ? $options["selected"] : '';
 
     $retour = '<select id="'.$_id.'" name="'.$_name.'">'."\n";
+    $retour .= '<option value="0">---</option>'."\n";
     foreach($liste as $type){
       $aff_selected = '';
       if ($type->getId() == $_selected){
-        $aff_selected = ' selected="selected';
+        $aff_selected = ' selected="selected"';
       }
       $retour .= '<option value="'.$type->getId().'"'.$aff_selected.'>'.$type->getNom().'</option>'."\n";
     }
@@ -132,10 +135,11 @@ class AbsencesParametresHelper {
     $_selected  = isset($options["selected"]) ? $options["selected"] : '';
 
     $retour = '<select id="'.$_id.'" name="'.$_name.'">'."\n";
+    $retour .= '<option value="0">---</option>'."\n";
     foreach($liste as $type){
       $aff_selected = '';
       if ($type->getId() == $_selected){
-        $aff_selected = ' selected="selected';
+        $aff_selected = ' selected="selected"';
       }
       $retour .= '<option value="'.$type->getId().'"'.$aff_selected.'>'.$type->getNom().'</option>'."\n";
     }

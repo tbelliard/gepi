@@ -41,17 +41,19 @@ if ($resultat_session == 'c') {
 }
 
 // ==================== VARIABLES ===============================
-$_id = isset($_POST["_id"]) ? $_POST["_id"] : NULL;
-$type = isset($_POST["type"]) ? $_POST["type"] : NULL;
-$_ok = 'oui';
-$aff_coche = '';
-$test_aff_fiche = "ok";
+$_id        = isset($_POST["_id"]) ? $_POST["_id"] : NULL;
+$type       = isset($_POST["type"]) ? $_POST["type"] : NULL;
+$_droits    = isset($_POST["droits"]) ? $_POST["droits"] : NULL; // permet de défnir ce qui est affiché en fonction des droits
+$_ok        = 'oui';
+$aff_coche  = '';
+$test_afffiche = "ok";
 $aff_creneaux_deb = $aff_creneaux_fin = NULL;
 $aff_motifs = $aff_justifications = NULL;
-$aff_liste = array ();
+$aff_liste  = array ();
 
 // +++++++++++++++++++++ Code métier ++++++++++++++++++++++++++++
 include("lib/erreurs.php");
+include('../orm/helpers/AbsencesParametresHelper.php');
 
 try{
 
@@ -127,32 +129,7 @@ try{
   }
   // ****************************** Fin de la liste des créneaux *********************** //
   // *********************************************************************************** //
-  // ************** MOTIFS : On crée les options pour les selects des motifs *********** //
-  $c_mot = new Criteria();
-  $c_mot->addAscendingOrderByColumn(AbsenceMotifPeer::ORDRE);
-  $liste_motifs = AbsenceMotifPeer::doSelect($c_mot);
 
-  foreach($liste_motifs as $motifs){
-    $aff_motifs .= '<option value="' . $motifs->getId() . '">' . $motifs->getNom() . '</option>'."\n";
-  }
-  if (!isset($aff_motifs)){
-    $aff_motifs = '<option value="rien">Aucun motif dans la base</option>';
-  }
-  // ****************************** Fin de la liste des motifs ************************* //
-  // *********************************************************************************** //
-  // **** JUSTIFICATIONS : On crée les options pour les selects des justifications ***** //
-  $c_just = new Criteria();
-  $c_just->addAscendingOrderByColumn(AbsenceJustificationPeer::ORDRE);
-  $liste_justifications = AbsenceJustificationPeer::doSelect($c_just);
-
-  foreach($liste_justifications as $justifications){
-    $aff_justifications .= '<option value="' . $justifications->getId() . '">' . $justifications->getNom() . '</option>' . "\n";
-  }
-  if (!isset($aff_justifications)){
-    $aff_justifications = '<option value="rien">Aucune justification dans la base</option>';
-  }
-  // ****************************** Fin de la liste des motifs ************************* //
-  // *********************************************************************************** //
 
 
 }catch(exception $e){
@@ -181,7 +158,20 @@ header('Content-Type: text/html; charset:iso-8859-1');
             if ($liste == 'CLA'){$eleve = $eleve->getEleve();}
             //aff_debug($eleve->getJEleveClasses());exit();
             $classes = $eleve->getJEleveClasses();
-            $classe = isset($classes[0]) ? $classes[0]->getClasse() : NULL; ?>
+            $classe = isset($classes[0]) ? $classes[0]->getClasse() : NULL;
+            $options_j = array('id'=>'idJustif'.$a, 'name'=>'_justifications['.$a.']');
+            $aff_justifications = AbsencesParametresHelper::AfficherListeDeroulanteJustifications($options_j);
+            $options_m = array ('id'=>'idMotif'.$a, 'name'=>'_motifs['.$a.']');
+            $aff_motifs = AbsencesParametresHelper::AfficherListeDeroulanteMotifs($options_m);
+
+
+            // Gestion des droits pour l'affichage
+            if ($_droits == "professeur"){
+              // Pour un professeur, on n'affiche pas les motifs ni les justifications.
+              $aff_motifs = $aff_justifications = NULL;
+            }
+
+      ?>
         
         <tr>
 
@@ -190,8 +180,8 @@ header('Content-Type: text/html; charset:iso-8859-1');
           <td><input type="checkbox" name="_jourentier[<?php echo $a; ?>]" id="j<?php echo $a; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
           <td><select name="_deb[<?php echo $a; ?>]" id="decod<?php echo $a; ?>"><?php echo $aff_creneaux_deb; ?></select></td>
           <td><select name="_fin[<?php echo $a; ?>]" id="decof<?php echo $a; ?>"><?php echo $aff_creneaux_fin; ?></select></td>
-          <td><select name="_justifications[<?php echo $a; ?>]"><?php echo $aff_justifications; ?></select></td>
-          <td><select name="_motifs[<?php echo $a; ?>]"><?php echo $aff_motifs; ?></select></td>
+          <td><?php echo $aff_justifications; ?></td>
+          <td><?php echo $aff_motifs; ?></td>
 
         </tr>
 
