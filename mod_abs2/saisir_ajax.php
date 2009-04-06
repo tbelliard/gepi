@@ -147,7 +147,7 @@ header('Content-Type: text/html; charset:iso-8859-1');
     <p><input type="hidden" name="action" value="eleves" /></p>
     <p><input type="submit" name="enregistrer_absences" value="Enregistrer" /> - <?php echo $test_type; ?></p>
     <table class="_center">
-      <tr><th>Absents</th><th>Nom Pr&eacute;nom</th><th>Abs. Journ.</th><th>D&eacute;but</th><th>Fin</th><th>Justification</th><th>Motif</th></tr>
+      <tr><th>Absents</th><th>Nom Pr&eacute;nom</th><th>Abs. Journ.</th><th>D&eacute;but</th><th>Fin</th><th>Type</th><th>Justification</th><th>Motif</th></tr>
 
       <?php $a = 0;
 
@@ -163,12 +163,14 @@ header('Content-Type: text/html; charset:iso-8859-1');
             $aff_justifications = AbsencesParametresHelper::AfficherListeDeroulanteJustifications($options_j);
             $options_m = array ('id'=>'idMotif'.$a, 'name'=>'_motifs['.$a.']');
             $aff_motifs = AbsencesParametresHelper::AfficherListeDeroulanteMotifs($options_m);
+            $options_t = array('id'=>'idType'.$a, 'name'=>'_types['.$a.']', 'selected'=>'1'); // par défaut, c'est le type 1 qui est sélectionné (absence)
+            $aff_types  = AbsencesParametresHelper::AfficherListeDeroulanteTypes($options_t);
 
 
             // Gestion des droits pour l'affichage
             if ($_droits == "professeur"){
-              // Pour un professeur, on n'affiche pas les motifs ni les justifications.
-              $aff_motifs = $aff_justifications = NULL;
+              // Pour un professeur, on n'affiche pas les motifs ni les justifications, ni les types.
+              $aff_motifs = $aff_justifications = $aff_types = NULL;
             }
 
       ?>
@@ -180,6 +182,7 @@ header('Content-Type: text/html; charset:iso-8859-1');
           <td><input type="checkbox" name="_jourentier[<?php echo $a; ?>]" id="j<?php echo $a; ?>" value="ok"<?php echo $aff_coche; ?> /></td>
           <td><select name="_deb[<?php echo $a; ?>]" id="decod<?php echo $a; ?>"><?php echo $aff_creneaux_deb; ?></select></td>
           <td><select name="_fin[<?php echo $a; ?>]" id="decof<?php echo $a; ?>"><?php echo $aff_creneaux_fin; ?></select></td>
+          <td><?php echo $aff_types; ?>
           <td><?php echo $aff_justifications; ?></td>
           <td><?php echo $aff_motifs; ?></td>
 

@@ -58,6 +58,7 @@ $_SESSION['msg_abs']  = isset($_SESSION['msg_abs']) ? $_SESSION['msg_abs'] : NUL
 
 // ============== Code métier ===============================
 include("lib/erreurs.php");
+include('../orm/helpers/CreneauHelper.php');
 
 
 try{
@@ -93,9 +94,9 @@ try{
         }else{
 
           $t_deb  = CreneauPeer::retrieveByPK($_deb[$a]);
-          $deb   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $t_deb->getDebutCreneau();
+          $deb    = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $t_deb->getDebutCreneau();
           $t_fin  = CreneauPeer::retrieveByPK($_fin[$a]);
-          $fin   = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $t_fin->getFinCreneau();
+          $fin    = mktime(0, 0, 0, date("m"), date("d"), date("Y")) + $t_fin->getFinCreneau();
 
         }
 
@@ -103,6 +104,20 @@ try{
         $saisie->setFinAbs($fin);
 
         if ($_last_id = $saisie->save()){
+          // Si l'enregistrement est bon et que l'utilisateur a demandé un motif et/ou une justification, on crée un traitement également
+          if (($_motifs[$a] != "0") OR ($_justifications[$a] != "0")){
+            $traitement = new AbsenceTraitement();
+            $traitement->setAMotifId($_motifs[$a]);
+            $traitement->setAJustificationId($_justifications[$a]);
+            $traitement->setATypeId($_types[$a]);
+            $traitement->save();
+
+            $join = new JTraitementSaisie();
+            $join->setASaisieId($saisie->getId());
+            $join->setATraitementId($traitement->getId());
+            $join->save();
+
+          }
           // $_last_id est donc l'id de l'enregistrement qui vient d'avoir lieu => A vérifier, il semblerait que non
           $increment++;
         }else{

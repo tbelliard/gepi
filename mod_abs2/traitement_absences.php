@@ -96,7 +96,7 @@ $titre_page = "Le traitement des absences";
 require_once("../lib/header.inc");
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
-debug_var();
+//debug_var();
 echo '
   <p>Liste des traitements en cours</p>
 <form action="traitement_absences.php" method="post">
@@ -122,24 +122,34 @@ foreach ($liste_traitements_en_cours as $traitements){
     </tr>';
   }
 
+  // La couleur des lignes est alternée
+  if (is_integer($a/2)){
+
+    $class_couleur = 'lig1';
+
+  }else{
+    $class_couleur = 'lig2';
+  }
+
+
   $_debut_abs     = 999999999999;
   $_fin_abs       = 0;
   $_id_traitement = $traitements->getId();
 
   $_type          = $traitements->getATypeId();
-  $options_type   = array('id'=>'type'.$_id_traitement, 'name'=>'type['.$a.']', 'selected'=>$_type);
+  $options_type   = array('id'=>'type'.$_id_traitement, 'name'=>'type['.$a.']', 'selected'=>$_type, 'class'=>$class_couleur);
   $aff_type       = AbsencesParametresHelper::AfficherListeDeroulanteTypes($options_type);
 
   $_motif         = $traitements->getAMotifId();
-  $options_motif  = array('id'=>'motif'.$_id_traitement, 'name'=>'motif['.$a.']', 'selected'=>$_motif);
+  $options_motif  = array('id'=>'motif'.$_id_traitement, 'name'=>'motif['.$a.']', 'selected'=>$_motif, 'class'=>$class_couleur);
   $aff_motif      = AbsencesParametresHelper::AfficherListeDeroulanteMotifs($options_motif);
 
   $_justification     = $traitements->getAJustificationId();
-  $options_justif     = array('id'=>'justif'.$_id_traitement, 'name'=>'justif['.$a.']', 'selected'=>$_justification);
+  $options_justif     = array('id'=>'justif'.$_id_traitement, 'name'=>'justif['.$a.']', 'selected'=>$_justification, 'class'=>$class_couleur);
   $aff_justification  = AbsencesParametresHelper::AfficherListeDeroulanteJustifications($options_justif);
 
   $_action        = $traitements->getAActionId();
-  $options_action = array('id'=>'action'.$_id_traitement, 'name'=>'action['.$a.']', 'selected'=>$_action);
+  $options_action = array('id'=>'action'.$_id_traitement, 'name'=>'action['.$a.']', 'selected'=>$_action, 'class'=>$class_couleur);
   $aff_action     = AbsencesParametresHelper::AfficherListeDeroulanteActions($options_action);
 
   foreach($traitements->getJTraitementSaisies() as $saisies){
@@ -163,7 +173,7 @@ foreach ($liste_traitements_en_cours as $traitements){
   }
 
   echo'
-    <tr>
+    <tr class="'.$class_couleur.'">
       <td>'.$_nom . ' ' . $_prenom . '<input type="hidden" name="traite['.$a.']" value="'.$_id_traitement.'" /></td>
       <td>' . date("d/m/Y H:i", $_debut_abs) . ' - ' .date("d/m/Y H:i", $_fin_abs) . '</td>
       <td>'.$aff_type.'</td>

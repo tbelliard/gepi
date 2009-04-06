@@ -43,8 +43,9 @@ class AbsencesParametresHelper {
     $_id        = isset($options["id"]) ? $options["id"] : 'idTypes';
     $_name      = isset($options["name"]) ? $options["name"] : 'nametypes';
     $_selected  = isset($options["selected"]) ? $options["selected"] : '';
+    $_class     = isset($options["class"]) ? ' class="'.$options["class"].'"' : '';
 
-    $retour = '<select id="'.$_id.'" name="'.$_name.'">'."\n";
+    $retour = '<select id="'.$_id.'" name="'.$_name.'"'.$_class.'>'."\n";
     $retour .= '<option value="0">---</option>'."\n";
     foreach($liste as $type){
       $aff_selected = '';
@@ -73,8 +74,9 @@ class AbsencesParametresHelper {
     $_id        = isset($options["id"]) ? $options["id"] : 'idMotifs';
     $_name      = isset($options["name"]) ? $options["name"] : 'namemotifs';
     $_selected  = isset($options["selected"]) ? $options["selected"] : '';
+    $_class     = isset($options["class"]) ? ' class="'.$options["class"].'"' : '';
 
-    $retour = '<select id="'.$_id.'" name="'.$_name.'">'."\n";
+    $retour = '<select id="'.$_id.'" name="'.$_name.'"'.$_class.'>'."\n";
     $retour .= '<option value="0">---</option>'."\n";
     foreach($liste as $type){
       $aff_selected = '';
@@ -103,8 +105,9 @@ class AbsencesParametresHelper {
     $_id        = isset($options["id"]) ? $options["id"] : 'idJustif';
     $_name      = isset($options["name"]) ? $options["name"] : 'namejustif';
     $_selected  = isset($options["selected"]) ? $options["selected"] : '';
+    $_class     = isset($options["class"]) ? ' class="'.$options["class"].'"' : '';
 
-    $retour = '<select id="'.$_id.'" name="'.$_name.'">'."\n";
+    $retour = '<select id="'.$_id.'" name="'.$_name.'"'.$_class.'>'."\n";
     $retour .= '<option value="0">---</option>'."\n";
     foreach($liste as $type){
       $aff_selected = '';
@@ -133,8 +136,9 @@ class AbsencesParametresHelper {
     $_id        = isset($options["id"]) ? $options["id"] : 'idAction';
     $_name      = isset($options["name"]) ? $options["name"] : 'nameaction';
     $_selected  = isset($options["selected"]) ? $options["selected"] : '';
+    $_class     = isset($options["class"]) ? ' class="'.$options["class"].'"' : '';
 
-    $retour = '<select id="'.$_id.'" name="'.$_name.'">'."\n";
+    $retour = '<select id="'.$_id.'" name="'.$_name.'"'.$_class.'>'."\n";
     $retour .= '<option value="0">---</option>'."\n";
     foreach($liste as $type){
       $aff_selected = '';

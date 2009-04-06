@@ -42,11 +42,12 @@ if ($resultat_session == 'c') {
 //debug_var();
 
 // ========================== VARIABLES ================================ //
-$fusionner  = isset($_POST["fusionner"]) ? $_POST["fusionner"] : NULL;
-$_fusion    = isset($_POST["fusion"]) ? $_POST["fusion"] : NULL;
-$_ordre     = isset($_POST["ordre"]) ? $_POST["ordre"] : NULL;
-$aff_fusion = NULL;
-$retour_aff = NULL;
+$fusionner    = isset ($_POST["fusionner"]) ? $_POST["fusionner"] : NULL;
+$_fusion      = isset ($_POST["fusion"]) ? $_POST["fusion"] : NULL;
+$_fusionHier  = isset ($_POST["fusionHier"]) ? $_POST["fusionHier"] : NULL;
+$_ordre       = isset ($_POST["ordre"]) ? $_POST["ordre"] : NULL;
+$aff_fusion   = NULL;
+$retour_aff   = NULL;
 
 // ========================== Code métier ============================== //
 // ============== Code métier ===============================
@@ -63,56 +64,62 @@ try{
 
   }
 
-}catch(exception $e){
-  affExceptions($e);
-}
 
-
-
-//echo '
-//  <p>'. $aff_fusion . '</p>
-//  <p><a href="suivi_absences.php?ordre='.$_ordre.'">RETOUR</a></p>';
 
   $test = $saisies[0]->getEleveId(); // On prend le premier élève et on vérifiera les autres dans la boucle foreach
 
-  $traite_test = new AbsenceTraitement();
-  $traite_test->setUtilisateurId($_SESSION["login"]);
-  $traite_test->setCreatedOn(date("U"));
-  $traite_test->save();
-  $_idTraitement = $traite_test->getId();
-
-foreach($saisies as $saisie){
-
-  if ($saisie->getEleveId() == $test){
-
-    $join = new JTraitementSaisie();
-    $join->setATraitementId($_idTraitement);
-    $join->setASaisieId($saisie->getId());
-
-    $retour_aff .= 'La saisie de ' . $saisie->getEleve()->getNom() . ' du ' . date("d/m/Y H:i", $saisie->getDebutAbs()) . ' &agrave; ' . date("d/m/Y H:i", $saisie->getFinAbs()) . ' est fusionn&eacute;e<br />';
+  if ($_fusionHier[0] == 'ok'){
+    // On fusionne tout le groupe avec le traitement existant le plus récent
+    $c = new Criteria();
+    $c->add(AbsenceSaisiePeer::ELEVE_ID, $test, Criteria::EQUAL);
+    $c->addDescendingOrderByColumn(AbsenceSaisiePeer::FIN_ABS);
+    $traite_test = JTraitementSaisiePeer::doSelectJoinAbsenceSaisie($c);
+    $_idTraitement = $traite_test[0]->getATraitementId(); // On renvoie le premier de la liste qui est
 
   }else{
-
-    $retour_aff .= 'Cette saisie ' . $saisie->getId(). ' ne peut &ecirc;tre fusionn&eacute;e car ce n\'est pas le m&ecirc;me él&egrave;ve <br />';
-
+    // sinon on crée un nouveau traitement
+    $traite_test = new AbsenceTraitement();
+    $traite_test->setUtilisateurId($_SESSION["login"]);
+    $traite_test->setCreatedOn(date("U"));
+    $traite_test->save();
+    $_idTraitement = $traite_test->getId();
   }
 
-  if ($join->save()){
-    $_SESSION["msg_fusions"] = $retour_aff;
-    header("Location:suivi_absences.php?ordre=".$_ordre);
-  }else{
+  foreach($saisies as $saisie){
 
-    //**************** EN-TETE *********************
-    $javascript_specifique = "mod_abs2/lib/absences_ajax";
-    $style_specifique = "mod_abs2/lib/abs_style";
-    $utilisation_win = 'oui';
-    $titre_page = "Fusionner des absences";
-    require_once("../lib/header.inc");
-    require("lib/abs_menu.php");
-    //**************** FIN EN-TETE *****************
-    echo '<p>IMPOSSIBLE de fusionner les saisies</p>' . $retour_aff;
+    if ($saisie->getEleveId() == $test){
 
+      $join = new JTraitementSaisie();
+      $join->setATraitementId($_idTraitement);
+      $join->setASaisieId($saisie->getId());
+
+      $retour_aff .= 'La saisie de ' . $saisie->getEleve()->getNom() . ' du ' . date("d/m/Y H:i", $saisie->getDebutAbs()) . ' &agrave; ' . date("d/m/Y H:i", $saisie->getFinAbs()) . ' est fusionn&eacute;e<br />';
+
+    }else{
+
+      $retour_aff .= 'Cette saisie ' . $saisie->getId(). ' ne peut &ecirc;tre fusionn&eacute;e car ce n\'est pas le m&ecirc;me él&egrave;ve <br />';
+
+    }
+
+    if ($join->save()){
+      $_SESSION["msg_fusions"] = $retour_aff;
+      header("Location:suivi_absences.php?ordre=".$_ordre);
+    }else{
+
+      //**************** EN-TETE *********************
+      $javascript_specifique = "mod_abs2/lib/absences_ajax";
+      $style_specifique = "mod_abs2/lib/abs_style";
+      $utilisation_win = 'oui';
+      $titre_page = "Fusionner des absences";
+      require_once("../lib/header.inc");
+      require("lib/abs_menu.php");
+      //**************** FIN EN-TETE *****************
+      echo '<p>IMPOSSIBLE de fusionner les saisies</p>' . $retour_aff;
+      require_once("../lib/footer.inc.php");
+
+    }
   }
-  
+}catch(exception $e){
+  affExceptions($e);
 }
-require_once("../lib/footer.inc.php"); ?>
+?>
