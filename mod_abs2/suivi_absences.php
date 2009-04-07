@@ -112,7 +112,7 @@ try{
 $javascript_specifique = "mod_abs2/lib/absences_ajax";
 $style_specifique = "mod_abs2/lib/abs_style";
 $utilisation_win = 'oui';
-$titre_page = "Les absences";
+$titre_page = "Le suivi des saisies";
 require_once("../lib/header.inc");
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************

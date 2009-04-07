@@ -43,16 +43,19 @@ if ($resultat_session == 'c') {
     die();
 };
 //debug_var();
-// ============== traitement des variables ==================
+
+// ========================== traitement des variables ======================================
 $_enregistrer = isset($_POST["enregistrer"]) ? $_POST["enregistrer"] : NULL;
-$_traite       = isset($_POST["traite"]) ? $_POST["traite"] : NULL;
-$_type         = isset($_POST["type"]) ? $_POST["type"] : NULL;
-$_motif        = isset($_POST["motif"]) ? $_POST["motif"] : NULL;
-$_justif       = isset($_POST["justif"]) ? $_POST["justif"] : NULL;
-$_action       = isset($_POST["action"]) ? $_POST["action"] : NULL;
+$_traite      = isset($_POST["traite"]) ? $_POST["traite"] : NULL;
+$_type        = isset($_POST["type"]) ? $_POST["type"] : NULL;
+$_motif       = isset($_POST["motif"]) ? $_POST["motif"] : NULL;
+$_justif      = isset($_POST["justif"]) ? $_POST["justif"] : NULL;
+$_action      = isset($_POST["action"]) ? $_POST["action"] : NULL;
+$_supprimer   = isset($_POST["supprimer"]) ? $_POST["supprimer"] : NULL;
+$_periode_active = '1';
 
 
-// ============== Code métier ===============================
+// ============================ Code métier =================================================
 include("lib/erreurs.php");
 include("../orm/helpers/CreneauHelper.php");
 include("../orm/helpers/AbsencesParametresHelper.php");
@@ -60,17 +63,52 @@ include("../orm/helpers/AbsencesParametresHelper.php");
 
 try{
 
+  // On détermine la période active
+
+
   if ($_enregistrer == 'Enregistrer'){
     // On revoit tous les traitements pour les mettre à jour
     $nbre = count($_traite);
     for($i = 0 ; $i < $nbre ; $i++){
-      $traitement = AbsenceTraitementPeer::retrieveByPK($_traite[$i]);
-      $traitement->setATypeId($_type[$i]);
-      $traitement->setAMotifId($_motif[$i]);
-      $traitement->setAJustificationId($_justif[$i]);
-      $traitement->setAActionId($_action[$i]);
-      $traitement->save();
-    }
+      if (isset($_supprimer[$i]) AND $_supprimer[$i] != "0"){
+
+        // On traite ce qui est demandé :
+        // S = supprimer le traitement en faisant en sorte qu'il disparaisse (les saisies également)
+        // D = Défusionner en faisant disparaitre le traitement (mais en conservant les saisies)
+        if ($_supprimer[$i] == "S"){
+
+          // Donc ces saisies seront toujours stockées dans la base, rattachées à un traitement qui n'existe plus
+          // Donc elles ne sont plus visibles dans le suivi des saisies mais continuent d'être stockées dans la base
+          $traitement = AbsenceTraitementPeer::retrieveByPK($_traite[$i]);
+          $traitement->delete();
+
+        }elseif($_supprimer[$i] == "D"){
+
+          // On fait la même chose mais on supprime également les entrées dans la table j_traitements_saisies
+          $traitement = AbsenceTraitementPeer::retrieveByPK($_traite[$i]);
+          $traitement->delete();
+          $criteria = new Criteria();
+          $criteria->add(JTraitementSaisiePeer::A_TRAITEMENT_ID, $_traite[$i], Criteria::EQUAL);
+          $joinTraitement = JTraitementSaisiePeer::doSelect($criteria);
+          foreach ($joinTraitement as $join){
+            $delete_join = $join->delete();
+          }
+
+        }
+
+      }else{
+
+        // On met à jour les traitements qui ne sont pas supprimés
+        $traitement = AbsenceTraitementPeer::retrieveByPK($_traite[$i]);
+        $traitement->setUtilisateurId($_SESSION["login"]);
+        $traitement->setATypeId($_type[$i]);
+        $traitement->setAMotifId($_motif[$i]);
+        $traitement->setAJustificationId($_justif[$i]);
+        $traitement->setAActionId($_action[$i]);
+        $traitement->save();
+
+      }
+    } // fin du for($i...
   }
 
   // On récupère toutes les absences dont le traitement n'est pas clos
@@ -97,9 +135,14 @@ require_once("../lib/header.inc");
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
-echo '
-  <p>Liste des traitements en cours</p>
+  echo '
+    <div id="idAidAbs" style="display: none; position: absolute; background-color: gray; color: white; width: 600px;">
+    Si vous voulez supprimer un traitement, les saisies li&eacute;es seront supprim&eacute;es également (mais elles seront conserv&eacute;es dans la base tout de m&ecirc;me).
+     Si vous voulez d&eacute;fusionner un traitement, le traitement sera effac&eacute; mais les saisies seront disponibles dans le <a href="suivi_absences.php">suivi</a>.
+    </div>
+    <p>Liste des traitements en cours - aide [F2] - </p>
 <form action="traitement_absences.php" method="post">
+<div style="padding: 10px 10px 10px 10px; background-color: #AAEEAA;">
 <table id="table_liste_absents">
   <tr>
     <th>Eleve</th>
@@ -108,6 +151,7 @@ echo '
     <th>Motif</th>
     <th>Justification</th>
     <th>Action</th>
+    <th>Suppr.</th>
   </tr>';
 
 $a = 0; // incrémenteur
@@ -118,7 +162,7 @@ foreach ($liste_traitements_en_cours as $traitements){
     echo '
     <tr>
       <td colspan="5">Valider toutes les modifications</td>
-      <td style="background-color: red;"><input type="submit" name="enregistrer" value="Enregistrer" /></td>
+      <td colspan="2" style="background-color: red;"><input type="submit" name="enregistrer" value="Enregistrer" /></td>
     </tr>';
   }
 
@@ -152,6 +196,13 @@ foreach ($liste_traitements_en_cours as $traitements){
   $options_action = array('id'=>'action'.$_id_traitement, 'name'=>'action['.$a.']', 'selected'=>$_action, 'class'=>$class_couleur);
   $aff_action     = AbsencesParametresHelper::AfficherListeDeroulanteActions($options_action);
 
+  $aff_supprimer  = '
+                    <select name="supprimer['.$a.']" class="'.$class_couleur.'">
+                      <option value="0">---</option>
+                      <option value="D" title="D&eacute;fusionner ce traitement">Défus.</option>
+                      <option value="S" title="Supprimer ce traitement">Suppr.</option>
+                    </select>';
+
   foreach($traitements->getJTraitementSaisies() as $saisies){
 
     // On teste sur le début de l'absence
@@ -169,17 +220,30 @@ foreach ($liste_traitements_en_cours as $traitements){
     // les saisies liées à ce traitement
     $_nom     = $saisies->getAbsenceSaisie()->getEleve()->getNom();
     $_prenom  = $saisies->getAbsenceSaisie()->getEleve()->getPrenom();
+    /**
+     * @TODO : Il faudra s'assurer de renvoyer le nom de la classe de la bonne période
+     * Ici, c'est la première qui est renvoyée
+     */
+    $classes  = $saisies->getAbsenceSaisie()->getEleve()->getJELeveClasses();
+    $_classe = 'inc.';
+    foreach ($classes as $classe){
+      // On recherche la bonne classe par rapport à la periode
+      if ($classe->getPeriode() == $_periode_active){
+        $_classe  = $classe->getClasse()->getNomComplet();
+      }
+    }
 
   }
 
   echo'
     <tr class="'.$class_couleur.'">
-      <td>'.$_nom . ' ' . $_prenom . '<input type="hidden" name="traite['.$a.']" value="'.$_id_traitement.'" /></td>
+      <td>'.$_nom . ' ' . $_prenom . ' ( '.$_classe.' )<input type="hidden" name="traite['.$a.']" value="'.$_id_traitement.'" /></td>
       <td>' . date("d/m/Y H:i", $_debut_abs) . ' - ' .date("d/m/Y H:i", $_fin_abs) . '</td>
       <td>'.$aff_type.'</td>
       <td>'.$aff_motif.'</td>
       <td>'.$aff_justification.'</td>
       <td>'.$aff_action.'</td>
+      <td>'.$aff_supprimer.'</td>
     </tr>';
 
   $a++; // On incrémente
@@ -190,6 +254,7 @@ foreach ($liste_traitements_en_cours as $traitements){
 
 echo '
   </table>
+</div>
 </form>';
 
 ?>

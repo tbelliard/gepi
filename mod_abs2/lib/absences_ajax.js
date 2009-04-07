@@ -48,15 +48,21 @@ function gestionaffAbs(id, reglage, url){
   var test = reglage.split("||");
   var nbre = test.length;
   var info='';
+  var ordre='';
   if (nbre > 1){
     for(i=0 ; i<nbre ; i++){
-      var info = info+$F(test[i])+'||';
+      info = info+$F(test[i])+'||';
     }
   }else{
-    var info = $F(reglage);
+    info = $F(reglage);
+  }
+  if (url == 'parametrage_ajax.php'){
+    var ordre = $F('idOrder');
+  }else{
+    var ordre = '0';
   }
 	o_options = new Object();
-	o_options = {postBody: '_id='+info+'&type='+reglage, onComplete:afficherDiv(id)};
+	o_options = {postBody: '_id='+info+'&type='+reglage+'&ordre='+ordre, onComplete:afficherDiv(id)};
 	var laRequete = new Ajax.Updater(elementHTML,url,o_options);
 }
 function afficherDiv(id){Element.show(id);}

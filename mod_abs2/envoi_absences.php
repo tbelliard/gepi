@@ -23,8 +23,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-$utiliser_pdo = 'on';
-//error_reporting(0);
 // Initialisation des feuilles de style après modification pour améliorer l'accessibilité
 $accessibilite="y";
 
@@ -45,7 +43,7 @@ if ($resultat_session == 'c') {
 $action = isset($_POST['action']) ? $_POST['action'] : NULL;
 
 // ============== Code métier ===============================
-include("classes/courrier_ooo.class.php");
+include("classes/odtphp_0_3/odf.php");
 include("lib/erreurs.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
 
@@ -59,13 +57,13 @@ try{
 
 
 
-  if ($action == "odt") {
-    $odf = new odfDoc("test.odt");
-    $odf->setVars("{titre1}", "Premier titre pour voir ;)");
-    $odf->setVars("{titre2}", "deuxième titre avec un accent pour voir aussi");
-    $odf->save("fichierResultat.odt");
-    $odf->versNavigateur();
-  }
+  //if ($action == "odt") {
+    $odf = new odf("modeles/test.odt");
+    $odf->setVars('titre','premier titre de remplacement');
+    $odf->setVars('contenu',"texte sur plusieurs lignes mais va comprendre");
+    // On exporte le fichier
+    $odf->exportAsAttachedFile('un_nom_c_est_mieux.odt');
+  //}
 
 
 }catch(exception $e){
@@ -79,7 +77,7 @@ require("lib/abs_menu.php");
 
 //aff_debug($eleves[0]->getResponsableInformations());
 $responsable = $eleves[0]->getResponsableInformations();
-aff_debug($responsable[0]->getResponsableEleve()->getResponsableEleveAdresse());
+//aff_debug($responsable[0]->getResponsableEleve()->getResponsableEleveAdresse());
 echo '
     L\'élève ' . $eleves[0]->getNom() . ' ' . $eleves[0]->getPrenom() . '<br />
 Dont le responsable 1 est : ' . $responsable[0]->getResponsableEleve()->getNom() . ' ' . $responsable[0]->getResponsableEleve()->getPrenom() . '

@@ -47,6 +47,7 @@ $_eleve               = isset($_POST['_eleve']) ? $_POST['_eleve'] : NULL;
 $_jourentier          = isset($_POST["_jourentier"]) ? $_POST["_jourentier"] : NULL;
 $_deb                 = isset($_POST['_deb']) ? $_POST['_deb'] : NULL;
 $_fin                 = isset($_POST['_fin']) ? $_POST['_fin'] : NULL;
+$_types               = isset($_POST["_types"]) ? $_POST["_types"] : NULL;
 $_justifications      = isset($_POST['_justifications']) ? $_POST['_justifications'] : NULL;
 $_motifs              = isset($_POST['_motifs']) ? $_POST['_motifs'] : NULL;
 $nombre               = isset($_POST['nombre']) ? $_POST['nombre'] : NULL;

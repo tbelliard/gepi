@@ -44,6 +44,7 @@ if ($resultat_session == 'c') {
 $type_req = isset($_POST["type"]) ? $_POST["type"] : NULL;
 $_table = $_champ = NULL;
 $_id = isset($_POST["_id"]) ? $_POST["_id"] : NULL;
+$_ordre = (isset($_POST["ordre"]) AND is_numeric($_POST["ordre"])) ? $_POST["ordre"] : NULL;
 $_classe = $tout = NULL;
 $ajouter = $modifier = $effacer = NULL;
 $del = false;
@@ -108,8 +109,8 @@ try{
     $_objet = ($_classe !== NULL) ? new $_classe : NULL;
 
     // On est dans le cas d'une demande d'ajout dans la base
-    $_objet->setNom($_id);
-    $_objet->setOrdre('0');
+    $_objet->setNom(utf8_decode($_id));
+    $_objet->setOrdre($_ordre);
 
     if ($_objet->save()) {
       $ajouter = 'ok';
@@ -147,7 +148,7 @@ try{
 
   /******************* LISTER ******************************/
       $c = new Criteria();
-      $c->addDescendingOrderByColumn('ordre');
+      $c->addAscendingOrderByColumn('ordre');
   switch($type_req){
     case 'types':
     $tout = AbsenceTypePeer::doSelect($c);
