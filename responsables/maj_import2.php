@@ -4465,6 +4465,14 @@ else{
 				$sql="TRUNCATE TABLE tempo2;";
 				$res0=mysql_query($sql);
 
+				//=======================================================
+				// STOCKAGE DES pers_id DISPARUS DE temp_resp_pers_import
+				$sql="insert into tempo2 SELECT rp.pers_id,rp.pers_id FROM resp_pers rp WHERE rp.pers_id NOT IN (SELECT pers_id FROM temp_resp_pers_import);";
+				$insert=mysql_query($sql);
+				$sql="UPDATE tempo2 SET col1='pers_id_disparu';";
+				$update=mysql_query($sql);
+				//=======================================================
+
 				$sql="SELECT pers_id FROM temp_resp_pers_import WHERE statut='nouveau' OR statut='modif';";
 				//echo "$sql<br />";
 				$res2=mysql_query($sql);
@@ -4474,6 +4482,7 @@ else{
 						$insert=mysql_query($sql);
 					}
 				}
+
 				info_debug("fin du remplissage de tempo2");
 
 				echo "<input type='hidden' name='step' value='14' />\n";
@@ -4630,9 +4639,69 @@ else{
 
 
 			break;
-		case 14:
+
+		/*
+		// INSERER A CE NIVEAU DES TESTS SUPPLEMENTAIRES
+		case "13b":
+			// 20090331
+
+			// Remplir une table temporaire avec les membres de resp_pers et chercher s'ils sont toujours dans temp_resp_pers
+			// S'ils n'y sont pas, les noter comme 'suppr' ou 'disparu' dans 
+			//$sql="UPDATE temp_resp_pers_import SET statut='disparu' WHERE pers_id='$lig->pers_id';";
+
+			//Boucle sur $cpt avec
+			//$sql="SELECT pers_id FROM resp_pers LIMIT $cpt,20";
+			// Et remplir une table temporaire... puis passer en revue la table temporaire
+
+			// Ou:
+			// INSERT INTO tempo3 SELECT pers_id FROM resp_pers;
+			// Ou s'il faut plusieurs champs dans tempo3:
+			// INSERT INTO tempo3 SELECT pers_id,autre_champ FROM resp_pers;
+			// Et si le pers_id n'est pas dans temp_resp_pers, inscrire dans tempo2 pers_id,$pers_id et quand on ne trouve pas le pers_id par la sutie dans temp_resp_pers, c'est qu'on a une suppression... ou stocker plus précisément l'info ailleurs
+			// Conserver les infos dans la table tempo3 (vider au fur et à mesure la table tempo3 quand le pers_id est dans temp_resp_pers
+
+			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//==============================
+
+			if(!isset($_POST['cpt'])) {
+				//$sql="INSERT INTO tempo3 SELECT pers_id,autre_champ FROM resp_pers;";
+				$cpt=0;
+			}
+			else {
+				$cpt=$_POST['cpt'];
+				//$sql="SELECT "
+			}
+
+			$sql="SELECT pers_id FROM resp_pers LIMIT $cpt,100";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				while($lig=mysql_fetch_object($res)) {
+
+
+				}
+			}
+			else {
+				// FIN DU PARCOURS
+			}
+
+
+
+
+			$cpt+=100;
+			echo "<input type='hidden' name='cpt' value='$cpt' />\n";
+
+			echo "</form>\n";
+			break;
+		*/
+
+
+		case "14":
 			// DEBUG:
 			//echo "step=$step<br />";
+			//debug_var();
 
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
@@ -4727,7 +4796,14 @@ else{
 				}
 				else{
 					//echo "<input type='hidden' name='step' value='a15' />\n";
-					echo "<input type='hidden' name='step' value='15' />\n";
+					$sql="SELECT 1=1 FROM tempo2 WHERE col1='pers_id_disparu' LIMIT 1;";
+					$test=mysql_query($sql);
+					if (mysql_num_rows($test)>0) {
+						echo "<input type='hidden' name='step' value='14b' />\n";
+					}
+					else {
+						echo "<input type='hidden' name='step' value='15' />\n";
+					}
 					echo "<p><input type='submit' value='Effectuer un nettoyage avant affichage des différences' /></p>\n";
 				}
 
@@ -4864,6 +4940,215 @@ else{
 
 			break;
 
+
+		// 20090331
+		// INSERER LA LE CONTROLE DES col1=pers_id_disparu DANS tempo2
+		case "14b":
+			// A l'étape précédente passer à 14b s'il y a des col1=pers_id_disparu  et passer à 15 sinon
+			echo "<h2>Import/mise à jour des responsables</h2>\n";
+
+			info_debug("=========================================================");
+			info_debug("Etape 14b.");
+
+			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//echo "<input type='hidden' name='step' value='15' />\n";
+			echo "<input type='hidden' name='step' value='14c' />\n";
+			//==============================
+
+			$sql="SELECT col2 FROM tempo2 WHERE col1='pers_id_disparu';";
+			$test=mysql_query($sql);
+			$nb_disparus=mysql_num_rows($test);
+
+			echo "<p>$nb_disparus responsables présents dans votre table 'resp_pers' ne sont plus présents dans Sconet.<br />Vous allez devoir décider si vous souhaitez conserver ces responsables ou si vous voulez les supprimer de votre base.</p>\n";
+
+			echo "<table class='boireaus' summary='Tableau des responsables disparus de Sconet'>\n";
+
+			$ligne_entete_tableau="<tr>\n";
+			$ligne_entete_tableau.="<td style='text-align: center; font-weight: bold;'>Supprimer<br />\n";
+
+			$ligne_entete_tableau.="<a href=\"javascript:modifcase('coche')\">";
+			$ligne_entete_tableau.="<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
+			$ligne_entete_tableau.=" / ";
+			$ligne_entete_tableau.="<a href=\"javascript:modifcase('decoche')\">";
+			$ligne_entete_tableau.="<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			$ligne_entete_tableau.="</td>\n";
+
+			$ligne_entete_tableau.="<td style='text-align:center; font-weight: bold;'>Statut</td>\n";
+
+			$ligne_entete_tableau.="<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>pers_id</td>\n";
+			$ligne_entete_tableau.="<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Nom</td>\n";
+			$ligne_entete_tableau.="<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Prénom</td>\n";
+			$ligne_entete_tableau.="<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Civilité</td>\n";
+
+			$ligne_entete_tableau.="<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>Responsable de</td>\n";
+			$ligne_entete_tableau.="</tr>\n";
+
+			// Entête du tableau:
+			echo $ligne_entete_tableau;
+
+			$alt=1;
+			$cpt=0;
+			//echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />";
+			while($lig1=mysql_fetch_object($test)){
+				$pers_id=$lig1->col2;
+
+				$sql="SELECT * FROM resp_pers WHERE pers_id='$pers_id'";
+				$res_pers1=mysql_query($sql);
+				if(mysql_num_rows($res_pers1)==0){
+					// CA NE DEVRAIT PAS ARRIVER
+					echo "<tr style='color:red;'><td colspan='7'>Anomalie: Aucun responsable ne correspond à pers_id=$pers_id</td></tr>\n";
+				}
+				else{
+					$lig_pers1=mysql_fetch_object($res_pers1);
+
+					$nom1=$lig_pers1->nom;
+					$prenom1=$lig_pers1->prenom;
+					$civilite1=$lig_pers1->civilite;
+
+					$adr_id1=$lig_pers1->adr_id;
+
+					$alt=$alt*(-1);
+					$ligne_parent="<tr class='lig$alt'>\n";
+	
+					$ligne_parent.="<td style='text-align: center;'>\n";
+					$ligne_parent.="<input type='checkbox' id='check_".$cpt."' name='valid_pers_id[]' value='$pers_id' />\n";
+					$ligne_parent.="<input type='hidden' name='liste_pers_id[]' value='$pers_id' />\n";
+					$ligne_parent.="</td>\n";
+
+					$ligne_parent.="<td>Disparu</td>\n";
+	
+					$ligne_parent.="<td style='text-align:center;'><a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a>";
+					$ligne_parent.="</td>\n";
+		
+					$ligne_parent.="<td>";
+					$ligne_parent.=stripslashes($nom1);
+					$ligne_parent.="</td>\n";
+	
+					$ligne_parent.="<td>";
+					$ligne_parent.=stripslashes($prenom1);
+					$ligne_parent.="</td>\n";
+
+					$ligne_parent.="<td>";
+					$ligne_parent.=ucfirst($civilite1);
+					$ligne_parent.="</td>\n";
+
+					$ligne_parent.="<td>\n";
+					$sql="SELECT e.login, e.nom, e.prenom, r.resp_legal FROM eleves e, responsables2 r WHERE r.pers_id='$pers_id' AND r.ele_id=e.ele_id ORDER BY e.prenom;";
+					//$ligne_parent.="$sql<br />";
+					$res_ele=mysql_query($sql);
+					if(mysql_num_rows($res_ele)==0) {
+						//$ligne_parent.="&nbsp;\n";
+						$ligne_parent.="<span style='color:red;'>X</span>\n";
+					}
+					else {
+						$cpt_tmp=0;
+						while($lig2=mysql_fetch_object($res_ele)){
+							if($cpt_tmp>0) {$ligne_parent.="<br />\n";}
+							$tmp_classes=get_class_from_ele_login($lig2->login);
+							if(isset($tmp_classes['liste'])) {
+								$info_classe=$tmp_classes['liste'];
+							}
+							else {
+								$info_classe='Aucune classe';
+							}
+							if($lig2->resp_legal==0) {$ligne_parent.="<span style='font-size:x-small;'>";}
+							$ligne_parent.="$lig2->nom $lig2->prenom (".$info_classe.")";
+							if($lig2->resp_legal==0) {$ligne_parent.="</span>";}
+							$cpt_tmp++;
+						}
+					}
+					$ligne_parent.="</td>\n";
+	
+					$ligne_parent.="</tr>\n";
+
+					echo $ligne_parent;
+
+				}
+
+				$cpt++;
+			}
+
+			echo $ligne_entete_tableau;
+
+			echo "</table>\n";
+
+			echo "<script type='text/javascript'>
+	function modifcase(mode){
+		for(i=0;i<$cpt;i++){
+			if(document.getElementById('check_'+i)){
+				if(mode=='coche'){
+					document.getElementById('check_'+i).checked=true;
+				}
+				else{
+					document.getElementById('check_'+i).checked=false;
+				}
+			}
+		}
+	}
+</script>\n";
+
+			echo "<p><input type='submit' value='Supprimer les personnes cochées et passer à la suite' /></p>\n";
+
+			echo "</form>\n";
+			break;
+
+		case "14c":
+			// 20090401
+			// EFFECTUER LES SUPPRESSIONS COCHEES EN SUPRIMANT DANS resp_pers et responsables2
+
+			//debug_var();
+
+			$valid_pers_id=isset($_POST['valid_pers_id']) ? $_POST['valid_pers_id'] : NULL;
+
+			if(is_array($valid_pers_id)) {
+
+				for($i=0;$i<count($valid_pers_id);$i++) {
+					$sql="SELECT nom, prenom, civilite FROM resp_pers WHERE pers_id='".$valid_pers_id[$i]."';";
+					$res=mysql_query($sql);
+					if(mysql_num_rows($res)==0) {
+						echo "<p style='color:red;'>Le responsable n°".$valid_pers_id[$i]." n'existe pas.</p>\n";
+					}
+					else {
+						$lig=mysql_fetch_object($res);
+						echo "<p>Suppression du responsable n°".$valid_pers_id[$i].": $lig->civilite ".strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)).":<br />\n";
+						// Supprimer les responsabilités
+						echo "Suppression des responsabilités: ";
+						$sql="DELETE FROM responsables2 WHERE pers_id='".$valid_pers_id[$i]."';";
+						//echo "$sql<br />\n";
+						if(mysql_query($sql)) {echo "<span style='color:green;'>OK</span>";} else {echo "<span style='color:red;'>ERREUR</span>";}
+
+						echo "<br />\n";
+
+						// Supprimer la personne
+						echo "Suppression de la personne de la base: ";
+						$sql="DELETE FROM resp_pers WHERE pers_id='".$valid_pers_id[$i]."';";
+						//echo "$sql<br />\n";
+						if(mysql_query($sql)) {echo "<span style='color:green;'>OK</span>";} else {echo "<span style='color:red;'>ERREUR</span>";}
+
+						echo "</p>\n";
+					}
+				}
+
+			}
+			else {
+				echo "<p>Aucune suppression n'a été répercutée dans la base.</p>\n";
+			}
+
+			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//echo "<input type='hidden' name='step' value='15' />\n";
+			echo "<input type='hidden' name='step' value='15' />\n";
+			//==============================
+			echo "<p><input type='submit' value='Suite' /></p>\n";
+			echo "</form>\n";
+
+			break;
+
 		case "15":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
@@ -4925,7 +5210,7 @@ else{
 
 			echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
 
-			echo "<p><input type='checkbox' name='ne_pas_proposer_redoublonnage_adresse' id='ne_pas_proposer_redoublonnage_adresse' value='y' /><label for='ne_pas_proposer_redoublonnage_adresse' style='cursor:pointer;'> Ne pas proposer de rétablir des doublons d'adresses identiques avec identifiant différent pour des parents qui conservent la même adresse.</label></p>\n";
+			echo "<p><input type='checkbox' name='ne_pas_proposer_redoublonnage_adresse' id='ne_pas_proposer_redoublonnage_adresse' value='y' checked='true' /><label for='ne_pas_proposer_redoublonnage_adresse' style='cursor:pointer;'> Ne pas proposer de rétablir des doublons d'adresses identiques avec identifiant différent pour des parents qui conservent la même adresse.</label></p>\n";
 
 			echo "</form>\n";
 
@@ -6954,7 +7239,7 @@ else{
 			else{
 				//echo "<input type='hidden' name='step' value='19' />\n";
 				echo "<input type='hidden' name='step' value='20' />\n";
-
+/*
 				echo "<p>Nettoyage des tables temporaires: ";
 				unset($liste_tab_del);
 				$liste_tab_del=array("temp_ele_classe", "temp_gep_import2", "temp_resp_adr_import", "temp_resp_pers_import", "temp_responsables2_import", "tempo2");
@@ -6969,7 +7254,7 @@ else{
 					}
 				}
 				echo "</p>\n";
-
+*/
 
 				$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
 				$test=mysql_query($sql);
@@ -7003,6 +7288,10 @@ else{
 			break;
 		//case 19:
 		case 20:
+			echo "A FAIRE: Lister les associations de responsables2 qui ne sont plus dans temp_resp...<br />Il faudrait faire de même à la fin des recherches sur resp_pers, resp_adr et eleves.";
+
+			break;
+		case 21:
 			echo "<h2>THE END ?</h2>\n";
 			break;
 	}
