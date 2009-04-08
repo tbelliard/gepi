@@ -82,10 +82,11 @@ echo "<br><br>";
 //fin affichage des groupes
 
 if(getSettingValue('cahier_texte_acces_public')!='no'){
-	echo "<a href='../public/index.php?id_groupe=" . $current_group->getId() ."' target='_blank'>Visualiser le cahier de textes en accès public</a>\n<br><br>";
+	echo "<a href='../public/index.php?id_groupe=" . $current_group->getId() ."' target='_blank'>Visualiser le cahier de textes en accès public</a>\n<br>";
 } else {
-	echo "<a href='./see_all.php'>Visualiser les cahiers de textes (accès restreint)</a>\n<br><br>";
+	echo "<a href='./see_all.php'>Visualiser les cahiers de textes (accès restreint)</a>\n<br>";
 }
+echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a><br/><br";
 //echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $current_group->getDescriptionAvecClasses() . "</p><br/>\n";
 
 if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != ''))
@@ -265,7 +266,7 @@ echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom
 echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\">Export</legend>";
 echo "<table border='0' width='100%' summary=\"Tableau de...\">\n";
 echo "<tr><td>";
-echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a> Note : pour ouvrir ce fichier csv avec oppenoffice, garder les réglages par défaut lors de l'ouverture du fichier.</a>";
+echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a> Note : pour ouvrir ce fichier csv avec oppenoffice, garder les réglages par défaut lors de l'ouverture du fichier.";
 echo "</td></tr></table></fieldset>";
 // fin export
 ?>
