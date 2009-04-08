@@ -67,7 +67,11 @@ function last_connection() {
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<meta http-equiv="refresh" content="<?php echo getSettingValue("sessionMaxLength")*60; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;session_id=<?php echo session_id();?>" />
+<?php
+if (!isset($message_deconnexion) || $message_deconnexion != 'non'){
+	echo ("<meta http-equiv=\"refresh\" content=\"".(getSettingValue("sessionMaxLength")*60)."; URL=".$gepiPath."/logout.php?auto=3&amp;debut_session=".urlencode($_SESSION['start'])."&amp;session_id=".session_id()." />");
+}
+?>
 <!-- correction Regis : déclaration par défaut pour les scripts et les mises en page-->
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta http-equiv="Content-Style-Type" content="text/css" />
@@ -104,6 +108,15 @@ Pour affichage d'un fixe en bas à droite (ne marche pas avec IE 6)
 <!--correction Regis javascript -->
 <script type="text/javascript">
 <!--
+//position fixe même en cas de scrolling
+var xV1 = 100; //top position
+function stayHome(){
+	nV = document.documentElement.scrollTop;
+	document.getElementById('deconnexion').style.top = xV1+nV + "px";
+}
+window.onscroll=stayHome;
+
+//affichage du message
 var debut=new Date()
 function show_message_deconnexion(){
   var seconds_before_alert = 180;
@@ -119,7 +132,9 @@ function show_message_deconnexion(){
     var secs=now.getSeconds();
 
     var heure = hrs + " H " + mins + "' " + secs + "'' ";
-    alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
+    var content = "A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !";
+    document.getElementById("deconnexion").innerHTML = content;
+    document.getElementById("deconnexion").style.display = "block";
   }
   setTimeout("show_message_deconnexion()",seconds_int_betweenn_2_msg*1000)
 }
@@ -164,11 +179,14 @@ $script_effet = isset($scriptaculous_effet) ? $scriptaculous_effet : NULL;
 	 }
 // Utilisation de windows.js
 $windows = isset($utilisation_win) ? $utilisation_win : NULL;
+$windows_effects = isset($windows_effects) ? $windows_effects : NULL;
 if ($windows == 'oui') {
+	if ($windows_effects != "non") {
+	echo '<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/effects.js"> </script>
+	<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/window_effects.js"> </script>';
+	}
  	echo '
-	<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/effects.js"> </script>
 	<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/window.js"> </script>
-	<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/window_effects.js"> </script>
 	<link href="'.$gepiPath.'/edt_effets/themes/default.css" rel="stylesheet" type="text/css"/>
 	<link href="'.$gepiPath.'/edt_effets/themes/alphacube.css" rel="stylesheet" type="text/css"/>
 	 ';
@@ -296,12 +314,19 @@ if (isset($use_observeur) AND $use_observeur == 'ok'){
 }else{
   $charger_observeur = NULL;
 }
+if (!isset($message_deconnexion) || $message_deconnexion != 'non'){
+	$show_message_deconnexion = "show_message_deconnexion()";
+} else {
+	$show_message_deconnexion = "";
+}
 ?>
 </head>
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
-<body onload="show_message_deconnexion();<?php echo $charger_observeur; ?>">
+<body onload="<?php echo $show_message_deconnexion; ?>; <?php echo $charger_observeur; ?>">
+<!-- div du message de deconnexion -->
+<div id='deconnexion' style='deconnexion' ></div>
 
 <?php
 if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {
