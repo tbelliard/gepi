@@ -25,6 +25,7 @@
 // Initialisations files
 $niveau_arbo = 0;
 require_once("./lib/initialisations.inc.php");
+global $gepiPath;
 
 
 if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "cas") {
@@ -40,16 +41,16 @@ if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "ca
 	}
 
     $message = "<h1 class='gepi'>Déconnexion</h1>";
-	$message .= "<img src='./images/icons/lock-open.png' alt='lock-open' /><br/><br/>";
+	$message .= "<img src='$gepiPath/images/icons/lock-open.png' alt='lock-open' /><br/><br/>";
     if (!$_GET['auto']) {
         $session_gepi->close($_GET['auto']);
         $message .= "Vous avez fermé votre session GEPI.<br />";
-        $message .= "<a href=\"login.php\">Ouvrir une nouvelle session</a>.";
+        $message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
     } else if ($_GET['auto']==2) {
         $session_gepi->close($_GET['auto']);
         $message .= "Vous avez été déconnecté. Il peut s'agir d'une mauvaise configuration de la variable \$GepiPath dans la fichier \"connect.inc.php\"<br />
         <a href='aide_gepipath.php'><b>Aide à la configuration de \$GepiPath</b></a><br /><br />";
-        $message .= "<a href=\"login.php\">Ouvrir une nouvelle session</a>.";
+        $message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
     } else if ($_GET['auto']==3) {
         $date_fermeture = date("d\/m\/Y\ \à\ H\ \h\ i");
         $debut_session = urldecode($_GET['debut_session']);
@@ -58,7 +59,7 @@ if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "ca
            // Le temps d'inactivité est dépassé
            $session_gepi->close($_GET['auto']);
            $message .= "Votre session GEPI a expiré car le temps maximum (".getSettingValue("sessionMaxLength")." minutes) sans échange avec le serveur a été atteint.<br /><br />Date et heure de la déconnexion : ".$date_fermeture."<br /><br />";
-           $message .= "<a href=\"login.php\">Ouvrir une nouvelle session</a>.";
+           $message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
         } else {
            $message .= "<h1 class='gepi'>Fermeture d'une fenêtre GEPI</h1>";
            $message .= "A l'heure ci-dessous, une fenêtre GEPI s'est automatiquement fermée par mesure de sécurité car
@@ -69,7 +70,7 @@ if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "ca
         $session_gepi->close($_GET['auto']);
         $message .= "Votre session GEPI a expiré, ou bien vous avez été déconnecté.<br />";
         if ((getSettingValue("disable_login"))=='yes') $message .=  "<br /><font color=\"red\" size=\"+1\">Le site est momentanément inaccessible. Veuillez nous excuser de ce dérangement !</font><br /><br />";
-        $message .= "<a href=\"login.php\">Ouvrir une nouvelle session</a>.";
+        $message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
     }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
