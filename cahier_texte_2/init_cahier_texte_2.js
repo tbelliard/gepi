@@ -402,7 +402,7 @@ function suppressionDevoirDocument(message, id_document_a_supprimer, id_devoir, 
 function completeEnregistrementCompteRenduCallback(response) {
 	if (response.match('Erreur') || response.match('error')) {
 		alert(response);
-		getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:function() {iniWysiwyg();}});
+		getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:function() {initWysiwyg();}});
 	} else {
 		//si response ne contient pas le mot erreur, il contient l'id du compte rendu
 		id_ct_en_cours = response;

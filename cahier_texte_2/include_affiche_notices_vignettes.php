@@ -13,6 +13,8 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 		$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								id_groupe = '".$devoir->getIdGroupe()."';
 								getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$devoir->getIdCt()."',{ onComplete: function(transport) {	initWysiwyg();}});
+								getWinListeNotices();
+								new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$devoir->getIdGroupe()."',{ onComplete:function() {updateDivModification();}});
 								updateCalendarWithUnixDate(".$devoir->getDateCt().");
 								object_en_cours_edition = 'devoir';
 								");
@@ -54,6 +56,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 								getWinEditionNotice().setAjaxContent('ajax_edition_notice_privee.php?id_ct=".$notice_privee->getIdCt()."',{ onComplete: function() {	initWysiwyg();}});
 								updateCalendarWithUnixDate(".$notice_privee->getDateCt().");
 								getWinListeNotices();
+								new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$notice_privee->getIdGroupe()."',{ onComplete:function() {updateDivModification();}});
 								object_en_cours_edition = 'notice_privee';
 								");
 		$html_balise .=("\">");
@@ -84,6 +87,8 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 								getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$compte_rendu->getIdCt()."',
 									{ onComplete: function(transport) {initWysiwyg();}});
 								updateCalendarWithUnixDate(".$compte_rendu->getDateCt().");
+								getWinListeNotices();
+								new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$compte_rendu->getIdGroupe()."',{ onComplete:function() {updateDivModification();}});
 								object_en_cours_edition = 'compte_rendu';
 							");
 			$html_balise .=("\">");

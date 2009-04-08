@@ -57,7 +57,8 @@ $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GE
 
 // uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
-if ($uid_post==$_SESSION['uid_prime']) {
+$uid_prime = isset($_SESSION['uid_prime']) ? $uid_prime : 0;
+if ($uid_post==$uid_prime) {
 	echo("Erreur : formulaire dejà posté précédemment.");
 	die();
 }
@@ -123,7 +124,7 @@ if (!empty($doc_file['name'][0])) {
 	//il y a au plus trois documents joints dans l'interface de saisie
 	for ($index_doc=0; $index_doc < 3; $index_doc++) {
 		if(!empty($doc_file['tmp_name'][$index_doc])) {
-			$file_path = ajout_fichier($doc_file, $dest_dir, $index_doc);
+			$file_path = ajout_fichier($doc_file, $dest_dir, $index_doc, $id_groupe);
 			if ($file_path != null) {
 				//création de l'objet ctDocument
 				$ctDocument = new CahierTexteCompteRenduFichierJoint();
