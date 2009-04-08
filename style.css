@@ -361,8 +361,25 @@ div.headerMessage {
 	font-variant: small-caps;
 	text-align: center;
 }
-
 /*Fin - header*/
+
+/*page acceuil*/
+div.bloc_page_acceuil_professeur {
+	/*width: 140px;
+	height: 70px;*/
+}
+table.table_acceuil {
+	position: relative;
+	margin : 13px;
+	border-spacing : 7px;
+	/*border-width: 1px;
+	border-style: solid;
+	border-color: #000000;*/
+	/*width: 140px;
+	height: 70px;*/
+}
+/* fin page acceuil*/
+
 h1 {
 	font: normal small-caps 20pt Verdana;
 	line-height: 300%;
@@ -792,6 +809,20 @@ td.menu_droit {
 .cadenas {
 	width:48px;
 	height: 48px;
+}
+#deconnexion {
+	width:99%;
+        background-color: #FFFFBB;
+	padding: 0.1em;
+	margin: 0 auto;
+	position: absolute;
+        top: 100px;
+        left: 5px;
+        z-index: 1;
+	overflow: none;
+        display: none;
+        font-size: 16pt;
+        color : red;
 }
 .acc_prof {
   font-weight: bold;
