@@ -913,8 +913,8 @@ if ($id_devoir==0) {
 				$id_s_dev[$i][$m] = mysql_result($query_nb_dev, $m, 'id');
 				$nom_sous_dev[$i][$m] = mysql_result($query_nb_dev, $m, 'nom_court');
 				$coef_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'coef');
-				$note_sur_s_dev[$i][$m] = mysql_result($appel_dev, $m, 'note_sur');
-				$ramener_sur_referentiel_s_dev[$i][$m] = mysql_result($appel_dev, $m, 'ramener_sur_referentiel');
+				$note_sur_s_dev[$i][$m] = mysql_result($query_nb_dev, $m, 'note_sur');
+				$ramener_sur_referentiel_s_dev[$i][$m] = mysql_result($query_nb_dev, $m, 'ramener_sur_referentiel');
 				$fac_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'facultatif');
 				$date = mysql_result($query_nb_dev, $m, 'date');
 				$annee = substr($date,0,4);
