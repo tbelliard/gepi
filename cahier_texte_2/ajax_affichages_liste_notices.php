@@ -78,15 +78,15 @@ foreach ($utilisateur->getGroupes() as $group) {
 }
 echo "</select>&nbsp;";
 echo "<div id=\"div_chaine_liste_notices\" style=\"display:inline;\"><img id=\"chaine_liste_notice\" onLoad=\"updateChaineIcones()\" HEIGHT=\"16\" WIDTH=\"16\" style=\"border: 0px; vertical-align : middle\" src=\"../images/blank.gif\"  alt=\"Lier\" title=\"Lier la liste avec la fenetre edition de notices\" /></div>";
-echo "<br><br>";
 //fin affichage des groupes
 
+echo "<p style='font-size:9pt'>";
 if(getSettingValue('cahier_texte_acces_public')!='no'){
 	echo "<a href='../public/index.php?id_groupe=" . $current_group->getId() ."' target='_blank'>Visualiser le cahier de textes en accès public</a>\n<br>";
 } else {
 	echo "<a href='./see_all.php'>Visualiser les cahiers de textes (accès restreint)</a>\n<br>";
 }
-echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a><br/><br";
+echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a><br/>";
 //echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $current_group->getDescriptionAvecClasses() . "</p><br/>\n";
 
 if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != ''))
@@ -114,12 +114,13 @@ foreach ($current_group->getClasses() as $classe) {
 // Affichage des travaux à  faire futurs, toutes matières confondues
 foreach ($current_group->getClasses() as $classe) {
 	if ($total[$classe->getId()] > 0) {
-		echo"<p>La classe " . $classe->getClasse() . " a  <a href=\"javascript:centrerpopup('liste_tous_devoirs.php?classe=". $classe->getId()."&amp;debut=$aujourdhui',260,320,'scrollbars=yes,statusbar=no,resizable=yes');\"><strong>" . $total[$classe->getId()] . "</strong> ";
-		echo (($total[$classe->getId()] == 1) ? "travail personnel" : "travaux personnels");
-		echo "</a> jusqu'au <strong>" . strftime("%A %d %B %Y", $date[$classe->getId()]) . "</strong>.</p>\n";
+		echo"La classe " . $classe->getClasse() . " a  <a href=\"javascript:centrerpopup('liste_tous_devoirs.php?classe=". $classe->getId()."&amp;debut=$aujourdhui',260,320,'scrollbars=yes,statusbar=no,resizable=yes');\">" . $total[$classe->getId()];
+		echo (($total[$classe->getId()] == 1) ? " travail personnel" : "travaux personnels");
+		echo "</a> jusqu'au " . strftime("%A %d %B %Y", $date[$classe->getId()]) . ".\n<br style='font-size:2px;'/>";
 	}
 }
 
+echo "</p>";
 $compteur_nb_total_notices = 0;
 
 //récupération de $liste_comptes_rendus : comptes rendus pour la matière en cours
