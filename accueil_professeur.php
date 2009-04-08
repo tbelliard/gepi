@@ -205,7 +205,7 @@ if ($condition_releve_note ||  (getSettingValue("GepiAccesBulletinSimplePP")=="y
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."';";
 		$test_pp=mysql_num_rows(mysql_query($sql));
 		if($test_pp>0) {
-			affiche_ligne( "/prepa_conseil/index3.php", "Les bulletins simplifi?s",   "Cet outil vous permet de visualiser &agrave; l'&eacute;cran et d'imprimer les relev&eacute;s de notes, ".$gepiSettings['denomination_eleve']." par ".$gepiSettings['denomination_eleve'].", classe par classe.", $_SESSION['statut']);
+			affiche_ligne( "/prepa_conseil/index3.php", "Les bulletins simplifi&eacute;s",   "Cet outil vous permet de visualiser &agrave; l'&eacute;cran et d'imprimer les relev&eacute;s de notes, ".$gepiSettings['denomination_eleve']." par ".$gepiSettings['denomination_eleve'].", classe par classe.", $_SESSION['statut']);
 		}
 	}
 
