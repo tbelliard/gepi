@@ -205,8 +205,8 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 		$classe = $_SESSION['retenue_classe_elv'];
 		session_unregister("retenue_classe_elv");	
 	}
-	if (isset($_SESSION['retenue_date'])) {
-		$motif = $_SESSION['retenue_date'];
+	if (isset($_SESSION['retenue_motif'])) {
+		$motif = $_SESSION['retenue_motif'];
 		$motif=traitement_magic_quotes(corriger_caracteres($motif));
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 		$motif=ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
