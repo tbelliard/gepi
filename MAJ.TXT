@@ -65,4 +65,3 @@ du bon fonctionnement du logiciel.
 Dans certains cas la connexion au site peut échouer tant que la mise àjour n'a pas été effectuée.
 Si vous êtes dans cette situation, connectez-vous directement à l'interface de mise à jour de la base en tapant :
 http://www.monsite.fr/gepi/utilitaires/maj.php  (dans le cas où l'adresse serait http://www.monsite.fr/gepi)
-
