@@ -74,6 +74,9 @@ try{
     $c->add(AbsenceSaisiePeer::ELEVE_ID, $test, Criteria::EQUAL);
     $c->addDescendingOrderByColumn(AbsenceSaisiePeer::FIN_ABS);
     $traite_test = JTraitementSaisiePeer::doSelectJoinAbsenceSaisie($c);
+    /**
+     * @todo : Verification que ce traitement existe encore ?
+     */
     $_idTraitement = $traite_test[0]->getATraitementId(); // On renvoie le premier de la liste qui est
 
   }else{
