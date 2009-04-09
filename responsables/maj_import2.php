@@ -711,6 +711,9 @@ else{
 		case 1:
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
 
+			$sql="TRUNCATE TABLE tempo2;";
+			$res0=mysql_query($sql);
+
 			$dest_file="../temp/".$tempdir."/eleves.xml";
 			$fp=fopen($dest_file,"r");
 			if(!$fp){
@@ -973,6 +976,9 @@ else{
 						if($temoin_date_sortie=="y") {
 							$sql="DELETE FROM temp_gep_import2 WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							$nettoyage=mysql_query($sql);
+
+							$sql="INSERT INTO tempo2 SET col1='ele_id_eleve_parti', col2='".$eleves[$i]['eleve_id']."';";
+							$insert=mysql_query($sql);
 						}
 						else {
 							$sql="UPDATE temp_gep_import2 SET ";
@@ -1038,7 +1044,8 @@ else{
 		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=3')\",2000);
 	}
 	*/
-	setTimeout(\"test_stop('3')\",3000);
+	//setTimeout(\"test_stop('3')\",3000);
+	setTimeout(\"test_stop('2')\",3000);
 </script>\n";
 				}
 				elseif($nb_err==1) {
@@ -1056,14 +1063,19 @@ else{
 			// ON SAUTE L'ETAPE 2 QUI CORRESPOND AUX OPTIONS DES ELEVES... NON PRISES EN CHARGE POUR LE MOMENT.
 			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2'>Suite</a></p>\n";
 			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop'>Suite</a></p>\n";
-			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop' onClick=\"test_stop_suite('3'); return false;\">Suite</a></p>\n";
+			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop' onClick=\"test_stop_suite('3'); return false;\">Suite</a></p>\n";
+			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2&amp;stop=$stop' onClick=\"test_stop_suite('2'); return false;\">Suite</a></p>\n";
 
 			require("../lib/footer.inc.php");
 			die();
 
 			break;
-		case 2:
+		case "2":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			// CETTE PHASE D'ANALYSE DES OPTIONS EST A REVOIR: Il faudrait le fichier Nomenclature pour pouvoir proposer les bonnes options lors de l'inscription de nouveaux élèves (ou stocker dans une table les correspondances de codes/matières).
+			//
+			// Par contre, on y fait quand même des tests pour les élèves partis... ne pas squizzer ça si on supprime l'étape
 
 			$dest_file="../temp/".$tempdir."/eleves.xml";
 			$fp=fopen($dest_file,"r");
@@ -1211,6 +1223,11 @@ else{
 						}
 					}
 				}
+
+				$sql="SELECT 1=1 FROM tempo2 WHERE col1='ele_id_eleve_parti';";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)==0) {$suite="3";} else {$suite="2b";}
+
 				if($nb_err==0) {
 					echo "<p>La troisième phase s'est passée sans erreur.</p>\n";
 
@@ -1223,10 +1240,10 @@ else{
 		}
 	}
 	if(stop=='n'){
-		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=3')\",2000);
+		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=$suite')\",2000);
 	}
 	*/
-	setTimeout(\"test_stop('3')\",3000);
+	setTimeout(\"test_stop('$suite')\",3000);
 </script>\n";
 				}
 				elseif($nb_err==1) {
@@ -1240,14 +1257,200 @@ else{
 
 				//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=3'>Suite</a></p>\n";
 				//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop'>Suite</a></p>\n";
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop' onClick=\"test_stop_suite('3'); return false;\">Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=$suite&amp;stop=$stop' onClick=\"test_stop_suite('$suite'); return false;\">Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
 			}
 
 			break;
-		case 3:
+
+
+		case "2b":
+			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			echo "<p>Contrôle des départs d'élèves...</p>\n";
+
+			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//==============================
+
+			$sql="SELECT col2 FROM tempo2 WHERE col1='ele_id_eleve_parti';";
+			$res=mysql_query($sql);
+			while($lig=mysql_fetch_object($res)) {
+				$ele_id=$lig->col2;
+				$sql="SELECT * FROM eleves WHERE ele_id='$ele_id';";
+				$res_ele=mysql_query($sql);
+				if(mysql_num_rows($res_ele)>0) {
+					$lig_ele=mysql_fetch_object($res_ele);
+
+					echo "<p>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</p>\n";
+					echo "<blockquote>\n";
+					// On cherche les périodes pour lesquelles l'élève n'a pas de notes ni d'appréciations ni dans le carnet de notes ni sur le bulletin.
+					$sql="SELECT DISTINCT jec.id_classe, c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$lig_ele->login' ORDER BY periode,classe;";
+					$res_class=mysql_query($sql);
+					if(mysql_num_rows($res_class)==0){
+						echo "Il n'est inscrit dans aucune classe.";
+					}
+					else {
+						$alt=1;
+						echo "<table class='boireaus' summary='Elève n°$ele_id'>\n";
+						echo "<tr class='lig$alt'>\n";
+						echo "<th>Classe</th>\n";
+						echo "<th>Période</th>\n";
+						echo "<th>Carnet de notes</th>\n";
+						echo "<th>Notes sur le bulletin</th>\n";
+						echo "<th>Appréciations sur le bulletin</th>\n";
+						echo "<th>Avis du conseil de classe</th>\n";
+						echo "<th>Désinscrire</th>\n";
+						echo "</tr>\n";
+
+						while($lig_clas=mysql_fetch_object($res_class)){
+							$temoin_periode="y";
+
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'>\n";
+							echo "<td>$lig_clas->classe</td>\n";
+							echo "<td>$lig_clas->periode</td>\n";
+							echo "<td>\n";
+							$sql="SELECT 1=1 FROM cn_cahier_notes ccn, 
+													cn_conteneurs cc, 
+													cn_devoirs cd, 
+													cn_notes_devoirs cnd WHERE
+												ccn.periode='$lig_clas->periode' AND
+												ccn.id_cahier_notes=cc.id_racine AND
+												cc.id=cd.id_conteneur AND
+												cd.id=cnd.id_devoir AND
+												cnd.login='$lig_ele->login';";
+							$test1=mysql_query($sql);
+							$nb_notes=mysql_num_rows($test1);
+							if($nb_notes==0) {
+								echo "<span style='color:green;'>Vide</span>";
+							}
+							else {
+								echo "<span style='color:red;'>$nb_notes notes</span>";
+								$temoin_periode="n";
+							}
+							echo "</td>\n";
+	
+							echo "<td>\n";
+							$sql="SELECT 1=1 FROM matieres_notes WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
+							$test2=mysql_query($sql);
+							$nb_notes_bull=mysql_num_rows($test2);
+							if($nb_notes_bull==0) {
+								echo "<span style='color:green;'>Vide</span>";
+							}
+							else {
+								echo "<span style='color:red;'>$nb_notes_bull notes</span>";
+								$temoin_periode="n";
+							}
+							echo "</td>\n";
+	
+							echo "<td>\n";
+							$sql="SELECT 1=1 FROM matieres_appreciations WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
+							$test3=mysql_query($sql);
+							$nb_app_bull=mysql_num_rows($test3);
+							if($nb_app_bull==0) {
+								echo "<span style='color:green;'>Vide</span>";
+							}
+							else {
+								echo "<span style='color:red;'>$nb_app_bull appréciations</span>";
+								$temoin_periode="n";
+							}
+							echo "</td>\n";
+
+							echo "<td>\n";
+							$sql="SELECT 1=1 FROM avis_conseil_classe WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
+							$test4=mysql_query($sql);
+							$nb_avis=mysql_num_rows($test4);
+							if($nb_avis==0) {
+								echo "<span style='color:green;'>Vide</span>";
+							}
+							else {
+								echo "<span style='color:red;'>$nb_avis avis</span>";
+								$temoin_periode="n";
+							}
+							echo "</td>\n";
+
+							echo "<td>\n";
+							if($temoin_periode=='y') {
+								// On propose de désinscrire des classes et des groupes
+								echo "<input type='checkbox' name='desinscription[]' value=\"$lig_ele->login|$lig_clas->periode\" />\n";
+							}
+							else {
+								echo "&nbsp;";
+							}
+							echo "</td>\n";
+
+							echo "</tr>\n";
+						}
+						echo "</table>\n";
+					}
+					echo "</blockquote>\n";
+	
+				}
+			}
+
+			echo "<input type='hidden' name='step' value='2c' />\n";
+			echo "<p><input type='submit' value='Valider' /></p>\n";
+
+			echo "</form>\n";
+
+			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop' onClick=\"test_stop_suite('3'); return false;\">Suite</a></p>\n";
+
+			break;
+
+		case "2c":
+
+			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			// On vide la table dont on va se resservir plus tard:
+			$sql="TRUNCATE TABLE tempo2;";
+			$res0=mysql_query($sql);
+
+
+			if(!isset($_POST['desinscription'])) {
+				echo "<p>Aucune désinscription n'a été validée.</p>\n";
+			}
+			else {
+				$desinscription=$_POST['desinscription'];
+				echo "<p>";
+				for($i=0;$i<count($desinscription);$i++) {
+					$tab=explode("|",$desinscription[$i]);
+					$ele_login=$tab[0];
+					$periode=$tab[1];
+
+					$sql="SELECT * FROM eleves WHERE login='$ele_login';";
+					$res_ele=mysql_query($sql);
+					$lig_ele=mysql_fetch_object($res_ele);
+
+					echo "Désinscription des classes et des enseignements de ".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))." pour la période $periode: ";
+
+					$sql="DELETE FROM j_eleves_groupes WHERE login='$ele_login' AND periode='$periode';";
+					if(!mysql_query($sql)) {
+						echo "<span style='color:red;'>ERREUR lors de la désinscription des enseignements</span>";
+					}
+					else {
+						$sql="DELETE FROM j_eleves_classes WHERE login='$ele_login' AND periode='$periode';";
+						if(!mysql_query($sql)) {
+							echo "<span style='color:red;'>ERREUR lors de la désinscription de la classe</span>";
+						}
+						else {
+							echo "<span style='color:green;'>OK</span>";
+						}
+					}
+					echo "<br />\n";
+				}
+				echo "</p>\n";
+			}
+
+			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop' onClick=\"test_stop_suite('3'); return false;\">Suite</a></p>\n";
+
+			break;
+
+		case "3":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
 
 			if(file_exists("../temp/".$tempdir."/eleves.xml")) {
@@ -3650,7 +3853,7 @@ else{
 			echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' ";
 			if("$stop"=="y"){echo "checked ";}
 			echo "/><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label>";
-			echo "</p>\n";
+			//echo "</p>\n";
 			//==============================
 
 			echo "<p><input type='submit' value='Valider' /></p>\n";
