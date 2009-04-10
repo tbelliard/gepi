@@ -81,7 +81,7 @@ try{
         $saisie = new AbsenceSaisie();
         $saisie->setUtilisateurId($_SESSION["login"]);
         $saisie->setEleveId($_eleve[$a]);
-
+        $_SESSION["_eleveSaisi"] = $_eleve[$a];
 
         // Si on demande la journée entière ...
         if (isset($_jourentier[$a]) AND $_jourentier[$a] != ''){

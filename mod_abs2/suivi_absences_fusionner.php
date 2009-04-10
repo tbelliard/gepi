@@ -79,7 +79,9 @@ try{
       if ((isset($verif)) AND is_object($verif)){
         $_id_test = $verif->getATraitementId();
         $verif2 = AbsenceTraitementPeer::retrieveByPK($_id_test);
-        $_idTraitement = $verif->getATraitementId();
+        if (isset($verif2) AND is_object($verif2)){
+          $_idTraitement = $verif2->getId();
+        }
       }
     }
   }

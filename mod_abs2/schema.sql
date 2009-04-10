@@ -138,3 +138,122 @@ PRIMARY KEY ( `a_traitement_id` , `a_saisie_id` ),
 INDEX j_traitements_saisies_FI_1 (a_traitement_id),
 INDEX j_traitements_saisies_FI_2 (a_saisie_id)
 ) ENGINE = InnoDB COMMENT = 'Table de jointure entre les traitements et la saisie des absences';
+
+
+DROP TABLE IF EXISTS a_envois;
+
+
+CREATE TABLE a_envois
+(
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
+	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a lance l\'envoi',
+	id_type_envoi INTEGER(4)  NOT NULL COMMENT 'id du type de l\'envoi',
+	statut_envoi VARCHAR(20) default '0' NOT NULL COMMENT 'Statut de cet envoi (envoye, en cours,...)',
+	date_envoi INTEGER(12) default 0 NOT NULL COMMENT 'Date en timestamp UNIX de l\'envoi',
+	created_on INTEGER(13) default 0 NOT NULL COMMENT 'Date de la saisie de l\'envoi en timestamp UNIX',
+	updated_on INTEGER(13) default 0 NOT NULL COMMENT 'Date de la modification de l\'envoi en timestamp UNIX',
+	PRIMARY KEY (id),
+	INDEX a_envois_FI_1 (utilisateur_id),
+	INDEX a_envois_FI_2 (id_type_envoi)
+)Type=MyISAM COMMENT='Chaque envoi est repertorie ici';
+
+#-----------------------------------------------------------------------------
+#-- a_type_envois
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS a_type_envois;
+
+
+CREATE TABLE a_type_envois
+(
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
+	nom VARCHAR(100)  NOT NULL COMMENT 'nom du type de l\'envoi',
+	ordre_affichage INTEGER(4)  NOT NULL COMMENT 'ordre d\'affichage du type de l\'envoi',
+	contenu LONGTEXT  NOT NULL COMMENT 'Contenu modele de l\'envoi',
+	PRIMARY KEY (id)
+)Type=MyISAM COMMENT='Chaque envoi dispose d\'un type qui est stocke ici';
+
+#-----------------------------------------------------------------------------
+#-- j_traitements_envois
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS j_traitements_envois;
+
+
+CREATE TABLE j_traitements_envois
+(
+	a_envoi_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de l\'envoi',
+	a_traitement_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere du traitement de ces absences',
+	PRIMARY KEY (a_envoi_id,a_traitement_id),
+  INDEX j_traitements_saisies_FI_1 (a_traitement_id),
+  INDEX j_traitements_saisies_FI_2 (a_envoi_id)
+)Type=MyISAM COMMENT='Table de jointure entre le traitement des absences et leur envoi';
+
+
+#-----------------------------------------------------------------------------
+#-- Le contenu des tables pour les paramètres
+#-----------------------------------------------------------------------------
+
+--
+-- Contenu de la table `a_actions`
+--
+
+INSERT INTO `a_actions` (`id`, `nom`, `ordre`) VALUES
+(1, 'Aucune action', 1),
+(2, 'Courrier papier', 2),
+(3, 'sms', 3),
+(4, 'Courriel', 4),
+(5, 'Convocation de l''élève', 5);
+
+--
+-- Contenu de la table `a_creneaux`
+--
+
+INSERT INTO `a_creneaux` (`id`, `nom_creneau`, `debut_creneau`, `fin_creneau`, `jour_creneau`, `type_creneau`) VALUES
+(4, 'M1', 30900, 34200, 9, 'cours'),
+(5, 'M2', 34200, 37500, 9, 'cours'),
+(7, 'P1', 37500, 38400, 9, 'pause'),
+(8, 'M3', 38400, 41700, 9, 'cours'),
+(9, 'M4', 41700, 45000, 9, 'cours'),
+(10, 'R', 45000, 47100, 9, 'repas'),
+(11, 'S1', 47100, 50400, 9, 'cours'),
+(12, 'S2', 50400, 53700, 9, 'cours'),
+(13, 'S3', 54600, 57900, 9, 'cours'),
+(14, 'S4', 57900, 61200, 9, 'cours'),
+(15, 'P2', 53700, 54600, 9, 'pause');
+
+--
+-- Contenu de la table `a_justifications`
+--
+
+INSERT INTO `a_justifications` (`id`, `nom`, `ordre`) VALUES
+(1, 'Aucune justification', 1),
+(2, 'Par courrier', 2),
+(3, 'Par téléphone', 3),
+(4, 'Par courriel', 4),
+(5, 'Par l''ENT', 5);
+
+--
+-- Contenu de la table `a_motifs`
+--
+
+INSERT INTO `a_motifs` (`id`, `nom`, `ordre`) VALUES
+(1, 'Aucun', 1),
+(2, 'Maladie', 2),
+(3, 'Convocation interne', 3),
+(4, 'Convenances familiales', 4),
+(5, 'Infirmerie', 5),
+(6, 'Erreur d''emploi du temps', 6),
+(7, 'Sortie Pédagogique', 7),
+(8, 'Exclusion', 8),
+(9, 'Transport', 9);
+
+--
+-- Contenu de la table `a_types`
+--
+
+INSERT INTO `a_types` (`id`, `nom`, `ordre`) VALUES
+(1, 'Absence', 1),
+(2, 'Retard', 2),
+(3, 'Inclusion', 3),
+(4, 'Dispense', 4);

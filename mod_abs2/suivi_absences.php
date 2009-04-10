@@ -234,7 +234,7 @@ if (isset($_SESSION["msg_fusions"])){
       <td ondblclick="afficherDiv('_fusHier<?php echo $increment; ?>');" title="Un double-clic vous permet de fusionner avec la saisie pr&eacute;c&eacute;dente la plus r&eacute;cente" >
         <input type="checkbox" name="fusion[<?php echo $increment; ?>]" value="<?php echo $absents->getId(); ?>" title="Attention vous allez fusionner des absences !" />
         <div id="_fusHier<?php echo $increment; ?>" style="display: none;">
-          <input type="checkbox" name="fusionHier[<?php echo $increment; ?>]" value="ok" />
+          h<input type="checkbox" name="fusionHier[<?php echo $increment; ?>]" value="ok" title="Cochez pour fusionner avec la pr&eacute;c&eacute;dente." />
         </div>
       </td>
       <td><?php echo $aff_suivi_creneaux; ?></td>

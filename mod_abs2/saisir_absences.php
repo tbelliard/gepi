@@ -46,6 +46,8 @@ $test = array();
 $_SESSION["type_aff_abs"] = isset($_SESSION["type_aff_abs"]) ? $_SESSION["type_aff_abs"] : 'alpha';
 $_SESSION["type_aff_abs"] = (isset($_GET["type_aff_abs"]) AND ($_GET["type_aff_abs"] == 'alpha' OR $_GET["type_aff_abs"] == 'classe'))
                             ? $_GET["type_aff_abs"] : $_SESSION["type_aff_abs"];
+$_selected_liste_eleve    = isset($_SESSION["_eleveSaisi"]) ? $_SESSION["_eleveSaisi"] : NULL;
+$_SESSION["_eleveSaisi"]  = NULL;
 
 
 // ============== Code métier ===============================
@@ -170,7 +172,7 @@ require("lib/abs_menu.php");
     <legend> - Saisir un ou plusieurs &eacute;l&egrave;ves - </legend>
 
       <p>
-        <?php echo EleveHelper::afficheHtmlSelectListeEleves(array ('label'=>'Elève (nom)', 'size'=>10, 'multiple'=>'on', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php'), $liste_eleves); ?>
+        <?php echo EleveHelper::afficheHtmlSelectListeEleves(array ('label'=>'Elève (nom)', 'size'=>10, 'multiple'=>'on', 'event'=>'change', 'method_event'=>'gestionaffAbs', 'url'=>'saisir_ajax.php', 'selected'=>$_selected_liste_eleve), $liste_eleves); ?>
       </p>
   </fieldset>
 

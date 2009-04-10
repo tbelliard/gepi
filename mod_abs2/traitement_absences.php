@@ -85,15 +85,14 @@ try{
         }elseif($_supprimer[$i] == "D"){
 
           // On fait la même chose mais on supprime également les entrées dans la table j_traitements_saisies
-          $traitement = AbsenceTraitementPeer::retrieveByPK($_traite[$i]);
-          $traitement->delete();
           $criteria = new Criteria();
           $criteria->add(JTraitementSaisiePeer::A_TRAITEMENT_ID, $_traite[$i], Criteria::EQUAL);
           $joinTraitement = JTraitementSaisiePeer::doSelect($criteria);
           foreach ($joinTraitement as $join){
             $delete_join = $join->delete();
           }
-
+          $traitement = AbsenceTraitementPeer::retrieveByPK($_traite[$i]);
+          $traitement->delete();
         }
 
       }else{
