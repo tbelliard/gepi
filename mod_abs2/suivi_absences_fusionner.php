@@ -67,19 +67,23 @@ try{
 
 
   $test = $saisies[0]->getEleveId(); // On prend le premier élève et on vérifiera les autres dans la boucle foreach
-
+  $_idTraitement = NULL; // marqueur sur l'id du traitement
   if ($_fusionHier[0] == 'ok'){
     // On fusionne tout le groupe avec le traitement existant le plus récent
     $c = new Criteria();
     $c->add(AbsenceSaisiePeer::ELEVE_ID, $test, Criteria::EQUAL);
     $c->addDescendingOrderByColumn(AbsenceSaisiePeer::FIN_ABS);
     $traite_test = JTraitementSaisiePeer::doSelectJoinAbsenceSaisie($c);
-    /**
-     * @todo : Verification que ce traitement existe encore ?
-     */
-    $_idTraitement = $traite_test[0]->getATraitementId(); // On renvoie le premier de la liste qui est
 
-  }else{
+    foreach($traite_test as $verif){
+      if ((isset($verif)) AND is_object($verif)){
+        $_id_test = $verif->getATraitementId();
+        $verif2 = AbsenceTraitementPeer::retrieveByPK($_id_test);
+        $_idTraitement = $verif->getATraitementId();
+      }
+    }
+  }
+  if ($_idTraitement === NULL){
     // sinon on crée un nouveau traitement
     $traite_test = new AbsenceTraitement();
     $traite_test->setUtilisateurId($_SESSION["login"]);
