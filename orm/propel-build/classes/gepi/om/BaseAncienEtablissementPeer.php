@@ -531,6 +531,7 @@ abstract class BaseAncienEtablissementPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
+			$affectedRows += AncienEtablissementPeer::doOnDeleteCascade(new Criteria(AncienEtablissementPeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(AncienEtablissementPeer::TABLE_NAME, $con);
 			$con->commit();
 			return $affectedRows;
@@ -593,6 +594,16 @@ abstract class BaseAncienEtablissementPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
+			$affectedRows += AncienEtablissementPeer::doOnDeleteCascade($criteria, $con);
+			
+				// Because this db requires some delete cascade/set null emulation, we have to
+				// clear the cached instance *after* the emulation has happened (since
+				// instances get re-added by the select statement contained therein).
+				if ($values instanceof Criteria) {
+					AncienEtablissementPeer::clearInstancePool();
+				} else { // it's a PK or object
+					AncienEtablissementPeer::removeInstanceFromPool($values);
+				}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
 
@@ -605,6 +616,38 @@ abstract class BaseAncienEtablissementPeer {
 			$con->rollBack();
 			throw $e;
 		}
+	}
+
+	/**
+	 * This is a method for emulating ON DELETE CASCADE for DBs that don't support this
+	 * feature (like MySQL or SQLite).
+	 *
+	 * This method is not very speedy because it must perform a query first to get
+	 * the implicated records and then perform the deletes by calling those Peer classes.
+	 *
+	 * This method should be used within a transaction if possible.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     int The number of affected rows (if supported by underlying database driver).
+	 */
+	protected static function doOnDeleteCascade(Criteria $criteria, PropelPDO $con)
+	{
+		// initialize var to track total num of affected rows
+		$affectedRows = 0;
+
+		// first find the objects that are implicated by the $criteria
+		$objects = AncienEtablissementPeer::doSelect($criteria, $con);
+		foreach ($objects as $obj) {
+
+
+			// delete related JEleveAncienEtablissement objects
+			$c = new Criteria(JEleveAncienEtablissementPeer::DATABASE_NAME);
+			
+			$c->add(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $obj->getId());
+			$affectedRows += JEleveAncienEtablissementPeer::doDelete($c, $con);
+		}
+		return $affectedRows;
 	}
 
 	/**

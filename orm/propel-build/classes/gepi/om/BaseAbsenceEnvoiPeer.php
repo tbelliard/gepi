@@ -1,58 +1,55 @@
 <?php
 
 /**
- * Base static class for performing query and update operations on the 'ct_entry' table.
+ * Base static class for performing query and update operations on the 'a_envois' table.
  *
- * Compte rendu du cahier de texte
+ * Chaque envoi est repertorie ici
  *
  * @package    gepi.om
  */
-abstract class BaseCahierTexteCompteRenduPeer {
+abstract class BaseAbsenceEnvoiPeer {
 
 	/** the default database name for this class */
 	const DATABASE_NAME = 'gepi';
 
 	/** the table name for this class */
-	const TABLE_NAME = 'ct_entry';
+	const TABLE_NAME = 'a_envois';
 
 	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'gepi.CahierTexteCompteRendu';
+	const CLASS_DEFAULT = 'gepi.AbsenceEnvoi';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 8;
+	const NUM_COLUMNS = 7;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
-	/** the column name for the ID_CT field */
-	const ID_CT = 'ct_entry.ID_CT';
+	/** the column name for the ID field */
+	const ID = 'a_envois.ID';
 
-	/** the column name for the HEURE_ENTRY field */
-	const HEURE_ENTRY = 'ct_entry.HEURE_ENTRY';
+	/** the column name for the UTILISATEUR_ID field */
+	const UTILISATEUR_ID = 'a_envois.UTILISATEUR_ID';
 
-	/** the column name for the DATE_CT field */
-	const DATE_CT = 'ct_entry.DATE_CT';
+	/** the column name for the ID_TYPE_ENVOI field */
+	const ID_TYPE_ENVOI = 'a_envois.ID_TYPE_ENVOI';
 
-	/** the column name for the CONTENU field */
-	const CONTENU = 'ct_entry.CONTENU';
+	/** the column name for the STATUT_ENVOI field */
+	const STATUT_ENVOI = 'a_envois.STATUT_ENVOI';
 
-	/** the column name for the VISE field */
-	const VISE = 'ct_entry.VISE';
+	/** the column name for the DATE_ENVOI field */
+	const DATE_ENVOI = 'a_envois.DATE_ENVOI';
 
-	/** the column name for the VISA field */
-	const VISA = 'ct_entry.VISA';
+	/** the column name for the CREATED_ON field */
+	const CREATED_ON = 'a_envois.CREATED_ON';
 
-	/** the column name for the ID_GROUPE field */
-	const ID_GROUPE = 'ct_entry.ID_GROUPE';
-
-	/** the column name for the ID_LOGIN field */
-	const ID_LOGIN = 'ct_entry.ID_LOGIN';
+	/** the column name for the UPDATED_ON field */
+	const UPDATED_ON = 'a_envois.UPDATED_ON';
 
 	/**
-	 * An identiy map to hold any loaded instances of CahierTexteCompteRendu objects.
+	 * An identiy map to hold any loaded instances of AbsenceEnvoi objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
 	 * queries.
-	 * @var        array CahierTexteCompteRendu[]
+	 * @var        array AbsenceEnvoi[]
 	 */
 	public static $instances = array();
 
@@ -69,11 +66,11 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('IdCt', 'HeureEntry', 'DateCt', 'Contenu', 'Vise', 'Visa', 'IdGroupe', 'IdLogin', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt', 'heureEntry', 'dateCt', 'contenu', 'vise', 'visa', 'idGroupe', 'idLogin', ),
-		BasePeer::TYPE_COLNAME => array (self::ID_CT, self::HEURE_ENTRY, self::DATE_CT, self::CONTENU, self::VISE, self::VISA, self::ID_GROUPE, self::ID_LOGIN, ),
-		BasePeer::TYPE_FIELDNAME => array ('id_ct', 'heure_entry', 'date_ct', 'contenu', 'vise', 'visa', 'id_groupe', 'id_login', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'IdTypeEnvoi', 'StatutEnvoi', 'DateEnvoi', 'CreatedOn', 'UpdatedOn', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'idTypeEnvoi', 'statutEnvoi', 'dateEnvoi', 'createdOn', 'updatedOn', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::ID_TYPE_ENVOI, self::STATUT_ENVOI, self::DATE_ENVOI, self::CREATED_ON, self::UPDATED_ON, ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'id_type_envoi', 'statut_envoi', 'date_envoi', 'created_on', 'updated_on', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
 	/**
@@ -83,11 +80,11 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('IdCt' => 0, 'HeureEntry' => 1, 'DateCt' => 2, 'Contenu' => 3, 'Vise' => 4, 'Visa' => 5, 'IdGroupe' => 6, 'IdLogin' => 7, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt' => 0, 'heureEntry' => 1, 'dateCt' => 2, 'contenu' => 3, 'vise' => 4, 'visa' => 5, 'idGroupe' => 6, 'idLogin' => 7, ),
-		BasePeer::TYPE_COLNAME => array (self::ID_CT => 0, self::HEURE_ENTRY => 1, self::DATE_CT => 2, self::CONTENU => 3, self::VISE => 4, self::VISA => 5, self::ID_GROUPE => 6, self::ID_LOGIN => 7, ),
-		BasePeer::TYPE_FIELDNAME => array ('id_ct' => 0, 'heure_entry' => 1, 'date_ct' => 2, 'contenu' => 3, 'vise' => 4, 'visa' => 5, 'id_groupe' => 6, 'id_login' => 7, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'IdTypeEnvoi' => 2, 'StatutEnvoi' => 3, 'DateEnvoi' => 4, 'CreatedOn' => 5, 'UpdatedOn' => 6, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'idTypeEnvoi' => 2, 'statutEnvoi' => 3, 'dateEnvoi' => 4, 'createdOn' => 5, 'updatedOn' => 6, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::ID_TYPE_ENVOI => 2, self::STATUT_ENVOI => 3, self::DATE_ENVOI => 4, self::CREATED_ON => 5, self::UPDATED_ON => 6, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'id_type_envoi' => 2, 'statut_envoi' => 3, 'date_envoi' => 4, 'created_on' => 5, 'updated_on' => 6, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
 	/**
@@ -97,7 +94,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	public static function getMapBuilder()
 	{
 		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new CahierTexteCompteRenduMapBuilder();
+			self::$mapBuilder = new AbsenceEnvoiMapBuilder();
 		}
 		return self::$mapBuilder;
 	}
@@ -147,12 +144,12 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
 	 * </code>
 	 * @param      string $alias The alias for the current table.
-	 * @param      string $column The column name for current table. (i.e. CahierTexteCompteRenduPeer::COLUMN_NAME).
+	 * @param      string $column The column name for current table. (i.e. AbsenceEnvoiPeer::COLUMN_NAME).
 	 * @return     string
 	 */
 	public static function alias($alias, $column)
 	{
-		return str_replace(CahierTexteCompteRenduPeer::TABLE_NAME.'.', $alias.'.', $column);
+		return str_replace(AbsenceEnvoiPeer::TABLE_NAME.'.', $alias.'.', $column);
 	}
 
 	/**
@@ -169,21 +166,19 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	public static function addSelectColumns(Criteria $criteria)
 	{
 
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::ID_CT);
+		$criteria->addSelectColumn(AbsenceEnvoiPeer::ID);
 
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::HEURE_ENTRY);
+		$criteria->addSelectColumn(AbsenceEnvoiPeer::UTILISATEUR_ID);
 
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::DATE_CT);
+		$criteria->addSelectColumn(AbsenceEnvoiPeer::ID_TYPE_ENVOI);
 
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::CONTENU);
+		$criteria->addSelectColumn(AbsenceEnvoiPeer::STATUT_ENVOI);
 
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::VISE);
+		$criteria->addSelectColumn(AbsenceEnvoiPeer::DATE_ENVOI);
 
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::VISA);
+		$criteria->addSelectColumn(AbsenceEnvoiPeer::CREATED_ON);
 
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::ID_GROUPE);
-
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::ID_LOGIN);
+		$criteria->addSelectColumn(AbsenceEnvoiPeer::UPDATED_ON);
 
 	}
 
@@ -203,21 +198,21 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(CahierTexteCompteRenduPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(AbsenceEnvoiPeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			CahierTexteCompteRenduPeer::addSelectColumns($criteria);
+			AbsenceEnvoiPeer::addSelectColumns($criteria);
 		}
 
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
 
 		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 		// BasePeer returns a PDOStatement
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -235,7 +230,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
-	 * @return     CahierTexteCompteRendu
+	 * @return     AbsenceEnvoi
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -243,7 +238,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
-		$objects = CahierTexteCompteRenduPeer::doSelect($critcopy, $con);
+		$objects = AbsenceEnvoiPeer::doSelect($critcopy, $con);
 		if ($objects) {
 			return $objects[0];
 		}
@@ -260,7 +255,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 */
 	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return CahierTexteCompteRenduPeer::populateObjects(CahierTexteCompteRenduPeer::doSelectStmt($criteria, $con));
+		return AbsenceEnvoiPeer::populateObjects(AbsenceEnvoiPeer::doSelectStmt($criteria, $con));
 	}
 	/**
 	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -278,12 +273,12 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
-			CahierTexteCompteRenduPeer::addSelectColumns($criteria);
+			AbsenceEnvoiPeer::addSelectColumns($criteria);
 		}
 
 		// Set the correct dbName
@@ -301,14 +296,14 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
 	 * and retrieveByPK*() calls.
 	 *
-	 * @param      CahierTexteCompteRendu $value A CahierTexteCompteRendu object.
+	 * @param      AbsenceEnvoi $value A AbsenceEnvoi object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(CahierTexteCompteRendu $obj, $key = null)
+	public static function addInstanceToPool(AbsenceEnvoi $obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = (string) $obj->getIdCt();
+				$key = (string) $obj->getId();
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -322,18 +317,18 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 * methods in your stub classes -- you may need to explicitly remove objects
 	 * from the cache in order to prevent returning objects that no longer exist.
 	 *
-	 * @param      mixed $value A CahierTexteCompteRendu object or a primary key value.
+	 * @param      mixed $value A AbsenceEnvoi object or a primary key value.
 	 */
 	public static function removeInstanceFromPool($value)
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
-			if (is_object($value) && $value instanceof CahierTexteCompteRendu) {
-				$key = (string) $value->getIdCt();
+			if (is_object($value) && $value instanceof AbsenceEnvoi) {
+				$key = (string) $value->getId();
 			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
 				$key = (string) $value;
 			} else {
-				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or CahierTexteCompteRendu object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or AbsenceEnvoi object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
 			}
 
@@ -348,7 +343,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
 	 *
 	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-	 * @return     CahierTexteCompteRendu Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @return     AbsenceEnvoi Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
 	 * @see        getPrimaryKeyHash()
 	 */
 	public static function getInstanceFromPool($key)
@@ -402,12 +397,12 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = CahierTexteCompteRenduPeer::getOMClass();
+		$cls = AbsenceEnvoiPeer::getOMClass();
 		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj = CahierTexteCompteRenduPeer::getInstanceFromPool($key))) {
+			$key = AbsenceEnvoiPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = AbsenceEnvoiPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
@@ -417,61 +412,12 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
-				CahierTexteCompteRenduPeer::addInstanceToPool($obj, $key);
+				AbsenceEnvoiPeer::addInstanceToPool($obj, $key);
 			} // if key exists
 		}
 		$stmt->closeCursor();
 		return $results;
 	}
-
-	/**
-	 * Returns the number of rows matching criteria, joining the related Groupe table
-	 *
-	 * @param      Criteria $c
-	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     int Number of matching rows.
-	 */
-	public static function doCountJoinGroupe(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		// we're going to modify criteria, so copy it first
-		$criteria = clone $criteria;
-
-		// We need to set the primary table name, since in the case that there are no WHERE columns
-		// it will be impossible for the BasePeer::createSelectSql() method to determine which
-		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(CahierTexteCompteRenduPeer::TABLE_NAME);
-
-		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->setDistinct();
-		}
-
-		if (!$criteria->hasSelectClause()) {
-			CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-		}
-		
-		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
-		// Set the correct dbName
-		$criteria->setDbName(self::DATABASE_NAME);
-
-		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-
-		$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$stmt = BasePeer::doCount($criteria, $con);
-
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$count = (int) $row[0];
-		} else {
-			$count = 0; // no rows returned; we infer that means 0 matches.
-		}
-		$stmt->closeCursor();
-		return $count;
-	}
-
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
@@ -490,14 +436,14 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(CahierTexteCompteRenduPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(AbsenceEnvoiPeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			CahierTexteCompteRenduPeer::addSelectColumns($criteria);
+			AbsenceEnvoiPeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -506,10 +452,10 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(array(AbsenceEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -523,78 +469,60 @@ abstract class BaseCahierTexteCompteRenduPeer {
 
 
 	/**
-	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with their Groupe objects.
-	 * @param      Criteria  $c
+	 * Returns the number of rows matching criteria, joining the related AbsenceTypeEnvoi table
+	 *
+	 * @param      Criteria $c
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of CahierTexteCompteRendu objects.
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
+	 * @return     int Number of matching rows.
 	 */
-	public static function doSelectJoinGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinAbsenceTypeEnvoi(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
 
-		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(AbsenceEnvoiPeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
 		}
 
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
-		$startcol = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
-		GroupePeer::addSelectColumns($c);
+		if (!$criteria->hasSelectClause()) {
+			AbsenceEnvoiPeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
 
-		$c->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
-		$results = array();
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
 
-		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
-				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
-				// $obj1->hydrate($row, 0, true); // rehydrate
-			} else {
+		$criteria->addJoin(array(AbsenceEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceTypeEnvoiPeer::ID,), $join_behavior);
+		$stmt = BasePeer::doCount($criteria, $con);
 
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
-
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
-				$obj1 = new $cls();
-				$obj1->hydrate($row);
-				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
-			} // if $obj1 already loaded
-
-			$key2 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol);
-			if ($key2 !== null) {
-				$obj2 = GroupePeer::getInstanceFromPool($key2);
-				if (!$obj2) {
-
-					$omClass = GroupePeer::getOMClass();
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol);
-					GroupePeer::addInstanceToPool($obj2, $key2);
-				} // if obj2 already loaded
-
-				// Add the $obj1 (CahierTexteCompteRendu) to $obj2 (Groupe)
-				$obj2->addCahierTexteCompteRendu($obj1);
-
-			} // if joined row was not null
-
-			$results[] = $obj1;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
 		}
 		$stmt->closeCursor();
-		return $results;
+		return $count;
 	}
 
 
 	/**
-	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with their UtilisateurProfessionnel objects.
+	 * Selects a collection of AbsenceEnvoi objects pre-filled with their UtilisateurProfessionnel objects.
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of CahierTexteCompteRendu objects.
+	 * @return     array Array of AbsenceEnvoi objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -607,28 +535,28 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$c->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
-		$startcol = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
+		AbsenceEnvoiPeer::addSelectColumns($c);
+		$startcol = (AbsenceEnvoiPeer::NUM_COLUMNS - AbsenceEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
 		UtilisateurProfessionnelPeer::addSelectColumns($c);
 
-		$c->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$c->addJoin(array(AbsenceEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
+			$key1 = AbsenceEnvoiPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = AbsenceEnvoiPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
+				$omClass = AbsenceEnvoiPeer::getOMClass();
 
 				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
+				AbsenceEnvoiPeer::addInstanceToPool($obj1, $key1);
 			} // if $obj1 already loaded
 
 			$key2 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol);
@@ -644,8 +572,75 @@ abstract class BaseCahierTexteCompteRenduPeer {
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 already loaded
 
-				// Add the $obj1 (CahierTexteCompteRendu) to $obj2 (UtilisateurProfessionnel)
-				$obj2->addCahierTexteCompteRendu($obj1);
+				// Add the $obj1 (AbsenceEnvoi) to $obj2 (UtilisateurProfessionnel)
+				$obj2->addAbsenceEnvoi($obj1);
+
+			} // if joined row was not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of AbsenceEnvoi objects pre-filled with their AbsenceTypeEnvoi objects.
+	 * @param      Criteria  $c
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of AbsenceEnvoi objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAbsenceTypeEnvoi(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$c = clone $c;
+
+		// Set the correct dbName if it has not been overridden
+		if ($c->getDbName() == Propel::getDefaultDB()) {
+			$c->setDbName(self::DATABASE_NAME);
+		}
+
+		AbsenceEnvoiPeer::addSelectColumns($c);
+		$startcol = (AbsenceEnvoiPeer::NUM_COLUMNS - AbsenceEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
+		AbsenceTypeEnvoiPeer::addSelectColumns($c);
+
+		$c->addJoin(array(AbsenceEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceTypeEnvoiPeer::ID,), $join_behavior);
+		$stmt = BasePeer::doSelect($c, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = AbsenceEnvoiPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = AbsenceEnvoiPeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+
+				$omClass = AbsenceEnvoiPeer::getOMClass();
+
+				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				AbsenceEnvoiPeer::addInstanceToPool($obj1, $key1);
+			} // if $obj1 already loaded
+
+			$key2 = AbsenceTypeEnvoiPeer::getPrimaryKeyHashFromRow($row, $startcol);
+			if ($key2 !== null) {
+				$obj2 = AbsenceTypeEnvoiPeer::getInstanceFromPool($key2);
+				if (!$obj2) {
+
+					$omClass = AbsenceTypeEnvoiPeer::getOMClass();
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol);
+					AbsenceTypeEnvoiPeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 already loaded
+
+				// Add the $obj1 (AbsenceEnvoi) to $obj2 (AbsenceTypeEnvoi)
+				$obj2->addAbsenceEnvoi($obj1);
 
 			} // if joined row was not null
 
@@ -673,14 +668,14 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(CahierTexteCompteRenduPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(AbsenceEnvoiPeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			CahierTexteCompteRenduPeer::addSelectColumns($criteria);
+			AbsenceEnvoiPeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -689,11 +684,11 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(array(AbsenceEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(array(AbsenceEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceTypeEnvoiPeer::ID,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -706,12 +701,12 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	}
 
 	/**
-	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with all related objects.
+	 * Selects a collection of AbsenceEnvoi objects pre-filled with all related objects.
 	 *
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of CahierTexteCompteRendu objects.
+	 * @return     array Array of AbsenceEnvoi objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -724,128 +719,79 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$c->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
-		$startcol2 = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
-
-		GroupePeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		AbsenceEnvoiPeer::addSelectColumns($c);
+		$startcol2 = (AbsenceEnvoiPeer::NUM_COLUMNS - AbsenceEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
 
 		UtilisateurProfessionnelPeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$c->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		AbsenceTypeEnvoiPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + (AbsenceTypeEnvoiPeer::NUM_COLUMNS - AbsenceTypeEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		$c->addJoin(array(AbsenceEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$c->addJoin(array(AbsenceEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceTypeEnvoiPeer::ID,), $join_behavior);
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
+			$key1 = AbsenceEnvoiPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = AbsenceEnvoiPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
+				$omClass = AbsenceEnvoiPeer::getOMClass();
 
 				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
+				AbsenceEnvoiPeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
-
-			// Add objects for joined Groupe rows
-
-			$key2 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol2);
-			if ($key2 !== null) {
-				$obj2 = GroupePeer::getInstanceFromPool($key2);
-				if (!$obj2) {
-
-					$omClass = GroupePeer::getOMClass();
-
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol2);
-					GroupePeer::addInstanceToPool($obj2, $key2);
-				} // if obj2 loaded
-
-				// Add the $obj1 (CahierTexteCompteRendu) to the collection in $obj2 (Groupe)
-				$obj2->addCahierTexteCompteRendu($obj1);
-			} // if joined row not null
 
 			// Add objects for joined UtilisateurProfessionnel rows
 
-			$key3 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-			if ($key3 !== null) {
-				$obj3 = UtilisateurProfessionnelPeer::getInstanceFromPool($key3);
-				if (!$obj3) {
+			$key2 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+			if ($key2 !== null) {
+				$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
+				if (!$obj2) {
 
 					$omClass = UtilisateurProfessionnelPeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 loaded
+
+				// Add the $obj1 (AbsenceEnvoi) to the collection in $obj2 (UtilisateurProfessionnel)
+				$obj2->addAbsenceEnvoi($obj1);
+			} // if joined row not null
+
+			// Add objects for joined AbsenceTypeEnvoi rows
+
+			$key3 = AbsenceTypeEnvoiPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+			if ($key3 !== null) {
+				$obj3 = AbsenceTypeEnvoiPeer::getInstanceFromPool($key3);
+				if (!$obj3) {
+
+					$omClass = AbsenceTypeEnvoiPeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
-					UtilisateurProfessionnelPeer::addInstanceToPool($obj3, $key3);
+					AbsenceTypeEnvoiPeer::addInstanceToPool($obj3, $key3);
 				} // if obj3 loaded
 
-				// Add the $obj1 (CahierTexteCompteRendu) to the collection in $obj3 (UtilisateurProfessionnel)
-				$obj3->addCahierTexteCompteRendu($obj1);
+				// Add the $obj1 (AbsenceEnvoi) to the collection in $obj3 (AbsenceTypeEnvoi)
+				$obj3->addAbsenceEnvoi($obj1);
 			} // if joined row not null
 
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
 		return $results;
-	}
-
-
-	/**
-	 * Returns the number of rows matching criteria, joining the related Groupe table
-	 *
-	 * @param      Criteria $c
-	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     int Number of matching rows.
-	 */
-	public static function doCountJoinAllExceptGroupe(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		// we're going to modify criteria, so copy it first
-		$criteria = clone $criteria;
-
-		// We need to set the primary table name, since in the case that there are no WHERE columns
-		// it will be impossible for the BasePeer::createSelectSql() method to determine which
-		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(CahierTexteCompteRenduPeer::TABLE_NAME);
-		
-		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->setDistinct();
-		}
-
-		if (!$criteria->hasSelectClause()) {
-			CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-		}
-		
-		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
-		// Set the correct dbName
-		$criteria->setDbName(self::DATABASE_NAME);
-
-		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-	
-				$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$stmt = BasePeer::doCount($criteria, $con);
-
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$count = (int) $row[0];
-		} else {
-			$count = 0; // no rows returned; we infer that means 0 matches.
-		}
-		$stmt->closeCursor();
-		return $count;
 	}
 
 
@@ -866,14 +812,14 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(CahierTexteCompteRenduPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(AbsenceEnvoiPeer::TABLE_NAME);
 		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			CahierTexteCompteRenduPeer::addSelectColumns($criteria);
+			AbsenceEnvoiPeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
@@ -882,10 +828,10 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$criteria->addJoin(array(AbsenceEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceTypeEnvoiPeer::ID,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -899,16 +845,65 @@ abstract class BaseCahierTexteCompteRenduPeer {
 
 
 	/**
-	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with all related objects except Groupe.
+	 * Returns the number of rows matching criteria, joining the related AbsenceTypeEnvoi table
+	 *
+	 * @param      Criteria $c
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptAbsenceTypeEnvoi(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(AbsenceEnvoiPeer::TABLE_NAME);
+		
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			AbsenceEnvoiPeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+				$criteria->addJoin(array(AbsenceEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Selects a collection of AbsenceEnvoi objects pre-filled with all related objects except UtilisateurProfessionnel.
 	 *
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of CahierTexteCompteRendu objects.
+	 * @return     array Array of AbsenceEnvoi objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$c = clone $c;
 
@@ -919,30 +914,105 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$c->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
-		$startcol2 = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
+		AbsenceEnvoiPeer::addSelectColumns($c);
+		$startcol2 = (AbsenceEnvoiPeer::NUM_COLUMNS - AbsenceEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		AbsenceTypeEnvoiPeer::addSelectColumns($c);
+		$startcol3 = $startcol2 + (AbsenceTypeEnvoiPeer::NUM_COLUMNS - AbsenceTypeEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+				$c->addJoin(array(AbsenceEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceTypeEnvoiPeer::ID,), $join_behavior);
 
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
+			$key1 = AbsenceEnvoiPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = AbsenceEnvoiPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
+				$omClass = AbsenceEnvoiPeer::getOMClass();
 
 				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
+				AbsenceEnvoiPeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+				// Add objects for joined AbsenceTypeEnvoi rows
+
+				$key2 = AbsenceTypeEnvoiPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = AbsenceTypeEnvoiPeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$omClass = AbsenceTypeEnvoiPeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					AbsenceTypeEnvoiPeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
+
+				// Add the $obj1 (AbsenceEnvoi) to the collection in $obj2 (AbsenceTypeEnvoi)
+				$obj2->addAbsenceEnvoi($obj1);
+
+			} // if joined row is not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of AbsenceEnvoi objects pre-filled with all related objects except AbsenceTypeEnvoi.
+	 *
+	 * @param      Criteria  $c
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of AbsenceEnvoi objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptAbsenceTypeEnvoi(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$c = clone $c;
+
+		// Set the correct dbName if it has not been overridden
+		// $c->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($c->getDbName() == Propel::getDefaultDB()) {
+			$c->setDbName(self::DATABASE_NAME);
+		}
+
+		AbsenceEnvoiPeer::addSelectColumns($c);
+		$startcol2 = (AbsenceEnvoiPeer::NUM_COLUMNS - AbsenceEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+
+				$c->addJoin(array(AbsenceEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+
+		$stmt = BasePeer::doSelect($c, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = AbsenceEnvoiPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = AbsenceEnvoiPeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$omClass = AbsenceEnvoiPeer::getOMClass();
+
+				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				AbsenceEnvoiPeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
 				// Add objects for joined UtilisateurProfessionnel rows
@@ -961,83 +1031,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
 				} // if $obj2 already loaded
 
-				// Add the $obj1 (CahierTexteCompteRendu) to the collection in $obj2 (UtilisateurProfessionnel)
-				$obj2->addCahierTexteCompteRendu($obj1);
-
-			} // if joined row is not null
-
-			$results[] = $obj1;
-		}
-		$stmt->closeCursor();
-		return $results;
-	}
-
-
-	/**
-	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with all related objects except UtilisateurProfessionnel.
-	 *
-	 * @param      Criteria  $c
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of CahierTexteCompteRendu objects.
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function doSelectJoinAllExceptUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$c = clone $c;
-
-		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
-		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
-		}
-
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
-		$startcol2 = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
-
-		GroupePeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
-
-				$c->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-
-		$stmt = BasePeer::doSelect($c, $con);
-		$results = array();
-
-		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
-				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
-				// $obj1->hydrate($row, 0, true); // rehydrate
-			} else {
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
-
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
-				$obj1 = new $cls();
-				$obj1->hydrate($row);
-				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
-			} // if obj1 already loaded
-
-				// Add objects for joined Groupe rows
-
-				$key2 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol2);
-				if ($key2 !== null) {
-					$obj2 = GroupePeer::getInstanceFromPool($key2);
-					if (!$obj2) {
-	
-						$omClass = GroupePeer::getOMClass();
-
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol2);
-					GroupePeer::addInstanceToPool($obj2, $key2);
-				} // if $obj2 already loaded
-
-				// Add the $obj1 (CahierTexteCompteRendu) to the collection in $obj2 (Groupe)
-				$obj2->addCahierTexteCompteRendu($obj1);
+				// Add the $obj1 (AbsenceEnvoi) to the collection in $obj2 (UtilisateurProfessionnel)
+				$obj2->addAbsenceEnvoi($obj1);
 
 			} // if joined row is not null
 
@@ -1070,13 +1065,13 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 */
 	public static function getOMClass()
 	{
-		return CahierTexteCompteRenduPeer::CLASS_DEFAULT;
+		return AbsenceEnvoiPeer::CLASS_DEFAULT;
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a CahierTexteCompteRendu or Criteria object.
+	 * Method perform an INSERT on the database, given a AbsenceEnvoi or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or CahierTexteCompteRendu object containing data that is used to create the INSERT statement.
+	 * @param      mixed $values Criteria or AbsenceEnvoi object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -1085,17 +1080,17 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 		} else {
-			$criteria = $values->buildCriteria(); // build Criteria from CahierTexteCompteRendu object
+			$criteria = $values->buildCriteria(); // build Criteria from AbsenceEnvoi object
 		}
 
-		if ($criteria->containsKey(CahierTexteCompteRenduPeer::ID_CT) && $criteria->keyContainsValue(CahierTexteCompteRenduPeer::ID_CT) ) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key ('.CahierTexteCompteRenduPeer::ID_CT.')');
+		if ($criteria->containsKey(AbsenceEnvoiPeer::ID) && $criteria->keyContainsValue(AbsenceEnvoiPeer::ID) ) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key ('.AbsenceEnvoiPeer::ID.')');
 		}
 
 
@@ -1117,9 +1112,9 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a CahierTexteCompteRendu or Criteria object.
+	 * Method perform an UPDATE on the database, given a AbsenceEnvoi or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or CahierTexteCompteRendu object containing data that is used to create the UPDATE statement.
+	 * @param      mixed $values Criteria or AbsenceEnvoi object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -1128,7 +1123,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -1136,10 +1131,10 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(CahierTexteCompteRenduPeer::ID_CT);
-			$selectCriteria->add(CahierTexteCompteRenduPeer::ID_CT, $criteria->remove(CahierTexteCompteRenduPeer::ID_CT), $comparison);
+			$comparison = $criteria->getComparison(AbsenceEnvoiPeer::ID);
+			$selectCriteria->add(AbsenceEnvoiPeer::ID, $criteria->remove(AbsenceEnvoiPeer::ID), $comparison);
 
-		} else { // $values is CahierTexteCompteRendu object
+		} else { // $values is AbsenceEnvoi object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
 		}
@@ -1151,22 +1146,22 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the ct_entry table.
+	 * Method to DELETE all rows from the a_envois table.
 	 *
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
 	public static function doDeleteAll($con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += CahierTexteCompteRenduPeer::doOnDeleteCascade(new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(CahierTexteCompteRenduPeer::TABLE_NAME, $con);
+			AbsenceEnvoiPeer::doOnDeleteSetNull(new Criteria(AbsenceEnvoiPeer::DATABASE_NAME), $con);
+			$affectedRows += BasePeer::doDeleteAll(AbsenceEnvoiPeer::TABLE_NAME, $con);
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1176,9 +1171,9 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a CahierTexteCompteRendu or Criteria object OR a primary key value.
+	 * Method perform a DELETE on the database, given a AbsenceEnvoi or Criteria object OR a primary key value.
 	 *
-	 * @param      mixed $values Criteria or CahierTexteCompteRendu object or primary key or array of primary keys
+	 * @param      mixed $values Criteria or AbsenceEnvoi object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
 	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -1189,20 +1184,20 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			// invalidate the cache for all objects of this type, since we have no
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
-			CahierTexteCompteRenduPeer::clearInstancePool();
+			AbsenceEnvoiPeer::clearInstancePool();
 
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof CahierTexteCompteRendu) {
+		} elseif ($values instanceof AbsenceEnvoi) {
 			// invalidate the cache for this single object
-			CahierTexteCompteRenduPeer::removeInstanceFromPool($values);
+			AbsenceEnvoiPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
 		} else {
@@ -1211,11 +1206,11 @@ abstract class BaseCahierTexteCompteRenduPeer {
 
 
 			$criteria = new Criteria(self::DATABASE_NAME);
-			$criteria->add(CahierTexteCompteRenduPeer::ID_CT, (array) $values, Criteria::IN);
+			$criteria->add(AbsenceEnvoiPeer::ID, (array) $values, Criteria::IN);
 
 			foreach ((array) $values as $singleval) {
 				// we can invalidate the cache for this single object
-				CahierTexteCompteRenduPeer::removeInstanceFromPool($singleval);
+				AbsenceEnvoiPeer::removeInstanceFromPool($singleval);
 			}
 		}
 
@@ -1228,21 +1223,21 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += CahierTexteCompteRenduPeer::doOnDeleteCascade($criteria, $con);
+			AbsenceEnvoiPeer::doOnDeleteSetNull($criteria, $con);
 			
 				// Because this db requires some delete cascade/set null emulation, we have to
 				// clear the cached instance *after* the emulation has happened (since
 				// instances get re-added by the select statement contained therein).
 				if ($values instanceof Criteria) {
-					CahierTexteCompteRenduPeer::clearInstancePool();
+					AbsenceEnvoiPeer::clearInstancePool();
 				} else { // it's a PK or object
-					CahierTexteCompteRenduPeer::removeInstanceFromPool($values);
+					AbsenceEnvoiPeer::removeInstanceFromPool($values);
 				}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
 
-			// invalidate objects in CahierTexteCompteRenduFichierJointPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			CahierTexteCompteRenduFichierJointPeer::clearInstancePool();
+			// invalidate objects in JTraitementEnvoiPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			JTraitementEnvoiPeer::clearInstancePool();
 
 			$con->commit();
 			return $affectedRows;
@@ -1253,7 +1248,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	}
 
 	/**
-	 * This is a method for emulating ON DELETE CASCADE for DBs that don't support this
+	 * This is a method for emulating ON DELETE SET NULL DBs that don't support this
 	 * feature (like MySQL or SQLite).
 	 *
 	 * This method is not very speedy because it must perform a query first to get
@@ -1263,46 +1258,45 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 *
 	 * @param      Criteria $criteria
 	 * @param      PropelPDO $con
-	 * @return     int The number of affected rows (if supported by underlying database driver).
+	 * @return     void
 	 */
-	protected static function doOnDeleteCascade(Criteria $criteria, PropelPDO $con)
+	protected static function doOnDeleteSetNull(Criteria $criteria, PropelPDO $con)
 	{
-		// initialize var to track total num of affected rows
-		$affectedRows = 0;
 
 		// first find the objects that are implicated by the $criteria
-		$objects = CahierTexteCompteRenduPeer::doSelect($criteria, $con);
+		$objects = AbsenceEnvoiPeer::doSelect($criteria, $con);
 		foreach ($objects as $obj) {
 
+			// set fkey col in related JTraitementEnvoi rows to NULL
+			$selectCriteria = new Criteria(AbsenceEnvoiPeer::DATABASE_NAME);
+			$updateValues = new Criteria(AbsenceEnvoiPeer::DATABASE_NAME);
+			$selectCriteria->add(JTraitementEnvoiPeer::A_ENVOI_ID, $obj->getId());
+			$updateValues->add(JTraitementEnvoiPeer::A_ENVOI_ID, null);
 
-			// delete related CahierTexteCompteRenduFichierJoint objects
-			$c = new Criteria(CahierTexteCompteRenduFichierJointPeer::DATABASE_NAME);
-			
-			$c->add(CahierTexteCompteRenduFichierJointPeer::ID_CT, $obj->getIdCt());
-			$affectedRows += CahierTexteCompteRenduFichierJointPeer::doDelete($c, $con);
+					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
 		}
-		return $affectedRows;
 	}
 
 	/**
-	 * Validates all modified columns of given CahierTexteCompteRendu object.
+	 * Validates all modified columns of given AbsenceEnvoi object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.
 	 *
 	 * NOTICE: This does not apply to primary or foreign keys for now.
 	 *
-	 * @param      CahierTexteCompteRendu $obj The object to validate.
+	 * @param      AbsenceEnvoi $obj The object to validate.
 	 * @param      mixed $cols Column name or array of column names.
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(CahierTexteCompteRendu $obj, $cols = null)
+	public static function doValidate(AbsenceEnvoi $obj, $cols = null)
 	{
 		$columns = array();
 
 		if ($cols) {
-			$dbMap = Propel::getDatabaseMap(CahierTexteCompteRenduPeer::DATABASE_NAME);
-			$tableMap = $dbMap->getTable(CahierTexteCompteRenduPeer::TABLE_NAME);
+			$dbMap = Propel::getDatabaseMap(AbsenceEnvoiPeer::DATABASE_NAME);
+			$tableMap = $dbMap->getTable(AbsenceEnvoiPeer::TABLE_NAME);
 
 			if (! is_array($cols)) {
 				$cols = array($cols);
@@ -1318,7 +1312,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 
 		}
 
-		return BasePeer::doValidate(CahierTexteCompteRenduPeer::DATABASE_NAME, CahierTexteCompteRenduPeer::TABLE_NAME, $columns);
+		return BasePeer::doValidate(AbsenceEnvoiPeer::DATABASE_NAME, AbsenceEnvoiPeer::TABLE_NAME, $columns);
 	}
 
 	/**
@@ -1326,23 +1320,23 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 *
 	 * @param      int $pk the primary key.
 	 * @param      PropelPDO $con the connection to use
-	 * @return     CahierTexteCompteRendu
+	 * @return     AbsenceEnvoi
 	 */
 	public static function retrieveByPK($pk, PropelPDO $con = null)
 	{
 
-		if (null !== ($obj = CahierTexteCompteRenduPeer::getInstanceFromPool((string) $pk))) {
+		if (null !== ($obj = AbsenceEnvoiPeer::getInstanceFromPool((string) $pk))) {
 			return $obj;
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
-		$criteria->add(CahierTexteCompteRenduPeer::ID_CT, $pk);
+		$criteria = new Criteria(AbsenceEnvoiPeer::DATABASE_NAME);
+		$criteria->add(AbsenceEnvoiPeer::ID, $pk);
 
-		$v = CahierTexteCompteRenduPeer::doSelect($criteria, $con);
+		$v = AbsenceEnvoiPeer::doSelect($criteria, $con);
 
 		return !empty($v) > 0 ? $v[0] : null;
 	}
@@ -1358,30 +1352,30 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	public static function retrieveByPKs($pks, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		$objs = null;
 		if (empty($pks)) {
 			$objs = array();
 		} else {
-			$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
-			$criteria->add(CahierTexteCompteRenduPeer::ID_CT, $pks, Criteria::IN);
-			$objs = CahierTexteCompteRenduPeer::doSelect($criteria, $con);
+			$criteria = new Criteria(AbsenceEnvoiPeer::DATABASE_NAME);
+			$criteria->add(AbsenceEnvoiPeer::ID, $pks, Criteria::IN);
+			$objs = AbsenceEnvoiPeer::doSelect($criteria, $con);
 		}
 		return $objs;
 	}
 
-} // BaseCahierTexteCompteRenduPeer
+} // BaseAbsenceEnvoiPeer
 
 // This is the static code needed to register the MapBuilder for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the CahierTexteCompteRenduPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the CahierTexteCompteRenduPeer class:
+// NOTE: This static code cannot call methods on the AbsenceEnvoiPeer class, because it is not defined yet.
+// If you need to use overridden methods, you can add this code to the bottom of the AbsenceEnvoiPeer class:
 //
-// Propel::getDatabaseMap(CahierTexteCompteRenduPeer::DATABASE_NAME)->addTableBuilder(CahierTexteCompteRenduPeer::TABLE_NAME, CahierTexteCompteRenduPeer::getMapBuilder());
+// Propel::getDatabaseMap(AbsenceEnvoiPeer::DATABASE_NAME)->addTableBuilder(AbsenceEnvoiPeer::TABLE_NAME, AbsenceEnvoiPeer::getMapBuilder());
 //
 // Doing so will effectively overwrite the registration below.
 
-Propel::getDatabaseMap(BaseCahierTexteCompteRenduPeer::DATABASE_NAME)->addTableBuilder(BaseCahierTexteCompteRenduPeer::TABLE_NAME, BaseCahierTexteCompteRenduPeer::getMapBuilder());
+Propel::getDatabaseMap(BaseAbsenceEnvoiPeer::DATABASE_NAME)->addTableBuilder(BaseAbsenceEnvoiPeer::TABLE_NAME, BaseAbsenceEnvoiPeer::getMapBuilder());
 

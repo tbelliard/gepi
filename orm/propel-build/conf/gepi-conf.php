@@ -19,7 +19,7 @@ return array_merge_recursive(array (
         'connection' => 
         array (
           'classname' => 'DebugPDO',
-          'dsn' => 'mysql:dbname=' . $GLOBALS["dbDb"],
+          'dsn' => 'mysql:dbname='.$GLOBALS["dbDb"],
           'user' => $GLOBALS["dbUser"],
           'password' => $GLOBALS["dbPass"],
           'options' => 

@@ -108,6 +108,16 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	private $lastJTraitementSaisieCriteria = null;
 
 	/**
+	 * @var        array JTraitementEnvoi[] Collection to store aggregation of JTraitementEnvoi objects.
+	 */
+	protected $collJTraitementEnvois;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collJTraitementEnvois.
+	 */
+	private $lastJTraitementEnvoiCriteria = null;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -571,6 +581,9 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 			$this->collJTraitementSaisies = null;
 			$this->lastJTraitementSaisieCriteria = null;
 
+			$this->collJTraitementEnvois = null;
+			$this->lastJTraitementEnvoiCriteria = null;
+
 		} // if (deep)
 	}
 
@@ -726,6 +739,14 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 				}
 			}
 
+			if ($this->collJTraitementEnvois !== null) {
+				foreach ($this->collJTraitementEnvois as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			$this->alreadyInSave = false;
 
 		}
@@ -835,6 +856,14 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 
 				if ($this->collJTraitementSaisies !== null) {
 					foreach ($this->collJTraitementSaisies as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJTraitementEnvois !== null) {
+					foreach ($this->collJTraitementEnvois as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1121,6 +1150,12 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 			foreach ($this->getJTraitementSaisies() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addJTraitementSaisie($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getJTraitementEnvois() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJTraitementEnvoi($relObj->copy($deepCopy));
 				}
 			}
 
@@ -1619,6 +1654,208 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Clears out the collJTraitementEnvois collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJTraitementEnvois()
+	 */
+	public function clearJTraitementEnvois()
+	{
+		$this->collJTraitementEnvois = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJTraitementEnvois collection (array).
+	 *
+	 * By default this just sets the collJTraitementEnvois collection to an empty array (like clearcollJTraitementEnvois());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initJTraitementEnvois()
+	{
+		$this->collJTraitementEnvois = array();
+	}
+
+	/**
+	 * Gets an array of JTraitementEnvoi objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this AbsenceTraitement has previously been saved, it will retrieve
+	 * related JTraitementEnvois from storage. If this AbsenceTraitement is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array JTraitementEnvoi[]
+	 * @throws     PropelException
+	 */
+	public function getJTraitementEnvois($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(AbsenceTraitementPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collJTraitementEnvois === null) {
+			if ($this->isNew()) {
+			   $this->collJTraitementEnvois = array();
+			} else {
+
+				$criteria->add(JTraitementEnvoiPeer::A_TRAITEMENT_ID, $this->id);
+
+				JTraitementEnvoiPeer::addSelectColumns($criteria);
+				$this->collJTraitementEnvois = JTraitementEnvoiPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(JTraitementEnvoiPeer::A_TRAITEMENT_ID, $this->id);
+
+				JTraitementEnvoiPeer::addSelectColumns($criteria);
+				if (!isset($this->lastJTraitementEnvoiCriteria) || !$this->lastJTraitementEnvoiCriteria->equals($criteria)) {
+					$this->collJTraitementEnvois = JTraitementEnvoiPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastJTraitementEnvoiCriteria = $criteria;
+		return $this->collJTraitementEnvois;
+	}
+
+	/**
+	 * Returns the number of related JTraitementEnvoi objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JTraitementEnvoi objects.
+	 * @throws     PropelException
+	 */
+	public function countJTraitementEnvois(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(AbsenceTraitementPeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collJTraitementEnvois === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(JTraitementEnvoiPeer::A_TRAITEMENT_ID, $this->id);
+
+				$count = JTraitementEnvoiPeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(JTraitementEnvoiPeer::A_TRAITEMENT_ID, $this->id);
+
+				if (!isset($this->lastJTraitementEnvoiCriteria) || !$this->lastJTraitementEnvoiCriteria->equals($criteria)) {
+					$count = JTraitementEnvoiPeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collJTraitementEnvois);
+				}
+			} else {
+				$count = count($this->collJTraitementEnvois);
+			}
+		}
+		$this->lastJTraitementEnvoiCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a JTraitementEnvoi object to this object
+	 * through the JTraitementEnvoi foreign key attribute.
+	 *
+	 * @param      JTraitementEnvoi $l JTraitementEnvoi
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addJTraitementEnvoi(JTraitementEnvoi $l)
+	{
+		if ($this->collJTraitementEnvois === null) {
+			$this->initJTraitementEnvois();
+		}
+		if (!in_array($l, $this->collJTraitementEnvois, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collJTraitementEnvois, $l);
+			$l->setAbsenceTraitement($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this AbsenceTraitement is new, it will return
+	 * an empty collection; or if this AbsenceTraitement has previously
+	 * been saved, it will retrieve related JTraitementEnvois from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in AbsenceTraitement.
+	 */
+	public function getJTraitementEnvoisJoinAbsenceEnvoi($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(AbsenceTraitementPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collJTraitementEnvois === null) {
+			if ($this->isNew()) {
+				$this->collJTraitementEnvois = array();
+			} else {
+
+				$criteria->add(JTraitementEnvoiPeer::A_TRAITEMENT_ID, $this->id);
+
+				$this->collJTraitementEnvois = JTraitementEnvoiPeer::doSelectJoinAbsenceEnvoi($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(JTraitementEnvoiPeer::A_TRAITEMENT_ID, $this->id);
+
+			if (!isset($this->lastJTraitementEnvoiCriteria) || !$this->lastJTraitementEnvoiCriteria->equals($criteria)) {
+				$this->collJTraitementEnvois = JTraitementEnvoiPeer::doSelectJoinAbsenceEnvoi($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastJTraitementEnvoiCriteria = $criteria;
+
+		return $this->collJTraitementEnvois;
+	}
+
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -1635,9 +1872,15 @@ abstract class BaseAbsenceTraitement extends BaseObject  implements Persistent {
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collJTraitementEnvois) {
+				foreach ((array) $this->collJTraitementEnvois as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		$this->collJTraitementSaisies = null;
+		$this->collJTraitementEnvois = null;
 			$this->aUtilisateurProfessionnel = null;
 			$this->aAbsenceType = null;
 			$this->aAbsenceMotif = null;

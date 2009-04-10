@@ -1,58 +1,46 @@
 <?php
 
 /**
- * Base static class for performing query and update operations on the 'resp_adr' table.
+ * Base static class for performing query and update operations on the 'a_type_envois' table.
  *
- * Table de jointure entre les responsables legaux et leur adresse
+ * Chaque envoi dispose d'un type qui est stocke ici
  *
  * @package    gepi.om
  */
-abstract class BaseResponsableEleveAdressePeer {
+abstract class BaseAbsenceTypeEnvoiPeer {
 
 	/** the default database name for this class */
 	const DATABASE_NAME = 'gepi';
 
 	/** the table name for this class */
-	const TABLE_NAME = 'resp_adr';
+	const TABLE_NAME = 'a_type_envois';
 
 	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'gepi.ResponsableEleveAdresse';
+	const CLASS_DEFAULT = 'gepi.AbsenceTypeEnvoi';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 8;
+	const NUM_COLUMNS = 4;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
-	/** the column name for the ADR_ID field */
-	const ADR_ID = 'resp_adr.ADR_ID';
+	/** the column name for the ID field */
+	const ID = 'a_type_envois.ID';
 
-	/** the column name for the ADR1 field */
-	const ADR1 = 'resp_adr.ADR1';
+	/** the column name for the NOM field */
+	const NOM = 'a_type_envois.NOM';
 
-	/** the column name for the ADR2 field */
-	const ADR2 = 'resp_adr.ADR2';
+	/** the column name for the ORDRE_AFFICHAGE field */
+	const ORDRE_AFFICHAGE = 'a_type_envois.ORDRE_AFFICHAGE';
 
-	/** the column name for the ADR3 field */
-	const ADR3 = 'resp_adr.ADR3';
-
-	/** the column name for the ADR4 field */
-	const ADR4 = 'resp_adr.ADR4';
-
-	/** the column name for the CP field */
-	const CP = 'resp_adr.CP';
-
-	/** the column name for the PAYS field */
-	const PAYS = 'resp_adr.PAYS';
-
-	/** the column name for the COMMUNE field */
-	const COMMUNE = 'resp_adr.COMMUNE';
+	/** the column name for the CONTENU field */
+	const CONTENU = 'a_type_envois.CONTENU';
 
 	/**
-	 * An identiy map to hold any loaded instances of ResponsableEleveAdresse objects.
+	 * An identiy map to hold any loaded instances of AbsenceTypeEnvoi objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
 	 * queries.
-	 * @var        array ResponsableEleveAdresse[]
+	 * @var        array AbsenceTypeEnvoi[]
 	 */
 	public static $instances = array();
 
@@ -69,11 +57,11 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('AdrId', 'Adr1', 'Adr2', 'Adr3', 'Adr4', 'Cp', 'Pays', 'Commune', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('adrId', 'adr1', 'adr2', 'adr3', 'adr4', 'cp', 'pays', 'commune', ),
-		BasePeer::TYPE_COLNAME => array (self::ADR_ID, self::ADR1, self::ADR2, self::ADR3, self::ADR4, self::CP, self::PAYS, self::COMMUNE, ),
-		BasePeer::TYPE_FIELDNAME => array ('adr_id', 'adr1', 'adr2', 'adr3', 'adr4', 'cp', 'pays', 'commune', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'OrdreAffichage', 'Contenu', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'ordreAffichage', 'contenu', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::ORDRE_AFFICHAGE, self::CONTENU, ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'ordre_affichage', 'contenu', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
 	/**
@@ -83,11 +71,11 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('AdrId' => 0, 'Adr1' => 1, 'Adr2' => 2, 'Adr3' => 3, 'Adr4' => 4, 'Cp' => 5, 'Pays' => 6, 'Commune' => 7, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('adrId' => 0, 'adr1' => 1, 'adr2' => 2, 'adr3' => 3, 'adr4' => 4, 'cp' => 5, 'pays' => 6, 'commune' => 7, ),
-		BasePeer::TYPE_COLNAME => array (self::ADR_ID => 0, self::ADR1 => 1, self::ADR2 => 2, self::ADR3 => 3, self::ADR4 => 4, self::CP => 5, self::PAYS => 6, self::COMMUNE => 7, ),
-		BasePeer::TYPE_FIELDNAME => array ('adr_id' => 0, 'adr1' => 1, 'adr2' => 2, 'adr3' => 3, 'adr4' => 4, 'cp' => 5, 'pays' => 6, 'commune' => 7, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'OrdreAffichage' => 2, 'Contenu' => 3, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'ordreAffichage' => 2, 'contenu' => 3, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::ORDRE_AFFICHAGE => 2, self::CONTENU => 3, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'ordre_affichage' => 2, 'contenu' => 3, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
 	/**
@@ -97,7 +85,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function getMapBuilder()
 	{
 		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new ResponsableEleveAdresseMapBuilder();
+			self::$mapBuilder = new AbsenceTypeEnvoiMapBuilder();
 		}
 		return self::$mapBuilder;
 	}
@@ -147,12 +135,12 @@ abstract class BaseResponsableEleveAdressePeer {
 	 *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
 	 * </code>
 	 * @param      string $alias The alias for the current table.
-	 * @param      string $column The column name for current table. (i.e. ResponsableEleveAdressePeer::COLUMN_NAME).
+	 * @param      string $column The column name for current table. (i.e. AbsenceTypeEnvoiPeer::COLUMN_NAME).
 	 * @return     string
 	 */
 	public static function alias($alias, $column)
 	{
-		return str_replace(ResponsableEleveAdressePeer::TABLE_NAME.'.', $alias.'.', $column);
+		return str_replace(AbsenceTypeEnvoiPeer::TABLE_NAME.'.', $alias.'.', $column);
 	}
 
 	/**
@@ -169,21 +157,13 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function addSelectColumns(Criteria $criteria)
 	{
 
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR_ID);
+		$criteria->addSelectColumn(AbsenceTypeEnvoiPeer::ID);
 
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR1);
+		$criteria->addSelectColumn(AbsenceTypeEnvoiPeer::NOM);
 
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR2);
+		$criteria->addSelectColumn(AbsenceTypeEnvoiPeer::ORDRE_AFFICHAGE);
 
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR3);
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR4);
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::CP);
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::PAYS);
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::COMMUNE);
+		$criteria->addSelectColumn(AbsenceTypeEnvoiPeer::CONTENU);
 
 	}
 
@@ -203,21 +183,21 @@ abstract class BaseResponsableEleveAdressePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(ResponsableEleveAdressePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(AbsenceTypeEnvoiPeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			ResponsableEleveAdressePeer::addSelectColumns($criteria);
+			AbsenceTypeEnvoiPeer::addSelectColumns($criteria);
 		}
 
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
 
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceTypeEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 		// BasePeer returns a PDOStatement
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -235,7 +215,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
-	 * @return     ResponsableEleveAdresse
+	 * @return     AbsenceTypeEnvoi
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -243,7 +223,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
-		$objects = ResponsableEleveAdressePeer::doSelect($critcopy, $con);
+		$objects = AbsenceTypeEnvoiPeer::doSelect($critcopy, $con);
 		if ($objects) {
 			return $objects[0];
 		}
@@ -260,7 +240,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	 */
 	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return ResponsableEleveAdressePeer::populateObjects(ResponsableEleveAdressePeer::doSelectStmt($criteria, $con));
+		return AbsenceTypeEnvoiPeer::populateObjects(AbsenceTypeEnvoiPeer::doSelectStmt($criteria, $con));
 	}
 	/**
 	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -278,12 +258,12 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceTypeEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
-			ResponsableEleveAdressePeer::addSelectColumns($criteria);
+			AbsenceTypeEnvoiPeer::addSelectColumns($criteria);
 		}
 
 		// Set the correct dbName
@@ -301,14 +281,14 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
 	 * and retrieveByPK*() calls.
 	 *
-	 * @param      ResponsableEleveAdresse $value A ResponsableEleveAdresse object.
+	 * @param      AbsenceTypeEnvoi $value A AbsenceTypeEnvoi object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(ResponsableEleveAdresse $obj, $key = null)
+	public static function addInstanceToPool(AbsenceTypeEnvoi $obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = (string) $obj->getAdrId();
+				$key = (string) $obj->getId();
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -322,18 +302,18 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * methods in your stub classes -- you may need to explicitly remove objects
 	 * from the cache in order to prevent returning objects that no longer exist.
 	 *
-	 * @param      mixed $value A ResponsableEleveAdresse object or a primary key value.
+	 * @param      mixed $value A AbsenceTypeEnvoi object or a primary key value.
 	 */
 	public static function removeInstanceFromPool($value)
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
-			if (is_object($value) && $value instanceof ResponsableEleveAdresse) {
-				$key = (string) $value->getAdrId();
+			if (is_object($value) && $value instanceof AbsenceTypeEnvoi) {
+				$key = (string) $value->getId();
 			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
 				$key = (string) $value;
 			} else {
-				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or ResponsableEleveAdresse object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or AbsenceTypeEnvoi object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
 			}
 
@@ -348,7 +328,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
 	 *
 	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-	 * @return     ResponsableEleveAdresse Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @return     AbsenceTypeEnvoi Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
 	 * @see        getPrimaryKeyHash()
 	 */
 	public static function getInstanceFromPool($key)
@@ -402,12 +382,12 @@ abstract class BaseResponsableEleveAdressePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = ResponsableEleveAdressePeer::getOMClass();
+		$cls = AbsenceTypeEnvoiPeer::getOMClass();
 		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key = ResponsableEleveAdressePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj = ResponsableEleveAdressePeer::getInstanceFromPool($key))) {
+			$key = AbsenceTypeEnvoiPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = AbsenceTypeEnvoiPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
@@ -417,7 +397,7 @@ abstract class BaseResponsableEleveAdressePeer {
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
-				ResponsableEleveAdressePeer::addInstanceToPool($obj, $key);
+				AbsenceTypeEnvoiPeer::addInstanceToPool($obj, $key);
 			} // if key exists
 		}
 		$stmt->closeCursor();
@@ -446,13 +426,13 @@ abstract class BaseResponsableEleveAdressePeer {
 	 */
 	public static function getOMClass()
 	{
-		return ResponsableEleveAdressePeer::CLASS_DEFAULT;
+		return AbsenceTypeEnvoiPeer::CLASS_DEFAULT;
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a ResponsableEleveAdresse or Criteria object.
+	 * Method perform an INSERT on the database, given a AbsenceTypeEnvoi or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or ResponsableEleveAdresse object containing data that is used to create the INSERT statement.
+	 * @param      mixed $values Criteria or AbsenceTypeEnvoi object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -461,13 +441,17 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceTypeEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 		} else {
-			$criteria = $values->buildCriteria(); // build Criteria from ResponsableEleveAdresse object
+			$criteria = $values->buildCriteria(); // build Criteria from AbsenceTypeEnvoi object
+		}
+
+		if ($criteria->containsKey(AbsenceTypeEnvoiPeer::ID) && $criteria->keyContainsValue(AbsenceTypeEnvoiPeer::ID) ) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key ('.AbsenceTypeEnvoiPeer::ID.')');
 		}
 
 
@@ -489,9 +473,9 @@ abstract class BaseResponsableEleveAdressePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a ResponsableEleveAdresse or Criteria object.
+	 * Method perform an UPDATE on the database, given a AbsenceTypeEnvoi or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or ResponsableEleveAdresse object containing data that is used to create the UPDATE statement.
+	 * @param      mixed $values Criteria or AbsenceTypeEnvoi object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -500,7 +484,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceTypeEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -508,10 +492,10 @@ abstract class BaseResponsableEleveAdressePeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(ResponsableEleveAdressePeer::ADR_ID);
-			$selectCriteria->add(ResponsableEleveAdressePeer::ADR_ID, $criteria->remove(ResponsableEleveAdressePeer::ADR_ID), $comparison);
+			$comparison = $criteria->getComparison(AbsenceTypeEnvoiPeer::ID);
+			$selectCriteria->add(AbsenceTypeEnvoiPeer::ID, $criteria->remove(AbsenceTypeEnvoiPeer::ID), $comparison);
 
-		} else { // $values is ResponsableEleveAdresse object
+		} else { // $values is AbsenceTypeEnvoi object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
 		}
@@ -523,22 +507,22 @@ abstract class BaseResponsableEleveAdressePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the resp_adr table.
+	 * Method to DELETE all rows from the a_type_envois table.
 	 *
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
 	public static function doDeleteAll($con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceTypeEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			ResponsableEleveAdressePeer::doOnDeleteSetNull(new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(ResponsableEleveAdressePeer::TABLE_NAME, $con);
+			AbsenceTypeEnvoiPeer::doOnDeleteSetNull(new Criteria(AbsenceTypeEnvoiPeer::DATABASE_NAME), $con);
+			$affectedRows += BasePeer::doDeleteAll(AbsenceTypeEnvoiPeer::TABLE_NAME, $con);
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -548,9 +532,9 @@ abstract class BaseResponsableEleveAdressePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a ResponsableEleveAdresse or Criteria object OR a primary key value.
+	 * Method perform a DELETE on the database, given a AbsenceTypeEnvoi or Criteria object OR a primary key value.
 	 *
-	 * @param      mixed $values Criteria or ResponsableEleveAdresse object or primary key or array of primary keys
+	 * @param      mixed $values Criteria or AbsenceTypeEnvoi object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
 	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -561,20 +545,20 @@ abstract class BaseResponsableEleveAdressePeer {
 	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceTypeEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			// invalidate the cache for all objects of this type, since we have no
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
-			ResponsableEleveAdressePeer::clearInstancePool();
+			AbsenceTypeEnvoiPeer::clearInstancePool();
 
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof ResponsableEleveAdresse) {
+		} elseif ($values instanceof AbsenceTypeEnvoi) {
 			// invalidate the cache for this single object
-			ResponsableEleveAdressePeer::removeInstanceFromPool($values);
+			AbsenceTypeEnvoiPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
 		} else {
@@ -583,11 +567,11 @@ abstract class BaseResponsableEleveAdressePeer {
 
 
 			$criteria = new Criteria(self::DATABASE_NAME);
-			$criteria->add(ResponsableEleveAdressePeer::ADR_ID, (array) $values, Criteria::IN);
+			$criteria->add(AbsenceTypeEnvoiPeer::ID, (array) $values, Criteria::IN);
 
 			foreach ((array) $values as $singleval) {
 				// we can invalidate the cache for this single object
-				ResponsableEleveAdressePeer::removeInstanceFromPool($singleval);
+				AbsenceTypeEnvoiPeer::removeInstanceFromPool($singleval);
 			}
 		}
 
@@ -600,21 +584,21 @@ abstract class BaseResponsableEleveAdressePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			ResponsableEleveAdressePeer::doOnDeleteSetNull($criteria, $con);
+			AbsenceTypeEnvoiPeer::doOnDeleteSetNull($criteria, $con);
 			
 				// Because this db requires some delete cascade/set null emulation, we have to
 				// clear the cached instance *after* the emulation has happened (since
 				// instances get re-added by the select statement contained therein).
 				if ($values instanceof Criteria) {
-					ResponsableEleveAdressePeer::clearInstancePool();
+					AbsenceTypeEnvoiPeer::clearInstancePool();
 				} else { // it's a PK or object
-					ResponsableEleveAdressePeer::removeInstanceFromPool($values);
+					AbsenceTypeEnvoiPeer::removeInstanceFromPool($values);
 				}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
 
-			// invalidate objects in ResponsableElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			ResponsableElevePeer::clearInstancePool();
+			// invalidate objects in AbsenceEnvoiPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			AbsenceEnvoiPeer::clearInstancePool();
 
 			$con->commit();
 			return $affectedRows;
@@ -641,14 +625,14 @@ abstract class BaseResponsableEleveAdressePeer {
 	{
 
 		// first find the objects that are implicated by the $criteria
-		$objects = ResponsableEleveAdressePeer::doSelect($criteria, $con);
+		$objects = AbsenceTypeEnvoiPeer::doSelect($criteria, $con);
 		foreach ($objects as $obj) {
 
-			// set fkey col in related ResponsableEleve rows to NULL
-			$selectCriteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$updateValues = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$selectCriteria->add(ResponsableElevePeer::ADR_ID, $obj->getAdrId());
-			$updateValues->add(ResponsableElevePeer::ADR_ID, null);
+			// set fkey col in related AbsenceEnvoi rows to NULL
+			$selectCriteria = new Criteria(AbsenceTypeEnvoiPeer::DATABASE_NAME);
+			$updateValues = new Criteria(AbsenceTypeEnvoiPeer::DATABASE_NAME);
+			$selectCriteria->add(AbsenceEnvoiPeer::ID_TYPE_ENVOI, $obj->getId());
+			$updateValues->add(AbsenceEnvoiPeer::ID_TYPE_ENVOI, null);
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
@@ -656,24 +640,24 @@ abstract class BaseResponsableEleveAdressePeer {
 	}
 
 	/**
-	 * Validates all modified columns of given ResponsableEleveAdresse object.
+	 * Validates all modified columns of given AbsenceTypeEnvoi object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.
 	 *
 	 * NOTICE: This does not apply to primary or foreign keys for now.
 	 *
-	 * @param      ResponsableEleveAdresse $obj The object to validate.
+	 * @param      AbsenceTypeEnvoi $obj The object to validate.
 	 * @param      mixed $cols Column name or array of column names.
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(ResponsableEleveAdresse $obj, $cols = null)
+	public static function doValidate(AbsenceTypeEnvoi $obj, $cols = null)
 	{
 		$columns = array();
 
 		if ($cols) {
-			$dbMap = Propel::getDatabaseMap(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$tableMap = $dbMap->getTable(ResponsableEleveAdressePeer::TABLE_NAME);
+			$dbMap = Propel::getDatabaseMap(AbsenceTypeEnvoiPeer::DATABASE_NAME);
+			$tableMap = $dbMap->getTable(AbsenceTypeEnvoiPeer::TABLE_NAME);
 
 			if (! is_array($cols)) {
 				$cols = array($cols);
@@ -689,31 +673,31 @@ abstract class BaseResponsableEleveAdressePeer {
 
 		}
 
-		return BasePeer::doValidate(ResponsableEleveAdressePeer::DATABASE_NAME, ResponsableEleveAdressePeer::TABLE_NAME, $columns);
+		return BasePeer::doValidate(AbsenceTypeEnvoiPeer::DATABASE_NAME, AbsenceTypeEnvoiPeer::TABLE_NAME, $columns);
 	}
 
 	/**
 	 * Retrieve a single object by pkey.
 	 *
-	 * @param      string $pk the primary key.
+	 * @param      int $pk the primary key.
 	 * @param      PropelPDO $con the connection to use
-	 * @return     ResponsableEleveAdresse
+	 * @return     AbsenceTypeEnvoi
 	 */
 	public static function retrieveByPK($pk, PropelPDO $con = null)
 	{
 
-		if (null !== ($obj = ResponsableEleveAdressePeer::getInstanceFromPool((string) $pk))) {
+		if (null !== ($obj = AbsenceTypeEnvoiPeer::getInstanceFromPool((string) $pk))) {
 			return $obj;
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceTypeEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-		$criteria->add(ResponsableEleveAdressePeer::ADR_ID, $pk);
+		$criteria = new Criteria(AbsenceTypeEnvoiPeer::DATABASE_NAME);
+		$criteria->add(AbsenceTypeEnvoiPeer::ID, $pk);
 
-		$v = ResponsableEleveAdressePeer::doSelect($criteria, $con);
+		$v = AbsenceTypeEnvoiPeer::doSelect($criteria, $con);
 
 		return !empty($v) > 0 ? $v[0] : null;
 	}
@@ -729,30 +713,30 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function retrieveByPKs($pks, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceTypeEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		$objs = null;
 		if (empty($pks)) {
 			$objs = array();
 		} else {
-			$criteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$criteria->add(ResponsableEleveAdressePeer::ADR_ID, $pks, Criteria::IN);
-			$objs = ResponsableEleveAdressePeer::doSelect($criteria, $con);
+			$criteria = new Criteria(AbsenceTypeEnvoiPeer::DATABASE_NAME);
+			$criteria->add(AbsenceTypeEnvoiPeer::ID, $pks, Criteria::IN);
+			$objs = AbsenceTypeEnvoiPeer::doSelect($criteria, $con);
 		}
 		return $objs;
 	}
 
-} // BaseResponsableEleveAdressePeer
+} // BaseAbsenceTypeEnvoiPeer
 
 // This is the static code needed to register the MapBuilder for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the ResponsableEleveAdressePeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the ResponsableEleveAdressePeer class:
+// NOTE: This static code cannot call methods on the AbsenceTypeEnvoiPeer class, because it is not defined yet.
+// If you need to use overridden methods, you can add this code to the bottom of the AbsenceTypeEnvoiPeer class:
 //
-// Propel::getDatabaseMap(ResponsableEleveAdressePeer::DATABASE_NAME)->addTableBuilder(ResponsableEleveAdressePeer::TABLE_NAME, ResponsableEleveAdressePeer::getMapBuilder());
+// Propel::getDatabaseMap(AbsenceTypeEnvoiPeer::DATABASE_NAME)->addTableBuilder(AbsenceTypeEnvoiPeer::TABLE_NAME, AbsenceTypeEnvoiPeer::getMapBuilder());
 //
 // Doing so will effectively overwrite the registration below.
 
-Propel::getDatabaseMap(BaseResponsableEleveAdressePeer::DATABASE_NAME)->addTableBuilder(BaseResponsableEleveAdressePeer::TABLE_NAME, BaseResponsableEleveAdressePeer::getMapBuilder());
+Propel::getDatabaseMap(BaseAbsenceTypeEnvoiPeer::DATABASE_NAME)->addTableBuilder(BaseAbsenceTypeEnvoiPeer::TABLE_NAME, BaseAbsenceTypeEnvoiPeer::getMapBuilder());
 
