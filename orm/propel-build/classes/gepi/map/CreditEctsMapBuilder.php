@@ -2,7 +2,7 @@
 
 
 /**
- * This class adds structure of 'j_groupes_classes' table to 'gepi' DatabaseMap object.
+ * This class adds structure of 'ects_credits' table to 'gepi' DatabaseMap object.
  *
  *
  *
@@ -13,12 +13,12 @@
  *
  * @package    gepi.map
  */
-class JGroupesClassesMapBuilder implements MapBuilder {
+class CreditEctsMapBuilder implements MapBuilder {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'gepi.map.JGroupesClassesMapBuilder';
+	const CLASS_NAME = 'gepi.map.CreditEctsMapBuilder';
 
 	/**
 	 * The database map.
@@ -54,28 +54,26 @@ class JGroupesClassesMapBuilder implements MapBuilder {
 	 */
 	public function doBuild()
 	{
-		$this->dbMap = Propel::getDatabaseMap(JGroupesClassesPeer::DATABASE_NAME);
+		$this->dbMap = Propel::getDatabaseMap(CreditEctsPeer::DATABASE_NAME);
 
-		$tMap = $this->dbMap->addTable(JGroupesClassesPeer::TABLE_NAME);
-		$tMap->setPhpName('JGroupesClasses');
-		$tMap->setClassname('JGroupesClasses');
+		$tMap = $this->dbMap->addTable(CreditEctsPeer::TABLE_NAME);
+		$tMap->setPhpName('CreditEcts');
+		$tMap->setClassname('CreditEcts');
 
-		$tMap->setUseIdGenerator(false);
+		$tMap->setUseIdGenerator(true);
 
-		$tMap->addForeignPrimaryKey('ID_GROUPE', 'IdGroupe', 'INTEGER' , 'groupes', 'ID', true, null);
+		$tMap->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11);
 
-		$tMap->addForeignPrimaryKey('ID_CLASSE', 'IdClasse', 'INTEGER' , 'classes', 'ID', true, null);
+		$tMap->addForeignPrimaryKey('ID_ELEVE', 'IdEleve', 'INTEGER' , 'eleves', 'ID_ELEVE', true, 11);
 
-		$tMap->addColumn('PRIORITE', 'Priorite', 'SMALLINT', true, null);
+		$tMap->addPrimaryKey('NUM_PERIODE', 'NumPeriode', 'INTEGER', true, 11);
 
-		$tMap->addColumn('COEF', 'Coef', 'DECIMAL', true, null);
+		$tMap->addForeignPrimaryKey('ID_GROUPE', 'IdGroupe', 'INTEGER' , 'groupes', 'ID', true, 11);
 
-		$tMap->addColumn('CATEGORIE_ID', 'CategorieId', 'INTEGER', true, null);
+		$tMap->addColumn('VALEUR', 'Valeur', 'DECIMAL', true, null);
 
-		$tMap->addColumn('SAISIE_ECTS', 'SaisieEcts', 'BOOLEAN', false, null);
-
-		$tMap->addColumn('VALEUR_ECTS', 'ValeurEcts', 'DECIMAL', false, null);
+		$tMap->addColumn('MENTION', 'Mention', 'VARCHAR', true, 255);
 
 	} // doBuild()
 
-} // JGroupesClassesMapBuilder
+} // CreditEctsMapBuilder

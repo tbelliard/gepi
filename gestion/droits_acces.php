@@ -629,6 +629,23 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 		}
 	}
 
+	if (isset($_POST['GepiAccesSaisieEctsPP'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesSaisieEctsPP", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesSaisieEctsPP !";
+	}
+
+	if (isset($_POST['GepiAccesSaisieEctsScolarite'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesSaisieEctsScolarite", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesSaisieEctsScolarite !";
+	}
 
 
 	$tab_droits_ele_trombi=array('GepiAccesEleTrombiTousEleves',
@@ -822,6 +839,10 @@ require_once("../lib/header.inc");
 				<td style='border: 0px;'><input type="checkbox" name="AAProfPrinc" id="AAProfPrinc" value="yes" <?php if (getSettingValue("AAProfPrinc")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='AAProfPrinc' style='cursor: pointer;'> a accès aux données d'années antérieures des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est <?php echo $gepiSettings['denomination_professeur']; ?> principal</label></td>
 			</tr>
+           	<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesSaisieEctsPP" id="GepiAccesSaisieEctsPP" value="yes" <?php if (getSettingValue("GepiAccesSaisieEctsPP")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesSaisieEctsPP' style='cursor: pointer;'> peut saisir les crédits ECTS pour sa classe</label></td>
+			</tr>
 			</table>
 	</tr>
 	<tr>
@@ -874,6 +895,10 @@ require_once("../lib/header.inc");
 				</label></td>
 			</tr>
 
+           	<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesSaisieEctsScolarite" id="GepiAccesSaisieEctsScolarite" value="yes" <?php if (getSettingValue("GepiAccesSaisieEctsScolarite")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesSaisieEctsScolarite' style='cursor: pointer;'> peut saisir les crédits ECTS</label></td>
+			</tr>
 			</table>
 		</td>
 	</tr>

@@ -120,6 +120,8 @@ CREATE TABLE j_groupes_classes
 	priorite SMALLINT  NOT NULL,
 	coef DECIMAL  NOT NULL,
 	categorie_id INTEGER  NOT NULL,
+	saisie_ects TINYINT default 0 COMMENT 'Active ou non la saisie ECTS pour cet enseignement',
+	valeur_ects DECIMAL COMMENT 'Valeur par défaut des ECTS pour cet enseignement',
 	PRIMARY KEY (id_groupe,id_classe),
 	CONSTRAINT j_groupes_classes_FK_1
 		FOREIGN KEY (id_groupe)
@@ -889,6 +891,32 @@ CREATE TABLE j_traitements_envois
 		REFERENCES a_traitements (id)
 		ON DELETE SET NULL
 )Type=MyISAM COMMENT='Table de jointure entre le traitement des absences et leur envoi';
+
+#-----------------------------------------------------------------------------
+#-- ects_credits
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS ects_credits;
+
+
+CREATE TABLE ects_credits
+(
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
+	id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve',
+	num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode',
+	id_groupe INTEGER(11)  NOT NULL COMMENT 'Identifiant du groupe',
+	valeur DECIMAL  NOT NULL COMMENT 'Nombre de crédits obtenus par l\'eleve',
+	mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue',
+	PRIMARY KEY (id,id_eleve,num_periode,id_groupe),
+	INDEX ects_credits_FI_1 (id_eleve),
+	CONSTRAINT ects_credits_FK_1
+		FOREIGN KEY (id_eleve)
+		REFERENCES eleves (id_eleve),
+	INDEX ects_credits_FI_2 (id_groupe),
+	CONSTRAINT ects_credits_FK_2
+		FOREIGN KEY (id_groupe)
+		REFERENCES groupes (id)
+)Type=MyISAM COMMENT='Association eleve/periode/enseignement qui précise le nombre d\'ECTS obtenus par l\'eleve';
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

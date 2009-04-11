@@ -138,6 +138,12 @@ $chemin[] = "/mod_ooo/ooo_admin.php";
 $titre[] = "Modèle OpenOffice";
 $expli[] = "Pour gérer les modèles Open Office de Gepi.";
 
+//Module ECTS
+$chemin[] = "/mod_ects/ects_admin.php";
+$titre[] = "Saisie ECTS";
+$expli[] = "Pour gérer les crédits ECTS attribués pour chaque enseignement.";
+
+
 $nb_ligne = count($chemin);
 //
 // Outils d'administration

@@ -179,6 +179,16 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 	private $lastAbsenceSaisieCriteria = null;
 
 	/**
+	 * @var        array CreditEcts[] Collection to store aggregation of CreditEcts objects.
+	 */
+	protected $collCreditEctss;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collCreditEctss.
+	 */
+	private $lastCreditEctsCriteria = null;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -790,6 +800,9 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 			$this->collAbsenceSaisies = null;
 			$this->lastAbsenceSaisieCriteria = null;
 
+			$this->collCreditEctss = null;
+			$this->lastCreditEctsCriteria = null;
+
 		} // if (deep)
 	}
 
@@ -967,6 +980,14 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 				}
 			}
 
+			if ($this->collCreditEctss !== null) {
+				foreach ($this->collCreditEctss as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			$this->alreadyInSave = false;
 
 		}
@@ -1102,6 +1123,14 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 
 				if ($this->collAbsenceSaisies !== null) {
 					foreach ($this->collAbsenceSaisies as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collCreditEctss !== null) {
+					foreach ($this->collCreditEctss as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1468,6 +1497,12 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 			foreach ($this->getAbsenceSaisies() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addAbsenceSaisie($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getCreditEctss() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addCreditEcts($relObj->copy($deepCopy));
 				}
 			}
 
@@ -3218,6 +3253,208 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Clears out the collCreditEctss collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addCreditEctss()
+	 */
+	public function clearCreditEctss()
+	{
+		$this->collCreditEctss = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collCreditEctss collection (array).
+	 *
+	 * By default this just sets the collCreditEctss collection to an empty array (like clearcollCreditEctss());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initCreditEctss()
+	{
+		$this->collCreditEctss = array();
+	}
+
+	/**
+	 * Gets an array of CreditEcts objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this Eleve has previously been saved, it will retrieve
+	 * related CreditEctss from storage. If this Eleve is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array CreditEcts[]
+	 * @throws     PropelException
+	 */
+	public function getCreditEctss($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ElevePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCreditEctss === null) {
+			if ($this->isNew()) {
+			   $this->collCreditEctss = array();
+			} else {
+
+				$criteria->add(CreditEctsPeer::ID_ELEVE, $this->id_eleve);
+
+				CreditEctsPeer::addSelectColumns($criteria);
+				$this->collCreditEctss = CreditEctsPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(CreditEctsPeer::ID_ELEVE, $this->id_eleve);
+
+				CreditEctsPeer::addSelectColumns($criteria);
+				if (!isset($this->lastCreditEctsCriteria) || !$this->lastCreditEctsCriteria->equals($criteria)) {
+					$this->collCreditEctss = CreditEctsPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastCreditEctsCriteria = $criteria;
+		return $this->collCreditEctss;
+	}
+
+	/**
+	 * Returns the number of related CreditEcts objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related CreditEcts objects.
+	 * @throws     PropelException
+	 */
+	public function countCreditEctss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ElevePeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collCreditEctss === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(CreditEctsPeer::ID_ELEVE, $this->id_eleve);
+
+				$count = CreditEctsPeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(CreditEctsPeer::ID_ELEVE, $this->id_eleve);
+
+				if (!isset($this->lastCreditEctsCriteria) || !$this->lastCreditEctsCriteria->equals($criteria)) {
+					$count = CreditEctsPeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collCreditEctss);
+				}
+			} else {
+				$count = count($this->collCreditEctss);
+			}
+		}
+		$this->lastCreditEctsCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a CreditEcts object to this object
+	 * through the CreditEcts foreign key attribute.
+	 *
+	 * @param      CreditEcts $l CreditEcts
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addCreditEcts(CreditEcts $l)
+	{
+		if ($this->collCreditEctss === null) {
+			$this->initCreditEctss();
+		}
+		if (!in_array($l, $this->collCreditEctss, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collCreditEctss, $l);
+			$l->setEleve($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Eleve is new, it will return
+	 * an empty collection; or if this Eleve has previously
+	 * been saved, it will retrieve related CreditEctss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Eleve.
+	 */
+	public function getCreditEctssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ElevePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCreditEctss === null) {
+			if ($this->isNew()) {
+				$this->collCreditEctss = array();
+			} else {
+
+				$criteria->add(CreditEctsPeer::ID_ELEVE, $this->id_eleve);
+
+				$this->collCreditEctss = CreditEctsPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(CreditEctsPeer::ID_ELEVE, $this->id_eleve);
+
+			if (!isset($this->lastCreditEctsCriteria) || !$this->lastCreditEctsCriteria->equals($criteria)) {
+				$this->collCreditEctss = CreditEctsPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastCreditEctsCriteria = $criteria;
+
+		return $this->collCreditEctss;
+	}
+
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -3272,6 +3509,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collCreditEctss) {
+				foreach ((array) $this->collCreditEctss as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		$this->collJEleveClasses = null;
@@ -3283,6 +3525,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 		$this->collJEleveAncienEtablissements = null;
 		$this->collJAidElevess = null;
 		$this->collAbsenceSaisies = null;
+		$this->collCreditEctss = null;
 	}
 
 } // BaseEleve

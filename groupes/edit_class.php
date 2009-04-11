@@ -104,6 +104,30 @@ if (isset($_POST['is_posted'])) {
     }
 
     foreach ($_POST as $key => $value) {
+        $pattern = "/^no_saisie_ects\_/";
+        if (preg_match($pattern, $key)) {
+            $group_id = preg_replace($pattern, "", $key);
+            $options[$group_id]["saisie_ects"] = $value;
+        }
+    }
+
+    foreach ($_POST as $key => $value) {
+        $pattern = "/^saisie_ects\_/";
+        if (preg_match($pattern, $key)) {
+            $group_id = preg_replace($pattern, "", $key);
+            $options[$group_id]["saisie_ects"] = $value;
+        }
+    }
+
+    foreach ($_POST as $key => $value) {
+        $pattern = "/^valeur_ects\_/";
+        if (preg_match($pattern, $key)) {
+            $group_id = preg_replace($pattern, "", $key);
+            $options[$group_id]["valeur_ects"] = $value;
+        }
+    }
+
+    foreach ($_POST as $key => $value) {
         $pattern = "/^categorie\_/";
         if (preg_match($pattern, $key)) {
             $group_id = preg_replace($pattern, "", $key);
@@ -337,6 +361,15 @@ for($i=0;$i<10;$i++){
 </td></tr></table>
 <!--p><i>Pour les enseignements impliquant plusieurs classes, le coefficient s'applique à tous les élèves de la classe courante et peut être réglé indépendamment d'une classe à l'autre (pour le régler individuellement par élève, voir la liste des élèves inscrits).</i-->
 <?php
+    // si le module ECTS est activé, on calcul la valeur total d'ECTS attribués aux groupes
+    if ($gepiSettings['active_mod_ects'] == "y") {
+        $total_ects = mysql_result(mysql_query("SELECT sum(valeur_ects) FROM j_groupes_classes WHERE (id_classe = '".$id_classe."' and saisie_ects = TRUE)"), 0);
+        echo "<p style='margin-top: 10px;'>Nombre total d'ECTS actuellement attribués pour cette classe : ".$total_ects."</p>";
+        if ($total_ects < 30) {
+            echo "<p style='color: red;'>Attention, le total d'ECTS pour un semestre devrait être au moins égal à 30.</p>";
+        }
+    }
+
     $cpt_grp=0;
     $res = mysql_query("SELECT id, nom_court, nom_complet, priority FROM matieres_categories");
     $mat_categories = array();
@@ -482,6 +515,20 @@ for($i=0;$i<10;$i++){
         }
         echo "</td>";
         echo "</tr>";
+        if ($gepiSettings['active_mod_ects'] == "y") {
+            echo "<tr><td>&nbsp;</td>";
+            echo "<td><label for='saisie_ects_".$cpt_grp."'>Activer la saisie ECTS</label>&nbsp;<input id='saisie_ects_".$cpt_grp."' type='checkbox' name='saisie_ects_".$current_group["id"]."' value='1'";
+            if($current_group["classes"]["classes"][$id_classe]["saisie_ects"]) {
+                echo " checked";
+            }
+            echo "/>";
+            echo "<input id='no_saisie_ects_".$cpt_grp."' type='hidden' name='no_saisie_ects_".$current_group["id"]."' value='0' />";
+            echo "</td>";
+            echo "<td>";
+            echo "Nombre d'ECTS par défaut pour une période : <input type=\"text\" onchange=\"changement()\" id='valeur_ects_".$cpt_grp."' name='". "valeur_ects_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["valeur_ects"] . "' size=\"5\" />";
+            echo "</td>";
+            echo "</tr>";
+        }
         echo "</table>";
         echo "</fieldset>";
 

@@ -710,7 +710,14 @@ if (isset ($_POST['maj'])) {
 
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/responsables/dedoublonnage_adresses.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Dédoublonnage des adresses responsables', '');";
 
+
+
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ects/ects_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Module ECTS : Admin', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ects/index_saisie.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Accueil saisie', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ects/saisie_ects.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Saisie', '');";
+
 	//$tab_req[] = "";
+
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 	if ($test1 == 1) {
@@ -7616,6 +7623,85 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($res_test == 0) {
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('active_mod_ooo', 'n');");
 		}
+
+		// Module ECTS
+		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'active_mod_ects'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0) {
+			$result_inter .= traite_requete("INSERT INTO setting VALUES ('active_mod_ects', 'n');");
+		}
+
+		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesSaisieEctsPP'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0) {
+			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesSaisieEctsPP', 'no');");
+		}
+
+		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesSaisieEctsScolarite'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0) {
+			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesSaisieEctsScolarite', 'yes');");
+		}
+
+		$result .= "&nbsp;->Ajout d'un champ 'saisie_ects' à la table 'j_groupes_classes': ";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM j_groupes_classes LIKE 'saisie_ects'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE j_groupes_classes ADD saisie_ects BOOLEAN NOT NULL DEFAULT 0;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+		}
+
+		$result .= "&nbsp;->Ajout d'un champ 'valeur_ects' à la table 'j_groupes_classes': ";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM j_groupes_classes LIKE 'valeur_ects'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE j_groupes_classes ADD valeur_ects DECIMAL(3,1) NOT NULL;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+		}
+
+
+        $result .= "&nbsp;->Création de la table ects_credits<br />";
+		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'ects_credits'"));
+		if ($test == 0) {
+			$query2 = mysql_query("CREATE TABLE ects_credits
+(
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
+	id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve',
+	num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode',
+	id_groupe INTEGER(11)  NOT NULL COMMENT 'Identifiant du groupe',
+	valeur DECIMAL  NOT NULL COMMENT 'Nombre de crÃ©dits obtenus par l\'eleve',
+	mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue',
+	PRIMARY KEY (id,id_eleve,num_periode,id_groupe),
+	INDEX ects_credits_FI_1 (id_eleve),
+	CONSTRAINT ects_credits_FK_1
+		FOREIGN KEY (id_eleve)
+		REFERENCES eleves (id_eleve),
+	INDEX ects_credits_FI_2 (id_groupe),
+	CONSTRAINT ects_credits_FK_2
+		FOREIGN KEY (id_groupe)
+		REFERENCES groupes (id)
+)");
+			if ($query2) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		} else {
+			$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+		}
+
 
 
 		//------------------------------------------------------------------------

@@ -6,7 +6,8 @@ require 'gepi/om/BaseElevePeer.php';
 /**
  * Skeleton subclass for performing query and update operations on the 'eleves' table.
  *
- * 
+ * Liste des eleves de l'etablissement
+ *
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -16,6 +17,31 @@ require 'gepi/om/BaseElevePeer.php';
  */
 class ElevePeer extends BaseElevePeer {
 
+	/**
+	 * Récupère un élève à partir de son login.
+	 *
+	 * @param      int $pk the primary key.
+	 * @param      PropelPDO $con the connection to use
+	 * @return     Eleve
+	 */
+	public static function retrieveByLOGIN($login, PropelPDO $con = null)
+	{
+
+		if (null !== ($obj = ElevePeer::getInstanceFromPool((string) $login))) {
+			return $obj;
+		}
+
+		if ($con === null) {
+			$con = Propel::getConnection(ElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria = new Criteria(ElevePeer::DATABASE_NAME);
+		$criteria->add(ElevePeer::LOGIN, $login);
+
+		$v = ElevePeer::doSelect($criteria, $con);
+
+		return !empty($v) > 0 ? $v[0] : null;
+	}
   /**
    * Liste de tous les eleves de l'etablissement
    *

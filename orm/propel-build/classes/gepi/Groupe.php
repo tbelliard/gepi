@@ -173,6 +173,25 @@ class Groupe extends BaseGroupe {
 
 	/**
 	 *
+	 * Renvoi sous forme d'un tableau la liste des profs d'une classe.
+	 * Manually added for N:M relationship
+	 *
+	 * @periode integer numero de la periode
+	 * @return     array Eleves[]
+	 *
+	 */
+	public function getProfesseurs() {
+		$profs = array();
+		$criteria = new Criteria();
+		$criteria->add(JGroupesProfesseursPeer::ID_GROUPE,$this->getId());
+		foreach($this->getJGroupesProfesseurssJoinUtilisateurProfessionnel($criteria) as $ref) {
+			$profs[] = $ref->getUtilisateurProfessionnel();
+		}
+		return $profs;
+	}
+
+	/**
+	 *
 	 * Ajoute un eleve a un groupe
 	 * Manually added for N:M relationship
 	 * It seems that the groupes are passed by values and not by references.

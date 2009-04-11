@@ -101,7 +101,7 @@ function get_group($_id_groupe) {
 
     // Classes
 
-    $get_classes = mysql_query("SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.categorie_id FROM classes c, j_groupes_classes j WHERE (" .
+    $get_classes = mysql_query("SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.categorie_id, j.saisie_ects, j.valeur_ects FROM classes c, j_groupes_classes j WHERE (" .
                                     "c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "') ORDER BY c.classe, c.nom_complet;");
     //                                "c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "')");
     $nb_classes = mysql_num_rows($get_classes);
@@ -111,9 +111,11 @@ function get_group($_id_groupe) {
         $c_nom_complet = mysql_result($get_classes, $k, "nom_complet");
         $c_priorite = mysql_result($get_classes, $k, "priorite");
         $c_coef = mysql_result($get_classes, $k, "coef");
+        $c_saisie_ects = mysql_result($get_classes, $k, "saisie_ects") > '0' ? true : false;
+        $c_valeur_ects = mysql_result($get_classes, $k, "valeur_ects");
         $c_cat_id = mysql_result($get_classes, $k, "categorie_id");
         $temp["classes"]["list"][] = $c_id;
-        $temp["classes"]["classes"][$c_id] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet, "priorite" => $c_priorite, "coef" => $c_coef, "categorie_id" => $c_cat_id);
+        $temp["classes"]["classes"][$c_id] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet, "priorite" => $c_priorite, "coef" => $c_coef, "saisie_ects" => $c_saisie_ects, "valeur_ects" => $c_valeur_ects, "categorie_id" => $c_cat_id);
     }
 
     $str = null;
@@ -298,8 +300,16 @@ function update_group_class_options($_id_groupe, $_id_classe, $_options) {
     if (!is_numeric($_id_classe)) $_id_classe = 0;
     if (!is_numeric($_options["coef"])) $_options["coef"] = 0;
     if (!is_numeric($_options["priorite"])) $_options["priorite"] = 0;
+
+    if (!in_array($_options["saisie_ects"],array("0","1"))) $_options["saisie_ects"] = 0;
+    if (!is_numeric($_options["valeur_ects"])) $_options["valeur_ects"] = 0;
+    if (!is_numeric($_options["coef"])) $_options["coef"] = 0;
     if (!is_numeric($_options["categorie_id"])) $_options["categorie_id"] = 0;
-    $res = mysql_query("update j_groupes_classes set priorite = '" . $_options["priorite"] . "', coef = '" . $_options["coef"] . "', categorie_id = '" . $_options["categorie_id"] ."' ".
+    $res = mysql_query("update j_groupes_classes set priorite = '" . $_options["priorite"] . "',
+                                                     coef = '" . $_options["coef"] . "',
+                                                     saisie_ects = '" . $_options['saisie_ects']."',
+                                                     valeur_ects = '" . $_options['valeur_ects']."',
+                                                     categorie_id = '" . $_options["categorie_id"] ."' ".
                         "WHERE (id_groupe = '" . $_id_groupe . "' and id_classe = '" . $_id_classe . "')");
 
     if (!$res) {

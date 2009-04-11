@@ -77,6 +77,8 @@
 		<column name="priorite" type="SMALLINT" required="true"/>
 		<column name="coef" type="DECIMAL" required="true"/>
 		<column name="categorie_id" type="INTEGER" required="true"/>
+        <column name="saisie_ects" type="BOOLEAN" required="false" default="0" description="Active ou non la saisie ECTS pour cet enseignement"/>
+        <column name="valeur_ects" type="DECIMAL" required="false" description="Valeur par défaut des ECTS pour cet enseignement"/>
 	</table>
 
 <!-- objets specifiques a cahiers de texte 2 -->
@@ -419,4 +421,17 @@
   </table>
 <!-- fin objets propel generes pour absence2-->
 
+<!-- Objets propel spécifiques au module ECTS -->
+  <table name="ects_credits" phpName="CreditEcts" description="Association eleve/periode/enseignement qui précise le nombre d'ECTS obtenus par l'eleve">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
+    <column name="id_eleve" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de l'eleve"/>
+    <foreign-key foreignTable="eleves"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
+    <column name="num_periode" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de la periode"/>
+    <column name="id_groupe" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant du groupe"/>
+    <foreign-key foreignTable="groupes"><reference local="id_groupe" foreign="id"/></foreign-key>
+    <column name="valeur" type="DECIMAL" required="true" description="Nombre de crédits obtenus par l'eleve"/>
+    <column name="mention" type="VARCHAR" required="true" size="255" description="Mention obtenue"/>
+  </table>
+
+<!-- Fin des objets propel spécifiques au module ECTS -->
 </database>

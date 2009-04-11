@@ -513,6 +513,13 @@ if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (ge
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $chemin[] = "/cahier_notes/index.php";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $chemin[] = "/saisie/index.php";
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $chemin[] = "/saisie/saisie_avis.php";
+// Saisie ECTS - ne doit être affichée que si l'utilisateur a bien des classes ouvrant droit à ECTS
+if ($_SESSION['statut'] == 'professeur') {
+    $test_prof_ects = sql_count(sql_query("SELECT jgc.saisie_ects FROM j_groupes_classes jgc, j_eleves_professeurs jep, j_eleves_groupes jeg WHERE (jgc.saisie_ects = TRUE AND jgc.id_groupe = jeg.id_groupe AND jeg.login = jep.login AND jep.professeur = '".$_SESSION['login']."')"));
+} else {
+    $test_scol_ects = sql_count(sql_query("SELECT jgc.saisie_ects FROM j_groupes_classes jgc, j_scol_classes jsc WHERE (jgc.saisie_ects = TRUE AND jgc.id_classe = jsc.id_classe AND jsc.login = '".$_SESSION['login']."')"));
+}
+if ((($test_prof_suivi != "0") and ($gepiSettings['GepiAccesSaisieEctsPP'] =='yes') and $test_prof_ects != "0") or (($_SESSION['statut']=='scolarite') and ($gepiSettings['GepiAccesSaisieEctsScolarite'] =='yes') and $test_scol_ects != "0") or ($_SESSION['statut']=='secours')  ) $chemin[] = "/mod_ects/index_saisie.php";
 
 
 $titre = array();
@@ -521,6 +528,7 @@ if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (ge
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $titre[] = "Carnet de notes : saisie des notes";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $titre[] = "Bulletin : saisie des moyennes et des appréciations par matière";
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $titre[] = "Bulletin : saisie des avis du conseil";
+if ((($test_prof_suivi != "0") and ($gepiSettings['GepiAccesSaisieEctsPP'] =='yes') and $test_prof_ects != "0") or (($_SESSION['statut']=='scolarite') and ($gepiSettings['GepiAccesSaisieEctsScolarite'] =='yes') and $test_scol_ects != "0") or ($_SESSION['statut']=='secours')  ) $titre[] = "Crédits ECTS";
 
 $expli = array();
 $expli[] = "Cet outil vous permet d'enregistrer les absences des ".$gepiSettings['denomination_eleves'].". Elles figureront sur le bulletin scolaire.";
@@ -528,6 +536,7 @@ if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (ge
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $expli[] = "Cet outil vous permet de constituer un carnet de notes pour chaque période et de saisir les notes de toutes vos évaluations.";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $expli[] = "Cet outil permet de saisir directement, sans passer par le carnet de notes, les moyennes et les appréciations du bulletin";
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $expli[] = "Cet outil permet la saisie des avis du conseil de classe.";
+if ((($test_prof_suivi != "0") and ($gepiSettings['GepiAccesSaisieEctsPP'] =='yes') and $test_prof_ects != "0") or (($_SESSION['statut']=='scolarite') and ($gepiSettings['GepiAccesSaisieEctsScolarite'] =='yes') and $test_scol_ects != "0") or ($_SESSION['statut']=='secours')) $expli[] = "Saisie des crédits ECTS";
 
 // Pour un professeur, on n'appelle que les aid qui sont sur un bulletin
 $call_data = mysql_query("SELECT * FROM aid_config WHERE display_bulletin = 'y' OR bull_simplifie = 'y' ORDER BY nom");
