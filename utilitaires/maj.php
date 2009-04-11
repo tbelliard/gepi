@@ -7681,7 +7681,7 @@ lieu VARCHAR( 255 ) NOT NULL
 	id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve',
 	num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode',
 	id_groupe INTEGER(11)  NOT NULL COMMENT 'Identifiant du groupe',
-	valeur DECIMAL  NOT NULL COMMENT 'Nombre de crédits obtenus par l\'eleve',
+	valeur DECIMAL(3,1) NOT NULL COMMENT 'Nombre de crédits obtenus par l\'eleve',
 	mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue',
 	PRIMARY KEY (id,id_eleve,num_periode,id_groupe),
 	INDEX ects_credits_FI_1 (id_eleve),
