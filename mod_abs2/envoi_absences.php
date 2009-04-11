@@ -40,54 +40,106 @@ if ($resultat_session == 'c') {
 };
 //debug_var();
 // ============== traitement des variables ==================
-$action = isset($_POST['action']) ? $_POST['action'] : NULL;
+$action     = isset($_POST['action']) ? $_POST['action'] : NULL;
+$_tri       = isset($_POST["tri"]) ? $_POST["tri"] : '0';
+$memoriser  = isset($_POST["memoriser"]) ? $_POST["memoriser"] : NULL;
+$aff_envois = NULL;
 
 // ============== Code métier ===============================
 include("classes/odtphp_0_3/odf.php");
 include("lib/erreurs.php");
 include("helpers/aff_listes_utilisateurs.inc.php");
+include '../orm/helpers/AbsencesParametresHelper.php';
 
 
 try{
 
-    // On teste Propel pour récupérer la liste des élèves
-    $criteria = new Criteria();
-    $criteria->setLimit(1);
-    $eleves = ElevePeer::doSelect($criteria);
+  // Mémorisation de l'affichage ?
+  if ($memoriser == 'ok'){
+    saveSetting('a2_aff_envois', $_tri);
+  }
+  $_memoriser = (getSettingValue('a2_aff_envois') != '' AND getSettingValue('a2_aff_envois') != '0') ? getSettingValue('a2_aff_envois') : $_tri;
 
+  /**
+   * Début de l'affichage des envois
+   */
+  $criteria = new Criteria();
+  $criteria->add(AbsenceTraitementPeer::A_ACTION_ID, "0", Criteria::NOT_EQUAL);
+  if ($_memoriser != '0'){
+    $criteria->add(AbsenceTraitementPeer::A_ACTION_ID, $_memoriser, Criteria::EQUAL);
+  }
+  $liste_envois = AbsenceTraitementPeer::doSelect($criteria);
+  $increment = 0;
+  foreach ($liste_envois as $envoi){
+    $couleur_ligne = (is_integer($increment/2)) ? 'lig1' : 'lig2';
+    $_id_traitement = $envoi->getId();
 
+    // On affiche l'action demandée par le selected
+    $options_action = array('id'=>'action'.$_id_traitement, 'name'=>'action['.$increment.']', 'selected'=>$envoi->getAActionId(), 'class'=>$couleur_ligne);
+    $aff_action     = AbsencesParametresHelper::AfficherListeDeroulanteActions($options_action);
 
-  //if ($action == "odt") {
-    $odf = new odf("modeles/test.odt");
-    $odf->setVars('titre','premier titre de remplacement');
-    $odf->setVars('contenu',"texte sur plusieurs lignes mais va comprendre");
-    // On exporte le fichier
-    $odf->exportAsAttachedFile('un_nom_c_est_mieux.odt');
-  //}
+    // On récupère l'objet eleve
+    $saisies = $envoi->getJTraitementSaisies();
+    $eleve = $saisies[0]->getAbsenceSaisie()->getEleve();
+
+    $aff_envois .= '
+      <tr class="'.$couleur_ligne.'">
+        <td>'.$eleve->getNom().' '.$eleve->getPrenom().'</td>
+        <td>'.$aff_action.'</td>
+        <td><form method="post" action="envoi_absences.php"><input type="hidden" name="traitement" value="'.$_id_traitement.'" /><input type="submit" name="valider" value="Envoyer" /></form></td>
+        <td></td>
+      </tr>';
+
+    $increment++;
+
+  }
+
+  $test_courrier_html = '
+  <div class="a_adresse">
+    <p>{NOM_RESP} {PRENOM_RESP}</p>
+    <p>{ADR1_RESP}<br />{ADR2_RESP}<br />{CP_RESP} {COMMUNE_RESP}</p>
+  </div>
+
+  <div class="a_entete">
+
+  </div>
+
+  <div class="a_corps">
+
+  </div>
+
+  <div class="a_pied">
+    
+  </div>
+  ';
 
 
 }catch(exception $e){
   affExceptions($e);
 }
 //**************** EN-TETE *****************
-$titre_page = "Les absences";
+$titre_page       = "Les absences";
+$style_specifique = "mod_abs2/lib/abs_style";
 require_once("../lib/header.inc");
 require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
 
-//aff_debug($eleves[0]->getResponsableInformations());
-$responsable = $eleves[0]->getResponsableInformations();
-//aff_debug($responsable[0]->getResponsableEleve()->getResponsableEleveAdresse());
-echo '
-    L\'élève ' . $eleves[0]->getNom() . ' ' . $eleves[0]->getPrenom() . '<br />
-Dont le responsable 1 est : ' . $responsable[0]->getResponsableEleve()->getNom() . ' ' . $responsable[0]->getResponsableEleve()->getPrenom() . '
-<br />
-Adresse : ' . $responsable[0]->getResponsableEleve()->getResponsableEleveAdresse()->getAdr1() . '<br />
-          ' . $responsable[0]->getResponsableEleve()->getResponsableEleveAdresse()->getAdr2() . '<br />
-          ' . $responsable[0]->getResponsableEleve()->getResponsableEleveAdresse()->getCp() . ' ' . $responsable[0]->getResponsableEleve()->getResponsableEleveAdresse()->getCommune() . '<br />
-';
 ?>
+<form method="post" action="envoi_absences.php">
+  <p><label for="idTri">Faire un tri par : </label>
+  <?php echo AbsencesParametresHelper::AfficherListeDeroulanteActions(array('id'=>'idTri', 'name'=>'tri', 'selected'=>$_memoriser)); ?>
+  <label for="idMem" title="Pour bloquer l'affichage sur cette action. Si vous voulez d&eacute;bloquer, il faudra m&eacute;moriser une autre action.">Mémoriser ?</label><input id="idMem" type="checkbox" name="memoriser" value="ok" />
+  <input type="submit" name="valider" value="Trier" /></p>
+</form>
 
+<table id="table_liste_absents">
+  <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+  <?php echo $aff_envois; ?>
+</table>
 
 
 
