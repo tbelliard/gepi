@@ -192,6 +192,22 @@ class Groupe extends BaseGroupe {
 
 	/**
 	 *
+	 * Renvoi sous forme la valeur ECTS par défaut
+	 *
+	 * @periode integer numero de la periode
+	 * @return     array Eleves[]
+	 *
+	 */
+	public function getEctsDefaultValue($id_classe) {
+		$profs = array();
+		$criteria = new Criteria();
+		$criteria->add(JGroupesClassesPeer::ID_CLASSE,$id_classe);
+		$g = $this->getJGroupesClassess($criteria);
+        return !empty($g) > 0 ? $g[0]->getValeurEcts() : '';
+	}
+
+	/**
+	 *
 	 * Ajoute un eleve a un groupe
 	 * Manually added for N:M relationship
 	 * It seems that the groupes are passed by values and not by references.
