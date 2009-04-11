@@ -364,7 +364,7 @@ function updatesum() {
         echo "</p></td>";
         $CreditEcts = $Eleve->getEctsCredit($periode_num,$group->getId());
         echo "<td class='bull_simple'>";
-        $valeur_ects = $CreditEcts == null ? '' : $CreditEcts->getValeur();
+        $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
         echo "<input type='text' class='valeur' style='width: 40px;' name='valeur_ects_".$group->getId()."' value='$valeur_ects' onblur='updatesum();'>";
         echo "</td>";
         echo "<td class='bull_simple'>";
