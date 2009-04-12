@@ -23,6 +23,7 @@
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
+include("../lib/initialisationsPropel.inc.php");
 require_once("./fonctions_annees_anterieures.inc.php");
 
 // Resume session
@@ -54,7 +55,7 @@ $annee_scolaire=isset($_POST['annee_scolaire']) ? $_POST['annee_scolaire'] : NUL
 $confirmer=isset($_POST['confirmer']) ? $_POST['confirmer'] : NULL;
 
 // Si le module n'est pas activé...
-if(getSettingValue('active_annees_anterieures')!="y"){
+if($gepiSettings['active_annees_anterieures'] !="y"){
 	// A DEGAGER
 	// A VOIR: Comment enregistrer une tentative d'accès illicite?
 
@@ -76,21 +77,26 @@ if(isset($enregistrer)){
 
 // Suppression des données archivées pour une année donnée.
 if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
-    $sql="DELETE FROM archivage_disciplines WHERE annee='".$_GET["annee_supp"]."';";
+        $sql="DELETE FROM archivage_disciplines WHERE annee='".$_GET["annee_supp"]."';";
 		$res_suppr1=mysql_query($sql);
 
 		// Maintenant, on regarde si l'année est encore utilisée dans archivage_types_aid
 		// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
 		$test = sql_query1("select count(annee) from archivage_types_aid where annee='".$_GET['annee_supp']."'");
 		if ($test == 0) {
-      $sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
-	  	$res_suppr2=mysql_query($sql);
-		} else $res_suppr2 = 1;
+            $sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
+            $res_suppr2=mysql_query($sql);
+		} else {
+            $res_suppr2 = 1;
+        }
+
+        $sql="DELETE FROM archivage_ects WHERE annee='".$_GET["annee_supp"]."';";
+		$res_suppr3=mysql_query($sql);
 
     // Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
     suppression_donnees_eleves_inutiles();
 
-		if (($res_suppr1) and ($res_suppr2)) {
+		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3)) {
 			$msg = "La suppression des données a été correctement effectuée.";
 		} else {
 			$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
@@ -728,7 +734,31 @@ else{
 								}
 
 
-							}
+                                //--------------------
+                                // Les crédits ECTS
+                                //--------------------
+
+                                // On a besoin de : annee, ine, classe, num_periode, nom_periode, matiere, prof, valeur_ects, mention_ects
+                                // On a déjà pratiquement tout... ça ne va pas être compliqué !
+                                $Eleve = ElevePeer::retrieveByLOGIN($login_eleve);
+                                $Ects = $Eleve->getEctsCredit($num_periode,$id_groupe);
+
+                                if ($Ects != null) {
+                                    $Archive = new ArchiveEcts();
+                                    $Archive->setAnnee($annee_scolaire);
+                                    $Archive->setIne($ine);
+                                    $Archive->setClasse($classe);
+                                    $Archive->setNumPeriode($num_periode);
+                                    $Archive->setNomPeriode($nom_periode);
+                                    $Archive->setMatiere($matiere);
+                                    $Archive->setSpecial('');
+                                    $Archive->setProfs($prof);
+                                    $Archive->setValeur($Ects->getValeur());
+                                    $Archive->setMention($Ects->getMention());
+                                    $Archive->save();
+                                }
+
+							} // Fin de la boucle matières
 
 							if($erreur==0){
 								echo "<script type='text/javascript'>

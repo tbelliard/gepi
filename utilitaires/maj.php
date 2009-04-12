@@ -7702,6 +7702,68 @@ lieu VARCHAR( 255 ) NOT NULL
 			$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 		}
 
+        $result .= "&nbsp;->Création de la table archivage_ects<br />";
+		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_ects'"));
+		if ($test == 0) {
+			$query2 = mysql_query("CREATE TABLE archivage_ects
+                                    (
+                                        id INTEGER(11)  NOT NULL AUTO_INCREMENT,
+                                        annee VARCHAR(255)  NOT NULL COMMENT 'Annee scolaire',
+                                        ine VARCHAR(255)  NOT NULL COMMENT 'Identifiant de l\'eleve',
+                                        classe VARCHAR(255)  NOT NULL COMMENT 'Classe de l\'eleve',
+                                        num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode',
+                                        nom_periode VARCHAR(255)  NOT NULL COMMENT 'Nom complet de la periode',
+                                        special VARCHAR(255)  NOT NULL COMMENT 'Cle utilisee pour isoler certaines lignes (par exemple un credit ECTS pour une periode et non une matiere)',
+                                        matiere VARCHAR(255) COMMENT 'Nom de l\'enseignement',
+                                        profs VARCHAR(255) COMMENT 'Liste des profs de l\'enseignement',
+                                        valeur DECIMAL  NOT NULL COMMENT 'Nombre de crÃ©dits obtenus par l\'eleve',
+                                        mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue',
+                                        PRIMARY KEY (id,ine,num_periode,special),
+                                        INDEX archivage_ects_FI_1 (ine),
+                                        CONSTRAINT archivage_ects_FK_1
+                                            FOREIGN KEY (ine)
+                                            REFERENCES eleves (no_gep)
+                                    )");
+			if ($query2) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		} else {
+			$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+		}
+
+
+		// Ajouts d'index
+		$result .= "&nbsp;->Ajout de l'index 'annee' à la table archivage_disciplines<br />";
+		$req_test = mysql_query("SHOW INDEX FROM archivage_disciplines WHERE Key_name = 'annee'");
+		$req_res = mysql_num_rows($req_test);
+		if ($req_res == 0) {
+			$query = mysql_query("ALTER TABLE `archivage_disciplines` ADD INDEX annee ( `annee` )");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		} else {
+			$result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+		}
+
+		// Ajouts d'index
+		$result .= "&nbsp;->Ajout de l'index 'INE' à la table archivage_disciplines<br />";
+		$req_test = mysql_query("SHOW INDEX FROM archivage_disciplines WHERE Key_name = 'INE'");
+		$req_res = mysql_num_rows($req_test);
+		if ($req_res == 0) {
+			$query = mysql_query("ALTER TABLE `archivage_disciplines` ADD INDEX INE ( `INE` )");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		} else {
+			$result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+		}
+
 
 
 		//------------------------------------------------------------------------

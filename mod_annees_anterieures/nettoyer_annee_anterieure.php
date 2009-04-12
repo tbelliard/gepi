@@ -68,7 +68,9 @@ if(isset($confirmer)){
 		$res_suppr4=mysql_query($sql);
 		$sql="DELETE FROM archivage_disciplines WHERE INE='$suppr[$i]';";
 		$res_suppr5=mysql_query($sql);
-		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)  and ($res_suppr5) ) {
+		$sql="DELETE FROM archivage_ects WHERE INE='$suppr[$i]';";
+		$res_suppr6=mysql_query($sql);
+		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)  and ($res_suppr5) and ($res_suppr6)) {
 			$nb_suppr++;
 		}
 		else{

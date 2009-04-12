@@ -433,5 +433,20 @@
     <column name="mention" type="VARCHAR" required="true" size="255" description="Mention obtenue"/>
   </table>
 
+  <table name="archivage_ects" phpName="ArchiveEcts" description="Enregistrement d'archive pour les credits ECTS, dont le rapport n'est edite qu'au depart de l'eleve">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
+    <column name="annee" required="true" type="VARCHAR" size="255" description="Annee scolaire"/>
+    <column name="ine" required="true" primaryKey="true" type="VARCHAR" size="255" description="Identifiant de l'eleve"/>
+    <foreign-key foreignTable="eleves"><reference local="ine" foreign="no_gep"/></foreign-key>
+    <column name="classe" required="true" type="VARCHAR" size="255" description="Classe de l'eleve"/>
+    <column name="num_periode" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de la periode"/>
+    <column name="nom_periode" required="true" type="VARCHAR" size="255" description="Nom complet de la periode"/>
+    <column name="special" primaryKey="true" type="VARCHAR" size="255" description="Cle utilisee pour isoler certaines lignes (par exemple un credit ECTS pour une periode et non une matiere)"/>
+    <column name="matiere" type="VARCHAR" size="255" description="Nom de l'enseignement"/>
+    <column name="profs" type="VARCHAR" size="255" description="Liste des profs de l'enseignement"/>
+    <column name="valeur" type="DECIMAL" required="true" description="Nombre de crédits obtenus par l'eleve"/>
+    <column name="mention" type="VARCHAR" required="true" size="255" description="Mention obtenue"/>
+  </table>
+
 <!-- Fin des objets propel spécifiques au module ECTS -->
 </database>

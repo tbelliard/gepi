@@ -292,7 +292,8 @@ CREATE TABLE eleves
 	INDEX I_referenced_j_eleves_professeurs_FK_1_4 (login),
 	INDEX I_referenced_j_eleves_regime_FK_1_5 (login),
 	INDEX I_referenced_responsables2_FK_1_6 (ele_id),
-	INDEX I_referenced_j_aid_eleves_FK_2_7 (login)
+	INDEX I_referenced_j_aid_eleves_FK_2_7 (login),
+	INDEX I_referenced_archivage_ects_FK_1_8 (no_gep)
 )Type=MyISAM COMMENT='Liste des eleves de l\'etablissement';
 
 #-----------------------------------------------------------------------------
@@ -917,6 +918,33 @@ CREATE TABLE ects_credits
 		FOREIGN KEY (id_groupe)
 		REFERENCES groupes (id)
 )Type=MyISAM COMMENT='Association eleve/periode/enseignement qui précise le nombre d\'ECTS obtenus par l\'eleve';
+
+#-----------------------------------------------------------------------------
+#-- archivage_ects
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS archivage_ects;
+
+
+CREATE TABLE archivage_ects
+(
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
+	annee VARCHAR(255)  NOT NULL COMMENT 'Annee scolaire',
+	ine VARCHAR(255)  NOT NULL COMMENT 'Identifiant de l\'eleve',
+	classe VARCHAR(255)  NOT NULL COMMENT 'Classe de l\'eleve',
+	num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode',
+	nom_periode VARCHAR(255)  NOT NULL COMMENT 'Nom complet de la periode',
+	special VARCHAR(255)  NOT NULL COMMENT 'Cle utilisee pour isoler certaines lignes (par exemple un credit ECTS pour une periode et non une matiere)',
+	matiere VARCHAR(255) COMMENT 'Nom de l\'enseignement',
+	profs VARCHAR(255) COMMENT 'Liste des profs de l\'enseignement',
+	valeur DECIMAL  NOT NULL COMMENT 'Nombre de crédits obtenus par l\'eleve',
+	mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue',
+	PRIMARY KEY (id,ine,num_periode,special),
+	INDEX archivage_ects_FI_1 (ine),
+	CONSTRAINT archivage_ects_FK_1
+		FOREIGN KEY (ine)
+		REFERENCES eleves (no_gep)
+)Type=MyISAM COMMENT='Enregistrement d\'archive pour les credits ECTS, dont le rapport n\'est edite qu\'au depart de l\'eleve';
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

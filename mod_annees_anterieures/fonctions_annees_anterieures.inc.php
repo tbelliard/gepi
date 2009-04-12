@@ -701,7 +701,9 @@ function suppression_donnees_eleves_inutiles(){
       where ((aa.id_eleve = ae.ine) and (ae.ine='".$ine."'))");
       $test3 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves ae, archivage_disciplines ad
       where ((ad.INE = ae.ine) and (ae.ine='".$ine."'))");
-      if (($test1==0) and ($test2==0) and ($test3==0))
+      $test4 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves ae, archivage_ects aects
+      where ((aects.ine = ae.ine) and (ae.ine='".$ine."'))");
+      if (($test1==0) and ($test2==0) and ($test3==0) and ($test4==0))
           sql_query("DELETE FROM archivage_eleves WHERE ine='".$ine."'");
       $k++;
     }
@@ -717,7 +719,9 @@ function suppression_donnees_eleves_inutiles(){
       where ((aa.id_eleve = ae.ine) and (ae.ine='".$ine."'))");
       $test3 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves2 ae, archivage_disciplines ad
       where ((ad.INE = ae.ine) and (ae.ine='".$ine."'))");
-      if (($test1==0) and ($test2==0) and ($test3==0))
+      $test4 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves2 ae, archivage_ects ad
+      where ((ad.ine = ae.ine) and (ae.ine='".$ine."'))");
+      if (($test1==0) and ($test2==0) and ($test3==0) and ($test4==0))
           sql_query("DELETE FROM archivage_eleves2 WHERE ine='".$ine."'");
       $k++;
     }
