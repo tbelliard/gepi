@@ -250,6 +250,15 @@ if (isset($_POST['ok'])) {
         $msg = "Il y a eu un problème lors de l'enregistrement";
     }
 
+    //==========================================================
+    // Ajout d'un test:
+    // Si on modifie un devoir alors que des notes ont été reportées sur le bulletin, il faut penser à mettre à jour la recopie vers le bulletin.
+    $sql="SELECT 1=1 FROM matieres_notes WHERE periode='".$periode_num."' AND id_groupe='".$id_groupe."';";
+    $test_bulletin=mysql_query($sql);
+    if(mysql_num_rows($test_bulletin)>0) {
+        $msg.=" ATTENTION: Des notes sont présentes sur le bulletin. Si vous avez modifié un coefficient,... pensez à mettre à jour la recopie vers le bulletin.";
+    }
+    //==========================================================
 
     //
     // retour
@@ -398,7 +407,7 @@ if($interface_simplifiee=="y"){
 
 	echo "<div align='center'>\n";
 	//echo "<table border='1'>\n";
-	echo "<table class='boireaus' border='1'>\n";
+	echo "<table class='boireaus' border='1' summary='Parametres du devoir'>\n";
 
 	//#aaaae6
 	//#aae6aa
@@ -581,14 +590,14 @@ else{
 	// Noms et conteneur
 	// =================
 
-	echo "<table>\n";
+	echo "<table summary='Nom et conteneur du devoir'>\n";
 	//echo "<tr><td>Nom court : </td><td><input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" /></td></tr>\n";
 	echo "<tr><td>Nom court : </td><td><input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
 	//echo "<tr><td>Nom complet : </td><td><input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" /></td></tr>\n";
 	echo "<tr><td>Nom complet : </td><td><input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
 	echo "<tr><td>Description : </td><td><textarea name='description' rows='2' cols='40' >".$description."</textarea></td></tr></table>\n";
 	echo "<br />\n";
-	echo "<table><tr><td><h3 class='gepi'>Emplacement de l'évaluation : </h3></td>\n<td>";
+	echo "<table summary='Emplacement du devoir'><tr><td><h3 class='gepi'>Emplacement de l'évaluation : </h3></td>\n<td>";
 	echo "<select size='1' name='id_emplacement'>\n";
 	$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court");
 	$nb_cont = mysql_num_rows($appel_conteneurs);
@@ -609,7 +618,7 @@ else{
 	// =====
 
 	echo "<h3 class='gepi'>Coefficient de l'évaluation</h3>\n";
-	echo "<table><tr><td>Valeur de la pondération dans le calcul de la moyenne (si 0, la note de l'évaluation n'intervient pas dans le calcul de la moyenne) : </td>";
+	echo "<table summary='Ponderation'><tr><td>Valeur de la pondération dans le calcul de la moyenne (si 0, la note de l'évaluation n'intervient pas dans le calcul de la moyenne) : </td>";
 	echo "<td><input type='text' name = 'coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" /></td></tr></table>\n";
 
 	//====================================
@@ -617,7 +626,7 @@ else{
 	// =====
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 	    echo "<h3 class='gepi'>Notation</h3>\n";
-	    echo "<table><tr><td>Note sur : </td>";
+	    echo "<table summary='Referentiel'><tr><td>Note sur : </td>";
 	    echo "<td><input type='text' name = 'note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
 	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <BR />";
 		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<BR />";
@@ -636,7 +645,7 @@ else{
 	// ======
 
 	echo "<h3 class='gepi'>Statut de l'évaluation</h3>\n";
-	echo "<table><tr><td><input type='radio' name='facultatif' id='facultatif_O' value='O' "; if ($facultatif=='O') echo "checked"; echo " /></td><td>";
+	echo "<table summary='Statut du devoir'><tr><td><input type='radio' name='facultatif' id='facultatif_O' value='O' "; if ($facultatif=='O') echo "checked"; echo " /></td><td>";
 	echo "<label for='facultatif_O' style='cursor: pointer;'>";
 	echo "La note de l'évaluation entre dans le calcul de la moyenne.";
 	echo "</label>";
@@ -664,7 +673,7 @@ else{
 	// ===============
 
 	echo "<h3 class='gepi'>Affichage sur le relevé de notes</h3>\n";
-	echo "<table>\n";
+	echo "<table summary='Visibilité'>\n";
 	echo "<tr><td><label for='display_parents' style='cursor: pointer;'>";
 	echo "Faire <b>apparaître cette évaluation</b> sur le <b>relevé de notes</b> de l'élève : ";
 	echo "</label>";
