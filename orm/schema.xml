@@ -22,7 +22,7 @@
 		<column name="auth_mode" required="true" type="VARCHAR" size="255" default="gepi" description="auth_mode de l'utilisateur (gepi/cas/ldap)" />
 	</table>
 
-	<table name="groupes" phpName="Groupe" description="Groupe d'eleves permettant d'y affecter des matieres et des professeurs">
+	<table name="groupes" phpName="Groupe" description="Groupe d'eleves permettant d'y affecter une matiere et un professeurs">
 		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Clee primaire du groupe" />
 		<column name="name" required="true" type="VARCHAR" size="60" description="Nom du groupe" />
 		<column name="description" required="true" type="LONGVARCHAR" description="Description du groupe" />
@@ -65,7 +65,7 @@
 		<column name="rn_formule" required="true" type="LONGVARCHAR"/>
 	</table>
 
-	<table name="j_groupes_classes" description="Table permettant le jointure entre groupe d'eleves et une classe. Est rarement utilise directement dans le code.">
+	<table name="j_groupes_classes" description="Table permettant la jointure entre groupe d'eleves et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
 		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe"/>
 		<foreign-key foreignTable="groupes" onDelete="CASCADE">
 			<reference local="id_groupe" foreign="id"/>
@@ -77,8 +77,8 @@
 		<column name="priorite" type="SMALLINT" required="true"/>
 		<column name="coef" type="DECIMAL" required="true"/>
 		<column name="categorie_id" type="INTEGER" required="true"/>
-        <column name="saisie_ects" type="BOOLEAN" required="false" default="0" description="Active ou non la saisie ECTS pour cet enseignement"/>
-        <column name="valeur_ects" type="DECIMAL" required="false" description="Valeur par défaut des ECTS pour cet enseignement"/>
+		<column name="saisie_ects" type="BOOLEAN" required="false" default="0" description="Active ou non la saisie ECTS pour cet enseignement"/>
+		<column name="valeur_ects" type="DECIMAL" required="false" description="Valeur par défaut des ECTS pour cet enseignement"/>
 	</table>
 
 <!-- objets specifiques a cahiers de texte 2 -->
@@ -422,7 +422,7 @@
 <!-- fin objets propel generes pour absence2-->
 
 <!-- Objets propel spécifiques au module ECTS -->
-  <table name="ects_credits" phpName="CreditEcts" description="Association eleve/periode/enseignement qui précise le nombre d'ECTS obtenus par l'eleve">
+  <table name="ects_credits" phpName="CreditEcts" description="Objet qui précise le nombre d'ECTS obtenus par l'eleve pour un enseignement et une periode donnée">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
     <column name="id_eleve" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de l'eleve"/>
     <foreign-key foreignTable="eleves"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>

@@ -192,8 +192,10 @@ class Groupe extends BaseGroupe {
 
 	/**
 	 *
-	 * Renvoi sous forme la valeur ECTS par défaut
-	 *
+	 * Renvoi sous forme la valeur ECTS par défaut.
+	 * Cette valeur se trouve à la jointure d'un groupe et d'une classe, elle n'est pas spécifique à un groupe
+	 * En effet, il peut y avoir plusieurs eleves d'une meme classe qui sont regroupés dans un groupe, et pour ces eleves il est possible
+	 * que la valeur par defaut soit différente.
 	 * @periode integer numero de la periode
 	 * @return     array Eleves[]
 	 *
