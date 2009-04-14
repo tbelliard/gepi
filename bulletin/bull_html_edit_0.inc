@@ -437,7 +437,7 @@ if ($bull_affiche_aid == 'y') {
 						echo $tab_bull['eleve'][$i]['aid_e'][$z]['message']." ";
 					}
 					echo $tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']."</b><br />";
-				fi
+				}
 				echo texte_html_ou_pas($tab_bull['eleve'][$i]['aid_e'][$z]['aid_appreciation']);
 				echo "</span></td>\n";
 			}
