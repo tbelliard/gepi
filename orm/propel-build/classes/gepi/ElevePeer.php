@@ -47,7 +47,7 @@ class ElevePeer extends BaseElevePeer {
    *
    * @var array Tableau d'objets
    */
-  protected static $_liste_eleves_all = NULL;
+  private static $_liste_eleves_all_order_by_nom_prenom = NULL;
 
   /**
    * Appelle la liste de tous les eleves de l'etablissement
@@ -55,9 +55,9 @@ class ElevePeer extends BaseElevePeer {
    * @access private
    * @return array Tableau d'objets de tous les eleves
    */
-  public static function FindAllEleves($options = NULL){
+  public static function FindAllElevesOrderByNomPrenom($options = NULL){
 
-    if (self::$_liste_eleves_all === NULL){
+    if (self::$_liste_eleves_all_order_by_nom_prenom === NULL){
 
       $critere = new Criteria();
 
@@ -65,10 +65,10 @@ class ElevePeer extends BaseElevePeer {
       $critere->addAscendingOrderByColumn(ElevePeer::NOM);
       $critere->addAscendingOrderByColumn(ElevePeer::PRENOM);
       // et on demande à ElevePeer de renvoyer ce dont on a besoin
-      self::$_liste_eleves_all = ElevePeer::doSelect($critere);
+      self::$_liste_eleves_all_order_by_nom_prenom = ElevePeer::doSelect($critere);
     }
 
-    return self::$_liste_eleves_all;
+    return self::$_liste_eleves_all_order_by_nom_prenom;
   }
 
   /**

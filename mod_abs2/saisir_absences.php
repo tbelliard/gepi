@@ -62,7 +62,7 @@ try{
 
   if ($_SESSION["type_aff_abs"] == "alpha"){
     // La liste de tous les élèves de l'établissement
-    $liste_eleves = ElevePeer::FindAllEleves();
+    $liste_eleves = ElevePeer::FindAllElevesOrderByNomPrenom();
   }else{
     // La même liste mais enrichie par Propel (classe, ...)
     $liste_eleves = ElevePeer::FindAllElevesAvecCLasse();
