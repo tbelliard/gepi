@@ -69,7 +69,7 @@ function last_connection() {
 <meta http-equiv="Expires" content="0" />
 <?php
 if (!isset($message_deconnexion) || $message_deconnexion != 'non'){
-	echo ("<meta http-equiv=\"refresh\" content=\"".(getSettingValue("sessionMaxLength")*60)."; URL=".$gepiPath."/logout.php?auto=3&amp;debut_session=".urlencode($_SESSION['start'])."&amp;session_id=".session_id()." />");
+	echo ("<meta http-equiv=\"refresh\" content=\"".(getSettingValue("sessionMaxLength")*60)."; URL=".$gepiPath."/logout.php?auto=3&amp;debut_session=".urlencode($_SESSION['start'])."&amp;session_id=".session_id()."\" />\n");
 }
 ?>
 <!-- correction Regis : déclaration par défaut pour les scripts et les mises en page-->
