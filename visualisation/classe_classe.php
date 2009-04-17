@@ -147,26 +147,27 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
     }
 
     if ($affiche_categories) {
-            // On utilise les valeurs spécifiées pour la classe en question
-            $call_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
-            "FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
-            "WHERE ( " .
-            "jgc.categorie_id = jmcc.categorie_id AND " .
-            "jgc.id_classe='".$id_classe."' AND " .
-            "jgm.id_groupe=jgc.id_groupe AND " .
-            "m.matiere = jgm.id_matiere" .
-            ") " .
-            "ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
+        // On utilise les valeurs spécifiées pour la classe en question
+        $sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
+        "FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
+        "WHERE ( " .
+        "jgc.categorie_id = jmcc.categorie_id AND " .
+        "jgc.id_classe='".$id_classe."' AND " .
+        "jgm.id_groupe=jgc.id_groupe AND " .
+        "m.matiere = jgm.id_matiere" .
+        ") " .
+        "ORDER BY jmcc.priority,jgc.priorite,m.nom_complet";
     } else {
-        $call_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef
+        $sql="SELECT DISTINCT jgc.id_groupe, jgc.coef
         FROM j_groupes_classes jgc, j_groupes_matieres jgm
         WHERE (
         jgc.id_classe='".$id_classe."' AND
         jgm.id_groupe=jgc.id_groupe
         )
-        ORDER BY jgc.priorite,jgm.id_matiere");
+        ORDER BY jgc.priorite,jgm.id_matiere";
     }
-
+    //echo "$sql<br />";
+    $call_groupes = mysql_query($sql);
 
     $nombre_lignes = mysql_num_rows($call_groupes);
 
@@ -176,6 +177,7 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
     while ($i < $nombre_lignes) {
 
         $group_id = mysql_result($call_groupes, $i, "id_groupe");
+        //echo "\$group_id=$group_id<br />";
         $current_group = get_group($group_id);
 
         // On essaie maintenant de récupérer un groupe avec la même matière, lié à la seconde classe
@@ -191,7 +193,11 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
         } elseif (mysql_num_rows($call_group2) > 1) {
             while ($row = mysql_fetch_object($call_group2)) {
                 if ($row->description == $current_group["description"]) {
-                    $current_group2 = get_group($row->id);
+                    //echo "\$row->description=".$row->description."<br />";
+                    //echo "\$row->id=".$row->id."<br />";
+                    //echo "\$row->id_groupe=".$row->id_groupe."<br />";
+                    //$current_group2 = get_group($row->id);
+                    $current_group2 = get_group($row->id_groupe);
                     break;
                 } else {
                     $current_group2 = false;

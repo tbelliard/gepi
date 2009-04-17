@@ -77,11 +77,14 @@ function get_group($_id_groupe) {
 
     if (!is_numeric($_id_groupe)) $_id_groupe = "0";
 
-    $query = mysql_query("select name, id, description ".
+    $sql="select name, id, description ".
                             "from groupes ".
                             "where (" .
                             "id = '" . $_id_groupe . "'".
-                            ")");
+                            ")";
+    //echo "$sql<br />";
+    $query = mysql_query($sql);
+
 
     $temp["name"] = mysql_result($query, 0, "name");
     $temp["description"] = mysql_result($query, 0, "description");
