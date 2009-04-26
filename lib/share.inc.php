@@ -133,6 +133,8 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
             $temp1 = ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,19);
         } elseif ($_mode == "namef8") {
+			//echo "\$_nom=$_nom<br />";
+			//echo "\$_prenom=$_prenom<br />";
             $temp1 =  substr($_nom,0,7) . $_prenom{0};
             //$temp1 = strtoupper($temp1);
             $temp1 = ereg_replace(" ","", $temp1);
@@ -145,7 +147,7 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
 
         $login_user = $temp1;
 
-		//echo "\$login_user=$login_user<br />";
+		//echo "\$login_user=$login_user<br /><hr width='100' />";
 		/*
         // On teste l'unicité du login que l'on vient de créer
         $m = '';
@@ -867,6 +869,13 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 //
 function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_periode) {
     global $gepiClosedPeriodLabel;
+    global $id_groupe;
+    global $eff_groupe;
+    if((isset($id_groupe))&&(!isset($eff_groupe))) {
+        $sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
+        $res_ele_grp=mysql_query($sql);
+        $eff_groupe=mysql_num_rows($res_ele_grp);
+    }
     //
     // Cas particulier de la racine
     //
@@ -899,8 +908,9 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
         echo "<li>\n";
         echo "$nom_conteneur ";
         //echo "id=$id_cont id_racine=$id_racine parent=$id_parent ";
-        if ($ver_periode <= 1)
+        if ($ver_periode <= 1) {
             echo " (<strong>".$gepiClosedPeriodLabel."</strong>) ";
+        }
         echo "- <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
         $appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
         $nb_dev  = mysql_num_rows($appel_dev);
@@ -915,6 +925,16 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
                     echo "<li>\n";
                     echo "<font color='green'>$nom_dev</font>";
                     echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
+
+                    $sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='$id_dev' AND statut!='-' AND statut!='v';";
+                    $res_eff_dev=mysql_query($sql);
+                    $eff_dev=mysql_num_rows($res_eff_dev);
+                    echo " <span style='font-size:small;";
+                    if(isset($eff_groupe)) {if($eff_dev==$eff_groupe) {echo "color:green;";} else {echo "color:red;";}}
+                    echo "'>($eff_dev";
+                    if(isset($eff_groupe)) {echo "/$eff_groupe";}
+                    echo ")</span>";
+
                     echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
                     echo "</li>\n";
                     $j++;
