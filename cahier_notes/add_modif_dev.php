@@ -99,6 +99,9 @@ $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] : (isset($_GET["id
 
 // enregistrement des données
 if (isset($_POST['ok'])) {
+	unset($tab_group);
+	$tab_group=array();
+
     $reg_ok = "yes";
     $new='no';
     if ((isset($_POST['new_devoir'])) and ($_POST['new_devoir'] == 'yes')) {
@@ -106,7 +109,97 @@ if (isset($_POST['ok'])) {
         $id_devoir = mysql_insert_id();
         $new='yes';
         if (!$reg)  $reg_ok = "no";
+
+		$creation_dev_autres_groupes=isset($_POST['creation_dev_autres_groupes']) ? $_POST['creation_dev_autres_groupes'] : 'n';
+		$id_autre_groupe=isset($_POST['id_autre_groupe']) ? $_POST['id_autre_groupe'] : array();
+		if(($creation_dev_autres_groupes=='y')&&(count($id_autre_groupe)>0)) {
+			// Créer un tableau des id_groupe, id_cahier_notes=id_racine, id_conteneur, id_devoir
+
+			$id_emplacement=isset($_POST['id_emplacement']) ? $_POST['id_emplacement'] : $id_racine;
+
+			$sql="SELECT * FROM cn_conteneurs WHERE id='$id_emplacement';";
+			//echo "$sql<br />\n";
+			$res_infos_conteneur=mysql_query($sql);
+			$lig_conteneur=mysql_fetch_object($res_infos_conteneur);
+			$nom_court_conteneur=$lig_conteneur->nom_court;
+			$nom_complet_conteneur=$lig_conteneur->nom_complet;
+			$description_conteneur=$lig_conteneur->description;
+			$mode_conteneur=$lig_conteneur->mode;
+			$coef_conteneur=$lig_conteneur->coef;
+			$arrondir_conteneur=$lig_conteneur->arrondir;
+			$ponderation_conteneur=$lig_conteneur->ponderation;
+			$display_parents_conteneur=$lig_conteneur->display_parents;
+			$display_bulletin_conteneur=$lig_conteneur->display_bulletin;
+
+			// Vérifier que la période est bien ouverte en saisie
+			$cpt=0;
+			for($i=0;$i<count($id_autre_groupe);$i++) {
+				//$tab_group[$i]=get_group($id_autre_groupe);
+				$tmp_group=get_group($id_autre_groupe[$i]);
+				if($tmp_group["classe"]["ver_periode"]["all"][$periode_num]>=2) {
+
+					$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='".$tmp_group['id']."' AND periode='$periode_num');";
+					//echo "$sql<br />\n";
+					$res_idcn=mysql_query($sql);
+					if(mysql_num_rows($res_idcn)>0) {
+						$lig_tmp=mysql_fetch_object($res_idcn);
+						$tmp_id_racine=$lig_tmp->id_cahier_notes;
+
+						// La même boite existe-t-elle dans cet autre enseignement?
+						if($id_emplacement!=$id_racine) {
+							$sql="SELECT * FROM cn_conteneurs WHERE nom_court='".addslashes($nom_court_conteneur)."' AND id_racine='$tmp_id_racine';";
+							//echo "$sql<br />\n";
+							$test_conteneur=mysql_query($sql);
+							if(mysql_num_rows($test_conteneur)>0) {
+								$lig_tmp=mysql_fetch_object($test_conteneur);
+								$tmp_id_conteneur=$lig_tmp->id;
+							}
+							else {
+								// On met le devoir à la racine
+								// Dans le futur, il faudrait tenter de créer ici une boite comme celle du devoir modèle (si une case a été cochée)
+								$tmp_id_conteneur=$tmp_id_racine;
+
+								if((isset($_POST['creer_conteneur']))&&($_POST['creer_conteneur']=="y")) {
+									$sql="INSERT INTO cn_conteneurs SET id_racine='$tmp_id_racine',
+																		nom_court='".addslashes($nom_court_conteneur)."',
+																		nom_complet='".addslashes($nom_complet_conteneur)."',
+																		description='".addslashes($description_conteneur)."',
+																		mode='".addslashes($mode_conteneur)."',
+																		coef='".addslashes($coef_conteneur)."',
+																		arrondir='".addslashes($arrondir_conteneur)."',
+																		ponderation='".addslashes($ponderation_conteneur)."',
+																		display_parents='".addslashes($display_parents_conteneur)."',
+																		display_bulletin='".addslashes($display_bulletin_conteneur)."',
+																		parent='$tmp_id_racine';";
+									$insert_conteneur=mysql_query($sql);
+									$tmp_id_conteneur=mysql_insert_id();
+								}
+
+							}
+						}
+						else {
+							// La boite du devoir est la racine du cahier de notes
+							$tmp_id_conteneur=$tmp_id_racine;
+						}
+
+						$sql="insert into cn_devoirs (id_racine,id_conteneur,nom_court) values ('$tmp_id_racine','$tmp_id_conteneur','nouveau');";
+						//echo "$sql<br />\n";
+						$creation_dev=mysql_query($sql);
+						$tmp_id_devoir = mysql_insert_id();
+
+						$tab_group[$cpt]=$tmp_group;
+						$tab_group[$cpt]['id_racine']=$tmp_id_racine;
+						$tab_group[$cpt]['id_conteneur']=$tmp_id_conteneur;
+						$tab_group[$cpt]['id_devoir']=$tmp_id_devoir;
+
+						$cpt++;
+					}
+				}
+			}
+		}
+
     }
+
     if ($_POST['nom_court'])  {
         $nom_court = $_POST['nom_court'];
     } else {
@@ -114,6 +207,11 @@ if (isset($_POST['ok'])) {
     }
     $reg = mysql_query("UPDATE cn_devoirs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '$id_devoir'");
     if (!$reg)  $reg_ok = "no";
+	for($i=0;$i<count($tab_group);$i++) {
+		$sql="UPDATE cn_devoirs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
+		//echo "$sql<br />\n";
+		$reg=mysql_query($sql);
+	}
 
     if ($_POST['nom_complet'])  {
         $nom_complet = $_POST['nom_complet'];
@@ -123,17 +221,35 @@ if (isset($_POST['ok'])) {
 
     $reg = mysql_query("UPDATE cn_devoirs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '$id_devoir'");
     if (!$reg)  $reg_ok = "no";
+	for($i=0;$i<count($tab_group);$i++) {
+		$sql="UPDATE cn_devoirs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
+		//echo "$sql<br />\n";
+		$reg=mysql_query($sql);
+	}
+
     if ($_POST['description'])  {
         $reg = mysql_query("UPDATE cn_devoirs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
     }
+	for($i=0;$i<count($tab_group);$i++) {
+		$sql="UPDATE cn_devoirs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
+		//echo "$sql<br />\n";
+		$reg=mysql_query($sql);
+	}
+
     if ($_POST['id_emplacement'])  {
         $id_emplacement = $_POST['id_emplacement'];
         $reg = mysql_query("UPDATE cn_devoirs SET id_conteneur = '".$id_emplacement."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
+
+		for($i=0;$i<count($tab_group);$i++) {
+			$sql="UPDATE cn_devoirs SET id_conteneur = '".$tab_group[$i]['id_conteneur']."' WHERE id = '".$tab_group[$i]['id_devoir']."';";
+			//echo "$sql<br />\n";
+			$reg=mysql_query($sql);
+		}
     }
 
-
+	/*
     if ($_POST['coef']) {
         $reg = mysql_query("UPDATE cn_devoirs SET coef = '".$_POST['coef']."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
@@ -141,7 +257,17 @@ if (isset($_POST['ok'])) {
         $reg = mysql_query("UPDATE cn_devoirs SET coef = '0' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
     }
+	*/
+	$tmp_coef=isset($_POST['coef']) ? $_POST['coef'] : 0;
+	$reg = mysql_query("UPDATE cn_devoirs SET coef='".$tmp_coef."' WHERE id='$id_devoir'");
+	if (!$reg)  $reg_ok = "no";
+	for($i=0;$i<count($tab_group);$i++) {
+		$sql="UPDATE cn_devoirs SET coef='".$tmp_coef."' WHERE id='".$tab_group[$i]['id_devoir']."';";
+		//echo "$sql<br />\n";
+		$reg=mysql_query($sql);
+	}
 
+	/*
    if (isset($_POST['note_sur'])) {
         $reg = mysql_query("UPDATE cn_devoirs SET note_sur = '".$_POST['note_sur']."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
@@ -149,6 +275,15 @@ if (isset($_POST['ok'])) {
         $reg = mysql_query("UPDATE cn_devoirs SET note_sur = '".getSettingValue("referentiel_note")."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
     }
+	*/
+	$note_sur=isset($_POST['note_sur']) ? $_POST['note_sur'] : getSettingValue("referentiel_note");
+	$reg = mysql_query("UPDATE cn_devoirs SET note_sur='".$note_sur."' WHERE id='$id_devoir'");
+	if (!$reg)  $reg_ok = "no";
+	for($i=0;$i<count($tab_group);$i++) {
+		$sql="UPDATE cn_devoirs SET note_sur='".$note_sur."' WHERE id='".$tab_group[$i]['id_devoir']."';";
+		//echo "$sql<br />\n";
+		$reg=mysql_query($sql);
+	}
 
     if (isset($_POST['ramener_sur_referentiel'])) {
         if ($_POST['ramener_sur_referentiel']) {
@@ -160,10 +295,20 @@ if (isset($_POST['ok'])) {
 
     $reg = mysql_query("UPDATE cn_devoirs SET ramener_sur_referentiel = '$ramener_sur_referentiel' WHERE id = '$id_devoir'");
     if (!$reg)  $reg_ok = "no";
+	for($i=0;$i<count($tab_group);$i++) {
+		$sql="UPDATE cn_devoirs SET ramener_sur_referentiel='$ramener_sur_referentiel' WHERE id='".$tab_group[$i]['id_devoir']."';";
+		//echo "$sql<br />\n";
+		$reg=mysql_query($sql);
+	}
 
     if (($_POST['facultatif']) and ereg("^(O|N|B)$", $_POST['facultatif'])) {
         $reg = mysql_query("UPDATE cn_devoirs SET facultatif = '".$_POST['facultatif']."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
+		for($i=0;$i<count($tab_group);$i++) {
+			$sql="UPDATE cn_devoirs SET facultatif='".$_POST['facultatif']."' WHERE id='".$tab_group[$i]['id_devoir']."';";
+			//echo "$sql<br />\n";
+			$reg=mysql_query($sql);
+		}
     }
 
     if ($_POST['display_date']) {
@@ -179,19 +324,31 @@ if (isset($_POST['ok'])) {
         $date = $annee."-".$mois."-".$jour." 00:00:00";
         $reg = mysql_query("UPDATE cn_devoirs SET date = '".$date."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
+		for($i=0;$i<count($tab_group);$i++) {
+			$sql="UPDATE cn_devoirs SET date='".$date."' WHERE id='".$tab_group[$i]['id_devoir']."';";
+			//echo "$sql<br />\n";
+			$reg=mysql_query($sql);
+		}
     }
 
     if (isset($_POST['display_parents'])) {
-		    if($_POST['display_parents']==1)
+		if($_POST['display_parents']==1) {
             $display_parents=1;
-		    else
+		}
+		else {
 		        $display_parents=0;
+		}
     } else {
         $display_parents=0;
     }
 
     $reg = mysql_query("UPDATE cn_devoirs SET display_parents = '$display_parents' WHERE id = '$id_devoir'");
     if (!$reg)  $reg_ok = "no";
+	for($i=0;$i<count($tab_group);$i++) {
+		$sql="UPDATE cn_devoirs SET display_parents='$display_parents' WHERE id='".$tab_group[$i]['id_devoir']."';";
+		//echo "$sql<br />\n";
+		$reg=mysql_query($sql);
+	}
 
     if (isset($_POST['display_parents_app'])) {
 		    if($_POST['display_parents_app']==1)
@@ -204,6 +361,11 @@ if (isset($_POST['ok'])) {
 
     $reg = mysql_query("UPDATE cn_devoirs SET display_parents_app = '$display_parents_app' WHERE id = '$id_devoir'");
     if (!$reg)  $reg_ok = "no";
+	for($i=0;$i<count($tab_group);$i++) {
+		$sql="UPDATE cn_devoirs SET display_parents_app='$display_parents_app' WHERE id='".$tab_group[$i]['id_devoir']."';";
+		//echo "$sql<br />\n";
+		$reg=mysql_query($sql);
+	}
 
     //==========================================================
     // MODIF: boireaus
@@ -256,7 +418,7 @@ if (isset($_POST['ok'])) {
     $sql="SELECT 1=1 FROM matieres_notes WHERE periode='".$periode_num."' AND id_groupe='".$id_groupe."';";
     $test_bulletin=mysql_query($sql);
     if(mysql_num_rows($test_bulletin)>0) {
-        $msg.=" ATTENTION: Des notes sont présentes sur le bulletin. Si vous avez modifié un coefficient,... pensez à mettre à jour la recopie vers le bulletin.";
+        $msg.=" ATTENTION: Des notes sont présentes sur les bulletins. Si vous avez modifié un coefficient, des notes,... pensez à mettre à jour la recopie vers les bulletins.";
     }
     //==========================================================
 
@@ -688,7 +850,89 @@ else{
 
 }
 
-if ($new_devoir=='yes')     echo "<input type='hidden' name='new_devoir' value='yes' />\n";
+if ($new_devoir=='yes') {
+	echo "<input type='hidden' name='new_devoir' value='yes' />\n";
+
+	//$sql="SELECT g.name, jgc.id_classe FROM groupes g, j_groupes_classes jgc WHERE ";
+	$tab_group=get_groups_for_prof($_SESSION['login']);
+	if(count($tab_group)>1) {
+
+		if($interface_simplifiee=="y"){echo "<div align='center'>\n";}
+		echo "<input type='checkbox' id='creation_dev_autres_groupes' name='creation_dev_autres_groupes' value='y' onchange=\"display_div_autres_groupes()\" /><label for='creation_dev_autres_groupes'> Créer le même devoir pour d'autres enseignements.</label><br />\n";
+	
+		echo "<div id='div_autres_groupes'>\n";
+		echo "<table class='boireaus' summary='Autres enseignements'>\n";
+		echo "<tr>\n";
+		echo "<th rowspan='2'>";
+		echo "<a href='javascript:modif_case(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+		echo "<a href='javascript:modif_case(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+		echo "</th>\n";
+		echo "<th colspan='3'>Enseignement</th>\n";
+		//echo "<th rowspan='2'>Boite</th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<th>Nom</th>\n";
+		echo "<th>Description</th>\n";
+		echo "<th>Classe</th>\n";
+		echo "</tr>\n";
+	
+		$alt=1;
+		$cpt=0;
+		for($i=0;$i<count($tab_group);$i++) {
+			if($tab_group[$i]['id']!=$id_groupe) {
+				// Tester si la période est aussi ouverte pour le groupe... ou sinon si une seule période est ouverte en saisie?
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt'>\n";
+				echo "<td>\n";
+				if($tab_group[$i]["classe"]["ver_periode"]["all"][$periode_num]>=2) {
+					echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' />\n";
+					$cpt++;
+				}
+				else {
+					echo "<span style='color:red;'>Clos</span>";
+				}
+				echo "</td>\n";
+				echo "<td>".htmlentities($tab_group[$i]['name'])."</td>\n";
+				echo "<td>".htmlentities($tab_group[$i]['description'])."</td>\n";
+				echo "<td>".$tab_group[$i]['classlist_string']."</td>\n";
+				//echo "<td>...</td>\n";
+				echo "</tr>\n";
+			}
+		}
+		echo "</table>\n";
+		// A METTRE AU POINT: 
+		//echo "<input type='checkbox' name='creer_arbo_conteneurs' id='creer_arbo_conteneurs' value='y' /><label for='creer_arbo_conteneurs'> Créer si nécessaire la même arborescence de boites/conteneurs.</label>\n";
+		echo "<input type='checkbox' name='creer_conteneur' id='creer_conteneur' value='y' /><label for='creer_conteneur'> Créer si nécessaire ";
+		if(getSettingValue('gepi_denom_boite_genre')=="m") {echo "le ";} else {echo "la ";}
+		echo getSettingValue('gepi_denom_boite');
+		//echo "la boite conteneur";
+		echo ".</label>\n";
+		echo "</div>\n";
+		if($interface_simplifiee=="y"){echo "</div>\n";}
+
+		echo "<script type='text/javascript'>
+function display_div_autres_groupes() {
+	if(document.getElementById('creation_dev_autres_groupes').checked==true) {
+		document.getElementById('div_autres_groupes').style.display='';
+	}
+	else {
+		document.getElementById('div_autres_groupes').style.display='none';
+	}
+}
+display_div_autres_groupes();
+
+function modif_case(statut){
+	for(k=0;k<$cpt;k++){
+		if(document.getElementById('case_'+k)){
+			document.getElementById('case_'+k).checked=statut;
+		}
+	}
+}
+
+</script>\n";
+
+	}
+}
 echo "<input type='hidden' name='id_devoir' value='$id_devoir' />\n";
 echo "<input type='hidden' name='id_conteneur' value='$id_conteneur' />\n";
 echo "<input type='hidden' name='mode_navig' value='$mode_navig' />\n";
