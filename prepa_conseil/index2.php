@@ -268,7 +268,55 @@ if (isset($id_classe)) {
 	AND getSettingValue("GepiAccesMoyennesProfToutesTousEleves") != "yes") {
 		echo "<br />\n<span class='small'>Si vous n'enseignez pas à des classes entières, seuls les élèves auxquels vous enseignez apparaîtront dans la liste, et les moyennes calculés ne prendront en compte que les élèves affichés.</span>";
 	}
-	echo "</td></tr>\n</table>\n</form>\n";
+	echo "</td></tr>\n</table>\n";
+
+	$sql="SELECT DISTINCT jgc.id_groupe, g.name, g.description, jgc.coef FROM groupes g, j_groupes_classes jgc WHERE id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY g.name;";
+	//echo "$sql<br />";
+	$res_coef_grp=mysql_query($sql);
+	echo "<input type='checkbox' id='utiliser_coef_perso' name='utiliser_coef_perso' value='y' onchange=\"display_div_coef_perso()\" /><label for='utiliser_coef_perso'> Utiliser des coefficients personnalisés.</label><br />\n";
+
+	echo "<div id='div_coef_perso'>\n";
+	echo "<table class='boireaus' summary='Coefficients personnalisés'>\n";
+	echo "<tr>\n";
+	echo "<th>Identifiant</th>\n";
+	echo "<th>Nom de l'enseignement</th>\n";
+	echo "<th>Description de l'enseignement</th>\n";
+	echo "<th>Coefficient</th>\n";
+	echo "<th>Note&gt;10</th>\n";
+	echo "</tr>\n";
+
+	$alt=1;
+	$num_id=1;
+	while ($lig_cg=mysql_fetch_object($res_coef_grp)) {
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+		echo "<td>$lig_cg->id_groupe</td>\n";
+		echo "<td>".htmlentities($lig_cg->name)."</td>\n";
+		echo "<td>".htmlentities($lig_cg->description)."</td>\n";
+		echo "<td><input type='text' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()\" name='coef_perso[$lig_cg->id_groupe]' value='$lig_cg->coef' size='3' autocomplete='off' /></td>\n";
+		echo "<td><input type='checkbox' name='note_sup_10[$lig_cg->id_groupe]' value='y' /></td>\n";
+		echo "</tr>\n";
+		$num_id++;
+	}
+	echo "</table>\n";
+
+	echo "<p><i>Remarque:</i> Si des coefficients spécifiques ont été mis en place pour certains élèves (<i>voir en compte administrateur Gestion des bases/Gestion des classes/Enseignements/&lt;ENSEIGNEMENT&gt;/Eleves inscrits</i>), ils ne seront pas écrasés par les valeurs saisies ici.</p>\n";
+	echo "</div>\n";
+
+	echo "<script type='text/javascript'>
+function display_div_coef_perso() {
+//alert('grrrr');
+if(document.getElementById('utiliser_coef_perso').checked==true) {
+document.getElementById('div_coef_perso').style.display='';
+}
+else {
+document.getElementById('div_coef_perso').style.display='none';
+}
+}
+display_div_coef_perso();
+</script>\n";
+
+	echo "</form>\n";
 } else {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>";
 
