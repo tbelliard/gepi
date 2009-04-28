@@ -2085,7 +2085,8 @@ function eleve_suivant(){
 			// On recherche l'élève courant:
 			$indice_eleve1=-1;
 			for($loop=0;$loop<count($current_eleve_login);$loop++) {
-				if($current_eleve_login[$loop]==$eleve1) {
+				//if($current_eleve_login[$loop]==$eleve1) {
+				if(strtolower($current_eleve_login[$loop])==strtolower($eleve1)) {
 					$indice_eleve1=$loop;
 					break;
 				}
@@ -2888,7 +2889,8 @@ function eleve_suivant(){
 				// On recherche l'indice de l'élève courant: $eleve1
 				$indice_eleve1=-1;
 				for($loop=0;$loop<count($current_eleve_login);$loop++) {
-					if($current_eleve_login[$loop]==$eleve1) {
+					//if($current_eleve_login[$loop]==$eleve1) {
+					if(strtolower($current_eleve_login[$loop])==strtolower($eleve1)) {
 						$indice_eleve1=$loop;
 						break;
 					}
