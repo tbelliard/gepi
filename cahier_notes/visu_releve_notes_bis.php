@@ -71,6 +71,15 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 }
 //============ FIN ENTETE BULLETIN HTML ==============
 //====================================================
+//============== ENTETE BULLETIN PDF ================
+elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
+	$mode_utf8_pdf=getSettingValue("mode_utf8_bulletins_pdf");
+	if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
+	include("../bulletin/header_bulletin_pdf.php");
+	include("../bulletin/header_releve_pdf.php");
+}
+//============ FIN ENTETE BULLETIN HTML ==============
+//====================================================
 
 //echo "microtime()=".microtime()."<br />";
 //echo "time()=".time()."<br />";
@@ -727,15 +736,19 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	//=======================================
 	// A remplacer par la suite par un choix:
-	echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
+	//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
 	//echo "<input type='hidden' name='un_seul_bull_par_famille' value='non' />\n";
+
+	echo "<p><input type='radio' id='releve_html' name='mode_bulletin' value='html' checked /><label for='releve_html'> Relevé HTML</label><br />\n";
+	echo "<input type='radio' id='releve_pdf' name='mode_bulletin' value='pdf' /><label for='releve_pdf'> Relevé PDF</label></p>\n";
+
 	//=======================================
 
 	if ((($_SESSION['statut']=='eleve') AND (getSettingValue("GepiAccesOptionsReleveEleve") != "yes"))||
 		(($_SESSION['statut']=='responsable') AND (getSettingValue("GepiAccesOptionsReleveParent") != "yes"))) {
 		// Témoin destiné à sauter l'étape des paramètres
 		echo "<input type='hidden' name='choix_parametres' value='y' />\n";
-		echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
+		//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
 		echo "<input type='hidden' name='un_seul_bull_par_famille' value='oui' />\n";
 	}
 	else {
@@ -1443,7 +1456,8 @@ else {
 	// Prof principal
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
 
-	echo "<div id='infodiv'>
+	if($mode_bulletin!="pdf") {
+		echo "<div id='infodiv'>
 <p id='titre_infodiv' style='font-weight:bold; text-align:center; border:1px solid black;'></p>
 <table class='boireaus' width='100%' summary=\"Tableau de déroulement de l'extraction/génération\">
 <tr>
@@ -1461,6 +1475,7 @@ else {
 </tr>
 </table>
 </div>\n";
+	}
 
 	//========================================
 	// Extraction des données externalisée pour permettre un appel depuis la génération de bulletins de façon à intercaler les relevés de notes entre les bulletins
@@ -1478,54 +1493,112 @@ else {
 	// POUR CHAQUE ELEVE.
 	//========================================================================
 
-	echo "<script type='text/javascript'>
+	if($mode_bulletin!="pdf") {
+		echo "<script type='text/javascript'>
 	document.getElementById('td_info').innerHTML='Affichage';
 </script>\n";
+	}
+	else {
+		// définition d'une variable
+		$hauteur_pris = 0;
+
+		/*****************************************
+		* début de la génération du fichier PDF  *
+		* ****************************************/
+		header('Content-type: application/pdf');
+		//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
+		$pdf=new bul_PDF('p', 'mm', 'A4');
+		$nb_eleve_aff = 1;
+		$categorie_passe = '';
+		$categorie_passe_count = 0;
+		$pdf->SetCreator($gepiSchoolName);
+		$pdf->SetAuthor($gepiSchoolName);
+		$pdf->SetKeywords('');
+		$pdf->SetSubject('Releve_de_notes');
+		$pdf->SetTitle('Releve_de_notes');
+		$pdf->SetDisplayMode('fullwidth', 'single');
+		$pdf->SetCompression(TRUE);
+		$pdf->SetAutoPageBreak(TRUE, 5);
+
+		$responsable_place = 0;
+	}
+
+	function regime($id_reg) {
+		switch($id_reg) {
+			case "d/p":
+				$regime="demi-pensionnaire";
+				break;
+			case "ext.":
+				$regime="externe";
+				break;
+			case "int.":
+				$regime="interne";
+				break;
+			case "i-e":
+				$regime="interne-externé";
+				break;
+			default:
+				$regime="Régime inconnu???";
+				break;
+		}
+	
+		return $regime;
+	}
 
 	$compteur=0;
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 		$id_classe=$tab_id_classe[$loop_classe];
 		$classe=get_class_from_id($id_classe);
 
-		echo "<script type='text/javascript'>
+		if($mode_bulletin!="pdf") {
+			echo "<script type='text/javascript'>
 	document.getElementById('td_classe').innerHTML='".$classe."';
 </script>\n";
+		}
 
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
 
 			$periode_num=$tab_periode_num[$loop_periode_num];
 
 			//==============================
-			echo "<script type='text/javascript'>
+			if($mode_bulletin!="pdf") {
+				echo "<script type='text/javascript'>
 	document.getElementById('td_periode').innerHTML='".$periode_num."';
 </script>\n";
-			flush();
+				flush();
+			}
 			//==============================
 
-			echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
-			echo "<h2>Classe de ".$classe."</h2>\n";
-			if($periode_num=="intervalle") {
-				echo "<p><b>Du $display_date_debut au $display_date_fin</b></p>\n";
-			}
-			else {
-				echo "<p><b>Période $periode_num</b></p>\n";
+			if($mode_bulletin!="pdf") {
+				echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
+				echo "<h2>Classe de ".$classe."</h2>\n";
+				if($periode_num=="intervalle") {
+					echo "<p><b>Du $display_date_debut au $display_date_fin</b></p>\n";
+				}
+				else {
+					echo "<p><b>Période $periode_num</b></p>\n";
+				}
+
+				echo "<p>Effectif de la classe: ".$tab_releve[$id_classe][$periode_num]['eff_classe']."</p>\n";
+				//echo "</div>\n";
 			}
 
-			echo "<p>Effectif de la classe: ".$tab_releve[$id_classe][$periode_num]['eff_classe']."</p>\n";
-			//echo "</div>\n";
-
-			if(!isset($tab_releve[$id_classe][$periode_num]['eleve'])) {
+			//if(!isset($tab_releve[$id_classe][$periode_num]['eleve'])) {
+			if((!isset($tab_releve[$id_classe][$periode_num]['eleve']))&&($mode_bulletin!="pdf")) {
 				echo "<p>Aucun élève sélectionné/coché dans cette classe pour cette période.</p>\n";
 				echo "</div>\n";
 			}
 			else {
 
-				//+++++++++++++++++++++++++++++++++++
-				// A FAIRE: Il faudrait afficher l'effectif des élèves choisis faisant partie de la classe/période...
-				echo "<p>".count($tab_releve[$id_classe][$periode_num]['eleve'])." élève(s) sélectionné(s) dans cette classe (<i>pour cette période</i>).</p>\n";
-				//+++++++++++++++++++++++++++++++++++
+				if($mode_bulletin!="pdf") {
+					//+++++++++++++++++++++++++++++++++++
+					// A FAIRE: Il faudrait afficher l'effectif des élèves choisis faisant partie de la classe/période...
+					echo "<p>".count($tab_releve[$id_classe][$periode_num]['eleve'])." élève(s) sélectionné(s) dans cette classe (<i>pour cette période</i>).</p>\n";
+					//+++++++++++++++++++++++++++++++++++
+	
+					echo "</div>\n";
+				}
 
-				echo "</div>\n";
 				//$compteur=0;
 				for($i=0;$i<count($tab_releve[$id_classe][$periode_num]['eleve']);$i++) {
 
@@ -1573,22 +1646,32 @@ else {
 							//+++++++++++++++++++++++++++++++++++
 
 							if($autorisation_acces=='y') {
-								echo "<script type='text/javascript'>
+								if($mode_bulletin!="pdf") {
+									echo "<script type='text/javascript'>
 	document.getElementById('td_ele').innerHTML='".$tab_releve[$id_classe][$periode_num]['eleve'][$i]['login']."';
 </script>\n";
-								flush();
+									flush();
 
-								// Saut de page si jamais ce n'est pas le premier bulletin
-								if($compteur>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+									// Saut de page si jamais ce n'est pas le premier bulletin
+									if($compteur>0) {echo "<p class='saut'>&nbsp;</p>\n";}
 
-								// Génération du bulletin de l'élève
-								releve_html($tab_releve[$id_classe][$periode_num],$i,-1);
+									// Génération du bulletin de l'élève
+									releve_html($tab_releve[$id_classe][$periode_num],$i,-1);
+	
+									echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les relevés</div></div>\n";
 
-								echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les relevés</div></div>\n";
+									flush();
+								}
+								else {
+									// Relevé PDF
+
+									// Génération du relevé PDF de l'élève
+									releve_pdf($tab_releve[$id_classe][$periode_num],$i);
+
+								}
 
 								$compteur++;
 
-								flush();
 							}
 						//}
 					}
@@ -1623,9 +1706,19 @@ else {
 </style>\n";
 */
 
-	echo "<script type='text/javascript'>
+	if($mode_bulletin!="pdf") {
+		echo "<script type='text/javascript'>
 	document.getElementById('infodiv').style.display='none';
 </script>\n";
+	}
+	else {
+		// Envoyer le PDF et quitter
+		$nom_releve = date("Ymd_Hi");
+		$nom_fichier = 'releve_notes_'.$nom_releve.'.pdf';
+		$pdf->Output($nom_fichier,'I');
+
+		die();
+	}
 
 }
 

@@ -4444,7 +4444,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 }
 
 
-function releve_pdf($tab_rel,$i) {
+function releve_pdf_20090429($tab_rel,$i) {
 	global $annee_scolaire,
 		$gepi_prof_suivi,
 
