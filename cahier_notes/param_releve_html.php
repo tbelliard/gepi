@@ -591,7 +591,7 @@ $nb_ligne=1;
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         <label for='releve_col_hauteur' style='cursor: pointer;'>Hauteur minimale des lignes en pixels ("0" si automatique) :</label><br />
-        <span class="small">(Si le contenu d'une cellule est telle que la hauteur fixée ci-dessus est insuffisante, la hauteur de la ligne sera dimensionnée par le navigateur lui-même.)</span>
+        <span class="small">(Si le contenu d'une cellule est tel que la hauteur fixée ci-dessus est insuffisante, la hauteur de la ligne sera dimensionnée par le navigateur lui-même.)</span>
         </td>
         <td><input type="text" name="releve_col_hauteur" id="releve_col_hauteur" size="20" value="<?php
 		if(getSettingValue("releve_col_hauteur")!=""){
