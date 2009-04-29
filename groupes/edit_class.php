@@ -104,6 +104,14 @@ if (isset($_POST['is_posted'])) {
     }
 
     foreach ($_POST as $key => $value) {
+        $pattern = "/^note\_sup\_10\_/";
+        if (preg_match($pattern, $key)) {
+            $group_id = preg_replace($pattern, "", $key);
+            $options[$group_id]["mode_moy"] = "sup10";
+        }
+    }
+
+    foreach ($_POST as $key => $value) {
         $pattern = "/^no_saisie_ects\_/";
         if (preg_match($pattern, $key)) {
             $group_id = preg_replace($pattern, "", $key);
@@ -235,10 +243,10 @@ $texte.="<img src='../images/icons/configure.png' alt='' /> <a href='../classes/
 $ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
 
 if($ouvrir_infobulle_nav=="y") {
-	$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;'><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/vert.png' width='16' height='16' /></a></div>\n";
+	$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;'><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/vert.png' width='16' height='16' alt='Oui' /></a></div>\n";
 }
 else {
-	$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;'><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/rouge.png' width='16' height='16' /></a></div>\n";
+	$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;'><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/rouge.png' width='16' height='16' alt='Non' /></a></div>\n";
 }
 
 $texte.="<script type='text/javascript'>
@@ -501,7 +509,14 @@ for($i=0;$i<10;$i++){
         echo "</td>";
 
         // Coefficient
-        echo "<td>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" /></td></tr>";
+        //echo "<td>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" /></td></tr>";
+        echo "<td>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" />";
+        echo "<br />\n";
+        echo "<input type='checkbox' name='note_sup_10_".$current_group["id"]."' id='note_sup_10_".$current_group["id"]."' value='y' ";
+        if($current_group["classes"]["classes"][$id_classe]["mode_moy"]=="sup10") {echo "checked ";}
+        echo "/><label for='note_sup_10_".$current_group["id"]."'> Note&gt;10</label>\n";
+        echo "</td>\n";
+        echo "</tr>\n";
 
         echo "<tr>";
         echo "<td colspan=4>";

@@ -7765,6 +7765,20 @@ lieu VARCHAR( 255 ) NOT NULL
 		}
 
 
+		$result .= "&nbsp;->Ajout d'un champ 'mode_moy' à la table 'j_groupes_classes'<br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM j_groupes_classes LIKE 'mode_moy'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE j_groupes_classes ADD mode_moy ENUM('-','sup10','bonus') NOT NULL DEFAULT '-' AFTER valeur_ects;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
+		}
+
 
 		//------------------------------------------------------------------------
 		// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion

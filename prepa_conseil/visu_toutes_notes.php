@@ -168,7 +168,6 @@ $test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHER
 $ligne_supl = 0;
 if ($test_coef != 0) $ligne_supl = 1;
 
-
 $temoin_note_sup10="n";
 if($utiliser_coef_perso=='y') {
 	if(isset($note_sup_10)) {
@@ -176,7 +175,14 @@ if($utiliser_coef_perso=='y') {
 		$temoin_note_sup10="y";
 	}
 }
-
+else {
+	$sql="SELECT 1=1 FROM j_groupes_classes jgc WHERE jgc.id_classe='".$id_classe."' AND jgc.mode_moy='sup10';";
+	$test_note_sup10 = mysql_query($sql);
+	if(mysql_num_rows($test_note_sup10)>0) {
+		$ligne_supl++;
+		$temoin_note_sup10="y";
+	}
+}
 
 // On regarde si on doit afficher les moyennes des catégories de matières
 $affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
@@ -222,7 +228,8 @@ if ($affiche_categories) {
 
 if ($affiche_categories) {
     // On utilise les valeurs spécifiées pour la classe en question
-    $groupeinfo = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
+    //$groupeinfo = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
+    $sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id, jgc.mode_moy ".
     "FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
     "WHERE ( " .
     "jgc.categorie_id = jmcc.categorie_id AND " .
@@ -230,17 +237,19 @@ if ($affiche_categories) {
     "jgm.id_groupe=jgc.id_groupe AND " .
     "m.matiere = jgm.id_matiere" .
     ") " .
-    "ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
+    "ORDER BY jmcc.priority,jgc.priorite,m.nom_complet";
 } else {
-    $groupeinfo = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef
+    //$groupeinfo = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef
+    $sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.mode_moy
     FROM j_groupes_classes jgc, j_groupes_matieres jgm
     WHERE (
     jgc.id_classe='".$id_classe."' AND
     jgm.id_groupe=jgc.id_groupe
     )
-    ORDER BY jgc.priorite,jgm.id_matiere");
+    ORDER BY jgc.priorite,jgm.id_matiere";
 }
-
+//echo "$sql<br />";
+$groupeinfo=mysql_query($sql);
 $lignes_groupes = mysql_num_rows($groupeinfo);
 
 //
@@ -461,13 +470,13 @@ while($j < $nb_lignes_tableau) {
 }
 
 
-if(($utiliser_coef_perso=='y')&&(isset($note_sup_10))) {
+//if((($utiliser_coef_perso=='y')&&(isset($note_sup_10)))||($temoin_note_sup10=='y')) {
+if($temoin_note_sup10=='y') {
 	//$col[1][1]="Note&gt;10";
 	$col[1][1]="Note sup 10";
 	//$col_csv[1][1]="Note sup 10";
 	for($t=2;$t<=$nb_col+$lignes_groupes;$t++) {$col[$t][1]='-';}
 }
-
 
 //
 // définition des colonnes matières
@@ -490,10 +499,16 @@ while($i < $lignes_groupes) {
     $current_group = get_group($var_group_id);
     // Coeff pour la classe
     $current_coef = mysql_result($groupeinfo, $i, "coef");
+
+    // Mode de calcul sur la moyenne: standard (-) ou note supérieure à 10
+    $current_mode_moy = mysql_result($groupeinfo, $i, "mode_moy");
     // A FAIRE: A l'affichage, il faudrait mettre 1.0(*) quand le coeff n'est pas 1.0 pour tous les élèves à cause de coeffs personnalisés.
     if($utiliser_coef_perso=='y') {
         if(isset($coef_perso[$var_group_id])) {$current_coef=$coef_perso[$var_group_id];}
-		if(isset($note_sup_10[$var_group_id])) {$col[$nb_col][1]='X';}
+        if(isset($note_sup_10[$var_group_id])) {$col[$nb_col][1]='X';}
+    }
+    else {
+        if($current_mode_moy=='sup10') {$col[$nb_col][1]='X';}
     }
 
     if ($affiche_categories) {
@@ -553,9 +568,14 @@ while($i < $lignes_groupes) {
 						} else {
 							// Coefficient du groupe:
 							$coef_eleve = $current_coef;
-							if((isset($note_sup_10[$current_group["id"]]))&&($note_sup_10[$current_group["id"]]=='y')&&($temp<10)) {
-								$coef_eleve=0;
-								//echo $current_eleve_login[$j]." groupe n°".$current_group["id"]." (".$current_group["name"]."): coeff 0<br />";
+							if($utiliser_coef_perso=='y') {
+								if ((isset($note_sup_10[$current_group["id"]]))&&($note_sup_10[$current_group["id"]]=='y')&&($temp<10)) {
+									$coef_eleve=0;
+									//echo $current_eleve_login[$j]." groupe n°".$current_group["id"]." (".$current_group["name"]."): coeff 0<br />";
+								}
+							}
+							else {
+								if(($current_mode_moy=='sup10')&&($temp<10)) {$coef_eleve=0;}
 							}
 						}
 						//$coef_eleve=number_format($coef_eleve,1, ',', ' ');
@@ -615,9 +635,14 @@ while($i < $lignes_groupes) {
              $col[$k][$j+$ligne_supl] = number_format($moy,1, ',', ' ');
              if ($current_coef > 0) {
 
-				if((isset($note_sup_10[$current_group["id"]]))&&($note_sup_10[$current_group["id"]]=='y')&&($moy<10)) {
-					$coef_eleve=0;
-					//echo $current_eleve_login[$j]." groupe n°".$current_group["id"]." (".$current_group["name"]."): coeff 0<br />";
+				if($utiliser_coef_perso=='y') {
+					if((isset($note_sup_10[$current_group["id"]]))&&($note_sup_10[$current_group["id"]]=='y')&&($moy<10)) {
+						$coef_eleve=0;
+						//echo $current_eleve_login[$j]." groupe n°".$current_group["id"]." (".$current_group["name"]."): coeff 0<br />";
+					}
+				}
+				else {
+					if(($current_mode_moy=='sup10')&&($moy<10)) {$coef_eleve=0;}
 				}
 
                  if (!in_array($prev_cat_id, $displayed_categories)) $displayed_categories[] = $prev_cat_id;
@@ -729,7 +754,8 @@ if ($ligne_supl >= 1) {
 
 			$ligne1_csv[$nb_col] = "Moyenne : " . $cat_names[$cat_id];
 
-			if(isset($note_sup_10)) {$col[$nb_col][1]='-';}
+			//if(isset($note_sup_10)) {$col[$nb_col][1]='-';}
+			if($temoin_note_sup10=='y') {$col[$nb_col][1]='-';}
 
 			$j = '0';
 			while($j < $nb_lignes_tableau) {
@@ -765,7 +791,8 @@ if ($ligne_supl >= 1) {
     // La moyenne générale
     $nb_col++;
 
-	if(isset($note_sup_10)) {$col[$nb_col][1]='-';}
+	//if(isset($note_sup_10)) {$col[$nb_col][1]='-';}
+	if($temoin_note_sup10=='y') {$col[$nb_col][1]='-';}
 
     //$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=Moyenne générale&width=22\" width=\"22\" border=\"0\" />";
     //$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale\" />";
@@ -923,8 +950,8 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 
 	// if ($test_coef != 0) $col[1][0] = "Coefficient";
 
-	// Ajout d'une ligne de décalage si il y a une ligne de coeff
 	$corr=0;
+	// Ajout d'une ligne de décalage si il y a une ligne de coeff
 	if($col[1][0]=="Coefficient") {
 		//$b_inf=1;
 		//$b_sup=$nb_lignes_tableau+1;
@@ -934,7 +961,6 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 	if($temoin_note_sup10=='y') {
 		$corr++;
 	}
-	//echo "corr=$corr<br />";
 	/*
 	else {
 		//$b_inf=0;
@@ -1187,7 +1213,7 @@ if ($referent == "une_periode") {
 
 affiche_tableau($nb_lignes_tableau, $nb_col, $ligne1, $col, $larg_tab, $bord,0,1,$couleur_alterne);
 
-if(($utiliser_coef_perso=='y')&&(isset($note_sup_10))) {
+if(isset($note_sup_10)) {
 	if(count($note_sup_10)==1) {
 		echo "<p>Une matière n'est comptée que pour les notes supérieures à 10.</p>\n";
 	}

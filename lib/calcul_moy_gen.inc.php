@@ -76,7 +76,7 @@ if ($affiche_categories) {
 	") " .
 	"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
 	*/
-	$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
+	$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id, jgc.mode_moy ".
 	"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m, matieres_categories mc " .
 	"WHERE ( " .
 	"mc.id=jmcc.categorie_id AND ".
@@ -100,7 +100,7 @@ if ($affiche_categories) {
 	)
 	ORDER BY jgc.priorite,jgm.id_matiere");
 	*/
-	$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef
+	$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.mode_moy
 	FROM j_groupes_classes jgc, j_groupes_matieres jgm
 	WHERE (
 	jgc.id_classe='".$id_classe."' AND
@@ -119,6 +119,7 @@ calc_moy_debug("\$nombre_groupes=$nombre_groupes\n");
 // Initialisation des tableaux liés aux calculs des moyennes générales
 $current_group = array();
 $current_coef = array();
+$current_mode_moy = array();
 
 //======================================
 // Ajout: boireaus 20080408
@@ -228,6 +229,9 @@ while ($j < $nombre_groupes) {
 		}
 	}
 	calc_moy_debug("\$current_coef[$j]=$current_coef[$j]\n");
+
+	$current_mode_moy[$j]=mysql_result($appel_liste_groupes, $j, "mode_moy");
+	calc_moy_debug("\$current_mode_moy[$j]=mysql_result(\$appel_liste_groupes, $j, \"mode_moy\")=$current_mode_moy[$j]\n");
 
     if ($current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"] != $prev_cat) {
     	$prev_cat = $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"];
@@ -390,6 +394,12 @@ while ($j < $nombre_groupes) {
 					$coef_eleve = mysql_result($test_coef, 0);
 				} else {
 					$coef_eleve = $current_coef[$j];
+				}
+			}
+
+			if($current_mode_moy[$j]=='sup10') {
+				if(($current_eleve_note[$j][$i]!="")&&($current_eleve_note[$j][$i]!="-")&&($current_eleve_note[$j][$i]<10)) {
+					$coef_eleve=0;
 				}
 			}
 

@@ -270,7 +270,8 @@ if (isset($id_classe)) {
 	}
 	echo "</td></tr>\n</table>\n";
 
-	$sql="SELECT DISTINCT jgc.id_groupe, g.name, g.description, jgc.coef FROM groupes g, j_groupes_classes jgc WHERE id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY g.name;";
+	//$sql="SELECT DISTINCT jgc.id_groupe, g.name, g.description, jgc.coef FROM groupes g, j_groupes_classes jgc WHERE id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY g.name;";
+	$sql="SELECT DISTINCT jgc.id_groupe, g.name, g.description, jgc.coef, jgc.mode_moy FROM groupes g, j_groupes_classes jgc WHERE id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY g.name;";
 	//echo "$sql<br />";
 	$res_coef_grp=mysql_query($sql);
 	echo "<input type='checkbox' id='utiliser_coef_perso' name='utiliser_coef_perso' value='y' onchange=\"display_div_coef_perso()\" /><label for='utiliser_coef_perso'> Utiliser des coefficients personnalisés.</label><br />\n";
@@ -294,7 +295,9 @@ if (isset($id_classe)) {
 		echo "<td>".htmlentities($lig_cg->name)."</td>\n";
 		echo "<td>".htmlentities($lig_cg->description)."</td>\n";
 		echo "<td><input type='text' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()\" name='coef_perso[$lig_cg->id_groupe]' value='$lig_cg->coef' size='3' autocomplete='off' /></td>\n";
-		echo "<td><input type='checkbox' name='note_sup_10[$lig_cg->id_groupe]' value='y' /></td>\n";
+		echo "<td><input type='checkbox' name='note_sup_10[$lig_cg->id_groupe]' value='y' ";
+		if($lig_cg->mode_moy=='sup10') {echo "checked ";}
+		echo "/></td>\n";
 		echo "</tr>\n";
 		$num_id++;
 	}
