@@ -708,8 +708,10 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	echo "\n<!-- Formulaire de choix des élèves et des paramètres -->\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' target='_blank'>\n";
+	//echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' target='_blank' onsubmit='if(test_check_ele()) {document.forms['formulaire'].submit();}'>\n";
 
-	echo "<p><input type='submit' name='bouton_valide_select_eleves2' value='Valider' /></p>\n";
+	//echo "<p><input type='submit' name='bouton_valide_select_eleves2' value='Valider' /></p>\n";
+	echo "<p><input type='button' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' /></p>\n";
 
 	// Période d'affichage:
 	echo "<input type='hidden' name='choix_periode' value='$choix_periode' />\n";
@@ -1196,7 +1198,43 @@ function decocher_tous_eleves() {
 	}
 
 	echo "}
+
+function test_check_ele() {
+	eff_eleve_checked=0;
+	
+	tabinput=document.getElementsByTagName('input');
+	
+	for(i=0;i<tabinput.length;i++) {
+		//nom_element=tabinput[i].getAttribute('name');
+		// On ne peut pas tester si le champ est coché en utilisant l'attribut 'name' parce que cet attribut est de la forme 'tab_selection_ele_...[]' et les crochets posent pb.
+		
+		if(tabinput[i].getAttribute('id')) {
+			nom_element=tabinput[i].getAttribute('id');
+
+			t=nom_element.substring(0,18);
+
+			if(t=='tab_selection_ele_') {
+				if(document.getElementById(nom_element).checked==true) {
+					eff_eleve_checked++;
+				}
+			}
+		}
+	}
+	
+	if(eff_eleve_checked==0) {
+		//alert('Aucun élève n est sélectionné.');
+		//return confirm('Aucun élève n est sélectionné. Voulez-vous quand même générer le relevé?');
+		if(confirm('Aucun élève n est sélectionné. Voulez-vous quand même générer le relevé?')) {document.forms['formulaire'].submit();}
+	}
+	else {
+	//	alert('Au moins un élève est sélectionné: '+eff_eleve_checked);
+	document.forms['formulaire'].submit();
+	}
+}
 </script>\n";
+
+	//echo "<p><a href='javascript:test_check_ele();return false;'>Test élève</a></p>\n";
+	//echo "<p><a href='#' onclick='test_check_ele();return false;'>Test élève</a></p>\n";
 
 	if(isset($id_groupe)) {
 		// Cas d'un prof (on a forcé plus haut à NULL $id_groupe si on n'a pas affaire à un prof)
@@ -1213,7 +1251,9 @@ function decocher_tous_eleves() {
 	}
 	*/
 	echo "<input type='hidden' name='valide_select_eleves' value='y' />\n";
-	echo "<p><input type='submit' name='bouton_valide_select_eleves2' value='Valider' /></p>\n";
+	//echo "<p><input type='submit' name='bouton_valide_select_eleves2' value='Valider' /></p>\n";
+	//echo "<p><input type='submit' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' /></p>\n";
+	echo "<p><input type='button' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' /></p>\n";
 	echo "</form>\n";
 }
 //=======================================================
