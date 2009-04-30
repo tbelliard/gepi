@@ -1600,80 +1600,82 @@ else {
 				}
 
 				//$compteur=0;
-				for($i=0;$i<count($tab_releve[$id_classe][$periode_num]['eleve']);$i++) {
-
-					if(isset($tab_releve[$id_classe][$periode_num]['selection_eleves'])) {
-						//if (in_array($tab_releve[$id_classe][$periode_num]['eleve'][$i]['login'],$tab_releve[$id_classe][$periode_num]['selection_eleves'])) {
-
-							//+++++++++++++++++++++++++++++++++++
-							//===============================================
-							/*
-
-							// A FAIRE -> A FAIRE PLUS HAUT POUR NE PLUS FAIRE DE REQUETES DANS CETTE PARTIE Là
-
-							// Contrôler qu'il n'y a pas d'usurpation d'accès
-							$autorisation_acces='n';
-							// Si c'est un prof
-							if($_SESSION['statut']=='professeur') {
-								// GepiAccesReleveProf               -> que les élèves de ses groupes
-								// GepiAccesReleveProfTousEleves     -> tous les élèves de ses classes
-								// GepiAccesReleveProfToutesClasses  -> tous les élèves de toutes les classes
-
-								// GepiAccesReleveProfToutesClasses  -> tous les élèves de toutes les classes
-								if(getSettingValue("GepiAccesReleveProfToutesClasses") == "yes") {
-									// On vérifie seulement que c'est bien le login d'un élève d'une classe
-									$sql="SELECT 1=1 FROM j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND login='".$tab_releve[$id_classe][$periode_num]['eleve'][$i]['login']."';";
-									$verif=mysql_query($sql);
-									if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
+				if(isset($tab_releve[$id_classe][$periode_num]['eleve'])) {
+					for($i=0;$i<count($tab_releve[$id_classe][$periode_num]['eleve']);$i++) {
+	
+						if(isset($tab_releve[$id_classe][$periode_num]['selection_eleves'])) {
+							//if (in_array($tab_releve[$id_classe][$periode_num]['eleve'][$i]['login'],$tab_releve[$id_classe][$periode_num]['selection_eleves'])) {
+	
+								//+++++++++++++++++++++++++++++++++++
+								//===============================================
+								/*
+	
+								// A FAIRE -> A FAIRE PLUS HAUT POUR NE PLUS FAIRE DE REQUETES DANS CETTE PARTIE Là
+	
+								// Contrôler qu'il n'y a pas d'usurpation d'accès
+								$autorisation_acces='n';
+								// Si c'est un prof
+								if($_SESSION['statut']=='professeur') {
+									// GepiAccesReleveProf               -> que les élèves de ses groupes
+									// GepiAccesReleveProfTousEleves     -> tous les élèves de ses classes
+									// GepiAccesReleveProfToutesClasses  -> tous les élèves de toutes les classes
+	
+									// GepiAccesReleveProfToutesClasses  -> tous les élèves de toutes les classes
+									if(getSettingValue("GepiAccesReleveProfToutesClasses") == "yes") {
+										// On vérifie seulement que c'est bien le login d'un élève d'une classe
+										$sql="SELECT 1=1 FROM j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND login='".$tab_releve[$id_classe][$periode_num]['eleve'][$i]['login']."';";
+										$verif=mysql_query($sql);
+										if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
+									}
+									elseif (getSettingValue("GepiAccesReleveProf") == "yes") {
+	
+									}
+									elseif (getSettingValue("GepiAccesReleveProfTousEleves") == "yes") {
+	
+									}
+									else {
+	
+									}
 								}
-								elseif (getSettingValue("GepiAccesReleveProf") == "yes") {
-
-								}
-								elseif (getSettingValue("GepiAccesReleveProfTousEleves") == "yes") {
-
-								}
-								else {
-
-								}
-							}
-							// Si c'est un CPE
-							// Si c'est un compte scolarité
-							// Si c'est un élève
-							// Si c'est un responsable
-							*/
-							$autorisation_acces='y';
-							//===============================================
-							//+++++++++++++++++++++++++++++++++++
-
-							if($autorisation_acces=='y') {
-								if($mode_bulletin!="pdf") {
-									echo "<script type='text/javascript'>
+								// Si c'est un CPE
+								// Si c'est un compte scolarité
+								// Si c'est un élève
+								// Si c'est un responsable
+								*/
+								$autorisation_acces='y';
+								//===============================================
+								//+++++++++++++++++++++++++++++++++++
+	
+								if($autorisation_acces=='y') {
+									if($mode_bulletin!="pdf") {
+										echo "<script type='text/javascript'>
 	document.getElementById('td_ele').innerHTML='".$tab_releve[$id_classe][$periode_num]['eleve'][$i]['login']."';
 </script>\n";
-									flush();
-
-									// Saut de page si jamais ce n'est pas le premier bulletin
-									if($compteur>0) {echo "<p class='saut'>&nbsp;</p>\n";}
-
-									// Génération du bulletin de l'élève
-									releve_html($tab_releve[$id_classe][$periode_num],$i,-1);
+										flush();
 	
-									echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les relevés</div></div>\n";
-
-									flush();
+										// Saut de page si jamais ce n'est pas le premier bulletin
+										if($compteur>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+	
+										// Génération du bulletin de l'élève
+										releve_html($tab_releve[$id_classe][$periode_num],$i,-1);
+		
+										echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les relevés</div></div>\n";
+	
+										flush();
+									}
+									else {
+										// Relevé PDF
+	
+										// Génération du relevé PDF de l'élève
+										releve_pdf($tab_releve[$id_classe][$periode_num],$i);
+	
+									}
+	
+									$compteur++;
+	
 								}
-								else {
-									// Relevé PDF
-
-									// Génération du relevé PDF de l'élève
-									releve_pdf($tab_releve[$id_classe][$periode_num],$i);
-
-								}
-
-								$compteur++;
-
-							}
-						//}
+							//}
+						}
 					}
 				}
 			}
