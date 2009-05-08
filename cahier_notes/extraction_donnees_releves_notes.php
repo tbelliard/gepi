@@ -417,8 +417,11 @@
 							"jgc.categorie_id = jmcc.categorie_id AND " .
 							"jgc.id_classe = '".$id_classe."' AND " .
 							"jgm.id_groupe = jgc.id_groupe AND " .
-							"m.matiere = jgm.id_matiere" .
-							") " .
+							"m.matiere = jgm.id_matiere";
+
+							if($choix_periode!="intervalle") {$sql.=" AND jeg.periode='$periode_num'";}
+
+							$sql.=") " .
 							"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet";
 						} else {
 							$sql="SELECT DISTINCT jgc.id_groupe, jgc.categorie_id, jgc.coef, jgm.id_matiere matiere " .
@@ -427,8 +430,11 @@
 							"jeg.login = '" . $current_eleve_login[$i] . "' AND " .
 							"jgc.id_groupe = jeg.id_groupe AND " .
 							"jgc.id_classe = '".$id_classe."' AND " .
-							"jgm.id_groupe = jgc.id_groupe" .
-							") " .
+							"jgm.id_groupe = jgc.id_groupe";
+
+							if($choix_periode!="intervalle") {$sql.=" AND jeg.periode='$periode_num'";}
+
+							$sql.=") " .
 							"ORDER BY jgc.priorite,jgm.id_matiere";
 						}
 						$appel_liste_groupes = mysql_query($sql);
