@@ -52,7 +52,16 @@ class Classe extends BaseClasse {
 	public function getEleves($periode) {
 		$criteria = new Criteria();
 		$criteria->add(JEleveClassePeer::PERIODE,$periode);
-		foreach($this->getJEleveClassesJoinEleve() as $ref) {
+		foreach($this->getJEleveClassesJoinEleve($criteria) as $ref) {
+			$eleves[] = $ref->getEleve();
+		}
+		return $eleves;
+	}
+
+	public function getElevesByProfesseurPrincipal($login_prof) {
+		$criteria = new Criteria();
+		$criteria->add(JEleveProfesseurPrincipalPeer::PROFESSEUR,$login_prof);
+		foreach($this->getJEleveProfesseurPrincipalsJoinEleve($criteria) as $ref) {
 			$eleves[] = $ref->getEleve();
 		}
 		return $eleves;
