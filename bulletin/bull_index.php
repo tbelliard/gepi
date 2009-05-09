@@ -164,7 +164,9 @@ $choix_periode_num=isset($_POST['choix_periode_num']) ? $_POST['choix_periode_nu
 //==================CHOIX DES CLASSES===================
 if(!isset($tab_id_classe)) {
 	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||($_SESSION['statut']=='administrateur')) {
+	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
+	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
+	($_SESSION['statut']=='administrateur')) {
 		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 	}
 	echo "</p>\n";
@@ -269,7 +271,9 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 	echo "<p class='bold'>";
 	//echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 	echo "<a href='bull_index.php'>Choisir d'autres classes</a>\n";
-	if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
+	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
+	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
+	($_SESSION['statut']=='administrateur')) {
 		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 	}
 	echo "</p>\n";
@@ -368,7 +372,9 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	//echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres périodes</a>\n";
 	//echo " | <a href='#' onClick='history.go(-1);'>Choisir d'autres périodes</a>\n";
 	echo " | <a href='".$_SERVER['PHP_SELF']."' onClick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
-	if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
+	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
+	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
+	($_SESSION['statut']=='administrateur')) {
 		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 	}
 	echo "</p>\n";

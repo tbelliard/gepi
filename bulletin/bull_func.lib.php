@@ -1017,6 +1017,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		$bull_intitule_app,
 
+		$bull_formule_bas,
+
 		// Paramètre transmis depuis la page d'impression des bulletins
 		$un_seul_bull_par_famille,
 
@@ -1248,6 +1250,15 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		$pdf->AddPage(); //ajout d'une page au document
 		$pdf->SetFont('Arial');
 
+		//================================
+		// On insère le footer dès que la page est créée:
+		//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+		$pdf->SetXY(5,-10);
+		//Police Arial Gras 6
+		$pdf->SetFont('Arial','B',8);
+		// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
+		$pdf->Cell(0,4.5, $bull_formule_bas,0,0,'C');
+		//================================
 
 		// A VERIFIER: CETTE VARIABLE NE DOIT PAS ETRE UTILE
 		// SI LES VALEURS AFFICHEES PROVIENNENT DE L'EXTRACTION HORS DE LA FONCTION

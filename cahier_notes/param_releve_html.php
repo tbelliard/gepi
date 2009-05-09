@@ -426,6 +426,22 @@ if(isset($_POST['releve_affiche_fax'])) {
 }
 
 
+if (isset($NON_PROTECT['releve_formule_bas'])) {
+    $imp = traitement_magic_quotes($NON_PROTECT['releve_formule_bas']);
+    if (!saveSetting("releve_formule_bas", $imp)) {
+        $msg .= "Erreur lors de l'enregistrement de releve_formule_bas !";
+        $reg_ok = 'no';
+    }
+}
+
+if (isset($_POST['releve_affiche_formule'])) {
+
+    if (!saveSetting("releve_affiche_formule", $_POST['releve_affiche_formule'])) {
+        $msg .= "Erreur lors de l'enregistrement de releve_affiche_formule !";
+        $reg_ok = 'no';
+    }
+}
+
 // Tableau des couleurs HTML:
 $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
 
@@ -996,6 +1012,32 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         ?>
         </td>
     </tr>
+
+
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Afficher la formule figurant en bas de chaque relevé de notes :
+        </td>
+        <td>
+        <?php
+        echo "<input type=\"radio\" name=\"releve_affiche_formule\" id=\"releve_affiche_formuley\" value=\"y\" ";
+        if (getSettingValue("releve_affiche_formule") == 'y') echo " checked";
+        echo " /><label for='releve_affiche_formuley' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"releve_affiche_formule\" id=\"releve_affiche_formulen\" value=\"n\" ";
+        if (getSettingValue("releve_affiche_formule") != 'y') echo " checked";
+        echo " /><label for='releve_affiche_formulen' style='cursor: pointer;'>&nbsp;Non</label>";
+
+        ?>
+        </td>
+    </tr>
+
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;" colspan="2">
+        <label for='no_anti_inject_releve_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque relevé de notes:</label>
+        <input type="text" name="no_anti_inject_releve_formule_bas" id="no_anti_inject_releve_formule_bas" size="100" value="<?php echo(getSettingValue("releve_formule_bas")); ?>" />
+        </td>
+    </tr>
+
 
 	<?php
 	/*

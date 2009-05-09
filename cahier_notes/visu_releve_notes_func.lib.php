@@ -1134,11 +1134,11 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 		}
 		//================================
-        echo "</div>\n";
+        //echo "</div>\n";
 
 
 		//================================
-		/*
+		
 		// Affichage de la formule de bas de page
 		//echo "\$releve_formule_bas=$releve_formule_bas<br />";
 		//echo "\$releve_affiche_formule=$releve_affiche_formule<br />";
@@ -1149,7 +1149,8 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			echo "<td><p align='center' class='bulletin'>".$releve_formule_bas."</p></td>\n";
 			echo "</tr></table>";
 		}
-		*/
+        echo "</div>\n";
+
 		//================================
 
 
@@ -1213,6 +1214,9 @@ function releve_pdf($tab_rel,$i) {
 
 		// Paramètres du modèle PDF
 		$tab_modele_pdf,
+
+		$affiche_releve_formule,
+		$releve_formule_bas,
 
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
@@ -1423,6 +1427,17 @@ function releve_pdf($tab_rel,$i) {
 
 	$pdf->AddPage("P");
 	$pdf->SetFontSize(10);
+
+	//================================
+	// On insère le footer dès que la page est créée:
+	//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+	$pdf->SetXY(5,-10);
+	//Police Arial Gras 6
+	$pdf->SetFont('Arial','B',8);
+	// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
+	$pdf->Cell(0,4.5, $releve_formule_bas,0,0,'C');
+	//================================
+
 
 	/*
 	if($nb_releve_par_page === '1' and $active_bloc_adresse_parent != '1') { $hauteur_cadre_note_global = 250; }

@@ -284,6 +284,9 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 
 	//Pied de page du document
 	function Footer() {
+		// On utilise la classe bul_PDF pour les bulletins et pour les relevés de notes et la formule de bas de page ne doit pas nécessairement être la même.
+		// Traitement du footer déplacé dans les pages concernées.
+		/*
 		//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
 		$this->SetXY(5,-10);
 		//Police Arial Gras 6
@@ -291,6 +294,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 		// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
 		$fomule = getSettingValue("bull_formule_bas");
 		$this->Cell(0,4.5, $fomule,0,0,'C');
+		*/
 	}
 
 } // class bul_PDF

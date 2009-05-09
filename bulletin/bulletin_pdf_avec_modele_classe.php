@@ -85,6 +85,7 @@ require_once("bulletin_donnees.php");
 // Tableau de la liste des champs des modèles de bulletins:
 require_once("bulletin_pdf.inc.php");
 
+$bull_formule_bas=getSettingValue("bull_formule_bas") ? getSettingValue("bull_formule_bas") : "Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.";
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('TopMargin','5');
@@ -2032,6 +2033,16 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 		$pdf->AddPage(); //ajout d'une page au document
 		$pdf->SetFont('Arial');
+
+		//================================
+		// On insère le footer dès que la page est créée:
+		//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+		$pdf->SetXY(5,-10);
+		//Police Arial Gras 6
+		$pdf->SetFont('Arial','B',8);
+		// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
+		$pdf->Cell(0,4.5, $bull_formule_bas,0,0,'C');
+		//================================
 
 	// ==================== DEBUT ENTETE BULLETIN ====================
 		//Affiche le filigrame

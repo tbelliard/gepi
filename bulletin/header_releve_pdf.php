@@ -358,6 +358,8 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 
 
+	$releve_affiche_formule=getSettingValue("releve_affiche_formule") ? getSettingValue("releve_affiche_formule") : "y";
+	$releve_formule_bas=getSettingValue("releve_formule_bas") ? getSettingValue("releve_formule_bas") : "";
 
 
 ?>
