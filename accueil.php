@@ -774,6 +774,46 @@ if ($affiche=='yes') {
 **********************************/
 
 
+/******************************
+	Outils de relevé ECTS
+******************************/
+/* $test_prof_suivi et $test_prof_ects doivent être défini avant */
+
+$condition = (  (($test_prof_suivi != "0") and ($gepiSettings['GepiAccesEditionDocsEctsPP'] =='yes') and $test_prof_ects != "0")
+                or (($_SESSION['statut']=='scolarite') and ($gepiSettings['GepiAccesEditionDocsEctsScolarite'] =='yes') and $test_scol_ects != "0")
+                or ($_SESSION['statut']=='secours')  );
+
+$chemin = array();
+if ($condition) $chemin[] = '/mod_ects/edition.php';
+
+$titre = array();
+if ($condition) $titre[] = 'Génération des documents ECTS';
+
+$expli = array();
+if ($condition) $expli[] = 'Cet outil vous permet de générer les documents ECTS (relevé, attestation, annexe) pour les classes concernées.';
+
+
+$nb_ligne = count($chemin);
+$affiche = 'no';
+for ($i=0;$i<$nb_ligne;$i++) {
+    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+}
+if ($affiche=='yes') {
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/releve.png' alt=''/> - Documents ECTS</h2>\n";
+	echo "<table class='menu' summary=\"Outils de relevés ECTS. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+    for ($i=0;$i<$nb_ligne;$i++) {
+        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+    }
+    echo "</table>\n";
+}
+
+/**********************************
+	Fin outils de relevé ECTS
+**********************************/
+
+
+
 /********************
 	Emploi du temps
 ********************/

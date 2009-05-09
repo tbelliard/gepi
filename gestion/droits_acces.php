@@ -647,6 +647,26 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesSaisieEctsScolarite !";
 	}
 
+	if (isset($_POST['GepiAccesEditionDocsEctsPP'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesEditionDocsEctsPP", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesEditionDocsEctsPP !";
+	}
+
+	if (isset($_POST['GepiAccesEditionDocsEctsScolarite'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesEditionDocsEctsScolarite", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesEditionDocsEctsScolarite !";
+	}
+
+
+
 
 	$tab_droits_ele_trombi=array('GepiAccesEleTrombiTousEleves',
 'GepiAccesEleTrombiElevesClasse',
@@ -843,6 +863,10 @@ require_once("../lib/header.inc");
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesSaisieEctsPP" id="GepiAccesSaisieEctsPP" value="yes" <?php if (getSettingValue("GepiAccesSaisieEctsPP")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesSaisieEctsPP' style='cursor: pointer;'> peut saisir les crédits ECTS pour sa classe</label></td>
 			</tr>
+           	<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEditionDocsEctsPP" id="GepiAccesEditionDocsEctsPP" value="yes" <?php if (getSettingValue("GepiAccesEditionDocsEctsPP")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesEditionDocsEctsPP' style='cursor: pointer;'> peut éditer les relevés ECTS pour sa classe</label></td>
+			</tr>
 			</table>
 	</tr>
 	<tr>
@@ -898,6 +922,10 @@ require_once("../lib/header.inc");
            	<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesSaisieEctsScolarite" id="GepiAccesSaisieEctsScolarite" value="yes" <?php if (getSettingValue("GepiAccesSaisieEctsScolarite")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesSaisieEctsScolarite' style='cursor: pointer;'> peut saisir les crédits ECTS</label></td>
+			</tr>
+           	<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEditionDocsEctsScolarite" id="GepiAccesEditionDocsEctsScolarite" value="yes" <?php if (getSettingValue("GepiAccesEditionDocsEctsScolarite")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesEditionDocsEctsScolarite' style='cursor: pointer;'> peut éditer les relevés d'ECTS</label></td>
 			</tr>
 			</table>
 		</td>

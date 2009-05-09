@@ -715,6 +715,8 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ects/ects_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Module ECTS : Admin', '');";
     $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ects/index_saisie.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Accueil saisie', '');";
     $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ects/saisie_ects.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Saisie', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ects/edition.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Edition des documents', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/documents_ects.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Génération des documents', '');";
 
 	//$tab_req[] = "";
 
@@ -7641,6 +7643,18 @@ lieu VARCHAR( 255 ) NOT NULL
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0) {
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesSaisieEctsScolarite', 'yes');");
+		}
+
+		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEditionDocsEctsPP'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0) {
+			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsPP', 'no');");
+		}
+
+		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEditionDocsEctsScolarite'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0) {
+			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsScolarite', 'yes');");
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'saisie_ects' à la table 'j_groupes_classes': ";
