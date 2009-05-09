@@ -185,6 +185,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	private $lastJEleveClasseCriteria = null;
 
 	/**
+	 * @var        array JEleveProfesseurPrincipal[] Collection to store aggregation of JEleveProfesseurPrincipal objects.
+	 */
+	protected $collJEleveProfesseurPrincipals;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collJEleveProfesseurPrincipals.
+	 */
+	private $lastJEleveProfesseurPrincipalCriteria = null;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -1084,6 +1094,9 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$this->collJEleveClasses = null;
 			$this->lastJEleveClasseCriteria = null;
 
+			$this->collJEleveProfesseurPrincipals = null;
+			$this->lastJEleveProfesseurPrincipalCriteria = null;
+
 		} // if (deep)
 	}
 
@@ -1207,6 +1220,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 				}
 			}
 
+			if ($this->collJEleveProfesseurPrincipals !== null) {
+				foreach ($this->collJEleveProfesseurPrincipals as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			$this->alreadyInSave = false;
 
 		}
@@ -1288,6 +1309,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 
 				if ($this->collJEleveClasses !== null) {
 					foreach ($this->collJEleveClasses as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJEleveProfesseurPrincipals !== null) {
+					foreach ($this->collJEleveProfesseurPrincipals as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1723,6 +1752,12 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			foreach ($this->getJEleveClasses() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addJEleveClasse($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getJEleveProfesseurPrincipals() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJEleveProfesseurPrincipal($relObj->copy($deepCopy));
 				}
 			}
 
@@ -2178,6 +2213,255 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Clears out the collJEleveProfesseurPrincipals collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJEleveProfesseurPrincipals()
+	 */
+	public function clearJEleveProfesseurPrincipals()
+	{
+		$this->collJEleveProfesseurPrincipals = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJEleveProfesseurPrincipals collection (array).
+	 *
+	 * By default this just sets the collJEleveProfesseurPrincipals collection to an empty array (like clearcollJEleveProfesseurPrincipals());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initJEleveProfesseurPrincipals()
+	{
+		$this->collJEleveProfesseurPrincipals = array();
+	}
+
+	/**
+	 * Gets an array of JEleveProfesseurPrincipal objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this Classe has previously been saved, it will retrieve
+	 * related JEleveProfesseurPrincipals from storage. If this Classe is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array JEleveProfesseurPrincipal[]
+	 * @throws     PropelException
+	 */
+	public function getJEleveProfesseurPrincipals($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collJEleveProfesseurPrincipals === null) {
+			if ($this->isNew()) {
+			   $this->collJEleveProfesseurPrincipals = array();
+			} else {
+
+				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
+
+				JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
+				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
+
+				JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
+				if (!isset($this->lastJEleveProfesseurPrincipalCriteria) || !$this->lastJEleveProfesseurPrincipalCriteria->equals($criteria)) {
+					$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastJEleveProfesseurPrincipalCriteria = $criteria;
+		return $this->collJEleveProfesseurPrincipals;
+	}
+
+	/**
+	 * Returns the number of related JEleveProfesseurPrincipal objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JEleveProfesseurPrincipal objects.
+	 * @throws     PropelException
+	 */
+	public function countJEleveProfesseurPrincipals(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collJEleveProfesseurPrincipals === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
+
+				$count = JEleveProfesseurPrincipalPeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
+
+				if (!isset($this->lastJEleveProfesseurPrincipalCriteria) || !$this->lastJEleveProfesseurPrincipalCriteria->equals($criteria)) {
+					$count = JEleveProfesseurPrincipalPeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collJEleveProfesseurPrincipals);
+				}
+			} else {
+				$count = count($this->collJEleveProfesseurPrincipals);
+			}
+		}
+		$this->lastJEleveProfesseurPrincipalCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a JEleveProfesseurPrincipal object to this object
+	 * through the JEleveProfesseurPrincipal foreign key attribute.
+	 *
+	 * @param      JEleveProfesseurPrincipal $l JEleveProfesseurPrincipal
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addJEleveProfesseurPrincipal(JEleveProfesseurPrincipal $l)
+	{
+		if ($this->collJEleveProfesseurPrincipals === null) {
+			$this->initJEleveProfesseurPrincipals();
+		}
+		if (!in_array($l, $this->collJEleveProfesseurPrincipals, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collJEleveProfesseurPrincipals, $l);
+			$l->setClasse($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Classe is new, it will return
+	 * an empty collection; or if this Classe has previously
+	 * been saved, it will retrieve related JEleveProfesseurPrincipals from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Classe.
+	 */
+	public function getJEleveProfesseurPrincipalsJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collJEleveProfesseurPrincipals === null) {
+			if ($this->isNew()) {
+				$this->collJEleveProfesseurPrincipals = array();
+			} else {
+
+				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
+
+				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelectJoinEleve($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
+
+			if (!isset($this->lastJEleveProfesseurPrincipalCriteria) || !$this->lastJEleveProfesseurPrincipalCriteria->equals($criteria)) {
+				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelectJoinEleve($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastJEleveProfesseurPrincipalCriteria = $criteria;
+
+		return $this->collJEleveProfesseurPrincipals;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Classe is new, it will return
+	 * an empty collection; or if this Classe has previously
+	 * been saved, it will retrieve related JEleveProfesseurPrincipals from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Classe.
+	 */
+	public function getJEleveProfesseurPrincipalsJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collJEleveProfesseurPrincipals === null) {
+			if ($this->isNew()) {
+				$this->collJEleveProfesseurPrincipals = array();
+			} else {
+
+				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
+
+				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
+
+			if (!isset($this->lastJEleveProfesseurPrincipalCriteria) || !$this->lastJEleveProfesseurPrincipalCriteria->equals($criteria)) {
+				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastJEleveProfesseurPrincipalCriteria = $criteria;
+
+		return $this->collJEleveProfesseurPrincipals;
+	}
+
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -2199,10 +2483,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collJEleveProfesseurPrincipals) {
+				foreach ((array) $this->collJEleveProfesseurPrincipals as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		$this->collJGroupesClassess = null;
 		$this->collJEleveClasses = null;
+		$this->collJEleveProfesseurPrincipals = null;
 	}
 
 } // BaseClasse

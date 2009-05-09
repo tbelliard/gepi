@@ -693,6 +693,9 @@ abstract class BaseClassePeer {
 			// invalidate objects in JEleveClassePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 			JEleveClassePeer::clearInstancePool();
 
+			// invalidate objects in JEleveProfesseurPrincipalPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			JEleveProfesseurPrincipalPeer::clearInstancePool();
+
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -735,6 +738,12 @@ abstract class BaseClassePeer {
 			
 			$c->add(JEleveClassePeer::ID_CLASSE, $obj->getId());
 			$affectedRows += JEleveClassePeer::doDelete($c, $con);
+
+			// delete related JEleveProfesseurPrincipal objects
+			$c = new Criteria(JEleveProfesseurPrincipalPeer::DATABASE_NAME);
+			
+			$c->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $obj->getId());
+			$affectedRows += JEleveProfesseurPrincipalPeer::doDelete($c, $con);
 		}
 		return $affectedRows;
 	}

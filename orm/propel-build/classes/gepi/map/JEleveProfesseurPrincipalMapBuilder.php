@@ -66,6 +66,8 @@ class JEleveProfesseurPrincipalMapBuilder implements MapBuilder {
 
 		$tMap->addForeignPrimaryKey('PROFESSEUR', 'Professeur', 'VARCHAR' , 'utilisateurs', 'LOGIN', true, 50);
 
+		$tMap->addForeignPrimaryKey('ID_CLASSE', 'IdClasse', 'INTEGER' , 'classes', 'ID', true, 11);
+
 	} // doBuild()
 
 } // JEleveProfesseurPrincipalMapBuilder

@@ -199,6 +199,8 @@
 		<foreign-key foreignTable="eleves" onDelete="CASCADE"><reference local="login" foreign="login"/></foreign-key>
 		<column name="professeur" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, login du professeur (utilisateur professionnel)"/>
 		<foreign-key foreignTable="utilisateurs" onDelete="CASCADE"><reference local="professeur" foreign="login"/></foreign-key>
+        <column name="id_classe" required="true" primaryKey="true" type="INTEGER" size="11" description="cle etrangere, id de la classe"/>
+		<foreign-key foreignTable="classes" onDelete="CASCADE"><reference local="id_classe" foreign="id"/></foreign-key>
 	</table>
 
 	<table name="j_eleves_regime" phpName="EleveRegimeDoublant" description="Mention du redoublement eventuel de l'eleve ainsi que son regime de presence (externe, demi-pensionnaire, ...)">

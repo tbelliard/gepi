@@ -47,7 +47,7 @@ CREATE TABLE groupes
 	description TEXT  NOT NULL COMMENT 'Description du groupe',
 	recalcul_rang VARCHAR(10) COMMENT 'recalcul_rang',
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Groupe d\'eleves permettant d\'y affecter des matieres et des professeurs';
+)Type=MyISAM COMMENT='Groupe d\'eleves permettant d\'y affecter une matiere et un professeurs';
 
 #-----------------------------------------------------------------------------
 #-- j_groupes_professeurs
@@ -132,7 +132,7 @@ CREATE TABLE j_groupes_classes
 		FOREIGN KEY (id_classe)
 		REFERENCES classes (id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table permettant le jointure entre groupe d\'eleves et une classe. Est rarement utilise directement dans le code.';
+)Type=MyISAM COMMENT='Table permettant la jointure entre groupe d\'eleves et une classe. Cette jointure permet de definir un enseignement, c\'est à dire un groupe d\'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe';
 
 #-----------------------------------------------------------------------------
 #-- ct_entry
@@ -379,7 +379,8 @@ CREATE TABLE j_eleves_professeurs
 (
 	login VARCHAR(50)  NOT NULL COMMENT 'cle etrangere, login de l\'eleve',
 	professeur VARCHAR(50)  NOT NULL COMMENT 'cle etrangere, login du professeur (utilisateur professionnel)',
-	PRIMARY KEY (login,professeur),
+	id_classe INTEGER(11)  NOT NULL COMMENT 'cle etrangere, id de la classe',
+	PRIMARY KEY (login,professeur,id_classe),
 	CONSTRAINT j_eleves_professeurs_FK_1
 		FOREIGN KEY (login)
 		REFERENCES eleves (login)
@@ -388,6 +389,11 @@ CREATE TABLE j_eleves_professeurs
 	CONSTRAINT j_eleves_professeurs_FK_2
 		FOREIGN KEY (professeur)
 		REFERENCES utilisateurs (login)
+		ON DELETE CASCADE,
+	INDEX j_eleves_professeurs_FI_3 (id_classe),
+	CONSTRAINT j_eleves_professeurs_FK_3
+		FOREIGN KEY (id_classe)
+		REFERENCES classes (id)
 		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Table de jointure entre les professeurs principaux et les eleves';
 
@@ -917,7 +923,7 @@ CREATE TABLE ects_credits
 	CONSTRAINT ects_credits_FK_2
 		FOREIGN KEY (id_groupe)
 		REFERENCES groupes (id)
-)Type=MyISAM COMMENT='Association eleve/periode/enseignement qui précise le nombre d\'ECTS obtenus par l\'eleve';
+)Type=MyISAM COMMENT='Objet qui précise le nombre d\'ECTS obtenus par l\'eleve pour un enseignement et une periode donnée';
 
 #-----------------------------------------------------------------------------
 #-- archivage_ects

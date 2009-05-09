@@ -3,7 +3,7 @@
 /**
  * Base static class for performing query and update operations on the 'ects_credits' table.
  *
- * Association eleve/periode/enseignement qui précise le nombre d'ECTS obtenus par l'eleve
+ * Objet qui précise le nombre d'ECTS obtenus par l'eleve pour un enseignement et une periode donnée
  *
  * @package    gepi.om
  */

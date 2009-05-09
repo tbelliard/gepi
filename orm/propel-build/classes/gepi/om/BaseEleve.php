@@ -2396,6 +2396,53 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 		return $this->collJEleveProfesseurPrincipals;
 	}
 
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Eleve is new, it will return
+	 * an empty collection; or if this Eleve has previously
+	 * been saved, it will retrieve related JEleveProfesseurPrincipals from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Eleve.
+	 */
+	public function getJEleveProfesseurPrincipalsJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ElevePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collJEleveProfesseurPrincipals === null) {
+			if ($this->isNew()) {
+				$this->collJEleveProfesseurPrincipals = array();
+			} else {
+
+				$criteria->add(JEleveProfesseurPrincipalPeer::LOGIN, $this->login);
+
+				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelectJoinClasse($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(JEleveProfesseurPrincipalPeer::LOGIN, $this->login);
+
+			if (!isset($this->lastJEleveProfesseurPrincipalCriteria) || !$this->lastJEleveProfesseurPrincipalCriteria->equals($criteria)) {
+				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelectJoinClasse($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastJEleveProfesseurPrincipalCriteria = $criteria;
+
+		return $this->collJEleveProfesseurPrincipals;
+	}
+
 	/**
 	 * Gets a single EleveRegimeDoublant object, which is related to this object by a one-to-one relationship.
 	 *
