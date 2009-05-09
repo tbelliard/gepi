@@ -102,6 +102,15 @@ class Eleve extends BaseEleve {
         return !empty($v) > 0 ? $v[0] : null;
 	}
 
+
+	public function getArchivedEctsCredits($annee,$periode) {
+		$criteria = new Criteria();
+		$criteria->add(ArchiveEctsPeer::NUM_PERIODE,$periode);
+        $criteria->add(ArchiveEctsPeer::ANNEE,$annee);
+        $v = $this->getArchiveEctss($criteria);
+        return $v;
+	}
+
     /**
 	 * Enregistre les crédits ECTS pour une période et un groupe
 	 */
