@@ -70,7 +70,7 @@ include "../lib/periodes.inc.php";
 //*******************************************************************************************************
 $msg = '';
 if (isset($_POST['is_posted'])) {
-    if (($periode_num < $nb_periode) and ($periode_num > 0) and ($ver_periode[$periode_num] != "O"))  {
+    if (($periode_num < $nb_periode) and ($periode_num > 0) and ($ver_periode[$periode_num] == "N" OR $ver_periode[$periode_num] == "P"))  {
         $reg = 'yes';
         // si l'utilisateur n'a pas le statut scolarité, on vérifie qu'il est prof principal de l'élève
         if (($_SESSION['statut'] != 'scolarite') and ($_SESSION['statut'] != 'secours')) {
@@ -99,6 +99,8 @@ if (isset($_POST['is_posted'])) {
 
                 $Eleve->setEctsCredit($periode_num,$groupe->getId(),$valeur_ects,$mention_ects);
             }
+            $mention_globale = $_POST['credit_ects_global'];
+            $Eleve->setCreditEctsGlobal($mention_globale);
         }
 
     } else {
@@ -338,30 +340,26 @@ function updatesum() {
 <?
 
     $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
+    $Classe = ClassePeer::retrieveByPK($id_classe);
     echo "<br/>";
 	echo "<form enctype=\"multipart/form-data\" name='ects_form' id='ects_form' action=\"saisie_ects.php\" method=\"post\">\n";
-	echo "<table class='boireaus' summary=\"Elève ".$Eleve->getLogin()."\">\n";
-	echo "<tr>\n";
-	echo "<td colspan='3' class='bull_simple'>\n";
-    echo "<span class='bull_simpl'><span class='bold'>".$Eleve->getNom()." ".$Eleve->getPrenom()."</span>";
-	echo "</td>\n";
-    echo "</tr>";
+    echo "<p><b>".$Classe->getClasse()."</b>, ".$Classe->getEctsTypeFormation()."</p>";
+    echo "<p><b>Parcours</b> : ".$Classe->getEctsParcours()."</p>";
+    echo "<p><b>Principaux domaines d'études</b> : ".$Classe->getEctsDomainesEtude()."</p>";
+    echo "<h2>".$Eleve->getPrenom()." ".$Eleve->getNom()."</h2>";
+	echo "<table class='boireaus' style='margin-left: 50px; margin-top: 10px;' summary=\"Elève ".$Eleve->getLogin()."\">\n";
     echo "<tr><td>Enseignements</td><td>Crédits obtenus</td><td>Mention (de A à F)</td></tr>";
-
-
     $groupes = $Eleve->getEctsGroupes($periode_num);
    
     $total_valeur = 0;
-
+    $mentions = array('A','B','C','D','E','F');
     foreach($groupes as $group) {
         echo "<tr>";
         echo "<td class='bull_simple'>";
         // Information sur la matière
-        echo "<p><b>".$group->getDescription()."</b><br/>";
-        foreach($group->getProfesseurs() as $prof) {
-        	echo "<i>".affiche_utilisateur($prof->getLogin(),$id_classe)."</i><br/>";
-		}
-        echo "</p></td>";
+        echo "<p><b>".$group->getDescription()."</b>";
+        echo "<br/><span style='font-size:x-small;'>Crédits par défaut : ".$group->getEctsDefaultValue($id_classe);
+        echo "</span></p></td>";
         $CreditEcts = $Eleve->getEctsCredit($periode_num,$group->getId());
         echo "<td class='bull_simple'>";
         $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
@@ -369,13 +367,35 @@ function updatesum() {
         echo "</td>";
         echo "<td class='bull_simple'>";
         $mention_ects = $CreditEcts == null ? '' : $CreditEcts->getMention();
-        echo "<input type='text' style='width: 40px;' name='mention_ects_".$group->getId()."' value='$mention_ects'>";
+        if ($mention_ects == '') $mention_ects = 'A';
+        foreach($mentions as $mention) {
+            echo "<input id='mention_ects_".$group->getId()."_$mention' type='radio' name='mention_ects_".$group->getId()."' value='$mention'";
+            if ($mention == $mention_ects) echo " CHECKED ";
+            echo "/><label for='mention_ects_".$group->getId()."_$mention'>$mention</label>";
+        }
         echo "</td>";
         echo "</tr>";
         $total_valeur += $valeur_ects;
     }
 
     echo "<tr><td>Total :</td><td><input id='total_ects' name='total_ects' readonly style='width: 40px;' value='$total_valeur'/></td><td></td></tr>";
+    echo "<tr><td>Mention globale :</td>";
+    echo "<td colspan='2'>";
+
+    $credit_global = $Eleve->getCreditEctsGlobal();
+    if ($credit_global == null) {
+        $mention_globale = 'A';
+    } else {
+        $mention_globale = $credit_global->getMention();
+    }
+    foreach($mentions as $mention) {
+        echo "<input id='credit_global_$mention' type='radio' name='credit_ects_global' value='$mention'";
+        if ($mention_globale == $mention) echo " CHECKED ";
+        echo "/><label for='credit_global_$mention'>$mention</label>";
+    }
+
+
+    echo "</td></tr>";
     ?>
     </table>
     <input type=hidden name=id_classe value=<?php echo "$id_classe";?> />
