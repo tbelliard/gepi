@@ -63,6 +63,11 @@
 		<column name="rn_sign_resp" required="true" type="CHAR" size="1" default="n"/>
 		<column name="rn_sign_nblig" required="true" type="INTEGER" default="3"/>
 		<column name="rn_formule" required="true" type="LONGVARCHAR"/>
+        <column name="ects_type_formation" type="VARCHAR" size="255" />
+        <column name="ects_parcours" type="VARCHAR" size="255" />
+        <column name="ects_code_parcours" type="VARCHAR" size="255" />
+        <column name="ects_domaines_etude" type="VARCHAR" size="255" />
+        <column name="ects_fonction_signataire_attestation" type="VARCHAR" size="255" />
 	</table>
 
 	<table name="j_groupes_classes" description="Table permettant la jointure entre groupe d'eleves et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
@@ -432,6 +437,13 @@
     <column name="id_groupe" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant du groupe"/>
     <foreign-key foreignTable="groupes"><reference local="id_groupe" foreign="id"/></foreign-key>
     <column name="valeur" type="DECIMAL" required="true" description="Nombre de crédits obtenus par l'eleve"/>
+    <column name="mention" type="VARCHAR" required="true" size="255" description="Mention obtenue"/>
+  </table>
+
+  <table name="ects_global_credits" phpName="CreditEctsGlobal" description="Objet qui précise la mention globale obtenue pour un eleve">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
+    <column name="id_eleve" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de l'eleve"/>
+    <foreign-key foreignTable="eleves"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
     <column name="mention" type="VARCHAR" required="true" size="255" description="Mention obtenue"/>
   </table>
 

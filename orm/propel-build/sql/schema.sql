@@ -103,6 +103,11 @@ CREATE TABLE classes
 	rn_sign_resp CHAR(1) default 'n' NOT NULL,
 	rn_sign_nblig INTEGER default 3 NOT NULL,
 	rn_formule TEXT  NOT NULL,
+	ects_type_formation VARCHAR(255),
+	ects_parcours VARCHAR(255),
+	ects_code_parcours VARCHAR(255),
+	ects_domaines_etude VARCHAR(255),
+	ects_fonction_signataire_attestation VARCHAR(255),
 	PRIMARY KEY (id)
 )Type=MyISAM COMMENT='Classe regroupant des eleves';
 
@@ -924,6 +929,25 @@ CREATE TABLE ects_credits
 		FOREIGN KEY (id_groupe)
 		REFERENCES groupes (id)
 )Type=MyISAM COMMENT='Objet qui précise le nombre d\'ECTS obtenus par l\'eleve pour un enseignement et une periode donnée';
+
+#-----------------------------------------------------------------------------
+#-- ects_global_credits
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS ects_global_credits;
+
+
+CREATE TABLE ects_global_credits
+(
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
+	id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve',
+	mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue',
+	PRIMARY KEY (id,id_eleve),
+	INDEX ects_global_credits_FI_1 (id_eleve),
+	CONSTRAINT ects_global_credits_FK_1
+		FOREIGN KEY (id_eleve)
+		REFERENCES eleves (id_eleve)
+)Type=MyISAM COMMENT='Objet qui précise la mention globale obtenue pour un eleve';
 
 #-----------------------------------------------------------------------------
 #-- archivage_ects
