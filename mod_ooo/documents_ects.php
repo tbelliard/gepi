@@ -100,13 +100,50 @@ if ($id_classe == 'all') {
         $Eleves = $Classe->getEleves('1');
     }
 }
-
+$current_date = date('d/m/Y');
 $i = 0;
+$mentions = array('A' => 'Très bien', 'B' => 'Bien', 'C' => 'Assez Bien', 'D' => 'Convenable', 'E' => 'Passable', 'F' => 'Insuffisant');
 foreach($Eleves as $Eleve) {
     // On est dans la boucle principale. Le premier tableau contient les informations relatives à l'élève.
     // C'est le premier bloc.
-    $eleves[$i] = array('nom' => $Eleve->getNom(), 'prenom' => $Eleve->getPrenom(), 'ine' => $Eleve->getNoGep(), 'parcours' => 'A préciser');
+    $classes = $Eleve->getClasses('1');
+    $Classe = $classes[0];
+    if ($Eleve->getSexe() == 'F') {
+        $naissance = "née le ".$Eleve->getNaissance();
+    } else {
+        $naissance = "né le ".$Eleve->getNaissance();
+    }
+    $adresse_etablissement = $gepiSettings['gepiSchoolName'];
+    if ($gepiSettings['gepiSchoolAdress1'] != '') $adresse_etablissement.= ', '.$gepiSettings['gepiSchoolAdress1'];
+    if ($gepiSettings['gepiSchoolAdress2'] != '') $adresse_etablissement.= ', '.$gepiSettings['gepiSchoolAdress2'];
+    $adresse_etablissement.= ', '.$gepiSettings['gepiSchoolZipCode'].' '.$gepiSettings['gepiSchoolCity'];
+    if ($gepiSettings['gepiSchoolPays'] != '') $adresse_etablissement.= ', '.$gepiSettings['gepiSchoolPays'];
+    $credit_global = $Eleve->getCreditEctsGlobal();
+    if ($credit_global == null) {
+        $mention_globale = 'A';
+    } else {
+        $mention_globale = $credit_global->getMention();
+    }
+    $eleves[$i] = array(
+                        'nom' => $Eleve->getNom(),
+                        'prenom' => $Eleve->getPrenom(),
+                        'ine' => $Eleve->getNoGep(),
+                        'date_naissance' => $naissance,
+                        'mention_globale' => $mentions[$mention_globale],
+                        'mention_globale_lettre' => $mention_globale,
+                        'parcours' => $Classe->getEctsParcours(),
+                        'code_parcours' => $Classe->getEctsCodeParcours(),
+                        'type_formation' => $Classe->getEctsTypeFormation(),
+                        'domaines_etude' => $Classe->getEctsDomainesEtude(),
+                        'fonction_signataire' => $Classe->getEctsFonctionSignataireAttestation(),
+                        'nom_signataire' => $Classe->getSuiviPar(),
+                        'date' => $current_date,
+                        'academie' => $gepiSettings['gepiSchoolAcademie'],
+                        'etablissement' => $gepiSettings['gepiSchoolName'],
+                        'ville_etab' => $gepiSettings['gepiSchoolCity'],
+                        'adresse_etab' => $adresse_etablissement);
 
+    $total_credits = 0;
     // Pour les semestre 1 et 2, on doit passer par les archives
     $semestre1[$i] = array();
     foreach($Eleve->getArchivedEctsCredits($annee_derniere, '1') as $Credit) {
@@ -116,6 +153,7 @@ foreach($Eleves as $Eleve) {
                             'discipline' => $Credit->getMatiere(),
                             'ects_credit' => $valeur,
                             'ects_mention' => $mention);
+        $total_credits = $total_credits + $valeur;
     }
 
     $semestre2[$i] = array();
@@ -126,6 +164,7 @@ foreach($Eleves as $Eleve) {
                             'discipline' => $Credit->getMatiere(),
                             'ects_credit' => $valeur,
                             'ects_mention' => $mention);
+        $total_credits = $total_credits + $valeur;
     }
 
     // On s'occupe des semestres 3 et 4:
@@ -139,6 +178,7 @@ foreach($Eleves as $Eleve) {
                             'discipline' => $Group->getDescription(),
                             'ects_credit' => $valeur,
                             'ects_mention' => $mention);
+        $total_credits = $total_credits + $valeur;
     }
     $semestre4[$i] = array();
     foreach($Eleve->getEctsGroupes('2') as $Group) {
@@ -149,8 +189,10 @@ foreach($Eleves as $Eleve) {
                             'discipline' => $Group->getDescription(),
                             'ects_credit' => $valeur,
                             'ects_mention' => $mention);
+        $total_credits = $total_credits + $valeur;
     }
 
+    $eleves[$i]['total_credits'] = $total_credits;
 
 
     $i++;
