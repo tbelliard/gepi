@@ -410,14 +410,16 @@ for($i=0;$i<10;$i++){
         //===============================
         // AJOUT: boireaus
         unset($result_matiere);
-        //$sql="SELECT m.priority, m.categorie_id FROM matieres m, j_groupes_matieres jgc WHERE jgc.id_groupe='".$group["id"]."' AND m.matiere=jgc.id_matiere";
-        $sql="SELECT jgc.priorite, m.categorie_id FROM matieres m, j_groupes_matieres jgm, j_groupes_classes jgc WHERE jgc.id_groupe='".$group["id"]."' AND m.matiere=jgm.id_matiere AND jgc.id_groupe=jgm.id_groupe;";
+        // On récupère l'ordre par défaut des matières dans matieres pour permettre de fixer les priorités d'après les priorités par défaut de matières.
+        // Sinon, pour l'affichage, c'est la priorité dans j_groupes_classes qui est utilisée à l'affichage dans les champs select.
+        $sql="SELECT m.priority, m.categorie_id FROM matieres m, j_groupes_matieres jgc WHERE jgc.id_groupe='".$group["id"]."' AND m.matiere=jgc.id_matiere";
+        //$sql="SELECT jgc.priorite, m.categorie_id FROM matieres m, j_groupes_matieres jgm, j_groupes_classes jgc WHERE jgc.id_groupe='".$group["id"]."' AND m.matiere=jgm.id_matiere AND jgc.id_groupe=jgm.id_groupe;";
         //$sql="SELECT priorite FROM j_groupes_classes jgc WHERE jgc.id_groupe='".$group["id"]."' AND id_classe='$id_classe'";
         //echo "$sql<br />\n";
         $result_matiere=mysql_query($sql);
         $ligmat=mysql_fetch_object($result_matiere);
-        //$mat_priorite[$cpt_grp]=$ligmat->priority;
-        $mat_priorite[$cpt_grp]=$ligmat->priorite;
+        $mat_priorite[$cpt_grp]=$ligmat->priority;
+        //$mat_priorite[$cpt_grp]=$ligmat->priorite;
         $mat_cat_id[$cpt_grp]=$ligmat->categorie_id;
         //$mat_priorite[$cpt_grp]=$ligmat->priorite;
         //echo "\$mat_priorite[$cpt_grp]=".$mat_priorite[$cpt_grp]."<br />\n";
