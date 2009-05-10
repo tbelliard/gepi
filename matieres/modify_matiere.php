@@ -97,12 +97,20 @@ if (isset($_POST['isposted'])) {
             $msg = rawurlencode("Les modifications ont été enregistrées ! ");
         }
     }
-    if ((isset($_POST['force_defaut'])) and ($ok == 'yes'))
-        $req = mysql_query("UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$matiere_priorite."'
-        WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."'");
-    if ((isset($_POST['force_defaut_categorie'])) and ($ok == 'yes'))
-        $req = mysql_query("UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$matiere_categorie."'
-        WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."')");
+    if ((isset($_POST['force_defaut'])) and ($ok == 'yes')) {
+        $sql="UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$matiere_priorite."'
+        WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."')";
+        //echo "$sql<br />";
+        //$msg = rawurlencode($sql);
+        $req = mysql_query($sql);
+    }
+    if ((isset($_POST['force_defaut_categorie'])) and ($ok == 'yes')) {
+        $sql="UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$matiere_categorie."'
+        WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."')";
+        //echo "$sql<br />";
+        //$msg = rawurlencode($sql);
+        $req = mysql_query($sql);
+    }
     header("location: index.php?msg=$msg");
     die();
 
