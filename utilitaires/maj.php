@@ -7657,6 +7657,12 @@ lieu VARCHAR( 255 ) NOT NULL
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsScolarite', 'yes');");
 		}
 
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'gepiSchoolAcademie'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0) {
+			$result_inter .= traite_requete("INSERT INTO setting VALUES ('gepiSchoolAcademie', '');");
+		}
+
 		$result .= "&nbsp;->Ajout d'un champ 'saisie_ects' à la table 'j_groupes_classes': ";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM j_groupes_classes LIKE 'saisie_ects'"));
 		if ($test1 == 0) {
@@ -7690,23 +7696,23 @@ lieu VARCHAR( 255 ) NOT NULL
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'ects_credits'"));
 		if ($test == 0) {
 			$query2 = mysql_query("CREATE TABLE ects_credits
-(
-	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
-	id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve',
-	num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode',
-	id_groupe INTEGER(11)  NOT NULL COMMENT 'Identifiant du groupe',
-	valeur DECIMAL(3,1) NOT NULL COMMENT 'Nombre de crÃ©dits obtenus par l\'eleve',
-	mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue',
-	PRIMARY KEY (id,id_eleve,num_periode,id_groupe),
-	INDEX ects_credits_FI_1 (id_eleve),
-	CONSTRAINT ects_credits_FK_1
-		FOREIGN KEY (id_eleve)
-		REFERENCES eleves (id_eleve),
-	INDEX ects_credits_FI_2 (id_groupe),
-	CONSTRAINT ects_credits_FK_2
-		FOREIGN KEY (id_groupe)
-		REFERENCES groupes (id)
-)");
+                                    (
+                                        id INTEGER(11)  NOT NULL AUTO_INCREMENT,
+                                        id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve',
+                                        num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode',
+                                        id_groupe INTEGER(11)  NOT NULL COMMENT 'Identifiant du groupe',
+                                        valeur DECIMAL(3,1) NOT NULL COMMENT 'Nombre de crÃ©dits obtenus par l\'eleve',
+                                        mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue',
+                                        PRIMARY KEY (id,id_eleve,num_periode,id_groupe),
+                                        INDEX ects_credits_FI_1 (id_eleve),
+                                        CONSTRAINT ects_credits_FK_1
+                                            FOREIGN KEY (id_eleve)
+                                            REFERENCES eleves (id_eleve),
+                                        INDEX ects_credits_FI_2 (id_groupe),
+                                        CONSTRAINT ects_credits_FK_2
+                                            FOREIGN KEY (id_groupe)
+                                            REFERENCES groupes (id)
+                                    )");
 			if ($query2) {
 				$result .= "<font color=\"green\">Ok !</font><br />";
 			} else {
@@ -7715,6 +7721,31 @@ lieu VARCHAR( 255 ) NOT NULL
 		} else {
 			$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 		}
+
+        $result .= "&nbsp;->Création de la table ects_global_credits<br />";
+		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'ects_global_credits'"));
+		if ($test == 0) {
+			$query2 = mysql_query("CREATE TABLE ects_global_credits
+                                    (
+                                        id INTEGER(11)  NOT NULL AUTO_INCREMENT,
+                                        id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve',
+                                        mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue',
+                                        PRIMARY KEY (id,id_eleve),
+                                        INDEX ects_global_credits_FI_1 (id_eleve),
+                                        CONSTRAINT ects_global_credits_FK_1
+                                            FOREIGN KEY (id_eleve)
+                                            REFERENCES eleves (id_eleve)
+                                    )");
+			if ($query2) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		} else {
+			$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+		}
+
+
 
         $result .= "&nbsp;->Création de la table archivage_ects<br />";
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_ects'"));
@@ -7746,6 +7777,78 @@ lieu VARCHAR( 255 ) NOT NULL
 		} else {
 			$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 		}
+
+
+		$result .= "&nbsp;->Ajout d'un champ 'ects_type_formation' à la table 'classes': ";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'ects_type_formation'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE classes ADD ects_type_formation VARCHAR(255) NOT NULL DEFAULT '';");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+		}
+
+		$result .= "&nbsp;->Ajout d'un champ 'ects_parcours' à la table 'classes': ";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'ects_parcours'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE classes ADD ects_parcours VARCHAR(255) NOT NULL DEFAULT '';");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+		}
+
+		$result .= "&nbsp;->Ajout d'un champ 'ects_code_parcours' à la table 'classes': ";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'ects_code_parcours'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE classes ADD ects_code_parcours VARCHAR(255) NOT NULL DEFAULT '';");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+		}
+
+		$result .= "&nbsp;->Ajout d'un champ 'ects_domaines_etude' à la table 'classes': ";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'ects_domaines_etude'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE classes ADD ects_domaines_etude VARCHAR(255) NOT NULL DEFAULT '';");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+		}
+
+		$result .= "&nbsp;->Ajout d'un champ 'ects_fonction_signataire_attestation' à la table 'classes': ";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'ects_fonction_signataire_attestation'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE classes ADD ects_fonction_signataire_attestation VARCHAR(255) NOT NULL DEFAULT '';");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+		}
+
 
 
 		// Ajouts d'index
