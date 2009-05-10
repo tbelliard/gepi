@@ -106,6 +106,16 @@ class ClasseMapBuilder implements MapBuilder {
 
 		$tMap->addColumn('RN_FORMULE', 'RnFormule', 'LONGVARCHAR', true, null);
 
+		$tMap->addColumn('ECTS_TYPE_FORMATION', 'EctsTypeFormation', 'VARCHAR', false, 255);
+
+		$tMap->addColumn('ECTS_PARCOURS', 'EctsParcours', 'VARCHAR', false, 255);
+
+		$tMap->addColumn('ECTS_CODE_PARCOURS', 'EctsCodeParcours', 'VARCHAR', false, 255);
+
+		$tMap->addColumn('ECTS_DOMAINES_ETUDE', 'EctsDomainesEtude', 'VARCHAR', false, 255);
+
+		$tMap->addColumn('ECTS_FONCTION_SIGNATAIRE_ATTESTATION', 'EctsFonctionSignataireAttestation', 'VARCHAR', false, 255);
+
 	} // doBuild()
 
 } // ClasseMapBuilder

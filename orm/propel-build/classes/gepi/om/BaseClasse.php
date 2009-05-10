@@ -165,6 +165,36 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	protected $rn_formule;
 
 	/**
+	 * The value for the ects_type_formation field.
+	 * @var        string
+	 */
+	protected $ects_type_formation;
+
+	/**
+	 * The value for the ects_parcours field.
+	 * @var        string
+	 */
+	protected $ects_parcours;
+
+	/**
+	 * The value for the ects_code_parcours field.
+	 * @var        string
+	 */
+	protected $ects_code_parcours;
+
+	/**
+	 * The value for the ects_domaines_etude field.
+	 * @var        string
+	 */
+	protected $ects_domaines_etude;
+
+	/**
+	 * The value for the ects_fonction_signataire_attestation field.
+	 * @var        string
+	 */
+	protected $ects_fonction_signataire_attestation;
+
+	/**
 	 * @var        array JGroupesClasses[] Collection to store aggregation of JGroupesClasses objects.
 	 */
 	protected $collJGroupesClassess;
@@ -460,6 +490,56 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	public function getRnFormule()
 	{
 		return $this->rn_formule;
+	}
+
+	/**
+	 * Get the [ects_type_formation] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getEctsTypeFormation()
+	{
+		return $this->ects_type_formation;
+	}
+
+	/**
+	 * Get the [ects_parcours] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getEctsParcours()
+	{
+		return $this->ects_parcours;
+	}
+
+	/**
+	 * Get the [ects_code_parcours] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getEctsCodeParcours()
+	{
+		return $this->ects_code_parcours;
+	}
+
+	/**
+	 * Get the [ects_domaines_etude] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getEctsDomainesEtude()
+	{
+		return $this->ects_domaines_etude;
+	}
+
+	/**
+	 * Get the [ects_fonction_signataire_attestation] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getEctsFonctionSignataireAttestation()
+	{
+		return $this->ects_fonction_signataire_attestation;
 	}
 
 	/**
@@ -903,6 +983,106 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	} // setRnFormule()
 
 	/**
+	 * Set the value of [ects_type_formation] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Classe The current object (for fluent API support)
+	 */
+	public function setEctsTypeFormation($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->ects_type_formation !== $v) {
+			$this->ects_type_formation = $v;
+			$this->modifiedColumns[] = ClassePeer::ECTS_TYPE_FORMATION;
+		}
+
+		return $this;
+	} // setEctsTypeFormation()
+
+	/**
+	 * Set the value of [ects_parcours] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Classe The current object (for fluent API support)
+	 */
+	public function setEctsParcours($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->ects_parcours !== $v) {
+			$this->ects_parcours = $v;
+			$this->modifiedColumns[] = ClassePeer::ECTS_PARCOURS;
+		}
+
+		return $this;
+	} // setEctsParcours()
+
+	/**
+	 * Set the value of [ects_code_parcours] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Classe The current object (for fluent API support)
+	 */
+	public function setEctsCodeParcours($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->ects_code_parcours !== $v) {
+			$this->ects_code_parcours = $v;
+			$this->modifiedColumns[] = ClassePeer::ECTS_CODE_PARCOURS;
+		}
+
+		return $this;
+	} // setEctsCodeParcours()
+
+	/**
+	 * Set the value of [ects_domaines_etude] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Classe The current object (for fluent API support)
+	 */
+	public function setEctsDomainesEtude($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->ects_domaines_etude !== $v) {
+			$this->ects_domaines_etude = $v;
+			$this->modifiedColumns[] = ClassePeer::ECTS_DOMAINES_ETUDE;
+		}
+
+		return $this;
+	} // setEctsDomainesEtude()
+
+	/**
+	 * Set the value of [ects_fonction_signataire_attestation] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     Classe The current object (for fluent API support)
+	 */
+	public function setEctsFonctionSignataireAttestation($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->ects_fonction_signataire_attestation !== $v) {
+			$this->ects_fonction_signataire_attestation = $v;
+			$this->modifiedColumns[] = ClassePeer::ECTS_FONCTION_SIGNATAIRE_ATTESTATION;
+		}
+
+		return $this;
+	} // setEctsFonctionSignataireAttestation()
+
+	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -1017,6 +1197,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$this->rn_sign_resp = ($row[$startcol + 19] !== null) ? (string) $row[$startcol + 19] : null;
 			$this->rn_sign_nblig = ($row[$startcol + 20] !== null) ? (int) $row[$startcol + 20] : null;
 			$this->rn_formule = ($row[$startcol + 21] !== null) ? (string) $row[$startcol + 21] : null;
+			$this->ects_type_formation = ($row[$startcol + 22] !== null) ? (string) $row[$startcol + 22] : null;
+			$this->ects_parcours = ($row[$startcol + 23] !== null) ? (string) $row[$startcol + 23] : null;
+			$this->ects_code_parcours = ($row[$startcol + 24] !== null) ? (string) $row[$startcol + 24] : null;
+			$this->ects_domaines_etude = ($row[$startcol + 25] !== null) ? (string) $row[$startcol + 25] : null;
+			$this->ects_fonction_signataire_attestation = ($row[$startcol + 26] !== null) ? (string) $row[$startcol + 26] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -1026,7 +1211,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			}
 
 			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 22; // 22 = ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 27; // 27 = ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Classe object", $e);
@@ -1422,6 +1607,21 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			case 21:
 				return $this->getRnFormule();
 				break;
+			case 22:
+				return $this->getEctsTypeFormation();
+				break;
+			case 23:
+				return $this->getEctsParcours();
+				break;
+			case 24:
+				return $this->getEctsCodeParcours();
+				break;
+			case 25:
+				return $this->getEctsDomainesEtude();
+				break;
+			case 26:
+				return $this->getEctsFonctionSignataireAttestation();
+				break;
 			default:
 				return null;
 				break;
@@ -1465,6 +1665,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$keys[19] => $this->getRnSignResp(),
 			$keys[20] => $this->getRnSignNblig(),
 			$keys[21] => $this->getRnFormule(),
+			$keys[22] => $this->getEctsTypeFormation(),
+			$keys[23] => $this->getEctsParcours(),
+			$keys[24] => $this->getEctsCodeParcours(),
+			$keys[25] => $this->getEctsDomainesEtude(),
+			$keys[26] => $this->getEctsFonctionSignataireAttestation(),
 		);
 		return $result;
 	}
@@ -1562,6 +1767,21 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			case 21:
 				$this->setRnFormule($value);
 				break;
+			case 22:
+				$this->setEctsTypeFormation($value);
+				break;
+			case 23:
+				$this->setEctsParcours($value);
+				break;
+			case 24:
+				$this->setEctsCodeParcours($value);
+				break;
+			case 25:
+				$this->setEctsDomainesEtude($value);
+				break;
+			case 26:
+				$this->setEctsFonctionSignataireAttestation($value);
+				break;
 		} // switch()
 	}
 
@@ -1608,6 +1828,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		if (array_key_exists($keys[19], $arr)) $this->setRnSignResp($arr[$keys[19]]);
 		if (array_key_exists($keys[20], $arr)) $this->setRnSignNblig($arr[$keys[20]]);
 		if (array_key_exists($keys[21], $arr)) $this->setRnFormule($arr[$keys[21]]);
+		if (array_key_exists($keys[22], $arr)) $this->setEctsTypeFormation($arr[$keys[22]]);
+		if (array_key_exists($keys[23], $arr)) $this->setEctsParcours($arr[$keys[23]]);
+		if (array_key_exists($keys[24], $arr)) $this->setEctsCodeParcours($arr[$keys[24]]);
+		if (array_key_exists($keys[25], $arr)) $this->setEctsDomainesEtude($arr[$keys[25]]);
+		if (array_key_exists($keys[26], $arr)) $this->setEctsFonctionSignataireAttestation($arr[$keys[26]]);
 	}
 
 	/**
@@ -1641,6 +1866,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		if ($this->isColumnModified(ClassePeer::RN_SIGN_RESP)) $criteria->add(ClassePeer::RN_SIGN_RESP, $this->rn_sign_resp);
 		if ($this->isColumnModified(ClassePeer::RN_SIGN_NBLIG)) $criteria->add(ClassePeer::RN_SIGN_NBLIG, $this->rn_sign_nblig);
 		if ($this->isColumnModified(ClassePeer::RN_FORMULE)) $criteria->add(ClassePeer::RN_FORMULE, $this->rn_formule);
+		if ($this->isColumnModified(ClassePeer::ECTS_TYPE_FORMATION)) $criteria->add(ClassePeer::ECTS_TYPE_FORMATION, $this->ects_type_formation);
+		if ($this->isColumnModified(ClassePeer::ECTS_PARCOURS)) $criteria->add(ClassePeer::ECTS_PARCOURS, $this->ects_parcours);
+		if ($this->isColumnModified(ClassePeer::ECTS_CODE_PARCOURS)) $criteria->add(ClassePeer::ECTS_CODE_PARCOURS, $this->ects_code_parcours);
+		if ($this->isColumnModified(ClassePeer::ECTS_DOMAINES_ETUDE)) $criteria->add(ClassePeer::ECTS_DOMAINES_ETUDE, $this->ects_domaines_etude);
+		if ($this->isColumnModified(ClassePeer::ECTS_FONCTION_SIGNATAIRE_ATTESTATION)) $criteria->add(ClassePeer::ECTS_FONCTION_SIGNATAIRE_ATTESTATION, $this->ects_fonction_signataire_attestation);
 
 		return $criteria;
 	}
@@ -1736,6 +1966,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		$copyObj->setRnSignNblig($this->rn_sign_nblig);
 
 		$copyObj->setRnFormule($this->rn_formule);
+
+		$copyObj->setEctsTypeFormation($this->ects_type_formation);
+
+		$copyObj->setEctsParcours($this->ects_parcours);
+
+		$copyObj->setEctsCodeParcours($this->ects_code_parcours);
+
+		$copyObj->setEctsDomainesEtude($this->ects_domaines_etude);
+
+		$copyObj->setEctsFonctionSignataireAttestation($this->ects_fonction_signataire_attestation);
 
 
 		if ($deepCopy) {

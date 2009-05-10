@@ -71,6 +71,13 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if (isset($rn_sign_resp)){$rn_sign_resp='y';}else{$rn_sign_resp='n';}
 	// =========================
 
+    // Mod ECTS
+    if (!isset($ects_type_formation)) $ects_type_formation = '';
+    if (!isset($ects_parcours)) $ects_parcours = '';
+    if (!isset($ects_code_parcours)) $ects_code_parcours = '';
+    if (!isset($ects_domaines_etude)) $ects_domaines_etude = '';
+    if (!isset($ects_fonction_signataire_attestation)) $ects_fonction_signataire_attestation = '';
+
 
 	if (isset($id_classe)) {
 		if ($reg_class_name) {
@@ -99,7 +106,12 @@ if (isset($is_posted) and ($is_posted == '1')) {
 													rn_sign_pp='$rn_sign_pp',
 													rn_sign_resp='$rn_sign_resp',
 													rn_sign_nblig='$rn_sign_nblig',
-													rn_formule='$rn_formule'
+													rn_formule='$rn_formule',
+                                                    ects_type_formation='".$ects_type_formation."',
+                                                    ects_parcours='".$ects_parcours."',
+                                                    ects_code_parcours='".$ects_code_parcours."',
+                                                    ects_domaines_etude='".$ects_domaines_etude."',
+                                                    ects_fonction_signataire_attestation='".$ects_fonction_signataire_attestation."'
 												WHERE id = '$id_classe'");
 
 			if (!$register_class) {
@@ -159,7 +171,12 @@ if (isset($is_posted) and ($is_posted == '1')) {
 													rn_sign_pp='$rn_sign_pp',
 													rn_sign_resp='$rn_sign_resp',
 													rn_sign_nblig='$rn_sign_nblig',
-													rn_formule='$rn_formule'
+													rn_formule='$rn_formule',
+                                                    ects_type_formation='".$ects_type_formation."',
+                                                    ects_parcours='".$ects_parcours."',
+                                                    ects_code_parcours='".$ects_code_parcours."',
+                                                    ects_domaines_etude='".$ects_domaines_etude."',
+                                                    ects_fonction_signataire_attestation='".$ects_fonction_signataire_attestation."'
 												");
 		if (!$register_class) {
 			$msg .= "Une erreur s'est produite lors de l'enregistrement de la nouvelle classe.";
@@ -358,6 +375,15 @@ if (isset($id_classe)) {
 	$rn_sign_resp=mysql_result($call_nom_class, 0, 'rn_sign_resp');
 	$rn_sign_nblig=mysql_result($call_nom_class, 0, 'rn_sign_nblig');
 	// =========================
+
+    //=========================
+    // Ajout : Module ECTS
+    $ects_type_formation = mysql_result($call_nom_class, 0, 'ects_type_formation');
+    $ects_parcours = mysql_result($call_nom_class, 0, 'ects_parcours');
+    $ects_code_parcours = mysql_result($call_nom_class, 0, 'ects_code_parcours');
+    $ects_fonction_signataire_attestation = mysql_result($call_nom_class, 0, 'ects_fonction_signataire_attestation');
+    $ects_domaines_etude = mysql_result($call_nom_class, 0, 'ects_domaines_etude');
+
 } else {
 	$classe = '';
 	$nom_complet = '';
@@ -385,6 +411,13 @@ if (isset($id_classe)) {
 	$rn_sign_resp='n';
 	$rn_sign_nblig=3;
 	// =========================
+
+    // Mod ECTS
+    $ects_type_formation = '';
+    $ects_parcours = '';
+    $ects_code_parcours = '';
+    $ects_fonction_signataire_attestation = '';
+    $ects_domaines_etude = '';
 }
 
 ?>
@@ -643,6 +676,50 @@ Afficher une case pour la signature du chef d'établissement
     <td style="font-variant: small-caps;">Nombre de lignes pour la signature :</td>
     <td><input type="text" name="rn_sign_nblig" value="<?php echo $rn_sign_nblig;?>" onchange='changement()' /></td>
 </tr>
+
+<?php
+if ($gepiSettings['active_mod_ects'] == "y") {
+    ?>
+<tr>
+	<td colspan='3'>
+	  <h2><b>Paramètres des attestations ECTS : </b></h2>
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Type de formation (ex: "Classe préparatoire scientifique") :</td>
+    <td><input type="text" size="40" name="ects_type_formation" value="<?php echo $ects_type_formation;?>" onchange='changement()' /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Nom complet du parcours de formation (ex: "BCPST (Biologie, Chimie, Physique et Sciences de la Terre)") :</td>
+    <td><input type="text" size="40" name="ects_parcours" value="<?php echo $ects_parcours;?>" onchange='changement()' /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Nom cours du parcours de formation (ex: "BCPST") :</td>
+    <td><input type="text" size="40" name="ects_code_parcours" value="<?php echo $ects_code_parcours;?>" onchange='changement()' /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Domaines d'étude (ex: "Biologie, Chimie, Physique, Mathématiques, Sciences de la Terre") :</td>
+    <td><input type="text" size="40" name="ects_domaines_etude" value="<?php echo $ects_domaines_etude;?>" onchange='changement()' /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Fonction du signataire des attestations (ex: "Proviseur adjoint" ; les noms et prénoms seront ceux paramétrés plus haut) :</td>
+    <td><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></td>
+</tr>
+    <?
+} else {
+?>
+<input type="hidden" name="ects_type_formation" value="<?php echo $ects_type_formation;?>" />
+<input type="hidden" name="ects_parcours" value="<?php echo $ects_parcours;?>" />
+<input type="hidden" name="ects_code_parcours" value="<?php echo $ects_code_parcours;?>" />
+<input type="hidden" name="ects_domaines_etude" value="<?php echo $ects_domaines_etude;?>" />
+<input type="hidden" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" />
+<? } ?>
+
 
 </table>
 <center><input type=submit value="Enregistrer" style="margin-top: 30px; margin-bottom: 100px;" /></center>

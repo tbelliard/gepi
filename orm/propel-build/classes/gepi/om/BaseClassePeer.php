@@ -19,7 +19,7 @@ abstract class BaseClassePeer {
 	const CLASS_DEFAULT = 'gepi.Classe';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 22;
+	const NUM_COLUMNS = 27;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -90,6 +90,21 @@ abstract class BaseClassePeer {
 	/** the column name for the RN_FORMULE field */
 	const RN_FORMULE = 'classes.RN_FORMULE';
 
+	/** the column name for the ECTS_TYPE_FORMATION field */
+	const ECTS_TYPE_FORMATION = 'classes.ECTS_TYPE_FORMATION';
+
+	/** the column name for the ECTS_PARCOURS field */
+	const ECTS_PARCOURS = 'classes.ECTS_PARCOURS';
+
+	/** the column name for the ECTS_CODE_PARCOURS field */
+	const ECTS_CODE_PARCOURS = 'classes.ECTS_CODE_PARCOURS';
+
+	/** the column name for the ECTS_DOMAINES_ETUDE field */
+	const ECTS_DOMAINES_ETUDE = 'classes.ECTS_DOMAINES_ETUDE';
+
+	/** the column name for the ECTS_FONCTION_SIGNATAIRE_ATTESTATION field */
+	const ECTS_FONCTION_SIGNATAIRE_ATTESTATION = 'classes.ECTS_FONCTION_SIGNATAIRE_ATTESTATION';
+
 	/**
 	 * An identiy map to hold any loaded instances of Classe objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -111,11 +126,11 @@ abstract class BaseClassePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Classe', 'NomComplet', 'SuiviPar', 'Formule', 'FormatNom', 'DisplayRang', 'DisplayAddress', 'DisplayCoef', 'DisplayMatCat', 'DisplayNbdev', 'DisplayMoyGen', 'ModeleBulletinPdf', 'RnNomdev', 'RnToutcoefdev', 'RnCoefdevSiDiff', 'RnDatedev', 'RnSignChefetab', 'RnSignPp', 'RnSignResp', 'RnSignNblig', 'RnFormule', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'classe', 'nomComplet', 'suiviPar', 'formule', 'formatNom', 'displayRang', 'displayAddress', 'displayCoef', 'displayMatCat', 'displayNbdev', 'displayMoyGen', 'modeleBulletinPdf', 'rnNomdev', 'rnToutcoefdev', 'rnCoefdevSiDiff', 'rnDatedev', 'rnSignChefetab', 'rnSignPp', 'rnSignResp', 'rnSignNblig', 'rnFormule', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::CLASSE, self::NOM_COMPLET, self::SUIVI_PAR, self::FORMULE, self::FORMAT_NOM, self::DISPLAY_RANG, self::DISPLAY_ADDRESS, self::DISPLAY_COEF, self::DISPLAY_MAT_CAT, self::DISPLAY_NBDEV, self::DISPLAY_MOY_GEN, self::MODELE_BULLETIN_PDF, self::RN_NOMDEV, self::RN_TOUTCOEFDEV, self::RN_COEFDEV_SI_DIFF, self::RN_DATEDEV, self::RN_SIGN_CHEFETAB, self::RN_SIGN_PP, self::RN_SIGN_RESP, self::RN_SIGN_NBLIG, self::RN_FORMULE, ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'classe', 'nom_complet', 'suivi_par', 'formule', 'format_nom', 'display_rang', 'display_address', 'display_coef', 'display_mat_cat', 'display_nbdev', 'display_moy_gen', 'modele_bulletin_pdf', 'rn_nomdev', 'rn_toutcoefdev', 'rn_coefdev_si_diff', 'rn_datedev', 'rn_sign_chefetab', 'rn_sign_pp', 'rn_sign_resp', 'rn_sign_nblig', 'rn_formule', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Classe', 'NomComplet', 'SuiviPar', 'Formule', 'FormatNom', 'DisplayRang', 'DisplayAddress', 'DisplayCoef', 'DisplayMatCat', 'DisplayNbdev', 'DisplayMoyGen', 'ModeleBulletinPdf', 'RnNomdev', 'RnToutcoefdev', 'RnCoefdevSiDiff', 'RnDatedev', 'RnSignChefetab', 'RnSignPp', 'RnSignResp', 'RnSignNblig', 'RnFormule', 'EctsTypeFormation', 'EctsParcours', 'EctsCodeParcours', 'EctsDomainesEtude', 'EctsFonctionSignataireAttestation', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'classe', 'nomComplet', 'suiviPar', 'formule', 'formatNom', 'displayRang', 'displayAddress', 'displayCoef', 'displayMatCat', 'displayNbdev', 'displayMoyGen', 'modeleBulletinPdf', 'rnNomdev', 'rnToutcoefdev', 'rnCoefdevSiDiff', 'rnDatedev', 'rnSignChefetab', 'rnSignPp', 'rnSignResp', 'rnSignNblig', 'rnFormule', 'ectsTypeFormation', 'ectsParcours', 'ectsCodeParcours', 'ectsDomainesEtude', 'ectsFonctionSignataireAttestation', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::CLASSE, self::NOM_COMPLET, self::SUIVI_PAR, self::FORMULE, self::FORMAT_NOM, self::DISPLAY_RANG, self::DISPLAY_ADDRESS, self::DISPLAY_COEF, self::DISPLAY_MAT_CAT, self::DISPLAY_NBDEV, self::DISPLAY_MOY_GEN, self::MODELE_BULLETIN_PDF, self::RN_NOMDEV, self::RN_TOUTCOEFDEV, self::RN_COEFDEV_SI_DIFF, self::RN_DATEDEV, self::RN_SIGN_CHEFETAB, self::RN_SIGN_PP, self::RN_SIGN_RESP, self::RN_SIGN_NBLIG, self::RN_FORMULE, self::ECTS_TYPE_FORMATION, self::ECTS_PARCOURS, self::ECTS_CODE_PARCOURS, self::ECTS_DOMAINES_ETUDE, self::ECTS_FONCTION_SIGNATAIRE_ATTESTATION, ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'classe', 'nom_complet', 'suivi_par', 'formule', 'format_nom', 'display_rang', 'display_address', 'display_coef', 'display_mat_cat', 'display_nbdev', 'display_moy_gen', 'modele_bulletin_pdf', 'rn_nomdev', 'rn_toutcoefdev', 'rn_coefdev_si_diff', 'rn_datedev', 'rn_sign_chefetab', 'rn_sign_pp', 'rn_sign_resp', 'rn_sign_nblig', 'rn_formule', 'ects_type_formation', 'ects_parcours', 'ects_code_parcours', 'ects_domaines_etude', 'ects_fonction_signataire_attestation', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, )
 	);
 
 	/**
@@ -125,11 +140,11 @@ abstract class BaseClassePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Classe' => 1, 'NomComplet' => 2, 'SuiviPar' => 3, 'Formule' => 4, 'FormatNom' => 5, 'DisplayRang' => 6, 'DisplayAddress' => 7, 'DisplayCoef' => 8, 'DisplayMatCat' => 9, 'DisplayNbdev' => 10, 'DisplayMoyGen' => 11, 'ModeleBulletinPdf' => 12, 'RnNomdev' => 13, 'RnToutcoefdev' => 14, 'RnCoefdevSiDiff' => 15, 'RnDatedev' => 16, 'RnSignChefetab' => 17, 'RnSignPp' => 18, 'RnSignResp' => 19, 'RnSignNblig' => 20, 'RnFormule' => 21, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'classe' => 1, 'nomComplet' => 2, 'suiviPar' => 3, 'formule' => 4, 'formatNom' => 5, 'displayRang' => 6, 'displayAddress' => 7, 'displayCoef' => 8, 'displayMatCat' => 9, 'displayNbdev' => 10, 'displayMoyGen' => 11, 'modeleBulletinPdf' => 12, 'rnNomdev' => 13, 'rnToutcoefdev' => 14, 'rnCoefdevSiDiff' => 15, 'rnDatedev' => 16, 'rnSignChefetab' => 17, 'rnSignPp' => 18, 'rnSignResp' => 19, 'rnSignNblig' => 20, 'rnFormule' => 21, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::CLASSE => 1, self::NOM_COMPLET => 2, self::SUIVI_PAR => 3, self::FORMULE => 4, self::FORMAT_NOM => 5, self::DISPLAY_RANG => 6, self::DISPLAY_ADDRESS => 7, self::DISPLAY_COEF => 8, self::DISPLAY_MAT_CAT => 9, self::DISPLAY_NBDEV => 10, self::DISPLAY_MOY_GEN => 11, self::MODELE_BULLETIN_PDF => 12, self::RN_NOMDEV => 13, self::RN_TOUTCOEFDEV => 14, self::RN_COEFDEV_SI_DIFF => 15, self::RN_DATEDEV => 16, self::RN_SIGN_CHEFETAB => 17, self::RN_SIGN_PP => 18, self::RN_SIGN_RESP => 19, self::RN_SIGN_NBLIG => 20, self::RN_FORMULE => 21, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'classe' => 1, 'nom_complet' => 2, 'suivi_par' => 3, 'formule' => 4, 'format_nom' => 5, 'display_rang' => 6, 'display_address' => 7, 'display_coef' => 8, 'display_mat_cat' => 9, 'display_nbdev' => 10, 'display_moy_gen' => 11, 'modele_bulletin_pdf' => 12, 'rn_nomdev' => 13, 'rn_toutcoefdev' => 14, 'rn_coefdev_si_diff' => 15, 'rn_datedev' => 16, 'rn_sign_chefetab' => 17, 'rn_sign_pp' => 18, 'rn_sign_resp' => 19, 'rn_sign_nblig' => 20, 'rn_formule' => 21, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Classe' => 1, 'NomComplet' => 2, 'SuiviPar' => 3, 'Formule' => 4, 'FormatNom' => 5, 'DisplayRang' => 6, 'DisplayAddress' => 7, 'DisplayCoef' => 8, 'DisplayMatCat' => 9, 'DisplayNbdev' => 10, 'DisplayMoyGen' => 11, 'ModeleBulletinPdf' => 12, 'RnNomdev' => 13, 'RnToutcoefdev' => 14, 'RnCoefdevSiDiff' => 15, 'RnDatedev' => 16, 'RnSignChefetab' => 17, 'RnSignPp' => 18, 'RnSignResp' => 19, 'RnSignNblig' => 20, 'RnFormule' => 21, 'EctsTypeFormation' => 22, 'EctsParcours' => 23, 'EctsCodeParcours' => 24, 'EctsDomainesEtude' => 25, 'EctsFonctionSignataireAttestation' => 26, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'classe' => 1, 'nomComplet' => 2, 'suiviPar' => 3, 'formule' => 4, 'formatNom' => 5, 'displayRang' => 6, 'displayAddress' => 7, 'displayCoef' => 8, 'displayMatCat' => 9, 'displayNbdev' => 10, 'displayMoyGen' => 11, 'modeleBulletinPdf' => 12, 'rnNomdev' => 13, 'rnToutcoefdev' => 14, 'rnCoefdevSiDiff' => 15, 'rnDatedev' => 16, 'rnSignChefetab' => 17, 'rnSignPp' => 18, 'rnSignResp' => 19, 'rnSignNblig' => 20, 'rnFormule' => 21, 'ectsTypeFormation' => 22, 'ectsParcours' => 23, 'ectsCodeParcours' => 24, 'ectsDomainesEtude' => 25, 'ectsFonctionSignataireAttestation' => 26, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::CLASSE => 1, self::NOM_COMPLET => 2, self::SUIVI_PAR => 3, self::FORMULE => 4, self::FORMAT_NOM => 5, self::DISPLAY_RANG => 6, self::DISPLAY_ADDRESS => 7, self::DISPLAY_COEF => 8, self::DISPLAY_MAT_CAT => 9, self::DISPLAY_NBDEV => 10, self::DISPLAY_MOY_GEN => 11, self::MODELE_BULLETIN_PDF => 12, self::RN_NOMDEV => 13, self::RN_TOUTCOEFDEV => 14, self::RN_COEFDEV_SI_DIFF => 15, self::RN_DATEDEV => 16, self::RN_SIGN_CHEFETAB => 17, self::RN_SIGN_PP => 18, self::RN_SIGN_RESP => 19, self::RN_SIGN_NBLIG => 20, self::RN_FORMULE => 21, self::ECTS_TYPE_FORMATION => 22, self::ECTS_PARCOURS => 23, self::ECTS_CODE_PARCOURS => 24, self::ECTS_DOMAINES_ETUDE => 25, self::ECTS_FONCTION_SIGNATAIRE_ATTESTATION => 26, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'classe' => 1, 'nom_complet' => 2, 'suivi_par' => 3, 'formule' => 4, 'format_nom' => 5, 'display_rang' => 6, 'display_address' => 7, 'display_coef' => 8, 'display_mat_cat' => 9, 'display_nbdev' => 10, 'display_moy_gen' => 11, 'modele_bulletin_pdf' => 12, 'rn_nomdev' => 13, 'rn_toutcoefdev' => 14, 'rn_coefdev_si_diff' => 15, 'rn_datedev' => 16, 'rn_sign_chefetab' => 17, 'rn_sign_pp' => 18, 'rn_sign_resp' => 19, 'rn_sign_nblig' => 20, 'rn_formule' => 21, 'ects_type_formation' => 22, 'ects_parcours' => 23, 'ects_code_parcours' => 24, 'ects_domaines_etude' => 25, 'ects_fonction_signataire_attestation' => 26, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, )
 	);
 
 	/**
@@ -254,6 +269,16 @@ abstract class BaseClassePeer {
 		$criteria->addSelectColumn(ClassePeer::RN_SIGN_NBLIG);
 
 		$criteria->addSelectColumn(ClassePeer::RN_FORMULE);
+
+		$criteria->addSelectColumn(ClassePeer::ECTS_TYPE_FORMATION);
+
+		$criteria->addSelectColumn(ClassePeer::ECTS_PARCOURS);
+
+		$criteria->addSelectColumn(ClassePeer::ECTS_CODE_PARCOURS);
+
+		$criteria->addSelectColumn(ClassePeer::ECTS_DOMAINES_ETUDE);
+
+		$criteria->addSelectColumn(ClassePeer::ECTS_FONCTION_SIGNATAIRE_ATTESTATION);
 
 	}
 
