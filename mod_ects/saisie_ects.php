@@ -149,7 +149,7 @@ change = 'no';
 // Première étape : la classe est définie, on definit la période
 if (isset($id_classe) and (!isset($periode_num))) {
     $classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
-    echo "<p class=bold><a href=\"saisie_ects.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Mes classes</a></p>\n";
+    echo "<p class=bold><a href=\"index_saisie.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Mes classes</a></p>\n";
     echo "<p><b>".$classe_suivi.", choisissez la période : </b></p>\n";
     include "../lib/periodes.inc.php";
     $i="1";
@@ -183,16 +183,15 @@ if($_SESSION['statut']=='scolarite'){
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 }
 elseif($_SESSION['statut']=='professeur'){
-
-	// On a filtré plus haut les profs qui n'ont pas getSettingValue("GepiRubConseilProf")=='yes'
 	$sql="SELECT DISTINCT c.id,c.classe FROM classes c,
 										j_eleves_classes jec,
 										j_eleves_professeurs jep,
-                                        j_groupes_classes
-								WHERE jec.id_classe=c.id AND
-                                        c.id = jgc.id_classe AND
+                                        j_groupes_classes jgc
+								WHERE   c.id = jec.id_classe AND
+                                        jec.login = jep.login AND
+                                        jec.periode = '$periode_num' AND
+                                        jec.id_classe = jgc.id_classe AND
                                         jgc.saisie_ects = TRUE AND
-										jep.login=jec.login AND
 										jep.professeur='".$_SESSION['login']."'
 								ORDER BY c.classe;";
 }

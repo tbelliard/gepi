@@ -162,11 +162,17 @@ if (!$id_classe) {
                 $call_classe = mysql_query("SELECT c.* FROM classes c WHERE c.id = '".$id_classe."'");
             }
         } else {
-            $call_classe = mysql_query("SELECT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jgc.id_classe = '".$id_classe."')");
+            $call_classe = mysql_query("SELECT c.* FROM classes c, j_eleves_professeurs jep, j_groupes_classes jgc
+                                        WHERE
+                                            c.id = jep.id_classe AND
+                                            c.id = jgc.id_classe AND
+                                            c.id = '".$id_classe."' AND
+                                            jgc.saisie_ects = TRUE AND
+                                            jep.professeur='" . $_SESSION['login'] . "'");
         }
-
-        if (mysql_num_rows($call_classe) != 1) {
+        if (mysql_num_rows($call_classe) == 0) {
             echo 'Erreur avec la sélection de la classe. Avez-vous bien les droits sur cette classe ?';
+            die();
         } else {
             $Classe = ClassePeer::retrieveByPK($id_classe);
 

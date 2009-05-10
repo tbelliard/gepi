@@ -89,7 +89,11 @@ if ($id_classe == 'all') {
     $Eleves = array();
     for($i=0;$i<$nb_classes;$i++) {
         $Classe = ClassePeer::retrieveByPK(mysql_result($call_classes, $i, 'id'));
-        $Eleves = array_merge($Eleves,$Classe->getEleves('1'));
+        if ($_SESSION['statut'] == 'scolarite' OR $_SESSION['statut'] == 'secours') {
+            $Eleves = array_merge($Eleves,$Classe->getEleves('1'));
+        } else {
+            $Eleves = array_merge($Eleves,$Classe->getElevesByProfesseurPrincipal($_SESSION['login']));
+        }
     }
 } else {
     if ($choix_edit && $choix_edit == '2') {
@@ -97,7 +101,11 @@ if ($id_classe == 'all') {
         $Eleves[] = ElevePeer::retrieveByLOGIN($login_eleve);
     } else {
         $Classe = ClassePeer::retrieveByPK($id_classe);
-        $Eleves = $Classe->getEleves('1');
+        if ($_SESSION['statut'] == 'scolarite' OR $_SESSION['statut'] == 'secours') {
+            $Eleves = $Classe->getEleves('1');
+        } else {
+            $Eleves = $Classe->getElevesByProfesseurPrincipal($_SESSION['login']);
+        }
     }
 }
 $current_date = date('d/m/Y');

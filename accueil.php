@@ -519,7 +519,11 @@ if ($_SESSION['statut'] == 'professeur') {
 } else {
     $test_scol_ects = sql_count(sql_query("SELECT jgc.saisie_ects FROM j_groupes_classes jgc, j_scol_classes jsc WHERE (jgc.saisie_ects = TRUE AND jgc.id_classe = jsc.id_classe AND jsc.login = '".$_SESSION['login']."')"));
 }
-if ((($test_prof_suivi != "0") and ($gepiSettings['GepiAccesSaisieEctsPP'] =='yes') and $test_prof_ects != "0") or (($_SESSION['statut']=='scolarite') and ($gepiSettings['GepiAccesSaisieEctsScolarite'] =='yes') and $test_scol_ects != "0") or ($_SESSION['statut']=='secours')  ) $chemin[] = "/mod_ects/index_saisie.php";
+if (
+        ($test_prof_suivi != "0" and $gepiSettings['GepiAccesSaisieEctsPP'] =='yes' and $test_prof_ects != "0")
+      or ($_SESSION['statut']=='scolarite' and $gepiSettings['GepiAccesSaisieEctsScolarite'] =='yes' and $test_scol_ects != "0")
+      or ($_SESSION['statut']=='secours')
+      ) $chemin[] = "/mod_ects/index_saisie.php";
 
 
 $titre = array();
