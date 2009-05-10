@@ -111,6 +111,11 @@ class Eleve extends BaseEleve {
         return $v;
 	}
 
+	public function getCreditEctsGlobal() {
+        $v = $this->getCreditEctsGlobals();
+        return !empty($v) > 0 ? $v[0] : null;
+	}
+
     /**
 	 * Enregistre les crédits ECTS pour une période et un groupe
 	 */
@@ -127,4 +132,13 @@ class Eleve extends BaseEleve {
         return $credit->save();
 	}
 
+	public function setCreditEctsGlobal($mention_ects) {
+        $credit = $this->getCreditEctsGlobal();
+        if ($credit == null) {
+            $credit = new CreditEctsGlobal();
+            $credit->setEleve($this);
+        }
+        $credit->setMention($mention_ects);
+        return $credit->save();
+	}
 } // Eleve

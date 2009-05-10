@@ -189,6 +189,16 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 	private $lastCreditEctsCriteria = null;
 
 	/**
+	 * @var        array CreditEctsGlobal[] Collection to store aggregation of CreditEctsGlobal objects.
+	 */
+	protected $collCreditEctsGlobals;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collCreditEctsGlobals.
+	 */
+	private $lastCreditEctsGlobalCriteria = null;
+
+	/**
 	 * @var        array ArchiveEcts[] Collection to store aggregation of ArchiveEcts objects.
 	 */
 	protected $collArchiveEctss;
@@ -813,6 +823,9 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 			$this->collCreditEctss = null;
 			$this->lastCreditEctsCriteria = null;
 
+			$this->collCreditEctsGlobals = null;
+			$this->lastCreditEctsGlobalCriteria = null;
+
 			$this->collArchiveEctss = null;
 			$this->lastArchiveEctsCriteria = null;
 
@@ -1001,6 +1014,14 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 				}
 			}
 
+			if ($this->collCreditEctsGlobals !== null) {
+				foreach ($this->collCreditEctsGlobals as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			if ($this->collArchiveEctss !== null) {
 				foreach ($this->collArchiveEctss as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1152,6 +1173,14 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 
 				if ($this->collCreditEctss !== null) {
 					foreach ($this->collCreditEctss as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collCreditEctsGlobals !== null) {
+					foreach ($this->collCreditEctsGlobals as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1532,6 +1561,12 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 			foreach ($this->getCreditEctss() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addCreditEcts($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getCreditEctsGlobals() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addCreditEctsGlobal($relObj->copy($deepCopy));
 				}
 			}
 
@@ -3537,6 +3572,161 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Clears out the collCreditEctsGlobals collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addCreditEctsGlobals()
+	 */
+	public function clearCreditEctsGlobals()
+	{
+		$this->collCreditEctsGlobals = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collCreditEctsGlobals collection (array).
+	 *
+	 * By default this just sets the collCreditEctsGlobals collection to an empty array (like clearcollCreditEctsGlobals());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initCreditEctsGlobals()
+	{
+		$this->collCreditEctsGlobals = array();
+	}
+
+	/**
+	 * Gets an array of CreditEctsGlobal objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this Eleve has previously been saved, it will retrieve
+	 * related CreditEctsGlobals from storage. If this Eleve is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array CreditEctsGlobal[]
+	 * @throws     PropelException
+	 */
+	public function getCreditEctsGlobals($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ElevePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCreditEctsGlobals === null) {
+			if ($this->isNew()) {
+			   $this->collCreditEctsGlobals = array();
+			} else {
+
+				$criteria->add(CreditEctsGlobalPeer::ID_ELEVE, $this->id_eleve);
+
+				CreditEctsGlobalPeer::addSelectColumns($criteria);
+				$this->collCreditEctsGlobals = CreditEctsGlobalPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(CreditEctsGlobalPeer::ID_ELEVE, $this->id_eleve);
+
+				CreditEctsGlobalPeer::addSelectColumns($criteria);
+				if (!isset($this->lastCreditEctsGlobalCriteria) || !$this->lastCreditEctsGlobalCriteria->equals($criteria)) {
+					$this->collCreditEctsGlobals = CreditEctsGlobalPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastCreditEctsGlobalCriteria = $criteria;
+		return $this->collCreditEctsGlobals;
+	}
+
+	/**
+	 * Returns the number of related CreditEctsGlobal objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related CreditEctsGlobal objects.
+	 * @throws     PropelException
+	 */
+	public function countCreditEctsGlobals(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ElevePeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collCreditEctsGlobals === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(CreditEctsGlobalPeer::ID_ELEVE, $this->id_eleve);
+
+				$count = CreditEctsGlobalPeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(CreditEctsGlobalPeer::ID_ELEVE, $this->id_eleve);
+
+				if (!isset($this->lastCreditEctsGlobalCriteria) || !$this->lastCreditEctsGlobalCriteria->equals($criteria)) {
+					$count = CreditEctsGlobalPeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collCreditEctsGlobals);
+				}
+			} else {
+				$count = count($this->collCreditEctsGlobals);
+			}
+		}
+		$this->lastCreditEctsGlobalCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a CreditEctsGlobal object to this object
+	 * through the CreditEctsGlobal foreign key attribute.
+	 *
+	 * @param      CreditEctsGlobal $l CreditEctsGlobal
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addCreditEctsGlobal(CreditEctsGlobal $l)
+	{
+		if ($this->collCreditEctsGlobals === null) {
+			$this->initCreditEctsGlobals();
+		}
+		if (!in_array($l, $this->collCreditEctsGlobals, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collCreditEctsGlobals, $l);
+			$l->setEleve($this);
+		}
+	}
+
+	/**
 	 * Clears out the collArchiveEctss collection (array).
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -3751,6 +3941,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collCreditEctsGlobals) {
+				foreach ((array) $this->collCreditEctsGlobals as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collArchiveEctss) {
 				foreach ((array) $this->collArchiveEctss as $o) {
 					$o->clearAllReferences($deep);
@@ -3768,6 +3963,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 		$this->collJAidElevess = null;
 		$this->collAbsenceSaisies = null;
 		$this->collCreditEctss = null;
+		$this->collCreditEctsGlobals = null;
 		$this->collArchiveEctss = null;
 	}
 
