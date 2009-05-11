@@ -346,40 +346,47 @@ function updatesum() {
     echo "<p><b>Parcours</b> : ".$Classe->getEctsParcours()."</p>";
     echo "<p><b>Principaux domaines d'études</b> : ".$Classe->getEctsDomainesEtude()."</p>";
     echo "<h2>".$Eleve->getPrenom()." ".$Eleve->getNom()."</h2>";
+    
+    echo "<div style='float:left;'>";
 	echo "<table class='boireaus' style='margin-left: 50px; margin-top: 10px;' summary=\"Elève ".$Eleve->getLogin()."\">\n";
     echo "<tr><td>Enseignements</td><td>Crédits obtenus</td><td>Mention (de A à F)</td></tr>";
-    $groupes = $Eleve->getEctsGroupes($periode_num);
+    $categories = $Eleve->getEctsGroupesByCategories($periode_num);
    
     $total_valeur = 0;
     $mentions = array('A','B','C','D','E','F');
-    foreach($groupes as $group) {
-        echo "<tr>";
-        echo "<td class='bull_simple'>";
-        // Information sur la matière
-        echo "<p><b>".$group->getDescription()."</b>";
-        echo "<br/><span style='font-size:x-small;'>Crédits par défaut : ".$group->getEctsDefaultValue($id_classe);
-        echo "</span></p></td>";
-        $CreditEcts = $Eleve->getEctsCredit($periode_num,$group->getId());
-        echo "<td class='bull_simple'>";
-        $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
-        echo "<input type='text' class='valeur' style='width: 40px;' name='valeur_ects_".$group->getId()."' value='$valeur_ects' onblur='updatesum();'>";
-        echo "</td>";
-        echo "<td class='bull_simple'>";
-        $mention_ects = $CreditEcts == null ? '' : $CreditEcts->getMention();
-        if ($mention_ects == '') $mention_ects = 'A';
-        foreach($mentions as $mention) {
-            echo "<input id='mention_ects_".$group->getId()."_$mention' type='radio' name='mention_ects_".$group->getId()."' value='$mention'";
-            if ($mention == $mention_ects) echo " CHECKED ";
-            echo "/><label for='mention_ects_".$group->getId()."_$mention'>$mention</label>";
+
+    foreach($categories as $categorie) {
+        if (count($categories) > 0) {
+            echo "<tr><td colspan='3' style='text-align:left; padding-left: 10px; background-color: lightgray;'><b><i>".$categorie[0]->getNomComplet()."</i></b></td></tr>";
         }
-        echo "</td>";
-        echo "</tr>";
-        $total_valeur += $valeur_ects;
+        foreach($categorie[1] as $group) {
+            echo "<tr>";
+            echo "<td class='bull_simple'>";
+            // Information sur la matière
+            echo "<p><b>".$group->getDescription()."</b>";
+            echo "<br/><span style='font-size:x-small;'>Crédits par défaut : ".$group->getEctsDefaultValue($id_classe);
+            echo "</span></p></td>";
+            $CreditEcts = $Eleve->getEctsCredit($periode_num,$group->getId());
+            echo "<td class='bull_simple'>";
+            $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
+            echo "<input type='text' class='valeur' style='width: 40px;' name='valeur_ects_".$group->getId()."' value='$valeur_ects' onblur='updatesum();'>";
+            echo "</td>";
+            echo "<td class='bull_simple' style='padding:10px;'>";
+            $mention_ects = $CreditEcts == null ? '' : $CreditEcts->getMention();
+            if ($mention_ects == '') $mention_ects = 'A';
+            foreach($mentions as $mention) {
+                echo "<input id='mention_ects_".$group->getId()."_$mention' type='radio' name='mention_ects_".$group->getId()."' value='$mention'";
+                if ($mention == $mention_ects) echo " CHECKED ";
+                echo "/><label for='mention_ects_".$group->getId()."_$mention'>$mention</label>";
+            }
+            echo "</td>";
+            echo "</tr>";
+            $total_valeur += $valeur_ects;
+        }
     }
 
-    echo "<tr><td>Total :</td><td><input id='total_ects' name='total_ects' readonly style='width: 40px;' value='$total_valeur'/></td><td></td></tr>";
-    echo "<tr><td>Mention globale :</td>";
-    echo "<td colspan='2'>";
+    echo "<tr><td>Global</td><td><input id='total_ects' name='total_ects' readonly style='font-weight: bold; width: 40px; background-color: lightgray; cursor: default; border-color: black;' value='$total_valeur'/></td>";
+    echo "<td style='padding:10px;'>";
 
     $credit_global = $Eleve->getCreditEctsGlobal();
     if ($credit_global == null) {
@@ -406,7 +413,15 @@ function updatesum() {
     <br/>
 	<input type="submit" NAME="ok1" value="Enregistrer et passer à l'élève suivant" />
     <input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" /><br /><br />&nbsp;
-
+    </div>
+    <div style='padding-left: 30px; padding-top: 70px; float:left;'>
+    <p>A = Très bien</p>
+    <p>B = Bien</p>
+    <p>C = Assez bien</p>
+    <p>D = Convenable</p>
+    <p>E = Passable</p>
+    <p>F = Insuffisant</p>
+    </div>
     </form>
     <?php
 

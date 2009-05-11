@@ -82,6 +82,9 @@
 		<column name="priorite" type="SMALLINT" required="true"/>
 		<column name="coef" type="DECIMAL" required="true"/>
 		<column name="categorie_id" type="INTEGER" required="true"/>
+		<foreign-key foreignTable="matieres_categories">
+			<reference local="categorie_id" foreign="id"/>
+		</foreign-key>
 		<column name="saisie_ects" type="BOOLEAN" required="false" default="0" description="Active ou non la saisie ECTS pour cet enseignement"/>
 		<column name="valeur_ects" type="DECIMAL" required="false" description="Valeur par défaut des ECTS pour cet enseignement"/>
 	</table>
@@ -463,4 +466,21 @@
   </table>
 
 <!-- Fin des objets propel spécifiques au module ECTS -->
+  <table name="matieres_categories" phpName="CategorieMatiere" description="Categories de matiere, utilisees pour regrouper des enseignements">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
+    <column name="nom_court" type="VARCHAR" required="true" size="255" description="Nom court"/>
+    <column name="nom_complet" type="VARCHAR" required="true" size="255" description="Nom complet"/>
+    <column name="priority" required="true" type="INTEGER" size="6" description="Priorite d'affichage"/>
+  </table>
+
+  <table name="j_matieres_categories_classes" phpName="JCategoriesMatieresClasses" description="Liaison entre categories de matiere et classes">
+    <column name="categorie_id" required="true" primaryKey="true" type="INTEGER" size="11" description=""/>
+    <foreign-key foreignTable="matieres_categories"><reference local="categorie_id" foreign="id"/></foreign-key>
+    <column name="classe_id" required="true" primaryKey="true" type="INTEGER" size="11" description=""/>
+    <foreign-key foreignTable="classes"><reference local="classe_id" foreign="id"/></foreign-key>
+    <column name="affiche_moyenne" type="BOOLEAN" required="false" default="0" description="Nom complet"/>
+    <column name="priority" required="true" type="INTEGER" size="6" description="Priorite d'affichage"/>
+  </table>
+
+
 </database>

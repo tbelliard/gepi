@@ -424,7 +424,14 @@ if (isset($id_classe)) {
 <form enctype="multipart/form-data" action="modify_nom_class.php" method=post>
 <p>Nom court de la classe : <input type=text size=30 name=reg_class_name value = "<?php echo $classe; ?>" onchange='changement()' /></p>
 <p>Nom complet de la classe : <input type=text size=50 name=reg_nom_complet value = "<?php echo $nom_complet; ?>"  onchange='changement()' /></p>
-<p>Prénom et nom du chef d'établissement ou de son représentant apparaissant en bas de chaque bulletin : <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
+<p>Prénom et nom du chef d'établissement ou de son représentant apparaissant en bas de chaque bulletin<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> : <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
+<?php
+if ($gepiSettings['active_mod_ects'] == "y") {
+    ?>
+<p>Fonction de la personne ci-dessus, signataire des attestations ECTS (ex: "proviseur adjoint", "chef d'établissement") : <br /><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></p>
+<?php
+}
+    ?>
 <p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus :<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>"  onchange='changement()' /></p>
 
 <p><b>Formatage de l'identité des professeurs pour les bulletins :</b>
@@ -705,11 +712,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     <td style="font-variant: small-caps;">Domaines d'étude (ex: "Biologie, Chimie, Physique, Mathématiques, Sciences de la Terre") :</td>
     <td><input type="text" size="40" name="ects_domaines_etude" value="<?php echo $ects_domaines_etude;?>" onchange='changement()' /></td>
 </tr>
-<tr>
-	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Fonction du signataire des attestations (ex: "Proviseur adjoint" ; les noms et prénoms seront ceux paramétrés plus haut) :</td>
-    <td><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></td>
-</tr>
+
     <?
 } else {
 ?>

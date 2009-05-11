@@ -201,11 +201,25 @@ class Groupe extends BaseGroupe {
 	 *
 	 */
 	public function getEctsDefaultValue($id_classe) {
-		$profs = array();
 		$criteria = new Criteria();
 		$criteria->add(JGroupesClassesPeer::ID_CLASSE,$id_classe);
 		$g = $this->getJGroupesClassess($criteria);
         return !empty($g) > 0 ? $g[0]->getValeurEcts() : '';
+	}
+
+    public function allowsEctsCredits($id_classe) {
+        $c = new Criteria();
+        $c->add(JGroupesClassesPeer::ID_CLASSE,$id_classe);
+		$g = $this->getJGroupesClassess($c);
+        return !empty($g) > 0 ? $g[0]->getSaisieEcts() : false;
+    }
+
+	public function getCategorieMatiere($id_classe) {
+		$profs = array();
+		$criteria = new Criteria();
+		$criteria->add(JGroupesClassesPeer::ID_CLASSE,$id_classe);
+		$g = $this->getJGroupesClassess($criteria);
+        return !empty($g) ? $g[0]->getCategorieMatiere() : false;
 	}
 
 	/**

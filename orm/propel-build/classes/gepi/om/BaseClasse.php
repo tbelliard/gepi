@@ -225,6 +225,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	private $lastJEleveProfesseurPrincipalCriteria = null;
 
 	/**
+	 * @var        array JCategoriesMatieresClasses[] Collection to store aggregation of JCategoriesMatieresClasses objects.
+	 */
+	protected $collJCategoriesMatieresClassess;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collJCategoriesMatieresClassess.
+	 */
+	private $lastJCategoriesMatieresClassesCriteria = null;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -1282,6 +1292,9 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$this->collJEleveProfesseurPrincipals = null;
 			$this->lastJEleveProfesseurPrincipalCriteria = null;
 
+			$this->collJCategoriesMatieresClassess = null;
+			$this->lastJCategoriesMatieresClassesCriteria = null;
+
 		} // if (deep)
 	}
 
@@ -1413,6 +1426,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 				}
 			}
 
+			if ($this->collJCategoriesMatieresClassess !== null) {
+				foreach ($this->collJCategoriesMatieresClassess as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			$this->alreadyInSave = false;
 
 		}
@@ -1502,6 +1523,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 
 				if ($this->collJEleveProfesseurPrincipals !== null) {
 					foreach ($this->collJEleveProfesseurPrincipals as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJCategoriesMatieresClassess !== null) {
+					foreach ($this->collJCategoriesMatieresClassess as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -2001,6 +2030,12 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 				}
 			}
 
+			foreach ($this->getJCategoriesMatieresClassess() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJCategoriesMatieresClasses($relObj->copy($deepCopy));
+				}
+			}
+
 		} // if ($deepCopy)
 
 
@@ -2243,6 +2278,53 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 
 			if (!isset($this->lastJGroupesClassesCriteria) || !$this->lastJGroupesClassesCriteria->equals($criteria)) {
 				$this->collJGroupesClassess = JGroupesClassesPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastJGroupesClassesCriteria = $criteria;
+
+		return $this->collJGroupesClassess;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Classe is new, it will return
+	 * an empty collection; or if this Classe has previously
+	 * been saved, it will retrieve related JGroupesClassess from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Classe.
+	 */
+	public function getJGroupesClassessJoinCategorieMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collJGroupesClassess === null) {
+			if ($this->isNew()) {
+				$this->collJGroupesClassess = array();
+			} else {
+
+				$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id);
+
+				$this->collJGroupesClassess = JGroupesClassesPeer::doSelectJoinCategorieMatiere($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id);
+
+			if (!isset($this->lastJGroupesClassesCriteria) || !$this->lastJGroupesClassesCriteria->equals($criteria)) {
+				$this->collJGroupesClassess = JGroupesClassesPeer::doSelectJoinCategorieMatiere($criteria, $con, $join_behavior);
 			}
 		}
 		$this->lastJGroupesClassesCriteria = $criteria;
@@ -2702,6 +2784,208 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Clears out the collJCategoriesMatieresClassess collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJCategoriesMatieresClassess()
+	 */
+	public function clearJCategoriesMatieresClassess()
+	{
+		$this->collJCategoriesMatieresClassess = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJCategoriesMatieresClassess collection (array).
+	 *
+	 * By default this just sets the collJCategoriesMatieresClassess collection to an empty array (like clearcollJCategoriesMatieresClassess());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initJCategoriesMatieresClassess()
+	{
+		$this->collJCategoriesMatieresClassess = array();
+	}
+
+	/**
+	 * Gets an array of JCategoriesMatieresClasses objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this Classe has previously been saved, it will retrieve
+	 * related JCategoriesMatieresClassess from storage. If this Classe is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array JCategoriesMatieresClasses[]
+	 * @throws     PropelException
+	 */
+	public function getJCategoriesMatieresClassess($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collJCategoriesMatieresClassess === null) {
+			if ($this->isNew()) {
+			   $this->collJCategoriesMatieresClassess = array();
+			} else {
+
+				$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
+
+				JCategoriesMatieresClassesPeer::addSelectColumns($criteria);
+				$this->collJCategoriesMatieresClassess = JCategoriesMatieresClassesPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
+
+				JCategoriesMatieresClassesPeer::addSelectColumns($criteria);
+				if (!isset($this->lastJCategoriesMatieresClassesCriteria) || !$this->lastJCategoriesMatieresClassesCriteria->equals($criteria)) {
+					$this->collJCategoriesMatieresClassess = JCategoriesMatieresClassesPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastJCategoriesMatieresClassesCriteria = $criteria;
+		return $this->collJCategoriesMatieresClassess;
+	}
+
+	/**
+	 * Returns the number of related JCategoriesMatieresClasses objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JCategoriesMatieresClasses objects.
+	 * @throws     PropelException
+	 */
+	public function countJCategoriesMatieresClassess(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collJCategoriesMatieresClassess === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
+
+				$count = JCategoriesMatieresClassesPeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
+
+				if (!isset($this->lastJCategoriesMatieresClassesCriteria) || !$this->lastJCategoriesMatieresClassesCriteria->equals($criteria)) {
+					$count = JCategoriesMatieresClassesPeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collJCategoriesMatieresClassess);
+				}
+			} else {
+				$count = count($this->collJCategoriesMatieresClassess);
+			}
+		}
+		$this->lastJCategoriesMatieresClassesCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a JCategoriesMatieresClasses object to this object
+	 * through the JCategoriesMatieresClasses foreign key attribute.
+	 *
+	 * @param      JCategoriesMatieresClasses $l JCategoriesMatieresClasses
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addJCategoriesMatieresClasses(JCategoriesMatieresClasses $l)
+	{
+		if ($this->collJCategoriesMatieresClassess === null) {
+			$this->initJCategoriesMatieresClassess();
+		}
+		if (!in_array($l, $this->collJCategoriesMatieresClassess, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collJCategoriesMatieresClassess, $l);
+			$l->setClasse($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Classe is new, it will return
+	 * an empty collection; or if this Classe has previously
+	 * been saved, it will retrieve related JCategoriesMatieresClassess from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Classe.
+	 */
+	public function getJCategoriesMatieresClassessJoinCategorieMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collJCategoriesMatieresClassess === null) {
+			if ($this->isNew()) {
+				$this->collJCategoriesMatieresClassess = array();
+			} else {
+
+				$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
+
+				$this->collJCategoriesMatieresClassess = JCategoriesMatieresClassesPeer::doSelectJoinCategorieMatiere($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
+
+			if (!isset($this->lastJCategoriesMatieresClassesCriteria) || !$this->lastJCategoriesMatieresClassesCriteria->equals($criteria)) {
+				$this->collJCategoriesMatieresClassess = JCategoriesMatieresClassesPeer::doSelectJoinCategorieMatiere($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastJCategoriesMatieresClassesCriteria = $criteria;
+
+		return $this->collJCategoriesMatieresClassess;
+	}
+
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -2728,11 +3012,17 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collJCategoriesMatieresClassess) {
+				foreach ((array) $this->collJCategoriesMatieresClassess as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		$this->collJGroupesClassess = null;
 		$this->collJEleveClasses = null;
 		$this->collJEleveProfesseurPrincipals = null;
+		$this->collJCategoriesMatieresClassess = null;
 	}
 
 } // BaseClasse

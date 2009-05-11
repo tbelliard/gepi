@@ -36,6 +36,7 @@ class Eleve extends BaseEleve {
 	 * @return     array Classes[]
 	 *
 	 */
+    // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	public function getClasses($periode) {
 		$classes = array();
 		$criteria = new Criteria();
@@ -44,6 +45,14 @@ class Eleve extends BaseEleve {
 			$classes[] = $ref->getClasse();
 		}
 		return $classes;
+	}
+
+    // La méthode ci-dessous, au singulier, corrige le problème ci-dessus.
+	public function getClasse($periode) {
+		$c = new Criteria();
+		$c->add(JEleveClassePeer::PERIODE,$periode);
+		$jec = $this->getJEleveClasses($c);
+        return $jec[0]->getClasse();
 	}
 
 	/**
@@ -57,13 +66,36 @@ class Eleve extends BaseEleve {
 	 */
 	public function getGroupes($periode) {
 		$groupes = array();
-		$criteria = new Criteria();
-		$criteria->add(JEleveGroupePeer::PERIODE,$periode);
-		foreach($this->getJEleveGroupesJoinGroupe($criteria) as $ref) {
+		$c = new Criteria();
+		$c->add(JEleveGroupePeer::PERIODE,$periode);
+		foreach($this->getJEleveGroupesJoinGroupe($c) as $ref) {
 			$groupes[] = $ref->getGroupe();
 		}
 		return $groupes;
 	}
+
+    public function getGroupesByCategories($periode) {
+        // On commence par récupérer tous les groupes
+        $groupes = $this->getGroupes($periode);
+        // Ensuite, il nous faut les catégories. Pour ça, on passe par les classes.
+        $classe = $this->getClasse($periode);
+        $categories = array();
+        $c = new Criteria();
+        $c->add(JCategoriesMatieresClassesPeer::CLASSE_ID,$classe->getId());
+        $c->addAscendingOrderByColumn(JCategoriesMatieresClassesPeer::PRIORITY);
+        foreach(JCategoriesMatieresClassesPeer::doSelect($c) as $j) {
+            $cat = $j->getCategorieMatiere();
+            $categories[$cat->getId()] = array(0 => $cat, 1 => array());
+        }
+        // Maintenant, on mets tout ça ensemble
+        foreach($groupes as $groupe) {
+            $cat = $groupe->getCategorieMatiere($classe);
+            $categories[$cat->getId()][1][] = $groupe;
+        }
+        // On renvoie un table multi-dimensionnel, qui contient les catégories
+        // dans le bon ordre, et les groupes sous chaque catégorie.
+        return $categories;
+    }
 
     	/**
 	 *
@@ -80,12 +112,46 @@ class Eleve extends BaseEleve {
 		$con = Propel::getConnection(ElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 
         $sql = "SELECT groupes.* FROM groupes, j_eleves_classes jec, j_groupes_classes jgc, j_eleves_groupes jeg
-                    WHERE (groupes.id = jgc.id_groupe AND jgc.id_groupe = jeg.id_groupe AND jgc.id_classe = jec.id_classe AND jgc.saisie_ects = TRUE AND jec.login = jeg.login AND jec.periode = jeg.periode AND jeg.periode = '".$periode."' AND jeg.login = '".$this->getLogin()."')";
+                    WHERE (groupes.id = jgc.id_groupe AND jgc.id_groupe = jeg.id_groupe AND jgc.id_classe = jec.id_classe AND jgc.saisie_ects = TRUE AND jec.login = jeg.login AND jec.periode = jeg.periode AND jeg.periode = '".$periode."' AND jeg.login = '".$this->getLogin()."') ORDER BY jgc.priorite";
         $stmt = $con->prepare($sql);
         $stmt->execute();
         $groupes = GroupePeer::populateObjects($stmt);
 		return $groupes;
 	}
+
+    public function getEctsGroupesByCategories($periode) {
+        // On commence par récupérer tous les groupes
+        $groupes = $this->getGroupes($periode);
+        // Ensuite, il nous faut les catégories. Pour ça, on passe par les classes.
+        $classe = $this->getClasse($periode);
+        $categories = array();
+        $c = new Criteria();
+        $c->add(JCategoriesMatieresClassesPeer::CLASSE_ID,$classe->getId());
+        $c->addAscendingOrderByColumn(JCategoriesMatieresClassesPeer::PRIORITY);
+        foreach(JCategoriesMatieresClassesPeer::doSelect($c) as $j) {
+            $cat = $j->getCategorieMatiere();
+            $categories[$cat->getId()] = array(0 => $cat, 1 => array());
+        }
+        // Maintenant, on mets tout ça ensemble
+        foreach($groupes as $groupe) {
+            if ($groupe->allowsEctsCredits($classe->getId())) {
+                $cat = $groupe->getCategorieMatiere($classe->getId());
+                $categories[$cat->getId()][1][] = $groupe;
+            }
+        }
+
+        foreach($categories as $cat) {
+            if (count($cat[1]) == 0) {
+                $id = $cat[0]->getId();
+                unset($categories[$id]);
+            }
+        }
+
+        // On renvoie un table multi-dimensionnel, qui contient les catégories
+        // dans le bon ordre, et les groupes sous chaque catégorie.
+        return $categories;
+    }
+
 
 	/**
 	 * Manually added for N:M relationship
