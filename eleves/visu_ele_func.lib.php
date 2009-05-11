@@ -105,6 +105,9 @@ function info_eleve($ele_login) {
 		$tab_ele['lieu_naissance']="";
 	}
 
+	$tab_ele['prof_liste_email']="";
+	$tab_ele['tab_prof_liste_email']=array();
+
 	/*
 	$tab_ele['classe']=array();
 	$sql="SELECT DISTINCT c.*,jec.periode FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
@@ -367,6 +370,7 @@ function info_eleve($ele_login) {
 				if(mysql_num_rows($res_prof)>0) {
 					$tab_ele['groupes'][$cpt]['prof']=array();
 					$tab_ele['groupes'][$cpt]['prof_liste']="";
+					//$tab_ele['groupes'][$cpt]['prof_liste_email']="";
 					$cpt2=0;
 					while($lig_prof=mysql_fetch_object($res_prof)) {
 						if($cpt2>0) {$tab_ele['groupes'][$cpt]['prof_liste'].=", ";}
@@ -376,6 +380,13 @@ function info_eleve($ele_login) {
 						$tab_ele['groupes'][$cpt]['prof'][$cpt2]['prenom']=$lig_prof->prenom;
 						$tab_ele['groupes'][$cpt]['prof'][$cpt2]['civilite']=$lig_prof->civilite;
 						$tab_ele['groupes'][$cpt]['prof'][$cpt2]['email']=$lig_prof->email;
+
+						//if($lig_prof->email!='') {
+						//	if($tab_ele['groupes'][$cpt]['prof'][$cpt2]['prof_liste_email']!='') {$tab_ele['groupes'][$cpt]['prof_liste_email'].=", ";}
+						//	$tab_ele['groupes'][$cpt]['prof_liste_email'].=$lig_prof->email;
+						//}
+
+						if(($lig_prof->email!='')&&(!in_array($lig_prof->email,$tab_ele['tab_prof_liste_email']))) {$tab_ele['tab_prof_liste_email'][]=$lig_prof->email;}
 
 						$tab_ele['groupes'][$cpt]['prof_liste'].=$lig_prof->civilite." ".$lig_prof->nom." ".substr($lig_prof->prenom,0,1).".";
 
@@ -392,6 +403,11 @@ function info_eleve($ele_login) {
 		// ou $tab_ele['periodes'][$cpt]['groupes'][]
 		// ou $tab_ele['classes'][$cpt]['groupes'][$cpt2]['periodes'][]
 
+	}
+
+	for($i=0;$i<count($tab_ele['tab_prof_liste_email']);$i++) {
+		if($tab_ele['prof_liste_email']!="") {$tab_ele['prof_liste_email'].=", ";}
+		$tab_ele['prof_liste_email'].=$tab_ele['tab_prof_liste_email'][$i];
 	}
 
 	//===================================

@@ -1340,6 +1340,13 @@ Patientez pendant l'extraction des données... merci.
 					echo "</a>";
 				}
 				echo "</p>\n";
+
+				if($tab_ele['prof_liste_email']!="") {
+					$tmp_date=getdate();
+					echo "<p>Ecrire un email à l'<a href='mailto:".$tab_ele['prof_liste_email']."?subject=GEPI&amp;body=";
+					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+					echo ",%0d%0aCordialement.'>Equipe de l'élève</a>.</p>\n";
+				}
 			}
 			echo "</div>\n";
 		}
