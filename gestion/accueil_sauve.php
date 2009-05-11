@@ -35,7 +35,7 @@ $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ?
 
 $dossier_a_archiver=isset($_POST['dossier']) ? $_POST['dossier'] : (isset($_GET['dossier']) ? $_GET['dossier'] : '');
 
-debug_var();
+//debug_var();
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -1467,7 +1467,8 @@ La seconde méthode est lourde en ressources mais passera sur toutes les configur
 
 <span class='small'><b>Remarques</b> :</span>
 <ul>
-<li><span class='small'>le répertoire "documents" contenant les documents joints aux cahiers de texte ne sera pas sauvegardé.</span></li>
+<li><span class='small'>Les répertoires "documents" (contenant les documents joints aux cahiers de texte) et "photos" (contenant les photos du trombinoscope) ne seront pas sauvegardés.<br/>
+Un outil de sauvegarde spécifique se trouve en bas de <a href='#zip'>cette page</a>.</span></li>
 <li><span class='small'>Valeur de la <b>durée d'une portion</b> en secondes : <input type="text" name="duree" value="<?php echo $_SESSION['defaulttimeout']; ?>" size="5" />
 <input type='checkbox' name='sauve_duree' value='yes' /> Mémoriser la durée de la portion pour la prochaine fois
 <br/><a href='#' onClick="clicMenu('1')" style="cursor: hand">Afficher/cacher l'aide</a>.</span></li>
@@ -1571,7 +1572,7 @@ echo "<tr class='lig-1'><td style='font-weight: bold; text-align: center;'>uploa
 echo "</table>\n";
 
 echo "<br /><hr />";
-echo "<h3>Créer une archive (Zip) de dossiers de Gepi</h3>\n";
+echo "<h3 id=\"zip\">Créer une archive (Zip) de dossiers de Gepi</h3>\n";
 echo "Une fois créée, pour télécharger l'archive, rendez-vous à la section \"Fichiers de restauration\" de cette page. <br />";
 echo "<p style=\"color: red;\">ATTENTION : veillez à supprimer le fichier créé une fois l'archive téléchargée.</p>";
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
