@@ -179,6 +179,41 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
+					if (isset($_POST['ects_fonction_signataire_attestation_'.$per])) {
+						if ($_POST['ects_fonction_signataire_attestation_'.$per]!='') {
+							$register = mysql_query("UPDATE classes SET ects_fonction_signataire_attestation='".$_POST['ects_fonction_signataire_attestation_'.$per]."' where id='".$id_classe."'");
+							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						}
+					}
+
+					if (isset($_POST['ects_type_formation_'.$per])) {
+						if ($_POST['ects_type_formation_'.$per]!='') {
+							$register = mysql_query("UPDATE classes SET ects_type_formation='".$_POST['ects_type_formation_'.$per]."' where id='".$id_classe."'");
+							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						}
+					}
+
+                    if (isset($_POST['ects_parcours_'.$per])) {
+						if ($_POST['ects_parcours_'.$per]!='') {
+							$register = mysql_query("UPDATE classes SET ects_parcours='".$_POST['ects_parcours_'.$per]."' where id='".$id_classe."'");
+							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						}
+					}
+
+                    if (isset($_POST['ects_domaines_etude_'.$per])) {
+						if ($_POST['ects_domaines_etude_'.$per]!='') {
+							$register = mysql_query("UPDATE classes SET ects_domaines_etude='".$_POST['ects_domaines_etude_'.$per]."' where id='".$id_classe."'");
+							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						}
+					}
+
+                    if (isset($_POST['ects_code_parcours_'.$per])) {
+						if ($_POST['ects_code_parcours_'.$per]!='') {
+							$register = mysql_query("UPDATE classes SET ects_code_parcours='".$_POST['ects_code_parcours_'.$per]."' where id='".$id_classe."'");
+							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						}
+					}
+
 					// On enregistre les infos relatives aux catégories de matières
 					$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 					while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
@@ -494,10 +529,13 @@ while ($per < $max_periode) {
 		?>
 
 		</table>
-		<p>Prénom et nom du chef d'établissement ou de son représentant apparaissant en bas de chaque bulletin :
-		<br /><input type="text" size="30" name=<?php echo "nb_".$per."_reg_suivi_par"; ?> value = "" ></input></p>
+		<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant) :
+		<br /><input type="text" size="30" name="<?php echo "nb_".$per."_reg_suivi_par"; ?>" value="" /></p>
+        <?php if ($gepiSettings['active_mod_ects'] == "y") { ?>
+            <p>Fonction du signataire sus-nommé (ex.: "Proviseur") : <br /><input type="text" size="40" name="ects_fonction_signataire_attestation_<?php echo $per;?>" value="" /></p>
+        <?php } ?>
 		<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus :
-		<br /><input type="text" size="80" name=<?php echo "nb_".$per."_reg_formule"; ?> value = "" ></input></p>
+		<br /><input type="text" size="80" name="<?php echo "nb_".$per."_reg_formule"; ?>" value="" /></p>
 		<p>Formatage de l'identité des professeurs :
 
 		<br />
@@ -835,7 +873,43 @@ while ($per < $max_periode) {
 	<td><input type="text" name="rn_sign_nblig_<?php echo $per;?>" value="" size="3" /></td>
 </tr>
 
-
+<?php
+if ($gepiSettings['active_mod_ects'] == "y") {
+    ?>
+<tr>
+	<td colspan='3'>
+	  <h2><b>Paramètres des attestations ECTS : </b></h2>
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Type de formation (ex: "Classe préparatoire scientifique") :</td>
+    <td><input type="text" size="40" name="ects_type_formation_<?php echo $per;?>" value="" /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Nom complet du parcours de formation (ex: "BCPST (Biologie, Chimie, Physique et Sciences de la Terre)") :</td>
+    <td><input type="text" size="40" name="ects_parcours_<?php echo $per;?>" value="" /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Nom cours du parcours de formation (ex: "BCPST") :</td>
+    <td><input type="text" size="40" name="ects_code_parcours_<?php echo $per;?>" value="" /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Domaines d'étude (ex: "Biologie, Chimie, Physique, Mathématiques, Sciences de la Terre") :</td>
+    <td><input type="text" size="40" name="ects_domaines_etude_<?php echo $per;?>" value="" /></td>
+</tr>
+<?
+} else {
+?>
+<input type="hidden" name="ects_type_formation_<?php echo $per;?>" value="" />
+<input type="hidden" name="ects_parcours_<?php echo $per;?>" value="" />
+<input type="hidden" name="ects_code_parcours_<?php echo $per;?>" value="" />
+<input type="hidden" name="ects_domaines_etude_<?php echo $per;?>" value="" />
+<input type="hidden" name="ects_fonction_signataire_attestation_<?php echo $per;?>" value="" />
+<? } ?>
 </table>
 <hr />
 <?php
