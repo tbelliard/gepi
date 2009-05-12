@@ -486,6 +486,12 @@ function info_eleve($ele_login) {
 		$tab_ele['cpe']['civ_nom_prenom']=$lig_cpe->civilite." ".$lig_cpe->nom." ".substr($lig_cpe->prenom,0,1).".";
 	}
 
+	$tab_ele['equipe_liste_email']=$tab_ele['prof_liste_email'];
+	if((isset($tab_ele['cpe']['email']))&&($tab_ele['cpe']['email']!="")&&(!in_array($tab_ele['cpe']['email'],$tab_ele['tab_prof_liste_email']))) { 
+		if($tab_ele['equipe_liste_email']!="") {$tab_ele['equipe_liste_email'].=", ";}
+		$tab_ele['equipe_liste_email'].=$tab_ele['cpe']['email'];
+	}
+
 	/*
 	// Récup infos Prof Principal (prof_suivi)
 	$sql="SELECT u.* FROM j_eleves_professeurs jep, utilisateurs u WHERE jep.login='".$ele_login."' AND id_classe='$id_classe' AND jep.professeur=u.login;";
