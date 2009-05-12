@@ -191,7 +191,7 @@ if (!$id_classe) {
                 echo "<label for='choix_edit_2' class='curseur_pointeur'>\n";
                     echo "Générer uniquement le relevé de notes de l'élève sélectionné ci-contre : \n";
                 echo "</label>\n";
-                echo "<select size=\"1\" id=\"select_login_eleve\" name=\"login_eleve\">\n";
+                echo "<select size=\"1\" id=\"select_login_eleve\" name=\"login_eleve\" onchange=\"document.getElementById('choix_edit_2').checked=true;\">\n";
 
                 // On récupère la liste des élèves s'il s'agit d'un professeur principal
                 if ($_SESSION['statut'] == 'professeur') {
