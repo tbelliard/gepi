@@ -70,7 +70,7 @@ class JGroupesClassesMapBuilder implements MapBuilder {
 
 		$tMap->addColumn('COEF', 'Coef', 'DECIMAL', true, null);
 
-		$tMap->addColumn('CATEGORIE_ID', 'CategorieId', 'INTEGER', true, null);
+		$tMap->addForeignKey('CATEGORIE_ID', 'CategorieId', 'INTEGER', 'matieres_categories', 'ID', true, null);
 
 		$tMap->addColumn('SAISIE_ECTS', 'SaisieEcts', 'BOOLEAN', false, null);
 

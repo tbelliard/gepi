@@ -136,7 +136,11 @@ CREATE TABLE j_groupes_classes
 	CONSTRAINT j_groupes_classes_FK_2
 		FOREIGN KEY (id_classe)
 		REFERENCES classes (id)
-		ON DELETE CASCADE
+		ON DELETE CASCADE,
+	INDEX j_groupes_classes_FI_3 (categorie_id),
+	CONSTRAINT j_groupes_classes_FK_3
+		FOREIGN KEY (categorie_id)
+		REFERENCES matieres_categories (id)
 )Type=MyISAM COMMENT='Table permettant la jointure entre groupe d\'eleves et une classe. Cette jointure permet de definir un enseignement, c\'est à dire un groupe d\'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe';
 
 #-----------------------------------------------------------------------------
@@ -975,6 +979,45 @@ CREATE TABLE archivage_ects
 		FOREIGN KEY (ine)
 		REFERENCES eleves (no_gep)
 )Type=MyISAM COMMENT='Enregistrement d\'archive pour les credits ECTS, dont le rapport n\'est edite qu\'au depart de l\'eleve';
+
+#-----------------------------------------------------------------------------
+#-- matieres_categories
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS matieres_categories;
+
+
+CREATE TABLE matieres_categories
+(
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
+	nom_court VARCHAR(255)  NOT NULL COMMENT 'Nom court',
+	nom_complet VARCHAR(255)  NOT NULL COMMENT 'Nom complet',
+	priority INTEGER(6)  NOT NULL COMMENT 'Priorite d\'affichage',
+	PRIMARY KEY (id)
+)Type=MyISAM COMMENT='Categories de matiere, utilisees pour regrouper des enseignements';
+
+#-----------------------------------------------------------------------------
+#-- j_matieres_categories_classes
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS j_matieres_categories_classes;
+
+
+CREATE TABLE j_matieres_categories_classes
+(
+	categorie_id INTEGER(11)  NOT NULL,
+	classe_id INTEGER(11)  NOT NULL,
+	affiche_moyenne TINYINT default 0 COMMENT 'Nom complet',
+	priority INTEGER(6)  NOT NULL COMMENT 'Priorite d\'affichage',
+	PRIMARY KEY (categorie_id,classe_id),
+	CONSTRAINT j_matieres_categories_classes_FK_1
+		FOREIGN KEY (categorie_id)
+		REFERENCES matieres_categories (id),
+	INDEX j_matieres_categories_classes_FI_2 (classe_id),
+	CONSTRAINT j_matieres_categories_classes_FK_2
+		FOREIGN KEY (classe_id)
+		REFERENCES classes (id)
+)Type=MyISAM COMMENT='Liaison entre categories de matiere et classes';
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
