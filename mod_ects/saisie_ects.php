@@ -288,7 +288,7 @@ echo "</form>\n";
 
     <p class='grand'>Classe : <?php echo $classe_suivi; ?></p>
 
-    <p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier l'appréciation.</p>
+    <p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier les crédits ECTS.</p>
     <?php
     if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
         $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
@@ -329,7 +329,7 @@ if (isset($fiche)) {
 <script type="text/javascript"><!--
 function updatesum() {
  $('total_ects').value = 0;
- $$('input.valeur').each(function(a){
+ $$('select.valeur').each(function(a){
      $('total_ects').value = (($('total_ects').value-0) + (a.value-0));
  })
 }
@@ -340,6 +340,85 @@ function updatesum() {
 
     $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
     $Classe = ClassePeer::retrieveByPK($id_classe);
+
+    // On affiche les menus de navigation
+  	echo "<form action='".$_SERVER['PHP_SELF']."' name='form_navigation' method='post'>\n";
+
+	echo "<div class='norme'><p class='bold'><a href='saisie_ects.php?id_classe=$id_classe&periode_num=$periode_num'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+
+    if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
+        $sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes c
+        WHERE (c.id_classe='$id_classe' AND
+           c.login = e.login AND
+           c.periode = '".$periode_num."'
+           ) ORDER BY nom,prenom";
+    } else {
+        $sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
+        WHERE (c.id_classe='$id_classe' AND
+           c.login = e.login AND
+           p.login = c.login AND
+           p.professeur = '".$_SESSION['login']."' AND
+           c.periode = '".$periode_num."'
+           ) ORDER BY nom,prenom";
+    }
+
+    $chaine_options_eleves="";
+
+    $res_ele_tmp=mysql_query($sql);
+    if(mysql_num_rows($res_ele_tmp)>0){
+        $ele_login_prec="";
+        $ele_login_suiv="";
+        $ind_eleve_login_suiv = 0;
+        $temoin_tmp=0;
+        while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)) {
+            if($lig_ele_tmp->login==$Eleve->getLogin()) {
+                $chaine_options_eleves.="<option value='$lig_ele_tmp->login' selected='true'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+                $temoin_tmp=1;
+                $ind_eleve_login_suiv++;
+                if($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)) {
+                    $chaine_options_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+                    $ele_login_suiv=$lig_ele_tmp->login;
+                }
+                else {
+                    $ele_login_suiv="";
+                }
+            }
+            else {
+                $chaine_options_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+            }
+            if($temoin_tmp==0) {
+                $ele_login_prec=$lig_ele_tmp->login;
+                $ind_eleve_login_suiv++;
+            }
+        }
+    }
+    // =================================
+
+    if($ele_login_prec!=""){
+        echo " | <a href='".$_SERVER['PHP_SELF']."?fiche=y&amp;periode_num=$periode_num&amp;current_eleve_login=$ele_login_prec&amp;id_classe=$id_classe";
+        echo "'>".ucfirst($gepiSettings['denomination_eleve'])." précédent</a>";
+    }
+    if($chaine_options_eleves!="") {
+        echo " | <select name='current_eleve_login' onchange=\"document.forms['form_navigation'].submit();\">\n";
+        echo $chaine_options_eleves;
+        echo "</select>\n";
+    }
+    if($ele_login_suiv!=""){
+        echo " | <a href='".$_SERVER['PHP_SELF']."?fiche=y&amp;periode_num=$periode_num&amp;current_eleve_login=$ele_login_suiv&amp;id_classe=$id_classe";
+        echo "'>".ucfirst($gepiSettings['denomination_eleve'])." suivant</a>";
+    }
+
+    //echo "</p>\n";
+
+    echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+    echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
+    echo "<input type='hidden' name='fiche' value='y' />\n";
+	echo "</p>\n";
+	echo "</div>\n";
+	echo "</form>\n";
+
+
+
     echo "<br/>";
 	echo "<form enctype=\"multipart/form-data\" name='ects_form' id='ects_form' action=\"saisie_ects.php\" method=\"post\">\n";
     echo "<p><b>".$Classe->getClasse()."</b>, ".$Classe->getEctsTypeFormation()."</p>";
@@ -351,7 +430,8 @@ function updatesum() {
 	echo "<table class='boireaus' style='margin-left: 50px; margin-top: 10px;' summary=\"Elève ".$Eleve->getLogin()."\">\n";
     echo "<tr><td>Enseignements</td><td>Crédits obtenus</td><td>Mention (de A à F)</td></tr>";
     $categories = $Eleve->getEctsGroupesByCategories($periode_num);
-   
+
+    $donnees_enregistrees = true;
     $total_valeur = 0;
     $mentions = array('A','B','C','D','E','F');
 
@@ -367,9 +447,16 @@ function updatesum() {
             echo "<br/><span style='font-size:x-small;'>Crédits par défaut : ".$group->getEctsDefaultValue($id_classe);
             echo "</span></p></td>";
             $CreditEcts = $Eleve->getEctsCredit($periode_num,$group->getId());
+            if ($CreditEcts == null) $donnees_enregistrees = false; // On indique que des données n'ont pas été enregistrées en base de données
             echo "<td class='bull_simple'>";
             $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
-            echo "<input type='text' class='valeur' style='width: 40px;' name='valeur_ects_".$group->getId()."' value='$valeur_ects' onblur='updatesum();'>";
+            echo "<select class='valeur' name='valeur_ects_".$group->getId()."' onchange='updatesum();'>";
+            for($c=$group->getEctsDefaultValue($id_classe)-1;$c<$group->getEctsDefaultValue($id_classe)+3;$c++) {
+                echo "<option value='".$c."'";
+                if ($valeur_ects == $c) echo " SELECTED";
+                echo ">".$c."</option>";
+            }
+            echo "</select>";
             echo "</td>";
             echo "<td class='bull_simple' style='padding:10px;'>";
             $mention_ects = $CreditEcts == null ? '' : $CreditEcts->getMention();
@@ -399,9 +486,27 @@ function updatesum() {
         if ($mention_globale == $mention) echo " CHECKED ";
         echo "/><label for='credit_global_$mention'>$mention</label>";
     }
+    echo "</td></tr>";
+
+    // On affiche le statut des données
+
+    echo "<tr><td colspan='3'>";
+    if (!$donnees_enregistrees) {
+        echo "<p style='color: red;'>Données non-examinées<br/><span style='font-size: small;'>Les valeurs par défaut son pré-saisies, mais ne sont pas encore enregistrées en base de données.</span></p>";
+    } else {
+        // Des données sont présentes en base de données. Seul les variations de total influent sur le message à afficher
+        if ($total_valeur < 30) {
+            echo "<p style='color: red;'>Non validé<br/><span style='font-size: small;'>Des crédits sont enregistrés en base de données, mais le total est inférieur à 30.</span></p>";
+        } elseif ($total_valeur == 30) {
+            echo "<p style='color: blue;'>Validé<br/><span style='font-size: small;'>30 crédits ECTS sont enregistrés en base de données pour cette période.</span></p>";
+        } else {
+            echo "<p style='color: red;'>Excès de crédit<br/><span style='font-size: small;'>Plus de 30 crédits sont enregistrés en base de données pour cette période.</span></p>";
+        }
+    }
 
 
     echo "</td></tr>";
+
     ?>
     </table>
     <input type=hidden name=id_classe value=<?php echo "$id_classe";?> />
