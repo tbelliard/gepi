@@ -519,7 +519,7 @@ function updatesum() {
                     echo "<td class='bull_simple'>";
                     $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
                     echo "<select class='valeur' name='valeur_ects_".$group->getId()."' onchange='updatesum();'>";
-                    for($c=$group->getEctsDefaultValue($id_classe)-1;$c<$group->getEctsDefaultValue($id_classe)+3;$c++) {
+                    for($c=0;$c<=$group->getEctsDefaultValue($id_classe)+3;$c++) {
                         echo "<option value='".$c."'";
                         if ($valeur_ects == $c) echo " SELECTED";
                         echo ">".$c."</option>";
