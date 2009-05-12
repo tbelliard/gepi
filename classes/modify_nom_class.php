@@ -424,11 +424,11 @@ if (isset($id_classe)) {
 <form enctype="multipart/form-data" action="modify_nom_class.php" method=post>
 <p>Nom court de la classe : <input type=text size=30 name=reg_class_name value = "<?php echo $classe; ?>" onchange='changement()' /></p>
 <p>Nom complet de la classe : <input type=text size=50 name=reg_nom_complet value = "<?php echo $nom_complet; ?>"  onchange='changement()' /></p>
-<p>Prénom et nom du chef d'établissement ou de son représentant apparaissant en bas de chaque bulletin<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> : <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
+<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant) : <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
 <?php
 if ($gepiSettings['active_mod_ects'] == "y") {
     ?>
-<p>Fonction de la personne ci-dessus, signataire des attestations ECTS (ex: "proviseur adjoint", "chef d'établissement") : <br /><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></p>
+<p>Fonction du signataire sus-nommé (ex.: "Proviseur") : <br /><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></p>
 <?php
 }
     ?>
