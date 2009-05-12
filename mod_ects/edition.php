@@ -189,7 +189,7 @@ if (!$id_classe) {
             echo "<div>\n";
                 echo "<input type=\"radio\" name=\"choix_edit\" id='choix_edit_2' value=\"2\" />\n";
                 echo "<label for='choix_edit_2' class='curseur_pointeur'>\n";
-                    echo "Générer uniquement le relevé de notes de l'élève sélectionné ci-contre : \n";
+                    echo "Générer uniquement les documents ECTS de l'élève sélectionné ci-contre : \n";
                 echo "</label>\n";
                 echo "<select size=\"1\" id=\"select_login_eleve\" name=\"login_eleve\" onchange=\"document.getElementById('choix_edit_2').checked=true;\">\n";
 
