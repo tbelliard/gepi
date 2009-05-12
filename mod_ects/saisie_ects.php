@@ -340,7 +340,13 @@ function updatesum() {
 
     $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
     $Classe = ClassePeer::retrieveByPK($id_classe);
-
+    $annees_precedentes = $Eleve->getEctsAnneesPrecedentes();
+    $nb_cols = 0;
+    // On compte le total de colonnes (= le nombre de périodes pour chaque année archivée).
+    foreach($annees_precedentes as $a) {
+        $nb_cols += count($a['periodes']);
+    }
+    $nb_cols += $periode_num+1;
     // On affiche les menus de navigation
   	echo "<form action='".$_SERVER['PHP_SELF']."' name='form_navigation' method='post'>\n";
 
@@ -428,16 +434,58 @@ function updatesum() {
     
     echo "<div style='float:left;'>";
 	echo "<table class='boireaus' style='margin-left: 50px; margin-top: 10px;' summary=\"Elève ".$Eleve->getLogin()."\">\n";
-    echo "<tr><td>Enseignements</td><td>Crédits obtenus</td><td>Mention (de A à F)</td></tr>";
+    echo "<tr><td>Enseignements</td>";
+    foreach ($annees_precedentes as $a) {
+        echo "<td colspan='".count($a['periodes'])."'>".$a['annee']."</td>";
+    }
+
+    echo "<td colspan='";
+    echo $periode_num+1;
+    echo "'>".$gepiSettings['gepiYear']."</td>";
+
+    echo "</tr>";
+
+
+    echo "<tr><td>&nbsp;</td>";
+    foreach($annees_precedentes as $a) {
+        foreach($a['periodes'] as $p_num => $p) {
+            echo "<td>".$p."</td>";
+        }
+    }
+    for ($i=1;$i<=$periode_num;$i++) {
+        echo "<td";
+        if ($i == $periode_num) {
+            echo " colspan=2";
+        }
+        echo ">";
+        echo $nom_periode[$i];
+        echo "</td>";
+    }
+    echo "</tr>";
+
+
+
     $categories = $Eleve->getEctsGroupesByCategories($periode_num);
 
     $donnees_enregistrees = true;
-    $total_valeur = 0;
+    $total_valeur = array();
+    for ($i=1;$i<=$periode_num;$i++) {
+        $total_valeur[$i] = 0;
+    }
     $mentions = array('A','B','C','D','E','F');
-
+    $archives_id = array();
+    $archives_valeurs_globales = array();
+    foreach($annees_precedentes as $a) {
+        $archives_valeurs_globales[$a['annee']] = array();
+        foreach($a['periodes'] as $p_num => $p) {
+            $archives_valeurs_globales[$a['annee']][$p_num] = 0;
+        }
+    }
     foreach($categories as $categorie) {
         if (count($categories) > 0) {
-            echo "<tr><td colspan='3' style='text-align:left; padding-left: 10px; background-color: lightgray;'><b><i>".$categorie[0]->getNomComplet()."</i></b></td></tr>";
+            echo "<tr><td colspan='";
+                echo 1+$nb_cols;
+            echo "' style='text-align:left; padding-left: 10px; background-color: lightgray;'><b><i>".$categorie[0]->getNomComplet()."</i></b></td></tr>";
         }
         foreach($categorie[1] as $group) {
             echo "<tr>";
@@ -446,33 +494,82 @@ function updatesum() {
             echo "<p><b>".$group->getDescription()."</b>";
             echo "<br/><span style='font-size:x-small;'>Crédits par défaut : ".$group->getEctsDefaultValue($id_classe);
             echo "</span></p></td>";
-            $CreditEcts = $Eleve->getEctsCredit($periode_num,$group->getId());
-            if ($CreditEcts == null) $donnees_enregistrees = false; // On indique que des données n'ont pas été enregistrées en base de données
-            echo "<td class='bull_simple'>";
-            $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
-            echo "<select class='valeur' name='valeur_ects_".$group->getId()."' onchange='updatesum();'>";
-            for($c=$group->getEctsDefaultValue($id_classe)-1;$c<$group->getEctsDefaultValue($id_classe)+3;$c++) {
-                echo "<option value='".$c."'";
-                if ($valeur_ects == $c) echo " SELECTED";
-                echo ">".$c."</option>";
+            // Affichage des éventuelles résultats précédents
+            foreach($annees_precedentes as $a) {
+                foreach($a['periodes'] as $p_num => $p) {
+                    $archive = $Eleve->getArchivedEctsCredit($a['annee'], $p, $group->getDescription());
+                    echo "<td>";
+                    if ($archive == null) {
+                        echo "-";
+                    } else {
+                        // On stocke l'ID pour voir si on a bien affiché tous les crédits obtenus par le passé
+                        $archives_id[] = $archive->getId();
+                        echo $archive->getValeur()." - ".$archive->getMention();
+                        $archives_valeurs_globales[$a['annee']][$p_num] += $archive->getValeur();
+                    }
+                    echo "</td>";
+                }
             }
-            echo "</select>";
-            echo "</td>";
-            echo "<td class='bull_simple' style='padding:10px;'>";
-            $mention_ects = $CreditEcts == null ? '' : $CreditEcts->getMention();
-            if ($mention_ects == '') $mention_ects = 'A';
-            foreach($mentions as $mention) {
-                echo "<input id='mention_ects_".$group->getId()."_$mention' type='radio' name='mention_ects_".$group->getId()."' value='$mention'";
-                if ($mention == $mention_ects) echo " CHECKED ";
-                echo "/><label for='mention_ects_".$group->getId()."_$mention'>$mention</label>";
+
+
+            for ($i=1;$i<=$periode_num;$i++) {
+                $CreditEcts = $Eleve->getEctsCredit($i,$group->getId());
+                if ($i == $periode_num) {
+                    if ($CreditEcts == null) $donnees_enregistrees = false; // On indique que des données n'ont pas été enregistrées en base de données
+                    echo "<td class='bull_simple'>";
+                    $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
+                    echo "<select class='valeur' name='valeur_ects_".$group->getId()."' onchange='updatesum();'>";
+                    for($c=$group->getEctsDefaultValue($id_classe)-1;$c<$group->getEctsDefaultValue($id_classe)+3;$c++) {
+                        echo "<option value='".$c."'";
+                        if ($valeur_ects == $c) echo " SELECTED";
+                        echo ">".$c."</option>";
+                    }
+                    echo "</select>";
+                    echo "</td>";
+                    echo "<td class='bull_simple' style='padding:10px;'>";
+                    $mention_ects = $CreditEcts == null ? '' : $CreditEcts->getMention();
+                    if ($mention_ects == '') $mention_ects = 'A';
+                    foreach($mentions as $mention) {
+                        echo "<input id='mention_ects_".$group->getId()."_$mention' type='radio' name='mention_ects_".$group->getId()."' value='$mention'";
+                        if ($mention == $mention_ects) echo " CHECKED ";
+                        echo "/><label for='mention_ects_".$group->getId()."_$mention'>$mention</label>";
+                    }
+                    echo "</td>";
+                } else {
+                    // Ici on affiche simplement les valeurs de la période
+                    echo "<td>";
+                    if ($CreditEcts == null) {
+                        echo "-";
+                        $valeur_ects = 0;
+                    } else {
+                        echo $CreditEcts->getValeur()." - ".$CreditEcts->getMention();
+                        $valeur_ects = $CreditEcts->getValeur();
+                    }
+                    echo "</td>";
+                }
+                $total_valeur[$i] += $valeur_ects;
             }
-            echo "</td>";
             echo "</tr>";
-            $total_valeur += $valeur_ects;
         }
     }
 
-    echo "<tr><td>Global</td><td><input id='total_ects' name='total_ects' readonly style='font-weight: bold; width: 40px; background-color: lightgray; cursor: default; border-color: black;' value='$total_valeur'/></td>";
+    echo "<tr><td>Global</td>";
+    foreach($annees_precedentes as $a) {
+        foreach($a['periodes'] as $p_num => $p) {
+            echo "<td>".$archives_valeurs_globales[$a['annee']][$p_num]."</td>";
+        }
+    }
+
+    for($i=1;$i<=$periode_num;$i++) {
+        echo "<td>";
+        if ($i == $periode_num) {
+            echo "<input id='total_ects' name='total_ects' readonly style='font-weight: bold; width: 40px; background-color: lightgray; cursor: default; border-color: black;' value='$total_valeur[$i]'/></td>";
+        } else {
+            echo $total_valeur[$i];
+        }
+        echo "</td>";
+    }
+
     echo "<td style='padding:10px;'>";
 
     $credit_global = $Eleve->getCreditEctsGlobal();
@@ -490,14 +587,16 @@ function updatesum() {
 
     // On affiche le statut des données
 
-    echo "<tr><td colspan='3'>";
+    echo "<tr><td colspan='";
+    echo $nb_cols+1;
+    echo "'>";
     if (!$donnees_enregistrees) {
         echo "<p style='color: red;'>Données non-examinées<br/><span style='font-size: small;'>Les valeurs par défaut son pré-saisies, mais ne sont pas encore enregistrées en base de données.</span></p>";
     } else {
         // Des données sont présentes en base de données. Seul les variations de total influent sur le message à afficher
-        if ($total_valeur < 30) {
+        if ($total_valeur[$periode_num] < 30) {
             echo "<p style='color: red;'>Non validé<br/><span style='font-size: small;'>Des crédits sont enregistrés en base de données, mais le total est inférieur à 30.</span></p>";
-        } elseif ($total_valeur == 30) {
+        } elseif ($total_valeur[$periode_num] == 30) {
             echo "<p style='color: blue;'>Validé<br/><span style='font-size: small;'>30 crédits ECTS sont enregistrés en base de données pour cette période.</span></p>";
         } else {
             echo "<p style='color: red;'>Excès de crédit<br/><span style='font-size: small;'>Plus de 30 crédits sont enregistrés en base de données pour cette période.</span></p>";

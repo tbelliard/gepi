@@ -177,11 +177,39 @@ class Eleve extends BaseEleve {
         return $v;
 	}
 
+	public function getArchivedEctsCredit($annee,$periode,$matiere) {
+		$criteria = new Criteria();
+		$criteria->add(ArchiveEctsPeer::NUM_PERIODE,$periode);
+        $criteria->add(ArchiveEctsPeer::ANNEE,$annee);
+        $criteria->add(ArchiveEctsPeer::MATIERE,$matiere);
+        $v = $this->getArchiveEctss($criteria);
+        return !empty($v) ? $v[0] : null;
+	}
+
 	public function getCreditEctsGlobal() {
         $v = $this->getCreditEctsGlobals();
         return !empty($v) > 0 ? $v[0] : null;
 	}
 
+    public function getEctsAnneesPrecedentes() {
+        $c = new Criteria();
+        $c->addAscendingOrderByColumn(ArchiveEctsPeer::ANNEE);
+        $c->addAscendingOrderByColumn(ArchiveEctsPeer::NUM_PERIODE);
+        $archives = $this->getArchiveEctss($c);
+        $annees = array();
+        foreach ($archives as $a) {
+            if (array_key_exists($a->getAnnee(), $annees)) {
+                // Le tableau avec l'année existe déjà.
+                // On regarde si c'est le cas pour la période.
+                if (!array_key_exists($a->getNumPeriode(), $annees[$a->getAnnee()]['periodes'])) {
+                    $annees[$a->getAnnee()]['periodes'][$a->getNumPeriode()] = $a->getNomPeriode();
+                }
+            } else {
+                $annees[$a->getAnnee()] = array('annee' => $a->getAnnee(), 'periodes' => array($a->getNumPeriode() => $a->getNomPeriode()));
+            }
+        }
+        return $annees;
+    }
     /**
 	 * Enregistre les crédits ECTS pour une période et un groupe
 	 */
