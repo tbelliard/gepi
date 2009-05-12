@@ -372,7 +372,7 @@ for($i=0;$i<10;$i++){
     // si le module ECTS est activé, on calcul la valeur total d'ECTS attribués aux groupes
     if ($gepiSettings['active_mod_ects'] == "y") {
         $total_ects = mysql_result(mysql_query("SELECT sum(valeur_ects) FROM j_groupes_classes WHERE (id_classe = '".$id_classe."' and saisie_ects = TRUE)"), 0);
-        echo "<p style='margin-top: 10px;'>Nombre total d'ECTS actuellement attribués pour cette classe : ".$total_ects."</p>";
+        echo "<p style='margin-top: 10px;'>Nombre total d'ECTS actuellement attribués pour cette classe : ".intval($total_ects)."</p>";
         if ($total_ects < 30) {
             echo "<p style='color: red;'>Attention, le total d'ECTS pour un semestre devrait être au moins égal à 30.</p>";
         }
@@ -544,7 +544,14 @@ for($i=0;$i<10;$i++){
             echo "<input id='no_saisie_ects_".$cpt_grp."' type='hidden' name='no_saisie_ects_".$current_group["id"]."' value='0' />";
             echo "</td>";
             echo "<td>";
-            echo "Nombre d'ECTS par défaut pour une période : <input type=\"text\" onchange=\"changement()\" id='valeur_ects_".$cpt_grp."' name='". "valeur_ects_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["valeur_ects"] . "' size=\"5\" />";
+            echo "Nombre d'ECTS par défaut pour une période : ";
+            echo "<select onchange=\"changement()\" id='valeur_ects_".$cpt_grp."' name='". "valeur_ects_" . $current_group["id"] . "'>";
+            for($c=0;$c<15;$c++) {
+                echo "<option value='$c'";
+                if (intval($current_group["classes"]["classes"][$id_classe]["valeur_ects"]) == $c) echo " SELECTED ";
+                echo ">$c</option>";
+            }
+            echo "</select>";
             echo "</td>";
             echo "</tr>";
         }
