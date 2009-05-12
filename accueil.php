@@ -394,8 +394,8 @@ if ($affiche=='yes') {
 		echo "<input type='hidden' name='action' value='dump' />";
 	}
 	echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></p></form>\n";
-	echo "<p class='small'>Les répertoires \"documents\" (contenant les documents joints aux cahiers de texte) et \"photos\" (contenant les photos du trombinoscope) ne seront pas sauvegardés.\n";
-	echo "Un outil de sauvegarde spécifique se trouve en bas de la page <a href='./gestion/accueil_sauve.php#zip'>[gestion des sauvegardes]</a></p>\n";
+	echo "<p class='small'>Les répertoires \"documents\" (<em>contenant les documents joints aux cahiers de texte</em>) et \"photos\" (<em>contenant les photos du trombinoscope</em>) ne seront pas sauvegardés.\n";
+	echo "Un outil de sauvegarde spécifique se trouve en bas de la page <a href='./gestion/accueil_sauve.php#zip'>gestion des sauvegardes</a></p>\n";
 	echo "</td></tr>";
 	for ($i=0;$i<$nb_ligne;$i++) {
 		affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
