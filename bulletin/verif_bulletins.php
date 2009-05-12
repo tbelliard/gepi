@@ -363,14 +363,26 @@ if (!(isset($id_classe))) {
 	}
 	echo "</tr>\n";
 
+    if ($gepiSettings['active_mod_ects'] == 'y') {
+        $i="1";
+        echo "<tr class='lig1'>\n";
+        echo "<th>Crédits ECTS</th>\n";
+        while ($i < $nb_periode) {
 
+            echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=ects'>";
+            echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
+            echo "</td>\n";
+            $i++;
+        }
+        echo "</tr>\n";
+    }
 
 	echo "</table>\n";
 
 } else {
 
 	$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : "");
-	if(($mode!='note_app')&&($mode!='abs')&&($mode!='avis')){
+	if( $mode!='note_app' && $mode!='abs' && $mode!='avis' && $mode != 'ects'){
 		$mode="tout";
 	}
 
@@ -485,6 +497,9 @@ if (!(isset($id_classe))) {
 		case 'abs':
 			echo "<p class='bold'>Vérification du remplissage des absences:</p>\n";
 			break;
+		case 'ects':
+			echo "<p class='bold'>Vérification du remplissage des absences:</p>\n";
+			break;
 		case 'tout':
 			echo "<p class='bold'>Vérification du remplissage des moyennes, appréciations, absences et avis du conseil de classe:</p>\n";
 			break;
@@ -506,6 +521,8 @@ if (!(isset($id_classe))) {
 	$temoin_avis=0;
 	$temoin_aid=0;
 	$temoin_abs=0;
+    $temoin_ects=0;
+    $temoin_has_ects = false; // Ce témoin sert dans les cas où en réalité aucun élève ne suit d'enseignement ouvrant droit à ECTS.
 	while($j < $nb_eleves) {
 
 		//affichage 2 colonnes
@@ -854,6 +871,60 @@ if (!(isset($id_classe))) {
 			}
 		}
 
+
+		if($gepiSettings['active_mod_ects'] == 'y' && (($mode=="ects")||($mode=="tout"))){
+			//
+			//Vérification des ECTS
+			//
+
+            // On commence par regarder si l'élève a des groupes qui ouvrent droit à des ECTS.
+            $query_groupes_ects = mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.saisie_ects = '1' AND jgc.id_classe = '$id_classe' AND jgc.id_groupe = jeg.id_groupe AND jeg.login = '".$id_eleve[$j]."' AND jeg.periode = '$per'");
+            if (mysql_num_rows($query_groupes_ects) > 0) {
+                $temoin_has_ects = true;
+                $query_conseil = mysql_query("SELECT ec.* FROM ects_credits ec, eleves e WHERE ec.id_eleve = e.id_eleve AND e.login = '$id_eleve[$j]' AND num_periode = '$per'");
+                $nb = mysql_num_rows($query_conseil);
+                if ($nb == 0) {
+                    $bulletin_rempli = 'no';
+                    if ($affiche_nom != 0) {
+                        echo "<p style='border:1px solid black;'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+                        echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span> :";
+                    }
+                    echo "<br /><br />\n";
+                    echo "<b>Crédits ECTS</b> non remplis !";
+
+                    // On récupère le prof principal, si celui-ci est autorisé à saisir les ECTS
+                    if ($gepiSettings['GepiAccesSaisieEctsPP'] == 'yes') {
+                        $call_prof = mysql_query("SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_eleves_professeurs j WHERE (j.login = '$id_eleve[$j]' and j.id_classe='$id_classe' and u.login=j.professeur)");
+                        $nb_result = mysql_num_rows($call_prof);
+                        if ($nb_result != 0) {
+                            $login_prof = mysql_result($call_prof, 0, 'login');
+                            $email = retourne_email($login_prof);
+                            $nom_prof = mysql_result($call_prof, 0, 'nom');
+                            $prenom_prof = mysql_result($call_prof, 0, 'prenom');
+                            //echo " (<a href='mailto:$email'>$prenom_prof $nom_prof</a>)";
+                            if($email!=""){
+                                echo " (<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>)";
+                            }
+                            else{
+                                echo " (".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof).")";
+                            }
+
+                        } else {
+                            echo " (pas de ".getSettingValue("gepi_prof_suivi").")";
+                        }
+                    }
+                    $affiche_nom = 0;
+                    $temoin_ects++;
+                }
+            }
+		}
+
+
+
+
+
+
+
 		$j++;
 		//Fin de la boucle élève
 
@@ -880,6 +951,8 @@ if (!(isset($id_classe))) {
 		echo "<p class='bold'>Tous les avis de conseil de classe des bulletins de cette classe ont été renseignés.</p>\n";
 	} elseif(($temoin_abs==0)&&($mode=='abs')) {
 		echo "<p class='bold'>Toutes les absences et retards des bulletins de cette classe ont été renseignés.</p>\n";
+    }elseif ($gepiSettings['active_mod_ects'] == 'y' && $temoin_ects == 0 && $mode=='ects' && $temoin_has_ects) {
+        echo "<p class='bold'>Tous les crédits ECTS de cette classe ont été renseignés.</p>\n";
 	} else{
 		echo "<br /><p class='bold'>*** Fin des vérifications. ***</p>\n";
 		/*
