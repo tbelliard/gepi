@@ -582,7 +582,16 @@ if (isset($titre_page)) {
 							echo "<a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"http://gepi.mutualibre.org/\">Visiter le site de GEPI</a>";
 							// echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a>";
 						} else {
-							echo("<a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
+							if (getSettingValue("contact_admin_mailto")=='y') {
+								$gepiAdminAdress=getSettingValue("gepiAdminAdress");
+								$tmp_date=getdate();
+								echo "<a href='mailto:$gepiAdminAdress?Subject=Gepi&amp;body=";
+								if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+								echo ",%0d%0aCordialement.'>Contacter l'administrateur</a>";
+							}
+							else {
+								echo("<a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
+							}
 						}
 						echo " - <a href=\"javascript:centrerpopup('$gepiPath/gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Informations générales</a> - <a href='javascript:centrerpopup(\"$gepiPath/gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
 					echo "</p>\n";

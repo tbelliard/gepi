@@ -190,7 +190,6 @@ if (isset($_POST['gepiAdminAdress'])) {
 	}
 }
 
-
 if (isset($_POST['is_posted'])) {
 	if ($_POST['is_posted']=='1') {
 		if (isset($_POST['gepiAdminAdressPageLogin'])) {
@@ -203,6 +202,18 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement du non-affichage de adresse email sur la page de login !";
 			}
 		}
+
+		if (isset($_POST['contact_admin_mailto'])) {
+			if (!saveSetting("contact_admin_mailto", 'y')) {
+				$msg .= "Erreur lors de l'enregistrement de 'contact_admin_mailto' !";
+			}
+		}
+		else {
+			if (!saveSetting("contact_admin_mailto", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement de 'contact_admin_mailto' !";
+			}
+		}
+		
 	}
 }
 
@@ -577,6 +588,18 @@ require_once("../lib/header.inc");
 		<input type="checkbox" name="gepiAdminAdressFormHidden" id="gepiAdminAdressFormHidden" value="n"
 		<?php
 			if(getSettingValue("gepiAdminAdressFormHidden")!='y'){echo " checked";}
+		?>
+		/>
+		</td>
+	</tr>
+	<tr>
+		<td style="font-variant: small-caps;">
+		<label for='contact_admin_mailto' style='cursor: pointer;'>Remplacer le formulaire [Contacter l'administrateur] par un lien mailto :</label>
+		</td>
+		<td>
+		<input type="checkbox" id='contact_admin_mailto' name="contact_admin_mailto" value="y"
+		<?php
+			if(getSettingValue("contact_admin_mailto")=='y'){echo " checked";}
 		?>
 		/>
 		</td>
