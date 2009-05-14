@@ -114,7 +114,16 @@ if(isset($style_screen_ajout)){
 		echo "<span class='grey'>";
 		    echo "<a href=\"".$page_accueil. $aff_get_rne ."\">Accueil</a> - ";
 		    echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a> - ";
-		    echo "<a href=\"javascript:centrerpopup('contacter_admin_pub.php" . $aff_get_rne_bis . "',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>";
+			if (getSettingValue("contact_admin_mailto")=='y') {
+				$gepiAdminAdress=getSettingValue("gepiAdminAdress");
+				$tmp_date=getdate();
+				echo "<a href='mailto:$gepiAdminAdress?Subject=Gepi&amp;body=";
+				if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+				echo ",%0d%0aCordialement.'>Contacter l'administrateur</a>";
+			}
+			else {
+			    echo "<a href=\"javascript:centrerpopup('contacter_admin_pub.php" . $aff_get_rne_bis . "',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>";
+			}
 		echo "</span>\n";
 
 		echo "</td>\n";
