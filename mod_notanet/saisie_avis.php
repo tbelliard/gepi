@@ -39,6 +39,7 @@ if ($resultat_session == 'c') {
 
 
 // INSERT INTO droits VALUES('/mod_notanet/saisie_avis.php','V','F','F','F','F','F','F','F','Notanet: Saisie avis chef etablissement','');
+// INSERT INTO droits VALUES('/mod_notanet/saisie_avis.php','V','F','F','V','F','F','F','F','Notanet: Saisie avis chef etablissement','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -172,7 +173,7 @@ if(!isset($id_classe)) {
 		// Affichage sur 3 colonnes
 		$nb_classes_par_colonne=round($nb_classes/2);
 
-		echo "<table width='100%'>\n";
+		echo "<table width='100%' summary='Choix des classes'>\n";
 		echo "<tr valign='top' align='center'>\n";
 
 		$cpt_i = 0;
@@ -237,7 +238,7 @@ else {
 			echo "Aucun élève dans cette classe.</p>\n";
 		}
 		else {
-			echo "<table class='boireaus' border='1'>\n";
+			echo "<table class='boireaus' border='1' summary='Saisie avis'>\n";
 
 			//===========================
 			echo "<tr>\n";

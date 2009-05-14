@@ -39,6 +39,7 @@ if ($resultat_session == 'c') {
 
 
 // INSERT INTO droits VALUES('/mod_notanet/saisie_b2i_a2.php','V','F','F','F','F','F','F','F','Notanet: Saisie des notes de socle B2i et A2','');
+// INSERT INTO droits VALUES('/mod_notanet/saisie_b2i_a2.php','V','F','F','V','F','F','F','F','Notanet: Saisie des notes de socle B2i et A2','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -224,7 +225,7 @@ if(!isset($id_classe)) {
 		// Affichage sur 3 colonnes
 		$nb_classes_par_colonne=round($nb_classes/2);
 
-		echo "<table width='100%'>\n";
+		echo "<table width='100%' summary='Choix des classes'>\n";
 		echo "<tr valign='top' align='center'>\n";
 
 		$cpt_i = 0;
@@ -288,7 +289,7 @@ else {
 			echo "Aucun élève dans cette classe.</p>\n";
 		}
 		else {
-			echo "<table class='boireaus' border='1'>\n";
+			echo "<table class='boireaus' border='1' summary='Saisie B2I A2'>\n";
 
 			$sql="SELECT DISTINCT id_matiere FROM j_groupes_classes jgc, j_groupes_matieres jgm, notanet_corresp nc WHERE (jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."' AND nc.matiere=jgm.id_matiere AND notanet_mat LIKE 'LANGUE VIVANTE %') ORDER BY id_matiere;";
 			$res_mat=mysql_query($sql);
