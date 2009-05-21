@@ -413,7 +413,7 @@ function updatesum() {
         echo " | <a href='".$_SERVER['PHP_SELF']."?fiche=y&amp;periode_num=$periode_num&amp;current_eleve_login=$ele_login_suiv&amp;id_classe=$id_classe";
         echo "'>".ucfirst($gepiSettings['denomination_eleve'])." suivant</a>";
     }
-
+    echo " - ".$Classe->getClasse();
     //echo "</p>\n";
 
     echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
@@ -423,17 +423,19 @@ function updatesum() {
 	echo "</div>\n";
 	echo "</form>\n";
 
-
-
-    echo "<br/>";
 	echo "<form enctype=\"multipart/form-data\" name='ects_form' id='ects_form' action=\"saisie_ects.php\" method=\"post\">\n";
-    echo "<p><b>".$Classe->getClasse()."</b>, ".$Classe->getEctsTypeFormation()."</p>";
-    echo "<p><b>Parcours</b> : ".$Classe->getEctsParcours()."</p>";
     echo "<p><b>Principaux domaines d'études</b> : ".$Classe->getEctsDomainesEtude()."</p>";
-    echo "<h2>".$Eleve->getPrenom()." ".$Eleve->getNom()."</h2>";
+
     
     echo "<div style='float:left;'>";
-	echo "<table class='boireaus' style='margin-left: 50px; margin-top: 10px;' summary=\"Elève ".$Eleve->getLogin()."\">\n";
+	echo "<table class='boireaus' style='margin-left: 50px; border-top: 0px solid black; border-right: 0px solid black; border-left: 0px solid black;' summary=\"Elève ".$Eleve->getLogin()."\">\n";
+
+    echo "<tr><td style='border-top: 0px solid black; border-right: 0px solid black; border-left: 0px solid black;' colspan='";
+    echo $nb_cols+1;
+    echo "'>";
+    echo "<h2>".$Eleve->getPrenom()." ".$Eleve->getNom()."</h2>";
+    echo "</td></tr>";
+
     echo "<tr><td>Enseignements</td>";
     foreach ($annees_precedentes as $a) {
         echo "<td colspan='".count($a['periodes'])."'>".$a['annee']."</td>";
@@ -553,7 +555,7 @@ function updatesum() {
         }
     }
 
-    echo "<tr><td>Global</td>";
+    echo "<tr style='border-top: 3px solid black; background-color: lightgray;'><td>Global</td>";
     foreach($annees_precedentes as $a) {
         foreach($a['periodes'] as $p_num => $p) {
             echo "<td>".$archives_valeurs_globales[$a['annee']][$p_num]."</td>";
@@ -561,9 +563,9 @@ function updatesum() {
     }
 
     for($i=1;$i<=$periode_num;$i++) {
-        echo "<td>";
+        echo "<td style='text-align: center;'>";
         if ($i == $periode_num) {
-            echo "<input id='total_ects' name='total_ects' readonly style='font-weight: bold; width: 40px; background-color: lightgray; cursor: default; border-color: black;' value='$total_valeur[$i]'/></td>";
+            echo "<input id='total_ects' name='total_ects' readonly style='font-weight: bold; width: 40px; background-color: lightgray; cursor: default; border-color: black; text-align: center;' value='$total_valeur[$i]'/></td>";
         } else {
             echo $total_valeur[$i];
         }
@@ -606,7 +608,13 @@ function updatesum() {
 
     echo "</td></tr>";
 
+    echo "<tr><td colspan='";
+    echo $nb_cols+1;
+    echo "' style='padding: 10px;'>";
     ?>
+   	<input type="submit" NAME="ok1" value="Enregistrer et passer à l'élève suivant" />
+    <input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" />
+    </td></tr>
     </table>
     <input type=hidden name=id_classe value=<?php echo "$id_classe";?> />
     <input type=hidden name=is_posted value="yes" />
@@ -615,8 +623,7 @@ function updatesum() {
     <input type=hidden name=ind_eleve_login_suiv value="<?php echo "$ind_eleve_login_suiv";?>" />
     <!--br /-->
     <br/>
-	<input type="submit" NAME="ok1" value="Enregistrer et passer à l'élève suivant" />
-    <input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" /><br /><br />&nbsp;
+
     </div>
     <div style='padding-left: 30px; padding-top: 70px; float:left;'>
     <p>A = Très bien</p>
