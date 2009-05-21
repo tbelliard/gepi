@@ -489,19 +489,19 @@ if (!(isset($id_classe))) {
 
 	switch($mode){
 		case 'note_app':
-			echo "<p class='bold'>Vérification du remplissage des moyennes et appréciations:</p>\n";
+			echo "<p class='bold'>Vérification du remplissage des moyennes et appréciations :</p>\n";
 			break;
 		case 'avis':
-			echo "<p class='bold'>Vérification du remplissage des avis du conseil de classe:</p>\n";
+			echo "<p class='bold'>Vérification du remplissage des avis du conseil de classe :</p>\n";
 			break;
 		case 'abs':
-			echo "<p class='bold'>Vérification du remplissage des absences:</p>\n";
+			echo "<p class='bold'>Vérification du remplissage des absences :</p>\n";
 			break;
 		case 'ects':
-			echo "<p class='bold'>Vérification du remplissage des absences:</p>\n";
+			echo "<p class='bold'>Vérification du remplissage des crédits ECTS :</p>\n";
 			break;
 		case 'tout':
-			echo "<p class='bold'>Vérification du remplissage des moyennes, appréciations, absences et avis du conseil de classe:</p>\n";
+			echo "<p class='bold'>Vérification du remplissage des moyennes, appréciations, absences et avis du conseil de classe :</p>\n";
 			break;
 	}
 
