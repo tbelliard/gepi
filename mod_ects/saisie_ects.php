@@ -180,7 +180,7 @@ if (isset($id_classe) and (!isset($periode_num))) {
         if ($ver_periode[$i] != "O") {
             echo "<li><a href='saisie_ects.php?id_classe=".$id_classe."&amp;periode_num=".$i."'>".ucfirst($nom_periode[$i])."</a></li>\n";
         } else {
-            echo "<li>".ucfirst($nom_periode[$i])." (".$gepiClosedPeriodLabel.", édition impossible).</li>\n";
+            echo "<li>".ucfirst($nom_periode[$i])." (".$gepiClosedPeriodLabel.", saisie impossible).</li>\n";
         }
     $i++;
     }
