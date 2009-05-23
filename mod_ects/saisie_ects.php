@@ -333,6 +333,13 @@ function updatesum() {
      $('total_ects').value = (($('total_ects').value-0) + (a.value-0));
  })
 }
+
+function updateCredits(id,valeur){
+    if ($(id).selectedIndex == 0){
+        $(id).selectedIndex = valeur;
+    }
+}
+
 //--></script>
 
 
@@ -520,7 +527,7 @@ function updatesum() {
                     if ($CreditEcts == null) $donnees_enregistrees = false; // On indique que des données n'ont pas été enregistrées en base de données
                     echo "<td class='bull_simple'>";
                     $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
-                    echo "<select class='valeur' name='valeur_ects_".$group->getId()."' onchange='updatesum();'>";
+                    echo "<select class='valeur' id='valeur_ects_".$group->getId()."' name='valeur_ects_".$group->getId()."' onchange='updatesum();'>";
                     for($c=0;$c<=$group->getEctsDefaultValue($id_classe)+3;$c++) {
                         echo "<option value='".$c."'";
                         if ($valeur_ects == $c) echo " SELECTED";
@@ -534,6 +541,11 @@ function updatesum() {
                     foreach($mentions as $mention) {
                         echo "<input id='mention_ects_".$group->getId()."_$mention' type='radio' name='mention_ects_".$group->getId()."' value='$mention'";
                         if ($mention == $mention_ects) echo " CHECKED ";
+                        if ($mention == 'F') {
+                            echo "onclick=\"$('valeur_ects_".$group->getId()."').selectedIndex=0;\"";
+                        } else {
+                            echo "onclick=\"updateCredits('valeur_ects_".$group->getId()."','".$group->getEctsDefaultValue($id_classe)."');\"";
+                        }
                         echo "/><label for='mention_ects_".$group->getId()."_$mention'>$mention</label>";
                     }
                     echo "</td>";
