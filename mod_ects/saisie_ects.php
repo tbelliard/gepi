@@ -325,6 +325,11 @@ echo "</form>\n";
 
 if (isset($fiche)) {
 
+    if ($ver_periode[$periode_num] != "N" AND $ver_periode[$periode_num] != "P") {
+        echo "La période est fermée !";
+        die();
+    }
+
 ?>
 <script type="text/javascript"><!--
 function updatesum() {
