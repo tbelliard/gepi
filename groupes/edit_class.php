@@ -546,7 +546,7 @@ for($i=0;$i<10;$i++){
             echo "<td>";
             echo "Nombre d'ECTS par défaut pour une période : ";
             echo "<select onchange=\"changement()\" id='valeur_ects_".$cpt_grp."' name='". "valeur_ects_" . $current_group["id"] . "'>";
-            for($c=0;$c<15;$c++) {
+            for($c=0;$c<31;$c++) {
                 echo "<option value='$c'";
                 if (intval($current_group["classes"]["classes"][$id_classe]["valeur_ects"]) == $c) echo " SELECTED ";
                 echo ">$c</option>";
