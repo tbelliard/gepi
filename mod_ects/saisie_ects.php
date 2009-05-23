@@ -536,8 +536,8 @@ function updateMention(id,valeur){
             echo "<td class='bull_simple'>";
             // Information sur la matière
             echo "<p><b>".$group->getDescription()."</b>";
-            echo "<br/><span style='font-size:x-small;'>Crédits par défaut : ".$group->getEctsDefaultValue($id_classe);
-            echo "</span></p></td>";
+            echo " (".intval($group->getEctsDefaultValue($id_classe)).")";
+            echo "</p></td>";
             // Affichage des éventuelles résultats précédents
             foreach($annees_precedentes as $a) {
                 foreach($a['periodes'] as $p_num => $p) {
