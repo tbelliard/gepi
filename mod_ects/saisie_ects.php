@@ -658,8 +658,10 @@ function updateMention(id,valeur){
     echo "<tr><td colspan='";
     echo $nb_cols+1;
     echo "' style='padding: 10px;'>";
+    if($ele_login_suiv!=""){
+        echo "<input type='submit' NAME='ok1' value=\"Enregistrer et passer à l'élève suivant\" />";
+    }
     ?>
-   	<input type="submit" NAME="ok1" value="Enregistrer et passer à l'élève suivant" />
     <input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" />
     </td></tr>
     <tr><td colspan="<?php echo $nb_cols+1;?>" style='padding: 10px;'>
