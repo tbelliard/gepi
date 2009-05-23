@@ -168,6 +168,10 @@ class Eleve extends BaseEleve {
         return !empty($v) > 0 ? $v[0] : null;
 	}
 
+	public function deleteEctsCredit($periode,$id_groupe) {
+        $credit = $this->getEctsCredit($periode, $id_groupe);
+        return $credit == null ? true : $credit->delete();
+	}
 
 	public function getArchivedEctsCredits($annee,$periode) {
 		$criteria = new Criteria();

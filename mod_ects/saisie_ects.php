@@ -70,6 +70,7 @@ include "../lib/periodes.inc.php";
 //*******************************************************************************************************
 $msg = '';
 if (isset($_POST['is_posted'])) {
+
     if (($periode_num < $nb_periode) and ($periode_num > 0) and ($ver_periode[$periode_num] == "N" OR $ver_periode[$periode_num] == "P"))  {
         $reg = 'yes';
         // si l'utilisateur n'a pas le statut scolarité, on vérifie qu'il est prof principal de l'élève
@@ -86,27 +87,45 @@ if (isset($_POST['is_posted'])) {
          }
          if ($reg == 'yes') {
 
-             // C'est ici que l'enregistrement se passe réellement.
+             if (isset($_POST['delete'])) {
+                 // On a affaire à une suppression de données
+                 if (isset($_POST['delete_all']) and $_POST['delete_all'] == 'yes') {
+                     // La case a bien été cochée, on supprime.
+                    $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
+                    $groupes = $Eleve->getEctsGroupes($periode_num);
+                    foreach($groupes as $groupe) {
+                        // On a l'élève, le groupe, et la période. On peut supprimer.
+                        $Eleve->deleteEctsCredit($periode_num,$groupe->getId());
+                    }
+                    $msg = "Les données de cet élève viennent d'être supprimées.";
+                 } else {
+                     $msg = 'Pour supprimer des données, vous devez cocher la case au-dessus du bouton de validation de suppression.';
+                 }
 
-            $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
-            $groupes = $Eleve->getEctsGroupes($periode_num);
-            foreach($groupes as $groupe) {
-                // On a l'élève, le groupe, et la période. On peut enregistrer.
-                $valeur_ects = $_POST['valeur_ects_'.$groupe->getId()];
-                $mention_ects = $_POST['mention_ects_'.$groupe->getId()];
-                if (!empty($valeur_ects) && !is_numeric($valeur_ects)) $valeur_ects = "0";
-                if (!in_array($mention_ects, array("A","B","C","D","E","F"))) $mention_ects = '';
+             } else {
 
-                $Eleve->setEctsCredit($periode_num,$groupe->getId(),$valeur_ects,$mention_ects);
-            }
-            $mention_globale = $_POST['credit_ects_global'];
-            $Eleve->setCreditEctsGlobal($mention_globale);
+                 // C'est ici que l'enregistrement se passe réellement.
+
+                $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
+                $groupes = $Eleve->getEctsGroupes($periode_num);
+                foreach($groupes as $groupe) {
+                    // On a l'élève, le groupe, et la période. On peut enregistrer.
+                    $valeur_ects = $_POST['valeur_ects_'.$groupe->getId()];
+                    $mention_ects = $_POST['mention_ects_'.$groupe->getId()];
+                    if (!empty($valeur_ects) && !is_numeric($valeur_ects)) $valeur_ects = "0";
+                    if (!in_array($mention_ects, array("A","B","C","D","E","F"))) $mention_ects = '';
+
+                    $Eleve->setEctsCredit($periode_num,$groupe->getId(),$valeur_ects,$mention_ects);
+                }
+                $mention_globale = $_POST['credit_ects_global'];
+                $Eleve->setCreditEctsGlobal($mention_globale);
+             }
         }
 
     } else {
         $msg = "La période sur laquelle vous voulez enregistrer est verrouillée";
     }
-    if (isset($_POST['ok1']))  {
+    if (isset($_POST['ok1']) OR isset($_POST['delete']))  {
         if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
             $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
             WHERE (
@@ -124,9 +143,12 @@ if (isset($_POST['is_posted'])) {
             c.periode = '".$periode_num."'
             ) ORDER BY nom,prenom");
         }
+
         $nb_eleve = mysql_num_rows($appel_donnees_eleves);
-        $current_eleve_login = @mysql_result($appel_donnees_eleves, $ind_eleve_login_suiv, "login");
-        $ind_eleve_login_suiv++;
+        if (!isset($_POST['delete'])) {
+            $current_eleve_login = @mysql_result($appel_donnees_eleves, $ind_eleve_login_suiv, "login");
+            $ind_eleve_login_suiv++;
+        }
         if ($ind_eleve_login_suiv >= $nb_eleve)  $ind_eleve_login_suiv = 0;
 
         header("Location: saisie_ects.php?periode_num=$periode_num&id_classe=$id_classe&current_eleve_login=$current_eleve_login&ind_eleve_login_suiv=$ind_eleve_login_suiv&fiche=y&msg=$msg&affiche_message=$affiche_message#app");
@@ -639,6 +661,12 @@ function updateMention(id,valeur){
     ?>
    	<input type="submit" NAME="ok1" value="Enregistrer et passer à l'élève suivant" />
     <input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" />
+    </td></tr>
+    <tr><td colspan="<?php echo $nb_cols+1;?>" style='padding: 10px;'>
+    <p style='font-size: small;'>Si vous souhaitez supprimer toutes les données ECTS de cet élève pour cette période,<br/>cochez la case ci-dessous puis validez avec le bouton 'Supprimer les données'.<br/>Cette opération est irréversible.</p>
+    <input id="delete_all" type="checkbox" name="delete_all" value="yes" /><label for="delete_all" style='font-size: small;color: red;'>Supprimez toutes les données.</label><br/>
+    <br/>
+    <input type="submit" NAME="delete" value="Supprimer les données" />
     </td></tr>
     </table>
     <input type=hidden name=id_classe value=<?php echo "$id_classe";?> />
