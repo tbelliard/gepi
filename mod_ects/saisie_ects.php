@@ -562,8 +562,9 @@ function updateMention(id,valeur){
                     if ($CreditEcts == null) $donnees_enregistrees = false; // On indique que des données n'ont pas été enregistrées en base de données
                     echo "<td class='bull_simple'>";
                     $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
+                    $max_ects = $group->getEctsDefaultValue($id_classe) >= $valeur_ects ? $group->getEctsDefaultValue($id_classe)+3 : $valeur_ects+3;
                     echo "<select class='valeur' id='valeur_ects_".$group->getId()."' name='valeur_ects_".$group->getId()."' onchange=\"updatesum();updateMention('mention_ects_".$group->getId()."',this.selectedIndex);\">";
-                    for($c=0;$c<=$group->getEctsDefaultValue($id_classe)+3;$c++) {
+                    for($c=0;$c<=$max_ects;$c++) {
                         echo "<option value='".$c."'";
                         if ($valeur_ects == $c) echo " SELECTED";
                         echo ">".$c."</option>";
