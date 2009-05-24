@@ -49,6 +49,39 @@ if (!checkAccess()) {
 }
 //======================================================================================
 
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/fb_rouen_pdf.php';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+$sql="INSERT INTO droits SET id='/mod_notanet/fb_rouen_pdf.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Fiches brevet PDF pour Rouen',
+statut='';";
+$insert=mysql_query($sql);
+}
+
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/fb_montpellier_pdf.php';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+$sql="INSERT INTO droits SET id='/mod_notanet/fb_montpellier_pdf.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Fiches brevet PDF pour Montpellier',
+statut='';";
+$insert=mysql_query($sql);
+}
 
 //**************** EN-TETE *****************
 $titre_page = "Notanet: Accueil";
@@ -130,6 +163,25 @@ PRIMARY KEY ( login )
 );";
 $create_table=mysql_query($sql);
 
+if($_SESSION['statut']=="administrateur") {
+	$truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
+	if($truncate_tables=='y') {
+		echo "<p>Nettoyage des tables Notanet</p>\n";
+		$sql="TRUNCATE TABLE notanet;";
+		$del=mysql_query($sql);
+		$sql="TRUNCATE TABLE notanet_avis;";
+		$del=mysql_query($sql);
+		$sql="TRUNCATE TABLE notanet_app;";
+		$del=mysql_query($sql);
+		$sql="TRUNCATE TABLE notanet_verrou;";
+		$del=mysql_query($sql);
+		$sql="TRUNCATE TABLE notanet_socles;";
+		$del=mysql_query($sql);
+		$sql="TRUNCATE TABLE notanet_ele_type;";
+		$del=mysql_query($sql);
+	}
+}
+
 echo "<p>Voulez-vous: ";
 //echo "<br />\n";
 echo "</p>\n";
@@ -155,12 +207,15 @@ if($_SESSION['statut']=="administrateur") {
 	echo "<li><p>Générer les fiches brevet selon le modèle de:</p>
 	<ul>
 		<li><a href='poitiers/fiches_brevet.php'>Poitiers</a></li>
-		<li><a href='rouen/fiches_brevet.php'>Rouen</a></li>
+		<li><a href='rouen/fiches_brevet.php'>Rouen (<i>version HTML</i>)</a> - <a href='fb_rouen_pdf.php'>version PDF</a></li>
+		<li><a href='fb_montpellier_pdf.php'>Montpellier (<i>version PDF</i>)</a></li>
 	</ul>
 </li>\n";
 	//echo "<li><a href='#'>Vider les tables notanet</a></li>\n";
 	//echo "<li><a href=''></a></li>\n";
 	echo "</ol>\n";
+
+	echo "<p>Au changement d'année: <a href='".$_SERVER['PHP_SELF']."?truncate_tables=y'>Vider les saisies Notanet antérieures</a>.</p>\n";
 
 	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, il faut parcourir les points ci-dessus dans l'ordre.</p>\n";
 }
@@ -178,5 +233,9 @@ else {
 	echo "</ul>\n";
 }
 
+//<a href="notes_structure_pdf.php">Test PDF</a>
+
+?>
+<?php
 require("../lib/footer.inc.php");
 ?>

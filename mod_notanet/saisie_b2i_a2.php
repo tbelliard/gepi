@@ -66,105 +66,79 @@ if (isset($_POST['is_posted'])) {
 		if((isset($b2i[$i]))||(isset($a2[$i]))||(isset($lv[$i]))) {
 			//echo "<p>Traitement de ".$ele_login[$i]." avec \$b2i[$i]=".$b2i[$i].", \$a2[$i]=".$a2[$i]." et \$lv[$i]=".$lv[$i]."<br />\n";
 
-			$sql="SELECT 1=1 FROM notanet_socles WHERE login='".$ele_login[$i]."';";
-			$res_ele=mysql_query($sql);
-			if(mysql_num_rows($res_ele)==0) {
-				$sql="INSERT INTO notanet_socles SET login='".$ele_login[$i]."'";
+			$sql2="";
+			$sql3="";
+			$maj_notanet="n";
+			$sql="SELECT 1=1 FROM notanet WHERE login='".$ele_login[$i]."';";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)>0) {
+				$maj_notanet="y";
+			}
 
-				if((isset($b2i[$i]))&&(($b2i[$i]=='MS')||($b2i[$i]=='ME')||($b2i[$i]=='MN')||($b2i[$i]=='AB'))) {
-					$sql.=",b2i='".$b2i[$i]."'";
+			$sql="DELETE FROM notanet_socles WHERE login='".$ele_login[$i]."';";
+			$nettoyage=mysql_query($sql);
+
+			$sql="INSERT INTO notanet_socles SET login='".$ele_login[$i]."'";
+
+			if((isset($b2i[$i]))&&(($b2i[$i]=='MS')||($b2i[$i]=='ME')||($b2i[$i]=='MN')||($b2i[$i]=='AB'))) {
+				$sql.=",b2i='".$b2i[$i]."'";
+
+				if($sql2=='') {
+					$sql2="UPDATE notanet SET note='".$b2i[$i]."', note_notanet='".$b2i[$i]."'";
 				}
 				else {
-					$sql.=",b2i=''";
+					$sql2.=", note='".$b2i[$i]."', note_notanet='".$b2i[$i]."'";
 				}
-
-				//if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB'))) {
-				if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='MN')||($a2[$i]=='AB'))) {
-					$sql.=",a2='".$a2[$i]."'";
-				}
-				else {
-					$sql.=",a2=''";
-				}
-
-				if((isset($lv[$i]))&&($lv[$i]!='')) {
-					$sql2="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (jeg.login='".$ele_login[$i]."' AND jeg.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$lv[$i]."');";
-					$res_mat_suivie=mysql_query($sql2);
-					if(mysql_num_rows($res_mat_suivie)!=0) {
-						$sql.=",lv='".$lv[$i]."'";
-					}
-					else {
-						$sql.=",lv=''";
-					}
-				}
-				else {
-					$sql.=",lv=''";
-				}
-				$sql.=";";
 			}
 			else {
-				$sql="UPDATE notanet_socles SET ";
+				$sql.=",b2i=''";
 
-				/*
-				$temoin_b2i="n";
-				if(isset($b2i[$i])) {
-					if(($b2i[$i]=='MS')||($b2i[$i]=='ME')||($b2i[$i]=='MN')||($b2i[$i]=='AB')) {
-						$sql.="b2i='".$b2i[$i]."'";
-						$temoin_b2i="y";
-					}
-				}
-
-				$temoin_a2="n";
-				if(isset($a2[$i])) {
-					if(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB')) {
-						if($temoin_b2i=="y") {$sql.=",";}
-						$sql.="a2='".$a2[$i]."'";
-						$temoin_a2="y";
-					}
-				}
-
-				if(isset($lv[$i])) {
-					if($lv[$i]!='') {
-						$sql2="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (jeg.login='".$ele_login[$i]."' AND jeg.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$lv[$i]."');";
-						$res_mat_suivie=mysql_query($sql2);
-						if(mysql_num_rows($res_mat_suivie)!=0) {
-							if(($temoin_b2i=="y")||($temoin_a2=="y")) {$sql.=",";}
-							$sql.="lv='".$lv[$i]."'";
-						}
-					}
-				}
-				*/
-
-				if((isset($b2i[$i]))&&(($b2i[$i]=='MS')||($b2i[$i]=='ME')||($b2i[$i]=='MN')||($b2i[$i]=='AB'))) {
-					$sql.="b2i='".$b2i[$i]."'";
+				if($sql2=='') {
+					$sql2="UPDATE notanet SET note='', note_notanet=''";
 				}
 				else {
-					$sql.="b2i=''";
+					$sql2.=", note='',  note_notanet=''";
 				}
+			}
 
-				//if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB'))) {
-				if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='MN')||($a2[$i]=='AB'))) {
-					$sql.=",a2='".$a2[$i]."'";
+			if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='MN')||($a2[$i]=='AB'))) {
+				$sql.=",a2='".$a2[$i]."'";
+
+				if($sql3=='') {
+					$sql3="UPDATE notanet SET note='".$a2[$i]."', note_notanet='".$a2[$i]."'";
 				}
 				else {
-					$sql.=",a2=''";
+					$sql3=", note='".$a2[$i]."', note_notanet='".$a2[$i]."'";
 				}
+			}
+			else {
+				$sql.=",a2=''";
 
-				if((isset($lv[$i]))&&($lv[$i]!='')) {
-					$sql2="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (jeg.login='".$ele_login[$i]."' AND jeg.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$lv[$i]."');";
-					$res_mat_suivie=mysql_query($sql2);
-					if(mysql_num_rows($res_mat_suivie)!=0) {
-						$sql.=",lv='".$lv[$i]."'";
-					}
-					else {
-						$sql.=",lv=''";
-					}
+				if($sql2=='') {
+					$sql3="UPDATE notanet SET note='', note_notanet=''";
+				}
+				else {
+					$sql3=", note='', note_notanet=''";
+				}
+			}
+
+			if((isset($lv[$i]))&&($lv[$i]!='')) {
+				$sql2="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (jeg.login='".$ele_login[$i]."' AND jeg.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$lv[$i]."');";
+				$res_mat_suivie=mysql_query($sql2);
+				if(mysql_num_rows($res_mat_suivie)!=0) {
+					$sql.=",lv='".$lv[$i]."'";
 				}
 				else {
 					$sql.=",lv=''";
 				}
-
-				$sql.=" WHERE login='".$ele_login[$i]."';";
 			}
+			else {
+				$sql.=",lv=''";
+			}
+			$sql.=";";
+			$sql2.=" WHERE login='".$ele_login[$i]."' AND notanet_mat='SOCLE B2I';";
+			$sql3.=" WHERE login='".$ele_login[$i]."' AND notanet_mat='SOCLE NIVEAU A2 DE LANGUE';";
+
 			//echo "$sql<br />";
 			$register=mysql_query($sql);
 			if (!$register) {
@@ -172,6 +146,13 @@ if (isset($_POST['is_posted'])) {
 				//echo "ERREUR<br />";
 				$pb_record = 'yes';
 			}
+
+			if($maj_notanet=='y') {
+				// On met à jour la table notanet avec les corrections apportées sur notanet_socles
+				$register=mysql_query($sql2);
+				$register=mysql_query($sql3);
+			}
+
 		}
 	}
 

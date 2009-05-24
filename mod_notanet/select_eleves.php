@@ -89,6 +89,9 @@ PRIMARY KEY ( login )
 		$msg.="ERREUR lors de la création de la table 'notanet_ele_type'.<br />";
 	}
 	else {
+		$sql="DELETE FROM notanet_ele_type WHERE type_brevet='$type_brevet';";
+		$nettoyage=mysql_query($sql);
+
 		$nb_err=0;
 		$cpt_enr=0;
 		for($i=0;$i<count($ele_login);$i++) {
@@ -325,6 +328,7 @@ else {
 				echo "<p>Aucun élève n'est affecté dans cette classe.</p>\n";
 			}
 			else {
+				echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 				echo "<table class='boireaus'>\n";
 
 				echo "<tr>\n";
