@@ -106,7 +106,7 @@ $alt=1;
 	echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 	echo "</td>\n";
 	echo "<td width='1%' style='text-align:right;'>\n";
-	echo "<input type='submit' name='enregistrer' value='Générer le retenue' />\n";
+	echo "<input type='submit' name='enregistrer' value='G&eacute;n&eacute;rer la retenue' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
