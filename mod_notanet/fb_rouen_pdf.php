@@ -271,8 +271,8 @@
 
 	//variables invariables
 	$annee_scolaire = $gepiYear;
-	$date_bulletin = date("d/m/Y H:i");
-	$nom_bulletin = date("Ymd_Hi");
+	$date_fb = date("d/m/Y H:i");
+	$date_fichier = date("Ymd_Hi");
 
 	$pdf=new bul_PDF('p', 'mm', 'A4');
 	$pdf->SetCreator($gepiSchoolName);
@@ -932,7 +932,7 @@
 		}
 	}
 
-	$nom_bulletin = 'Test_PDF_notanet.pdf';
+	$nom_bulletin='Fiches_brevet_'.$date_fichier.'.pdf';
 
 	$pdf->Output($nom_bulletin,'I');
 	die();

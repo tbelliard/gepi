@@ -83,6 +83,23 @@ statut='';";
 $insert=mysql_query($sql);
 }
 
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/fb_creteil_pdf.php';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+$sql="INSERT INTO droits SET id='/mod_notanet/fb_creteil_pdf.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Fiches brevet PDF pour Creteil',
+statut='';";
+$insert=mysql_query($sql);
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Notanet: Accueil";
 //echo "<div class='noprint'>\n";
@@ -209,6 +226,7 @@ if($_SESSION['statut']=="administrateur") {
 		<li><a href='poitiers/fiches_brevet.php'>Poitiers</a></li>
 		<li><a href='rouen/fiches_brevet.php'>Rouen (<i>version HTML</i>)</a> - <a href='fb_rouen_pdf.php'>version PDF</a></li>
 		<li><a href='fb_montpellier_pdf.php'>Montpellier (<i>version PDF</i>)</a></li>
+		<li><a href='fb_creteil_pdf.php'>Creteil (<i>version PDF</i>)</a></li>
 	</ul>
 </li>\n";
 	//echo "<li><a href='#'>Vider les tables notanet</a></li>\n";
