@@ -1,7 +1,6 @@
 <?php
 
-	// /home/steph/2008_04_25/gepi/notanet_et_fiches_brevet/
-	// /home/steph/2009_02_24/gepi/notanet
+	/* $Id$ */
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
