@@ -577,12 +577,20 @@
 								$pdf->SetFont('Arial','B',$fs_txt);
 								$pdf->Cell(210-2*$marge-$larg_col_note_glob,$h_ligne_a_titre_indicatif, 'A titre indicatif','LRBT',2,'L');
 
+								$y0_notnonca=$pdf->GetY();
+
+								$pdf->SetFillColor(200,200,200);
 								$pdf->SetXY($x_col_note_glob,$y);
-								$texte='TOTAL DES POINTS';
-								$font_size=adjust_size_font($texte,$larg_col_note_glob,$fs_txt,0.3);
-								$pdf->SetFontSize($font_size);
-								$pdf->Cell($larg_col_note_glob,$h_ligne_a_titre_indicatif, $texte,'LRBT',2,'C');
-				
+								//$texte='Total des points';
+								//$font_size=adjust_size_font($texte,$larg_col_note_glob,$fs_txt,0.3);
+								//$pdf->SetFontSize($font_size);
+								//$pdf->Cell($larg_col_note_glob,$h_ligne_a_titre_indicatif, $texte,'LRBT',2,'C');
+								//$pdf->Cell($larg_col_note_glob,$h_ligne_a_titre_indicatif+$nb_mat_notnonca*$h_par_matiere, $texte,'LRBT',2,'C',true);
+
+								$texte="Total\ndes\npoints";
+								$pdf->SetFont('Arial','B',$fs_txt);
+								$pdf->drawTextBox($texte, $larg_col_note_glob, $h_ligne_a_titre_indicatif+$nb_mat_notnonca*$h_par_matiere, 'C', 'M', 1);
+
 								//$temoin_notnonca++;
 							}
 	
@@ -661,7 +669,9 @@
 									$texte=trim($lig_app->appreciation);
 								}
 							}
-	
+
+							//$texte.=" ".$y; // DEBUG
+
 							//$largeur_dispo=100-$largeur_colonnes_moy;$larg_col_app
 							$largeur_dispo=$larg_col_app;
 							$h_cell=$h_par_matiere;
@@ -774,6 +784,7 @@
 									$pdf->Cell($larg_col_note_glob,$h_par_matiere, $valeur_notanet_tmp,'LRBT',2,'C');
 								}
 							}
+							/*
 							elseif($temoin_notnonca==1) {
 								// LIGNES TOTAUX
 								$pdf->SetFont('Arial','',$fs_txt);
@@ -791,6 +802,7 @@
 									$pdf->Cell($larg_col_note_glob,$nb_mat_notnonca*$h_par_matiere, $t_col2,'LRBT',2,'C');
 								}
 							}
+							*/
 
 							$cpt++;
 						}
@@ -828,11 +840,38 @@
 					}
 					*/
 
+
+					//=====================================================
+					// TOTAUX
+					$y_socles=$pdf->GetY();
+					//$pdf->SetXY(210-$marge-$larg_col_note_glob,$y);
+					// LIGNE TOTAUX
+					$pdf->SetFont('Arial','',$fs_txt);
+					//$pdf->SetFontSize($fs_txt);
+
+					$pdf->SetXY($x_col_note_glob,$y+$h_par_matiere); // Je n'ai pas saisi pourquoi j'ai dû décaler verticalement de $h_par_matiere... à revoir
+					$pdf->SetFillColor(200,200,200);
+					if($num_fb_col==1) {
+						$t_col1=$TOTAL."/".$SUR_TOTAL[1];
+						//$t_col1=$y; // DEBUG
+						//$t_col2="    /".$SUR_TOTAL[2];
+						//$pdf->Cell($larg_col_note_glob,$nb_mat_notnonca*$h_par_matiere, $t_col1,'LRBT',2,'C');
+						$pdf->Cell($larg_col_note_glob,$h_bloc_socles, $t_col1,'LRBT',2,'C',true);
+					}
+					else {
+						//$t_col1="    /".$SUR_TOTAL[1];
+						$t_col2=$TOTAL."/".$SUR_TOTAL[2];
+						//$pdf->Cell($larg_col_note_glob,$nb_mat_notnonca*$h_par_matiere, $t_col2,'LRBT',2,'C');
+						$pdf->Cell($larg_col_note_glob,$h_bloc_socles, $t_col2,'LRBT',2,'C',true);
+					}
+					//=====================================================
+					// Socles B2i/A2
 					//$hauteur_texte=$fs_txt;
 					$pdf->SetFontSize($fs_txt);
 					$h_txt_socles=$pdf->FontSize*$sc_interligne;
 					//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j]['socle']=='y')) {
-						$y=$pdf->GetY();
+						//$y=$pdf->GetY();
+						$y=$y_socles;
 						$pdf->SetXY($marge,$y);
 						$pdf->Cell(210-2*$marge,$h_bloc_socles, "",'LRBT',0,'C');
 						$pdf->SetXY($marge,$y+1);
@@ -840,7 +879,8 @@
 						$pdf->Cell(210-2*$marge, $pdf->FontSize*$sc_interligne, "Le chef d'établissement atteste : attribution du B2i",'',0,'L');
 						//$x=$pdf->GetX();
 						$x=$marge+$pdf->GetStringWidth("Le chef d'établissement atteste : attribution du B2i");
-						$esp=(210-2*$marge-$pdf->GetStringWidth("   Oui   Non")-$pdf->GetStringWidth("Le chef d'établissement atteste : attribution du B2i"))/3.5;
+						//$esp=(210-2*$marge-$pdf->GetStringWidth("   Oui   Non")-$pdf->GetStringWidth("Le chef d'établissement atteste : attribution du B2i"))/3.5;
+						$esp=(210-2*$marge-$larg_col_note_glob-$pdf->GetStringWidth("   Oui   Non")-$pdf->GetStringWidth("Le chef d'établissement atteste : attribution du B2i"))/3.5;
 						$pdf->SetXY($x+$esp,$y+1);
 						//$pdf->SetXY(170,170);
 						//$pdf->SetXY($x+15,$y);
@@ -857,7 +897,7 @@
 						$x0=$pdf->GetX();
 						$pdf->Cell(4,4, "",'LRBT',0,'C');
 						$x1=$pdf->GetX();
-						if(($note_b2i=='MN')||($note_b2i=='ME')) {
+						if(($note_b2i=='MN')||($note_b2i=='ME')||($note_b2i=='AB')) {
 							$pdf->Line($x0,$y+1,$x1,$y+1+4);
 							$pdf->Line($x1,$y+1,$x0,$y+1+4);
 						}
@@ -883,7 +923,7 @@
 						$x0=$pdf->GetX();
 						$pdf->Cell(4,4, "",'LRBT',0,'C');
 						$x1=$pdf->GetX();
-						if(($note_a2=='MN')||($note_a2=='ME')) {
+						if(($note_a2=='MN')||($note_a2=='ME')||($note_a2=='AB')) {
 							$pdf->Line($x0,$y+$h_txt_socles+1,$x1,$y+$h_txt_socles+1+4);
 							$pdf->Line($x1,$y+$h_txt_socles+1,$x0,$y+$h_txt_socles+1+4);
 						}
@@ -893,7 +933,8 @@
 						$pdf->SetXY($marge,$y+2*$h_txt_socles);
 						$pdf->Cell(210-2*$marge, $h_txt_socles, "Avis pour l'examen :",'',0,'L');
 						$x=$marge+$pdf->GetStringWidth("Avis pour l'examen :");
-						$esp=(210-2*$marge-$pdf->GetStringWidth("   très favorable   favorable   défavorable")-$pdf->GetStringWidth("Avis pour l'examen :"))/4.5;
+						//$esp=(210-2*$marge-$pdf->GetStringWidth("   très favorable   favorable   défavorable")-$pdf->GetStringWidth("Avis pour l'examen :"))/4.5;
+						$esp=(210-2*$marge-$larg_col_note_glob-$pdf->GetStringWidth("   très favorable   favorable   défavorable")-$pdf->GetStringWidth("Avis pour l'examen :"))/4.5;
 
 						$coche_avis="";
 						$avis="";
