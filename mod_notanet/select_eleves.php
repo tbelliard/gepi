@@ -207,6 +207,8 @@ echo "<style type='text/css'>
 echo "<div class='noprint'>\n";
 echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Retour à l'accueil Notanet</a>";
 
+//debug_var();
+
 //echo "<h2></h2>\n";
 
 // Choix du type de Brevet:
@@ -317,7 +319,7 @@ else {
 		$cpt=0;
 		for($i=0;$i<count($id_classe);$i++) {
 			echo "<p class='bold'>Classe de ".get_classe_from_id($id_classe[$i])."</p>\n";
-			echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
+			//echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 			$sql="SELECT DISTINCT e.login,e.nom,e.prenom
 					FROM eleves e, j_eleves_classes jec
 					WHERE jec.login=e.login AND
