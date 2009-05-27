@@ -1296,6 +1296,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//echo "<form action='$_PHP_SELF' name='form_choix_eleves' method='POST'>\n";
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
+	echo "<input type='hidden' name='graphe_champ_saisie_avis_fixe' value='$graphe_champ_saisie_avis_fixe' />\n";
+
 	echo "<input type='hidden' name='is_posted' value='y' />\n";
 
 	//echo "\$eleve1=$eleve1 et \$affiche_photo=$affiche_photo<br />";
@@ -1762,7 +1764,7 @@ function eleve_suivant(){
 							$lig_avis=mysql_fetch_object($res_avis);
 							$current_eleve_avis=$lig_avis->avis;
 						}
-	
+
 	
 						echo "<div style='display:none;'>
 <textarea name='no_anti_inject_current_eleve_login_ap' id='no_anti_inject_current_eleve_login_ap' rows='5' cols='20' wrap='virtual' onchange=\"changement()\">$current_eleve_avis</textarea>
@@ -1811,7 +1813,12 @@ function eleve_suivant(){
 							}
 	
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
-	
+							//require("insere_cmnt_type.php");
+							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+								$texte.=div_cmnt_type();
+							}
+
 							$texte.="</div>\n";
 							$texte.="</form>\n";
 	
@@ -1834,7 +1841,13 @@ function eleve_suivant(){
 							}
 	
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
-	
+							//require("insere_cmnt_type.php");
+							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+								$texte_saisie_avis_fixe.=div_cmnt_type();
+							}
+
+
 							$texte_saisie_avis_fixe.="</div>\n";
 							$texte_saisie_avis_fixe.="</form>\n";
 							$texte_saisie_avis_fixe.="</div>\n";
@@ -1911,7 +1924,12 @@ function eleve_suivant(){
 							}
 	
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
-	
+							//require("insere_cmnt_type.php");
+							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+								$texte.=div_cmnt_type();
+							}
+
 							$texte.="</div>\n";
 							$texte.="</form>\n";
 	
@@ -1934,7 +1952,12 @@ function eleve_suivant(){
 							}
 	
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
-	
+							//require("insere_cmnt_type.php");
+							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+								$texte_saisie_avis_fixe.=div_cmnt_type();
+							}
+
 							$texte_saisie_avis_fixe.="</div>\n";
 							$texte_saisie_avis_fixe.="</form>\n";
 							$texte_saisie_avis_fixe.="</div>\n";
@@ -3550,5 +3573,145 @@ function eleve_suivant(){
 	//echo "<div id='divtruc' class='infodiv'>BLABLA</div>\n";
 
 }
+
+
+function div_cmnt_type() {
+	global $id_classe;
+	global $num_periode_choisie;
+	global $graphe_champ_saisie_avis_fixe;
+
+	// Récupération du numéro de la période de saisie de l'avis du conseil:
+	$periode_num=$num_periode_choisie;
+
+	$sql="show tables;";
+	$res_tables=mysql_query($sql);
+	$temoin_commentaires_types="";
+	while($lig_table=mysql_fetch_array($res_tables)){
+		if($lig_table[0]=='commentaires_types'){
+			$temoin_commentaires_types="oui";
+		}
+	}
+
+	//$retour_lignes_cmnt_type="_o_";
+	//$retour_lignes_cmnt_type="\$periode_num=$periode_num";
+	$retour_lignes_cmnt_type="";
+
+	if($temoin_commentaires_types=="oui") {
+		$sql="select * from commentaires_types where id_classe='$id_classe' and num_periode='$periode_num' order by commentaire";
+		//$retour_lignes_cmnt_type.="<p>$sql</p>\n";
+		$resultat_commentaire=mysql_query($sql);
+		if(mysql_num_rows($resultat_commentaire)>0) {
+
+			//$retour_lignes_cmnt_type.="<p>Ajouter un <a href='#' onClick=\"afficher_div('commentaire_type','y',30,20);";
+			//if($graphe_champ_saisie_avis_fixe!='y') {$retour_lignes_cmnt_type.="ajuste_pos('commentaire_type');";}
+			//$retour_lignes_cmnt_type.="return false;\">Commentaire-type</a></p>\n";
+
+			$retour_lignes_cmnt_type.=" <a href='#' onClick=\"afficher_div('commentaire_type','y',30,20);";
+			if($graphe_champ_saisie_avis_fixe!='y') {$retour_lignes_cmnt_type.="ajuste_pos('commentaire_type');";}
+			$retour_lignes_cmnt_type.="return false;\">CT</a>\n";
+
+			$retour_lignes_cmnt_type.="<div id='commentaire_type' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; height: 10em 5px; width: 400px;'>\n";
+			$retour_lignes_cmnt_type.="<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px;'  onmousedown=\"dragStart(event, 'commentaire_type')\">\n";
+			$retour_lignes_cmnt_type.="<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 1em;'><a href='#' onClick=\"document.getElementById('commentaire_type').style.display='none';return false;\">X</a></div>\n";
+			$retour_lignes_cmnt_type.="Commentaires-types";
+			$retour_lignes_cmnt_type.="</div>\n";
+
+			$retour_lignes_cmnt_type.="<div style='height: 9em; overflow: auto;'>\n";
+			$cpt=0;
+			while($ligne_commentaire=mysql_fetch_object($resultat_commentaire)) {
+				$retour_lignes_cmnt_type.="<div style='border: 1px solid black; margin: 1px; padding: 1px;'";
+
+				if(eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+					$retour_lignes_cmnt_type.=" onClick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value+document.getElementById('commentaire_type_'+$cpt).value;changement();document.getElementById('commentaire_type').style.display='none'; document.getElementById('no_anti_inject_current_eleve_login_ap2').focus();\"";
+				}
+				$retour_lignes_cmnt_type.=">\n";
+
+				$retour_lignes_cmnt_type.="<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
+
+				if(!eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+					// Avec konqueror, pour document.getElementById('textarea_courant').value, on obtient [Object INPUT]
+					// En sortant, la commande du onClick et en la mettant dans une fonction javascript externe, ca passe.
+					//$retour_lignes_cmnt_type.="<a href='#' onClick=\"complete_textarea_courant($cpt); return false;\" style='text-decoration:none; color:black;'>";
+					$retour_lignes_cmnt_type.="<a href='#' onClick=\"complete_textarea_avis($cpt); return false;\" style='text-decoration:none; color:black;'>";
+				}
+
+				// Pour conserver le code HTML saisi dans les commentaires-type...
+				if((ereg("<",$ligne_commentaire->commentaire))&&(ereg(">",$ligne_commentaire->commentaire))){
+					/* Si le commentaire contient du code HTML, on ne remplace pas les retours à la ligne par des <br> pour éviter des doubles retours à la ligne pour un code comme celui-ci:
+						<p>Blabla<br>
+						Blibli</p>
+					*/
+					$retour_lignes_cmnt_type.=htmlentities(stripslashes(trim($ligne_commentaire->commentaire)));
+				}
+				else{
+					//Si le commentaire ne contient pas de code HTML, on remplace les retours à la ligne par des <br>:
+					$retour_lignes_cmnt_type.=htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
+				}
+
+				if(!eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+					$retour_lignes_cmnt_type.="</a>";
+				}
+
+				$retour_lignes_cmnt_type.="</div>\n";
+				$cpt++;
+			}
+			$retour_lignes_cmnt_type.="</div>\n";
+			$retour_lignes_cmnt_type.="</div>\n";
+
+			$retour_lignes_cmnt_type.="<script type='text/javascript'>
+	document.getElementById('commentaire_type').style.display='none';
+</script>\n";
+
+
+$retour_lignes_cmnt_type.="<script type='text/javascript'>
+function ajuste_pos(id_div) {
+	if(browser.isIE){
+		document.getElementById(id_div).style.left=0;
+		document.getElementById(id_div).style.top=0;
+	}
+	else{
+		document.getElementById(id_div).style.left='0px';
+		document.getElementById(id_div).style.top='0px';
+	}
+}
+
+// Pour konqueror...
+function complete_textarea_avis(num){
+	// Récupération de l'identifiant du TEXTAREA à remplir
+	id_textarea_courant='no_anti_inject_current_eleve_login_ap2'
+	//alert('id_textarea_courant='+id_textarea_courant);
+
+	// Contenu initial du TEXTAREA
+	contenu_courant_textarea_courant=eval(\"document.getElementById('\"+id_textarea_courant+\"').value\");
+	//alert('contenu_courant_textarea_courant='+contenu_courant_textarea_courant);
+
+	// Commentaire à ajouter
+	commentaire_a_ajouter=eval(\"document.getElementById('commentaire_type_\"+num+\"').value\");
+	//alert('commentaire_a_ajouter='+commentaire_a_ajouter);
+
+	// Ajout
+	textarea_courant=eval(\"document.getElementById('\"+id_textarea_courant+\"')\")
+	textarea_courant.value=contenu_courant_textarea_courant+commentaire_a_ajouter;
+
+	// On cache la liste des commentaires-types
+	document.getElementById('commentaire_type').style.display='none';
+
+	// On redonne le focus au TEXTAREA
+	document.getElementById(id_textarea_courant).focus();
+
+	changement();
+}
+</script>\n";
+
+			//$retour_lignes_cmnt_type.="<script type='text/javascript' src='../lib/brainjar_drag.js'></script>\n";
+			//$retour_lignes_cmnt_type.="<script type='text/javascript' src='../lib/position.js'></script>\n";
+		}
+	}
+
+	return $retour_lignes_cmnt_type;
+}
+
+
+
 require("../lib/footer.inc.php");
 ?>
