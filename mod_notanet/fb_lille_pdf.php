@@ -1,6 +1,6 @@
 <?php
 
-	/* $Id$ */
+	/* $Id: fb_rouen_pdf.php 3157 2009-05-25 14:32:18Z crob $ */
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
@@ -48,7 +48,7 @@
 
 	if((!isset($_POST['id_classe']))||(!isset($_POST['type_brevet']))) {
 		//**************** EN-TETE *****************
-		$titre_page = "Fiches Brevet<br />Modèle Rouen";
+		$titre_page = "Fiches Brevet<br />Modèle Lille";
 		//echo "<div class='noprint'>\n";
 		require_once("../lib/header.inc");
 		//echo "</div>\n";
@@ -239,6 +239,33 @@
 				}
 			}
 		}
+
+
+		// Pourcentages d'acquisition sur les socles
+		$sql="SELECT DISTINCT ns.login FROM notanet_socles ns, j_eleves_classes jec WHERE ns.login=jec.login AND id_classe='$id_classe[$i]';";
+		$res_eff=mysql_query($sql);
+		$eff_classe_ns=mysql_num_rows($res_eff);
+
+		$sql="SELECT DISTINCT ns.login FROM notanet_socles ns, j_eleves_classes jec WHERE ns.login=jec.login AND id_classe='$id_classe[$i]' AND b2i='MS';";
+		$res_eff=mysql_query($sql);
+		$eff_b2i_ms=mysql_num_rows($res_eff);
+
+		$sql="SELECT DISTINCT ns.login FROM notanet_socles ns, j_eleves_classes jec WHERE ns.login=jec.login AND id_classe='$id_classe[$i]' AND a2='MS';";
+		$res_eff=mysql_query($sql);
+		$eff_a2_ms=mysql_num_rows($res_eff);
+
+		if($eff_classe_ns>0) {
+			$p_b2i=round(($eff_b2i_ms*100/$eff_classe_ns)*10)/10;
+			$p_a2=round(($eff_a2_ms*100/$eff_classe_ns)*10)/10;
+		}
+		else {
+			$p_b2i="NaN";
+			$p_a2="NaN";
+		}
+
+		$p_socle[114]=$p_b2i;
+		$p_socle[115]=$p_a2;
+
 	}
 
 	define('FPDF_FONTPATH','../fpdf/font/');
@@ -273,7 +300,7 @@
 	$date_fb = date("d/m/Y H:i");
 	$date_fichier = date("Ymd_Hi");
 
-	$pdf=new bul_PDF('p', 'mm', 'A4');
+	$pdf=new bul_PDF('l', 'mm', 'A4');
 	$pdf->SetCreator($gepiSchoolName);
 	$pdf->SetAuthor($gepiSchoolName);
 	$pdf->SetKeywords('');
@@ -311,50 +338,39 @@
 	//$use_cell_ajustee="y";
 
 	// Taille des textes
-	$fs_titre=14;
+	$fs_titre=11;
 	$fs_titre_mm=fs_pt2mm($fs_titre);
-	$fs_txt=12;
+	$fs_txt=10;
 	$fs_txt_mm=fs_pt2mm($fs_txt);
 
 	// Ratio de l'interligne par rapport à la taille de police
 	$r_interligne=0.3;
 	$sc_interligne=1+$r_interligne;
 
-	$larg_acad=90;
-	$larg_session=40;
+	$l_page=297;
+	$h_page=210;
+
 	$marge=10;
 
-	// Ordonnée bloc "Fiche scolaire..."
-	$y_fsb=20;
-
-	// Ordonnée bloc "Nom, prénom,..."
-	$y_nom_ele=45;
-	$larg_col_nom=20;
-	$larg_col_val_nom=210/2-$marge-$larg_col_nom;
-	$larg_col_prenom=30;
-	$larg_col_val_prenom=210/2-$marge-$larg_col_prenom;
-	$x_col_prenom=$marge+$larg_col_nom+$larg_col_val_nom;
-
-	// Bloc nom/adresse etab
-	$larg_col_etab=55;
-	$larg_col_val_etab=210-2*$marge-$larg_col_etab;
-
 	// Bloc disciplines
-	$larg_col_disc=50;
+	$larg_col_disc=65;
 	$x_col_note_mc=$marge+$larg_col_disc;
-	$larg_col_note=20;
-	$x_col_note_me=$marge+$larg_col_disc+$larg_col_note;
-	
-	$larg_col_classe_3eme_college=210-$x_col_note_mc-2*$larg_col_note-$marge;
-	
-	$x_col_app=$x_col_note_me+$larg_col_note;
-	$larg_col_app=$larg_col_classe_3eme_college-2*$larg_col_note;
-	
-	$x_col_note_glob=$x_col_app+$larg_col_app;
+	$larg_col_note_classe=29;
+	$x_col_note_glob=$marge+$larg_col_disc+$larg_col_note_classe;
+
+	$larg_col_note_glob=33;
+
+	$x_col_app=$x_col_note_glob+2*$larg_col_note_glob;
+	//$larg_col_app=$l_page-2*$marge-$x_col_app;
+	$larg_col_app=$l_page-$marge-$x_col_app;
+
+	//=======================================
 
 	// Hauteur cadre du bas (avis du chef d'établissement,...)
-	$h_cadre_bas=40;
-	$y_cadre_bas=297-$marge-$h_cadre_bas;
+	$h_cadre_bas=41;
+	$h_cadre_bas_hors_notes_pdp=22;
+	//$y_cadre_bas=$h_page-$marge-$h_cadre_bas;
+	$y_cadre_bas=$h_page-$h_cadre_bas;
 
 	$bord_debug='';
 	//$bord_debug='LRBT';
@@ -372,161 +388,133 @@
 			// Boucle sur la liste des élèves
 			while($lig1=mysql_fetch_object($res1)) {
 
-				$pdf->AddPage(); //ajout d'une page au document
+				$pdf->AddPage('L'); //ajout d'une page au document
 			
 				//================================================
 				// ENTETE DE PAGE
 				//$pdf->SetFont('Arial');
-				$pdf->SetFont('Arial','B',$fs_txt);
+				$pdf->SetFont('Arial','',$fs_titre);
 				$pdf->SetXY($marge,$marge);
-				//$pdf->SetFontSize($fs_txt);
-				$pdf->Cell($larg_acad,fs_pt2mm($pdf->FontSize)*$sc_interligne, "ACADÉMIE DE ".strtoupper($fb_academie),0,1,'');
+				$texte="NOMS et PRENOMS : ".strtoupper($lig1->nom)." ".ucfirst(strtolower($lig1->prenom));
+				$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne, $texte,0,0,'L');
 
-				//$pdf->SetXY($marge,15);
-				$pdf->SetXY($marge,$pdf->GetY()+$pdf->FontSize*$r_interligne);
-				//$pdf->Cell($larg_acad,fs_pt2mm($pdf->FontSize)*$sc_interligne, "Département: $fb_departement   ".$pdf->GetY(),0,2,'');
-				$pdf->Cell($larg_acad,$pdf->FontSize*$sc_interligne, "Département: $fb_departement",0,2,'');
-			
-				// Cadre avec alignement à droite
-				$pdf->SetXY(210-$marge-$larg_session,$marge);
-				$pdf->Cell($larg_session,$pdf->FontSize*$sc_interligne, "Session: $fb_session",'',1,'R');
-			
-				// LRBT: Left Right Bottom Top
+				$texte1="FICHE SCOLAIRE BREVET - ";
+				$l1=$pdf->GetStringWidth($texte1);
+
+				$texte3="   SESSION : ".$fb_session;
+				$l3=$pdf->GetStringWidth($texte3);
 
 				$pdf->SetFont('Arial','B',$fs_titre);
-				$pdf->SetXY($marge,$y_fsb);
-				$pdf->Cell(210-2*$marge,10, "FICHE SCOLAIRE DU BREVET",$bord_debug,1,'C');
-				//$pdf->SetXY($marge,$pdf->GetY()+$pdf->FontSize*$sc_interligne);
-				//$pdf->SetXY($marge,$pdf->GetY());
-				$pdf->Cell(210-2*$marge,10, "Série ".$tab_type_brevet[$type_brevet],$bord_debug,1,'C');
-			
-				//================================================
-				// TABLEAU DES INFOS ELEVE
-				$pdf->SetFont('Arial','B',$fs_txt);
-				$pdf->SetXY($marge,$y_nom_ele);
-				$pdf->Cell($larg_col_nom,$pdf->FontSize*$sc_interligne, "Nom:",$bord_debug,0,'');
-				//$pdf->SetXY(30,45);
-				//$pdf->Cell(75,10, "DUGENOUX",$bord_debug,2,'');
-				$pdf->SetFont('Arial','',$fs_txt);
-				$pdf->Cell($larg_col_val_nom,$pdf->FontSize*$sc_interligne, $lig1->nom,$bord_debug,1,'');
+				$texte2="SERIE ".$tab_type_brevet[$type_brevet];
+				$l2=$pdf->GetStringWidth($texte2);
 
-				//$pdf->SetXY($marge,55);
-				//$pdf->Cell(20,10, "Né(e) le:",$bord_debug,2,'');
-				$pdf->SetFont('Arial','B',$fs_txt);
+				$x=$pdf->GetX()+($l_page-$pdf->GetX()-($l1+$l2+$l3))/2;
+				$pdf->SetFont('Arial','',$fs_titre);
+				$pdf->SetXY($x,$pdf->GetY());
+				$pdf->Cell($pdf->GetStringWidth($texte1),$pdf->FontSize*$sc_interligne, $texte1,0,0,'L');
+				$pdf->SetFont('Arial','B',$fs_titre);
+				$pdf->Cell($pdf->GetStringWidth($texte2),$pdf->FontSize*$sc_interligne, $texte2,0,0,'L');
+				$pdf->SetFont('Arial','',$fs_titre);
+				$pdf->Cell($pdf->GetStringWidth($texte3),$pdf->FontSize*$sc_interligne, $texte3,0,1,'L');
+
+				// Problème potentiel de largeur
+
+				// Deuxième ligne
 				if($lig1->sexe=='F') {
-					$pdf->Cell($larg_col_nom,$pdf->FontSize*$sc_interligne, "Née le:",$bord_debug,0,'');
+					$texte="Née le :";
 				}
 				else {
-					$pdf->Cell($larg_col_nom,$pdf->FontSize*$sc_interligne, "Né le:",$bord_debug,0,'');
+					$texte="Né le :";
 				}
-				//$pdf->SetXY(30,55);
-				//$pdf->Cell(75,10, "09/09/1990",$bord_debug,2,'');
-				$pdf->SetFont('Arial','',$fs_txt);
-				$pdf->Cell($larg_col_val_nom,$pdf->FontSize*$sc_interligne, formate_date($lig1->naissance),$bord_debug,2,'');
-			
-				$pdf->SetFont('Arial','B',$fs_txt);
-				$pdf->SetXY($x_col_prenom,$y_nom_ele);
-				$pdf->Cell($larg_col_prenom,$pdf->FontSize*$sc_interligne, "Prénom(s):",$bord_debug,0,'');
-				//$pdf->SetXY(135,45);
-				//$pdf->Cell(75,10, "Edgar, Simon, Bidule",$bord_debug,2,'');
-				$pdf->SetFont('Arial','',$fs_txt);
-				$pdf->Cell($larg_col_val_prenom,$pdf->FontSize*$sc_interligne, $lig1->prenom,$bord_debug,1,'');
-			
-				//$pdf->SetXY($x_col_prenom,$y_nom_ele+$pdf->FontSize*$sc_interligne);
-				$pdf->SetFont('Arial','B',$fs_txt);
-				$pdf->SetXY($x_col_prenom,$pdf->GetY());
-				$pdf->Cell($larg_col_prenom,$pdf->FontSize*$sc_interligne, "à:",$bord_debug,0,'');
-				//$pdf->SetXY(135,55);
-				//$pdf->Cell(75,10, "Lisieux (14)",$bord_debug,2,'');
-				$pdf->SetFont('Arial','',$fs_txt);
+				$texte.=formate_date($lig1->naissance)." à : ";
 				if($ele_lieu_naissance=='y') {
-					$pdf->Cell($larg_col_val_prenom,$pdf->FontSize*$sc_interligne, get_commune($lig1->lieu_naissance, 2),$bord_debug,1,'');
+					$texte.=get_commune($lig1->lieu_naissance, 2);
 				}
-				else {
-					$pdf->Cell($larg_col_val_prenom,$pdf->FontSize*$sc_interligne, '',$bord_debug,1,'');
-				}
+				$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne, $texte,0,0,'L');
 
+				$pdf->SetFont('Arial','B',$fs_txt);
+				$texte="ACADÉMIE DE ".strtoupper($fb_academie);
+				$x=$l_page-$marge-$pdf->GetStringWidth($texte);
+				$pdf->setXY($x,$pdf->GetY());
+				$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne, $texte,0,1,'R');
+
+				// Il n'y a pas le département sur le modèle Lille
+				//$pdf->SetXY($marge,$pdf->GetY()+$pdf->FontSize*$r_interligne);
+				//$pdf->Cell($larg_acad,$pdf->FontSize*$sc_interligne, "Département: $fb_departement",0,2,'');
+			
 				//================================================
 				// TABLEAU ADRESSE ETAB
-				//$pdf->SetXY($marge,65);
+				$y=$pdf->GetY();
+				$pdf->SetFont('Arial','',$fs_txt);
+				// Cadre
+				$pdf->Cell($l_page-2*$marge,3*$pdf->FontSize*$sc_interligne, '','LRBT',1,'');
+				$y2=$pdf->GetY();
+
+				$y_etab=$y+$pdf->FontSize*$sc_interligne;
+				$pdf->setXY($marge+15,$y_etab);
 				$pdf->SetFont('Arial','B',$fs_txt);
-				$y_etab=$pdf->GetY();
-				//$pdf->Cell($larg_col_etab,2*$pdf->FontSize*$sc_interligne, "",'LBT',1,'');
+				$texte="Établissement fréquenté : ";
+				$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne, $texte,0,0,'L');
 
-				$pdf->SetXY($marge,$y_etab);
-				$pdf->Cell($larg_col_etab,$pdf->FontSize*$sc_interligne, "Établissement fréquenté:",'',0,'');
-				$x=$pdf->GetX();
-				//$pdf->SetXY($x,65);
-				//$pdf->SetFont('Arial','',$fs_txt);
-				$font_size=adjust_size_font($gepiSchoolName,$larg_col_val_etab,$fs_txt,0.1);
+				$pdf->SetFont('Arial','',$fs_txt);
+				$texte=$gepiSchoolName." ".$adresse_etab;
+				$font_size=adjust_size_font($texte,$l_page-$pdf->GetX()-$marge,$fs_txt,0.1);
 				$pdf->SetFont('Arial','',$font_size);
-				//$pdf->Cell($larg_col_val_etab,$pdf->FontSize*$sc_interligne, $gepiSchoolName,'RT',1,'');
-				$pdf->Cell($larg_col_val_etab,$pdf->FontSize*$sc_interligne, $gepiSchoolName,'',1,'');
-				$y=$pdf->GetY();
-				$pdf->SetXY($x,$y);
-				// A MODIFIER: Si l'adresse est très longue, cela peut déborder...
-				$font_size=adjust_size_font($adresse_etab,$larg_col_val_etab,$fs_txt,0.1);
-				$pdf->SetFont('Arial','',$font_size);
-				//$pdf->Cell($larg_col_val_etab,$pdf->FontSize*$sc_interligne, $adresse_etab,'RB',1,'');
-				$pdf->Cell($larg_col_val_etab,$pdf->FontSize*$sc_interligne, $adresse_etab,'',1,'');
-
-				$y=$pdf->GetY();
-				$pdf->SetXY($marge,$y_etab);
-				$pdf->Cell($larg_col_etab,$y-$y_etab, "",'LBT',0,'');
-				$pdf->Cell($larg_col_val_etab,$y-$y_etab, "",'RBT',1,'');
+				$pdf->Cell($l_page-$pdf->GetX()-$marge,$pdf->FontSize*$sc_interligne, $texte,'',1,'L');
 
 				//================================================
 				// TABLEAU DES DISCIPLINES
 				// LIGNES DE TITRE DU TABLEAU DES DISCIPLINES
+
+				$pdf->SetXY($marge+$larg_col_disc,$y2+$pdf->FontSize*$sc_interligne);
+				$pdf->SetFont('Arial','B',$fs_txt);
+				$texte='   Note Globale affectée du coefficient   ';
+				$font_size=adjust_size_font($texte,$l_page-$pdf->GetX()-$marge,$fs_txt,0.1);
+				$pdf->SetFont('Arial','B',$font_size);
+				$pdf->Cell($larg_col_note_classe+2*$larg_col_note_glob,3*$pdf->FontSize*$sc_interligne, $texte,'LRBT',1,'C');
+				//================================================
+
 				$pdf->SetFont('Arial','B',$fs_txt);
 				//$pdf->SetXY($marge,80);
-				$x=$pdf->GetX();
+				$x=$marge;
 				$y_disc=$pdf->GetY();
-				$y_lignes_disc=$y_disc+20;
+				$y_lignes_disc=$y_disc+3*$pdf->FontSize*$sc_interligne;
 				// On trace le cadre d'entête du tableau
-				$pdf->Cell(210-2*$marge,20, "",'LRBT',0,'C');
-				$pdf->SetXY($x,$y_disc);
-				$pdf->Cell($larg_col_disc,20, "DISCIPLINES",'LRBT',0,'C');
-				//$pdf->SetXY(60,80);
-				$pdf->Cell($larg_col_classe_3eme_college,5, "Classe de 3ème de collège",'LRBT',1,'C');
-				$y=$pdf->GetY();
+				$pdf->Cell($l_page-2*$marge,3*$pdf->FontSize*$sc_interligne, "",'LRBT',0,'C');
+				$pdf->SetXY($marge,$y_disc);
+				$h_titre_disc=3*$pdf->FontSize*$sc_interligne;
+				$pdf->Cell($larg_col_disc,$h_titre_disc, "DISCIPLINES",'LRBT',0,'C');
 
-				$pdf->SetXY($x_col_note_mc,$y);
-				$pdf->Cell($larg_col_note,20-5, "",'LRBT',0,'C');
-				$pdf->SetXY($x_col_note_mc,$y);
+				$h_texte_titre_disc=$pdf->FontSize*$sc_interligne;
+
 				$pdf->SetFontSize(9);
-				//$pdf->drawTextBox('Note moyenne de la classe', $larg_col_note, 11, 'C', 'M', 1);
-				$pdf->drawTextBox('Note moyenne de la classe', $larg_col_note, 11, 'C', 'M', 0);
-				$pdf->SetXY($x_col_note_mc,$pdf->GetY());
-				//$pdf->drawTextBox('0 à 20', $larg_col_note, 4, 'C', 'M', 1);
-				$pdf->drawTextBox('0 à 20', $larg_col_note, 4, 'C', 'M', 0);
+				$x_tmp=$pdf->GetX();
+				//$pdf->drawTextBox('Note moyenne de la classe', $larg_col_note_classe, 2*$pdf->FontSize*$sc_interligne, 'C', 'M', 0);
+				$pdf->drawTextBox('Note moyenne de la classe', $larg_col_note_classe, 2*$h_texte_titre_disc, 'C', 'M', 0);
+				$pdf->SetXY($x_tmp,$pdf->GetY());
+				//$pdf->Cell($larg_col_note_classe,$pdf->FontSize*$sc_interligne, "(0 à 20)",'',0,'C');
+				$pdf->Cell($larg_col_note_classe,$h_texte_titre_disc, "(0 à 20)",'',0,'C');
 
-				$pdf->SetXY($x_col_note_me,$y);
-				$pdf->Cell($larg_col_note,20-5, "",'LRBT',0,'C');
-				$pdf->SetXY($x_col_note_me,$y);
-				$pdf->drawTextBox("Note moyenne de l'élève", $larg_col_note, 11, 'C', 'M', 0);
-				$pdf->SetXY($x_col_note_me,$pdf->GetY());
-				$pdf->drawTextBox('0 à 20', $larg_col_note, 4, 'C', 'M', 0);
+				$x_tmp=$pdf->GetX();
+				$pdf->SetXY($x_tmp,$y_disc);
+				//$pdf->Cell(2*$larg_col_note_glob,$pdf->FontSize*$sc_interligne, "3ème",'LRBT',1,'C');
+				$pdf->Cell(2*$larg_col_note_glob,$h_texte_titre_disc, "3ème",'LRBT',1,'C');
+				$pdf->SetXY($x_tmp,$pdf->GetY());
+				//$pdf->Cell($larg_col_note_glob,2*$pdf->FontSize*$sc_interligne, "LV2",'LRBT',0,'C');
+				$pdf->Cell($larg_col_note_glob,2*$h_texte_titre_disc, "LV2",'LRBT',0,'C');
+				$texte="Module déc.Prof. 6 heures";
+				//$pdf->drawTextBox('Note moyenne de la classe', $larg_col_note_glob, 2*$pdf->FontSize*$sc_interligne, 'C', 'M', 1);
+				$pdf->drawTextBox('Note moyenne de la classe', $larg_col_note_glob, 2*$h_texte_titre_disc, 'C', 'M', 1);
 
-				//$pdf->SetFontSize($fs_txt);
 				$texte="Appréciations des professeurs";
 				$font_size=adjust_size_font($texte,$larg_col_app,$fs_txt,0.3);
 				$pdf->SetFontSize($font_size);
-				$pdf->SetXY($x_col_app,$y_disc+5);
-				$pdf->Cell($larg_col_app,15, $texte,'LRBT',2,'C');
-			
-				$pdf->SetFontSize(10);
-				$pdf->SetXY($x_col_note_glob,$y_disc);
-				$pdf->drawTextBox('Note Globale affectée du coefficient', 2*$larg_col_note, 10, 'C', 'M', 1);
-				$pdf->SetXY($x_col_note_glob,$pdf->GetY()+2);
-				$pdf->Cell(2*$larg_col_note,5, "3ème à option",'',1,'C');
-				//$pdf->SetXY($x_col_note_glob,$pdf->GetY());
-				$pdf->SetXY($x_col_note_glob,$y_disc+20-5);
-				$pdf->Cell($larg_col_note,5, "LV2",'LRBT',0,'C');
-				//$pdf->SetXY($x_col_note_glob+$larg_col_note,95);
-				//$pdf->SetXY($x_col_note_glob+$larg_col_note,95);
-				$pdf->SetXY($x_col_note_glob+$larg_col_note,$y_disc+20-5);
-				$pdf->Cell($larg_col_note,5, "DP6h",'LRBT',1,'C');
+				//$pdf->SetXY($x_tmp+2*$larg_col_note_glob,$y_disc);
+				$pdf->SetXY($x_col_app,$y_disc);
+				//$pdf->SetFillColor(200,200,200);
+				//$pdf->Cell($larg_col_app,3*$h_texte_titre_disc, $texte." ".$x_col_app." ".$larg_col_app,'LRBT',2,'C',true);
+				//$pdf->Cell($l_page-$marge-$x_col_app,3*$h_texte_titre_disc, $texte." ".$x_col_app." ".$larg_col_app,'LRBT',2,'C',true);
+				$pdf->Cell($l_page-$marge-$x_col_app,3*$h_texte_titre_disc, $texte,'LRBT',2,'C');
 
 				//====================================================
 				// LIGNES DE MATIERES DU TABLEAU DES DISCIPLINES
@@ -551,12 +539,12 @@
 				$y=$y_lignes_disc;
 
 				//$h_ligne_a_titre_indicatif=10;
-				$h_ligne_a_titre_indicatif=fs_pt2mm($fs_txt)*$sc_interligne;
+				//$h_ligne_a_titre_indicatif=fs_pt2mm($fs_txt)*$sc_interligne; // INUTILE A VIRER ********************************************************
 
 				// Hauteur pour chaque matière:
-				$hauteur_toutes_matieres=$y_cadre_bas-$marge-$y; // 10 pour la ligne 'A titre indicatif'
-				$h_par_matiere=$hauteur_toutes_matieres/$nb_mat;
-			
+				$hauteur_toutes_matieres=$y_cadre_bas-$y;
+				$h_par_matiere=$hauteur_toutes_matieres/($nb_mat+1); // La ligne TOTAL compte comme une matière
+
 				// Boucle sur les matières
 				$TOTAL=0;
 				$SUR_TOTAL=array();
@@ -579,19 +567,48 @@
 							if(($temoin_notnonca==0)&&($tabmatieres[$j][-1]=='NOTNONCA')) {
 								// Insertion de la ligne 'A titre indicatif'
 								$pdf->SetFont('Arial','B',$fs_txt);
-								$pdf->Cell(210-2*$marge-2*$larg_col_note,$h_ligne_a_titre_indicatif, 'A titre indicatif','LRBT',2,'C');
+								$pdf->Cell($larg_col_disc,$h_par_matiere, 'TOTAL DES POINTS','LRBT',0,'L');
+
+								$pdf->SetFont('Arial','',$fs_txt);
+
+								// Colonne Moyenne classe
+								$pdf->Cell($larg_col_note_classe,$h_par_matiere, '','LRBT',0,'L');
 				
-								// Colonne LV2
+								// Colonnes LV2 et DP6
 								$pdf->SetXY($x_col_note_glob,$y);
-								$texte='TOTAL DES POINTS';
-								$font_size=adjust_size_font($texte,$larg_col_note,$fs_txt,0.3);
-								$pdf->SetFontSize($font_size);
-								$pdf->Cell($larg_col_note,$h_ligne_a_titre_indicatif, $texte,'LRBT',2,'C');
+
+								if($num_fb_col==1) {
+									$t_col1=$TOTAL."/".$SUR_TOTAL[1];
+									$t_col2="    /".$SUR_TOTAL[2];
+								}
+								else {
+									$t_col1="    /".$SUR_TOTAL[1];
+									$t_col2=$TOTAL."/".$SUR_TOTAL[2];
+								}
+
+								// Colonne LV2
+								$pdf->Cell($larg_col_note_glob,$h_par_matiere, $t_col1,'LRBT',0,'C');
 					
 								// Colonne DP6h
-								$pdf->SetXY($x_col_note_glob+$larg_col_note,$y);
-								$pdf->Cell($larg_col_note,$h_ligne_a_titre_indicatif, $texte,'LRBT',2,'C');
-				
+								$pdf->Cell($larg_col_note_glob,$h_par_matiere, $t_col2,'LRBT',0,'C');
+
+								// Appréciation
+								$pdf->Cell($larg_col_app,$h_par_matiere, '','LRBT',1,'C');
+
+								$cpt++;
+								$y=$y_lignes_disc+$cpt*$h_par_matiere;
+
+								/*
+								$texte='TOTAL DES POINTS';
+								$font_size=adjust_size_font($texte,$larg_col_note_classe,$fs_txt,0.3);
+								$pdf->SetFontSize($font_size);
+								$pdf->Cell($larg_col_note_classe,$h_ligne_a_titre_indicatif, $texte,'LRBT',2,'C');
+					
+								// Colonne DP6h
+								$pdf->SetXY($x_col_note_glob+$larg_col_note_classe,$y);
+								$pdf->Cell($larg_col_note_classe,$h_ligne_a_titre_indicatif, $texte,'LRBT',2,'C');
+								*/
+
 								//$temoin_notnonca++;
 							}
 	
@@ -599,8 +616,8 @@
 							$pdf->SetFontSize($fs_txt);
 				
 							if($tabmatieres[$j][-1]=='NOTNONCA') {
-								// Correctif pour le décalage dû à la ligne 'A titre indicatif'
-								$y+=$h_ligne_a_titre_indicatif;
+								// Correctif pour le décalage dû à la ligne 'A titre indicatif' -> INUTILE SUR LE MODELE LILLE
+								//$y+=$h_ligne_a_titre_indicatif;
 								$temoin_notnonca++;
 							}
 							$pdf->SetXY($marge,$y);
@@ -611,7 +628,7 @@
 							$texte=ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
 	
 							//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
-							if($tabmatieres[$j][0]=="OPTION FACULTATIVE"){
+							if($tabmatieres[$j][0]=="OPTION FACULTATIVE") {
 								// recherche de la matière facultative pour l'élève
 								$sql_mat_fac="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
 								$res_mat_fac=mysql_query($sql_mat_fac);
@@ -622,7 +639,7 @@
 							}
 							$font_size=adjust_size_font($texte,$larg_col_disc,$fs_txt,0.3);
 							$pdf->SetFontSize($font_size);
-							$pdf->Cell($larg_col_disc,$h_par_matiere, $texte,'LRBT',2,'L');
+							$pdf->Cell($larg_col_disc,$h_par_matiere, $texte,'LRBT',0,'L');
 							// A REVOIR: Si la taille de police descend en dessous d'une valeur à choisir, mettre sur deux lignes
 
 							$pdf->SetFont('Arial','',$fs_txt);
@@ -631,31 +648,38 @@
 							$largeur_colonnes_moy=0;
 							if($tabmatieres[$j]['socle']!='y') {
 								// Moyenne classe
-								$pdf->SetXY($x,$y);
+								//$pdf->SetXY($x,$y);
 								//$tmp="-";
 								//if($tabmatieres[$j]['socle']!='y') {$tmp=strtr($moy_classe[$j],".",",");}
 								$tmp=strtr($moy_classe[$j],".",",");
-								$pdf->Cell($larg_col_note,$h_par_matiere, $tmp,'LRBT',2,'C');
-								$x+=$larg_col_note;
-								$largeur_colonnes_moy+=$larg_col_note;
+								$pdf->Cell($larg_col_note_classe,$h_par_matiere, $tmp,'LRBT',0,'C');
+								$x+=$larg_col_note_classe;
+								$largeur_colonnes_moy+=$larg_col_note_classe;
 					
 								// Moyenne élève
-								$pdf->SetXY($x,$y);
-								$tmp="";
+								//$pdf->SetXY($x,$y);
+								$tmp_note="";
 								$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
 								$res_note=mysql_query($sql);
 								if(mysql_num_rows($res_note)>0){
 									$lig_note=mysql_fetch_object($res_note);
-									$tmp=strtr($lig_note->note,".",",");
+									$tmp_note=strtr($lig_note->note,".",",");
 								}
-								$pdf->Cell($larg_col_note,$h_par_matiere, $tmp,'LRBT',2,'C');
-								//$pdf->Cell($larg_col_note,$h_par_matiere, $tmp." ".$y,'LRBT',2,'C');
-								$x+=$larg_col_note;
-								$largeur_colonnes_moy+=$larg_col_note;
+								//$pdf->Cell($larg_col_note_classe,$h_par_matiere, $tmp,'LRBT',2,'C');
+								//$pdf->Cell($larg_col_note_classe,$h_par_matiere, $tmp." ".$y,'LRBT',2,'C');
+								//$x+=$larg_col_note_classe;
+								//$largeur_colonnes_moy+=$larg_col_note_classe;
 							}
-	
+							else {
+								$pdf->Cell($larg_col_note_classe,$h_par_matiere, $p_socle[$j]."%",'LRBT',0,'C');
+							}
+
+
+
+
+							/*
 							// Appréciation
-							$pdf->SetXY($x,$y);
+							//$pdf->SetXY($x,$y);
 							$texte="";
 							if($avec_app=="y") {
 								$sql="SELECT appreciation FROM notanet_app na,
@@ -671,13 +695,13 @@
 								}
 							}
 
-							if($tabmatieres[$j]['socle']!='y') {
+							//if($tabmatieres[$j]['socle']!='y') {
 								//$largeur_dispo=100-$largeur_colonnes_moy;
 								$largeur_dispo=$larg_col_app;
-							}
-							else {
-								$largeur_dispo=$larg_col_app+2*$larg_col_note;
-							}
+							//}
+							//else {
+							//	$largeur_dispo=$larg_col_app+2*$larg_col_note_classe;
+							//}
 
 							$h_cell=$h_par_matiere;
 							// Par précaution, si ma fonction cell_ajustee() posait pb:
@@ -691,6 +715,7 @@
 								$taille_min_police=ceil($fs_txt/3);
 								cell_ajustee(traite_accents_utf8($texte),$x,$y,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
 							}
+							*/
 
 							//=========================================================
 							// Colonnes de droite: Moyennes et totaux Notanet
@@ -829,33 +854,63 @@
 								$pdf->SetFontSize($fs_txt);
 								if($tabmatieres[$j][-1]!='PTSUP') {
 									// Colonne LV2
-									$pdf->SetXY($x_col_note_glob,$y);
-									$pdf->Cell($larg_col_note,$h_par_matiere, $t_col1,'LRBT',2,'C');
+									//$pdf->SetXY($x_col_note_glob,$y);
+									$pdf->Cell($larg_col_note_glob,$h_par_matiere, $t_col1,'LRBT',0,'C');
 						
 									// Colonne DP6h
-									$pdf->SetXY($x_col_note_glob+$larg_col_note,$y);
-									$pdf->Cell($larg_col_note,$h_par_matiere, $t_col2,'LRBT',2,'C');
+									//$pdf->SetXY($x_col_note_glob+$larg_col_note_glob,$y);
+									$pdf->Cell($larg_col_note_glob,$h_par_matiere, $t_col2,'LRBT',0,'C');
 								}
 								else {
 									// Colonne LV2
+									//$y_tmp=$pdf->GetY();
 									$pdf->SetXY($x_col_note_glob,$y);
-									$pdf->SetFont('Arial','B',$fs_txt);
-									$font_size=adjust_size_font('Points > à 10',18,$fs_txt,0.3);
-									$pdf->Cell($larg_col_note,$h_par_matiere/2, 'Points > à 10','LRBT',2,'C');
 									$pdf->SetFont('Arial','',$fs_txt);
+									$texte="Points supplémentaires";
+									$font_size=adjust_size_font($texte,$larg_col_note_glob-4,$fs_txt,0.3);
+									$pdf->Cell($larg_col_note_glob,$h_par_matiere/2, $texte,'LRT',0,'C');
+
 									$pdf->SetXY($x_col_note_glob,$y+($h_par_matiere/2));
-									$pdf->Cell($larg_col_note,$h_par_matiere/2, $t_col1,'LRBT',2,'C');
+									$pdf->Cell($larg_col_note_glob,$h_par_matiere/2, $t_col1,'LRB',0,'C');
 
 									// Colonne DP6h
-									$pdf->SetXY($x_col_note_glob+$larg_col_note,$y);
-									$pdf->SetFont('Arial','B',$fs_txt);
-									$font_size=adjust_size_font('Points > à 10',18,$fs_txt,0.3);
-									$pdf->Cell($larg_col_note,$h_par_matiere/2, 'Points > à 10','LRBT',2,'C');
+									$pdf->SetXY($x_col_note_glob+$larg_col_note_glob,$y);
 									$pdf->SetFont('Arial','',$fs_txt);
-									$pdf->SetXY($x_col_note_glob+$larg_col_note,$y+($h_par_matiere/2));
-									$pdf->Cell($larg_col_note,$h_par_matiere/2, $t_col2,'LRBT',2,'C');
+									$texte="Points supplémentaires";
+									$font_size=adjust_size_font($texte,$larg_col_note_glob-4,$fs_txt,0.3);
+									$pdf->Cell($larg_col_note_glob,$h_par_matiere/2, $texte,'LRT',2,'C');
+									$pdf->SetXY($x_col_note_glob+$larg_col_note_glob,$y+($h_par_matiere/2));
+									$pdf->Cell($larg_col_note_glob,$h_par_matiere/2, $t_col2,'LRB',0,'C');
 								}
+
+
 							}
+							elseif($tabmatieres[$j][-1]=="NOTNONCA") {
+
+								if($num_fb_col==1) {
+									$t_col1=$tmp_note;
+									$t_col2="";
+
+									if($temoin_note_non_numerique=="n") {
+										$t_col1.="/".$tabmatieres[$j]['fb_col'][1];
+									}
+								}
+								elseif($num_fb_col==2) {
+									$t_col1="";
+									$t_col2=$tmp_note;
+
+									if($temoin_note_non_numerique=="n") {
+										$t_col2.="/".$tabmatieres[$j]['fb_col'][2];
+									}
+								}
+
+								// Colonne LV2
+								$pdf->Cell($larg_col_note_glob,$h_par_matiere, $t_col1,'LRBT',0,'C');
+					
+								// Colonne DP6h
+								$pdf->Cell($larg_col_note_glob,$h_par_matiere, $t_col2,'LRBT',0,'C');
+							}
+							/*
 							elseif($temoin_notnonca==1) {
 								// LIGNES TOTAUX
 								$pdf->SetFont('Arial','',$fs_txt);
@@ -871,29 +926,81 @@
 								}
 
 								// Colonne LV2
-								$pdf->SetXY($x_col_note_glob,$y);
-								$pdf->Cell($larg_col_note,$nb_mat_notnonca*$h_par_matiere, $t_col1,'LRBT',2,'C');
+								//$pdf->SetXY($x_col_note_glob,$y);
+								$pdf->Cell($larg_col_note_glob,$nb_mat_notnonca*$h_par_matiere, $t_col1,'LRBT',0,'C');
 					
 								// Colonne DP6h
-								$pdf->SetXY($x_col_note_glob+$larg_col_note,$y);
-								$pdf->Cell($larg_col_note,$nb_mat_notnonca*$h_par_matiere, $t_col2,'LRBT',2,'C');
+								//$pdf->SetXY($x_col_note_glob+$larg_col_note_glob,$y);
+								$pdf->Cell($larg_col_note_glob,$nb_mat_notnonca*$h_par_matiere, $t_col2,'LRBT',0,'C');
 
+							}
+							*/
+
+
+
+
+							$pdf->SetXY($x_col_app,$y);
+
+							// Appréciation
+							//$pdf->SetXY($x,$y);
+							$texte="";
+							if($avec_app=="y") {
+								$sql="SELECT appreciation FROM notanet_app na,
+																notanet_corresp nc
+															WHERE na.login='$lig1->login' AND
+																nc.notanet_mat='".$tabmatieres[$j][0]."' AND
+																nc.matiere=na.matiere;";
+								//echo "$sql<br />";
+								$res_app=mysql_query($sql);
+								if(mysql_num_rows($res_app)>0){
+									$lig_app=mysql_fetch_object($res_app);
+									$texte=trim($lig_app->appreciation);
+								}
+							}
+
+							//if($tabmatieres[$j]['socle']!='y') {
+								//$largeur_dispo=100-$largeur_colonnes_moy;
+								$largeur_dispo=$larg_col_app;
+							//}
+							//else {
+							//	$largeur_dispo=$larg_col_app+2*$larg_col_note_classe;
+							//}
+
+							$h_cell=$h_par_matiere;
+							// Par précaution, si ma fonction cell_ajustee() posait pb:
+							if($use_cell_ajustee=="n") {
+								$font_size=adjust_size_font($texte,100-$largeur_colonnes_moy,$fs_txt,0.1);
+								$pdf->SetFontSize($font_size);
+								$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $h_cell, 'J', 'M', 1);
+							}
+							else {
+								$taille_max_police=$fs_txt;
+								$taille_min_police=ceil($fs_txt/3);
+								cell_ajustee(traite_accents_utf8($texte),$x_col_app,$y,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+							}
+
+							if($tabmatieres[$j]['socle']=='y') {
+								$pdf->SetXY($marge+$larg_col_disc,$y);
+								$pdf->Cell($larg_col_note_glob,$h_par_matiere, "(2)",'',0,'L');
+								$pdf->SetXY($marge+$larg_col_disc+$larg_col_note_classe,$y);
+								$pdf->Cell($larg_col_note_glob,$h_par_matiere, "(3)",'',0,'L');
 							}
 
 							$cpt++;
 						}
 					}
 				}
+				//******************************************
+				//$pdf->AddPage('L');
+
 				//$larg_intitule_avis=80;
-				$larg_intitule_avis=$larg_col_disc+$larg_col_note;
+				//$larg_intitule_avis=$larg_col_disc+$larg_col_note_classe;
 				$pdf->SetXY($marge,$y_cadre_bas);
-				$pdf->Cell(210-2*$marge, $h_cadre_bas, "",'LRBT',2,'C');
+				$pdf->Cell($l_page-2*$marge, $h_cadre_bas_hors_notes_pdp, "",'LRBT',2,'C');
 				$pdf->SetXY($marge,$y_cadre_bas);
 				$pdf->SetFont('Arial','B',$fs_txt);
-				$texte="Avis et signature du chef d'établissement";
-				$font_size=adjust_size_font($texte,$larg_intitule_avis,$fs_txt,0.3);
-				$pdf->SetFontSize($font_size);
-				$pdf->Cell($larg_intitule_avis, $pdf->FontSize*$sc_interligne, $texte,'',0,'L');
+				$texte="Avis et signature du Chef d'établissement : ";
+				$pdf->Cell($pdf->GetStringWidth($texte), $pdf->FontSize*$sc_interligne, $texte,'',0,'L');
 				$pdf->SetFont('Arial','',$fs_txt);
 				$x=$pdf->GetX();
 				$avis="";
@@ -906,8 +1013,8 @@
 					$avis.=$lig_avis->avis;
 				}
 				//$pdf->Cell(100, $h_cadre_bas, $avis,'',0,'C');
-				$largeur_dispo=210-2*$marge-$larg_intitule_avis-2*$larg_col_note;
-				$h_cell=$h_cadre_bas;
+				$largeur_dispo=$l_page-$marge-$x;
+				$h_cell=$h_cadre_bas_hors_notes_pdp;
 				if($use_cell_ajustee=='n') {
 					$pdf->drawTextBox(traite_accents_utf8($avis), $largeur_dispo, $h_cell, 'L', 'T', 0);
 				}
@@ -917,16 +1024,25 @@
 					cell_ajustee(traite_accents_utf8($avis),$x,$y_cadre_bas,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'','T');
 				}
 
-				// Décision
-				$pdf->SetXY(210-$marge-2*$larg_col_note,$y_cadre_bas);
-				$pdf->SetFont('Arial','B',$fs_txt);
-				$pdf->Cell(2*$larg_col_note, $pdf->FontSize*$sc_interligne, "DÉCISION",'LRBT',1,'C');
+				$pdf->SetXY($marge,$y_cadre_bas+$h_cadre_bas_hors_notes_pdp);
 				$pdf->SetFont('Arial','',$fs_txt);
-				//$pdf->SetXY(210-$marge-2*$larg_col_note,$pdf->GetY());
-				$pdf->SetXY(210-$marge-2*$larg_col_note,$y_cadre_bas+$pdf->FontSize*$sc_interligne);
-				$pdf->Cell($larg_col_note, $h_cadre_bas-$pdf->FontSize*$sc_interligne, "",'LRBT',0,'C');
-				$pdf->Cell($larg_col_note, $h_cadre_bas-$pdf->FontSize*$sc_interligne, "",'LRBT',0,'C');
-
+				$texte="(1) Latin, Grec ou découverte professionnelle 3H";
+				$pdf->Cell($pdf->GetStringWidth($texte), $pdf->FontSize*$sc_interligne, $texte,'',1,'L');
+				$texte="(2) % acquisition dans la classe";
+				$pdf->Cell($pdf->GetStringWidth($texte), $pdf->FontSize*$sc_interligne, $texte,'',1,'L');
+				$texte="(3) AB (candidat absent) - MS (maîtrise du socle) - MN (maîtrise du socle non évaluée) - ME (maîtrise éléments du socle)";
+				$pdf->Cell($pdf->GetStringWidth($texte), $pdf->FontSize*$sc_interligne, $texte,'',1,'L');
+				/*
+				// Décision
+				$pdf->SetXY(210-$marge-2*$larg_col_note_classe,$y_cadre_bas);
+				$pdf->SetFont('Arial','B',$fs_txt);
+				$pdf->Cell(2*$larg_col_note_classe, $pdf->FontSize*$sc_interligne, "DÉCISION",'LRBT',1,'C');
+				$pdf->SetFont('Arial','',$fs_txt);
+				//$pdf->SetXY(210-$marge-2*$larg_col_note_classe,$pdf->GetY());
+				$pdf->SetXY(210-$marge-2*$larg_col_note_classe,$y_cadre_bas+$pdf->FontSize*$sc_interligne);
+				$pdf->Cell($larg_col_note_classe, $h_cadre_bas-$pdf->FontSize*$sc_interligne, "",'LRBT',0,'C');
+				$pdf->Cell($larg_col_note_classe, $h_cadre_bas-$pdf->FontSize*$sc_interligne, "",'LRBT',0,'C');
+				*/
 			}
 		}
 	}

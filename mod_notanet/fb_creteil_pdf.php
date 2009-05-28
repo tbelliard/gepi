@@ -48,7 +48,7 @@
 
 	if((!isset($_POST['id_classe']))||(!isset($_POST['type_brevet']))) {
 		//**************** EN-TETE *****************
-		$titre_page = "Fiches Brevet";
+		$titre_page = "Fiches Brevet<br />Modèle Créteil";
 		//echo "<div class='noprint'>\n";
 		require_once("../lib/header.inc");
 		//echo "</div>\n";
