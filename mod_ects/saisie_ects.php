@@ -310,37 +310,44 @@ echo "</form>\n";
 
     <p class='grand'>Classe : <?php echo $classe_suivi; ?></p>
 
-    <p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier les crédits ECTS.</p>
     <?php
-    if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
-        $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
-        WHERE (c.id_classe='$id_classe' AND
-           c.login = e.login AND
-           c.periode = '".$periode_num."'
-           ) ORDER BY nom,prenom";
+    if ($ver_periode[$periode_num] != "N" AND $ver_periode[$periode_num] != "P") {
+        echo "Cette période est fermée pour cette classe !";
     } else {
-        $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
-        WHERE (c.id_classe='$id_classe' AND
-           c.login = e.login AND
-           p.login = c.login AND
-           p.professeur = '".$_SESSION['login']."' AND
-           c.periode = '".$periode_num."'
-           ) ORDER BY nom,prenom";
-    }
+        ?>
 
-	$appel_donnees_eleves = mysql_query($sql);
-    $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
-    $i = "0";
-	$alt=1;
-    while($i < $nombre_lignes) {
-        $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
-        $ind_eleve_login_suiv = 0;
-        if ($i < $nombre_lignes-1) $ind_eleve_login_suiv = $i+1;
-        $current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
-        $current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
-		$alt=$alt*(-1);
-        echo "<a href = 'saisie_ects.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'>$current_eleve_nom $current_eleve_prenom</a><br/>\n";
-        $i++;
+        <p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier les crédits ECTS.</p>
+        <?php
+        if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
+            $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
+            WHERE (c.id_classe='$id_classe' AND
+               c.login = e.login AND
+               c.periode = '".$periode_num."'
+               ) ORDER BY nom,prenom";
+        } else {
+            $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
+            WHERE (c.id_classe='$id_classe' AND
+               c.login = e.login AND
+               p.login = c.login AND
+               p.professeur = '".$_SESSION['login']."' AND
+               c.periode = '".$periode_num."'
+               ) ORDER BY nom,prenom";
+        }
+
+        $appel_donnees_eleves = mysql_query($sql);
+        $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
+        $i = "0";
+        $alt=1;
+        while($i < $nombre_lignes) {
+            $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
+            $ind_eleve_login_suiv = 0;
+            if ($i < $nombre_lignes-1) $ind_eleve_login_suiv = $i+1;
+            $current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
+            $current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
+            $alt=$alt*(-1);
+            echo "<a href = 'saisie_ects.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'>$current_eleve_nom $current_eleve_prenom</a><br/>\n";
+            $i++;
+        }
     }
 }
 
