@@ -886,8 +886,7 @@ if (!(isset($id_classe))) {
                 if ($nb == 0) {
                     $bulletin_rempli = 'no';
                     if ($affiche_nom != 0) {
-                        echo "<p style='border:1px solid black;'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
-                        echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span> :";
+                        echo "<p style='border:1px solid black;'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]</span>";
                     }
                     echo "<br /><br />\n";
                     echo "<b>Crédits ECTS</b> non remplis !";
