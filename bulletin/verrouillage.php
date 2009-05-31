@@ -175,7 +175,9 @@ if (!(($classe != 0) AND ($periode !=0))) {
    <li>Lorsqu'une période est <b>déverrouillée</b>, le remplissage de toutes les rubriques (notes, appréciations, avis) est autorisé, la visualisation des
    bulletins simples est autorisée mais la visualisation et l'impression des bulletins officiels sont impossibles.<br /><br /></li>
    <li>Lorsqu'une période est <b>verrouillée partiellement</b>, seuls le remplissage et/ou la modification
-   de l'avis du conseil de classe et des crédits ECTS sont possibles. La visualisation et l'impression des bulletins officiels sont autorisées.<br /><br /></li>
+   de l'avis du conseil de classe";
+   if ($gepiSettings['active_mod_ects'] == 'y') echo "et des crédits ECTS ";
+   echo "sont possibles. La visualisation et l'impression des bulletins officiels sont autorisées.<br /><br /></li>
    <li>Lorsqu'une période est <b>verrouillée totalement</b>, le remplissage et la modification du bulletin pour la période concernée
    sont impossibles. la visualisation et l'impression sont autorisées.</li>\n";
    echo "</ul>\n";

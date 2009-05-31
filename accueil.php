@@ -520,11 +520,10 @@ if ($_SESSION['statut'] == 'professeur') {
 } else {
     $test_scol_ects = sql_count(sql_query("SELECT jgc.saisie_ects FROM j_groupes_classes jgc, j_scol_classes jsc WHERE (jgc.saisie_ects = TRUE AND jgc.id_classe = jsc.id_classe AND jsc.login = '".$_SESSION['login']."')"));
 }
-if (
-        ($test_prof_suivi != "0" and $gepiSettings['GepiAccesSaisieEctsPP'] =='yes' and $test_prof_ects != "0")
+$conditions_ects = ($gepiSettings['active_mod_ects'] == 'y' and (($test_prof_suivi != "0" and $gepiSettings['GepiAccesSaisieEctsPP'] =='yes' and $test_prof_ects != "0")
       or ($_SESSION['statut']=='scolarite' and $gepiSettings['GepiAccesSaisieEctsScolarite'] =='yes' and $test_scol_ects != "0")
-      or ($_SESSION['statut']=='secours')
-      ) $chemin[] = "/mod_ects/index_saisie.php";
+      or ($_SESSION['statut']=='secours')));
+if ($conditions_ects) $chemin[] = "/mod_ects/index_saisie.php";
 
 
 $titre = array();
@@ -533,7 +532,7 @@ if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (ge
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $titre[] = "Carnet de notes : saisie des notes";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $titre[] = "Bulletin : saisie des moyennes et des appréciations par matière";
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $titre[] = "Bulletin : saisie des avis du conseil";
-if ((($test_prof_suivi != "0") and ($gepiSettings['GepiAccesSaisieEctsPP'] =='yes') and $test_prof_ects != "0") or (($_SESSION['statut']=='scolarite') and ($gepiSettings['GepiAccesSaisieEctsScolarite'] =='yes') and $test_scol_ects != "0") or ($_SESSION['statut']=='secours')  ) $titre[] = "Crédits ECTS";
+if ($conditions_ects) $titre[] = "Crédits ECTS";
 
 $expli = array();
 $expli[] = "Cet outil vous permet d'enregistrer les absences des ".$gepiSettings['denomination_eleves'].". Elles figureront sur le bulletin scolaire.";
@@ -541,7 +540,7 @@ if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (ge
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $expli[] = "Cet outil vous permet de constituer un carnet de notes pour chaque période et de saisir les notes de toutes vos évaluations.";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $expli[] = "Cet outil permet de saisir directement, sans passer par le carnet de notes, les moyennes et les appréciations du bulletin";
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $expli[] = "Cet outil permet la saisie des avis du conseil de classe.";
-if ((($test_prof_suivi != "0") and ($gepiSettings['GepiAccesSaisieEctsPP'] =='yes') and $test_prof_ects != "0") or (($_SESSION['statut']=='scolarite') and ($gepiSettings['GepiAccesSaisieEctsScolarite'] =='yes') and $test_scol_ects != "0") or ($_SESSION['statut']=='secours')) $expli[] = "Saisie des crédits ECTS";
+if ($conditions_ects) $expli[] = "Saisie des crédits ECTS";
 
 // Pour un professeur, on n'appelle que les aid qui sont sur un bulletin
 $call_data = mysql_query("SELECT * FROM aid_config WHERE display_bulletin = 'y' OR bull_simplifie = 'y' ORDER BY nom");
@@ -784,9 +783,9 @@ if ($affiche=='yes') {
 ******************************/
 /* $test_prof_suivi et $test_prof_ects doivent être défini avant */
 
-$condition = (  (($test_prof_suivi != "0") and ($gepiSettings['GepiAccesEditionDocsEctsPP'] =='yes') and $test_prof_ects != "0")
+$condition = ($gepiSettings['active_mod_ects'] == 'y' and ((($test_prof_suivi != "0") and ($gepiSettings['GepiAccesEditionDocsEctsPP'] =='yes') and $test_prof_ects != "0")
                 or (($_SESSION['statut']=='scolarite') and ($gepiSettings['GepiAccesEditionDocsEctsScolarite'] =='yes') and $test_scol_ects != "0")
-                or ($_SESSION['statut']=='secours')  );
+                or ($_SESSION['statut']=='secours')  ));
 
 $chemin = array();
 if ($condition) $chemin[] = '/mod_ects/edition.php';
