@@ -516,15 +516,46 @@ function updateMention(id,valeur){
 
 
 
+    // Cette variable contient tous les groupes pour la période, organisés par catégories.
     $categories = $Eleve->getEctsGroupesByCategories($periode_num);
 
+    // Pour s'assurer qu'on affiche bien tout, il faut néanmoins récupérer tout de suite
+    // les crédits ECTS précédents, sans quoi ne saura si tout a été affiché.
+    $periodes_precedentes = array();
+    if ($periode_num > 1) {
+        for($i=1;$i<$periode_num;$i++) {
+            $periodes_precedentes[$i] = $Eleve->getEctsGroupesByCategories($i);
+            foreach($periodes_precedentes[$i] as $key => $cat_per_prec) {
+                if (!array_key_exists($key,$categories)) {
+                    $categories[$key][0] = $cat_per_prec[0];
+                    $categories[$key][1] = array();
+                }
+            }
+        }
+    }
+    // Idem pour les crédits archivés : on stock en avance tous les crédits archivés
+    $archived_credits = array();
+    foreach($annees_precedentes as $a) {
+        $archived_credits[$a['annee']] = array();
+        foreach($a['periodes'] as $p_num => $p) {
+            $archived_credits[$a['annee']][$p_num] = $Eleve->getArchivedEctsCredits($a['annee'], $p_num);
+        }
+    }
+
+    // Ce tableau liste les ID des groupes déjà affichés, pour chaque période.
+    $groupes_id = array();
     $donnees_enregistrees = true;
     $total_valeur = array();
     for ($i=1;$i<=$periode_num;$i++) {
         $total_valeur[$i] = 0;
     }
     $mentions = array('A','B','C','D','E','F');
+
+    // Ce tableau liste les ID des ects archivés déjà affichés, pour éviter des doublons à la fin,
+    // et déterminer ceux qui n'ont pas encore été affichés.
     $archives_id = array();
+
+    // Ce tableau sert à calculer les totaux de crédits.
     $archives_valeurs_globales = array();
     foreach($annees_precedentes as $a) {
         $archives_valeurs_globales[$a['annee']] = array();
@@ -532,12 +563,14 @@ function updateMention(id,valeur){
             $archives_valeurs_globales[$a['annee']][$p_num] = 0;
         }
     }
+
     foreach($categories as $categorie) {
-        if (count($categories) > 0) {
             echo "<tr><td colspan='";
                 echo 1+$nb_cols;
             echo "' style='text-align:left; padding-left: 10px; background-color: lightgray;'><b><i>".$categorie[0]->getNomComplet()."</i></b></td></tr>";
-        }
+
+        // On traite tous les groupes présents pour la catégorie.
+        // Ces groupes sont basés sur la période courante.
         foreach($categorie[1] as $group) {
             echo "<tr>";
             echo "<td class='bull_simple'>";
@@ -545,26 +578,29 @@ function updateMention(id,valeur){
             echo "<p><b>".$group->getDescription()."</b>";
             echo " (".intval($group->getEctsDefaultValue($id_classe)).")";
             echo "</p></td>";
-            // Affichage des éventuelles résultats précédents
+            // Affichage des éventuels résultats précédents
             foreach($annees_precedentes as $a) {
                 foreach($a['periodes'] as $p_num => $p) {
                     $archive = $Eleve->getArchivedEctsCredit($a['annee'], $p, $group->getDescription());
-                    echo "<td>";
-                    if ($archive == null) {
-                        echo "-";
-                    } else {
-                        // On stocke l'ID pour voir si on a bien affiché tous les crédits obtenus par le passé
+                    if ($archive != null and !in_array($archive->getId(), $archives_id)) {
+                        echo "<td>";
+                        // On stocke l'ID pour voir plus tard si on a bien affiché tous les crédits obtenus par le passé
                         $archives_id[] = $archive->getId();
                         echo $archive->getValeur()." - ".$archive->getMention();
                         $archives_valeurs_globales[$a['annee']][$p_num] += $archive->getValeur();
+                        echo "</td>";
+                        $archives_id[] = $archive->getId();
+                    } else {
+                        echo "<td>-</td>";
                     }
-                    echo "</td>";
                 }
             }
 
-
+            // Maintenant on attaque les périodes de l'année en cours.
             for ($i=1;$i<=$periode_num;$i++) {
                 $CreditEcts = $Eleve->getEctsCredit($i,$group->getId());
+
+                // Si on est rendu à la période courante :
                 if ($i == $periode_num) {
                     if ($CreditEcts == null) $donnees_enregistrees = false; // On indique que des données n'ont pas été enregistrées en base de données
                     echo "<td class='bull_simple'>";
@@ -592,24 +628,193 @@ function updateMention(id,valeur){
                         echo "/><label for='mention_ects_".$group->getId()."_$mention'>$mention</label>";
                     }
                     echo "</td>";
+                    $total_valeur[$i] += $valeur_ects;
+                // Ici on est aux périodes précédentes
                 } else {
-                    // Ici on affiche simplement les valeurs de la période
-                    echo "<td>";
-                    if ($CreditEcts == null) {
-                        echo "-";
-                        $valeur_ects = 0;
+
+                    // Ici on affiche simplement les valeurs de la période, et seulement
+                    // si le groupe en question n'a pas été déjà traité.
+                    // Il peut arriver que ce groupe ait été traité dans une catégorie
+                    // précédente, s'il était assigné à une autre catégorie au semestre
+                    // précédent pour l'élève en question... (c'est tordu, oui...)
+                    if (!in_array($group->getId(),$groupes_id)) {
+                        echo "<td>";
+                        if ($CreditEcts == null) {
+                            echo "-";
+                            $valeur_ects = 0;
+                        } else {
+                            echo $CreditEcts->getValeur()." - ".$CreditEcts->getMention();
+                            $valeur_ects = $CreditEcts->getValeur();
+                        }
+                        echo "</td>";
+                        $total_valeur[$i] += $valeur_ects;
                     } else {
-                        echo $CreditEcts->getValeur()." - ".$CreditEcts->getMention();
-                        $valeur_ects = $CreditEcts->getValeur();
+                        echo "<td>-</td>";
                     }
-                    echo "</td>";
+
+                    // On enlève ce groupe de la liste des groupes pour les périodes précédentes.
+                    // Cela va nous permettre de vérifier s'il reste des groupes non traités ayant
+                    // cette catégorie (typiquement des groupes auxquels l'élève n'est plus
+                    // inscrit.
+                    // Attention, il y a un cas de figure non pris en compte : si ce même groupe
+                    // est en réalité dans une catégorie différente pour la période précédente !!
+                    // (ce serait un cas tordu, mais le bug engendra serait très embêtant, car le
+                    // crédit serait affiché deux fois).
+                    // Pour pallier ce problème, on doit donc identifier la liste des groupes déjà
+                    // affichés pour chaque période. Et on testera cette liste si jamais on doit afficher
+                    // des crédits qui 'extra'.
+                    if (isset($periodes_precedentes[$i][$categorie[0]->getId()][1][$group->getId()])) {
+                        unset($periodes_precedentes[$i][$categorie[0]->getId()][1][$group->getId()]);
+                    }
                 }
-                $total_valeur[$i] += $valeur_ects;
+                
             }
             echo "</tr>";
+            
+            // On indique que le groupe en question a été traité
+            $groupes_id[] = $group->getId();
+        }
+
+        // Maintenant on a fait le tour de tous les groupes actifs pour la période
+        // courante. On regarde si des groupes supplémentaires doivent être affichés
+        // pour cette catégorie pour des périodes précédentes.
+        $extra_groups = array();
+        for ($i=1;$i<$periode_num;$i++) {
+            // Test 1 : est-ce qu'il reste des groupes supplémentaires ?
+            if (count($periodes_precedentes[$i][$categorie[0]->getId()][1]) > 0) {
+                // Oui... Alors on les passe en boucle.
+                foreach($periodes_precedentes[$i][$categorie[0]->getId()][1] as $group) {
+                    // Test 2 : quand même, ils ont pu être déjà traités sans être
+                    // supprimés, s'ils étaient dans une autre catégorie. On regarde
+                    // alors la liste des groupes déjà traités pour les périodes
+                    // précédentes.
+                    if(!in_array($group->getId(), $groupes_id)) {
+                        // Il n'a pas été traité, alors on le prend !
+                        $extra_groups[] = $group;
+                    }
+                }
+            }
+        }
+        
+        foreach($extra_groups as $group) {
+            // On a encore des groupes à traiter... On va donc refaire la même procédure que ci-dessus.
+            // Pas très propre ce copier/coller de code (même si c'est en réalité une version
+            // simplifiée ici), mais bon... Difficile de faire autrement vue la
+            // complexité des contraintes.
+            echo "<tr>";
+            echo "<td class='bull_simple'>";
+            // Information sur la matière
+            echo "<p><b>".$group->getDescription()."</b>";
+            echo "</p></td>";
+            // Affichage des éventuels résultats archivés
+            foreach($annees_precedentes as $a) {
+                foreach($a['periodes'] as $p_num => $p) {
+                    $archive = $Eleve->getArchivedEctsCredit($a['annee'], $p, $group->getDescription());
+                    if ($archive != null and !in_array($archive->getId(), $archives_id)) {
+                        echo "<td>";
+                        // On stocke l'ID pour voir plus tard si on a bien affiché tous les crédits obtenus par le passé
+                        $archives_id[] = $archive->getId();
+                        echo $archive->getValeur()." - ".$archive->getMention();
+                        $archives_valeurs_globales[$a['annee']][$p_num] += $archive->getValeur();
+                        echo "</td>";
+                        $archives_id[] = $archive->getId();
+                    } else {
+                        echo "<td>-</td>";
+                    }
+                }
+            }
+
+            // Maintenant on attaque les périodes de l'année en cours.
+            for ($i=1;$i<$periode_num;$i++) {
+                $CreditEcts = $Eleve->getEctsCredit($i,$group->getId());
+
+                // Si on est rendu à la période courante :
+                if ($i == $periode_num) {
+
+                // Ici on est aux périodes précédentes
+                } else {
+                    // Ici on affiche simplement les valeurs de la période, et seulement
+                    // si le groupe en question n'a pas été déjà traité.
+                    if (!in_array($group->getId(),$groupes_id)) {
+                        echo "<td>";
+                        if ($CreditEcts == null) {
+                            echo "-";
+                            $valeur_ects = 0;
+                        } else {
+                            echo $CreditEcts->getValeur()." - ".$CreditEcts->getMention();
+                            $valeur_ects = $CreditEcts->getValeur();
+                        }
+                        echo "</td>";
+                        $total_valeur[$i] += $valeur_ects;
+                    } else {
+                        echo "<td>-</td>";
+                    }
+                    if (isset($periodes_precedentes[$i][$categorie[0]->getId()][1][$group->getId()])) {
+                        unset($periodes_precedentes[$i][$categorie[0]->getId()][1][$group->getId()]);
+                    }
+                }
+
+            }
+            // On affiche la période courante vide :
+            echo "<td>-</td><td>-</td>";
+            echo "</tr>";
+            // On indique que le groupe en question a été traité
+            $groupes_id[] = $group->getId();
         }
     }
 
+
+    // Enfin, le traitement ultime : l'hypothèse où il reste des matières archivées
+    // dont les ECTS n'ont pas encore été affichés...
+    // On ne se pose plus la question des catégories, à ce stade...
+
+    $extra_matieres = array();
+    foreach($annees_precedentes as $a) {
+        foreach($a['periodes'] as $p_num => $p) {
+            $credits = $Eleve->getArchivedEctsCredits($a['annee'], $p);
+            foreach($credits as $archive) {
+                if (!in_array($archive->getId(), $archives_id) and !in_array($archive->getMatiere(), $extra_matieres)) {
+                    $extra_matieres[] = $archive->getMatiere();
+                }
+            }
+        }
+    }
+
+
+    foreach($extra_matieres as $matiere) {
+        echo "<tr>";
+        echo "<td class='bull_simple'>";
+        // Information sur la matière
+        echo "<p><b>".$matiere."</b>";
+        echo "</p></td>";
+        // Affichage des éventuels résultats archivés
+        foreach($annees_precedentes as $a) {
+            foreach($a['periodes'] as $p_num => $p) {
+                $archive = $Eleve->getArchivedEctsCredit($a['annee'], $p, $matiere);
+                if ($archive != null and !in_array($archive->getId(), $archives_id)) {
+                    echo "<td>";
+                    // On stocke l'ID pour voir plus tard si on a bien affiché tous les crédits obtenus par le passé
+                    $archives_id[] = $archive->getId();
+                    echo $archive->getValeur()." - ".$archive->getMention();
+                    $archives_valeurs_globales[$a['annee']][$p_num] += $archive->getValeur();
+                    echo "</td>";
+                    $archives_id[] = $archive->getId();
+                } else {
+                    echo "<td>-</td>";
+                }
+            }
+        }
+
+        // Maintenant on attaque les périodes de l'année en cours.
+        for ($i=1;$i<$periode_num;$i++) {
+            echo "<td>-</td>";
+        }
+        // On affiche la période courante vide :
+        echo "<td>-</td><td>-</td>";
+        echo "</tr>";
+    }
+
+    // Maintenant on arrive aux totaux :
     echo "<tr style='border-top: 3px solid black; background-color: lightgray;'><td>Global</td>";
     foreach($annees_precedentes as $a) {
         foreach($a['periodes'] as $p_num => $p) {

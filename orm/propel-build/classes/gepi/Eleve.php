@@ -136,7 +136,7 @@ class Eleve extends BaseEleve {
         foreach($groupes as $groupe) {
             if ($groupe->allowsEctsCredits($classe->getId())) {
                 $cat = $groupe->getCategorieMatiere($classe->getId());
-                $categories[$cat->getId()][1][] = $groupe;
+                $categories[$cat->getId()][1][$groupe->getId()] = $groupe;
             }
         }
 
@@ -178,7 +178,15 @@ class Eleve extends BaseEleve {
 		$criteria->add(ArchiveEctsPeer::NUM_PERIODE,$periode);
         $criteria->add(ArchiveEctsPeer::ANNEE,$annee);
         $v = $this->getArchiveEctss($criteria);
-        return $v;
+        if (!empty($v)) {
+            $result = array();
+            foreach($v as $credit){
+                $result[$credit->getId()] = $credit;
+            }
+        } else {
+            $result = null;
+        }
+        return $result;
 	}
 
 	public function getArchivedEctsCredit($annee,$periode,$matiere) {
