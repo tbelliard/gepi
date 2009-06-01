@@ -933,6 +933,7 @@
 
 	$nom_bulletin='Fiches_brevet_'.$date_fichier.'.pdf';
 
+	header('Content-Type: application/pdf');
 	$pdf->Output($nom_bulletin,'I');
 	die();
 
