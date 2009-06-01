@@ -416,7 +416,7 @@ else {
 			$alt=1;
 			while($lig_ele=mysql_fetch_object($res_ele)) {
 				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'>\n";
+				echo "<tr class='lig$alt white_hover'>\n";
 				echo "<td>";
 				echo "<input type='hidden' name='ele_login[$cpt]' value=\"".$lig_ele->login."\" />\n";
 				echo $lig_ele->nom." ".$lig_ele->prenom;
