@@ -282,8 +282,7 @@ if($_SESSION['statut']=="administrateur") {
 		<li><a href='rouen/fiches_brevet.php'>Rouen (<i>version HTML</i>)</a> - <a href='fb_rouen_pdf.php'>version PDF</a></li>
 		<li><a href='fb_montpellier_pdf.php'>Montpellier (<i>version PDF</i>)</a></li>
 		<li><a href='fb_creteil_pdf.php'>Creteil (<i>version PDF</i>)</a></li>
-		<li><a href='fb_lille_pdf.php'>Lille (<i>version PDF</i>)</a></li>
-		<li><a href='fb_montpellier_pdf.php'>Montpellier (<i>version PDF</i>)</a></li>\n";
+		<li><a href='fb_lille_pdf.php'>Lille (<i>version PDF</i>)</a></li>\n";
 	$gepi_version=getSettingValue('version');
 	if(($gepi_version!='1.5.1')&&($gepi_version!='1.5.0')) {
 		echo "		<li>Modèle Nantes au format <a href='OOo/imprime_ooo.php'>OpenOffice</a> </li>\n";
