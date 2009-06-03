@@ -49,6 +49,44 @@ if (!checkAccess()) {
 }
 //======================================================================================
 
+//==============================================
+/* Ajout des droits pour fiches_brevet.php dans la table droits */
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/OOo/fiches_brevet.php';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+$sql="INSERT INTO droits SET id='/mod_notanet/OOo/fiches_brevet.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Fiches brevet OpenOffice',
+statut='';";
+$insert=mysql_query($sql);
+}
+
+/* Ajout des droits pour imprime_ooo.php dans la table droits */
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/OOo/imprime_ooo.php';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+$sql="INSERT INTO droits SET id='/mod_notanet/OOo/imprime_ooo.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Imprime fiches brevet OpenOffice',
+statut='';";
+$insert=mysql_query($sql);
+}
+//==============================================
+
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/fb_rouen_pdf.php';";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
@@ -245,7 +283,12 @@ if($_SESSION['statut']=="administrateur") {
 		<li><a href='fb_montpellier_pdf.php'>Montpellier (<i>version PDF</i>)</a></li>
 		<li><a href='fb_creteil_pdf.php'>Creteil (<i>version PDF</i>)</a></li>
 		<li><a href='fb_lille_pdf.php'>Lille (<i>version PDF</i>)</a></li>
-	</ul>
+		<li><a href='fb_montpellier_pdf.php'>Montpellier (<i>version PDF</i>)</a></li>\n";
+	$gepi_version=getSettingValue('version');
+	if(($gepi_version!='1.5.1')&&($gepi_version!='1.5.0')) {
+		echo "		<li>Modèle Nantes au format <a href='OOo/imprime_ooo.php'>OpenOffice</a> </li>\n";
+	}
+	echo "	</ul>
 </li>\n";
 	//echo "<li><a href='#'>Vider les tables notanet</a></li>\n";
 	//echo "<li><a href=''></a></li>\n";
