@@ -538,7 +538,8 @@
 				$nb_mat=0;
 				$nb_mat_notnonca=0;
 				for($j=101;$j<=122;$j++) {
-					if($tabmatieres[$j][0]!='') {
+					//if($tabmatieres[$j][0]!='') {
+					if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j][-4]!='non dispensee dans l etablissement')) {
 						$nb_mat++;
 						if($tabmatieres[$j][-1]=='NOTNONCA') {
 							$nb_mat_notnonca++;

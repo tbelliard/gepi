@@ -533,7 +533,8 @@
 				$nb_mat=0;
 				$nb_mat_notnonca=0;
 				for($j=101;$j<=122;$j++) {
-					if($tabmatieres[$j][0]!='') {
+					//if($tabmatieres[$j][0]!='') {
+					if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j][-4]!='non dispensee dans l etablissement')) {
 						$nb_mat++;
 						if($tabmatieres[$j][-1]=='NOTNONCA') {
 							$nb_mat_notnonca++;
@@ -550,6 +551,7 @@
 
 				// Hauteur pour chaque matière:
 				$hauteur_toutes_matieres=$y_cadre_bas-$marge-$y; // 10 pour la ligne 'A titre indicatif'
+				//$hauteur_toutes_matieres=$y_cadre_bas-$marge-$y-$h_ligne_a_titre_indicatif; // 10 pour la ligne 'A titre indicatif'
 				$h_par_matiere=$hauteur_toutes_matieres/$nb_mat;
 			
 				// Boucle sur les matières
@@ -843,7 +845,8 @@
 
 					//=====================================================
 					// TOTAUX
-					$y_socles=$pdf->GetY();
+					//$y_socles=$pdf->GetY();
+					$y_socles=$y+$h_par_matiere;
 					//$pdf->SetXY(210-$marge-$larg_col_note_glob,$y);
 					// LIGNE TOTAUX
 					$pdf->SetFont('Arial','',$fs_txt);
