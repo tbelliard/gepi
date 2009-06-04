@@ -256,7 +256,7 @@ if($periode_cn==0){
 		$periode_cn=1;
 	}
 }
-
+/*
 // appel du carnet de notes
 if ($periode_cn != 0) {
 	$login_prof = $_SESSION['login'];
@@ -264,6 +264,33 @@ if ($periode_cn != 0) {
 	$id_racine = @mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
 
 }
+*/
+// appel du carnet de notes
+if ($periode_cn != 0) {
+	$login_prof = $_SESSION['login'];
+
+	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$periode_cn');";
+	$appel_cahier_notes = mysql_query($sql);
+	if(mysql_num_rows($appel_cahier_notes)==0) {
+		// En passant à enseignement suivant, il peut arriver que l'on passe d'une enseignement à trois périodes à un enseignement à 2 périodes.
+		// Si on arrive sur l'enseignement à deux périodes avec un periode_cn=3, on obtient des erreurs
+
+		$sql="SELECT num_periode FROM periodes p, j_groupes_classes jgc WHERE p.verouiller='N' AND jgc.id_classe=p.id_classe AND jgc.id_groupe='".$current_group["id"]."' ORDER BY num_periode LIMIT 1;";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$lig_tmp=mysql_fetch_object($test);
+			$periode_cn=$lig_tmp->num_periode;
+		}
+		else {
+			$periode_cn=1;
+		}
+		$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$periode_cn');";
+		$appel_cahier_notes = mysql_query($sql);
+	}
+	$id_racine = @mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
+}
+
+
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 
