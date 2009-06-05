@@ -155,6 +155,24 @@ statut='';";
 $insert=mysql_query($sql);
 }
 
+
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/saisie_param.php';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+$sql="INSERT INTO droits SET id='/mod_notanet/saisie_param.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Fiches brevet: Saisie des paramètres',
+statut='';";
+$insert=mysql_query($sql);
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Notanet: Accueil";
 //echo "<div class='noprint'>\n";
@@ -260,6 +278,7 @@ echo "</p>\n";
 //echo "<ul>\n";
 if($_SESSION['statut']=="administrateur") {
 	echo "<ol>\n";
+	echo "<li><a href='saisie_param.php'>Saisir les paramètres Académie, Session,...</a>.</li>\n";
 	echo "<li><a href='select_eleves.php'>Effectuer les associations Elèves/Type de brevet</a></li>\n";
 
 	echo "<li><a href='select_matieres.php'>Effectuer les associations Type de brevet/Matières</a>  (<i>en précisant le statut: imposées et options</i>)</li>\n";

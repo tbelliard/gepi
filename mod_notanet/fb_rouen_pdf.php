@@ -25,11 +25,12 @@
 	$fb_session=getSettingValue("fb_session");
 	// ****************************************************************************
 	// MODE DE CALCUL POUR LES MOYENNES DES REGROUPEMENTS DE MATIERES:
-	// - LV1: on fait la moyenne de toutes les LV1 (AGL1, ALL1)
-	// ou
 	// - LV1: on présente pour chaque élève, la moyenne qui correspond à sa LV1: ALL1 s'il fait ALL1,...
+	// ou
+	// - LV1: on fait la moyenne de toutes les LV1 (AGL1, ALL1)
 	// ****************************************************************************
 	$fb_mode_moyenne=getSettingValue("fb_mode_moyenne");
+	if(($fb_mode_moyenne!=1)&&($fb_mode_moyenne!=2)) {$fb_mode_moyenne=1;}
 	$ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele_lieu_naissance") : "n";
 
 	// Choix du type de brevet à imprimer
@@ -635,7 +636,25 @@
 								$pdf->SetXY($x,$y);
 								//$tmp="-";
 								//if($tabmatieres[$j]['socle']!='y') {$tmp=strtr($moy_classe[$j],".",",");}
-								$tmp=strtr($moy_classe[$j],".",",");
+								$tmp="-";
+								if($fb_mode_moyenne==1) {
+									$tmp=strtr($moy_classe[$j],".",",");
+								}
+								else {
+									$sql="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
+									$res_mat=mysql_query($sql);
+									if(mysql_num_rows($res_mat)>0){
+										$lig_mat=mysql_fetch_object($res_mat);
+
+										$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND matiere='".$lig_mat->matiere."' AND note!='AB' AND note!='DI' AND note!='NN';";
+										//echo "$sql<br />";
+										$res_moy=mysql_query($sql);
+										if(mysql_num_rows($res_moy)>0){
+											$lig_moy=mysql_fetch_object($res_moy);
+											$tmp=strtr($lig_moy->moyenne_mat,".",",");
+										}
+									}
+								}
 								$pdf->Cell($larg_col_note,$h_par_matiere, $tmp,'LRBT',2,'C');
 								$x+=$larg_col_note;
 								$largeur_colonnes_moy+=$larg_col_note;
