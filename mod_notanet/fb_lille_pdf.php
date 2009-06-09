@@ -152,6 +152,13 @@
 		echo "<p class='bold'><a href='../accueil.php'>Accueil</a>";
 		echo " | <a href='index.php'>Accueil Notanet</a>";
 		//echo " | <a href='".$_SERVER['PHP_SELF']."?parametrer=y'>Paramètrer</a>";
+
+		$sql="SELECT DISTINCT type_brevet FROM notanet_ele_type LIMIT 2;";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>1) {
+			echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre type de brevet</a>";
+		}
+
 		echo "</p>\n";
 		echo "</div>\n";
 	
@@ -168,7 +175,7 @@
 		$nombre_lignes = mysql_num_rows($call_data);
 	
 	
-		echo "<p>Choisissez les classes pour lesquelles vous souhaitez générer les fiches brevet:</p>\n";
+		echo "<p>Choisissez les classes pour lesquelles vous souhaitez générer les fiches brevet série <b>".$tab_type_brevet[$type_brevet]."</b>&nbsp;:</p>\n";
 	
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_classe' method='post'>\n";
 		echo "<input type='hidden' name='type_brevet' value='$type_brevet' />\n";
@@ -382,7 +389,8 @@
 										notanet_ele_type net
 								WHERE n.id_classe='$id_classe[$i]' AND
 										n.login=e.login AND
-										net.login=n.login
+										net.login=n.login AND
+										net.type_brevet='$type_brevet'
 								ORDER BY e.login;";
 		$res1=mysql_query($sql);
 		if(mysql_num_rows($res1)>0) {
@@ -776,7 +784,7 @@
 										else{
 											$valeur_tmp=$lig_note->note;
 											$temoin_note_non_numerique="y";
-											/*
+											
 											if(($tabmatieres[$j][-1]!='PTSUP')){
 												if($num_fb_col==1){
 													$SUR_TOTAL[1]-=$tabmatieres[$j]['fb_col'][1];
@@ -785,7 +793,7 @@
 													$SUR_TOTAL[2]-=$tabmatieres[$j]['fb_col'][2];
 												}
 											}
-											*/
+											
 										}
 									}
 									else{

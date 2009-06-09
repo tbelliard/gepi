@@ -242,7 +242,7 @@ else {
 
 			//===========================
 			echo "<tr>\n";
-			echo "<th rowspan='3'>Elève</th>\n";
+			echo "<th rowspan='3' colspan='2'>Elève</th>\n";
 			echo "<th colspan='2'>Avis favorable</th>\n";
 			//echo "<th rowspan='3'>Motivation d'un avis défavorable</th>\n";
 			echo "<th rowspan='3'>Motivation de l'avis</th>\n";
@@ -276,12 +276,53 @@ else {
 
 			$alt=1;
 			while($lig_ele=mysql_fetch_object($res_ele)) {
+
+				$temoin_photo="";
+
+				//========================
+				$sql="SELECT elenoet FROM eleves WHERE login='$lig_ele->login';";
+				$res_elenoet=mysql_query($sql);
+				$lig_elenoet=mysql_fetch_object($res_elenoet);
+				$eleve_elenoet=$lig_elenoet->elenoet;
+	
+				// Photo...
+				$photo=nom_photo($eleve_elenoet);
+				//$temoin_photo="";
+				if("$photo"!=""){
+					$titre=$lig_ele->nom." ".$lig_ele->prenom;
+	
+					$texte="<div align='center'>\n";
+					$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$lig_ele->nom $lig_ele->prenom\" />";
+					$texte.="<br />\n";
+					$texte.="</div>\n";
+	
+					$temoin_photo="y";
+	
+					$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$lig_ele->login,$titre,"",$texte,"",14,0,'y','y','n','n');
+				}
+				//========================
+
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
+				/*
 				echo "<td>";
 				echo "<input type='hidden' name='ele_login[$cpt]' value=\"".$lig_ele->login."\" />\n";
 				echo $lig_ele->nom." ".$lig_ele->prenom;
 				echo "</td>\n";
+				*/
+				if($temoin_photo!="y") {
+					echo "<td colspan='2'>".$lig_ele->nom." ".$lig_ele->prenom;
+				}
+				else {
+					echo "<td>".$lig_ele->nom." ".$lig_ele->prenom."</td>";
+					echo "<td><a href='#' onmouseover=\"afficher_div('photo_$lig_ele->login','y',-100,20);\"";
+					echo ">";
+					echo "<img src='../images/icons/buddy.png' alt='".$lig_ele->nom." ".$lig_ele->prenom."' />";
+					echo "</a>";
+				}
+				echo "<input type='hidden' name='ele_login[$cpt]' value=\"".$lig_ele->login."\" />\n";
+				echo "</td>\n";
+
 
 				$sql="SELECT * FROM notanet_avis WHERE login='".$lig_ele->login."';";
 				$res_avis=mysql_query($sql);
