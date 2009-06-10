@@ -168,14 +168,17 @@ else {
 							$ine="";
 							while($lig2=mysql_fetch_object($res2)) {
 								$ine=$lig2->ine;
+								$note=$lig2->note_notanet;
 								if (ereg ("([0-9]{2}).([0-9]{1})", $lig2->note_notanet)) {
 									if($tabmatieres[$lig2->id_mat][-1]!="NOTNONCA") {
 										$TOT+=$lig2->note_notanet;
 									}
+									$note=formate_note_notanet($lig2->note_notanet);
 								}
-								// Le formatage est déjà fait lors de l'insertion dans la table
+								// Le formatage est déjà fait lors de l'insertion dans la table: NON... il faut deux chiffres après la virgule
 								//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".formate_note_notanet($lig2->note_notanet)."|";
-								$lig_notanet[]="$lig2->ine|$lig2->id_mat|".$lig2->note_notanet."|";
+								//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".$lig2->note_notanet."|";
+								$lig_notanet[]="$lig2->ine|$lig2->id_mat|".$note."|";
 							}
 							$lig_notanet[]="$ine|TOT|".formate_note_notanet($TOT)."|";
 						}
@@ -224,14 +227,16 @@ else {
 					$ine="";
 					while($lig2=mysql_fetch_object($res2)) {
 						$ine=$lig2->ine;
+						$note=$lig2->note_notanet;
 						if (ereg ("([0-9]{2}).([0-9]{1})", $lig2->note_notanet)) {
 							if($tabmatieres[$lig2->id_mat][-1]!="NOTNONCA") {
 								$TOT+=$lig2->note_notanet;
 							}
+							$note=formate_note_notanet($lig2->note_notanet);
 						}
 						// Le formatage est déjà fait lors de l'insertion dans la table
 						//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".formate_note_notanet($lig2->note_notanet)."|";
-						$lig_notanet[]="$lig2->ine|$lig2->id_mat|".$lig2->note_notanet."|";
+						$lig_notanet[]="$lig2->ine|$lig2->id_mat|".$note."|";
 					}
 					$lig_notanet[]="$ine|TOT|".formate_note_notanet($TOT)."|";
 				}
