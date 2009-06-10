@@ -728,6 +728,7 @@
 								}
 								$valeur_tmp="";
 
+								// On traite le cas des notes non numériques AB, DI,... plus pour décrémenter les SUR_TOTAUX
 								if((strlen(ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
 									$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];
 								}
@@ -812,6 +813,8 @@
 									$pdf->SetFont('Arial','',$fs_txt);
 									$pdf->SetXY($x_col_note_glob,$y);
 									$pdf->Cell($larg_col_note_glob,$h_par_matiere, $valeur_notanet_tmp,'LRBT',2,'C');
+
+									$TOTAL+=$valeur_notanet_tmp;
 								}
 							}
 							/*

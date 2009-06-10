@@ -513,7 +513,7 @@
 				$pdf->Cell($larg_col_note_glob,2*$h_texte_titre_disc, "LV2",'LRBT',0,'C');
 				$texte="Module déc.Prof. 6 heures";
 				//$pdf->drawTextBox('Note moyenne de la classe', $larg_col_note_glob, 2*$pdf->FontSize*$sc_interligne, 'C', 'M', 1);
-				$pdf->drawTextBox('Note moyenne de la classe', $larg_col_note_glob, 2*$h_texte_titre_disc, 'C', 'M', 1);
+				$pdf->drawTextBox($texte, $larg_col_note_glob, 2*$h_texte_titre_disc, 'C', 'M', 1);
 
 				$texte="Appréciations des professeurs";
 				$font_size=adjust_size_font($texte,$larg_col_app,$fs_txt,0.3);
@@ -756,6 +756,7 @@
 
 									$valeur_tmp="";
 	
+									// On traite le cas des notes non numériques AB, DI,... plus pour décrémenter les SUR_TOTAUX
 									if((strlen(ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
 										$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];
 									}
@@ -819,6 +820,8 @@
 												// Cas points>10
 												$t_col1=$valeur_notanet_tmp;
 												$t_col2="";
+
+												$TOTAL+=$valeur_notanet_tmp;
 											}
 										}
 										else {
@@ -834,6 +837,8 @@
 												// Cas points>10
 												$t_col2=$valeur_notanet_tmp;
 												$t_col1="";
+
+												$TOTAL+=$valeur_notanet_tmp;
 											}
 										}
 										else {

@@ -731,6 +731,7 @@
 
 									$valeur_tmp="";
 	
+									// On traite le cas des notes non numériques AB, DI,... plus pour décrémenter les SUR_TOTAUX
 									if((strlen(ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
 										$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];
 									}
@@ -784,7 +785,7 @@
 										}
 									}
 									//echo "\$valeur_tmp=$valeur_tmp<br />\n";
-			
+
 									if($num_fb_col==1) {
 										if($temoin_note_non_numerique=="n") {
 											if($tabmatieres[$j][-1]!='PTSUP') {
@@ -794,6 +795,8 @@
 												// Cas points>10
 												$t_col1=$valeur_notanet_tmp;
 												$t_col2="";
+
+												$TOTAL+=$valeur_notanet_tmp;
 											}
 										}
 										else {
@@ -809,6 +812,8 @@
 												// Cas points>10
 												$t_col2=$valeur_notanet_tmp;
 												$t_col1="";
+
+												$TOTAL+=$valeur_notanet_tmp;
 											}
 										}
 										else {
