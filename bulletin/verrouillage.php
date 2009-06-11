@@ -1,25 +1,25 @@
 <?php
 /*
- * @version: $Id$
- *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- *
- * This file is part of GEPI.
- *
- * GEPI is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * GEPI is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GEPI; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+* @version: $Id$
+*
+* Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -30,13 +30,13 @@ if ($resultat_session == 'c') {
 header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 die();
 };
 
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 die();
 }
 
@@ -48,10 +48,10 @@ $action_apres=isset($_GET['action']) ? $_GET['action'] : NULL;
 
 
 if (isset($_POST['deverouillage_auto_periode_suivante'])) {
-    if (!saveSetting("deverouillage_auto_periode_suivante", $_POST['deverouillage_auto_periode_suivante'])) {
-        $msg .= "Erreur lors de l'enregistrement de deverouillage_auto_periode_suivante !";
-        $reg_ok = 'no';
-    }
+	if (!saveSetting("deverouillage_auto_periode_suivante", $_POST['deverouillage_auto_periode_suivante'])) {
+		$msg .= "Erreur lors de l'enregistrement de deverouillage_auto_periode_suivante !";
+		$reg_ok = 'no';
+	}
 }
 
 if (isset($_POST['ok'])) {
@@ -81,58 +81,58 @@ if (isset($_POST['ok'])) {
 		}
 	}
 
-   // Déverrouillage de la période suivante si le bouton radio est à Oui.
-   if ((($action_apres == 'retour') OR ($action_apres == 'imprime_html') OR ($action_apres == 'imprime_pdf') OR ($action_apres == 'rien')) AND isset($_POST['deverouillage_auto_periode_suivante'])) {
+// Déverrouillage de la période suivante si le bouton radio est à Oui.
+if ((($action_apres == 'retour') OR ($action_apres == 'imprime_html') OR ($action_apres == 'imprime_pdf') OR ($action_apres == 'rien')) AND isset($_POST['deverouillage_auto_periode_suivante'])) {
 		if (($_POST['deverouillage_auto_periode_suivante'])=='y') {
-		  //recherche du nombre de période pour la classe
-		  $sql_periode = "SELECT * FROM periodes WHERE id_classe='$classe';";
-		  $result_periode = mysql_query($sql_periode);
-		  $nb_periodes_classe = mysql_num_rows($result_periode);
-          //echo $nb_periodes_classe;
-          $periode_en_cours = $periode;
-		  $periode_suivante = $periode+1;
-		  //Pour la période modifiée on récupère son état
-		  $etat_periode=mysql_result($result_periode, $periode-1, "verouiller");
-		  //echo "<br/>".$etat_periode;
-		  //echo "<br/>".$periode_en_cours;
-		  //echo "<br/>".$nb_periodes_classe;
-		  //si l'état est P ou O on dévérouille totalement la période +1 (di elle existe !)
-		  if (($etat_periode=='P') OR $etat_periode=='O') {
-		    if ($periode_en_cours  < $nb_periodes_classe) {
-			  //echo "<br/>On déverrouille $periode_suivante";
-			  //$sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N' WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
-			  //$sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N', date_verrouillage='".time()."' WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
-			  $sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N', date_verrouillage=NOW() WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
-			  //echo "<br/>".$sql_maj_periode_suivante;
-			  $result_maj_periode_suivante = mysql_query($sql_maj_periode_suivante);
-			  if (!$result_maj_periode_suivante) {$pb_reg_ver = 'yes';}
-		    }
-		  }
-      	}
-   }
-
-   if ($pb_reg_ver == 'no') {
-      $msg = "Les modifications ont été enregistrées.";
-   } else {
-      $msg = "Il y a eu un problème lors de l'enregistrement des données.";
-   }
-
-   if ($action_apres == 'retour') {
-     header("Location: ./verif_bulletins.php");
-   }
-
-   if ($action_apres == 'imprime_html') {
-
-     header("Location: ./index.php?id_classe=$classe");
-   }
-
-   if ($action_apres == 'imprime_pdf') {
-
-     header("Location: ./index.php?format=pdf");
-   }
+		//recherche du nombre de période pour la classe
+		$sql_periode = "SELECT * FROM periodes WHERE id_classe='$classe';";
+		$result_periode = mysql_query($sql_periode);
+		$nb_periodes_classe = mysql_num_rows($result_periode);
+		//echo $nb_periodes_classe;
+		$periode_en_cours = $periode;
+		$periode_suivante = $periode+1;
+		//Pour la période modifiée on récupère son état
+		$etat_periode=mysql_result($result_periode, $periode-1, "verouiller");
+		//echo "<br/>".$etat_periode;
+		//echo "<br/>".$periode_en_cours;
+		//echo "<br/>".$nb_periodes_classe;
+		//si l'état est P ou O on dévérouille totalement la période +1 (di elle existe !)
+		if (($etat_periode=='P') OR $etat_periode=='O') {
+			if ($periode_en_cours  < $nb_periodes_classe) {
+			//echo "<br/>On déverrouille $periode_suivante";
+			//$sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N' WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
+			//$sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N', date_verrouillage='".time()."' WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
+			$sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N', date_verrouillage=NOW() WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
+			//echo "<br/>".$sql_maj_periode_suivante;
+			$result_maj_periode_suivante = mysql_query($sql_maj_periode_suivante);
+			if (!$result_maj_periode_suivante) {$pb_reg_ver = 'yes';}
+			}
+		}
+		}
 }
 
+if ($pb_reg_ver == 'no') {
+	$msg = "Les modifications ont été enregistrées.";
+} else {
+	$msg = "Il y a eu un problème lors de l'enregistrement des données.";
+}
 
+if ($action_apres == 'retour') {
+	header("Location: ./verif_bulletins.php");
+}
+
+if ($action_apres == 'imprime_html') {
+
+	header("Location: ./index.php?id_classe=$classe");
+}
+
+if ($action_apres == 'imprime_pdf') {
+
+	header("Location: ./index.php?format=pdf");
+}
+}
+
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Verrouillage et déverrouillage des périodes";
 require_once("../lib/header.inc");
@@ -140,23 +140,22 @@ require_once("../lib/header.inc");
 ?>
 <script type='text/javascript' language='javascript'>
 function CocheCase(rang,per) {
- nbelements = document.formulaire.elements.length;
- for (i=0;i<nbelements;i++) {
-   if (document.formulaire.elements[i].type =='hidden') {
-     if (document.formulaire.elements[i].value ==per) {
-       document.formulaire.elements[i+1].checked = false ;
-       document.formulaire.elements[i+2].checked = false ;
-       document.formulaire.elements[i+3].checked = false ;
-       document.formulaire.elements[i+rang].checked = true ;
-      }
-   }
- }
+nbelements = document.formulaire.elements.length;
+for (i=0;i<nbelements;i++) {
+if (document.formulaire.elements[i].type =='hidden') {
+	if (document.formulaire.elements[i].value ==per) {
+	document.formulaire.elements[i+1].checked = false ;
+	document.formulaire.elements[i+2].checked = false ;
+	document.formulaire.elements[i+3].checked = false ;
+	document.formulaire.elements[i+rang].checked = true ;
+	}
+}
+}
 }
 </script>
-<p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
-</p>
-
 <?php
+echo "<p class='bold'><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+
 $texte_deverrouiller = urlencode("Déverrouiller");
 $texte_verrouiller_part = urlencode("Verrouiller part.");
 $texte_verrouiller_tot = urlencode("Verrouiller tot.");
@@ -164,167 +163,223 @@ $texte_verrouiller_tot = urlencode("Verrouiller tot.");
 // si la classe et la période sont définies (on vient de verif_bulletiin.php)
 if (!(($classe != 0) AND ($periode !=0))) {
 // On va chercher les classes déjà existantes, et on les affiche.
-    $max_per = sql_query1("SELECT num_periode FROM periodes ORDER BY num_periode DESC LIMIT 1");
-   //$calldata = sql_query("SELECT DISTINCT c.id, c.classe FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-   $calldata = mysql_query("SELECT DISTINCT c.id, c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
-   $nombreligne = sql_count($calldata);
-   echo "Total : $nombreligne classes\n";
+	$max_per = sql_query1("SELECT num_periode FROM periodes ORDER BY num_periode DESC LIMIT 1");
+//$calldata = sql_query("SELECT DISTINCT c.id, c.classe FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+$calldata = mysql_query("SELECT DISTINCT c.id, c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+$nombreligne = sql_count($calldata);
+echo "Total : $nombreligne classes\n";
 }
 
-   echo "<ul>
-   <li>Lorsqu'une période est <b>déverrouillée</b>, le remplissage de toutes les rubriques (notes, appréciations, avis) est autorisé, la visualisation des
-   bulletins simples est autorisée mais la visualisation et l'impression des bulletins officiels sont impossibles.<br /><br /></li>
-   <li>Lorsqu'une période est <b>verrouillée partiellement</b>, seuls le remplissage et/ou la modification
-   de l'avis du conseil de classe";
-   if ($gepiSettings['active_mod_ects'] == 'y') echo "et des crédits ECTS ";
-   echo "sont possibles. La visualisation et l'impression des bulletins officiels sont autorisées.<br /><br /></li>
-   <li>Lorsqu'une période est <b>verrouillée totalement</b>, le remplissage et la modification du bulletin pour la période concernée
-   sont impossibles. la visualisation et l'impression sont autorisées.</li>\n";
-   echo "</ul>\n";
-   echo "<br /><br />\n";
+echo "<ul>
+<li>Lorsqu'une période est <b>déverrouillée</b>, le remplissage de toutes les rubriques (notes, appréciations, avis) est autorisé, la visualisation des
+bulletins simples est autorisée mais la visualisation et l'impression des bulletins officiels sont impossibles.<br /><br /></li>
+<li>Lorsqu'une période est <b>verrouillée partiellement</b>, seuls le remplissage et/ou la modification
+de l'avis du conseil de classe";
+if ($gepiSettings['active_mod_ects'] == 'y') echo "et des crédits ECTS ";
+echo "sont possibles. La visualisation et l'impression des bulletins officiels sont autorisées.<br /><br /></li>
+<li>Lorsqu'une période est <b>verrouillée totalement</b>, le remplissage et la modification du bulletin pour la période concernée
+sont impossibles. la visualisation et l'impression sont autorisées.</li>\n";
+echo "</ul>\n";
+echo "<br /><br />\n";
 
 
 // si la classe et la période sont définies (on vient de verif_bulletiin.php)
 if (($classe != 0) AND ($periode !=0)) {
 
-	  echo "<form action=\"verrouillage.php?classe=$classe&periode=$periode&action=$action_apres\" name=\"formulaire\" method=\"post\">";
+	echo "<form action=\"verrouillage.php?classe=$classe&periode=$periode&action=$action_apres\" name=\"formulaire\" method=\"post\">";
 
-      echo "<table cellpadding='3' cellspacing='0' border='1' align='center'>";
-      echo "<tr class='fond_sombre'><td>&nbsp;</td>";
-      echo "<td>";
-      echo"</td>
-        <td><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Déverrouiller\" /></td>
-        <td><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller partiellement\" /></td>
-        <td><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller totalement\" /></td>";
-      echo "</tr>\n";
-	  // Affichage de la classe (nom court)
-	  $sql_classe = "SELECT classe FROM classes WHERE id = '$classe'";
-      $requete_classe = sql_query($sql_classe);
-	  $donner_modele = mysql_fetch_array($requete_classe);
-	  $nom_court_classe = $donner_modele['classe'];
-	  echo "<td><b>$nom_court_classe</b> ";
-	  echo "</td>";
+	echo "<table cellpadding='3' cellspacing='0' border='1' align='center'>";
+	echo "<tr class='fond_sombre'><td>&nbsp;</td>";
+	echo "<td>";
+	echo"</td>
+		<td><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Déverrouiller\" /></td>
+		<td><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller partiellement\" /></td>
+		<td><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller totalement\" /></td>";
+	echo "</tr>\n";
+	// Affichage de la classe (nom court)
+	$sql_classe = "SELECT classe FROM classes WHERE id = '$classe'";
+	$requete_classe = sql_query($sql_classe);
+	$donner_modele = mysql_fetch_array($requete_classe);
+	$nom_court_classe = $donner_modele['classe'];
+	echo "<td><b>$nom_court_classe</b> ";
+	echo "</td>";
 
-	  $sql_periode = "SELECT nom_periode, verouiller FROM periodes WHERE (id_classe = '$classe' AND num_periode='$periode')";
-	  $periode_query = sql_query($sql_periode);
-	  $nb_periode = sql_count($periode_query) + 1 ;
-	  $j = 0;
+	$sql_periode = "SELECT nom_periode, verouiller FROM periodes WHERE (id_classe = '$classe' AND num_periode='$periode')";
+	$periode_query = sql_query($sql_periode);
+	$nb_periode = sql_count($periode_query) + 1 ;
+	$j = 0;
 
-	  //ajustement de l'indice periode 1, 2 , 3 dans la base en réalité : 0, 1, 2
-	  $indice_periode = $periode-1;
-	  if ($periode_query) for ($i = 0; ($row_per = sql_row($periode_query, $i)); $i++) {
-		 $nom_classe = "cl_".$classe."_".$indice_periode;
-		 echo "<td>".ucfirst($row_per[0])."</td>\n";
-		 //echo "<input type=\"hidden\" name=\"numperiode\" value=\"$i\" />";
-		 echo "<td><input type=\"hidden\" name=\"numperiode\" value=\"$indice_periode\" />";
-		 //echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"N\" ";
-		 echo "<input type=\"radio\" name=\"".$nom_classe."\" value=\"N\" ";
-		 if ($row_per[1] == "N") echo "checked";
-		 echo " /></td>\n";
-		 echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"P\" ";
-		 if ($row_per[1] == "P") echo "checked";
-		 echo " /></td>\n";
-		 echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"O\" ";
-		 if ($row_per[1] == "O") echo "checked";
-		 echo " /></td>\n";
-		 $j++;
-	  }
+	//ajustement de l'indice periode 1, 2 , 3 dans la base en réalité : 0, 1, 2
+	$indice_periode = $periode-1;
+	if ($periode_query) for ($i = 0; ($row_per = sql_row($periode_query, $i)); $i++) {
+		$nom_classe = "cl_".$classe."_".$indice_periode;
+		echo "<td>".ucfirst($row_per[0])."</td>\n";
+		//echo "<input type=\"hidden\" name=\"numperiode\" value=\"$i\" />";
+		echo "<td><input type=\"hidden\" name=\"numperiode\" value=\"$indice_periode\" />";
+		//echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"N\" ";
+		echo "<input type=\"radio\" name=\"".$nom_classe."\" value=\"N\" ";
+		if ($row_per[1] == "N") echo "checked";
+		echo " /></td>\n";
+		echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"P\" ";
+		if ($row_per[1] == "P") echo "checked";
+		echo " /></td>\n";
+		echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"O\" ";
+		if ($row_per[1] == "O") echo "checked";
+		echo " /></td>\n";
+		$j++;
+	}
 
-	  echo "</table><br />\n";
+	echo "</table><br />\n";
 
-	  // Option de déverrouillage automatique
-	  echo "<br />\n<table align='center'>\n";
-	  echo "<tr>\n";
-	  echo "<td>\nProcéder également au déverrouillage automatique de la période suivante <br />lors du verrouillage partiel ou total de la période ci-dessus : ";
-      echo "\n</td>\n<td>\n";
+	// Option de déverrouillage automatique
+	echo "<br />\n<table align='center'>\n";
+	echo "<tr>\n";
+	echo "<td>\nProcéder également au déverrouillage automatique de la période suivante <br />lors du verrouillage partiel ou total de la période ci-dessus : ";
+	echo "\n</td>\n<td>\n";
 
-        echo "<input type=\"radio\" name=\"deverouillage_auto_periode_suivante\" value=\"y\" ";
-        if (getSettingValue("deverouillage_auto_periode_suivante") == 'y') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"deverouillage_auto_periode_suivante\" value=\"n\" ";
-        if (getSettingValue("deverouillage_auto_periode_suivante") != 'y') echo " checked";
-        echo " />&nbsp;Non";
+		echo "<input type=\"radio\" name=\"deverouillage_auto_periode_suivante\" value=\"y\" ";
+		if (getSettingValue("deverouillage_auto_periode_suivante") == 'y') echo " checked";
+		echo " />&nbsp;Oui";
+		echo "<input type=\"radio\" name=\"deverouillage_auto_periode_suivante\" value=\"n\" ";
+		if (getSettingValue("deverouillage_auto_periode_suivante") != 'y') echo " checked";
+		echo " />&nbsp;Non";
 
-	  echo "\n</td>\n</tr>\n</table>\n<br />\n";
+	echo "\n</td>\n</tr>\n</table>\n<br />\n";
 
-	 if ($action_apres == 'rien') {
+	if ($action_apres == 'rien') {
 
-	   echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" /></center>\n";
+	echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" /></center>\n";
 
-    } elseif ($action_apres == 'imprime_html') {
+	} elseif ($action_apres == 'imprime_html') {
 
-	  echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer puis aller à la page impression HTML\" /></center>\n";
+	echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer puis aller à la page impression HTML\" /></center>\n";
 
-    } elseif ($action_apres == 'imprime_pdf') {
+	} elseif ($action_apres == 'imprime_pdf') {
 
-	  echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer puis aller à la page impression PDF\" /></center>\n";
+	echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer puis aller à la page impression PDF\" /></center>\n";
 
-    } elseif ($action_apres == 'retour') {
+	} elseif ($action_apres == 'retour') {
 
-      echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer puis retour à la page vérification\" /></center>\n";
+	echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer puis retour à la page vérification\" /></center>\n";
 
-    }
+	}
 
-      echo "</form>\n";
+	echo "</form>\n";
 
 } else {
-   if ($nombreligne != 0) {
-      echo "<form action=\"verrouillage.php\" name=\"formulaire\" method=\"post\">";
+if ($nombreligne != 0) {
+	echo "<form action=\"verrouillage.php\" name=\"formulaire\" method=\"post\">";
 
-      echo "<p align='center'><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" /></p>\n";
-      //echo "<table cellpadding='3' cellspacing='0' border='1' align='center'>";
-      echo "<table class='boireaus' cellpadding='3' cellspacing='0' align='center'>";
-      echo "<tr class='fond_sombre'><th>&nbsp;</th>";
-      for ($i = 0; $i < $max_per; $i++) echo "<th>
-        <a href=\"javascript:CocheCase(1,".$i.")\">Tout déverrouiller</a><br />
-        <a href=\"javascript:CocheCase(2,".$i.")\">Tout verrouiller partiellement</a><br />
-        <a href=\"javascript:CocheCase(3,".$i.")\">Tout verrouiller  totalement</a>
-        </th>
-        <th><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Déverrouiller\" /></th>
-        <th><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller partiellement\" /></th>
-        <th><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller totalement\" /></th>\n";
-      echo "</tr>\n";
-      //$flag = 0;
+	echo "<p align='center'><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" /></p>\n";
+	//echo "<table cellpadding='3' cellspacing='0' border='1' align='center'>";
+	echo "<table class='boireaus' summary='Verrouillage des périodes' cellpadding='3' cellspacing='0' align='center'>\n";
+	echo "<tr class='fond_sombre'><th>&nbsp;</th>\n";
+	for ($i = 0; $i < $max_per; $i++) {
+		echo "<th colspan='2'>\n";
+		echo "<a href=\"javascript:CocheCase(1,".$i.")\">Tout déverrouiller</a><br />\n";
+		echo "<a href=\"javascript:CocheCase(2,".$i.")\">Tout verrouiller partiellement</a><br />\n";
+		echo "<a href=\"javascript:CocheCase(3,".$i.")\">Tout verrouiller  totalement</a>\n";
+		echo "</th>\n";
+		echo "<th><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Déverrouiller\" /></th>\n";
+		echo "<th><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller partiellement\" /></th>\n";
+		echo "<th><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller totalement\" /></th>\n";
+	}
+	echo "</tr>\n";
+	//$flag = 0;
 		$alt=1;
-      if ($calldata) for ($k = 0; ($row = sql_row($calldata, $k)); $k++) {
-          $id_classe = $row[0];
-          $classe = $row[1];
-          $alt=$alt*(-1);
-			echo "<tr class='lig$alt'";
-          //if ($flag==1) { echo " class='fond_sombre'"; $flag = 0;} else {$flag=1;};
-          echo "><td><b>$classe</b> ";
-          echo "</td>";
+	if ($calldata) {
+		for ($k = 0; ($row = sql_row($calldata, $k)); $k++) {
+			$id_classe = $row[0];
+			$classe = $row[1];
+			$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'";
+			//if ($flag==1) { echo " class='fond_sombre'"; $flag = 0;} else {$flag=1;};
+			echo ">\n";
+			echo "<td>\n";
+			echo "<b>$classe</b> ";
+			echo "</td>\n";
+	
+			$periode_query = sql_query("SELECT nom_periode, verouiller FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+			$nb_periode = sql_count($periode_query) + 1 ;
+			$j = 0;
+			if ($periode_query) {
+				for ($i = 0; ($row_per = sql_row($periode_query, $i)); $i++) {
+					$nom_classe = "cl_".$id_classe."_".$i;
+					echo "<td>".ucfirst($row_per[0])."</td>\n";
+		
+					if ($row_per[1] == "N") {
+						echo "<td id='c_".$id_classe."_".$i."' style='font-size:small; color:green;'>Ouvert</td>\n";
+					}
+					elseif ($row_per[1] == "P") {
+						echo "<td id='c_".$id_classe."_".$i."' style='font-size:small; color:orange;'>Partiel.clos</td>\n";
+					}
+					elseif ($row_per[1] == "O") {
+						echo "<td id='c_".$id_classe."_".$i."' style='font-size:small; color:red;'>Clos</td>\n";
+					}
+					else {
+						// Ca ne devrait pas arriver
+						echo "<td>&nbsp;</td>\n";
+					}
+		
+					//echo "<input type=\"hidden\" name=\"numperiode\" value=\"$i\" />";
+					echo "<td><input type=\"hidden\" name=\"numperiode\" value=\"$i\" />";
+					//echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"N\" ";
+					echo "<input type=\"radio\" name=\"".$nom_classe."\" value=\"N\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
+					if ($row_per[1] == "N") {echo "checked";}
+					echo " /></td>\n";
+					echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"P\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
+					if ($row_per[1] == "P") {echo "checked";}
+					echo " /></td>\n";
+					echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"O\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
+					if ($row_per[1] == "O") {echo "checked";}
+					echo " /></td>\n";
+					$j++;
+				}
+			}
+			for ($i = $j; $i < $max_per; $i++) echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>\n";
+	
+			echo "</tr>\n";
+		}
+	}
+	echo "</table>\n";
+	echo "<br />\n";
+	echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" /></center>\n";
+	echo "</form>\n";
 
-          $periode_query = sql_query("SELECT nom_periode, verouiller FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
-          $nb_periode = sql_count($periode_query) + 1 ;
-          $j = 0;
-          if ($periode_query) for ($i = 0; ($row_per = sql_row($periode_query, $i)); $i++) {
-             $nom_classe = "cl_".$id_classe."_".$i;
-             echo "<td>".ucfirst($row_per[0])."</td>\n";
-             //echo "<input type=\"hidden\" name=\"numperiode\" value=\"$i\" />";
-             echo "<td><input type=\"hidden\" name=\"numperiode\" value=\"$i\" />";
-             //echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"N\" ";
-             echo "<input type=\"radio\" name=\"".$nom_classe."\" value=\"N\" ";
-             if ($row_per[1] == "N") echo "checked";
-             echo " /></td>\n";
-             echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"P\" ";
-             if ($row_per[1] == "P") echo "checked";
-             echo " /></td>\n";
-             echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"O\" ";
-             if ($row_per[1] == "O") echo "checked";
-             echo " /></td>\n";
-             $j++;
-          }
-          for ($i = $j; $i < $max_per; $i++) echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>\n";
+	echo "<script type='text/javascript'>
+	function actualise_cell_(id_classe,i) {
+		// id_classe correspond à la ligne (pas nécessairement le numéro de ligne)
+		// i correspond au numéro de la période -1 (colonne)
 
-          echo "</tr>\n";
-      }
-      echo "</table><br />\n";
-      echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" /></center>\n";
-      echo "</form>\n";
-   } else {
-      echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>\n";
-   }
+		for (j=0;j<$max_per;j++) {
+
+			if (eval('document.formulaire.cl_'+id_classe+'_'+i+'[j].checked')==true) {
+				//alert('Classe '+id_classe+' période '+i+' état '+eval('document.formulaire.cl_'+id_classe+'_'+i+'[j].value'));
+				if(eval('document.formulaire.cl_'+id_classe+'_'+i+'[j].value')=='N') {
+					// Période ouverte en saisie
+					document.getElementById('c_'+id_classe+'_'+i).innerHTML='Ouvert (*)';
+					document.getElementById('c_'+id_classe+'_'+i).style.color='green';
+				}
+
+				if(eval('document.formulaire.cl_'+id_classe+'_'+i+'[j].value')=='P') {
+					// Période ouverte en saisie
+					document.getElementById('c_'+id_classe+'_'+i).innerHTML='Partiel.clos (*)';
+					document.getElementById('c_'+id_classe+'_'+i).style.color='orange';
+				}
+
+				if(eval('document.formulaire.cl_'+id_classe+'_'+i+'[j].value')=='O') {
+					// Période ouverte en saisie
+					document.getElementById('c_'+id_classe+'_'+i).innerHTML='Clos (*)';
+					document.getElementById('c_'+id_classe+'_'+i).style.color='red';
+				}
+			}
+		}
+	}
+</script>\n";
+
+} else {
+	echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>\n";
+}
 } //else
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
