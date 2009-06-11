@@ -1322,13 +1322,17 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 $classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 
+$la_date=date("d/m/Y H:i");
+
+echo "<div>\n";
+
 if ($referent == "une_periode") {
 	//echo "<p class=bold>Classe : $classe - Résultats : $nom_periode[$num_periode] - Année scolaire : ".getSettingValue("gepiYear")."</p>";
-	echo "<p class='bold'>Classe : $classe - Moyennes du carnet de notes du $nom_periode[$num_periode] - ".getSettingValue("gepiYear")."</p>\n";
+	echo "<p class='bold'>Classe : $classe - Moyennes du carnet de notes du $nom_periode[$num_periode] - (<i>".$la_date."</i>) - ".getSettingValue("gepiYear")."</p>\n";
 }
 else {
 	//echo "<p class=bold>Classe : $classe - Résultats : Moyennes annuelles - Année scolaire : ".getSettingValue("gepiYear")."</p>";
-	echo "<p class='bold'>Classe : $classe - Moyennes annuelles du carnet de notes - ".getSettingValue("gepiYear")."</p>\n";
+	echo "<p class='bold'>Classe : $classe - Moyennes annuelles du carnet de notes - (<i>".$la_date."</i>) - ".getSettingValue("gepiYear")."</p>\n";
 }
 
 //affiche_tableau($nb_lignes_tableau, $nb_col, $ligne1, $col, $larg_tab, $bord,0,1,$couleur_alterne);
@@ -1340,7 +1344,7 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 	// $col_centre = 0 --> toutes les autres colonnes sont alignées.
 	// $couleur_alterne --> les couleurs de fond des lignes sont alternés
 
-	echo "<table border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\">\n";
+	echo "<table summary=\"Moyennes des carnets de notes\" border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\">\n";
 	echo "<tr>\n";
 	$j = 1;
 	while($j < $nb_col+1) {
@@ -1375,6 +1379,11 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 }
 
 affiche_tableau2($nb_lignes_tableau, $nb_col, $ligne1, $col, $larg_tab, $bord,0,1,$couleur_alterne);
+
+echo "<div class='noprint'>\n";
+echo "<p><b>Attention:</b> Les moyennes visualisées ici sont des photos à un instant t de ce qui a été saisi par les professeurs.<br />\n";
+echo "Cela ne correspond pas nécessairement à ce qui apparaitra sur le bulletin après saisie d'autres résultats et ajustements éventuels des coefficients.</p>\n";
+echo "</div>\n";
 
 //=======================================================
 // MODIF: boireaus 20080424
