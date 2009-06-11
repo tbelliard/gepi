@@ -744,6 +744,12 @@ if($interface_simplifiee=="y"){
 	echo "<input type='hidden' name='display_parents_app' value='$display_parents_app' />\n";
 	echo "<input type='hidden' name='interface_simplifiee' value='$interface_simplifiee' />\n";
 
+	if($aff_nom_court=='y'){
+		echo "<script type='text/javascript'>
+	document.formulaire.nom_court.focus();
+</script>\n";
+	}
+
 	//echo "<center><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></center>\n";
 	//echo "<br />\n";
 }
@@ -847,6 +853,10 @@ else{
 	echo "</td><td><input type='checkbox' name='display_parents_app' id='display_parents_app' value='1' "; if ($display_parents_app == 1) echo " checked"; echo " /></td></tr>\n";
 
   echo "</table>\n";
+
+	echo "<script type='text/javascript'>
+	document.formulaire.nom_court.focus();
+</script>\n";
 
 }
 
