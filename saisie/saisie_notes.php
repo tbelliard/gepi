@@ -511,21 +511,28 @@ echo "</script>\n";
 
 //echo "<table  border=\"0\">\n";
 if ($affiche_bascule == 'yes') {
+
+	echo "<div id='div_bascule'>\n";
+
 	//if ($id_racine == '') echo "<tr><td></td><td><font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font></td></tr>\n";
-	if ($id_racine == '') echo "<font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font>\n";
+	if ($id_racine == '') {echo "<font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font>\n";}
+
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\"post\">\n";
 	if ($is_posted != 'bascule') {
 		//echo "<tr><td><input type=\"submit\" value=\"Recopier\"></td><td> : Recopier la colonne \"carnet de notes\" dans la colonne \"bulletin\"</td></tr>\n";
 		echo "<input type=\"submit\" value=\"Recopier\" /> : Recopier la colonne \"carnet de notes\" dans la colonne \"bulletin\"\n";
 		echo "<input type=\"hidden\" name=\"is_posted\" value=\"bascule\" />\n";
-	} else {
+	} 
+	else {
 		//echo "<tr><td><input type=\"submit\" value=\"Annuler recopie\"></td><td> : Afficher dans la colonne \"bulletin\" les moyennes actuellement enregistrées</td></tr>\n";
 		echo "<input type=\"submit\" value=\"Annuler recopie\" /> : Afficher dans la colonne \"bulletin\" les moyennes actuellement enregistrées\n";
 	}
 	echo "<input type=\"hidden\" name=\"id_groupe\" value= \"".$id_groupe."\" />\n";
 	echo "<input type=\"hidden\" name=\"periode_cn\" value=\"".$periode_cn."\" />\n";
-	if (isset($retour_cn)) echo "<input type=\"hidden\" name=\"retour_cn\" value=\"".$retour_cn."\" />\n";
+	if (isset($retour_cn)) {echo "<input type=\"hidden\" name=\"retour_cn\" value=\"".$retour_cn."\" />\n";}
 	echo "</form>\n";
+
+	echo "</div>\n";
 }
 
 
@@ -582,6 +589,8 @@ echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\
 <!--tr><td><input type=submit value=Enregistrer></td><td> : Enregistrer les moyennes dans le bulletin</td></tr></table-->
 
 <?php
+	$temoin_notes=0;
+
 	// Il ne faudrait afficher le bouton d'enregistrement que si la période choisie est ouverte ou seulement partiellement close.
 	//if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0) {
 	//if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2) {
@@ -823,6 +832,7 @@ foreach ($liste_eleves as $eleve_login) {
 				$statut_moy = @mysql_result($moyenne_query, 0, "statut");
 				if ($statut_moy == 'y') {
 					$moy = @mysql_result($moyenne_query, 0, "note");
+					$temoin_notes++;
 				} else {
 					$moy = '&nbsp;';
 				}
@@ -1067,6 +1077,12 @@ $k++;
 </tr>
 </table>
 <?php
+
+if($temoin_notes==0) {
+	echo "<script type='text/javascript'>
+	document.getElementById('div_bascule').style.display='none';
+</script>\n";
+}
 
 if(count($tab_recopie_vide)>0) {
 	$chaine_js="<p style='text-align:center'>Pas de moyenne recopiée pour:<br />";
