@@ -644,7 +644,7 @@ function ToutDeCocher() {
 		if(count($tab_periode_num)>1) {
 			echo " et toutes les périodes";
 		}
-		echo " <a href='#' onClick='cocher_tous_eleves()'>Cocher tous les élèves</a> / <a href='#' onClick='decocher_tous_eleves()'>Décocher tous les élèves</a></p>\n";
+		echo " <a href='#' onClick='cocher_tous_eleves();return false;'>Cocher tous les élèves</a> / <a href='#' onClick='decocher_tous_eleves();return false;'>Décocher tous les élèves</a></p>\n";
 	}
 
 	$max_eff_classe=0;
