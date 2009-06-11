@@ -77,10 +77,96 @@ require_once("../lib/header.inc");
 chargement = false;
 </script>
 <?php
-echo "<p class=bold>";
+echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
+
+echo "<p class='bold'>";
 echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
 echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe\" target=\"_blank\" onclick=\"return VerifChargement()\">Imprimer au format PDF</a> |";
-echo "</p>";
+
+
+if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
+	if($_SESSION['statut']=='professeur') {
+		$login_prof_groupe_courant=$_SESSION["login"];
+	}
+	else {
+		$tmp_current_group=get_group($id_groupe);
+
+		$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
+	}
+
+	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+
+	if(!empty($tab_groups)) {
+
+		$chaine_options_classes="";
+
+		$num_groupe=-1;
+		$nb_groupes_suivies=count($tab_groups);
+
+		$id_grp_prec=0;
+		$id_grp_suiv=0;
+		$temoin_tmp=0;
+		for($loop=0;$loop<count($tab_groups);$loop++) {
+
+			if($tab_groups[$loop]['id']==$id_groupe){
+				$num_groupe=$loop;
+
+				$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+
+				$temoin_tmp=1;
+				if(isset($tab_groups[$loop+1])){
+					$id_grp_suiv=$tab_groups[$loop+1]['id'];
+				}
+				else{
+					$id_grp_suiv=0;
+				}
+			}
+			else {
+				$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+			}
+
+			if($temoin_tmp==0){
+				$id_grp_prec=$tab_groups[$loop]['id'];
+			}
+		}
+		// =================================
+		if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
+
+			echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_groupe').selectedIndex=$num_groupe;
+			}
+		}
+	}
+</script>\n";
+
+			echo " <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+			echo $chaine_options_classes;
+			echo "</select> | \n";
+		}
+	}
+	// =================================
+}
+
+
+echo "</p>\n";
+
+echo "</form>\n";
+
 echo "<p class=cn><b>Classe : $nom_classe | Enseignement : " . $current_group["description"] . "</b></p>\n";
 
 
@@ -208,7 +294,7 @@ foreach ($current_group["eleves"]["all"]["list"] as $_login) {
 //
 // Affichage du tableau
 //
-echo "<table border=1 cellspacing=2 cellpadding=1>\n";
+echo "<table summary='Toutes les notes' border='1' cellspacing='2' cellpadding='1'>\n";
 
 // Affichage première ligne
 echo "<tr><td class=cn>&nbsp;</td>\n";
@@ -295,8 +381,12 @@ while ($num_per < $nb_cahier_note) {
 			echo "<font size=-2>Note sur $note_sur[$i]";
 			echo "</a><br />";
 		}
+		echo "($display_date[$i])</font></center></td>\n";
 	}	
-	echo "($display_date[$i])</font></center></td>\n";
+	else {
+		echo "($display_date[$i])</center></td>\n";
+	}
+
         $header_pdf[] = $nom_dev[$i]." (".$display_date[$i].")";
         $w_pdf[] = $w2;
         $i++;
