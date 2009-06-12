@@ -25,10 +25,16 @@
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
-include_once('./lib/lib_mod_ooo.php');
+// Remplacement des anciennes versions vers la nouvelle lib TinyDoc
+//include_once('./lib/lib_mod_ooo.php');
+//include_once('./lib/tbs_class.php');
+//include_once('./lib/tbsooo_class.php');
 
-include_once('./lib/tbs_class.php');
-include_once('./lib/tbsooo_class.php');
+include_once('./lib/tinyButStrong.class.php');
+include_once('./lib/tinyDoc.class.php');
+
+
+
 define( 'PCLZIP_TEMPORARY_DIR', '../mod_ooo/tmp/' );
 include_once('../lib/pclzip.lib.php');
 
@@ -111,6 +117,8 @@ if ($id_classe == 'all') {
 $current_date = date('d/m/Y');
 $i = 0;
 $mentions = array('A' => 'Très bien', 'B' => 'Bien', 'C' => 'Assez Bien', 'D' => 'Convenable', 'E' => 'Passable', 'F' => 'Insuffisant');
+$resultats = array();
+$periodes = array();
 foreach($Eleves as $Eleve) {
     // On est dans la boucle principale. Le premier tableau contient les informations relatives à l'élève.
     // C'est le premier bloc.
@@ -153,22 +161,22 @@ foreach($Eleves as $Eleve) {
 
     $total_credits = 0;
     // Pour les semestre 1 et 2, on doit passer par les archives
-    $semestre1[$i] = array();
+    $semestre1 = array();
     foreach($Eleve->getArchivedEctsCredits($annee_derniere, '1') as $Credit) {
         $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
         $mention = $Credit ? $Credit->getMention() : 'Non saisie';
-        $semestre1[$i][] = array(
+        $semestre1[] = array(
                             'discipline' => $Credit->getMatiere(),
                             'ects_credit' => $valeur,
                             'ects_mention' => $mention);
         $total_credits = $total_credits + $valeur;
     }
 
-    $semestre2[$i] = array();
+    $semestre2 = array();
     foreach($Eleve->getArchivedEctsCredits($annee_derniere, '2') as $Credit) {
         $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
         $mention = $Credit ? $Credit->getMention() : 'Non saisie';
-        $semestre2[$i][] = array(
+        $semestre2[] = array(
                             'discipline' => $Credit->getMatiere(),
                             'ects_credit' => $valeur,
                             'ects_mention' => $mention);
@@ -176,36 +184,90 @@ foreach($Eleves as $Eleve) {
     }
 
     // On s'occupe des semestres 3 et 4:
-    $semestre3[$i] = array();
+    $semestre3 = array();
     foreach($Eleve->getEctsGroupes('1') as $Group) {
         $Credit = $Eleve->getEctsCredit('1',$Group->getId());
-        $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
-        $mention = $Credit ? $Credit->getMention() : 'Non saisie';
+        if ($Credit) {
+            $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
+            $mention = $Credit ? $Credit->getMention() : 'Non saisie';
 
-        $semestre3[$i][] = array(
-                            'discipline' => $Group->getDescription(),
-                            'ects_credit' => $valeur,
-                            'ects_mention' => $mention);
-        $total_credits = $total_credits + $valeur;
+            $semestre3[] = array(
+                                'discipline' => $Group->getDescription(),
+                                'ects_credit' => $valeur,
+                                'ects_mention' => $mention);
+            $total_credits = $total_credits + $valeur;
+        }
     }
-    $semestre4[$i] = array();
+    $semestre4 = array();
     foreach($Eleve->getEctsGroupes('2') as $Group) {
         $Credit = $Eleve->getEctsCredit('2',$Group->getId());
-        $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
-        $mention = $Credit ? $Credit->getMention() : 'Non saisie';
-        $semestre4[$i][] = array(
-                            'discipline' => $Group->getDescription(),
-                            'ects_credit' => $valeur,
-                            'ects_mention' => $mention);
-        $total_credits = $total_credits + $valeur;
+        if ($Credit) {
+            $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
+            $mention = $Credit ? $Credit->getMention() : 'Non saisie';
+            $semestre4[] = array(
+                                'discipline' => $Group->getDescription(),
+                                'ects_credit' => $valeur,
+                                'ects_mention' => $mention);
+            $total_credits = $total_credits + $valeur;
+        }
     }
 
     $eleves[$i]['total_credits'] = $total_credits;
 
+    // On filtre maintenant les périodes : on ne devra afficher que les périodes
+    // pour lesquelles il y a des résultats saisis.
+    $denomination_periodes = array(1 => 'Premier semestre', 2 => 'Deuxième semestre', 3 => 'Troisième semestre', 4 => 'Quatrième semestre');
+    $periodes[$i] = array();
+    $resultats[$i] = array();
+    $periode_courante = 1;
 
+    if (!empty($semestre1)) {
+//        $periodes[$i][$periode_courante] = array('num' => $periode_courante, 'nom' => $denomination_periodes[$periode_courante]);
+//        $resultats[$i][$periode_courante] = $semestre1;
+
+        foreach($semestre1 as &$tab) {
+            $tab['periode'] = $denomination_periodes[$periode_courante];
+            array_push($resultats[$i],$tab);
+        }
+        $periode_courante++;
+    }
+
+    if (!empty($semestre2)) {
+
+//        $periodes[$i][$periode_courante] = array('num' => $periode_courante, 'nom' => $denomination_periodes[$periode_courante]);
+//        $resultats[$i][$periode_courante] = $semestre2;
+        foreach($semestre2 as &$tab) {
+            $tab['periode'] = $denomination_periodes[$periode_courante];
+            array_push($resultats[$i],$tab);
+        }
+        $periode_courante++;
+    }
+
+    if (!empty($semestre3)) {
+//        $periodes[$i][$periode_courante] = array('num' => $periode_courante, 'nom' => $denomination_periodes[$periode_courante]);
+//        $resultats[$i][$periode_courante] = $semestre3;
+        foreach($semestre3 as &$tab) {
+            $tab['periode'] = $denomination_periodes[$periode_courante];
+            array_push($resultats[$i],$tab);
+        }
+        $periode_courante++;
+    }
+
+    if (!empty($semestre4)) {
+//        $periodes[$i][$periode_courante] = array('num' => $periode_courante, 'nom' => $denomination_periodes[$periode_courante]);
+//        $resultats[$i][$periode_courante] = $semestre4;
+        foreach($semestre4 as &$tab) {
+            $tab['periode'] = $denomination_periodes[$periode_courante];
+            array_push($resultats[$i],$tab);
+        }
+        $periode_courante++;
+    }
     $i++;
 }
 
+//echo "<pre>";
+//print_r($resultats);
+//echo "</pre>";
 
 // Et maintenant on s'occupe du fichier proprement dit
 
@@ -226,46 +288,60 @@ include_once ("./lib/chemin.inc.php");
 
 
 // instantiate a TBS OOo class
-$OOo = new clsTinyButStrongOOo;
+$OOo = new tinyDoc();
+$OOo->setZipMethod('shell');
+$OOo->setZipBinary('zip');
+$OOo->setUnzipBinary('unzip');
+
 // setting the object
 $OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
 // create a new openoffice document from the template with an unique id
-$OOo->NewDocFromTpl($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
+$OOo->createFrom($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
 // merge data with openoffice file named 'content.xml'
-$OOo->LoadXmlFromDoc($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
+$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
 
 
 
 // Traitement des tableaux
 // On insère ici les lignes concernant la gestion des tableaux
 if (!$releve) {
-    $OOo->MergeBlock('releve','clear');
+    $OOo->mergeXmlBlock('releve','clear');
 } else {
-    $OOo->MergeBlock('releve',array('fake')); // Juste pour que le bloc s'initialise correctement
+    $OOo->mergeXmlBlock('releve',array('fake')); // Juste pour que le bloc s'initialise correctement
 }
 if (!$attestation) {
-    $OOo->MergeBlock('attestation','clear');
+    $OOo->mergeXmlBlock('attestation','clear');
 } else {
-    $OOo->MergeBlock('attestation',array('fake')); // Juste pour que le bloc s'initialise correctement
+    $OOo->mergeXmlBlock('attestation',array('fake')); // Juste pour que le bloc s'initialise correctement
 }
 if (!$description) {
-    $OOo->MergeBlock('description','clear');
+    $OOo->mergeXmlBlock('description','clear');
 } else {
-    $OOo->MergeBlock('description',array('fake')); // Juste pour que le bloc s'initialise correctement
+    $OOo->mergeXmlBlock('description',array('fake')); // Juste pour que le bloc s'initialise correctement
 }
 
-$OOo->MergeBlock('eleves',$eleves);
+$OOo->mergeXmlBlock('eleves',$eleves);
+
+//echo "<pre>";
+//print_r($resultats);
+//echo "</pre>";
 
 // On insère les semestres
-$OOo->MergeBlock('sem1','array','semestre1[%p1%]');
-$OOo->MergeBlock('sem2','array','semestre2[%p1%]');
-$OOo->MergeBlock('sem3','array','semestre3[%p1%]');
-$OOo->MergeBlock('sem4','array','semestre4[%p1%]');
+//$OOo->mergeXmlBlock('periodes','periodes[%p1%]');
+
+// On insère les résultats
+$OOo->mergeXml(
+    array(
+      'name'      => 'resultats',
+      'type'      => 'block',
+      'data_type' => 'array',
+      'charset'   => 'ISO 8859-15'
+    ),'resultats[%p1%]');
 // Fin de traitement des tableaux
 
 
-$OOo->SaveXmlToDoc(); //traitement du fichier extrait
-
+$OOo->saveXml(); //traitement du fichier extrait
+$OOo->close();
 
 //Génération du nom du fichier
 $now = gmdate('d_M_Y_H:i:s');
@@ -282,9 +358,13 @@ if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 }
 
 // display
-header('Content-type: '.$OOo->GetMimetypeDoc());
-header('Content-Length: '.filesize($OOo->GetPathnameDoc()));
-$OOo->FlushDoc(); //envoi du fichier traité
-$OOo->RemoveDoc(); //suppression des fichiers de travail
+header('Content-type: '.$OOo->getMimetype());
+header('Content-Length: '.filesize($OOo->getPathname()));
+
+
+
+// send and remove the document
+$OOo->sendResponse();
+$OOo->remove();
 // Fin de traitement des tableaux
 ?>
