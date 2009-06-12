@@ -178,13 +178,11 @@ class Eleve extends BaseEleve {
 		$criteria->add(ArchiveEctsPeer::NUM_PERIODE,$periode);
         $criteria->add(ArchiveEctsPeer::ANNEE,$annee);
         $v = $this->getArchiveEctss($criteria);
+        $result = array();
         if (!empty($v)) {
-            $result = array();
             foreach($v as $credit){
                 $result[$credit->getId()] = $credit;
             }
-        } else {
-            $result = null;
         }
         return $result;
 	}
