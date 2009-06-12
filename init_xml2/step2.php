@@ -132,6 +132,15 @@ $liste_tables_del = array(
 "matieres_notes",
 "matieres_appreciations_grp",
 "matieres_appreciations_tempo",
+//==========================
+// Tables notanet
+'notanet',
+'notanet_avis',
+'notanet_app',
+'notanet_verrou',
+'notanet_socles',
+'notanet_ele_type',
+//==========================
 "observatoire",
 "observatoire_comment",
 //"observatoire_config",
@@ -167,7 +176,7 @@ if (!isset($step2)) {
     if ($flag != 0){
         echo "<p><b>ATTENTION ...</b><br />\n";
         echo "Des données concernant la constitution des classes et l'affectation des élèves dans les classes sont présentes dans la base GEPI ! Si vous poursuivez la procédure, ces données seront définitivement effacées !</p>\n";
-        echo "<form enctype='multipart/form-data' action='step2.php' method=post>\n";
+        echo "<form enctype='multipart/form-data' action='step2.php' method='post'>\n";
         echo "<input type=hidden name='step2' value='y' />\n";
         echo "<input type='submit' value='Poursuivre la procédure' />\n";
         echo "</form>\n";
