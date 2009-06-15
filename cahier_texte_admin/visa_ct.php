@@ -30,7 +30,7 @@
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-
+//debug_var();
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -71,46 +71,58 @@ if (isset($_POST['visa_ct'])) {
   // on vise les notices (le champs vise de la table ct_entry est mis à 'y')
   $query = sql_query("SELECT DISTINCT id_groupe, id_login FROM ct_entry ORDER BY id_groupe");
   $msg = '';
+  $iterateur = 0;
   for ($i=0; ($row=sql_row($query,$i)); $i++) {
       $id_groupe = $row[0];
       $id_prop = $row[1];
-      $temp = "visa".$id_groupe."_".$id_prop;
-      if (isset($_POST[$temp])) {
-         $error = 'no';
-		 $sql_visa_ct = "UPDATE `ct_entry` SET `vise` = 'y' WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."')";
-		 //echo $sql_visa_ct;
-         $visa_ct = sql_query($sql_visa_ct);
+      $temp = "visa_".$iterateur;
+    if (isset($_POST[$temp])) {
+      $error = 'no';
+      $id_groupe = isset($_POST["groupe_".$iterateur]) ? $_POST["groupe_".$iterateur] : NULL;
+      $id_prop = isset($_POST["prof_".$iterateur]) ? $_POST["prof_".$iterateur] : NULL;
 
-		// On ajoute une notice montrant la signature du cahier de texte
-        $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
+      $sql_visa_ct = "UPDATE `ct_entry` SET `vise` = 'y' WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."')";
+      //echo $sql_visa_ct;
+      $visa_ct = sql_query($sql_visa_ct);
+
+      // On ajoute une notice montrant la signature du cahier de texte
+      //$aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
+      $aujourdhui = date("U");
 
 
-		$sql_insertion_visa = "INSERT INTO `ct_entry` VALUES (NULL, '00:00:00', '".$id_groupe."', '".$aujourdhui."', '".$id_prop."', '".$texte_visa_cdt."', 'y', 'y')";
-		//echo $sql_insertion_visa;
-		$insertion_visa = sql_query($sql_insertion_visa);
-         if ($error == 'no') {
-              $msg = "Cahiers de texte signé.";
-           } else {
-              $msg = "Il y a eu un problème lors de la signature du cahier de textes.";
-           }
-         }
+      $sql_insertion_visa = "INSERT INTO `ct_entry` VALUES (NULL, '00:00:00', '".$id_groupe."', '".$aujourdhui."', '".$id_prop."', '".$texte_visa_cdt."', 'y', 'y')";
+      //echo $sql_insertion_visa;
+      $insertion_visa = sql_query($sql_insertion_visa);
+      if ($error == 'no') {
+        $msg = "Cahiers de texte signé.";
+      } else {
+        $msg = "Il y a eu un problème lors de la signature du cahier de textes.";
       }
+    }
+    $iterateur++;
+  }
 
   $query = sql_query("SELECT DISTINCT id_groupe, id_login FROM ct_devoirs_entry ORDER BY id_groupe");
   //les devoirs
   // on vise les notices devoirs (le champs vise de la table ct_devoirs_entry est mis à 'y')
+  $itera = 0;
   for ($i=0; ($row=sql_row($query,$i)); $i++) {
       $id_groupe = $row[0];
       $id_prop = $row[1];
-      $temp = "visa".$id_groupe."_".$id_prop;
+      $temp = "visa_".$itera;
+
       if (isset($_POST[$temp])) {
          $error = 'no';
-		 $sql_visa_ct = "UPDATE `ct_devoirs_entry` SET `vise` = 'y' WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."')";
+         $id_professeur = isset($_POST["prof_".$itera]) ? $_POST["prof_".$itera] : NULL;
+         $id_groupe = isset($_POST["groupe_".$itera]) ? $_POST["groupe_".$itera] : NULL;
+  
+		 $sql_visa_ct = "UPDATE `ct_devoirs_entry` SET `vise` = 'y' WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_professeur."')";
 		 //echo $sql_visa_ct;
          $visa_ct = sql_query($sql_visa_ct);
 
-      }
-   }
+    }
+    $itera++;
+  }
 }
 
 
@@ -183,6 +195,8 @@ echo "</div>\n";
      $order_by = $_GET['order_by'];
   }
 
+  $iter = 0; // itérateur
+
   $query = sql_query("SELECT DISTINCT ct.id_groupe, ct.id_login FROM ct_entry ct, j_groupes_classes jc, j_groupes_matieres jm WHERE (jc.id_groupe = ct.id_groupe AND jm.id_groupe = ct.id_groupe) ORDER BY ".$order_by);
   for ($i=0; ($row=sql_row($query,$i)); $i++) {
       $id_groupe = $row[0];
@@ -231,10 +245,13 @@ echo "</div>\n";
 	}else{
 		echo "<td><a href='../public/index.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>";
 	}
-      echo "<td><center><input type=\"checkbox\" name=\"visa".$id_groupe."_".$id_prop."\" /></center></td>";
+      echo "<td><center><input type=\"checkbox\" name=\"visa_".$iter."\" />
+                        <input type=\"hidden\" name=\"prof_".$iter."\" value=\"".$id_prop."\" />
+                        <input type=\"hidden\" name=\"groupe_".$iter."\" value=\"".$id_groupe."\" />
+            </center></td>";
 	  echo "<td>".$nb_ct_visa."</td>";
       echo "</tr>";
-
+    $iter++;
   }
   echo "</table></form>";
 }
