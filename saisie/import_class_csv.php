@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 30/05/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -116,21 +116,53 @@ if ($current_group) {
 			}
 		}
 		*/
+
+		$sql="SELECT note,statut FROM matieres_notes WHERE login='$eleve_login' AND periode='$periode_num' AND id_groupe='$id_groupe'";
+		$res_note=mysql_query($sql);
+		if(mysql_num_rows($res_note)){
+			$lig_note=mysql_fetch_object($res_note);
+			if($lig_note->statut==''){
+				$note=ereg_replace(".",",",$lig_note->note);
+			}
+			else{
+				$note=$lig_note->statut;
+			}
+		}
+		else{
+			$note="-";
+		}
+
+
+		$app="-";
+		$sql="SELECT appreciation FROM matieres_appreciations WHERE login='$eleve_login' AND periode='$periode_num' AND id_groupe='$id_groupe'";
+		$res_appreciation=mysql_query($sql);
+		if(mysql_num_rows($res_appreciation)){
+			$lig_appreciation=mysql_fetch_object($res_appreciation);
+			//$app=ereg_replace("\n"," ",$lig_appreciation->appreciation);
+			$app=ereg_replace("\n"," ",ereg_replace("\r","",strtr($lig_appreciation->appreciation,";",".")));
+			//$app=strtr($lig_appreciation->appreciation,"\n"," ");
+			//$app="grr".eregi_replace("<br />"," ",eregi_replace("<br>"," ",nl2br($lig_appreciation->appreciation)));
+		}
+
 		switch($_GET['mode']){
 			case "Id_Note_App":
-				$fd.=$eleve_login.";".";"."\n";
+				//$fd.=$eleve_login.";".";"."\n";
+				$fd.=$eleve_login.";".$note.";".$app."\n";
 				break;
 			case "Id_App":
-				$fd.=$eleve_login.";"."\n";
+				//$fd.=$eleve_login.";"."\n";
+				$fd.=$eleve_login.";".$app."\n";
 				break;
 			case "Nom_Prenom_Id_App":
-				$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";"."\n";
+				//$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";"."\n";
+				$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".$app."\n";
 				break;
 			case "Nom_Prenom_Id":
 				$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login."\n";
 				break;
 			case "Nom_Prenom_Id_Note_App":
-				$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".";"."\n";
+				//$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".";"."\n";
+				$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".$note.";".$app."\n";
 				break;
 		}
 	}
@@ -175,6 +207,8 @@ if ($current_group) {
 					$fd.=$eleve_login."\n";
 				}
 			}*/
+
+
 			switch($_GET['mode']){
 				case "Id_Note_App":
 					$fd.=$eleve_login.";".";"."\n";
