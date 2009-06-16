@@ -385,7 +385,7 @@ function updateMention(id,valeur){
 //--></script>
 
 
-<?
+<?php
 
     $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
     $Classe = ClassePeer::retrieveByPK($id_classe);
