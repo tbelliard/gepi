@@ -337,6 +337,7 @@ else {
 		(<i>on parle de sélection multiple</i>)</p></li>\n";
 		echo "<li><p>Dans le cas du 'SOCLE B2I', il n'est pas nécessaire d'associer une matière.<br />L'affectation de la 'note' (<i>MS, ME, MN ou AB</i>) ne se fait pas par extraction des notes de l'année.</p>
 		<p>Pour le 'SOCLE NIVEAU A2 DE LANGUE', les matières ne sont pas exploitées pour le filtrage... seul le statut 'imposee' ou 'optionnelle' selon le type de brevet est utilisé.</p></li>\n";
+		echo "<li><p>Dans certains établissements, la matière Education Civique est considérée comme une sous-matière de Histoire-géographie et EDCIV ne fait alors pas l'objet d'une moyenne séparée de HIGEO.<br />Dans ce cas, il convient d'associer les deux matières notanet Histoire-Géo et Education civique à HIGEO.<br />Dans le cas contraire, l'export CSV sera refusé par l'application Notanet académique.</p></li>\n";
 		echo "</ul>\n";
 
 		if($type_brevet==2){
@@ -344,8 +345,8 @@ else {
 			echo "<blockquote>\n";
 			echo "<p>Pour le Brevet de série PROFESSIONNELLE, sans option de série, il faut cocher 'optionnelle' la LV1 et les Sciences-Physiques, puisque chaque élève n'a de notes que dans l'une ou l'autre.<br />Ne pas cocher cette case conduirait à considérer qu'il manque une moyenne qui en LV1, qui en Sciences-Physiques pour chaque élève et une erreur serait affichée sans production des lignes de l'export NOTANET.</p>\n";
 			echo "<p>L'inconvénient: si un élève n'a de moyenne ni en LV1, ni en Sciences-physiques, cela ne sera pas signalé comme une erreur alors que cela devrait l'être...<br />En attendant une éventuelle amélioration du dispositif, il convient de contrôler manuellement (de visu) de tels manques.</p>\n";
-			echo "<p><br /></p>";
-			echo "<p><b>GROS DOUTE:</b> Est-ce qu'un élève peut suivre les deux (LV1 et Sc-Phy) et choisir la matière à retenir pour le Brevet?<br />Si oui, je n'ai pas géré ce cas... il faut corriger (vider) la matière non souhaitée pour chaque élève dans le prochain formulaire.</p>";
+			echo "<p><br /></p>\n";
+			echo "<p><b>GROS DOUTE:</b> Est-ce qu'un élève peut suivre les deux (LV1 et Sc-Phy) et choisir la matière à retenir pour le Brevet?<br />Si oui, je n'ai pas géré ce cas... il faut corriger (vider) la matière non souhaitée pour chaque élève dans le prochain formulaire.</p>\n";
 			echo "</blockquote>\n";
 		}
 	/*
