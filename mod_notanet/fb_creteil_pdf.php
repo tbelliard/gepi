@@ -1205,10 +1205,12 @@
 
 				$y=$pdf->GetY()+4; // Normalement, on devrait être à $y_cadre_bas
 				$pdf->SetXY($marge,$y);
-				$pdf->Cell($larg_col_disc+2*$larg_col_note,3*$pdf->FontSize*$sc_interligne, "",'LRBT',0,'L'); // Encadrement
+				//$largeur_dispo=$larg_col_disc+2*$larg_col_note;
+				$largeur_dispo=$l_page-2*$marge-3*$larg_col_note;
+				$pdf->Cell($largeur_dispo,3*$pdf->FontSize*$sc_interligne, "",'LRBT',0,'L'); // Encadrement
 				$pdf->SetXY($marge,$y);
 				$texte="Avis et signature du chef d'établissement : ";
-				$pdf->Cell($larg_col_disc+2*$larg_col_note,1*$pdf->FontSize*$sc_interligne, $texte,'',1,'L');
+				$pdf->Cell($largeur_dispo,1*$pdf->FontSize*$sc_interligne, $texte,'',1,'L');
 
 				$y_avis=$pdf->GetY();
 				$x_avis=$marge;
@@ -1223,7 +1225,8 @@
 					$avis.=$lig_avis->avis;
 				}
 				//$pdf->Cell(100, $h_cadre_bas, $avis,'',0,'C');
-				$largeur_dispo=$larg_col_disc+2*$larg_col_note;
+				//$largeur_dispo=$larg_col_disc+2*$larg_col_note;
+				$largeur_dispo=$l_page-2*$marge-2*$larg_col_note;
 				$h_cell=2*$pdf->FontSize*$sc_interligne;
 				if($use_cell_ajustee=='n') {
 					$pdf->drawTextBox(traite_accents_utf8($avis), $largeur_dispo, $h_cell, 'L', 'T', 0);
@@ -1235,12 +1238,17 @@
 				}
 
 				//$x=$pdf->GetX();
-				$x=$marge+$larg_col_disc+2*$larg_col_note;
+				//$x=$marge+$larg_col_disc+2*$larg_col_note;
+				//$largeur_dispo=$larg_col_app+2*$larg_col_note;
+
+				$x=$x_col_note_glob;
+				$largeur_dispo=2*$larg_col_note;
+
 				$pdf->SetXY($x,$y);
 				$texte="DECISION";
-				$pdf->Cell($larg_col_app+2*$larg_col_note,1*$pdf->FontSize*$sc_interligne, $texte,'LRBT',1,'C');
+				$pdf->Cell($largeur_dispo,1*$pdf->FontSize*$sc_interligne, $texte,'LRBT',1,'C');
 				$pdf->SetXY($x,$pdf->GetY());
-				$pdf->Cell($larg_col_app+2*$larg_col_note,2*$pdf->FontSize*$sc_interligne, "",'LRBT',1,'C');
+				$pdf->Cell($largeur_dispo,2*$pdf->FontSize*$sc_interligne, "",'LRBT',1,'C');
 
 				$texte="* Latin, grec, langue vivante étrangère ou découverte professionnelle 3H, seuls les points au-dessus de 10 seront pris en compte";
 				$pdf->Cell($l_page-2*$marge,$pdf->FontSize*$sc_interligne, $texte,'',1,'L');
