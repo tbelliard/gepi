@@ -33,10 +33,6 @@ $niveau_arbo = 0;
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
 
-if (getSettingValue("use_only_cdt") == 'y' AND $_SESSION["statut"] == 'professeur'){
-  $cdt = (getSettingValue("GepiCahierTexteVersion") == '2') ? '_2' : '';
-  header("Location:cahier_texte".$cdt."/index.php");
-}
 
 // On teste s'il y a une mise à jour de la base de données à effectuer
 if (test_maj()) {
@@ -52,6 +48,12 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ./logout.php?auto=1");
     die();
+}
+
+// On vérifie si l'utilisation du cdt n'est pas unique
+if (getSettingValue("use_only_cdt") == 'y' AND $_SESSION["statut"] == 'professeur'){
+  $cdt = (getSettingValue("GepiCahierTexteVersion") == '2') ? '_2' : '';
+  header("Location:cahier_texte".$cdt."/index.php");
 }
 
 // Sécurité
