@@ -160,6 +160,7 @@ CREATE TABLE ct_entry
 	visa CHAR default 'n' NOT NULL COMMENT 'visa',
 	id_groupe INTEGER  NOT NULL COMMENT 'Cle etrangere du groupe auquel appartient le compte rendu',
 	id_login VARCHAR(32) COMMENT 'Cle etrangere de l\'utilisateur auquel appartient le compte rendu',
+	id_sequence INTEGER(5) default 0 COMMENT 'Cle etrangere de la sequence auquel appartient le compte rendu',
 	PRIMARY KEY (id_ct),
 	INDEX ct_entry_FI_1 (id_groupe),
 	CONSTRAINT ct_entry_FK_1
@@ -170,6 +171,11 @@ CREATE TABLE ct_entry
 	CONSTRAINT ct_entry_FK_2
 		FOREIGN KEY (id_login)
 		REFERENCES utilisateurs (login)
+		ON DELETE SET NULL,
+	INDEX ct_entry_FI_3 (id_sequence),
+	CONSTRAINT ct_entry_FK_3
+		FOREIGN KEY (id_sequence)
+		REFERENCES ct_sequences (id)
 		ON DELETE SET NULL
 )Type=MyISAM COMMENT='Compte rendu du cahier de texte';
 
@@ -272,6 +278,21 @@ CREATE TABLE ct_private_entry
 		REFERENCES utilisateurs (login)
 		ON DELETE SET NULL
 )Type=MyISAM COMMENT='Notice privee du cahier de texte';
+
+#-----------------------------------------------------------------------------
+#-- ct_sequences
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS ct_sequences;
+
+
+CREATE TABLE ct_sequences
+(
+	id INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire des sequences',
+	titre VARCHAR(255)  NOT NULL COMMENT 'Titre de la sequence',
+	description LONGTEXT  NOT NULL COMMENT 'Description de la sequence',
+	PRIMARY KEY (id)
+)Type=MyISAM COMMENT='Sequence de plusieurs compte-rendus';
 
 #-----------------------------------------------------------------------------
 #-- eleves

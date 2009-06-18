@@ -71,6 +71,13 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	protected $id_login;
 
 	/**
+	 * The value for the id_sequence field.
+	 * Note: this column has a database default value of: 0
+	 * @var        int
+	 */
+	protected $id_sequence;
+
+	/**
 	 * @var        Groupe
 	 */
 	protected $aGroupe;
@@ -79,6 +86,11 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	 * @var        UtilisateurProfessionnel
 	 */
 	protected $aUtilisateurProfessionnel;
+
+	/**
+	 * @var        CahierTexteSequence
+	 */
+	protected $aCahierTexteSequence;
 
 	/**
 	 * @var        array CahierTexteCompteRenduFichierJoint[] Collection to store aggregation of CahierTexteCompteRenduFichierJoint objects.
@@ -126,6 +138,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		$this->date_ct = 0;
 		$this->vise = 'n';
 		$this->visa = 'n';
+		$this->id_sequence = 0;
 	}
 
 	/**
@@ -229,6 +242,16 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	public function getIdLogin()
 	{
 		return $this->id_login;
+	}
+
+	/**
+	 * Get the [id_sequence] column value.
+	 * Cle etrangere de la sequence auquel appartient le compte rendu
+	 * @return     int
+	 */
+	public function getIdSequence()
+	{
+		return $this->id_sequence;
 	}
 
 	/**
@@ -430,6 +453,30 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	} // setIdLogin()
 
 	/**
+	 * Set the value of [id_sequence] column.
+	 * Cle etrangere de la sequence auquel appartient le compte rendu
+	 * @param      int $v new value
+	 * @return     CahierTexteCompteRendu The current object (for fluent API support)
+	 */
+	public function setIdSequence($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->id_sequence !== $v || $v === 0) {
+			$this->id_sequence = $v;
+			$this->modifiedColumns[] = CahierTexteCompteRenduPeer::ID_SEQUENCE;
+		}
+
+		if ($this->aCahierTexteSequence !== null && $this->aCahierTexteSequence->getId() !== $v) {
+			$this->aCahierTexteSequence = null;
+		}
+
+		return $this;
+	} // setIdSequence()
+
+	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -440,7 +487,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	public function hasOnlyDefaultValues()
 	{
 			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(CahierTexteCompteRenduPeer::HEURE_ENTRY,CahierTexteCompteRenduPeer::DATE_CT,CahierTexteCompteRenduPeer::VISE,CahierTexteCompteRenduPeer::VISA))) {
+			if (array_diff($this->modifiedColumns, array(CahierTexteCompteRenduPeer::HEURE_ENTRY,CahierTexteCompteRenduPeer::DATE_CT,CahierTexteCompteRenduPeer::VISE,CahierTexteCompteRenduPeer::VISA,CahierTexteCompteRenduPeer::ID_SEQUENCE))) {
 				return false;
 			}
 
@@ -457,6 +504,10 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			}
 
 			if ($this->visa !== 'n') {
+				return false;
+			}
+
+			if ($this->id_sequence !== 0) {
 				return false;
 			}
 
@@ -490,6 +541,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			$this->visa = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
 			$this->id_groupe = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
 			$this->id_login = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+			$this->id_sequence = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -499,7 +551,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			}
 
 			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 8; // 8 = CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 9; // 9 = CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating CahierTexteCompteRendu object", $e);
@@ -527,6 +579,9 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		}
 		if ($this->aUtilisateurProfessionnel !== null && $this->id_login !== $this->aUtilisateurProfessionnel->getLogin()) {
 			$this->aUtilisateurProfessionnel = null;
+		}
+		if ($this->aCahierTexteSequence !== null && $this->id_sequence !== $this->aCahierTexteSequence->getId()) {
+			$this->aCahierTexteSequence = null;
 		}
 	} // ensureConsistency
 
@@ -569,6 +624,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 
 			$this->aGroupe = null;
 			$this->aUtilisateurProfessionnel = null;
+			$this->aCahierTexteSequence = null;
 			$this->collCahierTexteCompteRenduFichierJoints = null;
 			$this->lastCahierTexteCompteRenduFichierJointCriteria = null;
 
@@ -674,6 +730,13 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 					$affectedRows += $this->aUtilisateurProfessionnel->save($con);
 				}
 				$this->setUtilisateurProfessionnel($this->aUtilisateurProfessionnel);
+			}
+
+			if ($this->aCahierTexteSequence !== null) {
+				if ($this->aCahierTexteSequence->isModified() || $this->aCahierTexteSequence->isNew()) {
+					$affectedRows += $this->aCahierTexteSequence->save($con);
+				}
+				$this->setCahierTexteSequence($this->aCahierTexteSequence);
 			}
 
 			if ($this->isNew() ) {
@@ -789,6 +852,12 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 				}
 			}
 
+			if ($this->aCahierTexteSequence !== null) {
+				if (!$this->aCahierTexteSequence->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aCahierTexteSequence->getValidationFailures());
+				}
+			}
+
 
 			if (($retval = CahierTexteCompteRenduPeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
@@ -860,6 +929,9 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			case 7:
 				return $this->getIdLogin();
 				break;
+			case 8:
+				return $this->getIdSequence();
+				break;
 			default:
 				return null;
 				break;
@@ -889,6 +961,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			$keys[5] => $this->getVisa(),
 			$keys[6] => $this->getIdGroupe(),
 			$keys[7] => $this->getIdLogin(),
+			$keys[8] => $this->getIdSequence(),
 		);
 		return $result;
 	}
@@ -944,6 +1017,9 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			case 7:
 				$this->setIdLogin($value);
 				break;
+			case 8:
+				$this->setIdSequence($value);
+				break;
 		} // switch()
 	}
 
@@ -976,6 +1052,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		if (array_key_exists($keys[5], $arr)) $this->setVisa($arr[$keys[5]]);
 		if (array_key_exists($keys[6], $arr)) $this->setIdGroupe($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setIdLogin($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setIdSequence($arr[$keys[8]]);
 	}
 
 	/**
@@ -995,6 +1072,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		if ($this->isColumnModified(CahierTexteCompteRenduPeer::VISA)) $criteria->add(CahierTexteCompteRenduPeer::VISA, $this->visa);
 		if ($this->isColumnModified(CahierTexteCompteRenduPeer::ID_GROUPE)) $criteria->add(CahierTexteCompteRenduPeer::ID_GROUPE, $this->id_groupe);
 		if ($this->isColumnModified(CahierTexteCompteRenduPeer::ID_LOGIN)) $criteria->add(CahierTexteCompteRenduPeer::ID_LOGIN, $this->id_login);
+		if ($this->isColumnModified(CahierTexteCompteRenduPeer::ID_SEQUENCE)) $criteria->add(CahierTexteCompteRenduPeer::ID_SEQUENCE, $this->id_sequence);
 
 		return $criteria;
 	}
@@ -1062,6 +1140,8 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		$copyObj->setIdGroupe($this->id_groupe);
 
 		$copyObj->setIdLogin($this->id_login);
+
+		$copyObj->setIdSequence($this->id_sequence);
 
 
 		if ($deepCopy) {
@@ -1218,6 +1298,55 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
+	}
+
+	/**
+	 * Declares an association between this object and a CahierTexteSequence object.
+	 *
+	 * @param      CahierTexteSequence $v
+	 * @return     CahierTexteCompteRendu The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setCahierTexteSequence(CahierTexteSequence $v = null)
+	{
+		if ($v === null) {
+			$this->setIdSequence(0);
+		} else {
+			$this->setIdSequence($v->getId());
+		}
+
+		$this->aCahierTexteSequence = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the CahierTexteSequence object, it will not be re-added.
+		if ($v !== null) {
+			$v->addCahierTexteCompteRendu($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated CahierTexteSequence object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     CahierTexteSequence The associated CahierTexteSequence object.
+	 * @throws     PropelException
+	 */
+	public function getCahierTexteSequence(PropelPDO $con = null)
+	{
+		if ($this->aCahierTexteSequence === null && ($this->id_sequence !== null)) {
+			$this->aCahierTexteSequence = CahierTexteSequencePeer::retrieveByPK($this->id_sequence, $con);
+			/* The following can be used additionally to
+			   guarantee the related object contains a reference
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aCahierTexteSequence->addCahierTexteCompteRendus($this);
+			 */
+		}
+		return $this->aCahierTexteSequence;
 	}
 
 	/**
@@ -1397,6 +1526,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		$this->collCahierTexteCompteRenduFichierJoints = null;
 			$this->aGroupe = null;
 			$this->aUtilisateurProfessionnel = null;
+			$this->aCahierTexteSequence = null;
 	}
 
 } // BaseCahierTexteCompteRendu

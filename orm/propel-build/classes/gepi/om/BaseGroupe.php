@@ -1653,6 +1653,53 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 		return $this->collCahierTexteCompteRendus;
 	}
 
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related CahierTexteCompteRendus from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getCahierTexteCompteRendusJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCahierTexteCompteRendus === null) {
+			if ($this->isNew()) {
+				$this->collCahierTexteCompteRendus = array();
+			} else {
+
+				$criteria->add(CahierTexteCompteRenduPeer::ID_GROUPE, $this->id);
+
+				$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelectJoinCahierTexteSequence($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(CahierTexteCompteRenduPeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastCahierTexteCompteRenduCriteria) || !$this->lastCahierTexteCompteRenduCriteria->equals($criteria)) {
+				$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelectJoinCahierTexteSequence($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastCahierTexteCompteRenduCriteria = $criteria;
+
+		return $this->collCahierTexteCompteRendus;
+	}
+
 	/**
 	 * Clears out the collCahierTexteTravailAFaires collection (array).
 	 *
