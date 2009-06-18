@@ -105,6 +105,10 @@
 		<foreign-key foreignTable="utilisateurs" onDelete="SETNULL">
 			<reference local="id_login" foreign="login" />
 		</foreign-key>
+    <column name="id_sequence" type="INTEGER" size="5" default="0" description="Cle etrangere de la sequence auquel appartient le compte rendu" />
+		<foreign-key foreignTable="ct_sequences" onDelete="SETNULL">
+			<reference local="id_sequence" foreign="id" />
+		</foreign-key>
 	</table>
 
 	<table name="ct_documents" phpName="CahierTexteCompteRenduFichierJoint" description="Document (fichier joint) appartenant a un compte rendu du cahier de texte">
@@ -157,6 +161,12 @@
 		<foreign-key foreignTable="utilisateurs" onDelete="SETNULL">
 			<reference local="id_login" foreign="login" />
 		</foreign-key>
+	</table>
+
+  <table name="ct_sequences" phpName="CahierTexteSequence" description="Sequence de plusieurs compte-rendus">
+		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire des sequences" />
+		<column name="titre" required="true" type="VARCHAR" size="255" description="Titre de la sequence" />
+		<column name="description" required="true" type="CLOB" description="Description de la sequence" />
 	</table>
 
 <!-- fin des objets specifiques a cahiers de texte 2 -->
