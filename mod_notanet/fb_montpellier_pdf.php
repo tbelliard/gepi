@@ -37,6 +37,7 @@
 	// Choix du type de brevet à imprimer
 	//$type_brevet=0;
 
+	$trois_choix_avis=getSettingValue("fb_trois_choix_avis") ? getSettingValue("fb_trois_choix_avis") : "y";
 
 
 /*
@@ -976,23 +977,36 @@
 						$res_avis=mysql_query($sql);
 						if(mysql_num_rows($res_avis)>0) {
 							$lig_avis=mysql_fetch_object($res_avis);
-							if($lig_avis->favorable=="O") {$avis="Avis favorable.\n";}
+							if($lig_avis->favorable=="O") {$avis="Avis favorable.\n";$coche_avis="O";}
 							elseif($lig_avis->favorable=="N") {$avis="Avis défavorable.\n";$coche_avis="D";}
 							$avis.=$lig_avis->avis;
 						}
 
 						$pdf->SetXY($x+$esp,$y+2*$h_txt_socles+1);
-						$x0=$pdf->GetX();
-						$pdf->Cell(4,4, "",'LRBT',0,'C');
-						$x1=$pdf->GetX();
-						$texte=" très favorable";
-						$pdf->Cell($pdf->GetStringWidth($texte), $h_txt_socles, $texte,'',0,'C');
-						$pdf->SetXY($pdf->GetX()+$esp,$y+2*$h_txt_socles+1);
+						//$trois_choix_avis="y";
+
+						if($trois_choix_avis=="y") {
+							$x0=$pdf->GetX();
+							$pdf->Cell(4,4, "",'LRBT',0,'C');
+							$x1=$pdf->GetX();
+							$texte=" très favorable";
+							$pdf->Cell($pdf->GetStringWidth($texte), $h_txt_socles, $texte,'',0,'C');
+	
+							$pdf->SetXY($pdf->GetX()+$esp,$y+2*$h_txt_socles+1);
+						}
+
 						$texte=" favorable";
 						$x0=$pdf->GetX();
 						$pdf->Cell(4,4, "",'LRBT',0,'C');
 						$x1=$pdf->GetX();
+						if($trois_choix_avis=="n") {
+							if($coche_avis=="O") {
+								$pdf->Line($x0,$y+2*$h_txt_socles+1,$x1,$y+2*$h_txt_socles+1+4);
+								$pdf->Line($x1,$y+2*$h_txt_socles+1,$x0,$y+2*$h_txt_socles+1+4);
+							}
+						}
 						$pdf->Cell($pdf->GetStringWidth($texte), $h_txt_socles, $texte,'',0,'C');
+
 						$pdf->SetXY($pdf->GetX()+$esp,$y+2*$h_txt_socles+1);
 						$texte=" défavorable";
 						$x0=$pdf->GetX();
