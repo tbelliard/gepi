@@ -92,7 +92,9 @@ function statutAutreSetting(){
 
 	<div id="agauche">
 
-		<span class="refus"><?php echo ('Semaine n° '.date("W")); ?></span>
+<?php
+if (getSettingValue("use_only_cdt") == 'y' AND $_SESSION["statut"] == 'professeur'){}else{ ?>
+  		<span class="refus"><?php echo ('Semaine n° '.date("W")); ?></span>
 
 		<dl id="menu_edt">
 			<dd>
@@ -184,4 +186,7 @@ if (getSettingValue("mod_edt_gr") == "y") {
 ?>
 		</dl>
 <br />
+<?php
+}
+?>
 	</div>

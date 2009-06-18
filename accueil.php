@@ -33,6 +33,11 @@ $niveau_arbo = 0;
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
 
+if (getSettingValue("use_only_cdt") == 'y' AND $_SESSION["statut"] == 'professeur'){
+  $cdt = (getSettingValue("GepiCahierTexteVersion") == '2') ? '_2' : '';
+  header("Location:cahier_texte".$cdt."/index.php");
+}
+
 // On teste s'il y a une mise à jour de la base de données à effectuer
 if (test_maj()) {
     header("Location: ./utilitaires/maj.php");

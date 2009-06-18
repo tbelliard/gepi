@@ -25,18 +25,31 @@
 $accessibilite="y";
 
 // Initialisations files
+require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 require_once("../lib/transform_functions.php");
 
+  function aff_debug($tableau){
+    echo '<pre>';
+    print_r($tableau);
+    echo '</pre>';
+  }
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-    die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-    die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
+$propUser = ($_SESSION["statut"] == "eleve") ? ElevePeer::retrieveByLOGIN($_SESSION["login"]) :
+              ($_SESSION["statut"] == "responsable" ? ResponsableElevePeer::retrieveByLogin($_SESSION["login"]) : NULL);
+if ($propUser == null) {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -158,7 +171,14 @@ $today=mktime(0,0,0,$month,$day,$year);
 $titre_page = "Cahier de textes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
-
+//aff_debug($propUser->getGroupes(3));
+foreach ($propUser->getGroupes(1) as $group){
+  $test = $group->getCahierTexteCompteRendusJoinUtilisateurProfessionnel();
+  //$test2 = array_pop($test);
+  aff_debug($test[0]->getContenu());
+  //echo date("H:i d/m/Y", $test2->getDateCt()) . ' || ' . $test2->getContenu() . '<br />';
+  //aff_debug($test2);exit();
+}
 //debug_var();
 
 //echo "<p>\$selected_eleve_login=$selected_eleve_login</p>";

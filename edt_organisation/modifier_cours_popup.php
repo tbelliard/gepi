@@ -48,11 +48,11 @@ if ($resultat_session == 'c') {
 // Sécurité
 // INSERT INTO droits VALUES ('/edt_organisation/modifier_cours_popup.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'Modifier un cours', '');
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=2");
-    die();
+    //header("Location: ../logout.php?auto=2");
+    //die();
 }
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
-if (param_edt($_SESSION["statut"]) != "yes") {
+if (param_edt($_SESSION["statut"]) != "yes" OR ( ($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof") != 'y') )) {
 	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
 }
 // On vérifie que le droit soit le bon pour le profil scolarité
@@ -62,6 +62,9 @@ if ($_SESSION["statut"] == "administrateur") {
 }
 elseif ($_SESSION["statut"] == "scolarite" AND $gepiSettings['scolarite_modif_cours'] == "y") {
 	$autorise = "oui";
+}
+elseif(($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof") == 'y')){
+  $autorise = "oui";
 }
 else {
 	$autorise = "non";
