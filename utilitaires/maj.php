@@ -292,6 +292,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/exportcsv.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
   $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/consultation.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'F', 'Consultation des cahiers de textes', '');";
   $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/see_all.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Consultation des cahiers de texte', '');";
+  $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/creer_sequence.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte', '1');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/classes/classes_ajout.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/classes/classes_const.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/classes/cpe_resp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Affectation des CPE aux classes', '');";
@@ -7927,6 +7928,33 @@ lieu VARCHAR( 255 ) NOT NULL
       $result .= "<font color=\"blue\">Le setting est déjà présent</font><br />";
     }
 
+    $test = sql_query1("SHOW TABLES LIKE 'ct_sequences'");
+		if ($test == -1) {
+			$result .= "<br />Création de la table 'ct_sequences'. ";
+			$sql="CREATE TABLE IF NOT EXISTS ct_sequences (
+id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+titre VARCHAR( 255 ) NOT NULL ,
+description TEXT NOT NULL
+);";
+			$result_inter = traite_requete($sql);
+			if ($result_inter != '') {
+				$result .= "<br />Erreur sur la création de la table 'ct_sequences': ".$result_inter."<br />";
+			}
+		}
+
+    $result .= "&nbsp;->Ajout d'un champ 'id_sequence' à la table 'ct_entry'<br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_entry LIKE 'id_sequence'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE ct_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0' AFTER id_login;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
+		}
 
 		//------------------------------------------------------------------------
 		// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion
