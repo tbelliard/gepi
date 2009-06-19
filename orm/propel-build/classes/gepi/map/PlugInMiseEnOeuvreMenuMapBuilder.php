@@ -2,7 +2,7 @@
 
 
 /**
- * This class adds structure of 'ct_private_entry' table to 'gepi' DatabaseMap object.
+ * This class adds structure of 'plugins_menus' table to 'gepi' DatabaseMap object.
  *
  *
  *
@@ -13,12 +13,12 @@
  *
  * @package    gepi.map
  */
-class CahierTexteNoticePriveeMapBuilder implements MapBuilder {
+class PlugInMiseEnOeuvreMenuMapBuilder implements MapBuilder {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'gepi.map.CahierTexteNoticePriveeMapBuilder';
+	const CLASS_NAME = 'gepi.map.PlugInMiseEnOeuvreMenuMapBuilder';
 
 	/**
 	 * The database map.
@@ -54,28 +54,26 @@ class CahierTexteNoticePriveeMapBuilder implements MapBuilder {
 	 */
 	public function doBuild()
 	{
-		$this->dbMap = Propel::getDatabaseMap(CahierTexteNoticePriveePeer::DATABASE_NAME);
+		$this->dbMap = Propel::getDatabaseMap(PlugInMiseEnOeuvreMenuPeer::DATABASE_NAME);
 
-		$tMap = $this->dbMap->addTable(CahierTexteNoticePriveePeer::TABLE_NAME);
-		$tMap->setPhpName('CahierTexteNoticePrivee');
-		$tMap->setClassname('CahierTexteNoticePrivee');
+		$tMap = $this->dbMap->addTable(PlugInMiseEnOeuvreMenuPeer::TABLE_NAME);
+		$tMap->setPhpName('PlugInMiseEnOeuvreMenu');
+		$tMap->setClassname('PlugInMiseEnOeuvreMenu');
 
 		$tMap->setUseIdGenerator(true);
 
-		$tMap->addPrimaryKey('ID_CT', 'IdCt', 'INTEGER', true, null);
+		$tMap->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11);
 
-		$tMap->addColumn('HEURE_ENTRY', 'HeureEntry', 'TIME', true, null);
+		$tMap->addForeignKey('PLUGIN_ID', 'PluginId', 'INTEGER', 'plugins', 'ID', true, 11);
 
-		$tMap->addColumn('DATE_CT', 'DateCt', 'INTEGER', true, null);
+		$tMap->addColumn('USER_STATUT', 'UserStatut', 'VARCHAR', true, 50);
 
-		$tMap->addColumn('CONTENU', 'Contenu', 'LONGVARCHAR', true, null);
+		$tMap->addColumn('TITRE_ITEM', 'TitreItem', 'VARCHAR', true, 255);
 
-		$tMap->addForeignKey('ID_GROUPE', 'IdGroupe', 'INTEGER', 'groupes', 'ID', true, null);
+		$tMap->addColumn('LIEN_ITEM', 'LienItem', 'VARCHAR', true, 255);
 
-		$tMap->addForeignKey('ID_LOGIN', 'IdLogin', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 32);
-
-		$tMap->addForeignKey('ID_SEQUENCE', 'IdSequence', 'INTEGER', 'ct_sequences', 'ID', false, 5);
+		$tMap->addColumn('DESCRIPTION_ITEM', 'DescriptionItem', 'VARCHAR', true, 255);
 
 	} // doBuild()
 
-} // CahierTexteNoticePriveeMapBuilder
+} // PlugInMiseEnOeuvreMenuMapBuilder

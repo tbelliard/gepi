@@ -216,6 +216,7 @@ CREATE TABLE ct_devoirs_entry
 	vise CHAR default 'n' NOT NULL COMMENT 'vise',
 	id_groupe INTEGER  NOT NULL COMMENT 'Cle etrangere du groupe auquel appartient ce travail a faire',
 	id_login VARCHAR(32) COMMENT 'Cle etrangere du l\'utilisateur auquel appartient ce travail a faire',
+	id_sequence INTEGER(5) default 0 COMMENT 'Cle etrangere de la sequence auquel appartient le devoir a faire',
 	PRIMARY KEY (id_ct),
 	INDEX ct_devoirs_entry_FI_1 (id_groupe),
 	CONSTRAINT ct_devoirs_entry_FK_1
@@ -226,6 +227,11 @@ CREATE TABLE ct_devoirs_entry
 	CONSTRAINT ct_devoirs_entry_FK_2
 		FOREIGN KEY (id_login)
 		REFERENCES utilisateurs (login)
+		ON DELETE SET NULL,
+	INDEX ct_devoirs_entry_FI_3 (id_sequence),
+	CONSTRAINT ct_devoirs_entry_FK_3
+		FOREIGN KEY (id_sequence)
+		REFERENCES ct_sequences (id)
 		ON DELETE SET NULL
 )Type=MyISAM COMMENT='Travail Ã  faire (devoir) cahier de texte';
 
@@ -266,6 +272,7 @@ CREATE TABLE ct_private_entry
 	contenu TEXT  NOT NULL COMMENT 'contenu redactionnel du compte rendu',
 	id_groupe INTEGER  NOT NULL COMMENT 'Cle etrangere du groupe auquel appartient le compte rendu',
 	id_login VARCHAR(32) COMMENT 'Cle etrangere de l\'utilisateur auquel appartient le compte rendu',
+	id_sequence INTEGER(5) default 0 COMMENT 'Cle etrangere de la sequence auquel appartient la notice privee',
 	PRIMARY KEY (id_ct),
 	INDEX ct_private_entry_FI_1 (id_groupe),
 	CONSTRAINT ct_private_entry_FK_1
@@ -276,6 +283,11 @@ CREATE TABLE ct_private_entry
 	CONSTRAINT ct_private_entry_FK_2
 		FOREIGN KEY (id_login)
 		REFERENCES utilisateurs (login)
+		ON DELETE SET NULL,
+	INDEX ct_private_entry_FI_3 (id_sequence),
+	CONSTRAINT ct_private_entry_FK_3
+		FOREIGN KEY (id_sequence)
+		REFERENCES ct_sequences (id)
 		ON DELETE SET NULL
 )Type=MyISAM COMMENT='Notice privee du cahier de texte';
 
@@ -1039,6 +1051,66 @@ CREATE TABLE j_matieres_categories_classes
 		FOREIGN KEY (classe_id)
 		REFERENCES classes (id)
 )Type=MyISAM COMMENT='Liaison entre categories de matiere et classes';
+
+#-----------------------------------------------------------------------------
+#-- plugins
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS plugins;
+
+
+CREATE TABLE plugins
+(
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire',
+	nom VARCHAR(100)  NOT NULL COMMENT 'Nom du plugin',
+	repertoire VARCHAR(255)  NOT NULL COMMENT 'Repertoire du plugin',
+	description LONGTEXT  NOT NULL COMMENT 'Description du plugin',
+	ouvert CHAR(1)  NOT NULL COMMENT 'Statut du plugin, si il est operationnel y/n',
+	PRIMARY KEY (id)
+)Type=MyISAM COMMENT='Liste des plugins installes sur ce Gepi';
+
+#-----------------------------------------------------------------------------
+#-- plugins_autorisations
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS plugins_autorisations;
+
+
+CREATE TABLE plugins_autorisations
+(
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire',
+	plugin_id INTEGER(11)  NOT NULL COMMENT 'cle etrangere vers la table plugins',
+	fichier VARCHAR(100)  NOT NULL COMMENT 'Nom d\'un fichier de ce plugin',
+	user_statut VARCHAR(50)  NOT NULL COMMENT 'Statut de l\'utilisateur',
+	auth CHAR(1)  NOT NULL COMMENT 'Est-ce que ce statut a le droit de voir ce fichier y/n',
+	PRIMARY KEY (id),
+	INDEX plugins_autorisations_FI_1 (plugin_id),
+	CONSTRAINT plugins_autorisations_FK_1
+		FOREIGN KEY (plugin_id)
+		REFERENCES plugins (id)
+)Type=MyISAM COMMENT='Liste des autorisations pour chaque statut';
+
+#-----------------------------------------------------------------------------
+#-- plugins_menus
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS plugins_menus;
+
+
+CREATE TABLE plugins_menus
+(
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire',
+	plugin_id INTEGER(11)  NOT NULL COMMENT 'cle etrangere vers la table plugins',
+	user_statut VARCHAR(50)  NOT NULL COMMENT 'Statut de l\'utilisateur',
+	titre_item VARCHAR(255)  NOT NULL COMMENT 'Titre du lien qui amène vers le bon fichier',
+	lien_item VARCHAR(255)  NOT NULL COMMENT 'url relative',
+	description_item VARCHAR(255)  NOT NULL COMMENT 'Description du lien',
+	PRIMARY KEY (id),
+	INDEX plugins_menus_FI_1 (plugin_id),
+	CONSTRAINT plugins_menus_FK_1
+		FOREIGN KEY (plugin_id)
+		REFERENCES plugins (id)
+)Type=MyISAM COMMENT='Items pour construire le menu de ce plug-in';
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

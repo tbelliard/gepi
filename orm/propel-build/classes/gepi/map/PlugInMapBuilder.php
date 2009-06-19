@@ -2,7 +2,7 @@
 
 
 /**
- * This class adds structure of 'ct_private_entry' table to 'gepi' DatabaseMap object.
+ * This class adds structure of 'plugins' table to 'gepi' DatabaseMap object.
  *
  *
  *
@@ -13,12 +13,12 @@
  *
  * @package    gepi.map
  */
-class CahierTexteNoticePriveeMapBuilder implements MapBuilder {
+class PlugInMapBuilder implements MapBuilder {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'gepi.map.CahierTexteNoticePriveeMapBuilder';
+	const CLASS_NAME = 'gepi.map.PlugInMapBuilder';
 
 	/**
 	 * The database map.
@@ -54,28 +54,24 @@ class CahierTexteNoticePriveeMapBuilder implements MapBuilder {
 	 */
 	public function doBuild()
 	{
-		$this->dbMap = Propel::getDatabaseMap(CahierTexteNoticePriveePeer::DATABASE_NAME);
+		$this->dbMap = Propel::getDatabaseMap(PlugInPeer::DATABASE_NAME);
 
-		$tMap = $this->dbMap->addTable(CahierTexteNoticePriveePeer::TABLE_NAME);
-		$tMap->setPhpName('CahierTexteNoticePrivee');
-		$tMap->setClassname('CahierTexteNoticePrivee');
+		$tMap = $this->dbMap->addTable(PlugInPeer::TABLE_NAME);
+		$tMap->setPhpName('PlugIn');
+		$tMap->setClassname('PlugIn');
 
 		$tMap->setUseIdGenerator(true);
 
-		$tMap->addPrimaryKey('ID_CT', 'IdCt', 'INTEGER', true, null);
+		$tMap->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11);
 
-		$tMap->addColumn('HEURE_ENTRY', 'HeureEntry', 'TIME', true, null);
+		$tMap->addColumn('NOM', 'Nom', 'VARCHAR', true, 100);
 
-		$tMap->addColumn('DATE_CT', 'DateCt', 'INTEGER', true, null);
+		$tMap->addColumn('REPERTOIRE', 'Repertoire', 'VARCHAR', true, 255);
 
-		$tMap->addColumn('CONTENU', 'Contenu', 'LONGVARCHAR', true, null);
+		$tMap->addColumn('DESCRIPTION', 'Description', 'CLOB', true, null);
 
-		$tMap->addForeignKey('ID_GROUPE', 'IdGroupe', 'INTEGER', 'groupes', 'ID', true, null);
-
-		$tMap->addForeignKey('ID_LOGIN', 'IdLogin', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 32);
-
-		$tMap->addForeignKey('ID_SEQUENCE', 'IdSequence', 'INTEGER', 'ct_sequences', 'ID', false, 5);
+		$tMap->addColumn('OUVERT', 'Ouvert', 'CHAR', true, 1);
 
 	} // doBuild()
 
-} // CahierTexteNoticePriveeMapBuilder
+} // PlugInMapBuilder

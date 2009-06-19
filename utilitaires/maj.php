@@ -7956,6 +7956,83 @@ description TEXT NOT NULL
 			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
 		}
 
+    $result .= "&nbsp;->Ajout d'un champ 'id_sequence' à la table 'ct_devoirs_entry'<br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_devoirs_entry LIKE 'id_sequence'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE ct_devoirs_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0';");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
+		}
+
+    $result .= "&nbsp;->Ajout d'un champ 'id_sequence' à la table 'ct_private_entry'<br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_private_entry LIKE 'id_sequence'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE ct_private_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0';");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
+		}
+
+    $test = sql_query1("SHOW TABLES LIKE 'plugins'");
+		if ($test == -1) {
+			$result .= "<br />Création de la table 'plugins'. ";
+			$sql="CREATE TABLE IF NOT EXISTS plugins (
+id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+nom VARCHAR( 100 ) NOT NULL,
+repertoire VARCHAR( 255 ) NOT NULL,
+description LONGTEXT NOT NULL,
+ouvert CHAR( 1 ) default 'n'
+);";
+			$result_inter = traite_requete($sql);
+			if ($result_inter != '') {
+				$result .= "<br />Erreur sur la création de la table 'plugins': ".$result_inter."<br />";
+			}
+		}
+
+    $test = sql_query1("SHOW TABLES LIKE 'plugins_autorisations'");
+		if ($test == -1) {
+			$result .= "<br />Création de la table 'plugins_autorisations'. ";
+			$sql="CREATE TABLE IF NOT EXISTS plugins_autorisations (
+id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+plugin_id INT( 11 ) NOT NULL,
+fichier VARCHAR( 100 ) NOT NULL,
+user_statut VARCHAR( 50 ) NOT NULL,
+auth CHAR( 1 ) default 'n'
+);";
+			$result_inter = traite_requete($sql);
+			if ($result_inter != '') {
+				$result .= "<br />Erreur sur la création de la table 'plugins_autorisations': ".$result_inter."<br />";
+			}
+		}
+
+    $test = sql_query1("SHOW TABLES LIKE 'plugins_menus'");
+		if ($test == -1) {
+			$result .= "<br />Création de la table 'plugins_menus'. ";
+			$sql="CREATE TABLE IF NOT EXISTS plugins_menus (
+id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+plugin_id INT( 11 ) NOT NULL,
+user_statut VARCHAR( 50 ) NOT NULL,
+titre_item VARCHAR ( 255 ) NOT NULL,
+lien_item VARCHAR( 255 ) NOT NULL,
+description_item VARCHAR( 255 ) NOT NULL
+);";
+			$result_inter = traite_requete($sql);
+			if ($result_inter != '') {
+				$result .= "<br />Erreur sur la création de la table 'plugins_menus': ".$result_inter."<br />";
+			}
+		}
+
 		//------------------------------------------------------------------------
 		// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion
 		// de la 1.5.2 stable doivent se situer au-dessus de cette ligne !

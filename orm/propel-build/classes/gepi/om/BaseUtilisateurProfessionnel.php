@@ -2566,6 +2566,53 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		return $this->collCahierTexteTravailAFaires;
 	}
 
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related CahierTexteTravailAFaires from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 */
+	public function getCahierTexteTravailAFairesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCahierTexteTravailAFaires === null) {
+			if ($this->isNew()) {
+				$this->collCahierTexteTravailAFaires = array();
+			} else {
+
+				$criteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $this->login);
+
+				$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelectJoinCahierTexteSequence($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $this->login);
+
+			if (!isset($this->lastCahierTexteTravailAFaireCriteria) || !$this->lastCahierTexteTravailAFaireCriteria->equals($criteria)) {
+				$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelectJoinCahierTexteSequence($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastCahierTexteTravailAFaireCriteria = $criteria;
+
+		return $this->collCahierTexteTravailAFaires;
+	}
+
 	/**
 	 * Clears out the collCahierTexteNoticePrivees collection (array).
 	 *
@@ -2761,6 +2808,53 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 			if (!isset($this->lastCahierTexteNoticePriveeCriteria) || !$this->lastCahierTexteNoticePriveeCriteria->equals($criteria)) {
 				$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastCahierTexteNoticePriveeCriteria = $criteria;
+
+		return $this->collCahierTexteNoticePrivees;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related CahierTexteNoticePrivees from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 */
+	public function getCahierTexteNoticePriveesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collCahierTexteNoticePrivees === null) {
+			if ($this->isNew()) {
+				$this->collCahierTexteNoticePrivees = array();
+			} else {
+
+				$criteria->add(CahierTexteNoticePriveePeer::ID_LOGIN, $this->login);
+
+				$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelectJoinCahierTexteSequence($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(CahierTexteNoticePriveePeer::ID_LOGIN, $this->login);
+
+			if (!isset($this->lastCahierTexteNoticePriveeCriteria) || !$this->lastCahierTexteNoticePriveeCriteria->equals($criteria)) {
+				$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelectJoinCahierTexteSequence($criteria, $con, $join_behavior);
 			}
 		}
 		$this->lastCahierTexteNoticePriveeCriteria = $criteria;

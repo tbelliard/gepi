@@ -135,6 +135,10 @@
 		<foreign-key foreignTable="utilisateurs" onDelete="SETNULL">
 			<reference local="id_login" foreign="login" />
 		</foreign-key>
+    <column name="id_sequence" type="INTEGER" size="5" default="0" description="Cle etrangere de la sequence auquel appartient le devoir a faire" />
+		<foreign-key foreignTable="ct_sequences" onDelete="SETNULL">
+			<reference local="id_sequence" foreign="id" />
+		</foreign-key>
 	</table>
 
 	<table name="ct_devoirs_documents" phpName="CahierTexteTravailAFaireFichierJoint" description="Document (fichier joint) appartenant a un travail Ã  faire du cahier de texte">
@@ -160,6 +164,10 @@
 		<column name="id_login" type="VARCHAR" size="32" description="Cle etrangere de l'utilisateur auquel appartient le compte rendu" />
 		<foreign-key foreignTable="utilisateurs" onDelete="SETNULL">
 			<reference local="id_login" foreign="login" />
+		</foreign-key>
+    <column name="id_sequence" type="INTEGER" size="5" default="0" description="Cle etrangere de la sequence auquel appartient la notice privee" />
+		<foreign-key foreignTable="ct_sequences" onDelete="SETNULL">
+			<reference local="id_sequence" foreign="id" />
 		</foreign-key>
 	</table>
 
@@ -492,5 +500,33 @@
     <column name="priority" required="true" type="INTEGER" size="6" description="Priorite d'affichage"/>
   </table>
 
+<!-- Début des objets propel spécifiques au module PLUGIN -->
+  <table name="plugins" phpName="PlugIn" description="Liste des plugins installes sur ce Gepi">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire"/>
+    <column name="nom" required="true" type="VARCHAR" size="100" description="Nom du plugin"/>
+    <column name="repertoire" type="VARCHAR" required="true" size="255" description="Repertoire du plugin"/>
+    <column name="description" type="CLOB" required="true" description="Description du plugin"/>
+    <column name="ouvert" required="true" type="CHAR" size="1" description="Statut du plugin, si il est operationnel y/n"/>
+  </table>
+
+  <table name="plugins_autorisations" phpName="PlugInAutorisation" description="Liste des autorisations pour chaque statut">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire"/>
+    <column name="plugin_id" required="true" type="INTEGER" size="11" description="cle etrangere vers la table plugins"/>
+    <foreign-key foreignTable="plugins"><reference local="plugin_id" foreign="id"/></foreign-key>
+    <column name="fichier" required="true" type="VARCHAR" size="100" description="Nom d'un fichier de ce plugin"/>
+    <column name="user_statut" type="VARCHAR" required="true" size="50" description="Statut de l'utilisateur"/>
+    <column name="auth" required="true" type="CHAR" size="1" description="Est-ce que ce statut a le droit de voir ce fichier y/n"/>
+  </table>
+
+  <table name="plugins_menus" phpName="PlugInMiseEnOeuvreMenu" description="Items pour construire le menu de ce plug-in">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire"/>
+    <column name="plugin_id" required="true" type="INTEGER" size="11" description="cle etrangere vers la table plugins"/>
+    <foreign-key foreignTable="plugins"><reference local="plugin_id" foreign="id"/></foreign-key>
+    <column name="user_statut" required="true" type="VARCHAR" size="50" description="Statut de l'utilisateur"/>
+    <column name="titre_item" required="true" type="VARCHAR" size="255" description="Titre du lien qui amène vers le bon fichier"/>
+    <column name="lien_item" required="true" type="VARCHAR" size="255" description="url relative"/>
+    <column name="description_item" required="true" type="VARCHAR" size="255" description="Description du lien"/>
+  </table>
+<!-- Fin des objets propel spécifiques au module PLUGIN -->
 
 </database>

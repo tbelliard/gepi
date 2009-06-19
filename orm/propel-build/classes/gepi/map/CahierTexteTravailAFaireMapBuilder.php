@@ -74,6 +74,8 @@ class CahierTexteTravailAFaireMapBuilder implements MapBuilder {
 
 		$tMap->addForeignKey('ID_LOGIN', 'IdLogin', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 32);
 
+		$tMap->addForeignKey('ID_SEQUENCE', 'IdSequence', 'INTEGER', 'ct_sequences', 'ID', false, 5);
+
 	} // doBuild()
 
 } // CahierTexteTravailAFaireMapBuilder

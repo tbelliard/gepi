@@ -2,7 +2,7 @@
 
 
 /**
- * This class adds structure of 'ct_private_entry' table to 'gepi' DatabaseMap object.
+ * This class adds structure of 'plugins_autorisations' table to 'gepi' DatabaseMap object.
  *
  *
  *
@@ -13,12 +13,12 @@
  *
  * @package    gepi.map
  */
-class CahierTexteNoticePriveeMapBuilder implements MapBuilder {
+class PlugInAutorisationMapBuilder implements MapBuilder {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'gepi.map.CahierTexteNoticePriveeMapBuilder';
+	const CLASS_NAME = 'gepi.map.PlugInAutorisationMapBuilder';
 
 	/**
 	 * The database map.
@@ -54,28 +54,24 @@ class CahierTexteNoticePriveeMapBuilder implements MapBuilder {
 	 */
 	public function doBuild()
 	{
-		$this->dbMap = Propel::getDatabaseMap(CahierTexteNoticePriveePeer::DATABASE_NAME);
+		$this->dbMap = Propel::getDatabaseMap(PlugInAutorisationPeer::DATABASE_NAME);
 
-		$tMap = $this->dbMap->addTable(CahierTexteNoticePriveePeer::TABLE_NAME);
-		$tMap->setPhpName('CahierTexteNoticePrivee');
-		$tMap->setClassname('CahierTexteNoticePrivee');
+		$tMap = $this->dbMap->addTable(PlugInAutorisationPeer::TABLE_NAME);
+		$tMap->setPhpName('PlugInAutorisation');
+		$tMap->setClassname('PlugInAutorisation');
 
 		$tMap->setUseIdGenerator(true);
 
-		$tMap->addPrimaryKey('ID_CT', 'IdCt', 'INTEGER', true, null);
+		$tMap->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11);
 
-		$tMap->addColumn('HEURE_ENTRY', 'HeureEntry', 'TIME', true, null);
+		$tMap->addForeignKey('PLUGIN_ID', 'PluginId', 'INTEGER', 'plugins', 'ID', true, 11);
 
-		$tMap->addColumn('DATE_CT', 'DateCt', 'INTEGER', true, null);
+		$tMap->addColumn('FICHIER', 'Fichier', 'VARCHAR', true, 100);
 
-		$tMap->addColumn('CONTENU', 'Contenu', 'LONGVARCHAR', true, null);
+		$tMap->addColumn('USER_STATUT', 'UserStatut', 'VARCHAR', true, 50);
 
-		$tMap->addForeignKey('ID_GROUPE', 'IdGroupe', 'INTEGER', 'groupes', 'ID', true, null);
-
-		$tMap->addForeignKey('ID_LOGIN', 'IdLogin', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 32);
-
-		$tMap->addForeignKey('ID_SEQUENCE', 'IdSequence', 'INTEGER', 'ct_sequences', 'ID', false, 5);
+		$tMap->addColumn('AUTH', 'Auth', 'CHAR', true, 1);
 
 	} // doBuild()
 
-} // CahierTexteNoticePriveeMapBuilder
+} // PlugInAutorisationMapBuilder

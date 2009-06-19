@@ -57,6 +57,13 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	protected $id_login;
 
 	/**
+	 * The value for the id_sequence field.
+	 * Note: this column has a database default value of: 0
+	 * @var        int
+	 */
+	protected $id_sequence;
+
+	/**
 	 * @var        Groupe
 	 */
 	protected $aGroupe;
@@ -65,6 +72,11 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	 * @var        UtilisateurProfessionnel
 	 */
 	protected $aUtilisateurProfessionnel;
+
+	/**
+	 * @var        CahierTexteSequence
+	 */
+	protected $aCahierTexteSequence;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -100,6 +112,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	{
 		$this->heure_entry = '00:00:00';
 		$this->date_ct = 0;
+		$this->id_sequence = 0;
 	}
 
 	/**
@@ -183,6 +196,16 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	public function getIdLogin()
 	{
 		return $this->id_login;
+	}
+
+	/**
+	 * Get the [id_sequence] column value.
+	 * Cle etrangere de la sequence auquel appartient la notice privee
+	 * @return     int
+	 */
+	public function getIdSequence()
+	{
+		return $this->id_sequence;
 	}
 
 	/**
@@ -344,6 +367,30 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	} // setIdLogin()
 
 	/**
+	 * Set the value of [id_sequence] column.
+	 * Cle etrangere de la sequence auquel appartient la notice privee
+	 * @param      int $v new value
+	 * @return     CahierTexteNoticePrivee The current object (for fluent API support)
+	 */
+	public function setIdSequence($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->id_sequence !== $v || $v === 0) {
+			$this->id_sequence = $v;
+			$this->modifiedColumns[] = CahierTexteNoticePriveePeer::ID_SEQUENCE;
+		}
+
+		if ($this->aCahierTexteSequence !== null && $this->aCahierTexteSequence->getId() !== $v) {
+			$this->aCahierTexteSequence = null;
+		}
+
+		return $this;
+	} // setIdSequence()
+
+	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -354,7 +401,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	public function hasOnlyDefaultValues()
 	{
 			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(CahierTexteNoticePriveePeer::HEURE_ENTRY,CahierTexteNoticePriveePeer::DATE_CT))) {
+			if (array_diff($this->modifiedColumns, array(CahierTexteNoticePriveePeer::HEURE_ENTRY,CahierTexteNoticePriveePeer::DATE_CT,CahierTexteNoticePriveePeer::ID_SEQUENCE))) {
 				return false;
 			}
 
@@ -363,6 +410,10 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 			}
 
 			if ($this->date_ct !== 0) {
+				return false;
+			}
+
+			if ($this->id_sequence !== 0) {
 				return false;
 			}
 
@@ -394,6 +445,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 			$this->contenu = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
 			$this->id_groupe = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
 			$this->id_login = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->id_sequence = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -403,7 +455,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 			}
 
 			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 6; // 6 = CahierTexteNoticePriveePeer::NUM_COLUMNS - CahierTexteNoticePriveePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 7; // 7 = CahierTexteNoticePriveePeer::NUM_COLUMNS - CahierTexteNoticePriveePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating CahierTexteNoticePrivee object", $e);
@@ -431,6 +483,9 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		}
 		if ($this->aUtilisateurProfessionnel !== null && $this->id_login !== $this->aUtilisateurProfessionnel->getLogin()) {
 			$this->aUtilisateurProfessionnel = null;
+		}
+		if ($this->aCahierTexteSequence !== null && $this->id_sequence !== $this->aCahierTexteSequence->getId()) {
+			$this->aCahierTexteSequence = null;
 		}
 	} // ensureConsistency
 
@@ -473,6 +528,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 
 			$this->aGroupe = null;
 			$this->aUtilisateurProfessionnel = null;
+			$this->aCahierTexteSequence = null;
 		} // if (deep)
 	}
 
@@ -575,6 +631,13 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 					$affectedRows += $this->aUtilisateurProfessionnel->save($con);
 				}
 				$this->setUtilisateurProfessionnel($this->aUtilisateurProfessionnel);
+			}
+
+			if ($this->aCahierTexteSequence !== null) {
+				if ($this->aCahierTexteSequence->isModified() || $this->aCahierTexteSequence->isNew()) {
+					$affectedRows += $this->aCahierTexteSequence->save($con);
+				}
+				$this->setCahierTexteSequence($this->aCahierTexteSequence);
 			}
 
 			if ($this->isNew() ) {
@@ -682,6 +745,12 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 				}
 			}
 
+			if ($this->aCahierTexteSequence !== null) {
+				if (!$this->aCahierTexteSequence->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aCahierTexteSequence->getValidationFailures());
+				}
+			}
+
 
 			if (($retval = CahierTexteNoticePriveePeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
@@ -739,6 +808,9 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 			case 5:
 				return $this->getIdLogin();
 				break;
+			case 6:
+				return $this->getIdSequence();
+				break;
 			default:
 				return null;
 				break;
@@ -766,6 +838,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 			$keys[3] => $this->getContenu(),
 			$keys[4] => $this->getIdGroupe(),
 			$keys[5] => $this->getIdLogin(),
+			$keys[6] => $this->getIdSequence(),
 		);
 		return $result;
 	}
@@ -815,6 +888,9 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 			case 5:
 				$this->setIdLogin($value);
 				break;
+			case 6:
+				$this->setIdSequence($value);
+				break;
 		} // switch()
 	}
 
@@ -845,6 +921,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		if (array_key_exists($keys[3], $arr)) $this->setContenu($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setIdGroupe($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setIdLogin($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setIdSequence($arr[$keys[6]]);
 	}
 
 	/**
@@ -862,6 +939,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		if ($this->isColumnModified(CahierTexteNoticePriveePeer::CONTENU)) $criteria->add(CahierTexteNoticePriveePeer::CONTENU, $this->contenu);
 		if ($this->isColumnModified(CahierTexteNoticePriveePeer::ID_GROUPE)) $criteria->add(CahierTexteNoticePriveePeer::ID_GROUPE, $this->id_groupe);
 		if ($this->isColumnModified(CahierTexteNoticePriveePeer::ID_LOGIN)) $criteria->add(CahierTexteNoticePriveePeer::ID_LOGIN, $this->id_login);
+		if ($this->isColumnModified(CahierTexteNoticePriveePeer::ID_SEQUENCE)) $criteria->add(CahierTexteNoticePriveePeer::ID_SEQUENCE, $this->id_sequence);
 
 		return $criteria;
 	}
@@ -925,6 +1003,8 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		$copyObj->setIdGroupe($this->id_groupe);
 
 		$copyObj->setIdLogin($this->id_login);
+
+		$copyObj->setIdSequence($this->id_sequence);
 
 
 		$copyObj->setNew(true);
@@ -1070,6 +1150,55 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	}
 
 	/**
+	 * Declares an association between this object and a CahierTexteSequence object.
+	 *
+	 * @param      CahierTexteSequence $v
+	 * @return     CahierTexteNoticePrivee The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setCahierTexteSequence(CahierTexteSequence $v = null)
+	{
+		if ($v === null) {
+			$this->setIdSequence(0);
+		} else {
+			$this->setIdSequence($v->getId());
+		}
+
+		$this->aCahierTexteSequence = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the CahierTexteSequence object, it will not be re-added.
+		if ($v !== null) {
+			$v->addCahierTexteNoticePrivee($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated CahierTexteSequence object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     CahierTexteSequence The associated CahierTexteSequence object.
+	 * @throws     PropelException
+	 */
+	public function getCahierTexteSequence(PropelPDO $con = null)
+	{
+		if ($this->aCahierTexteSequence === null && ($this->id_sequence !== null)) {
+			$this->aCahierTexteSequence = CahierTexteSequencePeer::retrieveByPK($this->id_sequence, $con);
+			/* The following can be used additionally to
+			   guarantee the related object contains a reference
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aCahierTexteSequence->addCahierTexteNoticePrivees($this);
+			 */
+		}
+		return $this->aCahierTexteSequence;
+	}
+
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -1085,6 +1214,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 
 			$this->aGroupe = null;
 			$this->aUtilisateurProfessionnel = null;
+			$this->aCahierTexteSequence = null;
 	}
 
 } // BaseCahierTexteNoticePrivee

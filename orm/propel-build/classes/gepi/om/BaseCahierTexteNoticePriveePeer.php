@@ -19,7 +19,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 	const CLASS_DEFAULT = 'gepi.CahierTexteNoticePrivee';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 6;
+	const NUM_COLUMNS = 7;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -42,6 +42,9 @@ abstract class BaseCahierTexteNoticePriveePeer {
 	/** the column name for the ID_LOGIN field */
 	const ID_LOGIN = 'ct_private_entry.ID_LOGIN';
 
+	/** the column name for the ID_SEQUENCE field */
+	const ID_SEQUENCE = 'ct_private_entry.ID_SEQUENCE';
+
 	/**
 	 * An identiy map to hold any loaded instances of CahierTexteNoticePrivee objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -63,11 +66,11 @@ abstract class BaseCahierTexteNoticePriveePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('IdCt', 'HeureEntry', 'DateCt', 'Contenu', 'IdGroupe', 'IdLogin', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt', 'heureEntry', 'dateCt', 'contenu', 'idGroupe', 'idLogin', ),
-		BasePeer::TYPE_COLNAME => array (self::ID_CT, self::HEURE_ENTRY, self::DATE_CT, self::CONTENU, self::ID_GROUPE, self::ID_LOGIN, ),
-		BasePeer::TYPE_FIELDNAME => array ('id_ct', 'heure_entry', 'date_ct', 'contenu', 'id_groupe', 'id_login', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+		BasePeer::TYPE_PHPNAME => array ('IdCt', 'HeureEntry', 'DateCt', 'Contenu', 'IdGroupe', 'IdLogin', 'IdSequence', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt', 'heureEntry', 'dateCt', 'contenu', 'idGroupe', 'idLogin', 'idSequence', ),
+		BasePeer::TYPE_COLNAME => array (self::ID_CT, self::HEURE_ENTRY, self::DATE_CT, self::CONTENU, self::ID_GROUPE, self::ID_LOGIN, self::ID_SEQUENCE, ),
+		BasePeer::TYPE_FIELDNAME => array ('id_ct', 'heure_entry', 'date_ct', 'contenu', 'id_groupe', 'id_login', 'id_sequence', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
 	/**
@@ -77,11 +80,11 @@ abstract class BaseCahierTexteNoticePriveePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('IdCt' => 0, 'HeureEntry' => 1, 'DateCt' => 2, 'Contenu' => 3, 'IdGroupe' => 4, 'IdLogin' => 5, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt' => 0, 'heureEntry' => 1, 'dateCt' => 2, 'contenu' => 3, 'idGroupe' => 4, 'idLogin' => 5, ),
-		BasePeer::TYPE_COLNAME => array (self::ID_CT => 0, self::HEURE_ENTRY => 1, self::DATE_CT => 2, self::CONTENU => 3, self::ID_GROUPE => 4, self::ID_LOGIN => 5, ),
-		BasePeer::TYPE_FIELDNAME => array ('id_ct' => 0, 'heure_entry' => 1, 'date_ct' => 2, 'contenu' => 3, 'id_groupe' => 4, 'id_login' => 5, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+		BasePeer::TYPE_PHPNAME => array ('IdCt' => 0, 'HeureEntry' => 1, 'DateCt' => 2, 'Contenu' => 3, 'IdGroupe' => 4, 'IdLogin' => 5, 'IdSequence' => 6, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt' => 0, 'heureEntry' => 1, 'dateCt' => 2, 'contenu' => 3, 'idGroupe' => 4, 'idLogin' => 5, 'idSequence' => 6, ),
+		BasePeer::TYPE_COLNAME => array (self::ID_CT => 0, self::HEURE_ENTRY => 1, self::DATE_CT => 2, self::CONTENU => 3, self::ID_GROUPE => 4, self::ID_LOGIN => 5, self::ID_SEQUENCE => 6, ),
+		BasePeer::TYPE_FIELDNAME => array ('id_ct' => 0, 'heure_entry' => 1, 'date_ct' => 2, 'contenu' => 3, 'id_groupe' => 4, 'id_login' => 5, 'id_sequence' => 6, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
 	/**
@@ -174,6 +177,8 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		$criteria->addSelectColumn(CahierTexteNoticePriveePeer::ID_GROUPE);
 
 		$criteria->addSelectColumn(CahierTexteNoticePriveePeer::ID_LOGIN);
+
+		$criteria->addSelectColumn(CahierTexteNoticePriveePeer::ID_SEQUENCE);
 
 	}
 
@@ -513,6 +518,55 @@ abstract class BaseCahierTexteNoticePriveePeer {
 
 
 	/**
+	 * Returns the number of rows matching criteria, joining the related CahierTexteSequence table
+	 *
+	 * @param      Criteria $c
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinCahierTexteSequence(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(CahierTexteNoticePriveePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			CahierTexteNoticePriveePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(CahierTexteNoticePriveePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria->addJoin(array(CahierTexteNoticePriveePeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
 	 * Selects a collection of CahierTexteNoticePrivee objects pre-filled with their Groupe objects.
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
@@ -647,6 +701,73 @@ abstract class BaseCahierTexteNoticePriveePeer {
 
 
 	/**
+	 * Selects a collection of CahierTexteNoticePrivee objects pre-filled with their CahierTexteSequence objects.
+	 * @param      Criteria  $c
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of CahierTexteNoticePrivee objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinCahierTexteSequence(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$c = clone $c;
+
+		// Set the correct dbName if it has not been overridden
+		if ($c->getDbName() == Propel::getDefaultDB()) {
+			$c->setDbName(self::DATABASE_NAME);
+		}
+
+		CahierTexteNoticePriveePeer::addSelectColumns($c);
+		$startcol = (CahierTexteNoticePriveePeer::NUM_COLUMNS - CahierTexteNoticePriveePeer::NUM_LAZY_LOAD_COLUMNS);
+		CahierTexteSequencePeer::addSelectColumns($c);
+
+		$c->addJoin(array(CahierTexteNoticePriveePeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
+		$stmt = BasePeer::doSelect($c, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = CahierTexteNoticePriveePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = CahierTexteNoticePriveePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+
+				$omClass = CahierTexteNoticePriveePeer::getOMClass();
+
+				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				CahierTexteNoticePriveePeer::addInstanceToPool($obj1, $key1);
+			} // if $obj1 already loaded
+
+			$key2 = CahierTexteSequencePeer::getPrimaryKeyHashFromRow($row, $startcol);
+			if ($key2 !== null) {
+				$obj2 = CahierTexteSequencePeer::getInstanceFromPool($key2);
+				if (!$obj2) {
+
+					$omClass = CahierTexteSequencePeer::getOMClass();
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol);
+					CahierTexteSequencePeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 already loaded
+
+				// Add the $obj1 (CahierTexteNoticePrivee) to $obj2 (CahierTexteSequence)
+				$obj2->addCahierTexteNoticePrivee($obj1);
+
+			} // if joined row was not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
 	 * @param      Criteria $c
@@ -684,6 +805,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 
 		$criteria->addJoin(array(CahierTexteNoticePriveePeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
 		$criteria->addJoin(array(CahierTexteNoticePriveePeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(array(CahierTexteNoticePriveePeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -723,8 +845,12 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		UtilisateurProfessionnelPeer::addSelectColumns($c);
 		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
+		CahierTexteSequencePeer::addSelectColumns($c);
+		$startcol5 = $startcol4 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
+
 		$c->addJoin(array(CahierTexteNoticePriveePeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
 		$c->addJoin(array(CahierTexteNoticePriveePeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$c->addJoin(array(CahierTexteNoticePriveePeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
@@ -783,6 +909,26 @@ abstract class BaseCahierTexteNoticePriveePeer {
 				$obj3->addCahierTexteNoticePrivee($obj1);
 			} // if joined row not null
 
+			// Add objects for joined CahierTexteSequence rows
+
+			$key4 = CahierTexteSequencePeer::getPrimaryKeyHashFromRow($row, $startcol4);
+			if ($key4 !== null) {
+				$obj4 = CahierTexteSequencePeer::getInstanceFromPool($key4);
+				if (!$obj4) {
+
+					$omClass = CahierTexteSequencePeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj4 = new $cls();
+					$obj4->hydrate($row, $startcol4);
+					CahierTexteSequencePeer::addInstanceToPool($obj4, $key4);
+				} // if obj4 loaded
+
+				// Add the $obj1 (CahierTexteNoticePrivee) to the collection in $obj4 (CahierTexteSequence)
+				$obj4->addCahierTexteNoticePrivee($obj1);
+			} // if joined row not null
+
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -827,6 +973,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		}
 	
 				$criteria->addJoin(array(CahierTexteNoticePriveePeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+				$criteria->addJoin(array(CahierTexteNoticePriveePeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -876,6 +1023,57 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		}
 	
 				$criteria->addJoin(array(CahierTexteNoticePriveePeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$criteria->addJoin(array(CahierTexteNoticePriveePeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related CahierTexteSequence table
+	 *
+	 * @param      Criteria $c
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptCahierTexteSequence(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(CahierTexteNoticePriveePeer::TABLE_NAME);
+		
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			CahierTexteNoticePriveePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(CahierTexteNoticePriveePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+				$criteria->addJoin(array(CahierTexteNoticePriveePeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$criteria->addJoin(array(CahierTexteNoticePriveePeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -915,7 +1113,11 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		UtilisateurProfessionnelPeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
+		CahierTexteSequencePeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
+
 				$c->addJoin(array(CahierTexteNoticePriveePeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+				$c->addJoin(array(CahierTexteNoticePriveePeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
 
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
@@ -956,6 +1158,27 @@ abstract class BaseCahierTexteNoticePriveePeer {
 
 			} // if joined row is not null
 
+				// Add objects for joined CahierTexteSequence rows
+
+				$key3 = CahierTexteSequencePeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				if ($key3 !== null) {
+					$obj3 = CahierTexteSequencePeer::getInstanceFromPool($key3);
+					if (!$obj3) {
+	
+						$omClass = CahierTexteSequencePeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					CahierTexteSequencePeer::addInstanceToPool($obj3, $key3);
+				} // if $obj3 already loaded
+
+				// Add the $obj1 (CahierTexteNoticePrivee) to the collection in $obj3 (CahierTexteSequence)
+				$obj3->addCahierTexteNoticePrivee($obj1);
+
+			} // if joined row is not null
+
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -990,7 +1213,11 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		GroupePeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
+		CahierTexteSequencePeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
+
 				$c->addJoin(array(CahierTexteNoticePriveePeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$c->addJoin(array(CahierTexteNoticePriveePeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
 
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
@@ -1028,6 +1255,127 @@ abstract class BaseCahierTexteNoticePriveePeer {
 
 				// Add the $obj1 (CahierTexteNoticePrivee) to the collection in $obj2 (Groupe)
 				$obj2->addCahierTexteNoticePrivee($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined CahierTexteSequence rows
+
+				$key3 = CahierTexteSequencePeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				if ($key3 !== null) {
+					$obj3 = CahierTexteSequencePeer::getInstanceFromPool($key3);
+					if (!$obj3) {
+	
+						$omClass = CahierTexteSequencePeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					CahierTexteSequencePeer::addInstanceToPool($obj3, $key3);
+				} // if $obj3 already loaded
+
+				// Add the $obj1 (CahierTexteNoticePrivee) to the collection in $obj3 (CahierTexteSequence)
+				$obj3->addCahierTexteNoticePrivee($obj1);
+
+			} // if joined row is not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of CahierTexteNoticePrivee objects pre-filled with all related objects except CahierTexteSequence.
+	 *
+	 * @param      Criteria  $c
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of CahierTexteNoticePrivee objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptCahierTexteSequence(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$c = clone $c;
+
+		// Set the correct dbName if it has not been overridden
+		// $c->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($c->getDbName() == Propel::getDefaultDB()) {
+			$c->setDbName(self::DATABASE_NAME);
+		}
+
+		CahierTexteNoticePriveePeer::addSelectColumns($c);
+		$startcol2 = (CahierTexteNoticePriveePeer::NUM_COLUMNS - CahierTexteNoticePriveePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		GroupePeer::addSelectColumns($c);
+		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+
+				$c->addJoin(array(CahierTexteNoticePriveePeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$c->addJoin(array(CahierTexteNoticePriveePeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+
+		$stmt = BasePeer::doSelect($c, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = CahierTexteNoticePriveePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = CahierTexteNoticePriveePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$omClass = CahierTexteNoticePriveePeer::getOMClass();
+
+				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				CahierTexteNoticePriveePeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+				// Add objects for joined Groupe rows
+
+				$key2 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = GroupePeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$omClass = GroupePeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					GroupePeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
+
+				// Add the $obj1 (CahierTexteNoticePrivee) to the collection in $obj2 (Groupe)
+				$obj2->addCahierTexteNoticePrivee($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined UtilisateurProfessionnel rows
+
+				$key3 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				if ($key3 !== null) {
+					$obj3 = UtilisateurProfessionnelPeer::getInstanceFromPool($key3);
+					if (!$obj3) {
+	
+						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					UtilisateurProfessionnelPeer::addInstanceToPool($obj3, $key3);
+				} // if $obj3 already loaded
+
+				// Add the $obj1 (CahierTexteNoticePrivee) to the collection in $obj3 (UtilisateurProfessionnel)
+				$obj3->addCahierTexteNoticePrivee($obj1);
 
 			} // if joined row is not null
 
