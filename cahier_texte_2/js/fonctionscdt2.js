@@ -7,9 +7,8 @@ function traiterEvenementChange(event){
   var elementCliquer = Event.element(event);
   var premierSelectCliquer = Event.findElement(event,"select") ? Event.findElement(event,"select") : null;
   var affPremierSelectCliquer = premierSelectCliquer ? premierSelectCliquer.name : 'aucun';
-  if (elementCliquer.value != 'rien'){
-    //alert("coucou\n"+elementCliquer.value+"\nselect\n"+premierSelectCliquer.name);
-    var insertion = new Insertion.After('aff_result', '<br />On cherche &agrave; appeler '+elementCliquer.value+' CR pour la s&eacute;quence');
+  if (elementCliquer.value != 'rien' && elementCliquer.name == 'nbre_sequences'){
+    ajaxCdt2('aff_result', elementCliquer.name, elementCliquer.value, 'creer_seq_ajax_step1.php');
   }
 }
 function func_KeyDown(event, script, type){
@@ -27,3 +26,6 @@ function ajaxCdt2(id, type, info, url){
 	o_options = {postBody: '_id='+info+'&select='+type, onComplete:afficherDiv(id)};
 	var laRequete = new Ajax.Updater(elementHTML,url,o_options);
 }
+function afficherDiv(id){Element.show(id);}
+function cacherDiv(id){Element.hide(id);}
+function inverserDiv(id){Element.toggle(id);}
