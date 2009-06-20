@@ -267,7 +267,7 @@ echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom
 echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\">Export</legend>";
 echo "<table border='0' width='100%' summary=\"Tableau de...\">\n";
 echo "<tr><td>";
-echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a> Note : pour ouvrir ce fichier csv avec oppenoffice, garder les réglages par défaut lors de l'ouverture du fichier.";
+echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a> Note : pour ouvrir ce fichier csv avec OpenOffice, garder les réglages par défaut lors de l'ouverture du fichier.";
 echo "</td></tr></table></fieldset>";
 // fin export
 ?>

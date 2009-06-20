@@ -56,6 +56,7 @@ function aff_debug($tableau){
 // ==================================================== Les variables =======================================/
 $enregistrer        = isset($_POST["enregistrer"]) ? $_POST["enregistrer"] : NULL;
 $titresequence      = isset($_POST["titresequence"]) ? $_POST["titresequence"] : NULL;
+$descsequence       = isset($_POST["descsequence"]) ? $_POST["descsequence"] : NULL;
 $enseignement       = isset($_POST["enseignement"]) ? $_POST["enseignement"] : NULL;
 $dateseance         = isset($_POST["dateseance"]) ? $_POST["dateseance"] : NULL;
 $cr                 = isset($_POST["cr"]) ? $_POST["cr"] : NULL;
@@ -70,7 +71,7 @@ if ($enregistrer == "Enregistrer"){
   // On pense à vérifier quelques trucs comme les entités html
   $sequence = new CahierTexteSequence();
   $sequence->setTitre(htmlentities($titresequence));
-  $sequence->setDescription("aucune car le code n'a pas été prévu encore ;)");
+  $sequence->setDescription($descsequence);
   $sequence->save();
 
   // Maintenant on peut relier les compte-rendus avec cette séquence
@@ -118,8 +119,9 @@ $use_observeur = "ok";
 $titre_page = "Cr&eacute;er des s&eacute;quences pour le cahier de textes";
 $javascript_specifique = "cahier_texte_2/js/fonctionscdt2";
 include '../lib/header.inc';
-debug_var();
+//debug_var();
 ?>
+<p><a href="index.php"><img src="../images/icons/back.png" alt="Retour" class="back_link" /> Retour</a></p>
 <form action="#" method="post">
   <p>
     <label for="idSeq">Cr&eacute;er une s&eacute;quence pour le cahier de textes (pr&eacute;cisez le nombre de s&eacute;ances)</label>

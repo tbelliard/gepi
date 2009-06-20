@@ -51,15 +51,21 @@ if ($propUser == null) {
 	die();
 }
 
+if (getSettingValue("GepiCahierTexteVersion") != '2') {
+  tentative_intrusion(1, "Tentative d'accès au cahier de textes v2 alors qu'il n'est pas ouvert.");
+  header("Location: ../cahier_texte/consultation.php");
+  die();
+}
+
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+  header("Location: ../logout.php?auto=1");
+  die();
 }
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
-    tentative_intrusion(1, "Tentative d'accès au cahier de textes en consultation alors que le module n'est pas activé.");
-    die("Le module n'est pas activé.");
+  tentative_intrusion(1, "Tentative d'accès au cahier de textes en consultation alors que le module n'est pas activé.");
+  die("Le module n'est pas activé.");
 }
 
 include "../lib/mincals.inc";
@@ -152,7 +158,7 @@ $classe_nom = @mysql_result($appel_classe, 0, "classe");
 // Nom complet de la matière
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
-// Vérification
+// Vérification sur les dates
 settype($month,"integer");
 settype($day,"integer");
 settype($year,"integer");
@@ -164,6 +170,17 @@ if ($month < 1) $month = 1;
 if ($month > 12) $month = 12;
 if ($year < $minyear) $year = $minyear;
 if ($year > $maxyear) $year = $maxyear;
+
+// On empêche un élève ou un parent de voir les CR des jours futurs
+  /* --------- Ajout pour les séquences ---------------- */
+if ($_SESSION["statut"] == 'eleve' OR $_SESSION["statut"] == 'responsable'){
+
+  if ($day > date("d")) {$day = date("d");}
+  if ($month > date("m")) {$month = date("m");}
+  if ($year > date("Y")) {$year = date("Y");}
+
+}
+
 # Make the date valid if day is more then number of days in month
 while (!checkdate($month, $day, $year)) $day--;
 $today=mktime(0,0,0,$month,$day,$year);
@@ -171,15 +188,7 @@ $today=mktime(0,0,0,$month,$day,$year);
 $titre_page = "Cahier de textes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
-//aff_debug($propUser->getGroupes(3));
-foreach ($propUser->getGroupes(1) as $group){
-  $test = $group->getCahierTexteCompteRendusJoinUtilisateurProfessionnel();
-  //$test2 = array_pop($test);
-  aff_debug($test[0]->getContenu());
-  //echo date("H:i d/m/Y", $test2->getDateCt()) . ' || ' . $test2->getContenu() . '<br />';
-  //aff_debug($test2);exit();
-}
-//debug_var();
+
 
 //echo "<p>\$selected_eleve_login=$selected_eleve_login</p>";
 //echo "<p>id_classe=$id_classe</p>";
@@ -292,7 +301,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
         $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
         $jour = mktime(0, 0, 0, date('m',$aujourdhui), (date('d',$aujourdhui) + $i), date('Y',$aujourdhui) );
         if (is_numeric($id_classe) AND $id_classe > 0) {
-	        $appel_devoirs_cahier_texte = mysql_query("SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	        $appel_devoirs_cahier_texte = mysql_query("SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
 	            "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jc WHERE (" .
 	            "ct.id_groupe = jc.id_groupe and " .
 	            "g.id = jc.id_groupe and " .
@@ -301,7 +310,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 	            "ct.date_ct = '$jour')");
 
         } elseif ($selected_eleve) {
-	        $sql="SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	        $sql="SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
@@ -313,62 +322,82 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
                 "jec.periode = '1' and " .
                 "ct.contenu != '' and " .
                 "ct.date_ct = '$jour')";
-		//echo "$sql<br />";
-		$appel_devoirs_cahier_texte = mysql_query($sql);
+
+          $appel_devoirs_cahier_texte = mysql_query($sql);
         }
         $nb_devoirs_cahier_texte = mysql_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
         if ($nb_devoirs_cahier_texte != 0) {
-            $nb_dev++;
-            if ($nb_dev == '1') {
-                //echo "<br /><center>Date sélectionnée : ".strftime("%A %d %B %Y", $today)."</center>\n";
-                //echo "<br /><center><strong><font style='font-variant: small-caps;'>Travaux personnels des $delai jours suivant le ".strftime("%d %B %Y", $today)."</font></strong></center><br />\n";
-                //echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice.";\" width = '100%' cellpadding='5'><tr><td>\n";
-				// Correction Régis : création de classes pour gérer la mise en page par fichier CSS
-                echo "<p class=\"centre_texte no_print\">Date sélectionnée : ".strftime("%A %d %B %Y", $today)."\n</p>\n";
-                echo "<h2 class=\"centre_texte_pt_cap petit_h2\">Travaux personnels des $delai jours suivant le ".strftime("%d %B %Y", $today)."</h2>\n";
-                //  echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice.";\" width = '100%' cellpadding='5' summary=\"Tableau des travaux à effectuer\">\n<tr>\n<td class=\"cel_trav_futur\">\n";
-					echo "<div class='cel_trav_futur couleur_bord_tableau_notice color_fond_notices_f'>\n";
+          $nb_dev++;
+          if ($nb_dev == '1') {
 
-            }
-            //echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><font color='".$color_police_travaux."' style='font-variant: small-caps;'><strong>Travaux personnels pour le ".strftime("%a %d %b", $jour)."</strong></font>\n";
-            echo "<h3 class=\"titre_a_faire couleur_bord_tableau_notice color_fond_notices_f color_police_travaux\">\nTravaux personnels pour le ".strftime("%a %d %b", $jour)."</h3>\n";
+            // Correction Régis : création de classes pour gérer la mise en page par fichier CSS
+            echo "<p class=\"centre_texte no_print\">Date sélectionnée : ".strftime("%A %d %B %Y", $today)."\n</p>\n";
+            echo "<h2 class=\"centre_texte_pt_cap petit_h2\">Travaux personnels des $delai jours suivant le ".strftime("%d %B %Y", $today)."</h2>\n";
 
-            // Affichage des devoirs dans chaque matière
-            while ($ind < $nb_devoirs_cahier_texte) {
-                $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
-                // Mise en forme du texte
-                include "../lib/transform.php";
-                $date_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
-                $id_devoirs =  mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
-                $id_groupe_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
-                $matiere_devoirs = mysql_result($appel_devoirs_cahier_texte,$ind, 'description');
-                //$test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
-                $test_prof = "SELECT nom, prenom,u.login FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
-                $res_prof = sql_query($test_prof);
-                $chaine = "";
-                for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
-                  if ($k != 0) $chaine .= ", ";
-                  //$chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
-					// ???????????????????????????????
-					// Faudrait-il modifier ici pour utiliser
-					$chaine.=affiche_utilisateur($prof[2],$selected_eleve_classe);
-					// Comment est utilisé $chaine???
-					// ???????????????????????????????
-                }
-                //$html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><strong><u>".$matiere_devoirs." (".$chaine."):</u></strong></small></font>".$html;
-                $html = "<div class=\"matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres\">\n<h4 class=\"souligne\">".$matiere_devoirs." (".$chaine."):</h4>\n".$html;
-                // fichier joint
-                $html .= affiche_docs_joints($id_devoirs,"t");
-                $html .="</div>";
-                if ($nb_devoirs_cahier_texte != 0)
-                    echo $html;
-                $ind++;
+            echo "<div class='cel_trav_futur couleur_bord_tableau_notice color_fond_notices_f'>\n";
+
+          }
+
+          // On range les devoirs les uns à côté des autres en fonction du jour
+          /**
+           * @todo il faudrait inverser le tableau et la méthode avec mysql_result ne le permet pas facilement
+           * pour afficher les devoirs en fonction du jour à la place des uns en dessous des autres.
+           */
+          //if ($i > 0) {$margin_left = 'margin-left:'.($i * 15).'%;';}else{$margin_left = NULL;}
+          //echo "\n".'<div style="position relative;'.$margin_left.'width: 15%;">';
+          echo "<h3 class=\"titre_a_faire couleur_bord_tableau_notice color_fond_notices_f color_police_travaux\">\n
+                  Travaux personnels pour le ".strftime("%a %d %b", $jour)."</h3>\n";
+
+          // Affichage des devoirs dans chaque matière
+          while ($ind < $nb_devoirs_cahier_texte) {
+            $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
+            // Mise en forme du texte
+            include "../lib/transform.php";
+            $date_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
+            $id_devoirs =  mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
+            $id_groupe_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
+            $_id_sequence = mysql_result($appel_devoirs_cahier_texte, $ind, 'id_sequence');
+            $matiere_devoirs = mysql_result($appel_devoirs_cahier_texte,$ind, 'description');
+            //$test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
+            $test_prof = "SELECT nom, prenom,u.login FROM j_groupes_professeurs j, utilisateurs u 
+                                                      WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login)
+                                                      ORDER BY nom, prenom";
+            $res_prof = sql_query($test_prof);
+            $chaine = "";
+            for ($k=0 ; $prof=sql_row($res_prof,$k) ; $k++) {
+              if ($k != 0) $chaine .= ", ";
+              //$chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+            	// ???????????????????????????????
+        			// Faudrait-il modifier ici pour utiliser
+            	$chaine.=affiche_utilisateur($prof[2],$selected_eleve_classe);
+              // Comment est utilisé $chaine???
+              // ???????????????????????????????
             }
-        		// echo "</div>";
+
+            // On ajoute le nom de la séquence si elle existe
+            // On n'utilise pas les objets propel pour ne pas surcharger mais il faudra réécrire avec
+            $aff_titre_seq = NULL;
+            if ($_id_sequence != '0'){
+              $sql_seq        = "SELECT titre FROM ct_sequences WHERE id = '".$_id_sequence."'";
+              $query_seq      = mysql_query($sql_seq);
+              $rep_seq        = mysql_fetch_array($query_seq);
+              $aff_titre_seq  = '<p class="bold"> - <em>' . $rep_seq["titre"] . '</em> - </p>';
+            }
+
+            $html = "<div class=\"matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres\">\n
+                      <h4 class=\"souligne\">".$matiere_devoirs." (".$chaine."):</h4>\n".$aff_titre_seq."".$html;
+            // fichier joint
+            $html .= affiche_docs_joints($id_devoirs,"t");
+            $html .="</div>";
+            if ($nb_devoirs_cahier_texte != 0)
+                echo $html;
+            $ind++;
+          }
+        	//echo "</div>";
         }
     }
-    //if ($nb_dev != 0) echo "</td></tr></table><br />";
+
     if ($nb_dev != 0) echo "</div>";
 	require("../lib/footer.inc.php");
     die();
@@ -424,7 +453,7 @@ echo "<div class=\"centre_cont_texte\">\n";
         // On regarde pour chaque jour, s'il y a des devoirs dans à faire
           if ($selected_eleve) {
 // On détermine la période active, pour ne pas avoir de duplication des entrées
-	         $appel_devoirs_cahier_texte = mysql_query("SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	         $appel_devoirs_cahier_texte = mysql_query("SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
@@ -437,7 +466,7 @@ echo "<div class=\"centre_cont_texte\">\n";
                 "ct.contenu != '' and " .
                 "ct.date_ct = '$jour')");
           } else {
-	         $appel_devoirs_cahier_texte = mysql_query("SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	         $appel_devoirs_cahier_texte = mysql_query("SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
 	             "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jgc WHERE (" .
 	             "ct.id_groupe = jgc.id_groupe and " .
 	             "g.id = jgc.id_groupe and " .
@@ -484,11 +513,12 @@ echo "<div class=\"centre_cont_texte\">\n";
               $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
               // Mise en forme du texte
               include "../lib/transform.php";
-              $date_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
-              $id_devoirs =  mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
-              $id_groupe_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
-              $matiere_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'description');
-//$test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
+              $date_devoirs       = mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
+              $id_devoirs         = mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
+              $id_groupe_devoirs  = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
+              $matiere_devoirs    = mysql_result($appel_devoirs_cahier_texte, $ind, 'description');
+              $_id_sequence       = mysql_result($appel_devoirs_cahier_texte, $ind, 'id_sequence');
+
               $test_prof = "SELECT nom, prenom,u.login FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
               $res_prof = sql_query($test_prof);
               $chaine = "";
@@ -497,9 +527,20 @@ echo "<div class=\"centre_cont_texte\">\n";
                 //$chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
               $chaine.=affiche_utilisateur($prof[2],$selected_eleve_classe);
               }
-//$html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><strong><u>".$matiere_devoirs." (".$chaine.") :</u></strong></small></font>\n".$html;
+
+              // On ajoute le nom de la séquence si elle existe
+              // On n'utilise pas les objets propel pour ne pas surcharger mais il faudra réécrire avec
+              $aff_titre_seq = NULL;
+              if ($_id_sequence != '0'){
+                $sql_seq        = "SELECT titre FROM ct_sequences WHERE id = '".$_id_sequence."'";
+                $query_seq      = mysql_query($sql_seq);
+                $rep_seq        = mysql_fetch_array($query_seq);
+                $aff_titre_seq  = '<p class="bold"> - <em>' . $rep_seq["titre"] . '</em> - </p>';
+              }
+
 // Correction Régis : ajout de class pour gérer la mise en page
-              $html = "<div class='matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres'>\n<h4 class='a_faire_titre color_police_matieres'>".$matiere_devoirs." (".$chaine.") :</h4>\n<div class='txt_gauche'>\n".$html;
+              $html = "<div class='matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres'>\n
+                  <h4 class='a_faire_titre color_police_matieres'>".$matiere_devoirs." (".$chaine.") :</h4>".$aff_titre_seq."\n<div class='txt_gauche'>\n".$html;
               // fichier joint
               $html .= affiche_docs_joints($id_devoirs,"t");
               $html .="</div>\n</div>\n";
@@ -622,7 +663,7 @@ $td = date("d",$i);
           echo "<div class=\"ct_jour couleur_bord_tableau_notice\">\n";
 
           $req_notices =
-              "select 'c' type, contenu, date_ct, id_ct
+              "select 'c' type, contenu, date_ct, id_ct, id_sequence
               from ct_entry
               where (contenu != ''
               and id_groupe='$id_groupe'
@@ -634,7 +675,7 @@ $td = date("d",$i);
           $notice = mysql_fetch_object($res_notices);
 
           $req_devoirs =
-              "select 't' type, contenu, date_ct, id_ct
+              "select 't' type, contenu, date_ct, id_ct, id_sequence
               from ct_devoirs_entry
               where (contenu != ''
               and id_groupe = '".$id_groupe."'
@@ -673,9 +714,9 @@ $td = date("d",$i);
               //$titre .= "<strong>" . strftime("%a %d %b %y", $not_dev->date_ct) . "</strong>\n";
               $titre .= "<strong>" . strftime("%a %d %b %y", $not_dev->date_ct) . "</strong>\n";
               // Numérotation des notices si plusieurs notice sur la même journée
-              if ($not_dev->type == "c") {               if ($date_ct_old == $not_dev->date_ct) {
+            if ($not_dev->type == "c") {
+              if ($date_ct_old == $not_dev->date_ct) {
                 $num_notice++;
-                //$titre .= " <strong><i>(notice N° ".$num_notice.")</i></strong>";
                 $titre .= " <stong><em>(notice N° ".$num_notice.")</em></strong>";
               } else {
                 // on afffiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
@@ -685,6 +726,15 @@ $td = date("d",$i);
                 // On réinitialise le compteur
                 $num_notice = 1;
               }
+            }
+            // On ajoute le nom de la séquence si elle existe
+            // On n'utilise pas les objets propel pour ne pas surcharger mais il faudra réécrire avec
+            $aff_titre_seq = NULL;
+            if ($not_dev->id_sequence != '0'){
+              $sql_seq        = "SELECT titre FROM ct_sequences WHERE id = '".$not_dev->id_sequence."'";
+              $query_seq      = mysql_query($sql_seq);
+              $rep_seq        = mysql_fetch_array($query_seq);
+              $aff_titre_seq  = '<p class="bold"> - <em>' . $rep_seq["titre"] . '</em> - </p>';
             }
 // ---------------------------- contenu chaque notice (div div div div div) --
             echo "<div class='cdt_une_notice '>\n";
@@ -697,7 +747,7 @@ $td = date("d",$i);
               } else {
               	 echo "t'>";
               }*/
-              echo "<h3>\n".$titre."</h3>\n</div>\n";
+              echo "<h3>\n".$titre."</h3>".$aff_titre_seq."\n</div>\n";
 // ---------------------------- Fin titre notices (div div div div div /div) --
 //            echo "</tr>\n";
 // ---------------------------- contenu notices (div div div div div div) --

@@ -72,6 +72,10 @@ if ($select == "nbre_sequences"){
       <input type="text" id="idSeq" name="titresequence" value="" />
       <label for="idGroupe">Enseignement concern&eacute;</label>
       '.$aff_select_groups.'
+    <p>
+    </p>
+      <label for="idDescSeq">Description</label>
+      <input type="text" name="descsequence" value="" style="width: 40%;" />
     </p>';
   $ts = date("U");
   for($a = 1 ; $a <= $_id ; $a++){

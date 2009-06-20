@@ -132,7 +132,7 @@ $a = 1;
 		$a = $a + 1;
 	}
 }
-echo "</td>";
+echo "<a href='creer_sequence.php'>Pr&eacute;parer une s&eacute;quence enti&egrave;re</a></td>";
 // Fin Affichage des différents groupes du professeur
 // **********************************************
 echo "<td width='250 px'></td>";

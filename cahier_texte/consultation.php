@@ -37,7 +37,10 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();
 };
-
+if (getSettingValue("GepiCahierTexteVersion") == '2') {
+    header("Location: ../cahier_texte_2/consultation.php");
+    die();
+}
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();

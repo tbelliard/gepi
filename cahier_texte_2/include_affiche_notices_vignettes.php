@@ -113,7 +113,12 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 
 		//affichage contenu
 		echo "<br/>";
-		echo ($compte_rendu->getContenu());
+    // On ajoute le nom de la séquence si elle existe
+    $aff_seq = NULL;
+    if ($compte_rendu->getIdSequence() != "0"){
+      $aff_seq = '<p class="bold" title="'.$compte_rendu->getCahierTexteSequence()->getDescription().'"> - <em>' . $compte_rendu->getCahierTexteSequence()->getTitre() . '</em> - </p>';
+    }
+		echo ($aff_seq . $compte_rendu->getContenu());
 
 		// Documents joints
 		$ctDocuments = $compte_rendu->getCahierTexteCompteRenduFichierJoints();
