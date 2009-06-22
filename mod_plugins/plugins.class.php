@@ -110,5 +110,45 @@ class gepiPlugIn {
     }
   }
 
+  /**
+   * On propose dans l'API des méthodes statiques pour les requêtes SQL
+   * Il faut ajouter $utiliser_pdo = 'on'; au début de votre fichier pour utiliser PDO
+   */
+    /**
+     * Méthode qui permet de lancer une requête à la base
+     *
+     * @param string $sql requête SQL
+     * @param boolean $use_PDO par défaut false. Passé à true, il permet d'utiliser PDO (ajouter $utiliser_pdo = 'on'; au début de votre fichier)
+     * @return ressourceMySql
+     */
+    public static function _sqlQuery($sql, $use_PDO = false){
+      if($use_PDO){
+        ;
+
+      }else{
+        return mysql_query($sql);
+      }
+
+    }
+    public static function _sqlQueryArray($sql, $use_PDO = false){
+      $query = self::_sqlQuery($sql, $use_PDO);
+    }
+    public static function _sqlQueryObject($sql, $use_PDO = false){
+      return mysql_fetch_array($query);
+    }
+    public static function _sqlCount ($sql, $use_PDO = false){
+      return mysql_num_rows($sql);
+    }
+
+    /**
+     * Méthode qui renvoie le numéro du champ autoincrémenté du dernier enregistrement en INSERT
+     *
+     * @param boolean $use_PDO par défaut false. Passé à true, il permet d'utiliser PDO (ajouter $utiliser_pdo = 'on'; au début de votre fichier)
+     * @return integer
+     */
+    public static function _sqlInsertId($use_PDO = false){
+      return mysql_insert_id();
+    }
+
 }
 ?>

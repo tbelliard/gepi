@@ -16,4 +16,21 @@ require 'gepi/om/BasePlugInPeer.php';
  */
 class PlugInPeer extends BasePlugInPeer {
 
+  public static function getPluginByNom($nom){
+    if (is_string($nom)){
+      $c = new Criteria();
+      $c->add(PlugInPeer::NOM, $nom, Criteria::EQUAL);
+      $retour = PlugInPeer::doSelect($c);
+
+      if (empty ($retour)){
+        return NULL;
+      }else{
+        return $retour;
+      }
+
+    }else{
+      return false;
+    }
+  }
+
 } // PlugInPeer

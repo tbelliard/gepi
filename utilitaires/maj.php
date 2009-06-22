@@ -725,6 +725,8 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES ( '/mod_notanet/fb_rouen_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Fiches brevet PDF pour Rouen', '');";
     $tab_req[] = "INSERT INTO droits VALUES ( '/mod_notanet/fb_montpellier_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Fiches brevet PDF pour Montpellier', '');";
 
+    $tab_req[] = "INSERT INTO droits VALUES ( '/mod_plugins/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajouter/enlever des plugins', '');";
+
 	//$tab_req[] = "";
 
 
@@ -7993,7 +7995,8 @@ id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 nom VARCHAR( 100 ) NOT NULL,
 repertoire VARCHAR( 255 ) NOT NULL,
 description LONGTEXT NOT NULL,
-ouvert CHAR( 1 ) default 'n'
+ouvert CHAR( 1 ) default 'n',
+  UNIQUE KEY `nom` (`nom`)
 );";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
