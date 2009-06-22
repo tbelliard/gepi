@@ -34,6 +34,7 @@ $niveau_arbo = 1;
 // Initialisations files et autres librairies
 include("../lib/initialisations.inc.php");
 include("../lib/initialisationsPropel.inc.php");
+include 'traiterXml.class.php';
 
 // Resume session et on vérifie les droits de l'utilisateur
 $resultat_session = $session_gepi->security_check();
@@ -54,9 +55,15 @@ if (!checkAccess()) {
 $plugin_id    = isset($_GET["plugin_id"]) ? $_GET["plugin_id"] : NULL;
 $nom_plugin   = isset($_GET["nom_plugin"]) ? $_GET["nom_plugin"] : NULL;
 $action       = isset($_GET["action"]) ? $_GET["action"] : NULL;
+$_erreur      = isset($_GET["_erreur"]) ? $_GET["_erreur"] : NULL;
 
 
 // ========================================== CODE METIER ================================================== //
+function aff_debug($tab){
+  echo '<pre>';
+  print_r($tab);
+  echo '</pre>';
+}
 
 # On traite d'un plugin déjà installé
 if (isset($plugin_id)){
@@ -76,7 +83,22 @@ if (isset($nom_plugin)){
       }
     }
 
-    echo $testXML . 'testons<br />';
+    if ($testXML){
+
+      // On lit le fichier xml
+      $xml = simplexml_load_file($nom_plugin . "/plugin.xml");
+      if (new traiterXml($xml)){
+        // alors on peut envoyer le xml pour installer le plugin
+        $new_plugin = PlugInPeer::addPluginComplet($xml);
+      }else{
+        header("index.php?_erreur=2");
+      }
+
+    }else{
+
+      header("index.php?_erreur=1");
+
+    }
 
   }
 }
@@ -103,11 +125,25 @@ foreach ($open_dir as $dir){
 
 }
 
+# Gestion des erreurs
+switch ($_erreur) {
+  case "1":
+    $_msg = "<p>Il manque le fichier plugin.xml &agrave; ce plugin, impossible de l'installer !</p>";
+    break;
+  case "2":
+    $_msg = "<p>Le fichier plugin.xml ne respecte pas la struture demand&eacute;e ! voir <a href=\"http://projects.sylogix.org/gepi/wiki/plugin\">la page sur TRAC</a></p>";
+    break;
+
+default:
+  $_msg = NULL;
+  break;
+}
 // ================= HEADER ========================//
 $titre_page = "Param&eacute;trer les plugins";
 include '../lib/header.inc';
 // ================ FIN HEADER =====================//
 //print_r($liste_plugins);
+//aff_debug($xml->administration->menu->item);
 ?>
 <h3 class="Gepi">Liste des plugins install&eacute;s</h3>
 <p>Pour plus d'informations concernant les plugins de Gepi, voyez
@@ -117,6 +153,9 @@ include '../lib/header.inc';
  <table class="table">
   <tr>
     <th>Plugin</th>
+    <th>Description</th>
+    <th>Auteur</th>
+    <th>Version</th>
     <th>Install&eacute; ?</th>
     <th>Ouvert ?</th>
   </tr>
@@ -127,11 +166,15 @@ foreach($liste_plugins as $plugin){
     echo '
     <tr>
       <td>'.str_replace("_", " ", $plugin).'</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
       <td><a href="index.php?nom_plugin='.$plugin.'&amp;action=installer" title="Voulez-vous l\'installer ?">NON</a></td>
       <td>NON</td>
     </tr>';
   }else{
     // Le plugin est installé
+    $xml = simplexml_load_file($plugin->getNom() . "/plugin.xml");
     // On teste s'il est ouvert
     if ($plugin->getOuvert() == 'y'){
       $aff_ouvert = '<a href="index.php?plugin_id='.$plugin->getId().'&amp;action=fermer" title="Voulez-vous le fermer ?">OUI</a>';
@@ -141,6 +184,9 @@ foreach($liste_plugins as $plugin){
     echo '
     <tr>
       <td>'.str_replace("_", " ", $plugin).'</td>
+      <td>'.$xml->description.'</td>
+      <td>'.$xml->auteur.'</td>
+      <td>'.$xml->version.'</td>
       <td><a href="index.php?plugin_id='.$plugin->getId().'&amp;action=desinstaller" title="Voulez-vous le d&eacute;sinstaller ?">OUI</a></td>
       <td>'.$aff_ouvert.'</td>
     </tr>';
