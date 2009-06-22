@@ -418,7 +418,8 @@
 				$pdf->SetFont('Arial','',$fs_txt);
 				//$pdf->SetXY($marge,$pdf->GetY()+$pdf->FontSize*$r_interligne);
 				$pdf->SetXY($marge,$pdf->GetY());
-				$pdf->Cell($pdf->GetStringWidth("Département : "),$pdf->FontSize*$sc_interligne, "Département : $fb_departement",0,0,'L');
+				//$pdf->Cell($pdf->GetStringWidth("Département : "),$pdf->FontSize*$sc_interligne, "Département : $fb_departement",0,0,'L');
+				$pdf->Cell($pdf->GetStringWidth("Département : "),$pdf->FontSize*$sc_interligne, "Département : ",0,0,'L');
 				$pdf->SetFont('Arial','B',$fs_txt);
 				$pdf->Cell($larg_acad,$pdf->FontSize*$sc_interligne,$fb_departement,0,0,'L');
 
