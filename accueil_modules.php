@@ -143,6 +143,10 @@ $chemin[] = "/mod_ects/ects_admin.php";
 $titre[] = "Saisie ECTS";
 $expli[] = "Pour gérer les crédits ECTS attribués pour chaque enseignement.";
 
+//Module Plugins
+$chemin[] = "/mod_plugins/index.php";
+$titre[] = "Gérer les plugins";
+$expli[] = "Interface d'administration des plugins personnels de l'établissement.";
 
 $nb_ligne = count($chemin);
 //

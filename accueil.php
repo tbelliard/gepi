@@ -31,6 +31,7 @@ $affiche_connexion = 'yes';
 $niveau_arbo = 0;
 
 // Initialisations files
+require_once 'lib/initialisationsPropel.inc.php';
 require_once("./lib/initialisations.inc.php");
 
 
@@ -1748,6 +1749,58 @@ if (getSettingValue("active_mod_ooo")=='y') {
 
 /*****************************
 	Fin module modèle Open Office
+*****************************/
+
+/*****************************
+ * Module plugins : affichage des menus des plugins en fonction des droits
+*****************************/
+$c = new Criteria();
+$c->add(PlugInPeer::OUVERT, "y", Criteria::EQUAL);
+$plugins_ouvert = PlugInPeer::doSelect($c);
+//print_r($plugins_ouvert[0]->getPlugInMiseEnOeuvreMenus());
+if (!empty ($plugins_ouvert)){
+  $chemin = array();
+  $titre = array();
+  $expli = array();
+  foreach ($plugins_ouvert as $plugin){
+
+    foreach ($plugin->getPlugInMiseEnOeuvreMenus() as $menuItem) {
+
+      if ($menuItem->getUserStatut() == $_SESSION["statut"]){
+
+        $chemin[] = $menuItem->getLienItem();
+
+        $titre[]  = $menuItem->getTitreItem();
+
+        $expli[]  = $menuItem->getDescriptionItem();
+
+      }
+
+    }
+
+    $nb_ligne = count($chemin);
+
+
+    echo "<h2 class='accueil'><img src='./images/icons/package.png' alt='#' /> - ".str_replace("_", " ", $plugin->getNom())." (plugin)</h2>
+    <table class='menu' summary=\"Plugins de Gepi. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+			for ($i=0;$i<$nb_ligne;$i++) {
+
+        echo "
+      <tr>
+        <td class='menu_gauche'><a href=\"$chemin[$i]\">$titre[$i]</a></td>
+        <td class='menu_droit'>$expli[$i]</td>
+      </tr>\n";
+
+			}
+			echo "</table>";
+    }
+
+}
+
+
+
+/*****************************
+ * Fin module plugins
 *****************************/
 
 /**************************************************************

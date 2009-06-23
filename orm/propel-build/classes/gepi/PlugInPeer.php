@@ -25,7 +25,7 @@ class PlugInPeer extends BasePlugInPeer {
       if (empty ($retour)){
         return NULL;
       }else{
-        return $retour;
+        return $retour[0];
       }
 
     }else{
@@ -113,6 +113,27 @@ class PlugInPeer extends BasePlugInPeer {
         }
       }
     }
+  }
+
+  /**
+   * Méthode qui désinstalle proprement le plugin
+   *
+   * @param object PlugIn $_plugin
+   */
+  public static function deletePluginComplet(PlugIn $_plugin){
+    $_id = $_plugin->getId();
+    # On détruit les droits
+    $c = new Criteria();
+    $c->add(PlugInAutorisationPeer::PLUGIN_ID, $_id, Criteria::EQUAL);
+    $autorisation = PlugInAutorisationPeer::doDelete($c);
+    # On détruit les menus
+    $c = new Criteria();
+    $c->add(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $_id, Criteria::EQUAL);
+    $autorisation = PlugInMiseEnOeuvreMenuPeer::doDelete($c);
+    # On détruit le plugin
+    $plugin = PlugInPeer::doDelete($_id);
+
+    return true;
   }
 
 } // PlugInPeer

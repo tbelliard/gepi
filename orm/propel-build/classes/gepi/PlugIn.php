@@ -27,4 +27,20 @@ class PlugIn extends BasePlugIn {
 		parent::__construct();
 	}
 
+  /**
+   * Ouvre le plugin aux utilisateurs autorisés
+   */
+  public function ouvrePlugin(){
+    $this->setOuvert("y");
+    $this->save();
+  }
+
+  /**
+   * Ferme le plugin à tous les utilisateurs
+   */
+  public function fermePlugin(){
+    $this->setOuvert("n");
+    $this->save();
+  }
+
 } // PlugIn

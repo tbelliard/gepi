@@ -56,6 +56,7 @@ $plugin_id    = isset($_GET["plugin_id"]) ? $_GET["plugin_id"] : NULL;
 $nom_plugin   = isset($_GET["nom_plugin"]) ? $_GET["nom_plugin"] : NULL;
 $action       = isset($_GET["action"]) ? $_GET["action"] : NULL;
 $_erreur      = isset($_GET["_erreur"]) ? $_GET["_erreur"] : NULL;
+$_msg         = NULL;
 
 
 // ========================================== CODE METIER ================================================== //
@@ -63,11 +64,6 @@ function aff_debug($tab){
   echo '<pre>';
   print_r($tab);
   echo '</pre>';
-}
-
-# On traite d'un plugin déjà installé
-if (isset($plugin_id)){
-
 }
 
 # On traite d'un plugin qui n'est pas installé
@@ -87,19 +83,43 @@ if (isset($nom_plugin)){
 
       // On lit le fichier xml
       $xml = simplexml_load_file($nom_plugin . "/plugin.xml");
-      if (new traiterXml($xml)){
+      $testXML = new traiterXml($xml);
+
+      if ($testXML->getReponse() === true){
         // alors on peut envoyer le xml pour installer le plugin
         $new_plugin = PlugInPeer::addPluginComplet($xml);
       }else{
-        header("index.php?_erreur=2");
+
+        $_msg = '<p class="red">ERREUR : ' . $testXML->getErreur() . '</p>';
+
       }
 
     }else{
 
       header("index.php?_erreur=1");
+      exit();
 
     }
 
+  }
+# On traite des plugin déjà installés
+}elseif(isset($plugin_id)){
+  // On s'attache à faire les actions demandées sur ce plugin déjà installé
+  $pluginAmodifier = PlugInPeer::retrieveByPK($plugin_id);
+  switch ($action) {
+    case "desinstaller":
+      $desinstall = PlugInPeer::deletePluginComplet($pluginAmodifier);
+      break;
+    case "ouvrir":
+      $pluginAmodifier->ouvrePlugin();
+      break;
+    case "fermer":
+      $pluginAmodifier->fermePlugin();
+      break;
+
+  default:
+    $_msg = "<p>L'action demand&eacute;e n'existe pas !</p>";
+    break;
   }
 }
 
@@ -128,14 +148,14 @@ foreach ($open_dir as $dir){
 # Gestion des erreurs
 switch ($_erreur) {
   case "1":
-    $_msg = "<p>Il manque le fichier plugin.xml &agrave; ce plugin, impossible de l'installer !</p>";
+    $_msg = "<p class=\"red\">Il manque le fichier plugin.xml &agrave; ce plugin, impossible de l'installer !</p>";
     break;
   case "2":
-    $_msg = "<p>Le fichier plugin.xml ne respecte pas la struture demand&eacute;e ! voir <a href=\"http://projects.sylogix.org/gepi/wiki/plugin\">la page sur TRAC</a></p>";
+    $_msg = "<p class=\"red\">Le fichier plugin.xml ne respecte pas la struture demand&eacute;e ! voir <a href=\"http://projects.sylogix.org/gepi/wiki/plugin\">la page sur TRAC</a></p>";
     break;
 
 default:
-  $_msg = NULL;
+  //$_msg = NULL;
   break;
 }
 // ================= HEADER ========================//
@@ -143,13 +163,13 @@ $titre_page = "Param&eacute;trer les plugins";
 include '../lib/header.inc';
 // ================ FIN HEADER =====================//
 //print_r($liste_plugins);
-//aff_debug($xml->administration->menu->item);
+//aff_debug($testXML);
 ?>
 <h3 class="Gepi">Liste des plugins install&eacute;s</h3>
 <p>Pour plus d'informations concernant les plugins de Gepi, voyez
   <a onclick="window.open(this.href, '_blank'); return false;" href="http://projects.sylogix.org/gepi/wiki/plugin">la page sur TRAC</a>
 </p>
-
+<?php echo $_msg; ?>
  <table class="table">
   <tr>
     <th>Plugin</th>
@@ -183,7 +203,7 @@ foreach($liste_plugins as $plugin){
     }
     echo '
     <tr>
-      <td>'.str_replace("_", " ", $plugin).'</td>
+      <td>'.str_replace("_", " ", $plugin->getNom()).'</td>
       <td>'.$xml->description.'</td>
       <td>'.$xml->auteur.'</td>
       <td>'.$xml->version.'</td>
