@@ -46,10 +46,10 @@ if ($resultat_session == 'c') {
 }
 
 // Sécurité
-// INSERT INTO droits VALUES ('/edt_organisation/modifier_cours_popup.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'Modifier un cours', '');
+// INSERT INTO droits VALUES ('/edt_organisation/modifier_cours_popup.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'Modifier un cours', '');
 if (!checkAccess()) {
-    //header("Location: ../logout.php?auto=2");
-    //die();
+    header("Location: ../logout.php?auto=2");
+    die();
 }
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes" OR ( ($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof") != 'y') )) {
@@ -89,6 +89,14 @@ $aid = isset($_POST["aid"]) ? $_POST["aid"] : NULL;
 $horaire = isset($_GET["horaire"]) ? $_GET["horaire"] : (isset($_POST["horaire"]) ? $_POST["horaire"] : NULL);
 $cours = isset($_GET["cours"]) ? $_GET["cours"] : (isset($_POST["cours"]) ? $_POST["cours"] : NULL);
 $message = "";
+
+// Dans le cas d'un professeur, on s'assure qu'il s'agit bien de son edt
+if (($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof") == 'y')){
+
+  if (strtolower($identite) != strtolower($_SESSION["login"])){
+    Die("Vous ne pouvez pas cr&eacute;er un cours pour un coll&egrave;gue");
+  }
+}
 
 // Traitement des changements
 if (isset($modifier_cours) AND $modifier_cours == "ok") {

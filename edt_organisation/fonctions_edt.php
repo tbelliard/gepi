@@ -753,7 +753,10 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 
 	// Seul l'admin peut effacer ce cours ou le scolarite si l'admin l'y a autorisé
 	$effacer_cours = "";
-	if (($_SESSION["statut"] == "scolarite" AND GetSettingEdt('scolarite_modif_cours') == "y") OR $_SESSION["statut"] == "administrateur") {
+  if (($_SESSION["statut"] == "scolarite" AND GetSettingEdt('scolarite_modif_cours') == "y") OR
+      $_SESSION["statut"] == "administrateur" OR
+      ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y') ) {
+
 		$effacer_cours = '
 					<a href="./effacer_cours.php?supprimer_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'" onclick="return confirm(\'Confirmez-vous cette suppression ?\')">
 					<img src="../images/icons/delete.png" title="Effacer" alt="Effacer" /></a>

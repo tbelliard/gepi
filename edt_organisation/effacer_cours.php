@@ -45,7 +45,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// INSERT INTO `gepi`.`droits` (`id` ,`administrateur` ,`professeur` ,`cpe` ,`scolarite` ,`eleve` ,`responsable` ,`secours` ,`description` ,`statut`) VALUES ('/edt_organisation/effacer_cours.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Effacer un cours des EdT', '');
+// INSERT INTO `gepi`.`droits` (`id` ,`administrateur` ,`professeur` ,`cpe` ,`scolarite` ,`eleve` ,`responsable` ,`secours` ,`description` ,`statut`) VALUES ('/edt_organisation/effacer_cours.php', 'V', 'V', 'F', 'F', 'F', 'F', 'F', 'Effacer un cours des EdT', '');
 // Sécurité
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
@@ -53,7 +53,11 @@ if (!checkAccess()) {
 }
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+  if ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y'){
+    // On autorise la lecture de cette page
+  }else{
+    Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+  }
 }
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
@@ -77,6 +81,9 @@ $supprimer_cours = isset($_GET["supprimer_cours"]) ? $_GET["supprimer_cours"] : 
 $type_edt = isset($_GET["type_edt"]) ? $_GET["type_edt"] : NULL;
 $identite = isset($_GET["identite"]) ? $_GET["identite"] : NULL;
 
+if ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND strtolower($identite) != strtolower($_SESSION["login"])){
+  Die("Vous ne pouvez pas effacer un cours d'un coll&egrave;gue");
+}
 $effacer_cours = mysql_query("DELETE FROM edt_cours WHERE id_cours = '".$supprimer_cours."'") OR die ('Impossible d\'effacer ce cours');
 
 if (!$effacer_cours) {
