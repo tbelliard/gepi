@@ -55,7 +55,8 @@ require_once("../lib/header.inc");
 // ++++++++++ Initialisation des variables +++++++
 $autorise_acces_admin = isset($_POST["activ_ad"]) ? $_POST["activ_ad"] : NULL;
 $autorise_acces_eleve = isset($_POST["activ_ele"]) ? $_POST["activ_ele"] : NULL;
-$autorise_acces_tous = isset($_POST["activ_tous"]) ? $_POST["activ_tous"] : NULL;
+$autorise_acces_tous  = isset($_POST["activ_tous"]) ? $_POST["activ_tous"] : NULL;
+$autorise_saisir_prof = isset($_POST["autorise_saisir_prof"]) ? $_POST["autorise_saisir_prof"] : NULL;
 $modif_setting = "";
 $message = "";
 
@@ -82,6 +83,13 @@ $message = "";
 		$modif = mysql_query($requete) OR DIE('La modification n\'a pas été enregistrée : '.mysql_error());
 		$message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";
 	}
+
+  // L'autorisation pour les professeurs de saisir leur edt
+  if (isset ($autorise_saisir_prof)){
+    if (saveSetting("edt_remplir_prof", $autorise_saisir_prof)){
+      $message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";;
+    }
+  }
 
 	// Petite fonction pour déterminer le checked="checked"
 	function eval_checked($Settings, $yn){
@@ -120,6 +128,18 @@ $message = "";
 </p>
 
 	</form>
+
+<br /><br />
+<form action="edt.php" method="post" name="autorise_prof">
+<p>
+  <input type="radio" name="autorise_saisir_prof" id="autoProf" value="y"<?php echo eval_checked("edt_remplir_prof", "y"); ?> onclick="document.autorise_prof.submit();">
+  <label for="autoProf">Autoriser le professeur &agrave; saisir son emploi du temps</label>
+</p>
+<p>
+  <input type="radio" name="autorise_saisir_prof" id="autoProfNon" value="n"<?php echo eval_checked("edt_remplir_prof", "n"); ?> onclick="document.autorise_prof.submit();">
+  <label for="autoProfNon">Interdire au professeur de saisir son emploi du temps</label>
+</p>
+</form>
 
 <br /><br />
 
