@@ -35,6 +35,7 @@ $niveau_arbo = 1;
 include("../lib/initialisations.inc.php");
 include("../lib/initialisationsPropel.inc.php");
 include 'traiterXml.class.php';
+include 'traiterRequetes.class.php';
 
 // Resume session et on vérifie les droits de l'utilisateur
 $resultat_session = $session_gepi->security_check();
@@ -88,9 +89,18 @@ if (isset($nom_plugin)){
       if ($testXML->getReponse() === true){
         // alors on peut envoyer le xml pour installer le plugin
         $new_plugin = PlugInPeer::addPluginComplet($xml);
+        /**
+         * On traite les requêtes demandées lors de l'installation
+         */
+        $traitement_requetes = new traiterRequetes($xml->installation->requetes);
+        if ($traitement_requetes->getReponse() === true){
+          // C'est fait les requêtes ont été exécutées
+        }else{
+          $_msg = '<p class="red">ERREUR(r) : ' . $traitement_requetes->getErreur() . '</p>';
+        }
       }else{
 
-        $_msg = '<p class="red">ERREUR : ' . $testXML->getErreur() . '</p>';
+        $_msg = '<p class="red">ERREUR(x) : ' . $testXML->getErreur() . '</p>';
 
       }
 
@@ -108,7 +118,9 @@ if (isset($nom_plugin)){
   $pluginAmodifier = PlugInPeer::retrieveByPK($plugin_id);
   switch ($action) {
     case "desinstaller":
+      $xml = simplexml_load_file($pluginAmodifier->getNom() . "/plugin.xml");
       $desinstall = PlugInPeer::deletePluginComplet($pluginAmodifier);
+      $traitement_requetes = new traiterRequetes($xml->desinstallation->requetes);
       break;
     case "ouvrir":
       $pluginAmodifier->ouvrePlugin();

@@ -2,7 +2,7 @@
 /**
  * @version : $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -57,13 +57,15 @@ class gepiPlugIn {
    */
   public function verifDroits(){
     $user_statut = $_SESSION["statut"];
+    global $gepiPath;
+    $url = parse_url($_SERVER['REQUEST_URI']);
 
     if (is_null($this->_plugin)){
       $this->affErreur(2);
     }else{
       // On s'attache à vérifier les droits de ce statut
       $this->_droits = $this->_plugin->getPlugInAutorisations();
-      $fichier = $_SERVER["REQUEST_URI"];
+      $fichier = substr($url['path'], strlen($gepiPath));
 
       $autorisation = false;
       foreach($this->_droits as $_droit){
