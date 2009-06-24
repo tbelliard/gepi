@@ -6,10 +6,16 @@
 */
 
 
-// Verification de la validité d'un mot de passe
-// longueur : getSettingValue("longmin_pwd") minimum
-// composé de lettre et d'au moins un chiffre
-// Si $flag = 1, il faut également au moins un caractères  spécial (voir $char_spec dans global.inc)
+/**
+ * Verification de la validité d'un mot de passe
+ * longueur : getSettingValue("longmin_pwd") minimum
+ * composé de lettre et d'au moins un chiffre
+ *
+ * @global string $char_spec liste des caractères spéciaux
+ * @param string $password Mot de passe
+ * @param boolean $flag Si $flag = 1, il faut également au moins un caractères spécial (voir $char_spec dans global.inc)
+ * @return boolean false/true
+ */
 function verif_mot_de_passe($password,$flag) {
     global $char_spec;
     if ($flag == 1)
@@ -27,6 +33,12 @@ function verif_mot_de_passe($password,$flag) {
 
 }
 
+/**
+ * Tester si le login existe déjà dans la base
+ *
+ * @param string $s le login testé
+ * @return string yes/no
+ */
 function test_unique_login($s) {
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
     $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
@@ -74,8 +86,16 @@ function test_unique_e_login($s, $indice) {
     }
 }
 
-// Fonction pour générer le login à partir du nom et du prénom
-// Le mode de génération doit être passé en argument
+//
+/**
+ * Fonction pour générer le login à partir du nom et du prénom
+ * Le mode de génération doit être passé en argument
+ *
+ * @param string $_nom
+ * @param string $_prenom
+ * @param string $_mode
+ * @return string
+ */
 function generate_unique_login($_nom, $_prenom, $_mode) {
 
 	if ($_mode == null) {
