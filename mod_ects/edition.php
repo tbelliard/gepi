@@ -206,21 +206,10 @@ if (!$id_classe) {
         echo "</div>\n";
 
 
-        // On récupère les années archivées, pour sélectionner celle qui correspond à l'année dernière :
-        $annees = mysql_query("SELECT DISTINCT a.annee FROM archivage_ects a, j_eleves_classes jec, eleves e  WHERE a.ine = e.no_gep AND e.login = jec.login AND jec.id_classe = '".$id_classe."'");
-        $nb_annees = mysql_num_rows($annees);
-        if ($nb_annees == 0) {
-            echo "<p>Attention ! Aucun crédit ECTS n'est actuellement présent dans les tables d'archivage pour cette classe. Les informations
-                    des semestres 1 et 2 seront donc absentes.</p>";
-        } else {
-            echo "<select size=\"1\" id=\"select_annee_derniere\" name=\"annee_derniere\">\n";
-            for ($a=0;$a<$nb_annees;$a++) {
-                $annee = mysql_result($annees, $a);
-              echo "<option value='".$annee."'>".$annee."</option>\n";
-            }
-            echo "</select>\n";
-        }
-
+        echo "<p>Document fait à ";
+        echo "<input type='text' name='lieu_edition' value='".$gepiSettings['gepiSchoolCity']."'/> ";
+        echo "le ";
+        echo "<input type='text' name='date_edition' value='".date('d/m/Y')."' /></p>";
         }
 
     }
@@ -231,7 +220,7 @@ if (!$id_classe) {
     echo "<div>\n";
         echo "<input type=\"checkbox\" name=\"releve\" id='choix_releve' value=\"releve\" checked='checked' />\n";
         echo "<label for='choix_releve' class='curseur_pointeur'>\n";
-            echo "Le relevé de crédits, sur 4 semestres\n";
+            echo "Le relevé de crédits\n";
         echo "</label>\n";
     echo "</div>\n";
     echo "<div>\n";

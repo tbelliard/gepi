@@ -70,7 +70,8 @@ $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] : false;
 $releve = isset($_POST['releve']) ? true : false;
 $attestation = isset($_POST['attestation']) ? true : false;
 $description = isset($_POST['description']) ? true : false;
-$annee_derniere = isset($_POST['annee_derniere']) ? $_POST['annee_derniere'] : false;
+$date_edition = isset($_POST['date_edition']) ? $_POST['date_edition'] : false;
+$lieu_edition =isset($_POST['lieu_edition']) ? $_POST['lieu_edition'] : false;
 
 // On va générer un gros tableau avec toutes les données.
 
@@ -114,11 +115,11 @@ if ($id_classe == 'all') {
         }
     }
 }
-$current_date = date('d/m/Y');
+
 $i = 0;
 $mentions = array('A' => 'Très bien', 'B' => 'Bien', 'C' => 'Assez Bien', 'D' => 'Convenable', 'E' => 'Passable', 'F' => 'Insuffisant');
 $resultats = array();
-$periodes = array();
+//$recap_annees = array();
 foreach($Eleves as $Eleve) {
     // On est dans la boucle principale. Le premier tableau contient les informations relatives à l'élève.
     // C'est le premier bloc.
@@ -129,6 +130,7 @@ foreach($Eleves as $Eleve) {
     } else {
         $naissance = "né le ".$Eleve->getNaissance();
     }
+
     $adresse_etablissement = $gepiSettings['gepiSchoolName'];
     if ($gepiSettings['gepiSchoolAdress1'] != '') $adresse_etablissement.= ', '.$gepiSettings['gepiSchoolAdress1'];
     if ($gepiSettings['gepiSchoolAdress2'] != '') $adresse_etablissement.= ', '.$gepiSettings['gepiSchoolAdress2'];
@@ -153,115 +155,95 @@ foreach($Eleves as $Eleve) {
                         'domaines_etude' => $Classe->getEctsDomainesEtude(),
                         'fonction_signataire' => $Classe->getEctsFonctionSignataireAttestation(),
                         'nom_signataire' => $Classe->getSuiviPar(),
-                        'date' => $current_date,
+                        'date' => $date_edition,
                         'academie' => $gepiSettings['gepiSchoolAcademie'],
                         'etablissement' => $gepiSettings['gepiSchoolName'],
                         'ville_etab' => $gepiSettings['gepiSchoolCity'],
+                        'lieu_edition' => $lieu_edition,
                         'adresse_etab' => $adresse_etablissement);
 
+    // Tableau qui contient le total général des crédits de l'étudiant
     $total_credits = 0;
-    // Pour les semestre 1 et 2, on doit passer par les archives
-    $semestre1 = array();
-    foreach($Eleve->getArchivedEctsCredits($annee_derniere, '1') as $Credit) {
-        $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
-        $mention = $Credit ? $Credit->getMention() : 'Non saisie';
-        $semestre1[] = array(
-                            'discipline' => $Credit->getMatiere(),
-                            'ects_credit' => $valeur,
-                            'ects_mention' => $mention);
-        $total_credits = $total_credits + $valeur;
+
+    // On commence par les années archivées
+    // On récupère la liste des années archivées
+    $annees = mysql_query("SELECT DISTINCT(a.annee) FROM archivage_ects a, j_eleves_classes jec, eleves e  WHERE a.ine = e.no_gep AND e.login = jec.login AND jec.id_classe = '".$Classe->getId()."'");
+    $annees_archivees = array();
+    $nb_annees = mysql_num_rows($annees);
+    for ($a=0;$a<$nb_annees;$a++) {
+        $annees_archivees[] = mysql_result($annees, $a);
     }
 
-    $semestre2 = array();
-    foreach($Eleve->getArchivedEctsCredits($annee_derniere, '2') as $Credit) {
-        $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
-        $mention = $Credit ? $Credit->getMention() : 'Non saisie';
-        $semestre2[] = array(
-                            'discipline' => $Credit->getMatiere(),
-                            'ects_credit' => $valeur,
-                            'ects_mention' => $mention);
-        $total_credits = $total_credits + $valeur;
+    // Tableau qui contient le total des crédits par année
+    $total_credits_annees = array();
+    foreach($annees_archivees as $annee_archive) {
+        $total_credits_annees[$annee_archive] = 0;
     }
+    $total_credits_annees[$gepiSettings['gepiYear']] = 0;
 
-    // On s'occupe des semestres 3 et 4:
-    $semestre3 = array();
-    foreach($Eleve->getEctsGroupes('1') as $Group) {
-        $Credit = $Eleve->getEctsCredit('1',$Group->getId());
-        if ($Credit) {
-            $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
-            $mention = $Credit ? $Credit->getMention() : 'Non saisie';
-
-            $semestre3[] = array(
-                                'discipline' => $Group->getDescription(),
-                                'ects_credit' => $valeur,
-                                'ects_mention' => $mention);
-            $total_credits = $total_credits + $valeur;
+    // Boucle de traitement des archives
+    $periode_courante = 1;
+    foreach($annees_archivees as $annee_archive) {
+        //TODO: Pour l'instant on laisse en dur un nombre de périodes égal à 2.
+        // Il faudrait sans doute améliorer le système.
+        for($p=1;$p<=2;$p++) {
+            $semestres[$periode_courante] = array();
+            foreach($Eleve->getArchivedEctsCredits($annee_archive, $p) as $Credit) {
+                $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
+                $mention = $Credit ? $Credit->getMention() : 'Non saisie';
+                $semestres[$periode_courante][] = array(
+                                    'discipline' => $Credit->getMatiere(),
+                                    'ects_credit' => $valeur,
+                                    'ects_mention' => $mention);
+                $total_credits = $total_credits + $valeur;
+                $total_credits_annees[$annee_archive] = $total_credits_annees[$annee_archive] + $valeur;
+            }
+            // On incrémente le semestre
+            $periode_courante++;
         }
     }
-    $semestre4 = array();
-    foreach($Eleve->getEctsGroupes('2') as $Group) {
-        $Credit = $Eleve->getEctsCredit('2',$Group->getId());
-        if ($Credit) {
-            $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
-            $mention = $Credit ? $Credit->getMention() : 'Non saisie';
-            $semestre4[] = array(
-                                'discipline' => $Group->getDescription(),
-                                'ects_credit' => $valeur,
-                                'ects_mention' => $mention);
-            $total_credits = $total_credits + $valeur;
+
+    //TODO: On considère en dur seulement deux périodes pour l'année en cours.
+    // A reprendre...
+    for ($p=1;$p<=2;$p++) {
+        $semestres[$periode_courante] = array();
+        foreach($Eleve->getEctsGroupes($p) as $Group) {
+            $Credit = $Eleve->getEctsCredit($p,$Group->getId());
+            if ($Credit) {
+                $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
+                $mention = $Credit ? $Credit->getMention() : 'Non saisie';
+
+                $semestres[$periode_courante][] = array(
+                                    'discipline' => $Group->getDescription(),
+                                    'ects_credit' => $valeur,
+                                    'ects_mention' => $mention);
+                $total_credits = $total_credits + $valeur;
+                $total_credits_annees[$gepiSettings['gepiYear']] = $total_credits_annees[$gepiSettings['gepiYear']] + $valeur;
+            }
         }
+        // On incrémente le semestre
+        $periode_courante++;
     }
 
     $eleves[$i]['total_credits'] = $total_credits;
 
     // On filtre maintenant les périodes : on ne devra afficher que les périodes
     // pour lesquelles il y a des résultats saisis.
-    $denomination_periodes = array(1 => 'Premier semestre', 2 => 'Deuxième semestre', 3 => 'Troisième semestre', 4 => 'Quatrième semestre');
-    $periodes[$i] = array();
+    $denomination_periodes = array(1 => 'Premier semestre', 2 => 'Deuxième semestre', 3 => 'Troisième semestre', 4 => 'Quatrième semestre', 5 => 'Cinquième semestre', 6 => 'Sixième semestre');
     $resultats[$i] = array();
-    $periode_courante = 1;
 
-    if (!empty($semestre1)) {
-//        $periodes[$i][$periode_courante] = array('num' => $periode_courante, 'nom' => $denomination_periodes[$periode_courante]);
-//        $resultats[$i][$periode_courante] = $semestre1;
-
-        foreach($semestre1 as &$tab) {
-            $tab['periode'] = $denomination_periodes[$periode_courante];
+    foreach($semestres as $num_semestre => $semestre) {
+        foreach($semestre as &$tab) {
+            $tab['periode'] = $denomination_periodes[$num_semestre];
             array_push($resultats[$i],$tab);
         }
-        $periode_courante++;
     }
 
-    if (!empty($semestre2)) {
-
-//        $periodes[$i][$periode_courante] = array('num' => $periode_courante, 'nom' => $denomination_periodes[$periode_courante]);
-//        $resultats[$i][$periode_courante] = $semestre2;
-        foreach($semestre2 as &$tab) {
-            $tab['periode'] = $denomination_periodes[$periode_courante];
-            array_push($resultats[$i],$tab);
-        }
-        $periode_courante++;
+    $recap_annees[$i] = array();
+    foreach($total_credits_annees as $annee_courante => $credits_courants) {
+        $recap_annees[$i][] = array('texte' => 'Année académique '.$annee_courante." : ".$credits_courants." ECTS");
     }
-
-    if (!empty($semestre3)) {
-//        $periodes[$i][$periode_courante] = array('num' => $periode_courante, 'nom' => $denomination_periodes[$periode_courante]);
-//        $resultats[$i][$periode_courante] = $semestre3;
-        foreach($semestre3 as &$tab) {
-            $tab['periode'] = $denomination_periodes[$periode_courante];
-            array_push($resultats[$i],$tab);
-        }
-        $periode_courante++;
-    }
-
-    if (!empty($semestre4)) {
-//        $periodes[$i][$periode_courante] = array('num' => $periode_courante, 'nom' => $denomination_periodes[$periode_courante]);
-//        $resultats[$i][$periode_courante] = $semestre4;
-        foreach($semestre4 as &$tab) {
-            $tab['periode'] = $denomination_periodes[$periode_courante];
-            array_push($resultats[$i],$tab);
-        }
-        $periode_courante++;
-    }
+    // Fin de la boucle élève
     $i++;
 }
 
@@ -320,14 +302,14 @@ if (!$description) {
     $OOo->mergeXmlBlock('description',array('fake')); // Juste pour que le bloc s'initialise correctement
 }
 
-$OOo->mergeXmlBlock('eleves',$eleves);
+$OOo->mergeXml(
+    array(
+      'name'      => 'eleves',
+      'type'      => 'block',
+      'data_type' => 'array',
+      'charset'   => 'ISO 8859-15'
+    ),$eleves);
 
-//echo "<pre>";
-//print_r($resultats);
-//echo "</pre>";
-
-// On insère les semestres
-//$OOo->mergeXmlBlock('periodes','periodes[%p1%]');
 
 // On insère les résultats
 $OOo->mergeXml(
@@ -337,6 +319,17 @@ $OOo->mergeXml(
       'data_type' => 'array',
       'charset'   => 'ISO 8859-15'
     ),'resultats[%p1%]');
+
+// On insère le récapitulatif des années
+$OOo->mergeXml(
+    array(
+      'name'      => 'recap_annees',
+      'type'      => 'block',
+      'data_type' => 'array',
+      'charset'   => 'ISO 8859-15'
+    ),'recap_annees[%p1%]');
+
+
 // Fin de traitement des tableaux
 
 
