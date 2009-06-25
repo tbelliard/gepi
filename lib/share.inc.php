@@ -34,7 +34,7 @@ function verif_mot_de_passe($password,$flag) {
 }
 
 /**
- * Tester si le login existe déjà dans la base
+ * Teste si le login existe déjà dans la base
  *
  * @param string $s le login testé
  * @return string yes/no
@@ -54,9 +54,17 @@ function test_unique_login($s) {
     }
 }
 
+/**
+ * fonction vérifiant l'unicité du login
+ * On vérifie que le login ne figure pas déjà dans une des bases élève des années passées (??)
+ *
+ * @param string $s le login à vérifier
+ * @param <type> $indice ??
+ * @return string yes/no
+ */
 function test_unique_e_login($s, $indice) {
-    // fonction vérifiant l'unicité du login $s
-    // On vérifie que le login ne figure pas déjà dans une des bases élève des années passées
+    //  $s
+    // 
 /*    $test1 = mysql_num_rows(mysql_query("SELECT login FROM a1_eleves WHERE (login='$s')"));
     $test2 = mysql_num_rows(mysql_query("SELECT login FROM a2_eleves WHERE (login='$s')"));
     $test3 = mysql_num_rows(mysql_query("SELECT login FROM a3_eleves WHERE (login='$s')"));
@@ -227,7 +235,13 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
 		return $login_user;
 }
 
-
+/**
+ * Fonction qui propose l'ordre d'affichage du nom, prénom et de la civilité en fonction des réglages de la classe de l'élève
+ *
+ * @param string $login
+ * @param integer $id_classe
+ * @return string
+ */
 function affiche_utilisateur($login,$id_classe) {
     $req = mysql_query("select nom, prenom, civilite from utilisateurs where login = '".$login."'");
 	//$tmp="mysql_num_rows($req)=".mysql_num_rows($req);
@@ -281,7 +295,11 @@ function affiche_utilisateur($login,$id_classe) {
     //return $tmp;
 }
 
-// Verifie si l'extension d_base est active
+/**
+ * Verifie si l'extension d_base est active
+ *
+ * @return echo réponse
+ */
 function verif_active_dbase() {
     if (!function_exists("dbase_open"))  {
         echo "<center><p class=grand>ATTENTION : PHP n'est pas configuré pour gérer les fichiers GEP (dbf).
@@ -290,8 +308,13 @@ function verif_active_dbase() {
     }
 }
 
-// Verifie si un groupe appartient bien à la personne connectée
-//
+/**
+ * Verifie si un groupe appartient bien à la personne connectée
+ *
+ * @deprecated Cette fonction ne peut plus fonctionner car la requête SQL n'est plus valide
+ * @param integer $id_groupe identifiant du groupe
+ * @return boolean 0/1
+ */
 function verif_groupe_appartient_prof($id_groupe) {
     $test = mysql_query("select id from groupes where (id='$id_groupe' and login_user = '".$_SESSION['login']."')");
     if (mysql_num_rows($test) == 0) {
@@ -300,9 +323,15 @@ function verif_groupe_appartient_prof($id_groupe) {
         return 1;
     }
 }
-//
-// Verifie si un élève appartient à un groupe
-//
+
+/**
+ * Verifie si un élève appartient à un groupe
+ *
+ * @deprecated La requête SQL n'est plus possible
+ * @param integer $id_eleve
+ * @param integer $id_groupe
+ * @return boolean 0/1
+ */
 function verif_eleve_dans_groupe($id_eleve, $id_groupe) {
     if ($id_groupe != "-1") {
         // On verifie l'appartenance de id_eleve au groupe id_groupe
@@ -327,9 +356,13 @@ function verif_eleve_dans_groupe($id_eleve, $id_groupe) {
 
     }
 }
-//
-// Construit un tableau des groupes de l'utilisateur connecté
-//
+
+/**
+ * Construit un tableau des groupes de l'utilisateur connecté
+ *
+ * @deprecated La requête SQL n'est plus possible
+ * @return array
+ */
 function make_tables_of_groupes() {
     $tab_groupes = array();
     $test = mysql_query("select id, nom_court, nom_complet from groupes where login_user = '".$_SESSION['login']."'");
@@ -344,9 +377,11 @@ function make_tables_of_groupes() {
       return $tab_groupes;
 }
 
-//
-// Construit un tableau des classes et matières de l'utilisateur connecté
-//
+/**
+ * Construit un tableau des classes et matières de l'utilisateur connecté (professeur)
+ *
+ * @return array Liste des classes et matières de ce professeur
+ */
 function make_tables_of_classes_matieres () {
   $tab_class_mat = array();
   $appel_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
@@ -377,9 +412,11 @@ function make_tables_of_classes_matieres () {
   return $tab_class_mat;
 }
 
-//
-// Construit un tableau des classes de l'utilisateur connecté
-//
+/**
+ * Construit un tableau des classes de l'utilisateur connecté (professeur)
+ *
+ * @return array Liste des classes (id_classe)
+ */
 function make_tables_of_classes () {
   $tab_class = array();
   $appel_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
@@ -402,7 +439,18 @@ function make_tables_of_classes () {
   return $tab_class;
 }
 
-
+/**
+ * Construit du html pour les cahiers de textes
+ *
+ * @deprecated La requête SQL n'est plus valide
+ * @param string $link Le lien
+ * @param <type> $current_classe
+ * @param <type> $current_matiere
+ * @param integer $year année
+ * @param integer $month le mois
+ * @param integer $day le jour
+ * @return string echo résultat
+ */
 function make_area_list_html($link, $current_classe, $current_matiere, $year, $month, $day) {
   echo "<strong><em>Cahier&nbsp;de&nbsp;texte&nbsp;de&nbsp;:</em></strong><br />";
   $appel_donnees = mysql_query("SELECT * FROM classes ORDER BY classe");
@@ -444,12 +492,17 @@ function make_area_list_html($link, $current_classe, $current_matiere, $year, $m
   }
 }
 
-	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
-	//						  Création d'un label pour passer les tests WAI
-	//						  Ajout de balises <p>...</p> pour encadrer <select>...
-/*$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
-  <p> \n<label for=\"enseignement\"><strong><em>Matière :<br /></em></strong></label> <select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";*/
-
+/**
+ * Ecrit une balise <select> de date jour mois année
+ * correction W3C : ajout de la balise de fin </option> à la fin de $out_html
+ * Création d'un label pour passer les tests WAI
+ *
+ * @param string $prefix l'attribut name sera de la forme $prefixday, $prefixMois,...
+ * @param integer $day
+ * @param integer $month
+ * @param integer $year
+ * @param string $option Si = more_years, on ajoute +5 et -5 années aux années possibles
+ */
 function genDateSelector($prefix, $day, $month, $year, $option)
 {
     if($day   == 0) $day = date("d");
@@ -509,8 +562,12 @@ function genDateSelector($prefix, $day, $month, $year, $option)
     echo "</select>\n";
 }
 
-
-
+/**
+ * Détruit les conteneurs vides qui ne sont pas rattachés à un parent (@à vérifier)
+ *
+ * @param integer $id_conteneur
+ * @param <type> $id_racine ??
+ */
 function test_conteneurs_vides($id_conteneur,$id_racine) {
         // On teste si le conteneur est vide
         if ($id_conteneur !=0) {

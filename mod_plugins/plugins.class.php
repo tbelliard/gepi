@@ -65,12 +65,12 @@ class gepiPlugIn {
     }else{
       // On s'attache à vérifier les droits de ce statut
       $this->_droits = $this->_plugin->getPlugInAutorisations();
-      $fichier = substr($url['path'], strlen($gepiPath));
+      $fichier = substr($url['path'], (strlen($gepiPath) + 1));
 
       $autorisation = false;
       foreach($this->_droits as $_droit){
 
-        if ($_droit->getFichier() == $fichier){
+        if ($_droit->getFichier() == $fichier AND $_droit->getAuth() == 'V'){
 
           $autorisation = true;
 
@@ -125,7 +125,7 @@ class gepiPlugIn {
      */
     public static function _sqlQuery($sql, $use_PDO = false){
       if($use_PDO){
-        ;
+        return $_globals["cnx"]->exec($sql);
 
       }else{
         return mysql_query($sql);
@@ -133,18 +133,38 @@ class gepiPlugIn {
 
     }
     public static function _sqlQueryArray($sql, $use_PDO = false){
-      $query = self::_sqlQuery($sql, $use_PDO);
+      if ($use_PDO){
+        $query = self::_sqlQuery($sql, $use_PDO);
+        return $query->fetchAll();
+      }else{
+        $query = self::_sqlQuery($sql, $use_PDO);
+        return mysql_fetch_array($query);
+      }
     }
     public static function _sqlQueryObject($sql, $use_PDO = false){
-      return mysql_fetch_array($query);
+      if ($use_PDO){
+        $query = self::_sqlQuery($sql, $use_PDO);
+        return $query->fetchAll();
+      }else{
+        $query = self::_sqlQuery($sql, $use_PDO);
+        return mysql_fetch_object($query);
+      }
     }
     public static function _sqlCount ($sql, $use_PDO = false){
-      return mysql_num_rows($sql);
+      if ($use_PDO){
+        $query = self::_sqlQuery($sql, $use_PDO);
+        $result = $query->fetchAll();
+        return count($result);
+      }else{
+        $query = self::_sqlQuery($sql, $use_PDO);
+        return mysql_num_rows($query);
+      }
     }
 
     /**
      * Méthode qui renvoie le numéro du champ autoincrémenté du dernier enregistrement en INSERT
      *
+     * @todo Terminer de coder ce cas avec PDO
      * @param boolean $use_PDO par défaut false. Passé à true, il permet d'utiliser PDO (ajouter $utiliser_pdo = 'on'; au début de votre fichier)
      * @return integer
      */
