@@ -734,31 +734,41 @@ else{
 								}
 
 
-                                //--------------------
-                                // Les crédits ECTS
-                                //--------------------
-
-                                // On a besoin de : annee, ine, classe, num_periode, nom_periode, matiere, prof, valeur_ects, mention_ects
-                                // On a déjà pratiquement tout... ça ne va pas être compliqué !
-                                $Eleve = ElevePeer::retrieveByLOGIN($login_eleve);
-                                $Ects = $Eleve->getEctsCredit($num_periode,$id_groupe);
-
-                                if ($Ects != null) {
-                                    $Archive = new ArchiveEcts();
-                                    $Archive->setAnnee($annee_scolaire);
-                                    $Archive->setIne($ine);
-                                    $Archive->setClasse($classe);
-                                    $Archive->setNumPeriode($num_periode);
-                                    $Archive->setNomPeriode($nom_periode);
-                                    $Archive->setMatiere($matiere);
-                                    $Archive->setSpecial('');
-                                    $Archive->setProfs($prof);
-                                    $Archive->setValeur($Ects->getValeur());
-                                    $Archive->setMention($Ects->getMention());
-                                    $Archive->save();
-                                }
-
 							} // Fin de la boucle matières
+
+
+
+                                                        //--------------------
+                                                        // Les crédits ECTS
+                                                        //--------------------
+
+                                                        // On a besoin de : annee, ine, classe, num_periode, nom_periode, matiere, prof, valeur_ects, mention_ects
+                                                        // On a déjà pratiquement tout... ça ne va pas être compliqué !
+                                                        $Eleve = ElevePeer::retrieveByLOGIN($login_eleve);
+                                                        $Groupes = $Eleve->getGroupes($num_periode);
+
+                                                        foreach($Groupes as $Groupe) {
+                                                            
+                                                            $Ects = $Eleve->getEctsCredit($num_periode,$Groupe->getId());
+
+                                                            if ($Ects != null) {
+                                                                $Archive = new ArchiveEcts();
+                                                                $Archive->setAnnee($annee_scolaire);
+                                                                $Archive->setIne($ine);
+                                                                $Archive->setClasse($classe);
+                                                                $Archive->setNumPeriode($num_periode);
+                                                                $Archive->setNomPeriode($nom_periode);
+                                                                $Archive->setMatiere($Groupe->getDescription());
+                                                                $Archive->setSpecial('');
+                                                                $Archive->setProfs($prof);
+                                                                $Archive->setValeur($Ects->getValeur());
+                                                                $Archive->setMention($Ects->getMention());
+                                                                $Archive->save();
+                                                            }
+                                                        }
+
+
+
 
 							if($erreur==0){
 								echo "<script type='text/javascript'>
