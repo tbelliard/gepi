@@ -123,6 +123,11 @@ if (isset($_POST['gepiSchoolName'])) {
 		$msg .= "Erreur lors de l'enregistrement du nom de l'établissement !";
 	}
 }
+if (isset($_POST['gepiSchoolStatut'])) {
+	if (!saveSetting("gepiSchoolStatut", $_POST['gepiSchoolStatut'])) {
+		$msg .= "Erreur lors de l'enregistrement du statut de l'établissement !";
+	}
+}
 if (isset($_POST['gepiSchoolAdress1'])) {
 	if (!saveSetting("gepiSchoolAdress1", $_POST['gepiSchoolAdress1'])) {
 		$msg .= "Erreur lors de l'enregistrement de l'adresse !";
@@ -479,6 +484,14 @@ require_once("../lib/header.inc");
 		Nom de l'établissement :
 		</td>
 		<td><input type="text" name="gepiSchoolName" size="20" value="<?php echo(getSettingValue("gepiSchoolName")); ?>" />
+		</td>
+	</tr>
+	<tr>
+		<td style="font-variant: small-caps;">
+		Statut de l'établissement :<br />
+		(<span style='font-style:italic;font-size:x-small'>utilisé pour certains documents officiels</span>)
+		</td>
+		<td><input type="text" name="gepiSchoolStatut" size="20" value="<?php echo(getSettingValue("gepiSchoolStatut")); ?>" />
 		</td>
 	</tr>
 	<tr>

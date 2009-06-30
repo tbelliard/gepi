@@ -7667,6 +7667,12 @@ lieu VARCHAR( 255 ) NOT NULL
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsScolarite', 'yes');");
 		}
 
+		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'gepiSchoolStatut'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0) {
+			$result_inter .= traite_requete("INSERT INTO setting VALUES ('gepiSchoolStatut', '');");
+		}
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'gepiSchoolAcademie'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0) {

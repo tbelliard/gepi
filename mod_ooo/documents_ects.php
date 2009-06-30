@@ -142,6 +142,113 @@ foreach($Eleves as $Eleve) {
     } else {
         $mention_globale = $credit_global->getMention();
     }
+
+
+    // Gestion du bloc adresse.
+    // Le code ci-dessous est repris directement des bulletins... pas le temps
+    // de faire un truc générique propre :-(
+
+    $sql="SELECT rp.nom, rp.prenom, rp.civilite, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
+					WHERE r.ele_id='".$Eleve->getEleId()."' AND
+						rp.adr_id=ra.adr_id AND
+						r.pers_id=rp.pers_id AND
+						(r.resp_legal='1' OR r.resp_legal='2')
+					ORDER BY r.resp_legal";
+
+    $call_resp=@mysql_query($sql);
+
+    $nom_resp=array();
+    $prenom_resp=array();
+    $civilite_resp=array();
+    $adr1_resp=array();
+    $adr2_resp=array();
+    $adr3_resp=array();
+    $adr4_resp=array();
+    $cp_resp=array();
+    $commune_resp=array();
+    $pays_resp=array();
+    $cpt=1;
+    while($lig_resp=mysql_fetch_object($call_resp)){
+            $nom_resp[$cpt]=$lig_resp->nom;
+            $prenom_resp[$cpt]=$lig_resp->prenom;
+            $civilite_resp[$cpt]=$lig_resp->civilite;
+            $adr1_resp[$cpt]=$lig_resp->adr1;
+            $adr2_resp[$cpt]=$lig_resp->adr2;
+            $adr3_resp[$cpt]=$lig_resp->adr3;
+            $adr4_resp[$cpt]=$lig_resp->adr4;
+            $cp_resp[$cpt]=$lig_resp->cp;
+            $commune_resp[$cpt]=$lig_resp->commune;
+            $pays_resp[$cpt]=$lig_resp->pays;
+            $cpt++;
+    }
+
+    // On a désormais toutes les infos concernant le ou les responsables
+    // légaux de l'élève.
+
+    if ($nom_resp[1]=='') {
+            // Si on n'a pas de nom pour le responsable 1, on n'affiche rien.
+            $ligne1="";
+            $ligne2="";
+            $ligne3="";
+    } else {
+            if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))) {
+                    if((
+                    (substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)==substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
+                    and (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)==substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
+                    and (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)==substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
+                    and (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)==substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
+                    and ($cp_resp[1]==$cp_resp[2])
+                    and ($commune_resp[1]==$commune_resp[2])
+                    and ($pays_resp[1]==$pays_resp[2])
+                    )
+                    and ($adr1_resp[2]!='')) {
+                    // Les deux responsables légaux ont la même adresse
+
+                            if(($nom_resp[1]!=$nom_resp[2])&&($nom_resp[2]!="")) {
+                                // Les deux responsables légaux n'ont pas le même nom
+                                    $ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
+                                    $ligne1.="<br />\n";
+                                    $ligne1.="et ";
+                                    $ligne1.=$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
+                            } else {
+                                // Ils ont le même nom
+                                    if(($civilite_resp[1]!="")&&($civilite_resp[2]!="")) {
+                                            $ligne1=$civilite_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[1]." ".$prenom_resp[1];
+                                    } else {
+                                            $ligne1="M. et Mme ".$nom_resp[1]." ".$prenom_resp[1];
+                                    }
+                            }
+                    } elseif ($civilite_resp[1]!="") {
+                            $ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
+                    } else {
+                            $ligne1=$nom_resp[1]." ".$prenom_resp[1];
+                    }
+            } else {
+                    if($civilite_resp[1]!=""){
+                            $ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
+                    } else {
+                            $ligne1=$nom_resp[1]." ".$prenom_resp[1];
+                    }
+            }
+            $ligne2=$adr1_resp[1];
+            if($adr2_resp[1]!=""){
+                    $ligne2.="<br />\n".$adr2_resp[1];
+            }
+            if($adr3_resp[1]!=""){
+                    $ligne2.="<br />\n".$adr3_resp[1];
+            }
+            if($adr4_resp[1]!=""){
+                    $ligne2.="<br />\n".$adr4_resp[1];
+            }
+            $ligne3=$cp_resp[1]." ".$commune_resp[1];
+            if(($pays_resp[1]!="")&&(strtolower($pays_resp[1])!=strtolower($gepiSettings['gepiSchoolPays']))) {
+                    if($ligne3!=" "){
+                            $ligne3.="<br />";
+                    }
+                    $ligne3.="$pays_resp[1]";
+            }
+    }
+
     $eleves[$i] = array(
                         'nom' => $Eleve->getNom(),
                         'prenom' => $Eleve->getPrenom(),
@@ -159,15 +266,20 @@ foreach($Eleves as $Eleve) {
                         'academie' => $gepiSettings['gepiSchoolAcademie'],
                         'etablissement' => $gepiSettings['gepiSchoolName'],
                         'ville_etab' => $gepiSettings['gepiSchoolCity'],
+                        'statut_etab' => $gepiSettings['gepiSchoolStatut'],
                         'lieu_edition' => $lieu_edition,
-                        'adresse_etab' => $adresse_etablissement);
+                        'adresse_etab' => $adresse_etablissement,
+                        'resp_ligne1' => $ligne1,
+                        'resp_ligne2' => $ligne2,
+                        'resp_ligne3' => $ligne3
+                );
 
     // Tableau qui contient le total général des crédits de l'étudiant
     $total_credits = 0;
 
     // On commence par les années archivées
-    // On récupère la liste des années archivées
-    $annees = mysql_query("SELECT DISTINCT(a.annee) FROM archivage_ects a, j_eleves_classes jec, eleves e  WHERE a.ine = e.no_gep AND e.login = jec.login AND jec.id_classe = '".$Classe->getId()."'");
+    // On récupère la liste des années archivées pour l'élève
+    $annees = mysql_query("SELECT DISTINCT(a.annee) FROM archivage_ects a WHERE a.ine = '".$Eleve->getNoGep()."'");
     $annees_archivees = array();
     $nb_annees = mysql_num_rows($annees);
     for ($a=0;$a<$nb_annees;$a++) {
@@ -184,10 +296,11 @@ foreach($Eleves as $Eleve) {
     // Boucle de traitement des archives
     $periode_courante = 1;
     foreach($annees_archivees as $annee_archive) {
-        //TODO: Pour l'instant on laisse en dur un nombre de périodes égal à 2.
+        //TODO: Pour l'instant on laisse en dur un nombre de périodes maxi de 5
         // Il faudrait sans doute améliorer le système.
-        for($p=1;$p<=2;$p++) {
+        for($p=1;$p<=5;$p++) {
             $semestres[$periode_courante] = array();
+            $flag = false;
             foreach($Eleve->getArchivedEctsCredits($annee_archive, $p) as $Credit) {
                 $valeur = $Credit ? $Credit->getValeur() : 'Non saisie';
                 $mention = $Credit ? $Credit->getMention() : 'Non saisie';
@@ -197,16 +310,21 @@ foreach($Eleves as $Eleve) {
                                     'ects_mention' => $mention);
                 $total_credits = $total_credits + $valeur;
                 $total_credits_annees[$annee_archive] = $total_credits_annees[$annee_archive] + $valeur;
+                $flag = true;
             }
-            // On incrémente le semestre
-            $periode_courante++;
+            // On incrémente le semestre si des valeurs avaient été trouvées
+            // pour la période considérée. Ce fonctionnement permet de jouer
+            // sur des périodes spécifiques pour les ECTS, et d'avoir des relevés
+            // linéaires en apparence.
+            if ($flag) $periode_courante++;
         }
     }
 
     //TODO: On considère en dur seulement deux périodes pour l'année en cours.
     // A reprendre...
-    for ($p=1;$p<=2;$p++) {
+    for ($p=1;$p<=5;$p++) {
         $semestres[$periode_courante] = array();
+        $flag = false;
         foreach($Eleve->getEctsGroupes($p) as $Group) {
             $Credit = $Eleve->getEctsCredit($p,$Group->getId());
             if ($Credit) {
@@ -219,10 +337,11 @@ foreach($Eleves as $Eleve) {
                                     'ects_mention' => $mention);
                 $total_credits = $total_credits + $valeur;
                 $total_credits_annees[$gepiSettings['gepiYear']] = $total_credits_annees[$gepiSettings['gepiYear']] + $valeur;
+                $flag = true;
             }
         }
-        // On incrémente le semestre
-        $periode_courante++;
+        // On incrémente le semestre si on avait des données.
+        if ($flag) $periode_courante++;
     }
 
     $eleves[$i]['total_credits'] = $total_credits;
@@ -287,17 +406,26 @@ $OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variabl
 // Traitement des tableaux
 // On insère ici les lignes concernant la gestion des tableaux
 if (!$releve) {
-    $OOo->mergeXmlBlock('releve','clear');
+    $OOo->mergeXml(
+        array(
+            'name' => 'releve',
+            'type' => 'clear'));
 } else {
     $OOo->mergeXmlBlock('releve',array('fake')); // Juste pour que le bloc s'initialise correctement
 }
 if (!$attestation) {
-    $OOo->mergeXmlBlock('attestation','clear');
+    $OOo->mergeXml(
+        array(
+            'name' => 'attestation',
+            'type' => 'clear'));
 } else {
     $OOo->mergeXmlBlock('attestation',array('fake')); // Juste pour que le bloc s'initialise correctement
 }
 if (!$description) {
-    $OOo->mergeXmlBlock('description','clear');
+    $OOo->mergeXml(
+        array(
+            'name' => 'description',
+            'type' => 'clear'));
 } else {
     $OOo->mergeXmlBlock('description',array('fake')); // Juste pour que le bloc s'initialise correctement
 }
@@ -328,6 +456,14 @@ $OOo->mergeXml(
       'data_type' => 'array',
       'charset'   => 'ISO 8859-15'
     ),'recap_annees[%p1%]');
+
+$nom_fic_logo = getSettingValue("logo_etab");
+$nom_fic_logo_c = "../images/".$nom_fic_logo;
+if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
+    $OOo->mergeXmlField('logo',$nom_fic_logo_c);
+} else {
+    $OOo->mergeXmlField('logo','../images/blank.gif'); 
+}
 
 
 // Fin de traitement des tableaux
