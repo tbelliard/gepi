@@ -520,7 +520,7 @@ function updateMention(id,valeur){
     $categories = $Eleve->getEctsGroupesByCategories($periode_num);
 
     // Pour s'assurer qu'on affiche bien tout, il faut néanmoins récupérer tout de suite
-    // les crédits ECTS précédents, sans quoi ne saura si tout a été affiché.
+    // les crédits ECTS précédents, sans quoi on ne saura si tout a été affiché.
     $periodes_precedentes = array();
     if ($periode_num > 1) {
         for($i=1;$i<$periode_num;$i++) {
@@ -581,7 +581,7 @@ function updateMention(id,valeur){
             // Affichage des éventuels résultats précédents
             foreach($annees_precedentes as $a) {
                 foreach($a['periodes'] as $p_num => $p) {
-                    $archive = $Eleve->getArchivedEctsCredit($a['annee'], $p, $group->getDescription());
+                    $archive = $Eleve->getArchivedEctsCredit($a['annee'], $p_num, $group->getDescription());
                     if ($archive != null and !in_array($archive->getId(), $archives_id)) {
                         echo "<td>";
                         // On stocke l'ID pour voir plus tard si on a bien affiché tous les crédits obtenus par le passé
@@ -771,7 +771,7 @@ function updateMention(id,valeur){
     $extra_matieres = array();
     foreach($annees_precedentes as $a) {
         foreach($a['periodes'] as $p_num => $p) {
-            $credits = $Eleve->getArchivedEctsCredits($a['annee'], $p);
+            $credits = $Eleve->getArchivedEctsCredits($a['annee'], $p_num);
             foreach($credits as $archive) {
                 if (!in_array($archive->getId(), $archives_id) and !in_array($archive->getMatiere(), $extra_matieres)) {
                     $extra_matieres[] = $archive->getMatiere();
@@ -790,7 +790,7 @@ function updateMention(id,valeur){
         // Affichage des éventuels résultats archivés
         foreach($annees_precedentes as $a) {
             foreach($a['periodes'] as $p_num => $p) {
-                $archive = $Eleve->getArchivedEctsCredit($a['annee'], $p, $matiere);
+                $archive = $Eleve->getArchivedEctsCredit($a['annee'], $p_num, $matiere);
                 if ($archive != null and !in_array($archive->getId(), $archives_id)) {
                     echo "<td>";
                     // On stocke l'ID pour voir plus tard si on a bien affiché tous les crédits obtenus par le passé
