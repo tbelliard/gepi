@@ -491,7 +491,12 @@ require_once("../lib/header.inc");
 		Statut de l'établissement :<br />
 		(<span style='font-style:italic;font-size:x-small'>utilisé pour certains documents officiels</span>)
 		</td>
-		<td><input type="text" name="gepiSchoolStatut" size="20" value="<?php echo(getSettingValue("gepiSchoolStatut")); ?>" />
+		<td>
+                    <select name='gepiSchoolStatut'>
+			<option value='public'<?php if (getSettingValue("gepiSchoolStatut")=='public') echo " SELECTED"; ?>>établissement public</option>
+			<option value='prive_sous_contrat'<?php if (getSettingValue("gepiSchoolStatut")=='prive_sous_contrat') echo " SELECTED"; ?>>établissement privé sous contrat</option>
+			<option value='prive_hors_contrat'<?php if (getSettingValue("gepiSchoolStatut")=='prive_hors_contrat') echo " SELECTED"; ?>>établissement privé hors contrat</option>
+                    </select>
 		</td>
 	</tr>
 	<tr>

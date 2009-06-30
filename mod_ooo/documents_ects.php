@@ -249,6 +249,20 @@ foreach($Eleves as $Eleve) {
             }
     }
 
+    switch($gepiSettings['gepiSchoolStatut']){
+        case 'public':
+            $statut_etab = 'public';
+            break;
+        case 'prive_sous_contrat':
+            $statut_etab = 'privé sous contrat';
+            break;
+        case 'prive_hors_contrat':
+            $statut_etab = 'privé hors contrat';
+            break;
+        default:
+            $statut_etab = 'public';
+    }
+
     $eleves[$i] = array(
                         'nom' => $Eleve->getNom(),
                         'prenom' => $Eleve->getPrenom(),
@@ -266,7 +280,7 @@ foreach($Eleves as $Eleve) {
                         'academie' => $gepiSettings['gepiSchoolAcademie'],
                         'etablissement' => $gepiSettings['gepiSchoolName'],
                         'ville_etab' => $gepiSettings['gepiSchoolCity'],
-                        'statut_etab' => $gepiSettings['gepiSchoolStatut'],
+                        'statut_etab' => $statut_etab,
                         'lieu_edition' => $lieu_edition,
                         'adresse_etab' => $adresse_etablissement,
                         'resp_ligne1' => $ligne1,

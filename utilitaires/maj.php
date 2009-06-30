@@ -7670,7 +7670,7 @@ lieu VARCHAR( 255 ) NOT NULL
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'gepiSchoolStatut'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0) {
-			$result_inter .= traite_requete("INSERT INTO setting VALUES ('gepiSchoolStatut', '');");
+			$result_inter .= traite_requete("INSERT INTO setting VALUES ('gepiSchoolStatut', 'public');");
 		}
 
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'gepiSchoolAcademie'");
