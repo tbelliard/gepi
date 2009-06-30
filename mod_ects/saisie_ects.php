@@ -853,7 +853,7 @@ function updateMention(id,valeur){
     echo $nb_cols+1;
     echo "'>";
     if (!$donnees_enregistrees) {
-        echo "<p style='color: red;'>Données non-examinées<br/><span style='font-size: small;'>Les valeurs par défaut son pré-saisies, mais ne sont pas encore enregistrées en base de données.</span></p>";
+        echo "<p style='color: red;'>Données non-examinées<br/><span style='font-size: small;'>Les valeurs par défaut sont pré-saisies, mais ne sont pas encore enregistrées en base de données.</span></p>";
     } else {
         // Des données sont présentes en base de données. Seul les variations de total influent sur le message à afficher
         if ($total_valeur[$periode_num] < 30) {
