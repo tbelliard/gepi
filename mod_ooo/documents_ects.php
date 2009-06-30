@@ -281,6 +281,8 @@ foreach($Eleves as $Eleve) {
                         'etablissement' => $gepiSettings['gepiSchoolName'],
                         'ville_etab' => $gepiSettings['gepiSchoolCity'],
                         'statut_etab' => $statut_etab,
+                        'rne_etab' => $gepiSettings['gepiSchoolRne'],
+                        'code_postal_etab' => $gepiSettings['gepiSchoolZipCode'],
                         'lieu_edition' => $lieu_edition,
                         'adresse_etab' => $adresse_etablissement,
                         'resp_ligne1' => $ligne1,
