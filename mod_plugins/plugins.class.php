@@ -70,15 +70,18 @@ class gepiPlugIn {
       $autorisation = false;
       foreach($this->_droits as $_droit){
 
-        if ($_droit->getFichier() == $fichier AND $_droit->getAuth() == 'V'){
+        if ($_droit->getFichier() == $fichier AND $_droit->getAuth() == 'V' AND $_droit->getUserStatut() == $user_statut){
 
           $autorisation = true;
 
         }
       }
 
-      if (!$autorisation){
+      if ($autorisation === false){
         $this->affErreur(3);
+        return false;
+      }else{
+        return true;
       }
 
     }
@@ -91,7 +94,7 @@ class gepiPlugIn {
 
   private function affErreur($number){
     if(is_numeric($number)){
-      switch ($$number) {
+      switch ($number) {
         case "1":
           Die('Il faut pr&eacute;ciser le nom du plugin dans la cr&eacute;ation de son instance : $user_auth = new gepiPlugIn("nom_plugin");');
           break;
