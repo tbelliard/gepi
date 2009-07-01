@@ -178,8 +178,16 @@ if (isset($_POST['no_anti_inject_password'])) {
 <script src="lib/functions.js" type="text/javascript" language="javascript"></script>
 <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
 <link rel="icon" type="image/ico" href="./favicon.ico" />
+<?php
+	// Styles paramétrables depuis l'interface:
+	if($style_screen_ajout=='y'){
+		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
+		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+	}
+?>
 </head>
-<body>
+<body onload="document.getElementById('login').focus()">
 <div>
 <?php
 echo "<div class='center'>";
