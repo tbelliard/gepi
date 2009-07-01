@@ -99,6 +99,11 @@ $liste_scripts_non_traites = array(
 "/cahier_texte_2/creer_sequence.php"
 );
 
+// On ajoute la possibilité pour les plugins de s'ajouter à la liste
+if (isset($_ajouter_fichier_anti_inject)){
+  $liste_scripts_non_traites[] = "/mod_plugins/" . $_ajouter_fichier_anti_inject;
+}
+
 $url = parse_url($_SERVER['REQUEST_URI']);
 // On traite les données postées si nécessaire
 if ((!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {

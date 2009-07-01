@@ -1589,12 +1589,31 @@ function check_backup_directory() {
 
 }
 
+/**
+ * Fonction qui retourne le nombre de périodes pour une classe
+ *
+ * @param integer $_id_classe identifiant numérique de la classe
+ * @return integer Nombre de periodes définies pour cette classe
+ */
 function get_period_number($_id_classe) {
     $periode_query = mysql_query("SELECT count(*) FROM periodes WHERE id_classe = '" . $_id_classe . "'");
     $nb_periode = mysql_result($periode_query, 0);
     return $nb_periode;
 }
 
+/**
+ * Renvoie le numéro et le nom de la première période active (O) pour une classe
+ *
+ * @param integer $_id_classe identifiant unique de la classe
+ * @return array numéro de la période 'num' et son nom 'nom'
+ */
+function get_periode_active($_id_classe){
+  $periode_query  = mysql_query("SELECT num_periode, nom_periode FROM periodes WHERE id_classe = '" . $_id_classe . "' AND verouiller = 'N'");
+  $reponse        = mysql_fetch_array($periode_query);
+
+  return $retour = array('nom' => $reponse["num_periode"], 'nom' => $reponse["nom_periode"]);
+
+}
 
 // Pour les utilisateurs ayant des versions antérieures à PHP 4.3.0 :
 // la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.
@@ -1841,10 +1860,18 @@ $res = sql_query($sql);
   return $html;
  }
 
-// Cette fonction est à appeler dans tous les cas où une tentative
-// d'utilisation illégale de Gepi est manifestement avérée.
-// Elle est à appeler notamment dans tous les tests de sécurité lorsqu'un test
-// est négatif.
+/**
+ * Cette fonction est à appeler dans tous les cas où une tentative
+ * d'utilisation illégale de Gepi est manifestement avérée.
+ * Elle est à appeler notamment dans tous les tests de sécurité lorsqu'un test est négatif.
+ * Possibilité d'envoyer un mail à l'administrateur et de bloquer l'utilisateur
+ *
+ * @global array $_SERVER obsolète car $_SERVER est une superglobale
+ * @global array $_SESSION obsolète car $_SESSION est une super globale
+ * @global string $gepiPath Path de Gepi (connect.inc.php)
+ * @param integer $_niveau Niveau d'intrusion enregistré
+ * @param string $_description Message enregistré pour cette tentative
+ */
 function tentative_intrusion($_niveau, $_description) {
 	// On permet l'accès à $_SERVER et $_SESSION
 	global $_SERVER;
@@ -1854,7 +1881,7 @@ function tentative_intrusion($_niveau, $_description) {
 	// On commence par enregistrer la tentative en question
 
 	if (!isset($_SESSION['login'])) {
-		// Ici, ça veut dire que l'attaque est extérieure. Il n'y a pas d'utiliser logué.
+		// Ici, ça veut dire que l'attaque est extérieure. Il n'y a pas d'utilisateur logué.
 		$user_login = "-";
 	} else {
 		$user_login = $_SESSION['login'];
@@ -1958,8 +1985,14 @@ function tentative_intrusion($_niveau, $_description) {
 	}
 }
 
+/**
+ * Fonction destinée à présenter une liste de liens répartis en $nbcol colonnes
+ *
+ * @param array $tab_txt tableau des textes
+ * @param array $tab_lien tableau des liens
+ * @param integer $nbcol Nombre de colonnes
+ */
 function tab_liste($tab_txt,$tab_lien,$nbcol){
-	// Fonction destinée à présenter une liste de liens répartis en $nbcol colonnes
 
 	// Nombre d'enregistrements à afficher
 	$nombreligne=count($tab_txt);
@@ -1993,8 +2026,12 @@ function tab_liste($tab_txt,$tab_lien,$nbcol){
 	echo "</table>\n";
 }
 
+/**
+ * Fonction destinée à créer un dossier temporaire aléatoire /temp/<alea>
+ *
+ * @return boolean true/false
+ */
 function check_temp_directory(){
-	// Fonction destinée à créer un dossier /temp/<alea>
 
 	$dirname=getSettingValue("temp_directory");
 	if(($dirname=='')||(!file_exists("./temp/$dirname"))){
@@ -2031,8 +2068,12 @@ function check_temp_directory(){
 	*/
 }
 
+/**
+ * Fonction destinée à créer un dossier /temp/<alea> propre au professeur
+ *
+ * @return boolean true/false
+ */
 function check_user_temp_directory(){
-	// Fonction destinée à créer un dossier /temp/<alea> propre au prof
 
 	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$_SESSION['login']."'";
 	$res_temp_dir=mysql_query($sql);
@@ -2115,6 +2156,11 @@ function check_user_temp_directory(){
 	}
 }
 
+/**
+ * Renvoie le nom du répertoire temporaire de l'utilisateur
+ *
+ * @return string retourne false s'il n'existe pas et le nom du répertoire s'il existe
+ */
 function get_user_temp_directory(){
 	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$_SESSION['login']."'";
 	$res_temp_dir=mysql_query($sql);
@@ -2264,7 +2310,12 @@ function remplace_accents($chaine,$mode){
 	return $retour;
 }
 
-// Fonction qui renvoie le login d'un élève en échange de son ele_id
+/**
+ * Fonction qui renvoie le login d'un élève en échange de son ele_id
+ *
+ * @param integer $id_eleve ele_id de l'élève
+ * @return string login de l'élève
+ */
 function get_login_eleve($id_eleve){
 
 	$sql = "SELECT login FROM eleves WHERE id_eleve = '".$id_eleve."'";
@@ -2278,7 +2329,12 @@ function get_login_eleve($id_eleve){
 
 }
 
-// fonction qui renvoie le nom de la classe d'un élève pour chaque période
+/**
+ * fonction qui renvoie le nom de la classe d'un élève pour chaque période
+ *
+ * @param string $ele_login login de l'élève
+ * @return array Tableau des classes en fonction des périodes
+ */
 function get_class_from_ele_login($ele_login){
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
 	$res_class=mysql_query($sql);
