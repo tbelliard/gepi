@@ -25,7 +25,7 @@
 // Initialisations files et inclusion des librairies utiles
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
-include("../fckeditor/fckeditor.php") ;
+include("../fckeditor/fckeditor.php");
 //include_once('./lib/tinyButStrong.class.php');
 
 // Resume session
@@ -53,8 +53,7 @@ $_id      = isset($_POST["_id"]) ? $_POST["_id"] : NULL;
 
 $utilisateur = $_SESSION['utilisateurProfessionnel'];
 $__test = new UtilisateurProfessionnel();
-//print_r($utilisateur->getGroupes());
-//print_r($color_fond_notices);
+
 if ($select == "nbre_sequences"){
 
   // On affiche un select des enseignements de ce professeur
@@ -90,13 +89,13 @@ if ($select == "nbre_sequences"){
 
   <p>';
 
-    $oFCKeditor = new FCKeditor('cr['.$a.']') ;
-    $oFCKeditor->BasePath = '../fckeditor/' ;
-    $oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-    $oFCKeditor->ToolbarSet = 'Basic' ;
-    $oFCKeditor->Value = '' ;
-    $oFCKeditor->Create() ;
-  echo '<p>
+    $oFCKeditor                             = new FCKeditor('cr['.$a.']');
+    $oFCKeditor->BasePath                   = '../fckeditor/';
+    $oFCKeditor->Config['DefaultLanguage']  = 'fr';
+    $oFCKeditor->ToolbarSet                 = 'Basic';
+    $oFCKeditor->Value                      = '';
+    $oFCKeditor->Create();
+  echo '</p>
 </div>
 <br />
     ';

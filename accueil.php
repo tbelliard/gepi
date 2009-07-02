@@ -1780,8 +1780,8 @@ if (!empty ($plugins_ouvert)){
 
     $nb_ligne = count($chemin);
 
-
-    echo "<h2 class='accueil'><img src='./images/icons/package.png' alt='#' /> - ".str_replace("_", " ", $plugin->getNom())." (plugin)</h2>
+    if ($nb_ligne >= 1){
+      echo "<h2 class='accueil'><img src='./images/icons/package.png' alt='#' /> - ".str_replace("_", " ", $plugin->getNom())." (plugin)</h2>
     <table class='menu' summary=\"Plugins de Gepi. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
 			for ($i=0;$i<$nb_ligne;$i++) {
 
@@ -1794,6 +1794,7 @@ if (!empty ($plugins_ouvert)){
 			}
 			echo "</table>";
     }
+  }
 
 }
 
