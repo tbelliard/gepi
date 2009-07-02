@@ -510,27 +510,27 @@ function completeDeplacementNoticeCallback(response) {
 					$('date_deplacement').value = 0;
 				}
 				$('id_ct').value = id_ct;
-				$('deplacement_notice_form').request({onComplete: function(transport){ alert(transport.responseText) }});
-				new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + $F('id_groupe'),
-					{ onComplete:
-						function(transport) {
-							updateDivModification();
+				$('deplacement_notice_form').request({
+					//une fois le deplacement effectué en base, on mets à jour la fenetre d'edition puis la liste des notices'
+					onComplete: function(transport){
+						var url = null;
+						if (object_en_cours_edition == "compte_rendu") {
+							url = 'ajax_edition_compte_rendu.php?id_ct=' + id_ct;
+						} else if (object_en_cours_edition == "devoir") {
+							url = 'ajax_edition_devoir.php?id_devoir=' + id_ct;
+						} else if (object_en_cours_edition == 'notice_privee') {
+							url = 'ajax_edition_notice_privee.php?id_ct=' + id_ct;
 						}
+						var id_groupe = $('id_groupe').value;
+						getWinEditionNotice().setAjaxContent(url,
+							{ onComplete: function(transport) {
+									new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();}});
+									initWysiwyg();
+								}
+							});
+						alert(transport.responseText);
 					}
-				);
-				var url = null;
-				if (object_en_cours_edition == "compte_rendu") {
-					url = 'ajax_edition_compte_rendu.php?id_ct=' + id_ct;
-				} else if (object_en_cours_edition == "devoir") {
-					url = 'ajax_edition_devoir.php?id_devoir=' + id_ct;
-				} else if (object_en_cours_edition == 'notice_privee') {
-					url = 'ajax_edition_notice_privee.php?id_ct=' + id_ct;
-				}
-				getWinEditionNotice().setAjaxContent(url,
-					{ onComplete: function(transport) {
-							initWysiwyg();
-						}
-					});
+				});
 			}
 		}
 	}
