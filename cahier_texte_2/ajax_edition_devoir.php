@@ -170,31 +170,31 @@ if (!$ctTravailAFaire->isNew()) {
 				\">
 		Dupliquer la notice</a> - ";
 
-	echo "<a href=\"#\" onclick=\"javascript:
-				new Ajax.Updater($('deplacement_notice'), 'ajax_affichage_deplacement_notice.php?id_groupe=".$groupe->getId()."&type=CahierTexteTravailAFaire&id_ct=".$ctTravailAFaire->getIdCt()."',
-					{ onComplete:
-						function() {
-							$('deplacement_notice').show();
-							calendarDeplacementInstanciation = null;";
-	if (!isset($info)) {
-		//on affiche le calendrier de duplication uniquement si ce n'est pas une notice d'information generale
-		echo "calendarDeplacementInstanciation = Calendar.setup({
-										flat         : 'calendar-deplacement-container', // ID of the parent element
-										daFormat     : '%s' ,   			   //date format
-										weekNumbers  : false
-								})
-								calendarDeplacementInstanciation.setDate(calendarInstanciation.date);";
-	}
-	echo "
-						}
-					}
-				);
-				return false;
-				\">
-		Deplacer la notice</a>";
 } else {
-	echo " - <b><font color=\"red\">Nouvelle notice</font></b>\n";
+	echo " - <b><font color=\"red\">Nouvelle notice</font></b> - \n";
 }
+echo "<a href=\"#\" onclick=\"javascript:
+			new Ajax.Updater($('deplacement_notice'), 'ajax_affichage_deplacement_notice.php?id_groupe=".$groupe->getId()."&type=CahierTexteTravailAFaire&id_ct=".$ctTravailAFaire->getIdCt()."',
+				{ onComplete:
+					function() {
+						$('deplacement_notice').show();
+						calendarDeplacementInstanciation = null;";
+if (!isset($info)) {
+	//on affiche le calendrier de duplication uniquement si ce n'est pas une notice d'information generale
+	echo "calendarDeplacementInstanciation = Calendar.setup({
+									flat         : 'calendar-deplacement-container', // ID of the parent element
+									daFormat     : '%s' ,   			   //date format
+									weekNumbers  : false
+							})
+							calendarDeplacementInstanciation.setDate(calendarInstanciation.date);";
+}
+echo "
+					}
+				}
+			);
+			return false;
+			\">
+	Deplacer la notice</a>";
 
 echo "</legend>\n";
 
