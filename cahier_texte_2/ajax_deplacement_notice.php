@@ -49,6 +49,8 @@ if ($type == 'CahierTexteTravailAFaire') {
 	$ctCompteRendu = CahierTexteTravailAFairePeer::retrieveByPK($id_ct);
 } elseif ($type == 'CahierTexteCompteRendu') {
 	$ctCompteRendu = CahierTexteCompteRenduPeer::retrieveByPK($id_ct);
+} elseif ($type == 'CahierTexteNoticePrivee') {
+	$ctCompteRendu = CahierTexteNoticePriveePeer::retrieveByPK($id_ct);
 }
 
 if ($ctCompteRendu == null) {
@@ -66,5 +68,5 @@ $ctCompteRendu->setDateCt($date_deplacement);
 
 $ctCompteRendu->save();
 $utilisateur->clearAllReferences();
-echo("Deplacement effectuée");
+echo("Deplacement effectué");
 ?>
