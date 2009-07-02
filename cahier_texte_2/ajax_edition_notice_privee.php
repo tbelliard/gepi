@@ -208,7 +208,7 @@ echo "</legend>\n";
 
 echo "<div id=\"dupplication_notice\" style='display: none;'>oulalala</div>";
 echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>";
-echo "<form enctype=\"multipart/form-data\" name=\"modification_notice_privee_form\" id=\"modification_notice_privee_form\" action=\"ajax_enregistrement_notice_privee.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementNoticePriveeCallback})\" style=\"width: 100%;\">\n";
+echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_notice_privee.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementNoticePriveeCallback})\" style=\"width: 100%;\">\n";
 // uid de pour ne pas refaire renvoyer plusieurs fois le meme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid = md5(uniqid(microtime(), 1));
