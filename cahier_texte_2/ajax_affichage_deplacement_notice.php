@@ -67,42 +67,13 @@ echo "</td><td>";
 echo "<div id='calendar-deplacement-container'></div>";
 echo "</td><td>";
 echo "<button onClick=\"javascript:
-			if (\$F('id_groupe') == -1) {
-				alert('Pas de groupe spécifié');
-				return false;
-			} else {
-				if (typeof calendarDeplacementInstanciation != 'undefined' && calendarDeplacementInstanciation != null) {
-					//get the unix date
-					calendarDeplacementInstanciation.date.setHours(0);
-					calendarDeplacementInstanciation.date.setMinutes(0);
-					calendarDeplacementInstanciation.date.setSeconds(0);
-					calendarDeplacementInstanciation.date.setMilliseconds(0);
-					$('date_deplacement').value = Math.round(calendarDeplacementInstanciation.date.getTime()/1000);
-					updateCalendarWithUnixDate($('date_deplacement').value);
-				} else {
-					$('date_deplacement').value = 0;
-				}
-				$('deplacement_notice_form').request({onComplete: function(transport){ alert(transport.responseText) }});
-				new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + \$F('id_groupe'),
-					{ onComplete:
-						function(transport) {
-							updateDivModification();
-						}
-					}
-				);
-				var url = null;
-				if ('CahierTexteCompteRendu' == '".$type."') {
-					url = 'ajax_edition_compte_rendu.php?id_ct=".$id_ct."';
-				} else if ('CahierTexteTravailAFaire' == '".$type."') {
-					url = 'ajax_edition_devoir.php?id_devoir=".$id_ct."';
-				}
-				getWinEditionNotice().setAjaxContent(url, 
-					{ onComplete: function(transport) {
-							initWysiwyg();
-						}
-					});
-			}
+
+			//d'abord on enregistre la notice pour prendre en compte des modifications de contenu eventuelles
+			//le deplacement est fait dans completeDeplacementNoticeCallback
+			AIM.submit($('modification_compte_rendu_form'), {'onComplete' : completeDeplacementNoticeCallback});
+			$('modification_compte_rendu_form').submit();
 			return false;\"
+
 			id=\"bouton_deplacer\" name=\"Deplacer\" style='font-variant: small-caps;'>Deplacer</button>";
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onClick=\"javascript:
