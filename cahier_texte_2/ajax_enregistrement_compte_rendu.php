@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+//Attention, la sortie standard de ce script (echo), doit etre soit une erreur soit l'id de la noice. La sortie est utilisée dans un javascript
 
 // On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
@@ -48,7 +49,7 @@ $uid_post = isset($_POST["uid_post"]) ? $_POST["uid_post"] :(isset($_GET["uid_po
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 
 //parametre d'enregistrement de fichiers joints
-if (empty($_FILES['doc_file'])) { echo "doc file empty"; $doc_file=''; } else { $doc_file=$_FILES['doc_file'];}
+if (empty($_FILES['doc_file'])) { $doc_file=''; } else { $doc_file=$_FILES['doc_file'];}
 $doc_name = isset($_POST["doc_name"]) ? $_POST["doc_name"] :(isset($_GET["doc_name"]) ? $_GET["doc_name"] :NULL);
 
 //parametre de changement de titre de fichier joint.
