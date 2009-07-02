@@ -45,7 +45,7 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_
 //	die();
 //}
 echo "<form enctype=\"multipart/form-data\" name=\"deplacement_notice_form\" id=\"deplacement_notice_form\" action=\"ajax_deplacement_notice.php\" method=\"post\">\n";
-echo "<input type='hidden' name='id_ct' value='".$id_ct."' />";
+echo "<input type='hidden' id='id_ct' name='id_ct' value='".$id_ct."' />";
 echo "<input type='hidden' name='type' value='".$type."' />";
 echo "<input type='hidden' id='date_deplacement' name='date_deplacement'/>";
 echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";

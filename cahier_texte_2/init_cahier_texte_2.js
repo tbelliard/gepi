@@ -492,6 +492,7 @@ function completeDeplacementNoticeCallback(response) {
 			//pas d'erreur, on deplace la notice
 
 			id_ct = response;
+//			alert('Notice enregistrée, id : ' + id_ct);
 
 			if ($F('id_groupe') == -1) {
 				alert('Pas de groupe spécifié');
@@ -508,6 +509,7 @@ function completeDeplacementNoticeCallback(response) {
 				} else {
 					$('date_deplacement').value = 0;
 				}
+				$('id_ct').value = id_ct;
 				$('deplacement_notice_form').request({onComplete: function(transport){ alert(transport.responseText) }});
 				new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + $F('id_groupe'),
 					{ onComplete:
