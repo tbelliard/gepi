@@ -258,6 +258,7 @@
 							if ($res_extract != 0) {
 								echo "<p>Le fichier uploadé a été dézippé.</p>\n";
 								$fichier_extrait=$res_extract[0]['filename'];
+								unlink("$dest_file"); // Pour Wamp...
 								$res_copy=rename("$fichier_extrait" , "$dest_file");
 							}
 							else {
@@ -1295,6 +1296,7 @@
 							if ($res_extract != 0) {
 								echo "<p>Le fichier uploadé a été dézippé.</p>\n";
 								$fichier_extrait=$res_extract[0]['filename'];
+								unlink("$dest_file"); // Pour Wamp...
 								$res_copy=rename("$fichier_extrait" , "$dest_file");
 							}
 							else {
