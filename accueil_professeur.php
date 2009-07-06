@@ -197,7 +197,7 @@ if ($condition_releve_note ||  (getSettingValue("GepiAccesBulletinSimplePP")=="y
 
 /** relevés de notes**/
 	if ($condition_releve_note) {
-		affiche_ligne( "/cahier_notes/visu_releve_notes.php", "Les relev&eacute;s de notes",   "Cet outil vous permet de visualiser &agrave; l'&eacute;cran et d'imprimer les relev&eacute;s de notes, ".$gepiSettings['denomination_eleve']." par ".$gepiSettings['denomination_eleve'].", classe par classe.", $_SESSION['statut']);
+		affiche_ligne( "/cahier_notes/visu_releve_notes_bis.php", "Les relev&eacute;s de notes",   "Cet outil vous permet de visualiser &agrave; l'&eacute;cran et d'imprimer les relev&eacute;s de notes, ".$gepiSettings['denomination_eleve']." par ".$gepiSettings['denomination_eleve'].", classe par classe.", $_SESSION['statut']);
 	}
 
 	// Bulletins simplifiés

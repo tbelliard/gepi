@@ -747,7 +747,8 @@ $condition2 = ($_SESSION['statut'] != "professeur" OR
 			);
 
 $chemin = array();
-if ($condition) $chemin[] = "/cahier_notes/visu_releve_notes.php";
+//if ($condition) $chemin[] = "/cahier_notes/visu_releve_notes.php";
+if ($condition) $chemin[] = "/cahier_notes/visu_releve_notes_bis.php";
 
 $titre = array();
 if ($condition) $titre[] = "Visualisation et impression des relevés de notes";
@@ -901,7 +902,8 @@ $condition = (
 			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes')
 			));
 if ($condition) {
-    $chemin[] = "/cahier_notes/visu_releve_notes.php";
+    //$chemin[] = "/cahier_notes/visu_releve_notes.php";
+    $chemin[] = "/cahier_notes/visu_releve_notes_bis.php";
     $titre[] = "Relevés de notes";
     if ($_SESSION['statut'] == "responsable") {
     	$expli[] = "Permet de consulter les relevés de notes des ".$gepiSettings['denomination_eleves']." dont vous êtes le ".$gepiSettings['denomination_responsable'].".";
@@ -1093,7 +1095,7 @@ if ($_SESSION['statut']=='scolarite')
 if ($_SESSION['statut']=='scolarite')
 { $chemin[] = "/eleves/index.php"; }
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
-{ $chemin[] = "/bulletin/index.php";}
+{ $chemin[] = "/bulletin/bull_index.php";}
 
 $titre = array();
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))

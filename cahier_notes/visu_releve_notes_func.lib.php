@@ -1218,6 +1218,8 @@ function releve_pdf($tab_rel,$i) {
 		$affiche_releve_formule,
 		$releve_formule_bas,
 
+		$use_cell_ajustee,
+
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
 
@@ -1979,20 +1981,34 @@ function releve_pdf($tab_rel,$i) {
 				// on peut allez jusqu'a 275mm de caractère dans trois cases de notes
 				$hauteur_caractere_notes=9;
 				$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_notes);
-				$val = $pdf->GetStringWidth($chaine_notes);
-				$taille_texte = (($hauteur_cadre_matiere/4)*$largeur_cadre_note);
-				$grandeur_texte='test';
-				while($grandeur_texte!='ok') {
-					if($taille_texte<$val) {
-						$hauteur_caractere_notes = $hauteur_caractere_notes-0.3;
-						$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_notes);
-						$val = $pdf->GetStringWidth($chaine_notes);
+
+				if($use_cell_ajustee=="n") {
+					$val = $pdf->GetStringWidth($chaine_notes);
+					$taille_texte = (($hauteur_cadre_matiere/4)*$largeur_cadre_note);
+					$grandeur_texte='test';
+					while($grandeur_texte!='ok') {
+						if($taille_texte<$val) {
+							$hauteur_caractere_notes = $hauteur_caractere_notes-0.3;
+							$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_notes);
+							$val = $pdf->GetStringWidth($chaine_notes);
+						}
+						else {
+							$grandeur_texte='ok';
+						}
 					}
-					else {
-						$grandeur_texte='ok';
-					}
+					$pdf->drawTextBox($chaine_notes, $largeur_cadre_note, $hauteur_cadre_matiere, 'J', 'M', 1);
 				}
-				$pdf->drawTextBox($chaine_notes, $largeur_cadre_note, $hauteur_cadre_matiere, 'J', 'M', 1);
+				else {
+					$texte=$chaine_notes;
+					$taille_max_police=$hauteur_caractere_notes;
+					$taille_min_police=ceil($taille_max_police/3);
+
+					$largeur_dispo=$largeur_cadre_note;
+					$h_cell=$hauteur_cadre_matiere;
+
+					cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+				}
+
 				$hauteur_utilise=$hauteur_utilise+$hauteur_cadre_matiere;
 			}
 			//$cpt_i=$cpt_i+1;

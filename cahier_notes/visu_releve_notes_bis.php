@@ -218,6 +218,8 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
 		echo " | ";
 		echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+		echo " | ";
+		echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
 	}
 	else {
 		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
@@ -742,7 +744,27 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	//echo "<input type='hidden' name='un_seul_bull_par_famille' value='non' />\n";
 
 	echo "<p><input type='radio' id='releve_html' name='mode_bulletin' value='html' checked /><label for='releve_html'> Relevé HTML</label><br />\n";
-	echo "<input type='radio' id='releve_pdf' name='mode_bulletin' value='pdf' /><label for='releve_pdf'> Relevé PDF</label></p>\n";
+	echo "<input type='radio' id='releve_pdf' name='mode_bulletin' value='pdf' onchange='display_div_param_pdf();' /><label for='releve_pdf'> Relevé PDF</label></p>\n";
+
+	echo "<div id='div_param_pdf'>\n";
+		//echo "<br />\n";
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for='use_cell_ajustee' style='cursor: pointer;'><input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' /> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label><br />\n";
+	echo "</div>\n";
+
+	echo "<script type='text/javascript'>
+	function display_div_param_pdf() {
+		if(document.getElementById('div_param_pdf')) {
+			if(document.getElementById('releve_pdf').checked==true) {
+				document.getElementById('div_param_pdf').style.display='';
+			}
+			else {
+				document.getElementById('div_param_pdf').style.display='none';
+			}
+		}
+	}
+
+	display_div_param_pdf();
+</script>\n";
 
 	//=======================================
 

@@ -1775,6 +1775,7 @@ function adjust_size_font($texte,$largeur_dispo,$h_max_font,$increment,$multilig
 	}
 }
 
+/*
 function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align='C',$align='L',$increment=0.3,$r_interligne=0.3) {
 	global $pdf;
 
@@ -1980,23 +1981,23 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 
 		// Si ça ne passe toujours pas, on prend $hauteur_min_font sans retours à la ligne et on tronque
 		if(!isset($ifmax)) {
-			/*
-			$tab_lig=array();
-			$j=1;
-			$ifmax=$j;
-			$hauteur_texte=$hauteur_min_font;
-			$hauteur_texte_mm=$hauteur_texte*26/100;
-			$tab_lig[$j]['hauteur_texte_mm']=$hauteur_texte_mm;
-			// Hauteur de la police en pt
-			$tab_lig[$j]['taille_police']=$hauteur_texte;
-			// Hauteur totale du texte
-			$tab_lig[$j]['hauteur_totale']=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
-			// Marge verticale en mm entre les lignes
-			$marge_verticale=$hauteur_texte_mm*$r_interligne;
-			$tab_lig[$j]['marge_verticale']=$marge_verticale;
-			// Tableau des lignes
-			$tab_lig[$j]['lignes'][]="Texte trop long";
-			*/
+			
+		//	$tab_lig=array();
+		//	$j=1;
+		//	$ifmax=$j;
+		//	$hauteur_texte=$hauteur_min_font;
+		//	$hauteur_texte_mm=$hauteur_texte*26/100;
+		//	$tab_lig[$j]['hauteur_texte_mm']=$hauteur_texte_mm;
+		//	// Hauteur de la police en pt
+		//	$tab_lig[$j]['taille_police']=$hauteur_texte;
+		//	// Hauteur totale du texte
+		//	$tab_lig[$j]['hauteur_totale']=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
+		//	// Marge verticale en mm entre les lignes
+		//	$marge_verticale=$hauteur_texte_mm*$r_interligne;
+		//	$tab_lig[$j]['marge_verticale']=$marge_verticale;
+		//	// Tableau des lignes
+		//	$tab_lig[$j]['lignes'][]="Texte trop long";
+			
 
 			$fmax=0;
 
@@ -2079,7 +2080,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 	//if($tab_lig[$ifmax]['taille_police']!=$hauteur_max_font) {$pdf->Cell(20,$h_cell, $tab_lig[$ifmax]['taille_police'],$bord_debug,2,'');}
 
 }
-
+*/
 function fs_pt2mm($fs) {
 	//(proportionnalité: 100pt -> 26mm)
 	return $fs*26/100;

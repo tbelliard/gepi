@@ -1030,6 +1030,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		// Paramètres du modèle PDF
 		$tab_modele_pdf,
 
+		$use_cell_ajustee,
+
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
 		//=========================================
@@ -2642,34 +2644,48 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$taille_texte_total = $pdf->GetStringWidth($app_aff);
 								$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
 
-								//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
-								$nb_ligne_app = '2.8';
-								//$nb_ligne_app = '3.8';
-								//$nb_ligne_app = '4.8';
-								$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
-								//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
-								$grandeur_texte='test';
-
-								fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
-								fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
-								fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
-								//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
-								fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
-
-								while($grandeur_texte!='ok') {
-									if($taille_texte_max < $taille_texte_total)
-									{
-										$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
-										//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
-										$taille_texte_total = $pdf->GetStringWidth($app_aff);
+								if($use_cell_ajustee=="n") {
+									//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+									$nb_ligne_app = '2.8';
+									//$nb_ligne_app = '3.8';
+									//$nb_ligne_app = '4.8';
+									$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+									//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+									$grandeur_texte='test';
+	
+									fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+									fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+									fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+									//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+									fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+	
+									while($grandeur_texte!='ok') {
+										if($taille_texte_max < $taille_texte_total)
+										{
+											$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+											//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+											$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
+											$taille_texte_total = $pdf->GetStringWidth($app_aff);
+										}
+										else {
+											$grandeur_texte='ok';
+										}
 									}
-									else {
-										$grandeur_texte='ok';
-									}
+									$grandeur_texte='test';
+									$pdf->drawTextBox(traite_accents_utf8($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
 								}
-								$grandeur_texte='test';
-								$pdf->drawTextBox(traite_accents_utf8($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
+								else {
+									//$texte="Bla bla\nbli ".$app_aff;
+									$texte=$app_aff;
+									$taille_max_police=$hauteur_caractere_appreciation;
+									$taille_min_police=ceil($taille_max_police/3);
+
+									$largeur_dispo=$largeur_appreciation2;
+									$h_cell=$espace_entre_matier;
+
+									cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+								}
+
 								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 								$largeur_utilise = $largeur_utilise + $largeur_appreciation2;
 								//$largeur_utilise = 0;
@@ -3031,7 +3047,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//if($compteur_bulletins===0) { $enplus = 5; }
 						//if($compteur_bulletins!=0) { $enplus = 0; }
 
-						fich_debug_bull("Poisition du cadre $categorie_passe\n");
+						fich_debug_bull("Position du cadre $categorie_passe\n");
 						$tmp_val=$Y_decal-$hauteur_regroupement+$espace_entre_matier;
 						fich_debug_bull("\$Y_decal-\$hauteur_regroupement+\$espace_entre_matier=".$Y_decal."-".$hauteur_regroupement."+".$espace_entre_matier."=".$tmp_val."\n");
 
@@ -3479,34 +3495,48 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							$taille_texte_total = $pdf->GetStringWidth($app_aff);
 							$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
 
-							//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
-							$nb_ligne_app = '2.8';
-							//$nb_ligne_app = '3.8';
-							//$nb_ligne_app = '4.8';
-							$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
-							//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
-							$grandeur_texte='test';
-
-							fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
-							fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
-							fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
-							//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
-							fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
-
-							while($grandeur_texte!='ok') {
-								if($taille_texte_max < $taille_texte_total)
-								{
-									$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
-									//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
-									$taille_texte_total = $pdf->GetStringWidth($app_aff);
+							if($use_cell_ajustee=="n") {
+								//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+								$nb_ligne_app = '2.8';
+								//$nb_ligne_app = '3.8';
+								//$nb_ligne_app = '4.8';
+								$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+								//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+								$grandeur_texte='test';
+	
+								fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+								fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+								fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+								//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+								fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+	
+								while($grandeur_texte!='ok') {
+									if($taille_texte_max < $taille_texte_total)
+									{
+										$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+										//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
+										$taille_texte_total = $pdf->GetStringWidth($app_aff);
+									}
+									else {
+										$grandeur_texte='ok';
+									}
 								}
-								else {
-									$grandeur_texte='ok';
-								}
+								$grandeur_texte='test';
+								$pdf->drawTextBox(traite_accents_utf8($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
 							}
-							$grandeur_texte='test';
-							$pdf->drawTextBox(traite_accents_utf8($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
+							else {
+								$texte=$app_aff;
+								//$texte="Bla bla\nbli ".$app_aff;
+								$taille_max_police=$hauteur_caractere_appreciation;
+								$taille_min_police=ceil($taille_max_police/3);
+
+								$largeur_dispo=$largeur_appreciation2;
+								$h_cell=$espace_entre_matier;
+
+								cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+							}
+
 							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 							$largeur_utilise = $largeur_utilise + $largeur_appreciation2;
 							//$largeur_utilise = 0;
@@ -3902,34 +3932,48 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$taille_texte_total = $pdf->GetStringWidth($app_aff);
 								$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
 
-								//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
-								$nb_ligne_app = '2.8';
-								//$nb_ligne_app = '3.8';
-								//$nb_ligne_app = '4.8';
-								$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
-								//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
-								$grandeur_texte='test';
-
-								fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
-								fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
-								fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
-								//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
-								fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
-
-								while($grandeur_texte!='ok') {
-									if($taille_texte_max < $taille_texte_total)
-									{
-										$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
-										//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
-										$taille_texte_total = $pdf->GetStringWidth($app_aff);
+								if($use_cell_ajustee=="n") {
+									//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+									$nb_ligne_app = '2.8';
+									//$nb_ligne_app = '3.8';
+									//$nb_ligne_app = '4.8';
+									$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+									//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+									$grandeur_texte='test';
+	
+									fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+									fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+									fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+									//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+									fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+	
+									while($grandeur_texte!='ok') {
+										if($taille_texte_max < $taille_texte_total)
+										{
+											$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+											//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+											$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
+											$taille_texte_total = $pdf->GetStringWidth($app_aff);
+										}
+										else {
+											$grandeur_texte='ok';
+										}
 									}
-									else {
-										$grandeur_texte='ok';
-									}
+									$grandeur_texte='test';
+									$pdf->drawTextBox(traite_accents_utf8($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
 								}
-								$grandeur_texte='test';
-								$pdf->drawTextBox(traite_accents_utf8($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
+								else {
+									$texte=$app_aff;
+									//$texte="Bla bla\nbli ".$app_aff;
+									$taille_max_police=$hauteur_caractere_appreciation;
+									$taille_min_police=ceil($taille_max_police/3);
+	
+									$largeur_dispo=$largeur_appreciation2;
+									$h_cell=$espace_entre_matier;
+	
+									cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+								}
+
 								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 								$largeur_utilise = $largeur_utilise + $largeur_appreciation2;
 								//$largeur_utilise = 0;
@@ -4344,7 +4388,21 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				$texteavis = $tab_bull['avis'][$i];
 
 				//$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
-				$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $hauteur_avis_cons_init-10, 'J', 'M', 0);
+
+				if($use_cell_ajustee=="n") {
+					$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $hauteur_avis_cons_init-10, 'J', 'M', 0);
+				}
+				else {
+					$texte=$texteavis;
+					$taille_max_police=10;
+					$taille_min_police=ceil($taille_max_police/3);
+
+					$largeur_dispo=$tab_modele_pdf["longeur_avis_cons"][$classe_id]-5;
+					$h_cell=$hauteur_avis_cons_init-10;
+
+					cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+				}
+
 				//=========================
 				// MODIF: boireaus 20081220
 				// DEBUG:
@@ -5373,4 +5431,310 @@ function fich_debug_bull($texte){
 	}
 }
 
+/*
+function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align='C',$align='L',$increment=0.3,$r_interligne=0.3) {
+	global $pdf;
+
+	// $increment:     nombre dont on réduit la police à chaque essai
+	// $r_interligne:  proportion de la taille de police pour les interlignes
+	// $bordure:       LRBT
+	// $v_align:       C(enter) ou T(op)
+
+	$texte=trim($texte);
+	$hauteur_texte=$hauteur_max_font;
+	$pdf->SetFontSize($hauteur_texte);
+	$taille_texte_total=$pdf->GetStringWidth($texte);
+
+	// Ca nous donne le nombre max de lignes en hauteur avec la taille de police maxi
+	// Il faudrait plutôt déterminer ce nombre d'après une taille minimale acceptable de police
+	$nb_max_lig=max(1,floor($h_cell/((1+$r_interligne)*($hauteur_min_font*26/100))));
+	// echo "\$nb_max_lig=$nb_max_lig<br />";
+
+	//$ifmax=0;
+	//$ifmax=1;
+	$fmax=0;
+
+	$tab_lig=array();
+	for($j=1;$j<=$nb_max_lig;$j++) {
+		$hauteur_texte=$hauteur_max_font;
+
+		unset($ligne);
+		$ligne=array();
+	
+		$tab=split(" ",$texte);
+		$cpt=0;
+		$i=0;
+		while(true) {
+			if(isset($ligne[$cpt])) {$ligne[$cpt].=" ";} else {$ligne[$cpt]="";}
+
+			if(ereg("\n",$tab[$i])) {
+				$tmp_tab=split("\n",$tab[$i]);
+
+				for($k=0;$k<count($tmp_tab)-1;$k++) {
+					if(!isset($ligne[$cpt])) {$ligne[$cpt]="";}
+					$ligne[$cpt].=$tmp_tab[$k];
+					$cpt++;
+				}
+				if(!isset($ligne[$cpt])) {$ligne[$cpt]="";}
+				$ligne[$cpt].=$tmp_tab[$k];
+			}
+			else {
+				if($pdf->GetStringWidth($ligne[$cpt].$tab[$i])>=$largeur_dispo) {
+					$cpt++;
+					$ligne[$cpt]=$tab[$i];
+				}
+				else {
+					$ligne[$cpt].=$tab[$i];
+				}
+			}
+			$i++;
+			if(!isset($tab[$i])) {break;}
+		}
+	
+		// Recherche de la plus longue ligne:
+		$taille_texte_ligne=0;
+		$num=0;
+		for($i=0;$i<count($ligne);$i++) {
+			// echo "\$ligne[$i]=$ligne[$i]<br />";
+			$l=$pdf->GetStringWidth($ligne[$i]);
+			if($taille_texte_ligne<$l) {$taille_texte_ligne=$l;$num=$i;}
+		}
+
+		// On calcule la hauteur en mm de la police (proportionnalité: 100pt -> 26mm)
+		$hauteur_texte_mm=$hauteur_texte*26/100;
+		// Hauteur totale: Nombre de lignes multiplié par la hauteur de police avec les marges verticales
+		$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
+	
+		// echo "On calcule la taille de la police d'après \$ligne[$num]=".$ligne[$num]."<br/>";
+		// On ajuste la taille de police avec la plus grande ligne pour que cela tienne en largeur
+		// et on contrôle aussi que cela tient en hauteur, sinon on continue à réduire la police.
+		$grandeur_texte='test';
+		while($grandeur_texte!='ok') {
+			//if($largeur_dispo<$taille_texte_ligne) {
+			if(($largeur_dispo<$taille_texte_ligne)||($hauteur_totale>$h_cell)) {
+				$hauteur_texte=$hauteur_texte-$increment;
+				if($hauteur_texte<$hauteur_min_font) {break;}
+				$hauteur_texte_mm=$hauteur_texte*26/100;
+				$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
+				//$pdf->SetFont('Arial','',$hauteur_texte);
+				$pdf->SetFontSize($hauteur_texte);
+				$taille_texte_ligne=$pdf->GetStringWidth($ligne[$num]);
+				// echo "\$hauteur_texte=$hauteur_texte -&gt; \$taille_texte_ligne=".$taille_texte_ligne."<br/>";
+			}
+			else {
+				$grandeur_texte='ok';
+			}
+		}
+
+		if($grandeur_texte=='ok') {
+			// Hauteur de la police en mm
+			$hauteur_texte_mm=$hauteur_texte*26/100;
+			$tab_lig[$j]['hauteur_texte_mm']=$hauteur_texte_mm;
+			// Hauteur de la police en pt
+			$tab_lig[$j]['taille_police']=$hauteur_texte;
+			// Hauteur totale du texte
+			$tab_lig[$j]['hauteur_totale']=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
+			// Marge verticale en mm entre les lignes
+			$marge_verticale=$hauteur_texte_mm*$r_interligne;
+			$tab_lig[$j]['marge_verticale']=$marge_verticale;
+			// Tableau des lignes
+			$tab_lig[$j]['lignes']=$ligne;
+	
+			// On choisit la hauteur de police la plus grande possible pour laquelle les lignes tiennent en hauteur 
+			// (la largeur a déjà été utilisée pour découper en lignes).
+			if(($hauteur_texte>$fmax)&&($tab_lig[$j]['hauteur_totale']<=$h_cell)) {
+				$ifmax=$j;
+			}
+		}
+	}
+
+	if((!isset($ifmax))||($tab_lig[$ifmax]['taille_police']<$hauteur_min_font)) {
+		// On relance en remplaçant les retours forcés à la ligne (\n) par des espaces.
+
+		$fmax=0;
+
+		$tab_lig=array();
+		for($j=1;$j<=$nb_max_lig;$j++) {
+			$hauteur_texte=$hauteur_max_font;
+
+			unset($ligne);
+			$ligne=array();
+		
+			$tab=split(" ",trim(ereg_replace("\n"," ",$texte)));
+			$cpt=0;
+			$i=0;
+			while(true) {
+				if(isset($ligne[$cpt])) {$ligne[$cpt].=" ";} else {$ligne[$cpt]="";}
+
+				if($pdf->GetStringWidth($ligne[$cpt].$tab[$i])>=$largeur_dispo) {
+					$cpt++;
+					$ligne[$cpt]=$tab[$i];
+				}
+				else {
+					$ligne[$cpt].=$tab[$i];
+				}
+				$i++;
+				if(!isset($tab[$i])) {break;}
+			}
+		
+			// Recherche de la plus longue ligne:
+			$taille_texte_ligne=0;
+			$num=0;
+			for($i=0;$i<count($ligne);$i++) {
+				// echo "\$ligne[$i]=$ligne[$i]<br />";
+				$l=$pdf->GetStringWidth($ligne[$i]);
+				if($taille_texte_ligne<$l) {$taille_texte_ligne=$l;$num=$i;}
+			}
+
+			// On calcule la hauteur en mm de la police (proportionnalité: 100pt -> 26mm)
+			$hauteur_texte_mm=$hauteur_texte*26/100;
+			// Hauteur totale: Nombre de lignes multiplié par la hauteur de police avec les marges verticales
+			$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
+		
+			// echo "On calcule la taille de la police d'après \$ligne[$num]=".$ligne[$num]."<br/>";
+			// On ajuste la taille de police avec la plus grande ligne pour que cela tienne en largeur
+			// et on contrôle aussi que cela tient en hauteur, sinon on continue à réduire la police.
+			$grandeur_texte='test';
+			while($grandeur_texte!='ok') {
+				//if($largeur_dispo<$taille_texte_ligne) {
+				if(($largeur_dispo<$taille_texte_ligne)||($hauteur_totale>$h_cell)) {
+					$hauteur_texte=$hauteur_texte-$increment;
+					if($hauteur_texte<$hauteur_min_font) {break;}
+					$hauteur_texte_mm=$hauteur_texte*26/100;
+					$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
+					//$pdf->SetFont('Arial','',$hauteur_texte);
+					$pdf->SetFontSize($hauteur_texte);
+					$taille_texte_ligne=$pdf->GetStringWidth($ligne[$num]);
+					// echo "\$hauteur_texte=$hauteur_texte -&gt; \$taille_texte_ligne=".$taille_texte_ligne."<br/>";
+				}
+				else {
+					$grandeur_texte='ok';
+				}
+			}
+
+			if($grandeur_texte=='ok') {
+				// Hauteur de la police en mm
+				$hauteur_texte_mm=$hauteur_texte*26/100;
+				$tab_lig[$j]['hauteur_texte_mm']=$hauteur_texte_mm;
+				// Hauteur de la police en pt
+				$tab_lig[$j]['taille_police']=$hauteur_texte;
+				// Hauteur totale du texte
+				$tab_lig[$j]['hauteur_totale']=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
+				// Marge verticale en mm entre les lignes
+				$marge_verticale=$hauteur_texte_mm*$r_interligne;
+				$tab_lig[$j]['marge_verticale']=$marge_verticale;
+				// Tableau des lignes
+				$tab_lig[$j]['lignes']=$ligne;
+		
+				// On choisit la hauteur de police la plus grande possible pour laquelle les lignes tiennent en hauteur 
+				// (la largeur a déjà été utilisée pour découper en lignes).
+				if(($hauteur_texte>$fmax)&&($tab_lig[$j]['hauteur_totale']<=$h_cell)) {
+					$ifmax=$j;
+				}
+			}
+		}
+
+
+		// Si ça ne passe toujours pas, on prend $hauteur_min_font sans retours à la ligne et on tronque
+		if(!isset($ifmax)) {
+			
+		//	$tab_lig=array();
+		//	$j=1;
+		//	$ifmax=$j;
+		//	$hauteur_texte=$hauteur_min_font;
+		//	$hauteur_texte_mm=$hauteur_texte*26/100;
+		//	$tab_lig[$j]['hauteur_texte_mm']=$hauteur_texte_mm;
+		//	// Hauteur de la police en pt
+		//	$tab_lig[$j]['taille_police']=$hauteur_texte;
+		//	// Hauteur totale du texte
+		//	$tab_lig[$j]['hauteur_totale']=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
+		//	// Marge verticale en mm entre les lignes
+		//	$marge_verticale=$hauteur_texte_mm*$r_interligne;
+		//	$tab_lig[$j]['marge_verticale']=$marge_verticale;
+		//	// Tableau des lignes
+		//	$tab_lig[$j]['lignes'][]="Texte trop long";
+			
+
+			$fmax=0;
+
+			$tab_lig=array();
+			$hauteur_texte=$hauteur_min_font;
+			unset($ligne);
+			$ligne=array();
+
+			$tab=split(" ",trim(ereg_replace("\n"," ",$texte)));
+			$cpt=0;
+			$i=0;
+			while(true) {
+				if(isset($ligne[$cpt])) {$ligne[$cpt].=" ";} else {$ligne[$cpt]="";}
+
+				if($pdf->GetStringWidth($ligne[$cpt].$tab[$i])>=$largeur_dispo) {
+
+					if(($cpt+2)*$hauteur_texte*(1+$r_interligne)*26/100>$h_cell) {
+						$d=1;
+						while(($pdf->GetStringWidth(substr($ligne[$cpt],0,strlen($ligne[$cpt])-$d)."...")>=$largeur_dispo)&&($d<strlen($ligne[$cpt]))) {
+							$d++;
+						}
+						$ligne[$cpt]=substr($ligne[$cpt],0,strlen($ligne[$cpt])-$d)."...";
+						break;
+					}
+
+					$cpt++;
+					$ligne[$cpt]=$tab[$i];
+				}
+				else {
+					$ligne[$cpt].=$tab[$i];
+				}
+				$i++;
+				if(!isset($tab[$i])) {break;} // On ne devrait pas quitter sur ça puisque le texte va être trop long
+			}
+
+			$j=1;
+			$ifmax=$j;
+			$hauteur_texte_mm=$hauteur_texte*26/100;
+			$tab_lig[$j]['hauteur_texte_mm']=$hauteur_texte_mm;
+			// Hauteur de la police en pt
+			$tab_lig[$j]['taille_police']=$hauteur_texte;
+			// Hauteur totale du texte
+			$tab_lig[$j]['hauteur_totale']=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
+			// Marge verticale en mm entre les lignes
+			$marge_verticale=$hauteur_texte_mm*$r_interligne;
+			$tab_lig[$j]['marge_verticale']=$marge_verticale;
+			// Tableau des lignes
+			$tab_lig[$j]['lignes']=$ligne;
+
+		}
+	}
+
+	// On trace le rectangle (vide) du cadre:
+	$pdf->SetXY($x,$y);
+	$pdf->Cell($largeur_dispo,$h_cell, '',$bordure,2,'');
+
+	// On va écrire les lignes avec la taille de police optimale déterminée (cf. $ifmax)	
+	//$marge_h=round(($h_cell-(count($ligne)*$hauteur_texte_mm+(count($ligne)-1)*$marge_verticale))/2);
+	//$marge_h=round(($h_cell-$tab_lig[$ifmax]['hauteur_totale'])/2);
+	$nb_lig=count($tab_lig[$ifmax]['lignes']);
+	$h=count($tab_lig[$ifmax]['lignes'])*$tab_lig[$ifmax]['hauteur_texte_mm']*(1+$r_interligne);
+	$t=$h_cell-$h;
+	$bord_debug='';
+	//$bord_debug='LRBT';
+	for($i=0;$i<count($tab_lig[$ifmax]['lignes']);$i++) {
+		
+		//$pdf->SetXY(10,$y+$i*($hauteur_texte_mm+$marge_verticale)+$marge_h);
+		$pdf->SetXY($x,$y+$i*($tab_lig[$ifmax]['hauteur_texte_mm']+$tab_lig[$ifmax]['marge_verticale']));
+
+		//if($i==1) {$bord_debug='LRBT';} else {$bord_debug='';}
+		//$pdf->Cell($largeur_dispo-4,$h_cell/count($tab_lig[$ifmax]['lignes']), $tab_lig[$ifmax]['lignes'][$i],$bord_debug,2,'');
+
+		if($v_align=='T') {
+			$pdf->Cell($largeur_dispo,$tab_lig[$ifmax]['hauteur_texte_mm']+2*$tab_lig[$ifmax]['marge_verticale'], $tab_lig[$ifmax]['lignes'][$i],$bord_debug,1,$align);
+		}
+		else {
+			$pdf->Cell($largeur_dispo,$h_cell/count($tab_lig[$ifmax]['lignes']), $tab_lig[$ifmax]['lignes'][$i],$bord_debug,1,$align);
+		}
+	}
+	//if($tab_lig[$ifmax]['taille_police']!=$hauteur_max_font) {$pdf->Cell(20,$h_cell, $tab_lig[$ifmax]['taille_police'],$bord_debug,2,'');}
+
+}
+*/
 ?>

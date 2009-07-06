@@ -163,12 +163,14 @@ $choix_periode_num=isset($_POST['choix_periode_num']) ? $_POST['choix_periode_nu
 //======================================================
 //==================CHOIX DES CLASSES===================
 if(!isset($tab_id_classe)) {
-	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	//echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
 	($_SESSION['statut']=='administrateur')) {
 		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 	}
+	echo " | <a href='index.php'>Ancien dispositif</a>";
 	echo "</p>\n";
 
 	echo "<p class='bold'>Choix des classes:</p>\n";
@@ -449,7 +451,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 			echo "<label for='mode_bulletin_pdf' style='cursor:pointer;'>Bulletin PDF</label>\n";
 
 			echo "<br />\n";
-			echo "<span id='div_modele_bulletin_pdf'>\n";
+			//echo "<span id='div_modele_bulletin_pdf'>\n";
+			echo "<div id='div_modele_bulletin_pdf'>\n";
 				echo "Choisir le modèle de bulletin<br />\n";
 				// sélection des modèles des bulletins PDF
 				//$sql='SELECT id_model_bulletin, nom_model_bulletin FROM modele_bulletin ORDER BY modele_bulletin.nom_model_bulletin ASC';
@@ -466,7 +469,11 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 						echo ">".ucfirst($donner_modele['valeur'])."</option>\n";
 					}
 				echo "</select>\n";
-			echo "</span>\n";
+			//echo "</span>\n";
+
+			echo "<br />\n";
+			echo "<label for='use_cell_ajustee' style='cursor: pointer;'><input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' /> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label><br />\n";
+			echo "</div>\n";
 		}
 	}
 	echo "</td>\n";
@@ -563,7 +570,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 
 	// L'admin peut avoir accès aux bulletins, mais il n'a de toute façon pas accès au relevés de notes.
-	$sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/visu_releve_notes.php' AND ".$_SESSION['statut']."='V';";
+	$sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/visu_releve_notes_bis.php' AND ".$_SESSION['statut']."='V';";
 	$res_verif_droit=mysql_query($sql);
 	if (mysql_num_rows($res_verif_droit)>0) {
 		echo "<p><input type='checkbox' name='intercaler_releve_notes' id='intercaler_releve_notes' value='y' onchange='display_param_releve();' /> <label for='intercaler_releve_notes' style='cursor: pointer;'>Intercaler les relevés de notes</label>\n";
@@ -829,6 +836,8 @@ else {
 	$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : "html";
 	$un_seul_bull_par_famille=isset($_POST['un_seul_bull_par_famille']) ? $_POST['un_seul_bull_par_famille'] : "non";
 	$coefficients_a_1=isset($_POST['coefficients_a_1']) ? $_POST['coefficients_a_1'] : "non";
+
+	$use_cell_ajustee=isset($_POST['use_cell_ajustee']) ? $_POST['use_cell_ajustee'] : "y";
 
 	//========================================
 	/*
