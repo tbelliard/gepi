@@ -1611,7 +1611,7 @@ elseif($step==2) {
 					$texte.="Un compte cpe ou scolarité peut ensuite saisir la sanction correspondante s'il juge la demande appropriée.<br />";
 					$texte.="<br />";
 					$texte.="Il n'y a pas d'intérêt pour un CPE à cocher une de ces cases.<br />";
-					$texte.="Il vaut mieux passer à la saisie en suivant le lien Tratement/sanction en haut à droite.<br />";
+					$texte.="Il vaut mieux passer à la saisie en suivant le lien Traitement/sanction en haut à droite.<br />";
 					$tabdiv_infobulle[]=creer_div_infobulle("div_mesures_demandees","Mesures demandées","",$texte,"",30,0,'y','y','n','n');
 
 					echo "<a href='#' onmouseover=\"delais_afficher_div('div_mesures_demandees','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">";
