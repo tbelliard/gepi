@@ -620,11 +620,14 @@ if((!isset($mode))||($mode=="suppr_sanction")) {
 						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
 						echo "</td>\n";
 //Eric
+						echo "<td>";
 						if ($gepiSettings['active_mod_ooo'] == 'y') { //impression avec mod_ooo
-							echo "<td>";
 							echo "<a href='../mod_ooo/retenue.php?mode=module_retenue&amp;id_incident=$id_incident&amp;id_sanction=$lig_sanction->id_sanction&amp;ele_login=$lig->login' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
-	                        echo "</td>";
-						} 
+						}
+						else {
+							echo "-";
+						}
+						echo "</td>\n";
 //
 						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
 						echo "</tr>\n";
