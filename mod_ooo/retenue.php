@@ -104,7 +104,9 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 		//traitement du motif et du travail
 		$motif = $lig_incident->description;
 		$travail ='Donné sur place'; // texte par défaut, c'est un enseignant qui rédige l'incident, il n'y a pas de possibilité de saisir le travail.
-		
+
+		$nature_incident=$lig_incident->nature;
+
 		// le nom et le prénom de l'élève
 		$nom_prenom_eleve =p_nom($ele_login,"Pn");
 		
@@ -228,12 +230,22 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 		session_unregister("retenue_fct_resp");
 	}
 
+	if (isset($_SESSION['retenue_nature_incident'])) {
+		$nature_incident = $_SESSION['retenue_nature_incident'];
+		$nature_incident=traitement_magic_quotes(corriger_caracteres($nature_incident));
+		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+		$nature_incident=ereg_replace('(\\\r\\\n)+',"\r\n",$nature_incident);
+		session_unregister("retenue_nature_incident");
+	}
+
 	$date_retenue ='';
 	$duree ='';
 	$h_deb ='';
 	$num_incident = '';
 
 } // formulaire_retenue
+
+//$nature_incident='Scrogneugneu';
 
 //
 // Fin zone de traitement Les données qui seront fusionnées au modèle
@@ -276,7 +288,8 @@ $OOo->SaveXmlToDoc(); //traitement du fichier extrait
 //Génération du nom du fichier
 $now = gmdate('d_M_Y_H:i:s');
 $nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
-$nom_fic = $nom_fichier_modele[0]."_".$classe."_".$nom_prenom_eleve."_généré_le_".$now.".".$nom_fichier_modele[1];
+//$nom_fic = $nom_fichier_modele[0]."_".$classe."_".$nom_prenom_eleve."_généré_le_".$now.".".$nom_fichier_modele[1];
+$nom_fic = remplace_accents($nom_fichier_modele[0]."_".$classe."_".$nom_prenom_eleve."_généré_le_".$now.".".$nom_fichier_modele[1],'all');
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
 
