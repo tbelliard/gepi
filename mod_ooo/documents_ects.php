@@ -67,6 +67,7 @@ if (($_SESSION['statut'] == 'scolarite') and $gepiSettings["GepiAccesEditionDocs
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : false;
 $choix_edit = isset($_POST["choix_edit"]) ? $_POST["choix_edit"] : false;
 $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] : false;
+$page_garde = isset($_POST['page_garde']) ? true : false;
 $releve = isset($_POST['releve']) ? true : false;
 $attestation = isset($_POST['attestation']) ? true : false;
 $description = isset($_POST['description']) ? true : false;
@@ -336,8 +337,8 @@ foreach($Eleves as $Eleve) {
         }
     }
 
-    //TODO: On considère en dur seulement deux périodes pour l'année en cours.
-    // A reprendre...
+    //TODO: On considère en dur seulement cinq périodes pour l'année en cours.
+    // A reprendre peut-être...
     for ($p=1;$p<=5;$p++) {
         $semestres[$periode_courante] = array();
         $flag = false;
@@ -421,6 +422,14 @@ $OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variabl
 
 // Traitement des tableaux
 // On insère ici les lignes concernant la gestion des tableaux
+if (!$page_garde) {
+    $OOo->mergeXml(
+        array(
+            'name' => 'page_garde',
+            'type' => 'clear'));
+} else {
+    $OOo->mergeXmlBlock('page_garde',array('fake')); // Juste pour que le bloc s'initialise correctement
+}
 if (!$releve) {
     $OOo->mergeXml(
         array(

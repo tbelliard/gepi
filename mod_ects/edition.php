@@ -218,6 +218,12 @@ if (!$id_classe) {
     echo "<h3>Documents à générer</h3>";
     echo "<p>Cochez les documents que vous souhaitez générer :</p>";
     echo "<div>\n";
+        echo "<input type=\"checkbox\" name=\"page_garde\" id='choix_page_garde' value=\"page_garde\" checked='checked' />\n";
+        echo "<label for='choix_page_garde' class='curseur_pointeur'>\n";
+            echo "La page de garde\n";
+        echo "</label>\n";
+    echo "</div>\n";
+    echo "<div>\n";
         echo "<input type=\"checkbox\" name=\"releve\" id='choix_releve' value=\"releve\" checked='checked' />\n";
         echo "<label for='choix_releve' class='curseur_pointeur'>\n";
             echo "Le relevé de crédits\n";
