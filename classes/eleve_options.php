@@ -65,31 +65,47 @@ if($_SESSION['statut']=="administrateur"){
 		$msg = '';
 		$j = 1;
 		while ($j < $nb_periode) {
-			$call_group = mysql_query("SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
+			$sql="SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name";
+			//echo "$sql<br />";
+			$call_group = mysql_query($sql);
 			$nombre_ligne = mysql_num_rows($call_group);
 			$i=0;
 			while ($i < $nombre_ligne) {
 				$id_groupe = mysql_result($call_group, $i, "id");
 				$nom_groupe = mysql_result($call_group, $i, "name");
 				$id_group[$j] = $id_groupe."_".$j;
-				$test_query = mysql_query("SELECT 1=1 FROM j_eleves_groupes WHERE (" .
+				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (" .
 						"id_groupe = '" . $id_groupe . "' and " .
 						"login = '" . $login_eleve . "' and " .
-						"periode = '" . $j . "')");
+						"periode = '" . $j . "')";
+				//echo "$sql<br />";
+				$test_query = mysql_query($sql);
 				$test = mysql_num_rows($test_query);
 				if (isset($_POST[$id_group[$j]])) {
 					if ($test == 0) {
-						$req = mysql_query("INSERT INTO j_eleves_groupes SET id_groupe = '" . $id_groupe . "', login = '" . $login_eleve . "', periode = '" . $j ."'");
+						$sql="INSERT INTO j_eleves_groupes SET id_groupe = '" . $id_groupe . "', login = '" . $login_eleve . "', periode = '" . $j ."'";
+						//echo "$sql<br />";
+						$req = mysql_query($sql);
 					}
 				} else {
-					$test1 = mysql_query("SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')");
+					$sql="SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')";
+					//echo "$sql<br />";
+					$test1 = mysql_query($sql);
 					$nb_test1 = mysql_num_rows($test1);
-					$test2 = mysql_query("SELECT 1=1 FROM matieres_appreciations WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')");
+
+					$sql="SELECT 1=1 FROM matieres_appreciations WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')";
+					//echo "$sql<br />";
+					$test2 = mysql_query($sql);
 					$nb_test2 = mysql_num_rows($test2);
+
 					if (($nb_test1 != 0) or ($nb_test2 != 0)) {
 						$msg = $msg."--> Impossible de supprimer cette option pour l'élève $login_eleve car des moyennes ou appréciations ont déjà été rentrées pour le groupe $nom_groupe pour la période $j ! Commencez par supprimer ces données !<br />";
 					} else {
-						if ($test != "0")  $req = mysql_query("DELETE FROM j_eleves_groupes WHERE (login='".$login_eleve."' and id_groupe='".$id_groupe."' and periode = '".$j."')");
+						if ($test != "0") {
+							$sql="DELETE FROM j_eleves_groupes WHERE (login='".$login_eleve."' and id_groupe='".$id_groupe."' and periode = '".$j."')";
+							//echo "$sql<br />";
+							$req = mysql_query($sql);
+						}
 					}
 				}
 				$i++;
@@ -97,7 +113,7 @@ if($_SESSION['statut']=="administrateur"){
 			$j++;
 		}
 		//$affiche_message = 'yes';
-		$msg = "Les modifications ont été enregistrées !";
+		if($msg=='') {$msg= "Les modifications ont été enregistrées !";}
 	}
 	//$message_enregistrement = "Les modifications ont été enregistrées !";
 }
