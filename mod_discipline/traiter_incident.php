@@ -877,8 +877,13 @@ if(!isset($id_incident)) {
 			//=================================================
 			// Colonne détails incident
 			echo "<td>\n";
+			$texte="";
+			if($lig->nature!="") {
+				$texte="<b>$lig->nature</b><br />";
+			}
+
 			if($lig->description=="") {
-				$texte="Aucun détail n'a été saisi.";
+				$texte.="Aucun détail n'a été saisi.";
 
 				if($lig->nature=='') {
 					$sql="SELECT email,civilite,nom,prenom FROM utilisateurs WHERE login='$lig->declarant' AND email!='';";
@@ -909,10 +914,19 @@ if(!isset($id_incident)) {
 				}
 			}
 			else {
-				$texte=nl2br($lig->description);
+				$texte.=nl2br($lig->description);
 			}
 			$lieu_incident=get_lieu_from_id($lig->id_lieu);
-			if($lieu_incident!="") {$texte.="<br /><span style='font-size:x-small;'>Lieu&nbsp;: ".$lieu_incident."</span>";}
+			if($lieu_incident=="") {
+				//$texte.="<br /><span style='font-size:x-small;'>Lieu&nbsp;: ".$lieu_incident."</span>";
+				$lieu_incident="non précisé";
+			}
+			$texte.="<br /><span style='font-size:x-small;'>Lieu&nbsp;: ".$lieu_incident."</span>";
+
+			if($lig->heure!="") {
+				$texte.="<span style='font-size:x-small;'> à l'heure $lig->heure</span>";
+			}
+
 			$texte.="<br /><span style='font-size:x-small;'>Incident signalé par ".u_p_nom($lig->declarant)."</span>";
 
 			if(($lig->declarant==$_SESSION['login'])||($_SESSION['statut']!='professeur')) {$possibilite_prof_clore_incident='y';} else {$possibilite_prof_clore_incident='n';}
