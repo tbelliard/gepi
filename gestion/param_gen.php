@@ -308,6 +308,18 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 	*/
+
+	if (isset($_POST['exp_imp_chgt_etab'])) {
+		if (!saveSetting("exp_imp_chgt_etab", $_POST['exp_imp_chgt_etab'])) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre exp_imp_chgt_etab !";
+		}
+	}
+	else{
+		if (!saveSetting("exp_imp_chgt_etab", 'no')) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre exp_imp_chgt_etab !";
+		}
+	}
+
 	//===============================================================
 }
 
@@ -432,7 +444,6 @@ if (isset($_POST['delais_apres_cloture'])) {
 		}
 	}
 }
-
 
 
 /*
@@ -848,6 +859,26 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 			$delais_apres_cloture=getSettingValue("delais_apres_cloture");
 			if($delais_apres_cloture=="") {$delais_apres_cloture=0;}
 			echo "<input type='text' name='delais_apres_cloture' size='2' value='$delais_apres_cloture' />\n";
+			?>
+		</td>
+	</tr>
+
+	<tr>
+		<td style="font-variant: small-caps;">
+		<a name='ancre_exp_imp_chgt_etab'></a>
+		<label for='exp_imp_chgt_etab' style='cursor: pointer'>Permettre l'export/import des bulletins d'élèves au format CSV&nbsp;:</label><br />
+		<div style='font-variant: normal; font-style: italic; font-size: small;'>
+			Le fichier peut être généré pour un élève qui quitte l'établissement en cours d'année.<br />
+			L'établissement qui reçoit l'élève peut utiliser ce fichier pour importer les bulletins.<br />
+		</div>
+		</td>
+		<td valign='top'>
+			<?php
+			$exp_imp_chgt_etab=getSettingValue("exp_imp_chgt_etab");
+			if($exp_imp_chgt_etab=="") {$exp_imp_chgt_etab="no";}
+			echo "<input type='checkbox' name='exp_imp_chgt_etab' id='exp_imp_chgt_etab' value='yes'";
+			if($exp_imp_chgt_etab=='yes') {echo " checked";}
+			echo " />\n";
 			?>
 		</td>
 	</tr>
