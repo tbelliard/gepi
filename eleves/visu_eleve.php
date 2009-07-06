@@ -497,9 +497,15 @@ Patientez pendant l'extraction des données... merci.
 			}
 
 			// Contrôle de l'accès à l'onglet Responsables
-			$GepiAccesGestElevesProfP=getSettingValue('GepiAccesGestElevesProfP');
-			if(($GepiAccesGestElevesProfP=="yes")&&($is_pp=="y")) {
+			$GepiAccesGestElevesProf=getSettingValue('GepiAccesGestElevesProf');
+			if($GepiAccesGestElevesProf=="yes") {
 				$acces_responsables="y";
+			}
+			else {
+				$GepiAccesGestElevesProfP=getSettingValue('GepiAccesGestElevesProfP');
+				if(($GepiAccesGestElevesProfP=="yes")&&($is_pp=="y")) {
+					$acces_responsables="y";
+				}
 			}
 
 			// Contrôle de l'accès du prof au relevé de notes:

@@ -668,6 +668,19 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 
 
 
+	if (isset($_POST['GepiAccesGestElevesProf'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesGestElevesProf", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesGestElevesProf !";
+	}
+
+
+
+
+
 	$tab_droits_ele_trombi=array('GepiAccesEleTrombiTousEleves',
 'GepiAccesEleTrombiElevesClasse',
 'GepiAccesEleTrombiPersonnels',
@@ -788,6 +801,12 @@ require_once("../lib/header.inc");
 				<td style='border: 0px;'><label for='AAProfGroupes' style='cursor: pointer;'> a accès aux données antérieures des <?php echo $gepiSettings['denomination_eleves']; ?> des groupes auxquels il enseigne<br />
 				(<i>il a ces <?php echo $gepiSettings['denomination_eleves']; ?> en classe</i>)
 				</label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesGestElevesProf" id="GepiAccesGestElevesProf" value="yes" <?php if (getSettingValue("GepiAccesGestElevesProf")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesGestElevesProf' style='cursor: pointer;'> a accès aux fiches des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est professeur.</label>
+				</td>
 			</tr>
 
 			<tr valign='top'>
