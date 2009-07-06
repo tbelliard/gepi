@@ -407,7 +407,8 @@
 				$pdf->SetXY($marge,$marge);
 				//$pdf->SetFontSize($fs_txt);
 				//$pdf->Cell($larg_acad,fs_pt2mm($pdf->FontSize)*$sc_interligne, "ACADÉMIE DE ".strtoupper($fb_academie),0,0,'L');
-				$texte="ACADÉMIE DE ".strtoupper($fb_academie);
+				//$texte="ACADÉMIE DE ".strtoupper($fb_academie);
+				$texte="ACADÉMIE DE ".casse_mot($fb_academie);
 				$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne, $texte,$bord_debug,0,'L');
 
 				$x_tmp=$pdf->GetX();

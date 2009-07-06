@@ -3736,4 +3736,39 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 
 }
 
+function casse_mot($mot,$mode='maj') {
+	if($mode=='maj') {
+		return strtr(strtoupper($mot),"äâàáåãéèëêòóôõöøìíîïùúûüıñçşÿæ½ğø","ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜİÑÇŞİÆ¼ĞØ");
+	}
+	elseif($mode=='min') {
+		return strtr(strtolower($mot),"ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜİÑÇŞİÆ¼ĞØ","äâàáåãéèëêòóôõöøìíîïùúûüıñçşÿæ½ğø");
+	}
+	elseif($mode=='majf') {
+		if(strlen($mot)>1) {
+			return strtr(strtoupper(substr($mot,0,1)),"äâàáåãéèëêòóôõöøìíîïùúûüıñçşÿæ½ğø","ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜİÑÇŞİÆ¼ĞØ").strtr(strtolower(substr($mot,1)),"ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜİÑÇŞİÆ¼ĞØ","äâàáåãéèëêòóôõöøìíîïùúûüıñçşÿæ½ğø");
+		}
+		else {
+			return strtr(strtoupper($mot),"äâàáåãéèëêòóôõöøìíîïùúûüıñçşÿæ½ğø","ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜİÑÇŞİÆ¼ĞØ");
+		}
+	}
+	elseif($mode=='majf2') {
+		$chaine="";
+		$tab=explode(" ",$mot);
+		for($i=0;$i<count($tab);$i++) {
+			if($i>0) {$chaine.=" ";}
+			$tab2=explode("-",$tab[$i]);
+			for($j=0;$j<count($tab2);$j++) {
+				if($j>0) {$chaine.="-";}
+				if(strlen($mot)>1) {
+					$chaine.=strtr(strtoupper(substr($mot,0,1)),"äâàáåãéèëêòóôõöøìíîïùúûüıñçşÿæ½ğø","ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜİÑÇŞİÆ¼ĞØ").strtr(strtolower(substr($mot,1)),"ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜİÑÇŞİÆ¼ĞØ","äâàáåãéèëêòóôõöøìíîïùúûüıñçşÿæ½ğø");
+				}
+				else {
+					$chaine.=strtr(strtoupper($mot),"äâàáåãéèëêòóôõöøìíîïùúûüıñçşÿæ½ğø","ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜİÑÇŞİÆ¼ĞØ");
+				}
+			}
+		}
+		return $chaine;
+	}
+}
+
 ?>

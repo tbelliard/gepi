@@ -389,7 +389,8 @@
 				$pdf->SetFont('Arial','B',$fs_txt);
 				$pdf->SetXY($marge,$marge);
 				//$pdf->SetFontSize($fs_txt);
-				$pdf->Cell($larg_acad,fs_pt2mm($pdf->FontSize)*$sc_interligne, "ACADÉMIE DE ".strtoupper($fb_academie),0,1,'');
+				//$pdf->Cell($larg_acad,fs_pt2mm($pdf->FontSize)*$sc_interligne, "ACADÉMIE DE ".strtoupper($fb_academie),0,1,'');
+				$pdf->Cell($larg_acad,fs_pt2mm($pdf->FontSize)*$sc_interligne, "ACADÉMIE DE ".casse_mot($fb_academie),0,1,'');
 
 				//$pdf->SetXY($marge,15);
 				$pdf->SetXY($marge,$pdf->GetY()+$pdf->FontSize*$r_interligne);
