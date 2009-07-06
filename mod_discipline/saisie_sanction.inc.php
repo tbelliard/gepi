@@ -19,7 +19,8 @@ function choix_heure2($champ_heure,$selected,$dernier) {
 	}
 	else {
         $cpt=1;	
-		echo "<select name='$champ_heure' id='$champ_heure' onchange='changement();' >\n";
+		//echo "<select name='$champ_heure' id='$champ_heure' onchange='changement();' >\n";
+		echo "<select name='$champ_heure' id='$champ_heure' onchange=\"if(document.getElementById('display_heure_main')) {document.getElementById('display_heure_main').value=document.getElementById('$champ_heure').options[document.getElementById('$champ_heure').selectedIndex].value};changement();\" >\n";
 		
 		while($lig_ac=mysql_fetch_object($res_abs_cren)) {
 			echo "<option value='$lig_ac->nom_definie_periode'";
