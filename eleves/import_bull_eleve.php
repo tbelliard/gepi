@@ -283,6 +283,7 @@ else {
 		echo "<input type='submit' name='envoi' value='Envoyer' />\n";
 		echo "</form>\n";
 
+		echo "<p><i>Attention</i>&nbsp;: Veillez à n'importer que des fichiers CSV générés par Gepi.<br />Dans le doute, faites une sauvegarde préalable de la base.</p>\n";
 	}
 	else {
 
@@ -303,6 +304,9 @@ else {
 
 		$sql="SELECT MAX(num_periode) AS nb_per FROM periodes p, j_eleves_classes jec WHERE jec.login='$ele_login' AND jec.id_classe=p.id_classe;";
 		//echo "$sql<br />";
+
+		//die();
+
 		//flush();
 		$res=mysql_query($sql);
 		//$nb_per=3;
@@ -330,7 +334,8 @@ else {
 		while (!feof($fich)) {
 			$ligne=fgets($fich, 4096);
 			if(trim($ligne)!="") {
-				echo $ligne."<br />\n";
+				//echo $ligne."<br />\n";
+				echo htmlentities($ligne)."<br />\n";
 			}
 		}
 		echo "</div>\n";
@@ -390,7 +395,8 @@ else {
 
 
 		// Créer la classe
-		$sql="SELECT classe FROM classes WHERE classe LIKE '$nom_etab_ori%';";
+		//$sql="SELECT classe FROM classes WHERE classe LIKE '$nom_etab_ori%';";
+		$sql="SELECT classe FROM classes WHERE classe='$nom_etab_ori';";
 		//echo "$sql<br />";
 		//flush();
 		$res=mysql_query($sql);
@@ -423,9 +429,10 @@ else {
 		else {
 			$cpt=1;
 			while(true) {
-				$sql="SELECT classe FROM classes WHERE classe LIKE '".$nom_etab_ori.$cpt."';";
+				//$sql="SELECT classe FROM classes WHERE classe LIKE '".$nom_etab_ori.$cpt."';";
+				$sql="SELECT classe FROM classes WHERE classe='".$nom_etab_ori.$cpt."';";
 				$test=mysql_query($sql);
-				if(mysql_num_rows($res)==0) {
+				if(mysql_num_rows($test)==0) {
 					echo "<p>Création d'une classe '".$nom_etab_ori.$cpt."': ";
 
 					$sql="INSERT INTO classes SET classe='".$nom_etab_ori.$cpt."',
@@ -774,7 +781,7 @@ else {
 						$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de la matière '$matiere' dans la table 'matieres': ";
+							echo "<p>Inscription de la matière '".htmlentities($matiere)."' dans la table 'matieres': ";
 							$sql="INSERT INTO matieres SET matiere='$matiere', nom_complet='$matiere_nom_complet';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -793,7 +800,7 @@ else {
 						$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$matiere' AND id_professeur='$login_etab';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'association professeur '$login_etab' / matière '$matiere' dans la table 'j_professeurs_matieres': ";
+							echo "<p>Inscription de l'association professeur '$login_etab' / matière '".htmlentities($matiere)."' dans la table 'j_professeurs_matieres': ";
 							$sql="INSERT INTO j_professeurs_matieres SET id_matiere='$matiere', id_professeur='$login_etab';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -858,7 +865,7 @@ else {
 						$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$current_id_groupe' AND login='$login_etab';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'association professeur '$login_etab' / groupe '$current_id_groupe' dans la table 'j_groupes_professeurs': ";
+							echo "<p>Inscription de l'association professeur '$login_etab' / groupe '".htmlentities($current_id_groupe)."' dans la table 'j_groupes_professeurs': ";
 							$sql="INSERT INTO j_groupes_professeurs SET id_groupe='$current_id_groupe', login='$login_etab';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -916,7 +923,7 @@ else {
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
 						*/
-							echo "<p>Inscription de l'appréciation pour la matière '$matiere' sur la période '$periode': ";
+							echo "<p>Inscription de l'appréciation pour la matière '".htmlentities($matiere)."' sur la période '$periode': ";
 							//$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='$app';";
 							$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='".ereg_replace("_POINT_VIRGULE_",";",$app)."';";
 							$res=mysql_query($sql);
@@ -947,7 +954,7 @@ else {
 			}
 		}
 		fclose($fich);
-		echo "</p>\n";
+		//echo "</p>\n";
 
 		echo "<p>Terminé.</p>\n";
 
