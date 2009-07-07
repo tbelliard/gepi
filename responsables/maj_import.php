@@ -84,7 +84,7 @@ else{
 		echo "<p>Voir en <a href='#notes_correction'>sous le tableau</a> les possibilités de correction.</p>\n";
 
 		echo "<blockquote>\n";
-		echo "<table class='boireaus'>\n";
+		echo "<table class='boireaus' summary='Elèves à corriger'>\n";
 		echo "<tr>\n";
 		echo "<th>Identifiant<br />'ele_id'</th>\n";
 		echo "<th>Identifiant<br />'elenoet'</th>\n";
