@@ -412,6 +412,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 		if(getSettingValue("import_maj_xml_sconet")==1){
 			echo " | <a href=\"../responsables/maj_import.php\">Mettre à jour depuis Sconet</a>\n";
+			echo " | <a href=\"import_communes.php\">Importer les communes de naissance des élèves</a>\n";
 		}
 	}
 }

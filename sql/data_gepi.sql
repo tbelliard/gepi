@@ -799,3 +799,4 @@ INSERT INTO droits SET id='/mod_genese_classes/select_arriv_red.php',administrat
 INSERT INTO droits SET id='/mod_genese_classes/liste_options.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Liste des options de classes existantes',statut='';
 INSERT INTO droits SET id='/mod_genese_classes/import_options.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Import options depuis CSV',statut='';
 INSERT INTO setting SET name='active_mod_genese_classes', value='y';
+INSERT INTO `droits` VALUES ('/eleves/import_communes.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Import des communes de naissance', '');
