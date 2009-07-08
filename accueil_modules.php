@@ -148,6 +148,11 @@ $chemin[] = "/mod_plugins/index.php";
 $titre[] = "Gérer les plugins";
 $expli[] = "Interface d'administration des plugins personnels de l'établissement.";
 
+//Module Génèse des classes
+$chemin[] = "/mod_genese_classes/admin.php";
+$titre[] = "Génèse des classes";
+$expli[] = "Pour gérer le module Génèse des classes.";
+
 $nb_ligne = count($chemin);
 //
 // Outils d'administration

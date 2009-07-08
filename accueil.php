@@ -1806,6 +1806,39 @@ if (!empty ($plugins_ouvert)){
  * Fin module plugins
 *****************************/
 
+/*************************
+	Module Genese des classes
+*************************/
+
+if (getSettingValue("active_mod_genese_classes")=='y') {
+
+	$chemin = array();
+	$chemin[]="/mod_genese_classes/index.php";
+	$titre = array();
+	$titre[] = "Génèse des classes";
+
+	$expli = array();
+	$expli[] = "Effectuer la répartition des élèves par classes en tenant comptes des options,...";
+
+	$nb_ligne = count($chemin);
+	$affiche = 'no';
+	for ($i=0;$i<$nb_ligne;$i++) {
+		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+	}
+	if ($affiche=='yes') {
+			echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Génèse des classes</h2>\n";
+			echo "<table class='menu' summary=\"Module Génèse des classes. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+			for ($i=0;$i<$nb_ligne;$i++) {
+				affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+			}
+			echo "</table>";
+	}
+}
+
+/*****************************
+	Fin module Genese des classes
+*****************************/
+
 /**************************************************************
 	Lien vers les flux rss pour les élèves s'ils sont activés
 **************************************************************/
