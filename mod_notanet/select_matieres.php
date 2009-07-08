@@ -79,8 +79,13 @@ for($j=101;$j<=122;$j++){
 $statut_matiere=isset($_POST['statut_matiere']) ? $_POST['statut_matiere'] : NULL;
 
 $choix_matieres=isset($_POST['choix_matieres']) ? $_POST['choix_matieres'] : NULL;
+$is_posted=isset($_POST['is_posted']) ? $_POST['is_posted'] : NULL;
 
-if((isset($choix_matieres))&&(isset($type_brevet))) {
+//if((isset($choix_matieres))&&(isset($type_brevet))) {
+if((isset($is_posted))&&(isset($type_brevet))) {
+
+	//echo "\$choix_matieres=$choix_matieres<br />";
+	//echo "\$type_brevet=$type_brevet<br />";
 
 	$tabmatieres=tabmatieres($type_brevet);
 
@@ -106,6 +111,7 @@ if((isset($choix_matieres))&&(isset($type_brevet))) {
 																	statut='".$statut_matiere[$j]."',
 																	id_mat='$j',
 																	type_brevet='$type_brevet';";
+							//echo "$sql<br />";
 							$res_insert=mysql_query($sql);
 							if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
 						}
@@ -117,12 +123,33 @@ if((isset($choix_matieres))&&(isset($type_brevet))) {
 																statut='".$statut_matiere[$j]."',
 																id_mat='$j',
 																type_brevet='$type_brevet';";
+						//echo "$sql<br />";
 						$res_insert=mysql_query($sql);
 						if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
 					}
 				//else {
 				//}
 			}
+		}
+
+		$j_matiere=isset($_POST['j_matiere']) ? $_POST['j_matiere'] : NULL;
+		$matiere_a_ajouter=isset($_POST['matiere_a_ajouter']) ? $_POST['matiere_a_ajouter'] : NULL;
+
+		//echo "\$j_matiere=$j_matiere<br />";
+		//echo "\$matiere_a_ajouter=$matiere_a_ajouter<br />";
+
+		if(($j_matiere!='')&&($matiere_a_ajouter!='')) {
+			$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j_matiere][0]."',
+													matiere='$matiere_a_ajouter',
+													statut='".$statut_matiere[$j_matiere]."',
+													id_mat='$j_matiere',
+													type_brevet='$type_brevet';";
+			//echo "$sql<br />";
+			$res_insert=mysql_query($sql);
+			if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
+
+			if($nb_err==0) {$msg.="Enregistrement effectué pour $cpt_enr matière(s).";}
+			header("Location: ".$_SERVER['PHP_SELF']."?type_brevet=$type_brevet&msg=".urlencode($msg)."#ancre_$j_matiere");
 		}
 
 		if($nb_err==0) {$msg.="Enregistrement effectué pour $cpt_enr matière(s).<br />\n";}
@@ -176,6 +203,8 @@ else {
 	echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir un autre type de brevet</a>";
 	echo "</p>\n";
 	echo "</div>\n";
+
+	//debug_var();
 
 	$sql="CREATE TABLE IF NOT EXISTS notanet_corresp (
 						id INT NOT NULL AUTO_INCREMENT ,
@@ -244,7 +273,7 @@ else {
 		}
 
 		//echo "<table border='1'>\n";
-		echo "<table class='boireaus'>\n";
+		echo "<table class='boireaus' summary='Tableau des associations matière notanet/matière gepi'>\n";
 		echo "<tr style='font-weight:bold; text-align:center'>\n";
 		echo "<th>&nbsp;</th>\n";
 		echo "<th colspan='3'>Matière</th>\n";
@@ -265,7 +294,10 @@ else {
 			//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j]['socle']=='n')) {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
-				echo "<td>".strtoupper($tabmatieres[$j][0])."</td>\n";
+				//echo "<td>".strtoupper($tabmatieres[$j][0])."</td>\n";
+				echo "<td>";
+				//echo "<a name='ancre_$j'></a>";
+				echo strtoupper($tabmatieres[$j][0])."</td>\n";
 
 				$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet';";
 				$res_notanet_corresp=mysql_query($sql);
@@ -300,6 +332,7 @@ else {
 				echo "<td>\n";
 				//echo "\$type_brevet=$type_brevet \$tabmatieres[$j]['socle']";
 				if($tabmatieres[$j]['socle']=='n') {
+					/*
 					echo "<select multiple='true' size='4' name='id_matiere".$j."[]'>\n";
 					echo "<option value=''>&nbsp;</option>\n";
 					for($k=0;$k<$cpt;$k++){
@@ -312,6 +345,23 @@ else {
 						echo ">$tab_mat_classes[$k]</option>\n";
 					}
 					echo "</select>\n";
+					*/
+
+					echo "<a name='ancre_$j'></a>";
+
+					$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' ORDER BY matiere;";
+					$res_test=mysql_query($sql);
+					if(mysql_num_rows($res_test)>0){
+						$cpt=0;
+						echo "<p align='left'>";
+						while($lig_tmp=mysql_fetch_object($res_test)) {
+							echo "<input type='checkbox' name='id_matiere".$j."[]' id='id_matiere".$j."_$cpt' value='$lig_tmp->matiere' checked /><label for='id_matiere".$j."_$cpt'>$lig_tmp->matiere</label><br />";
+							$cpt++;
+						}
+					}
+					echo "<p align='center'>";
+					echo "<a href='#' onclick=\"document.getElementById('j_matiere').value='$j';afficher_div('ajout_matiere','y',10,10);return false;\"> + </a>";
+
 				}
 				else {
 					echo "<input type='hidden' name='id_matiere".$j."[]' value='' />\n";
@@ -323,8 +373,30 @@ else {
 		}
 		echo "</table>\n";
 
+		//==================================================
+		$titre="Ajout matière";
+		$texte_checkbox_matieres="";
+		$texte_checkbox_matieres.="<input type='hidden' name='j_matiere' id='j_matiere' value='' />";
+		$texte_checkbox_matieres.="<input type='hidden' name='matiere_a_ajouter' id='matiere_a_ajouter' value='' />";
+		$sql="SELECT matiere FROM matieres ORDER BY matiere;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			//$cpt=0;
+			while($lig=mysql_fetch_object($res)) {
+				//$texte_checkbox_matieres.="<input type='checkbox' name='matiere[]' id='matiere_$cpt' value='$lig->matiere' /><label for='matiere_$cpt'>$lig->matiere</label><br />";
+				//$texte_checkbox_matieres.="<a href='#' onclick=\"document.getElementById('matiere_a_ajouter').value='$lig->matiere';return false;\">$lig->matiere</a><br />";
+				$texte_checkbox_matieres.="<a href='#' onclick=\"document.getElementById('matiere_a_ajouter').value='$lig->matiere';cacher_div('ajout_matiere');document.form_choix_matieres.submit()\">$lig->matiere</a><br />";
+				$cpt++;
+			}
+		}
+		//$tabdiv_infobulle[]=creer_div_infobulle('ajout_lv1',$titre,"",$texte,"",35,0,'y','y','n','n');
+		//$tabdiv_infobulle[]=creer_div_infobulle('ajout_matiere',$titre,"",$texte_checkbox_matieres,"",20,20,'y','y','n','y');
+		echo creer_div_infobulle('ajout_matiere',$titre,"",$texte_checkbox_matieres,"",20,20,'y','y','n','y');
+		//==================================================
+
 		//echo "<p>Le fichier d'export Notanet doit-il avoir des fins de lignes Unix ou Dos?<br /><input type='radio' name='finsdelignes' value='dos' checked /> Fins de lignes DOS<br /><input type='radio' name='finsdelignes' value='unix' /> Fins de lignes UNIX</p>\n";
 
+		echo "<input type='hidden' name='is_posted' value='y' />\n";
 		echo "<input type='submit' name='choix_matieres' value='Enregistrer' />\n";
 		echo "</form>\n";
 
