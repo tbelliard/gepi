@@ -728,6 +728,25 @@ if (isset ($_POST['maj'])) {
 
     $tab_req[] = "INSERT INTO droits VALUES ( '/mod_plugins/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajouter/enlever des plugins', '');";
 
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/index.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Accueil',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/admin.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Activation/désactivation',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/select_options.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Choix des options',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/select_eleves_options.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Choix des options des élèves',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/select_classes.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Choix des classes',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/saisie_contraintes_opt_classe.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Saisie des contraintes options/classes',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/liste_classe_fut.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Liste des classes futures (appel ajax)',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/affiche_listes.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Affichage de listes',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/genere_ods.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Génération d un fichier ODS de listes',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/affect_eleves_classes.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Affectation des élèves',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/select_arriv_red.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Sélection des arrivants/redoublants',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/liste_options.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Liste des options de classes existantes',statut='';";
+	$tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/import_options.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Génèse des classes: Import options depuis CSV',statut='';";
+
+	$tab_req[] = "INSERT INTO droits VALUES ('/eleves/import_communes.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Import des communes de naissance', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ( '/mod_notanet/fb_lille_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Fiches brevet PDF pour Lille', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ( '/mod_notanet/fb_creteil_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Fiches brevet PDF pour Creteil', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ( '/mod_plugins/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajouter/enlever des plugins', '');";
+
 	//$tab_req[] = "";
 
 
