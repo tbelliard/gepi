@@ -320,6 +320,17 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
+	if (isset($_POST['ele_lieu_naissance'])) {
+		if (!saveSetting("ele_lieu_naissance", $_POST['ele_lieu_naissance'])) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre ele_lieu_naissance !";
+		}
+	}
+	else{
+		if (!saveSetting("ele_lieu_naissance", 'no')) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre ele_lieu_naissance !";
+		}
+	}
+
 	//===============================================================
 }
 
@@ -468,25 +479,32 @@ if (!loadSettings()) {
 }
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
 
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+//**************** EN-TETE *****************
 // End standart header
 $titre_page = "Paramètres généraux";
 require_once("../lib/header.inc");
+//**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p class=bold><a href="index.php"<?php
+echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <form action="param_gen.php" method="post" name="form1" style="width: 100%;">
 <table style="width: 100%; border: 0;" cellpadding="5" cellspacing="5" summary='Paramètres'>
 	<tr>
 		<td style="width: 60%;font-variant: small-caps;">
 		Année scolaire :
 		</td>
-		<td><input type="text" name="gepiYear" size="20" value="<?php echo(getSettingValue("gepiYear")); ?>" />
+		<td><input type="text" name="gepiYear" size="20" value="<?php echo(getSettingValue("gepiYear")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Numéro RNE de l'établissement :
 		</td>
-		<td><input type="text" name="gepiSchoolRne" size="8" value="<?php echo(getSettingValue("gepiSchoolRne")); ?>" />
+		<td><input type="text" name="gepiSchoolRne" size="8" value="<?php echo(getSettingValue("gepiSchoolRne")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 
@@ -494,7 +512,7 @@ require_once("../lib/header.inc");
 		<td style="font-variant: small-caps;">
 		Nom de l'établissement :
 		</td>
-		<td><input type="text" name="gepiSchoolName" size="20" value="<?php echo(getSettingValue("gepiSchoolName")); ?>" />
+		<td><input type="text" name="gepiSchoolName" size="20" value="<?php echo(getSettingValue("gepiSchoolName")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
@@ -503,7 +521,7 @@ require_once("../lib/header.inc");
 		(<span style='font-style:italic;font-size:x-small'>utilisé pour certains documents officiels</span>)
 		</td>
 		<td>
-                    <select name='gepiSchoolStatut'>
+                    <select name='gepiSchoolStatut' onchange='changement()'>
 			<option value='public'<?php if (getSettingValue("gepiSchoolStatut")=='public') echo " SELECTED"; ?>>établissement public</option>
 			<option value='prive_sous_contrat'<?php if (getSettingValue("gepiSchoolStatut")=='prive_sous_contrat') echo " SELECTED"; ?>>établissement privé sous contrat</option>
 			<option value='prive_hors_contrat'<?php if (getSettingValue("gepiSchoolStatut")=='prive_hors_contrat') echo " SELECTED"; ?>>établissement privé hors contrat</option>
@@ -514,22 +532,22 @@ require_once("../lib/header.inc");
 		<td style="font-variant: small-caps;">
 		Adresse de l'établissement :
 		</td>
-		<td><input type="text" name="gepiSchoolAdress1" size="40" value="<?php echo(getSettingValue("gepiSchoolAdress1")); ?>" /><br />
-		<input type="text" name="gepiSchoolAdress2" size="40" value="<?php echo(getSettingValue("gepiSchoolAdress2")); ?>" />
+		<td><input type="text" name="gepiSchoolAdress1" size="40" value="<?php echo(getSettingValue("gepiSchoolAdress1")); ?>" onchange='changement()' /><br />
+		<input type="text" name="gepiSchoolAdress2" size="40" value="<?php echo(getSettingValue("gepiSchoolAdress2")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Code postal :
 		</td>
-		<td><input type="text" name="gepiSchoolZipCode" size="20" value="<?php echo(getSettingValue("gepiSchoolZipCode")); ?>" />
+		<td><input type="text" name="gepiSchoolZipCode" size="20" value="<?php echo(getSettingValue("gepiSchoolZipCode")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Ville :
 		</td>
-		<td><input type="text" name="gepiSchoolCity" size="20" value="<?php echo(getSettingValue("gepiSchoolCity")); ?>" />
+		<td><input type="text" name="gepiSchoolCity" size="20" value="<?php echo(getSettingValue("gepiSchoolCity")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
@@ -537,7 +555,7 @@ require_once("../lib/header.inc");
 		Pays :<br />
 		(<span style='font-style:italic;font-size:x-small'>Le pays est utilisé pour comparer avec celui des responsables dans les blocs adresse des courriers adressés aux responsables</span>)
 		</td>
-		<td><input type="text" name="gepiSchoolPays" size="20" value="<?php echo(getSettingValue("gepiSchoolPays")); ?>" />
+		<td><input type="text" name="gepiSchoolPays" size="20" value="<?php echo(getSettingValue("gepiSchoolPays")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
@@ -545,56 +563,56 @@ require_once("../lib/header.inc");
 		Académie :<br />
 		(<span style='font-style:italic;font-size:x-small'>utilisé pour certains documents officiels</span>)
 		</td>
-		<td><input type="text" name="gepiSchoolAcademie" size="20" value="<?php echo(getSettingValue("gepiSchoolAcademie")); ?>" />
+		<td><input type="text" name="gepiSchoolAcademie" size="20" value="<?php echo(getSettingValue("gepiSchoolAcademie")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Téléphone établissement :
 		</td>
-		<td><input type="text" name="gepiSchoolTel" size="20" value="<?php echo(getSettingValue("gepiSchoolTel")); ?>" />
+		<td><input type="text" name="gepiSchoolTel" size="20" value="<?php echo(getSettingValue("gepiSchoolTel")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Fax établissement :
 		</td>
-		<td><input type="text" name="gepiSchoolFax" size="20" value="<?php echo(getSettingValue("gepiSchoolFax")); ?>" />
+		<td><input type="text" name="gepiSchoolFax" size="20" value="<?php echo(getSettingValue("gepiSchoolFax")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		E-mail établissement :
 		</td>
-		<td><input type="text" name="gepiSchoolEmail" size="20" value="<?php echo(getSettingValue("gepiSchoolEmail")); ?>" />
+		<td><input type="text" name="gepiSchoolEmail" size="20" value="<?php echo(getSettingValue("gepiSchoolEmail")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Nom de l'administrateur du site :
 		</td>
-		<td><input type="text" name="gepiAdminNom" size="20" value="<?php echo(getSettingValue("gepiAdminNom")); ?>" />
+		<td><input type="text" name="gepiAdminNom" size="20" value="<?php echo(getSettingValue("gepiAdminNom")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Prénom de l'administrateur du site :
 		</td>
-		<td><input type="text" name="gepiAdminPrenom" size="20" value="<?php echo(getSettingValue("gepiAdminPrenom")); ?>" />
+		<td><input type="text" name="gepiAdminPrenom" size="20" value="<?php echo(getSettingValue("gepiAdminPrenom")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Fonction de l'administrateur du site :
 		</td>
-		<td><input type="text" name="gepiAdminFonction" size="20" value="<?php echo(getSettingValue("gepiAdminFonction")); ?>" />
+		<td><input type="text" name="gepiAdminFonction" size="20" value="<?php echo(getSettingValue("gepiAdminFonction")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Email de l'administrateur du site :
 		</td>
-		<td><input type="text" name="gepiAdminAdress" size="20" value="<?php echo(getSettingValue("gepiAdminAdress")); ?>" />
+		<td><input type="text" name="gepiAdminAdress" size="20" value="<?php echo(getSettingValue("gepiAdminAdress")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
@@ -606,7 +624,7 @@ require_once("../lib/header.inc");
 		<?php
 			if(getSettingValue("gepiAdminAdressPageLogin")!='n'){echo " checked";}
 		?>
-		/>
+		onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
@@ -618,7 +636,7 @@ require_once("../lib/header.inc");
 		<?php
 			if(getSettingValue("gepiAdminAdressFormHidden")!='y'){echo " checked";}
 		?>
-		/>
+		onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
@@ -630,7 +648,7 @@ require_once("../lib/header.inc");
 		<?php
 			if(getSettingValue("contact_admin_mailto")=='y'){echo " checked";}
 		?>
-		/>
+		onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
@@ -638,13 +656,13 @@ require_once("../lib/header.inc");
 		Durée maximum d'inactivité : <br />
 		<span class='small'>(Durée d'inactivité, en minutes, au bout de laquelle un utilisateur est automatiquement déconnecté de Gepi.) Attention, la variable session.maxlifetime dans le fichier php.ini est réglée à <?php echo(ini_get("session.gc_maxlifetime")); ?> secondes, soit un maximum de <?php echo(ini_get("session.gc_maxlifetime")/60); ?> minutes pour la session.</span>
 		</td>
-		<td><input type="text" name="sessionMaxLength" size="20" value="<?php echo(getSettingValue("sessionMaxLength")); ?>" />
+		<td><input type="text" name="sessionMaxLength" size="20" value="<?php echo(getSettingValue("sessionMaxLength")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Longueur minimale du mot de passe :</td>
-		<td><input type="text" name="longmin_pwd" size="20" value="<?php echo(getSettingValue("longmin_pwd")); ?>" />
+		<td><input type="text" name="longmin_pwd" size="20" value="<?php echo(getSettingValue("longmin_pwd")); ?>" onchange='changement()' />
 		</td>
 	</tr>
         <?php if (isset($use_custom_denominations) && $use_custom_denominations) {
@@ -652,39 +670,39 @@ require_once("../lib/header.inc");
 	<tr>
 		<td style="font-variant: small-caps;">
 		Dénomination des professeurs :</td>
-		<td>Sing. :<input type="text" name="denomination_professeur" size="20" value="<?php echo(getSettingValue("denomination_professeur")); ?>" />
-		<br/>Pluriel :<input type="text" name="denomination_professeurs" size="20" value="<?php echo(getSettingValue("denomination_professeurs")); ?>" />
+		<td>Sing. :<input type="text" name="denomination_professeur" size="20" value="<?php echo(getSettingValue("denomination_professeur")); ?>" onchange='changement()' />
+		<br/>Pluriel :<input type="text" name="denomination_professeurs" size="20" value="<?php echo(getSettingValue("denomination_professeurs")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Dénomination des élèves :</td>
 		<td>Sing. :<input type="text" name="denomination_eleve" size="20" value="<?php echo(getSettingValue("denomination_eleve")); ?>" />
-		<br/>Pluriel :<input type="text" name="denomination_eleves" size="20" value="<?php echo(getSettingValue("denomination_eleves")); ?>" />
+		<br/>Pluriel :<input type="text" name="denomination_eleves" size="20" value="<?php echo(getSettingValue("denomination_eleves")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Dénomination des responsables légaux :</td>
-		<td>Sing. :<input type="text" name="denomination_responsable" size="20" value="<?php echo(getSettingValue("denomination_responsable")); ?>" />
-		<br/>Pluriel :<input type="text" name="denomination_responsables" size="20" value="<?php echo(getSettingValue("denomination_responsables")); ?>" />
+		<td>Sing. :<input type="text" name="denomination_responsable" size="20" value="<?php echo(getSettingValue("denomination_responsable")); ?>" onchange='changement()' />
+		<br/>Pluriel :<input type="text" name="denomination_responsables" size="20" value="<?php echo(getSettingValue("denomination_responsables")); ?>" onchange='changement()' />
 		</td>
 	</tr>
         <?php } ?>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Dénomination du professeur chargé du suivi des élèves :</td>
-		<td><input type="text" name="gepi_prof_suivi" size="20" value="<?php echo(getSettingValue("gepi_prof_suivi")); ?>" />
+		<td><input type="text" name="gepi_prof_suivi" size="20" value="<?php echo(getSettingValue("gepi_prof_suivi")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
 		Désignation des boites/conteneurs/emplacements/sous-matières :</td>
 		<td>
-		<input type="text" name="gepi_denom_boite" size="20" value="<?php echo(getSettingValue("gepi_denom_boite")); ?>" /><br />
+		<input type="text" name="gepi_denom_boite" size="20" value="<?php echo(getSettingValue("gepi_denom_boite")); ?>" onchange='changement()' /><br />
 		<table summary='Genre'><tr valign='top'><td>Genre:</td><td>
-		<input type="radio" name="gepi_denom_boite_genre" id="gepi_denom_boite_genre_m" value="m" <?php if(getSettingValue("gepi_denom_boite_genre")=="m"){echo 'checked';} ?> /> <label for='gepi_denom_boite_genre_m' style='cursor: pointer;'>Masculin</label><br />
-		<input type="radio" name="gepi_denom_boite_genre" id="gepi_denom_boite_genre_f" value="f" <?php if(getSettingValue("gepi_denom_boite_genre")=="f"){echo 'checked';} ?> /> <label for='gepi_denom_boite_genre_f' style='cursor: pointer;'>Féminin</label><br />
+		<input type="radio" name="gepi_denom_boite_genre" id="gepi_denom_boite_genre_m" value="m" <?php if(getSettingValue("gepi_denom_boite_genre")=="m"){echo 'checked';} ?> onchange='changement()' /> <label for='gepi_denom_boite_genre_m' style='cursor: pointer;'>Masculin</label><br />
+		<input type="radio" name="gepi_denom_boite_genre" id="gepi_denom_boite_genre_f" value="f" <?php if(getSettingValue("gepi_denom_boite_genre")=="f"){echo 'checked';} ?> onchange='changement()' /> <label for='gepi_denom_boite_genre_f' style='cursor: pointer;'>Féminin</label><br />
 		</td></tr></table>
 		</td>
 	</tr>
@@ -692,7 +710,7 @@ require_once("../lib/header.inc");
 		<td style="font-variant: small-caps;">
 		Mode de génération automatique des logins :</td>
 	<td>
-	<select name='mode_generation_login'>
+	<select name='mode_generation_login' onchange='changement()'>
 			<option value='name8'<?php if (getSettingValue("mode_generation_login")=='name8') echo " SELECTED"; ?>> nom (tronqué à 8 caractères)</option>
 			<option value='fname8'<?php if (getSettingValue("mode_generation_login")=='fname8') echo " SELECTED"; ?>> pnom (tronqué à 8 caractères)</option>
 			<option value='fname19'<?php if (getSettingValue("mode_generation_login")=='fname19') echo " SELECTED"; ?>> pnom (tronqué à 19 caractères)</option>
@@ -708,13 +726,13 @@ require_once("../lib/header.inc");
 		<td style="font-variant: small-caps;" valign='top'>
 		Mode de génération des mots de passe :<br />(<i style='font-size:small;'>Jeu de caractères à utiliser en plus des caractères numériques</i>)</td>
 	<td valign='top'>
-		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_y" value="y" <?php if((getSettingValue("mode_generation_pwd_majmin")=="y")||(getSettingValue("mode_generation_pwd_majmin")=="")) {echo 'checked';} ?> /> <label for='mode_generation_pwd_majmin_y' style='cursor: pointer;'>Majuscules et minuscules</label><br />
-		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_n" value="n" <?php if(getSettingValue("mode_generation_pwd_majmin")=="n"){echo 'checked';} ?> /> <label for='mode_generation_pwd_majmin_n' style='cursor: pointer;'>Minuscules seulement</label><br />
+		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_y" value="y" <?php if((getSettingValue("mode_generation_pwd_majmin")=="y")||(getSettingValue("mode_generation_pwd_majmin")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='mode_generation_pwd_majmin_y' style='cursor: pointer;'>Majuscules et minuscules</label><br />
+		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_n" value="n" <?php if(getSettingValue("mode_generation_pwd_majmin")=="n"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_generation_pwd_majmin_n' style='cursor: pointer;'>Minuscules seulement</label><br />
 
 		<table border='0' summary='Pass'>
 		<tr>
 		<td valign='top'>
-		<input type="checkbox" name="mode_generation_pwd_excl" id="mode_generation_pwd_excl" value="y" <?php if(getSettingValue("mode_generation_pwd_excl")=="y") {echo 'checked';} ?> />
+		<input type="checkbox" name="mode_generation_pwd_excl" id="mode_generation_pwd_excl" value="y" <?php if(getSettingValue("mode_generation_pwd_excl")=="y") {echo 'checked';} ?> onchange='changement()' />
 		</td>
 		<td valign='top'> <label for='mode_generation_pwd_excl' style='cursor: pointer;'>Exclure les caractères prêtant à confusion (<i>i, 1, l, I, 0, O, o</i>)</label><br />
 		</td>
@@ -751,7 +769,7 @@ require_once("../lib/header.inc");
 		<?php
 			if(getSettingValue("mode_utf8_visu_notes_pdf")=='y'){echo " checked";}
 		?>
-		/>
+		onchange='changement()' />
 		</td>
 	</tr>
 <?php
@@ -780,7 +798,7 @@ require_once("../lib/header.inc");
 		<?php
 			if(getSettingValue("mode_utf8_bulletins_pdf")=='y'){echo " checked";}
 		?>
-		/>
+		onchange='changement()' />
 		</td>
 	</tr>
 
@@ -788,7 +806,7 @@ require_once("../lib/header.inc");
 		<td style="font-variant: small-caps;">
 		Feuille de style à utiliser :</td>
 	<td>
-	<select name='gepi_stylesheet'>
+	<select name='gepi_stylesheet' onchange='changement()'>
 			<option value='style'<?php if (getSettingValue("gepi_stylesheet")=='style') echo " SELECTED"; ?>> Nouveau design</option>
 			<option value='style_old'<?php if (getSettingValue("gepi_stylesheet")=='style_old') echo " SELECTED"; ?>> Design proche des anciennes versions (1.4.*)</option>
 	</select>
@@ -832,11 +850,13 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 			else {
 				echo $unzipped_max_filesize;
 			}
-			echo "' size='3' /> Mo";
+			echo "' size='3' onchange='changement()' /> Mo";
 			echo "</td>\n";
 		}
 		else{
-			echo "<td style='font-variant: small-caps;'>En mettant en place la bibliothèque 'pclzip.lib.php' dans le dossier '/lib/', vous pouvez envoyer des fichiers Zippés vers le serveur.<br />Voir <a href='http://www.phpconcept.net/pclzip/index.php' style=''>http://www.phpconcept.net/pclzip/index.php</a></td>\n";
+			echo "<td style='font-variant: small-caps;'>En mettant en place la bibliothèque 'pclzip.lib.php' dans le dossier '/lib/', vous pouvez envoyer des fichiers Zippés vers le serveur.<br />Voir <a href='http://www.phpconcept.net/pclzip/index.php' style=''";
+			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+			echo ">http://www.phpconcept.net/pclzip/index.php</a></td>\n";
 			echo "<td>&nbsp;</td>\n";
 		}
 		echo "</tr>\n";
@@ -849,7 +869,9 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 		<div style='font-variant: normal; font-style: italic; font-size: small;'>Sous réserve:<br />
 		<ul>
 			<li style='font-variant: normal; font-style: italic; font-size: small;'>de créer des comptes pour les responsables et élèves,</li>
-			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'autoriser l'accès aux bulletins simplifiés ou aux graphes dans <a href='droits_acces.php'>Droits d'accès</a></li>
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'autoriser l'accès aux bulletins simplifiés ou aux graphes dans <a href='droits_acces.php'<?php
+			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+			?>>Droits d'accès</a></li>
 			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'opter pour le mode de déverrouillage automatique sur le critère "période close".</li>
 		</ul>
 		</div>
@@ -858,7 +880,28 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 			<?php
 			$delais_apres_cloture=getSettingValue("delais_apres_cloture");
 			if($delais_apres_cloture=="") {$delais_apres_cloture=0;}
-			echo "<input type='text' name='delais_apres_cloture' size='2' value='$delais_apres_cloture' />\n";
+			echo "<input type='text' name='delais_apres_cloture' size='2' value='$delais_apres_cloture' onchange='changement()' />\n";
+			?>
+		</td>
+	</tr>
+
+	<tr>
+		<td style="font-variant: small-caps;">
+		<a name='ancre_ele_lieu_naissance'></a>
+		<label for='ele_lieu_naissance' style='cursor: pointer'>Faire apparaitre les lieux de naissance des élèves&nbsp;:</label><br />
+		<div style='font-variant: normal; font-style: italic; font-size: small;'>
+			Conditionné par l'utilisation des 'code_commune_insee' importés depuis Sconet et par l'import des correspondances 'code_commune_insee/commune' dans la table 'communes' depuis <a href='../eleves/import_communes.php' <?php
+			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+			?>>Import des communes</a>.<br />
+		</div>
+		</td>
+		<td valign='top'>
+			<?php
+			$ele_lieu_naissance=getSettingValue("ele_lieu_naissance");
+			if($ele_lieu_naissance=="") {$ele_lieu_naissance="no";}
+			echo "<input type='checkbox' name='ele_lieu_naissance' id='ele_lieu_naissance' value='y'";
+			if($ele_lieu_naissance=='y') {echo " checked";}
+			echo " onchange='changement()' />\n";
 			?>
 		</td>
 	</tr>
@@ -878,7 +921,7 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 			if($exp_imp_chgt_etab=="") {$exp_imp_chgt_etab="no";}
 			echo "<input type='checkbox' name='exp_imp_chgt_etab' id='exp_imp_chgt_etab' value='yes'";
 			if($exp_imp_chgt_etab=='yes') {echo " checked";}
-			echo " />\n";
+			echo " onchange='changement()' />\n";
 			?>
 		</td>
 	</tr>
@@ -891,7 +934,7 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 		cette installation de GEPI doit faire l'objet d'une déclaration de traitement automatisé d'informations nominatives auprès
 		de la CNIL. Si ce n'est pas encore le cas, laissez libre le champ ci-contre</span>
 		</td>
-		<td><input type="text" name="num_enregistrement_cnil" size="20" value="<?php echo(getSettingValue("num_enregistrement_cnil")); ?>" />
+		<td><input type="text" name="num_enregistrement_cnil" size="20" value="<?php echo(getSettingValue("num_enregistrement_cnil")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 </table>
@@ -905,7 +948,7 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 echo "<tr><td colspan=2 style=\"font-variant: small-caps;\"><b>Logo de l'établissement : </b></td></tr>\n";
 echo "<tr><td colspan=2>Le logo est visible sur les bulletins officiels, ainsi que sur la page d'accueil publique des cahiers de texte</td></tr>\n";
 echo "<tr><td>Modifier le Logo (png, jpg et gif uniquement) : ";
-echo "<input type=\"file\" name=\"doc_file\" />\n";
+echo "<input type=\"file\" name=\"doc_file\" onchange='changement()' />\n";
 echo "<input type=\"submit\" name=\"valid_logo\" value=\"Enregistrer\" /><br />\n";
 echo "Supprimer le logo : <input type=\"submit\" name=\"sup_logo\" value=\"Supprimer le logo\" /></td>\n";
 
@@ -928,8 +971,8 @@ echo "</tr></table></form>\n";
 		<td style="font-variant: small-caps;">
 		Tester la présence du module phpMyVisite (<i>pmv.php</i>) :</td>
 	<td>
-		<input type="radio" name="gepi_pmv" id="gepi_pmv_y" value="y" <?php if(getSettingValue("gepi_pmv")!="n"){echo 'checked';} ?> /><label for='gepi_pmv_y' style='cursor: pointer;'> Oui</label><br />
-		<input type="radio" name="gepi_pmv" id="gepi_pmv_n" value="n" <?php if(getSettingValue("gepi_pmv")=="n"){echo 'checked';} ?> /><label for='gepi_pmv_n' style='cursor: pointer;'> Non</label><br />
+		<input type="radio" name="gepi_pmv" id="gepi_pmv_y" value="y" <?php if(getSettingValue("gepi_pmv")!="n"){echo 'checked';} ?> onchange='changement()' /><label for='gepi_pmv_y' style='cursor: pointer;'> Oui</label><br />
+		<input type="radio" name="gepi_pmv" id="gepi_pmv_n" value="n" <?php if(getSettingValue("gepi_pmv")=="n"){echo 'checked';} ?> onchange='changement()' /><label for='gepi_pmv_n' style='cursor: pointer;'> Non</label><br />
 	</td>
 	</tr>
 </table>
