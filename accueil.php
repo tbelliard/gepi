@@ -1955,5 +1955,38 @@ if ($_SESSION["statut"] == 'autre') {
 }
 // ========================== fin Statut AUTRE =============================
 
+
+/*************************
+        Module Epreuves blanches
+*************************/
+//insert into setting set name='active_mod_epreuve_blanche', value='y';
+if (getSettingValue("active_mod_epreuve_blanche")=='y') {
+$chemin = array();
+$chemin[]="/mod_epreuve_blanche/index.php";
+$titre = array();
+$titre[] = "Epreuves blanches";
+
+$expli = array();
+$expli[] = "Organisation d'épreuves blanches,...";
+
+$nb_ligne = count($chemin);
+$affiche = 'no';
+for ($i=0;$i<$nb_ligne;$i++) {
+if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+}
+if ($affiche=='yes') {
+echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Epreuves blanches</h2>\n";
+echo "<table class='menu' summary=\"Module Epreuves blanches. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+for ($i=0;$i<$nb_ligne;$i++) {
+affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+}
+echo "</table>";
+}
+}
+
+/*****************************
+        Fin module Epreuves blanches
+*****************************/
+
 require_once ("./lib/footer.inc.php");
 ?>
