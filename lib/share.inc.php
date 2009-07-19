@@ -3771,4 +3771,97 @@ function casse_mot($mot,$mode='maj') {
 	}
 }
 
+
+function javascript_tab_stat($pref_id,$cpt) {
+	// Fonction à appeler avec une portion de code du type:
+	/*
+	echo "<div style='position: fixed; top: 200px; right: 200px;'>\n";
+	javascript_tab_stat('tab_stat_',$cpt);
+	echo "</div>\n";
+	*/
+
+	$alt=1;
+	echo "<table class='boireaus' summary='Statistiques'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>Moyenne</th>\n";
+	echo "<td id='".$pref_id."moyenne'></td>\n";
+	echo "</tr>\n";
+	
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>Médiane</th>\n";
+	echo "<td id='".$pref_id."mediane'></td>\n";
+	echo "</tr>\n";
+	
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>Min</th>\n";
+	echo "<td id='".$pref_id."min'></td>\n";
+	echo "</tr>\n";
+	
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>Max</th>\n";
+	echo "<td id='".$pref_id."max'></td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+	echo "<script type='text/javascript' language='JavaScript'>
+
+function calcul_moy_med() {
+	var eff_utile=0;
+	var total=0;
+	var valeur;
+	var tab_valeur=new Array();
+	var i=0;
+	var j=0;
+	var n=0;
+	var mediane;
+	var moyenne;
+
+	for(i=0;i<$cpt;i++) {
+		if(document.getElementById('n'+i)) {
+			valeur=document.getElementById('n'+i).value;
+			if((valeur!='abs')&&(valeur!='disp')&&(valeur!='-')&&(valeur!='')) {
+				tab_valeur[j]=valeur;
+				// Tambouille pour éviter que 'valeur' soit pris pour une chaine de caractères
+				total=eval((total*100+valeur*100)/100);
+				eff_utile++;
+				j++;
+			}
+		}
+	}
+	if(eff_utile>0) {
+		moyenne=Math.round(10*total/eff_utile)/10;
+		document.getElementById('".$pref_id."moyenne').innerHTML=moyenne;
+
+		tab_valeur.sort((function(a,b){return a - b}));
+		n=tab_valeur.length;
+		if(n/2==Math.round(n/2)) {
+			// Les indices commencent à zéro
+			// Tambouille pour éviter que 'valeur' soit pris pour une chaine de caractères
+			mediane=((eval(100*tab_valeur[n/2-1]+100*tab_valeur[n/2]))/100)/2;
+		}
+		else {
+			mediane=tab_valeur[(n-1)/2];
+		}
+		document.getElementById('".$pref_id."mediane').innerHTML=mediane;
+
+		document.getElementById('".$pref_id."min').innerHTML=tab_valeur[0];
+		document.getElementById('".$pref_id."max').innerHTML=tab_valeur[n-1];
+	}
+	else {
+		document.getElementById('".$pref_id."moyenne').innerHTML='-';
+		document.getElementById('".$pref_id."mediane').innerHTML='-';
+		document.getElementById('".$pref_id."min').innerHTML='-';
+		document.getElementById('".$pref_id."max').innerHTML='-';
+	}
+}
+
+calcul_moy_med();
+</script>
+";
+}
+
 ?>

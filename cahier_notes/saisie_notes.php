@@ -328,6 +328,17 @@ if (isset($_POST['is_posted'])) {
 	//
 	$arret = 'no';
 	mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur,$arret);
+
+    //==========================================================
+    // Ajout d'un test:
+    // Si on modifie un devoir alors que des notes ont été reportées sur le bulletin, il faut penser à mettre à jour la recopie vers le bulletin.
+    $sql="SELECT 1=1 FROM matieres_notes WHERE periode='".$periode_num."' AND id_groupe='".$id_groupe."';";
+    $test_bulletin=mysql_query($sql);
+    if(mysql_num_rows($test_bulletin)>0) {
+        $msg=" ATTENTION: Des notes sont présentes sur le bulletin.<br />Si vous avez modifié ou ajouté des notes, pensez à mettre à jour la recopie vers le bulletin.";
+    }
+    //==========================================================
+
 	$affiche_message = 'yes';
 }
 
@@ -824,7 +835,8 @@ foreach ($liste_eleves as $eleve) {
 				}
 			}
 			if ($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N") {
-				$mess_note[$i][$k] = $mess_note[$i][$k]."\" onfocus=\"javascript:this.select()\" onchange=\"verifcol($num_id);changement()\" />";
+				//$mess_note[$i][$k] = $mess_note[$i][$k]."\" onfocus=\"javascript:this.select()\" onchange=\"verifcol($num_id);changement()\" />";
+				$mess_note[$i][$k] = $mess_note[$i][$k]."\" onfocus=\"javascript:this.select()\" onchange=\"verifcol($num_id);calcul_moy_med();changement()\" />";
 			}
 			$mess_note[$i][$k] .= "</td>\n";
 			//=========================================================
@@ -1589,6 +1601,13 @@ if ($id_devoir==0) {
 	}
 }
 echo "</tr></table>\n";
+
+//===================================
+echo "<div style='position: fixed; top: 220px; right: 200px;'>\n";
+//javascript_tab_stat('tab_stat_',$nombre_lignes);
+javascript_tab_stat('tab_stat_',$num_id);
+echo "</div>\n";
+//===================================
 
 // Préparation du pdf
 $header_pdf=serialize($header_pdf);
