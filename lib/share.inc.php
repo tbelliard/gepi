@@ -1006,7 +1006,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
                     $sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='$id_dev' AND statut!='-' AND statut!='v';";
                     $res_eff_dev=mysql_query($sql);
                     $eff_dev=mysql_num_rows($res_eff_dev);
-                    echo " <span style='font-size:small;";
+                    echo " <span title=\"Effectif des notes saisies/effectif total de l'enseignement\" style='font-size:small;";
                     if(isset($eff_groupe)) {if($eff_dev==$eff_groupe) {echo "color:green;";} else {echo "color:red;";}}
                     echo "'>($eff_dev";
                     if(isset($eff_groupe)) {echo "/$eff_groupe";}
