@@ -47,7 +47,8 @@ $ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele
 
 function extr_valeur($lig){
 	unset($tabtmp);
-	$tabtmp=explode(">",ereg_replace("<",">",$lig));
+	//$tabtmp=explode(">",ereg_replace("<",">",$lig));
+	$tabtmp=explode(">",strtr($lig,"<",">"));
 	return trim($tabtmp[2]);
 }
 
@@ -71,7 +72,7 @@ function affiche_debug($texte){
 // Initialisation du répertoire actuel de sauvegarde
 $dirname = getSettingValue("backup_directory");
 
-function info_debug($texte){
+function info_debug($texte) {
 	global $step;
 	global $dirname;
 
@@ -307,7 +308,7 @@ if(!isset($step)) {
 	//==============================
 	// AJOUT pour tenir compte de l'automatisation ou non:
 	//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
-	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label></p>\n";
+	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label>\n";
 	//==============================
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
@@ -513,6 +514,7 @@ else{
 					*/
 
 					$sql="DROP TABLE IF EXISTS temp_gep_import2;";
+					info_debug($sql);
 					$suppr_table = mysql_query($sql);
 
 					$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
@@ -543,9 +545,11 @@ else{
 					`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default ''
 					);";
+					info_debug($sql);
 					$create_table = mysql_query($sql);
 
 					$sql="TRUNCATE TABLE temp_gep_import2;";
+					info_debug($sql);
 					$vide_table = mysql_query($sql);
 
 					$fp=fopen($dest_file,"r");
@@ -619,7 +623,8 @@ else{
 
 												//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
 												// Suppression des guillemets éventuels
-												$eleves[$i]["structures"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+												//$eleves[$i]["structures"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+												$eleves[$i]["structures"][$j]["$tmpmin"]=preg_replace('/"/','',extr_valeur($ligne));
 
 												//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
 												break;
@@ -657,6 +662,7 @@ else{
 								$sql.="ele_id='".$eleves[$i]['eleve_id']."', ";
 								$sql.="divcod='".$eleves[$i]['classe']."';";
 								//echo "$sql<br />\n";
+								info_debug($sql);
 								$res_insert=mysql_query($sql);
 								if(!$res_insert){
 									echo "Erreur lors de la requête $sql<br />\n";
@@ -713,6 +719,7 @@ else{
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
 
 			$sql="TRUNCATE TABLE tempo2;";
+			info_debug($sql);
 			$res0=mysql_query($sql);
 
 			$dest_file="../temp/".$tempdir."/eleves.xml";
@@ -725,6 +732,7 @@ else{
 			else{
 				// On récupère les ele_id des élèves qui sont affectés dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
+				info_debug($sql);
 				$res_ele_id=mysql_query($sql);
 				affiche_debug("count(\$res_ele_id)=".count($res_ele_id)."<br />");
 
@@ -872,7 +880,8 @@ else{
 
 										// Suppression des guillemets éventuels
 										//$eleves[$i]["$tmpmin"]=extr_valeur($ligne);
-										$eleves[$i]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+										//$eleves[$i]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+										$eleves[$i]["$tmpmin"]=preg_replace('/"/','',extr_valeur($ligne));
 
 										affiche_debug("\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n");
 										break;
@@ -920,7 +929,8 @@ else{
 										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 										// Suppression des guillemets éventuels
 										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
-										$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+										$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=preg_replace('/"/','',extr_valeur($ligne));
 										affiche_debug( "\$eleves[$i][\"scolarite_an_dernier\"][\"$tmpmin\"]=".$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]."<br />\n");
 										break;
 									}
@@ -976,9 +986,11 @@ else{
 
 						if($temoin_date_sortie=="y") {
 							$sql="DELETE FROM temp_gep_import2 WHERE ele_id='".$eleves[$i]['eleve_id']."';";
+							info_debug($sql);
 							$nettoyage=mysql_query($sql);
 
 							$sql="INSERT INTO tempo2 SET col1='ele_id_eleve_parti', col2='".$eleves[$i]['eleve_id']."';";
+							info_debug($sql);
 							$insert=mysql_query($sql);
 						}
 						else {
@@ -1011,6 +1023,7 @@ else{
 							$sql=substr($sql,0,strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							affiche_debug("$sql<br />\n");
+							info_debug($sql);
 							$res_insert=mysql_query($sql);
 							if(!$res_insert){
 								echo "Erreur lors de la requête $sql<br />\n";
@@ -1088,6 +1101,7 @@ else{
 			else{
 				// On récupère les ele_id des élèves qui sont affectés dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
+				info_debug($sql);
 				$res_ele_id=mysql_query($sql);
 				//echo "count(\$res_ele_id)=".count($res_ele_id)."<br />";
 
@@ -1187,7 +1201,8 @@ else{
 
 										// Suppression des guillemets éventuels
 										//$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne);
-										$eleves[$i]["options"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+										//$eleves[$i]["options"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+										$eleves[$i]["options"][$j]["$tmpmin"]=ereg_replace('/"/','',extr_valeur($ligne));
 
 										//echo "\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n";
 										break;
@@ -1212,6 +1227,7 @@ else{
 							$sql.="eleopt$k='".$eleves[$i]["options"][$j]['code_matiere']."'";
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							affiche_debug("$sql<br />\n");
+							info_debug($sql);
 							$res_update=mysql_query($sql);
 							if(!$res_update){
 								echo "Erreur lors de la requête $sql<br />\n";
@@ -1225,7 +1241,9 @@ else{
 					}
 				}
 
-				$sql="SELECT 1=1 FROM tempo2 WHERE col1='ele_id_eleve_parti';";
+				//$sql="SELECT 1=1 FROM tempo2 WHERE col1='ele_id_eleve_parti';";
+				$sql="SELECT 1=1 FROM tempo2 WHERE col1='ele_id_eleve_parti' LIMIT 1;";
+				info_debug($sql);
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)==0) {$suite="3";} else {$suite="2b";}
 
@@ -1278,11 +1296,15 @@ else{
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 
+			echo "<p>Cochez les périodes pour lesquelles vous souhaitez désinscrire le ou les élèves qui ont quitté l'établissement et validez en bas de page pour passer à la suite.</p>\n";
+
 			$sql="SELECT col2 FROM tempo2 WHERE col1='ele_id_eleve_parti';";
+			info_debug($sql);
 			$res=mysql_query($sql);
 			while($lig=mysql_fetch_object($res)) {
 				$ele_id=$lig->col2;
 				$sql="SELECT * FROM eleves WHERE ele_id='$ele_id';";
+				info_debug($sql);
 				$res_ele=mysql_query($sql);
 				if(mysql_num_rows($res_ele)>0) {
 					$lig_ele=mysql_fetch_object($res_ele);
@@ -1291,6 +1313,7 @@ else{
 					echo "<blockquote>\n";
 					// On cherche les périodes pour lesquelles l'élève n'a pas de notes ni d'appréciations ni dans le carnet de notes ni sur le bulletin.
 					$sql="SELECT DISTINCT jec.id_classe, c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$lig_ele->login' ORDER BY periode,classe;";
+					info_debug($sql);
 					$res_class=mysql_query($sql);
 					if(mysql_num_rows($res_class)==0){
 						echo "Il n'est inscrit dans aucune classe.";
@@ -1325,6 +1348,7 @@ else{
 												cc.id=cd.id_conteneur AND
 												cd.id=cnd.id_devoir AND
 												cnd.login='$lig_ele->login';";
+							info_debug($sql);
 							$test1=mysql_query($sql);
 							$nb_notes=mysql_num_rows($test1);
 							if($nb_notes==0) {
@@ -1338,6 +1362,7 @@ else{
 	
 							echo "<td>\n";
 							$sql="SELECT 1=1 FROM matieres_notes WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
+							info_debug($sql);
 							$test2=mysql_query($sql);
 							$nb_notes_bull=mysql_num_rows($test2);
 							if($nb_notes_bull==0) {
@@ -1351,6 +1376,7 @@ else{
 	
 							echo "<td>\n";
 							$sql="SELECT 1=1 FROM matieres_appreciations WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
+							info_debug($sql);
 							$test3=mysql_query($sql);
 							$nb_app_bull=mysql_num_rows($test3);
 							if($nb_app_bull==0) {
@@ -1364,6 +1390,7 @@ else{
 
 							echo "<td>\n";
 							$sql="SELECT 1=1 FROM avis_conseil_classe WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
+							info_debug($sql);
 							$test4=mysql_query($sql);
 							$nb_avis=mysql_num_rows($test4);
 							if($nb_avis==0) {
@@ -1399,6 +1426,11 @@ else{
 
 			echo "</form>\n";
 
+			echo "<p><i>NOTES&nbsp;:</i></p>\n";
+			echo "<blockquote>\n";
+			echo "<p>Les élèves notés dans Sconet comme ayant quitté l'établissement peuvent être désinscrits des classes et enseignements sur les périodes futures.<br />On recherche ci-dessus les périodes sur lesquelles les élèves n'ont pas de note ni quoi que ce soit sur le bulletin.</p>\n";
+			echo "</blockquote>\n";
+
 			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop' onClick=\"test_stop_suite('3'); return false;\">Suite</a></p>\n";
 
 			break;
@@ -1409,6 +1441,7 @@ else{
 
 			// On vide la table dont on va se resservir plus tard:
 			$sql="TRUNCATE TABLE tempo2;";
+			info_debug($sql);
 			$res0=mysql_query($sql);
 
 
@@ -1424,17 +1457,20 @@ else{
 					$periode=$tab[1];
 
 					$sql="SELECT * FROM eleves WHERE login='$ele_login';";
+					info_debug($sql);
 					$res_ele=mysql_query($sql);
 					$lig_ele=mysql_fetch_object($res_ele);
 
 					echo "Désinscription des classes et des enseignements de ".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))." pour la période $periode: ";
 
 					$sql="DELETE FROM j_eleves_groupes WHERE login='$ele_login' AND periode='$periode';";
+					info_debug($sql);
 					if(!mysql_query($sql)) {
 						echo "<span style='color:red;'>ERREUR lors de la désinscription des enseignements</span>";
 					}
 					else {
 						$sql="DELETE FROM j_eleves_classes WHERE login='$ele_login' AND periode='$periode';";
+						info_debug($sql);
 						if(!mysql_query($sql)) {
 							echo "<span style='color:red;'>ERREUR lors de la désinscription de la classe</span>";
 						}
@@ -1466,9 +1502,11 @@ else{
 
 			if(!isset($parcours_diff)){
 				$sql="TRUNCATE TABLE tempo2;";
+				info_debug($sql);
 				$res0=mysql_query($sql);
 
 				$sql="SELECT ele_id,naissance FROM eleves";
+				info_debug($sql);
 				$res1=mysql_query($sql);
 				//$nb_eleves=mysql_num_rows($res1);
 				//if($nb_eleves==0){
@@ -1483,6 +1521,7 @@ else{
 
 				// Il faut prendre la table temp_gep_import2 comme référence pour les différences pour ne pas passer à côté des nouveaux élèves.
 				$sql="SELECT ELE_ID,ELEDATNAIS FROM temp_gep_import2";
+				info_debug($sql);
 				$res2=mysql_query($sql);
 				$nb_eleves=mysql_num_rows($res2);
 				if($nb_eleves==0){
@@ -1563,11 +1602,13 @@ else{
 					$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
 					//$sql="INSERT INTO tempo2 SET col1='$lig->ele_id', col2='$naissance';";
 					$sql="INSERT INTO tempo2 SET col1='$lig->ELE_ID', col2='$naissance';";
+					info_debug($sql);
 					$insert=mysql_query($sql);
 
 					// Est-ce un nouvel élève?
 					$sql="SELECT 1=1 FROM eleves e, temp_gep_import2 t WHERE e.ele_id=t.ELE_ID AND t.ELE_ID='$lig->ELE_ID'";
 					//echo "$sql<br />\n";
+					info_debug($sql);
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)==0){
 						if($cpt>0){$chaine_nouveaux.=", ";}
@@ -1732,12 +1773,14 @@ else{
 				//echo "$sql<br />";
 				//if($tab_ele_id[$i]=='305034') {echo "$sql<br />";}
 				//$reserve_sql=$sql;
+				info_debug($sql);
 				$test=mysql_query($sql);
 
 				$temoin_chgt_ancien_etab="n";
 				if ($gepiSchoolRne!="") {
 					// Ancien établissement précédemment enregistré
 					$sql="SELECT id_etablissement FROM j_eleves_etablissements jee, eleves e WHERE jee.id_eleve=e.elenoet AND e.elenoet!='' AND e.ele_id='".$tab_ele_id[$i]."';";
+					info_debug($sql);
 					//echo "$sql<br />";
 					$test_ee=mysql_query($sql);
 					if(mysql_num_rows($test_ee)>0) {
@@ -1750,6 +1793,7 @@ else{
 
 					// Test de modification de l'ancien établissement
 					$sql="SELECT ETOCOD_EP FROM temp_gep_import2 t WHERE t.ELE_ID='".$tab_ele_id[$i]."' AND t.ETOCOD_EP!='';";
+					info_debug($sql);
 					//echo "$sql<br />";
 					$test_nouvel_ancien_etb=mysql_query($sql);
 					if(mysql_num_rows($test_nouvel_ancien_etb)>0) {
@@ -1810,6 +1854,7 @@ else{
 						if($tab_ele_id[$i]=='782611') {echo "$sql<br />";}
 						//=============
 						//echo "$sql<br />";
+						info_debug($sql);
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0){
 							$lig=mysql_fetch_object($test);
@@ -1852,6 +1897,7 @@ else{
 											jer.login=e.login AND
 											t.ele_id=e.ele_id AND
 											((jer.doublant='-' AND t.ELEDOUBL='O') OR (jer.doublant!='-' AND t.ELEDOUBL='N'));";
+							info_debug($sql);
 							//echo "$sql<br />";
 							$test=mysql_query($sql);
 							if(mysql_num_rows($test)>0){
@@ -1957,6 +2003,7 @@ else{
 
 				// On vide la table dont on va se resservir:
 				$sql="TRUNCATE TABLE tempo2;";
+				info_debug($sql);
 				$res0=mysql_query($sql);
 			}
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
@@ -2006,6 +2053,7 @@ else{
 				if(isset($modif)){
 					for($i=0;$i<count($modif);$i++){
 						$sql="INSERT INTO tempo2 SET col1='modif', col2='$modif[$i]'";
+						info_debug($sql);
 						$insert=mysql_query($sql);
 					}
 				}
@@ -2013,6 +2061,7 @@ else{
 				if(isset($new)){
 					for($i=0;$i<count($new);$i++){
 						$sql="INSERT INTO tempo2 SET col1='new', col2='$new[$i]'";
+						info_debug($sql);
 						$insert=mysql_query($sql);
 
 						// A CE STADE OU AU SUIVANT, IL FAUDRAIT AUSSI PROPOSER D'AFFECTER LES ELEVES DANS LES CLASSES INDIQUEES... AVEC CHOIX DES PERIODES.
@@ -2099,6 +2148,7 @@ else{
 
 					$w=$k-1;
 					$sql="SELECT DISTINCT * FROM temp_gep_import2 WHERE ELE_ID='$tab_ele_id_diff[$w]';";
+					info_debug($sql);
 					//echo "<tr><td colspan='13'>$sql</td></tr>\n";
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)==0){
@@ -2135,6 +2185,7 @@ else{
 
 							//$sql="SELECT * FROM eleves WHERE elenoet='$affiche[4]'";
 							$sql="SELECT * FROM eleves WHERE (elenoet='$affiche[4]' OR elenoet='".sprintf("%05d",$affiche[4])."')";
+							info_debug($sql);
 							//echo "<tr><td colspan='13'>$sql</td></tr>\n";
 							$res1=mysql_query($sql);
 							if(mysql_num_rows($res1)>0){
@@ -2209,6 +2260,7 @@ else{
 
 
 								$sql="SELECT * FROM j_eleves_regime WHERE (login='$lig_ele->login')";
+								info_debug($sql);
 								$res2=mysql_query($sql);
 								if(mysql_num_rows($res2)>0){
 									$tmp_regime="";
@@ -2273,6 +2325,7 @@ else{
 
 								// Rechercher s'il y a un changement dans l'établissement d'origine
 								$sql="SELECT id_etablissement FROM j_eleves_etablissements jee WHERE jee.id_eleve='$lig_ele->elenoet';";
+								info_debug($sql);
 								$res_ee=mysql_query($sql);
 								if(mysql_num_rows($res_ee)>0) {
 									$lig_ee=mysql_fetch_object($res_ee);
@@ -2508,6 +2561,7 @@ else{
 
 
 								$sql="SELECT id_etablissement FROM j_eleves_etablissements WHERE id_eleve='$lig_ele->elenoet';";
+								info_debug($sql);
 								$res_ee=mysql_query($sql);
 								if(mysql_num_rows($res_ee)) {
 									$lig_ee=mysql_fetch_object($res_ee);
@@ -2732,6 +2786,7 @@ else{
 			if(isset($modif)){
 				for($i=0;$i<count($modif);$i++){
 					$sql="INSERT INTO tempo2 SET col1='modif', col2='$modif[$i]'";
+					info_debug($sql);
 					$insert=mysql_query($sql);
 				}
 			}
@@ -2739,6 +2794,7 @@ else{
 			if(isset($new)){
 				for($i=0;$i<count($new);$i++){
 					$sql="INSERT INTO tempo2 SET col1='new', col2='$new[$i]'";
+					info_debug($sql);
 					$insert=mysql_query($sql);
 				}
 			}
@@ -2753,6 +2809,7 @@ else{
 			$erreur=0;
 			$cpt=0;
 			$sql="SELECT DISTINCT t.* FROM temp_gep_import2 t, tempo2 t2 WHERE t.ELE_ID=t2.col2 AND t2.col1='modif'";
+			info_debug($sql);
 			$res_modif=mysql_query($sql);
 			if(mysql_num_rows($res_modif)>0){
 				echo "<p>Mise à jour des informations pour ";
@@ -2809,6 +2866,7 @@ else{
 					// Si on fait des imports avec Sconet, l'ELENOET n'est pas vide.
 					// Et l'interface ne permet pas actuellement de saisir/corriger un ELE_ID
 					$sql_tmp="SELECT elenoet,login FROM eleves WHERE ele_id='$lig->ELE_ID';";
+					info_debug($sql);
 					//echo "$sql_tmp<br />";
 					$res_tmp=mysql_query($sql_tmp);
 					if(mysql_num_rows($res_tmp)>0) {
@@ -2823,6 +2881,7 @@ else{
 						$sql.=" WHERE ele_id='".$lig->ELE_ID."';";
 						//echo "============<br />";
 						//echo "$sql<br />";
+						info_debug($sql);
 						$update=mysql_query($sql);
 						if($update){
 							echo "\n<span style='color:darkgreen;'>";
@@ -2840,6 +2899,7 @@ else{
 							$sql.=", regime='$regime'";
 						}
 						$sql.=" WHERE (login='$login_eleve');";
+						info_debug($sql);
 						$res2=mysql_query($sql);
 						if(!$res2){
 							echo " <span style='color:red;'>(*)</span>";
@@ -2852,6 +2912,7 @@ else{
 						// La reconnaissance de 'modif' a dû se faire sur l'ELENOET
 						$sql_tmp="SELECT ele_id,login FROM eleves WHERE elenoet='$lig->ELENOET';";
 						//echo "$sql_tmp<br />";
+						info_debug($sql);
 						$res_tmp=mysql_query($sql_tmp);
 						if(mysql_num_rows($res_tmp)>0) {
 							$lig_tmp=mysql_fetch_object($res_tmp);
@@ -2868,6 +2929,7 @@ else{
 							$sql.=" WHERE elenoet='".$lig->ELENOET."';";
 							//echo "============<br />";
 							//echo "$sql<br />";
+							info_debug($sql);
 							$update=mysql_query($sql);
 							if($update){
 								echo "\n<span style='color:darkgreen;'>";
@@ -2885,6 +2947,7 @@ else{
 								$sql.=", regime='$regime'";
 							}
 							$sql.=" WHERE (login='$login_eleve');";
+							info_debug($sql);
 							$res2=mysql_query($sql);
 							if(!$res2){
 								echo " <span style='color:red;'>(*)</span>";
@@ -2892,6 +2955,7 @@ else{
 							}
 
 							$sql="UPDATE responsables2 SET ele_id='$lig->ELE_ID' WHERE ele_id='$old_ele_id';";
+							info_debug($sql);
 							$correction2=mysql_query($sql);
 							if(!$correction2){
 								echo " <span style='color:plum;'>(*)</span>";
@@ -2911,19 +2975,23 @@ else{
 
 					if(strtolower($lig->ETOCOD_EP)!=strtolower($gepiSchoolRne)) {
 						$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
+						info_debug($sql);
 						$test_ee=mysql_query($sql);
 						if(mysql_num_rows($test_ee)>0) {
 							if($lig->ETOCOD_EP!="") {
 								$sql="UPDATE j_eleves_etablissements SET id_etablissement='$lig->ETOCOD_EP' WHERE id_eleve='$lig->ELENOET';";
+								info_debug($sql);
 								$update_ee=mysql_query($sql);
 							}
 							else {
 								$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
+								info_debug($sql);
 								$del_ee=mysql_query($sql);
 							}
 						}
 						else {
 							$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$lig->ELENOET', id_etablissement='$lig->ETOCOD_EP';";
+							info_debug($sql);
 							$insert_ee=mysql_query($sql);
 						}
 					}
@@ -2935,6 +3003,7 @@ else{
 
 			$cpt=0;
 			$sql="SELECT DISTINCT t.* FROM temp_gep_import2 t, tempo2 t2 WHERE t.ELE_ID=t2.col2 AND t2.col1='new'";
+			info_debug($sql);
 			$res_new=mysql_query($sql);
 			if(mysql_num_rows($res_new)>0){
 
@@ -2942,9 +3011,11 @@ else{
 				`ele_id` varchar(40) $chaine_mysql_collate NOT NULL default '',
 				`divcod` varchar(40) $chaine_mysql_collate NOT NULL default ''
 				);";
+				info_debug($sql);
 				$create_table = mysql_query($sql);
 
 				$sql="TRUNCATE TABLE temp_ele_classe;";
+				info_debug($sql);
 				$vide_table = mysql_query($sql);
 
 
@@ -2953,6 +3024,7 @@ else{
 					// ON VERIFIE QU'ON N'A PAS DEJA UN ELEVE DE MEME ele_id DANS eleves
 					// CELA PEUT ARRIVER SI ON JOUE AVEC F5
 					$sql="SELECT 1=1 FROM eleves WHERE ele_id='$lig->ELE_ID'";
+					info_debug($sql);
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)==0){
 						//echo "New: $lig->ELE_ID : $lig->ELENOM $lig->ELEPRE<br />";
@@ -3032,6 +3104,7 @@ else{
 							$sql.=", lieu_naissance='".$lig->LIEU_NAISSANCE."'";
 						}
 						$sql.=";";
+						info_debug($sql);
 						$insert=mysql_query($sql);
 						if($insert){
 							echo "\n<span style='color:blue;'>";
@@ -3048,6 +3121,7 @@ else{
 						$sql="INSERT INTO j_eleves_regime SET doublant='$doublant',
 									regime='$regime',
 									login='$login_eleve';";
+						info_debug($sql);
 						$res2=mysql_query($sql);
 						if(!$res2){
 							echo " <span style='color:red;'>(*)</span>";
@@ -3057,19 +3131,23 @@ else{
 
 						if(strtolower($lig->ETOCOD_EP)!=strtolower($gepiSchoolRne)) {
 							$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
+							info_debug($sql);
 							$test_ee=mysql_query($sql);
 							if(mysql_num_rows($test_ee)>0) {
 								if($lig->ETOCOD_EP!="") {
 									$sql="UPDATE j_eleves_etablissements SET id_etablissement='$lig->ETOCOD_EP' WHERE id_eleve='$lig->ELENOET';";
+									info_debug($sql);
 									$update_ee=mysql_query($sql);
 								}
 								else {
 									$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
+									info_debug($sql);
 									$del_ee=mysql_query($sql);
 								}
 							}
 							else {
 								$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$lig->ELENOET', id_etablissement='$lig->ETOCOD_EP';";
+								info_debug($sql);
 								$insert_ee=mysql_query($sql);
 							}
 						}
@@ -3080,6 +3158,7 @@ else{
 						// (dans step1.php, on a fait le même traitement que pour le remplissage de temp_gep_import2 ici)
 						$classe=traitement_magic_quotes(corriger_caracteres($lig->DIVCOD));
 						$sql="INSERT INTO temp_ele_classe SET ele_id='".$lig->ELE_ID."', divcod='$classe'";
+						info_debug($sql);
 						$insert=mysql_query($sql);
 
 						$cpt++;
@@ -3147,6 +3226,7 @@ else{
 			// DISTINCT parce qu'on peut avoir plusieurs enregistrements d'un même élève dans 'temp_ele_classe' si on a joué avec F5.
 			// ERREUR: Il faut régler le problème plus haut parce que si on insère plusieurs fois l'élève, il est plusieurs fois dans 'eleves' avec des logins différents.
 			$sql="SELECT DISTINCT e.*,t.divcod FROM temp_ele_classe t,eleves e WHERE t.ele_id=e.ele_id ORDER BY e.nom,e.prenom";
+			info_debug($sql);
 			$res_ele=mysql_query($sql);
 
 			//echo mysql_num_rows($res_ele);
@@ -3158,6 +3238,7 @@ else{
 			else{
 
 				$sql="SELECT DISTINCT num_periode FROM periodes ORDER BY num_periode DESC LIMIT 1";
+				info_debug($sql);
 				$res_per=mysql_query($sql);
 
 				if(mysql_num_rows($res_per)==0){
@@ -3233,6 +3314,7 @@ else{
 						echo "</td>\n";
 
 						$sql="SELECT c.id FROM classes c WHERE c.classe='$lig_ele->divcod';";
+						info_debug($sql);
 						$res_classe=mysql_query($sql);
 						if(mysql_num_rows($res_classe)>0){
 							$lig_classe=mysql_fetch_object($res_classe);
@@ -3246,6 +3328,7 @@ else{
 													WHERE p.id_classe=c.id AND
 															c.classe='$lig_ele->divcod'
 													ORDER BY num_periode;";
+							info_debug($sql);
 							$res_per=mysql_query($sql);
 							$cpt_periode=1;
 							while($lig_per=mysql_fetch_object($res_per)){
@@ -3262,6 +3345,7 @@ else{
 						else{
 							// La classe n'a pas été identifiée
 							$sql="SELECT DISTINCT id,classe FROM classes ORDER BY classe";
+							info_debug($sql);
 							$res_classe=mysql_query($sql);
 							echo "<td>\n";
 							if(mysql_num_rows($res_classe)>0){
@@ -3342,6 +3426,7 @@ else{
 				for($i=0;$i<count($login_eleve);$i++){
 					$sql="SELECT nom, prenom FROM eleves WHERE login='$login_eleve[$i]'";
 					//echo $sql."<br />";
+					info_debug($sql);
 					$res_ele=mysql_query($sql);
 					if(mysql_num_rows($res_ele)>0){
 						$lig_ele=mysql_fetch_object($res_ele);
@@ -3354,6 +3439,7 @@ else{
 
 							if(isset($tab_periode)){
 								$sql="SELECT classe FROM classes WHERE id='$id_classe[$i]'";
+								info_debug($sql);
 								$test=mysql_query($sql);
 								if(mysql_num_rows($test)>0){
 									$lig_classe=mysql_fetch_object($test);
@@ -3372,6 +3458,7 @@ else{
 											//if(is_int($tab_periode[$j])){
 											if(is_numeric($tab_periode[$j])){
 												$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$tab_periode[$j]'";
+												info_debug($sql);
 												$test=mysql_query($sql);
 
 												if(mysql_num_rows($test)>0){
@@ -3379,6 +3466,7 @@ else{
 													$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$login_eleve[$i]' AND
 																						id_classe='$id_classe[$i]' AND
 																						periode='$tab_periode[$j]'";
+													info_debug($sql);
 													$test=mysql_query($sql);
 
 													if(mysql_num_rows($test)==0){
@@ -3386,6 +3474,7 @@ else{
 																							id_classe='$id_classe[$i]',
 																							periode='$tab_periode[$j]',
 																							rang='0'";
+														info_debug($sql);
 														$insert=mysql_query($sql);
 													}
 													if($cpt_per>0){echo ", ";}
@@ -3432,6 +3521,7 @@ else{
 
 			if(!isset($opt_eleve)){
 				$sql="SELECT e.* FROM eleves e, temp_ele_classe t WHERE t.ele_id=e.ele_id ORDER BY e.nom,e.prenom";
+				info_debug($sql);
 				$res_ele=mysql_query($sql);
 
 				if(mysql_num_rows($res_ele)==0){
@@ -3461,6 +3551,7 @@ else{
 				$login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : NULL;
 				$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode";
+				info_debug($sql);
 				$res_per=mysql_query($sql);
 				$nb_periode=mysql_num_rows($res_per)+1;
 
@@ -3470,9 +3561,11 @@ else{
 					if("$cpe_resp"!=""){
 						// Par précaution:
 						$sql="DELETE FROM j_eleves_cpe WHERE e_login='$login_eleve' AND cpe_login='$cpe_resp'";
+						info_debug($sql);
 						$nettoyage_cpe=mysql_query($sql);
 
 						$sql="INSERT INTO j_eleves_cpe SET e_login='$login_eleve', cpe_login='$cpe_resp'";
+						info_debug($sql);
 						$insert_cpe=mysql_query($sql);
 					}
 				}
@@ -3485,11 +3578,13 @@ else{
 						$sql="DELETE FROM j_eleves_professeurs WHERE login='$login_eleve' AND professeur='$pp_resp' AND id_classe='$id_classe';";
 						// DEBUG:
 						//echo "$sql<br />\n";
+						info_debug($sql);
 						$nettoyage_pp=mysql_query($sql);
 
 						$sql="INSERT INTO j_eleves_professeurs SET login='$login_eleve', professeur='$pp_resp', id_classe='$id_classe';";
 						// DEBUG:
 						//echo "$sql<br />\n";
+						info_debug($sql);
 						$insert_pp=mysql_query($sql);
 					}
 				}
@@ -3539,6 +3634,7 @@ else{
 
 				if(isset($eleve)){
 					$sql="SELECT e.* FROM eleves e WHERE e.ele_id='$eleve[0]'";
+					info_debug($sql);
 					$res_ele=mysql_query($sql);
 
 					$lig_ele=mysql_fetch_object($res_ele);
@@ -3570,6 +3666,7 @@ else{
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_classes jec
 									WHERE jec.id_classe=c.id AND
 										jec.login='$login_eleve'";
+			info_debug($sql);
 			$res_classe=mysql_query($sql);
 
 			if(mysql_num_rows($res_classe)==0){
@@ -3587,6 +3684,7 @@ else{
 				$id_classe=$lig_classe->id;
 
 				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode";
+				info_debug($sql);
 				$res_per=mysql_query($sql);
 
 				if(mysql_num_rows($res_per)==0){
@@ -3603,6 +3701,7 @@ else{
 					// A FAIRE: boireaus 20071129
 					//          Ajouter l'association avec le PP et le CPE
 					$sql="SELECT login, nom, prenom FROM utilisateurs WHERE statut='cpe' ORDER BY nom, prenom;";
+					info_debug($sql);
 					$res_cpe=mysql_query($sql);
 
 					echo "<table border='0'>\n";
@@ -3623,6 +3722,7 @@ else{
 										WHERE jep.id_classe='$id_classe' AND
 												jep.professeur=u.login
 										ORDER BY u.nom, u.prenom;";
+					info_debug($sql);
 					$res_pp=mysql_query($sql);
 					if(mysql_num_rows($res_pp)>0){
 						echo "<tr><td>".ucfirst(getSettingValue('gepi_prof_suivi')).": </td><td><select name='pp_resp'>\n";
@@ -3662,6 +3762,7 @@ else{
 									WHERE (g.id = jgc.id_groupe AND
 											jgc.id_classe = '" . $id_classe ."')
 									ORDER BY jgc.priorite, g.name";
+					info_debug($sql);
 					$call_group=mysql_query($sql);
 					$nombre_ligne=mysql_num_rows($call_group);
 
@@ -3727,6 +3828,7 @@ else{
 
 							$sql="SELECT * FROM j_eleves_classes WHERE login='$login_eleve' AND periode='$j' AND id_classe='$id_classe'";
 							// CA NE VA PAS... SUR LES GROUPES A REGROUPEMENT, IL FAUT PRENDRE DES PRECAUTIONS...
+							info_debug($sql);
 							$res_test_class_per=mysql_query($sql);
 							if(mysql_num_rows($res_test_class_per)==0){
 								if (mysql_num_rows($test) == "0") {
@@ -3734,13 +3836,16 @@ else{
 								}
 								else{
 									$sql="SELECT DISTINCT id_classe FROM j_groupes_classes WHERE id_groupe='$id_groupe'";
+									info_debug($sql);
 									$res_grp=mysql_query($sql);
 									$temoin="";
 									while($lig_clas=mysql_fetch_object($res_grp)){
 										$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$lig_clas->id_classe' AND login='$login_eleve' AND periode='$j'";
+										info_debug($sql);
 										$res_test_ele=mysql_query($sql);
 										if(mysql_num_rows($res_test_ele)==1){
 											$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
+											info_debug($sql);
 											$res_tmp=mysql_query($sql);
 											$lig_tmp=mysql_fetch_object($res_tmp);
 											$clas_tmp=$lig_tmp->classe;
@@ -4003,6 +4108,7 @@ else{
 						PRIMARY KEY  (`pers_id`));";
 					*/
 					$sql="DROP TABLE IF EXISTS temp_resp_pers_import;";
+					info_debug($sql);
 					$nettoyage = mysql_query($sql);
 
 					$sql="CREATE TABLE IF NOT EXISTS temp_resp_pers_import (
@@ -4018,10 +4124,12 @@ else{
 							`adr_id` varchar(10) $chaine_mysql_collate NOT NULL,
 							`statut` varchar(100) $chaine_mysql_collate NOT NULL,
 						PRIMARY KEY  (`pers_id`));";
+					info_debug($sql);
 					$create_table = mysql_query($sql);
 
 					$sql="TRUNCATE TABLE temp_resp_pers_import;";
 					//$sql="TRUNCATE TABLE resp_pers;";
+					info_debug($sql);
 					$vide_table = mysql_query($sql);
 
 					flush();
@@ -4100,7 +4208,8 @@ else{
 
 											// Suppression des guillemets éventuels
 											//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
-											$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+											//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+											$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',extr_valeur($ligne))));
 
 											affiche_debug("\$personnes[$i][\"$tmpmin\"]=".$personnes[$i]["$tmpmin"]."<br />\n");
 											break;
@@ -4148,6 +4257,7 @@ else{
 								// ILS NE DEVRAIENT PAS ETRE DESTINATAIRES DE BULLETINS,...
 							}
 							affiche_debug("$sql<br />\n");
+							info_debug($sql);
 							$res_insert=mysql_query($sql);
 							if(!$res_insert){
 								echo "Erreur lors de la requête $sql<br />\n";
@@ -4236,10 +4346,12 @@ else{
 						`resp_legal` varchar(1) $chaine_mysql_collate NOT NULL,
 						`pers_contact` varchar(1) $chaine_mysql_collate NOT NULL
 						);";
+				info_debug($sql);
 				$create_table = mysql_query($sql);
 
 				$sql="TRUNCATE TABLE temp_responsables2_import;";
 				//$sql="TRUNCATE TABLE responsables2;";
+				info_debug($sql);
 				$vide_table = mysql_query($sql);
 
 				/*
@@ -4311,7 +4423,8 @@ else{
 
 									// Suppression des guillemets éventuels (il ne devrait pas y en avoir là)
 									//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
-									$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+									//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+									$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('/"/','',extr_valeur($ligne))));
 
 									affiche_debug("\$responsables[$i][\"$tmpmin\"]=".$responsables[$i]["$tmpmin"]."<br />\n");
 									break;
@@ -4335,6 +4448,7 @@ else{
 					$sql.="resp_legal='".$responsables[$i]["resp_legal"]."', ";
 					$sql.="pers_contact='".$responsables[$i]["pers_contact"]."';";
 					affiche_debug("$sql<br />\n");
+					info_debug($sql);
 					$res_insert=mysql_query($sql);
 					if(!$res_insert){
 						echo "Erreur lors de la requête $sql<br />\n";
@@ -4410,6 +4524,7 @@ else{
 				*/
 
 				$sql="DROP TABLE IF EXISTS temp_resp_adr_import;";
+				info_debug($sql);
 				$nettoyage = mysql_query($sql);
 
 				$sql="CREATE TABLE IF NOT EXISTS temp_resp_adr_import (
@@ -4423,10 +4538,12 @@ else{
 						`commune` varchar(50) $chaine_mysql_collate NOT NULL,
 						`statut` varchar(100) $chaine_mysql_collate NOT NULL,
 					PRIMARY KEY  (`adr_id`));";
+				info_debug($sql);
 				$create_table = mysql_query($sql);
 
 				$sql="TRUNCATE TABLE temp_resp_adr_import;";
 				//$sql="TRUNCATE TABLE resp_adr;";
+				info_debug($sql);
 				$vide_table = mysql_query($sql);
 
 				/*
@@ -4510,7 +4627,8 @@ else{
 
 									// Suppression des guillemets éventuels
 									//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
-									$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+									//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+									$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',extr_valeur($ligne))));
 
 									//echo "\$adresses[$i][\"$tmpmin\"]=".$adresses[$i]["$tmpmin"]."<br />\n";
 									break;
@@ -4557,6 +4675,7 @@ else{
 					$sql=substr($sql,0,strlen($sql)-2);
 					$sql.=";";
 					affiche_debug("$sql<br />\n");
+					info_debug($sql);
 					$res_insert=mysql_query($sql);
 					if(!$res_insert){
 						echo "Erreur lors de la requête $sql<br />\n";
@@ -4637,6 +4756,7 @@ else{
 				echo "<p>On va commencer les comparaisons...</p>\n";
 
 				$sql="SELECT COUNT(pers_id) AS nb_pers FROM temp_resp_pers_import;";
+				info_debug($sql);
 				$res0=mysql_query($sql);
 				$lig=mysql_fetch_object($res0);
 
@@ -4658,6 +4778,7 @@ else{
 
 			$sql="SELECT pers_id FROM temp_resp_pers_import WHERE statut='' LIMIT 20;";
 			//echo "$sql<br />";
+			info_debug($sql);
 			$res1=mysql_query($sql);
 			//echo "mysql_num_rows(\$res1)=".mysql_num_rows($res1)."<br />";
 
@@ -4668,22 +4789,27 @@ else{
 
 				// On stocke dans la table tempo2 la liste des pers_id pour lesquels un changement a eu lieu:
 				$sql="TRUNCATE TABLE tempo2;";
+				info_debug($sql);
 				$res0=mysql_query($sql);
 
 				//=======================================================
 				// STOCKAGE DES pers_id DISPARUS DE temp_resp_pers_import
 				$sql="insert into tempo2 SELECT rp.pers_id,rp.pers_id FROM resp_pers rp WHERE rp.pers_id NOT IN (SELECT pers_id FROM temp_resp_pers_import);";
+				info_debug($sql);
 				$insert=mysql_query($sql);
 				$sql="UPDATE tempo2 SET col1='pers_id_disparu';";
+				info_debug($sql);
 				$update=mysql_query($sql);
 				//=======================================================
 
 				$sql="SELECT pers_id FROM temp_resp_pers_import WHERE statut='nouveau' OR statut='modif';";
 				//echo "$sql<br />";
+				info_debug($sql);
 				$res2=mysql_query($sql);
 				if(mysql_num_rows($res2)>0) {
 					while($lig2=mysql_fetch_object($res2)) {
 						$sql="INSERT INTO tempo2 SET col1='pers_id', col2='$lig2->pers_id'";
+						info_debug($sql);
 						$insert=mysql_query($sql);
 					}
 				}
@@ -4720,12 +4846,14 @@ else{
 
 				// Afficher les différences déjà trouvées...
 				$sql="SELECT COUNT(pers_id) AS nb_nouveau FROM temp_resp_pers_import WHERE statut='nouveau';";
+				info_debug($sql);
 				$res0=mysql_query($sql);
 				$lig=mysql_fetch_object($res0);
 				$nb_nouveau=$lig->nb_nouveau;
 				if($nb_nouveau!=0) {echo "<p>$nb_nouveau nouveau(x) trouvé(s) auparavant.</p>\n";}
 
 				$sql="SELECT COUNT(pers_id) AS nb_modif FROM temp_resp_pers_import WHERE statut='modif';";
+				info_debug($sql);
 				$res0=mysql_query($sql);
 				$lig=mysql_fetch_object($res0);
 				$nb_modif=$lig->nb_modif;
@@ -4740,6 +4868,7 @@ else{
 				//$chaine_nouveaux="";
 				while($lig=mysql_fetch_object($res1)){
 					$sql="SELECT 1=1 FROM resp_pers rp, temp_resp_pers_import t WHERE rp.pers_id=t.pers_id AND t.pers_id='$lig->pers_id'";
+					info_debug($sql);
 					$test=mysql_query($sql);
 					info_debug("Test diff $lig->pers_id");
 					if(mysql_num_rows($test)==0){
@@ -4752,6 +4881,7 @@ else{
 												trp.pers_id=tr.pers_id AND
 												tr.ele_id=e.ele_id";
 						//echo "$sql<br />";
+						info_debug($sql);
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0){
 							info_debug("$lig->pers_id est bien un nouveau");
@@ -4763,6 +4893,7 @@ else{
 							echo "<span style='color:blue;'>".$lig->pers_id."</span>";
 							//echo "<input type='hidden' name='tab_pers_id_diff[]' value='$lig->pers_id' />\n";
 							$sql="UPDATE temp_resp_pers_import SET statut='nouveau' WHERE pers_id='$lig->pers_id';";
+							info_debug($sql);
 							//echo "$sql<br />";
 							$update=mysql_query($sql);
 							$cpt++;
@@ -4772,6 +4903,7 @@ else{
 							// Ce 'nouveau' responsable n'est associé à aucun élève de 'eleves'...
 							// Pour ne pas laisser le statut vide (signe qu'on n'a pas encore testé ce pers_id):
 							$sql="UPDATE temp_resp_pers_import SET statut='-' WHERE pers_id='$lig->pers_id';";
+							info_debug($sql);
 							$update=mysql_query($sql);
 						}
 					}
@@ -4793,6 +4925,7 @@ else{
 												)
 												AND rp.pers_id='".$lig->pers_id."';";
 						//echo "$sql<br />\n";
+						info_debug($sql);
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0){
 							info_debug("... avec une diff au moins dans resp_pers");
@@ -4803,6 +4936,7 @@ else{
 							echo "<span style='color:green;'>".$lig->pers_id."</span>";
 							//echo "<input type='hidden' name='tab_pers_id_diff[]' value='$lig->pers_id' />\n";
 							$sql="UPDATE temp_resp_pers_import SET statut='modif' WHERE pers_id='$lig->pers_id';";
+							info_debug($sql);
 							$update=mysql_query($sql);
 							$cpt++;
 						}
@@ -4810,6 +4944,7 @@ else{
 							info_debug("... sans diff dans resp_pers");
 							// Pour ne pas laisser le statut vide (signe qu'on n'a pas encore testé ce pers_id):
 							$sql="UPDATE temp_resp_pers_import SET statut='-' WHERE pers_id='$lig->pers_id';";
+							info_debug($sql);
 							$update=mysql_query($sql);
 						}
 					}
@@ -4926,6 +5061,7 @@ else{
 				echo "<p>On va commencer les comparaisons...</p>\n";
 
 				$sql="SELECT COUNT(adr_id) AS nb_adr FROM temp_resp_adr_import;";
+				info_debug($sql);
 				$res0=mysql_query($sql);
 				$lig=mysql_fetch_object($res0);
 
@@ -4947,6 +5083,7 @@ else{
 
 
 			$sql="SELECT DISTINCT adr_id FROM temp_resp_adr_import WHERE statut='' LIMIT 20;";
+			info_debug($sql);
 			//echo "$sql<br />";
 			$res1=mysql_query($sql);
 			//echo "mysql_num_rows(\$res1)=".mysql_num_rows($res1)."<br />";
@@ -4959,6 +5096,7 @@ else{
 				flush();
 
 				$sql="SELECT adr_id FROM temp_resp_adr_import WHERE statut='nouveau' OR statut='modif';";
+				info_debug($sql);
 				//echo "$sql<br />";
 				$res2=mysql_query($sql);
 				if(mysql_num_rows($res2)>0) {
@@ -4966,22 +5104,26 @@ else{
 					while($lig2=mysql_fetch_object($res2)) {
 
 						$sql="SELECT DISTINCT pers_id FROM resp_pers WHERE adr_id='".$lig2->adr_id."';";
+						info_debug($sql);
 						$test=mysql_query($sql);
 
 						if(mysql_num_rows($test)>0){
 							while($lig3=mysql_fetch_object($test)){
 								$sql="INSERT INTO tempo2 SET col1='pers_id', col2='".$lig3->pers_id."';";
+								info_debug($sql);
 								$insert=mysql_query($sql);
 								info_debug("Modif adresse $lig2->adr_id pour resp_pers.pers_id=$lig3->pers_id");
 							}
 						}
 						else{
 							$sql="SELECT DISTINCT pers_id FROM temp_resp_pers_import WHERE adr_id='".$lig2->adr_id."';";
+							info_debug($sql);
 							$test=mysql_query($sql);
 
 							if(mysql_num_rows($test)>0){
 								while($lig3=mysql_fetch_object($test)){
 									$sql="INSERT INTO tempo2 SET col1='pers_id', col2='$lig3->pers_id'";
+									info_debug($sql);
 									$insert=mysql_query($sql);
 									info_debug("Nouvelle adresse $lig2->adr_id pour temp_resp_pers_import.pers_id=$lig3->pers_id");
 								}
@@ -5002,6 +5144,7 @@ else{
 				else{
 					//echo "<input type='hidden' name='step' value='a15' />\n";
 					$sql="SELECT 1=1 FROM tempo2 WHERE col1='pers_id_disparu' LIMIT 1;";
+					info_debug($sql);
 					$test=mysql_query($sql);
 					if (mysql_num_rows($test)>0) {
 						echo "<input type='hidden' name='step' value='14b' />\n";
@@ -5039,12 +5182,14 @@ else{
 
 				// Afficher les différences déjà trouvées...
 				$sql="SELECT COUNT(adr_id) AS nb_nouveau FROM temp_resp_adr_import WHERE statut='nouveau';";
+				info_debug($sql);
 				$res0=mysql_query($sql);
 				$lig=mysql_fetch_object($res0);
 				$nb_nouveau=$lig->nb_nouveau;
 				if($nb_nouveau!=0) {echo "<p>$nb_nouveau nouveau(x) trouvé(s) auparavant.</p>\n";}
 
 				$sql="SELECT COUNT(adr_id) AS nb_modif FROM temp_resp_adr_import WHERE statut='modif';";
+				info_debug($sql);
 				$res0=mysql_query($sql);
 				$lig=mysql_fetch_object($res0);
 				$nb_modif=$lig->nb_modif;
@@ -5060,6 +5205,7 @@ else{
 					//$time1=time();
 					// Est-ce une nouvelle adresse responsable?
 					$sql="SELECT 1=1 FROM resp_adr ra WHERE ra.adr_id='$lig->adr_id'";
+					info_debug($sql);
 					$test1=mysql_query($sql);
 
 					if(mysql_num_rows($test1)==0){
@@ -5070,6 +5216,7 @@ else{
 						echo "<span style='color:blue;'>".$lig->adr_id."</span>";
 						$sql="UPDATE temp_resp_adr_import SET statut='nouveau' WHERE adr_id='$lig->adr_id';";
 						//echo "$sql<br />";
+						info_debug($sql);
 						$update=mysql_query($sql);
 
 						info_debug("Nouvelle adresse adr_id=$lig->adr_id");
@@ -5091,6 +5238,7 @@ else{
 												)
 												AND ra.adr_id='".$lig->adr_id."';";
 						//echo "$sql<br />\n";
+						info_debug($sql);
 						$test=mysql_query($sql);
 						$diff_debug_time=time()-$debug_time;
 						info_debug("Test modif adr_id=$lig->adr_id (durée: $diff_debug_time)");
@@ -5100,6 +5248,7 @@ else{
 							}
 							echo "<span style='color:green;'>".$lig->adr_id."</span>";
 							$sql="UPDATE temp_resp_adr_import SET statut='modif' WHERE adr_id='$lig->adr_id';";
+							info_debug($sql);
 							//echo "$sql<br />";
 							$update=mysql_query($sql);
 							info_debug("Adresse modifiée adr_id=$lig->adr_id");
@@ -5109,6 +5258,7 @@ else{
 							// Pas de différence sur l'adresse
 							// Pour ne pas laisser le statut vide (signe qu'on n'a pas encore testé ce pers_id):
 							$sql="UPDATE temp_resp_adr_import SET statut='-' WHERE adr_id='$lig->adr_id';";
+							info_debug($sql);
 							$update=mysql_query($sql);
 							info_debug("Adresse adr_id=$lig->adr_id inchangée.");
 						}
@@ -5164,6 +5314,7 @@ else{
 			//==============================
 
 			$sql="SELECT col2 FROM tempo2 WHERE col1='pers_id_disparu';";
+			info_debug($sql);
 			$test=mysql_query($sql);
 			$nb_disparus=mysql_num_rows($test);
 
@@ -5201,6 +5352,7 @@ else{
 				$pers_id=$lig1->col2;
 
 				$sql="SELECT * FROM resp_pers WHERE pers_id='$pers_id'";
+				info_debug($sql);
 				$res_pers1=mysql_query($sql);
 				if(mysql_num_rows($res_pers1)==0){
 					// CA NE DEVRAIT PAS ARRIVER
@@ -5242,6 +5394,7 @@ else{
 
 					$ligne_parent.="<td>\n";
 					$sql="SELECT e.login, e.nom, e.prenom, r.resp_legal FROM eleves e, responsables2 r WHERE r.pers_id='$pers_id' AND r.ele_id=e.ele_id ORDER BY e.prenom;";
+					info_debug($sql);
 					//$ligne_parent.="$sql<br />";
 					$res_ele=mysql_query($sql);
 					if(mysql_num_rows($res_ele)==0) {
@@ -5312,6 +5465,7 @@ else{
 
 				for($i=0;$i<count($valid_pers_id);$i++) {
 					$sql="SELECT nom, prenom, civilite FROM resp_pers WHERE pers_id='".$valid_pers_id[$i]."';";
+					info_debug($sql);
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
 						echo "<p style='color:red;'>Le responsable n°".$valid_pers_id[$i]." n'existe pas.</p>\n";
@@ -5322,6 +5476,7 @@ else{
 						// Supprimer les responsabilités
 						echo "Suppression des responsabilités: ";
 						$sql="DELETE FROM responsables2 WHERE pers_id='".$valid_pers_id[$i]."';";
+						info_debug($sql);
 						//echo "$sql<br />\n";
 						if(mysql_query($sql)) {echo "<span style='color:green;'>OK</span>";} else {echo "<span style='color:red;'>ERREUR</span>";}
 
@@ -5330,6 +5485,7 @@ else{
 						// Supprimer la personne
 						echo "Suppression de la personne de la base: ";
 						$sql="DELETE FROM resp_pers WHERE pers_id='".$valid_pers_id[$i]."';";
+						info_debug($sql);
 						//echo "$sql<br />\n";
 						if(mysql_query($sql)) {echo "<span style='color:green;'>OK</span>";} else {echo "<span style='color:red;'>ERREUR</span>";}
 
@@ -5369,6 +5525,7 @@ else{
 			//==============================
 
 			$sql="SELECT col2 FROM tempo2 WHERE col1='pers_id';";
+			info_debug($sql);
 			$test=mysql_query($sql);
 
 			//echo "<p>mysql_num_rows(\$test)=".mysql_num_rows($test)."</p>\n";
@@ -5386,6 +5543,7 @@ else{
 								WHERE trp.pers_id='$lig->col2' AND
 										trp.pers_id=tr.pers_id AND
 										tr.ele_id=e.ele_id";
+				info_debug($sql);
 				$test2=mysql_query($sql);
 				$diff_debug_time=time()-$debug_time;
 				info_debug("Contrôle de pers_id=$lig->col2 (durée: $diff_debug_time)");
@@ -5398,10 +5556,12 @@ else{
 					//echo " (<span style='font-size:xx-small;'>$cpt</span>)";
 
 					$sql="DELETE FROM tempo2 WHERE col1='pers_id' AND col2='$lig->col2';";
+					info_debug($sql);
 					$suppr=mysql_query($sql);
 
 					// On supprime aussi les entrées dans la table temporaire jointure ele_id/pers_id
 					$sql="DELETE FROM temp_responsables2_import WHERE pers_id='$lig->col2';";
+					info_debug($sql);
 					$suppr=mysql_query($sql);
 
 					$cpt++;
@@ -5438,6 +5598,7 @@ else{
 				info_debug("========================================================");
 				//$sql="SELECT 1=1 FROM tempo2 WHERE col1='pers_id';";
 				$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id';";
+				info_debug($sql);
 				//echo "$sql<br />";
 				$test=mysql_query($sql);
 				//echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />";
@@ -5457,6 +5618,7 @@ else{
 				}
 
 				$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id';";
+				info_debug($sql);
 				//echo "$sql<br />";
 				$test2=mysql_query($sql);
 				//echo "mysql_num_rows(\$test2)=".mysql_num_rows($test2)."<br />";
@@ -5471,12 +5633,14 @@ else{
 					// On modifie la valeur de col1 pour les pers_id confirmés pour ne pas les re-parcourir:
 					for($i=0;$i<count($valid_pers_id);$i++){
 						$sql="UPDATE tempo2 SET col1='pers_id_confirm' WHERE col2='$valid_pers_id[$i]';";
+						info_debug($sql);
 						$update=mysql_query($sql);
 					}
 
 					for($i=0;$i<count($liste_pers_id);$i++){
 						if(!in_array($liste_pers_id[$i],$valid_pers_id)){
 							$sql="UPDATE tempo2 SET col1='pers_id_refus' WHERE col2='$liste_pers_id[$i]';";
+							info_debug($sql);
 							$update=mysql_query($sql);
 						}
 					}
@@ -5485,6 +5649,7 @@ else{
 					if(isset($liste_pers_id)){
 						for($i=0;$i<count($liste_pers_id);$i++){
 							$sql="UPDATE tempo2 SET col1='pers_id_refus' WHERE col2='$liste_pers_id[$i]';";
+							info_debug($sql);
 							$update=mysql_query($sql);
 						}
 					}
@@ -5493,6 +5658,7 @@ else{
 
 				//$sql="SELECT 1=1 FROM tempo2 WHERE col1='pers_id';";
 				$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id';";
+				info_debug($sql);
 				$test=mysql_query($sql);
 
 				echo "<p>".mysql_num_rows($test)." personnes/adresses restantes sur un total de $total_pers_diff.</p>\n";
@@ -5510,6 +5676,7 @@ else{
 			$eff_tranche=20;
 
 			$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id' LIMIT $eff_tranche";
+			info_debug($sql);
 			$res1=mysql_query($sql);
 
 			if(mysql_num_rows($res1)>0){
@@ -5611,6 +5778,7 @@ else{
 
 					// Est-ce un nouveau ou une modif?
 					$sql="SELECT * FROM resp_pers WHERE pers_id='$pers_id'";
+					info_debug($sql);
 					$res_pers1=mysql_query($sql);
 					$nouveau=0;
 					if(mysql_num_rows($res_pers1)==0){
@@ -5656,6 +5824,7 @@ else{
 										WHERE trp.pers_id='$pers_id' AND
 												trp.pers_id=tr.pers_id AND
 												tr.ele_id=e.ele_id";
+						info_debug($sql);
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0){
 							$ligne_parent.="<td class='nouveau'>Nouveau</td>\n";
@@ -5681,6 +5850,7 @@ else{
 
 
 					$sql="SELECT * FROM temp_resp_pers_import WHERE (pers_id='$pers_id')";
+					info_debug($sql);
 					$res_pers2=mysql_query($sql);
 					$lig_pers2=mysql_fetch_object($res_pers2);
 
@@ -5876,6 +6046,7 @@ else{
 
 					if($lig_pers2->adr_id!=""){
 						$sql="SELECT * FROM temp_resp_adr_import WHERE (adr_id='".$lig_pers2->adr_id."')";
+						info_debug($sql);
 						$res_adr2=mysql_query($sql);
 						if(mysql_num_rows($res_adr2)==0){
 							$adr1_2="";
@@ -5911,6 +6082,7 @@ else{
 					if($nouveau==0){
 						if($adr_id1!=""){
 							$sql="SELECT * FROM resp_adr WHERE (adr_id='".$adr_id1."')";
+							info_debug($sql);
 							//$adr_id=$personne[$pers_id]["adr_id"];
 							$res_adr1=mysql_query($sql);
 							if(mysql_num_rows($res_adr1)==0){
@@ -6010,6 +6182,7 @@ else{
 							$texte.="<b>Adresse actuelle:</b><br />\n";
 
 							$sql="SELECT * FROM resp_pers WHERE adr_id='$adr_id1' AND pers_id!='$pers_id';";
+							info_debug($sql);
 							$test_adr_id=mysql_query($sql);
 							if(mysql_num_rows($test_adr_id)>0) {
 								$lig_autre_resp_adr_partagee=mysql_fetch_object($test_adr_id);
@@ -6050,6 +6223,7 @@ else{
 							$texte.="<b>Nouvelle adresse:</b><br />\n";
 
 							$sql="SELECT * FROM temp_resp_pers_import WHERE adr_id='$lig_pers2->adr_id' AND pers_id!='$pers_id';";
+							info_debug($sql);
 							$test_adr_id=mysql_query($sql);
 							if(mysql_num_rows($test_adr_id)>0) {
 								$lig_autre_resp_adr_partagee=mysql_fetch_object($test_adr_id);
@@ -6244,6 +6418,7 @@ else{
 			//echo "<p>On doit parcourir 'tempo2' en recherchant 'pers_id_confirm'.</p>\n";
 
 			$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id_confirm';";
+			info_debug($sql);
 			$res1=mysql_query($sql);
 			if(mysql_num_rows($res1)==0){
 				echo "<p>Aucune modification n'a été confirmée/demandée.</p>\n";
@@ -6259,6 +6434,7 @@ else{
 				echo "<p>Ajout ou modification de: ";
 				while($lig1=mysql_fetch_object($res1)){
 					$sql="SELECT DISTINCT t.* FROM temp_resp_pers_import t WHERE t.pers_id='$lig1->col2'";
+					info_debug($sql);
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)>0){
 						$lig=mysql_fetch_object($res);
@@ -6268,6 +6444,7 @@ else{
 						}
 
 						$sql="SELECT 1=1 FROM resp_pers WHERE pers_id='$lig1->col2'";
+					info_debug($sql);
 						$test=mysql_query($sql);
 
 						if(mysql_num_rows($test)==0){
@@ -6282,6 +6459,7 @@ else{
 													tel_prof='".$lig->tel_prof."',
 													mel='".$lig->mel."',
 													adr_id='".$lig->adr_id."';";
+							info_debug($sql);
 							$insert=mysql_query($sql);
 							if($insert){
 								echo "\n<span style='color:blue;'>";
@@ -6303,6 +6481,7 @@ else{
 													mel='".$lig->mel."',
 													adr_id='".$lig->adr_id."'
 												WHERE pers_id='$lig1->col2';";
+							info_debug($sql);
 							$update=mysql_query($sql);
 							if($update){
 								echo "\n<span style='color:darkgreen;'>";
@@ -6319,6 +6498,7 @@ else{
 						if($lig->adr_id!=""){
 							// Ajout ou modification validée, on met à jour l'adresse aussi:
 							$sql="SELECT DISTINCT t.* FROM temp_resp_adr_import t WHERE t.adr_id='$lig->adr_id'";
+							info_debug($sql);
 							$res_adr2=mysql_query($sql);
 							if(mysql_num_rows($res_adr2)>0){
 								$lig_adr2=mysql_fetch_object($res_adr2);
@@ -6333,6 +6513,7 @@ else{
 
 
 								$sql="SELECT DISTINCT * FROM resp_adr WHERE adr_id='$lig->adr_id'";
+								info_debug($sql);
 								$res_adr1=mysql_query($sql);
 								if(mysql_num_rows($res_adr1)>0){
 									$lig_adr1=mysql_fetch_object($res_adr1);
@@ -6353,6 +6534,7 @@ else{
 																commune='".addslashes($commune2)."',
 																pays='".addslashes($pays2)."'
 														WHERE adr_id='$lig->adr_id'";
+									info_debug($sql);
 									$update=mysql_query($sql);
 									if(!$update){
 										$erreur++;
@@ -6376,6 +6558,7 @@ else{
 																commune='".addslashes($commune2)."',
 																pays='".addslashes($pays2)."',
 																adr_id='$lig->adr_id'";
+									info_debug($sql);
 									$insert=mysql_query($sql);
 									if(!$insert){
 										$erreur++;
@@ -6440,9 +6623,11 @@ else{
 				flush();
 
 				$sql="TRUNCATE tempo2;";
+				info_debug($sql);
 				$res0=mysql_query($sql);
 
 				$sql="select ele_id, pers_id from temp_responsables2_import;";
+				info_debug($sql);
 				$res1=mysql_query($sql);
 
 				if(mysql_num_rows($res1)==0){
@@ -6471,10 +6656,11 @@ else{
 												trp.pers_id=tr.pers_id AND
 												tr.ele_id=e.ele_id AND
 												e.ele_id='$lig->ele_id'";
-
+						info_debug($sql);
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0){
 							$sql="INSERT INTO tempo2 SET col1='t', col2='t_".$lig->ele_id."_".$lig->pers_id."'";
+							info_debug($sql);
 							$insert=mysql_query($sql);
 
 							$tab_resp[]="t_".$lig->ele_id."_".$lig->pers_id;
@@ -6535,6 +6721,7 @@ else{
 				//$chaine.="(t.ele_id='$tab_tmp[1]' AND t.pers_id='$tab_tmp[2]')";
 
 				$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$tab_tmp[1]' AND pers_id='$tab_tmp[2]';";
+				info_debug($sql);
 				//echo "$sql<br />";
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)==0){
@@ -6579,6 +6766,7 @@ else{
 											)
 											AND (t.ele_id='$tab_tmp[1]' AND t.pers_id='$tab_tmp[2]')
 											";
+					info_debug($sql);
 					//echo "$sql<br />\n";
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)>0){
@@ -6684,6 +6872,7 @@ else{
 
 				for($i=0;$i<count($tab_resp_diff);$i++){
 					$sql="UPDATE tempo2 SET col1='t_diff' WHERE col2='$tab_resp_diff[$i]'";
+					info_debug($sql);
 					$update=mysql_query($sql);
 				}
 
@@ -6728,6 +6917,7 @@ else{
 			//if(!isset($parcours_diff)){
 			if((!isset($parcours_diff))||(!isset($_POST['temoin_phase_19']))) {
 				$sql="SELECT 1=1 FROM tempo2 WHERE col1='t_diff';";
+				info_debug($sql);
 				$test=mysql_query($sql);
 
 				//echo "<p>".count($tab_pers_id_diff)." personnes...</p>\n";
@@ -6758,10 +6948,12 @@ else{
 					// On modifie la valeur de col1 pour les ele_id/pers_id supprimés pour ne pas les re-parcourir:
 					for($i=0;$i<count($suppr_resp);$i++){
 						$sql="UPDATE tempo2 SET col1='t_diff_suppr' WHERE col2='$suppr_resp[$i]';";
+						info_debug($sql);
 						$update=mysql_query($sql);
 					}
 
 					$sql="DELETE FROM responsables2 WHERE WHERE pers_id='$suppr_resp[$i]';";
+					info_debug($sql);
 					$nettoyage=mysql_query($sql);
 				}
 
@@ -6769,6 +6961,7 @@ else{
 					// On modifie la valeur de col1 pour les ele_id/pers_id confirmés pour ne pas les re-parcourir:
 					for($i=0;$i<count($modif);$i++){
 						$sql="UPDATE tempo2 SET col1='t_diff_confirm' WHERE col2='$modif[$i]';";
+						info_debug($sql);
 						$update=mysql_query($sql);
 					}
 
@@ -6776,12 +6969,14 @@ else{
 						// On modifie la valeur de col1 pour les ele_id/pers_id confirmés pour ne pas les re-parcourir:
 						for($i=0;$i<count($new);$i++){
 							$sql="UPDATE tempo2 SET col1='t_diff_confirm' WHERE col2='$new[$i]';";
+							info_debug($sql);
 							$update=mysql_query($sql);
 						}
 
 						for($i=0;$i<count($liste_assoc);$i++){
 							if((!in_array($liste_assoc[$i],$modif))&&(!in_array($liste_assoc[$i],$new))) {
 								$sql="UPDATE tempo2 SET col1='t_diff_refus' WHERE col2='$liste_assoc[$i]';";
+								info_debug($sql);
 								$update=mysql_query($sql);
 							}
 						}
@@ -6790,6 +6985,7 @@ else{
 						for($i=0;$i<count($liste_assoc);$i++){
 							if(!in_array($liste_assoc[$i],$modif)){
 								$sql="UPDATE tempo2 SET col1='t_diff_refus' WHERE col2='$liste_assoc[$i]';";
+								info_debug($sql);
 								$update=mysql_query($sql);
 							}
 						}
@@ -6799,12 +6995,14 @@ else{
 					// On modifie la valeur de col1 pour les ele_id/pers_id confirmés pour ne pas les re-parcourir:
 					for($i=0;$i<count($new);$i++){
 						$sql="UPDATE tempo2 SET col1='t_diff_confirm' WHERE col2='$new[$i]';";
+						info_debug($sql);
 						$update=mysql_query($sql);
 					}
 
 					for($i=0;$i<count($liste_assoc);$i++){
 						if(!in_array($liste_assoc[$i],$new)) {
 							$sql="UPDATE tempo2 SET col1='t_diff_refus' WHERE col2='$liste_assoc[$i]';";
+							info_debug($sql);
 							$update=mysql_query($sql);
 						}
 					}
@@ -6813,6 +7011,7 @@ else{
 					if(isset($liste_assoc)){
 						for($i=0;$i<count($liste_assoc);$i++){
 							$sql="UPDATE tempo2 SET col1='t_diff_refus' WHERE col2='$liste_assoc[$i]';";
+							info_debug($sql);
 							$update=mysql_query($sql);
 						}
 					}
@@ -6827,6 +7026,7 @@ else{
 						$pers_id=$tab_tmp[2];
 
 						$sql="SELECT * FROM temp_responsables2_import WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+						info_debug($sql);
 						$res1=mysql_query($sql);
 						if(mysql_num_rows($res1)>0){
 							$lig1=mysql_fetch_object($res1);
@@ -6835,16 +7035,19 @@ else{
 							$pers_contact=$lig1->pers_contact;
 
 							$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+							info_debug($sql);
 							$test1=mysql_query($sql);
 							// Pour une modif, ce test doit toujours être vrai.
 							if(mysql_num_rows($test1)>0){
 								$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+								info_debug($sql);
 								$suppr=mysql_query($sql);
 							}
 
 							// Il ne peut pas y avoir 2 resp_legal 1, ni 2 resp_legal 2 pour un même élève.
 							if(($resp_legal==1)||($resp_legal==2)) {
 								$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='$resp_legal';";
+								info_debug($sql);
 								$test2=mysql_query($sql);
 
 								/*
@@ -6868,6 +7071,7 @@ else{
 								if(mysql_num_rows($test2)>0){
 									$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND
 																	resp_legal='$resp_legal';";
+									info_debug($sql);
 									$delete=mysql_query($sql);
 								}
 
@@ -6875,6 +7079,7 @@ else{
 																pers_contact='$pers_contact',
 																ele_id='$ele_id',
 																resp_legal='$resp_legal';";
+								info_debug($sql);
 								$insert=mysql_query($sql);
 							}
 							else{
@@ -6883,6 +7088,7 @@ else{
 																pers_contact='$pers_contact',
 																ele_id='$ele_id',
 																resp_legal='$resp_legal';";
+								info_debug($sql);
 								$insert=mysql_query($sql);
 							}
 						}
@@ -6900,6 +7106,7 @@ else{
 						$pers_id=$tab_tmp[2];
 
 						$sql="SELECT * FROM temp_responsables2_import WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+						info_debug($sql);
 						$res1=mysql_query($sql);
 						if(mysql_num_rows($res1)>0){
 							$lig1=mysql_fetch_object($res1);
@@ -6908,16 +7115,19 @@ else{
 							$pers_contact=$lig1->pers_contact;
 
 							$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+							info_debug($sql);
 							$test1=mysql_query($sql);
 							// Pour une 'new', ce test doit toujours être faux.
 							if(mysql_num_rows($test1)>0){
 								$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+								info_debug($sql);
 								$suppr=mysql_query($sql);
 							}
 
 							// Il ne peut pas y avoir 2 resp_legal 1, ni 2 resp_legal 2 pour un même élève.
 							if(($resp_legal==1)||($resp_legal==2)) {
 								$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='$resp_legal';";
+								info_debug($sql);
 								$test2=mysql_query($sql);
 								/*
 								if(mysql_num_rows($test2)>0){
@@ -6940,6 +7150,7 @@ else{
 								if(mysql_num_rows($test2)>0){
 									$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND
 																	resp_legal='$resp_legal';";
+									info_debug($sql);
 									$delete=mysql_query($sql);
 								}
 
@@ -6947,6 +7158,7 @@ else{
 																pers_contact='$pers_contact',
 																ele_id='$ele_id',
 																resp_legal='$resp_legal';";
+								info_debug($sql);
 								$insert=mysql_query($sql);
 
 							}
@@ -6956,6 +7168,7 @@ else{
 																pers_contact='$pers_contact',
 																ele_id='$ele_id',
 																resp_legal='$resp_legal';";
+								info_debug($sql);
 								$update=mysql_query($sql);
 							}
 						}
@@ -6970,6 +7183,7 @@ else{
 
 
 				$sql="SELECT 1=1 FROM tempo2 WHERE col1='t_diff';";
+				info_debug($sql);
 				$test=mysql_query($sql);
 
 				if(mysql_num_rows($test)>0){
@@ -6988,6 +7202,7 @@ else{
 			$eff_tranche=20;
 
 			$sql="SELECT col2 FROM tempo2 WHERE col1='t_diff' LIMIT $eff_tranche";
+			info_debug($sql);
 			//echo "$sql<br />";
 			$res0=mysql_query($sql);
 
@@ -7054,6 +7269,7 @@ else{
 					$pers_id=$tab_tmp[2];
 
 					$sql="SELECT * FROM temp_responsables2_import WHERE ele_id='$ele_id' AND pers_id='$pers_id'";
+					info_debug($sql);
 					//echo "$sql<br />";
 					$res0b=mysql_query($sql);
 					if(mysql_num_rows($res0b)==0){
@@ -7072,6 +7288,7 @@ else{
 
 					//$sql="SELECT * FROM responsables2 WHERE ele_id='$affiche[0]' AND pers_id='$affiche[1]'";
 					$sql="SELECT * FROM responsables2 WHERE (ele_id='$ele_id' AND pers_id='$pers_id')";
+					info_debug($sql);
 					//echo "$sql<br />";
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)==0){
@@ -7093,6 +7310,7 @@ else{
 						echo "<tr class='lig$alt'>\n";
 
 						$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
+						info_debug($sql);
 						$res2=mysql_query($sql);
 						if(mysql_num_rows($res2)==0){
 							// Problème: On ne peut pas importer l'association sans que la personne existe.
@@ -7118,6 +7336,7 @@ else{
 
 							// Elève(s) associé(s)
 							$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
+							info_debug($sql);
 							$res4=mysql_query($sql);
 							if(mysql_num_rows($res4)>0){
 								echo "<input type='checkbox' id='check_".$cpt."' name='new[]' value='$lig0->col2' />\n";
@@ -7150,6 +7369,7 @@ else{
 							echo "<td";
 							//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 							$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
+							info_debug($sql);
 							$res3=mysql_query($sql);
 							if(mysql_num_rows($res3)==0){
 								//echo "'>\n";
@@ -7216,6 +7436,7 @@ else{
 										WHERE e.ele_id=r.ele_id AND
 												r.pers_id=rp.pers_id AND
 												rp.pers_id='$pers_id'";
+						info_debug($sql);
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0) {
 							//echo "<td style='text-align:center;'>&nbsp;</td>\n";
@@ -7259,6 +7480,7 @@ else{
 							echo "<tr class='lig$alt'>\n";
 
 							$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
+							info_debug($sql);
 							$res2=mysql_query($sql);
 							if(mysql_num_rows($res2)==0){
 								// Problème: On ne peut pas importer l'association sans que la personne existe.
@@ -7281,6 +7503,7 @@ else{
 
 								// Elève(s) associé(s)
 								$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
+								info_debug($sql);
 								$res4=mysql_query($sql);
 								if(mysql_num_rows($res4)>0){
 									echo "<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$lig0->col2' />\n";
@@ -7314,6 +7537,7 @@ else{
 								echo "<td";
 								//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 								$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
+								info_debug($sql);
 								$res3=mysql_query($sql);
 								if(mysql_num_rows($res3)==0){
 									//echo "'>\n";
@@ -7380,6 +7604,7 @@ else{
 											WHERE e.ele_id=r.ele_id AND
 													r.pers_id=rp.pers_id AND
 													rp.pers_id='$pers_id'";
+							info_debug($sql);
 							$test=mysql_query($sql);
 							if(mysql_num_rows($test)>0) {
 								//echo "<td style='text-align:center;'>&nbsp;</td>\n";
@@ -7399,6 +7624,7 @@ else{
 						// Sinon, il n'est pas nécessaire de refaire l'inscription déjà présente.
 						else {
 							$sql="UPDATE tempo2 SET col1='t_diff_pas_modif' WHERE col2='t_".$ele_id."_".$pers_id."'";
+							info_debug($sql);
 							$update=mysql_query($sql);
 						}
 					}
@@ -7462,6 +7688,7 @@ else{
 */
 
 				$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
+				info_debug($sql);
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)>0){
 					echo "<p>Suppression de responsabilités sans élève.<br />Voici la liste des identifiants de responsables qui étaient associés à des élèves inexistants: \n";
@@ -7470,6 +7697,7 @@ else{
 						if($cpt_nett>0){echo ", ";}
 						echo "<a href='modify_resp.php?pers_id=$lig_nett->pers_id' target='_blank'>".$lig_nett->pers_id."</a>";
 						$sql="DELETE FROM responsables2 WHERE pers_id='$lig_nett->pers_id' AND ele_id='$lig_nett->ele_id';";
+						info_debug($sql);
 						$nettoyage=mysql_query($sql);
 						flush();
 						$cpt_nett++;
