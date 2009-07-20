@@ -198,7 +198,7 @@ if(isset($reinitialiser)){
 		// Nombre de lignes dans chaque colonne:
 		$nb_class_par_colonne=round($nombreligne/$nbcol);
 
-		echo "<table width='100%'>\n";
+		echo "<table width='100%' class='boireaus' summary='Tableau des utilisateurs et volumes'>\n";
 		echo "<tr valign='top' align='center'>\n";
 		echo "<td align='left'>\n";
 
@@ -247,7 +247,7 @@ else{
 	echo "<div align='center' class='gestion_temp_dir'>\n";
 	echo "<form action='".$_SERVER['PHP_SELF']."' method=\"post\" name=\"formulaire\">\n";
 
-	echo "<table border='1'>\n";
+	echo "<table border='1' class='boireaus' summary='Tableau des utilisateurs et volumes'>\n";
 	echo "<tr>\n";
 	echo "<th>Login</th>\n";
 	echo "<th>Nom</th>\n";
