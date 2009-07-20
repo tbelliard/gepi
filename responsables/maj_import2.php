@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // INSERT INTO `droits` VALUES ('/responsables/maj_import2.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour Sconet', '');
 if (!checkAccess()) {
@@ -72,16 +72,26 @@ function affiche_debug($texte){
 // Initialisation du répertoire actuel de sauvegarde
 $dirname = getSettingValue("backup_directory");
 
-function info_debug($texte) {
+function info_debug($texte,$mode=0) {
 	global $step;
 	global $dirname;
 
-	$debug=0;
+	$debug=1;
 	if($debug==1) {
-		//$fich_debug=fopen("/tmp/debug_maj_import2.txt","a+");
-		$fich_debug=fopen("../backup/".$dirname."/debug_maj_import2.txt","a+");
-		fwrite($fich_debug,"$step;$texte;".time()."\n");
-		fclose($fich_debug);
+		if($mode==1) {
+			$fich_debug=fopen("../backup/".$dirname."/debug_maj_import2.txt","w+");
+			fwrite($fich_debug,"$step;$texte;".time()."\n");
+			fclose($fich_debug);
+		}
+		elseif($mode==2) {
+			echo "<p><a href='../backup/".$dirname."/debug_maj_import2.txt' target='_blank'>Fichier debug</a></p>";
+		}
+		else {
+			//$fich_debug=fopen("/tmp/debug_maj_import2.txt","a+");
+			$fich_debug=fopen("../backup/".$dirname."/debug_maj_import2.txt","a+");
+			fwrite($fich_debug,"$step;$texte;".time()."\n");
+			fclose($fich_debug);
+		}
 	}
 }
 
@@ -320,6 +330,9 @@ if(!isset($step)) {
 	echo "<p><br /></p>\n";
 
 	echo "<p><i>NOTE:</i> Après une phase d'analyse des différences, les différences seront affichées et des cases à cocher seront proposées pour valider les modifications.</p>\n";
+
+	// Pour afficher le lien vers le fichier de debug.
+	info_debug("",2);
 }
 else{
 	if($step>0){
@@ -482,6 +495,8 @@ else{
 				}
 				else{
 					echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
+
+					info_debug("Mise à jour sconet",1);
 
 					/*
 					$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
