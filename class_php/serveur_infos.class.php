@@ -73,6 +73,8 @@ class infos{
 		for($a = 0; $a < $nbre; $a++){
 			$extensions = get_loaded_extensions();
 
+			sort($extensions);
+
 			$b = $a + 1;
 			$c = $a + 2;
 			$d = $a + 3;
