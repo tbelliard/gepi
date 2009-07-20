@@ -76,7 +76,7 @@ function info_debug($texte,$mode=0) {
 	global $step;
 	global $dirname;
 
-	$debug=1;
+	$debug=0;
 	if($debug==1) {
 		if($mode==1) {
 			$fich_debug=fopen("../backup/".$dirname."/debug_maj_import2.txt","w+");
