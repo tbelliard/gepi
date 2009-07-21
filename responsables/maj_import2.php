@@ -377,7 +377,7 @@ else{
 
 	//if(!isset($_POST['step'])){
 	switch($step){
-		case 0:
+		case "0":
 			// Affichage des informations élèves
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
 
@@ -730,8 +730,11 @@ else{
 				}
 			}
 			break;
-		case 1:
+		case "1":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			$sql="TRUNCATE TABLE tempo2;";
 			info_debug($sql);
@@ -1102,6 +1105,9 @@ else{
 		case "2":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
 
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
+
 			// CETTE PHASE D'ANALYSE DES OPTIONS EST A REVOIR: Il faudrait le fichier Nomenclature pour pouvoir proposer les bonnes options lors de l'inscription de nouveaux élèves (ou stocker dans une table les correspondances de codes/matières).
 			//
 			// Par contre, on y fait quand même des tests pour les élèves partis... ne pas squizzer ça si on supprime l'étape
@@ -1303,6 +1309,9 @@ else{
 		case "2b":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
 
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
+
 			echo "<p>Contrôle des départs d'élèves...</p>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
@@ -1454,6 +1463,9 @@ else{
 
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
 
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
+
 			// On vide la table dont on va se resservir plus tard:
 			$sql="TRUNCATE TABLE tempo2;";
 			info_debug($sql);
@@ -1504,6 +1516,9 @@ else{
 
 		case "3":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			if(file_exists("../temp/".$tempdir."/eleves.xml")) {
 				echo "<p>Suppression de eleves.xml... ";
@@ -2028,8 +2043,11 @@ else{
 
 
 			break;
-		case 4:
+		case "4":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			if(!isset($tab_ele_id_diff)){
 				echo "<p>Aucune différence n'a été trouvée.</p>\n";
@@ -2791,8 +2809,11 @@ else{
 			}
 
 			break;
-		case 5:
+		case "5":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			$modif=isset($_POST['modif']) ? $_POST['modif'] : NULL;
 			$new=isset($_POST['new']) ? $_POST['new'] : NULL;
@@ -3227,8 +3248,11 @@ else{
 //              ... et d'affectation dans les options?
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-		case 6:
+		case "6":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			echo "<p>Affectation des nouveaux élèves dans leurs classes:</p>\n";
 
@@ -3426,8 +3450,11 @@ else{
 			break;
 
 		//case "6_1":
-		case 7:
+		case "7":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			$login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : NULL;
 			$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
@@ -3521,9 +3548,12 @@ else{
 
 			break;
 
-		case 8:
+		case "8":
 
 			echo "<h2>Import/mise à jour élève</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			$opt_eleve=isset($_POST['opt_eleve']) ? $_POST['opt_eleve'] : NULL;
 			$eleve=isset($_POST['eleve']) ? $_POST['eleve'] : NULL;
@@ -3948,8 +3978,11 @@ else{
 
 			break;
 
-		case 9:
+		case "9":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
@@ -3995,6 +4028,9 @@ else{
 			break;
 		case "10":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			$_SESSION['ne_pas_proposer_resp_sans_eleve']=$ne_pas_proposer_resp_sans_eleve;
 
@@ -4345,6 +4381,9 @@ else{
 		case "11":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
+
 			$dest_file="../temp/".$tempdir."/responsables.xml";
 			$fp=fopen($dest_file,"r");
 			if(!$fp){
@@ -4513,6 +4552,9 @@ else{
 			break;
 		case "12":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			$dest_file="../temp/".$tempdir."/responsables.xml";
 			$fp=fopen($dest_file,"r");
@@ -4735,7 +4777,7 @@ else{
 				die();
 			}
 			break;
-		case 13:
+		case "13":
 			// On va commencer les comparaisons...
 			// - resp_pers
 			// - resp_adr en rappelant la liste des personnes auxquelles l'adresse est rattachée...
@@ -4745,6 +4787,9 @@ else{
 			//     . Responsabilités supprimées
 
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			if(file_exists("../temp/".$tempdir."/responsables.xml")) {
 				echo "<p>Suppression du fichier responsables.xml... ";
@@ -5060,6 +5105,9 @@ else{
 
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
+
 			echo "<h3>Section ADRESSES</h3>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
@@ -5317,8 +5365,8 @@ else{
 			// A l'étape précédente passer à 14b s'il y a des col1=pers_id_disparu  et passer à 15 sinon
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
-			info_debug("=========================================================");
-			info_debug("Etape 14b.");
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
@@ -5474,6 +5522,9 @@ else{
 
 			//debug_var();
 
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
+
 			$valid_pers_id=isset($_POST['valid_pers_id']) ? $_POST['valid_pers_id'] : NULL;
 
 			if(is_array($valid_pers_id)) {
@@ -5528,8 +5579,8 @@ else{
 		case "15":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
-			info_debug("=========================================================");
-			info_debug("Etape 15.");
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
@@ -5597,8 +5648,11 @@ else{
 			break;
 
 		//case 15:
-		case 16:
+		case "16":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			$ne_pas_proposer_redoublonnage_adresse=isset($_POST['ne_pas_proposer_redoublonnage_adresse']) ? $_POST['ne_pas_proposer_redoublonnage_adresse'] : "n";
 
@@ -6427,8 +6481,11 @@ else{
 
 			break;
 		//case 16:
-		case 17:
+		case "17":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			//echo "<p>On doit parcourir 'tempo2' en recherchant 'pers_id_confirm'.</p>\n";
 
@@ -6618,8 +6675,11 @@ else{
 
 			break;
 		//case 17:
-		case 18:
+		case "18":
 			//echo "<h2>Import/mise à jour des responsabilités</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
 
@@ -6916,11 +6976,14 @@ else{
 
 			break;
 		//case 18:
-		case 19:
+		case "19":
 
 			//debug_var();
 
 			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 			//==============================
@@ -7735,11 +7798,15 @@ else{
 
 			break;
 		//case 19:
-		case 20:
+		case "20":
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
+
 			echo "A FAIRE: Lister les associations de responsables2 qui ne sont plus dans temp_resp...<br />Il faudrait faire de même à la fin des recherches sur resp_pers, resp_adr et eleves.";
 
 			break;
-		case 21:
+		case "21":
 			echo "<h2>THE END ?</h2>\n";
 			break;
 	}
