@@ -1312,7 +1312,7 @@ else{
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
-			echo "<p>Contrôle des départs d'élèves...</p>\n";
+			echo "<p class='bold'>Contrôle des départs d'élèves...</p>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 			//==============================
@@ -1320,7 +1320,9 @@ else{
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 
-			echo "<p>Cochez les périodes pour lesquelles vous souhaitez désinscrire le ou les élèves qui ont quitté l'établissement et validez en bas de page pour passer à la suite.</p>\n";
+			echo "<p>Les élèves notés dans Sconet comme ayant quitté l'établissement peuvent être désinscrits des classes et enseignements sur les périodes futures. On recherche ci-dessous les périodes sur lesquelles les élèves n'ont pas de note ni quoi que ce soit sur le bulletin.</p>\n";
+
+			echo "<p>Cochez les périodes pour lesquelles vous souhaitez désinscrire le ou les élèves qui ont quitté l'établissement et validez en bas de page pour passer à la suite.</p>\n"
 
 			$sql="SELECT col2 FROM tempo2 WHERE col1='ele_id_eleve_parti';";
 			info_debug($sql);
