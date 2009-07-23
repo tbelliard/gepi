@@ -1733,6 +1733,10 @@ function valide_modele(choix) {
 			affichecouleur(liste_style[i]);
 		}
 
+		document.getElementById('utiliser_couleurs_perso').checked=true;
+		document.getElementById('utiliser_degrade').checked=true;
+		document.getElementById('utiliser_couleurs_perso_infobulles').checked=true;
+
 		//document.forms['tab'].submit();
 		calcule_et_valide();
 	}
