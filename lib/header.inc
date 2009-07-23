@@ -2,6 +2,9 @@
 /*
  * $Id$
  *
+ * Basé sur  header.inc 2968 2009-03-03 20:11:00Z jjocal $
+ * modifié avec getSettingValue("contact_admin_mailto")=='y'
+ 
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
  *
  * This file is part of GEPI.
@@ -67,11 +70,7 @@ function last_connection() {
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<?php
-if (!isset($message_deconnexion) || $message_deconnexion != 'non'){
-	echo ("<meta http-equiv=\"refresh\" content=\"".(getSettingValue("sessionMaxLength")*60)."; URL=".$gepiPath."/logout.php?auto=3&amp;debut_session=".urlencode($_SESSION['start'])."&amp;session_id=".session_id()."\" />\n");
-}
-?>
+<meta http-equiv="refresh" content="<?php echo getSettingValue("sessionMaxLength")*60; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;session_id=<?php echo session_id();?>" />
 <!-- correction Regis : déclaration par défaut pour les scripts et les mises en page-->
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta http-equiv="Content-Style-Type" content="text/css" />
@@ -91,34 +90,13 @@ change = 'yes';
 }
 </script>
 
-<!--
-Pour affichage d'un fixe en bas à droite (ne marche pas avec IE 6)
--->
-<style type="text/css">
-@media screen  {
-  div#fixe   {
-    position: fixed;
-    bottom: 5%;
-    right: 5%;
-  }
-}
-</style>
 
 <!-- Gestion de l'expiration des session - Patrick Duthilleul -->
 <!--correction Regis javascript -->
 <script type="text/javascript">
 <!--
-//position fixe même en cas de scrolling
-var xV1 = 100; //top position
-function stayHome(){
-	nV = document.documentElement.scrollTop;
-	document.getElementById('deconnexion').style.top = xV1+nV + "px";
-}
-window.onscroll=stayHome;
-
-//affichage du message
 var debut=new Date()
-function show_message_deconnexion(){
+function show_message_deconnexion() {
   var seconds_before_alert = 180;
   var seconds_int_betweenn_2_msg = 30;
 
@@ -132,9 +110,7 @@ function show_message_deconnexion(){
     var secs=now.getSeconds();
 
     var heure = hrs + " H " + mins + "' " + secs + "'' ";
-    var content = "A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !";
-    document.getElementById("deconnexion").innerHTML = content;
-    document.getElementById("deconnexion").style.display = "block";
+    alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
   }
   setTimeout("show_message_deconnexion()",seconds_int_betweenn_2_msg*1000)
 }
@@ -144,7 +120,7 @@ function show_message_deconnexion(){
 <!-- christian -->
 <!--correction Regis javascript -->
 <script type="text/javascript">
-    function ouvre_popup(url){
+    function ouvre_popup(url) {
         eval("window.open('<?php echo($gepiPath); ?>/mod_miseajour/utilisateur/fenetre.php','fen','width=600,height=500,menubar=no,scrollbars=yes')");
         fen.focus();
     }
@@ -179,23 +155,20 @@ $script_effet = isset($scriptaculous_effet) ? $scriptaculous_effet : NULL;
 	 }
 // Utilisation de windows.js
 $windows = isset($utilisation_win) ? $utilisation_win : NULL;
-$windows_effects = isset($windows_effects) ? $windows_effects : NULL;
 if ($windows == 'oui') {
-	if ($windows_effects != "non") {
-	echo '<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/effects.js"> </script>
-	<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/window_effects.js"> </script>';
-	}
  	echo '
+	<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/effects.js"> </script>
 	<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/window.js"> </script>
+	<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/window_effects.js"> </script>
 	<link href="'.$gepiPath.'/edt_effets/themes/default.css" rel="stylesheet" type="text/css"/>
 	<link href="'.$gepiPath.'/edt_effets/themes/alphacube.css" rel="stylesheet" type="text/css"/>
 	 ';
  }
 // js spécifique
-if(isset($javascript_specifique)){
+if(isset($javascript_specifique)) {
 	// Il faudrait filtrer le contenu de la variable...
 	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
-	if(strlen(ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0){
+	if(strlen(ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0) {
 		// Javascript spécifique à une page:
 		echo "<script type='text/javascript' src='$gepiPath/$javascript_specifique.js'></script>\n";
 	}
@@ -243,11 +216,11 @@ echo '<link rel="stylesheet" type="text/css" href="'.$gepiPath.'/'.$style.'.css"
 if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
 
 
-if(isset($style_specifique)){
+if(isset($style_specifique)) {
 	// Il faudrait filtrer le contenu de la variable...
 	// ne doit contenir que certains types de caractères et se terminer par .css
 	// Non... on ajoute le ".css" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
-	if(strlen(ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0){
+	if(strlen(ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
 		// Styles spécifiques à une page:
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
 	}
@@ -265,8 +238,8 @@ if(isset($style_specifique)){
 // Voir si on restreint l'usage aux pages du module cahier de textes
 // Restreint aux pages modifiées pour une meilleure accessibilité
 
-if(isset($accessibilite)){
-	if($accessibilite=="y"){
+if(isset($accessibilite)) {
+	if($accessibilite=="y") {
 		echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/accessibilite.css' media='screen' />\n";
 		// Feuilles de styles Paramètres de configuration du cahier de texte à partir de /lib/global.inc
 		// echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/maj_global.css' media='screen' />\n";
@@ -275,32 +248,44 @@ if(isset($accessibilite)){
    }
 }
 
+
+echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/portable.css' media='handheld' />\n";
+
+
 // Feuilles de styles du bandeau
-echo "\n<link title='bandeau' rel='stylesheet' type='text/css' href='$gepiPath/bandeau.css' media='screen' />\n";
+echo "\n<link title='bandeau' rel='stylesheet' type='text/css' href='$gepiPath/css/bandeau_r01.css' media='screen' />\n";
 echo "<!--[if lte IE 7]>\n";
-	echo "	<link title='bandeau' rel='stylesheet' type='text/css' href='$gepiPath/correction_ie.css' media='screen' />\n";
+	echo "	<link title='bandeau' rel='stylesheet' type='text/css' href='$gepiPath/css/bandeau_r01_ie.css' media='screen' />\n";
+echo "<![endif]-->\n";
+echo "<!--[if lte IE 6]>\n";
+	echo "	<link title='bandeau' rel='stylesheet' type='text/css' href='$gepiPath/css/bandeau_r01_ie6.css' media='screen' />\n";
+echo "<![endif]-->\n";
+echo "<!--[if IE 7]>\n";
+	echo "	<link title='bandeau' rel='stylesheet' type='text/css' href='$gepiPath/css/bandeau_r01_ie7.css' media='screen' />\n";
 echo "<![endif]-->\n";
 
 // fin modification Régis
 
-if(isset($style_screen_ajout)){
+if(isset($style_screen_ajout)) {
 
 	// Styles paramétrables depuis l'interface:
-	if($style_screen_ajout=='y'){
+	if($style_screen_ajout=='y') {
 		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
 		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
 		// Il faudra définir un nom de la forme style_screen_ajout_RNE.css pour le multisite
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout_".getSettingValue("gepiSchoolRne").".css' />\n";
-		}else{
-			echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+			//if (is_file("$gepiPath/style_screen_ajout_".getSettingValue('gepiSchoolRne').".css")) {
+				echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout_".getSettingValue("gepiSchoolRne").".css' />\n";
+			//}
+		} else {
+			//if (is_file("$gepiPath/style_screen_ajout.css")) {
+				echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+			//}
 		}
 	}
 }
 
 //echo "<link href='".$gepiPath."/grid.css' rel='stylesheet' type='text/css'/>\n";
-
-echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/portable.css' media='handheld' />\n";
 
 
 echo '	<!-- Fin des styles -->'."\n\n";
@@ -309,24 +294,17 @@ include 'maj_coul_global.inc';
 
 // ============================== FIN des feuilles de style =======================
 // *********** sur le onload *************** //
-if (isset($use_observeur) AND $use_observeur == 'ok'){
+if (isset($use_observeur) AND $use_observeur == 'ok') {
   $charger_observeur = ' observeur();';
 }else{
   $charger_observeur = NULL;
-}
-if (!isset($message_deconnexion) || $message_deconnexion != 'non'){
-	$show_message_deconnexion = "show_message_deconnexion()";
-} else {
-	$show_message_deconnexion = "";
 }
 ?>
 </head>
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
-<body onload="<?php echo $show_message_deconnexion; ?>; <?php echo $charger_observeur; ?>">
-<!-- div du message de deconnexion -->
-<div id='deconnexion' style='deconnexion' ></div>
+<body onload="show_message_deconnexion();<?php echo $charger_observeur; ?>">
 
 <?php
 if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {
@@ -336,7 +314,7 @@ if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] =
 	// petit bandeau toute valeur sauf "n" ;
 	// grand bandeau "n";
 if (isset($titre_page)) {
-	if(!isset($_SESSION['cacher_header'])){
+	if(!isset($_SESSION['cacher_header'])) {
 		$_SESSION['cacher_header']="n";
 	}
 
@@ -349,9 +327,9 @@ if (isset($titre_page)) {
 
 /* ===== affichage du bandeau ===== */
 
-	if(getSettingValue('gepi_stylesheet')=='style'){
+	if(getSettingValue('gepi_stylesheet')=='style') {
 		// Détermine le fond du bandeau
-		if(getSettingValue('utiliser_degrade')=='y'){
+		if(getSettingValue('utiliser_degrade')=='y') {
 			$degrade_entete="degrade1";
 		}
 		else{
@@ -364,28 +342,7 @@ if (isset($titre_page)) {
 
 // Initialisation du bandeau à grand bandeau darkfade pour ceux qui n'ont pas de javascript
 	echo "<div id='bandeau' class='gd_bandeau darkfade gd_bandeau_darkfade'>\n";
-	
-    // Affichage de la version de Gepi
-	if ($_SESSION['statut'] == "administrateur") {
-        $version_gepi = '';
-        if ($gepiVersion == 'trunk') {
-            // On a une version trunk
-            $version_gepi .= "gepi-trunk";
-        } else {
-            // On a une version numérotée
-            $version_gepi .= "v".$gepiVersion;
-            if ($gepiRcVersion != '') $version_gepi .= "-RC".$gepiRcVersion;
-            if ($gepiBetaVersion != '') $version_gepi .= "-beta".$gepiBetaVersion;
-            if ($gepiVersionMaintenance != '') $version_gepi .= ".".$gepiVersionMaintenance;
-        }
-        if ($gepiSvnRev != '') $version_gepi .= " r".$gepiSvnRev;
 
-		echo "<div id='version_gepi'";
-		//if($_SESSION['cacher_header']=="y"){
-			echo " style='margin-left:22px;'";
-		//}
-		echo ">".$version_gepi."</div>";
-	}
 // Initialisation du bandeau à la bonne couleur
 	echo "<script type='text/javascript'>
 		<!--
@@ -409,7 +366,7 @@ if (isset($titre_page)) {
 		$taille_bandeau_header="p";
 	}
 	// 	echo $_SESSION['login'];
-	if($taille_bandeau_header=="p"){
+	if($taille_bandeau_header=="p") {
 		echo "<script type='text/javascript'>
 			<!--
 				modifier_taille_bandeau();
@@ -421,13 +378,13 @@ if (isset($titre_page)) {
 			echo "<!-- User name, status, main matter, home, logout, account management -->\n";
 
 			// Bandeau de gauche
-			echo "<div id='bandeau_gauche'>\n";
+			// echo "<div id='bandeau_gauche'>\n";
 
 				//=====================
 				// AJOUT boireaus 20080806
 				if(!isset($mode_header_reduit)) {
 				//=====================
-					echo "<div class='bt_change_taille'>";
+					//echo "<div class='bt_change_taille'>";
 						// Bouton réduire le bandeau
 						echo "<a class='change_taille_gd' href=\"#\" onclick=\"modifier_taille_bandeau();change_mode_header('y', '".$gepiPath."');return false;\">";
 							echo "<img src='$gepiPath/images/up.png' alt='Cacher le bandeau' title='Cacher le bandeau' />";
@@ -436,25 +393,18 @@ if (isset($titre_page)) {
 						echo "<a class='change_taille_pt' href=\"#\" onclick=\"modifier_taille_bandeau();change_mode_header('n', '".$gepiPath."');return false;\">";
 							echo "<img src='$gepiPath/images/down.png' alt='Afficher le bandeau' title='Afficher le bandeau' />";
 						echo "</a>";
-					echo "</div>\n";
+					//echo "</div>\n";
 				//=====================
 				// AJOUT boireaus 20080806
 				}
 				//=====================
 
-				// Titre de la page
+				//=== Titre de la page ===
 				echo "<h1>".$titre_page."</h1>\n";
 				echo "<!-- Dernière connexion -->\n";
-				if (isset($affiche_connexion)){
-					echo "<div class='a_gauche'><p>".last_connection();
-					echo "&nbsp;"; // Pour éviter un <p></p> lors de la première connexion
-					echo "</p></div>\n";}
-			echo "</div>\n";
-
-			// Bandeau de droite
-			echo "<div id='bandeau_droit_fixe'>\n";
+				
+				//=== Nom Prénom utilisateur ===
 				echo "<p id='bd_nom'>\n";
-					// Nom Prénom utilisateur
 					// echo "<span id='bd_nom'>";
 					if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
 						$sql="SELECT nom, prenom FROM utilisateurs WHERE login='".$_SESSION['login']."';";
@@ -472,115 +422,128 @@ if (isset($titre_page)) {
 						echo "NOM Prenom";
 					}
 					// echo "</span>\n";
+				echo "</p>\n";
+				
+				//=== Dernière connexion ===
+				if (isset($affiche_connexion)) {
+					echo "<p id='dern_connect'>".last_connection();
+					echo "&nbsp;"; // Pour éviter un <p></p> lors de la première connexion
 					echo "</p>\n";
-					// statut utilisateur
-					// echo "<span id='bd_parent'><br />\n";
-					echo "<p id='bd_parent'>\n";
-						if ($_SESSION['statut'] == "administrateur") {
-							echo "<span class='red'>Administrateur</span>\n";
-						} elseif ($_SESSION['statut'] == "professeur") {
-							$nom_complet_matiere = sql_query1("select nom_complet from matieres
-							where matiere = '".$_SESSION['matiere']."'");
-							if ($nom_complet_matiere != '-1') {
-								//echo("Professeur de : " . $nom_complet_matiere);
-								echo("Professeur de : " . htmlentities($nom_complet_matiere));
-							} else {
-								echo "Invité";
+				}
+				
+				//=== statut utilisateur ===
+				echo "<p id='bd_parent'>\n";
+					if ($_SESSION['statut'] == "administrateur") {
+						echo "<span class='red'>Administrateur</span>\n";
+					} 
+					elseif ($_SESSION['statut'] == "professeur") {
+						$nom_complet_matiere = sql_query1("select nom_complet from matieres
+						where matiere = '".$_SESSION['matiere']."'");
+						if ($nom_complet_matiere != '-1') {
+							//echo("Professeur de : " . $nom_complet_matiere);
+							echo("Professeur de : " . htmlentities($nom_complet_matiere));
+						} else {
+							echo "Invité";
+						}
+					} 
+					elseif ($_SESSION['statut'] == "scolarite") {
+						echo "Scolarité";
+					} 
+					elseif ($_SESSION['statut'] == "cpe") {
+						echo "CPE";
+					} 
+					elseif ($_SESSION['statut'] == "eleve") {
+						$tab_tmp_info_classes=get_noms_classes_from_ele_login($_SESSION['login']);
+						echo "Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1];
+					} 
+					elseif ($_SESSION['statut'] == "responsable") {
+						$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
+						$chaine_enfants="";
+						if(count($tab_tmp_ele)>0) {
+							$chaine_enfants=$tab_tmp_ele[1];
+							$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[0]);
+							if(count($tab_tmp_info_classes)>0) {
+								$chaine_enfants.=" (<em>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</em>)";
 							}
-						} elseif ($_SESSION['statut'] == "scolarite") {
-							echo "Scolarité";
-						} elseif ($_SESSION['statut'] == "cpe") {
-							echo "CPE";
-						} elseif ($_SESSION['statut'] == "eleve") {
-							$tab_tmp_info_classes=get_noms_classes_from_ele_login($_SESSION['login']);
-							echo "Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1];
-						} elseif ($_SESSION['statut'] == "responsable") {
-							$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
-							$chaine_enfants="";
-							if(count($tab_tmp_ele)>0){
-								$chaine_enfants=$tab_tmp_ele[1];
-								$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[0]);
-								if(count($tab_tmp_info_classes)>0){
+							for($i=3;$i<count($tab_tmp_ele);$i+=2) {
+								$chaine_enfants.=", ".$tab_tmp_ele[$i];
+								unset($tab_tmp_info_classes);
+								$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[$i-1]);
+								if(count($tab_tmp_info_classes)>0) {
 									$chaine_enfants.=" (<em>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</em>)";
 								}
-								for($i=3;$i<count($tab_tmp_ele);$i+=2){
-									$chaine_enfants.=", ".$tab_tmp_ele[$i];
-									unset($tab_tmp_info_classes);
-									$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[$i-1]);
-									if(count($tab_tmp_info_classes)>0){
-										$chaine_enfants.=" (<em>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</em>)";
-									}
-								}
 							}
-							echo "Responsable de $chaine_enfants";
-						}elseif($_SESSION["statut"] == "autre"){
-							echo $_SESSION["statut_special"];
 						}
-					// echo "</span>";
-					// A QUOI SERT CE $temp ?
-					$temp = '';
-					// christian
+						echo "Responsable de $chaine_enfants";
+					}
+					elseif($_SESSION["statut"] == "autre") {
+						echo $_SESSION["statut_special"];
+					}
 				echo "</p>\n";
+					
 				//On vérifie si le module de mise à jour est activé
 				if (getSettingValue("active_module_msj")==='y' and $_SESSION['statut'] == 'administrateur') {
 					echo "<a href='javascript:ouvre_popup()'>";
 						echo "<img style='border: 0px; width: 15px; height: 15px;' src='$gepiPath/images/info.png' alt='info' title='info' align='top' />";
 					echo "</a>\n<br />\n";
 				}
+				
 				//christian
 				// menus de droite
-				echo "<div id='bd_accueil'>";
-					// menu accueil
-					echo "<p>";
-						echo "<a href='$gepiPath/accueil.php'".insert_confirm_abandon().">";
-							echo "<img src='$gepiPath/images/icons/home.png' alt='Accueil' title='Accueil' />";
-							echo "<span class='menu_bandeau'>";
-								echo "&nbsp;Accueil";
-							echo "</span>";
-						echo "</a>\n";
-						echo "-";
-						echo "<a href='$gepiPath/utilisateurs/mon_compte.php'".insert_confirm_abandon().">";
-							echo "<img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' title='Mon compte' />";
-							echo "<span class='menu_bandeau'>";
-								echo "&nbsp;Gérer mon compte";
-							echo "</span>";
-						echo "</a>\n";
-						if ($session_gepi->current_auth_mode == "sso" && $gepiSettings['sso_display_portail'] == 'yes') {
-						echo "-";
+				// menu accueil
+				echo "<ol id='premier_menu'>\n";
+					if ($session_gepi->current_auth_mode == "sso" && $gepiSettings['sso_display_portail'] == 'yes') {
+					echo "<li class='ligne_premier_menu'>\n";
 						echo " <a href='".$gepiSettings['sso_url_portail']."'>";
 							echo "<img src='$gepiPath/images/icons/home.png' alt='Portail' title='Retour portail' />";
 							echo "<span class='menu_bandeau'>";
 								echo "&nbsp;Retour portail";
 							echo "</span>";
 						echo "</a>\n";
-						}
-						if ($session_gepi->current_auth_mode != "sso" || $gepiSettings['sso_hide_logout'] != 'yes') {
-						echo "-";
+					echo "</li>\n";
+					}
+					if ($session_gepi->current_auth_mode != "sso" || $gepiSettings['sso_hide_logout'] != 'yes') {
+					echo "<li class='ligne_premier_menu'>\n";
 						echo " <a href='$gepiPath/logout.php?auto=0'".insert_confirm_abandon().">";
 							echo "<img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' title='Se déconnecter' />";
 							echo "<span class='menu_bandeau'>";
 								echo "&nbsp;Déconnexion";
 							echo "</span>";
 						echo "</a>\n";
-						}
-					echo "</p>";
-				echo "</div>\n";
+					echo "</li>\n";
+					}
+					echo "<li class='ligne_premier_menu'>\n";
+						echo " <a href='$gepiPath/utilisateurs/mon_compte.php'".insert_confirm_abandon().">";
+							echo "<img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' title='Mon compte' />";
+							echo "<span class='menu_bandeau'>";
+								echo "&nbsp;Gérer mon compte";
+							echo "</span>";
+						echo "</a>\n";
+					echo "</li>\n";
+					echo "<li class='ligne_premier_menu'>\n";
+						echo "<a href='$gepiPath/accueil.php'".insert_confirm_abandon().">";
+							echo "<img src='$gepiPath/images/icons/home.png' alt='Accueil' title='Accueil' />";
+							echo "<span class='menu_bandeau'>";
+								echo "&nbsp;Accueil";
+							echo "</span>";
+						echo "</a>\n";
+					echo "</li>\n";
+				echo "</ol>\n";
+				echo "<div class='spacer'> </div>\n"; // sépare les 2 menus
 				// menu contact
-				echo "<!-- Contact -->\n";
-				//echo "<div class='menu_general' style='border: 1px dashed green;'>";
-				echo "<div class='menu_general'>";
-					echo "<p>";
-						$prefix = '';
-						if (!isset($niveau_arbo)) {
-							$prefix = "../";
-						}elseif($niveau_arbo==1){
-							$prefix = "../";
-						}elseif ($niveau_arbo==2){
-							$prefix = "../../";
-						}
+				echo "<ol id='deux_menu'>";
+						echo "<!-- Contact -->\n";
+					$prefix = '';
+					if (!isset($niveau_arbo)) {
+						$prefix = "../";
+					}elseif($niveau_arbo==1) {
+						$prefix = "../";
+					}elseif ($niveau_arbo==2) {
+						$prefix = "../../";
+					}
+					echo "<li class='ligne_deux_menu'>\n";
 						if ($_SESSION['statut'] == 'administrateur') {
 							echo "<a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"http://gepi.mutualibre.org/\">Visiter le site de GEPI</a>";
-							// echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a>";
 						} else {
 							if (getSettingValue("contact_admin_mailto")=='y') {
 								$gepiAdminAdress=getSettingValue("gepiAdminAdress");
@@ -593,11 +556,38 @@ if (isset($titre_page)) {
 								echo("<a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
 							}
 						}
-						echo " - <a href=\"javascript:centrerpopup('$gepiPath/gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Informations générales</a> - <a href='javascript:centrerpopup(\"$gepiPath/gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
-					echo "</p>\n";
-				echo "</div>\n";
-			echo "</div>\n";
-		echo "\n";
+					echo "</li>\n";
+					echo "<li class='ligne_deux_menu'>\n";
+						echo "<a href=\"javascript:centrerpopup('$gepiPath/gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Informations générales</a>";
+					echo "</li>\n";
+					echo "<li class='ligne_deux_menu'>\n";
+						echo "<a href='javascript:centrerpopup(\"$gepiPath/gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
+					echo "</li>\n";
+				echo "</ol>\n";
+				
+				// echo "<div class='spacer_bas'> </div>\n"; // bloque les menus dans le bandeau
+	
+		 //=== Affichage de la version de Gepi ===
+				if ($_SESSION['statut'] == "administrateur") {
+					  $version_gepi = '';
+					  if ($gepiVersion == 'trunk') {
+							// On a une version trunk
+							$version_gepi .= "gepi-trunk";
+					  } else {
+							// On a une version numérotée
+							$version_gepi .= "v".$gepiVersion;
+							if ($gepiRcVersion != '') $version_gepi .= "-RC".$gepiRcVersion;
+							if ($gepiBetaVersion != '') $version_gepi .= "-beta".$gepiBetaVersion;
+							if ($gepiVersionMaintenance != '') $version_gepi .= ".".$gepiVersionMaintenance;
+					  }
+					  if ($gepiSvnRev != '') $version_gepi .= " r".$gepiSvnRev;
+
+					//echo "<div id='version_gepi'"
+					echo "<p id='num_version'>".$version_gepi."</p>";
+				}
+				else{
+					echo "<p id='num_version'>&nbsp;</p>"; // nécessaire pour recaler le bandeau dans tous les navigateurs
+				}
 
 	// Fin du conteneur de Header
 
@@ -605,16 +595,16 @@ if (isset($titre_page)) {
 
 	echo "</div>\n";
 
-//echo "<div style='clear:both;'>&nbsp;</div>\n";
 
 // ==========> On ajoute la barre de menu <========================= //
 if (!isset($nobar)) { $nobar = "non"; }
 if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
 	// On vérifie que l'utilisateur ne l'a pas enlevée
 	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
 			require_once($prefix."edt_organisation/fonctions_calendrier.php");
-		}elseif(file_exists("fonctions_calendrier.php")){
+		}elseif(file_exists("fonctions_calendrier.php")) {
 			require_once("./fonctions_calendrier.php");
 		}
 		include("header_barre_menu.php");
@@ -622,7 +612,7 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 }
 
 echo "<div id='container'>\n";
-if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))){
+if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))) {
 	$msg = isset($_POST['msg']) ? unslashes($_POST['msg']) : (isset($_GET['msg']) ? unslashes($_GET['msg']) : $msg);
 	if ($msg != '') {
 		echo "<div class=\"headerMessage\">";

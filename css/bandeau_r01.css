@@ -1,0 +1,253 @@
+
+/*
+*@version $Id$
+*
+* bandeau_r01.css
+* Mise en page du bandeau
+*
+*/
+
+#bandeau {
+	width:100%;
+	padding: 0em 0em 0.2em 0em;
+	margin: 0em auto 0.2em;
+	overflow:auto;
+}
+
+/* Placement du titre */
+.gd_bandeau h1{
+	position:relative;
+	left: 1.1em;
+	top: -1.2em;
+	margin:0em;
+	padding:0em;
+	width:47%;
+	line-height: 100%;
+	text-align: center;
+	color: white;
+}
+
+/* Couleurs des liens */
+#bandeau a:link {
+	color: #D3D3D3;
+}
+#bandeau a:visited {
+	color: #D3D3D3;
+}
+#bandeau a:hover {
+	color: white;
+}
+
+/* Couleurs des bandeaux */
+.gd_bandeau_darkfade {
+	background-image: url(../images/background/darkfade.png);
+	background-repeat: repeat-x;
+	background-color:#4a4a59;
+}
+.pt_bandeau_darkfade {
+	background-image: url(../images/background/darkfade_small.png);
+	background-repeat: repeat-x;
+	background-color:#4a4a59;
+}
+.gd_bandeau_degrade1 {
+	background-image: url(../images/background/degrade1.png);
+	background-repeat: repeat-x;
+}
+.pt_bandeau_degrade1 {
+	background-image: url(../images/background/degrade1_small.png);
+	background-repeat: repeat-x;
+}
+
+/* Placement des boutons */
+.gd_bandeau .change_taille_pt {
+	display:none;
+}
+.gd_bandeau .change_taille_gd img {
+	margin-top:0.3em;
+	padding:0.3em;
+}
+.pt_bandeau .change_taille_gd {
+	display:none;
+}
+.pt_bandeau .change_taille_pt img {
+	margin-top:0.3em;
+	padding:0.3em;
+}
+ 
+/* Nom de l'utilisateur */
+#bd_nom {
+	margin-top: -4em;
+	margin-left:auto;
+	margin-bottom:1em;
+	padding: 0em;
+	width:49%;
+	font-weight:bold;
+	text-align:right;
+	color: white;
+}
+
+/* Dernière connexion */
+#dern_connect {
+	float:left;
+	margin-top: 0em;
+	margin-bottom:0em;
+	padding: 0em;
+	width:49%;
+	color: white;
+}
+
+/* Statut */
+#bd_parent {
+	margin-top: -1em;
+	margin-left:auto;
+	width:49%;
+	text-align:right;
+	color: white;
+}
+
+/* Premier menu */
+#premier_menu {
+	margin:0em 0em 0em auto;
+	width:45%;
+	list-style-type: none;
+	text-align:right;
+	color: white;
+}
+#premier_menu li, #deux_menu li{
+	float:right;
+	margin:0.1em 0.1em 0em 0.1em;
+	padding:0.1em 0.1em 0.1em 0.1em;
+	display: block;
+	/* border-top: 1px solid #4a4a59;
+	border-left: 1px solid #4a4a59;
+	border-bottom: 1px solid #040404;
+	border-right: 1px solid #040404; */
+}
+
+
+/* Deuxième menu */
+#deux_menu {
+	margin:0em 0em 0em auto;
+	padding:0em;
+	width:49%;
+	text-align:right;
+	color: white;
+	border-top: 1px dotted orange; 
+}
+.spacer {
+	clear: right;
+	width:49%;
+}
+.spacer_bas {
+	clear: right;
+	height:0.3em;
+	width:49%;
+}
+
+/* Numéro de version */
+#num_version {
+	margin-top:-1.8em;
+	padding-bottom:0.2em;
+	width:49%;
+	color:#ff0000;
+}
+ 
+/* Petit bandeau */
+.pt_bandeau {
+	min-height:1.2em;
+}
+.pt_bandeau .spacer {
+	display:none;
+}
+.pt_bandeau .spacer_bas {
+	display:none;
+}
+.pt_bandeau  h1 { 
+	margin:-2em 0em 0em;
+	padding:0em;
+	width:47%;
+	text-align: center;
+	font-size: 1em;
+	line-height: 100%;
+	font-weight:bold;
+	color: white;
+}
+.pt_bandeau #bd_nom {
+	float:left;
+	margin-top: -1.2em;
+	margin-bottom: 0em;
+	width:39%;
+	font-size: 0.9em;
+}
+.pt_bandeau #bd_parent {
+	display:none;
+}
+.pt_bandeau #dern_connect {
+	display:none;
+}
+.pt_bandeau #premier_menu {
+	float:right;
+	margin: -1.2em 0em 0em 0em;
+	padding: 0em 0em 0.3em 0em;
+	width:10%;
+	line-height: 1.8em;
+}
+.pt_bandeau .menu_bandeau {
+	display:none;
+}
+.pt_bandeau #deux_menu {
+	display:none;
+}
+.pt_bandeau #num_version {
+	margin-top:-4.1em;
+	margin-left:2em;
+	font-size:0.8em;
+	line-height: 1.8em;
+}
+
+/* === Reprise des styles de style.css pour pouvoir se passer de l'appel de ce fichier === */
+
+/* barre de menu prof */
+#essaiMenu {
+	margin: -0.3em 0em 0em 0em;
+	padding: 0.1em;
+	background: #686397;
+	color: #FFF;
+}
+#essaiMenu li {
+	display: inline;
+	/* margin-right: 0em; */
+	margin: 0em; 
+	padding: 0em 0.5em 0em 0em;
+	/* border-top: 1px solid #a0a0a0; */
+	/* border-left: 1px solid #a0a0a0; */
+	/* border-bottom: 1px solid #040404; */
+	/* border-right: 1px solid #040404; */
+	border-right: 1px solid #a0a0a0;
+	font-weight: bold;
+	font-size: 0.8em;
+}
+#essaiMenu li.last {
+	border-right: 0px;
+}
+#essaiMenu a {
+	margin: 0em; 
+	padding: 0em;
+	color: white;
+}
+#essaiMenu a:hover {
+	color: #99FFFF;
+}
+.pt_bandeau #essaiMenu {
+	margin: 0em;
+}
+
+/* message */
+div.headerMessage {
+	width: 100%;
+	padding: 0.5%;
+	margin: 0;
+	color: #FF0000;
+	font-variant: small-caps;
+	text-align: center;
+}

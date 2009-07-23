@@ -48,7 +48,7 @@ $comp=array('R','V','B');
 
 
 
-function hex2nb($carac){
+function hex2nb($carac) {
 	switch(strtoupper($carac)) {
 		case "A":
 			return 10;
@@ -74,7 +74,7 @@ function hex2nb($carac){
 	}
 }
 
-function tab_rvb($couleur){
+function tab_rvb($couleur) {
 	$compR=substr($couleur,0,2);
 	$compV=substr($couleur,2,2);
 	$compB=substr($couleur,4,2);
@@ -94,7 +94,7 @@ function tab_rvb($couleur){
 
 
 
-function genere_degrade($couleur_haut,$couleur_bas,$hauteur,$chemin_img){
+function genere_degrade($couleur_haut,$couleur_bas,$hauteur,$chemin_img) {
 	//$hauteur=100;
 
 	$im=imagecreate(1,$hauteur);
@@ -107,9 +107,9 @@ function genere_degrade($couleur_haut,$couleur_bas,$hauteur,$chemin_img){
 	$tab_bas=array();
 	$tab_bas=tab_rvb($couleur_bas);
 
-	for($x=0;$x<$hauteur;$x++){
+	for($x=0;$x<$hauteur;$x++) {
 		$ratio=array();
-		for($i=0;$i<count($comp);$i++){
+		for($i=0;$i<count($comp);$i++) {
 			$ratio[$comp[$i]]=$tab_haut[$comp[$i]]+$x*($tab_bas[$comp[$i]]-$tab_haut[$comp[$i]])/$hauteur;
 		}
 		$color=imagecolorallocate($im,$ratio['R'],$ratio['V'],$ratio['B']);
@@ -127,7 +127,7 @@ $tab[0]='style_body_backgroundcolor';
 
 
 
-//if(isset($_POST['ok'])){
+//if(isset($_POST['ok'])) {
 if(isset($_POST['is_posted'])) {
 	$err_no=0;
 	$msg="";
@@ -135,17 +135,17 @@ if(isset($_POST['is_posted'])) {
 	//if(isset($_POST['style_body_backgroundcolor'])) {
 
 	$reinitialiser="n";
-	if(isset($_POST['secu'])){
-		if($_POST['secu']=='y'){
+	if(isset($_POST['secu'])) {
+		if($_POST['secu']=='y') {
 			$reinitialiser='y';
 		}
 	}
 
-	if($reinitialiser=='y'){
+	if($reinitialiser=='y') {
 		if(saveSetting('style_body_backgroundcolor','')) {
 			if ($GLOBALS['multisite'] == 'y') {
 				$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
-			}else{
+			} else {
 				$fich=fopen("../style_screen_ajout.css","w+");
 			}
 			fwrite($fich,"/*
@@ -157,11 +157,11 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 			fclose($fich);
 			$msg.="Réinitialisation effectuée.";
 		}
-		else{
+		else {
 			$msg.="Erreur lors de la réinitialisation.";
 		}
 	}
-	else{
+	else {
 		$temoin_modif=0;
 		$temoin_fichier_regenere=0;
 		$nb_err=0;
@@ -172,11 +172,11 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 				$nb_err++;
 			}
 
-			if(isset($_POST['style_body_backgroundcolor'])){
+			if(isset($_POST['style_body_backgroundcolor'])) {
 				if(saveSetting('style_body_backgroundcolor',$_POST['style_body_backgroundcolor'])) {
 					if ($GLOBALS['multisite'] == 'y') {
 						$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
-					}else{
+					} else {
 						$fich=fopen("../style_screen_ajout.css","w+");
 					}
 					fwrite($fich,"/*
@@ -186,9 +186,9 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 */
 
 @media screen  {
-    body {
-        background: #".$_POST['style_body_backgroundcolor'].";
-    }
+	body {
+		background: #".$_POST['style_body_backgroundcolor'].";
+	}
 }
 ");
 					fclose($fich);
@@ -196,13 +196,13 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 					$temoin_modif++;
 					$temoin_fichier_regenere++;
 				}
-				else{
+				else {
 					$msg.="Erreur lors de la sauvegarde de 'style_body_backgroundcolor'. ";
 					$nb_err++;
 				}
 			}
 		}
-		else{
+		else {
 			if(!saveSetting('utiliser_couleurs_perso','n')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_couleurs_perso'. ";
 				$nb_err++;
@@ -210,7 +210,7 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 
 			if ($GLOBALS['multisite'] == 'y') {
 				$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
-			}else{
+			} else {
 				$fich=fopen("../style_screen_ajout.css","w+");
 			}
 			fwrite($fich,"/*
@@ -225,17 +225,17 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 			$temoin_fichier_regenere++;
 		}
 
-		if(isset($_POST['utiliser_degrade'])){
+		if(isset($_POST['utiliser_degrade'])) {
 			if(!saveSetting('utiliser_degrade','y')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_degrade'. ";
 				$nb_err++;
 			}
 
-			if(isset($_POST['degrade_haut'])){
+			if(isset($_POST['degrade_haut'])) {
 				if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST['degrade_haut'])))!=0)||(strlen($_POST['degrade_haut'])!=6)) {
 					$degrade_haut="020202";
 				}
-				else{
+				else {
 					$degrade_haut=$_POST['degrade_haut'];
 				}
 
@@ -243,17 +243,17 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 					//$msg.="Enregistrement effectué. ";
 					$temoin_modif++;
 				}
-				else{
+				else {
 					$msg.="Erreur lors de la sauvegarde de 'degrade_haut'. ";
 					$nb_err++;
 				}
 			}
 
-			if(isset($_POST['degrade_bas'])){
+			if(isset($_POST['degrade_bas'])) {
 				if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST['degrade_bas'])))!=0)||(strlen($_POST['degrade_bas'])!=6)) {
 					$degrade_bas="4A4A59";
 				}
-				else{
+				else {
 					$degrade_bas=$_POST['degrade_bas'];
 				}
 
@@ -261,17 +261,17 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 					//$msg.="Enregistrement effectué. ";
 					$temoin_modif++;
 				}
-				else{
+				else {
 					$msg.="Erreur lors de la sauvegarde de 'degrade_bas'. ";
 					$nb_err++;
 				}
 			}
 
-			if($nb_err==0){
+			if($nb_err==0) {
 				/*
-				if($temoin_fichier_regenere==0){
+				if($temoin_fichier_regenere==0) {
 				}
-				else{
+				else {
 				}
 				*/
 
@@ -284,46 +284,27 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 
 				if ($GLOBALS['multisite'] == 'y') {
 					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
-				}else{
+				} else {
 					$fich=fopen("../style_screen_ajout.css","a+");
 				}
+
 				fwrite($fich,"
 
 div#header {
-        background-color: #$degrade_bas;
+	background-color: #$degrade_bas;
 }
 
 fieldset#login_box div#header {
-    background: white;
-    background-image: url(\"./images/background/degrade1_small.png\");
-    background-repeat: repeat-x;
-    color: white;
-    text-align: center;
-    height: 40px;
+	background-image: url(\"./images/background/degrade1_small.png\");
 }
 
 #table_header {
-	color: white;
-	/*
-	Ca ne fonctionne pas! Pas pris en compte???
-	J'ai remis cette partie directement dans la page si on est en gepi_style=style.
-	*/
 	background-image: url(\"./images/background/degrade1.png\");
-    background-repeat: repeat-x;
-	/*background-color: red;*/
-	margin: 0;
-	padding: 0;
 }
 
 #div_login_entete {
 	background: #$degrade_bas;
 	background-image: url(\"./images/background/degrade1.png\");
-	background-repeat: repeat-x;
-	color: white;
-	text-align: center;
-	padding:0;
-	margin:0;
-	width: 25em;
 }
 
 #essaiMenu {
@@ -351,9 +332,9 @@ fieldset#login_box div#header {
 				fclose($fich);
 			}
 		}
-		else{
-			if(file_exists("../images/background/degrade1.png")){unlink("../images/background/degrade1.png");}
-			if(file_exists("../images/background/degrade1_small.png")){unlink("../images/background/degrade1_small.png");}
+		else {
+			if(file_exists("../images/background/degrade1.png")) {unlink("../images/background/degrade1.png");}
+			if(file_exists("../images/background/degrade1_small.png")) {unlink("../images/background/degrade1_small.png");}
 			if(!saveSetting('utiliser_degrade','n')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_degrade'. ";
 				$nb_err++;
@@ -364,7 +345,7 @@ fieldset#login_box div#header {
 
 
 
-		if(isset($_POST['utiliser_couleurs_perso_infobulles'])){
+		if(isset($_POST['utiliser_couleurs_perso_infobulles'])) {
 			if(!saveSetting('utiliser_couleurs_perso_infobulles','y')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_couleurs_perso_infobulles'. ";
 				$nb_err++;
@@ -373,11 +354,11 @@ fieldset#login_box div#header {
 			//couleur_infobulle_fond_corps
 			//couleur_infobulle_fond_entete
 
-			if(isset($_POST['couleur_infobulle_fond_entete'])){
+			if(isset($_POST['couleur_infobulle_fond_entete'])) {
 				if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_infobulle_fond_entete'])))!=0)||(strlen($_POST['couleur_infobulle_fond_entete'])!=6)) {
 					$couleur_infobulle_fond_entete="4a4a59";
 				}
-				else{
+				else {
 					$couleur_infobulle_fond_entete=$_POST['couleur_infobulle_fond_entete'];
 				}
 
@@ -385,17 +366,17 @@ fieldset#login_box div#header {
 					//$msg.="Enregistrement effectué. ";
 					$temoin_modif++;
 				}
-				else{
+				else {
 					$msg.="Erreur lors de la sauvegarde de 'couleur_infobulle_fond_entete'. ";
 					$nb_err++;
 				}
 			}
 
-			if(isset($_POST['couleur_infobulle_fond_corps'])){
+			if(isset($_POST['couleur_infobulle_fond_corps'])) {
 				if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_infobulle_fond_corps'])))!=0)||(strlen($_POST['couleur_infobulle_fond_corps'])!=6)) {
 					$couleur_infobulle_fond_corps="EAEAEA";
 				}
-				else{
+				else {
 					$couleur_infobulle_fond_corps=$_POST['couleur_infobulle_fond_corps'];
 				}
 
@@ -403,16 +384,16 @@ fieldset#login_box div#header {
 					//$msg.="Enregistrement effectué. ";
 					$temoin_modif++;
 				}
-				else{
+				else {
 					$msg.="Erreur lors de la sauvegarde de 'couleur_infobulle_fond_corps'. ";
 					$nb_err++;
 				}
 			}
 
-			if($nb_err==0){
+			if($nb_err==0) {
 				if ($GLOBALS['multisite'] == 'y') {
 					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
-				}else{
+				} else {
 					$fich=fopen("../style_screen_ajout.css","a+");
 				}
 				fwrite($fich,"
@@ -427,7 +408,7 @@ fieldset#login_box div#header {
 			}
 
 		}
-		else{
+		else {
 			if(!saveSetting('utiliser_couleurs_perso_infobulles','n')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_couleurs_perso_infobulles'. ";
 				$nb_err++;
@@ -438,17 +419,17 @@ fieldset#login_box div#header {
 
 
 		//=========================================
-		if(isset($_POST['utiliser_couleurs_perso_lig_tab_alt'])){
+		if(isset($_POST['utiliser_couleurs_perso_lig_tab_alt'])) {
 			if(!saveSetting('utiliser_couleurs_perso_lig_tab_alt','y')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_couleurs_perso_lig_tab_alt'. ";
 				$nb_err++;
 			}
 
-			if(isset($_POST['couleur_lig_alt1'])){
+			if(isset($_POST['couleur_lig_alt1'])) {
 				if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_lig_alt1'])))!=0)||(strlen($_POST['couleur_lig_alt1'])!=6)) {
 					$couleur_lig_alt1="ffefd5";
 				}
-				else{
+				else {
 					$couleur_lig_alt1=$_POST['couleur_lig_alt1'];
 				}
 
@@ -456,17 +437,17 @@ fieldset#login_box div#header {
 					//$msg.="Enregistrement effectué. ";
 					$temoin_modif++;
 				}
-				else{
+				else {
 					$msg.="Erreur lors de la sauvegarde de 'couleur_lig_alt1'. ";
 					$nb_err++;
 				}
 			}
 
-			if(isset($_POST['couleur_lig_alt_1'])){
+			if(isset($_POST['couleur_lig_alt_1'])) {
 				if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_lig_alt_1'])))!=0)||(strlen($_POST['couleur_lig_alt_1'])!=6)) {
 					$couleur_lig_alt_1="F0FFF0";
 				}
-				else{
+				else {
 					$couleur_lig_alt_1=$_POST['couleur_lig_alt_1'];
 				}
 
@@ -474,16 +455,16 @@ fieldset#login_box div#header {
 					//$msg.="Enregistrement effectué. ";
 					$temoin_modif++;
 				}
-				else{
+				else {
 					$msg.="Erreur lors de la sauvegarde de 'couleur_lig_alt_1'. ";
 					$nb_err++;
 				}
 			}
 
-			if($nb_err==0){
+			if($nb_err==0) {
 				if ($GLOBALS['multisite'] == 'y') {
 					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
-				}else{
+				} else {
 					$fich=fopen("../style_screen_ajout.css","a+");
 				}
 				fwrite($fich,"
@@ -505,7 +486,7 @@ fieldset#login_box div#header {
 			}
 
 		}
-		else{
+		else {
 			if(!saveSetting('utiliser_couleurs_perso_lig_tab_alt','n')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_couleurs_perso_lig_tab_alt'. ";
 				$nb_err++;
@@ -525,16 +506,16 @@ fieldset#login_box div#header {
 		$poste_notice_classe=array("color_fond_notices_c", "couleur_entete_fond_c", "couleur_cellule_c", "couleur_cellule_alt_c", "color_fond_notices_t", "couleur_entete_fond_t", "couleur_cellule_t", "couleur_cellule_alt_t", "color_fond_notices_i", "couleur_entete_fond_i", "couleur_cellule_i", "couleur_cellule_alt_i", "color_fond_notices_f", "couleur_cellule_f", "color_police_travaux", "color_police_matieres ", "couleur_bord_tableau_notice", "couleur_cellule_gen");
 		$poste_type_couleur=array("background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "color", "color", "border-color", "background-color");
 
-		if(isset($_POST['utiliser_cahier_texte_perso'])){
+		if(isset($_POST['utiliser_cahier_texte_perso'])) {
 			if(!saveSetting('utiliser_cahier_texte_perso','y')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_cahier_texte_perso'. ";
 				$nb_err++;
 			}
 
-			if($nb_err==0){
+			if($nb_err==0) {
 				if ($GLOBALS['multisite'] == 'y') {
 					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
-				}else{
+				} else {
 					$fich=fopen("../style_screen_ajout.css","a+");
 				}
 					fwrite($fich,"
@@ -543,28 +524,28 @@ fieldset#login_box div#header {
 				fclose($fich);
 			}
 
-			for($i=0;$i<count($poste_notice_nom);$i++){
-				if(isset($_POST[$poste_notice_nom[$i]])){
+			for($i=0;$i<count($poste_notice_nom);$i++) {
+				if(isset($_POST[$poste_notice_nom[$i]])) {
 					if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST[$poste_notice_nom[$i]])))!=0)||(strlen($_POST[$poste_notice_nom[$i]])!=6)) {
 						$couleur_poste=$poste_notice_couleur[$i];
 					}
-					else{
+					else {
 						$couleur_poste=$_POST[$poste_notice_nom[$i]];
 					}
 
 					if(saveSetting($poste_notice_nom[$i],$couleur_poste)) {
 						$temoin_modif++;
 					}
-					else{
+					else {
 						$msg.="Erreur lors de la sauvegarde de '".$poste_notice_nom[$i]."'. ";
 						$nb_err++;
 					}
 				}
 
-				if($nb_err==0){
+				if($nb_err==0) {
 					if ($GLOBALS['multisite'] == 'y') {
 						$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
-					}else{
+					} else {
 						$fich=fopen("../style_screen_ajout.css","a+");
 					}
 						fwrite($fich,"
@@ -577,17 +558,17 @@ fieldset#login_box div#header {
 
 			}
 		}
-		else{
+		else {
 			if(!saveSetting('utiliser_cahier_texte_perso','n')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_cahier_texte_perso'. ";
 				$nb_err++;
 			}
-			else{
-				for($i=0;$i<count($poste_notice_nom);$i++){
+			else {
+				for($i=0;$i<count($poste_notice_nom);$i++) {
 					if(saveSetting($poste_notice_nom[$i],$poste_notice_couleur[$i])) {
 						$temoin_modif++;
 					}
-					else{
+					else {
 						$msg.="Erreur lors de la sauvegarde de '".$poste_notice_nom[$i]."'. ";
 						$nb_err++;
 					}
@@ -601,9 +582,9 @@ fieldset#login_box div#header {
 
 /*
 //$temoin_fichier_regenere
-				if($temoin_modif==0){
+				if($temoin_modif==0) {
 				}
-				else{
+				else {
 				}
 				fclose($fich);
 */
@@ -629,7 +610,7 @@ echo "<div class='norme'>\n";
 echo "</div>\n";
 
 /*
-foreach($_POST as $post => $val){
+foreach($_POST as $post => $val) {
 	echo $post.' : '.$val."<br />\n";
 }
 */
@@ -652,7 +633,7 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 	var hexa=new Array("0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F");
 
 	/*
-	function affichecouleur(motif){
+	function affichecouleur(motif) {
 		compR=eval("document.forms['tab']."+motif+"_R.value");
 		compV=eval("document.forms['tab']."+motif+"_V.value");
 		compB=eval("document.forms['tab']."+motif+"_B.value");
@@ -676,7 +657,7 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 	*/
 
 
-	function calculecouleur(motif){
+	function calculecouleur(motif) {
 		compR=eval("document.forms['tab']."+motif+"_R.value");
 		compV=eval("document.forms['tab']."+motif+"_V.value");
 		compB=eval("document.forms['tab']."+motif+"_B.value");
@@ -696,11 +677,11 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 		return couleur;
 	}
 
-	function affichecouleur(motif){
+	function affichecouleur(motif) {
 		document.getElementById(motif).style.backgroundColor="#"+calculecouleur(motif);
 	}
 
-	function delai_affichecouleur(motif){
+	function delai_affichecouleur(motif) {
 		//alert('motif='+motif);
 		setTimeout("affichecouleur("+motif+")",1000);
 	}
@@ -710,22 +691,22 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 	// var liste=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1');
 	var liste=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen', 'fond_notices_c', 'fond_notices_t', 'fond_notices_i', 'fond_notices_f', 'entete_fond_c', 'entete_fond_t', 'entete_fond_i', 'cellule_c', 'cellule_t', 'cellule_i', 'cellule_f', 'cellule_alt_c', 'cellule_alt_t', 'cellule_alt_i');
 
-	function init(){
-		for(i=0;i<liste.length;i++){
+	function init() {
+		for(i=0;i<liste.length;i++) {
 			eval("affichecouleur('"+liste[i]+"')");
 		}
 	}
 
-	function calcule_et_valide(){
-		for(i=0;i<liste.length;i++){
+	function calcule_et_valide() {
+		for(i=0;i<liste.length;i++) {
 			champ=eval("document.forms['tab']."+liste[i])
 			champ.value=calculecouleur(liste[i]);
 		}
 		document.forms['tab'].submit();
 	}
 
-	//function reinitialiser(){
-	function reinit(){
+	//function reinitialiser() {
+	function reinit() {
 		document.forms['tab'].secu.value='y';
 		document.forms['tab'].submit();
 	}
@@ -838,7 +819,7 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 	tabmotif['cellule_gen_B']=239;
 
 
-	function reinit_couleurs(motif){
+	function reinit_couleurs(motif) {
 		comp_motif=motif+"_R";
 		champ_R=eval("document.forms['tab']."+comp_motif);
 		champ_R.value=tabmotif[comp_motif];
@@ -878,7 +859,7 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 	$tabcouleurs['style_body_backgroundcolor']=array();
 	$style_body_backgroundcolor=getSettingValue('style_body_backgroundcolor');
 	//echo "\$style_body_backgroundcolor=$style_body_backgroundcolor<br />";
-	if($style_body_backgroundcolor!=""){
+	if($style_body_backgroundcolor!="") {
 /*
 		$compR=substr($style_body_backgroundcolor,0,2);
 		$compV=substr($style_body_backgroundcolor,2,2);
@@ -915,10 +896,10 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 	$tabcouleurs['style_body_backgroundcolor']=array();
 	$style_body_backgroundcolor=getSettingValue('style_body_backgroundcolor');
 	//echo "\$style_body_backgroundcolor=$style_body_backgroundcolor<br />";
-	if($style_body_backgroundcolor!=""){
+	if($style_body_backgroundcolor!="") {
 		$tabcouleurs['style_body_backgroundcolor']=tab_rvb($style_body_backgroundcolor);
 	}
-	else{
+	else {
 		// #EAEAEA
 		// 14*16+10
 		$tabcouleurs['style_body_backgroundcolor']['R']=234;
@@ -934,7 +915,7 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			// echo "<tr>\n";
 				// echo "<td>\n";
 					echo "<input type='checkbox' name='utiliser_couleurs_perso' id='utiliser_couleurs_perso' value='y' ";
-					if(getSettingValue('utiliser_couleurs_perso')=='y'){
+					if(getSettingValue('utiliser_couleurs_perso')=='y') {
 						echo "checked='checked' ";
 					}
 					echo "/> ";
@@ -950,13 +931,13 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 						echo "<tr class='fond_blanc'>\n";
 							echo "<td class='texte_gras'>\nMotif\n</td>\n";
 							echo "<td class='texte_gras'>\nPropriété\n</td>\n";
-							for($j=0;$j<count($comp);$j++){
+							for($j=0;$j<count($comp);$j++) {
 								echo "<td class='texte_gras'>\n$comp[$j]\n</td>\n";
 							}
 							echo "<td class='texte_gras'>\nAperçu\n</td>\n";
 							echo "<td class='texte_gras'>\nRéinitialisation\n</td>\n";
 						echo "</tr>\n";
-						for($i=0;$i<count($tab);$i++){
+						for($i=0;$i<count($tab);$i++) {
 							echo "<tr>\n";
 								//echo "<td>$tab[$i]</td>\n";
 								//echo "<td>Couleur de fond de page: <a href='couleur.php?objet=Fond'></a></td>\n";
@@ -965,11 +946,11 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 									//echo "<a href='couleur.php?objet=".$tab[$i]."'></a>
 								echo "</td>\n";
 								echo "<td>\nbody{background-color: #XXXXXX;}\n</td>\n";
-								for($j=0;$j<count($comp);$j++){
+								for($j=0;$j<count($comp);$j++) {
 									/*
 									$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
 									$res_couleur=mysql_query($sql);
-									if(mysql_num_rows($res_couleur)>0){
+									if(mysql_num_rows($res_couleur)>0) {
 										$tmp=mysql_fetch_object($res_couleur);
 										$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
 									}
@@ -1031,7 +1012,7 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			// echo "<tr>\n";
 				// echo "<td>\n";
 					echo "<input type='checkbox' name='utiliser_degrade' id='utiliser_degrade' value='y' ";
-					if(getSettingValue('utiliser_degrade')=='y'){
+					if(getSettingValue('utiliser_degrade')=='y') {
 						echo "checked='checked' ";
 					}
 					echo "/> ";
@@ -1049,7 +1030,7 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 					echo "<table class='tableau_change_couleur' summary=\"bandeau changement de couleur : ligne 2 dégradé haut, ligne 3 dégradé bas, colonne 2 rouge, colonne 3 vert, colonne 4 bleu, colonne 6 validation\">\n";
 						echo "<tr class='fond_blanc'>\n";
 							echo "<td class='texte_gras'>Couleur</td>\n";
-							for($j=0;$j<count($comp);$j++){
+							for($j=0;$j<count($comp);$j++) {
 								echo "<td class='texte_gras'>$comp[$j]</td>\n";
 							}
 							echo "<td class='texte_gras'>Aperçu</td>\n";
@@ -1059,36 +1040,36 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 						$tab_degrade=array("degrade_haut","degrade_bas");
 
 						$degrade_haut=getSettingValue('degrade_haut');
-						if($degrade_haut!=""){
+						if($degrade_haut!="") {
 							$tabcouleurs['degrade_haut']=tab_rvb($degrade_haut);
 						}
-						else{
+						else {
 							$tabcouleurs['degrade_haut']['R']=2;
 							$tabcouleurs['degrade_haut']['V']=2;
 							$tabcouleurs['degrade_haut']['B']=2;
 						}
 
 						$degrade_bas=getSettingValue('degrade_bas');
-						if($degrade_bas!=""){
+						if($degrade_bas!="") {
 							$tabcouleurs['degrade_bas']=tab_rvb($degrade_bas);
 						}
-						else{
+						else {
 							$tabcouleurs['degrade_bas']['R']=74;
 							$tabcouleurs['degrade_bas']['V']=74;
 							$tabcouleurs['degrade_bas']['B']=89;
 						}
 
-						for($i=0;$i<count($tab_degrade);$i++){
+						for($i=0;$i<count($tab_degrade);$i++) {
 							echo "<tr>\n";
 
 								echo "<td>$tab_degrade[$i]";
 								echo "</td>\n";
 
-								for($j=0;$j<count($comp);$j++){
+								for($j=0;$j<count($comp);$j++) {
 									/*
 									$sql="SELECT value FROM setting WHERE name='".$tab_degrade[$i]."_".$comp[$j]."'";
 									$res_couleur=mysql_query($sql);
-									if(mysql_num_rows($res_couleur)>0){
+									if(mysql_num_rows($res_couleur)>0) {
 										$tmp=mysql_fetch_object($res_couleur);
 										$tabcouleurs[$tab_degrade[$i]][$comp[$j]]=$tmp->value;
 									}
@@ -1138,10 +1119,10 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
 	$tabcouleurs['couleur_infobulle_fond_entete']=array();
 	$couleur_infobulle_fond_entete=getSettingValue('couleur_infobulle_fond_entete');
-	if($couleur_infobulle_fond_entete!=""){
+	if($couleur_infobulle_fond_entete!="") {
 		$tabcouleurs['couleur_infobulle_fond_entete']=tab_rvb($couleur_infobulle_fond_entete);
 	}
-	else{
+	else {
 		// #4a4a59
 		// 4*16+10=74 et 5*16+9=89
 		$tabcouleurs['couleur_infobulle_fond_entete']['R']=74;
@@ -1151,10 +1132,10 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
 	$tabcouleurs['couleur_infobulle_fond_corps']=array();
 	$couleur_infobulle_fond_corps=getSettingValue('couleur_infobulle_fond_corps');
-	if($couleur_infobulle_fond_corps!=""){
+	if($couleur_infobulle_fond_corps!="") {
 		$tabcouleurs['couleur_infobulle_fond_corps']=tab_rvb($couleur_infobulle_fond_corps);
 	}
-	else{
+	else {
 		// #EAEAEA
 		// 14*16+10=234
 		$tabcouleurs['couleur_infobulle_fond_corps']['R']=234;
@@ -1168,7 +1149,7 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 		// echo "<tr>\n";
 			// echo "<td>\n";
 				echo "<input type='checkbox' name='utiliser_couleurs_perso_infobulles' id='utiliser_couleurs_perso_infobulles' value='y' ";
-				if(getSettingValue('utiliser_couleurs_perso_infobulles')=='y'){
+				if(getSettingValue('utiliser_couleurs_perso_infobulles')=='y') {
 					echo "checked='checked' ";
 				}
 				echo "/> ";
@@ -1187,7 +1168,7 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
 					echo "<tr class='fond_blanc'>\n";
 						echo "<td class='texte_gras'>\nMotif\n</td>\n";
-						for($j=0;$j<count($comp);$j++){
+						for($j=0;$j<count($comp);$j++) {
 							echo "<td class='texte_gras'>\n$comp[$j]\n</td>\n";
 						}
 						echo "<td class='texte_gras'>\nAperçu\n</td>\n";
@@ -1199,11 +1180,11 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 						echo "<td>\n";
 							echo "Couleur de fond de l'entête des infobulles\n";
 						echo "</td>\n";
-						for($j=0;$j<count($comp);$j++){
+						for($j=0;$j<count($comp);$j++) {
 							/*
 							$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
 							$res_couleur=mysql_query($sql);
-							if(mysql_num_rows($res_couleur)>0){
+							if(mysql_num_rows($res_couleur)>0) {
 								$tmp=mysql_fetch_object($res_couleur);
 								$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
 							}
@@ -1236,11 +1217,11 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 							echo "<td>\n";
 								echo "Couleur de fond du corps des infobulles";
 							echo "</td>\n";
-							for($j=0;$j<count($comp);$j++){
+							for($j=0;$j<count($comp);$j++) {
 								/*
 								$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
 								$res_couleur=mysql_query($sql);
-								if(mysql_num_rows($res_couleur)>0){
+								if(mysql_num_rows($res_couleur)>0) {
 									$tmp=mysql_fetch_object($res_couleur);
 									$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
 								}
@@ -1281,10 +1262,10 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
 		$tabcouleurs['couleur_lig_alt1']=array();
 		$couleur_lig_alt1=getSettingValue('couleur_lig_alt1');
-		if($couleur_lig_alt1!=""){
+		if($couleur_lig_alt1!="") {
 			$tabcouleurs['couleur_lig_alt1']=tab_rvb($couleur_lig_alt1);
 		}
-		else{
+		else {
 			// papayawhip #FFEFD5
 			$tabcouleurs['couleur_lig_alt1']['R']=255;
 			$tabcouleurs['couleur_lig_alt1']['V']=239;
@@ -1293,10 +1274,10 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
 		$tabcouleurs['couleur_lig_alt_1']=array();
 		$couleur_lig_alt_1=getSettingValue('couleur_lig_alt_1');
-		if($couleur_lig_alt_1!=""){
+		if($couleur_lig_alt_1!="") {
 			$tabcouleurs['couleur_lig_alt_1']=tab_rvb($couleur_lig_alt_1);
 		}
-		else{
+		else {
 			// honeydew #F0FFF0
 			$tabcouleurs['couleur_lig_alt_1']['R']=240;
 			$tabcouleurs['couleur_lig_alt_1']['V']=255;
@@ -1309,7 +1290,7 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 		echo "<div class='tableau_param_couleur'>\n";
 				// echo "<td>\n";
 					echo "<input type='checkbox' name='utiliser_couleurs_perso_lig_tab_alt' id='utiliser_couleurs_perso_lig_tab_alt' value='y' ";
-					if(getSettingValue('utiliser_couleurs_perso_lig_tab_alt')=='y'){
+					if(getSettingValue('utiliser_couleurs_perso_lig_tab_alt')=='y') {
 						echo "checked='checked' ";
 					}
 					echo "/> ";
@@ -1328,7 +1309,7 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
 						echo "<tr class='fond_blanc'>\n";
 							echo "<td class='texte_gras'>Motif</td>\n";
-							for($j=0;$j<count($comp);$j++){
+							for($j=0;$j<count($comp);$j++) {
 								echo "<td class='texte_gras'>$comp[$j]</td>\n";
 							}
 							echo "<td class='texte_gras'>Aperçu</td>\n";
@@ -1339,11 +1320,11 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 						echo "<tr>\n";
 							echo "<td>Couleur de ligne 1";
 							echo "</td>\n";
-							for($j=0;$j<count($comp);$j++){
+							for($j=0;$j<count($comp);$j++) {
 								/*
 								$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
 								$res_couleur=mysql_query($sql);
-								if(mysql_num_rows($res_couleur)>0){
+								if(mysql_num_rows($res_couleur)>0) {
 									$tmp=mysql_fetch_object($res_couleur);
 									$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
 								}
@@ -1374,11 +1355,11 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 						echo "<tr>\n";
 							echo "<td>Couleur de ligne -1";
 							echo "</td>\n";
-							for($j=0;$j<count($comp);$j++){
+							for($j=0;$j<count($comp);$j++) {
 								/*
 								$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
 								$res_couleur=mysql_query($sql);
-								if(mysql_num_rows($res_couleur)>0){
+								if(mysql_num_rows($res_couleur)>0) {
 									$tmp=mysql_fetch_object($res_couleur);
 									$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
 								}
@@ -1419,7 +1400,7 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo "<h2>\n<strong>Notices cahier de textes :</strong>\n</h2>\n";
 	echo "<div class='tableau_param_couleur'>\n";
 		echo "<input type='checkbox' name='utiliser_cahier_texte_perso' id='utiliser_cahier_texte_perso' value='y' ";
-		if(getSettingValue('utiliser_cahier_texte_perso')=='y'){
+		if(getSettingValue('utiliser_cahier_texte_perso')=='y') {
 			echo "checked='checked' ";
 		}
 		echo "/> ";
@@ -1459,14 +1440,14 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 		$tab_ct_couleur_origine["cellule"]["f"]="FFFFDF";
 
 		// Affectation des couleurs
-		for($i=0;$i<count($tab_ct_notice);$i++){
-			for($j=0;$j<count($tab_ct_couleur_fond);$j++){
+		for($i=0;$i<count($tab_ct_notice);$i++) {
+			for($j=0;$j<count($tab_ct_couleur_fond);$j++) {
 				$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]]=array();
 				$couleur_traite=getSettingValue($tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]);
-				if($couleur_traite!=""){
+				if($couleur_traite!="") {
 					$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]]=tab_rvb($couleur_traite);
 				} else {
-					if (isset($tab_ct_couleur_origine[$tab_ct_couleur_fond[$j]][$tab_ct_notice[$i]])){
+					if (isset($tab_ct_couleur_origine[$tab_ct_couleur_fond[$j]][$tab_ct_notice[$i]])) {
 						$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]]=tab_rvb($tab_ct_couleur_origine[$tab_ct_couleur_fond[$j]][$tab_ct_notice[$i]]);
 					}
 				}
@@ -1474,26 +1455,26 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 		}
 
 		// Tableau de réglage des couleurs
-		for($i=0;$i<count($tab_ct_notice);$i++){
+		for($i=0;$i<count($tab_ct_notice);$i++) {
 		// Titre de la notice
 			echo "<h3>$tab_ct_nom_notice[$i]</h3>";
 			echo "<table class='tableau_change_couleur' summary=\"cahier de texte changement de couleur\">\n";
 				// entête
 				echo "<tr class='fond_blanc'>\n";
 					echo "<td class='texte_gras'>Couleur</td>\n";
-					for($j=0;$j<count($comp);$j++){
+					for($j=0;$j<count($comp);$j++) {
 						echo "<td class='texte_gras'>$comp[$j]</td>\n";
 					}
 					echo "<td class='texte_gras'>Aperçu</td>\n";
 					echo "<td class='texte_gras'>Réinitialisation</td>\n";
 				echo "</tr>\n";
 				// Données de la couleur
-					for($j=0;$j<count($tab_ct_couleur_fond);$j++){
-						if (isset($tab_ct_couleur_origine[$tab_ct_couleur_fond[$j]][$tab_ct_notice[$i]])){
+					for($j=0;$j<count($tab_ct_couleur_fond);$j++) {
+						if (isset($tab_ct_couleur_origine[$tab_ct_couleur_fond[$j]][$tab_ct_notice[$i]])) {
 							echo "<tr>\n";
 								echo "<td>".$tab_ct_nom_couleur_fond[$j]."</td>";
 								// couleurs RVB
-								for($k=0;$k<count($comp);$k++){
+								for($k=0;$k<count($comp);$k++) {
 									echo "<td>\n";
 								echo "<label for='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' class='invisible'>".$comp[$k]." ".$tab_ct_notice[$i]." ".$tab_ct_couleur_fond[$j]."</label>\n";
 								echo "<input type='text' name='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' id='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' value='".$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]][$comp[$k]]."' size='3' onblur='affichecouleur(\"".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n</td>\n";
@@ -1534,13 +1515,13 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 		$tab_ct_couleur_gen_origine["cellule_gen"]="F6F7EF";
 
 		// Affectation des couleurs
-		for($j=0;$j<count($tab_ct_police_bordure);$j++){
+		for($j=0;$j<count($tab_ct_police_bordure);$j++) {
 			$tabcouleurs[$tab_ct_police_bordure[$j]]=array();
 			$couleur_traite=getSettingValue($tab_ct_police_bordure[$j]);
-			if($couleur_traite!=""){
+			if($couleur_traite!="") {
 				$tabcouleurs[$tab_ct_police_bordure[$j]]=tab_rvb($couleur_traite);
 			} else {
-				if (isset($tab_ct_couleur_gen_origine[$tab_ct_police_bordure[$j]])){
+				if (isset($tab_ct_couleur_gen_origine[$tab_ct_police_bordure[$j]])) {
 					$tabcouleurs[$tab_ct_police_bordure[$j]]=tab_rvb($tab_ct_couleur_gen_origine[$tab_ct_police_bordure[$j]]);
 				}
 			}
@@ -1553,18 +1534,18 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			// entête
 			echo "<tr class='fond_blanc'>\n";
 				echo "<td class='texte_gras'>Couleur</td>\n";
-				for($j=0;$j<count($comp);$j++){
+				for($j=0;$j<count($comp);$j++) {
 					echo "<td class='texte_gras'>$comp[$j]</td>\n";
 				}
 				echo "<td class='texte_gras'>Aperçu</td>\n";
 				echo "<td class='texte_gras'>Réinitialisation</td>\n";
 			echo "</tr>\n";
 			// Données de la couleur
-			for($i=0;$i<count($tab_ct_police_bordure);$i++){
+			for($i=0;$i<count($tab_ct_police_bordure);$i++) {
 				echo "<tr>\n";
 					echo "<td>".$tab_ct_nom_police_bordure[$i]."</td>\n";
 						// couleurs RVB
-						for($j=0;$j<count($comp);$j++){
+						for($j=0;$j<count($comp);$j++) {
 							echo "<td>\n";
 								echo "<label for='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' class='invisible'>".$tab_ct_police_bordure[$i]."_".$comp[$j]."</label>\n";
 								echo "<input type='text' name='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' id='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_ct_police_bordure[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab_ct_police_bordure[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
