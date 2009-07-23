@@ -606,8 +606,17 @@ echo "<div class='norme'>\n";
 			echo "<img src='../images/icons/back.png' alt='' class='back_link'/>\n";
 			echo " Retour\n";
 		echo "</a>\n";
+
+	echo " | Choix modèle&nbsp;: <select name='choix_modele' id='choix_modele' onchange=\"valide_modele(document.getElementById('choix_modele').options[document.getElementById('choix_modele').selectedIndex].value)\">
+	<option value=''>---</option>
+	<option value='rose'>Rose</option>
+	<option value='vert'>Vert</option>
+	<option value='bleu'>Bleu</option>
+</select>\n";
+
 	echo "</p>\n";
 echo "</div>\n";
+
 
 /*
 foreach($_POST as $post => $val) {
@@ -1617,9 +1626,125 @@ echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
 	echo "<script type='text/javascript'>
 		setTimeout('init()',500);
-	</script>\n<!--noscript></noscript-->";
 
 
+
+
+
+// Liste simplifiée
+var liste_style=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete');
+
+function valide_modele(choix) {
+	var choix_valide='n';
+
+	// Rose
+	if(choix=='rose') {
+		choix_valide='y';
+
+		var id_style_body_backgroundcolor_R=250
+		var id_style_body_backgroundcolor_V=220
+		var id_style_body_backgroundcolor_B=220
+		
+		// Haut du dégradé
+		var id_degrade_haut_R=160
+		var id_degrade_haut_V=80
+		var id_degrade_haut_B=80
+		
+		// Bas du dégradé
+		var id_degrade_bas_R=200
+		var id_degrade_bas_V=80
+		var id_degrade_bas_B=80
+		
+		// Couleur de fond de l'entête des infobulles
+		var id_couleur_infobulle_fond_entete_R=200
+		var id_couleur_infobulle_fond_entete_V=80
+		var id_couleur_infobulle_fond_entete_B=80
+		
+		// Couleur de fond du corps des infobulles
+		var id_couleur_infobulle_fond_corps_R=250
+		var id_couleur_infobulle_fond_corps_V=180
+		var id_couleur_infobulle_fond_corps_B=180
+	}
+	//=============================================================
+	// Vert
+	if(choix=='vert') {	
+		choix_valide='y';
+
+		var id_style_body_backgroundcolor_R=230
+		var id_style_body_backgroundcolor_V=250
+		var id_style_body_backgroundcolor_B=230
+		
+		// Haut du dégradé
+		var id_degrade_haut_R=80
+		var id_degrade_haut_V=140
+		var id_degrade_haut_B=80
+		
+		// Bas du dégradé
+		var id_degrade_bas_R=80
+		var id_degrade_bas_V=180
+		var id_degrade_bas_B=80
+		
+		// Couleur de fond de l'entête des infobulles
+		var id_couleur_infobulle_fond_entete_R=80
+		var id_couleur_infobulle_fond_entete_V=180
+		var id_couleur_infobulle_fond_entete_B=80
+		
+		// Couleur de fond du corps des infobulles
+		var id_couleur_infobulle_fond_corps_R=200
+		var id_couleur_infobulle_fond_corps_V=250
+		var id_couleur_infobulle_fond_corps_B=200
+	}	
+	//=============================================================
+	// Bleu
+	if(choix=='bleu') {
+		choix_valide='y';
+
+		var id_style_body_backgroundcolor_R=230
+		var id_style_body_backgroundcolor_V=230
+		var id_style_body_backgroundcolor_B=250
+		
+		// Haut du dégradé
+		var id_degrade_haut_R=60
+		var id_degrade_haut_V=60
+		var id_degrade_haut_B=100
+		
+		// Bas du dégradé
+		var id_degrade_bas_R=80
+		var id_degrade_bas_V=80
+		var id_degrade_bas_B=160
+		
+		// Couleur de fond de l'entête des infobulles
+		var id_couleur_infobulle_fond_entete_R=80
+		var id_couleur_infobulle_fond_entete_V=80
+		var id_couleur_infobulle_fond_entete_B=160
+		
+		// Couleur de fond du corps des infobulles
+		var id_couleur_infobulle_fond_corps_R=200
+		var id_couleur_infobulle_fond_corps_V=200
+		var id_couleur_infobulle_fond_corps_B=250
+	}
+
+	if(choix_valide=='y') {
+		for(i=0;i<liste_style.length;i++) {
+			document.getElementById('id_'+liste_style[i]+'_R').value=eval('id_'+liste_style[i]+'_R');
+			document.getElementById('id_'+liste_style[i]+'_V').value=eval('id_'+liste_style[i]+'_V');
+			document.getElementById('id_'+liste_style[i]+'_B').value=eval('id_'+liste_style[i]+'_B');
+
+			affichecouleur(liste_style[i]);
+		}
+
+		//document.forms['tab'].submit();
+		calcule_et_valide();
+	}
+}
+
+</script>\n<!--noscript></noscript-->";
+
+	/*
+	echo "<a href=\"javascript:valide_modele('rose')\">Rose</a><br />";
+	echo "<a href=\"javascript:valide_modele('vert')\">Vert</a><br />";
+	echo "<a href=\"javascript:valide_modele('bleu')\">Bleu</a><br />";
+	*/
 
 echo "</form>\n";
 
