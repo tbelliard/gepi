@@ -186,6 +186,7 @@ require_once("../lib/header.inc");
 
 if(isset($step)) {
 	if(($step==0)||
+		($step=="0b")||
 		($step==1)||
 		($step==2)||
 		($step==3)||
@@ -240,12 +241,27 @@ function test_stop(num){
 	//document.getElementById('id_form_stop').value=stop;
 	if(stop=='n'){
 		//setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=1')\",2000);
-		document.location.replace('".$_SERVER['PHP_SELF']."?step='+num";
+		//document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'&amp;stop='+stop);
+		document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'&stop='+stop);
+	}
+}
 
-// AJOUT A FAIRE VALEUR STOP
-echo "+'&amp;stop='+stop";
-
-echo ");
+function test_stop_bis(num,cpt_saut_lignes){
+//function test_stop_bis(num,cpt){
+	stop='n';
+	if(document.getElementById('stop')){
+		if(document.getElementById('stop').checked==true){
+			stop='y';
+		}
+	}
+	//document.getElementById('id_form_stop').value=stop;
+	if(stop=='n'){
+		//stop='y';
+		//document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'&amp;stop='+stop+'&amp;cpt_saut_lignes='+cpt_saut_lignes);
+		//document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'&amp;stop='+stop+'&amp;cpt_saut_lignes='+cpt);
+		//document.location.replace('".$_SERVER['PHP_SELF']."?cpt_saut_lignes='+cpt+'&amp;step='+num+'&amp;stop='+stop);
+		//document.location.replace('".$_SERVER['PHP_SELF']."?cpt_saut_lignes='+cpt+'&step='+num+'&stop='+stop);
+		document.location.replace('".$_SERVER['PHP_SELF']."?cpt_saut_lignes='+cpt_saut_lignes+'&step='+num+'&stop='+stop);
 	}
 }
 
@@ -264,9 +280,6 @@ function test_stop2(){
 }
 
 
-
-
-
 function test_stop_suite(num){
 	stop='n';
 	if(document.getElementById('stop')){
@@ -275,11 +288,20 @@ function test_stop_suite(num){
 		}
 	}
 
-	document.location.replace('".$_SERVER['PHP_SELF']."?step='+num";
-// AJOUT A FAIRE VALEUR STOP
-echo "+'&amp;stop='+stop";
+	//document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'&amp;stop='+stop);
+	document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'&stop='+stop);
+}
 
-echo ");
+function test_stop_suite_bis(num,cpt_saut_lignes){
+	stop='n';
+	if(document.getElementById('stop')){
+		if(document.getElementById('stop').checked==true){
+			stop='y';
+		}
+	}
+
+	//document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'&amp;stop='+stop+'&amp;cpt_saut_lignes='+cpt_saut_lignes);
+	document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'&stop='+stop+'&cpt_saut_lignes='+cpt_saut_lignes);
 }
 
 </script>\n";
@@ -287,7 +309,7 @@ echo ");
 	}
 }
 
-echo "<p class=bold>";
+echo "<p class='bold'>";
 echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 //echo "</p>\n";
 
@@ -567,11 +589,14 @@ else{
 					info_debug($sql);
 					$vide_table = mysql_query($sql);
 
+					//echo "<p style='color:red;'>DEBUG \$tempdir=$tempdir</p>";
+
 					$fp=fopen($dest_file,"r");
 					if($fp){
 						// On commence par la section STRUCTURES pour ne récupérer que les ELE_ID d'élèves qui sont dans une classe.
 						echo "<p>\n";
-						echo "Analyse du fichier pour extraire les informations de la section STRUCTURES pour ne conserver que les identifiants d'élèves affectés dans une classe...<br />\n";
+						//echo "Analyse du fichier pour extraire les informations de la section STRUCTURES pour ne conserver que les identifiants d'élèves affectés dans une classe...<br />\n";
+						echo "Découpage du fichier ElevesSansAdresses suivant les sections ELEVES, OPTIONS et STRUCTURES.<br />\n";
 
 						// PARTIE <STRUCTURES>
 						$cpt=0;
@@ -584,18 +609,118 @@ else{
 						while(!feof($fp)){
 							$ligne=fgets($fp,4096);
 
-							//if(strstr($ligne[$cpt],"<STRUCTURES>")){
-							if(strstr($ligne,"<STRUCTURES>")){
-								echo "Début de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-								$temoin_structures++;
+							if(strstr($ligne,"<ELEVES>")){
+								echo "Début de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+								//$temoin_eleves++;
+								$fich=fopen("../temp/".$tempdir."/section_eleves.xml","w+");
 							}
-							//if(strstr($ligne[$cpt],"</STRUCTURES>")){
-							if(strstr($ligne,"</STRUCTURES>")){
+							elseif(strstr($ligne,"</ELEVES>")){
+								echo "Fin de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+								fclose($fich);
+								unset($fich);
+								//break;
+							}
+							elseif(strstr($ligne,"<OPTIONS>")){
+								echo "Début de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+								//$temoin_options++;
+								$fich=fopen("../temp/".$tempdir."/section_options.xml","w+");
+							}
+							elseif(strstr($ligne,"</OPTIONS>")){
+								echo "Fin de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+								//$temoin_options++;
+								fclose($fich);
+								unset($fich);
+								//break;
+							}
+							elseif(strstr($ligne,"<STRUCTURES>")){
+								echo "Début de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+								//$temoin_structures++;
+								$fich=fopen("../temp/".$tempdir."/section_structures.xml","w+");
+							}
+							elseif(strstr($ligne,"</STRUCTURES>")){
 								echo "Fin de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-								$temoin_structures++;
+								//$temoin_structures++;
+								fclose($fich);
+								unset($fich);
 								break;
 							}
-							if($temoin_structures==1){
+							elseif(isset($fich)) {
+								fwrite($fich,$ligne);
+							}
+
+							$cpt++;
+						}
+						fclose($fp);
+
+
+
+
+
+
+
+						//if($nb_err==0) {
+							//echo "<p>La première phase s'est passée sans erreur.</p>\n";
+
+							echo "<script type='text/javascript'>
+	setTimeout(\"test_stop('0b')\",3000);
+</script>\n";
+						/*
+						}
+						elseif($nb_err==1) {
+							echo "<p>$nb_err erreur.</p>\n";
+						}
+						else{
+							echo "<p>$nb_err erreurs</p>\n";
+						}
+
+						$stat=$id_tempo-1-$nb_err;
+						echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
+						*/
+						//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
+						//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1&amp;stop=$stop'>Suite</a></p>\n";
+						//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1&amp;stop=y' onClick=\"test_stop_suite('1'); return false;\">Suite</a></p>\n";
+						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=0b&amp;stop=y' onClick=\"test_stop_suite('0b'); return false;\">Suite</a></p>\n";
+
+						require("../lib/footer.inc.php");
+						die();
+
+
+
+
+
+
+					}
+					else{
+						echo "<p>ERREUR: Il n'a pas été possible d'ouvrir le fichier en lecture...</p>\n";
+
+						require("../lib/footer.inc.php");
+						die();
+					}
+				}
+			}
+			break;
+		case "0b":
+
+			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+
+					$fp=fopen("../temp/".$tempdir."/section_structures.xml","r");
+					if($fp){
+
+						echo "<p>\n";
+						echo "Analyse de la section STRUCTURES pour ne conserver que les identifiants d'élèves affectés dans une classe...<br />\n";
+
+						$cpt=0;
+						$eleves=array();
+						$temoin_structures=0;
+						$temoin_struct_ele=-1;
+						$temoin_struct=-1;
+						$i=-1;
+						//while($cpt<count($ligne)){
+						while(!feof($fp)){
+							$ligne=fgets($fp,4096);
+
+							//if($temoin_structures==1){
 								//if(strstr($ligne[$cpt],"<STRUCTURES_ELEVE ")){
 								if(strstr($ligne,"<STRUCTURES_ELEVE ")){
 									$i++;
@@ -647,7 +772,7 @@ else{
 										}
 									}
 								}
-							}
+							//}
 							$cpt++;
 						}
 						fclose($fp);
@@ -690,17 +815,6 @@ else{
 							echo "<p>La première phase s'est passée sans erreur.</p>\n";
 
 							echo "<script type='text/javascript'>
-	/*
-	stop='n';
-	if(document.getElementById('stop')){
-		if(document.getElementById('stop').checked==true){
-			stop='y';
-		}
-	}
-	if(stop=='n'){
-		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=1')\",2000);
-	}
-	*/
 	setTimeout(\"test_stop('1')\",3000);
 </script>\n";
 						}
@@ -727,8 +841,8 @@ else{
 						require("../lib/footer.inc.php");
 						die();
 					}
-				}
-			}
+				//}
+			//}
 			break;
 		case "1":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
@@ -736,11 +850,18 @@ else{
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
-			$sql="TRUNCATE TABLE tempo2;";
-			info_debug($sql);
-			$res0=mysql_query($sql);
 
-			$dest_file="../temp/".$tempdir."/eleves.xml";
+			// 20090722
+			$cpt_saut_lignes=isset($_POST['cpt_saut_lignes']) ? $_POST['cpt_saut_lignes'] : (isset($_GET['cpt_saut_lignes']) ? $_GET['cpt_saut_lignes'] : 0);
+			if($cpt_saut_lignes==0) {
+				$sql="TRUNCATE TABLE tempo2;";
+				info_debug($sql);
+				$res0=mysql_query($sql);
+			}
+
+
+			//$dest_file="../temp/".$tempdir."/eleves.xml";
+			$dest_file="../temp/".$tempdir."/section_eleves.xml";
 			$fp=fopen($dest_file,"r");
 			if(!$fp){
 				echo "<p>Le XML élève n'a pas l'air présent dans le dossier temporaire.<br />Auriez-vous sauté une étape???</p>\n";
@@ -778,7 +899,8 @@ else{
 				*/
 
 				echo "<p>";
-				echo "Analyse du fichier pour extraire les informations de la section ELEVES...<br />\n";
+				//echo "Analyse du fichier pour extraire les informations de la section ELEVES...<br />\n";
+				echo "Traitement de la section ELEVES...<br />\n";
 				//echo "<blockquote>\n";
 
 				$cpt=0;
@@ -789,6 +911,10 @@ else{
 				$temoin_scol=0;
 				//Compteur élève:
 				$i=-1;
+
+				// 20090722
+				$the_end="";
+				$saut_effectue="n";
 
 				/*
 				$tab_champs_eleve=array("ID_NATIONAL",
@@ -836,10 +962,23 @@ else{
 				"LL_COMMUNE_INSEE"
 				);
 
+
 				// PARTIE <ELEVES>
 				//while($cpt<count($ligne)){
 				while(!feof($fp)){
+				//while((!feof($fp))||($i>200)) {
+
+					// Sauter les lignes
+					if($saut_effectue=="n") {
+						echo "Saut de $cpt_saut_lignes lignes dans le fichier section_eleves.xml<br />";
+						for($loop=0;$loop<$cpt_saut_lignes;$loop++) {$ligne=fgets($fp,4096);}
+						$saut_effectue="y";
+					}
 					$ligne=fgets($fp,4096);
+
+					$cpt_saut_lignes++;
+
+					/*
 					//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
 					//if(strstr($ligne[$cpt],"<ELEVES>")){
 					if(strstr($ligne,"<ELEVES>")){
@@ -852,9 +991,14 @@ else{
 						echo "Fin de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 						flush();
 						$temoin_eleves++;
+
+						// 20090722
+						$the_end="y";
+
 						break;
 					}
 					if($temoin_eleves==1){
+					*/
 						//if(strstr($ligne[$cpt],"<ELEVE ")){
 						if(strstr($ligne,"<ELEVE ")){
 							$i++;
@@ -878,6 +1022,9 @@ else{
 						//if(strstr($ligne[$cpt],"</ELEVE>")){
 						if(strstr($ligne,"</ELEVE>")){
 							$temoin_ele=0;
+
+							// 20090722
+							if($i>200) {$the_end="n";break;}
 						}
 						if($temoin_ele==1){
 							//if(strstr($ligne[$cpt],"<SCOLARITE_AN_DERNIER>")){
@@ -963,7 +1110,7 @@ else{
 							}
 							*/
 						}
-					}
+					//}
 					$cpt++;
 				}
 				fclose($fp);
@@ -1060,25 +1207,28 @@ else{
 					}
 					*/
 				}
+
+
+				if($the_end=="n") {
+					$suite="1";
+				}
+				else {
+					$suite="2";
+				}
+
 				if($nb_err==0) {
 					echo "<p>La deuxième phase s'est passée sans erreur.</p>\n";
 
-					echo "<script type='text/javascript'>
-	/*
-	stop='n';
-	if(document.getElementById('stop')){
-		if(document.getElementById('stop').checked==true){
-			stop='y';
-		}
-	}
-	if(stop=='n'){
-		//setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=2')\",2000);
-		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=3')\",2000);
-	}
-	*/
-	//setTimeout(\"test_stop('3')\",3000);
-	setTimeout(\"test_stop('2')\",3000);
+					if($the_end=="n") {
+						echo "<script type='text/javascript'>
+	setTimeout(\"test_stop_bis('$suite','$cpt_saut_lignes')\",1000);
 </script>\n";
+					}
+					else {
+						echo "<script type='text/javascript'>
+	setTimeout(\"test_stop('$suite')\",1000);
+</script>\n";
+					}
 				}
 				elseif($nb_err==1) {
 					echo "<p>$nb_err erreur.</p>\n";
@@ -1096,7 +1246,14 @@ else{
 			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2'>Suite</a></p>\n";
 			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop'>Suite</a></p>\n";
 			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop' onClick=\"test_stop_suite('3'); return false;\">Suite</a></p>\n";
-			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2&amp;stop=$stop' onClick=\"test_stop_suite('2'); return false;\">Suite</a></p>\n";
+			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2&amp;stop=$stop' onClick=\"test_stop_suite('2'); return false;\">Suite</a></p>\n";
+
+			if($the_end=="n") {
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1&amp;cpt_saut_lignes=$cpt_saut_lignes&amp;stop=$stop' onClick=\"test_stop_suite_bis('$suite','$cpt_saut_lignes'); return false;\">Suite</a></p>\n";
+			}
+			else {
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2&amp;stop=$stop' onClick=\"test_stop_suite('2'); return false;\">Suite</a></p>\n";
+			}
 
 			require("../lib/footer.inc.php");
 			die();
@@ -1112,7 +1269,8 @@ else{
 			//
 			// Par contre, on y fait quand même des tests pour les élèves partis... ne pas squizzer ça si on supprime l'étape
 
-			$dest_file="../temp/".$tempdir."/eleves.xml";
+			//$dest_file="../temp/".$tempdir."/eleves.xml";
+			$dest_file="../temp/".$tempdir."/section_options.xml";
 			$fp=fopen($dest_file,"r");
 			if(!$fp){
 				echo "<p>Le XML élève n'a pas l'air présent dans le dossier temporaire.<br />Auriez-vous sauté une étape???</p>\n";
@@ -1120,6 +1278,14 @@ else{
 				die();
 			}
 			else{
+
+
+				// 20090722
+				$cpt_saut_lignes=isset($_POST['cpt_saut_lignes']) ? $_POST['cpt_saut_lignes'] : (isset($_GET['cpt_saut_lignes']) ? $_GET['cpt_saut_lignes'] : 0);
+				$the_end="";
+				$saut_effectue="n";
+
+
 				// On récupère les ele_id des élèves qui sont affectés dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
 				info_debug($sql);
@@ -1164,7 +1330,17 @@ else{
 				$cpt=0;
 				//while($cpt<count($ligne)){
 				while(!feof($fp)){
+
+					// Sauter les lignes
+					if($saut_effectue=="n") {
+						for($loop=0;$loop<$cpt_saut_lignes;$loop++) {$ligne=fgets($fp,4096);}
+						$saut_effectue="y";
+					}
 					$ligne=fgets($fp,4096);
+
+					$cpt_saut_lignes++;
+
+					/*
 					//if(strstr($ligne[$cpt],"<OPTIONS>")){
 					if(strstr($ligne,"<OPTIONS>")){
 						echo "Début de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
@@ -1179,6 +1355,7 @@ else{
 						break;
 					}
 					if($temoin_options==1){
+					*/
 						//if(strstr($ligne[$cpt],"<OPTION ")){
 						if(strstr($ligne,"<OPTION ")){
 							$i++;
@@ -1210,6 +1387,11 @@ else{
 							if(strstr($ligne,"</OPTIONS_ELEVE>")){
 								$j++;
 								$temoin_opt_ele=0;
+
+
+								// 20090722
+								if($i>200) {$the_end="n";break;}
+
 							}
 
 							$tab_champs_opt=array("NUM_OPTION","CODE_MODALITE_ELECT","CODE_MATIERE");
@@ -1231,7 +1413,7 @@ else{
 								}
 							}
 						}
-					}
+					//}
 					$cpt++;
 				}
 				fclose($fp);
@@ -1262,29 +1444,32 @@ else{
 					}
 				}
 
-				//$sql="SELECT 1=1 FROM tempo2 WHERE col1='ele_id_eleve_parti';";
-				$sql="SELECT 1=1 FROM tempo2 WHERE col1='ele_id_eleve_parti' LIMIT 1;";
-				info_debug($sql);
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==0) {$suite="3";} else {$suite="2b";}
+
+				if($the_end=="n") {
+					$suite="2";
+				}
+				else {
+					//$sql="SELECT 1=1 FROM tempo2 WHERE col1='ele_id_eleve_parti';";
+					$sql="SELECT 1=1 FROM tempo2 WHERE col1='ele_id_eleve_parti' LIMIT 1;";
+					info_debug($sql);
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)==0) {$suite="3";} else {$suite="2b";}
+				}
+
 
 				if($nb_err==0) {
 					echo "<p>La troisième phase s'est passée sans erreur.</p>\n";
 
-					echo "<script type='text/javascript'>
-	/*
-	stop='n';
-	if(document.getElementById('stop')){
-		if(document.getElementById('stop').checked==true){
-			stop='y';
-		}
-	}
-	if(stop=='n'){
-		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=$suite')\",2000);
-	}
-	*/
+					if($the_end=="n") {
+						echo "<script type='text/javascript'>
+	setTimeout(\"test_stop_bis('$suite','$cpt_saut_lignes')\",1000);
+</script>\n";
+					}
+					else {
+						echo "<script type='text/javascript'>
 	setTimeout(\"test_stop('$suite')\",3000);
 </script>\n";
+					}
 				}
 				elseif($nb_err==1) {
 					echo "<p>$nb_err erreur.</p>\n";
@@ -1297,7 +1482,13 @@ else{
 
 				//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=3'>Suite</a></p>\n";
 				//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop'>Suite</a></p>\n";
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=$suite&amp;stop=$stop' onClick=\"test_stop_suite('$suite'); return false;\">Suite</a></p>\n";
+
+				if($the_end=="n") {
+					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=$suite&amp;stop=$stop&amp;cpt_saut_lignes=$cpt_saut_lignes' onClick=\"test_stop_suite_bis('$suite','$cpt_saut_lignes'); return false;\">Suite</a></p>\n";
+				}
+				else {
+					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=$suite&amp;stop=$stop' onClick=\"test_stop_suite('$suite'); return false;\">Suite</a></p>\n";
+				}
 
 				require("../lib/footer.inc.php");
 				die();
@@ -1525,6 +1716,30 @@ else{
 			if(file_exists("../temp/".$tempdir."/eleves.xml")) {
 				echo "<p>Suppression de eleves.xml... ";
 				if(unlink("../temp/".$tempdir."/eleves.xml")){
+					echo "réussie.<br />\n";
+				}
+				else{
+					echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.<br />\n";
+				}
+
+				echo "Suppression de section_eleves.xml... ";
+				if(unlink("../temp/".$tempdir."/section_eleves.xml")){
+					echo "réussie.<br />\n";
+				}
+				else{
+					echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.<br />\n";
+				}
+
+				echo "Suppression de section_options.xml... ";
+				if(unlink("../temp/".$tempdir."/section_options.xml")){
+					echo "réussie.<br />\n";
+				}
+				else{
+					echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.<br />\n";
+				}
+
+				echo "Suppression de section_structures.xml... ";
+				if(unlink("../temp/".$tempdir."/section_structures.xml")){
 					echo "réussie.</p>\n";
 				}
 				else{
