@@ -3787,11 +3787,23 @@ function javascript_tab_stat($pref_id,$cpt) {
 	echo "<th>Moyenne</th>\n";
 	echo "<td id='".$pref_id."moyenne'></td>\n";
 	echo "</tr>\n";
-	
+
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>1er quartile</th>\n";
+	echo "<td id='".$pref_id."q1'></td>\n";
+	echo "</tr>\n";
+
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 	echo "<th>Médiane</th>\n";
 	echo "<td id='".$pref_id."mediane'></td>\n";
+	echo "</tr>\n";
+
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>3è quartile</th>\n";
+	echo "<td id='".$pref_id."q3'></td>\n";
 	echo "</tr>\n";
 	
 	$alt=$alt*(-1);
@@ -3819,6 +3831,9 @@ function calcul_moy_med() {
 	var n=0;
 	var mediane;
 	var moyenne;
+	var q1;
+	var q3;
+	var rang=0;
 
 	for(i=0;i<$cpt;i++) {
 		if(document.getElementById('n'+i)) {
@@ -3848,12 +3863,29 @@ function calcul_moy_med() {
 		}
 		document.getElementById('".$pref_id."mediane').innerHTML=mediane;
 
+		if(eff_utile>=4) {
+			rang=Math.ceil(eff_utile/4);
+			q1=tab_valeur[rang-1];
+
+			rang=Math.ceil(3*eff_utile/4);
+			q3=tab_valeur[rang-1];
+
+			document.getElementById('".$pref_id."q1').innerHTML=q1;
+			document.getElementById('".$pref_id."q3').innerHTML=q3;
+		}
+		else {
+			document.getElementById('".$pref_id."q1').innerHTML='-';
+			document.getElementById('".$pref_id."q3').innerHTML='-';
+		}
+
 		document.getElementById('".$pref_id."min').innerHTML=tab_valeur[0];
 		document.getElementById('".$pref_id."max').innerHTML=tab_valeur[n-1];
 	}
 	else {
 		document.getElementById('".$pref_id."moyenne').innerHTML='-';
 		document.getElementById('".$pref_id."mediane').innerHTML='-';
+		document.getElementById('".$pref_id."q1').innerHTML='-';
+		document.getElementById('".$pref_id."q3').innerHTML='-';
 		document.getElementById('".$pref_id."min').innerHTML='-';
 		document.getElementById('".$pref_id."max').innerHTML='-';
 	}
