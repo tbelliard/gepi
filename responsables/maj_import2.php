@@ -812,7 +812,7 @@ else{
 							}
 						}
 						if($nb_err==0) {
-							echo "<p>La première phase s'est passée sans erreur.</p>\n";
+							echo "<p style='bold'>La première phase s'est passée sans erreur.</p>\n";
 
 							echo "<script type='text/javascript'>
 	setTimeout(\"test_stop('1')\",3000);
@@ -858,6 +858,7 @@ else{
 				info_debug($sql);
 				$res0=mysql_query($sql);
 			}
+			$cpt_saut_lignes_ini=$cpt_saut_lignes;
 
 
 			//$dest_file="../temp/".$tempdir."/eleves.xml";
@@ -970,7 +971,7 @@ else{
 
 					// Sauter les lignes
 					if($saut_effectue=="n") {
-						echo "Saut de $cpt_saut_lignes lignes dans le fichier section_eleves.xml<br />";
+						echo "Saut de <b>$cpt_saut_lignes</b> lignes dans le fichier section_eleves.xml<br />";
 						for($loop=0;$loop<$cpt_saut_lignes;$loop++) {$ligne=fgets($fp,4096);}
 						$saut_effectue="y";
 					}
@@ -1217,14 +1218,17 @@ else{
 				}
 
 				if($nb_err==0) {
-					echo "<p>La deuxième phase s'est passée sans erreur.</p>\n";
 
 					if($the_end=="n") {
+						echo "<p>Parcours d'une tranche de la deuxième phase (<i><b>$cpt_saut_lignes_ini</b> -&gt; <b>$cpt_saut_lignes</b></i>)...</p>\n";
+
 						echo "<script type='text/javascript'>
 	setTimeout(\"test_stop_bis('$suite','$cpt_saut_lignes')\",1000);
 </script>\n";
 					}
 					else {
+						echo "<p style='bold'>La deuxième phase s'est passée sans erreur.</p>\n";
+
 						echo "<script type='text/javascript'>
 	setTimeout(\"test_stop('$suite')\",1000);
 </script>\n";
@@ -1284,6 +1288,7 @@ else{
 				$cpt_saut_lignes=isset($_POST['cpt_saut_lignes']) ? $_POST['cpt_saut_lignes'] : (isset($_GET['cpt_saut_lignes']) ? $_GET['cpt_saut_lignes'] : 0);
 				$the_end="";
 				$saut_effectue="n";
+				$cpt_saut_lignes_ini=$cpt_saut_lignes;
 
 
 				// On récupère les ele_id des élèves qui sont affectés dans une classe
@@ -1458,14 +1463,15 @@ else{
 
 
 				if($nb_err==0) {
-					echo "<p>La troisième phase s'est passée sans erreur.</p>\n";
-
 					if($the_end=="n") {
+						echo "<p>Parcours d'une tranche de la troisième phase (<i><b>$cpt_saut_lignes_ini</b> -&gt; <b>$cpt_saut_lignes</b></i>)...</p>\n";
 						echo "<script type='text/javascript'>
 	setTimeout(\"test_stop_bis('$suite','$cpt_saut_lignes')\",1000);
 </script>\n";
 					}
 					else {
+						echo "<p style='bold'>La troisième phase s'est passée sans erreur.</p>\n";
+
 						echo "<script type='text/javascript'>
 	setTimeout(\"test_stop('$suite')\",3000);
 </script>\n";
