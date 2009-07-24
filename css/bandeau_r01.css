@@ -173,9 +173,11 @@
 	color: white;
 }
 .pt_bandeau #bd_nom {
-	float:left;
+	/*float:left;*/
 	margin-top: -1.2em;
+	margin-right:6em;
 	margin-bottom: 0em;
+	margin-left:auto;
 	width:39%;
 	font-size: 0.9em;
 }
@@ -189,7 +191,7 @@
 	float:right;
 	margin: -1.2em 0em 0em 0em;
 	padding: 0em 0em 0.3em 0em;
-	width:10%;
+	width:5em;
 	line-height: 1.8em;
 }
 .pt_bandeau .menu_bandeau {
@@ -199,7 +201,7 @@
 	display:none;
 }
 .pt_bandeau #num_version {
-	margin-top:-4.1em;
+	margin-top:-1.6em;
 	margin-left:2em;
 	font-size:0.8em;
 	line-height: 1.8em;
