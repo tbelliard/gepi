@@ -1219,9 +1219,10 @@ function decocher_tous_eleves() {
 		}
 	}
 
-	echo "}
+	echo "}\n";
 
-function test_check_ele() {
+	if($_SESSION['statut']!='eleve') {
+		echo "function test_check_ele() {
 	eff_eleve_checked=0;
 	
 	tabinput=document.getElementsByTagName('input');
@@ -1252,8 +1253,16 @@ function test_check_ele() {
 	//	alert('Au moins un élève est sélectionné: '+eff_eleve_checked);
 	document.forms['formulaire'].submit();
 	}
-}
-</script>\n";
+}\n";
+	}
+	else {
+		echo "function test_check_ele() {
+	// On ne fait pas de test dans le cas d'un login eleve
+	// L'élève ne peut consulter que ses notes et est donc nécessairement coché
+	document.forms['formulaire'].submit();
+}\n";
+	}
+	echo "</script>\n";
 
 	//echo "<p><a href='javascript:test_check_ele();return false;'>Test élève</a></p>\n";
 	//echo "<p><a href='#' onclick='test_check_ele();return false;'>Test élève</a></p>\n";

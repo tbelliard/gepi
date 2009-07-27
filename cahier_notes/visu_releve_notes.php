@@ -645,7 +645,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 			//$query_notes = mysql_query("SELECT nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 			if ($choix_periode ==0) {
 				//$sql1="SELECT d.coef, nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-				$sql1="SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+				$sql1="SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 				nd.login = '".$current_eleve_login."' and
 				nd.id_devoir = d.id and
 				d.display_parents='1' and
@@ -658,7 +658,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 				";
 				$query_notes = mysql_query($sql1);
 			} else {
-				$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+				$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 				nd.login = '".$current_eleve_login."' and
 				nd.id_devoir = d.id and
 	  		d.display_parents='1' and
@@ -673,79 +673,99 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 			//echo $sql1;
 			//====================================================
 
+			// Date actuelle pour le test de la date de visibilité des devoirs
+			$timestamp_courant=time();
+
 			$count_notes = mysql_num_rows($query_notes);
-			$m = 0;
+			$m=0;
 			$tiret = "no";
 			while ($m < $count_notes) {
-				$eleve_display_app = @mysql_result($query_notes,$m,'d.display_parents_app');
-				$eleve_app = @mysql_result($query_notes,$m,'nd.comment');
-				$eleve_note = @mysql_result($query_notes,$m,'nd.note');
-				if(getSettingValue("note_autre_que_sur_referentiel")=="V" || mysql_result($query_notes,$m,'d.note_sur')!= getSettingValue("referentiel_note")) {
-					$eleve_note = $eleve_note."/".@mysql_result($query_notes,$m,'d.note_sur');
-				}
-				$eleve_statut = @mysql_result($query_notes,$m,'nd.statut');
-				$eleve_nom_court = @mysql_result($query_notes,$m,'d.nom_court');
-	 			if (($eleve_statut != '') and ($eleve_statut != 'v')) {
-			 		$affiche_note = $eleve_statut;
-				 } else if ($eleve_statut == 'v') {
-					 $affiche_note = "";
-				 } else {
-					 if ($eleve_note != '') {
-						 $affiche_note = $eleve_note;
-					 } else {
-						 $affiche_note = "";
-					 }
-				 }
-				if(($avec_appreciation_devoir=="oui") and ($eleve_display_app=="1")) {
-					 if ($affiche_note=="")
-		       if ($avec_nom_devoir!="oui")
-		           $affiche_note = $eleve_nom_court;
-		       else
-		           $affiche_note = "&nbsp;";
-				}
-				if ($affiche_note != '') {
-					if ($tiret == "yes")
-		         if (($avec_appreciation_devoir=="oui") or ($avec_nom_devoir=="oui")){
-		             echo "<br />";
-					}
-		         else{
-		             echo " - ";
-	  				}
-					//====================================================================
-					// MODIF: boireaus
-					//echo "<strong>".$affiche_note."</strong> (".$eleve_nom_court.")";
-					if($avec_nom_devoir=="oui"){
-						//echo "<strong>".$affiche_note."</strong> (".$eleve_nom_court.")";
-						echo "$eleve_nom_court: <strong>".$affiche_note."</strong>";
-					}
-					else{
-						echo "<strong>".$affiche_note."</strong>";
-	  				}
 
-					if(($avec_tous_coef_devoir=="oui")||(($avec_coef_devoir=="oui")&&($affiche_coef=="oui"))){
-						$coef_devoir = @mysql_result($query_notes,$m,'d.coef');
-						echo " (<em><small>".$chaine_coef.$coef_devoir."</small></em>)";
-						//echo " \$affiche_coef=$affiche_coef";
+				$visible="y";
+				if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+					$date_ele_resp=@mysql_result($query_notes,$m,'d.date_ele_resp');
+					$tmp_tabdate=explode(" ",$date_ele_resp);
+					$tabdate=explode("-",$tmp_tabdate[0]);
+
+					$timestamp_limite=mktime(0,0,0,$tabdate[1],$tabdate[2],$tabdate[0]);
+					if($timestamp_courant<$timestamp_limite) {
+						$visible="n";
 					}
-					//echo "<br />\$eleve_display_app=$eleve_display_app<br />";
-					if(($avec_appreciation_devoir=="oui") and ($eleve_display_app=="1")) {
-					  echo " - Appréciation : ";
-						if ($eleve_app!=""){
-							echo $eleve_app;
-						}else{
-					 		echo "-";
+				}
+
+				if($visible=="y") {
+
+					$eleve_display_app = @mysql_result($query_notes,$m,'d.display_parents_app');
+					$eleve_app = @mysql_result($query_notes,$m,'nd.comment');
+					$eleve_note = @mysql_result($query_notes,$m,'nd.note');
+					if(getSettingValue("note_autre_que_sur_referentiel")=="V" || mysql_result($query_notes,$m,'d.note_sur')!= getSettingValue("referentiel_note")) {
+						$eleve_note = $eleve_note."/".@mysql_result($query_notes,$m,'d.note_sur');
+					}
+					$eleve_statut = @mysql_result($query_notes,$m,'nd.statut');
+					$eleve_nom_court = @mysql_result($query_notes,$m,'d.nom_court');
+					if (($eleve_statut != '') and ($eleve_statut != 'v')) {
+						$affiche_note = $eleve_statut;
+					} else if ($eleve_statut == 'v') {
+						$affiche_note = "";
+					} else {
+						if ($eleve_note != '') {
+							$affiche_note = $eleve_note;
+						} else {
+							$affiche_note = "";
 						}
 					}
-					if($avec_date_devoir=="oui"){
-						$date_note = @mysql_result($query_notes,$m,'d.date');
-						// Format: 2006-09-28 00:00:00
-						$tmpdate=explode(" ",$date_note);
-						$tmpdate=explode("-",$tmpdate[0]);
-						echo " (<em><small>$tmpdate[2]/$tmpdate[1]/$tmpdate[0]</small></em>)";
+					if(($avec_appreciation_devoir=="oui") and ($eleve_display_app=="1")) {
+						if ($affiche_note=="")
+				if ($avec_nom_devoir!="oui")
+					$affiche_note = $eleve_nom_court;
+				else
+					$affiche_note = "&nbsp;";
 					}
-					//====================================================================
-						$tiret = "yes";
+					if ($affiche_note != '') {
+						if ($tiret == "yes")
+					if (($avec_appreciation_devoir=="oui") or ($avec_nom_devoir=="oui")){
+						echo "<br />";
+						}
+					else{
+						echo " - ";
+						}
+						//====================================================================
+						// MODIF: boireaus
+						//echo "<strong>".$affiche_note."</strong> (".$eleve_nom_court.")";
+						if($avec_nom_devoir=="oui"){
+							//echo "<strong>".$affiche_note."</strong> (".$eleve_nom_court.")";
+							echo "$eleve_nom_court: <strong>".$affiche_note."</strong>";
+						}
+						else{
+							echo "<strong>".$affiche_note."</strong>";
+						}
+	
+						if(($avec_tous_coef_devoir=="oui")||(($avec_coef_devoir=="oui")&&($affiche_coef=="oui"))){
+							$coef_devoir = @mysql_result($query_notes,$m,'d.coef');
+							echo " (<em><small>".$chaine_coef.$coef_devoir."</small></em>)";
+							//echo " \$affiche_coef=$affiche_coef";
+						}
+						//echo "<br />\$eleve_display_app=$eleve_display_app<br />";
+						if(($avec_appreciation_devoir=="oui") and ($eleve_display_app=="1")) {
+						echo " - Appréciation : ";
+							if ($eleve_app!=""){
+								echo $eleve_app;
+							}else{
+								echo "-";
+							}
+						}
+						if($avec_date_devoir=="oui"){
+							$date_note = @mysql_result($query_notes,$m,'d.date');
+							// Format: 2006-09-28 00:00:00
+							$tmpdate=explode(" ",$date_note);
+							$tmpdate=explode("-",$tmpdate[0]);
+							echo " (<em><small>$tmpdate[2]/$tmpdate[1]/$tmpdate[0]</small></em>)";
+						}
+						//====================================================================
+							$tiret = "yes";
+						}
 					}
+
 					$m++;
 				}
 				echo "&nbsp;";
@@ -966,7 +986,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 
 
 				if ($_SESSION["statut"] != 'autre') {
-					echo "<p>Ou <a href='visu_releve_notes_bis.php'>accéder au nouveau dispositif des relevés de notes (<em>HTML</em>)</a></p>\n";
+					echo "<p>Ou <a href='visu_releve_notes_bis.php'>accéder au nouveau dispositif des relevés de notes (<em>HTML et PDF</em>)</a></p>\n";
 				}
 
 			}

@@ -68,6 +68,7 @@ if ($id_devoir)  {
 //Configuration du calendrier
 include("../lib/calendrier/calendrier.class.php");
 $cal = new Calendrier("formulaire", "display_date");
+$cal2 = new Calendrier("formulaire", "date_ele_resp");
 
 
 // On teste si le carnet de notes appartient bien à la personne connectée
@@ -331,6 +332,28 @@ if (isset($_POST['ok'])) {
 		}
     }
 
+	//====================================================
+    if ($_POST['date_ele_resp']) {
+        if (ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['date_ele_resp'])) {
+            $annee = substr($_POST['date_ele_resp'],6,4);
+            $mois = substr($_POST['date_ele_resp'],3,2);
+            $jour = substr($_POST['date_ele_resp'],0,2);
+        } else {
+            $annee = strftime("%Y");
+            $mois = strftime("%m");
+            $jour = strftime("%d");
+        }
+        $date = $annee."-".$mois."-".$jour." 00:00:00";
+        $reg = mysql_query("UPDATE cn_devoirs SET date_ele_resp='".$date."' WHERE id = '$id_devoir'");
+        if (!$reg)  $reg_ok = "no";
+		for($i=0;$i<count($tab_group);$i++) {
+			$sql="UPDATE cn_devoirs SET date_ele_resp='".$date."' WHERE id='".$tab_group[$i]['id_devoir']."';";
+			//echo "$sql<br />\n";
+			$reg=mysql_query($sql);
+		}
+    }
+	//====================================================
+
     if (isset($_POST['display_parents'])) {
 		if($_POST['display_parents']==1) {
             $display_parents=1;
@@ -460,6 +483,12 @@ if ($id_devoir)  {
     $jour =  substr($date,8,2);
     $display_date = $jour."/".$mois."/".$annee;
 
+    $date = mysql_result($appel_devoir, 0, 'date_ele_resp');
+    $annee = substr($date,0,4);
+    $mois =  substr($date,5,2);
+    $jour =  substr($date,8,2);
+    $date_ele_resp = $jour."/".$mois."/".$annee;
+
 } else {
     $nom_court = "Nouvelle évaluation";
     $nom_complet = "";
@@ -476,7 +505,7 @@ if ($id_devoir)  {
     $mois = strftime("%m");
     $jour = strftime("%d");
     $display_date = $jour."/".$mois."/".$annee;
-
+	$date_ele_resp=$display_date;
 }
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes - Ajout/modification d'une évaluation";
@@ -564,6 +593,7 @@ if($interface_simplifiee=="y"){
 	$aff_coef=getPref($_SESSION['login'],'add_modif_dev_coef','y');
 	$aff_note_autre_que_referentiel=getPref($_SESSION['login'],'add_modif_dev_note_autre_que_referentiel','n');
 	$aff_date=getPref($_SESSION['login'],'add_modif_dev_date','y');
+	$aff_date_ele_resp=getPref($_SESSION['login'],'add_modif_dev_date_ele_resp','y');
 	$aff_boite=getPref($_SESSION['login'],'add_modif_dev_boite','y');
 
 
@@ -677,8 +707,12 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name = 'display_date' size='10' value = \"".$display_date."\" />\n";
-		echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+		echo "<input type='text' name='display_date' id='display_date' size='10' value = \"".$display_date."\" />\n";
+		echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"";
+		if($aff_date_ele_resp!='y'){
+			echo " onchange=\"document.getElementById('date_ele_resp').value=document.getElementById('display_date').value\"";
+		}
+		echo "><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -687,6 +721,24 @@ if($interface_simplifiee=="y"){
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name = 'display_date' size='10' value = \"".$display_date."\" />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	if($aff_date_ele_resp=='y'){
+		echo "<tr>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables:</td>\n";
+		echo "<td>\n";
+		echo "<input type='text' name = 'date_ele_resp' size='10' value = \"".$date_ele_resp."\" />\n";
+		echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+	else{
+		echo "<tr style='display:none;'>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables:</td>\n";
+		echo "<td>\n";
+		echo "<input type='hidden' name='date_ele_resp' size='10' value = \"".$date_ele_resp."\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -835,6 +887,12 @@ else{
 	<b>Remarque</b> : c'est cette date qui est prise en compte pour l'édition des relevés de notes à différentes périodes de l'année.
 	<input type='text' name = 'display_date' size='10' value = \"".$display_date."\" />";
 	echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+
+
+	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de visibilité de l'évaluation pour les élèves et responsables (format jj/mm/aaaa) : </h3>
+	<b>Remarque</b> : Cette date permet de ne rendre la note visible qu'une fois que le devoir est corrigé en classe.
+	<input type='text' name='date_ele_resp' size='10' value=\"".$date_ele_resp."\" />";
+	echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 
 	//====================================
 	// Relevé de notes

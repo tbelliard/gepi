@@ -8073,6 +8073,20 @@ description_item VARCHAR( 255 ) NOT NULL
 		}
 		//==========================================================
 
+		$result .= "&nbsp;->Ajout d'un champ 'date_ele_resp' à la table 'cn_devoirs'<br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM cn_devoirs LIKE 'date_ele_resp'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE cn_devoirs ADD date_ele_resp DATETIME NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else {
+			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
+		}
+
 		//------------------------------------------------------------------------
 		// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion
 		// de la 1.5.2 stable doivent se situer au-dessus de cette ligne !
