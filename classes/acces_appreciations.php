@@ -167,6 +167,8 @@ require_once("../lib/header.inc");
 
 echo "<p class=bold><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a></p>\n";
 
+//debug_var();
+
 if($_SESSION['statut']=="professeur") {
 	$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 
@@ -557,6 +559,15 @@ elseif($acces_app_ele_resp=='date') {
 	// Le mode global paramétré est 'date'
 	// Si des paramétrages particuliers sont à autre chose que 'date', on bascule/modifie vers 'date'.
 
+
+	$annee = strftime("%Y");
+	$mois = strftime("%m");
+	$jour = strftime("%d");
+
+	$display_date=$jour."/".$mois."/".$annee;
+
+	echo "\$display_date=$display_date<br />";
+
 	echo "<table class='boireaus' width='100%'>\n";
 	echo "<tr>\n";
 	echo "<th rowspan='3'>Classe</th>\n";
@@ -587,12 +598,6 @@ elseif($acces_app_ele_resp=='date') {
 		echo "</th>\n";
 	}
 	echo "</tr>\n";
-
-	$annee = strftime("%Y");
-	$mois = strftime("%m");
-	$jour = strftime("%d");
-
-	$display_date=$jour."/".$mois."/".$annee;
 
 	//include("../lib/calendrier/calendrier.class.php");
 	
@@ -625,10 +630,12 @@ elseif($acces_app_ele_resp=='date') {
 						$mode="date";
 						$accessible="n";
 
+						$chaine_debug.="Initialisation: ";
+
 						// Mettre une date future
 						$tmp_date=getdate(time()+4*30*24*3600);
-						$tmp_jour=$tmp_date['mday'];
-						$tmp_mois=$tmp_date['mon'];
+						$tmp_jour=sprintf("%02d",$tmp_date['mday']);
+						$tmp_mois=sprintf("%02d",$tmp_date['mon']);
 						$tmp_annee=$tmp_date['year'];
 
 						// On force la valeur en mode 'date' (pour eleve et responsable)
@@ -646,6 +653,9 @@ elseif($acces_app_ele_resp=='date') {
 							$sql="UPDATE matieres_appreciations_acces SET acces='date', date='$tmp_annee-$tmp_mois-$tmp_jour' WHERE id_classe='$id_classe' AND periode='$i' AND statut='responsable';";
 							$update=mysql_query($sql);
 						}
+
+						$display_date="$tmp_jour/$tmp_mois/$tmp_annee";
+						$chaine_debug.="1 \$display_date=$display_date<br />";
 					}
 					else {
 						$lig=mysql_fetch_object($res);
@@ -676,6 +686,14 @@ elseif($acces_app_ele_resp=='date') {
 
 							if($ver_periode[$i]!='O') {
 								$accessible="n";
+
+								// Mettre une date future
+								$tmp_date=getdate(time()+4*30*24*3600);
+								$tmp_jour=sprintf("%02d",$tmp_date['mday']);
+								$tmp_mois=sprintf("%02d",$tmp_date['mon']);
+								$tmp_annee=$tmp_date['year'];
+								$display_date="$tmp_jour/$tmp_mois/$tmp_annee";
+
 							}
 							else {
 								$tmp_tabdate=explode(" ",$date_ver_periode[$i]);
@@ -689,8 +707,8 @@ elseif($acces_app_ele_resp=='date') {
 
 									// Mettre une date passée: hier
 									$tmp_date=getdate(time()-24*3600);
-									$tmp_jour=$tmp_date['mday'];
-									$tmp_mois=$tmp_date['mon'];
+									$tmp_jour=sprintf("%02d",$tmp_date['mday']);
+									$tmp_mois=sprintf("%02d",$tmp_date['mon']);
 									$tmp_annee=$tmp_date['year'];
 								}
 								else {
@@ -698,8 +716,8 @@ elseif($acces_app_ele_resp=='date') {
 
 									// Mettre une date future
 									$tmp_date=getdate(time()+4*30*24*3600);
-									$tmp_jour=$tmp_date['mday'];
-									$tmp_mois=$tmp_date['mon'];
+									$tmp_jour=sprintf("%02d",$tmp_date['mday']);
+									$tmp_mois=sprintf("%02d",$tmp_date['mon']);
 									$tmp_annee=$tmp_date['year'];
 								}
 							}
@@ -719,6 +737,9 @@ elseif($acces_app_ele_resp=='date') {
 								$sql="UPDATE matieres_appreciations_acces SET acces='date', date='$tmp_annee-$tmp_mois-$tmp_jour' WHERE id_classe='$id_classe' AND periode='$i' AND statut='responsable';";
 								$update=mysql_query($sql);
 							}
+
+							$chaine_debug.="2 \$display_date=$display_date<br />";
+
 						}
 						else {
 							$mode='manuel';
@@ -727,15 +748,15 @@ elseif($acces_app_ele_resp=='date') {
 							if($accessible=='y') {
 								// Mettre une date passée: hier
 								$tmp_date=getdate(time()-24*3600);
-								$tmp_jour=$tmp_date['mday'];
-								$tmp_mois=$tmp_date['mon'];
+								$tmp_jour=sprintf("%02d",$tmp_date['mday']);
+								$tmp_mois=sprintf("%02d",$tmp_date['mon']);
 								$tmp_annee=$tmp_date['year'];
 							}
 							else {
 								// Mettre une date future
 								$tmp_date=getdate(time()+4*30*24*3600);
-								$tmp_jour=$tmp_date['mday'];
-								$tmp_mois=$tmp_date['mon'];
+								$tmp_jour=sprintf("%02d",$tmp_date['mday']);
+								$tmp_mois=sprintf("%02d",$tmp_date['mon']);
 								$tmp_annee=$tmp_date['year'];
 							}
 
@@ -754,6 +775,10 @@ elseif($acces_app_ele_resp=='date') {
 								$sql="UPDATE matieres_appreciations_acces SET acces='date', date='$tmp_annee-$tmp_mois-$tmp_jour' WHERE id_classe='$id_classe' AND periode='$i' AND statut='responsable';";
 								$update=mysql_query($sql);
 							}
+
+							$display_date="$tmp_jour/$tmp_mois/$tmp_annee";
+							$chaine_debug.="3 \$display_date=$display_date<br />";
+
 						}
 					}
 
