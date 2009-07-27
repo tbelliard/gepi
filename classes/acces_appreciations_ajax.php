@@ -41,75 +41,85 @@
 		}
 	}
 
+	$id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;     // entier
+	if(strlen(preg_replace('/[0-9]/','',$id_classe))!=0) {$id_classe=NULL;}
+	if($id_classe=='') {$id_classe=NULL;}
+
+	$periode=isset($_GET['periode']) ? $_GET['periode'] : NULL;           // entier
+	if(strlen(preg_replace('/[0-9]/','',$periode))!=0) {$periode=NULL;}
+	if($periode=='') {$periode=NULL;}
+
+	$statut=isset($_GET['statut']) ? $_GET['statut'] : NULL;              // eleve, responsable ou ele_resp
+	$tab_statuts=array('eleve','responsable','ele_resp');
+	if(!in_array($statut,$tab_statuts)) {$statut='eleve';}
+
+	if($statut=='ele_resp') {$tab_liste_statuts=array('eleve','responsable');}
+	else {$tab_liste_statuts=array("$statut");}
+
+	$id_div=isset($_GET['id_div']) ? $_GET['id_div'] : NULL;              // ...
+	if(strlen(preg_replace('/[0-9A-Za-z_]/','',$id_div))!=0) {$id_div=NULL;$id_classe=NULL;}
 
 	if($_GET['mode']=='manuel') {
-		$id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;     // entier
-		$periode=isset($_GET['periode']) ? $_GET['periode'] : NULL;           // entier
-		//$accessible=isset($_GET['accessible']) ? $_GET['accessible'] : NULL;  // y ou n
-		$statut=isset($_GET['statut']) ? $_GET['statut'] : NULL;              // eleve ou responsable
-		$id_div=isset($_GET['id_div']) ? $_GET['id_div'] : NULL;              // ...
-		// A FAIRE: Vérifier que les valeurs passées sont conformes à ce qui est attendu
 
 		if(($id_classe!=NULL)&&($periode!=NULL)) {
-			$sql="SELECT acces FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$statut';";
-			//echo $sql;
-			$test_acces=mysql_query($sql);
-			if (mysql_num_rows($test_acces)==0) {
-				$sql="INSERT INTO matieres_appreciations_acces SET acces='n', id_classe='$id_classe', periode='$periode', statut='$statut';";
-				//echo "$sql<br />";
-				$insert=mysql_query($sql);
-
-				echo "<div style='background-color:orangered;'>";
-				echo "Manuel</div>\n";
-			}
-			else {
-				$lig_acces=mysql_fetch_object($test_acces);
-
-				//if($accessible=='y') {
-				if($lig_acces->acces=='y') {
-					$sql="UPDATE matieres_appreciations_acces SET acces='n' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$statut';";
+			for($i=0;$i<count($tab_liste_statuts);$i++) {
+				$sql="SELECT acces FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
+				//echo $sql;
+				$test_acces=mysql_query($sql);
+				if (mysql_num_rows($test_acces)==0) {
+					$sql="INSERT INTO matieres_appreciations_acces SET acces='n', id_classe='$id_classe', periode='$periode', statut='$tab_liste_statuts[$i]';";
 					//echo "$sql<br />";
-					$update=mysql_query($sql);
-
+					$insert=mysql_query($sql);
+	
 					echo "<div style='background-color:orangered;'>";
-					/*
-					// Modifier le lien pour soumettre effectivement si javascript est désactivé
-					//echo "<a href='#' onclick=\"g_manuel('$id_div', $id_classe, $periode,'y','eleve');return false;\">Manuel</a><br />";
-					echo "<a href='#' onclick=\"g_manuel('$id_div', $id_classe, $periode,'y','$statut');return false;\"><img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /></a>";
-					echo " | ";
-					echo "<a href='#' onclick=\"$('choix_date_id_div').value=$id_div;$('choix_date_id_classe').value=$id_classe;$('choix_date_statut').value=$statut;$('choix_date_periode').value=$periode;afficher_div('infobulle_choix_date','y',-100,20);return false;\"><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /></a>\n";
-					echo " | ";
-					echo "<a href='#' onclick=\"g_periode_close('$id_div', $id_classe, $periode,'$statut');return false;\"><img src='../images/icons/securite.png' width='16' height='16' alt=\"Période close\" /></a>\n";
-					echo "<br />\n";
-					*/
-					echo "Manuel</div>\n";
+					if($statut=='ele_resp') {
+						echo "Inaccessible</div>\n";
+					}
+					else {
+						echo "Manuel</div>\n";
+					}
 				}
 				else {
-					$sql="UPDATE matieres_appreciations_acces SET acces='y' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$statut';";
-					$update=mysql_query($sql);
-					//echo "$sql<br />";
-					echo "<div style='background-color:lightgreen;'>";
-					/*
-					// Modifier le lien pour soumettre effectivement si javascript est désactivé
-					//echo "<a href='#' onclick=\"g_manuel('$id_div', $id_classe, $periode,'y','eleve');return false;\">Manuel</a><br />";
-					echo "<a href='#' onclick=\"g_manuel('$id_div', $id_classe, $periode,'n','$statut');return false;\"><img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /></a>";
-					echo " | ";
-					echo "<a href='#' onclick=\"$('choix_date_id_div').value=$id_div;$('choix_date_id_classe').value=$id_classe;$('choix_date_statut').value=$statut;$('choix_date_periode').value=$periode;afficher_div('infobulle_choix_date','y',-100,20);return false;\"><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /></a>\n";
-					echo " | ";
-					echo "<a href='#' onclick=\"g_periode_close('$id_div', $id_classe, $periode,'$statut');return false;\"><img src='../images/icons/securite.png' width='16' height='16' alt=\"Période close\" /></a>\n";
-					echo "<br />\n";
-					*/
-					echo "Manuel</div>\n";
+					$lig_acces=mysql_fetch_object($test_acces);
+	
+					if($lig_acces->acces=='y') {
+						$sql="UPDATE matieres_appreciations_acces SET acces='n' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
+						//echo "$sql<br />";
+						$update=mysql_query($sql);
+
+						// On n'écrit le DIV de couleur qu'une fois
+						if($i==0) {
+							echo "<div style='background-color:orangered;'>";
+							if($statut=='ele_resp') {
+								echo "Inaccessible</div>\n";
+							}
+							else {
+								echo "Manuel</div>\n";
+							}
+						}
+					}
+					else {
+						$sql="UPDATE matieres_appreciations_acces SET acces='y' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
+						$update=mysql_query($sql);
+						//echo "$sql<br />";
+
+						// On n'écrit le DIV de couleur qu'une fois
+						if($i==0) {
+							echo "<div style='background-color:lightgreen;'>";
+							if($statut=='ele_resp') {
+								echo "Accessible</div>\n";
+							}
+							else {
+								echo "Manuel</div>\n";
+							}
+						}
+					}
 				}
 			}
 		}
 	}
 	elseif($_GET['mode']=='date') {
-		$id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;     // entier
-		$periode=isset($_GET['periode']) ? $_GET['periode'] : NULL;           // entier
 		$choix_date=isset($_GET['choix_date']) ? $_GET['choix_date'] : NULL;  // Contrôler que la date est valide
-		$statut=isset($_GET['statut']) ? $_GET['statut'] : NULL;              // eleve ou responsable
-		$id_div=isset($_GET['id_div']) ? $_GET['id_div'] : NULL;              // ...
 
 		$tabdate=explode("/",$choix_date);
 		$jour=$tabdate[0];
@@ -119,99 +129,109 @@
 		$display_date=$jour."/".$mois."/".$annee;
 
 		if(($id_classe!=NULL)&&($periode!=NULL)) {
-			$sql="UPDATE matieres_appreciations_acces SET acces='date', date='".$choix_date."' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$statut';";
-			//echo "$sql<br />";
-			$update=mysql_query($sql);
+			for($i=0;$i<count($tab_liste_statuts);$i++) {
+				$sql="SELECT acces FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
+				//echo $sql;
+				$test_acces=mysql_query($sql);
+				if (mysql_num_rows($test_acces)==0) {
+					$sql="INSERT INTO matieres_appreciations_acces SET acces='date', date='".$choix_date."', id_classe='$id_classe', periode='$periode', statut='$tab_liste_statuts[$i]';";
+					//echo "$sql<br />";
+					$insert=mysql_query($sql);
+				}
+				else {
+					$sql="UPDATE matieres_appreciations_acces SET acces='date', date='".$choix_date."' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
+					//echo "$sql<br />";
+					$update=mysql_query($sql);
+				}
 
-			$timestamp_limite=mktime(0,0,0,$mois,$jour,$annee);
-			$timestamp_courant=time();
-			if($timestamp_courant>=$timestamp_limite) {
-				echo "<div style='background-color:lightgreen;'>";
-			}
-			else {
-				echo "<div style='background-color:orangered;'>";
-			}
+				// On n'écrit le DIV de couleur qu'une fois
+				if($i==0) {
+					$timestamp_limite=mktime(0,0,0,$mois,$jour,$annee);
+					$timestamp_courant=time();
+					if($timestamp_courant>=$timestamp_limite) {
+						echo "<div style='background-color:lightgreen;'>";
+						if($statut=='ele_resp') {
+							echo "Accessible&nbsp;: \n";
+						}
+						else {
+							echo "Date&nbsp;: \n";
+						}
+					}
+					else {
+						echo "<div style='background-color:orangered;'>";
+						if($statut=='ele_resp') {
+							echo "Inaccessible&nbsp;: \n";
+						}
+						else {
+							echo "Date&nbsp;: \n";
+						}
+					}
 
-			/*
-			// Modifier le lien pour soumettre effectivement si javascript est désactivé
-			echo "<a href='#' onclick=\"g_manuel('$id_div', $id_classe, $periode,'n','$statut');return false;\"><img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /></a>";
-			echo " | ";
-			echo "<a href='#' onclick=\"$('choix_date_id_div').value=$id_div;$('choix_date_id_classe').value=$id_classe;$('choix_date_statut').value=$statut;$('choix_date_periode').value=$periode;afficher_div('infobulle_choix_date','y',-100,20);return false;\"><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /></a>\n";
-			echo " | ";
-			echo "<a href='#' onclick=\"g_periode_close('$id_div', $id_classe, $periode,'$statut');return false;\"><img src='../images/icons/securite.png' width='16' height='16' alt=\"Période close\" /></a>\n";
-			echo "<br />\n";
-			*/
-			echo "Date: $display_date</div>\n";
+					echo "$display_date</div>\n";
+				}
+			}
 		}
 	}
 	elseif($_GET['mode']=='d') {
-		$id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;     // entier
-		$periode=isset($_GET['periode']) ? $_GET['periode'] : NULL;           // entier
-		$statut=isset($_GET['statut']) ? $_GET['statut'] : NULL;              // eleve ou responsable
-		$id_div=isset($_GET['id_div']) ? $_GET['id_div'] : NULL;              // ...
 
 		if(($id_classe!=NULL)&&($periode!=NULL)) {
-			$sql="UPDATE matieres_appreciations_acces SET acces='d' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$statut';";
-			//echo "$sql<br />";
-			$update=mysql_query($sql);
-
-			$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='$periode';";
-			$res_per=mysql_query($sql);
-			$lig_per=mysql_fetch_object($res_per);
-			if($lig_per->verouiller!='O') {
-				$accessible="n";
-
-				if($lig_per->verouiller='P') {$etat_periode="Période partiellement close";} else {$etat_periode="Période ouverte";}
-			}
-			else {
-				$delais_apres_cloture=getSettingValue('delais_apres_cloture');
-
-				$tmp_tabdate=explode(" ",$lig_per->date_verrouillage);
-				$tabdate=explode("-",$tmp_tabdate[0]);
-				$jour=$tabdate[2];
-				$mois=$tabdate[1];
-				$annee=$tabdate[0];
-
-				$timestamp_limite=mktime(0,0,0,$mois,$jour,$annee)+$delais_apres_cloture*24*3600;
-				$timestamp_courant=time();
-				if($timestamp_courant>=$timestamp_limite) {
-					$accessible="y";
-					if($annee=='0000') {
-						$etat_periode="Accessible depuis la clôture de la période";
-					}
-					else {
-						$etat_periode="Accessible depuis<br />le $jour/$mois/$annee";
-					}
+			for($i=0;$i<count($tab_liste_statuts);$i++) {
+				$sql="UPDATE matieres_appreciations_acces SET acces='d' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
+				//echo "$sql<br />";
+				$update=mysql_query($sql);
+	
+				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='$periode';";
+				$res_per=mysql_query($sql);
+				$lig_per=mysql_fetch_object($res_per);
+				if($lig_per->verouiller!='O') {
+					$accessible="n";
+	
+					if($lig_per->verouiller='P') {$etat_periode="Période partiellement close";} else {$etat_periode="Période ouverte";}
 				}
 				else {
-					$accessible="n";
-					$tmp_date=getdate($timestamp_limite);
-					$jour=sprintf("%02d",$tmp_date['mday']);
-					$mois=sprintf("%02d",$tmp_date['mon']);
-					$annee=$tmp_date['year'];
-					$etat_periode="Acces possible<br />le $jour/$mois/$annee";
+					$delais_apres_cloture=getSettingValue('delais_apres_cloture');
+	
+					$tmp_tabdate=explode(" ",$lig_per->date_verrouillage);
+					$tabdate=explode("-",$tmp_tabdate[0]);
+					$jour=$tabdate[2];
+					$mois=$tabdate[1];
+					$annee=$tabdate[0];
+	
+					$timestamp_limite=mktime(0,0,0,$mois,$jour,$annee)+$delais_apres_cloture*24*3600;
+					$timestamp_courant=time();
+					if($timestamp_courant>=$timestamp_limite) {
+						$accessible="y";
+						if($annee=='0000') {
+							$etat_periode="Accessible depuis la clôture de la période";
+						}
+						else {
+							$etat_periode="Accessible depuis<br />le $jour/$mois/$annee";
+						}
+					}
+					else {
+						$accessible="n";
+						$tmp_date=getdate($timestamp_limite);
+						$jour=sprintf("%02d",$tmp_date['mday']);
+						$mois=sprintf("%02d",$tmp_date['mon']);
+						$annee=$tmp_date['year'];
+						$etat_periode="Acces possible<br />le $jour/$mois/$annee";
+					}
+	
+					//$etat_periode="Période close: $jour/$mois/$annee";
 				}
 
-				//$etat_periode="Période close: $jour/$mois/$annee";
+				// On n'écrit le DIV de couleur qu'une fois
+				if($i==0) {
+	
+					if($accessible=="y") {
+						echo "<div style='background-color:lightgreen;'>";
+					}
+					else {
+						echo "<div style='background-color:orangered;'>";
+					}
+					echo "$etat_periode</div>\n";
+				}
 			}
-
-			if($accessible=="y") {
-				echo "<div style='background-color:lightgreen;'>";
-			}
-			else {
-				echo "<div style='background-color:orangered;'>";
-			}
-
-			/*
-			// Modifier le lien pour soumettre effectivement si javascript est désactivé
-			echo "<a href='#' onclick=\"g_manuel('$id_div', $id_classe, $periode,'n','$statut');return false;\"><img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /></a>";
-			echo " | ";
-			echo "<a href='#' onclick=\"$('choix_date_id_div').value=$id_div;$('choix_date_id_classe').value=$id_classe;$('choix_date_statut').value=$statut;$('choix_date_periode').value=$periode;afficher_div('infobulle_choix_date','y',-100,20);return false;\"><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /></a>\n";
-			echo " | ";
-			echo "<a href='#' onclick=\"g_periode_close('$id_div', $id_classe, $periode,'$statut');return false;\"><img src='../images/icons/securite.png' width='16' height='16' alt=\"Période close\" /></a>\n";
-			echo "<br />\n";
-			*/
-			echo "$etat_periode</div>\n";
 		}
 	}
 ?>

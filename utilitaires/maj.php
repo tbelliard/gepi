@@ -8063,6 +8063,16 @@ description_item VARCHAR( 255 ) NOT NULL
 			}
 		}
 
+		//==========================================================
+		$result .= "<br />&nbsp;->Contrôle des valeurs autorisées pour le champ 'acces' de la table 'matieres_appreciations_acces'&nbsp;: ";
+		$query3 = mysql_query(" ALTER TABLE `matieres_appreciations_acces` CHANGE `acces` `acces` ENUM( 'y', 'n', 'date', 'd' ) NOT NULL DEFAULT 'y';");
+		if ($query3) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+		}
+		//==========================================================
+
 		//------------------------------------------------------------------------
 		// Fin du bloc de mise à jour 1.5.2. Les mises à jour jusqu'à la diffusion
 		// de la 1.5.2 stable doivent se situer au-dessus de cette ligne !

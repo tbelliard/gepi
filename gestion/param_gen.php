@@ -456,6 +456,12 @@ if (isset($_POST['delais_apres_cloture'])) {
 	}
 }
 
+if (isset($_POST['acces_app_ele_resp'])) {
+	$acces_app_ele_resp=$_POST['acces_app_ele_resp'];
+	if (!saveSetting("acces_app_ele_resp", $acces_app_ele_resp)) {
+		$msg .= "Erreur lors de l'enregistrement de acces_app_ele_resp !";
+	}
+}
 
 /*
 if(isset($_POST['is_posted'])){
@@ -862,7 +868,7 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 		echo "</tr>\n";
 	?>
 
-	<tr>
+	<!--tr>
 		<td style="font-variant: small-caps;">
 		<a name='delais_apres_cloture'></a>
 		Nombre de jours avant déverrouillage de l'accès aux appréciations des bulletins pour les responsables et les élèves une fois la période close&nbsp;:<br />
@@ -870,7 +876,7 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 		<ul>
 			<li style='font-variant: normal; font-style: italic; font-size: small;'>de créer des comptes pour les responsables et élèves,</li>
 			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'autoriser l'accès aux bulletins simplifiés ou aux graphes dans <a href='droits_acces.php'<?php
-			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+			//echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			?>>Droits d'accès</a></li>
 			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'opter pour le mode de déverrouillage automatique sur le critère "période close".</li>
 		</ul>
@@ -878,9 +884,49 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 		</td>
 		<td valign='top'>
 			<?php
+			/*
 			$delais_apres_cloture=getSettingValue("delais_apres_cloture");
 			if($delais_apres_cloture=="") {$delais_apres_cloture=0;}
 			echo "<input type='text' name='delais_apres_cloture' size='2' value='$delais_apres_cloture' onchange='changement()' />\n";
+			*/
+			?>
+		</td>
+	</tr-->
+
+
+	<tr>
+		<td style="font-variant: small-caps;">
+		<a name='delais_apres_cloture'></a>
+		Accès aux bulletins et résultats graphiques, pour les élèves et leurs
+responsables&nbsp;:<br />
+		<div style='font-variant: normal; font-style: italic; font-size: small;'>Sous réserve:<br />
+		<ul>
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>de créer des comptes pour les responsables et élèves,</li>
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'autoriser l'accès aux bulletins simplifiés ou aux graphes dans <a href='droits_acces.php'<?php
+			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+			?>>Droits d'accès</a></li>
+		</ul>
+		</div>
+		</td>
+		<td valign='top'>
+			<?php
+			$acces_app_ele_resp=getSettingValue("acces_app_ele_resp");
+			if($acces_app_ele_resp=="") {$acces_app_ele_resp='manuel';}
+
+			echo "<input type='radio' name='acces_app_ele_resp' id='acces_app_ele_resp_manuel' value='manuel' onchange='changement()' ";
+			if($acces_app_ele_resp=='manuel') {echo "checked ";}
+			echo "/><label for='acces_app_ele_resp_manuel'>manuel (<i>ouvert par la scolarité, classe par classe</i>)</label><br />\n";
+
+			echo "<input type='radio' name='acces_app_ele_resp' id='acces_app_ele_resp_date' value='date' onchange='changement()' ";
+			if($acces_app_ele_resp=='date') {echo "checked ";}
+			echo "/><label for='acces_app_ele_resp_date'>à une date choisie (<i>par la scolarité</i>)</label><br />\n";
+
+			$delais_apres_cloture=getSettingValue("delais_apres_cloture");
+			if($delais_apres_cloture=="") {$delais_apres_cloture=0;}
+
+			echo "<input type='radio' name='acces_app_ele_resp' id='acces_app_ele_resp_periode_close' value='periode_close' onchange='changement()' ";
+			if($acces_app_ele_resp=='periode_close') {echo "checked ";}
+			echo "/><label for='acces_app_ele_resp_periode_close'> <input type='text' name='delais_apres_cloture' value='$delais_apres_cloture' size='1' onchange='changement()' /> jours après la clôture de la période</label>\n";
 			?>
 		</td>
 	</tr>
