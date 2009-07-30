@@ -329,12 +329,14 @@ echo "<tr><td colspan=\"4\" style=\"border-style:solid; border-width:0px; border
 
 
 
+$current_time = time();
 $req_notices =
     "select 'c' type, contenu, date_ct, id_ct
     from ct_entry
     where (contenu != ''
     and id_groupe='$id_groupe'
     and date_ct <= '$today'
+    and date_ct <= '$current_time'
     and date_ct != ''
     and date_ct >= '".getSettingValue("begin_bookings")."')
     ORDER BY date_ct DESC, heure_entry DESC limit 10";
