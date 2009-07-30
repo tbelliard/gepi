@@ -165,7 +165,11 @@ $titre_page = "Accès aux appréciations";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a></p>\n";
+echo "<p class='bold'><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>\n";
+if($_SESSION['statut']=="administrateur") {
+	echo " | <a href='../classes/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Index Classes</a>\n";
+}
+echo "</p>\n";
 
 //debug_var();
 
@@ -209,14 +213,38 @@ if(isset($_POST['choix_date_valider2'])) {
 	$periode2=isset($_POST['periode2']) ? $_POST['periode2'] : NULL;
 	$choix_date2=isset($_POST['choix_date2']) ? $_POST['choix_date2'] : NULL;
 
-	if(($periode2!=NULL)&&($choix_date2!=NULL)) {
+	$poursuivre="y";
+	if($choix_date2=='') {
+		$poursuivre="n";
+		//echo "<script type='text/javascript'>alert('Veuillez saisir une date valide.');</script>\n";
+		echo "<span style='color:red'>Date saisie invalide</span>";
+	}
+	elseif(!ereg("[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}",$choix_date2)) {
+		$poursuivre="n";
+		echo "<span style='color:red'>Date saisie invalide</span>";
+	}
+	else {
 		$tabdate=explode("/",$choix_date2);
-		$mysql_date=$tabdate[2]."-".$tabdate[1]."-".$tabdate[0];
+		$jour=$tabdate[0];
+		$mois=$tabdate[1];
+		$annee=$tabdate[2];
 
-		while ($lig=mysql_fetch_object($res_classe)) {
-			$sql2="UPDATE matieres_appreciations_acces SET acces='date', date='$mysql_date' WHERE id_classe='$lig->id' AND periode='$periode2';";
-			//echo "$sql2<br />";
-			$update=mysql_query($sql2);
+		if(!checkdate($mois,$jour,$annee)) {
+			$poursuivre="n";
+			echo "<span style='color:red'>Date saisie invalide</span>";
+		}
+	}
+
+	if($poursuivre=="y") {
+		if(($periode2!=NULL)&&($choix_date2!=NULL)) {
+			$tabdate=explode("/",$choix_date2);
+			$mysql_date=$tabdate[2]."-".$tabdate[1]."-".$tabdate[0];
+	
+			while ($lig=mysql_fetch_object($res_classe)) {
+				$sql2="UPDATE matieres_appreciations_acces SET acces='date', date='$mysql_date' WHERE id_classe='$lig->id' AND periode='$periode2';";
+				//echo "$sql2<br />";
+				$update=mysql_query($sql2);
+			}
 		}
 	}
 
@@ -263,27 +291,37 @@ while($lig=mysql_fetch_object($res_classe)){
 	}
 }
 
-echo "<p>Vous pouvez définir ici quand les comptes utilisateurs pour des responsables et des élèves peuvent accéder aux appréciations des professeurs et avis du conseil de classe.<br />
-Il est souvent apprécié de pouvoir interdire l'accès aux élèves et responsables avant que le conseil de classe se soit déroulé.<br />
-Cet accès est conditionné par l'existence des comptes responsables et élèves.</p>\n";
-
 $acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
 if($acces_app_ele_resp=="") {$acces_app_ele_resp='manuel';}
 $delais_apres_cloture=getSettingValue('delais_apres_cloture');
 
+echo "<p>Vous pouvez définir ici quand les comptes utilisateurs pour des responsables et des élèves peuvent accéder aux appréciations des professeurs et avis du conseil de classe.<br />
+Il est souvent apprécié de pouvoir interdire l'accès aux élèves et responsables avant que le conseil de classe se soit déroulé.<br />
+Cet accès est conditionné par l'existence des comptes responsables et élèves.</p>\n";
+echo "<br />\n";
+
+if($acces_app_ele_resp=='manuel') {
+	echo "<p>Cliquez sur la clef <img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /> pour donner ou supprimer l'accès aux appréciations.</p>\n";
+}
+elseif($acces_app_ele_resp=='date') {
+	echo "<p>Cliquez sur le calendrier <img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /> pour donner ou supprimer l'accès aux appréciations.</p>\n";
+}
+else {
+	if($_SESSION['statut']=='scolarite') {
+		echo "<p>L'accès est automatiquement ouvert <b>$delais_apres_cloture</b> jours après la <a href='../bulletin/verrouillage.php'>clôture de la période</a>.</p>\n";
+	}
+	else {
+		echo "<p>L'accès est automatiquement ouvert <b>$delais_apres_cloture</b> jours après la clôture de la période.</p>\n";
+	}
+}
+
+/*
 echo "<p>L'ouverture/fermeture de l'accès aux appréciations peut se faire selon trois critères&nbsp;:</p>\n";
 echo "<ul>\n";
 echo "<li><img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /> Bascule manuelle de l'accès ou de l'interdiction d'accès.</li>\n";
 echo "<li><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /> Ouverture automatique de l'accès à la date choisie.</li>\n";
 echo "<li><img src='../images/icons/securite.png' width='16' height='16' alt=\"Période close\" /> Ouverture automatique de l'accès une fois la période complètement close.<br />\n";
-echo "Il est cependant possible d'ajouter un délais après cloture de la période avant que l'ouverture soit effective pour les élèves/responsables.<br />\n";
-echo "Ce délais (<i>en nombre de jours</i>) ainsi que le critère d'accès se paramètrent en administrateur dans ";
-if($_SESSION['statut']=='administrateur') {echo "<a href='../gestion/param_gen.php#delais_apres_cloture'>";}
-echo "Gestion générale/Configuration générale";
-if($_SESSION['statut']=='administrateur') {echo "</a>";}
-echo ".<br />Sa valeur actuelle est <b>$delais_apres_cloture</b> jours.</li>\n";
-echo "</ul>\n";
-
+*/
 
 //echo "<form method='post' action='".$_SERVER['PHP_SELF']."' name='form2'>\n";
 //echo "<p align='center'><input type='submit' name='submit' value='Valider' /></p>\n";
@@ -566,7 +604,7 @@ elseif($acces_app_ele_resp=='date') {
 
 	$display_date=$jour."/".$mois."/".$annee;
 
-	echo "\$display_date=$display_date<br />";
+	//echo "\$display_date=$display_date<br />";
 
 	echo "<table class='boireaus' width='100%'>\n";
 	echo "<tr>\n";
@@ -1070,8 +1108,10 @@ elseif($acces_app_ele_resp=='periode_close') {
 							echo "Accessible";
 	
 							if($display_date!='00/00/0000') {
-								echo "&nbsp;: ";
-								echo "$display_date";
+								//echo "&nbsp;: ";
+								echo "depuis le ";
+								echo $display_date;
+								if($delais_apres_cloture>0) {echo " + ".$delais_apres_cloture."j";}
 							}
 							else {
 								echo " <span style='font-size:x-small;'>depuis la clôture de la période</span>";
@@ -1109,6 +1149,9 @@ elseif($acces_app_ele_resp=='periode_close') {
 	echo "</table>\n";
 }
 
+if($_SESSION['statut']=="administrateur") {
+	echo "Le mode d'accès aux appréciatons (<i>manuel/date/période close</i>) ainsi que le délais après clôture de période se paramètrent en administrateur dans <a href='../gestion/param_gen.php#delais_apres_cloture'>Gestion générale/Configuration générale</a>";
+}
 
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");

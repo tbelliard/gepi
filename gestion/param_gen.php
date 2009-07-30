@@ -896,13 +896,14 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 
 	<tr>
 		<td style="font-variant: small-caps;">
+		<a name='mode_ouverture_acces_appreciations'></a>
 		<a name='delais_apres_cloture'></a>
-		Accès aux bulletins et résultats graphiques, pour les élèves et leurs
+		Mode d'accès aux bulletins et résultats graphiques, pour les élèves et leurs
 responsables&nbsp;:<br />
 		<div style='font-variant: normal; font-style: italic; font-size: small;'>Sous réserve:<br />
 		<ul>
 			<li style='font-variant: normal; font-style: italic; font-size: small;'>de créer des comptes pour les responsables et élèves,</li>
-			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'autoriser l'accès aux bulletins simplifiés ou aux graphes dans <a href='droits_acces.php'<?php
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'autoriser l'accès aux bulletins simplifiés ou aux graphes dans <a href='droits_acces.php#bull_simp_ele'<?php
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			?>>Droits d'accès</a></li>
 		</ul>

@@ -121,53 +121,73 @@
 	elseif($_GET['mode']=='date') {
 		$choix_date=isset($_GET['choix_date']) ? $_GET['choix_date'] : NULL;  // Contrôler que la date est valide
 
-		$tabdate=explode("/",$choix_date);
-		$jour=$tabdate[0];
-		$mois=$tabdate[1];
-		$annee=$tabdate[2];
-		$choix_date=$annee."-".$mois."-".$jour;
-		$display_date=$jour."/".$mois."/".$annee;
+		$poursuivre="y";
+		if($choix_date=='') {
+			$poursuivre="n";
+			//echo "<script type='text/javascript'>alert('Veuillez saisir une date valide.');</script>\n";
+			echo "<span style='color:red'>Date saisie invalide</span>";
+		}
+		elseif(!ereg("[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}",$choix_date)) {
+			$poursuivre="n";
+			echo "<span style='color:red'>Date saisie invalide</span>";
+		}
+		else {
+			$tabdate=explode("/",$choix_date);
+			$jour=$tabdate[0];
+			$mois=$tabdate[1];
+			$annee=$tabdate[2];
 
-		if(($id_classe!=NULL)&&($periode!=NULL)) {
-			for($i=0;$i<count($tab_liste_statuts);$i++) {
-				$sql="SELECT acces FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
-				//echo $sql;
-				$test_acces=mysql_query($sql);
-				if (mysql_num_rows($test_acces)==0) {
-					$sql="INSERT INTO matieres_appreciations_acces SET acces='date', date='".$choix_date."', id_classe='$id_classe', periode='$periode', statut='$tab_liste_statuts[$i]';";
-					//echo "$sql<br />";
-					$insert=mysql_query($sql);
-				}
-				else {
-					$sql="UPDATE matieres_appreciations_acces SET acces='date', date='".$choix_date."' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
-					//echo "$sql<br />";
-					$update=mysql_query($sql);
-				}
+			if(!checkdate($mois,$jour,$annee)) {
+				$poursuivre="n";
+				echo "<span style='color:red'>Date saisie invalide</span>";
+			}
+		}
 
-				// On n'écrit le DIV de couleur qu'une fois
-				if($i==0) {
-					$timestamp_limite=mktime(0,0,0,$mois,$jour,$annee);
-					$timestamp_courant=time();
-					if($timestamp_courant>=$timestamp_limite) {
-						echo "<div style='background-color:lightgreen;'>";
-						if($statut=='ele_resp') {
-							echo "Accessible&nbsp;: \n";
-						}
-						else {
-							echo "Date&nbsp;: \n";
-						}
+		if($poursuivre=="y") {
+			$choix_date=$annee."-".$mois."-".$jour;
+			$display_date=$jour."/".$mois."/".$annee;
+	
+			if(($id_classe!=NULL)&&($periode!=NULL)) {
+				for($i=0;$i<count($tab_liste_statuts);$i++) {
+					$sql="SELECT acces FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
+					//echo $sql;
+					$test_acces=mysql_query($sql);
+					if (mysql_num_rows($test_acces)==0) {
+						$sql="INSERT INTO matieres_appreciations_acces SET acces='date', date='".$choix_date."', id_classe='$id_classe', periode='$periode', statut='$tab_liste_statuts[$i]';";
+						//echo "$sql<br />";
+						$insert=mysql_query($sql);
 					}
 					else {
-						echo "<div style='background-color:orangered;'>";
-						if($statut=='ele_resp') {
-							echo "Inaccessible&nbsp;: \n";
+						$sql="UPDATE matieres_appreciations_acces SET acces='date', date='".$choix_date."' WHERE id_classe='$id_classe' AND periode='$periode' AND statut='$tab_liste_statuts[$i]';";
+						//echo "$sql<br />";
+						$update=mysql_query($sql);
+					}
+	
+					// On n'écrit le DIV de couleur qu'une fois
+					if($i==0) {
+						$timestamp_limite=mktime(0,0,0,$mois,$jour,$annee);
+						$timestamp_courant=time();
+						if($timestamp_courant>=$timestamp_limite) {
+							echo "<div style='background-color:lightgreen;'>";
+							if($statut=='ele_resp') {
+								echo "Accessible&nbsp;: \n";
+							}
+							else {
+								echo "Date&nbsp;: \n";
+							}
 						}
 						else {
-							echo "Date&nbsp;: \n";
+							echo "<div style='background-color:orangered;'>";
+							if($statut=='ele_resp') {
+								echo "Inaccessible&nbsp;: \n";
+							}
+							else {
+								echo "Date&nbsp;: \n";
+							}
 						}
+	
+						echo "$display_date</div>\n";
 					}
-
-					echo "$display_date</div>\n";
 				}
 			}
 		}
@@ -206,6 +226,7 @@
 						}
 						else {
 							$etat_periode="Accessible depuis<br />le $jour/$mois/$annee";
+							//if($delais_apres_cloture>0) {echo " + ".$delais_apres_cloture."j";}
 						}
 					}
 					else {
