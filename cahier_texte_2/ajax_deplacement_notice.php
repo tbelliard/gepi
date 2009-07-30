@@ -41,7 +41,7 @@ if ($utilisateur == null) {
 //récupération des paramètres de la requète
 $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
 $date_deplacement = isset($_POST["date_deplacement"]) ? $_POST["date_deplacement"] :(isset($_GET["date_deplacement"]) ? $_GET["date_duplication"] :NULL);
-$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
+$id_groupe = isset($_POST["id_groupe_deplacement"]) ? $_POST["id_groupe_deplacement"] :(isset($_GET["id_groupe_deplacement"]) ? $_GET["id_groupe_deplacement"] :NULL);
 $type = isset($_POST["type"]) ? $_POST["type"] :(isset($_GET["type"]) ? $_GET["type"] :NULL);
 
 $ctCompteRendu = null;

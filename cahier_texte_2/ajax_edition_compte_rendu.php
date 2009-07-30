@@ -241,7 +241,7 @@ $uid = md5(uniqid(microtime(), 1));
 echo("<input type='hidden' name='uid_post' value='".$uid."' />");
 //hidden input utilise pour indiquer a la fenetre ListeNotice a quel endroit mettre un petit texte rouge "modification"
 echo("<input type='hidden' id='div_id_ct' value='compte_rendu_".$ctCompteRendu->getIdCt()."' />");
-echo("<input type='hidden' name='id_groupe' value='".$groupe->getId()."' />");
+echo("<input type='hidden' id='id_groupe' name='id_groupe' value='".$groupe->getId()."' />");
 echo("<input type='hidden' name='heure_entry' value=\"");
 if ($ctCompteRendu->getHeureEntry() == null) {
 	echo date('G:i');

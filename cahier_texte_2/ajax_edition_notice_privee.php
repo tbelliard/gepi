@@ -216,7 +216,7 @@ $uid = md5(uniqid(microtime(), 1));
 echo("<input type='hidden' name='uid_post' value='".$uid."' />");
 //hidden input utilise pour indiquer a la fenetre ListeNotice a quel endroit mettre un petit texte rouge "modification"
 echo("<input type='hidden' id='div_id_ct' value='notice_privee_".$cahierTexteNoticePrivee->getIdCt()."' />");
-echo("<input type='hidden' name='id_groupe' value='".$groupe->getId()."' />");
+echo("<input type='hidden' name='id_groupe' id='id_groupe' value='".$groupe->getId()."' />");
 echo("<input type='hidden' name='heure_entry' value=\"");
 if ($cahierTexteNoticePrivee->getHeureEntry() == null) {
 	echo date('G:i');
@@ -238,14 +238,10 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 <table border="0" width="100%" summary="Tableau de saisie de notice">
 	<tr>
 	<td style="width: 80%"><b><?php echo $titre; ?></b>&nbsp;
-		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer"
-				style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
-		<input type="hidden" name="date_ct"
-									   value="<?php echo $cahierTexteNoticePrivee->getDateCt(); ?>" /> <input
-			type="hidden" id="id_ct" name="id_ct"
-			value="<?php echo $cahierTexteNoticePrivee->getIdCt(); ?>" /> <input
-			type="hidden" name="id_groupe"
-		value="<?php echo $groupe->getId(); ?>" /></td>
+		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer" style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
+		<input type="hidden" name="date_ct" value="<?php echo $cahierTexteNoticePrivee->getDateCt(); ?>" />
+		<input type="hidden" id="id_ct" name="id_ct" value="<?php echo $cahierTexteNoticePrivee->getIdCt(); ?>" />
+		<input type="hidden" name="id_groupe" id="id_ct" value="<?php echo $groupe->getId(); ?>" /></td>
 	<td><?php
 	if (!isset($info)) {
 		$hier = $today - 3600*24;

@@ -45,13 +45,13 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_
 //	die();
 //}
 echo "<form enctype=\"multipart/form-data\" name=\"duplication_notice_form\" id=\"duplication_notice_form\" action=\"ajax_duplication_notice.php\" method=\"post\">\n";
-echo "<input type='hidden' name='id_ct' value='".$id_ct."' />";
+echo "<input type='hidden' id='id_ct' name='id_ct' value='".$id_ct."' />";
 echo "<input type='hidden' name='type' value='".$type."' />";
 echo "<input type='hidden' id='date_duplication' name='date_duplication'/>";
 echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
 echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\"> Duplication de notice</legend> ";
 echo "<table style=\"border-style:solid; border-width:0px;\" cellspacing='20px'><tr><td>";
-echo "<select name=\"id_groupe\">";
+echo "<select id=\"id_groupe_duplication\" name=\"id_groupe_duplication\">";
 echo "<option value='-1'>(choisissez un groupe de destination)</option>\n";
 foreach ($utilisateur->getGroupes() as $group) {
 	echo "<option value='".$group->getId()."'>";
@@ -63,24 +63,10 @@ echo "</td><td>";
 echo "<div id='calendar-duplication-container'></div>";
 echo "</td><td>";
 echo "<button onClick=\"javascript:
-			if (typeof calendarDuplicationInstanciation != 'undefined' && calendarDuplicationInstanciation != null) {
-				//get the unix date
-				calendarDuplicationInstanciation.date.setHours(0);
-				calendarDuplicationInstanciation.date.setMinutes(0);
-				calendarDuplicationInstanciation.date.setSeconds(0);
-				calendarDuplicationInstanciation.date.setMilliseconds(0);
-			    $('date_duplication').value = Math.round(calendarDuplicationInstanciation.date.getTime()/1000);
-			} else {
-				$('date_duplication').value = 0;
-			}
-			$('duplication_notice_form').request({onComplete: function(transport){ alert(transport.responseText) }});
-            new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."',
-             	{ onComplete:
-             		function(transport) {
-             			updateDivModification();
-             		}
-             	}
-            );
+			//d'abord on enregistre la notice pour prendre en compte des modifications de contenu eventuelles
+			//la duplication est faite dans completeDuplicationNoticeCallback
+			AIM.submit($('modification_compte_rendu_form'), {'onComplete' : completeDuplicationNoticeCallback});
+			$('modification_compte_rendu_form').submit();
 			return false;\"
 			id=\"bouton_dupliquer\" name=\"Dupliquer\" style='font-variant: small-caps;'>Dupliquer</button>";
 

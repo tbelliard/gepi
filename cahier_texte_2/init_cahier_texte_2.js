@@ -483,58 +483,87 @@ function completeEnregistrementNoticePriveeCallback(response) {
 function completeDeplacementNoticeCallback(response) {
 	//on etudie la reponse de l'enregistrement de la notice
 	if (response.match('Erreur') || response.match('error')) {
-		alert(response);
-		getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:function() {initWysiwyg();}});
+	    updateWindows(response);
 	} else {
-		if (response.match('Erreur') || response.match('error')) {
-			alert(response);
-		} else {
-			//pas d'erreur, on deplace la notice
+	    //pas d'erreur, on deplace la notice
+	    $('id_ct').value = response;
 
-			id_ct = response;
-//			alert('Notice enregistrée, id : ' + id_ct);
-
-			if ($F('id_groupe') == -1) {
-				alert('Pas de groupe spécifié');
-				return false;
-			} else {
-				if (typeof calendarDeplacementInstanciation != 'undefined' && calendarDeplacementInstanciation != null) {
-					//get the unix date
-					calendarDeplacementInstanciation.date.setHours(0);
-					calendarDeplacementInstanciation.date.setMinutes(0);
-					calendarDeplacementInstanciation.date.setSeconds(0);
-					calendarDeplacementInstanciation.date.setMilliseconds(0);
-					$('date_deplacement').value = Math.round(calendarDeplacementInstanciation.date.getTime()/1000);
-					updateCalendarWithUnixDate($('date_deplacement').value);
-				} else {
-					$('date_deplacement').value = 0;
-				}
-				$('id_ct').value = id_ct;
-				$('deplacement_notice_form').request({
-					//une fois le deplacement effectué en base, on mets à jour la fenetre d'edition puis la liste des notices'
-					onComplete: function(transport){
-						var url = null;
-						if (object_en_cours_edition == "compte_rendu") {
-							url = 'ajax_edition_compte_rendu.php?id_ct=' + id_ct;
-						} else if (object_en_cours_edition == "devoir") {
-							url = 'ajax_edition_devoir.php?id_devoir=' + id_ct;
-						} else if (object_en_cours_edition == 'notice_privee') {
-							url = 'ajax_edition_notice_privee.php?id_ct=' + id_ct;
-						}
-						var id_groupe = $('id_groupe').value;
-						getWinEditionNotice().setAjaxContent(url,
-							{ onComplete: function(transport) {
-									new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();}});
-									initWysiwyg();
-								}
-							});
-						alert(transport.responseText);
-					}
-				});
-			}
-		}
+	    if ($F('id_groupe_deplacement') == -1) {
+		    updateWindows('Pas de groupe spécifié');
+		    return false;
+	    } else {
+		    if (typeof calendarDeplacementInstanciation != 'undefined' && calendarDeplacementInstanciation != null) {
+			    //get the unix date
+			    calendarDeplacementInstanciation.date.setHours(0);
+			    calendarDeplacementInstanciation.date.setMinutes(0);
+			    calendarDeplacementInstanciation.date.setSeconds(0);
+			    calendarDeplacementInstanciation.date.setMilliseconds(0);
+			    $('date_deplacement').value = Math.round(calendarDeplacementInstanciation.date.getTime()/1000);
+			    updateCalendarWithUnixDate($('date_deplacement').value);
+		    } else {
+			    $('date_deplacement').value = 0;
+		    }
+		    $('deplacement_notice_form').request({
+			    //une fois le deplacement effectué en base, on mets à jour la fenetre d'edition puis la liste des notices'
+			    onComplete: function (transport) {updateWindows(transport.responseText)}
+		    });
+	    }
 	}
 	return true;
+}
+
+//webtoolkit aim (ajax iframe method for file uploading)
+function completeDuplicationNoticeCallback(response) {
+	//on etudie la reponse de l'enregistrement de la notice
+	if (response.match('Erreur') || response.match('error')) {
+		updateWindows(response);
+	} else {
+	    //pas d'erreur, on deplace la notice
+	    $('id_ct').value = response;
+
+	    if ($F('id_groupe_duplication') == -1) {
+		    updateWindows('Pas de groupe spécifié');
+		    return false;
+	    } else {
+		    if (typeof calendarDuplicationInstanciation != 'undefined' && calendarDuplicationInstanciation != null) {
+			    //get the unix date
+			    calendarDuplicationInstanciation.date.setHours(0);
+			    calendarDuplicationInstanciation.date.setMinutes(0);
+			    calendarDuplicationInstanciation.date.setSeconds(0);
+			    calendarDuplicationInstanciation.date.setMilliseconds(0);
+			    $('date_duplication').value = Math.round(calendarDuplicationInstanciation.date.getTime()/1000);
+			    updateCalendarWithUnixDate($('date_duplication').value);
+		    } else {
+			    $('date_duplication').value = 0;
+		    }
+		    $('duplication_notice_form').request({
+			    //une fois le deplacement effectué en base, on mets à jour la fenetre d'edition puis la liste des notices'
+			    onComplete: function (transport) {updateWindows(transport.responseText)}
+		    });
+	    }
+	}
+	return true;
+}
+
+function updateWindows(message){
+	var url = null;
+	if (object_en_cours_edition == "compte_rendu") {
+		url = 'ajax_edition_compte_rendu.php?id_ct=' + $('id_ct').value;
+	} else if (object_en_cours_edition == "devoir") {
+		url = 'ajax_edition_devoir.php?id_devoir=' + $('id_ct').value;
+	} else if (object_en_cours_edition == 'notice_privee') {
+		url = 'ajax_edition_notice_privee.php?id_ct=' + $('id_ct').value;
+	}
+	var id_groupe = $('id_groupe').value;
+	getWinEditionNotice().setAjaxContent(url,
+		{ onComplete: function() {
+				new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();}});
+				initWysiwyg();
+			}
+		});
+	if (message != '') {
+	    alert(message);
+	}
 }
 
 function dateChanged(calendar) {

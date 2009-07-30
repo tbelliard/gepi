@@ -51,7 +51,7 @@ echo "<input type='hidden' id='date_deplacement' name='date_deplacement'/>";
 echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
 echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\"> deplacement de notice</legend> ";
 echo "<table style=\"border-style:solid; border-width:0px;\" cellspacing='20px'><tr><td>";
-echo "<select id=\"id_groupe\" name=\"id_groupe\">";
+echo "<select id=\"id_groupe_deplacement\" name=\"id_groupe_deplacement\">";
 echo "<option value='-1'>(choisissez un groupe de destination)</option>\n";
 foreach ($utilisateur->getGroupes() as $group) {
 	echo "<option value='".$group->getId()."'";
