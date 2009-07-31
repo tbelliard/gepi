@@ -96,6 +96,15 @@ $liste_tables_del = array(
 "matieres_notes",
 "matieres_appreciations_grp",
 "matieres_appreciations_tempo",
+//==========================
+// Tables notanet
+'notanet',
+'notanet_avis',
+'notanet_app',
+'notanet_verrou',
+'notanet_socles',
+'notanet_ele_type',
+//==========================
 //"periodes",
 //"periodes_observatoire",
 "tempo2",
