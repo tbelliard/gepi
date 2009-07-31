@@ -479,11 +479,13 @@ else {
 			}
 
 			echo "</table>\n";
+
+			echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 		}
 	}
 
 	echo "<input type='hidden' name='is_posted' value='y' />\n";
-	echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+	//echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
 
