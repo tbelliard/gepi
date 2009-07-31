@@ -36,6 +36,7 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+//debug_var();
 $msg = '';
 $error = false;
 if (isset($_POST['is_posted'])) {
@@ -45,8 +46,11 @@ if (isset($_POST['is_posted'])) {
     while ($row = mysql_fetch_object($get_all_matieres)) {
         // On passe les matières une par une et on met à jour
         $varname_p = strtolower($row->matiere)."_priorite";
+		//echo "<p>Test \$varname_p=$varname_p<br />";
         if (isset($_POST[$varname_p])) {
+			//echo "isset(\$_POST[$varname_p]) oui<br />";
             if (is_numeric($_POST[$varname_p])) {
+				//echo "is_numeric(\$_POST[$varname_p]) oui<br />";
             	// La valeur est correcte
             	if ($_POST[$varname_p] != $row->priority) {
                 // On a une valeur différente. On met à jour.
@@ -58,8 +62,10 @@ if (isset($_POST['is_posted'])) {
                 }
                 // On met à jour toutes les priorités dans les classes si ça a été demandé
                 if (isset($_POST['forcer_defauts']) AND $_POST['forcer_defauts'] == "yes") {
-			        $req = mysql_query("UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$_POST[$varname_p]."' " .
-			        		"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')");
+			        $sql="UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$_POST[$varname_p]."' " .
+			        		"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')";
+					//echo "$sql<br />";
+					$req = mysql_query($sql);
 			        if (!$req) {
 			        	$msg .="<br/>Erreur lors de la mise à jour de la priorité de matière dans les classes pour la matière ".$row->matiere.".";
 			        	$error = true;
