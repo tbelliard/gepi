@@ -1720,6 +1720,11 @@ function eleve_suivant(){
 	//echo "</form>\n";
 
 
+	//================
+	// Déplacement: boireaus 20090727
+	// Initialisation:
+	$texte_saisie_avis_fixe="";
+	//================
 
 	//if(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiRubConseilProf')=="yes")) {
 	if(
@@ -1741,7 +1746,7 @@ function eleve_suivant(){
 		//================
 		// Ajout: boireaus 20090115
 		// Initialisation:
-		$texte_saisie_avis_fixe="";
+		//$texte_saisie_avis_fixe="";
 		//================
 		if($droit_saisie_avis=="y") {
 			//if ($_POST['choix_periode']=="periode") {
