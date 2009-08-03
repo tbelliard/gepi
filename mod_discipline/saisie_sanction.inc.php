@@ -64,7 +64,8 @@ if($valeur=='travail') {
 	echo "<tr class='lig1'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date de retour&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
-	echo "<input type='text' name='date_retour' id='date_retour' size='10' value=\"".$date_retour."\" onchange='changement();' />\n";
+	//echo "<input type='text' name='date_retour' id='date_retour' size='10' value=\"".$date_retour."\" onchange='changement();' />\n";
+	echo "<input type='text' name='date_retour' id='date_retour' size='10' value=\"".$date_retour."\" onchange='changement();' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
 	echo "<a href=\"#calend\" onclick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\">\n";
 	echo "<img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" />\n";
 	echo "</a>\n";
@@ -128,7 +129,8 @@ elseif($valeur=='retenue') {
 	echo "<tr class='lig1'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
-	echo "<input type='text' name='date_retenue' id='date_retenue' value='$date_retenue' size='10' onchange='maj_div_liste_retenues_jour();changement();' onblur='maj_div_liste_retenues_jour();' />\n";
+	//echo "<input type='text' name='date_retenue' id='date_retenue' value='$date_retenue' size='10' onchange='maj_div_liste_retenues_jour();changement();' onblur='maj_div_liste_retenues_jour();' />\n";
+	echo "<input type='text' name='date_retenue' id='date_retenue' value='$date_retenue' size='10' onchange='maj_div_liste_retenues_jour();changement();' onblur='maj_div_liste_retenues_jour();' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
 	echo "<a href=\"#calend\" onclick=\"$('date_retenue').focus();".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\">\n";
 	echo "<img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" />\n";
 	echo "</a>\n";
@@ -249,7 +251,8 @@ elseif($valeur=='exclusion') {
 	echo "<tr class='lig1'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date de début&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
-	echo "<input type='text' name='date_debut' id='date_debut' value='$date_debut' size='10' onchange='changement();' />\n";
+	//echo "<input type='text' name='date_debut' id='date_debut' value='$date_debut' size='10' onchange='changement();' />\n";
+	echo "<input type='text' name='date_debut' id='date_debut' value='$date_debut' size='10' onchange='changement();' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
 	echo "<a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\">\n";
 	echo "<img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" />\n";
 	echo "</a>\n";
@@ -269,7 +272,8 @@ elseif($valeur=='exclusion') {
 	echo "<tr class='lig1'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date de fin&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
-	echo "<input type='text' name='date_fin' id='date_fin' value='$date_fin' size='10' onchange='changement();' />\n";
+	//echo "<input type='text' name='date_fin' id='date_fin' value='$date_fin' size='10' onchange='changement();' />\n";
+	echo "<input type='text' name='date_fin' id='date_fin' value='$date_fin' size='10' onchange='changement();' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
 	echo "<a href=\"#calend\" onclick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\">\n";
 	echo "<img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" />\n";
 	echo "</a>\n";

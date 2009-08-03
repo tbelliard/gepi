@@ -1378,7 +1378,7 @@ elseif($step==2) {
 		include("../lib/calendrier/calendrier.class.php");
 		$cal = new Calendrier("formulaire", "display_date");
 
-		echo "<input type='text' name='display_date' size='10' value=\"".$display_date."\" />\n";
+		echo "<input type='text' name='display_date' id='display_date' size='10' value=\"".$display_date."\" onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
 		echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 
 		echo "</td>\n";

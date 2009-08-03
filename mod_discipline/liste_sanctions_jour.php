@@ -114,7 +114,7 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">Jour précédent</a>";
 
 echo " | ";
-echo "<input type='text' name='jour_sanction' size='10' value=\"".$jour_sanction."\" />\n";
+echo "<input type='text' name='jour_sanction' id='jour_sanction' size='10' value=\"".$jour_sanction."\" onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
 echo "<a href=\"#calend\" onclick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";";
 //echo "return confirm_abandon (this, change, '$themessage')";
 echo "\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
