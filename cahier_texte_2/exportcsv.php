@@ -65,7 +65,7 @@ foreach ($current_group["classes"]["classes"] as $classe) {
     $str .= $classe["classe"];
 }
 
-if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
     header('Content-Disposition: inline; filename="' . $str.date("dmY") . '.csv"');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: public');

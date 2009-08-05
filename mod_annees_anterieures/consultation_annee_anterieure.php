@@ -730,7 +730,7 @@ else{
 		require("fonctions_annees_anterieures.inc.php");
 
 		//echo $_SERVER['HTTP_USER_AGENT']."<br />\n";
-		if(eregi("gecko",$_SERVER['HTTP_USER_AGENT'])){
+		if(my_eregi("gecko",$_SERVER['HTTP_USER_AGENT'])){
 			//echo "gecko=true<br />";
 			$gecko=true;
 		}

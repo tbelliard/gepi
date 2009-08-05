@@ -981,7 +981,7 @@ $_POST['projet']=	4eme_vers_3eme
 
 					//===================================
 					echo "<td>\n";
-					if(($moy!="")&&(strlen(ereg_replace("[0-9.,]","",$moy))==0)) {
+					if(($moy!="")&&(strlen(my_ereg_replace("[0-9.,]","",$moy))==0)) {
 						if($moy<7) {
 							echo "<span style='color:red;'>";
 						}

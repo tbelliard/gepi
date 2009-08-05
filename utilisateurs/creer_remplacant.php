@@ -139,34 +139,34 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					if ($mode_generation_login == "name") {
 						$temp1 = $affiche[0];
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,8);
 
 					} elseif ($mode_generation_login == "name8") {
 						$temp1 = $affiche[0];
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,8);
 					} elseif ($mode_generation_login == "fname8") {
 						$temp1 = $affiche[1]{0} . $affiche[0];
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,8);
 					} elseif ($mode_generation_login == "fname19") {
 						$temp1 = $affiche[1]{0} . $affiche[0];
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,19);
 					} elseif ($mode_generation_login == "firstdotname") {
@@ -178,9 +178,9 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$temp1 = $firstname . "." . $affiche[0];
 						$temp1 = strtoupper($temp1);
 
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,19);
 					} elseif ($mode_generation_login == "firstdotname19") {
@@ -191,17 +191,17 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						}
 						$temp1 = $firstname . "." . $affiche[0];
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,19);
 					} elseif ($mode_generation_login == "namef8") {
 						$temp1 =  substr($affiche[0],0,7) . $affiche[1]{0};
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,8);
 					} elseif ($mode_generation_login == "lcs") {

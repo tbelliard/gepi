@@ -70,8 +70,8 @@ if(isset($nettoyage)){
 		$msg="Vous tentez de supprimer des fichiers qui ne vous appartiennent pas.";
 	}
 	else{
-		if(strlen(ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0){
-			$msg="Le fichier proposé n'est pas valide: '".ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
+		if(strlen(my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0){
+			$msg="Le fichier proposé n'est pas valide: '".my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
 		}
 		else{
 			if(!file_exists("$chemin_temp/$nettoyage")){
@@ -102,7 +102,7 @@ $periode_num=isset($_POST["periode_num"]) ? $_POST["periode_num"] : (isset($_GET
 
 
 
-if((strlen(ereg_replace("[0-9]","",$id_groupe))!=0)||(strlen(ereg_replace("[0-9]","",$periode_num))!=0)){
+if((strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0)||(strlen(my_ereg_replace("[0-9]","",$periode_num))!=0)){
 	$msg="Une au moins des valeurs id_groupe ou periode_num est invalide.";
     header("Location: index.php?msg=$msg");
     die();
@@ -156,9 +156,9 @@ require_once("../lib/header.inc");
 
 $nom_fic=$_SESSION['login'];
 $nom_fic.="_notes_appreciations";
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group['description'],'all'));
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group["classlist_string"],'all'));
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode,'all'));
+$nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group['description'],'all'));
+$nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group["classlist_string"],'all'));
+$nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode,'all'));
 
 
 // Génération d'un fichier tableur ODS
@@ -219,7 +219,7 @@ if($nb_ele>0){
 		if(mysql_num_rows($res_note)){
 			$lig_note=mysql_fetch_object($res_note);
 			if($lig_note->statut==''){
-				$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="float" office:value="'.ereg_replace(',','.',$lig_note->note).'"><text:p>'.ereg_replace('.',',',$lig_note->note).'</text:p></table:table-cell>');
+				$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="float" office:value="'.my_ereg_replace(',','.',$lig_note->note).'"><text:p>'.my_ereg_replace('.',',',$lig_note->note).'</text:p></table:table-cell>');
 
 				// ATTENTION: Il va falloir vérifier qu'à l'import on gère bien 13.5 et 13,5
 			}
@@ -236,7 +236,7 @@ if($nb_ele>0){
 		$res_appreciation=mysql_query($sql);
 		if(mysql_num_rows($res_appreciation)){
 			$lig_appreciation=mysql_fetch_object($res_appreciation);
-			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.ereg_replace('\n',' ',$lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
+			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.my_ereg_replace('\n',' ',$lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
 			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.$lig_appreciation->appreciation.'</text:p></table:table-cell></table:table-row>');
 
 			// Il va falloir contrôler si certaines saisies ne font pas de blagues...
@@ -251,11 +251,11 @@ if($nb_ele>0){
 				CHABOT_F;15;
 
 			echo "$lig_ele->login<br />$lig_appreciation->appreciation=$lig_appreciation->appreciation<br />";
-			echo ereg_replace('\n',' ',$lig_appreciation->appreciation);
+			echo my_ereg_replace('\n',' ',$lig_appreciation->appreciation);
 			echo "=========================<br />";
 			*/
 
-			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.ereg_replace('\\n',' ',$lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
+			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.my_ereg_replace('\\n',' ',$lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
 			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.nl2br($lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
 			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.nl2br(caract_ooo($lig_appreciation->appreciation)).'</text:p></table:table-cell></table:table-row>');
 			$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce7" office:value-type="string"><text:p>'.nl2br(caract_ooo($lig_appreciation->appreciation)).'</text:p></table:table-cell></table:table-row>');

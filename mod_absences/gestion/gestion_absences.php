@@ -228,7 +228,7 @@ Pour éviter un centrage bizarre:
 			                 <?php if($action === 'modifier') { ?>
 			                      <input type="hidden" name="id_suivi_eleve_cpe" value="<?php echo $id_suivi_eleve_cpe; ?>" />
 			                 <?php } ?>
-<?php /* 		   <input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /> */ ?>
+<?php /* 		   <input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /> */ ?>
 			                 <input type="submit" name="submit8" value="Valider la saisie" />
 			                 <br />
 					 <table style="border: 0px" cellspacing="1" cellpadding="1">
@@ -749,8 +749,8 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 			  $passage='oui';
 			while($passage==='oui') {
 		          $dateexplode = explode('/', $date_debut);
-			    $date_debut_tableau_jour = eregi_replace('^0','',$dateexplode[0]);
-			    $date_debut_tableau_mois = eregi_replace('^0','',$dateexplode[1]);
+			    $date_debut_tableau_jour = my_eregi_replace('^0','',$dateexplode[0]);
+			    $date_debut_tableau_mois = my_eregi_replace('^0','',$dateexplode[1]);
 			    $date_debut_tableau= $date_debut_tableau_jour.'/'.$date_debut_tableau_mois.'/'.$dateexplode[2];
 			    if(empty($tableau_info_donnee[$date_debut_tableau])) { $tableau_info_donnee[$date_debut_tableau]=''; }
 			    $tableau_info_donnee[$date_debut_tableau]['absence'] = 'oui';
@@ -763,9 +763,9 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
                  while ($data_absences_nr = mysql_fetch_array($execution_absences_nr))
                    {
 			$date_debut = date_fr($data_absences_nr['d_date_absence_eleve']);
-			    $date_debut = eregi_replace('^0','',$date_debut);
+			    $date_debut = my_eregi_replace('^0','',$date_debut);
 			$date_fin = date_fr($data_absences_nr['a_date_absence_eleve']);
-			    $date_fin = eregi_replace('^0','',$date_fin);
+			    $date_fin = my_eregi_replace('^0','',$date_fin);
 			if(empty($tableau_info_donnee[$date_debut])) { $tableau_info_donnee[$date_debut]=''; }
 			$tableau_info_donnee[$date_debut]['retard'] = 'oui';
 			if(empty($tableau_info_donnee[$date_fin])) { $tableau_info_donnee[$date_fin]=''; }

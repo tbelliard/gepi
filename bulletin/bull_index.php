@@ -300,7 +300,7 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 	$max_per=0;
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		// Est-ce bien un entier?
-		if((strlen(ereg_replace("[0-9]","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
+		if((strlen(my_ereg_replace("[0-9]","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
 			echo "<p>Identifiant de classe erroné: <span style='color:red'>".$tab_id_classe[$i]."</span></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -657,7 +657,7 @@ function ToutDeCocher() {
 	$max_eff_classe=0;
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		// Est-ce bien un entier?
-		if((strlen(ereg_replace("[0-9]","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
+		if((strlen(my_ereg_replace("[0-9]","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
 			echo "<p>Identifiant de classe erroné: <span style='color:red'>".$tab_id_classe[$i]."</span></p></form>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -672,7 +672,7 @@ function ToutDeCocher() {
 		echo "<th>Elèves</th>\n";
 		for($j=0;$j<count($tab_periode_num);$j++) {
 			// Est-ce bien un entier?
-			if((strlen(ereg_replace("[0-9]","",$tab_periode_num[$j])))||($tab_periode_num[$j]=="")) {
+			if((strlen(my_ereg_replace("[0-9]","",$tab_periode_num[$j])))||($tab_periode_num[$j]=="")) {
 				echo "<td>Identifiant de période erroné: <span style='color:red'>".$tab_periode_num[$j]."</span></td></tr></table></form>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -1240,7 +1240,7 @@ else {
 		//$id_classe=2;
 		$id_classe=$tab_id_classe[$loop_classe];
 		// Est-ce bien un entier?
-		if((strlen(ereg_replace("[0-9]","",$id_classe)))||($id_classe=="")) {
+		if((strlen(my_ereg_replace("[0-9]","",$id_classe)))||($id_classe=="")) {
 			echo "<p>Identifiant de classe erroné: <span style='color:red'>$id_classe</span></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -1322,7 +1322,7 @@ else {
 			$periode_num=$tab_periode_num[$loop_periode_num];
 
 			// Est-ce bien un entier?
-			if((strlen(ereg_replace("[0-9]","",$periode_num)))||($periode_num=="")) {
+			if((strlen(my_ereg_replace("[0-9]","",$periode_num)))||($periode_num=="")) {
 				echo "<p>Identifiant de période erroné: <span style='color:red'>".$periode_num."</span></p>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -1394,7 +1394,7 @@ else {
 			$lig_per=mysql_fetch_object($res_per);
 			$tab_bulletin[$id_classe][$periode_num]['num_periode']=$lig_per->num_periode;
 			//$tab_bulletin[$id_classe][$periode_num]['nom_periode']=$lig_per->nom_periode;
-			$tab_bulletin[$id_classe][$periode_num]['nom_periode']=ereg_replace("&#039;","'",$lig_per->nom_periode);
+			$tab_bulletin[$id_classe][$periode_num]['nom_periode']=my_ereg_replace("&#039;","'",$lig_per->nom_periode);
 			$tab_bulletin[$id_classe][$periode_num]['verouiller']=$lig_per->verouiller;
 
 

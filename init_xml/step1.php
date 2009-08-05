@@ -190,7 +190,7 @@ if (!isset($is_posted)) {
 					//=========================
 					// MODIF: boireaus 20071024
 					//$ligne = fgets($fp, 4096);
-					$ligne = ereg_replace('"','',fgets($fp, 4096));
+					$ligne = my_ereg_replace('"','',fgets($fp, 4096));
 					//=========================
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);
@@ -203,7 +203,7 @@ if (!isset($is_posted)) {
 							//$affiche = dbase_filter(trim($ligne[$ind]));
 							//$affiche = dbase_filter(trim($tabligne[$ind]));
 							// On vire en plus les apostrophes dans les noms,...
-							$affiche = ereg_replace("'"," ",dbase_filter(trim($tabligne[$ind])));
+							$affiche = my_ereg_replace("'"," ",dbase_filter(trim($tabligne[$ind])));
 							//$query = $query."\"".$affiche."\"";
 							if($tabchamps[$ind]!=''){
 								$query = $query.",";

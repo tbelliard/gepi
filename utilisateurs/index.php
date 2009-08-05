@@ -151,7 +151,7 @@ function test_ecriture_backup() {
     else { if (isset($_GET['uid_post'])) {$uid_post=$_GET['uid_post'];} if (isset($_POST['uid_post'])) {$uid_post=$_POST['uid_post'];} }
 	$uid = md5(uniqid(microtime(), 1));
 	   // on remplace les %20 par des espaces
-	    $uid_post = eregi_replace('%20',' ',$uid_post);
+	    $uid_post = my_eregi_replace('%20',' ',$uid_post);
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'oui'; } else { $valide_form = 'non'; }
 	$_SESSION['uid_prime'] = $uid;
 // fin de la fonction de sécuritée
@@ -186,7 +186,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $val
 				} else {
 					$dest = "../photos/personnels/";
 					$n = 0;
-					//$nom_corrige = ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_photo['name'][$cpt_photo]);
+					//$nom_corrige = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_photo['name'][$cpt_photo]);
 					if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], "../photos/personnels/".$quiestce[$cpt_photo].".jpg")) {
 						//$msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire photos/personnels/";
 						$msg = "Problème de transfert : le fichier '".$sav_photo['name'][$cpt_photo]."' n'a pas pu être transféré sur le répertoire photos/personnels/<br />\n";
@@ -580,7 +580,7 @@ echo "</table>\n";
    // pour le trombinoscope on met la taille maximal d'une photos
    ?><input type="hidden" name="MAX_FILE_SIZE" value="150000" />
 	<input type="hidden" name="action" value="depot_photo" />
-	<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+	<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 	<input type="hidden" name="total_photo" value="<?php echo $nombreligne; ?>" /><?php
 echo  "</form>\n";
 // fin module trombinoscope

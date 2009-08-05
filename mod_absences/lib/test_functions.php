@@ -396,7 +396,7 @@ function nb_jour_mois($mois_select,$annee_select)
 
 function verif_date($date_a_verif)
  {
-    if(eregi("[0-9]{4}-[0-9]{2}-[0-9]{2}",$date_a_verif))
+    if(my_eregi("[0-9]{4}-[0-9]{2}-[0-9]{2}",$date_a_verif))
      {
        //explotion de la date en jour, mois, année
           $date_a_verif_exp = explode('-', $date_a_verif);

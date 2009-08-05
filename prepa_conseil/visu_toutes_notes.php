@@ -358,7 +358,7 @@ if (($aff_rang) and ($referent=="une_periode")){
 	//$ligne1[] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Rang de l'élève\" />";
 	/*
 	$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
-	if(eregi("^Rang",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
+	if(my_eregi("^Rang",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
 	$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
     $ligne1[$nb_col].="<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale\" />";
 	$ligne1[$nb_col].="</a>";
@@ -725,7 +725,7 @@ while($i < $lignes_groupes) {
     $nom_complet_coupe = (strlen($nom_complet_matiere) > 20)? urlencode(substr($nom_complet_matiere,0,20)."...") : urlencode($nom_complet_matiere);
 
     $nom_complet_coupe_csv=(strlen($nom_complet_matiere) > 20) ? substr($nom_complet_matiere,0,20) : $nom_complet_matiere;
-	$nom_complet_coupe_csv=ereg_replace(";","",$nom_complet_coupe_csv);
+	$nom_complet_coupe_csv=my_ereg_replace(";","",$nom_complet_coupe_csv);
 
     //$ligne1[$k] = "<img src=\"../lib/create_im_mat.php?texte=$nom_complet_coupe&width=22\" width=\"22\" border=\"0\" />";
     //$ligne1[$k] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"$nom_complet_coupe\" />";
@@ -798,7 +798,7 @@ if ($ligne_supl >= 1) {
     //$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale\" />";
     //$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale\" />";
 	$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
-	if(eregi("^Rang",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
+	if(my_eregi("^Rang",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
 	$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
     $ligne1[$nb_col].="<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale\" />";
 	$ligne1[$nb_col].="</a>";
@@ -862,7 +862,7 @@ if ($ligne_supl >= 1) {
 			$rg[$k]=$k;
 
 			if ($total_coef_eleve[$k+$ligne_supl] > 0) {
-				$tmp_tab[$k]=ereg_replace(",",".",$col[$nb_col][$k+1]);
+				$tmp_tab[$k]=my_ereg_replace(",",".",$col[$nb_col][$k+1]);
 				my_echo("<tr>");
 				my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k]</td>");
 				my_echo("</tr>");
@@ -970,17 +970,17 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 	*/
 
 	// Vérifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
-	if((strlen(ereg_replace("[0-9]","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
+	if((strlen(my_ereg_replace("[0-9]","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
 		my_echo("<table>");
 		my_echo("<tr><td valign='top'>");
 		unset($tmp_tab);
 		for($loop=0;$loop<$nb_lignes_tableau;$loop++) {
 		//for($loop=$b_inf;$loop<$b_sup;$loop++) {
 			// Il faut le POINT au lieu de la VIRGULE pour obtenir un tri correct sur les notes
-			//$tmp_tab[$loop]=ereg_replace(",",".",$col_csv[$col_tri][$loop]);
-			//$tmp_tab[$loop]=ereg_replace(",",".",$col[$col_tri][$loop]);
-			$tmp_tab[$loop]=ereg_replace(",",".",$col[$col_tri][$loop+$corr]);
-			//$tmp_tab[$loop]=ereg_replace(",",".",$col[$col_tri][$loop]);
+			//$tmp_tab[$loop]=my_ereg_replace(",",".",$col_csv[$col_tri][$loop]);
+			//$tmp_tab[$loop]=my_ereg_replace(",",".",$col[$col_tri][$loop]);
+			$tmp_tab[$loop]=my_ereg_replace(",",".",$col[$col_tri][$loop+$corr]);
+			//$tmp_tab[$loop]=my_ereg_replace(",",".",$col[$col_tri][$loop]);
 			my_echo("\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />");
 		}
 
@@ -1139,12 +1139,12 @@ if(isset($_GET['mode'])){
 		$nom_fic=$chaine_titre."_".$now.".csv";
 
 		// Filtrer les caractères dans le nom de fichier:
-		$nom_fic=ereg_replace("[^a-zA-Z0-9_.-]","",remplace_accents($nom_fic,'all'));
+		$nom_fic=my_ereg_replace("[^a-zA-Z0-9_.-]","",remplace_accents($nom_fic,'all'));
 
 		header('Content-Type: text/x-csv');
 		header('Expires: ' . $now);
 		// lem9 & loic1: IE need specific headers
-		if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+		if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 			header('Content-Disposition: inline; filename="' . $nom_fic . '"');
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 			header('Pragma: public');

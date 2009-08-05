@@ -212,7 +212,7 @@ else{
 					/*
 					for($i=0;$i<2; $i++) {
 						$affiche[$i]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[$i]))));
-						if((strlen(ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
+						if((strlen(my_ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
 							$temoin_erreur="oui";
 							//echo "<!--  -->\n";
 							$msg.="Le nom <font color='red'>$affiche[$i]</font> ne convient pas.<br />\n";
@@ -222,8 +222,8 @@ else{
 					*/
 
 					$affiche[0]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[0]))));
-					if((strlen(ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[0],"-","_")))!=0)&&($affiche[0]!="")){
-					//if((strlen(ereg_replace("[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
+					if((strlen(my_ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[0],"-","_")))!=0)&&($affiche[0]!="")){
+					//if((strlen(my_ereg_replace("[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
 						$temoin_erreur="oui";
 						//echo "<!--  -->\n";
 						$msg.="Le nom <font color='red'>$affiche[0]</font> ne convient pas.<br />\n";
@@ -231,8 +231,8 @@ else{
 					}
 
 					$affiche[1]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[1]))));
-					//if((strlen(ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
-					if((strlen(ereg_replace("[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]","",strtr($affiche[1],"-","_")))!=0)&&($affiche[1]!="")){
+					//if((strlen(my_ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
+					if((strlen(my_ereg_replace("[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]","",strtr($affiche[1],"-","_")))!=0)&&($affiche[1]!="")){
 						$temoin_erreur="oui";
 						//echo "<!--  -->\n";
 						$msg.="Le nom <font color='red'>$affiche[1]</font> ne convient pas.<br />\n";

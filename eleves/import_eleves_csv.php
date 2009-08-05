@@ -78,7 +78,7 @@ header('Expires: ' . $now);
 
 // lem9 & loic1: IE need specific headers
 
-if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 
     header('Content-Disposition: inline; filename="' . $nom_fic . '"');
 

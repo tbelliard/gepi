@@ -8,7 +8,7 @@
 function corriger_caracteres($texte) {
     // 145,146,180 = simple quote ; 147,148 = double quote ; 150,151 = tiret long
     $texte = strtr($texte, chr(145).chr(146).chr(180).chr(147).chr(148).chr(150).chr(151), "'''".'""--');
-    return ereg_replace( chr(133), "...", $texte );
+    return my_ereg_replace( chr(133), "...", $texte );
 }
 
 function traitement_magic_quotes($_value) {

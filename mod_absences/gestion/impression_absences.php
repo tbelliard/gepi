@@ -263,7 +263,7 @@ if($type_impr === 'eti') {
 	$uid = md5(uniqid(microtime(), 1));
 	$valide_form='';
 	   // on remplace les %20 par des espaces
-	    $uid_post = eregi_replace('%20',' ',$uid_post);
+	    $uid_post = my_eregi_replace('%20',' ',$uid_post);
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'yes'; } else { $valide_form = 'no'; }
 	$_SESSION['uid_prime'] = $uid;
 // fin de la fonction de sécuritée
@@ -363,8 +363,8 @@ if($action_cadre === 'modifier_cadre' and $valide_form === 'yes')
  {
 	if(!empty($id))
 	{
-		$texte_lettre_cadre = ereg_replace('\[','<',$texte_lettre_cadre);
-		$texte_lettre_cadre = ereg_replace('\]','>',$texte_lettre_cadre);
+		$texte_lettre_cadre = my_ereg_replace('\[','<',$texte_lettre_cadre);
+		$texte_lettre_cadre = my_ereg_replace('\]','>',$texte_lettre_cadre);
 		$couleurdefond_lettre_cadre = $r_couleurdefond_lettre_cadre.'|'.$v_couleurdefond_lettre_cadre.'|'.$b_couleurdefond_lettre_cadre;
 		$requete="UPDATE ".$prefix_base."lettres_cadres SET nom_lettre_cadre = '".$nom_lettre_cadre."', x_lettre_cadre = '".$x_lettre_cadre."', y_lettre_cadre = '".$y_lettre_cadre."', l_lettre_cadre = '".$l_lettre_cadre."', h_lettre_cadre = '".$h_lettre_cadre."', texte_lettre_cadre = '".$texte_lettre_cadre."', encadre_lettre_cadre = '".$encadre_lettre_cadre."', couleurdefond_lettre_cadre = '".$couleurdefond_lettre_cadre."' WHERE  id_lettre_cadre = '".$id."'";
 	        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
@@ -732,9 +732,9 @@ affichercacher('div_1');
 	      	<td align="center" nowrap="nowrap" valign="middle" style="text-align: left;"><label for="sel<?php echo $i; ?>"><?php echo '<strong>'.$donner_liste_courrier['nom'].' '.$donner_liste_courrier['prenom'].'</strong> ('.classe_de($donner_liste_courrier['login']).')'; ?></label></td>
 	      	<td align="center" nowrap="nowrap" valign="middle"><small><?php echo lettre_type($donner_liste_courrier['type_lettre_suivi']); ?></small></td>
 	      	<td align="center" nowrap="nowrap" valign="middle"><?php $datation = date_frl($donner_liste_courrier['emis_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['emis_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quiemet_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['emis_date_lettre_suivi']).'</span>'; ?></td>
-	      	<td align="center" nowrap="nowrap" valign="middle"><?php if($donner_liste_courrier['envoye_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['envoye_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['envoye_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quienvoi_lettre_suivi']); ?><span title="<?php echo $datation; ?>"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'recus' ) { echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); } else { ?><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=reinit_envoi&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>" onClick="return confirm('Etes-vous sur de vouloire réinitialiser la date d\'envoi ?')"><?php echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); ?></a><?php } ?></span><?php } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
+	      	<td align="center" nowrap="nowrap" valign="middle"><?php if($donner_liste_courrier['envoye_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['envoye_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['envoye_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quienvoi_lettre_suivi']); ?><span title="<?php echo $datation; ?>"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'recus' ) { echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); } else { ?><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=reinit_envoi&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>" onClick="return confirm('Etes-vous sur de vouloire réinitialiser la date d\'envoi ?')"><?php echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); ?></a><?php } ?></span><?php } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
 	      	<td align="center" nowrap="nowrap" valign="middle"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'envoyer' ) { ?><?php } elseif($donner_liste_courrier['reponse_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['reponse_date_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['reponse_date_lettre_suivi']).'</span>';  } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
-	      	<td align="center" nowrap="nowrap" valign="middle"><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=aff_status&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>#n<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>" title="modifier l'état de réception"><?php echo $donner_liste_courrier['statu_lettre_suivi']; ?></a></td>
+	      	<td align="center" nowrap="nowrap" valign="middle"><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=aff_status&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>#n<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>" title="modifier l'état de réception"><?php echo $donner_liste_courrier['statu_lettre_suivi']; ?></a></td>
 	    </tr>
 			<?php
 			if( $action_laf === 'aff_status' and $id === $donner_liste_courrier['id_lettre_suivi'])
@@ -777,7 +777,7 @@ affichercacher('div_1');
 				<input type="hidden" name="choix" value="<?php echo $choix; ?>" />
 				<input type="hidden" name="action_lettre" value="<?php echo $action_lettre; ?>" />
 				<input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
-				<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+				<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 
                 <input type="submit" name="Submit3" value="Sélectionner" />
             </td>
@@ -1085,7 +1085,7 @@ if ( $type_impr == "bj" ) { ?>
             <tr class="fond_vert">
 	      <td style="width: 17px;"></td>
 	      <td style="width: 17px;"></td>
-              <td class="norme_absence_blanc"><strong>Etiquettes</strong> - Nouveau <input name="nom_etiquette_format" value="" style="border: 1px solid #B3BFB8;" /><input type="hidden" name="type_impr" value="<?php echo $type_impr; ?>" /><input type="hidden" name="etiquette_aff" value="<?php echo $etiquette_aff; ?>" /><input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /><input type="submit" name="Submit10" value="Créer" /></td>
+              <td class="norme_absence_blanc"><strong>Etiquettes</strong> - Nouveau <input name="nom_etiquette_format" value="" style="border: 1px solid #B3BFB8;" /><input type="hidden" name="type_impr" value="<?php echo $type_impr; ?>" /><input type="hidden" name="etiquette_aff" value="<?php echo $etiquette_aff; ?>" /><input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /><input type="submit" name="Submit10" value="Créer" /></td>
             </tr>
 	  <?php
            $ic = '1';  $i = '0';
@@ -1095,8 +1095,8 @@ if ( $type_impr == "bj" ) { ?>
                { if ($ic === '1') { $ic = '2'; $couleur_cellule = 'td_tableau_absence_1'; } else { $couleur_cellule = 'td_tableau_absence_2'; $ic = '1'; }
                 ?>
                   <tr class="<?php echo $couleur_cellule; ?>">
-	            <td style="text-align: center;"><a name="crea_etiquette<?php echo $data_1['id_etiquette_format']; ?>"></a><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;etiquette_aff=bibliotheque&amp;id=<?php echo $data_1['id_etiquette_format']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>&amp;action_etiquette=aff_modifier_etiquette_format&amp;sous_rubrique=gb#crea_etiquette<?php echo $data_1['id_etiquette_format']; ?>"><img src="../../images/edit16.png" title="modifier le format d'étiquette" border="0" alt="" /></a></td>
-	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;etiquette_aff=<?php echo $etiquette_aff; ?>&amp;id=<?php echo $data_1['id_etiquette_format']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>&amp;action_etiquette=supprimer_etiquette_format&amp;sous_rubrique=gb#crea_etiquette" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../../images/delete16.png" title="supprimer le format d'étiquette" border="0" alt="" /></a></td>
+	            <td style="text-align: center;"><a name="crea_etiquette<?php echo $data_1['id_etiquette_format']; ?>"></a><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;etiquette_aff=bibliotheque&amp;id=<?php echo $data_1['id_etiquette_format']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_etiquette=aff_modifier_etiquette_format&amp;sous_rubrique=gb#crea_etiquette<?php echo $data_1['id_etiquette_format']; ?>"><img src="../../images/edit16.png" title="modifier le format d'étiquette" border="0" alt="" /></a></td>
+	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;etiquette_aff=<?php echo $etiquette_aff; ?>&amp;id=<?php echo $data_1['id_etiquette_format']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_etiquette=supprimer_etiquette_format&amp;sous_rubrique=gb#crea_etiquette" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../../images/delete16.png" title="supprimer le format d'étiquette" border="0" alt="" /></a></td>
                     <td class="norme_absence"><?php echo $data_1['nom_etiquette_format']; if($action_etiquette === 'aff_modifier_etiquette_format' and $id === $data_1['id_etiquette_format']) { ?>
 
 			<input name="nom_etiquette_format" value="<?php echo $data_1['nom_etiquette_format']; ?>" style="border: 1px solid #B3BFB8;" /><br />
@@ -1111,7 +1111,7 @@ if ( $type_impr == "bj" ) { ?>
 			<input type="hidden" name="type_impr" value="<?php echo $type_impr; ?>" />
 			<input type="hidden" name="etiquette_aff" value="<?php echo $action_etiquette; ?>" />
 			<input type="hidden" name="id" value="<?php echo $data_1['id_etiquette_format']; ?>" />
-			<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+			<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 			<input type="hidden" name="action_etiquette" value="modifier_etiquette_format" />
 			<input type="submit" value="valider" title="Valider les informations" alt="Valider les informations" />
 		    <?php } ?></td>
@@ -1157,10 +1157,10 @@ if ( $type_impr == "bj" ) { ?>
 		  </select><br />
 		  Si vous désirez en créer, saisissez le titre ici: <input name="lettre_type_nouv" style="width: 150px; border: 1px solid #000000;" value="<?php if ($action_choix_lettre === 'renommer') { $titre = titre_lettre_type($lettre_type); echo $titre[0]; } ?>" /><input name="reponse_lettre_type" value="oui" type="checkbox" title="désirez-vous une réponse à ce type de lettre" <?php if( ($action_choix_lettre === 'renommer' and $titre[1] === 'oui') or $action_choix_lettre != 'renommer' ) { ?>checked="checked"<?php } ?> />
 
-  		  <input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+  		  <input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 		  <?php if (!empty($erreur)) { ?><span class="erreur_rouge_jaune"><?php echo $erreur.' (<strong>'.$lettre_type_nouv.'</strong>)'; ?></span><?php } ?>
 		  <br /><input name="action_choix_lettre" id="acl1" value="editer" type="radio" <?php if(empty($action_choix_lettre) or $action_choix_lettre != 'renommer') { ?>checked="checked"<?php } ?> /><label for="acl1" style="cursor: pointer;">Editer</label> <input name="action_choix_lettre" id="acl2" value="renommer" type="radio" <?php if(!empty($action_choix_lettre) and $action_choix_lettre === 'renommer') { ?>checked="checked"<?php } ?> /><label for="acl2" style="cursor: pointer;">Renommer</label> <input name="action_choix_lettre" id="acl3" value="supprimer" type="radio" /><label for="acl3" style="cursor: pointer;">Supprimer</label>
-		  <?php if ($action_choix_lettre === 'modifier') { ?><input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /><?php } ?>
+		  <?php if ($action_choix_lettre === 'modifier') { ?><input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /><?php } ?>
 		  &nbsp;<input type="submit" name="Submit6" value="Valider" />
 		</div>
       </fieldset>
@@ -1189,7 +1189,7 @@ if ( $type_impr == "bj" ) { ?>
 		  </select><br />
 		  <input type="hidden" name="action_lettre" value="ajout_cadre" />
 		  <input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
-		  <input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+		  <input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 		  <input type="submit" name="Submit6" value="<< Ajouter la sélection" />
 	</form>
 </div>
@@ -1219,8 +1219,8 @@ if ( $type_impr == "bj" ) { ?>
                { if ($ic === '1') { $ic = '2'; $couleur_cellule = 'td_tableau_absence_1'; } else { $couleur_cellule = 'td_tableau_absence_2'; $ic = '1'; }
                 ?>
                   <tr class="<?php echo $couleur_cellule; ?>">
-	            <td style="text-align: center;"><a name="crea_lettre<?php echo $data_1['cadre_lettre_tc']; ?>"></a><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_tc']; ?>&amp;cadre_selection=<?php echo $data_1['cadre_lettre_tc']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>&amp;action_lettre=aff_modifier_cadre#crea_lettre<?php echo $data_1['cadre_lettre_tc']; ?>"><img src="../../images/edit16.png" title="modifier le cadre" border="0" alt="" /></a></td>
-	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_tc']; ?>&amp;cadre_selection=<?php echo $data_1['cadre_lettre_tc']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>&amp;action_lettre=supprimer_cadre#crea_lettre" onClick="return confirm('Etes-vous sûr de vouloir le supprimer...')"><img src="../../images/delete16.png" title="supprimer le cadre" border="0" alt="" /></a></td>
+	            <td style="text-align: center;"><a name="crea_lettre<?php echo $data_1['cadre_lettre_tc']; ?>"></a><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_tc']; ?>&amp;cadre_selection=<?php echo $data_1['cadre_lettre_tc']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_lettre=aff_modifier_cadre#crea_lettre<?php echo $data_1['cadre_lettre_tc']; ?>"><img src="../../images/edit16.png" title="modifier le cadre" border="0" alt="" /></a></td>
+	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_tc']; ?>&amp;cadre_selection=<?php echo $data_1['cadre_lettre_tc']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_lettre=supprimer_cadre#crea_lettre" onClick="return confirm('Etes-vous sûr de vouloir le supprimer...')"><img src="../../images/delete16.png" title="supprimer le cadre" border="0" alt="" /></a></td>
                     <td class="norme_absence"><?php echo $data_1['nom_lettre_cadre']; ?></td>
                     <td class="norme_absence" style="text-align: center;"><?php if($action_lettre === 'aff_modifier_cadre' and $cadre_selection === $data_1['cadre_lettre_tc']) { ?><input maxlength="6" size="4" name="x_lettre_tc" value="<?php echo $data_1['x_lettre_tc']; ?>" style="border: 1px solid #B3BFB8;" /><?php } else { echo $data_1['x_lettre_tc']; } ?></td>
                     <td class="norme_absence" style="text-align: center;"><?php if($action_lettre === 'aff_modifier_cadre' and $cadre_selection === $data_1['cadre_lettre_tc']) { ?><input maxlength="6" size="4" name="y_lettre_tc" value="<?php echo $data_1['y_lettre_tc']; ?>" style="border: 1px solid #B3BFB8;" /><?php } else { echo $data_1['y_lettre_tc']; } ?></td>
@@ -1231,7 +1231,7 @@ if ( $type_impr == "bj" ) { ?>
 			<input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
 			<input type="hidden" name="id" value="<?php echo $data_1['id_lettre_tc']; ?>" />
 			<input type="hidden" name="cadre_selection" value="<?php echo $data_1['cadre_lettre_tc']; ?>" />
-			<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+			<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 			<input type="hidden" name="action_lettre" value="modifier_cadre" />
 			<input type="image" src="../../images/enabled.png" style="border: 0px; width: 15px; height: 15px;" title="Valider les informations" alt="Valider les informations" /><?php } else { if($data_1['encadre_lettre_tc'] === '1') { ?>oui<?php } else { ?>non<?php }; } ?></td>
                   </tr>
@@ -1252,7 +1252,7 @@ if($sous_rubrique === 'gb') { ?>
           <tr class="fond_vert">
 	    <td style="width: 17px;"></td>
 	    <td style="width: 17px;"></td>
-            <td class="norme_absence_blanc"><strong>Nom du cadre</strong> - Nouveau <input name="nom_lettre_cadre" value="" style="border: 1px solid #B3BFB8;" /><input type="hidden" name="type_impr" value="crea_lettre" /><input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" /><input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /><input type="submit" name="Submit6" value="Créer" /></td>
+            <td class="norme_absence_blanc"><strong>Nom du cadre</strong> - Nouveau <input name="nom_lettre_cadre" value="" style="border: 1px solid #B3BFB8;" /><input type="hidden" name="type_impr" value="crea_lettre" /><input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" /><input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /><input type="submit" name="Submit6" value="Créer" /></td>
           </tr>
 	  <?php
            $ic = '1';  $i = '0';
@@ -1262,8 +1262,8 @@ if($sous_rubrique === 'gb') { ?>
                { if ($ic === '1') { $ic = '2'; $couleur_cellule = 'td_tableau_absence_1'; } else { $couleur_cellule = 'td_tableau_absence_2'; $ic = '1'; }
                 ?>
                   <tr class="<?php echo $couleur_cellule; ?>">
-	            <td style="text-align: center;"><a name="crea_lettre<?php echo $data_1['id_lettre_cadre']; ?>"></a><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_cadre']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>&amp;action_cadre=aff_modifier_cadre&amp;sous_rubrique=gb#crea_lettre<?php echo $data_1['id_lettre_cadre']; ?>"><img src="../../images/edit16.png" title="modifier le cadre" border="0" alt="" /></a></td>
-	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_cadre']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>&amp;action_cadre=supprimer_cadre&amp;sous_rubrique=gb#crea_lettre" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../../images/delete16.png" title="supprimer le cadre" border="0" alt="" /></a></td>
+	            <td style="text-align: center;"><a name="crea_lettre<?php echo $data_1['id_lettre_cadre']; ?>"></a><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_cadre']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_cadre=aff_modifier_cadre&amp;sous_rubrique=gb#crea_lettre<?php echo $data_1['id_lettre_cadre']; ?>"><img src="../../images/edit16.png" title="modifier le cadre" border="0" alt="" /></a></td>
+	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_cadre']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_cadre=supprimer_cadre&amp;sous_rubrique=gb#crea_lettre" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../../images/delete16.png" title="supprimer le cadre" border="0" alt="" /></a></td>
                     <td class="norme_absence"><?php echo $data_1['nom_lettre_cadre']; if($action_cadre === 'aff_modifier_cadre' and $id === $data_1['id_lettre_cadre']) { ?>
 
 			<input name="nom_lettre_cadre" value="<?php echo $data_1['nom_lettre_cadre']; ?>" style="border: 1px solid #B3BFB8;" /><br />
@@ -1330,20 +1330,20 @@ if($sous_rubrique === 'gb') { ?>
 		  <input type="hidden" name="sous_rubrique" value="<?php echo $sous_rubrique; ?>" />
 		  <input type="hidden" name="action_lettre" value="ajout_cadre" />
 		  <input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
-		  <input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+		  <input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 		 <?php /* <input type="submit" name="Submit6" value="<< Ajouter la sélection" /> */ ?>
 	</div>
 
 		<textarea name="texte_lettre_cadre" id="texte_lettre_cadre" cols="42" rows="10"><?php
 		// modifie les < en [ et inversement
-		$texte_lettre_cadre = ereg_replace('<','[',$data_1['texte_lettre_cadre']);
-		$texte_lettre_cadre = ereg_replace('>',']',$texte_lettre_cadre);
+		$texte_lettre_cadre = my_ereg_replace('<','[',$data_1['texte_lettre_cadre']);
+		$texte_lettre_cadre = my_ereg_replace('>',']',$texte_lettre_cadre);
 		echo $texte_lettre_cadre; ?></textarea>
 
 			<input type="hidden" name="type_impr" value="crea_lettre" />
 			<input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
 			<input type="hidden" name="id" value="<?php echo $data_1['id_lettre_cadre']; ?>" />
-			<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+			<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 			<input type="hidden" name="action_cadre" value="modifier_cadre" />
 			<input type="submit" value="valider" title="Valider les informations" alt="Valider les informations" />
 		    <?php } ?></td>

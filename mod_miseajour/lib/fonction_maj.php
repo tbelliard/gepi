@@ -34,7 +34,7 @@ function listage_dossier($dossier, $dossier_racine)
 						// si ce n'est pas un dossier alors un met l'emplacement du fichier et le fichier dans le tableau
 						$tab_fichier_select=$dossier.'/'.$nom;
 						//on enlève la partie non utils
-						$GLOBALS['tab_fichier'][$cpt_fichier] = eregi_replace($dossier_racine,'',$tab_fichier_select);
+						$GLOBALS['tab_fichier'][$cpt_fichier] = my_eregi_replace($dossier_racine,'',$tab_fichier_select);
 						$cpt_fichier++;
 						$GLOBALS['cpt_fichier']=$cpt_fichier;
 					  }
@@ -94,7 +94,7 @@ function envoi_ftp($tableau, $source, $destination)
 	     //nom du fichier
 	     $nom_du_fichier     = basename($tableau[$i_tab_ftp]);
 	     //emplacement complet du fichier - on enléve le nom du fichier au chemin complet
-	     $dossier_du_fichier = eregi_replace($nom_du_fichier,'',$tableau[$i_tab_ftp]);
+	     $dossier_du_fichier = my_eregi_replace($nom_du_fichier,'',$tableau[$i_tab_ftp]);
 	     //on donne met dans une variable le chemin sans le nom du fichier pour une comparaisont par la suite
 	     $dossier_du_fichier_verif = $dossier_du_fichier;
 	     //on explose le chemin pour le mettre dans un tableau chaque nom de dossier

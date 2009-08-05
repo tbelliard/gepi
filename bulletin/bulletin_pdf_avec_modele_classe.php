@@ -757,10 +757,10 @@ if(!empty($model_bulletin)) {
 		$o=0;
 		while(!empty($periode[$o]))
 		{
-			$periode[$o] = eregi_replace("[ .'_-]{1}",'',$periode[$o]); //supprime les espace les . les ' les _ et -
+			$periode[$o] = my_eregi_replace("[ .'_-]{1}",'',$periode[$o]); //supprime les espace les . les ' les _ et -
 			$periode[$o] = strtolower($periode[$o]); // mets en minuscule
 			$periode[$o] = html_entity_decode($periode[$o]);
-			$periode[$o] = eregi_replace("[éèëê]{1}","e",$periode[$o]); // supprime les accents
+			$periode[$o] = my_eregi_replace("[éèëê]{1}","e",$periode[$o]); // supprime les accents
 			// A VOIR: Il pourrait bien y avoir d'autres caractères accentués.
 			$o = $o + 1;
 		}
@@ -787,10 +787,10 @@ if(!empty($model_bulletin)) {
 		$periode_verouillez_classe = $donnee_periode_select['verouiller'];
 
 		// on transforme le nom de la période sans accent, sans espace...
-		$nom_periode_select = eregi_replace("[ .'_-]{1}",'',$nom_periode_select); //supprime les espace les . les ' les _ et -
+		$nom_periode_select = my_eregi_replace("[ .'_-]{1}",'',$nom_periode_select); //supprime les espace les . les ' les _ et -
 		$nom_periode_select = strtolower($nom_periode_select); // mais en minuscule
 		$nom_periode_select = html_entity_decode($nom_periode_select);
-		$nom_periode_select = eregi_replace("[éèëê]{1}",'e',$nom_periode_select); // supprime les accents
+		$nom_periode_select = my_eregi_replace("[éèëê]{1}",'e',$nom_periode_select); // supprime les accents
 		// A VOIR: Il pourrait bien y avoir d'autres caractères accentués.
 
 		// si la classe et la période correspondent, alors on initialise
@@ -4057,7 +4057,7 @@ $cpt_ordre = $cpt_ordre + 1;
 					$val_tmp="-";
 				}
 				else {
-					$val_tmp=present_nombre(ereg_replace(',','.',$info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve']), $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+					$val_tmp=present_nombre(my_ereg_replace(',','.',$info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve']), $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 				}
 
 				//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $val_tmp,1,0,'C',$utilise_couleur);
@@ -4096,7 +4096,7 @@ $cpt_ordre = $cpt_ordre + 1;
 					$moyenne_classe=nf($tab_moy_gen_classe[$classe_id][$id_periode]);
 					/*
 					if(($moyenne_classe!="")&&($moyenne_classe!="-")) {
-						$moyenne_classe=present_nombre(ereg_replace(',','.',$moyenne_classe), $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+						$moyenne_classe=present_nombre(my_ereg_replace(',','.',$moyenne_classe), $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
 					}
 					*/
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_classe, $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general[$classe_id]);

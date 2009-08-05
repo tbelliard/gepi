@@ -502,7 +502,7 @@ $now = gmdate('d_M_Y_H:i:s');
 $nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
 $nom_fic = $nom_fichier_modele[0]."_généré_le_".$now.".".$nom_fichier_modele[1];
 header('Expires: ' . $now);
-if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
     header('Content-Disposition: inline; filename="' . $nom_fic . '"');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: public');

@@ -47,7 +47,7 @@ $ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele
 
 function extr_valeur($lig){
 	unset($tabtmp);
-	//$tabtmp=explode(">",ereg_replace("<",">",$lig));
+	//$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
 	$tabtmp=explode(">",strtr($lig,"<",">"));
 	return trim($tabtmp[2]);
 }
@@ -763,7 +763,7 @@ else{
 
 												//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
 												// Suppression des guillemets éventuels
-												//$eleves[$i]["structures"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+												//$eleves[$i]["structures"][$j]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 												$eleves[$i]["structures"][$j]["$tmpmin"]=preg_replace('/"/','',extr_valeur($ligne));
 
 												//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
@@ -1046,7 +1046,7 @@ else{
 
 										// Suppression des guillemets éventuels
 										//$eleves[$i]["$tmpmin"]=extr_valeur($ligne);
-										//$eleves[$i]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+										//$eleves[$i]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 										$eleves[$i]["$tmpmin"]=preg_replace('/"/','',extr_valeur($ligne));
 
 										affiche_debug("\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n");
@@ -1095,7 +1095,7 @@ else{
 										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 										// Suppression des guillemets éventuels
 										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
-										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 										$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=preg_replace('/"/','',extr_valeur($ligne));
 										affiche_debug( "\$eleves[$i][\"scolarite_an_dernier\"][\"$tmpmin\"]=".$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]."<br />\n");
 										break;
@@ -1409,8 +1409,8 @@ else{
 
 										// Suppression des guillemets éventuels
 										//$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne);
-										//$eleves[$i]["options"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
-										$eleves[$i]["options"][$j]["$tmpmin"]=ereg_replace('/"/','',extr_valeur($ligne));
+										//$eleves[$i]["options"][$j]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
+										$eleves[$i]["options"][$j]["$tmpmin"]=my_ereg_replace('/"/','',extr_valeur($ligne));
 
 										//echo "\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n";
 										break;
@@ -4482,7 +4482,7 @@ else{
 
 											// Suppression des guillemets éventuels
 											//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
-											//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+											//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(my_ereg_replace('"','',extr_valeur($ligne))));
 											$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',extr_valeur($ligne))));
 
 											affiche_debug("\$personnes[$i][\"$tmpmin\"]=".$personnes[$i]["$tmpmin"]."<br />\n");
@@ -4700,8 +4700,8 @@ else{
 
 									// Suppression des guillemets éventuels (il ne devrait pas y en avoir là)
 									//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
-									//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
-									$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('/"/','',extr_valeur($ligne))));
+									//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(my_ereg_replace('"','',extr_valeur($ligne))));
+									$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(my_ereg_replace('/"/','',extr_valeur($ligne))));
 
 									affiche_debug("\$responsables[$i][\"$tmpmin\"]=".$responsables[$i]["$tmpmin"]."<br />\n");
 									break;
@@ -4907,7 +4907,7 @@ else{
 
 									// Suppression des guillemets éventuels
 									//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
-									//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+									//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(my_ereg_replace('"','',extr_valeur($ligne))));
 									$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',extr_valeur($ligne))));
 
 									//echo "\$adresses[$i][\"$tmpmin\"]=".$adresses[$i]["$tmpmin"]."<br />\n";

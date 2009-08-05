@@ -105,7 +105,7 @@ if (isset($_POST['ok'])) {
         $new='yes';
     }
 
-    if (isset($_POST['mode']) and ($_POST['mode']) and ereg("^[12]{1}$", $_POST['mode'])) {
+    if (isset($_POST['mode']) and ($_POST['mode']) and my_ereg("^[12]{1}$", $_POST['mode'])) {
         if ($_POST['mode'] == 1) $_SESSION['affiche_tous'] = 'yes';
         $reg = mysql_query("UPDATE cn_conteneurs SET mode = '".$_POST['mode']."' WHERE id = '$id_conteneur'");
         if (!$reg)  $reg_ok = "no";
@@ -159,7 +159,7 @@ if (isset($_POST['ok'])) {
         if (!$reg)  $reg_ok = "no";
     }
 
-    if (($_POST['precision']) and ereg("^(s1|s5|se|p1|p5|pe)$", $_POST['precision'])) {
+    if (($_POST['precision']) and my_ereg("^(s1|s5|se|p1|p5|pe)$", $_POST['precision'])) {
         $reg = mysql_query("UPDATE cn_conteneurs SET arrondir = '". $_POST['precision']."' WHERE id = '$id_conteneur'");
         if (!$reg)  $reg_ok = "no";
     }

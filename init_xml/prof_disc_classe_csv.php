@@ -324,7 +324,7 @@ if (!isset($is_posted)) {
 					//=========================
 					// MODIF: boireaus 20071024
 					//$ligne = fgets($fp, 4096);
-					$ligne = ereg_replace('"','',fgets($fp, 4096));
+					$ligne = my_ereg_replace('"','',fgets($fp, 4096));
 					//=========================
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);

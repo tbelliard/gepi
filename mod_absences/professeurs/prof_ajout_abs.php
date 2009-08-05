@@ -61,7 +61,7 @@ $uid_post = isset($_GET["uid_post"]) ? $_GET["uid_post"] : (isset($_POST["uid_po
 
 $uid = md5(uniqid(microtime(), 1));
 // on remplace les %20 par des espaces
-$uid_post = eregi_replace('%20',' ',$uid_post);
+$uid_post = my_eregi_replace('%20',' ',$uid_post);
 if($uid_post===$_SESSION['uid_prime']) {
 	$valide_form = 'yes';
 } else {
@@ -768,7 +768,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 		<input value="2" name="etape" type="hidden" />
 		<input type="hidden" name="premier_passage" value="ok" />
 		<input value="<?php echo $passage_form; ?>" name="passage_form" type="hidden" />
-		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+		<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 		<input value="Afficher les élèves" name="Valider" type="submit" onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 	</p>
 	<p>
@@ -1188,7 +1188,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		<input type="hidden" name="d_heure_absence_eleve" value="<?php echo $d_heure_absence_eleve; ?>" />
 		<input type="hidden" name="etape" value="2" />
 		<input type="hidden" name="a_heure_absence_eleve" value="<?php echo $a_heure_absence_eleve; ?>" />
-		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+		<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 	</p>
 		<div style="text-align: center; margin: 20px;">
 			<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />

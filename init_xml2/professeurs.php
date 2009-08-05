@@ -313,70 +313,70 @@ else {
 				//if(strstr($ligne[$cpt],"<SEXE>")){
 				if(strstr($ligne,"<SEXE>")){
 					unset($tabtmp);
-					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 					//$prof[$i]["sexe"]=$tabtmp[2];
-					$prof[$i]["sexe"]=trim(ereg_replace("[^1-2]","",$tabtmp[2]));
+					$prof[$i]["sexe"]=trim(my_ereg_replace("[^1-2]","",$tabtmp[2]));
 				}
 				//if(strstr($ligne[$cpt],"<CIVILITE>")){
 				if(strstr($ligne,"<CIVILITE>")){
 					unset($tabtmp);
-					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 					//$prof[$i]["civilite"]=$tabtmp[2];
-					$prof[$i]["civilite"]=trim(ereg_replace("[^1-3]","",$tabtmp[2]));
+					$prof[$i]["civilite"]=trim(my_ereg_replace("[^1-3]","",$tabtmp[2]));
 				}
 				//if(strstr($ligne[$cpt],"<NOM_USAGE>")){
 				if(strstr($ligne,"<NOM_USAGE>")){
 					unset($tabtmp);
-					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 					//$prof[$i]["nom_usage"]=$tabtmp[2];
-					$prof[$i]["nom_usage"]=trim(ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
+					$prof[$i]["nom_usage"]=trim(my_ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
 				}
 				//if(strstr($ligne[$cpt],"<NOM_PATRONYMIQUE>")){
 				if(strstr($ligne,"<NOM_PATRONYMIQUE>")){
 					unset($tabtmp);
-					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 					//$prof[$i]["nom_patronymique"]=$tabtmp[2];
-					$prof[$i]["nom_patronymique"]=trim(ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
+					$prof[$i]["nom_patronymique"]=trim(my_ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
 				}
 				//if(strstr($ligne[$cpt],"<PRENOM>")){
 				if(strstr($ligne,"<PRENOM>")){
 					unset($tabtmp);
-					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 					//$prof[$i]["prenom"]=$tabtmp[2];
-					$prof[$i]["prenom"]=trim(ereg_replace("[^a-zA-Z0-9¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_. -]","",$tabtmp[2]));
+					$prof[$i]["prenom"]=trim(my_ereg_replace("[^a-zA-Z0-9¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_. -]","",$tabtmp[2]));
 				}
 				//if(strstr($ligne[$cpt],"<DATE_NAISSANCE>")){
 				if(strstr($ligne,"<DATE_NAISSANCE>")){
 					unset($tabtmp);
-					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 					//$prof[$i]["date_naissance"]=$tabtmp[2];
-					$prof[$i]["date_naissance"]=trim(ereg_replace("[^0-9-]","",$tabtmp[2]));
+					$prof[$i]["date_naissance"]=trim(my_ereg_replace("[^0-9-]","",$tabtmp[2]));
 				}
 				//if(strstr($ligne[$cpt],"<GRADE>")){
 				if(strstr($ligne,"<GRADE>")){
 					unset($tabtmp);
-					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 
 					// Suppression des guillemets Èventuels
 					//$prof[$i]["grade"]=trim($tabtmp[2]);
-					$prof[$i]["grade"]=ereg_replace('"','',trim($tabtmp[2]));
+					$prof[$i]["grade"]=my_ereg_replace('"','',trim($tabtmp[2]));
 				}
 				//if(strstr($ligne[$cpt],"<FONCTION>")){
 				if(strstr($ligne,"<FONCTION>")){
 					unset($tabtmp);
-					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 
 					// Suppression des guillemets Èventuels
 					//$prof[$i]["fonction"]=trim($tabtmp[2]);
-					$prof[$i]["fonction"]=ereg_replace('"','',trim($tabtmp[2]));
+					$prof[$i]["fonction"]=my_ereg_replace('"','',trim($tabtmp[2]));
 				}
 
 
@@ -409,12 +409,12 @@ else {
 						//if(strstr($ligne[$cpt],"<CODE_STRUCTURE>")){
 						if(strstr($ligne,"<CODE_STRUCTURE>")){
 							unset($tabtmp);
-							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+							//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+							$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 
 							// Suppression des guillemets Èventuels
 							//$prof[$i]["prof_princ"][$j]["code_structure"]=trim($tabtmp[2]);
-							$prof[$i]["prof_princ"][$j]["code_structure"]=ereg_replace('"','',trim($tabtmp[2]));
+							$prof[$i]["prof_princ"][$j]["code_structure"]=my_ereg_replace('"','',trim($tabtmp[2]));
 
 							$temoin_au_moins_un_prof_princ="oui";
 						}
@@ -422,15 +422,15 @@ else {
 						//if(strstr($ligne[$cpt],"<DATE_DEBUT>")){
 						if(strstr($ligne,"<DATE_DEBUT>")){
 							unset($tabtmp);
-							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+							//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+							$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 							$prof[$i]["prof_princ"][$j]["date_debut"]=trim($tabtmp[2]);
 						}
 						//if(strstr($ligne[$cpt],"<DATE_FIN>")){
 						if(strstr($ligne,"<DATE_FIN>")){
 							unset($tabtmp);
-							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+							//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+							$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 							$prof[$i]["prof_princ"][$j]["date_fin"]=trim($tabtmp[2]);
 						}
 					}
@@ -462,7 +462,7 @@ else {
 
 						// Suppression des guillemets Èventuels
 						//$prof[$i]["disciplines"][$j]["code"]=trim($tabtmp[1]);
-						$prof[$i]["disciplines"][$j]["code"]=ereg_replace('"','',trim($tabtmp[1]));
+						$prof[$i]["disciplines"][$j]["code"]=my_ereg_replace('"','',trim($tabtmp[1]));
 					}
 					//if(strstr($ligne[$cpt],"</DISCIPLINE>")){
 					if(strstr($ligne,"</DISCIPLINE>")){
@@ -474,22 +474,22 @@ else {
 						//if(strstr($ligne[$cpt],"<LIBELLE_COURT>")){
 						if(strstr($ligne,"<LIBELLE_COURT>")){
 							unset($tabtmp);
-							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+							//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+							$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 
 							// Suppression des guillemets Èventuels
 							//$prof[$i]["disciplines"][$j]["libelle_court"]=trim($tabtmp[2]);
-							$prof[$i]["disciplines"][$j]["libelle_court"]=ereg_replace('"','',trim($tabtmp[2]));
+							$prof[$i]["disciplines"][$j]["libelle_court"]=my_ereg_replace('"','',trim($tabtmp[2]));
 						}
 						//if(strstr($ligne[$cpt],"<NB_HEURES>")){
 						if(strstr($ligne,"<NB_HEURES>")){
 							unset($tabtmp);
-							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+							//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+							$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 
 							// Suppression des guillemets Èventuels
 							//$prof[$i]["disciplines"][$j]["nb_heures"]=trim($tabtmp[2]);
-							$prof[$i]["disciplines"][$j]["nb_heures"]=ereg_replace('"','',trim($tabtmp[2]));
+							$prof[$i]["disciplines"][$j]["nb_heures"]=my_ereg_replace('"','',trim($tabtmp[2]));
 						}
 					}
 				}
@@ -635,34 +635,34 @@ else {
 					if ($_POST['login_gen_type'] == "name") {
 						$temp1 = $prof[$k]["nom_usage"];
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,8);
 
 					} elseif ($_POST['login_gen_type'] == "name8") {
 						$temp1 = $prof[$k]["nom_usage"];
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,8);
 					} elseif ($_POST['login_gen_type'] == "fname8") {
 						$temp1 = $prof[$k]["prenom"]{0} . $prof[$k]["nom_usage"];
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,8);
 					} elseif ($_POST['login_gen_type'] == "fname19") {
 						$temp1 = $prof[$k]["prenom"]{0} . $prof[$k]["nom_usage"];
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,19);
 					} elseif ($_POST['login_gen_type'] == "firstdotname") {
@@ -675,9 +675,9 @@ else {
 						$temp1 = $firstname . "." . $prof[$k]["nom_usage"];
 						$temp1 = strtoupper($temp1);
 
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,19);
 					} elseif ($_POST['login_gen_type'] == "firstdotname19") {
@@ -689,17 +689,17 @@ else {
 
 						$temp1 = $firstname . "." . $prof[$k]["nom_usage"];
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						$temp1 = substr($temp1,0,19);
 					} elseif ($_POST['login_gen_type'] == "namef8") {
 						$temp1 =  substr($prof[$k]["nom_usage"],0,7) . $prof[$k]["prenom"]{0};
 						$temp1 = strtoupper($temp1);
-						$temp1 = ereg_replace(" ","", $temp1);
-						$temp1 = ereg_replace("-","_", $temp1);
-						$temp1 = ereg_replace("'","", $temp1);
+						$temp1 = my_ereg_replace(" ","", $temp1);
+						$temp1 = my_ereg_replace("-","_", $temp1);
+						$temp1 = my_ereg_replace("'","", $temp1);
 						$temp1 = strtoupper(remplace_accents($temp1,"all"));
 						//$temp1 = substr($temp1,0,8);
 					} elseif ($_POST['login_gen_type'] == "lcs") {

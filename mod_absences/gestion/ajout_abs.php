@@ -797,7 +797,7 @@ if ($action === 'supprimer')
 				$requete = mysql_query("SELECT * FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'");
 				$donnee = mysql_fetch_array($requete);
 				$remplace_sa = ','.$id_absence_eleve.',';
-				$modifier_par = ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
+				$modifier_par = my_ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
 				$requete = "UPDATE ".$prefix_base."lettres_suivis
 									SET partdenum_lettre_suivi = '".$modifier_par."'
 									WHERE partde_lettre_suivi = 'absences_eleves'

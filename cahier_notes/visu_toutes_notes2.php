@@ -1035,7 +1035,7 @@ if ($ligne_supl == 1) {
 	//$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
 
 	$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
-	if(eregi("^Rang",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
+	if(my_eregi("^Rang",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
 	$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
     $ligne1[$nb_col].="<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
 	$ligne1[$nb_col].="</a>";
@@ -1102,7 +1102,7 @@ if ($ligne_supl == 1) {
 			$rg[$k]=$k;
 
 			if ($total_coef_eleve[$k+$ligne_supl] > 0) {
-				$tmp_tab[$k]=ereg_replace(",",".",$col[$nb_col][$k+1]);
+				$tmp_tab[$k]=my_ereg_replace(",",".",$col[$nb_col][$k+1]);
 				my_echo("<tr>");
 				my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k]</td>");
 				my_echo("</tr>");
@@ -1203,17 +1203,17 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 	}
 
 	// Vérifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
-	if((strlen(ereg_replace("[0-9]","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
+	if((strlen(my_ereg_replace("[0-9]","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
 		my_echo("<table>");
 		my_echo("<tr><td valign='top'>");
 		unset($tmp_tab);
 		for($loop=0;$loop<$nb_lignes_tableau;$loop++) {
 		//for($loop=$b_inf;$loop<$b_sup;$loop++) {
 			// Il faut le POINT au lieu de la VIRGULE pour obtenir un tri correct sur les notes
-			//$tmp_tab[$loop]=ereg_replace(",",".",$col_csv[$col_tri][$loop]);
-			//$tmp_tab[$loop]=ereg_replace(",",".",$col[$col_tri][$loop]);
-			$tmp_tab[$loop]=ereg_replace(",",".",$col[$col_tri][$loop+$corr]);
-			//$tmp_tab[$loop]=ereg_replace(",",".",$col[$col_tri][$loop]);
+			//$tmp_tab[$loop]=my_ereg_replace(",",".",$col_csv[$col_tri][$loop]);
+			//$tmp_tab[$loop]=my_ereg_replace(",",".",$col[$col_tri][$loop]);
+			$tmp_tab[$loop]=my_ereg_replace(",",".",$col[$col_tri][$loop+$corr]);
+			//$tmp_tab[$loop]=my_ereg_replace(",",".",$col[$col_tri][$loop]);
 			my_echo("\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />");
 		}
 

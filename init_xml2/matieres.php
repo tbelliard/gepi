@@ -28,7 +28,7 @@
 
 	function extr_valeur($lig){
 		unset($tabtmp);
-		$tabtmp=explode(">",ereg_replace("<",">",$lig));
+		$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
 		return trim($tabtmp[2]);
 	}
 
@@ -352,7 +352,7 @@
 									if(strstr($ligne[$cpt],"<MATIERE CODE=")){
 										$matiere[$i]=array();
 										unset($tabtmp);
-										//$tabtmp=explode("=",ereg_replace(">","",ereg_replace("<","",$ligne[$cpt])));
+										//$tabtmp=explode("=",my_ereg_replace(">","",my_ereg_replace("<","",$ligne[$cpt])));
 										$tabtmp=explode('"',$ligne[$cpt]);
 										$matiere[$i]["code"]=trim($tabtmp[1]);
 										$temoin_mat=1;
@@ -362,7 +362,7 @@
 									if(strstr($ligne,"<MATIERE ")){
 										$matiere[$i]=array();
 										unset($tabtmp);
-										//$tabtmp=explode("=",ereg_replace(">","",ereg_replace("<","",$ligne[$cpt])));
+										//$tabtmp=explode("=",my_ereg_replace(">","",my_ereg_replace("<","",$ligne[$cpt])));
 										//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
 										$tabtmp=explode('"',strstr($ligne," CODE="));
 										$matiere[$i]["code"]=trim($tabtmp[1]);
@@ -377,40 +377,40 @@
 										//if(strstr($ligne[$cpt],"<CODE_GESTION>")){
 										if(strstr($ligne,"<CODE_GESTION>")){
 											unset($tabtmp);
-											//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-											$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+											//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+											$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 											//$matiere[$i]["code_gestion"]=$tabtmp[2];
-											$matiere[$i]["code_gestion"]=trim(ereg_replace("[^a-zA-Z0-9&_. -]","",html_entity_decode_all_version($tabtmp[2])));
+											$matiere[$i]["code_gestion"]=trim(my_ereg_replace("[^a-zA-Z0-9&_. -]","",html_entity_decode_all_version($tabtmp[2])));
 										}
 										//if(strstr($ligne[$cpt],"<LIBELLE_COURT>")){
 										if(strstr($ligne,"<LIBELLE_COURT>")){
 											unset($tabtmp);
-											//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-											$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+											//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+											$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 											//$matiere[$i]["libelle_court"]=$tabtmp[2];
-											$matiere[$i]["libelle_court"]=trim(ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü&_. -]","",html_entity_decode_all_version($tabtmp[2])));
+											$matiere[$i]["libelle_court"]=trim(my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü&_. -]","",html_entity_decode_all_version($tabtmp[2])));
 										}
 										//if(strstr($ligne[$cpt],"<LIBELLE_LONG>")){
 										if(strstr($ligne,"<LIBELLE_LONG>")){
 											unset($tabtmp);
-											//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-											$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+											//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+											$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 											//$matiere[$i]["libelle_long"]=trim($tabtmp[2]);
 
 											// Suppression des guillemets éventuels
 											//$matiere[$i]["libelle_long"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[2])));
-											$matiere[$i]["libelle_long"]=traitement_magic_quotes(corriger_caracteres(trim(ereg_replace('"','',$tabtmp[2]))));
+											$matiere[$i]["libelle_long"]=traitement_magic_quotes(corriger_caracteres(trim(my_ereg_replace('"','',$tabtmp[2]))));
 										}
 										//if(strstr($ligne[$cpt],"<LIBELLE_EDITION>")){
 										if(strstr($ligne,"<LIBELLE_EDITION>")){
 											unset($tabtmp);
-											//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-											$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+											//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+											$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 											//$matiere[$i]["libelle_edition"]=trim($tabtmp[2]);
 
 											// Suppression des guillemets éventuels
 											//$matiere[$i]["libelle_edition"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[2])));
-											$matiere[$i]["libelle_edition"]=traitement_magic_quotes(corriger_caracteres(trim(ereg_replace('"','',$tabtmp[2]))));
+											$matiere[$i]["libelle_edition"]=traitement_magic_quotes(corriger_caracteres(trim(my_ereg_replace('"','',$tabtmp[2]))));
 										}
 									}
 								}

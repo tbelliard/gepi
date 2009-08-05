@@ -48,7 +48,7 @@ if (!checkAccess()) {
 
 $mdp_INE=isset($_POST["mdp_INE"]) ? $_POST["mdp_INE"] : NULL;
 $ine_password=isset($_POST["ine_password"]) ? $_POST["ine_password"] : NULL;
-$ine_password=ereg_replace("[^A-Za-z0-9]","",$ine_password);
+$ine_password=my_ereg_replace("[^A-Za-z0-9]","",$ine_password);
 
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
     $user_statut = sql_query1("SELECT statut FROM utilisateurs WHERE login='".$user_login."'");

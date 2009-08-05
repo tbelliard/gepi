@@ -51,7 +51,7 @@ if (!checkAccess()) {
 
 if (isset($_POST['is_posted'])) {
 	$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
-	//if((strlen(ereg_replace("[0-9a-zA-Z_ ]","",$id_classe))!=0)||($id_classe=="")){$id_classe=NULL;}
+	//if((strlen(my_ereg_replace("[0-9a-zA-Z_ ]","",$id_classe))!=0)||($id_classe=="")){$id_classe=NULL;}
 
 	// Type de brevet:
 	$type_brevet=isset($_POST['type_brevet']) ? $_POST['type_brevet'] : (isset($_GET['type_brevet']) ? $_GET['type_brevet'] : NULL);
@@ -60,7 +60,7 @@ if (isset($_POST['is_posted'])) {
 	$nb_enr=0;
 
 	for($i=0;$i<count($id_classe);$i++) {
-		if((strlen(ereg_replace("[0-9]","",$id_classe[$i]))==0)&&($id_classe[$i]!="")){
+		if((strlen(my_ereg_replace("[0-9]","",$id_classe[$i]))==0)&&($id_classe[$i]!="")){
 			//$sql="SELECT 1=1 FROM classes c, notanet n WHERE c.id='".$id_classe[$i]."' AND n.id_classe=c.id;";
 			$sql="SELECT 1=1 FROM classes c WHERE c.id='".$id_classe[$i]."';";
 			$res_test=mysql_query($sql);

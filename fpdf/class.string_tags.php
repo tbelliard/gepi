@@ -52,7 +52,7 @@ var $iTagMaxElem;
         if (isset($reg[2])) {
             preg_match_all("|([^ ]*)=[\"'](.*)[\"']|U", $reg[2], $out, PREG_PATTERN_ORDER);
             for ($i=0; $i<count($out[0]); $i++){
-                $out[2][$i] = eregi_replace("(\"|')", "", $out[2][$i]);
+                $out[2][$i] = my_eregi_replace("(\"|')", "", $out[2][$i]);
                 array_push($sHREF, array($out[1][$i], $out[2][$i]));
             }           
         }

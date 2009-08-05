@@ -572,7 +572,7 @@ function reactiver(mavar) {
 					echo " selected='selected'";
 				}
 				echo " onclick=\"desactiver('classe,groupe,equipepeda,discipline,affdiscipline');\">";
-				echo ereg_replace("Scolarite","Scolarité",ucwords($donnee_statusgepi['statut']));
+				echo my_ereg_replace("Scolarite","Scolarité",ucwords($donnee_statusgepi['statut']));
 				echo "</option>\n";
 			}
 
@@ -786,7 +786,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	}
 
 	if ( $action_affiche === 'statusgepi' ) {
-		echo "Statut : ".ereg_replace("scolarite","scolarité",$statusgepi);
+		echo "Statut : ".my_ereg_replace("scolarite","scolarité",$statusgepi);
 
 		$repertoire = 'personnels';
 
@@ -887,7 +887,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 
 			$tmp_clas=get_class_from_ele_login($_SESSION['login']);
 			foreach($tmp_clas as $key_tmp => $value_tmp) {
-				if(strlen(ereg_replace("[0-9]","",$key_tmp))==0) {
+				if(strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
 					$tmp_id_classe=$key_tmp;
 					break;
 				}
@@ -904,7 +904,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 					$tmp_clas=get_class_from_ele_login($tmp_tab_enfants[$loop]);
 					foreach($tmp_clas as $key_tmp => $value_tmp) {
 						//echo "\$tmp_clas[$key_tmp]=$value_tmp<br />";
-						if(strlen(ereg_replace("[0-9]","",$key_tmp))==0) {
+						if(strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
 							$tmp_id_classe=$key_tmp;
 							break;
 						}

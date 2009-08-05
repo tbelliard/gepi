@@ -96,7 +96,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
         $msg = "ATTENTION : Le message est vide.<br />L'enregistrement ne peut avoir lieu.";
         $record = 'no';
     }
-    if (ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_debut'])) {
+    if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_debut'])) {
         $anneed = substr($_POST['display_date_debut'],6,4);
         $moisd = substr($_POST['display_date_debut'],3,2);
         $jourd = substr($_POST['display_date_debut'],0,2);
@@ -107,7 +107,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
         $record = 'no';
 
     }
-    if (ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_fin'])) {
+    if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_fin'])) {
         $anneef = substr($_POST['display_date_fin'],6,4);
         $moisf = substr($_POST['display_date_fin'],3,2);
         $jourf = substr($_POST['display_date_fin'],0,2);

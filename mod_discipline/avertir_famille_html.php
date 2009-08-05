@@ -75,7 +75,7 @@ if (!checkAccess()) {
 		$courrier=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["courrier"]));
 
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-		$courrier=ereg_replace('(\\\r\\\n)+',"\r\n",$courrier);
+		$courrier=my_ereg_replace('(\\\r\\\n)+',"\r\n",$courrier);
 	}
 	else {
 		$courrier="";

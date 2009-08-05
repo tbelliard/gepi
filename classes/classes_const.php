@@ -548,7 +548,7 @@ if ($nombreligne == '0') {
 		echo "<input type='hidden' name='log_eleve[$k]' value=\"$login_eleve\" />\n";
 		//=========================
 
-		$ancre_login_eleve=ereg_replace("[^A-Za-z0-9_]","",$login_eleve);
+		$ancre_login_eleve=my_ereg_replace("[^A-Za-z0-9_]","",$login_eleve);
 		echo "<a name='$ancre_login_eleve'></a>\n";
 
 		echo "<br /><b><a href='eleve_options.php?login_eleve=".$login_eleve."&amp;id_classe=".$id_classe."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Matières suivies</a></b>";

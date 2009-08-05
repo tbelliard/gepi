@@ -91,9 +91,9 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
                       {
                             if ($a_heure_absence_eleve != "00:00" and $a_heure_absence_eleve != "")
                              {
-                                  if(eregi("[0-9]{2}:[0-9]{2}",$d_heure_absence_eleve))
+                                  if(my_eregi("[0-9]{2}:[0-9]{2}",$d_heure_absence_eleve))
                                    {
-                                         if(eregi("[0-9]{2}:[0-9]{2}",$a_heure_absence_eleve))
+                                         if(my_eregi("[0-9]{2}:[0-9]{2}",$a_heure_absence_eleve))
                                          {
                                                 if( $d_heure_absence_eleve != $a_heure_absence_eleve )
                                                  {

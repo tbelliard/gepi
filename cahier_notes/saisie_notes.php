@@ -163,8 +163,8 @@ if (isset($_POST['notes'])) {
 	// J'ai déplacé vers le bas l'alert Javascript qui lors d'un import des notes était inscrit avant même la balise <html>
 	// Cela faisait une page HTML non valide.
 	$temp = $_POST['notes']." 1";
-	$temp = ereg_replace("\\\\r","\r",$temp);
-	$temp = ereg_replace("\\\\n","\n",$temp);
+	$temp = my_ereg_replace("\\\\r","\r",$temp);
+	$temp = my_ereg_replace("\\\\n","\n",$temp);
 	$longueur = strlen($temp);
 	$i = 0;
 	$fin_note = 'yes';
@@ -230,13 +230,13 @@ if (isset($_POST['is_posted'])) {
 						$comment=$comment_eleve[$i];
 						//$comment=traitement_magic_quotes(corriger_caracteres($comment));
 						//$comment=html_entity_decode($comment);
-						//$comment=addslashes(ereg_replace("&#039;","'",html_entity_decode($comment)));
-						//$comment=addslashes(ereg_replace("\r\n",'<br />',ereg_replace("&#039;","'",html_entity_decode($comment))));
-						//$comment=addslashes(ereg_replace("\r\n",'<br />',stripslashes(ereg_replace("&#039;","'",html_entity_decode($comment)))));
-						//$comment=addslashes(nl2br(ereg_replace("&#039;","'",html_entity_decode($comment))));
-						//$comment=addslashes(ereg_replace('(\\\r\\\n)+',"<br />",ereg_replace("&#039;","'",html_entity_decode($comment))));
+						//$comment=addslashes(my_ereg_replace("&#039;","'",html_entity_decode($comment)));
+						//$comment=addslashes(my_ereg_replace("\r\n",'<br />',my_ereg_replace("&#039;","'",html_entity_decode($comment))));
+						//$comment=addslashes(my_ereg_replace("\r\n",'<br />',stripslashes(my_ereg_replace("&#039;","'",html_entity_decode($comment)))));
+						//$comment=addslashes(nl2br(my_ereg_replace("&#039;","'",html_entity_decode($comment))));
+						//$comment=addslashes(my_ereg_replace('(\\\r\\\n)+',"<br />",my_ereg_replace("&#039;","'",html_entity_decode($comment))));
 						// Cela fonctionne chez moi avec cette correction (accents, apostrophes et retours à la ligne):
-						$comment=addslashes(ereg_replace('(\\\r\\\n)+',"\r\n",ereg_replace("&#039;","'",html_entity_decode($comment))));
+						$comment=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($comment))));
 					}
 					else {
 						if (isset($NON_PROTECT["comment_eleve".$i])){
@@ -247,7 +247,7 @@ if (isset($_POST['is_posted'])) {
 						}
 						//echo "$i: $comment<br />";
 						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-						$comment=ereg_replace('(\\\r\\\n)+',"\r\n",$comment);
+						$comment=my_ereg_replace('(\\\r\\\n)+',"\r\n",$comment);
 					}
 					//==============================
 

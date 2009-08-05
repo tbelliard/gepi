@@ -151,7 +151,7 @@ if ($etape != NULL) {
 					$tab[$v] = '';
 				}else{
 
-					$tab[$v] = ereg_replace("wkzx", "'", ereg_replace("zxwk", '"', $tab[$v]));
+					$tab[$v] = my_ereg_replace("wkzx", "'", my_ereg_replace("zxwk", '"', $tab[$v]));
 
 				}
 			}*/

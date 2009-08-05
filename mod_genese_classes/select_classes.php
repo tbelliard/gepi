@@ -67,7 +67,7 @@ $projet=isset($_POST['projet']) ? $_POST['projet'] : (isset($_GET['projet']) ? $
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 $classe=isset($_POST['classe']) ? $_POST['classe'] : NULL;
 $classes_futures=isset($_POST['classes_futures']) ? $_POST['classes_futures'] : NULL;
-$classes_futures=ereg_replace("[^A-za-z0-9_,]","",$classes_futures);
+$classes_futures=my_ereg_replace("[^A-za-z0-9_,]","",$classes_futures);
 if($classes_futures=="") {unset($classes_futures);}
 
 $choix_classes=isset($_POST['choix_classes']) ? $_POST['choix_classes'] : NULL;

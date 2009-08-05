@@ -112,7 +112,7 @@ class LDAPServer {
 	# Renvoie les informations de l'utilisateur, au format correct Gepi
 	# dans un tableau
 	function get_user_profile($_login) {
-		$_login = ereg_replace("[^-@._[:space:][:alnum:]]", "", $_login); // securite
+		$_login = my_ereg_replace("[^-@._[:space:][:alnum:]]", "", $_login); // securite
 	    $search_dn = $this->get_dn();
 	    $search_filter = "(".$this->champ_login."=".$_login.")";
 		$sr = ldap_search($this->ds,$search_dn,$search_filter);

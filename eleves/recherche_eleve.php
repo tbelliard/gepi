@@ -5,7 +5,7 @@
 */
 
 	$rech_nom=$_POST['rech_nom'];
-	$rech_nom=ereg_replace("[^A-Za-zְֱֲֳִִֵַÊָֹֻ־ּֽֿׁװײׂ׃ױ¦ÛÜÙÚÝ¾´באגהדוחיטךכמןלםספצנעףץ¨ûüשת‎ÿ¸]","",$rech_nom);
+	$rech_nom=my_ereg_replace("[^A-Za-zְֱֲֳִִֵַÊָֹֻ־ּֽֿׁװײׂ׃ױ¦ÛÜÙÚÝ¾´באגהדוחיטךכמןלםספצנעףץ¨ûüשת‎ÿ¸]","",$rech_nom);
 	$page=$_POST['page'];
 	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php.php")) {
 	if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {

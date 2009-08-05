@@ -62,8 +62,8 @@ if(isset($_POST['enregistrer_sanction'])) {
 		$duree_retenue=isset($_POST['duree_retenue']) ? $_POST['duree_retenue'] : 1;
 		$lieu_retenue=isset($_POST['lieu_retenue']) ? $_POST['lieu_retenue'] : NULL;
 
-		//$duree_retenue=ereg_replace(",",".",ereg_replace("[^0-9.]","",$duree_retenue));
-		$duree_retenue=ereg_replace("[^0-9.]","",ereg_replace(",",".",$duree_retenue));
+		//$duree_retenue=my_ereg_replace(",",".",my_ereg_replace("[^0-9.]","",$duree_retenue));
+		$duree_retenue=my_ereg_replace("[^0-9.]","",my_ereg_replace(",",".",$duree_retenue));
 		if($duree_retenue=="") {
 			$duree_retenue=1;
 			$msg.="La durée de retenue saisie n'était pas correcte. Elle a été remplacée par '1'.<r />";
@@ -93,7 +93,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 		if (isset($NON_PROTECT["travail"])){
 			$travail=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["travail"]));
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$travail=ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+			$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
 		}
 		else {
 			$travail="";
@@ -214,7 +214,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 		if (isset($NON_PROTECT["travail"])){
 			$travail=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["travail"]));
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$travail=ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+			$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
 		}
 		else {
 			$travail="";
@@ -291,7 +291,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 		if (isset($NON_PROTECT["travail"])){
 			$travail=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["travail"]));
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$travail=ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+			$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
 		}
 		else {
 			$travail="";
@@ -352,7 +352,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 			if (isset($NON_PROTECT["description"])){
 				$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$description=ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+				$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
 			}
 			else {
 				$description="";

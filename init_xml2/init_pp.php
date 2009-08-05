@@ -210,7 +210,7 @@ if (!isset($is_posted)) {
 					//====================
 					// Suppression des guillemets éventuels
 					//$ligne = fgets($fp, 4096);
-					$ligne = ereg_replace('"','',fgets($fp, 4096));
+					$ligne = my_ereg_replace('"','',fgets($fp, 4096));
 					//====================
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);

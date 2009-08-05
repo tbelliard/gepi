@@ -169,10 +169,10 @@ if (!isset($_POST["action"])) {
 			$reg_id_eleve = preg_replace("/[^0-9]/","",trim($reg_id_eleve));
 
 			//$reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
-			$reg_nom = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
+			$reg_nom = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
 			if (strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
 			//$reg_prenom = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($reg_prenom));
-			$reg_prenom = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
+			$reg_prenom = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
 
 			// ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸
 
@@ -182,19 +182,19 @@ if (!isset($_POST["action"])) {
 			if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") { $reg_civilite = "";}
 
 			//$reg_adresse1 = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_adresse1));
-			$reg_adresse1 = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse1,"'"," ")))))));
+			$reg_adresse1 = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse1,"'"," ")))))));
 
 			if (strlen($reg_adresse1) > 50) $reg_adresse1 = substr($reg_adresse1, 0, 50);
 
 			//$reg_adresse2 = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_adresse2));
-			$reg_adresse2 = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse2,"'"," ")))))));
+			$reg_adresse2 = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse2,"'"," ")))))));
 			if (strlen($reg_adresse2) > 50) $reg_adresse2 = substr($reg_adresse2, 0, 50);
 
 			$reg_code_postal = preg_replace("/[^0-9]/","",trim($reg_code_postal));
 			if (strlen($reg_code_postal) > 6) $reg_code_postal = substr($reg_code_postal, 0, 6);
 
 			//$reg_commune = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_commune));
-			$reg_commune = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_commune,"'"," ")))))));
+			$reg_commune = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_commune,"'"," ")))))));
 			if (strlen($reg_commune) > 50) $reg_commune = substr($reg_commune, 0, 50);
 
 			// On vérifie que l'élève existe
@@ -345,29 +345,29 @@ if (!isset($_POST["action"])) {
 						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
 
 						//$tabligne[1] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[1])));
-						$tabligne[1] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[1])))))));
+						$tabligne[1] = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[1])))))));
 						if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
 
 						//$tabligne[2] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[2]));
-						$tabligne[2] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[2]))))));
+						$tabligne[2] = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[2]))))));
 						if (strlen($tabligne[2]) > 50) $tabligne[2] = substr($tabligne[2], 0, 50);
 
 						//if ($tabligne[3] != "M." AND $tabligne[3] != "MME" AND $tabligne[3] != "MLLE") $tabligne[3] = "M.";
 						if ($tabligne[3] != "M." AND $tabligne[3] != "MME" AND $tabligne[3] != "MLLE") { $tabligne[3] = "";}
 
 						//$tabligne[4] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[4]));
-						$tabligne[4] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[4],"'"," ")))))));
+						$tabligne[4] = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[4],"'"," ")))))));
 						if (strlen($tabligne[4]) > 50) $tabligne[4] = substr($tabligne[4], 0, 50);
 
 						//$tabligne[5] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[5]));
-						$tabligne[5] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[5],"'"," ")))))));
+						$tabligne[5] = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[5],"'"," ")))))));
 						if (strlen($tabligne[5]) > 50) $tabligne[5] = substr($tabligne[5], 0, 50);
 
 						$tabligne[6] = preg_replace("/[^0-9]/","",trim($tabligne[6]));
 						if (strlen($tabligne[6]) > 6) $tabligne[6] = substr($tabligne[6], 0, 6);
 
 						//$tabligne[7] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[7]));
-						$tabligne[7] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[7],"'"," ")))))));
+						$tabligne[7] = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[7],"'"," ")))))));
 						if (strlen($tabligne[7]) > 50) $tabligne[7] = substr($tabligne[7], 0, 50);
 
 

@@ -63,7 +63,7 @@ if (isset($_POST['sup_logo'])) {
 }
 if (isset($_POST['valid_logo'])) {
 	$doc_file = isset($_FILES["doc_file"]) ? $_FILES["doc_file"] : NULL;
-	if (ereg("\.([^.]+)$", $doc_file['name'], $match)) {
+	if (my_ereg("\.([^.]+)$", $doc_file['name'], $match)) {
 		$ext = strtolower($match[1]);
 		if ($ext!='jpg' and $ext!='png'and $ext!='gif') {
 		//if ($ext!='jpg' and $ext!='jpeg' and $ext!='png'and $ext!='gif') {
@@ -426,7 +426,7 @@ if (isset($_POST['mode_generation_login'])) {
 if (isset($_POST['unzipped_max_filesize'])) {
 	$unzipped_max_filesize=$_POST['unzipped_max_filesize'];
 	if(substr($unzipped_max_filesize,0,1)=="-") {$unzipped_max_filesize=-1;}
-	elseif(strlen(ereg_replace("[0-9]","",$unzipped_max_filesize))!=0) {
+	elseif(strlen(my_ereg_replace("[0-9]","",$unzipped_max_filesize))!=0) {
 		$unzipped_max_filesize=10;
 		$msg .= "Caractères invalides pour le paramètre unzipped_max_filesize<br />Initialisation à 10 Mo !";
 	}

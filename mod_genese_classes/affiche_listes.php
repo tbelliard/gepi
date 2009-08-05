@@ -96,7 +96,7 @@ if(!isset($afficher_listes)) {
 
 	// Affichage déjà choisi ou non
 	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
-	if((ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
+	if((my_ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
 
 
 
@@ -129,7 +129,7 @@ if(!isset($afficher_listes)) {
 		$sans_autre=isset($_POST['sans_autre']) ? $_POST['sans_autre'] : array();
 
 		//$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
-		//if((ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
+		//if((my_ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
 		if(!isset($id_aff)) {
 			$sql="SELECT MAX(id_aff) AS max_id_aff FROM gc_affichages;";
 			//echo "$sql<br />";
@@ -650,7 +650,7 @@ else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'>Autre sélection</a>";
 
 	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
-	if((ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
+	if((my_ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
 	if(!isset($id_aff)) {
 		echo "<p>ERREUR: La variable 'id_aff' n'est pas affectée.</p>\n";
 		require("../lib/footer.inc.php");
@@ -714,7 +714,7 @@ else {
 
 	//$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : NULL;
 	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
-	if((ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
+	if((my_ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
 	if(!isset($id_aff)) {
 		echo "<p>ERREUR: La variable 'id_aff' n'est pas affectée.</p>\n";
 		require("../lib/footer.inc.php");
@@ -1244,7 +1244,7 @@ else {
 
 						// Niveau...
 						echo "<td>\n";
-						if(($moy!="")&&(strlen(ereg_replace("[0-9.,]","",$moy))==0)) {
+						if(($moy!="")&&(strlen(my_ereg_replace("[0-9.,]","",$moy))==0)) {
 							if($moy<7) {
 								echo "<span style='color:red;'>";
 							}
@@ -1440,7 +1440,7 @@ else {
 				//if($compteur>0) {echo ", ";}
 				//echo $lig->opt;
 
-				//echo ereg_replace("^|","",ereg_replace("|$","",$lig->liste_opt));
+				//echo my_ereg_replace("^|","",my_ereg_replace("|$","",$lig->liste_opt));
 
 				$compteur=0;
 				$tmp_tab=explode("|",$lig->liste_opt);

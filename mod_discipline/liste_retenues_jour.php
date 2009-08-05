@@ -92,7 +92,7 @@ else {
 			echo " (<em>";
 			$tmp_tab=get_class_from_ele_login($current_eleve_login);
 			//if(isset($tmp_tab['liste_nbsp'])) {echo htmlentities($tmp_tab['liste_nbsp']);}
-			if(isset($tmp_tab['liste'])) {echo ereg_replace(" ","&nbsp;",htmlentities($tmp_tab['liste']));}
+			if(isset($tmp_tab['liste'])) {echo my_ereg_replace(" ","&nbsp;",htmlentities($tmp_tab['liste']));}
 			echo "</em>)";
 
 			echo "</td>\n";

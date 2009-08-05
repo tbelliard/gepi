@@ -86,8 +86,8 @@ else{
 				$msg="Vous tentez de supprimer des fichiers qui ne vous appartiennent pas.";
 			}
 			else{
-				if(strlen(ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0){
-					$msg="Le fichier proposé n'est pas valide: '".ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
+				if(strlen(my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0){
+					$msg="Le fichier proposé n'est pas valide: '".my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
 				}
 				else{
 					if(!file_exists("$chemin_temp/$nettoyage")){
@@ -194,9 +194,9 @@ if(!isset($type_export)){
 
 $nom_fic=$_SESSION['login'];
 $nom_fic.="_cn";
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group['description'],'all'));
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group["classlist_string"],'all'));
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode,'all'));
+$nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group['description'],'all'));
+$nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group["classlist_string"],'all'));
+$nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode,'all'));
 
 if($type_export=="CSV"){
 
@@ -208,7 +208,7 @@ if($type_export=="CSV"){
 	header('Content-Type: text/x-csv');
 	header('Expires: ' . $now);
 	// lem9 & loic1: IE need specific headers
-	if(ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+	if(my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 		header('Content-Disposition: inline; filename="'.$nom_fic.'"');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Pragma: public');
@@ -409,7 +409,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 		$id_dev[$cpt]=$lig_dev->id;
 		// Certains caractères comme le '°' que l'on met par exemple dans 'Devoir n°2' posent pb...
-		$nomc_dev[$cpt]=ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($lig_dev->nom_court,'all'));
+		$nomc_dev[$cpt]=my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($lig_dev->nom_court,'all'));
 
 		// Problème avec les 17.5 qui sont convertis en dates
 		//$coef_dev[$cpt]=$lig_dev->coef;

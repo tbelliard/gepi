@@ -67,7 +67,7 @@
 			echo "Commentaires-types: <select name='ajout_commentaire_type' id='ajout_commentaire_type'>\n";
 			while($ligne_commentaire=mysql_fetch_object($resultat_commentaire)) {
 				// Pour conserver le code HTML saisi dans les commentaires-type...
-				if((ereg("<",$ligne_commentaire->commentaire))&&(ereg(">",$ligne_commentaire->commentaire))){
+				if((my_ereg("<",$ligne_commentaire->commentaire))&&(my_ereg(">",$ligne_commentaire->commentaire))){
 					/* Si le commentaire contient du code HTML, on ne remplace pas les retours à la ligne par des <br> pour éviter des doubles retours à la ligne pour un code comme celui-ci:
 						<p>Blabla<br>
 						Blibli</p>

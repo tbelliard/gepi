@@ -42,13 +42,13 @@ if (!checkAccess()) {
 }
 
 
-$nom_fic = "notanet_".date('Y.m.d_H.i.s_').ereg_replace(" ","_",microtime()).".csv";
+$nom_fic = "notanet_".date('Y.m.d_H.i.s_').my_ereg_replace(" ","_",microtime()).".csv";
 
 $now = gmdate('D, d M Y H:i:s') . ' GMT';
 header('Content-Type: text/x-csv');
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
-if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 	header('Content-Disposition: inline; filename="' . $nom_fic . '"');
 	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 	header('Pragma: public');
@@ -187,7 +187,7 @@ else {
 			}
 		}
 	}
-	elseif((ereg("[0-9]",$extract_mode))&&(strlen(ereg_replace("[0-9]","",$extract_mode))==0)) {
+	elseif((my_ereg("[0-9]",$extract_mode))&&(strlen(my_ereg_replace("[0-9]","",$extract_mode))==0)) {
 		$type_brevet=$extract_mode;
 
 		/*

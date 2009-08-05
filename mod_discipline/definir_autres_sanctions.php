@@ -92,11 +92,11 @@ if(isset($nature)) {
 
 	if((isset($nature))&&($nature!='')) {
 		if($a_enregistrer=='y') {
-			//$nature=addslashes(ereg_replace('(\\\r\\\n)+',"\r\n",ereg_replace("&#039;","'",html_entity_decode($nature))));
-			//$nature=addslashes(ereg_replace('(\\\r\\\n)+',"\r\n",$nature));
-			//$nature=addslashes(ereg_replace('(\\\r\\\n)+',"\r\n",html_entity_decode($nature)));
-			//$nature=addslashes(ereg_replace('(\\\r\\\n)+',"\r\n",ereg_replace("'","&#039;",$nature)));
-			$nature=ereg_replace('(\\\r\\\n)+',"\r\n",$nature);
+			//$nature=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($nature))));
+			//$nature=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",$nature));
+			//$nature=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",html_entity_decode($nature)));
+			//$nature=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("'","&#039;",$nature)));
+			$nature=my_ereg_replace('(\\\r\\\n)+',"\r\n",$nature);
 
 			$sql="INSERT INTO s_types_sanctions SET nature='".$nature."';";
 			//echo "$sql<br />\n";

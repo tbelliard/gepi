@@ -2145,7 +2145,7 @@ if ($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") {
 
     // Affichage du relevé de notes
 
-if (ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_debut'])) {
+if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_debut'])) {
 	$anneed = substr($_POST['display_date_debut'],6,4);
 	$moisd = substr($_POST['display_date_debut'],3,2);
 	$jourd = substr($_POST['display_date_debut'],0,2);
@@ -2161,7 +2161,7 @@ $_SESSION['display_date_debut']=$_POST['display_date_debut'];
 	$jourd = strftime("%d");
 }
 
-if (ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_fin'])) {
+if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_fin'])) {
 	$anneef= substr($_POST['display_date_fin'],6,4);
 	$moisf= substr($_POST['display_date_fin'],3,2);
 	$jourf = substr($_POST['display_date_fin'],0,2);

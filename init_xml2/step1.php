@@ -28,7 +28,7 @@
 
 	function extr_valeur($lig){
 		unset($tabtmp);
-		$tabtmp=explode(">",ereg_replace("<",">",$lig));
+		$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
 		return trim($tabtmp[2]);
 	}
 
@@ -456,7 +456,7 @@
 
 													// Suppression des guillemets éventuels
 													//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
-													$eleves[$i]["structures"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+													$eleves[$i]["structures"][$j]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 
 													//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
 													break;
@@ -705,7 +705,7 @@
 
 											// Suppression des guillemets éventuels
 											//$eleves[$i]["$tmpmin"]=extr_valeur($ligne);
-											$eleves[$i]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+											$eleves[$i]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 
 											affiche_debug("\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n");
 											break;
@@ -754,7 +754,7 @@
 
 											// Suppression des guillemets éventuels
 											//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
-											$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+											$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 
 											affiche_debug( "\$eleves[$i][\"scolarite_an_dernier\"][\"$tmpmin\"]=".$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]."<br />\n");
 											break;
@@ -873,14 +873,14 @@
 											// NIVEAU
 											$chaine="";
 											if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-												if(ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												if(my_ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 													$chaine="ecole";
 												}
-												elseif(ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												elseif(my_ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 													$chaine="college";
 												}
-												elseif(ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-													if(ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												elseif(my_ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													if(my_ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 														$chaine="lprof";
 													}
 													else{
@@ -922,7 +922,7 @@
 
 											// TYPE
 											if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-												if(ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												if(my_ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 													$chaine="prive";
 												}
 												else{
@@ -1132,7 +1132,7 @@
 
 											// Suppression des guillemets éventuels
 											//$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne);
-											$eleves[$i]["options"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+											$eleves[$i]["options"][$j]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 
 											//echo "\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n";
 											break;
@@ -1390,7 +1390,7 @@
 
 									// Suppression des guillemets éventuels
 									//$matieres[$i]["code_matiere"]=trim($tabtmp[1]);
-									$matieres[$i]["code_matiere"]=ereg_replace('"','',trim($tabtmp[1]));
+									$matieres[$i]["code_matiere"]=my_ereg_replace('"','',trim($tabtmp[1]));
 
 									//affiche_debug("\$matieres[$i][\"matiere_id\"]=".$matieres[$i]["matiere_id"]."<br />\n");
 									affiche_debug("\$matieres[$i][\"code_matiere\"]=".$matieres[$i]["code_matiere"]."<br />\n");
@@ -1409,7 +1409,7 @@
 
 											// Suppression des guillemets éventuels
 											//$matieres[$i]["$tmpmin"]=extr_valeur($ligne);
-											$matieres[$i]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+											$matieres[$i]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 
 											affiche_debug("\$matieres[$i][\"$tmpmin\"]=".$matieres[$i]["$tmpmin"]."<br />\n");
 											break;

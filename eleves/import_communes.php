@@ -48,7 +48,7 @@ $ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele
 /*
 function extr_valeur($lig) {
 	unset($tabtmp);
-	$tabtmp=explode(">",ereg_replace("<",">",$lig));
+	$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
 	return trim($tabtmp[2]);
 }
 

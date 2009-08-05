@@ -1,5 +1,14 @@
 <?php
 
+//======================================
+/*
+$utiliser_mb="y";
+if($utiliser_mb=="y") {
+	mb_internal_encoding("iso-8859-15");
+}
+*/
+//======================================
+
 // Pour les scripts situés à la racine de GEPI
 if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
   if (file_exists("./secure/config_lcs.inc.php"))
@@ -32,6 +41,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    require_once("./secure/connect.inc.php");
    // Database connection
    require_once("./lib/mysql.inc");
+   // Ajout pour utiliser ou pas les fonctions mb_*
+   require_once("./lib/mb_ou_pas.php");
    // Global configuration file
    require_once("./lib/global.inc");
    // Traitement des donnée
@@ -58,6 +69,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    require_once("../../secure/connect.inc.php");
    // Database connection
    require_once("../../lib/mysql.inc");
+   // Ajout pour utiliser ou pas les fonctions mb_*
+   require_once("../../lib/mb_ou_pas.php");
    // Global configuration file
    require_once("../../lib/global.inc");
    // Traitement des donnée
@@ -84,6 +97,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    require_once("../../../secure/connect.inc.php");
    // Database connection
    require_once("../../../lib/mysql.inc");
+   // Ajout pour utiliser ou pas les fonctions mb_*
+   require_once("../../../lib/mb_ou_pas.php");
    // Global configuration file
    require_once("../../../lib/global.inc");
    // Traitement des donnée
@@ -111,6 +126,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
     require_once("./secure/connect.inc.php");
     // Database
     require_once("../lib/mysql.inc");
+   // Ajout pour utiliser ou pas les fonctions mb_*
+   require_once("../lib/mb_ou_pas.php");
     // Global configuration file
     require_once("../lib/global.inc");
     // Traitement des données
@@ -135,6 +152,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    require_once("../secure/connect.inc.php");
    // Database connection
    require_once("../lib/mysql.inc");
+   // Ajout pour utiliser ou pas les fonctions mb_*
+   require_once("../lib/mb_ou_pas.php");
    // Global configuration file
    require_once("../lib/global.inc");
    // Traitement des donnée

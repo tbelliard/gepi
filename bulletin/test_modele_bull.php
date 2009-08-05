@@ -141,8 +141,8 @@ Et récupérer/traiter:
 <pre>
 \$id_model_bulletin=\$_POST['id_model_bulletin'];
 foreach(\$_POST as \$key => \$value) {
-   if(ereg('^reg_',\$key)) {
-      \$key_modif=ereg_replace('^reg_','',\$key);
+   if(my_ereg('^reg_',\$key)) {
+      \$key_modif=my_ereg_replace('^reg_','',\$key);
       \$sql=\"INSERT INTO modele_bulletin SET id_model_bulletin='\$id_model_bulletin',
                                               nom='\$key_modif',
                                               valeur='\$value';\";
@@ -154,7 +154,7 @@ foreach(\$_POST as \$key => \$value) {
 <!--li></li-->
 </ul>\n";
 
-//echo "ereg_replace('^reg_','','reg_truc_reg_machin')=".ereg_replace('^reg_','','reg_truc_reg_machin')."<br />";
+//echo "my_ereg_replace('^reg_','','reg_truc_reg_machin')=".my_ereg_replace('^reg_','','reg_truc_reg_machin')."<br />";
 
 echo "<p><br /></p>\n";
 

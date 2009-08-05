@@ -68,7 +68,7 @@ function creer_repertoire($base, $subdir) {
 function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
     global $max_size, $total_max_size, $edit_devoir;
     /* Vérification du type de fichier */
-    if (ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
+    if (my_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
         $ext = corriger_caracteres(strtolower($match[1]));
         $ext = corriger_extension($ext);
     } else {
@@ -120,7 +120,7 @@ function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
       die();
     }
     $nom_sans_ext = substr(basename($doc_file['name'][$cpt_doc]),0,strlen(basename($doc_file['name'][$cpt_doc]))-(strlen($ext)+1));
-    $nom_sans_ext = ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $nom_sans_ext);
+    $nom_sans_ext = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $nom_sans_ext);
     if (strstr($nom_sans_ext, "..")) {
         return "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
         die();

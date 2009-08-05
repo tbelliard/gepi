@@ -654,7 +654,7 @@ else {
 						if(mysql_num_rows($res)==0) {
 							echo "<p>Inscription de l'avis du conseil de classe pour la période '$periode': ";
 							//$sql="INSERT INTO avis_conseil_classe SET login='$ele_login', periode='$periode', avis='$avis';";
-							$sql="INSERT INTO avis_conseil_classe SET login='$ele_login', periode='$periode', avis='".ereg_replace("_POINT_VIRGULE_",";",$avis)."';";
+							$sql="INSERT INTO avis_conseil_classe SET login='$ele_login', periode='$periode', avis='".my_ereg_replace("_POINT_VIRGULE_",";",$avis)."';";
 							$res=mysql_query($sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
@@ -697,7 +697,7 @@ else {
 															nb_absences='$nb_absences',
 															non_justifie='$non_justifie',
 															nb_retards='$nb_retards',
-															appreciation='".ereg_replace("_POINT_VIRGULE_",";",$app)."';";
+															appreciation='".my_ereg_replace("_POINT_VIRGULE_",";",$app)."';";
 							//								appreciation='".$app."';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -925,7 +925,7 @@ else {
 						*/
 							echo "<p>Inscription de l'appréciation pour la matière '".htmlentities($matiere)."' sur la période '$periode': ";
 							//$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='$app';";
-							$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='".ereg_replace("_POINT_VIRGULE_",";",$app)."';";
+							$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='".my_ereg_replace("_POINT_VIRGULE_",";",$app)."';";
 							$res=mysql_query($sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";

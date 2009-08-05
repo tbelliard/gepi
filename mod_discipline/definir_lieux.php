@@ -82,8 +82,8 @@ if((isset($lieu))&&($lieu!='')) {
 	}
 
 	if($a_enregistrer=='y') {
-		//$lieu=addslashes(ereg_replace('(\\\r\\\n)+',"\r\n",ereg_replace("&#039;","'",html_entity_decode($lieu))));
-		$lieu=ereg_replace('(\\\r\\\n)+',"\r\n",$lieu);
+		//$lieu=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($lieu))));
+		$lieu=my_ereg_replace('(\\\r\\\n)+',"\r\n",$lieu);
 
 		$sql="INSERT INTO s_lieux_incidents SET lieu='".$lieu."';";
 		$res=mysql_query($sql);

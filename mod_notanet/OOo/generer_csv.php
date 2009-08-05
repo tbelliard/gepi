@@ -111,7 +111,7 @@ $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id
 
 $type_brevet = isset($_POST['type_brevet']) ? $_POST['type_brevet'] : (isset($_GET['type_brevet']) ? $_GET['type_brevet'] : NULL);
 if(isset($type_brevet)) {
-	if((!ereg("[0-9]",$type_brevet))||(strlen(ereg_replace("[0-9]","",$type_brevet))!=0)) {
+	if((!ereg("[0-9]",$type_brevet))||(strlen(my_ereg_replace("[0-9]","",$type_brevet))!=0)) {
 		$type_brevet=NULL;
 	}
 }
@@ -718,7 +718,7 @@ else {
 	header('Content-Type: text/x-csv');
 	header('Expires: ' . $now);
 	// lem9 & loic1: IE need specific headers
-	if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+	if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 		header('Content-Disposition: inline; filename="' . $nom_fic . '"');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Pragma: public');

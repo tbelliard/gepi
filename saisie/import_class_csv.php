@@ -65,7 +65,7 @@ $now = gmdate('D, d M Y H:i:s') . ' GMT';
 header('Content-Type: text/x-csv');
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
-if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
     header('Content-Disposition: inline; filename="' . $nom_fic . '"');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: public');
@@ -122,7 +122,7 @@ if ($current_group) {
 		if(mysql_num_rows($res_note)){
 			$lig_note=mysql_fetch_object($res_note);
 			if($lig_note->statut==''){
-				$note=ereg_replace(".",",",$lig_note->note);
+				$note=my_ereg_replace(".",",",$lig_note->note);
 			}
 			else{
 				$note=$lig_note->statut;
@@ -138,10 +138,10 @@ if ($current_group) {
 		$res_appreciation=mysql_query($sql);
 		if(mysql_num_rows($res_appreciation)){
 			$lig_appreciation=mysql_fetch_object($res_appreciation);
-			//$app=ereg_replace("\n"," ",$lig_appreciation->appreciation);
-			$app=ereg_replace("\n"," ",ereg_replace("\r","",strtr($lig_appreciation->appreciation,";",".")));
+			//$app=my_ereg_replace("\n"," ",$lig_appreciation->appreciation);
+			$app=my_ereg_replace("\n"," ",my_ereg_replace("\r","",strtr($lig_appreciation->appreciation,";",".")));
 			//$app=strtr($lig_appreciation->appreciation,"\n"," ");
-			//$app="grr".eregi_replace("<br />"," ",eregi_replace("<br>"," ",nl2br($lig_appreciation->appreciation)));
+			//$app="grr".my_eregi_replace("<br />"," ",my_eregi_replace("<br>"," ",nl2br($lig_appreciation->appreciation)));
 		}
 
 		switch($_GET['mode']){

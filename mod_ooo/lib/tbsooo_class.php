@@ -260,7 +260,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 		$statut=true;
 		$handle = @opendir($dir);
 		while ($file = @readdir ($handle)){
-			if (eregi("^\.{1,2}$",$file)){
+			if (my_eregi("^\.{1,2}$",$file)){
 				continue;
 			}
 			if(is_dir("$dir/$file")){
@@ -290,7 +290,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 	$statut=true;
 	$handle = @opendir($dir);
 	while ($file = @readdir ($handle)){
-		if (eregi("^\.{1,2}$",$file)){
+		if (my_eregi("^\.{1,2}$",$file)){
 			continue;
 		}
 		if(is_dir("$dir/$file")){

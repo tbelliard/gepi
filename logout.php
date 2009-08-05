@@ -100,7 +100,7 @@ echo $message;
 
 $agent = $_SERVER['HTTP_USER_AGENT'];
 
-if (eregi("msie",$agent) && !eregi("opera",$agent)) {
+if (my_eregi("msie",$agent) && !eregi("opera",$agent)) {
 	echo "<div style='width: 70%; margin: auto;'>";
 	echo "<p><b>Note aux utilisateurs de Microsoft Internet Explorer :</b>";
 	echo "<br/>Si vous subissez des déconnexions intempestives, si vous n'arrivez pas à vous connecter à Gepi, " .

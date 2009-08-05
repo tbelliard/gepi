@@ -187,7 +187,7 @@ else{
 		$debut=0;
 	}
 	else{
-		if(strlen(ereg_replace("[0-9]","",$debut))){
+		if(strlen(my_ereg_replace("[0-9]","",$debut))){
 			$debut=0;
 		}
 	}

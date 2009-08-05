@@ -237,13 +237,13 @@ if ($mode=='formulaire_rapport_incident') { //les donnée provenant du formulaire
 	$motif = $_SESSION['retenue_motif'];
 	$motif=traitement_magic_quotes(corriger_caracteres($motif));
 	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-	$motif=ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
+	$motif=my_ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
 	session_unregister("retenue_motif");
 	
 	$travail = $_SESSION['retenue_travail'];
 	$travail=traitement_magic_quotes(corriger_caracteres($travail));
 	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-	$travail=ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+	$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
 	session_unregister("retenue_travail");
 	
 	$nom_resp = $_SESSION['retenue_nom_resp'];
@@ -304,7 +304,7 @@ $nom_fic = $nom_fichier_modele[0]."_N_".$num_incident."_genere_le_".$now.".".$no
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
 
-if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
     header('Content-Disposition: inline; filename="' . $nom_fic . '"');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: public');

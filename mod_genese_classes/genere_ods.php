@@ -74,7 +74,7 @@ if (!checkAccess()) {
 	}
 
 	$fichier_csv=isset($_POST['fichier_csv']) ? $_POST['fichier_csv'] : (isset($_GET['fichier_csv']) ? $_GET['fichier_csv'] : '');
-	$fichier_liste=ereg_replace(".csv","",$fichier_csv);
+	$fichier_liste=my_ereg_replace(".csv","",$fichier_csv);
 
 	//$detail=(isset($_POST['detail'])) ? $_POST['detail'] : '';
 	$detail=isset($_POST['detail']) ? $_POST['detail'] : (isset($_GET['detail']) ? $_GET['detail'] : '');
@@ -125,7 +125,7 @@ if (!checkAccess()) {
 		$fich_source_csv=fopen("../temp/".$user_temp_directory."/$fichier_csv","r");
 		while(!feof($fich_source_csv)) {
 			$ligne=fgets($fich_source_csv,4096);
-			$n=strlen(ereg_replace("[^;]","",$ligne));
+			$n=strlen(my_ereg_replace("[^;]","",$ligne));
 			if($n>$nb_ptvirg) {$nb_ptvirg=$n;}
 		}
 		$nb_ptvirg=$nb_ptvirg-1; // On supprime le point virgule en fin de ligne
@@ -140,9 +140,9 @@ if (!checkAccess()) {
 				$ligne=fgets($fich_source_csv,4096);
 	
 				// Bricolage pas chouette pour changer le séparateur du CSV
-				$ligne_tmp=ereg_replace("°"," ",ereg_replace(";",",",ereg_replace(',',' ',$ligne)));
+				$ligne_tmp=my_ereg_replace("°"," ",my_ereg_replace(";",",",my_ereg_replace(',',' ',$ligne)));
 	
-				$ligne_corrigee=trim(suppr_accents(ereg_replace("'","&apos;",ereg_replace('"','',$ligne_tmp))));
+				$ligne_corrigee=trim(suppr_accents(my_ereg_replace("'","&apos;",my_ereg_replace('"','',$ligne_tmp))));
 				//echo "<p>\$ligne=$ligne<br>\n";
 				//echo "\$ligne_corrigee=$ligne_corrigee</p>\n";
 	
@@ -320,9 +320,9 @@ if (!checkAccess()) {
 				$ligne=fgets($fich_source_csv,4096);
 	
 				// Bricolage pas chouette pour changer le séparateur du CSV
-				$ligne_tmp=ereg_replace("°"," ",ereg_replace(";",",",ereg_replace(',',' ',$ligne)));
+				$ligne_tmp=my_ereg_replace("°"," ",my_ereg_replace(";",",",my_ereg_replace(',',' ',$ligne)));
 	
-				$ligne_corrigee=trim(suppr_accents(ereg_replace("'","&apos;",ereg_replace('"','',$ligne_tmp))));
+				$ligne_corrigee=trim(suppr_accents(my_ereg_replace("'","&apos;",my_ereg_replace('"','',$ligne_tmp))));
 				//echo "<p>\$ligne=$ligne<br>\n";
 				//echo "\$ligne_corrigee=$ligne_corrigee</p>\n";
 	

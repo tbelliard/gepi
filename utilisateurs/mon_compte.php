@@ -282,7 +282,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 			// Envoi de la photo
 			if(isset($reg_no_gep)){
 				if($reg_no_gep!=""){
-					if(strlen(ereg_replace("[0-9]","",$reg_no_gep))==0){
+					if(strlen(my_ereg_replace("[0-9]","",$reg_no_gep))==0){
 						if(isset($_POST['suppr_filephoto'])){
 							if($_POST['suppr_filephoto']=='y'){
 

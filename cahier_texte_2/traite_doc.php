@@ -60,7 +60,7 @@ function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 	global $max_size, $total_max_size;
 	/* Vérification du type de fichier */
 	$ext = '';
-	if (ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
+	if (my_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
 		$ext = corriger_caracteres(strtolower($match[1]));
 		$ext = corriger_extension($ext);
 	}
@@ -99,7 +99,7 @@ function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 	
 	/* Recopier le fichier */
 	$nom_sans_ext = substr(basename($doc_file['name'][$cpt_doc]),0,strlen(basename($doc_file['name'][$cpt_doc]))-(strlen($ext)+1));
-	$nom_sans_ext = ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $nom_sans_ext);
+	$nom_sans_ext = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $nom_sans_ext);
 	if (strstr($nom_sans_ext, "..")) {
 		echo "Erreur : Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
 		die();

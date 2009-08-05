@@ -31,7 +31,7 @@ function ExitWiki($errormsg)
 
    function LinkImage($url, $alt='') {
       global $ScriptUrl;
-      if(ereg('[<>"]', $url)) {
+      if(my_ereg('[<>"]', $url)) {
          return "<b><u>Mauvaise URL -- supprimez tous les caractères &lt;, &gt;, &quot;</u></b>";
       }
       return "<img src=\"$url\" ALT=\"$alt\">";
@@ -79,7 +79,7 @@ function ParseAndLink($bracketlink) {
 
 
 function LinkURL($url, $linktext='') {
-  if(ereg("[<>\"]", $url)) {
+  if(my_ereg("[<>\"]", $url)) {
     return "<b><u>BAD URL -- remove all of &lt;, &gt;, &quot;</u></b>";
   }
   if(empty($linktext))

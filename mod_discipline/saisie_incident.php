@@ -79,7 +79,7 @@ function choix_heure($champ_heure,$div_choix_heure) {
 }
 
 function recherche_ele($rech_nom,$page) {
-	$rech_nom=ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]","",$rech_nom);
+	$rech_nom=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]","",$rech_nom);
 
 	$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%';";
 	$res_ele=mysql_query($sql);
@@ -144,7 +144,7 @@ function recherche_ele($rech_nom,$page) {
 }
 
 function recherche_utilisateur($rech_nom,$page) {
-	$rech_nom=ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]","",$rech_nom);
+	$rech_nom=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]","",$rech_nom);
 
 	$sql="SELECT * FROM utilisateurs WHERE (nom LIKE '%$rech_nom%' AND statut!='responsable');";
 	$res_utilisateur=mysql_query($sql);
@@ -266,7 +266,7 @@ if($etat_incident!='clos') {
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
-						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."';";
+						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
@@ -275,7 +275,7 @@ if($etat_incident!='clos') {
 					}
 					else {
 						//$sql="UPDATE s_protagonistes SET qualite='$qualite[$i]' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
-						$sql="UPDATE s_protagonistes SET qualite='".addslashes(ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
+						$sql="UPDATE s_protagonistes SET qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
 						//$sql="UPDATE s_protagonistes SET qualite='".$qualite[$i]."' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
@@ -310,7 +310,7 @@ if($etat_incident!='clos') {
 							$tmp_statut=$lig_statut->statut;
 						}
 
-						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."';";
+						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
@@ -319,7 +319,7 @@ if($etat_incident!='clos') {
 					}
 					else {
 						//$sql="UPDATE s_protagonistes SET qualite='$qualite[$i]' WHERE id_incident='$id_incident' AND login='".$u_login[$i]."' AND statut='uve';";
-						$sql="UPDATE s_protagonistes SET qualite='".addslashes(ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."' WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
+						$sql="UPDATE s_protagonistes SET qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."' WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
@@ -370,7 +370,7 @@ if($etat_incident!='clos') {
 				$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
 
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$description=ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+				$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
 			}
 			else {
 				$description="";
@@ -441,7 +441,7 @@ if($etat_incident!='clos') {
 				$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
 
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$description=ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+				$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
 
 				$sql.="description='".$description."' ,";
 				$temoin_modif="y";
@@ -479,7 +479,7 @@ if($etat_incident!='clos') {
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)==0) {
 					//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='$qualite[$i]';";
-					//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."', avertie='avertie='".$avertie[$i]."';";
+					//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."', avertie='avertie='".$avertie[$i]."';";
 					$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve';";
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
@@ -512,7 +512,7 @@ if($etat_incident!='clos') {
 						$lig_statut=mysql_fetch_object($res_statut);
 						$tmp_statut=$lig_statut->statut;
 
-						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."';";
+						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {

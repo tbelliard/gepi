@@ -129,7 +129,7 @@ if($action_sql === 'ajouter' or $action_sql === 'modifier')
        {
            if(verif_date($d_date_absence_eleve_form) === 'pass')
             {
-                if(eregi("[0-9]{2}:[0-9]{2}",$d_heure_absence_eleve_form))
+                if(my_eregi("[0-9]{2}:[0-9]{2}",$d_heure_absence_eleve_form))
                  {
                   } else { $erreur='1'; $erreur_valu='2'; $texte_erreur="Le format de l'heure n'est pas correct."; }
              } else { $erreur='1'; $erreur_valu='3'; $texte_erreur="La date n'est pas correct."; }

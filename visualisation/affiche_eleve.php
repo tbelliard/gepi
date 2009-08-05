@@ -181,7 +181,7 @@ if(
 	$num_periode_saisie = isset($_POST['num_periode_saisie']) ? $_POST['num_periode_saisie'] : NULL;
 
 	//if(!is_numeric($num_periode_saisie)){
-	if(strlen(ereg_replace("[0-9]","",$num_periode_saisie))==0){
+	if(strlen(my_ereg_replace("[0-9]","",$num_periode_saisie))==0){
 		$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$num_periode_saisie' AND login='$eleve_saisie_avis';";
 		//echo "$sql<br />";
 		$verif=mysql_query($sql);
@@ -846,7 +846,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 	// On s'assure que la largeur est valide:
-	if((strlen(ereg_replace("[0-9]","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")){$largeur_imposee_photo=100;}
+	if((strlen(my_ereg_replace("[0-9]","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")){$largeur_imposee_photo=100;}
 
 
 	if(isset($_POST['affiche_mgen'])){
@@ -932,7 +932,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$largeur_graphe=600;
 		}
 	}
-	if((strlen(ereg_replace("[0-9]","",$largeur_graphe))!=0)||($largeur_graphe=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$largeur_graphe))!=0)||($largeur_graphe=="")){
 		$largeur_graphe=600;
 	}
 
@@ -949,7 +949,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$hauteur_graphe=400;
 		}
 	}
-	if((strlen(ereg_replace("[0-9]","",$hauteur_graphe))!=0)||($hauteur_graphe=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$hauteur_graphe))!=0)||($hauteur_graphe=="")){
 		$hauteur_graphe=400;
 	}
 
@@ -965,7 +965,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$taille_police=2;
 		}
 	}
-	if((strlen(ereg_replace("[0-9]","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
 		$taille_police=2;
 	}
 
@@ -982,7 +982,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$epaisseur_traits=2;
 		}
 	}
-	if((strlen(ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
 		$epaisseur_traits=2;
 	}
 
@@ -1018,7 +1018,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 /*	$affiche_photo=isset($_POST['affiche_photo']) ? $_POST['affiche_photo'] : 'non';
 	$largeur_imposee_photo=isset($_POST['largeur_imposee_photo']) ? $_POST['largeur_imposee_photo'] : '100';
 	// On s'assure que la largeur est valide:
-	if((strlen(ereg_replace("[0-9]","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")){$largeur_imposee_photo=100;}
+	if((strlen(my_ereg_replace("[0-9]","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")){$largeur_imposee_photo=100;}
 
 	//$affiche_mgen=isset($_POST['affiche_mgen']) ? $_POST['affiche_mgen'] : '';
 	//$affiche_minmax=isset($_POST['affiche_minmax']) ? $_POST['affiche_minmax'] : '';
@@ -1027,21 +1027,21 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	$affiche_moy_annuelle=isset($_POST['affiche_moy_annuelle']) ? $_POST['affiche_moy_annuelle'] : 'non';
 
 	$largeur_graphe=isset($_POST['largeur_graphe']) ? $_POST['largeur_graphe'] : '600';
-	if((strlen(ereg_replace("[0-9]","",$largeur_graphe))!=0)||($largeur_graphe=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$largeur_graphe))!=0)||($largeur_graphe=="")){
 		$largeur_graphe=600;
 	}
 	$hauteur_graphe=isset($_POST['hauteur_graphe']) ? $_POST['hauteur_graphe'] : '400';
-	if((strlen(ereg_replace("[0-9]","",$hauteur_graphe))!=0)||($hauteur_graphe=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$hauteur_graphe))!=0)||($hauteur_graphe=="")){
 		$hauteur_graphe=400;
 	}
 
 	$taille_police=isset($_POST['taille_police']) ? $_POST['taille_police'] : '3';
-	if((strlen(ereg_replace("[0-9]","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
 		$taille_police=3;
 	}
 
 	$epaisseur_traits=isset($_POST['epaisseur_traits']) ? $_POST['epaisseur_traits'] : '2';
-	if((strlen(ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
 		$epaisseur_traits=2;
 	}
 
@@ -3626,7 +3626,7 @@ function div_cmnt_type() {
 			while($ligne_commentaire=mysql_fetch_object($resultat_commentaire)) {
 				$retour_lignes_cmnt_type.="<div style='border: 1px solid black; margin: 1px; padding: 1px;'";
 
-				if(eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+				if(my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
 					$retour_lignes_cmnt_type.=" onClick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value+document.getElementById('commentaire_type_'+$cpt).value;changement();document.getElementById('commentaire_type').style.display='none'; document.getElementById('no_anti_inject_current_eleve_login_ap2').focus();\"";
 				}
 				$retour_lignes_cmnt_type.=">\n";
@@ -3641,7 +3641,7 @@ function div_cmnt_type() {
 				}
 
 				// Pour conserver le code HTML saisi dans les commentaires-type...
-				if((ereg("<",$ligne_commentaire->commentaire))&&(ereg(">",$ligne_commentaire->commentaire))){
+				if((my_ereg("<",$ligne_commentaire->commentaire))&&(my_ereg(">",$ligne_commentaire->commentaire))){
 					/* Si le commentaire contient du code HTML, on ne remplace pas les retours à la ligne par des <br> pour éviter des doubles retours à la ligne pour un code comme celui-ci:
 						<p>Blabla<br>
 						Blibli</p>

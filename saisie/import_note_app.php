@@ -281,8 +281,8 @@ if (isset($is_posted )) {
 								// pour ne pas provoquer de problème avec le séparateur ; du CSV
 								// AJOUT: boireaus
 								//echo "<td>\$data[$c]=$data[$c]</td>";
-								//$data[$c]=ereg_replace("|POINT-VIRGULE|",";",$data[$c]);
-								//$data[$c]=ereg_replace("\|POINT-VIRGULE\|",";",$data[$c]);
+								//$data[$c]=my_ereg_replace("|POINT-VIRGULE|",";",$data[$c]);
+								//$data[$c]=my_ereg_replace("\|POINT-VIRGULE\|",";",$data[$c]);
 								$data[$c]=str_replace("|POINT-VIRGULE|",";",$data[$c]);
 								// =====================================================
                                 $col3 = $data[$c];

@@ -60,7 +60,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	//rn_formule
 	//rn_sign_nblig
 
-	if(strlen(ereg_replace("[0-9]","",$rn_sign_nblig))!=0){$rn_sign_nblig=3;}
+	if(strlen(my_ereg_replace("[0-9]","",$rn_sign_nblig))!=0){$rn_sign_nblig=3;}
 
 	if (isset($rn_nomdev)){$rn_nomdev='y';}else{$rn_nomdev='n';}
 	if (isset($rn_toutcoefdev)){$rn_toutcoefdev='y';}else{$rn_toutcoefdev='n';}

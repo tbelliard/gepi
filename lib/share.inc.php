@@ -17,20 +17,31 @@
  * @return boolean false/true
  */
 function verif_mot_de_passe($password,$flag) {
-    global $char_spec;
-    if ($flag == 1)
-        if ( ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password) )
-            return false;
-        elseif ( preg_match("/^[[:alnum:]\W]{".getSettingValue("longmin_pwd").",}$/", $password) and preg_match("/[\W]+/", $password) and preg_match("/[0-9]+/", $password))
-            return true; else return false;
-    else
-        if ( ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password) )
-            return false;
-        elseif (strlen($password) < getSettingValue("longmin_pwd"))
-            return false;
-        else
-            return true;
-
+	global $char_spec;
+	if ($flag == 1) {
+		//if(ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password)) {
+		if(my_ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password)) {
+			return false;
+		}
+		elseif(preg_match("/^[[:alnum:]\W]{".getSettingValue("longmin_pwd").",}$/", $password) and preg_match("/[\W]+/", $password) and preg_match("/[0-9]+/", $password)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		//if(ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password)) {
+		if(my_ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password)) {
+			return false;
+		}
+		elseif (strlen($password) < getSettingValue("longmin_pwd")) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
 }
 
 /**
@@ -119,55 +130,55 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
     if ($_mode == "name") {
             $temp1 = $_nom;
             //$temp1 = strtoupper($temp1);
-            $temp1 = ereg_replace(" ","", $temp1);
-            $temp1 = ereg_replace("-","_", $temp1);
-            $temp1 = ereg_replace("'","", $temp1);
+            $temp1 = my_ereg_replace(" ","", $temp1);
+            $temp1 = my_ereg_replace("-","_", $temp1);
+            $temp1 = my_ereg_replace("'","", $temp1);
             //$temp1 = substr($temp1,0,8);
         } elseif ($_mode == "name8") {
             $temp1 = $_nom;
             //$temp1 = strtoupper($temp1);
-            $temp1 = ereg_replace(" ","", $temp1);
-            $temp1 = ereg_replace("-","_", $temp1);
-            $temp1 = ereg_replace("'","", $temp1);
+            $temp1 = my_ereg_replace(" ","", $temp1);
+            $temp1 = my_ereg_replace("-","_", $temp1);
+            $temp1 = my_ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,8);
         } elseif ($_mode == "fname8") {
             $temp1 = $_prenom{0} . $_nom;
             //$temp1 = strtoupper($temp1);
-            $temp1 = ereg_replace(" ","", $temp1);
-            $temp1 = ereg_replace("-","_", $temp1);
-            $temp1 = ereg_replace("'","", $temp1);
+            $temp1 = my_ereg_replace(" ","", $temp1);
+            $temp1 = my_ereg_replace("-","_", $temp1);
+            $temp1 = my_ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,8);
         } elseif ($_mode == "fname19") {
             $temp1 = $_prenom{0} . $_nom;
             //$temp1 = strtoupper($temp1);
-            $temp1 = ereg_replace(" ","", $temp1);
-            $temp1 = ereg_replace("-","_", $temp1);
-            $temp1 = ereg_replace("'","", $temp1);
+            $temp1 = my_ereg_replace(" ","", $temp1);
+            $temp1 = my_ereg_replace("-","_", $temp1);
+            $temp1 = my_ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,19);
         } elseif ($_mode == "firstdotname") {
 
             $temp1 = $_prenom . "." . $_nom;
             //$temp1 = strtoupper($temp1);
 
-            $temp1 = ereg_replace(" ","", $temp1);
-            $temp1 = ereg_replace("-","_", $temp1);
-            $temp1 = ereg_replace("'","", $temp1);
+            $temp1 = my_ereg_replace(" ","", $temp1);
+            $temp1 = my_ereg_replace("-","_", $temp1);
+            $temp1 = my_ereg_replace("'","", $temp1);
             //$temp1 = substr($temp1,0,19);
         } elseif ($_mode == "firstdotname19") {
             $temp1 = $_prenom . "." . $_nom;
             //$temp1 = strtoupper($temp1);
-            $temp1 = ereg_replace(" ","", $temp1);
-            //$temp1 = ereg_replace("-","_", $temp1);
-            $temp1 = ereg_replace("'","", $temp1);
+            $temp1 = my_ereg_replace(" ","", $temp1);
+            //$temp1 = my_ereg_replace("-","_", $temp1);
+            $temp1 = my_ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,19);
         } elseif ($_mode == "namef8") {
 			//echo "\$_nom=$_nom<br />";
 			//echo "\$_prenom=$_prenom<br />";
             $temp1 =  substr($_nom,0,7) . $_prenom{0};
             //$temp1 = strtoupper($temp1);
-            $temp1 = ereg_replace(" ","", $temp1);
-            $temp1 = ereg_replace("-","_", $temp1);
-            $temp1 = ereg_replace("'","", $temp1);
+            $temp1 = my_ereg_replace(" ","", $temp1);
+            $temp1 = my_ereg_replace("-","_", $temp1);
+            $temp1 = my_ereg_replace("'","", $temp1);
             //$temp1 = substr($temp1,0,8);
         } else {
         	return false;
@@ -1395,23 +1406,23 @@ function dbase_filter($s){
 
 function detect_browser($HTTP_USER_AGENT) {
     // D'après le fichier db_details_common.php de phpmyadmin
-    if (ereg('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+    if (my_ereg('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
         $BROWSER_VER = $log_version[2];
         $BROWSER_AGENT = 'OPERA';
-    } else if (ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+    } else if (my_ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
         $BROWSER_VER = $log_version[1];
         $BROWSER_AGENT = 'Internet Explorer';
-    } else if (ereg('OmniWeb/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+    } else if (my_ereg('OmniWeb/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
         $BROWSER_VER = $log_version[1];
         $BROWSER_AGENT = 'OMNIWEB';
-    } else if (ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)) {
+    } else if (my_ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)) {
         $BROWSER_VER = $log_version[2];
         $BROWSER_AGENT = 'KONQUEROR';
-    } else if (ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)
-               && ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2)) {
+    } else if (my_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)
+               && my_ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2)) {
         $BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
         $BROWSER_AGENT = 'SAFARI';
-    } else if (ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+    } else if (my_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
         $BROWSER_VER = $log_version[1];
         $BROWSER_AGENT = 'MOZILLA';
     } else {
@@ -2168,7 +2179,7 @@ function get_user_temp_directory(){
 		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
 		$dirname=$lig_temp_dir->temp_dir;
 
-		if(($dirname!="")&&(strlen(ereg_replace("[A-Za-z0-9_]","",$dirname))==0)) {
+		if(($dirname!="")&&(strlen(my_ereg_replace("[A-Za-z0-9_]","",$dirname))==0)) {
 			if(file_exists("../temp/$dirname")){
 				return $dirname;
 			}
@@ -2212,7 +2223,7 @@ function volume_dir($dir){
 
 	$handle = @opendir($dir);
 	while ($file = @readdir ($handle)){
-		if (eregi("^\.{1,2}$",$file))
+		if (my_eregi("^\.{1,2}$",$file))
 			continue;
 		//if(is_dir($dir.$file)){
 		if(is_dir("$dir/$file")){
@@ -2234,7 +2245,7 @@ function vider_dir($dir){
 	$statut=true;
 	$handle = @opendir($dir);
 	while ($file = @readdir ($handle)){
-		if (eregi("^\.{1,2}$",$file)){
+		if (my_eregi("^\.{1,2}$",$file)){
 			continue;
 		}
 		//if(is_dir($dir.$file)){
@@ -2292,20 +2303,20 @@ function caract_ooo($chaine){
 }
 
 function remplace_accents($chaine,$mode){
-	//$retour=strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+	//$retour=strtr(my_ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
 	if($mode == 'all'){
 		// On remplace espaces et apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
-		$retour=strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		$retour=strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
 	}
 	elseif($mode == 'all_nospace'){
 		// On remplace apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
-		$retour1 = strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine")))),"'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸"," AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		$retour1 = strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine")))),"'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸"," AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
 		// On enlève aussi les guillemets
-		$retour = ereg_replace('"', '', $retour1);
+		$retour = my_ereg_replace('"', '', $retour1);
 	}
 	else{
 		// On remplace les caractères accentués par leurs équivalents non accentués.
-		$retour=strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine")))),"ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		$retour=strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine")))),"ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
 	}
 	return $retour;
 }
@@ -2351,7 +2362,7 @@ function get_class_from_ele_login($ele_login){
 			$tab_classe['liste'].=$lig_tmp->classe;
 
 			if($a>0) {$tab_classe['liste_nbsp'].=", ";}
-			$tab_classe['liste_nbsp'].=ereg_replace(" ","&nbsp;",$lig_tmp->classe);
+			$tab_classe['liste_nbsp'].=my_ereg_replace(" ","&nbsp;",$lig_tmp->classe);
 
 			$tab_classe['id'.$a] = $lig_tmp->id_classe;
 			$a = $a++;
@@ -2400,7 +2411,7 @@ function liens_class_from_ele_login($ele_login){
 	if(isset($tab_classe)){
 		if(count($tab_classe)>0){
 			foreach ($tab_classe as $key => $value){
-				if(strlen(ereg_replace("[0-9]","",$key))==0) {
+				if(strlen(my_ereg_replace("[0-9]","",$key))==0) {
 					if($_SESSION['statut']=='administrateur') {
 						$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
 					}
@@ -3466,7 +3477,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 		while(true) {
 			if(isset($ligne[$cpt])) {$ligne[$cpt].=" ";} else {$ligne[$cpt]="";}
 
-			if(ereg("\n",$tab[$i])) {
+			if(my_ereg("\n",$tab[$i])) {
 				$tmp_tab=split("\n",$tab[$i]);
 
 				for($k=0;$k<count($tmp_tab)-1;$k++) {
@@ -3559,7 +3570,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 			unset($ligne);
 			$ligne=array();
 		
-			$tab=split(" ",trim(ereg_replace("\n"," ",$texte)));
+			$tab=split(" ",trim(my_ereg_replace("\n"," ",$texte)));
 			$cpt=0;
 			$i=0;
 			while(true) {
@@ -3661,7 +3672,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 			unset($ligne);
 			$ligne=array();
 
-			$tab=split(" ",trim(ereg_replace("\n"," ",$texte)));
+			$tab=split(" ",trim(my_ereg_replace("\n"," ",$texte)));
 			$cpt=0;
 			$i=0;
 			while(true) {
@@ -3895,5 +3906,4 @@ calcul_moy_med();
 </script>
 ";
 }
-
 ?>

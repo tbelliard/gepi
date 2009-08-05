@@ -103,7 +103,7 @@ if (isset($_POST['is_posted'])) {
 				}
 				//echo "$k: $app<br />";
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$app=ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+				$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
 
 				$test_grp_app_query = mysql_query("SELECT * FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
 				$test = mysql_num_rows($test_grp_app_query);
@@ -135,7 +135,7 @@ if (isset($_POST['is_posted'])) {
 				//echo "\$log_eleve[$i]=$log_eleve[$i]<br />\n";
 				if(isset($log_eleve[$i])) {
 					// On supprime le suffixe indiquant la période:
-					$reg_eleve_login=ereg_replace("_t".$k."$","",$log_eleve[$i]);
+					$reg_eleve_login=my_ereg_replace("_t".$k."$","",$log_eleve[$i]);
 
 					//echo "\$i=$i<br />";
 					//echo "\$reg_eleve_login=$reg_eleve_login<br />";
@@ -161,7 +161,7 @@ if (isset($_POST['is_posted'])) {
 							//echo "\$app=$app<br />";
 
 							// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-							$app=ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+							$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
 
 							$test_eleve_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
 							$test = mysql_num_rows($test_eleve_app_query);
@@ -206,7 +206,7 @@ if (isset($_POST['is_posted'])) {
 						$app = "";
 
 						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraire.
-						$app=ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+						$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
 
 
 						$test_eleve_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");

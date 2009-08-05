@@ -72,18 +72,18 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 	$chaine_titre="export";
 	if(isset($current_group)) {
 		//$chaine_titre=$current_group['name']."_".$current_group['description'];
-		$chaine_titre=$current_group['name']."_".ereg_replace(",","_",$current_group['classlist_string']);
+		$chaine_titre=$current_group['name']."_".my_ereg_replace(",","_",$current_group['classlist_string']);
 	}
 
 	$nom_fic=$chaine_titre."_".$now.".csv";
 
 	// Filtrer les caractères dans le nom de fichier:
-	$nom_fic=ereg_replace("[^a-zA-Z0-9_.-]","",remplace_accents($nom_fic,'all'));
+	$nom_fic=my_ereg_replace("[^a-zA-Z0-9_.-]","",remplace_accents($nom_fic,'all'));
 
 	header('Content-Type: text/x-csv');
 	header('Expires: ' . $now);
 	// lem9 & loic1: IE need specific headers
-	if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+	if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 		header('Content-Disposition: inline; filename="' . $nom_fic . '"');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Pragma: public');
@@ -99,14 +99,14 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 	//$col_csv=$_POST['col_csv'];
 	$lignes_csv=$_POST['lignes_csv'];
 
-	$fd.=ereg_replace(";",",",ereg_replace("&#039;","'",html_entity_decode($ligne1_csv[1])));
+	$fd.=my_ereg_replace(";",",",my_ereg_replace("&#039;","'",html_entity_decode($ligne1_csv[1])));
 	for($i=2;$i<=count($ligne1_csv);$i++) {
-		$fd.=";".ereg_replace(";",",",ereg_replace("&#039;","'",html_entity_decode($ligne1_csv[$i])));
+		$fd.=";".my_ereg_replace(";",",",my_ereg_replace("&#039;","'",html_entity_decode($ligne1_csv[$i])));
 	}
 	$fd.="\n";
 
 	for($j=0;$j<count($lignes_csv);$j++) {
-		$fd.=ereg_replace("&#039;","'",html_entity_decode($lignes_csv[$j])."\n");
+		$fd.=my_ereg_replace("&#039;","'",html_entity_decode($lignes_csv[$j])."\n");
 	}
 
 	echo $fd;
@@ -868,7 +868,7 @@ if (!$current_group) {
 		for($loop=0;$loop<count($col[$nb_col]);$loop++) {
 			//$tmp_tab[$loop]=$col[$nb_col][$loop];
 			//$tmp_tab[$loop]=$col_csv[$nb_col][$loop];
-			$tmp_tab[$loop]=ereg_replace(",",".",$col_csv[$nb_col][$loop]);
+			$tmp_tab[$loop]=my_ereg_replace(",",".",$col_csv[$nb_col][$loop]);
 			//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
 
 			$rg[$loop]=$loop;
@@ -926,14 +926,14 @@ if (!$current_group) {
 		}
 
 		// Vérifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
-		if((strlen(ereg_replace("[0-9]","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
+		if((strlen(my_ereg_replace("[0-9]","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
 			//echo "<table>";
 			//echo "<tr><td valign='top'>";
 			unset($tmp_tab);
 			//for($loop=0;$loop<count($col[$col_tri]);$loop++) {
 			for($loop=0;$loop<count($col_csv[1]);$loop++) {
 				// Il faut le POINT au lieu de la VIRGULE pour obtenir un tri correct sur les notes
-				$tmp_tab[$loop]=ereg_replace(",",".",$col_csv[$col_tri][$loop]);
+				$tmp_tab[$loop]=my_ereg_replace(",",".",$col_csv[$col_tri][$loop]);
 				//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
 			}
 			/*
@@ -1503,7 +1503,7 @@ if (!$current_group) {
 				$lignes_csv[$j]=$col_csv[$i][$j];
 			}
 			else {
-				$lignes_csv[$j].=";".ereg_replace('"',"'",ereg_replace(";",",",ereg_replace("&#039;","'",html_entity_decode($col_csv[$i][$j]))));
+				$lignes_csv[$j].=";".my_ereg_replace('"',"'",my_ereg_replace(";",",",my_ereg_replace("&#039;","'",html_entity_decode($col_csv[$i][$j]))));
 			}
 
 			//echo "<input type='hidden' name='col_csv_".$i."[$j]' value='".$col_csv[$i][$j]."' />\n";
@@ -1576,7 +1576,7 @@ if (!$current_group) {
 			echo "<th class='small'>";
 			if(!eregi("Appréciation",$ligne1[$j])) {
 				echo "<a href='#' onclick=\"document.getElementById('col_tri').value='$j';";
-				if(eregi("Rang",$ligne1[$j])) {echo "document.getElementById('sens_tri').value='inverse';";}
+				if(my_eregi("Rang",$ligne1[$j])) {echo "document.getElementById('sens_tri').value='inverse';";}
 				if($ligne1[$j]=="Classe") {echo "if(document.getElementById('order_by')) {document.getElementById('order_by').value='classe';}";}
 				if($ligne1[$j]=="Nom Prénom") {echo "if(document.getElementById('order_by')) {document.getElementById('order_by').value='nom';}";}
 				echo "document.forms['formulaire_tri'].submit();\">";

@@ -211,14 +211,14 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 		$motif = $_SESSION['retenue_motif'];
 		$motif=traitement_magic_quotes(corriger_caracteres($motif));
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-		$motif=ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
+		$motif=my_ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
 		session_unregister("retenue_motif");
 	}
 	if (isset($_SESSION['retenue_travail'])) {
 		$travail = $_SESSION['retenue_travail'];
 		$travail=traitement_magic_quotes(corriger_caracteres($travail));
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-		$travail=ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+		$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
 		session_unregister("retenue_travail");
 	}
 	if (isset($_SESSION['retenue_nom_resp'])) {
@@ -234,7 +234,7 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 		$nature_incident = $_SESSION['retenue_nature_incident'];
 		$nature_incident=traitement_magic_quotes(corriger_caracteres($nature_incident));
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-		$nature_incident=ereg_replace('(\\\r\\\n)+',"\r\n",$nature_incident);
+		$nature_incident=my_ereg_replace('(\\\r\\\n)+',"\r\n",$nature_incident);
 		session_unregister("retenue_nature_incident");
 	}
 
@@ -293,7 +293,7 @@ $nom_fic = remplace_accents($nom_fichier_modele[0]."_".$classe."_".$nom_prenom_e
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
 
-if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
     header('Content-Disposition: inline; filename="' . $nom_fic . '"');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: public');

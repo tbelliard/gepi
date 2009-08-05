@@ -31,7 +31,7 @@ require_once("../lib/header.inc");
 
 function extr_valeur($lig){
 	unset($tabtmp);
-	$tabtmp=explode(">",ereg_replace("<",">",$lig));
+	$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
 	return trim($tabtmp[2]);
 }
 
@@ -565,13 +565,13 @@ function get_nom_class_from_id($id){
 											$tab_tmp=explode(" ",$ligne_courante);
 											for($j=0;$j<count($tab_tmp);$j++){
 												//echo "\$tab_tmp[$j]=".$tab_tmp[$j]."<br />";
-												if(ereg("=",$tab_tmp[$j])) {
+												if(my_ereg("=",$tab_tmp[$j])) {
 													unset($tab_tmp2);
-													$tab_tmp2=explode("=",ereg_replace('"','',$tab_tmp[$j]));
+													$tab_tmp2=explode("=",my_ereg_replace('"','',$tab_tmp[$j]));
 													//echo "\$tab_tmp2[0]=".$tab_tmp[0]."<br />";
 													//echo "\$tab_tmp2[1]=".$tab_tmp[1]."<br />";
 													//$eleves[$i][trim($tab_tmp2[0])]=trim($tab_tmp2[1]);
-													$eleves[$i][trim($tab_tmp2[0])]=trim(ereg_replace("/>$","",$tab_tmp2[1]));
+													$eleves[$i][trim($tab_tmp2[0])]=trim(my_ereg_replace("/>$","",$tab_tmp2[1]));
 												}
 											}
 										}
@@ -596,7 +596,7 @@ function get_nom_class_from_id($id){
 									/*
 									$num_periode="NaN";
 									if(isset($tab_periode['libelle'])) {
-										$num_periode=trim(ereg_replace("^T","",$tab_periode['libelle']));
+										$num_periode=trim(my_ereg_replace("^T","",$tab_periode['libelle']));
 									}
 									*/
 

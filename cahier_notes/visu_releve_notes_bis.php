@@ -107,7 +107,7 @@ $choix_parametres=isset($_POST['choix_parametres']) ? $_POST['choix_parametres']
 // Un prof peut choisir un groupe plutôt qu'une liste de classes
 $id_groupe=($_SESSION['statut']=='professeur') ? (isset($_POST['id_groupe']) ? $_POST['id_groupe'] : NULL) : NULL;
 if(isset($id_groupe)) {
-	if(($id_groupe=='')||(strlen(ereg_replace("[0-9]","",$id_groupe))!=0)) {
+	if(($id_groupe=='')||(strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0)) {
 		tentative_intrusion(2, "Tentative d'un professeur de manipuler l'identifiant id_groupe en y mettant des caractères non numériques ou un identifiant de groupe vide.");
 		echo "<p>L'identifiant de groupe est erroné.</p>\n";
 

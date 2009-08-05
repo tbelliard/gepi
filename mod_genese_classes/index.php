@@ -164,7 +164,7 @@ $projet_new=isset($_POST['projet_new']) ? $_POST['projet_new'] : (isset($_GET['p
 
 if(isset($projet)) {
 	if(isset($creer_projet)) {
-		$projet=ereg_replace("[^A-Za-z0-9_]","",$projet);
+		$projet=my_ereg_replace("[^A-Za-z0-9_]","",$projet);
 		if($projet!="") {
 			$sql="SELECT 1=1 FROM gc_projets WHERE projet='$projet';";
 			$test=mysql_query($sql);
@@ -181,7 +181,7 @@ if(isset($projet)) {
 		}
 	}
 	elseif(isset($suppr_projet)) {
-		$projet=ereg_replace("[^A-Za-z0-9_]","",$projet);
+		$projet=my_ereg_replace("[^A-Za-z0-9_]","",$projet);
 		if($projet!="") {
 			$sql="DELETE FROM gc_projets WHERE projet='$projet';";
 			$del=mysql_query($sql);
@@ -207,10 +207,10 @@ if(isset($projet)) {
 		unset($projet);
 	}
 	elseif(isset($copie_projet)) {
-		$projet_original=ereg_replace("[^A-Za-z0-9_]","",$projet);
+		$projet_original=my_ereg_replace("[^A-Za-z0-9_]","",$projet);
 		$projet=$projet_new;
 		if($projet_original!="") {
-			$projet=ereg_replace("[^A-Za-z0-9_]","",$projet);
+			$projet=my_ereg_replace("[^A-Za-z0-9_]","",$projet);
 			if($projet!="") {
 				$sql="SELECT 1=1 FROM gc_projets WHERE projet='$projet';";
 				$test=mysql_query($sql);

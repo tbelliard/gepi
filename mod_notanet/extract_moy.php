@@ -372,7 +372,7 @@ else {
 			$sql="DELETE FROM notanet;";
 			$nettoyage=mysql_query($sql);
 		}
-		elseif((ereg("[0-9]",$extract_mode))&&(strlen(ereg_replace("[0-9]","",$extract_mode))==0)) {
+		elseif((my_ereg("[0-9]",$extract_mode))&&(strlen(my_ereg_replace("[0-9]","",$extract_mode))==0)) {
 			$sql="SELECT login FROM notanet_ele_type WHERE type_brevet='$extract_mode';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
@@ -485,7 +485,7 @@ else {
 												}
 											}
 											if($test_valeur_speciale_autorisee!="oui"){
-												if(strlen(ereg_replace("[0-9.]","",$moy[$j][$k][$m]))!=0){
+												if(strlen(my_ereg_replace("[0-9.]","",$moy[$j][$k][$m]))!=0){
 													echo "<br /><span style='color:red'>ERREUR</span>: La valeur saisie n'est pas valide: ";
 													echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m];
 													echo "<br />\n";
@@ -551,7 +551,7 @@ else {
 											}
 										}
 										if($test_valeur_speciale_autorisee!="oui"){
-											if(strlen(ereg_replace("[0-9.]","",$moy[$j][$k][$m]))!=0){
+											if(strlen(my_ereg_replace("[0-9.]","",$moy[$j][$k][$m]))!=0){
 												echo "<br /><span style='color:red'>ERREUR</span>: La valeur saisie n'est pas valide: ";
 												echo $tabmatieres[$j][0]."=".$moy[$j][$k][$m];
 												echo "<br />\n";

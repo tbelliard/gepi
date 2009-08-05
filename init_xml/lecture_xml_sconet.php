@@ -28,7 +28,7 @@ require_once("../lib/header.inc");
 
 function extr_valeur($lig){
 	unset($tabtmp);
-	$tabtmp=explode(">",ereg_replace("<",">",$lig));
+	$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
 	return trim($tabtmp[2]);
 }
 
@@ -1211,16 +1211,16 @@ function dragStop(event) {
 															break;
 													}
 													*/
-													if(ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													if(my_ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 														echo "ecole";
 														$chaine.="ecole";
 													}
-													elseif(ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													elseif(my_ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 														echo "college";
 														$chaine.="college";
 													}
-													elseif(ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-														if(ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													elseif(my_ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+														if(my_ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 															echo "lprof";
 															$chaine.="lprof";
 														}
@@ -1243,7 +1243,7 @@ function dragStop(event) {
 												// TYPE
 												echo "<td>";
 												if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-													if(ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													if(my_ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 														echo "prive";
 														$chaine.="prive";
 													}

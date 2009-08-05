@@ -1015,7 +1015,7 @@ $annuel = $mois;
 	$pdf->SetFont('arial','',10);
 
 // a changer par la suite corrige une erreur
-//$total_absence_heure = eregi_replace("[-]{1}",'',$total_absence_heure);
+//$total_absence_heure = my_eregi_replace("[-]{1}",'',$total_absence_heure);
 
 	$pdf->Cell(0, $h_annuel, 'Total des absences : '.$total_absence_nb.', Total des absences en heure : '.convert_minutes_heures($total_absence_heure).', Total des retards : '.$total_retard, 0, 0, 'C', 0);
 // fin du tableau annuel des absences et retards

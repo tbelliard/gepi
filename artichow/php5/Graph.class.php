@@ -203,7 +203,7 @@ class awGraph extends awImage {
 				$type = awGraph::cleanGraphCache($file);
 				
 				if($type === NULL) {
-					$name = ereg_replace(".*/(.*)\-time", "\\1", $file);
+					$name = my_ereg_replace(".*/(.*)\-time", "\\1", $file);
 					awGraph::deleteFromCache($name);
 				}
 			

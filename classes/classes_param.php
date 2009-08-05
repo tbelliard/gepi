@@ -164,7 +164,7 @@ if (isset($_POST['is_posted'])) {
 					}
 
 
-					if(strlen(ereg_replace("[0-9]","",$_POST['rn_sign_nblig_'.$per]))!=0){$_POST['rn_sign_nblig_'.$per]=3;}
+					if(strlen(my_ereg_replace("[0-9]","",$_POST['rn_sign_nblig_'.$per]))!=0){$_POST['rn_sign_nblig_'.$per]=3;}
 
 					if (isset($_POST['rn_sign_nblig_'.$per])) {
 						$register = mysql_query("UPDATE classes SET rn_sign_nblig='".$_POST['rn_sign_nblig_'.$per]."' where id='".$id_classe."'");
@@ -237,7 +237,7 @@ if (isset($_POST['is_posted'])) {
 
 					if((isset($_POST['change_coef']))&&($_POST['change_coef']=='y')) {
 						if((isset($_POST['coef_enseignements']))&&($_POST['coef_enseignements']!="")) {
-							$coef_enseignements=ereg_replace("[^0-9]","",$_POST['coef_enseignements']);
+							$coef_enseignements=my_ereg_replace("[^0-9]","",$_POST['coef_enseignements']);
 							if($coef_enseignements!="") {
 								$sql="UPDATE j_groupes_classes SET coef='".$coef_enseignements."' WHERE id_classe='".$id_classe."';";
 								$update_coef=mysql_query($sql);
@@ -262,10 +262,10 @@ if (isset($_POST['is_posted'])) {
 							}
 							else {
 								$coef_nouvel_enseignement=isset($_POST['coef_nouvel_enseignement']) ? $_POST['coef_nouvel_enseignement'] : 0;
-								$coef_nouvel_enseignement=ereg_replace("[^0-9]","",$_POST['coef_nouvel_enseignement']);
+								$coef_nouvel_enseignement=my_ereg_replace("[^0-9]","",$_POST['coef_nouvel_enseignement']);
 
 								$professeur_nouvel_enseignement=isset($_POST['professeur_nouvel_enseignement']) ? $_POST['professeur_nouvel_enseignement'] : NULL;
-								$professeur_nouvel_enseignement=ereg_replace("[^A-Za-z0-9._-]","",$professeur_nouvel_enseignement);
+								$professeur_nouvel_enseignement=my_ereg_replace("[^A-Za-z0-9._-]","",$professeur_nouvel_enseignement);
 								if($professeur_nouvel_enseignement!="") {
 									$sql="SELECT 1=1 FROM utilisateurs u WHERE u.login='$professeur_nouvel_enseignement';";
 									$verif=mysql_query($sql);

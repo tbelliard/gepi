@@ -157,7 +157,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	}
 	if ( $action_affiche === 'equipepeda' ) { $entete = "Equipe pédagogique : ".$donnees_qui['nom_complet']." (<i>".$donnees_qui['classe']."</i>)"; }
 	if ( $action_affiche === 'discipline' ) { $entete = "Discipline : ".$donnees_qui['nom_complet']." (".$donnees_qui['matiere'].")"; }
-	if ( $action_affiche === 'statusgepi' ) { $entete = "Statut : ".ereg_replace("scolarite","scolarité",$statusgepi); }
+	if ( $action_affiche === 'statusgepi' ) { $entete = "Statut : ".my_ereg_replace("scolarite","scolarité",$statusgepi); }
 
 	// choix du répertoire ou chercher les photos entre professeur ou élève
 	if ( $action_affiche === 'classe' ) { $repertoire = 'eleves'; }
@@ -283,7 +283,7 @@ function matiereprof($prof, $equipepeda) {
 
 			$tmp_clas=get_class_from_ele_login($_SESSION['login']);
 			foreach($tmp_clas as $key_tmp => $value_tmp) {
-				if(strlen(ereg_replace("[0-9]","",$key_tmp))==0) {
+				if(strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
 					$tmp_id_classe=$key_tmp;
 					break;
 				}
@@ -298,7 +298,7 @@ function matiereprof($prof, $equipepeda) {
 				if(isset($tmp_tab_enfants[$loop])) {
 					$tmp_clas=get_class_from_ele_login($tmp_tab_enfants[$loop]);
 					foreach($tmp_clas as $key_tmp => $value_tmp) {
-						if(strlen(ereg_replace("[0-9]","",$key_tmp))==0) {
+						if(strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
 							$tmp_id_classe=$key_tmp;
 							break;
 						}

@@ -47,7 +47,7 @@ if (!checkAccess()) {
 
 function extr_valeur($lig){
 	unset($tabtmp);
-	$tabtmp=explode(">",ereg_replace("<",">",$lig));
+	$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
 	return trim($tabtmp[2]);
 }
 
@@ -458,7 +458,7 @@ else{
 
 												//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
 												// Suppression des guillemets éventuels
-												$eleves[$i]["structures"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+												$eleves[$i]["structures"][$j]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 
 												//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
 												break;
@@ -680,7 +680,7 @@ else{
 
 										// Suppression des guillemets éventuels
 										//$eleves[$i]["$tmpmin"]=extr_valeur($ligne);
-										$eleves[$i]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+										$eleves[$i]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 
 										affiche_debug("\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n");
 										break;
@@ -728,7 +728,7 @@ else{
 										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 										// Suppression des guillemets éventuels
 										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
-										$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+										$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 										affiche_debug( "\$eleves[$i][\"scolarite_an_dernier\"][\"$tmpmin\"]=".$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]."<br />\n");
 										break;
 									}

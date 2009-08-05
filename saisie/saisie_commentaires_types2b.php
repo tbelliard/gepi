@@ -97,7 +97,7 @@
 			while($ligne_commentaire=mysql_fetch_object($resultat_commentaire)) {
 				echo "<div style='border: 1px solid black; margin: 1px; padding: 1px;'";
 
-				if(eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+				if(my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
 					echo " onClick=\"textarea_courant=document.getElementById('textarea_courant').value;document.getElementById(textarea_courant).value=document.getElementById(textarea_courant).value+document.getElementById('commentaire_type_'+$cpt).value;changement();document.getElementById('commentaire_type').style.display='none'; document.getElementById(textarea_courant).focus();\"";
 				}
 				echo ">\n";
@@ -111,7 +111,7 @@
 				}
 
 				// Pour conserver le code HTML saisi dans les commentaires-type...
-				if((ereg("<",$ligne_commentaire->commentaire))&&(ereg(">",$ligne_commentaire->commentaire))){
+				if((my_ereg("<",$ligne_commentaire->commentaire))&&(my_ereg(">",$ligne_commentaire->commentaire))){
 					/* Si le commentaire contient du code HTML, on ne remplace pas les retours à la ligne par des <br> pour éviter des doubles retours à la ligne pour un code comme celui-ci:
 						<p>Blabla<br>
 						Blibli</p>

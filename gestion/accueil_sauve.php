@@ -84,7 +84,7 @@ if (isset($action) and ($action == 'upload'))  {
     } else {
         $dest = "../backup/".$dirname."/";
         $n = 0;
-        $nom_corrige = ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_file['name']);
+        $nom_corrige = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_file['name']);
         if (!deplacer_fichier_upload($sav_file['tmp_name'], "../backup/".$dirname."/".$nom_corrige)) {
             $msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire backup";
         } else {
@@ -355,7 +355,7 @@ function restoreMySqlDump($duree) {
 	if(mysql_num_rows($res)>0) {
 		$lig=mysql_fetch_object($res);
 
-		$num_table=ereg_replace('^table_','',$lig->name);
+		$num_table=my_ereg_replace('^table_','',$lig->name);
 		$nom_table=$lig->value;
 
 		$dumpFile="../backup/".$dirname."/base_extraite_table_".$num_table.".sql";
@@ -419,10 +419,10 @@ function restoreMySqlDump($duree) {
 						$sql = $formattedQuery;
 					}
 					if (mysql_query($sql)) {//réussie sinon continue à concaténer
-						if(ereg("^DROP TABLE ",$sql)) {
+						if(my_ereg("^DROP TABLE ",$sql)) {
 							echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
 						}
-						elseif(ereg("^CREATE TABLE ",$sql)) {
+						elseif(my_ereg("^CREATE TABLE ",$sql)) {
 							echo "Création de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde.<br />";
 						}
 						else {
@@ -500,7 +500,7 @@ function restoreMySqlDump($duree) {
 			if(mysql_num_rows($res)>0) {
 				$lig=mysql_fetch_object($res);
 
-				$num_table=ereg_replace('^table_','',$lig->name);
+				$num_table=my_ereg_replace('^table_','',$lig->name);
 				$nom_table=$lig->value;
 
 				$dumpFile="../backup/".$dirname."/base_extraite_table_".$num_table.".sql";
@@ -553,10 +553,10 @@ function restoreMySqlDump($duree) {
 								$sql = $formattedQuery;
 							}
 							if (mysql_query($sql)) {//réussie sinon continue à concaténer
-								if(ereg("^DROP TABLE ",$sql)) {
+								if(my_ereg("^DROP TABLE ",$sql)) {
 									echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
 								}
-								elseif(ereg("^CREATE TABLE ",$sql)) {
+								elseif(my_ereg("^CREATE TABLE ",$sql)) {
 									echo "Création de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde.<br />";
 								}
 								else {
@@ -682,12 +682,12 @@ function extractMySqlDump($dumpFile,$duree) {
 
 		// On ne met pas les lignes de commentaire, ni les lignes vides
 		if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/" AND trim($buffer)!='') {
-			if(ereg("^DROP TABLE ",$buffer)) {
+			if(my_ereg("^DROP TABLE ",$buffer)) {
 				if(isset($fich)) {fclose($fich);}
 				//$fich=fopen("../backup/".$dirname."/base_extraite_table_".$num_table.".sql","w+");
 				$fich=fopen("../backup/".$dirname."/base_extraite_table_".sprintf("%03d",$num_table).".sql","w+");
 
-				$nom_table=trim(ereg_replace("[ `;]","",ereg_replace("^DROP TABLE ","",ereg_replace("^DROP TABLE IF EXISTS ","",$buffer))));
+				$nom_table=trim(my_ereg_replace("[ `;]","",my_ereg_replace("^DROP TABLE ","",my_ereg_replace("^DROP TABLE IF EXISTS ","",$buffer))));
 
 				$sql="INSERT INTO a_tmp_setting SET name='table_".sprintf("%03d",$num_table)."', value='$nom_table';";
 				$res=mysql_query($sql);
@@ -1083,7 +1083,7 @@ if (isset($action) and ($action == 'restaure'))  {
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
 					while($lig=mysql_fetch_object($res)) {
-						$num_table=ereg_replace('^table_','',$lig->name);
+						$num_table=my_ereg_replace('^table_','',$lig->name);
 						unlink("../backup/".$dirname."/base_extraite_table_".$num_table.".sql");
 					}
 				}

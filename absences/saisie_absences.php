@@ -120,7 +120,7 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 			//echo "\$ap=$ap<br />";
 
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$ap=ereg_replace('(\\\r\\\n)+',"\r\n",$ap);
+			$ap=my_ereg_replace('(\\\r\\\n)+',"\r\n",$ap);
 			//=========================
 
 			if (!(ereg ("^[0-9]{1,}$", $nb_absences))) {

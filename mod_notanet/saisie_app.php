@@ -87,7 +87,7 @@ if (isset($_POST['is_posted'])) {
 					$app = "";
 				}
 
-				$app=ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+				$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
 
 				$sql="SELECT * FROM notanet_app WHERE (login='$log_eleve[$i]' AND matiere='$matiere');";
 				//echo "$sql<br />";

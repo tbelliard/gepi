@@ -157,7 +157,7 @@ if(isset($_GET['mode'])){
 		header('Content-Type: text/x-csv');
 		header('Expires: ' . $now);
 		// lem9 & loic1: IE need specific headers
-		if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+		if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 			header('Content-Disposition: inline; filename="' . $nom_fic . '"');
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 			header('Pragma: public');
@@ -712,7 +712,7 @@ if ($res) {
         echo "<td class=\"col\"><span class='small'>".$temp1.$date_debut.$temp2."</span></td>\n";
 
 		//$ligne_csv[$nb_ligne] = "$row[10];$row[0];$date_debut;";
-		$ligne_csv[$nb_ligne] = ereg_replace("&nbsp;"," ","$row[10];$row[0];$date_debut;");
+		$ligne_csv[$nb_ligne] = my_ereg_replace("&nbsp;"," ","$row[10];$row[0];$date_debut;");
 
         if ($row[7] == 4) {
            echo "<td class=\"col\" style=\"color: red;\"><span class='small'><b>Tentative de connexion<br />avec mot de passe erroné.</b></span></td>\n";
@@ -756,7 +756,7 @@ if ($res) {
 		echo "</span></td>\n";
 
 		//$ligne_csv[$nb_ligne] .= "$date_fin_f;$result_hostbyaddr;".detect_browser($row[5]).";$row[6]\n";
-		$ligne_csv[$nb_ligne] .= ereg_replace("&nbsp;"," ","$date_fin_f;$result_hostbyaddr;".detect_browser($row[5]).";$row[6]\n");
+		$ligne_csv[$nb_ligne] .= my_ereg_replace("&nbsp;"," ","$date_fin_f;$result_hostbyaddr;".detect_browser($row[5]).";$row[6]\n");
 
         echo "</tr>\n";
 

@@ -172,10 +172,10 @@ if (!isset($_POST["action"])) {
 
             // On nettoie et on vérifie :
             //$reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
-            $reg_nom = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
+            $reg_nom = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
             if (strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
             //$reg_prenom = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($reg_prenom));
-            $reg_prenom = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
+            $reg_prenom = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
             if (strlen($reg_prenom) > 50) $reg_prenom = substr($reg_prenom, 0, 50);
 
             //if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") $reg_civilite = "M.";
@@ -286,11 +286,11 @@ if (!isset($_POST["action"])) {
 
                             // On nettoie et on vérifie :
                             //$tabligne[0] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[0])));
-							$tabligne[0] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])))))));
+							$tabligne[0] = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])))))));
                             if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
 
                             //$tabligne[1] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[1]));
-							$tabligne[1] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
+							$tabligne[1] = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
                             if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
 
                             //if ($tabligne[2] != "M." AND $tabligne[2] != "MME" AND $tabligne[2] != "MLLE") $tabligne[2] = "M.";
@@ -313,54 +313,54 @@ if (!isset($_POST["action"])) {
                                 if ($_POST['login_mode'] == "name") {
                                         $temp1 = $reg_nom_login;
                                         $temp1 = strtoupper($temp1);
-                                        $temp1 = ereg_replace(" ","", $temp1);
-                                        $temp1 = ereg_replace("-","_", $temp1);
-                                        $temp1 = ereg_replace("'","", $temp1);
+                                        $temp1 = my_ereg_replace(" ","", $temp1);
+                                        $temp1 = my_ereg_replace("-","_", $temp1);
+                                        $temp1 = my_ereg_replace("'","", $temp1);
                                         //$temp1 = substr($temp1,0,8);
 
                                     } elseif ($_POST['login_mode'] == "name8") {
                                         $temp1 = $reg_nom_login;
                                         $temp1 = strtoupper($temp1);
-                                        $temp1 = ereg_replace(" ","", $temp1);
-                                        $temp1 = ereg_replace("-","_", $temp1);
-                                        $temp1 = ereg_replace("'","", $temp1);
+                                        $temp1 = my_ereg_replace(" ","", $temp1);
+                                        $temp1 = my_ereg_replace("-","_", $temp1);
+                                        $temp1 = my_ereg_replace("'","", $temp1);
                                         $temp1 = substr($temp1,0,8);
                                     } elseif ($_POST['login_mode'] == "fname8") {
                                         $temp1 = $reg_prenom_login{0} . $reg_nom_login;
                                         $temp1 = strtoupper($temp1);
-                                        $temp1 = ereg_replace(" ","", $temp1);
-                                        $temp1 = ereg_replace("-","_", $temp1);
-                                        $temp1 = ereg_replace("'","", $temp1);
+                                        $temp1 = my_ereg_replace(" ","", $temp1);
+                                        $temp1 = my_ereg_replace("-","_", $temp1);
+                                        $temp1 = my_ereg_replace("'","", $temp1);
                                         $temp1 = substr($temp1,0,8);
                                     } elseif ($_POST['login_mode'] == "fname19") {
                                         $temp1 = $reg_prenom_login{0} . $reg_nom_login;
                                         $temp1 = strtoupper($temp1);
-                                        $temp1 = ereg_replace(" ","", $temp1);
-                                        $temp1 = ereg_replace("-","_", $temp1);
-                                        $temp1 = ereg_replace("'","", $temp1);
+                                        $temp1 = my_ereg_replace(" ","", $temp1);
+                                        $temp1 = my_ereg_replace("-","_", $temp1);
+                                        $temp1 = my_ereg_replace("'","", $temp1);
                                         $temp1 = substr($temp1,0,19);
                                     } elseif ($_POST['login_mode'] == "firstdotname") {
 
                                         $temp1 = $reg_prenom_login . "." . $reg_nom_login;
                                         $temp1 = strtoupper($temp1);
 
-                                       $temp1 = ereg_replace(" ","", $temp1);
-                                        $temp1 = ereg_replace("-","_", $temp1);
-                                        $temp1 = ereg_replace("'","", $temp1);
+                                       $temp1 = my_ereg_replace(" ","", $temp1);
+                                        $temp1 = my_ereg_replace("-","_", $temp1);
+                                        $temp1 = my_ereg_replace("'","", $temp1);
                                         //$temp1 = substr($temp1,0,19);
                                     } elseif ($_POST['login_mode'] == "firstdotname19") {
                                         $temp1 = $reg_prenom_login . "." . $reg_nom_login;
                                         $temp1 = strtoupper($temp1);
-                                        $temp1 = ereg_replace(" ","", $temp1);
-                                        $temp1 = ereg_replace("-","_", $temp1);
-                                        $temp1 = ereg_replace("'","", $temp1);
+                                        $temp1 = my_ereg_replace(" ","", $temp1);
+                                        $temp1 = my_ereg_replace("-","_", $temp1);
+                                        $temp1 = my_ereg_replace("'","", $temp1);
                                         $temp1 = substr($temp1,0,19);
                                     } elseif ($_POST['login_mode'] == "namef8") {
                                         $temp1 =  substr($reg_nom_login,0,7) . $reg_prenom_login{0};
                                         $temp1 = strtoupper($temp1);
-                                        $temp1 = ereg_replace(" ","", $temp1);
-                                        $temp1 = ereg_replace("-","_", $temp1);
-                                        $temp1 = ereg_replace("'","", $temp1);
+                                        $temp1 = my_ereg_replace(" ","", $temp1);
+                                        $temp1 = my_ereg_replace("-","_", $temp1);
+                                        $temp1 = my_ereg_replace("'","", $temp1);
                                         //$temp1 = substr($temp1,0,8);
                                     } elseif ($_POST['login_mode'] == "lcs") {
                                         $nom = $reg_nom_login;

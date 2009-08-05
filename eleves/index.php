@@ -928,7 +928,7 @@ if(isset($quelles_classes)) {
 			ORDER BY $order_type
 			");
 			*/
-			if(ereg('classe',$order_type)){
+			if(my_ereg('classe',$order_type)){
 				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
 					WHERE (e.elenoet='' OR e.no_gep='') AND
 							jec.login=e.login AND
@@ -978,7 +978,7 @@ if(isset($quelles_classes)) {
 			echo "<p align='center'>Liste des élèves sans photo.</p>\n";
 
 		} else if ($quelles_classes == 'no_cpe') {
-			if(ereg('classe',$order_type)){
+			if(my_ereg('classe',$order_type)){
 				/*
 				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
 					WHERE jec.id_classe=c.id AND
@@ -1052,7 +1052,7 @@ if(isset($quelles_classes)) {
 			echo "<p align='center'>Liste des élèves sans CPE.</p>\n";
 
 		} else if ($quelles_classes == 'no_pp') {
-			if(ereg('classe',$order_type)){
+			if(my_ereg('classe',$order_type)){
 				//echo "DEBUG: 1<br />";
 				/*
 				//$sql="SELECT e.*,c.classe FROM eleves e, classes c, j_eleves_classes jec
@@ -1135,7 +1135,7 @@ if(isset($quelles_classes)) {
 			echo "<p align='center'>Liste des élèves sans ".getSettingValue('gepi_prof_suivi')."</p>\n";
 
 		} else if ($quelles_classes == 'no_resp') {
-			if(ereg('classe',$order_type)){
+			if(my_ereg('classe',$order_type)){
 
 				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, classes c
 						WHERE e.login=jec.login AND
@@ -1161,7 +1161,7 @@ if(isset($quelles_classes)) {
 			ORDER BY $order_type
 			");
 			*/
-			if(ereg('classe',$order_type)){
+			if(my_ereg('classe',$order_type)){
 				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
 					WHERE nom like '".$motif_rech."%' AND
 							jec.login=e.login AND

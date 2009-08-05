@@ -365,12 +365,12 @@ if (!isset($suite)) {
 					if(strstr($ligne,"<LIBELLE_LONG>")){
 						// IL ARRIVE QUE L'ON AIT <LIBELLE_LONG/>... faut-il alors remplir le libelle_long avec $groupes[$i]["code"] ??
 						unset($tabtmp);
-						//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-						$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+						//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
+						$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
 
 						// Suppression des guillemets éventuels
 						//$groupes[$i]["libelle_long"]=trim($tabtmp[2]);
-						$groupes[$i]["libelle_long"]=ereg_replace('"','',trim($tabtmp[2]));
+						$groupes[$i]["libelle_long"]=my_ereg_replace('"','',trim($tabtmp[2]));
 					}
 					elseif(strstr($ligne,"<LIBELLE_LONG/>")){
 						$groupes[$i]["libelle_long"]=$groupes[$i]["code"];

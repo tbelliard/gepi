@@ -90,7 +90,7 @@ function createRandomPassword() {
 				fclose($fich);
 			}
 
-            //$nom_corrige = ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_file['name']);
+            //$nom_corrige = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_file['name']);
 
 
 
@@ -402,79 +402,79 @@ function dragStop(event) {
                                     if($temoin_academie==1){
                                         if(strstr($ligne[$cpt],"<CODE>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["academie"]["code"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<LIBELLE>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["academie"]["libelle"]=trim($tabtmp[2]);
                                         }
                                     }
                                     else{
                                         if(strstr($ligne[$cpt],"<SIGLE>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["sigle"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<DENOM_PRINC>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["denom_princ"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<DENOM_COMPL>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["denom_compl"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<CODE_NATURE>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["code_nature"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<CODE_CATEGORIE>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["code_categorie"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<ADRESSE>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["adresse"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<COMMUNE>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["commune"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<CODE_POSTAL>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["code_postal"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<BOITE_POSTALE>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["boite_postale"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<CEDEX>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["cedex"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<TELEPHONE>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["telephone"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<STATUT>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["statut"]=trim($tabtmp[2]);
                                         }
                                         if(strstr($ligne[$cpt],"<ETABLISSEMENT_SENSIBLE>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $etablissement["etablissement_sensible"]=trim($tabtmp[2]);
                                         }
                                     }
@@ -503,12 +503,12 @@ function dragStop(event) {
                                 if($temoin_annee==1){
                                     if(strstr($ligne[$cpt],"<DATE_DEBUT>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         $etablissement["annee"]["date_debut"]=trim($tabtmp[2]);
                                     }
                                     if(strstr($ligne[$cpt],"<DATE_FIN>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         $etablissement["annee"]["date_fin"]=trim($tabtmp[2]);
                                     }
                                 }
@@ -607,7 +607,7 @@ function dragStop(event) {
                                 if(strstr($ligne[$cpt],"<MATIERE CODE=")){
                                     $matiere[$i]=array();
                                     unset($tabtmp);
-                                    //$tabtmp=explode("=",ereg_replace(">","",ereg_replace("<","",$ligne[$cpt])));
+                                    //$tabtmp=explode("=",my_ereg_replace(">","",my_ereg_replace("<","",$ligne[$cpt])));
                                     $tabtmp=explode('"',$ligne[$cpt]);
                                     $matiere[$i]["code"]=trim($tabtmp[1]);
                                     $temoin_mat=1;
@@ -616,7 +616,7 @@ function dragStop(event) {
                                 if(strstr($ligne[$cpt],"<MATIERE ")){
                                     $matiere[$i]=array();
                                     unset($tabtmp);
-                                    //$tabtmp=explode("=",ereg_replace(">","",ereg_replace("<","",$ligne[$cpt])));
+                                    //$tabtmp=explode("=",my_ereg_replace(">","",my_ereg_replace("<","",$ligne[$cpt])));
                                     $tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
                                     $matiere[$i]["code"]=trim($tabtmp[1]);
                                     $temoin_mat=1;
@@ -628,24 +628,24 @@ function dragStop(event) {
                                 if($temoin_mat==1){
                                     if(strstr($ligne[$cpt],"<CODE_GESTION>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$matiere[$i]["code_gestion"]=$tabtmp[2];
-                                        $matiere[$i]["code_gestion"]=trim(ereg_replace("[^a-zA-Z0-9&_. -]","",html_entity_decode_all_version($tabtmp[2])));
+                                        $matiere[$i]["code_gestion"]=trim(my_ereg_replace("[^a-zA-Z0-9&_. -]","",html_entity_decode_all_version($tabtmp[2])));
                                     }
                                     if(strstr($ligne[$cpt],"<LIBELLE_COURT>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$matiere[$i]["libelle_court"]=$tabtmp[2];
-                                        $matiere[$i]["libelle_court"]=trim(ereg_replace("[^a-zA-Z0-9¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸&_. -]","",html_entity_decode_all_version($tabtmp[2])));
+                                        $matiere[$i]["libelle_court"]=trim(my_ereg_replace("[^a-zA-Z0-9¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸&_. -]","",html_entity_decode_all_version($tabtmp[2])));
                                     }
                                     if(strstr($ligne[$cpt],"<LIBELLE_LONG>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         $matiere[$i]["libelle_long"]=trim($tabtmp[2]);
                                     }
                                     if(strstr($ligne[$cpt],"<LIBELLE_EDITION>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         $matiere[$i]["libelle_edition"]=trim($tabtmp[2]);
                                     }
                                 }
@@ -738,12 +738,12 @@ function dragStop(event) {
                                 if($temoin_civ==1){
                                     if(strstr($ligne[$cpt],"<LIBELLE_COURT>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         $civilites[$i]["libelle_court"]=trim($tabtmp[2]);
                                     }
                                     if(strstr($ligne[$cpt],"<LIBELLE_LONG>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         $civilites[$i]["libelle_long"]=trim($tabtmp[2]);
                                     }
                                 }
@@ -832,48 +832,48 @@ function dragStop(event) {
                                 if($temoin_prof==1){
                                     if(strstr($ligne[$cpt],"<SEXE>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$prof[$i]["sexe"]=$tabtmp[2];
-                                        $prof[$i]["sexe"]=trim(ereg_replace("[^1-2]","",$tabtmp[2]));
+                                        $prof[$i]["sexe"]=trim(my_ereg_replace("[^1-2]","",$tabtmp[2]));
                                     }
                                     if(strstr($ligne[$cpt],"<CIVILITE>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$prof[$i]["civilite"]=$tabtmp[2];
-                                        $prof[$i]["civilite"]=trim(ereg_replace("[^1-3]","",$tabtmp[2]));
+                                        $prof[$i]["civilite"]=trim(my_ereg_replace("[^1-3]","",$tabtmp[2]));
                                     }
                                     if(strstr($ligne[$cpt],"<NOM_USAGE>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$prof[$i]["nom_usage"]=$tabtmp[2];
-                                        $prof[$i]["nom_usage"]=trim(ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
+                                        $prof[$i]["nom_usage"]=trim(my_ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
                                     }
                                     if(strstr($ligne[$cpt],"<NOM_PATRONYMIQUE>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$prof[$i]["nom_patronymique"]=$tabtmp[2];
-                                        $prof[$i]["nom_patronymique"]=trim(ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
+                                        $prof[$i]["nom_patronymique"]=trim(my_ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
                                     }
                                     if(strstr($ligne[$cpt],"<PRENOM>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$prof[$i]["prenom"]=$tabtmp[2];
-                                        $prof[$i]["prenom"]=trim(ereg_replace("[^a-zA-Z0-9¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_. -]","",$tabtmp[2]));
+                                        $prof[$i]["prenom"]=trim(my_ereg_replace("[^a-zA-Z0-9¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_. -]","",$tabtmp[2]));
                                     }
                                     if(strstr($ligne[$cpt],"<DATE_NAISSANCE>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$prof[$i]["date_naissance"]=$tabtmp[2];
-                                        $prof[$i]["date_naissance"]=trim(ereg_replace("[^0-9-]","",$tabtmp[2]));
+                                        $prof[$i]["date_naissance"]=trim(my_ereg_replace("[^0-9-]","",$tabtmp[2]));
                                     }
                                     if(strstr($ligne[$cpt],"<GRADE>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         $prof[$i]["grade"]=trim($tabtmp[2]);
                                     }
                                     if(strstr($ligne[$cpt],"<FONCTION>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         $prof[$i]["fonction"]=trim($tabtmp[2]);
                                     }
 
@@ -902,19 +902,19 @@ function dragStop(event) {
                                         if($temoin_prof_princ==1){
                                             if(strstr($ligne[$cpt],"<CODE_STRUCTURE>")){
                                                 unset($tabtmp);
-                                                $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                                $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                                 $prof[$i]["prof_princ"][$j]["code_structure"]=trim($tabtmp[2]);
                                                 $temoin_au_moins_un_prof_princ="oui";
                                             }
 
                                             if(strstr($ligne[$cpt],"<DATE_DEBUT>")){
                                                 unset($tabtmp);
-                                                $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                                $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                                 $prof[$i]["prof_princ"][$j]["date_debut"]=trim($tabtmp[2]);
                                             }
                                             if(strstr($ligne[$cpt],"<DATE_FIN>")){
                                                 unset($tabtmp);
-                                                $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                                $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                                 $prof[$i]["prof_princ"][$j]["date_fin"]=trim($tabtmp[2]);
                                             }
                                         }
@@ -957,12 +957,12 @@ function dragStop(event) {
                                         if($temoin_disc==1){
                                             if(strstr($ligne[$cpt],"<LIBELLE_COURT>")){
                                                 unset($tabtmp);
-                                                $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                                $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                                 $prof[$i]["disciplines"][$j]["libelle_court"]=trim($tabtmp[2]);
                                             }
                                             if(strstr($ligne[$cpt],"<NB_HEURES>")){
                                                 unset($tabtmp);
-                                                $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                                $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                                 $prof[$i]["disciplines"][$j]["nb_heures"]=trim($tabtmp[2]);
                                             }
                                         }
@@ -1121,7 +1121,7 @@ function dragStop(event) {
                                     if($temoin_grp==1){
                                         if(strstr($ligne[$cpt],"<LIBELLE_LONG>")){
                                             unset($tabtmp);
-                                            $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                            $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                             $groupes[$i]["libelle_long"]=trim($tabtmp[2]);
                                         }
 
@@ -1254,12 +1254,12 @@ function dragStop(event) {
                                 if($temoin_prog==1){
                                     if(strstr($ligne[$cpt],"<CODE_MEF>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         $programme[$i]["code_mef"]=$tabtmp[2];
                                     }
                                     if(strstr($ligne[$cpt],"<CODE_MATIERE>")){
                                         unset($tabtmp);
-                                        $tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+                                        $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         $programme[$i]["code_matiere"]=$tabtmp[2];
                                     }
                                 }

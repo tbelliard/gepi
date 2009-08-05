@@ -941,7 +941,7 @@ function WriteHTML($html)
                 $tag=strtoupper(array_shift($a2));
                 $attr=array();
                 foreach($a2 as $v)
-                    if(ereg('^([^=]*)=["\']?([^"\']*)["\']?$',$v,$a3))
+                    if(my_ereg('^([^=]*)=["\']?([^"\']*)["\']?$',$v,$a3))
                         $attr[strtoupper($a3[1])]=$a3[2];
                 $this->OpenTag($tag,$attr);
             }

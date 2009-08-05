@@ -378,7 +378,7 @@ else{
 										//=========================
 										// MODIF: boireaus 20071121
 										//$sql="insert into commentaires_types values('','".html_entity_decode($commentaire[$i])."','$num_periode[$j]','$id_classe')";
-										//$tmp_commentaire=ereg_replace("&#039;","'",html_entity_decode($commentaire[$i]));
+										//$tmp_commentaire=my_ereg_replace("&#039;","'",html_entity_decode($commentaire[$i]));
 										//$sql="insert into commentaires_types values('','".addslashes($tmp_commentaire)."','$num_periode[$j]','$id_classe')";
 										//$sql="insert into commentaires_types values('','".addslashes($commentaire_courant)."','$num_periode[$j]','$id_classe')";
 										$sql="insert into commentaires_types values('','".$commentaire_courant."','$num_periode[$j]','$id_classe')";

@@ -86,8 +86,8 @@ if((isset($qualite))&&($qualite!='')) {
 	}
 
 	if($a_enregistrer=='y') {
-		//$qualite=addslashes(ereg_replace('(\\\r\\\n)+',"\r\n",ereg_replace("&#039;","'",html_entity_decode($qualite))));
-		$qualite=ereg_replace('(\\\r\\\n)+',"\r\n",$qualite);
+		//$qualite=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($qualite))));
+		$qualite=my_ereg_replace('(\\\r\\\n)+',"\r\n",$qualite);
 
 		$sql="INSERT INTO s_qualites SET qualite='".$qualite."';";
 		$res=mysql_query($sql);

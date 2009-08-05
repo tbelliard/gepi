@@ -70,7 +70,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 
 		    	$donnee = mysql_fetch_array($requete);
 		    	$remplace_sa = ','.$id_absence_eleve.',';
-		    	$modifier_par = ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
+		    	$modifier_par = my_ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
 		    	$requete = "UPDATE ".$prefix_base."lettres_suivis
 		    				SET partdenum_lettre_suivi = '".$modifier_par."',
 		    					envoye_date_lettre_suivi = '',

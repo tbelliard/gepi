@@ -181,7 +181,7 @@ elseif(!isset($_GET['nom_pdf_en_detail'])) {
 	$ident_plus="";
 
 	$ident_plus .= date("Ymd");
-	$ident_plus = ereg_replace("[^A-Za-z0-9]","_",$current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus);
+	$ident_plus = my_ereg_replace("[^A-Za-z0-9]","_",$current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus);
 	$ident_plus=str_replace(" ", "_", $ident_plus);
 	$pdf->Output($ident_plus.'.pdf','I');
 	$pdf->closeParsers();
@@ -193,7 +193,7 @@ else{
 		$ident_plus .= "Periode_".$_GET['periode_num']."_";
 	}
 	$ident_plus .= date("Ymd");
-	$ident_plus = ereg_replace("[^A-Za-z0-9]","_",$current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus);
+	$ident_plus = my_ereg_replace("[^A-Za-z0-9]","_",$current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus);
 	$ident_plus=str_replace(" ", "_", $ident_plus);
 	$pdf->Output($ident_plus.'.pdf','I');
 	$pdf->closeParsers();

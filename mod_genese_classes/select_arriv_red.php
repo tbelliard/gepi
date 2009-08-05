@@ -71,7 +71,7 @@ if((isset($projet))&&(isset($choix))&&(($choix=='Red')||($choix=='Arriv'))&&(iss
 	$nb_err=0;
 	$nb_reg=0;
 	for($i=0;$i<count($ele_login);$i++) {
-		if(($ele_login[$i]!='')&&(ereg_replace("[A-Za-z0-9_.-]","",$ele_login[$i])=='')) {
+		if(($ele_login[$i]!='')&&(my_ereg_replace("[A-Za-z0-9_.-]","",$ele_login[$i])=='')) {
 			$sql="DELETE FROM gc_ele_arriv_red WHERE projet='$projet' AND login='$ele_login[$i]';";
 			//echo "$sql<br />";
 			$del=mysql_query($sql);

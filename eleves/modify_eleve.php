@@ -616,7 +616,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			// Envoi de la photo
 			if(isset($reg_no_gep)){
 				if($reg_no_gep!=""){
-					if(strlen(ereg_replace("[0-9]","",$reg_no_gep))==0){
+					if(strlen(my_ereg_replace("[0-9]","",$reg_no_gep))==0){
 						if(isset($_POST['suppr_filephoto'])){
 							if($_POST['suppr_filephoto']=='y'){
 
@@ -847,7 +847,7 @@ elseif($_SESSION['statut']=="professeur"){
 		// Envoi de la photo
 		if(isset($reg_no_gep)){
 			if($reg_no_gep!=""){
-				if(strlen(ereg_replace("[0-9]","",$reg_no_gep))==0){
+				if(strlen(my_ereg_replace("[0-9]","",$reg_no_gep))==0){
 					if(isset($_POST['suppr_filephoto'])){
 						if($_POST['suppr_filephoto']=='y'){
 
@@ -1096,18 +1096,18 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 			$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
 			$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
-			$critere_recherche=ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche);
+			$critere_recherche=my_ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche);
 
 			if($critere_recherche==""){
 				$critere_recherche=substr($eleve_nom,0,3);
 			}
 
 			$nb_resp=isset($_POST['nb_resp']) ? $_POST['nb_resp'] : 20;
-			if(strlen(ereg_replace("[0-9]","",$nb_resp))!=0) {
+			if(strlen(my_ereg_replace("[0-9]","",$nb_resp))!=0) {
 				$nb_resp=20;
 			}
 			$num_premier_resp_rech=isset($_POST['num_premier_resp_rech']) ? $_POST['num_premier_resp_rech'] : 0;
-			if(strlen(ereg_replace("[0-9]","",$num_premier_resp_rech))!=0) {
+			if(strlen(my_ereg_replace("[0-9]","",$num_premier_resp_rech))!=0) {
 				$num_premier_resp_rech=0;
 			}
 
@@ -1255,8 +1255,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			//====================================================
 			$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
 			$afficher_tous_les_etab=isset($_POST['afficher_tous_les_etab']) ? $_POST['afficher_tous_les_etab'] : "n";
-			//$critere_recherche=ereg_replace("[^0-9a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche);
-			$critere_recherche=ereg_replace("[^0-9a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ %-]", "", ereg_replace(" ","%",$critere_recherche));
+			//$critere_recherche=my_ereg_replace("[^0-9a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche);
+			$critere_recherche=my_ereg_replace("[^0-9a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ %-]", "", my_ereg_replace(" ","%",$critere_recherche));
 			// Saisir un espace ou % pour plusieurs portions du champ de recherche ou pour une apostrophe
 			$champ_rech=isset($_POST['champ_rech']) ? $_POST['champ_rech'] : "nom";
 			$tab_champs_recherche_autorises=array('nom','cp','ville');
@@ -1269,11 +1269,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			*/
 
 			$nb_etab=isset($_POST['nb_etab']) ? $_POST['nb_etab'] : 20;
-			if(strlen(ereg_replace("[0-9]","",$nb_etab))!=0) {
+			if(strlen(my_ereg_replace("[0-9]","",$nb_etab))!=0) {
 				$nb_etab=20;
 			}
 			$num_premier_etab_rech=isset($_POST['num_premier_etab_rech']) ? $_POST['num_premier_etab_rech'] : 0;
-			if(strlen(ereg_replace("[0-9]","",$num_premier_etab_rech))!=0) {
+			if(strlen(my_ereg_replace("[0-9]","",$num_premier_etab_rech))!=0) {
 				$num_premier_etab_rech=0;
 			}
 

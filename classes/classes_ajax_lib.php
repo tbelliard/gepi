@@ -50,7 +50,7 @@ $mode=isset($_GET['mode']) ? $_GET['mode'] : NULL;
 if($mode=='classes_param') {
 	//$cpt=isset($_GET['cpt']) ? $_GET['cpt'] : NULL;
 	$matiere=isset($_GET['matiere']) ? $_GET['matiere'] : NULL;
-	$matiere=ereg_replace("[^A-Za-z0-9_.-]","",$matiere);
+	$matiere=my_ereg_replace("[^A-Za-z0-9_.-]","",$matiere);
 
 	if(isset($matiere)) {
 		if($matiere=="") {

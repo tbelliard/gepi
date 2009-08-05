@@ -28,7 +28,7 @@
 	@mysql_select_db($dbDb);
 
 	// CONTROLER CE QUI EST POSTé
-	if((strlen(ereg_replace("[A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸ -]","",$_POST['nom_ele']))!=0)||(strlen(ereg_replace("[A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸ -]","",$_POST['prenom_ele']))!=0)){
+	if((strlen(my_ereg_replace("[A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸ -]","",$_POST['nom_ele']))!=0)||(strlen(my_ereg_replace("[A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸ -]","",$_POST['prenom_ele']))!=0)){
 		$chaine="Les caractères proposés dans la recherche doivent être des caractères alphabétiques<br />(<i>ou éventuellement le tiret '-' et l'espace ' '</i>).";
 	}
 	else{

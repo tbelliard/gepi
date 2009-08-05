@@ -1811,7 +1811,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 		while(true) {
 			if(isset($ligne[$cpt])) {$ligne[$cpt].=" ";} else {$ligne[$cpt]="";}
 
-			if(ereg("\n",$tab[$i])) {
+			if(my_ereg("\n",$tab[$i])) {
 				$tmp_tab=split("\n",$tab[$i]);
 
 				for($k=0;$k<count($tmp_tab)-1;$k++) {
@@ -1904,7 +1904,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 			unset($ligne);
 			$ligne=array();
 		
-			$tab=split(" ",trim(ereg_replace("\n"," ",$texte)));
+			$tab=split(" ",trim(my_ereg_replace("\n"," ",$texte)));
 			$cpt=0;
 			$i=0;
 			while(true) {
@@ -2006,7 +2006,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 			unset($ligne);
 			$ligne=array();
 
-			$tab=split(" ",trim(ereg_replace("\n"," ",$texte)));
+			$tab=split(" ",trim(my_ereg_replace("\n"," ",$texte)));
 			$cpt=0;
 			$i=0;
 			while(true) {

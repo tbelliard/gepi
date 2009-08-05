@@ -24,7 +24,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve) {
 		$requete = mysql_query("SELECT * FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'");
 		$donnee = mysql_fetch_array($requete);
 		$remplace_sa = ','.$id_absence_eleve.',';
-		$modifier_par = ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
+		$modifier_par = my_ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
 		$requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$modifier_par."', envoye_date_lettre_suivi = '', envoye_heure_lettre_suivi = '', quienvoi_lettre_suivi = '' WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'";
 			mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 	}

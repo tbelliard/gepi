@@ -50,9 +50,9 @@ if (isset($is_posted) and ($is_posted == '1')) {
 		$count = mysql_num_rows($call_test);
 
 		// CORRECTION DU CONTENU DES CHAMPS: on interdit les guillemets,...
-		$id=ereg_replace("[^A-Za-z0-9]*","",$id);
+		$id=my_ereg_replace("[^A-Za-z0-9]*","",$id);
 		$nom_etab=strtr($nom_etab,'"',' ');
-		$cp_etab=ereg_replace("[^0-9]*","",$cp_etab);
+		$cp_etab=my_ereg_replace("[^0-9]*","",$cp_etab);
 		$ville_etab=strtr($ville_etab,'"',' ');
 
 		if ($count == "0") {

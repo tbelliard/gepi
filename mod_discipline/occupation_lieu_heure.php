@@ -58,7 +58,7 @@ if(!checkdate($tmp_date[1],$tmp_date[0],$tmp_date[2])) {
 }
 
 $l_duree=strlen($duree);
-$duree=ereg_replace(",",".",ereg_replace("[^0-9.]","",$duree));
+$duree=my_ereg_replace(",",".",my_ereg_replace("[^0-9.]","",$duree));
 if($duree=="") {
 	$duree=1;
 	$msg.="La durée de retenue saisie n'était pas correcte. Elle a été remplacée par '1'.<r />";

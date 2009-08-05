@@ -302,7 +302,7 @@ if (isset($_POST['ok'])) {
 		$reg=mysql_query($sql);
 	}
 
-    if (($_POST['facultatif']) and ereg("^(O|N|B)$", $_POST['facultatif'])) {
+    if (($_POST['facultatif']) and my_ereg("^(O|N|B)$", $_POST['facultatif'])) {
         $reg = mysql_query("UPDATE cn_devoirs SET facultatif = '".$_POST['facultatif']."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
 		for($i=0;$i<count($tab_group);$i++) {
@@ -313,7 +313,7 @@ if (isset($_POST['ok'])) {
     }
 
     if ($_POST['display_date']) {
-        if (ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date'])) {
+        if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date'])) {
             $annee = substr($_POST['display_date'],6,4);
             $mois = substr($_POST['display_date'],3,2);
             $jour = substr($_POST['display_date'],0,2);
@@ -334,7 +334,7 @@ if (isset($_POST['ok'])) {
 
 	//====================================================
     if ($_POST['date_ele_resp']) {
-        if (ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['date_ele_resp'])) {
+        if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['date_ele_resp'])) {
             $annee = substr($_POST['date_ele_resp'],6,4);
             $mois = substr($_POST['date_ele_resp'],3,2);
             $jour = substr($_POST['date_ele_resp'],0,2);

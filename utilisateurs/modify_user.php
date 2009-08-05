@@ -95,7 +95,7 @@ else {
 
 $uid = md5(uniqid(microtime(), 1));
 // on remplace les %20 par des espaces
-	$uid_post = eregi_replace('%20',' ',$uid_post);
+	$uid_post = my_eregi_replace('%20',' ',$uid_post);
 if($uid_post===$_SESSION['uid_prime']) {
 	$valide_form = 'oui';
 }
@@ -728,7 +728,7 @@ if(getSettingValue("active_module_trombinoscopes")=='y'){
 
 	<div id="div_upload_photo" style="display: none;">
 		<input type="file" name="filephoto" size="12" />
-		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+		<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 	<?php
 	if ((isset($user_login))and($user_login!='')&&(isset($user_nom))and($user_nom!='')&&(isset($user_prenom))and($user_prenom!='')) {
 		if(file_exists($photo)){

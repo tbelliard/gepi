@@ -102,12 +102,12 @@ if (!checkAccess()) {
 				//echo "\$periode[$j]=".$periode[$j]."<br />";
 
 				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode='".$periode[$j]."' AND verouiller!='O';";
-				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".ereg_replace("[ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸']","%",$periode[$j])."' AND verouiller!='O';";
-				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".ereg_replace("[^.a-zA-Z0-9_-]+","%",$periode[$j])."' AND verouiller!='O';";
+				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".my_ereg_replace("[ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸']","%",$periode[$j])."' AND verouiller!='O';";
+				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".my_ereg_replace("[^.a-zA-Z0-9_-]+","%",$periode[$j])."' AND verouiller!='O';";
 
-				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".ereg_replace("[^.a-zA-Z0-9_-]+","%",html_entity_decode($periode[$j]))."' AND verouiller!='O';";
+				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".my_ereg_replace("[^.a-zA-Z0-9_-]+","%",html_entity_decode($periode[$j]))."' AND verouiller!='O';";
 
-				$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".ereg_replace("[^.a-zA-Z0-9_-]+","%",html_entity_decode($periode[$j]))."' AND verouiller='N';";
+				$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".my_ereg_replace("[^.a-zA-Z0-9_-]+","%",html_entity_decode($periode[$j]))."' AND verouiller='N';";
 
 				//echo "$sql<br />\n";
 				$test_per=mysql_query($sql);

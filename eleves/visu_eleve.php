@@ -1351,7 +1351,7 @@ Patientez pendant l'extraction des données... merci.
 					$tmp_date=getdate();
 					echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI&amp;body=";
 					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-					if(ereg(",",$tab_ele['equipe_liste_email'])) {echo " à tou(te)s";}
+					if(my_ereg(",",$tab_ele['equipe_liste_email'])) {echo " à tou(te)s";}
 					echo ",%0d%0aCordialement.'>tous les enseignants et au CPE de l'élève</a>.</p>\n";
 				}
 			}
@@ -1835,7 +1835,7 @@ Patientez pendant l'extraction des données... merci.
 			require("../mod_annees_anterieures/fonctions_annees_anterieures.inc.php");
 
 			//echo $_SERVER['HTTP_USER_AGENT']."<br />\n";
-			if(eregi("gecko",$_SERVER['HTTP_USER_AGENT'])){
+			if(my_eregi("gecko",$_SERVER['HTTP_USER_AGENT'])){
 				//echo "gecko=true<br />";
 				$gecko=true;
 			}

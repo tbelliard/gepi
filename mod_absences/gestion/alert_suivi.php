@@ -130,7 +130,7 @@ die();
 	$uid = md5(uniqid(microtime(), 1));
 	$valide_form='';
 	   // on remplace les %20 par des espaces
-	    $uid_post = eregi_replace('%20',' ',$uid_post);
+	    $uid_post = my_eregi_replace('%20',' ',$uid_post);
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'yes'; } else { $valide_form = 'no'; }
 	$_SESSION['uid_prime'] = $uid;
 // fin de la fonction de sécuritée
@@ -449,7 +449,7 @@ function twAfficheCache(nObjet,nEtat) {
 				{ ?>
 	                          <option value="<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>" <?php if ( !empty($id_alert_groupe) and $id_alert_groupe === $donnee_alert_groupe['id_alert_groupe'] ) { ?>selected="selected"<?php } ?>><?php echo $donnee_alert_groupe['nom_alert_groupe']; ?></option>
         	          <?php } ?>
-	               </select><br /><a href="alert_suivi.php?action_page=gestion_ag&amp;id_alert_groupe=<?php echo $id_alert_groupe; ?>&amp;action=editer_alert_groupe&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>">gérer les groupes d'alerte</a><br /><br />
+	               </select><br /><a href="alert_suivi.php?action_page=gestion_ag&amp;id_alert_groupe=<?php echo $id_alert_groupe; ?>&amp;action=editer_alert_groupe&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>">gérer les groupes d'alerte</a><br /><br />
 		       <input type="hidden" name="action_page" value="alert" />
 		       <input type="submit" name="submit1" value="Valider" tabindex="2" /><br />
 		</form>
@@ -614,7 +614,7 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 						<input type="hidden" name="id_alert_groupe" value="<?php echo $id_alert_groupe; ?>" />
 						<input type="hidden" name="id_alert_eleve" value="<?php echo $id_alert_eleve; ?>" />
 						<input type="hidden" name="action_sql" value="modif_etat_ae" />
-						<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+						<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 						<input type="submit" name="submit3" value="<?php if ( $etat_alert_eleve === '0' ) { ?>Valider<?php } else { ?>Modifier<?php } ?>" />
 					</form>
 					<?php } ?>
@@ -639,7 +639,7 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 				<input type="hidden" name="action_sql" value="<?php if ( $action != 'modifier_alert_groupe' ) { ?>nouveau_alert_groupe<?php } else { ?>modifier_alert_groupe<?php } ?>" />
 				<input type="hidden" name="action_page" value="<?php echo $action_page; ?>" />
 				<input type="hidden" name="action" value="editer_alert_groupe" />
-				<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+				<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 				<input type="submit" name="submit2" value="<?php if ( $action != 'modifier_alert_groupe' ) { ?>Créer<?php } else { ?>Modifier<?php } ?>" />
 		<?php if ( $message_erreur != '' ) { ?><span style="color: #FF0000; font-weight: bold;"><?php echo $message_erreur; ?></span><?php } ?>
 		</form>
@@ -657,9 +657,9 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 			{
 			  if ($i_couleur === '1') { $couleur_cellule = 'couleur_ligne_5'; $i_couleur = '2'; } else { $couleur_cellule = 'couleur_ligne_6'; $i_couleur = '1'; } ?>
 			  <tr class="<?php echo $couleur_cellule; ?>">
-				<td style="text-align: left; padding: 2px;"><a href="alert_suivi.php?action_page=<?php echo $action_page; ?>&amp;action=editer_alert_groupe&amp;id_alert_groupe=<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>#eg" title="editer le groupe"><?php echo $donnee_alert_groupe['nom_alert_groupe']; ?></a></td>
-			        <td style="text-align: center;"><a href="alert_suivi.php?action_page=<?php echo $action_page; ?>&amp;action=modifier_alert_groupe&amp;id_alert_groupe=<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>"><img src="../images/modification.png" width="18" height="22" title="Modifier" border="0" alt="" /></a></td>
-			        <td style="text-align: center;"><a href="alert_suivi.php?action_sql=supprimer_alert_groupe&amp;action_page=<?php echo $action_page; ?>&amp;id_alert_groupe=<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>" onClick="return confirm('Attention cela va supprimer toutes les alerts élève pour ce groupe...')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+				<td style="text-align: left; padding: 2px;"><a href="alert_suivi.php?action_page=<?php echo $action_page; ?>&amp;action=editer_alert_groupe&amp;id_alert_groupe=<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>#eg" title="editer le groupe"><?php echo $donnee_alert_groupe['nom_alert_groupe']; ?></a></td>
+			        <td style="text-align: center;"><a href="alert_suivi.php?action_page=<?php echo $action_page; ?>&amp;action=modifier_alert_groupe&amp;id_alert_groupe=<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>"><img src="../images/modification.png" width="18" height="22" title="Modifier" border="0" alt="" /></a></td>
+			        <td style="text-align: center;"><a href="alert_suivi.php?action_sql=supprimer_alert_groupe&amp;action_page=<?php echo $action_page; ?>&amp;id_alert_groupe=<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>" onClick="return confirm('Attention cela va supprimer toutes les alerts élève pour ce groupe...')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
 			  </tr>
 		<?php } ?>
 		</table>
@@ -723,7 +723,7 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 				<input type="hidden" name="action" value="<?php echo $action; ?>" />
 				<input type="hidden" name="action_sql" value="<?php if ( $action != 'modifier_alert_type' ) { ?>creer_alert_type<?php } else { ?>modifier_alert_type<?php } ?>" />
 				<input type="hidden" name="action_page" value="<?php echo $action_page; ?>" />
-				<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+				<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 				<input type="submit" name="submit3" value="<?php if ( $action != 'modifier_alert_type' ) { ?>Ajouter<?php } else { ?>Modifier<?php } ?>" />
 		</form>
 		<?php } else { echo '* Modification du groupe impossible. Il y a des alerts d\'élèves relevé.'; } ?>
@@ -767,8 +767,8 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 				<td style="text-align: center; padding: 2px;"><?php echo date_fr($donnee_alert_type['date_debut_comptage']); ?></td>
 				<td style="text-align: center; padding: 2px;"><?php echo $donnee_alert_type['nb_comptage_limit']; ?> fois</td>
 			      <?php if ( $editer_ce_groupe != 'non' ) { ?>
-			        <td style="text-align: center;"><a href="alert_suivi.php?action_page=<?php echo $action_page; ?>&amp;id_alert_groupe=<?php echo $id_alert_groupe; ?>&amp;action=modifier_alert_type&amp;id_alert_type=<?php echo $donnee_alert_type['id_alert_type']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>#eg"><img src="../images/modification.png" width="18" height="22" title="Modifier" border="0" alt="" /></a></td>
-			        <td style="text-align: center;"><a href="alert_suivi.php?action_sql=supprimer_alert_type&amp;action_page=<?php echo $action_page; ?>&amp;action=<?php echo $action; ?>&amp;id_alert_groupe=<?php echo $id_alert_groupe; ?>&amp;id_alert_type=<?php echo $donnee_alert_type['id_alert_type']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>#eg" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+			        <td style="text-align: center;"><a href="alert_suivi.php?action_page=<?php echo $action_page; ?>&amp;id_alert_groupe=<?php echo $id_alert_groupe; ?>&amp;action=modifier_alert_type&amp;id_alert_type=<?php echo $donnee_alert_type['id_alert_type']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>#eg"><img src="../images/modification.png" width="18" height="22" title="Modifier" border="0" alt="" /></a></td>
+			        <td style="text-align: center;"><a href="alert_suivi.php?action_sql=supprimer_alert_type&amp;action_page=<?php echo $action_page; ?>&amp;action=<?php echo $action; ?>&amp;id_alert_groupe=<?php echo $id_alert_groupe; ?>&amp;id_alert_type=<?php echo $donnee_alert_type['id_alert_type']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>#eg" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
 			      <?php } ?>
 			  </tr>
 		<?php } ?>

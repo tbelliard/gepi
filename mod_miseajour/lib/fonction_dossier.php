@@ -70,8 +70,8 @@ function listage_dossier($dossier, $dossier_racine)
 						//nom du fichier
 						$GLOBALS['tab_fichier']['nom_fichier'][$cpt_fichier] = trim($nom);
 						// source
-						$source_emplacement= eregi_replace($dossier_racine,'',$tab_fichier_select);
-						$source_emplacement= eregi_replace($nom,'',$source_emplacement);
+						$source_emplacement= my_eregi_replace($dossier_racine,'',$tab_fichier_select);
+						$source_emplacement= my_eregi_replace($nom,'',$source_emplacement);
 						$GLOBALS['tab_fichier']['emplacement_fichier'][$cpt_fichier] = trim($source_emplacement);
 						// destiné à
 						$cpt_fichier++;
@@ -225,7 +225,7 @@ function info_miseajour_fichier($site_de_miseajour, $version_system)
 	$ligne='';
 
 	//on recherche le fichier de mise à jour sur le site du principal des fichiers d'après la version installé
-	$version_system = eregi_replace('\.','',$version_system);
+	$version_system = my_eregi_replace('\.','',$version_system);
 	if(url_exists($site_de_miseajour."version".$version_system.".msj"))
 	{
 	    if ($fp = fopen($site_de_miseajour."version".$version_system.".msj","r"))

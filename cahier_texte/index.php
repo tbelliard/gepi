@@ -252,7 +252,7 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
     // Cas des devoirs
     if (isset($edit_devoir)) {
         // Il s'agit d'un devoir à faire : on récupère la date à l'aide de $_POST['display_date']
-        if (ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date'])) {
+        if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date'])) {
             $_year = substr($_POST['display_date'],6,4);
             $_month = substr($_POST['display_date'],3,2);
             $_day = substr($_POST['display_date'],0,2);

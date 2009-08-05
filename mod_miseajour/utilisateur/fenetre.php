@@ -65,7 +65,7 @@ if (empty($_GET['uid_post']) and empty($_POST['uid_post'])) {
 	$uid = md5(uniqid(microtime(), 1));
 	$_SESSION['uid_prime'] = $uid;
 		// on remplace les %20 par des espaces
-		$uid_post = eregi_replace('%20',' ',$uid_post);
+		$uid_post = my_eregi_replace('%20',' ',$uid_post);
 		// et on vérifie si les deux infos sont identiques ou pas avant de savoir si le formulaire a été validé ou pas
 		if($uid_post===$_SESSION['uid_prime']) {
 			$valide_form = 'yes';
@@ -121,30 +121,30 @@ if(url_exists($site_de_miseajour."version.msj")) {
 		}
 		fclose($fp);
 
-			$ereg = eregi("<info>(.*)</info>",$ligne,$stable_serveur);
-				$erega = eregi("<changelog>(.*)</changelog>",$stable_serveur[1],$changelog);
+			$ereg = my_eregi("<info>(.*)</info>",$ligne,$stable_serveur);
+				$erega = my_eregi("<changelog>(.*)</changelog>",$stable_serveur[1],$changelog);
 
-			$ereg1 = eregi("<stable>(.*)</stable>",$ligne,$stable_serveur);
-				$ereg1a = eregi("<version_stable>(.*)</version_stable>",$stable_serveur[1],$version_stable_serveur);
-				$ereg2a = eregi("<site_stable>(.*)</site_stable>",$stable_serveur[1],$version_stable_site);
-				$ereg3a= eregi("<fichier_stable>(.*)</fichier_stable>",$stable_serveur[1],$version_stable_fichier);
-				$ereg4a= eregi("<md5_stable>(.*)</md5_stable>",$stable_serveur[1],$version_stable_md5);
+			$ereg1 = my_eregi("<stable>(.*)</stable>",$ligne,$stable_serveur);
+				$ereg1a = my_eregi("<version_stable>(.*)</version_stable>",$stable_serveur[1],$version_stable_serveur);
+				$ereg2a = my_eregi("<site_stable>(.*)</site_stable>",$stable_serveur[1],$version_stable_site);
+				$ereg3a= my_eregi("<fichier_stable>(.*)</fichier_stable>",$stable_serveur[1],$version_stable_fichier);
+				$ereg4a= my_eregi("<md5_stable>(.*)</md5_stable>",$stable_serveur[1],$version_stable_md5);
 
 			if (getSettingValue("rc_module_msj")==='y') {
-			$ereg2 = eregi("<rc>(.*)</rc>",$ligne,$rc_serveur);
-				$ereg1b = eregi("<version_rc>(.*)</version_rc>",$rc_serveur[1],$version_rc_serveur);
-				$ereg2b = eregi("<site_rc>(.*)</site_rc>",$rc_serveur[1],$version_rc_site);
-				$ereg3b = eregi("<fichier_rc>(.*)</fichier_rc>",$rc_serveur[1],$version_rc_fichier);
-				$ereg4b = eregi("<md5_rc>(.*)</md5_rc>",$rc_serveur[1],$version_rc_md5);
+			$ereg2 = my_eregi("<rc>(.*)</rc>",$ligne,$rc_serveur);
+				$ereg1b = my_eregi("<version_rc>(.*)</version_rc>",$rc_serveur[1],$version_rc_serveur);
+				$ereg2b = my_eregi("<site_rc>(.*)</site_rc>",$rc_serveur[1],$version_rc_site);
+				$ereg3b = my_eregi("<fichier_rc>(.*)</fichier_rc>",$rc_serveur[1],$version_rc_fichier);
+				$ereg4b = my_eregi("<md5_rc>(.*)</md5_rc>",$rc_serveur[1],$version_rc_md5);
 				$affiche_info_rc="oui";
 			}
 
 			if (getSettingValue("beta_module_msj")==='y') {
-			$ereg3 = eregi("<beta>(.*)</beta>",$ligne,$beta_serveur);
-				$ereg1c = eregi("<version_beta>(.*)</version_beta>",$beta_serveur[1],$version_beta_serveur);
-				$ereg2c = eregi("<site_beta>(.*)</site_beta>",$beta_serveur[1],$version_beta_site);
-				$ereg3c = eregi("<fichier_beta>(.*)</fichier_beta>",$beta_serveur[1],$version_beta_fichier);
-				$ereg4c = eregi("<md5_beta>(.*)</md5_beta",$beta_serveur[1],$version_beta_md5);
+			$ereg3 = my_eregi("<beta>(.*)</beta>",$ligne,$beta_serveur);
+				$ereg1c = my_eregi("<version_beta>(.*)</version_beta>",$beta_serveur[1],$version_beta_serveur);
+				$ereg2c = my_eregi("<site_beta>(.*)</site_beta>",$beta_serveur[1],$version_beta_site);
+				$ereg3c = my_eregi("<fichier_beta>(.*)</fichier_beta>",$beta_serveur[1],$version_beta_fichier);
+				$ereg4c = my_eregi("<md5_beta>(.*)</md5_beta",$beta_serveur[1],$version_beta_md5);
 				$affiche_info_beta="oui";
 			}
 		      }
@@ -245,9 +245,9 @@ if($maj_logiciel==='oui' and $valide_form==='yes')
 	if($maj_type==='beta') { $site = $version_beta_site[1]; $fichier=$version_beta_fichier[1]; $md5_de_verif = $version_beta_md5[1]; }
 
  	//connaitre l'extension et le nom du fichier complet sans l'extension
-	$nom_fichier_sans_ext=eregi_replace("\.zip",'',$fichier);
+	$nom_fichier_sans_ext=my_eregi_replace("\.zip",'',$fichier);
 	  if($nom_fichier_sans_ext!=$fichier) { $ext='.zip'; }
-	  else { $nom_fichier_sans_ext=eregi_replace("\.tar.gz",'',$fichier);
+	  else { $nom_fichier_sans_ext=my_eregi_replace("\.tar.gz",'',$fichier);
 		  if($nom_fichier_sans_ext!=$fichier) { $ext='.tar.gz'; }
 	       }
 
@@ -376,7 +376,7 @@ if($maj_logiciel==='oui' and $valide_form==='yes')
 <div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #5A7ACF;  padding: 2px; margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 0px;  text-align: left;">
    <div style="border-style:solid; border-width:0px; border-color: #6F6968; background-color: #5A7ACF;  padding: 2px; margin: 2px; font-family: Helvetica,Arial,sans-serif; font-weight: bold; color: #FFFFFF;">VERSION STABLE</div>
    <div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #FFFFFF;  padding: 6px; margin: 2px;">
-	<?php if($nouvelle_stable==='oui') { ?><div style="margin: 0px; padding: 0px; float: right; border-style:solid; border-width:1px; border-color: #6F6968; height: 25px;"><form action="fenetre.php?maj_logiciel=oui&amp;maj_type=stable" method="post" onSubmit="showWait('Mise à jour en cours...')"><input type="hidden" name="donnee[]" value="" /><input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /><input type="submit" value="Mettre à jour vers là <?php echo $version_stable_serveur[1]; ?>" style="height: 25px; wight: auto;" onclick="return confirmlink(this,'Voulez vous le mettre à jour')" /></form></div><?php } ?>
+	<?php if($nouvelle_stable==='oui') { ?><div style="margin: 0px; padding: 0px; float: right; border-style:solid; border-width:1px; border-color: #6F6968; height: 25px;"><form action="fenetre.php?maj_logiciel=oui&amp;maj_type=stable" method="post" onSubmit="showWait('Mise à jour en cours...')"><input type="hidden" name="donnee[]" value="" /><input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /><input type="submit" value="Mettre à jour vers là <?php echo $version_stable_serveur[1]; ?>" style="height: 25px; wight: auto;" onclick="return confirmlink(this,'Voulez vous le mettre à jour')" /></form></div><?php } ?>
 	<span style=" font-family: Helvetica,Arial,sans-serif; font-weight: bold; color: #000000;">Votre version actuelle : <?php echo $version_stable_client[1]; ?></span><br />
 	<span style="font-family: Helvetica,Arial,sans-serif; color: rgb(255, 0, 0); margin-left: 20px;"><?php echo $texte_stable; ?></span><br />
 	<div style="font-family: Helvetica,Arial,sans-serif; color: rgb(0, 0, 0); margin-left: 20px; text-align: justify;">descriptif: <a href="<?php echo $changelog[1]; ?>" target="_blank">voir le changelog</a></div>
@@ -419,7 +419,7 @@ while(!empty($donne_fichier['nom_fichier'][$nb_a])) { ?>
 		 $info_etat='une mise à jour du fichier est disponible';
 	   }
 	?>
-	<?php if($amettreajour==='oui') { ?><div style="margin: 0px; padding: 0px; float: right; border-style:solid; border-width:1px; border-color: #6F6968; height: 25px;"><form action="fenetre.php?maj_fichier=oui&amp;maj_type=fichier" method="post" onSubmit="showWait('Mise à jour en cours...')"><input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /><?php $tableau_select['source_fichier']['1'] = $donne_fichier['source_fichier'][$nb_a]; $tableau_select['nom_fichier']['1'] = $donne_fichier['nom_fichier'][$nb_a]; $tableau_select['emplacement_fichier']['1'] = $donne_fichier['emplacement_fichier'][$nb_a]; $tableau_select['date_fichier']['1'] = $donne_fichier['date_fichier'][$nb_a]; $tableau_select['heure_fichier']['1'] = $donne_fichier['heure_fichier'][$nb_a]; $tableau_select['md5_fichier']['1'] = $donne_fichier['md5_fichier'][$nb_a]; ?>
+	<?php if($amettreajour==='oui') { ?><div style="margin: 0px; padding: 0px; float: right; border-style:solid; border-width:1px; border-color: #6F6968; height: 25px;"><form action="fenetre.php?maj_fichier=oui&amp;maj_type=fichier" method="post" onSubmit="showWait('Mise à jour en cours...')"><input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /><?php $tableau_select['source_fichier']['1'] = $donne_fichier['source_fichier'][$nb_a]; $tableau_select['nom_fichier']['1'] = $donne_fichier['nom_fichier'][$nb_a]; $tableau_select['emplacement_fichier']['1'] = $donne_fichier['emplacement_fichier'][$nb_a]; $tableau_select['date_fichier']['1'] = $donne_fichier['date_fichier'][$nb_a]; $tableau_select['heure_fichier']['1'] = $donne_fichier['heure_fichier'][$nb_a]; $tableau_select['md5_fichier']['1'] = $donne_fichier['md5_fichier'][$nb_a]; ?>
 		<input type="hidden" name="source_fichier_select" value="<?php echo $donne_fichier['source_fichier'][$nb_a]; ?>" />
 		<input type="hidden" name="nom_fichier_select" value="<?php echo $donne_fichier['nom_fichier'][$nb_a]; ?>" />
 		<input type="hidden" name="emplacement_fichier_select" value="<?php echo $donne_fichier['emplacement_fichier'][$nb_a]; ?>" />
@@ -441,7 +441,7 @@ if($affiche_info_rc==='oui')
 <div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: rgb(255, 0, 0);  padding: 2px; margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 0px;  text-align: left;">
    <div style="border-style:solid; border-width:0px; border-color: #6F6968; background-color: rgb(255, 0, 0);  padding: 2px; margin: 2px; font-family: Helvetica,Arial,sans-serif; font-weight: bold; color: #FFFFFF;">VERSION RC</div>
    <div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #FFFFFF;  padding: 6px; margin: 2px;">
-	<?php if($nouvelle_rc==='oui') { ?><div style="margin: 0px; padding: 0px; float: right; border-style:solid; border-width:1px; border-color: #6F6968; height: 25px;"><form action="fenetre.php?maj_logiciel=oui&amp;maj_type=stable" method="post" onSubmit="showWait('Mise à jour en cours...')"><input type="hidden" name="donnee[]" value="" /><input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /><input type="submit" value="Passer en RC <?php echo $version_rc_serveur[1]; ?>" style="height: 25px; wight: auto;" onclick="return confirmlink(this,'Voulez vous le mettre à jour')" /></form></div><?php } ?>
+	<?php if($nouvelle_rc==='oui') { ?><div style="margin: 0px; padding: 0px; float: right; border-style:solid; border-width:1px; border-color: #6F6968; height: 25px;"><form action="fenetre.php?maj_logiciel=oui&amp;maj_type=stable" method="post" onSubmit="showWait('Mise à jour en cours...')"><input type="hidden" name="donnee[]" value="" /><input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /><input type="submit" value="Passer en RC <?php echo $version_rc_serveur[1]; ?>" style="height: 25px; wight: auto;" onclick="return confirmlink(this,'Voulez vous le mettre à jour')" /></form></div><?php } ?>
 	<span style=" font-family: Helvetica,Arial,sans-serif; font-weight: bold; color: #000000;">Version RC de GEPI a installer: <?php if($version_rc_client[1]!='') { echo 'RC '.$version_rc_client[1]; } else { echo 'aucune RC installé'; } ?></span><br />
 	<span style="font-family: Helvetica,Arial,sans-serif; color: rgb(255, 0, 0); margin-left: 20px;"><?php echo $texte_rc; ?></span><br />
 	<div style="font-family: Helvetica,Arial,sans-serif; color: rgb(0, 0, 0); margin-left: 20px; text-align: justify;">descriptif: <a href="<?php echo $changelog[1]; ?>" target="_blank">voir le changelog</a></div>
@@ -465,7 +465,7 @@ if($affiche_info_beta==='oui')
 	<div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: rgb(255, 0, 0);  padding: 2px; margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 0px;  text-align: left;">
 	<div style="border-style:solid; border-width:0px; border-color: #6F6968; background-color: rgb(255, 0, 0);  padding: 2px; margin: 2px; font-family: Helvetica,Arial,sans-serif; font-weight: bold; color: #FFFFFF;">VERSION BETA</div>
 	<div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #FFFFFF;  padding: 6px; margin: 2px;">
-	<?php if($nouvelle_beta==='oui') { ?><div style="margin: 0px; padding: 0px; float: right; border-style:solid; border-width:1px; border-color: #6F6968; height: 25px;"><form action="fenetre.php?maj_logiciel=oui&amp;maj_type=stable" method="post" onSubmit="showWait('Mise à jour en cours...')"><input type="hidden" name="donnee[]" value="" /><input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /><input type="submit" value="Passer en BETA <?php echo $version_beta_serveur[1]; ?>" style="height: 25px; wight: auto;" onclick="return confirmlink(this,'Voulez vous le mettre à jour')" /></form></div><?php } ?>
+	<?php if($nouvelle_beta==='oui') { ?><div style="margin: 0px; padding: 0px; float: right; border-style:solid; border-width:1px; border-color: #6F6968; height: 25px;"><form action="fenetre.php?maj_logiciel=oui&amp;maj_type=stable" method="post" onSubmit="showWait('Mise à jour en cours...')"><input type="hidden" name="donnee[]" value="" /><input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /><input type="submit" value="Passer en BETA <?php echo $version_beta_serveur[1]; ?>" style="height: 25px; wight: auto;" onclick="return confirmlink(this,'Voulez vous le mettre à jour')" /></form></div><?php } ?>
 	<span style=" font-family: Helvetica,Arial,sans-serif; font-weight: bold; color: #000000;">Version BETA de GEPI a installer: <?php if($version_beta_client[1]!='') { echo 'BETA '.$version_beta_client[1]; } else { echo 'aucune'; } ?></span><br />
 	<span style="font-family: Helvetica,Arial,sans-serif; color: rgb(255, 0, 0); margin-left: 20px;"><?php echo $texte_beta; ?></span><br />
 	<div style="font-family: Helvetica,Arial,sans-serif; color: rgb(0, 0, 0); margin-left: 20px; text-align: justify;">descriptif: <a href="<?php echo $changelog[1]; ?>" target="_blank">voir le changelog</a></div>

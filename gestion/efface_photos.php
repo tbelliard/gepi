@@ -57,7 +57,7 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))){
 	$nberreur=0;
 	$chaine="";
 	while ($file = readdir($handle)) {
-		if((eregi(".jpg$",$file))||(eregi(".jpeg$",$file))){
+		if((my_eregi(".jpg$",$file))||(my_eregi(".jpeg$",$file))){
 
 			$prefixe=substr($file,0,strrpos($file,"."));
 			$sql="SELECT 1=1 FROM eleves WHERE elenoet='$prefixe'";
@@ -100,7 +100,7 @@ else{
 	$nbjpg=0;
 	$chaine="";
 	while ($file = readdir($handle)) {
-		if((eregi(".jpg$",$file))||(eregi(".jpeg$",$file))){
+		if((my_eregi(".jpg$",$file))||(my_eregi(".jpeg$",$file))){
 			$nbjpg++;
 
 			$prefixe=substr($file,0,strrpos($file,"."));

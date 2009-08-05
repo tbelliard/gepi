@@ -72,7 +72,7 @@
 
 	for($k=0;$k<count($tab_item);$k++) {
 		$affiche_ligne="y";
-		if ((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&(ereg("^rn_sign",$tab_item[$k]))) {
+		if ((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&(my_ereg("^rn_sign",$tab_item[$k]))) {
 			$affiche_ligne="n";
 		}
 

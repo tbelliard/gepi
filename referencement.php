@@ -47,7 +47,7 @@ if (!checkAccess()) {
     else { if (isset($_GET['uid_post'])) {$uid_post=$_GET['uid_post'];} if (isset($_POST['uid_post'])) {$uid_post=$_POST['uid_post'];} }
 	$uid = md5(uniqid(microtime(), 1));
 	   // on remplace les %20 par des espaces
-	    $uid_post = eregi_replace('%20',' ',$uid_post);
+	    $uid_post = my_eregi_replace('%20',' ',$uid_post);
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'yes'; } else { $valide_form = 'no'; }
 	$_SESSION['uid_prime'] = $uid;
 
@@ -185,7 +185,7 @@ select {
 		<tr style="background-color: #EFF3FF;"><td colspan="2"><input name="pref5" id="pref7" type="radio" /><label for="pref7">Ne pas enregistrer mon établissement.</label></td></tr>
 		<tr><td></td><td style="text-align: center;">
 			<input type="hidden" name="version" value="<?php echo getSettingValue("version"); ?>" />
-			<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+			<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 			<input type="submit" value="Valider" /></td></tr></table>
 	   </fieldset>
 	</form>
