@@ -5,6 +5,46 @@
  * ci-après
  *
  */
+
+function traite_requete($requete = "") {
+	global $pb_maj;
+	$retour = "";
+	$res = mysql_query($requete);
+	$erreur_no = mysql_errno();
+	if (!$erreur_no) {
+		$retour = "";
+	} else {
+		switch ($erreur_no) {
+			case "1060" :
+				// le champ existe déjà : pas de problème
+				$retour = "";
+				break;
+			case "1061" :
+				// La cléf existe déjà : pas de problème
+				$retour = "";
+				break;
+			case "1062" :
+				// Présence d'un doublon : création de la cléf impossible
+				$retour = "<font color=\"#FF0000\">Erreur (<b>non critique</b>) sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")</font><br />\n";
+				$pb_maj = 'yes';
+				break;
+			case "1068" :
+				// Des cléfs existent déjà : pas de problème
+				$retour = "";
+				break;
+			case "1091" :
+				// Déjà supprimé : pas de problème
+				$retour = "";
+				break;
+			default :
+				$retour = "<font color=\"#FF0000\">Erreur sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")</font><br />\n";
+				$pb_maj = 'yes';
+				break;
+		}
+	}
+	return $retour;
+}
+
 // statuts dynamiques
 $result .= "&nbsp;->Ajout d'un champ 'autre' à la table 'droits'<br />";
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'autre'"));
