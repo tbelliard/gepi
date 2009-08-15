@@ -129,14 +129,17 @@ $couleur_cellule_gen = "#F6F7EF";
 ##################################################################################
 
 // Version de GEPI
-$gepiVersion = "trunk";
-$gepiVersionMaintenance = "";
+$gepiVersion = "trunk"; // Attention : cette ligne doit conserver une valeur respectant ce schéma : trunk/1.5.1/1.5.2, etc. avec des guillemets doubles.
+$gepiVersionMaintenance = ""; // 1, 2, 3, etc. N'est plus utilisé actuellement, remplacé plutôt par le numéro de révision SVN.
 $gepiRcVersion = "";
 $gepiBetaVersion = "";
 
-$gepiSvnRev = "";
 // Cette variable est utilisée par le système de packaging
-// automatique du site web de Gepi.
+// automatique du site web de Gepi. Elle n'est vraiment utile que pour les
+// branches stables, pas pour le trunk, qui correspond de toute façon à la
+// version la plus récente.
+$gepiSvnRev = "";
+
 
 // Forcer l'utilisation du module de gestion des absences au quoditien
 //
