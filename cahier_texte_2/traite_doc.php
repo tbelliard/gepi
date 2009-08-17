@@ -60,7 +60,8 @@ function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 	global $max_size, $total_max_size;
 	/* Vérification du type de fichier */
 	$ext = '';
-	if (my_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
+	//if (my_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
+    if (((function_exists("mb_ereg"))&&(mb_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))||((function_exists("ereg"))&&(ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))) {
 		$ext = corriger_caracteres(strtolower($match[1]));
 		$ext = corriger_extension($ext);
 	}
