@@ -63,7 +63,10 @@ if (isset($_POST['sup_logo'])) {
 }
 if (isset($_POST['valid_logo'])) {
 	$doc_file = isset($_FILES["doc_file"]) ? $_FILES["doc_file"] : NULL;
-	if (my_ereg("\.([^.]+)$", $doc_file['name'], $match)) {
+	//if (ereg("\.([^.]+)$", $doc_file['name'], $match)) {
+	//$match=array();
+	//if (my_ereg("\.([^.]+)$", $doc_file['name'], $match)) {
+	if (((function_exists("mb_ereg"))&&(mb_ereg("\.([^.]+)$", $doc_file['name'], $match)))||((function_exists("ereg"))&&(ereg("\.([^.]+)$", $doc_file['name'], $match)))) {
 		$ext = strtolower($match[1]);
 		if ($ext!='jpg' and $ext!='png'and $ext!='gif') {
 		//if ($ext!='jpg' and $ext!='jpeg' and $ext!='png'and $ext!='gif') {
