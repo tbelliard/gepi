@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 15/06/2006
+ * $Id$
  *
  * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -121,33 +121,63 @@ if(url_exists($site_de_miseajour."version.msj")) {
 		}
 		fclose($fp);
 
-			$ereg = my_eregi("<info>(.*)</info>",$ligne,$stable_serveur);
-				$erega = my_eregi("<changelog>(.*)</changelog>",$stable_serveur[1],$changelog);
-
-			$ereg1 = my_eregi("<stable>(.*)</stable>",$ligne,$stable_serveur);
-				$ereg1a = my_eregi("<version_stable>(.*)</version_stable>",$stable_serveur[1],$version_stable_serveur);
-				$ereg2a = my_eregi("<site_stable>(.*)</site_stable>",$stable_serveur[1],$version_stable_site);
-				$ereg3a= my_eregi("<fichier_stable>(.*)</fichier_stable>",$stable_serveur[1],$version_stable_fichier);
-				$ereg4a= my_eregi("<md5_stable>(.*)</md5_stable>",$stable_serveur[1],$version_stable_md5);
-
+		if(function_exists("mb_eregi")) {
+			$ereg = mb_eregi("<info>(.*)</info>",$ligne,$stable_serveur);
+			$erega = mb_eregi("<changelog>(.*)</changelog>",$stable_serveur[1],$changelog);
+	
+			$ereg1 = mb_eregi("<stable>(.*)</stable>",$ligne,$stable_serveur);
+			$ereg1a = mb_eregi("<version_stable>(.*)</version_stable>",$stable_serveur[1],$version_stable_serveur);
+			$ereg2a = mb_eregi("<site_stable>(.*)</site_stable>",$stable_serveur[1],$version_stable_site);
+			$ereg3a= mb_eregi("<fichier_stable>(.*)</fichier_stable>",$stable_serveur[1],$version_stable_fichier);
+			$ereg4a= mb_eregi("<md5_stable>(.*)</md5_stable>",$stable_serveur[1],$version_stable_md5);
+	
 			if (getSettingValue("rc_module_msj")==='y') {
-			$ereg2 = my_eregi("<rc>(.*)</rc>",$ligne,$rc_serveur);
-				$ereg1b = my_eregi("<version_rc>(.*)</version_rc>",$rc_serveur[1],$version_rc_serveur);
-				$ereg2b = my_eregi("<site_rc>(.*)</site_rc>",$rc_serveur[1],$version_rc_site);
-				$ereg3b = my_eregi("<fichier_rc>(.*)</fichier_rc>",$rc_serveur[1],$version_rc_fichier);
-				$ereg4b = my_eregi("<md5_rc>(.*)</md5_rc>",$rc_serveur[1],$version_rc_md5);
+				$ereg2 = mb_eregi("<rc>(.*)</rc>",$ligne,$rc_serveur);
+				$ereg1b = mb_eregi("<version_rc>(.*)</version_rc>",$rc_serveur[1],$version_rc_serveur);
+				$ereg2b = mb_eregi("<site_rc>(.*)</site_rc>",$rc_serveur[1],$version_rc_site);
+				$ereg3b = mb_eregi("<fichier_rc>(.*)</fichier_rc>",$rc_serveur[1],$version_rc_fichier);
+				$ereg4b = mb_eregi("<md5_rc>(.*)</md5_rc>",$rc_serveur[1],$version_rc_md5);
 				$affiche_info_rc="oui";
 			}
-
+	
 			if (getSettingValue("beta_module_msj")==='y') {
-			$ereg3 = my_eregi("<beta>(.*)</beta>",$ligne,$beta_serveur);
-				$ereg1c = my_eregi("<version_beta>(.*)</version_beta>",$beta_serveur[1],$version_beta_serveur);
-				$ereg2c = my_eregi("<site_beta>(.*)</site_beta>",$beta_serveur[1],$version_beta_site);
-				$ereg3c = my_eregi("<fichier_beta>(.*)</fichier_beta>",$beta_serveur[1],$version_beta_fichier);
-				$ereg4c = my_eregi("<md5_beta>(.*)</md5_beta",$beta_serveur[1],$version_beta_md5);
+				$ereg3 = mb_eregi("<beta>(.*)</beta>",$ligne,$beta_serveur);
+				$ereg1c = mb_eregi("<version_beta>(.*)</version_beta>",$beta_serveur[1],$version_beta_serveur);
+				$ereg2c = mb_eregi("<site_beta>(.*)</site_beta>",$beta_serveur[1],$version_beta_site);
+				$ereg3c = mb_eregi("<fichier_beta>(.*)</fichier_beta>",$beta_serveur[1],$version_beta_fichier);
+				$ereg4c = mb_eregi("<md5_beta>(.*)</md5_beta",$beta_serveur[1],$version_beta_md5);
 				$affiche_info_beta="oui";
 			}
-		      }
+		}
+		else {
+			$ereg = eregi("<info>(.*)</info>",$ligne,$stable_serveur);
+			$erega = eregi("<changelog>(.*)</changelog>",$stable_serveur[1],$changelog);
+	
+			$ereg1 = eregi("<stable>(.*)</stable>",$ligne,$stable_serveur);
+			$ereg1a = eregi("<version_stable>(.*)</version_stable>",$stable_serveur[1],$version_stable_serveur);
+			$ereg2a = eregi("<site_stable>(.*)</site_stable>",$stable_serveur[1],$version_stable_site);
+			$ereg3a= eregi("<fichier_stable>(.*)</fichier_stable>",$stable_serveur[1],$version_stable_fichier);
+			$ereg4a= eregi("<md5_stable>(.*)</md5_stable>",$stable_serveur[1],$version_stable_md5);
+	
+			if (getSettingValue("rc_module_msj")==='y') {
+				$ereg2 = eregi("<rc>(.*)</rc>",$ligne,$rc_serveur);
+				$ereg1b = eregi("<version_rc>(.*)</version_rc>",$rc_serveur[1],$version_rc_serveur);
+				$ereg2b = eregi("<site_rc>(.*)</site_rc>",$rc_serveur[1],$version_rc_site);
+				$ereg3b = eregi("<fichier_rc>(.*)</fichier_rc>",$rc_serveur[1],$version_rc_fichier);
+				$ereg4b = eregi("<md5_rc>(.*)</md5_rc>",$rc_serveur[1],$version_rc_md5);
+				$affiche_info_rc="oui";
+			}
+	
+			if (getSettingValue("beta_module_msj")==='y') {
+				$ereg3 = eregi("<beta>(.*)</beta>",$ligne,$beta_serveur);
+				$ereg1c = eregi("<version_beta>(.*)</version_beta>",$beta_serveur[1],$version_beta_serveur);
+				$ereg2c = eregi("<site_beta>(.*)</site_beta>",$beta_serveur[1],$version_beta_site);
+				$ereg3c = eregi("<fichier_beta>(.*)</fichier_beta>",$beta_serveur[1],$version_beta_fichier);
+				$ereg4c = eregi("<md5_beta>(.*)</md5_beta",$beta_serveur[1],$version_beta_md5);
+				$affiche_info_beta="oui";
+			}
+		}
+	}
 
 //on recherche la version du client
     $version_stable_client[1]=getSettingValue('version');
