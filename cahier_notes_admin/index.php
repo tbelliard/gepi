@@ -142,8 +142,8 @@ require_once("../lib/header.inc");
 		Référentiel des notes par défaut : <input type="text" name="referentiel_note" size="8" value="<?php echo(getSettingValue("referentiel_note")); ?>" />
 		</td></tr></table>
 		<table summary='Genre'><tr valign='top'><td></td><td>
-		<input type="radio" name="note_autre_que_sur_referentiel" id="note_sur_referentiel" value="V" <?php if(getSettingValue("note_autre_que_sur_referentiel")=="V"){echo 'checked';} ?> /> Autoriser les notes autre que sur le référentiel par défaut<br />
-		<input type="radio" name="note_autre_que_sur_referentiel" id="note_autre_que_referentiel" value="F" <?php if(getSettingValue("note_autre_que_sur_referentiel")=="F"){echo 'checked';} ?> /> Notes uniquement sur le référentiel par défaut</
+		<input type="radio" name="note_autre_que_sur_referentiel" id="note_sur_referentiel" value="V" <?php if(getSettingValue("note_autre_que_sur_referentiel")=="V"){echo 'checked';} ?> /><label for='note_sur_referentiel'> Autoriser les notes autre que sur le référentiel par défaut</label><br />
+		<input type="radio" name="note_autre_que_sur_referentiel" id="note_autre_que_referentiel" value="F" <?php if(getSettingValue("note_autre_que_sur_referentiel")=="F"){echo 'checked';} ?> /><label for='note_autre_que_referentiel'> Notes uniquement sur le référentiel par défaut</label>
 		</td></tr></table>
 		</td>
 	</tr>
