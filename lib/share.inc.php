@@ -1418,7 +1418,7 @@ function detect_browser($HTTP_USER_AGENT) {
 	} elseif(((function_exists("mb_ereg"))&&(mb_ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)))||((function_exists("ereg"))&&(ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)))) {
 		$BROWSER_VER = $log_version[2];
 		$BROWSER_AGENT = 'KONQUEROR';
-	} elseif(((function_exists("mb_ereg"))&&((mb_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(mb_ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2)))||((function_exists("ereg"))&&(ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&)&&(ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2)))) {
+	} elseif(((function_exists("mb_ereg"))&&(mb_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(mb_ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2)))||((function_exists("ereg"))&&(ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2)))) {
 		$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
 		$BROWSER_AGENT = 'SAFARI';
 	} elseif(((function_exists("mb_ereg"))&&(mb_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)))||((function_exists("ereg"))&&(ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)))) {
