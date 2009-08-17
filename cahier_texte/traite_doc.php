@@ -68,7 +68,8 @@ function creer_repertoire($base, $subdir) {
 function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
     global $max_size, $total_max_size, $edit_devoir;
     /* Vérification du type de fichier */
-    if (my_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
+    //if (my_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
+    if (((function_exists("mb_ereg"))&&(mb_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))||((function_exists("ereg"))&&(ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))) {
         $ext = corriger_caracteres(strtolower($match[1]));
         $ext = corriger_extension($ext);
     } else {
