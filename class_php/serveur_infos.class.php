@@ -68,10 +68,12 @@ class infos{
 		return $retour;
 	}
 	function listeExtension(){
-		$nbre = count(get_loaded_extensions());
+		$extensions = get_loaded_extensions();
+		//$nbre = count(get_loaded_extensions());
+		$nbre = count($extensions);
 		$retour = '<table style="border: 1px solid black;" summary="Liste des extensions">';
 		for($a = 0; $a < $nbre; $a++){
-			$extensions = get_loaded_extensions();
+			//$extensions = get_loaded_extensions();
 
 			sort($extensions);
 
@@ -103,6 +105,8 @@ class infos{
 			$a = $a + 3;
 		}
 		$retour .= '</table><br />';
+
+		if(!in_array('pdo_mysql',$extensions)) {$retour.="<span style='color:red'>ATTENTION&nbsp;</span> Il semble que le module 'pdo_mysql' ne soit pas présent.<br />Cela risque de rendre impossible l'utilisation des modules cahier_texte_2, mod_ects, mod_plugins,...<br />";}
 
 		return $retour;
 	}
