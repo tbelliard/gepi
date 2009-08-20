@@ -31,7 +31,6 @@ $affiche_connexion = 'yes';
 $niveau_arbo = 0;
 
 // Initialisations files
-require_once 'lib/initialisationsPropel.inc.php';
 require_once("./lib/initialisations.inc.php");
 
 
@@ -1756,34 +1755,29 @@ if (getSettingValue("active_mod_ooo")=='y') {
 /*****************************
  * Module plugins : affichage des menus des plugins en fonction des droits
 *****************************/
-$c = new Criteria();
-$c->add(PlugInPeer::OUVERT, "y", Criteria::EQUAL);
-$plugins_ouvert = PlugInPeer::doSelect($c);
-//print_r($plugins_ouvert[0]->getPlugInMiseEnOeuvreMenus());
-if (!empty ($plugins_ouvert)){
+
+$query = mysql_query('SELECT * FROM plugins WHERE ouvert = "y"');
+while ($plugin = mysql_fetch_object($query)){
+
   $chemin = array();
   $titre = array();
   $expli = array();
-  foreach ($plugins_ouvert as $plugin){
 
-    foreach ($plugin->getPlugInMiseEnOeuvreMenus() as $menuItem) {
+  $querymenu = mysql_query('SELECT * FROM plugins_menus WHERE plugin_id = "'.$plugin->id.'"');
+  while ($menuItem = mysql_fetch_object($querymenu)){
+    if ($menuItem->user_statut == $_SESSION['statut']){
+      $chemin[] = $menuItem->lien_item;
 
-      if ($menuItem->getUserStatut() == $_SESSION["statut"]){
+      $titre[]  = $menuItem->titre_item;
 
-        $chemin[] = $menuItem->getLienItem();
-
-        $titre[]  = $menuItem->getTitreItem();
-
-        $expli[]  = $menuItem->getDescriptionItem();
-
-      }
-
+      $expli[]  = $menuItem->description_item;
     }
+  }
 
-    $nb_ligne = count($chemin);
+      $nb_ligne = count($chemin);
 
     if ($nb_ligne >= 1){
-      echo "<h2 class='accueil'><img src='./images/icons/package.png' alt='#' /> - ".str_replace("_", " ", $plugin->getNom())." (plugin)</h2>
+      echo "<h2 class='accueil'><img src='./images/icons/package.png' alt='#' /> - ".str_replace("_", " ", $plugin->nom)." (plugin)</h2>
     <table class='menu' summary=\"Plugins de Gepi. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
 			for ($i=0;$i<$nb_ligne;$i++) {
 
@@ -1796,7 +1790,6 @@ if (!empty ($plugins_ouvert)){
 			}
 			echo "</table>";
     }
-  }
 
 }
 
