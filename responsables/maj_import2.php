@@ -1521,9 +1521,17 @@ else{
 
 			echo "<p>Cochez les périodes pour lesquelles vous souhaitez désinscrire le ou les élèves qui ont quitté l'établissement et validez en bas de page pour passer à la suite.</p>\n";
 
+			echo "<p>";
+			echo "<a href=\"javascript:modifcase('coche')\">";
+			echo "Cocher tous les élèves qu'il est possible de désinscrire</a>";
+			echo " / ";
+			echo "<a href=\"javascript:modifcase('decoche')\">";
+			echo "Tout décocher</a></p>\n";
+
 			$sql="SELECT col2 FROM tempo2 WHERE col1='ele_id_eleve_parti';";
 			info_debug($sql);
 			$res=mysql_query($sql);
+			$cpt=0;
 			while($lig=mysql_fetch_object($res)) {
 				$ele_id=$lig->col2;
 				$sql="SELECT * FROM eleves WHERE ele_id='$ele_id';";
@@ -1551,7 +1559,9 @@ else{
 						echo "<th>Notes sur le bulletin</th>\n";
 						echo "<th>Appréciations sur le bulletin</th>\n";
 						echo "<th>Avis du conseil de classe</th>\n";
-						echo "<th>Désinscrire</th>\n";
+						echo "<th>\n";
+						echo "Désinscrire\n";
+						echo "</th>\n";
 						echo "</tr>\n";
 
 						while($lig_clas=mysql_fetch_object($res_class)){
@@ -1628,7 +1638,7 @@ else{
 							echo "<td>\n";
 							if($temoin_periode=='y') {
 								// On propose de désinscrire des classes et des groupes
-								echo "<input type='checkbox' name='desinscription[]' value=\"$lig_ele->login|$lig_clas->periode\" />\n";
+								echo "<input type='checkbox' name='desinscription[]' id='desinscription_$cpt' value=\"$lig_ele->login|$lig_clas->periode\" />\n";
 							}
 							else {
 								echo "&nbsp;";
@@ -1636,8 +1646,12 @@ else{
 							echo "</td>\n";
 
 							echo "</tr>\n";
+
+							$cpt++;
+
 						}
 						echo "</table>\n";
+
 					}
 					echo "</blockquote>\n";
 	
@@ -1648,6 +1662,21 @@ else{
 			echo "<p><input type='submit' value='Valider' /></p>\n";
 
 			echo "</form>\n";
+
+			echo "<script type='text/javascript'>
+	function modifcase(mode){
+		for(i=0;i<$cpt;i++){
+			if(document.getElementById('desinscription_'+i)){
+				if(mode=='coche'){
+					document.getElementById('desinscription_'+i).checked=true;
+				}
+				else{
+					document.getElementById('desinscription_'+i).checked=false;
+				}
+			}
+		}
+	}
+</script>\n";
 
 			echo "<p><i>NOTES&nbsp;:</i></p>\n";
 			echo "<blockquote>\n";
@@ -2252,7 +2281,8 @@ else{
 				echo "<p>Le parcours des différences est terminé.</p>\n";
 
 				echo "<input type='hidden' name='step' value='4' />\n";
-				echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
+				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='10' size='3' /><br />\n";
+				echo "<input type='submit' value='Afficher les différences' /></p>\n";
 
 				// On vide la table dont on va se resservir:
 				$sql="TRUNCATE TABLE tempo2;";
@@ -2268,6 +2298,9 @@ else{
 			break;
 		case "4":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : 10;
+			if(my_ereg("[^0-9]",$eff_tranche)) {$eff_tranche=10;}
 
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
@@ -2299,7 +2332,8 @@ else{
 				// ?????????????????????????????????????????????????????????????????????
 				// ?????????????????????????????????????????????????????????????????????
 				//$eff_tranche=min(3,count($tab_ele_id_diff));
-				$eff_tranche=10;
+
+				//$eff_tranche=10;
 
 
 				// Les cases validées à l'étape 4 précédente:
@@ -2347,6 +2381,7 @@ else{
 				// AJOUT pour tenir compte de l'automatisation ou non:
 				echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 				//==============================
+				echo "<input type='hidden' name='eff_tranche' value='$eff_tranche' />\n";
 
 				for($i=$eff_tranche;$i<count($tab_ele_id_diff);$i++){
 					//echo "$i: ";
@@ -5862,7 +5897,8 @@ else{
 
 			echo "<p>$cpt fantôme(s) supprimé(s) de la table temporaire.</p>\n";
 
-			echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
+			echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='20' size='3' /><br />\n";
+			echo "<input type='submit' value='Afficher les différences' /></p>\n";
 
 			echo "<p><input type='checkbox' name='ne_pas_proposer_redoublonnage_adresse' id='ne_pas_proposer_redoublonnage_adresse' value='y' checked='true' /><label for='ne_pas_proposer_redoublonnage_adresse' style='cursor:pointer;'> Ne pas proposer de rétablir des doublons d'adresses identiques avec identifiant différent pour des parents qui conservent la même adresse.</label></p>\n";
 
@@ -5877,6 +5913,9 @@ else{
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
+			$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : 20;
+			if(my_ereg("[^0-9]",$eff_tranche)) {$eff_tranche=20;}
+
 			$ne_pas_proposer_redoublonnage_adresse=isset($_POST['ne_pas_proposer_redoublonnage_adresse']) ? $_POST['ne_pas_proposer_redoublonnage_adresse'] : "n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -5885,6 +5924,7 @@ else{
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 			echo "<input type='hidden' name='ne_pas_proposer_redoublonnage_adresse' value='$ne_pas_proposer_redoublonnage_adresse' />\n";
+			echo "<input type='hidden' name='eff_tranche' value='$eff_tranche' />\n";
 
 			if(!isset($parcours_diff)){
 				info_debug("========================================================");
@@ -5965,7 +6005,7 @@ else{
 
 
 
-			$eff_tranche=20;
+			//$eff_tranche=20;
 
 			$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id' LIMIT $eff_tranche";
 			info_debug($sql);
@@ -7176,23 +7216,13 @@ else{
 
 				//echo "<input type='hidden' name='step' value='18' />\n";
 				echo "<input type='hidden' name='step' value='19' />\n";
-				echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
-
+				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='20' size='3' /><br />\n";
+				echo "<input type='submit' value='Afficher les différences' /></p>\n";
+/*
 				echo "<script type='text/javascript'>
-	/*
-	stop='n';
-	if(document.getElementById('stop')){
-		if(document.getElementById('stop').checked==true){
-			stop='y';
-		}
-	}
-	if(stop=='n'){
-		setTimeout(\"document.forms['formulaire'].submit();\",5000);
-	}
-	*/
 	setTimeout(\"test_stop2()\",3000);
 </script>\n";
-
+*/
 			}
 			echo "</form>\n";
 
@@ -7208,11 +7238,15 @@ else{
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
+			$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : 20;
+			if(my_ereg("[^0-9]",$eff_tranche)) {$eff_tranche=20;}
+
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
+			echo "<input type='hidden' name='eff_tranche' value='$eff_tranche' />\n";
 
 			echo "<input type='hidden' name='temoin_phase_19' value='19' />\n";
 			//if(!isset($parcours_diff)){
@@ -7500,7 +7534,7 @@ else{
 
 			echo "<input type='hidden' name='parcours_diff' value='y' />\n";
 
-			$eff_tranche=20;
+			//$eff_tranche=20;
 
 			$sql="SELECT col2 FROM tempo2 WHERE col1='t_diff' LIMIT $eff_tranche";
 			info_debug($sql);
