@@ -4,6 +4,7 @@ $Id$
 */
 
 //========================================
+/*
 $enregistrer_mb="n";
 $sql="SELECT value FROM setting WHERE name='utiliser_mb';";
 //echo "$sql<br />";
@@ -17,21 +18,62 @@ else {
 	if(($utiliser_mb!='y')&&($utiliser_mb!='n')) {$enregistrer_mb="y";}
 }
 
-if($enregistrer_mb=="y") {
-	$phpversion=phpversion();
-	$tab_tmp=split(".",$phpversion);
-	if(($tab_tmp[0]>=5)&&($tab_tmp[1]>=3)) {
-		$val_tmp='y';
-	}
-	else {
-		$val_tmp='n';
-	}
+$phpversion=phpversion();
+$tab_tmp=split(".",$phpversion);
+if(($tab_tmp[0]>=5)&&($tab_tmp[1]>=3)) {
+	$val_tmp='y';
+}
+else {
+	$val_tmp='n';
+}
 
+if($enregistrer_mb=="y") {
 	$sql="INSERT INTO setting SET name='utiliser_mb', value='$val_tmp';";
 	$insert=mysql_query($sql);
-
-	$utiliser_mb=$val_tmp;
 }
+elseif($val_tmp!=$utiliser_mb) {
+	$sql="UPDATE setting SET value='$val_tmp' WHERE name='utiliser_mb';";
+	$update=mysql_query($sql);
+}
+
+$utiliser_mb=$val_tmp;
+*/
+
+$modifier_mb="n";
+$initialiser_mb="n";
+$sql="SELECT value FROM setting WHERE name='utiliser_mb';";
+//echo "$sql<br />";
+$res=mysql_query($sql);
+if(mysql_num_rows($res)==0) {
+	$initialiser_mb="y";
+	//$modifier_mb="y";
+}
+else {
+	$lig_tmp=mysql_fetch_object($res);
+	$utiliser_mb=$lig_tmp->value;
+	if(($utiliser_mb!='y')&&($utiliser_mb!='n')) {$modifier_mb="y";}
+}
+
+$phpversion=phpversion();
+$tab_tmp=split(".",$phpversion);
+if(($tab_tmp[0]>=5)&&($tab_tmp[1]>=3)) {
+	$val_tmp='y';
+}
+else {
+	$val_tmp='n';
+}
+// On pourrait aussi utiliser if(function_exists("mb_ereg")) pour le test...
+
+if($initialiser_mb=="y") {
+	$sql="INSERT INTO setting SET name='utiliser_mb', value='$val_tmp';";
+	$insert=mysql_query($sql);
+}
+elseif(($modifier_mb=="y")||($utiliser_mb!=$val_tmp)) {
+	$sql="UPDATE setting SET value='$val_tmp' WHERE name='utiliser_mb';";
+	$update=mysql_query($sql);
+}
+$utiliser_mb=$val_tmp;
+
 //========================================
 function appel_test_mb() {
 	test_mb();
@@ -46,7 +88,9 @@ function test_mb() {
 //mb_ereg ( string $pattern , string $string [, array $regs ] )
 //(PHP 4 >= 4.2.0, PHP 5)
 function my_ereg($motif,$chaine,$tableau=NULL) {
+//function my_ereg($motif,$chaine,$tableau=array()) {
 	global $utiliser_mb;
+	//global $tableau;
 	if($utiliser_mb=='y') {
 		if($tableau!=NULL) {
 			return mb_ereg($motif,$chaine,$tableau);
