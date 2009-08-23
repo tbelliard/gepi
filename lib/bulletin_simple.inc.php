@@ -751,7 +751,10 @@ if($display_moy_gen=="y") {
 			//=========================
 
 			echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
-			if ($total_points_classe[$nb] != 0) {
+			//echo "\$total_points_classe[$nb]=$total_points_classe[$nb]<br />\n";
+			//echo "\$tab_moy_gen[$nb]=$tab_moy_gen[$nb]<br />\n";
+			//if ($total_points_classe[$nb] != 0) {
+			if(($total_points_classe[$nb]!=0)||(isset($tab_moy_gen[$nb]))) {
 				//$moy_classe=number_format($total_points_classe[$nb]/$total_coef[$nb],1, ',', ' ');
 
 				//=========================

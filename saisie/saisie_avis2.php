@@ -364,6 +364,41 @@ if (isset($fiche)) {
 		$periode_num=$periode_courante;
 	}
 
+	//=====================================
+	// Ajout pour faire apparaitre la moyenne générale
+	if($test_coef>0) {
+		// Mise en réserve de variables modifiées dans le calcul de moyennes générales
+		$periode_num_reserve=$periode_num;
+		$current_eleve_login_reserve=$current_eleve_login;
+
+		// On réinitialise $current_eleve_login qui est modifié dans le calcul de moyennes générales
+		unset($current_eleve_login);
+
+		$display_moy_gen="y";
+		$coefficients_a_1="n";
+		$affiche_graph="n";
+
+		unset($tab_moy_gen);
+		//unset($tab_moy_cat_classe);
+		for($loop=1;$loop<=$periode_num;$loop++) {
+			$periode_num=$loop;
+			include "../lib/calcul_moy_gen.inc.php";
+			$tab_moy_gen[$loop]=$moy_generale_classe;
+
+			//echo "\$id_classe=$id_classe<br />\n";
+			//echo "\$periode_num=$periode_num<br />\n";
+			//echo "\$moy_generale_classe=$moy_generale_classe<br />\n";
+			//echo "\$tab_moy_gen[$loop]=$tab_moy_gen[$loop]<br />\n";
+			//$tab_moy_cat_classe
+		}
+
+		// Rétablissement des variables après calcul des moyennes générales
+		$periode_num=$periode_num_reserve;
+		$current_eleve_login=$current_eleve_login_reserve;
+	}
+	//echo "\$test_coef=$test_coef<br />";
+	//=====================================
+
 	bulletin($current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
 	$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 	$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
