@@ -138,7 +138,7 @@ if (!empty($doc_file['name'][0])) {
 					$ctDocument->setTitre(basename($file_path));
 				}
 				$ctDocument->save();
-				$ctCompteRendu->addCtDocument($ctDocument);
+				$ctCompteRendu->addCahierTexteCompteRenduFichierJoint($ctDocument);
 				$ctCompteRendu->save();
 			}
 		}
