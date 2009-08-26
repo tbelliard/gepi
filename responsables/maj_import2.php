@@ -3808,7 +3808,7 @@ else{
 
 		case "8":
 
-			echo "<h2>Import/mise à jour élève</h2>\n";
+			echo "<h2>Import/mise à jour des élèves</h2>\n";
 
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
@@ -7217,6 +7217,7 @@ else{
 				//echo "<input type='hidden' name='step' value='18' />\n";
 				echo "<input type='hidden' name='step' value='19' />\n";
 				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='20' size='3' /><br />\n";
+				echo "Ne pas proposer de supprimer des responsables non associés à des élèves <input type='checkbox' name='suppr_resp_non_assoc' value='n' /><br />\n";
 				echo "<input type='submit' value='Afficher les différences' /></p>\n";
 /*
 				echo "<script type='text/javascript'>
@@ -7241,12 +7242,16 @@ else{
 			$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : 20;
 			if(my_ereg("[^0-9]",$eff_tranche)) {$eff_tranche=20;}
 
+			$suppr_resp_non_assoc=isset($_POST['suppr_resp_non_assoc']) ? $_POST['suppr_resp_non_assoc'] : 'y';
+			
+
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 			echo "<input type='hidden' name='eff_tranche' value='$eff_tranche' />\n";
+			echo "<input type='hidden' name='suppr_resp_non_assoc' value='$suppr_resp_non_assoc' />\n";
 
 			echo "<input type='hidden' name='temoin_phase_19' value='19' />\n";
 			//if(!isset($parcours_diff)){
@@ -7599,6 +7604,8 @@ else{
 				while($lig0=mysql_fetch_object($res0)){
 					$tab_tmp=explode("_",$lig0->col2);
 
+					$temoin_suppr_resp="n";
+					$ligne_courante="";
 
 					$ele_id=$tab_tmp[1];
 					$pers_id=$tab_tmp[2];
@@ -7642,7 +7649,7 @@ else{
 						}
 						echo ";'>\n";
 						*/
-						echo "<tr class='lig$alt'>\n";
+						$ligne_courante.="<tr class='lig$alt'>\n";
 
 						$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
 						info_debug($sql);
@@ -7650,78 +7657,78 @@ else{
 						if(mysql_num_rows($res2)==0){
 							// Problème: On ne peut pas importer l'association sans que la personne existe.
 							// Est-ce que l'étape d'import de la personne a été refusée?
-							echo "<td>&nbsp;</td>\n";
-							echo "<td>&nbsp;</td>\n";
+							$ligne_courante.="<td>&nbsp;</td>\n";
+							$ligne_courante.="<td>&nbsp;</td>\n";
 
-							echo "<td style='background-color:red;'>&nbsp;</td>\n";
-							//echo "<td colspan='5'>Aucune personne associée???</td>\n";
-							echo "<td colspan='7'>Aucune personne associée???</td>\n";
+							$ligne_courante.="<td style='background-color:red;'>&nbsp;</td>\n";
+							//$ligne_courante.="<td colspan='5'>Aucune personne associée???</td>\n";
+							$ligne_courante.="<td colspan='7'>Aucune personne associée???</td>\n";
 
 							//=========================
 							// AJOUT: boireaus 20071129
-							//echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
-							//echo "<td style='text-align:center;'>&nbsp;</td>\n";
+							//$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+							//$ligne_courante.="<td style='text-align:center;'>&nbsp;</td>\n";
 							//=========================
 
 						}
 						else{
 							$lig2=mysql_fetch_object($res2);
-							echo "<td style='text-align:center;'>\n";
-							//echo "<input type='checkbox' id='check_".$cpt."' name='new[]' value='$cpt' />";
+							$ligne_courante.="<td style='text-align:center;'>\n";
+							//$ligne_courante.="<input type='checkbox' id='check_".$cpt."' name='new[]' value='$cpt' />";
 
 							// Elève(s) associé(s)
 							$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
 							info_debug($sql);
 							$res4=mysql_query($sql);
 							if(mysql_num_rows($res4)>0){
-								echo "<input type='checkbox' id='check_".$cpt."' name='new[]' value='$lig0->col2' />\n";
+								$ligne_courante.="<input type='checkbox' id='check_".$cpt."' name='new[]' value='$lig0->col2' />\n";
 							}
-							echo "<input type='hidden' name='liste_assoc[]' value='$lig0->col2' />\n";
-							echo "</td>\n";
+							$ligne_courante.="<input type='hidden' name='liste_assoc[]' value='$lig0->col2' />\n";
+							$ligne_courante.="</td>\n";
 
-							//echo "<td style='text-align:center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
-							echo "<td class='nouveau'>Nouveau</td>\n";
+							//$ligne_courante.="<td style='text-align:center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
+							$ligne_courante.="<td class='nouveau'>Nouveau</td>\n";
 
-							echo "<td style='text-align:center;'>\n";
-							echo "$pers_id";
-							//echo "<input type='hidden' name='new_".$cpt."_pers_id' value='$pers_id' />\n";
-							echo "</td>\n";
+							$ligne_courante.="<td style='text-align:center;'>\n";
+							$ligne_courante.="$pers_id";
+							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_pers_id' value='$pers_id' />\n";
+							$ligne_courante.="</td>\n";
 
-							echo "<td style='text-align:center;'>\n";
-							echo "$lig2->nom";
-							//echo "<input type='hidden' name='new_".$cpt."_resp_nom' value=\"$lig2->nom\" />\n";
-							echo "</td>\n";
+							$ligne_courante.="<td style='text-align:center;'>\n";
+							$ligne_courante.="$lig2->nom";
+							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_resp_nom' value=\"$lig2->nom\" />\n";
+							$ligne_courante.="</td>\n";
 
-							echo "<td style='text-align:center;'>\n";
-							echo "$lig2->prenom";
-							//echo "<input type='hidden' name='new_".$cpt."_resp_prenom' value=\"$lig2->prenom\" />\n";
-							echo "</td>\n";
+							$ligne_courante.="<td style='text-align:center;'>\n";
+							$ligne_courante.="$lig2->prenom";
+							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_resp_prenom' value=\"$lig2->prenom\" />\n";
+							$ligne_courante.="</td>\n";
 
 							// Existe-t-il déjà un numéro de responsable légal 1 ou 2 correspondant au nouvel arrivant?
 							// Il peut y avoir en revanche plus d'un resp_legal=0
 
-							//echo "<td style='text-align:center;";
-							echo "<td";
+							//$ligne_courante.="<td style='text-align:center;";
+							$ligne_courante.="<td";
 							//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 							$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
 							info_debug($sql);
 							$res3=mysql_query($sql);
 							if(mysql_num_rows($res3)==0){
-								//echo "'>\n";
-								echo ">\n";
+								//$ligne_courante.="'>\n";
+								$ligne_courante.=">\n";
 							}
 							else{
-								//echo " background-color: lightgreen;'>\n";
-								echo " class='modif'>\n";
+								//$ligne_courante.=" background-color: lightgreen;'>\n";
+								$ligne_courante.=" class='modif'>\n";
 							}
-							echo "$resp_legal";
-							//echo "<input type='hidden' name='new_".$cpt."_resp_legal' value='$resp_legal' />\n";
-							echo "</td>\n";
+							$ligne_courante.="$resp_legal";
+							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_resp_legal' value='$resp_legal' />\n";
+							$ligne_courante.="</td>\n";
 
-							echo "<td style='text-align:center;'>\n";
-							echo "$pers_contact";
-							//echo "<input type='hidden' name='new_".$cpt."_pers_contact' value='$pers_contact' />\n";
-							echo "</td>\n";
+							$ligne_courante.="<td style='text-align:center;'>\n";
+							$ligne_courante.="$pers_contact";
+							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_pers_contact' value='$pers_contact' />\n";
+							$ligne_courante.="</td>\n";
 
 							// Elève(s) associé(s)
 							/*
@@ -7729,35 +7736,35 @@ else{
 							$res4=mysql_query($sql);
 							*/
 							if(mysql_num_rows($res4)==0){
-								echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
-								echo "Aucun élève pour ele_id=$ele_id ???";
-								echo "</td>\n";
+								$ligne_courante.="<td style='text-align:center; background-color:red;' colspan='3'>\n";
+								$ligne_courante.="Aucun élève pour ele_id=$ele_id ???";
+								$ligne_courante.="</td>\n";
 
 								//=========================
 								// AJOUT: boireaus 20071129
-								//echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+								//$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
 								//=========================
 							}
 							else{
 								$lig4=mysql_fetch_object($res4);
-								echo "<td style='text-align:center;'>\n";
-								echo "$lig4->nom";
-								//echo "<input type='hidden' name='new_".$cpt."_ele_nom' value=\"$lig4->nom\" />\n";
-								echo "</td>\n";
+								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.="$lig4->nom";
+								//$ligne_courante.="<input type='hidden' name='new_".$cpt."_ele_nom' value=\"$lig4->nom\" />\n";
+								$ligne_courante.="</td>\n";
 
-								echo "<td style='text-align:center;'>\n";
-								echo "$lig4->prenom";
-								//echo "<input type='hidden' name='new_".$cpt."_ele_prenom' value=\"$lig4->prenom\" />\n";
-								echo "</td>\n";
+								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.="$lig4->prenom";
+								//$ligne_courante.="<input type='hidden' name='new_".$cpt."_ele_prenom' value=\"$lig4->prenom\" />\n";
+								$ligne_courante.="</td>\n";
 
-								echo "<td style='text-align:center;'>\n";
-								echo "$ele_id";
-								//echo "<input type='hidden' name='new_".$cpt."_ele_id' value='$ele_id' />\n";
-								echo "</td>\n";
+								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.="$ele_id";
+								//$ligne_courante.="<input type='hidden' name='new_".$cpt."_ele_id' value='$ele_id' />\n";
+								$ligne_courante.="</td>\n";
 
 								//=========================
 								// AJOUT: boireaus 20071129
-								//echo "<td style='text-align:center;'>&nbsp;</td>\n";
+								//$ligne_courante.="<td style='text-align:center;'>&nbsp;</td>\n";
 								//=========================
 							}
 						}
@@ -7774,19 +7781,20 @@ else{
 						info_debug($sql);
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0) {
-							//echo "<td style='text-align:center;'>&nbsp;</td>\n";
-							echo "<td style='text-align:center;'>";
-							//while($lig_tmp_test=mysql_fetch_object($test)){echo "$lig_tmp_test->ele_id - ";}
-							echo "&nbsp;\n";
-							echo "</td>\n";
+							//$ligne_courante.="<td style='text-align:center;'>&nbsp;</td>\n";
+							$ligne_courante.="<td style='text-align:center;'>";
+							//while($lig_tmp_test=mysql_fetch_object($test)){$ligne_courante.="$lig_tmp_test->ele_id - ";}
+							$ligne_courante.="&nbsp;\n";
+							$ligne_courante.="</td>\n";
 						}
 						else{
-							echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+							$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+							$temoin_suppr_resp="y";
 						}
 						//=========================
 
 
-						echo "</tr>\n";
+						$ligne_courante.="</tr>\n";
 						$cpt_nb_lig_tab++;
 					}
 					else{
@@ -7795,7 +7803,7 @@ else{
 						$lig1=mysql_fetch_object($res1);
 						if((stripslashes($lig1->resp_legal)!=stripslashes($resp_legal))||
 						(stripslashes($lig1->pers_contact)!=stripslashes($pers_contact))){
-							//echo "temoin<br />";
+							//$ligne_courante.="temoin<br />";
 							// L'un des champs resp_legal ou pers_contact au moins a changé
 							//$resp_modif[]="$affiche[0]:$affiche[1]";
 							$resp_modif[]="$ele_id:$pers_id";
@@ -7803,16 +7811,16 @@ else{
 
 							$alt=$alt*(-1);
 							/*
-							echo "<tr style='background-color:";
+							$ligne_courante.="<tr style='background-color:";
 							if($alt==1){
-								echo "silver";
+								$ligne_courante.="silver";
 							}
 							else{
-								echo "white";
+								$ligne_courante.="white";
 							}
-							echo ";'>\n";
+							$ligne_courante.=";'>\n";
 							*/
-							echo "<tr class='lig$alt'>\n";
+							$ligne_courante.="<tr class='lig$alt'>\n";
 
 							$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
 							info_debug($sql);
@@ -7820,112 +7828,112 @@ else{
 							if(mysql_num_rows($res2)==0){
 								// Problème: On ne peut pas importer l'association sans que la personne existe.
 								// Est-ce que l'étape d'import de la personne a été refusée?
-								echo "<td>&nbsp;</td>\n";
-								echo "<td>&nbsp;</td>\n";
+								$ligne_courante.="<td>&nbsp;</td>\n";
+								$ligne_courante.="<td>&nbsp;</td>\n";
 
-								echo "<td style='background-color:red;'>&nbsp;</td>\n";
-								echo "<td colspan='5'>Aucune personne associée???</td>\n";
+								$ligne_courante.="<td style='background-color:red;'>&nbsp;</td>\n";
+								$ligne_courante.="<td colspan='5'>Aucune personne associée???</td>\n";
 
 								//=========================
 								// AJOUT: boireaus 20071129
-								//echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+								//$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
 								//=========================
 							}
 							else{
 								$lig2=mysql_fetch_object($res2);
-								echo "<td style='text-align:center;'>\n";
-								//echo "<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$cpt' />";
+								$ligne_courante.="<td style='text-align:center;'>\n";
+								//$ligne_courante.="<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$cpt' />";
 
 								// Elève(s) associé(s)
 								$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
 								info_debug($sql);
 								$res4=mysql_query($sql);
 								if(mysql_num_rows($res4)>0){
-									echo "<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$lig0->col2' />\n";
+									$ligne_courante.="<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$lig0->col2' />\n";
 								}
-								echo "<input type='hidden' name='liste_assoc[]' value='$lig0->col2' />\n";
-								echo "</td>\n";
+								$ligne_courante.="<input type='hidden' name='liste_assoc[]' value='$lig0->col2' />\n";
+								$ligne_courante.="</td>\n";
 
-								//echo "<td style='text-align:center; background-color:lightgreen;'>Modif</td>\n";
-								echo "<td class='modif'>Modif</td>\n";
+								//$ligne_courante.="<td style='text-align:center; background-color:lightgreen;'>Modif</td>\n";
+								$ligne_courante.="<td class='modif'>Modif</td>\n";
 
-								echo "<td style='text-align:center;'>\n";
-								echo "$pers_id";
-								//echo "<input type='hidden' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
-								echo "</td>\n";
+								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.="$pers_id";
+								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
+								$ligne_courante.="</td>\n";
 
-								echo "<td style='text-align:center;'>\n";
-								echo "$lig2->nom";
-								//echo "<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".addslashes($lig2->nom)."\" />\n";
-								//echo "<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".$lig2->nom."\" />\n";
-								echo "</td>\n";
+								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.="$lig2->nom";
+								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".addslashes($lig2->nom)."\" />\n";
+								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".$lig2->nom."\" />\n";
+								$ligne_courante.="</td>\n";
 
-								echo "<td style='text-align:center;'>\n";
-								echo "$lig2->prenom";
-								//echo "<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".addslashes($lig2->nom)."\" />\n";
-								//echo "<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".$lig2->prenom."\" />\n";
-								echo "</td>\n";
+								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.="$lig2->prenom";
+								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".addslashes($lig2->nom)."\" />\n";
+								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".$lig2->prenom."\" />\n";
+								$ligne_courante.="</td>\n";
 
 								// Existe-t-il déjà un numéro de responsable légal 1 ou 2 correspondant au nouvel arrivant?
 
-								//echo "<td style='text-align:center;";
-								echo "<td";
+								//$ligne_courante.="<td style='text-align:center;";
+								$ligne_courante.="<td";
 								//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 								$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
 								info_debug($sql);
 								$res3=mysql_query($sql);
 								if(mysql_num_rows($res3)==0){
-									//echo "'>\n";
-									echo ">\n";
+									//$ligne_courante.="'>\n";
+									$ligne_courante.=">\n";
 								}
 								else{
-									//echo " background-color: lightgreen;'>\n";
-									echo " class='modif'>\n";
+									//$ligne_courante.=" background-color: lightgreen;'>\n";
+									$ligne_courante.=" class='modif'>\n";
 								}
-								echo "$resp_legal";
-								//echo "<input type='hidden' name='modif_".$cpt."_resp_legal' value='$resp_legal' />\n";
-								echo "</td>\n";
+								$ligne_courante.="$resp_legal";
+								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_legal' value='$resp_legal' />\n";
+								$ligne_courante.="</td>\n";
 
-								echo "<td style='text-align:center;'>\n";
-								echo "$pers_contact";
-								//echo "<input type='hidden' name='modif_".$cpt."_pers_contact' value='$pers_contact' />\n";
-								echo "</td>\n";
+								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.="$pers_contact";
+								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_pers_contact' value='$pers_contact' />\n";
+								$ligne_courante.="</td>\n";
 
 								// Elève(s) associé(s)
 								//$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
 								//$res4=mysql_query($sql);
 								if(mysql_num_rows($res4)==0){
-									echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
-									echo "Aucun élève pour ele_id=$ele_id ???";
-									echo "</td>\n";
+									$ligne_courante.="<td style='text-align:center; background-color:red;' colspan='3'>\n";
+									$ligne_courante.="Aucun élève pour ele_id=$ele_id ???";
+									$ligne_courante.="</td>\n";
 
 									//=========================
 									// AJOUT: boireaus 20071129
-									//echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+									//$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
 									//=========================
 								}
 								else{
 									$lig4=mysql_fetch_object($res4);
-									echo "<td style='text-align:center;'>\n";
-									echo "$lig4->nom";
-									//echo "<input type='hidden' name='modif_".$cpt."_ele_nom' value=\"".addslashes($lig4->nom)."\" />\n";
-									//echo "<input type='hidden' name='modif_".$cpt."_ele_nom' value=\"".$lig4->nom."\" />\n";
-									echo "</td>\n";
+									$ligne_courante.="<td style='text-align:center;'>\n";
+									$ligne_courante.="$lig4->nom";
+									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_nom' value=\"".addslashes($lig4->nom)."\" />\n";
+									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_nom' value=\"".$lig4->nom."\" />\n";
+									$ligne_courante.="</td>\n";
 
-									echo "<td style='text-align:center;'>\n";
-									echo "$lig4->prenom";
-									//echo "<input type='hidden' name='modif_".$cpt."_ele_prenom' value=\"".addslashes($lig4->prenom)."\" />\n";
-									//echo "<input type='hidden' name='modif_".$cpt."_ele_prenom' value=\"".$lig4->prenom."\" />\n";
-									echo "</td>\n";
+									$ligne_courante.="<td style='text-align:center;'>\n";
+									$ligne_courante.="$lig4->prenom";
+									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_prenom' value=\"".addslashes($lig4->prenom)."\" />\n";
+									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_prenom' value=\"".$lig4->prenom."\" />\n";
+									$ligne_courante.="</td>\n";
 
-									echo "<td style='text-align:center;'>\n";
-									echo "$ele_id";
-									//echo "<input type='hidden' name='modif_".$cpt."_ele_id' value='$ele_id' />\n";
-									echo "</td>\n";
+									$ligne_courante.="<td style='text-align:center;'>\n";
+									$ligne_courante.="$ele_id";
+									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_id' value='$ele_id' />\n";
+									$ligne_courante.="</td>\n";
 
 									//=========================
 									// AJOUT: boireaus 20071129
-									//echo "<td style='text-align:center;'>&nbsp;</td>\n";
+									//$ligne_courante.="<td style='text-align:center;'>&nbsp;</td>\n";
 									//=========================
 								}
 
@@ -7942,18 +7950,19 @@ else{
 							info_debug($sql);
 							$test=mysql_query($sql);
 							if(mysql_num_rows($test)>0) {
-								//echo "<td style='text-align:center;'>&nbsp;</td>\n";
-								echo "<td style='text-align:center;'>";
-								//while($lig_tmp_test=mysql_fetch_object($test)){echo "$lig_tmp_test->ele_id - ";}
-								echo "&nbsp;\n";
-								echo "</td>\n";
+								//$ligne_courante.="<td style='text-align:center;'>&nbsp;</td>\n";
+								$ligne_courante.="<td style='text-align:center;'>";
+								//while($lig_tmp_test=mysql_fetch_object($test)){$ligne_courante.="$lig_tmp_test->ele_id - ";}
+								$ligne_courante.="&nbsp;\n";
+								$ligne_courante.="</td>\n";
 							}
 							else{
-								echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+								$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+								$temoin_suppr_resp="y";
 							}
 							//=========================
 
-							echo "</tr>\n";
+							$ligne_courante.="</tr>\n";
 							$cpt_nb_lig_tab++;
 						}
 						// Sinon, il n'est pas nécessaire de refaire l'inscription déjà présente.
@@ -7962,6 +7971,13 @@ else{
 							info_debug($sql);
 							$update=mysql_query($sql);
 						}
+					}
+
+					if($suppr_resp_non_assoc="y") {
+						echo $ligne_courante;
+					}
+					elseif(($temoin_suppr_resp="n")&&($suppr_resp_non_assoc="n")) {
+						echo $ligne_courante;
 					}
 
 					//echo "</tr>\n";
