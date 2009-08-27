@@ -127,6 +127,9 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
     //$_nom = strtr($_nom, "éèëêÉÈËÊüûÜÛïÏäàÄÀ", "eeeeEEEEuuUUiIaaAA");
 	$_nom = strtr($_nom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀ", "ceeeeEEEEuuuUUiiIIaaaAAA");
     $_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
+
+	if($_nom=='') {return false;}
+
     if ($_mode == "name") {
             $temp1 = $_nom;
             //$temp1 = strtoupper($temp1);
@@ -142,6 +145,7 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
             $temp1 = my_ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,8);
         } elseif ($_mode == "fname8") {
+			if($_prenom=='') {return false;}
             $temp1 = $_prenom{0} . $_nom;
             //$temp1 = strtoupper($temp1);
             $temp1 = my_ereg_replace(" ","", $temp1);
@@ -149,6 +153,7 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
             $temp1 = my_ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,8);
         } elseif ($_mode == "fname19") {
+			if($_prenom=='') {return false;}
             $temp1 = $_prenom{0} . $_nom;
             //$temp1 = strtoupper($temp1);
             $temp1 = my_ereg_replace(" ","", $temp1);
@@ -156,7 +161,7 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
             $temp1 = my_ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,19);
         } elseif ($_mode == "firstdotname") {
-
+			if($_prenom=='') {return false;}
             $temp1 = $_prenom . "." . $_nom;
             //$temp1 = strtoupper($temp1);
 
@@ -165,6 +170,7 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
             $temp1 = my_ereg_replace("'","", $temp1);
             //$temp1 = substr($temp1,0,19);
         } elseif ($_mode == "firstdotname19") {
+			if($_prenom=='') {return false;}
             $temp1 = $_prenom . "." . $_nom;
             //$temp1 = strtoupper($temp1);
             $temp1 = my_ereg_replace(" ","", $temp1);
@@ -172,6 +178,7 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
             $temp1 = my_ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,19);
         } elseif ($_mode == "namef8") {
+			if($_prenom=='') {return false;}
 			//echo "\$_nom=$_nom<br />";
 			//echo "\$_prenom=$_prenom<br />";
             $temp1 =  substr($_nom,0,7) . $_prenom{0};

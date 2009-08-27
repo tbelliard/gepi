@@ -151,60 +151,66 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				// Création du compte utilisateur pour le responsable considéré
 				//echo "\$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, ".getSettingValue("mode_generation_login").");<br />\n";
 				$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login"));
+				// generate_unique_login() peut retourner 'false' en cas de pb
 			}
-
-			// Si on a un accès LDAP en écriture, on créé le compte sur le LDAP
-			// On ne procède que si le LDAP est configuré en écriture, qu'on a activé
-			// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a été choisi pour cet utilisateur.
-			if (LDAPServer::is_setup() && $gepiSettings["ldap_write_access"] == "yes" && ($session_gepi->auth_ldap || $session_gepi->auth_sso) && ($_POST['reg_auth_mode'] == 'auth_ldap' || $_POST['reg_auth_mode'] == 'auth_sso')) {
-				$write_ldap = true;
-				$write_ldap_success = false;
-				// On tente de créer l'utilisateur sur l'annuaire LDAP
-				$ldap_server = new LDAPServer();
-				if ($ldap_server->test_user($_POST['new_login'])) {
-					// L'utilisateur a été trouvé dans l'annuaire. On ne l'enregistre pas.
-					$write_ldap_success = true;
-					$msg.= "L'utilisateur n'a pas pu être ajouté à l'annuaire LDAP, car il y est déjà présent. Il va néanmoins être créé dans la base Gepi.";
+	
+			if($reg_login) {
+				// Si on a un accès LDAP en écriture, on créé le compte sur le LDAP
+				// On ne procède que si le LDAP est configuré en écriture, qu'on a activé
+				// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a été choisi pour cet utilisateur.
+				if (LDAPServer::is_setup() && $gepiSettings["ldap_write_access"] == "yes" && ($session_gepi->auth_ldap || $session_gepi->auth_sso) && ($_POST['reg_auth_mode'] == 'auth_ldap' || $_POST['reg_auth_mode'] == 'auth_sso')) {
+					$write_ldap = true;
+					$write_ldap_success = false;
+					// On tente de créer l'utilisateur sur l'annuaire LDAP
+					$ldap_server = new LDAPServer();
+					if ($ldap_server->test_user($_POST['new_login'])) {
+						// L'utilisateur a été trouvé dans l'annuaire. On ne l'enregistre pas.
+						$write_ldap_success = true;
+						$msg.= "L'utilisateur n'a pas pu être ajouté à l'annuaire LDAP, car il y est déjà présent. Il va néanmoins être créé dans la base Gepi.";
+					} else {
+						$write_ldap_success = $ldap_server->add_user($reg_login, $current_parent->nom, $current_parent->prenom, $current_parent->mel, $current_parent->civilite, '', 'responsable');
+					}
 				} else {
-					$write_ldap_success = $ldap_server->add_user($reg_login, $current_parent->nom, $current_parent->prenom, $current_parent->mel, $current_parent->civilite, '', 'responsable');
+					$write_ldap = false;
 				}
-			} else {
-				$write_ldap = false;
+	
+				if (!$write_ldap || ($write_ldap && $write_ldap_success)) {
+					$reg = true;
+					if ($_POST['reg_auth_mode'] == "auth_locale") {
+						$reg_auth = "gepi";
+					} elseif ($_POST['reg_auth_mode'] == "auth_ldap") {
+						$reg_auth = "ldap";
+					} elseif ($_POST['reg_auth_mode'] == "auth_sso") {
+						$reg_auth = "sso";
+					}
+					$sql="INSERT INTO utilisateurs SET " .
+							"login = '" . $reg_login . "', " .
+							"nom = '" . addslashes($current_parent->nom) . "', " .
+							"prenom = '". addslashes($current_parent->prenom) ."', " .
+							"password = '', " .
+							"civilite = '" . $current_parent->civilite."', " .
+							"email = '" . $current_parent->mel . "', " .
+							"statut = 'responsable', " .
+							"etat = 'actif', " .
+							"auth_mode = '".$reg_auth."', " .
+							"change_mdp = 'n'";
+					//echo "$sql<br />";
+					$reg = mysql_query($sql);
+	
+					if (!$reg) {
+						$msg .= "Erreur lors de la création du compte ".$reg_login."<br/>";
+					} else {
+						$sql="UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')";
+						$reg2 = mysql_query($sql);
+						//$msg.="$sql<br />";
+						$nb_comptes++;
+					}
+				} else {
+					$msg .= "Erreur lors de la création du compte ".$reg_login." : l'utilisateur n'a pas pu être créé sur l'annuaire LDAP.<br/>";
+				}
 			}
-
-			if (!$write_ldap || ($write_ldap && $write_ldap_success)) {
-				$reg = true;
-				if ($_POST['reg_auth_mode'] == "auth_locale") {
-					$reg_auth = "gepi";
-				} elseif ($_POST['reg_auth_mode'] == "auth_ldap") {
-					$reg_auth = "ldap";
-				} elseif ($_POST['reg_auth_mode'] == "auth_sso") {
-					$reg_auth = "sso";
-				}
-				$sql="INSERT INTO utilisateurs SET " .
-						"login = '" . $reg_login . "', " .
-						"nom = '" . addslashes($current_parent->nom) . "', " .
-						"prenom = '". addslashes($current_parent->prenom) ."', " .
-						"password = '', " .
-						"civilite = '" . $current_parent->civilite."', " .
-						"email = '" . $current_parent->mel . "', " .
-						"statut = 'responsable', " .
-						"etat = 'actif', " .
-						"auth_mode = '".$reg_auth."', " .
-						"change_mdp = 'n'";
-				//echo "$sql<br />";
-				$reg = mysql_query($sql);
-
-				if (!$reg) {
-					$msg .= "Erreur lors de la création du compte ".$reg_login."<br/>";
-				} else {
-					$sql="UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')";
-					$reg2 = mysql_query($sql);
-					//$msg.="$sql<br />";
-					$nb_comptes++;
-				}
-			} else {
-				$msg .= "Erreur lors de la création du compte ".$reg_login." : l'utilisateur n'a pas pu être créé sur l'annuaire LDAP.<br/>";
+			else {
+				$msg .= "Erreur lors de la génération d'un login pour '$current_parent->nom $current_parent->prenom'.<br/>";
 			}
 		}
 		if ($nb_comptes == 1) {
