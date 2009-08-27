@@ -108,10 +108,13 @@ $liste_tables_del = array(
 //"droits",
 "eleves",
 "responsables",
+/*
 // NE FAUDRAIT-IL PAS VIDER ICI responsables2, resp_pers et reps_adr?
+// NON: Cela empêche de conserver les comptes utilisateurs pour les responsables
 "responsables2",
 "resp_pers",
 "resp_adr",
+*/
 //"etablissements",
 "j_aid_eleves",
 "j_aid_utilisateurs",

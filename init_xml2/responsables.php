@@ -68,6 +68,8 @@
 
 	$verif_tables_non_vides=isset($_POST['verif_tables_non_vides']) ? $_POST['verif_tables_non_vides'] : NULL;
 
+	// Passer à 'y' pour afficher les requêtes
+	$debug_resp='n';
 
 	if(isset($_GET['ad_retour'])){
 		$_SESSION['ad_retour']=$_GET['ad_retour'];
@@ -240,26 +242,32 @@ temoin VARCHAR( 50 ) NOT NULL
 //auth_mode ENUM('gepi','ldap','sso') NOT NULL ,
 //auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
 //auth_mode VARCHAR( 4 ) NOT NULL ,
+			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$creation_table=mysql_query($sql);
 
 			$sql="TRUNCATE TABLE tempo_utilisateurs_resp;";
+			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$nettoyage=mysql_query($sql);
 
 			// Il faut faire cette étape avant de vider la table resp_pers via $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
-			$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,rp.pers_id,u.statut,u.auth_mode,u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND u.statut='responsable';";
+			$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,rp.pers_id,u.statut,u.auth_mode,u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND rp.login!='' AND u.statut='responsable';";
+			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$svg_insert=mysql_query($sql);
 
 
 			$j=0;
 			while ($j < count($liste_tables_del)) {
 				if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-					$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+					$sql="DELETE FROM $liste_tables_del[$j];";
+					if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+					$del=@mysql_query($sql);
 				}
 				$j++;
 			}
 
 			// Suppression des comptes de responsables:
 			$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
+			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$del=mysql_query($sql);
 
 			echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>\n";
@@ -548,6 +556,7 @@ temoin VARCHAR( 50 ) NOT NULL
 								else{
 
 									$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 									$res_tmp_u=mysql_query($sql);
 									if(mysql_num_rows($res_tmp_u)>0) {
 										$lig_tmp_u=mysql_fetch_object($res_tmp_u);
@@ -557,15 +566,18 @@ temoin VARCHAR( 50 ) NOT NULL
 											$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
 										}
 										$sql.="password='".$lig_tmp_u->password."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 										$insert_u=mysql_query($sql);
 										if(!$insert_u) {
 											echo "Erreur lors de la création du compte utilisateur pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"].".<br />";
 										}
 										else {
 											$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 											$update_rp=mysql_query($sql);
 
 											$sql="UPDATE tempo_utilisateurs_resp SET temoin='recree' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 											$update_tmp_u=mysql_query($sql);
 										}
 									}
