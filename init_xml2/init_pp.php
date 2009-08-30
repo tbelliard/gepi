@@ -74,7 +74,8 @@ if (!isset($step1)) {
 	if ($flag != 0){
 		echo "<p><b>ATTENTION ...</b><br />\n";
 		echo "Des professeurs principaux sont actuellement définis dans la base GEPI<br /></p>\n";
-		echo "<p>Si vous poursuivez la procédure ces données seront supprimées et remplacées par celles de votre fichier F_DIV.CSV</p>\n";
+		//echo "<p>Si vous poursuivez la procédure ces données seront supprimées et remplacées par celles de votre fichier F_DIV.CSV</p>\n";
+		echo "<p>Si vous poursuivez la procédure ces données seront supprimées et remplacées par celles de votre import XML.</p>\n";
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 		echo "<input type='hidden' name='step1' value='y' />\n";
