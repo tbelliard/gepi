@@ -68,7 +68,7 @@ if (!isset($_POST["action"])) {
 	echo "<form enctype='multipart/form-data' action='disciplines.php' method='post'>\n";
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
-	echo "<p><input type=\"checkbox\" name=\"ligne_entete\" value='y' /> Cocher si le fichier comporte une ligne d'entête.</p>\n";
+	//echo "<p><input type=\"checkbox\" name=\"ligne_entete\" value='y' /> Cocher si le fichier comporte une ligne d'entête.</p>\n";
     echo "<p><label for='ligne_entete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='ligne_entete' id='ligne_entete' value='yes' checked /></p>\n";
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -157,7 +157,7 @@ if (!isset($_POST["action"])) {
 		//
 
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
-		$ligne_entete=isset($_POST['ligne_entete']) ? $_POST['ligne_entete'] : 'n';
+		$ligne_entete=isset($_POST['ligne_entete']) ? $_POST['ligne_entete'] : 'no';
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
@@ -179,7 +179,7 @@ if (!isset($_POST["action"])) {
 				$data_tab = array();
 
 				//=========================
-				if($ligne_entete=="y"){
+				if($ligne_entete=="yes"){
 					// On lit une ligne pour passer la ligne d'entête:
 					$ligne = fgets($fp, 4096);
 				}
