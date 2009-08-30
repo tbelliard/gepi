@@ -122,10 +122,10 @@ if (isset($_POST['delai_devoirs'])) {
 <p style="font-style: italic;">La version 2 du cahier de texte necessite php 5.2.x minimum</p>
 	<label for='version_1' style='cursor: pointer;'>
 	<input type="radio" name="version" id="version_1" value="1" <?php if (getSettingValue("GepiCahierTexteVersion")=='1') echo " checked='checked'"; ?> />
-&nbsp;Cahier de texte version 1</label><br />
+&nbsp;Cahier de texte version 1</label> (<span style='font-size: small; font-style: italic;'>le cahier de texte version 1 ne sera plus supporté dans la future version 1.5.3</span>)<br />
 	<label for='version_2' style='cursor: pointer;'>
 	<input type="radio" name="version" id="version_2" value="2" <?php if (getSettingValue("GepiCahierTexteVersion")=='2') echo " checked='checked'"; ?> />
-&nbsp;Cahier de texte version 2 (beta)</label><br />
+&nbsp;Cahier de texte version 2</label><br />
 
 <h2>Début et fin des cahiers de textes</h2>
 <i>Seules les rubriques dont la date est comprise entre la date de début et la date de fin des cahiers de textes sont visibles dans
