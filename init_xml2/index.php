@@ -113,7 +113,7 @@ require_once("../lib/header.inc");
 				<p><a href='init_pp.php'>Procéder à la sixième phase</a>: Initialisation des professeurs principaux.</p>
 			</li>
 			<li>
-				<p><a href='clean_tables.php'>Procéder à la septième phase</a> de nettoyage des données : les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !</p>
+				<p><a href='clean_tables.php'>Procéder à la septième phase</a> de nettoyage des données : les données inutiles importées à partir des fichiers XML lors des différentes phases d'initialisation seront effacées !</p>
 			</li>
 			<li>
 				<p><a href='clean_temp.php'>Procéder à la phase de nettoyage des fichiers</a>: Supprimer les fichiers XML et CSV qui n'auraient pas été supprimés auparavant.</p>
