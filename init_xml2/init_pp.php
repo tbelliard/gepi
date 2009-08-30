@@ -105,13 +105,14 @@ if (!isset($is_posted)) {
 	}
 
 	if(!file_exists("../temp/$tempdir/f_div.csv")){
-		echo "<p>Le fichier f_div.csv n'est pas présent dans votre dossier temporaire.<br />Auriez-vous sauté l'étape de l'importation des professeurs???</p>\n";
+		echo "<p>Le fichier <b>f_div.csv</b> n'est pas présent dans votre dossier temporaire.<br />Auriez-vous sauté l'étape de l'importation des professeurs???</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
 
 	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée et si les professeurs ont été importés !</p>\n";
-	echo "<p>Importation du fichier <b>F_div.csv</b> (<i>généré lors de l'importation des professeurs</i>) contenant les associations classe/professeur principal.</p>\n";
+	//echo "<p>Importation du fichier <b>F_div.csv</b> (<i>généré lors de l'importation des professeurs</i>) contenant les associations classe/professeur principal.</p>\n";
+	echo "<p>Importation des associations classe/professeur principal.</p>\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<input type=hidden name='step1' value='y' />\n";
@@ -127,7 +128,7 @@ if (!isset($is_posted)) {
 		//$fp = fopen($dbf_file['tmp_name'],"r");
 		$fp = fopen("../temp/$tempdir/f_div.csv","r");
 		if(!$fp) {
-			echo "<p>Impossible d'ouvrir le fichier CSV</p>\n";
+			echo "<p>Impossible d'ouvrir le fichier CSV normalement généré lors de l'import des professeurs.</p>\n";
 			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 		} else {
 			// on constitue le tableau des champs à extraire
@@ -292,7 +293,10 @@ if (!isset($is_posted)) {
 					echo "<p>Aucun professeur principal n'a été inscrit dans la base GEPI !</p>\n";
 				}
 
-				echo "<p>Avant de procéder à un nettoyage des tables pour supprimer les données inutiles, vous devriez effectuer une <a href='../gestion/accueil_sauve.php?action=dump'>sauvegarde</a><br />\n";
+				if(getSettingValue("mode_sauvegarde")=="mysqldump") {$mode_sauvegarde="system_dump";}
+				else {$mode_sauvegarde="dump";}
+
+				echo "<p>Avant de procéder à un nettoyage des tables pour supprimer les données inutiles, vous devriez effectuer une <a href='../gestion/accueil_sauve.php?action=$mode_sauvegarde&amp;quitter_la_page=y' target='_blank'>sauvegarde</a><br />\n";
 				echo "Après cette sauvegarde, effectuez le nettoyage en repassant par 'Gestion générale/Initialisation des données à partir de fichiers DBF et XML/Procéder à la septième phase'.<br />\n";
 				echo "Si les données sont effectivement inutiles, c'est terminé.<br />\n";
 				echo "Sinon, vous pourrez restaurer votre sauvegarde et vous aurez pu noter les associations profs/matières/classes manquantes... à effectuer par la suite manuellement dans 'Gestion des bases'.</p>\n";
