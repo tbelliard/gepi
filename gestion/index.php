@@ -181,7 +181,7 @@ if (LDAPServer::is_setup()) {
 	<i>Les XML sont traités pour générer des fichiers CSV qui sont ensuite réclamés dans les différentes étapes de l'initialisation.</i>
     </td>
 </tr>
-<tr>
+<!--tr>
     <td width='200'><a href="../init_dbf_sts/index.php">Initialisation des données à partir de fichiers DBF et XML</a> (OBSOLETE)</td>
     <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis deux fichiers DBF et l'export XML de STS.<br />
 	<span style='color:red; '>Cette solution ne sera plus maintenue dans la future version 1.5.2 de Gepi.</span>
@@ -192,7 +192,7 @@ if (LDAPServer::is_setup()) {
     <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis les fichiers GEP. Cette procédure est désormais obsolète avec la généralisation de Sconet.<br />
 	<span style='color:red; '>Cette solution ne sera plus maintenue dans la future version 1.5.2 de Gepi.</span>
     </td>
-</tr>
+</tr-->
 </table>
 </center>
 <?php require("../lib/footer.inc.php");?>
