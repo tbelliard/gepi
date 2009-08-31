@@ -50,11 +50,16 @@ echo "<p class=bold>";
 echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 
+/*
 echo "<p>Vous pouvez effectuer les mises à jour de deux façons:</p>\n";
 echo "<ul>\n";
 echo "<li><a href='maj_import2.php'>Nouvelle méthode (<i>plus complète</i>)</a>: Nouvelle méthode, en fournissant directement les fichiers XML de Sconet/STS.</li>\n";
 echo "<li><a href='maj_import1.php'>Ancienne méthode</a>: En générant des fichiers CSV à partir des fichiers XML de Sconet/STS.</li>\n";
 echo "</ul>\n";
+echo "<p><br /></p>\n";
+*/
+
+echo "<p><a href='maj_import2.php'>Mise à jour des données élèves/responsables à l'aide des fichiers XML de Sconet/STS</a>.</p>\n";
 echo "<p><br /></p>\n";
 
 //==================================
@@ -202,6 +207,8 @@ else{
 }
 
 
+echo "<p><br /></p>\n";
+echo "<p><i>NOTE&nbsp;:</i> Cette page ne permet pas d'initialiser une année, mais seulement de mettre à jour en cours d'année les informations élèves (<i>nom, prénom, naissance, INE, régime,...</i>) et responsables (<i>nom, prénom, changement d'adresse, tel,...</i>), et d'importer les élèves/responsables ajoutés en cours d'année.</p>\n";
 
 // Il faudrait permettre de corriger l'ELE_ID et le PERS_ID
 echo "<p><br /></p>\n";
