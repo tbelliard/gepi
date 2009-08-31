@@ -315,7 +315,8 @@ echo "\$parent=$parent<br />\n";
 */
 
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_conteneur.php\" method='post'>\n";
-if ($mode_navig == 'retour_saisie') {
+//if ($mode_navig == 'retour_saisie') {
+if(($mode_navig == 'retour_saisie')&&(isset($id_retour))) {
     echo "<div class='norme'><p class=bold><a href='./saisie_notes.php?id_conteneur=$id_retour'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 } else {
     echo "<div class='norme'><p class=bold><a href='index.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
@@ -453,7 +454,8 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description:</td>\n";
 		echo "<td>\n";
-		echo "<input type='hidden' name='description' size='40' value='$description' onfocus=\"javascript:this.select()\" />\n";
+		echo "<textarea name='description' rows='2' cols='40' wrap='virtual' onfocus=\"javascript:this.select()\">".$description."</textarea>\n";
+		//echo "<input type='hidden' name='description' size='40' value='$description' onfocus=\"javascript:this.select()\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
