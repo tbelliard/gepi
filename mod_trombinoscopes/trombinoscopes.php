@@ -118,6 +118,68 @@ if (empty($_POST['eleve_initial'])) {$eleve_initial = ''; } else {$eleve_initial
 if (empty($_GET['id'])) {$id = ''; } else {$id=$_GET['id']; }
 if (empty($_POST['valider'])) {$valider = ''; } else {$valider=$_POST['valider']; }
 
+
+
+
+
+/*
+// =================================
+// AJOUT: boireaus
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')||($_SESSION['statut']=='professeur')) {
+	$chaine_options_classes="";
+
+	if($_SESSION['statut']=='administrateur') {
+		$sql="SELECT id, classe FROM classes ORDER BY classe";
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$sql="SELECT id, classe FROM classes ORDER BY classe";
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$sql="SELECT id, classe FROM classes ORDER BY classe";
+	}
+	elseif($_SESSION['statut']=='professeur') {
+		$sql="SELECT id, classe FROM classes ORDER BY classe";
+	}
+
+	$res_class_tmp=mysql_query($sql);
+	if(mysql_num_rows($res_class_tmp)>0){
+		$id_class_prec=0;
+		$id_class_suiv=0;
+		$temoin_tmp=0;
+	
+		$cpt_classe=0;
+		$num_classe=-1;
+	
+		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			if($lig_class_tmp->id==$id_classe){
+				// Index de la classe dans les <option>
+				$num_classe=$cpt_classe;
+	
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+				$temoin_tmp=1;
+				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+					$id_class_suiv=$lig_class_tmp->id;
+				}
+				else{
+					$id_class_suiv=0;
+				}
+			}
+			else {
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+			}
+	
+			if($temoin_tmp==0){
+				$id_class_prec=$lig_class_tmp->id;
+			}
+	
+			$cpt_classe++;
+		}
+	}
+}
+// =================================
+*/
+
 // =========== Style spécifique ================
 $style_specifique = "mod_trombinoscopes/styles/styles";
 //**************** EN-TETE *********************
@@ -169,10 +231,13 @@ function reactiver(mavar) {
 
 </script>
 
-<p class='bold'><a href='../accueil.php'><img src="../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>
- | <a href='trombinoscopes.php'>Effectuer une autre sélection</a>
-
 <?php
+
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo " | <a href='trombinoscopes.php'>Effectuer une autre sélection</a>";
+
 	function acces($id,$statut) {
 		$tab_id = explode("?",$id);
 		$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
@@ -185,13 +250,85 @@ function reactiver(mavar) {
 	}
 
 	if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) {
-		echo " | <a href='trombinoscopes.php'>Retour à la sélection</a>";
+		//echo " | <a href='trombinoscopes.php'>Retour à la sélection</a>";
 
 		if(acces('/mod_trombinoscopes/trombi_impr.php',$_SESSION['statut'])) {
 			echo " | <a href='trombi_impr.php?classe=$classe&amp;groupe=$groupe&amp;equipepeda=$equipepeda&amp;discipline=$discipline&amp;statusgepi=$statusgepi&amp;affdiscipline=$affdiscipline' target='_blank'>Format imprimable</a>";
 		}
 	}
+
+	$id_classe=$classe;
+	//if((isset($id_classe))&&(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')||($_SESSION['statut']=='professeur'))) {
+	if(($id_classe!='')&&(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')||($_SESSION['statut']=='professeur'))) {
+		// ===========================================
+		// Ajout lien classe précédente / classe suivante
+		if($_SESSION['statut']=='administrateur'){
+			$sql="SELECT id, classe FROM classes ORDER BY classe";
+		}
+		elseif($_SESSION['statut']=='scolarite'){
+			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		}
+		elseif($_SESSION['statut']=='professeur'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+		}
+		elseif($_SESSION['statut']=='cpe'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+				p.id_classe = c.id AND
+				jec.id_classe=c.id AND
+				jec.periode=p.num_periode AND
+				jecpe.e_login=jec.login AND
+				jecpe.cpe_login='".$_SESSION['login']."'
+				ORDER BY classe";
+		}
+		$chaine_options_classes="";
+	
+		$res_class_tmp=mysql_query($sql);
+		if(mysql_num_rows($res_class_tmp)>0){
+			$id_class_prec=0;
+			$id_class_suiv=0;
+			$temoin_tmp=0;
+			while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+				if($lig_class_tmp->id==$id_classe){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+					$temoin_tmp=1;
+					if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+						$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+						$id_class_suiv=$lig_class_tmp->id;
+					}
+					else{
+						$id_class_suiv=0;
+					}
+				}
+				else {
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+				}
+				if($temoin_tmp==0){
+					$id_class_prec=$lig_class_tmp->id;
+				}
+			}
+		}
+		// =================================
+		if(isset($id_class_prec)){
+			//if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+			if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?classe=$id_class_prec&amp;etape=2'>Classe précédente</a>";}
+		}
+		if($chaine_options_classes!="") {
+			//echo " | Classe : <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+			echo " | Classe : <select name='classe' onchange=\"document.forms['form1'].submit();\">\n";
+			echo $chaine_options_classes;
+			echo "</select>\n";
+			echo "<input type='hidden' name='etape' value='2' />\n";
+		}
+		if(isset($id_class_suiv)){
+			//if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+			if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?classe=$id_class_suiv&amp;etape=2'>Classe suivante</a>";}
+		}
+		//fin ajout lien classe précédente / classe suivante
+		// ===========================================
+	}
+
 	echo "</p>\n";
+	echo "</form>\n";
 
 
 	$GepiAccesEleTrombiTousEleves=getSettingValue("GepiAccesEleTrombiTousEleves");
