@@ -46,10 +46,19 @@ $id_classe = isset($_GET['id_classe']) ? $_GET['id_classe'] : (isset($_POST['id_
 $id_groupe = isset($_GET['id_groupe']) ? $_GET['id_groupe'] : (isset($_POST['id_groupe']) ? $_POST["id_groupe"] : NULL);
 $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST["order_by"] : "classe");
 
+function debug_edit_eleves($texte) {
+	$debug_edit_eleves=0;
+	if($debug_edit_eleves==1) {
+		echo "<span style='color:green'>$texte</span><br />\n";
+	}
+}
 
+debug_edit_eleves("id_groupe=$id_groupe");
 if (!is_numeric($id_groupe)) $id_groupe = 0;
+debug_edit_eleves("id_groupe=$id_groupe");
 $current_group = get_group($id_groupe);
 $reg_nom_groupe = $current_group["name"];
+debug_edit_eleves("reg_nom_groupe=$reg_nom_groupe");
 $reg_nom_complet = $current_group["description"];
 $reg_matiere = $current_group["matiere"]["matiere"];
 $reg_id_classe = $id_classe;
@@ -77,17 +86,25 @@ if (isset($_POST['is_posted'])) {
 
 	// Elèves
 	$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$id_groupe' ORDER BY login";
+	debug_edit_eleves($sql);
 	$result_liste_eleves_du_grp=mysql_query($sql);
 	while($lig_eleve=mysql_fetch_object($result_liste_eleves_du_grp)){
 		$temoin_nettoyage="";
 		foreach($current_group["periodes"] as $period) {
-			$sql="SELECT * FROM matieres_notes WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='$period'";
+			//$sql="SELECT * FROM matieres_notes WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='$period'";
+			$sql="SELECT * FROM matieres_notes WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='".$period['num_periode']."';";
+			debug_edit_eleves($sql);
 			$res_liste_notes=mysql_query($sql);
-			$sql="SELECT * FROM matieres_appreciations WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='$period'";
+			//$sql="SELECT * FROM matieres_appreciations WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='$period'";
+			//$sql="SELECT * FROM matieres_appreciations WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='$period'";
+			$sql="SELECT * FROM matieres_appreciations WHERE login='$lig_eleve->login' AND id_groupe='$id_groupe' AND periode='".$period['num_periode']."';";
+			debug_edit_eleves($sql);
 			$res_liste_appreciations=mysql_query($sql);
 			if((mysql_num_rows($res_liste_notes)==0)&&(mysql_num_rows($res_liste_appreciations)==0)){
 				//$sql="DELETE FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='$lig_eleve->login'";
-				$sql="DELETE FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='$lig_eleve->login' AND periode='$period'";
+				//$sql="DELETE FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='$lig_eleve->login' AND periode='$period'";
+				$sql="DELETE FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='$lig_eleve->login' AND periode='".$period['num_periode']."';";
+				debug_edit_eleves($sql);
 				//echo "$sql<br />\n";
 				$resultat_nettoyage_initial=mysql_query($sql);
 			}
@@ -127,6 +144,7 @@ if (isset($_POST['is_posted'])) {
 			if(isset($_POST['eleve_'.$period["num_periode"].'_'.$i])) {
 				$id=$login_eleve[$i];
 				$reg_eleves[$period["num_periode"]][] = $id;
+				debug_edit_eleves("\$reg_eleves[".$period["num_periode"]."][]=$id");
 				// Settings spécifiques
 				$coef = array();
 				if (!in_array($id, $flag)) {
@@ -151,6 +169,7 @@ if (isset($_POST['is_posted'])) {
 		// MODIF: boireaus
 		if(count($reg_eleves)!=0){
 			$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
+			debug_edit_eleves("update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, \$reg_clazz, \$reg_professeurs, \$reg_eleves);");
 			if (!$create) {
 				$msg .= "Erreur lors de la mise à jour du groupe.";
 			} else {
@@ -159,12 +178,15 @@ if (isset($_POST['is_posted'])) {
 		}
 		else{
 			$login_eleve=$_POST['login_eleve'];
+			debug_edit_eleves("count(\$login_eleve)=".count($login_eleve));
 			foreach($current_group["periodes"] as $period) {
 				//echo "<!-- \$period[\"num_periode\"]=".$period["num_periode"]." -->\n";
 				for($i=0;$i<count($login_eleve);$i++) {
 					if (test_before_eleve_removal($login_eleve[$i], $id_groupe, $period["num_periode"])) {
+						debug_edit_eleves("test_before_eleve_removal($login_eleve[$i], $id_groupe, ".$period["num_periode"].")");
 						//$res = mysql_query("delete from j_eleves_groupes where (id_groupe = '" . $_id_groupe . "' and login = '" . $login_eleve[$i] . "' and periode = '" . $period["num_periode"] . "')");
 						$sql="delete from j_eleves_groupes where (id_groupe = '" . $id_groupe . "' and login = '" . $login_eleve[$i] . "' and periode = '" . $period["num_periode"] . "')";
+						debug_edit_eleves($sql);
 						//echo "<!-- sql=$sql -->\n";
 						$res = mysql_query("delete from j_eleves_groupes where (id_groupe = '" . $id_groupe . "' and login = '" . $login_eleve[$i] . "' and periode = '" . $period["num_periode"] . "')");
 						if (!$res) $errors = true;
@@ -177,12 +199,15 @@ if (isset($_POST['is_posted'])) {
 		//==========================================
 	}
 
+	debug_edit_eleves("id_groupe=$id_groupe");
 	$current_group = get_group($id_groupe);
 	// On réinitialise $reg_eleves
 	$reg_eleves = array();
 	foreach ($current_group["periodes"] as $period) {
 		if($period["num_periode"]!=""){
+			debug_edit_eleves("\$period[\"num_periode\"]=".$period["num_periode"]);
 			$reg_eleves[$period["num_periode"]] = $current_group["eleves"][$period["num_periode"]]["list"];
+			debug_edit_eleves("\$reg_eleves[".$period["num_periode"]."] = \$current_group[\"eleves\"][".$period["num_periode"]."][\"list\"]");
 		}
 	}
 }
