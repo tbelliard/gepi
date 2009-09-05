@@ -49,7 +49,7 @@ $autorise[13]= array('/voir_notes');
 $autorise[14]= array('/voir_bulle');
 $autorise[15]= array('/voir_abs');
 $autorise[16]= array('/voir_anna');
-$autorise[17]= array('/mod_trombinoscopes/trombinoscopes.php');
+$autorise[17]= array('/mod_trombinoscopes/trombinoscopes.php', '/mod_trombinoscopes/trombi_impr.php');
 $autorise[18]= array('/mod_discipline/index.php',
 					 '/mod_discipline/saisie_incident.php',
 					 '/mod_discipline/incidents_sans_protagonistes.php',
