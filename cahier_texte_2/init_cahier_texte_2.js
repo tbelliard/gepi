@@ -36,6 +36,7 @@ function getWinListeNotices() {
 				{id: 'win_liste_notices',
 				title: 'Liste des Notices',
 				showEffect: Element.show,
+				hideEffect: Element.hide,
 				top:110,
 				left:0,
 				width:330,
@@ -120,8 +121,8 @@ function getWinCalendar() {
 				hideEffect: Element.hide,
 				top:0, 
 				right:85,
-				width:154,
-				height:150}
+				width:160,
+				height:160}
 			);
 		$('win_calendar_content').setStyle({	
 			backgroundColor: '#d0d0d0',
