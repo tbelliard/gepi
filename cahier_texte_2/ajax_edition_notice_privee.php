@@ -63,32 +63,23 @@ $succes_modification = isset($_POST["succes_modification"]) ? $_POST["succes_mod
 $today = isset($_POST["today"]) ? $_POST["today"] :(isset($_GET["today"]) ? $_GET["today"] :NULL);
 $ajout_nouvelle_notice = isset($_POST["ajout_nouvelle_notice"]) ? $_POST["ajout_nouvelle_notice"] :(isset($_GET["ajout_nouvelle_notice"]) ? $_GET["ajout_nouvelle_notice"] :NULL);
 
-$cahierTexteNoticePrivee = null;
-//$cahierTexteNoticePrivee = new CahierTexteNoticePrivee();
-if ($id_ct != null) {
-	$criteria = new Criteria();
-	$criteria->add(CahierTexteNoticePriveePeer::ID_CT, $id_ct, "=");
-	$cahierTexteNoticePrivees = $utilisateur->getCahierTexteNoticePrivees($criteria);
-	if (!isset($cahierTexteNoticePrivees[0])) $cahierTexteNoticePrivees[0] = null;
-	$cahierTexteNoticePrivee = $cahierTexteNoticePrivees[0];
-	if ($cahierTexteNoticePrivee == null) {
-		echo "Notice priv&eacute;e non trouvé ou impossible à modifier car elle ne vous appartient pas.";
-		die();
-	}
+$cahierTexteNoticePrivee = CahierTexteNoticePriveePeer::retrieveByPK($id_ct);
+if ($cahierTexteNoticePrivee != null) {
 	$groupe = $cahierTexteNoticePrivee->getGroupe();
 	$today = $cahierTexteNoticePrivee->getDateCt();
 } else {
 	//si pas de notice précisé, récupération du groupe dans la requete et recherche d'une notice pour la date précisée ou création d'une nouvelle notice
+	//pas de notices, on lance une création de notice
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
-		echo("Pas de groupe spécifié");
+		echo("Erreur : pas de groupe spécifié");
 		die;
 	}
 
 	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
-		echo "le groupe n'appartient pas au professeur";
+		echo "Erreur : le groupe n'appartient pas au professeur";
 		die();
 	}
 
@@ -100,12 +91,21 @@ if ($id_ct != null) {
 		$cahierTexteNoticePrivees = $groupe->getCahierTexteNoticePrivees($criteria);
 		$cahierTexteNoticePrivee = isset($cahierTexteNoticePrivees[0]) ? $cahierTexteNoticePrivees[0] : NULL;
 	}
+
 	if ($cahierTexteNoticePrivee == null) {
 		//pas de notices, on initialise un nouvel objet
 		$cahierTexteNoticePrivee = new CahierTexteNoticePrivee();
 		$cahierTexteNoticePrivee->setIdGroupe($groupe->getId());
 		$cahierTexteNoticePrivee->setDateCt($today);
+		$cahierTexteNoticePrivee->setIdLogin($utilisateur->getLogin());
 	}
+
+}
+
+// Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
+if ($cahierTexteNoticePrivee->getIdLogin() != $utilisateur->getLogin()) {
+	echo("Erreur : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
+	die();
 }
 
 // **********************************************

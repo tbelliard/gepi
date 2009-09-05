@@ -63,18 +63,8 @@ $succes_modification = isset($_POST["succes_modification"]) ? $_POST["succes_mod
 $today = isset($_POST["today"]) ? $_POST["today"] :(isset($_GET["today"]) ? $_GET["today"] :NULL);
 $ajout_nouvelle_notice = isset($_POST["ajout_nouvelle_notice"]) ? $_POST["ajout_nouvelle_notice"] :(isset($_GET["ajout_nouvelle_notice"]) ? $_GET["ajout_nouvelle_notice"] :NULL);
 
-$ctCompteRendu = null;
-//$ctCompteRendu = new CahierTexteCompteRendu();
-if ($id_ct != null) {
-	$criteria = new Criteria();
-	$criteria->add(CahierTexteCompteRenduPeer::ID_CT, $id_ct, "=");
-	$ctCompteRendus = $utilisateur->getCahierTexteCompteRendus($criteria);
-	if (!isset($ctCompteRendus[0])) $ctCompteRendus[0] = null;
-	$ctCompteRendu = $ctCompteRendus[0];
-	if ($ctCompteRendu == null) {
-		echo "Compte rendu non trouvé ou impossible à modifier car il ne vous appartient pas.";
-		die();
-	}
+$ctCompteRendu = CahierTexteCompteRenduPeer::retrieveByPK($id_ct);
+if ($ctCompteRendu != null) {
 	$groupe = $ctCompteRendu->getGroupe();
 	$today = $ctCompteRendu->getDateCt();
 } else {
@@ -82,13 +72,13 @@ if ($id_ct != null) {
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
-		echo("Pas de groupe spécifié");
+		echo("Erreur : pas de groupe spécifié");
 		die;
 	}
 
 	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
-		echo "le groupe n'appartient pas au professeur";
+		echo "Erreur : le groupe n'appartient pas au professeur";
 		die();
 	}
 
@@ -105,9 +95,15 @@ if ($id_ct != null) {
 		$ctCompteRendu = new CahierTexteCompteRendu();
 		$ctCompteRendu->setIdGroupe($groupe->getId());
 		$ctCompteRendu->setDateCt($today);
+		$ctCompteRendu->setIdLogin($utilisateur->getLogin());
 	}
 }
 
+// Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
+if ($ctCompteRendu->getIdLogin() != $utilisateur->getLogin()) {
+	echo("Erreur : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
+	die();
+}
 if ($ctCompteRendu->getVise() == 'y') {
 	// interdire la modification d'un visa par le prof si c'est un visa
 	echo("Notices signée, edition impossible");

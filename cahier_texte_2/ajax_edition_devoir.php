@@ -58,25 +58,24 @@ $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_
 $succes = isset($_POST["succes"]) ? $_POST["succes"] :(isset($_GET["succes"]) ? $_GET["succes"] :NULL);
 $today = isset($_POST["today"]) ? $_POST["today"] :(isset($_GET["today"]) ? $_GET["today"] :NULL);
 $ajout_nouvelle_notice = isset($_POST["ajout_nouvelle_notice"]) ? $_POST["ajout_nouvelle_notice"] :(isset($_GET["ajout_nouvelle_notice"]) ? $_GET["ajout_nouvelle_notice"] : NULL);
+
 $ctTravailAFaire = CahierTexteTravailAFairePeer::retrieveByPK($id_devoir);
 if ($ctTravailAFaire != null) {
 	$groupe = $ctTravailAFaire->getGroupe();
 	$today = $ctTravailAFaire->getDateCt();
-}
-
-//si pas de notice précisé, récupération du groupe dans la requete et recherche d'une notice pour la date précisée ou création d'une nouvelle notice
-if ($ctTravailAFaire == null) {
+} else {
+	//si pas de notice précisé, récupération du groupe dans la requete et recherche d'une notice pour la date précisée ou création d'une nouvelle notice
 	//pas de notices, on lance une création de notice
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
-		echo("Pas de groupe spécifié");
+		echo("Erreur : pas de groupe spécifié");
 		die;
 	}
 
 	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
-		echo "le groupe n'appartient pas au professeur";
+		echo "Erreur : le groupe n'appartient pas au professeur";
 		die();
 	}
 
@@ -85,9 +84,8 @@ if ($ctTravailAFaire == null) {
 	$criteria->add(CahierTexteTravailAFairePeer::DATE_CT, $today, '=');
 	$criteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $utilisateur->getLogin());
 	$ctTravailAFaires = $groupe->getCahierTexteTravailAFaires($criteria);
-	if (!isset($ctTravailAFaires[0])) $ctTravailAFaires[0] = null;
-	$ctTravailAFaire = $ctTravailAFaires[0];
-
+	$ctTravailAFaire = isset($ctTravailAFaires[0]) ? $ctTravailAFaires[0] : NULL;
+	
 	if ($ctTravailAFaire == null) {
 		//pas de notices, on initialise un nouvel objet
 		$ctTravailAFaire = new CahierTexteTravailAFaire();
@@ -99,7 +97,7 @@ if ($ctTravailAFaire == null) {
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
 if ($ctTravailAFaire->getIdLogin() != $utilisateur->getLogin()) {
-	echo("Erreur : vous n'avez pas le droit de modifier cette notice.");
+	echo("Erreur : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();
 }
 
@@ -306,7 +304,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 				<button type="submit" id="bouton_enregistrer_2" name="Enregistrer"
 					style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 				<button type="submit" style='font-variant: small-caps;'
-					onClick="javascript:$('passer_a').value = 'passer_au_compte_rendu';">Enr. et passer aux comptes rendus</button>
+					onClick="javascript:$('passer_a').value = 'passer_compte_rendu';">Enr. et passer aux comptes rendus</button>
 				</td>
 			</tr>
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">
