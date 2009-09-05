@@ -45,7 +45,7 @@ $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_
 $date_devoir = isset($_POST["date_devoir"]) ? $_POST["date_devoir"] :(isset($_GET["date_devoir"]) ? $_GET["date_devoir"] :NULL);
 $contenu = isset($_POST["contenu"]) ? $_POST["contenu"] :NULL;
 
-$uid_post = isset($_POST["uid_post"]) ? $_POST["uid_post"] :(isset($_GET["uid_post"]) ? $_GET["uid_post"] :NULL);
+$uid_post = isset($_POST["uid_post"]) ? $_POST["uid_post"] :(isset($_GET["uid_post"]) ? $_GET["uid_post"] :0);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 
 //parametre d'enregistrement de fichiers joints
@@ -58,7 +58,8 @@ $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GE
 
 // uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
-if ($uid_post==$_SESSION['uid_prime']) {
+$uid_prime = isset($_SESSION['uid_prime']) ? $uid_prime : 1;
+if ($uid_post==$uid_prime) {
 	echo("Erreur : formulaire dejà  posté précédemment. Merci de recharger la page avant de refaire des modifications.");
 	die();
 }

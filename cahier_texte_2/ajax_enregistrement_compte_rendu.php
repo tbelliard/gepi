@@ -45,7 +45,7 @@ $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GE
 $date_ct = isset($_POST["date_ct"]) ? $_POST["date_ct"] :(isset($_GET["date_ct"]) ? $_GET["date_ct"] :NULL);
 $contenu = isset($_POST["contenu"]) ? $_POST["contenu"] :NULL;
 $heure_entry = isset($_POST["heure_entry"]) ? $_POST["heure_entry"] :(isset($_GET["heure_entry"]) ? $_GET["heure_entry"] :NULL);
-$uid_post = isset($_POST["uid_post"]) ? $_POST["uid_post"] :(isset($_GET["uid_post"]) ? $_GET["uid_post"] :NULL);
+$uid_post = isset($_POST["uid_post"]) ? $_POST["uid_post"] :(isset($_GET["uid_post"]) ? $_GET["uid_post"] :0);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 
 //parametre d'enregistrement de fichiers joints
@@ -58,7 +58,7 @@ $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GE
 
 // uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
-$uid_prime = isset($_SESSION['uid_prime']) ? $uid_prime : 0;
+$uid_prime = isset($_SESSION['uid_prime']) ? $uid_prime : 1;
 if ($uid_post==$uid_prime) {
 	echo("Erreur : formulaire dejà posté précédemment.");
 	die();
@@ -73,7 +73,7 @@ if ($id_ct != null) {
 	$ctCompteRendus = $utilisateur->getCahierTexteCompteRendus($criteria);
 	$ctCompteRendu = $ctCompteRendus[0];
 	if ($ctCompteRendu == null) {
-		echo "Compte rendu non trouvé";
+		echo "Erreur : Compte rendu non trouvé";
 		die();
 	}
 	$groupe = $ctCompteRendu->getGroupe();
@@ -158,7 +158,7 @@ if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_docum
 	}
 	$document = $documents[0];
 	if ($document == null) {
-		echo "Erreur, document non trouvé.";
+		echo "Erreur : document non trouvé.";
 		die();
 	}
 	$document->setTitre(corriger_caracteres($doc_name_modif));
