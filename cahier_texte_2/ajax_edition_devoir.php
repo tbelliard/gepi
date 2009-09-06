@@ -140,7 +140,7 @@ echo "<button style='background-color:".$color_fond_notices['c']."' onclick=\"ja
 echo "<button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'notice_privee';
-					\">Editer les notices priv&eacute;e</button><br><br>\n";
+					\">Editer les notices priv&eacute;es</button><br><br>\n";
 
 //fin affichage des groupes
 

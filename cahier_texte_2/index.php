@@ -138,4 +138,5 @@ echo "<a href='creer_sequence.php'>Pr&eacute;parer une s&eacute;quence enti&egra
 echo "<td width='250 px'></td>";
 echo "</tr>\n";
 echo "</table>\n<hr />";
+require("../lib/footer.inc.php");
 ?>
