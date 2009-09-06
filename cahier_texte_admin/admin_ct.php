@@ -97,6 +97,25 @@ if (isset($_POST['sup_ct'])) {
       }
 
    }
+  $query = sql_query("SELECT DISTINCT id_groupe, id_login FROM ct_private_entry ORDER BY id_groupe");
+  for ($i=0; ($row=sql_row($query,$i)); $i++) {
+      $id_groupe = $row[0];
+      $id_prop = $row[1];
+      $temp = "sup".$id_groupe."_".$id_prop;
+      if (isset($_POST[$temp])) {
+         $error = 'no';
+         $del_ct_devoirs = sql_query("delete  FROM ct_private_entry WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."')");
+         if (!($del_ct_devoirs)) $error = 'yes';
+         if ($error == 'no') {
+             $msg .= "<br>Suppression des notices dans ct_private_entry réussie";
+         } else {
+             $msg .= "<br>Il y a eu un problème lors de la suppression des notices dans ct_devoirs_entry.";
+         }
+      } else {
+           $msg .= "<br>Pas de notice à supprimer dans ct_private_entry.";
+      }
+
+   }
 
 }
 
