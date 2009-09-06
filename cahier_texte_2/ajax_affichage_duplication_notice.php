@@ -63,10 +63,11 @@ echo "</td><td>";
 echo "<div id='calendar-duplication-container'></div>";
 echo "</td><td>";
 echo "<button onClick=\"javascript:
-			//d'abord on enregistre la notice pour prendre en compte des modifications de contenu eventuelles
-			//la duplication est faite dans completeDuplicationNoticeCallback
-			AIM.submit($('modification_compte_rendu_form'), {'onComplete' : completeDuplicationNoticeCallback});
-			$('modification_compte_rendu_form').submit();
+			AIM.submit($('modification_compte_rendu_form'));
+			$('modification_compte_rendu_form').request({
+			    //une fois la notice enregistrée, on procede a la duplication
+			    onComplete: function (transport) {completeDuplicationNoticeCallback(transport.responseText)}
+			});
 			return false;\"
 			id=\"bouton_dupliquer\" name=\"Dupliquer\" style='font-variant: small-caps;'>Dupliquer</button>";
 

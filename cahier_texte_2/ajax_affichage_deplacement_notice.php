@@ -67,11 +67,11 @@ echo "</td><td>";
 echo "<div id='calendar-deplacement-container'></div>";
 echo "</td><td>";
 echo "<button onClick=\"javascript:
-
-			//d'abord on enregistre la notice pour prendre en compte des modifications de contenu eventuelles
-			//le deplacement est fait dans completeDeplacementNoticeCallback
-			AIM.submit($('modification_compte_rendu_form'), {'onComplete' : completeDeplacementNoticeCallback});
-			$('modification_compte_rendu_form').submit();
+			AIM.submit($('modification_compte_rendu_form'));
+			$('modification_compte_rendu_form').request({
+			    //une fois la notice enregistrée, on procede au deplacement
+			    onComplete: function (transport) {completeDeplacementNoticeCallback(transport.responseText)}
+			});
 			return false;\"
 
 			id=\"bouton_deplacer\" name=\"Deplacer\" style='font-variant: small-caps;'>Deplacer</button>";
