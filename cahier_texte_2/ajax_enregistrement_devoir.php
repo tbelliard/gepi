@@ -108,6 +108,7 @@ if ($ctTravailAFaire->getVise() == 'y') {
 $contenu_cor = traitement_magic_quotes(corriger_caracteres($contenu),'');
 $contenu_cor = str_replace("\\r","",$contenu_cor);
 $contenu_cor = str_replace("\\n","",$contenu_cor);
+$contenu_cor = stripslashes($contenu_cor);
 if ($contenu_cor == "" or $contenu_cor == "<br>") $contenu_cor = "...";
 $ctTravailAFaire->setContenu($contenu_cor);
 $ctTravailAFaire->setDateCt($date_devoir);
