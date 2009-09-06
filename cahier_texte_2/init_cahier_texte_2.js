@@ -121,8 +121,8 @@ function getWinCalendar() {
 				hideEffect: Element.hide,
 				top:0, 
 				right:85,
-				width:160,
-				height:160}
+				width:155,
+				height:170}
 			);
 		$('win_calendar_content').setStyle({	
 			backgroundColor: '#d0d0d0',
