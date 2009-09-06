@@ -300,7 +300,7 @@ if($msg!=""){
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td>\n";
-		echo "<input type='hidden' name='user_login[]' value='$user_login' />\n";
+		echo "<input type='hidden' name='user_login[]' value=\"$user_login\" />\n";
 		echo "$user_nom $user_prenom";
 		echo "</td>\n";
 
@@ -318,7 +318,7 @@ if($msg!=""){
 			}
 
 			//echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt);' onMouseOut='retablit_couleurs($cpt);'>\n";
-			echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt); survol_colore_matiere($j);survol_infobulle(\"<p align=center>".$user_nom." ".substr($user_prenom,0,1).".<br />".$tab_matiere[$j]."</p>\")' onMouseOut='retablit_couleurs($cpt);cacher_div(\"div_infobulle\")'>\n";
+			echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt); survol_colore_matiere($j);survol_infobulle(\"<p align=center>".my_ereg_replace("'"," ",$user_nom)." ".substr($user_prenom,0,1).".<br />".$tab_matiere[$j]."</p>\")' onMouseOut='retablit_couleurs($cpt);cacher_div(\"div_infobulle\")'>\n";
 			echo "<div id='d_".$cpt."_".$j."'>\n";
 			echo "<input type='checkbox' id='c_".$cpt."_".$j."' name='c_".$cpt."_[".$j."]' value='oui' onchange='colore(\"td_".$cpt."_".$j."\",\"c_".$cpt."_".$j."\")' $checked_ou_pas />\n";
 			echo "</div>\n";
