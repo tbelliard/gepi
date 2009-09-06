@@ -1214,6 +1214,8 @@ value VARCHAR(255) NOT NULL);";
 	die();
 }
 
+$quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : (isset($_GET['quitter_la_page']) ? $_GET['quitter_la_page'] : NULL);
+
 // Sauvegarde
 if (isset($action) and ($action == 'dump'))  {
 	// On enregistre le paramètre pour s'en souvenir la prochaine fois
@@ -1269,9 +1271,21 @@ if (isset($action) and ($action == 'dump'))  {
         flush();
         if ($offsettable>=0){
             if (backupMySql($dbDb,$fichier,$duree,$rowlimit)) {
-                if (isset($debug)) echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path\">ici</a> pour poursuivre la sauvegarde.</b>\n";
-                if (!isset($debug))    echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path\">ici</a></b>\n";
-                if (!isset($debug))    echo "<script>window.location=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path\";</script>\n";
+                if (isset($debug)) {
+					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path";
+					if(isset($quitter_la_page)) {echo "&amp;quitter_la_page=y";}
+					echo "\">ici</a> pour poursuivre la sauvegarde.</b>\n";
+				}
+                if (!isset($debug)) {
+					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path";
+					if(isset($quitter_la_page)) {echo "&amp;quitter_la_page=y";}
+					echo "\">ici</a></b>\n";
+				}
+                if (!isset($debug)) {
+					echo "<script>window.location=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path";
+					if(isset($quitter_la_page)) {echo "&quitter_la_page=y";}
+					echo "\";</script>\n";
+				}
                 flush();
                 exit;
            }
@@ -1322,7 +1336,9 @@ if (isset($action) and ($action == 'dump'))  {
 
             //echo "<br/><p class=grand><a href='savebackup.php?filename=$fichier'>Télécharger le fichier généré par la sauvegarde</a></p>\n";
             echo "<br/><p class=grand><a href='savebackup.php?fileid=$fileid'>Télécharger le fichier généré par la sauvegarde</a></p>\n";
-            echo "<br/><br/><a href = \"accueil_sauve.php\">Retour vers l'interface de sauvegarde/restauration</a><br /></div>\n";
+            echo "<br/><br/><a href=\"accueil_sauve.php";
+			if(isset($quitter_la_page)) {echo "?quitter_la_page=y";}
+			echo "\">Retour vers l'interface de sauvegarde/restauration</a><br /></div>\n";
 			require("../lib/footer.inc.php");
             die();
         }
@@ -1377,17 +1393,19 @@ if (isset($action) and ($action == 'system_dump'))  {
 if (isset($action) and ($action == 'zip'))  {
   define( 'PCLZIP_TEMPORARY_DIR', '../backup/' );
   require_once('../lib/pclzip.lib.php');
-  
+
   if (isset($dossier_a_archiver)) {
-  
+
+		$suffixe_zip="_le_".date("Y_m_d_\a_H\hi");
+
         switch ($dossier_a_archiver) {
         case "cdt":
-			$chemin_stockage = $path."/_cdt.zip"; //l'endroit où sera stockée l'archive
+			$chemin_stockage = $path."/_cdt".$suffixe_zip.".zip"; //l'endroit où sera stockée l'archive
 			$dossier_a_traiter = '../documents/'; //le dossier à traiter
 			$dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
 			break;
 		case "photos":
-			$chemin_stockage = $path."/_photos.zip";
+			$chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
 			$dossier_a_traiter = '../photos/'; //le dossier à traiter
 			$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créer
 			break;
@@ -1408,8 +1426,55 @@ if (isset($action) and ($action == 'zip'))  {
 }
 
 
-?><b><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></b>
+?>
+<!---b><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></b-->
 <?php
+
+if(!isset($quitter_la_page)){
+	echo "<p class='bold'><a href='index.php'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	//echo "</p>\n";
+}
+else {
+/*
+	echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_close(theLink, thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			self.close();
+			return false;
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				self.close();
+				return false;
+			}
+			else{
+				return false;
+			}
+		}
+	}
+</script>\n";
+*/
+
+/*
+	echo "<p class=bold><a href=\"#\"";
+	//echo " onclick=\"return confirm_close (this, change, '$themessage')\"";
+	//echo " onclick=\"self.close();return false;\"";
+	echo " onclick=\"self.close();\"";
+*/
+	echo "<p class='bold'><a href=\"javascript:window.self.close();\"";
+	echo ">Refermer la page</a>";
+	//echo "</p>\n";
+}
+
+
 // Test présence de fichiers htaccess
 if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../backup/".$dirname."/.htpasswd"))) {
     echo "<h3 class='gepi'>Répertoire backup non protégé :</h3>\n";
