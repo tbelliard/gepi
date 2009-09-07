@@ -60,6 +60,15 @@ require_once("../lib/header.inc");
 		$texte="<p>L'archivage de l'année en cours vous permettra, une fois passé à l'année suivante, de consulter les bulletins antérieurs de chacun de vos élèves, pour peu qu'ils aient été scolarisés dans votre établissement.</p><p>Cela nécessite l'activation du <a href='../mod_annees_anterieures/admin.php'>module 'Années antérieures'</a>.</p>";
 		$tabdiv_infobulle[]=creer_div_infobulle('archivage',"Archivage d'une année","",$texte,"",30,0,'y','y','n','n');
 	}
+
+	// CDT
+	$sql="SELECT 1=1 FROM ct_entry LIMIT 1;";
+	$test1=mysql_query($sql);
+	$sql="SELECT 1=1 FROM ct_devoirs_entry LIMIT 1;";
+	$test2=mysql_query($sql);
+	if((mysql_num_rows($test1)>0)||(mysql_num_rows($test2)>0)) {
+		echo "<p>Les cahiers de textes ne sont pas vides.<br />Vous devriez <a href='cahier_texte_admin/admin_ct.php'>vider les cahiers de textes de l'an dernier</a> avant de procéder à l'initialisation.</p>\n";
+	}
 ?>
 <ul>
 	<li>
