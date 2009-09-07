@@ -60,7 +60,7 @@ $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GE
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid_prime = isset($_SESSION['uid_prime']) ? $uid_prime : 1;
 if ($uid_post==$uid_prime) {
-	echo("Erreur : formulaire dejà  posté précédemment. Merci de recharger la page avant de refaire des modifications.");
+	echo("Erreur enregistrement de devoir : formulaire dejà  posté précédemment. Merci de recharger la page avant de refaire des modifications.");
 	die();
 }
 $_SESSION['uid_prime'] = $uid_post;
@@ -75,13 +75,13 @@ if ($ctTravailAFaire != null) {
 if ($ctTravailAFaire == null) {
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
-		echo("Erreur : pas de groupe ou mauvais groupe spécifié");
+		echo("Erreur enregistrement de devoir : pas de groupe ou mauvais groupe spécifié");
 		die;
 	}
 
 	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
-		echo "le groupe n'appartient pas au professeur";
+		echo "Erreur enregistrement de devoir : le groupe n'appartient pas au professeur";
 		die();
 	}
 
@@ -93,14 +93,14 @@ if ($ctTravailAFaire == null) {
 
 // Vérification : est-ce que l'utilisateur a le droit de travailler sur ce devoir ?
 if ($ctTravailAFaire->getIdLogin() != $utilisateur->getLogin()) {
-	echo("Erreur : vous n'avez pas le droit de modifier cette notice.");
+	echo("Erreur enregistrement de devoir : vous n'avez pas le droit de modifier cette notice.");
 	die();
 }
 
 
 // interdire la modification d'un visa par le prof si c'est un visa
 if ($ctTravailAFaire->getVise() == 'y') {
-	echo("Erreur : Notice signée, edition impossible/");
+	echo("Erreur enregistrement de devoir : Notice signée, edition impossible/");
 	die();
 }
 
@@ -157,12 +157,12 @@ if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_docum
 	$documents = $ctTravailAFaire->getCtDevoirDocuments($criteria);
 
 	if (empty($documents)) {
-		echo "Erreur : document non trouvé.";
+		echo "Erreur enregistrement de devoir : document non trouvé.";
 		die();
 	}
 	$document = $documents[0];
 	if ($document == null) {
-		echo "Erreur, document non trouvé.";
+		echo "Erreur enregistrement de devoir :  document non trouvé.";
 		die();
 	}
 	require_once ("../lib/traitement_data.inc.php");

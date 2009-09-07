@@ -60,7 +60,7 @@ $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GE
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid_prime = isset($_SESSION['uid_prime']) ? $uid_prime : 1;
 if ($uid_post==$uid_prime) {
-	echo("Erreur : formulaire dejà posté précédemment.");
+	echo("Erreur enregistrement de compte rendu : formulaire dejà posté précédemment.");
 	die();
 }
 $_SESSION['uid_prime'] = $uid_post;
@@ -73,7 +73,7 @@ if ($id_ct != null) {
 	$ctCompteRendus = $utilisateur->getCahierTexteCompteRendus($criteria);
 	$ctCompteRendu = $ctCompteRendus[0];
 	if ($ctCompteRendu == null) {
-		echo "Erreur : Compte rendu non trouvé";
+		echo "Erreur enregistrement de compte rendu : Compte rendu non trouvé";
 		die();
 	}
 	$groupe = $ctCompteRendu->getGroupe();
@@ -86,7 +86,7 @@ if ($id_ct != null) {
 		}
 	}// cela economise un acces db par rapport à  $current_group = GroupePeer::retrieveByPK($id_groupe), et permet de ne pas avoir a nettoyer les reference de utilisateurs.
 	if ($groupe == null) {
-		echo("Erreur : pas de groupe ou mauvais groupe spécifié");
+		echo("Erreur enregistrement de compte rendu : pas de groupe ou mauvais groupe spécifié");
 		die;
 	}
 	//pas de notices, on lance une création de notice
@@ -97,7 +97,7 @@ if ($id_ct != null) {
 
 // interdire la modification d'un visa par le prof si c'est un visa
 if ($ctCompteRendu->getVise() == 'y') {
-	echo("Erreur : Notice signée, edition impossible/");
+	echo("Erreur enregistrement de compte rendu : Notice signée, edition impossible/");
 	die();
 }
 
@@ -153,12 +153,12 @@ if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_docum
 	$documents = $ctCompteRendu->getCahierTexteCompteRenduFichierJoints($criteria);
 
 	if (empty($documents)) {
-		echo "Erreur : document non trouvé.";
+		echo "Erreur enregistrement de compte rendu : document non trouvé.";
 		die();
 	}
 	$document = $documents[0];
 	if ($document == null) {
-		echo "Erreur : document non trouvé.";
+		echo "Erreur enregistrement de compte rendu : document non trouvé.";
 		die();
 	}
 	$document->setTitre(corriger_caracteres($doc_name_modif));

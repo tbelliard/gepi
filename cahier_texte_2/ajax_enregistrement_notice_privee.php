@@ -52,7 +52,7 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid_prime = isset($_SESSION['uid_prime']) ? $uid_prime : 1;
 if ($uid_post==$uid_prime) {
-	echo("Erreur : formulaire dejà posté précédemment.");
+	echo("Erreur enregistrement de notice privee : formulaire dejà posté précédemment.");
 	die();
 }
 $_SESSION['uid_prime'] = $uid_post;
@@ -65,7 +65,7 @@ if ($id_ct != null) {
 	$ctNoticePrivees = $utilisateur->getCahierTexteNoticePrivees($criteria);
 	$ctNoticePrivee = $ctNoticePrivees[0];
 	if ($ctNoticePrivee == null) {
-		echo "Compte rendu non trouvé";
+		echo "Erreur enregistrement de notice privee : notice non trouvée";
 		die();
 	}
 	$groupe = $ctNoticePrivee->getGroupe();
@@ -78,7 +78,7 @@ if ($id_ct != null) {
 		}
 	}// cela economise un acces db par rapport à  $current_group = GroupePeer::retrieveByPK($id_groupe), et permet de ne pas avoir a nettoyer les reference de utilisateurs.
 	if ($groupe == null) {
-		echo("Erreur : pas de groupe ou mauvais groupe spécifié");
+		echo("Erreur enregistrement de notice privee : pas de groupe ou mauvais groupe spécifié");
 		die;
 	}
 	//pas de notices, on lance une création de notice
