@@ -27,7 +27,7 @@ function include(filename)
 include('./calendar/calendar.js');
 include('./calendar/lang/calendar-fr.js');
 include('./calendar/calendar-setup.js');
-include('../fckeditor/fckeditor.js');
+include('../ckeditor/ckeditor.js');
 include('../edt_effets/javascripts/window.js');
 
 function getWinListeNotices() {
@@ -292,16 +292,20 @@ function initWysiwyg() {
 		//$('contenu').setStyle({width: '100%', height : editorHeight + 'px'});
 		//new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
 
-		if (typeof oFCKeditor=="undefined") {
-			oFCKeditor = new FCKeditor( 'contenu' ) ;
-			oFCKeditor.BasePath = '../fckeditor/' ;
-			oFCKeditor.StylesXmlPath = null ;
-			oFCKeditor.Config['DefaultLanguage']  = 'fr' ;
-			oFCKeditor.ToolbarSet = 'Basic' ;
-			oFCKeditor.Width = '100%' ;
+//		if (typeof oFCKeditor=="undefined") {
+//			oFCKeditor = new CKeditor( 'contenu' ) ;
+//			oFCKeditor.BasePath = '../fckeditor/' ;
+//			oFCKeditor.StylesXmlPath = null ;
+//			oFCKeditor.Config['DefaultLanguage']  = 'fr' ;
+//			oFCKeditor.ToolbarSet = 'Basic' ;
+//			oFCKeditor.Width = '100%' ;
+//		}
+//		oFCKeditor.Height = editorHeight ;
+
+		if (CKEDITOR.instances['contenu'] != null) {
+		    CKEDITOR.remove(CKEDITOR.instances['contenu']);
 		}
-		oFCKeditor.Height = editorHeight ;
-		oFCKeditor.ReplaceTextarea() ;
+		CKEDITOR.replace( 'contenu' );
 	}
 }
 
