@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 10/02/2007
+ * $Id$
  *
  * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -22,9 +22,12 @@
  */
 
 // Global configuration file
+
 // Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
 //Le problème peut être résolu en ajoutant la ligne suivante :
 Header('Pragma: public');
+
+header('Content-Type: application/pdf');
 
 //=============================
 // REMONTé:
