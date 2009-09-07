@@ -69,13 +69,13 @@ if ($ctTravailAFaire != null) {
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
-		echo("Erreur : pas de groupe spécifié");
+		echo("Erreur edition de devoir : pas de groupe spécifié");
 		die;
 	}
 
 	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
-		echo "Erreur : le groupe n'appartient pas au professeur";
+		echo "Erreur edition de devoir : le groupe n'appartient pas au professeur";
 		die();
 	}
 
@@ -97,14 +97,14 @@ if ($ctTravailAFaire != null) {
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
 if ($ctTravailAFaire->getIdLogin() != $utilisateur->getLogin()) {
-	echo("Erreur : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
+	echo("Erreur edition de devoir : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();
 }
 
 
 if ($ctTravailAFaire->getVise() == 'y') {
 	// interdire la modification d'un visa par le prof si c'est un visa
-	echo("Notice signée, edition impossible");
+	echo("Erreur edition de devoir : Notice signée, edition impossible");
 	die();
 }
 

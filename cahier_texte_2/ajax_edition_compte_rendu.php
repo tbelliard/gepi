@@ -72,13 +72,13 @@ if ($ctCompteRendu != null) {
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
-		echo("Erreur : pas de groupe spécifié");
+		echo("Erreur edition de compte rendu : pas de groupe spécifié");
 		die;
 	}
 
 	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
-		echo "Erreur : le groupe n'appartient pas au professeur";
+		echo "Erreur edition de compte rendu : le groupe n'appartient pas au professeur";
 		die();
 	}
 
@@ -101,12 +101,12 @@ if ($ctCompteRendu != null) {
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
 if ($ctCompteRendu->getIdLogin() != $utilisateur->getLogin()) {
-	echo("Erreur : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
+	echo("Erreur edition de compte rendu : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();
 }
 if ($ctCompteRendu->getVise() == 'y') {
 	// interdire la modification d'un visa par le prof si c'est un visa
-	echo("Notices signée, edition impossible");
+	echo("Erreur edition de compte rendu : Notices signée, edition impossible");
 	die();
 }
 

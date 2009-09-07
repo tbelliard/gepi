@@ -73,13 +73,13 @@ if ($cahierTexteNoticePrivee != null) {
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
-		echo("Erreur : pas de groupe spécifié");
+		echo("Erreur edition de notice privee : pas de groupe spécifié");
 		die;
 	}
 
 	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
-		echo "Erreur : le groupe n'appartient pas au professeur";
+		echo "Erreur edition de notice privee : le groupe n'appartient pas au professeur";
 		die();
 	}
 
@@ -104,7 +104,7 @@ if ($cahierTexteNoticePrivee != null) {
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
 if ($cahierTexteNoticePrivee->getIdLogin() != $utilisateur->getLogin()) {
-	echo("Erreur : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
+	echo("Erreur edition de notice privee : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();
 }
 
