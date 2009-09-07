@@ -430,7 +430,7 @@ function completeEnregistrementCompteRenduCallback(response) {
 			object_en_cours_edition = 'devoir';
 			updateCalendarWithUnixDate(getTomorrowCalendarUnixDate());
 		} else {
-			url = './ajax_edition_compte_rendu.php?succes_modification=oui&id_ct=' + id_ct_en_cours;
+			url = './ajax_edition_compte_rendu.php?succes_modification=oui&id_ct=' + id_ct_en_cours + '&id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate();
 		}
 		getWinListeNotices();
 		new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();}});
@@ -458,7 +458,7 @@ function completeEnregistrementDevoirCallback(response) {
 			object_en_cours_edition = 'compte_rendu';
 			url = './ajax_edition_compte_rendu.php?today=' + getCalendarUnixDate() +'&id_groupe=' + id_groupe;
  		} else {
-			url = './ajax_edition_devoir.php?succes_modification=oui&id_devoir=' + id_ct_en_cours;
+			url = './ajax_edition_devoir.php?succes_modification=oui&id_devoir=' + id_ct_en_cours + '&id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate();
  		}
 		getWinListeNotices();
  		new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();}});
@@ -483,7 +483,7 @@ function completeEnregistrementNoticePriveeCallback(response) {
 		id_ct_en_cours = response;
 		getWinListeNotices();
 		new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();}});
-		var url = './ajax_edition_notice_privee.php?succes_modification=oui&id_ct=' + id_ct_en_cours;
+		var url = './ajax_edition_notice_privee.php?succes_modification=oui&id_ct=' + id_ct_en_cours + '&id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate();
 		getWinEditionNotice().setAjaxContent(url ,{ onComplete:	function() {initWysiwyg();	}});
 
 		//on attend 5 secondes et on enleve les messages de confirmation d'enregistrement.
