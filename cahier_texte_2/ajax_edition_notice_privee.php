@@ -253,7 +253,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 	echo "<tr>
 					<td colspan='5'>";
 
-	echo "<div style=\"background-color: white;\"><textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$cahierTexteNoticePrivee->getContenu()."</textarea></div>";
+	echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$cahierTexteNoticePrivee->getContenu()."</textarea>";
 	?>
 	
 	<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice;?>; background-color: <?php echo $couleur_cellule['p']; ?>;">

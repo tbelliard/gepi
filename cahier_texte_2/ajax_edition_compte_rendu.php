@@ -286,7 +286,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		echo "<tr>
 				<td colspan='5'>";
 
-		echo "<div style=\"background-color: white;\"><textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctCompteRendu->getContenu()."</textarea></div>";
+		echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctCompteRendu->getContenu()."</textarea>";
 
 		// lancement de FCKeditor
 //		$oFCKeditor = new FCKeditor('contenu') ;

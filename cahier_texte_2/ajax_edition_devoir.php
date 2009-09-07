@@ -245,7 +245,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 	<tr>
 		<td colspan="5"><?php
 
-		echo "<div style=\"background-color: white;\"><textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctTravailAFaire->getContenu()."</textarea></div>";
+		echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctTravailAFaire->getContenu()."</textarea>";
 
 		//// gestion des fichiers attaché
 		echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">';
