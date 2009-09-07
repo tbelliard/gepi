@@ -44,10 +44,6 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_
 //	echo "Pas de compte rendu selectionnés.";
 //	die();
 //}
-echo "<form enctype=\"multipart/form-data\" name=\"deplacement_notice_form\" id=\"deplacement_notice_form\" action=\"ajax_deplacement_notice.php\" method=\"post\">\n";
-echo "<input type='hidden' id='id_ct' name='id_ct' value='".$id_ct."' />";
-echo "<input type='hidden' name='type' value='".$type."' />";
-echo "<input type='hidden' id='date_deplacement' name='date_deplacement'/>";
 echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
 echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\"> deplacement de notice</legend> ";
 echo "<table style=\"border-style:solid; border-width:0px;\" cellspacing='20px'><tr><td>";
@@ -67,12 +63,26 @@ echo "</td><td>";
 echo "<div id='calendar-deplacement-container'></div>";
 echo "</td><td>";
 echo "<button onClick=\"javascript:
+			//on stocke les donne de deplacement pour passer sur certains navigateurs car il y a deux requetes et la premiere requete peut effacer le formulaire
+			deplacement_id_groupe = \$F('id_groupe_deplacement');
+			deplacement_type = '$type';
+			if (typeof calendarDeplacementInstanciation != 'undefined' && calendarDeplacementInstanciation != null) {
+				//get the unix date
+				calendarDeplacementInstanciation.date.setHours(0);
+				calendarDeplacementInstanciation.date.setMinutes(0);
+				calendarDeplacementInstanciation.date.setSeconds(0);
+				calendarDeplacementInstanciation.date.setMilliseconds(0);
+				deplacement_date_deplacement = Math.round(calendarDeplacementInstanciation.date.getTime()/1000);
+				updateCalendarWithUnixDate(deplacement_date_deplacement);
+			} else {
+				deplacement_date_deplacement = 0;
+			}
 
 			//d'abord on enregistre la notice pour prendre en compte des modifications de contenu eventuelles
 			//le deplacement est fait dans completeDeplacementNoticeCallback
 			AIM.submit($('modification_compte_rendu_form'), {'onComplete' : completeDeplacementNoticeCallback});
 			$('modification_compte_rendu_form').submit();
-			return false;\"
+			\"
 
 			id=\"bouton_deplacer\" name=\"Deplacer\" style='font-variant: small-caps;'>Deplacer</button>";
 
@@ -82,5 +92,4 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onClick=\"javascript:
 			style='font-variant: small-caps;'>Cacher</button>";			
 echo "</td></tr></table>";
 echo "</fieldset>";
-echo "</form>";
 ?>

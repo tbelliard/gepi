@@ -39,7 +39,7 @@ if ($utilisateur == null) {
 }
 
 //récupération des paramètres de la requète
-$id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
+$id_ct = isset($_POST["id_ct_deplacement"]) ? $_POST["id_ct_deplacement"] :(isset($_GET["id_ct_deplacement"]) ? $_GET["id_ct_deplacement"] :NULL);
 $date_deplacement = isset($_POST["date_deplacement"]) ? $_POST["date_deplacement"] :(isset($_GET["date_deplacement"]) ? $_GET["date_duplication"] :NULL);
 $id_groupe = isset($_POST["id_groupe_deplacement"]) ? $_POST["id_groupe_deplacement"] :(isset($_GET["id_groupe_deplacement"]) ? $_GET["id_groupe_deplacement"] :NULL);
 $type = isset($_POST["type"]) ? $_POST["type"] :(isset($_GET["type"]) ? $_GET["type"] :NULL);
@@ -54,12 +54,12 @@ if ($type == 'CahierTexteTravailAFaire') {
 }
 
 if ($ctCompteRendu == null) {
-	echo ("Erreur : pas de notice trouvée.");
+	echo ("Erreur deplacement de notice : Pas de notice trouvée.");
 	die();
 }
 $groupe = GroupePeer::retrieveByPK($id_groupe);
 if ($groupe == null) {
-	echo("Pas de groupe spécifié");
+	echo ("Erreur deplacement de notice  : Pas de groupe spécifié");
 	die;
 }
 
