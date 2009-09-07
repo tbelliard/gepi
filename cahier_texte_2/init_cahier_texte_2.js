@@ -280,32 +280,38 @@ function compte_rendu_en_cours_de_modification(id_ct) {
     }
 }
 
-
 //Effectue les fonctions javascript necessaires apres la mise a jour de la fenetre edition de notice
 function initWysiwyg() {
 	updateDivModification();
 
 	if ($('contenu') != null) {
-		var editorHeight = winEditionNotice.getSize()['height'] - 390;
-		if (editorHeight < 170) editorHeight = 170;
 
-		//$('contenu').setStyle({width: '100%', height : editorHeight + 'px'});
-		//new nicEditor({iconsPath : 'nicEdit/nicEditorIcons.gif'}).panelInstance('contenu');
-
-//		if (typeof oFCKeditor=="undefined") {
-//			oFCKeditor = new CKeditor( 'contenu' ) ;
-//			oFCKeditor.BasePath = '../fckeditor/' ;
-//			oFCKeditor.StylesXmlPath = null ;
-//			oFCKeditor.Config['DefaultLanguage']  = 'fr' ;
-//			oFCKeditor.ToolbarSet = 'Basic' ;
-//			oFCKeditor.Width = '100%' ;
-//		}
-//		oFCKeditor.Height = editorHeight ;
-
+		//destruction de l'instance precedente
 		if (CKEDITOR.instances['contenu'] != null) {
 		    CKEDITOR.remove(CKEDITOR.instances['contenu']);
 		}
-		CKEDITOR.replace( 'contenu' );
+		//creation de l'instance
+		CKEDITOR.replace( 'contenu', {
+		    language : 'fr',
+		    skin : 'kama',
+		    resize_enabled : false,
+		    toolbar :
+		    [
+			['Source','-','NewPage','Preview','-','Templates'],
+			['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
+			['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+			['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
+			['Maximize', 'ShowBlocks','-','About'],
+			'/',
+			['NumberedList','BulletedList','-','Outdent','Indent'],
+			['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+			['Link','Unlink','Image','Table','HorizontalRule','Smiley','SpecialChar'],
+			['Styles','Format','Font','FontSize'],
+			['TextColor','BGColor']
+		    ]
+		} );
+		//hide the bottom bar of CKEditor
+		$('cke_bottom_contenu').hide();
 	}
 }
 
