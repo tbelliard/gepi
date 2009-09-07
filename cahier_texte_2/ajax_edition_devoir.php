@@ -226,6 +226,8 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 			value='passer_devoir' /> <input type="hidden" name="date_devoir"
 			value="<?php echo $ctTravailAFaire->getDateCt(); ?>" /> <input
 			type="hidden" id="id_devoir" name="id_devoir"
+			value="<?php echo $ctTravailAFaire->getIdCt(); ?>" /><input
+			type="hidden" id="id_ct" name="id_devoir"
 			value="<?php echo $ctTravailAFaire->getIdCt(); ?>" /> <input
 			type="hidden" name="id_groupe"
 			value="<?php echo $ctTravailAFaire->getGroupe()->getId(); ?>" /></td>
