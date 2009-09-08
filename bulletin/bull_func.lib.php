@@ -2399,9 +2399,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								// calcul nombre de sous affichage
 
 								$nb_sousaffichage='1';
-								if(empty($active_coef_sousmoyene)) { $active_coef_sousmoyene = ''; }
+								//20090908 if(empty($active_coef_sousmoyene)) { $active_coef_sousmoyene = ''; }
 
-								if($active_coef_sousmoyene==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
+								//if($active_coef_sousmoyene==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
+								if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
 								if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
 								if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') { if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
 								if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') { if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
@@ -2425,7 +2426,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur,1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								$valeur = "";
 
-								if($active_coef_sousmoyene==='1') {
+								if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') {
 									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
 									//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'coef. '.$tab_bull['eleve'][$i]['coef_eleve'][$i][$m],'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, '','LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
@@ -3256,9 +3257,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							// calcul nombre de sous affichage
 
 							$nb_sousaffichage='1';
-							if(empty($active_coef_sousmoyene)) { $active_coef_sousmoyene = ''; }
+							//20090908 if(empty($active_coef_sousmoyene)) { $active_coef_sousmoyene = ''; }
 
-							if($active_coef_sousmoyene==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
+							if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
 							if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
 							if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') { if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
 							if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') { if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
@@ -3277,7 +3278,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur,1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 							$valeur = "";
 
-							if($active_coef_sousmoyene==='1') {
+							if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') {
 								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
 								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'coef. '.$tab_bull['coef_eleve'][$i][$m],'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 							}
@@ -3686,9 +3687,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								// calcul nombre de sous affichage
 
 								$nb_sousaffichage='1';
-								if(empty($active_coef_sousmoyene)) { $active_coef_sousmoyene = ''; }
+								//20090908 if(empty($active_coef_sousmoyene)) { $active_coef_sousmoyene = ''; }
 
-								if($active_coef_sousmoyene==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
+								if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
 								if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
 								if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') { if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
 								if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') { if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
@@ -3712,7 +3713,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur,1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								$valeur = "";
 
-								if($active_coef_sousmoyene==='1') {
+								if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') {
 									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
 									//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'coef. '.$tab_bull['eleve'][$i]['coef_eleve'][$i][$m],'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, '','LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
