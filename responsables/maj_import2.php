@@ -5897,7 +5897,13 @@ else{
 
 			echo "<p>$cpt fantôme(s) supprimé(s) de la table temporaire.</p>\n";
 
-			echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='20' size='3' /><br />\n";
+			$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id';";
+			info_debug($sql);
+			//echo "$sql<br />";
+			$test=mysql_query($sql);
+			$nb_tmp_modif=mysql_num_rows($test);
+			echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='20' size='3' /> sur un total de $nb_tmp_modif.<br />\n";
+
 			echo "<input type='submit' value='Afficher les différences' /></p>\n";
 
 			echo "<p><input type='checkbox' name='ne_pas_proposer_redoublonnage_adresse' id='ne_pas_proposer_redoublonnage_adresse' value='y' checked='true' /><label for='ne_pas_proposer_redoublonnage_adresse' style='cursor:pointer;'> Ne pas proposer de rétablir des doublons d'adresses identiques avec identifiant différent pour des parents qui conservent la même adresse.</label></p>\n";
@@ -7216,7 +7222,13 @@ else{
 
 				//echo "<input type='hidden' name='step' value='18' />\n";
 				echo "<input type='hidden' name='step' value='19' />\n";
-				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='20' size='3' /><br />\n";
+
+				$sql="SELECT 1=1 FROM tempo2 WHERE col1='t_diff';";
+				info_debug($sql);
+				$test=mysql_query($sql);
+				$nb_associations_a_consulter=mysql_num_rows($test);
+				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='20' size='3' /> sur un total de $nb_associations_a_consulter.<br />\n";
+
 				echo "Ne pas proposer de supprimer des responsables non associés à des élèves <input type='checkbox' name='suppr_resp_non_assoc' value='n' /><br />\n";
 				echo "<input type='submit' value='Afficher les différences' /></p>\n";
 /*
