@@ -554,6 +554,7 @@ if (!isset($suite)) {
 	echo "<p>A cette étape, les élèves vont être affectés dans tous les groupes.<br />Ce n'est qu'à l'étape suivante que les options vont être prises en compte pour élaguer les groupes.</p>\n";
 	// A REVOIR... à moins que cette page soit déjà longue en traitement...
 
+	$temoin_div_sans_services=0;
 	echo "<h3>Création des groupes classe entière</h3>\n";
 	for ($i=0;$i<count($divisions);$i++) {
 		$classe=$divisions[$i]['code'];
@@ -594,29 +595,196 @@ if (!isset($suite)) {
 
 			$tab_clas=array($id_classe);
 
-			for($j=0;$j<count($divisions[$i]['services']);$j++) {
-				$id_mat=$divisions[$i]['services'][$j]['code_matiere'];
+			if(!isset($divisions[$i]['services'])) {
+				echo "<p style='color:red;'>Aucun service n'est défini pour cette classe.<br />L'emploi du temps a-t-il été remonté vers STS?</p>\n";
+				$temoin_div_sans_services++;
+			}
+			else {
+				for($j=0;$j<count($divisions[$i]['services']);$j++) {
+					$id_mat=$divisions[$i]['services'][$j]['code_matiere'];
+					$mat=get_code_gestion_from_code($id_mat);
+	
+					$nom_grp=$mat;
+					$descr_grp=get_nom_complet_from_matiere($mat);
+	
+					// Créer le groupe:                   groupes
+					// L'associer à la classe:            j_groupes_classes
+					// L'associer à la matière:           j_groupes_matieres
+					echo "<p>Création du groupe $descr_grp (<i>$nom_grp</i>) en $classe: ";
+					if($id_groupe=create_group($nom_grp, $descr_grp, $mat, $tab_clas)) {
+						echo "<span style='color:green;'>$id_groupe</span>";
+						//echo "<br />\n";
+						echo "<blockquote>\n";
+	
+						echo "Professeur(s): ";
+						for($k=0;$k<count($divisions[$i]['services'][$j]['enseignants']);$k++) {
+	
+							$sql="select col1 from tempo2 where col2='P".$divisions[$i]['services'][$j]['enseignants'][$k]['id']."';";
+							$res_prof=mysql_query($sql);
+							$login_prof=@mysql_result($res_prof, 0, 'col1');
+	
+							if ($login_prof!='') {
+								// Associer le groupe au prof:    j_groupes_professeurs
+								$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='$login_prof';";
+								$res_grp_prof=mysql_query($sql);
+								if(mysql_num_rows($res_grp_prof)==0) {
+									$sql="INSERT INTO j_groupes_professeurs SET id_groupe='$id_groupe', login='$login_prof';";
+									if($insert=mysql_query($sql)) {
+										echo "<span style='color:green;'>";
+									}
+									else {
+										echo "<span style='color:red;'>";
+									}
+									echo "$login_prof</span>";
+								}
+	
+								// Associer le prof à la matière: j_professeurs_matieres
+								$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$mat' AND id_professeur='$login_prof';";
+								$res_prof_mat=mysql_query($sql);
+								echo " (";
+								if(mysql_num_rows($res_prof_mat)==0) {
+									$sql="INSERT INTO j_professeurs_matieres SET id_matiere='$mat', id_professeur='$login_prof';";
+									if($insert=mysql_query($sql)) {
+										echo "<span style='color:green;'>";
+									}
+									else {
+										echo "<span style='color:red;'>";
+									}
+								}
+								else {
+									echo "<span style='color:black;'>";
+								}
+								echo "$mat</span>)";
+	
+							}
+							//else {echo "prof inconnu";}
+						}
+						echo "<br />\n";
+	
+						// Mettre tous les élèves dans le groupe pour toutes les périodes: j_eleves_groupes
+						echo "Association des élèves:<br />";
+						echo "<blockquote>\n";
+						for($k=0;$k<count($tab_ele);$k++) {
+							if($k>0) {echo " - ";}
+							echo $tab_ele[$k]." (";
+							for($l=0;$l<count($tab_per);$l++) {
+								if($l>0) {echo "-";}
+								$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='".$tab_ele[$k]."' AND periode='".$tab_per[$l]."';";
+								$res_ele_grp=mysql_query($sql);
+								if(mysql_num_rows($res_ele_grp)==0) {
+									$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele[$k]."', periode='".$tab_per[$l]."';";
+									if($insert=mysql_query($sql)) {
+										echo "<span style='color:green;'>";
+									}
+									else {
+										//echo "$sql<br />\n";
+										echo "<span style='color:red;'>";
+									}
+								}
+								else {
+									echo "<span style='color:black;'>";
+								}
+								echo $tab_per[$l]."</span>";
+							}
+							echo ")";
+						}
+						echo "</blockquote>\n";
+	
+						echo "</blockquote>\n";
+					}
+					else {
+						echo "<span style='color:red;'>ERREUR</span>";
+					}
+					echo "</p>\n";
+				}
+			}
+		}
+		echo "</blockquote>\n";
+	}
+
+	echo "<h3>Création des groupes</h3>\n";
+	// Traiter les groupes ensuite
+	if(!isset($groupes)) {
+		echo "<p>Aucun groupe n'est défini.</p>\n";		
+	}
+	else {
+		for ($i=0;$i<count($groupes);$i++) {
+			$code_groupe=$groupes[$i]['code'];
+			$libelle_groupe=$groupes[$i]['libelle_long'];
+	
+			$tab_clas=array();
+			$tab_ele=array();
+			$tab_per_clas=array();
+	
+			$list_classe="";
+	
+			$cpt_clas=0;
+	
+			for ($ii=0;$ii<count($groupes[$i]['divisions']);$ii++) {
+				$classe=$groupes[$i]['divisions'][$ii]['code'];
+				$sql="SELECT id FROM classes WHERE classe='$classe';";
+				$res_clas=mysql_query($sql);
+				$nb_clas=mysql_num_rows($res_clas);
+				if($nb_clas==1) {
+					$lig_clas=mysql_fetch_object($res_clas);
+					$id_classe=$lig_clas->id;
+	
+					// Récupération des périodes de la classe
+					//$tab_per=array();
+					$periode_query=mysql_query("SELECT MAX(num_periode) FROM periodes WHERE id_classe='$id_classe';");
+					if(mysql_num_rows($periode_query)>0) {
+						$tab_per_clas[]=mysql_result($periode_query,0);
+	
+						$tab_test=array_unique($tab_per_clas);
+						if(count($tab_test)==1) {
+							// Récupération des élèves de la classe
+							$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login;";
+							$res_ele=mysql_query($sql);
+							if(mysql_num_rows($res_ele)>0) {
+								while($lig_ele=mysql_fetch_object($res_ele)) {
+									$tab_ele[]=$lig_ele->login;
+								}
+							}
+	
+							//$tab_clas[]=$classe;
+							//$tab_id_clas[]=$id_classe;
+							$tab_clas[]=$id_classe;
+	
+							if($list_classe!="") {$list_classe.=", ";}
+							$list_classe.=$classe;
+						}
+						else {
+							echo "<p style='color:red'>PB: Des classes n'ayant pas le même nombre de périodes sont associées dans un même groupe.</p>\n";
+						}
+					}
+				}
+			}
+	
+	
+	
+			for($i_grp=0;$i_grp<count($groupes[$i]['grp']);$i_grp++) {
+				$id_mat=$groupes[$i]['grp'][$i_grp]['code_matiere'];
 				$mat=get_code_gestion_from_code($id_mat);
-
+	
 				$nom_grp=$mat;
-				$descr_grp=get_nom_complet_from_matiere($mat);
-
-				// Créer le groupe:                   groupes
-				// L'associer à la classe:            j_groupes_classes
-				// L'associer à la matière:           j_groupes_matieres
-				echo "<p>Création du groupe $descr_grp (<i>$nom_grp</i>) en $classe: ";
+				$descr_grp=get_nom_complet_from_matiere($mat)." (".$code_groupe.")";
+	
+				echo "<p>Création du groupe $descr_grp (<i>$nom_grp</i>) en $list_classe";
+				echo " (<i style='font-size:x-small;'>nom sts: ".$code_groupe."</i>)";
+				echo ": ";
 				if($id_groupe=create_group($nom_grp, $descr_grp, $mat, $tab_clas)) {
 					echo "<span style='color:green;'>$id_groupe</span>";
 					//echo "<br />\n";
 					echo "<blockquote>\n";
-
+	
 					echo "Professeur(s): ";
-					for($k=0;$k<count($divisions[$i]['services'][$j]['enseignants']);$k++) {
-
-						$sql="select col1 from tempo2 where col2='P".$divisions[$i]['services'][$j]['enseignants'][$k]['id']."';";
+					for($k=0;$k<count($groupes[$i]['grp'][$i_grp]['enseignant']);$k++) {
+						if($k>0) {echo ", ";}
+	
+						$sql="select col1 from tempo2 where col2='P".$groupes[$i]['grp'][$i_grp]['enseignant'][$k]['id']."';";
 						$res_prof=mysql_query($sql);
 						$login_prof=@mysql_result($res_prof, 0, 'col1');
-
+	
 						if ($login_prof!='') {
 							// Associer le groupe au prof:    j_groupes_professeurs
 							$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='$login_prof';";
@@ -631,7 +799,7 @@ if (!isset($suite)) {
 								}
 								echo "$login_prof</span>";
 							}
-
+	
 							// Associer le prof à la matière: j_professeurs_matieres
 							$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$mat' AND id_professeur='$login_prof';";
 							$res_prof_mat=mysql_query($sql);
@@ -649,12 +817,13 @@ if (!isset($suite)) {
 								echo "<span style='color:black;'>";
 							}
 							echo "$mat</span>)";
-
+	
 						}
 						//else {echo "prof inconnu";}
 					}
 					echo "<br />\n";
-
+	
+	
 					// Mettre tous les élèves dans le groupe pour toutes les périodes: j_eleves_groupes
 					echo "Association des élèves:<br />";
 					echo "<blockquote>\n";
@@ -683,170 +852,13 @@ if (!isset($suite)) {
 						echo ")";
 					}
 					echo "</blockquote>\n";
-
+	
 					echo "</blockquote>\n";
+	
+	
 				}
-				else {
-					echo "<span style='color:red;'>ERREUR</span>";
-				}
-				echo "</p>\n";
+	
 			}
-		}
-		echo "</blockquote>\n";
-	}
-
-	echo "<h3>Création des groupes</h3>\n";
-	// Traiter les groupes ensuite
-	for ($i=0;$i<count($groupes);$i++) {
-		$code_groupe=$groupes[$i]['code'];
-		$libelle_groupe=$groupes[$i]['libelle_long'];
-
-		$tab_clas=array();
-		$tab_ele=array();
-		$tab_per_clas=array();
-
-		$list_classe="";
-
-		$cpt_clas=0;
-
-		for ($ii=0;$ii<count($groupes[$i]['divisions']);$ii++) {
-			$classe=$groupes[$i]['divisions'][$ii]['code'];
-			$sql="SELECT id FROM classes WHERE classe='$classe';";
-			$res_clas=mysql_query($sql);
-			$nb_clas=mysql_num_rows($res_clas);
-			if($nb_clas==1) {
-				$lig_clas=mysql_fetch_object($res_clas);
-				$id_classe=$lig_clas->id;
-
-				// Récupération des périodes de la classe
-				//$tab_per=array();
-				$periode_query=mysql_query("SELECT MAX(num_periode) FROM periodes WHERE id_classe='$id_classe';");
-				if(mysql_num_rows($periode_query)>0) {
-					$tab_per_clas[]=mysql_result($periode_query,0);
-
-					$tab_test=array_unique($tab_per_clas);
-					if(count($tab_test)==1) {
-						// Récupération des élèves de la classe
-						$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login;";
-						$res_ele=mysql_query($sql);
-						if(mysql_num_rows($res_ele)>0) {
-							while($lig_ele=mysql_fetch_object($res_ele)) {
-								$tab_ele[]=$lig_ele->login;
-							}
-						}
-
-						//$tab_clas[]=$classe;
-						//$tab_id_clas[]=$id_classe;
-						$tab_clas[]=$id_classe;
-
-						if($list_classe!="") {$list_classe.=", ";}
-						$list_classe.=$classe;
-					}
-					else {
-						echo "<p style='color:red'>PB: Des classes n'ayant pas le même nombre de périodes sont associées dans un même groupe.</p>\n";
-					}
-				}
-			}
-		}
-
-
-
-		for($i_grp=0;$i_grp<count($groupes[$i]['grp']);$i_grp++) {
-			$id_mat=$groupes[$i]['grp'][$i_grp]['code_matiere'];
-			$mat=get_code_gestion_from_code($id_mat);
-
-			$nom_grp=$mat;
-			$descr_grp=get_nom_complet_from_matiere($mat)." (".$code_groupe.")";
-
-			echo "<p>Création du groupe $descr_grp (<i>$nom_grp</i>) en $list_classe";
-			echo " (<i style='font-size:x-small;'>nom sts: ".$code_groupe."</i>)";
-			echo ": ";
-			if($id_groupe=create_group($nom_grp, $descr_grp, $mat, $tab_clas)) {
-				echo "<span style='color:green;'>$id_groupe</span>";
-				//echo "<br />\n";
-				echo "<blockquote>\n";
-
-				echo "Professeur(s): ";
-				for($k=0;$k<count($groupes[$i]['grp'][$i_grp]['enseignant']);$k++) {
-					if($k>0) {echo ", ";}
-
-					$sql="select col1 from tempo2 where col2='P".$groupes[$i]['grp'][$i_grp]['enseignant'][$k]['id']."';";
-					$res_prof=mysql_query($sql);
-					$login_prof=@mysql_result($res_prof, 0, 'col1');
-
-					if ($login_prof!='') {
-						// Associer le groupe au prof:    j_groupes_professeurs
-						$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='$login_prof';";
-						$res_grp_prof=mysql_query($sql);
-						if(mysql_num_rows($res_grp_prof)==0) {
-							$sql="INSERT INTO j_groupes_professeurs SET id_groupe='$id_groupe', login='$login_prof';";
-							if($insert=mysql_query($sql)) {
-								echo "<span style='color:green;'>";
-							}
-							else {
-								echo "<span style='color:red;'>";
-							}
-							echo "$login_prof</span>";
-						}
-
-						// Associer le prof à la matière: j_professeurs_matieres
-						$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$mat' AND id_professeur='$login_prof';";
-						$res_prof_mat=mysql_query($sql);
-						echo " (";
-						if(mysql_num_rows($res_prof_mat)==0) {
-							$sql="INSERT INTO j_professeurs_matieres SET id_matiere='$mat', id_professeur='$login_prof';";
-							if($insert=mysql_query($sql)) {
-								echo "<span style='color:green;'>";
-							}
-							else {
-								echo "<span style='color:red;'>";
-							}
-						}
-						else {
-							echo "<span style='color:black;'>";
-						}
-						echo "$mat</span>)";
-
-					}
-					//else {echo "prof inconnu";}
-				}
-				echo "<br />\n";
-
-
-				// Mettre tous les élèves dans le groupe pour toutes les périodes: j_eleves_groupes
-				echo "Association des élèves:<br />";
-				echo "<blockquote>\n";
-				for($k=0;$k<count($tab_ele);$k++) {
-					if($k>0) {echo " - ";}
-					echo $tab_ele[$k]." (";
-					for($l=0;$l<count($tab_per);$l++) {
-						if($l>0) {echo "-";}
-						$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='".$tab_ele[$k]."' AND periode='".$tab_per[$l]."';";
-						$res_ele_grp=mysql_query($sql);
-						if(mysql_num_rows($res_ele_grp)==0) {
-							$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele[$k]."', periode='".$tab_per[$l]."';";
-							if($insert=mysql_query($sql)) {
-								echo "<span style='color:green;'>";
-							}
-							else {
-								//echo "$sql<br />\n";
-								echo "<span style='color:red;'>";
-							}
-						}
-						else {
-							echo "<span style='color:black;'>";
-						}
-						echo $tab_per[$l]."</span>";
-					}
-					echo ")";
-				}
-				echo "</blockquote>\n";
-
-				echo "</blockquote>\n";
-
-
-			}
-
 		}
 	}
 
@@ -857,10 +869,19 @@ if (!isset($suite)) {
 		echo "<p>Lors de l'enregistrement des données il n'y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.";
 	} else {
 	*/
+
+	if($temoin_div_sans_services==0) {
 		echo "<p>L'importation des relations professeurs/matières et professeurs/classes dans la base GEPI a été effectuée avec succès !<br />Vous pouvez procéder à l'étape suivante d'importation des options suivies par les élèves.</p>";
+	}
+	elseif($temoin_div_sans_services==1) {
+		echo "<p style='color:red;'>$temoin_div_sans_services division n'a pas de services déclarés.<br />Le fichier STS fourni n'est peut-être pas complet.<br />Cela arrive notamment quand l'emploi du temps n'a pas été remonté vers STS.<br />Vous devriez contrôler cela avant de procéder à l'étape d'importation des options suivies par les élèves.</p>\n";
+	}
+	else {
+		echo "<p style='color:red;'>$temoin_div_sans_services divisions n'ont pas de services déclarés.<br />Le fichier STS fourni n'est peut-être pas complet.<br />Cela arrive notamment quand l'emploi du temps n'a pas été remonté vers STS.<br />Vous devriez contrôler cela avant de procéder à l'étape d'importation des options suivies par les élèves.</p>\n";
+	}
 
 	//}
-	echo "<center><p><a href='init_options.php'>Importer les options suivies par les élèves</a></p></center>";
+	echo "<p align='center'><a href='init_options.php'>Importer les options suivies par les élèves</a></p>\n";
 	echo "<p><br /></p>\n";
 
 
