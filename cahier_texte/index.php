@@ -34,10 +34,6 @@ require_once("../lib/transform_functions.php");
 require_once("../public/lib/functions.inc");
 include("../fckeditor/fckeditor.php") ;
 
-if (getSettingValue("GepiCahierTexteVersion") == '2') {
-    header("Location: ../cahier_texte_2/index.php");
-    die();
-}
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -57,6 +53,15 @@ if (!checkAccess()) {
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
     die("Le module n'est pas activé.");
+}
+
+//on regarde si les preferences pour le cdt ont change
+if (getSettingValue("GepiCahierTexteVersion") == '2') {
+    //on regarde les preferences de l'utilisateur
+    if 	(getPref($_SESSION['login'],'cdt_version',"non renseigne") != "1" ) {
+	header("Location: ../cahier_texte_2/index.php");
+	die();
+    }
 }
 
 //Ajout Eric traitement Visa
@@ -365,7 +370,16 @@ echo "<script type=\"text/javascript\">";
 echo "<!--\n";
 echo "new LiveClock();\n";
 echo "//-->";
-echo "</SCRIPT></p>\n";
+echo "</SCRIPT>";
+
+if (getSettingValue("GepiCahierTexteVersion") == '2') {
+}
+echo "&nbsp;&nbsp;<button style='width: 200px;' onclick=\"javascript:window.location.replace('../cahier_texte_2/index.php?cdt_version_pref=2')
+				\">Utiliser la version 2 du cahier de texte</button>\n";
+}
+
+echo "</p>\n";
+
 
 // **********************************************
 // Affichage des différents groupes du professeur

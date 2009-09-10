@@ -65,12 +65,20 @@ $utilisation_jsdivdrag = "non";
 $windows_effects = "non";
 $message_deconnexion = "non";
 
-//$utilisation_scriptaculous = "ok";
-//$scriptaculous_effet = "effects";
+//on regarde si les preferences pour le cdt ont change
+$cdt_version_pref = isset($_POST["cdt_version_pref"]) ? $_POST["cdt_version_pref"] :(isset($_GET["cdt_version_pref"]) ? $_GET["cdt_version_pref"] :NULL);
+if ($cdt_version_pref != null) {
+    $utilisateur->setPreferenceValeur("cdt_version", $cdt_version_pref);
+}
+
+//on regarde les preference de l'utilisateur
+if ($utilisateur->getPreferenceValeur("cdt_version") == "1") {
+    header("Location: ../cahier_texte/index.php?cdt_version_pref=1");
+    die();
+}
 
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
-
 //-----------------------------------------------------------------------------------
 echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entète\">\n";
 echo "<tr>\n";
@@ -93,7 +101,11 @@ echo "<button style='width: 200px;' onclick=\"javascript:
 				\">Repositionner les fenetres</button>\n";
 echo "</td>";
 
-echo "<td width='20 px'></td>";
+echo "<td width='20 px'>";
+echo "<button style='width: 200px;' onclick=\"javascript:window.location.replace('./index.php?cdt_version_pref=1')
+				\">Utiliser la version 1 du cahier de texte</button>\n";
+
+echo "</td>";
 // **********************************************
 // Affichage des différents groupes du professeur
 // Récupération de toutes les infos sur le groupe
