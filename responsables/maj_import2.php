@@ -1738,7 +1738,9 @@ else{
 				echo "</p>\n";
 			}
 
-			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop' onClick=\"test_stop_suite('3'); return false;\">Suite</a></p>\n";
+			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop' onClick=\"test_stop_suite('3'); return false;\">Passer à l'étape suivante</a>";
+			if($stop=='n') {echo "<br />(<i style='color:red;'>un CLIC est requis pour confirmer que vous avez pris le temps de lire;o</i>)";}
+			echo "</p>\n";
 
 			break;
 
@@ -2020,6 +2022,7 @@ else{
 			}
 			*/
 
+			$cpt_tab_ele_id_diff=count($tab_ele_id_diff);
 			$cpt=0;
 			for($i=0;$i<min(20,count($tab_ele_id));$i++){
 
@@ -2113,6 +2116,7 @@ else{
 					//echo "\$temoin_chgt_ancien_etab=$temoin_chgt_ancien_etab<br />";
 					flush();
 					$cpt++;
+					$cpt_tab_ele_id_diff;
 				}
 				else{
 					// Inutile de tester les différences sur le régime si des différences ont déjà été repérées et que l'ELE_ID est déjà en tab_ele_id_diff[]
@@ -2158,6 +2162,7 @@ else{
 								// Pour le cas où on est dans la dernière tranche:
 								$tab_ele_id_diff[]=$tab_ele_id[$i];
 								$cpt++;
+								$cpt_tab_ele_id_diff;
 							}
 						}
 
@@ -2198,6 +2203,7 @@ else{
 								// Pour le cas où on est dans la dernière tranche:
 								$tab_ele_id_diff[]=$tab_ele_id[$i];
 								$cpt++;
+								$cpt_tab_ele_id_diff;
 							}
 						}
 
@@ -2281,7 +2287,7 @@ else{
 				echo "<p>Le parcours des différences est terminé.</p>\n";
 
 				echo "<input type='hidden' name='step' value='4' />\n";
-				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='10' size='3' /><br />\n";
+				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='10' size='3' /> sur $cpt_tab_ele_id_diff<br />\n";
 				echo "<input type='submit' value='Afficher les différences' /></p>\n";
 
 				// On vide la table dont on va se resservir:
