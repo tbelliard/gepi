@@ -6,7 +6,7 @@ require 'gepi/om/BaseEleve.php';
 /**
  * Skeleton subclass for representing a row from the 'eleves' table.
  *
- * 
+ * Liste des eleves de l'etablissement
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
