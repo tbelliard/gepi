@@ -373,7 +373,6 @@ echo "//-->";
 echo "</SCRIPT>";
 
 if (getSettingValue("GepiCahierTexteVersion") == '2') {
-}
 echo "&nbsp;&nbsp;<button style='width: 200px;' onclick=\"javascript:window.location.replace('../cahier_texte_2/index.php?cdt_version_pref=2')
 				\">Utiliser la version 2 du cahier de texte</button>\n";
 }
