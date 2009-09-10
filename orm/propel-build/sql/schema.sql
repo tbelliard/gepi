@@ -1121,7 +1121,7 @@ DROP TABLE IF EXISTS preferences;
 
 CREATE TABLE preferences
 (
-	name INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire du compte rendu',
+	name VARCHAR(50)  NOT NULL COMMENT 'Cle primaire du compte rendu',
 	value TEXT  NOT NULL AUTO_INCREMENT COMMENT 'valeur associe a la cle',
 	login VARCHAR(50)  NOT NULL COMMENT 'Cle etrangere de l\'utilisateur auquel appartient le compte rendu',
 	PRIMARY KEY (name,login),
