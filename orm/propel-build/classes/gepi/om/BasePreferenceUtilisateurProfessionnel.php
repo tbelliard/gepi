@@ -20,7 +20,7 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 
 	/**
 	 * The value for the name field.
-	 * @var        int
+	 * @var        string
 	 */
 	protected $name;
 
@@ -78,7 +78,7 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 	/**
 	 * Get the [name] column value.
 	 * Cle primaire du compte rendu
-	 * @return     int
+	 * @return     string
 	 */
 	public function getName()
 	{
@@ -108,13 +108,13 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 	/**
 	 * Set the value of [name] column.
 	 * Cle primaire du compte rendu
-	 * @param      int $v new value
+	 * @param      string $v new value
 	 * @return     PreferenceUtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function setName($v)
 	{
 		if ($v !== null) {
-			$v = (int) $v;
+			$v = (string) $v;
 		}
 
 		if ($this->name !== $v) {
@@ -206,7 +206,7 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 	{
 		try {
 
-			$this->name = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
+			$this->name = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
 			$this->value = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->login = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
 			$this->resetModified();
@@ -381,9 +381,6 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 				$this->setUtilisateurProfessionnel($this->aUtilisateurProfessionnel);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = PreferenceUtilisateurProfessionnelPeer::NAME;
-			}
 
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
@@ -392,8 +389,6 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
 										 // should always be true here (even though technically
 										 // BasePeer::doInsert() can insert multiple rows).
-
-					$this->setName($pk);  //[IMV] update autoincrement primary key
 
 					$this->setNew(false);
 				} else {
@@ -699,12 +694,12 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 	public function copyInto($copyObj, $deepCopy = false)
 	{
 
+		$copyObj->setName($this->name);
+
 		$copyObj->setLogin($this->login);
 
 
 		$copyObj->setNew(true);
-
-		$copyObj->setName(NULL); // this is a auto-increment column, so set to default value
 
 		$copyObj->setValue(NULL); // this is a auto-increment column, so set to default value
 

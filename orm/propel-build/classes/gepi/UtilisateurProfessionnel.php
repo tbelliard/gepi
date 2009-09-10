@@ -192,7 +192,10 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		$nouvellePref = new PreferenceUtilisateurProfessionnel();
 		$nouvellePref->setName($name);
 		$nouvellePref->setValue($value);
+		$nouvellePref->setLogin($this->getLogin());
+		$nouvellePref->save();
 		$this->addPreferenceUtilisateurProfessionnel($nouvellePref);
+		$this->save();
 	    } else if (count($prefs) == 1) {
 		$prefs[0]->setValue($value);
 		$prefs[0]->save();

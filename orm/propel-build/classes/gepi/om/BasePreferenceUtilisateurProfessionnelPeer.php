@@ -680,10 +680,6 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 			$criteria = $values->buildCriteria(); // build Criteria from PreferenceUtilisateurProfessionnel object
 		}
 
-		if ($criteria->containsKey(PreferenceUtilisateurProfessionnelPeer::NAME) && $criteria->keyContainsValue(PreferenceUtilisateurProfessionnelPeer::NAME) ) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key ('.PreferenceUtilisateurProfessionnelPeer::NAME.')');
-		}
-
 
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
@@ -877,7 +873,7 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 
 	/**
 	 * Retrieve object using using composite pkey values.
-	 * @param      int $name
+	 * @param      string $name
 	   @param      string $login
 	   
 	 * @param      PropelPDO $con

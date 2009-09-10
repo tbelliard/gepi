@@ -62,7 +62,7 @@ class PreferenceUtilisateurProfessionnelMapBuilder implements MapBuilder {
 
 		$tMap->setUseIdGenerator(true);
 
-		$tMap->addPrimaryKey('NAME', 'Name', 'INTEGER', true, null);
+		$tMap->addPrimaryKey('NAME', 'Name', 'VARCHAR', true, 50);
 
 		$tMap->addColumn('VALUE', 'Value', 'LONGVARCHAR', true, null);
 
