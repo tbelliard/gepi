@@ -233,6 +233,16 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	private $lastAbsenceEnvoiCriteria = null;
 
 	/**
+	 * @var        array PreferenceUtilisateurProfessionnel[] Collection to store aggregation of PreferenceUtilisateurProfessionnel objects.
+	 */
+	protected $collPreferenceUtilisateurProfessionnels;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collPreferenceUtilisateurProfessionnels.
+	 */
+	private $lastPreferenceUtilisateurProfessionnelCriteria = null;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -1097,6 +1107,9 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->collAbsenceEnvois = null;
 			$this->lastAbsenceEnvoiCriteria = null;
 
+			$this->collPreferenceUtilisateurProfessionnels = null;
+			$this->lastPreferenceUtilisateurProfessionnelCriteria = null;
+
 		} // if (deep)
 	}
 
@@ -1279,6 +1292,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			if ($this->collPreferenceUtilisateurProfessionnels !== null) {
+				foreach ($this->collPreferenceUtilisateurProfessionnels as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			$this->alreadyInSave = false;
 
 		}
@@ -1424,6 +1445,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 				if ($this->collAbsenceEnvois !== null) {
 					foreach ($this->collAbsenceEnvois as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collPreferenceUtilisateurProfessionnels !== null) {
+					foreach ($this->collPreferenceUtilisateurProfessionnels as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1865,6 +1894,12 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			foreach ($this->getAbsenceEnvois() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addAbsenceEnvoi($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getPreferenceUtilisateurProfessionnels() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addPreferenceUtilisateurProfessionnel($relObj->copy($deepCopy));
 				}
 			}
 
@@ -4310,6 +4345,161 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Clears out the collPreferenceUtilisateurProfessionnels collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addPreferenceUtilisateurProfessionnels()
+	 */
+	public function clearPreferenceUtilisateurProfessionnels()
+	{
+		$this->collPreferenceUtilisateurProfessionnels = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collPreferenceUtilisateurProfessionnels collection (array).
+	 *
+	 * By default this just sets the collPreferenceUtilisateurProfessionnels collection to an empty array (like clearcollPreferenceUtilisateurProfessionnels());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initPreferenceUtilisateurProfessionnels()
+	{
+		$this->collPreferenceUtilisateurProfessionnels = array();
+	}
+
+	/**
+	 * Gets an array of PreferenceUtilisateurProfessionnel objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel has previously been saved, it will retrieve
+	 * related PreferenceUtilisateurProfessionnels from storage. If this UtilisateurProfessionnel is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array PreferenceUtilisateurProfessionnel[]
+	 * @throws     PropelException
+	 */
+	public function getPreferenceUtilisateurProfessionnels($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collPreferenceUtilisateurProfessionnels === null) {
+			if ($this->isNew()) {
+			   $this->collPreferenceUtilisateurProfessionnels = array();
+			} else {
+
+				$criteria->add(PreferenceUtilisateurProfessionnelPeer::LOGIN, $this->login);
+
+				PreferenceUtilisateurProfessionnelPeer::addSelectColumns($criteria);
+				$this->collPreferenceUtilisateurProfessionnels = PreferenceUtilisateurProfessionnelPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(PreferenceUtilisateurProfessionnelPeer::LOGIN, $this->login);
+
+				PreferenceUtilisateurProfessionnelPeer::addSelectColumns($criteria);
+				if (!isset($this->lastPreferenceUtilisateurProfessionnelCriteria) || !$this->lastPreferenceUtilisateurProfessionnelCriteria->equals($criteria)) {
+					$this->collPreferenceUtilisateurProfessionnels = PreferenceUtilisateurProfessionnelPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastPreferenceUtilisateurProfessionnelCriteria = $criteria;
+		return $this->collPreferenceUtilisateurProfessionnels;
+	}
+
+	/**
+	 * Returns the number of related PreferenceUtilisateurProfessionnel objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related PreferenceUtilisateurProfessionnel objects.
+	 * @throws     PropelException
+	 */
+	public function countPreferenceUtilisateurProfessionnels(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collPreferenceUtilisateurProfessionnels === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(PreferenceUtilisateurProfessionnelPeer::LOGIN, $this->login);
+
+				$count = PreferenceUtilisateurProfessionnelPeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(PreferenceUtilisateurProfessionnelPeer::LOGIN, $this->login);
+
+				if (!isset($this->lastPreferenceUtilisateurProfessionnelCriteria) || !$this->lastPreferenceUtilisateurProfessionnelCriteria->equals($criteria)) {
+					$count = PreferenceUtilisateurProfessionnelPeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collPreferenceUtilisateurProfessionnels);
+				}
+			} else {
+				$count = count($this->collPreferenceUtilisateurProfessionnels);
+			}
+		}
+		$this->lastPreferenceUtilisateurProfessionnelCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a PreferenceUtilisateurProfessionnel object to this object
+	 * through the PreferenceUtilisateurProfessionnel foreign key attribute.
+	 *
+	 * @param      PreferenceUtilisateurProfessionnel $l PreferenceUtilisateurProfessionnel
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addPreferenceUtilisateurProfessionnel(PreferenceUtilisateurProfessionnel $l)
+	{
+		if ($this->collPreferenceUtilisateurProfessionnels === null) {
+			$this->initPreferenceUtilisateurProfessionnels();
+		}
+		if (!in_array($l, $this->collPreferenceUtilisateurProfessionnels, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collPreferenceUtilisateurProfessionnels, $l);
+			$l->setUtilisateurProfessionnel($this);
+		}
+	}
+
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -4371,6 +4561,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collPreferenceUtilisateurProfessionnels) {
+				foreach ((array) $this->collPreferenceUtilisateurProfessionnels as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		$this->collJGroupesProfesseurss = null;
@@ -4383,6 +4578,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$this->collAbsenceSaisies = null;
 		$this->collAbsenceTraitements = null;
 		$this->collAbsenceEnvois = null;
+		$this->collPreferenceUtilisateurProfessionnels = null;
 	}
 
 } // BaseUtilisateurProfessionnel

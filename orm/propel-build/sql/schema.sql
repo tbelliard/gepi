@@ -1112,5 +1112,25 @@ CREATE TABLE plugins_menus
 		REFERENCES plugins (id)
 )Type=MyISAM COMMENT='Items pour construire le menu de ce plug-in';
 
+#-----------------------------------------------------------------------------
+#-- preferences
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS preferences;
+
+
+CREATE TABLE preferences
+(
+	name INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire du compte rendu',
+	value TEXT  NOT NULL AUTO_INCREMENT COMMENT 'valeur associe a la cle',
+	login VARCHAR(50)  NOT NULL COMMENT 'Cle etrangere de l\'utilisateur auquel appartient le compte rendu',
+	PRIMARY KEY (name,login),
+	INDEX preferences_FI_1 (login),
+	CONSTRAINT preferences_FK_1
+		FOREIGN KEY (login)
+		REFERENCES utilisateurs (login)
+		ON DELETE SET NULL
+)Type=MyISAM COMMENT='Preference (cle - valeur) associes à un utilisateur professionnel';
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

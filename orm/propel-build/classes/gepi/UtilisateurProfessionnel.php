@@ -155,4 +155,51 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		$this->addJEleveCpe($jEleveCpe);
 		$jEleveCpe->save();
 	}
+
+	/**
+	 *
+	 * Renvoi une preference d'un utilisateur
+	 * Ajout manuel
+	 *
+	 * @param      String $name le nom de la preference à obtenir
+	 * @return     array Eleves[]
+	 */
+	public function getPreferenceValeur($name){
+	    $criteria = new Criteria();
+	    $criteria->add(PreferenceUtilisateurProfessionnelPeer::NAME, $name);
+	    $prefs = $this->getPreferenceUtilisateurProfessionnels($criteria);
+	    if (count($prefs) == 0) {
+		return null;
+	    } else {
+		return $prefs[0]->getValue();
+	    }
+	}
+
+	/**
+	 *
+	 * Enregistre une preference d'un utilisateur
+	 * Ajout manuel
+	 *
+	 * @param      String $name le nom de la preference à obtenir
+	 * @return     array Eleves[]
+	 */
+	public function setPreferenceValeur($name, $value){
+	    $criteria = new Criteria();
+	    $criteria->add(PreferenceUtilisateurProfessionnelPeer::NAME, $name);
+	    $prefs = $this->getPreferenceUtilisateurProfessionnels($criteria);
+	    if (count($prefs) == 0) {
+		//Creation d'une nouvelle entree dans les preferences
+		$nouvellePref = new PreferenceUtilisateurProfessionnel();
+		$nouvellePref->setName($name);
+		$nouvellePref->setValue($value);
+		$this->addPreferenceUtilisateurProfessionnel($nouvellePref);
+	    } else if (count($prefs) == 1) {
+		$prefs[0]->setValue($value);
+		$prefs[0]->save();
+	    } else {
+		//there's an error
+		throw new PropelException("Il existe deja plusieurs preferences avec ce nom !");
+	    }
+	}
+
 }

@@ -529,4 +529,13 @@
   </table>
 <!-- Fin des objets propel spécifiques au module PLUGIN -->
 
+	<table name="preferences" phpName="PreferenceUtilisateurProfessionnel" description="Preference (cle - valeur) associes à un utilisateur professionnel">
+		<column name="name" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire du compte rendu" />
+		<column name="value" required="true" autoIncrement="true" type="LONGVARCHAR" description="valeur associe a la cle" />
+		<column name="login" primaryKey="true" type="VARCHAR" size="50" description="Cle etrangere de l'utilisateur auquel appartient le compte rendu" />
+		<foreign-key foreignTable="utilisateurs" onDelete="SETNULL">
+			<reference local="login" foreign="login" />
+		</foreign-key>
+	</table>
+
 </database>
