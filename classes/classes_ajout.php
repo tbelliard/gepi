@@ -486,21 +486,21 @@ if ($nombreligne == '0') {
 
 			echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type='radio' name='regime_eleve[$ki]' value='ext.'";
 			if ($regime == 'ext.') { echo " checked ";}
-			echo " />\n";
+			echo " onchange='changement()' />\n";
 			echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='int.'";
 			if ($regime == 'int.') { echo " checked ";}
-			echo " />\n";
+			echo " onchange='changement()' />\n";
 			echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='d/p' ";
 			if ($regime == 'd/p') { echo " checked ";}
-			echo " />\n";
+			echo " onchange='changement()' />\n";
 			echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='i-e'";
 			if ($regime == 'i-e') { echo " checked ";}
-			echo " />\n";
+			echo " onchange='changement()' />\n";
 			//echo "</p></td><td><p><center><INPUT TYPE=CHECKBOX NAME='$doublant_login' VALUE='R'";
 			echo "</p></td>\n<td><p align='center'><input type='checkbox' name='doublant_eleve[$ki]' value='R'";
 			//=========================
 			if ($doublant == 'R') { echo " checked ";}
-			echo " />";
+			echo " onchange='changement()' />";
 
 			//echo "</center></p></td>";
 			echo "</p></td>\n";
@@ -511,7 +511,7 @@ if ($nombreligne == '0') {
 					//=========================
 					// MODIF: boireaus 20071010
 					//echo "<input type='checkbox' name='$ajout_login[$i]' value='yes' />";
-					echo "<input type='checkbox' name='ajout_eleve_".$ki."[$i]' id='case_".$ki."_".$i."' value='yes' />";
+					echo "<input type='checkbox' name='ajout_eleve_".$ki."[$i]' id='case_".$ki."_".$i."' value='yes' onchange='changement()' />";
 					//=========================
 				} else {
 					echo "$nom_classe[$i]";
@@ -526,7 +526,7 @@ if ($nombreligne == '0') {
 			}
 			$elementlist = substr($elementlist, 0, -1);
 			//echo "<td><center><a href=\"javascript:CochePeriode($elementlist)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecochePeriode($elementlist)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
-			echo "<td><center><a href=\"javascript:CocheLigne($ki)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($ki)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
+			echo "<td><center><a href=\"javascript:CocheLigne($ki)changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($ki);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
 			echo "</tr>\n";
 
 			//=========================
