@@ -419,7 +419,7 @@ function suppressionDevoirDocument(message, id_document_a_supprimer, id_devoir, 
 
 //webtoolkit aim (ajax iframe method for file uploading)
 function completeEnregistrementCompteRenduCallback(response) {
-	if (response.match('Erreur') || response.match('error')) {
+	if (response.match('Erreur') || response.match('error') || response.match('Notice') || response.match('Warning')) {
 		alert(response);
 		getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:function() {initWysiwyg();}});
 	} else {
@@ -448,7 +448,7 @@ function completeEnregistrementCompteRenduCallback(response) {
 
 //webtoolkit aim (ajax iframe method for file uploading)
 function completeEnregistrementDevoirCallback(response) {
- 	if (response.match('Erreur') || response.match('error')) {
+	if (response.match('Erreur') || response.match('error') || response.match('Notice') || response.match('Warning')) {
  		alert(response);
 		getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:function() {initWysiwyg();}});
  	} else {
@@ -476,7 +476,7 @@ function completeEnregistrementDevoirCallback(response) {
 
 //webtoolkit aim (ajax iframe method for file uploading)
 function completeEnregistrementNoticePriveeCallback(response) {
-	if (response.match('Erreur') || response.match('error')) {
+	if (response.match('Erreur') || response.match('error') || response.match('Notice') || response.match('Warning')) {
 		alert(response);
 		getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:function() {initWysiwyg();}});
 	} else {
@@ -499,8 +499,7 @@ function completeEnregistrementNoticePriveeCallback(response) {
 //webtoolkit aim (ajax iframe method for file uploading)
 function completeDeplacementNoticeCallback(response) {
 	//on etudie la reponse de l'enregistrement de la notice. Si il ne contient pas d'erreur, c'est l'id de la notice
-	alert(response);
-	if (response.match('Erreur') || response.match('error')) {
+	if (response.match('Erreur') || response.match('error') || response.match('Notice') || response.match('Warning')) {
 	    updateWindows(response);
 	} else {
 
@@ -521,7 +520,7 @@ function completeDeplacementNoticeCallback(response) {
 //webtoolkit aim (ajax iframe method for file uploading)
 function completeDuplicationNoticeCallback(response) {
 	//on etudie la reponse de l'enregistrement de la notice
-	if (response.match('Erreur') || response.match('error')) {
+	if (response.match('Erreur') || response.match('error') || response.match('Notice') || response.match('Warning')) {
 		updateWindows(response);
 	} else {
 	    //pas d'erreur, on deplace la notice
