@@ -54,7 +54,7 @@ if ($type == 'CahierTexteTravailAFaire') {
 }
 
 if ($ctCompteRendu == null) {
-	echo ("Erreur : pas de notice trouvée.");
+	echo ("Erreur duplacation denotice : pas de notice trouvée.");
 	die();
 }
 $groupe = GroupePeer::retrieveByPK($id_groupe);
