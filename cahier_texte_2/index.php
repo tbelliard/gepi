@@ -103,7 +103,7 @@ echo "</td>";
 
 echo "<td width='20 px'>";
 echo "<button style='width: 200px;' onclick=\"javascript:window.location.replace('./index.php?cdt_version_pref=1')
-				\">Utiliser la version 1 du cahier de texte</button>\n";
+				\">Utiliser la version 1 du cahier de textes</button>\n";
 
 echo "</td>";
 // **********************************************
