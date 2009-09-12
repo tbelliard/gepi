@@ -263,6 +263,7 @@ object_en_cours_edition = 'compte_rendu';
 deplacement_date_deplacement = '';
 deplacement_id_groupe = '';
 deplacement_type = '';
+deplacement_id_ct = '';
 
 //update div modification dans la liste des notices
 function updateDivModification() {
@@ -498,6 +499,7 @@ function completeEnregistrementNoticePriveeCallback(response) {
 //webtoolkit aim (ajax iframe method for file uploading)
 function completeDeplacementNoticeCallback(response) {
 	//on etudie la reponse de l'enregistrement de la notice. Si il ne contient pas d'erreur, c'est l'id de la notice
+	alert(response);
 	if (response.match('Erreur') || response.match('error')) {
 	    updateWindows(response);
 	} else {
