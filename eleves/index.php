@@ -946,7 +946,13 @@ if(isset($quelles_classes)) {
 
 		} else if ($quelles_classes == 'photo') {
 			//$sql="SELECT elenoet FROM eleves WHERE elenoet!='';";
-			$sql="SELECT * FROM eleves WHERE elenoet!='';";
+			if(isset($order_type)) {
+				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, classes c WHERE e.elenoet!='' AND e.login=jec.login AND jec.id_classe=c.id ORDER BY $order_type;";
+			}
+			else {
+				$sql="SELECT * FROM eleves WHERE elenoet!='';";
+			}
+			//echo "$sql<br />";
 			$test_elenoet_ok=mysql_query($sql);
 			if(mysql_num_rows($test_elenoet_ok)!=0){
 				//$chaine_photo_manquante="";
