@@ -263,7 +263,6 @@ object_en_cours_edition = 'compte_rendu';
 deplacement_date_deplacement = '';
 deplacement_id_groupe = '';
 deplacement_type = '';
-deplacement_id_ct = '';
 
 //update div modification dans la liste des notices
 function updateDivModification() {
