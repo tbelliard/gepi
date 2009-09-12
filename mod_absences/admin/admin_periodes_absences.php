@@ -336,7 +336,7 @@ if ($compter >= 1) {
         </tr>
      <?php } ?>
     </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <br/><br/>
 <?php } ?>
@@ -438,7 +438,7 @@ echo '			</select>
       <br/>
       <input type="submit" name="Submit" value="Enregistrer" />
     </form>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php }
 

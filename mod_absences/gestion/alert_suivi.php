@@ -433,7 +433,7 @@ function twAfficheCache(nObjet,nEtat) {
 <a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
 </p>
 
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center; margin: auto; width: 95%;">
 
   <div style="border: 2px solid #BF0000; width: 25%; height: 150px; float: left; margin-top: 17px;">
@@ -779,7 +779,7 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
   </div>
 <?php } ?>
 
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
 <?php require("../../lib/footer.inc.php"); ?>

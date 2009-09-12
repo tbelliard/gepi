@@ -781,7 +781,7 @@ while ($per < $max_periode) {
 	<td style="font-variant: small-caps;">
 	Sélectionner le modèle de bulletin pour l'impression en PDF :
 	</td>
-	<td><?PHP
+	<td><?php
 		echo "<select tabindex=\"5\" name=\"modele_bulletin_".$per."\">";
 		// sélection des modèle des bulletins.
 		//$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
@@ -901,7 +901,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     <td style="font-variant: small-caps;">Domaines d'étude (ex: "Biologie, Chimie, Physique, Mathématiques, Sciences de la Terre") :</td>
     <td><input type="text" size="40" name="ects_domaines_etude_<?php echo $per;?>" value="" /></td>
 </tr>
-<?
+<?php
 } else {
 ?>
 <input type="hidden" name="ects_type_formation_<?php echo $per;?>" value="" />
@@ -909,7 +909,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <input type="hidden" name="ects_code_parcours_<?php echo $per;?>" value="" />
 <input type="hidden" name="ects_domaines_etude_<?php echo $per;?>" value="" />
 <input type="hidden" name="ects_fonction_signataire_attestation_<?php echo $per;?>" value="" />
-<? } ?>
+<?php } ?>
 </table>
 <hr />
 <?php

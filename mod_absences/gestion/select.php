@@ -108,7 +108,7 @@ if ($_SESSION["statut"] == 'autre') {
 ?>
 <p class="bold"><a href='<?php echo $retour; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" /> Retour</a>
 </p>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
   <table class="entete_tableau_selection" border="0" cellspacing="0" cellpadding="2">
     <tr>
@@ -124,7 +124,7 @@ if ($_SESSION["statut"] == 'autre') {
         <form name="form1" method="post" action="select.php?type=<?php echo $type; ?>">
          <fieldset class="fieldset_efface" style="width: 450px;">
             Sélection de la classe :
-            <select name="classe_choix" onchange="javascript:document.form1.submit();"> <? /* correction pour ie didier  */ ?>
+            <select name="classe_choix" onchange="javascript:document.form1.submit();"> <?php /* correction pour ie didier  */ ?>
             	<option value="tous" selected="selected" onclick="javascript:document.form1.submit()">Toutes les classes</option>
 			<?php
 			$resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
@@ -172,7 +172,7 @@ if ($_SESSION["statut"] == 'autre') {
       </td>
     </tr>
   </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
 <?php require("../../lib/footer.inc.php"); ?>

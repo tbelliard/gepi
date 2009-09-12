@@ -713,7 +713,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     <td><input type="text" size="40" name="ects_domaines_etude" value="<?php echo $ects_domaines_etude;?>" onchange='changement()' /></td>
 </tr>
 
-    <?
+    <?php
 } else {
 ?>
 <input type="hidden" name="ects_type_formation" value="<?php echo $ects_type_formation;?>" />
@@ -721,7 +721,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <input type="hidden" name="ects_code_parcours" value="<?php echo $ects_code_parcours;?>" />
 <input type="hidden" name="ects_domaines_etude" value="<?php echo $ects_domaines_etude;?>" />
 <input type="hidden" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" />
-<? } ?>
+<?php } ?>
 
 
 </table>

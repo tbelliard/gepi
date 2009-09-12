@@ -170,7 +170,7 @@ echo "<p class=\"bold\">".$retour."<img src='../../images/icons/back.png' alt='R
 ?>
 
 <?php if ($action === "visualiser") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
 
 <?php /* gestion des horaire d'ouverture */ ?>
@@ -229,7 +229,7 @@ echo "<p class=\"bold\">".$retour."<img src='../../images/icons/back.png' alt='R
   </form>
 <?php /* fin de gestion des horaire d'ouverture */ ?>
 
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php mysql_close(); }
 

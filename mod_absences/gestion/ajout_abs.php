@@ -1203,7 +1203,7 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
              <?php } ?>
                     </table>
                     
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php }
 // fin du formulaire pour un élève ou une modification
@@ -1222,7 +1222,7 @@ if (isset($eleve_absent[1]) and !empty($eleve_absent[1]) or $mode === 'classe') 
                $i = $i+1;
            }
     ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
   <div style="text-align:center">
 <?php $entete_absence_1 = 'Ajout un ou plusieurs absences'; ?>
   <form method="post" action="ajout_abs.php?type=<?php echo $type; ?>" name="form1">
@@ -1345,7 +1345,7 @@ if (isset($eleve_absent[1]) and !empty($eleve_absent[1]) or $mode === 'classe') 
         <?php if($mode==="classe") { ?><input type="hidden" name="classe_choix" value="<?php echo $classe_choix; ?>" /><?php } else { ?><input type="hidden" name="classe_choix" value="" /><?php } ?>
   </fieldset>
 </form>
-    <? /* fin du div de centrage du tableau pour ie5 */ ?>
+    <?php /* fin du div de centrage du tableau pour ie5 */ ?>
     </div>
 <?php }
 require("../../lib/footer.inc.php");

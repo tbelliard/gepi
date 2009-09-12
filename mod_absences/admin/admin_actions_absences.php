@@ -177,7 +177,7 @@ echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Re
 echo "</p>";
 ?>
 <?php if ($action === "visualiser") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
     <h2>Définition des actions de suivi</h2>
     <p><a href="admin_actions_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter une ou des action(s)</a></p>
@@ -203,14 +203,14 @@ echo "</p>";
         </tr>
      <?php } ?>
     </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
 <?php if ($action === "ajouter" or $action === "modifier") { ?>
 <div style="text-align:center">
   <?php if ($action === "ajouter") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 
 	<h2>Ajout d'actions de suivi</h2>
     <form method="post" action="admin_actions_absences.php?action=ajouter" name="form1" id="form1">
@@ -277,7 +277,7 @@ echo "</p>";
      <input type="submit" name="Submit" value="Enregistrer" />
      </fieldset>
     </form>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php
 }

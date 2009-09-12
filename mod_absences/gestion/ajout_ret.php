@@ -384,7 +384,7 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
    <input type="hidden" name="nb_i" value="<?php echo $i; ?>" />
  </fieldset>
 </form>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
 <?php mysql_close(); ?>

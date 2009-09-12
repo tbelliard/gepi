@@ -177,7 +177,7 @@ echo "</p>";
 
 ?>
 <?php if ($action == "visualiser") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
     <h2>Définition des motifs d'absence</h2>
 	<a href="admin_motifs_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un ou plusieurs motif(s)</a>
@@ -204,7 +204,7 @@ echo "</p>";
      <?php } ?>
     </table>
     <br/><br/>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
@@ -284,7 +284,7 @@ echo "</p>";
      <input type="hidden" name="nb_ajout" value="<?php echo $nb_ajout; ?>" />
      <input type="submit" name="Submit" value="Enregistrer" />
     </form>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php
 } 

@@ -206,7 +206,7 @@ if ($recherche == "afficher")
 ?>
 <p class=bold>|<a href='../gestion/gestion_absences.php'>Retour</a>|
 </p>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
     <form method="post" action="" name="form1">
       <fieldset style="width: 400px; margin: auto;">
@@ -248,7 +248,7 @@ if ($recherche == "afficher")
     </div>
   </fieldset>
 </form>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php /* <div class="centre"><img src="view_artichow_absences.php?type_1=<?php echo $type; ?>&amp;classe_1=<?php echo $classe_choix; ?>&amp;eleve_1=<?php echo $eleve_choix; ?>" title="graphique" alt="graphique" /></div> */?>
 <div class="centre"><img src="view_artichow_absences.php?type_1=<?php echo $type; ?>&amp;classe_1=<?php echo $classe_choix; ?>&amp;eleve_1=<?php echo $eleve_choix; ?>" /></div>

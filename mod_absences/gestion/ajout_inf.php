@@ -337,7 +337,7 @@ $i = 0;
                  </tr>
          <?php } ?>
                </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 <?php mysql_close(); ?>

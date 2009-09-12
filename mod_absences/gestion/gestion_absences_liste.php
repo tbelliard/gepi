@@ -412,7 +412,7 @@ function pagin(numpage){
        </div>
 <?php } ?>
 
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
 <table style="margin: auto; width: 800px; border: 0 0 0 0;">
   <tr style="vertical-align: top">
@@ -441,7 +441,7 @@ function pagin(numpage){
                      if ($ic === '1') { $ic='2'; $couleur_cellule='td_tableau_absence_1'; } else { $couleur_cellule='td_tableau_absence_2'; $ic='1'; }
          ?>
         <tr>
-		  <? /* ajout classe eleve didier*/ ?>
+		  <?php /* ajout classe eleve didier*/ ?>
           <td class="<?php echo $couleur_cellule; ?>" onmouseover="changementDisplay('d<?php echo $data_top10['login']; ?>', ''); return true;" onmouseout="changementDisplay('d<?php echo $data_top10['login']; ?>', ''); return true;"><a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_top10['login']; ?>" title="consulter la fiche de l'élève"><?php echo "<b>".strtoupper($data_top10['nom'])."</b> ".ucfirst($data_top10['prenom'])." (".classe_de($data_top10['login'])." )"; ?><a/></td>
           <td class="<?php echo $couleur_cellule; ?>">
             <?php if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
@@ -495,7 +495,7 @@ function pagin(numpage){
     </td>
   </tr>
 </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php
 	} //fin du if ($choix=="top10" and $fiche_eleve == "" and $select_fiche_eleve == "")
@@ -678,7 +678,7 @@ if ($test_nbre_eleves_cpe === 0){
 	} ?>
 
 
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
 <table style="margin: auto; width: 800px; border: 0 0 0 0;">
   <tr style="vertical-align: top">
@@ -686,10 +686,10 @@ if ($test_nbre_eleves_cpe === 0){
       <br />
       <form name ="form3" method="post" action="gestion_absences.php?choix=<?php echo $choix; ?>&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>&amp;action_sql=supprimer_selection">
        <fieldset class="fieldset_efface">
-	   <? /* modification affichage didier */ ?>
+	   <?php /* modification affichage didier */ ?>
         <table class="td_tableau_gestion" style="margin: auto; margin-top:15px; width: 600px; border: 0 0 0 0;">
           <tr>
-<? /* modification affichage didier */ ?>
+<?php /* modification affichage didier */ ?>
 		   <td colspan="2" class="titre_tableau_gestion"><b><?php if ($type=="A") { ?>Absences non justifiées<?php } ?><?php if ($type=="R") { ?>Retards non justifiés<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispenses non justifiées<?php } ?></b></td>
           </tr>
           <?php
@@ -731,7 +731,7 @@ if ($test_nbre_eleves_cpe === 0){
 				}
 				?>
             	<a href="ajout_<?php if($data_sans_motif['type_absence_eleve']=="A") { ?>abs<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>ret<?php } if($data_sans_motif['type_absence_eleve']=="I") { ?>inf<?php } if($data_sans_motif['type_absence_eleve']=="D") { ?>dip<?php } ?>.php?action=modifier&amp;type=<?php echo $type; ?>&amp;id=<?php echo $data_sans_motif['id_absence_eleve']; ?>&amp;mode=eleve"><img src="../../images/icons/saisie.png" style="width: 16px; height: 16px;" title="modifier <?php if($data_sans_motif['type_absence_eleve']=="A") { ?>l'absence<?php } if ($data_sans_motif['type_absence_eleve']=="R") { ?>le retard<?php } if ($data_sans_motif['type_absence_eleve']=="D") { ?>la dispense<?php } if ($data_sans_motif['type_absence_eleve']=="I") { ?>le passage à l'infirmerie<?php } ?>" border="0" alt="" /></a>
-            	<? /* ajout classe eleve didier*/ ?>
+            	<?php /* ajout classe eleve didier*/ ?>
                <a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_sans_motif['login']; ?>" title="consulter la fiche de l'élève"><?php echo "<b>".strtoupper($data_sans_motif['nom'])."</b> ".ucfirst($data_sans_motif['prenom'])." (".$data_sans_motif['regime'].") (".classe_de($data_sans_motif['login'])." )"; ?></a>
             	</td>
             <td class="<?php echo $couleur_cellule; ?>">
@@ -821,7 +821,7 @@ if ($test_nbre_eleves_cpe === 0){
   </tr>
 </table>
 
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
 <?php
@@ -940,7 +940,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
              </tr>
              <tr>
                 <td class="norme_absence"><?php if ($data_sans_motif['justify_absence_eleve'] == "O") {?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b>
-										<? } elseif($data_sans_motif['justify_absence_eleve'] == "T") { ?><span class="norme_absence_vert" style="color: orange;"><b>a justifi&eacute; par t&eacute;l&eacute;phone : </b>
+										<?php } elseif($data_sans_motif['justify_absence_eleve'] == "T") { ?><span class="norme_absence_vert" style="color: orange;"><b>a justifi&eacute; par t&eacute;l&eacute;phone : </b>
 																						<?php } else { ?><span class="norme_absence_rouge"><b>n'a pas donn&eacute; de justification</b>
 																							<?php }?></span></td>
              </tr>
@@ -998,7 +998,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
 	} ?>
 
 
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
 <table style="margin: auto; width: 800px; border: 0 0 0 0;">
   <tr style="vertical-align: top">
@@ -1008,7 +1008,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
       <fieldset class="fieldset_efface">
         <table class="td_tableau_gestion" style="margin: auto; width: 600px;margin-top:15px; border: 0 0 0 0;">
         <tr>
-		<? /* modification affichage didier */ ?>
+		<?php /* modification affichage didier */ ?>
           <td colspan="2" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absences non justifiées <?php } ?><?php if ($type=="R") { ?>Retards non justifiés<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispenses non justifiées<?php } ?></b></td>
         </tr>
         <?php
@@ -1138,7 +1138,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
     </td>
   </tr>
 </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
@@ -1342,7 +1342,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
 ?>
 
 
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
 <table style="margin: auto; width: 800px;" border="0" cellspacing="0" cellpadding="1">
   <tr style="vertical-align: top">
@@ -1352,7 +1352,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
    <fieldset class="fieldset_efface">
     <table class="td_tableau_gestion"  style="width: 600px;margin:auto;margin-top:15px; ">
         <tr>
-		<? /* modification affichage didier */ ?>
+		<?php /* modification affichage didier */ ?>
           <td colspan="2" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absences justifiées<?php } ?><?php if ($type=="R") { ?>Retards justifiés<?php } ?><?php if ($type=="I") { ?>Infirmerie avec motif<?php } ?><?php if ($type=="D") { ?>Dispenses justifiées<?php } ?></b></td>
         </tr>
 <?php
@@ -1486,7 +1486,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
     </td>
   </tr>
 </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php }
 } ?>

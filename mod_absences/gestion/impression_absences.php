@@ -573,7 +573,7 @@ affichercacher('div_1');
 	 <a href="impression_absences.php?type_impr=eti">Etiquettes</a> ]</div><br />
 
 <?php if($type_impr == "laf") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
 
 	<?php
@@ -787,13 +787,13 @@ affichercacher('div_1');
       <?php } ?>
       </form>
 
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
 
 <?php if($type_impr == "bda") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form3">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
@@ -858,12 +858,12 @@ affichercacher('div_1');
                 <input type="submit" name="Submit32" value="Composer" />
         </fieldset>
      </form>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
 <?php if($type_impr == "bpc") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form5">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
@@ -929,14 +929,14 @@ affichercacher('div_1');
         </table>
     </form>
 
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
 
 <?php
 if ( $type_impr == "bj" ) { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
    <form method="post" action="bilan_absences_quotidien_pdf.php" name="form6">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
@@ -951,7 +951,7 @@ if ( $type_impr == "bj" ) { ?>
             </div>
       </fieldset>
     </form>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
@@ -959,7 +959,7 @@ if ( $type_impr == "bj" ) { ?>
 
 <?php // fiche récapitulative des absences
  if($type_impr === 'fic') { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form3">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
@@ -1020,12 +1020,12 @@ if ( $type_impr == "bj" ) { ?>
         </fieldset>
      </form>
      <?php } ?>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
 <?php if($type_impr == "eti") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
    <form method="post" action="etiquette_pdf.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;etiquette_action=originaux" name="form3">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
@@ -1122,7 +1122,7 @@ if ( $type_impr == "bj" ) { ?>
 
 	<?php } ?>
 
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
@@ -1130,7 +1130,7 @@ if ( $type_impr == "bj" ) { ?>
 
 
 <?php if($type_impr === 'crea_lettre') { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
 
       <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form6">
@@ -1356,17 +1356,17 @@ if($sous_rubrique === 'gb') { ?>
    <?php } ?>
 
 
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
 
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <?php if($type_impr === 'laf') { ?>
 <div style="text-align: center;">
 <br /><br />[ <a href='../gestion/impression_absences.php?type_impr=crea_lettre'>Gestion de la création des types de lettre</a> ]
 
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 

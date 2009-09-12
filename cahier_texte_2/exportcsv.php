@@ -1,4 +1,4 @@
-<?
+<?php
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 

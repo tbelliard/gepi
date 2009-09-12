@@ -549,7 +549,7 @@ if($echelle_y === 'E') {
 <a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
 </p>
 
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center; width: 760px; margin: auto;">
 
 <?php /* DIV contenant le formulaire de recherche */ ?>
@@ -748,7 +748,7 @@ if($echelle_y === 'E') {
 <br />
 	</div>
 </div></div>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
 <?php require("../../lib/footer.inc.php"); ?>

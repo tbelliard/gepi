@@ -269,7 +269,7 @@ if ($action == "ajouter" or $action == "modifier" or $erreur = 1)
 
 //affichage des messages d'erreur
         if ($erreur == 1) { ?>
-            <? /* div de centrage du tableau pour ie5 */ ?>
+            <?php /* div de centrage du tableau pour ie5 */ ?>
             <div style="text-align:center">
             <table class="table_erreur" border="0" cellpadding="2" cellspacing="2">
               <tr>
@@ -277,11 +277,11 @@ if ($action == "ajouter" or $action == "modifier" or $erreur = 1)
                 <td class="erreur"><strong>Erreur : <?php echo $texte_erreur; ?></strong></td>
               </tr>
             </table>
-            <? /* fin du div de centrage du tableau pour ie5 */ ?>
+            <?php /* fin du div de centrage du tableau pour ie5 */ ?>
             </div>
         <?php } ?>
 
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
   <form method="post" action="ajout_dip.php?type=<?php echo $type; ?>" name="form1">
     <fieldset class="fieldset_efface">
@@ -347,14 +347,14 @@ if ($action == "ajouter" or $action == "modifier" or $erreur = 1)
   </table>
  </fieldset>
 </form>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php
         $requete_t = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$id_eleve."' AND  d_date_absence_eleve <= '".$datej."' AND   a_date_absence_eleve >= '".$datej."' and type_absence_eleve = 'D'";
         $resultat = mysql_query($requete_t) or die('Erreur SQL !'.$requete_t.'<br />'.mysql_error());
 ?>
                  <div class="norme_absence_rouge"><strong>liste des dispenses déjas enregistré pour cette date</strong></div>
-                 <? /* div de centrage du tableau pour ie5 */ ?>
+                 <?php /* div de centrage du tableau pour ie5 */ ?>
                  <div style="text-align:center">
                  <table style="margin: auto; width: 500px;" border="0" cellspacing="2" cellpadding="0">
                  <tr class="fond_rouge">

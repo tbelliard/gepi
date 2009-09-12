@@ -162,7 +162,7 @@ if ( $etape === '1' ) {
 		$classe = mysql_result($call_classe, "0", "classe");
 	?>
 
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
 
 	<span style="font: normal small-caps normal 14pt Verdana; line-height: 125%;">Classe de <?php echo "$classe"; ?> - Importation des absences de GEPI</span>
@@ -232,7 +232,7 @@ if ( $etape === '1' ) {
 	<center><div id="fixe"><input type="submit" value="Enregistrer" /></div></center>
 	</form>
 
-<? /* fin div de centrage du tableau pour ie5 */ ?>
+<?php /* fin div de centrage du tableau pour ie5 */ ?>
 </div>
 
 <?php

@@ -292,7 +292,7 @@ echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Re
 echo "</p>";
 ?>
 <?php if ($action == "visualiser") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
 <h2>Définition du calendrier</h2>
 <a href="admin_config_calendrier.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter une date</a>
@@ -326,7 +326,7 @@ echo "</p>";
         </tr>
      <?php } ?>
     </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <br/><br/>
 <?php } ?>
@@ -430,7 +430,7 @@ echo "</p>";
       <br/>
       <input type="submit" name="Submit" value="Enregistrer" />
     </form>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } 
 

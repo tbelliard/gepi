@@ -681,12 +681,12 @@ if( $pagedarriver === 'gestion_absences') {
 
 <p>[ <a href="export_csv.php?type=<?php echo $type; ?>&amp;justifie=<?php echo $justifie; ?>&amp;nonjustifie=<?php echo $nonjustifie; ?>&amp;motif=<?php echo $motif; ?>&amp;classe_choix=<?php echo $classe_choix; ?>&amp;eleve_choix=<?php echo $eleve_choix; ?>&amp;du=<?php echo $du; ?>&amp;au=<?php echo $au; ?>">Exportation des données en csv</a> ]</p>
 
-<? /* ajout impression pdf didier */ ?>
+<?php /* ajout impression pdf didier */ ?>
 <p>[<a href="tableau_pdf.php?type=<?php echo $type; ?>&amp;justifie=<?php echo $justifie; ?>&amp;nonjustifie=<?php echo $nonjustifie; ?>&amp;motif=<?php echo $motif; ?>&amp;classe_choix=<?php echo $classe_choix; ?>&amp;eleve_choix=<?php echo $eleve_choix; ?>&amp;du=<?php echo $du; ?>&amp;au=<?php echo $au; ?>&amp;tri=<?php echo $tri; ?>" target="_blank">Impression en Pdf</a>]</p>
 	</div>
 	</fieldset>
 </form>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <div class="centre"><span class="norme_absence_bleu">Un passage avec la souris sur le NOM permet d'afficher la fiche de l'&eacute;l&egrave;ve</span></div>
 
@@ -805,11 +805,11 @@ if ($type == "A" or $type == "tous")
 	} ?>
 
 
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
   <table style="margin: auto; width: 600px;" border="0" cellspacing="2" cellpadding="0">
      <tr>
-	<? /* modification tableau pour ajout colonne classe et motif  didier   */ ?>
+	<?php /* modification tableau pour ajout colonne classe et motif  didier   */ ?>
       <td colspan="7" class="titre_tableau_gestion" nowrap><b>Absence</b></td>
     </tr>
     <tr class="fond_vert">
@@ -844,7 +844,7 @@ if ($type == "A" or $type == "tous")
 				$ic=1;
 			}
     ?>
-	<? /*ajout des colonnes classe et motif */?>
+	<?php /*ajout des colonnes classe et motif */?>
     <tr class="<?php echo $couleur_cellule; ?>" onmouseover="showdiv(event, 'd<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hidediv('d<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
       <td class="norme_absence"><?php echo "<b>".strtoupper($data_recherche['nom'])."</b><br />".ucfirst($data_recherche['prenom']); ?></td>
       <td class="norme_absence centre"><?php echo $data_recherche['classe']; ?></td>
@@ -858,7 +858,7 @@ if ($type == "A" or $type == "tous")
 		}
 	} ?>
   </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
 
@@ -890,7 +890,7 @@ if ($type == "R" or $type == "tous") { ?>
 			</tr>
 			<tr>
 				<td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] == "O") {?><span class="norme_absence_vert"><b>a donn&eacute;e pour justification : </b>
-			   <? } elseif($data_div['justify_absence_eleve'] == "T") { ?><span class="norme_absence_vert" style="color: orange;"><b>a justifi&eacute; par t&eacute;l&eacute;phone </b>
+			   <?php } elseif($data_div['justify_absence_eleve'] == "T") { ?><span class="norme_absence_vert" style="color: orange;"><b>a justifi&eacute; par t&eacute;l&eacute;phone </b>
 			   																	<?php } else { ?><span class="norme_absence_rouge"><b>N'a pas donn&eacute; de justification</b>
 			   <?php } ?></span></td>
 			</tr>
@@ -950,15 +950,15 @@ if ($type == "R" or $type == "tous") { ?>
 <?php	}
 	} ?>
 
-<? /* div de centrage du tableau pour ie5  correction oubli didier */?>
+<?php /* div de centrage du tableau pour ie5  correction oubli didier */?>
 <div style="text-align:center">
   <table style="margin: auto; width: 600px;" border="0" cellspacing="2" cellpadding="0">
     <tr>
-	<? /* modification nombre colonnes didier */?>
+	<?php /* modification nombre colonnes didier */?>
       <td colspan="5" class="titre_tableau_gestion" nowrap><b>Retard</b></td>
     </tr>
     <tr class="fond_vert">
-	<? /* ajout possibilité de tri sur colonnes en mode afficher didier */?>
+	<?php /* ajout possibilité de tri sur colonnes en mode afficher didier */?>
       <td class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='nom, prenom';document.form1.submit()">Nom Pr&eacute;nom</a><?php } else {echo 'Nom Pr&eacute;nom';}?></td>
       <td class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='classe';document.form1.submit()">Classe</a><?php } else {echo 'Le';}?></td>
 	  <td class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='d_date_absence_eleve';document.form1.submit()">Le</a><?php } else {echo 'Le';}?></td>
@@ -984,7 +984,7 @@ if ($type == "R" or $type == "tous") { ?>
     ?>
     <tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; showdiv(event, 'd<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hidediv('d<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
       <td class="norme_absence"><?php echo "<b>".strtoupper($data_recherche['nom'])."</b><br />".ucfirst($data_recherche['prenom']); ?></td>
-      <? /* ajout colonne classe didier */ ?>
+      <?php /* ajout colonne classe didier */ ?>
 	  <td class="norme_absence centre"><?php echo $data_recherche['classe']; ?></td>
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['d_date_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo heure($data_recherche['d_heure_absence_eleve']); ?></td>
@@ -993,7 +993,7 @@ if ($type == "R" or $type == "tous") { ?>
     <?php }
 	} ?>
   </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
 
@@ -1016,7 +1016,7 @@ if ($type == "D" or $type == "tous") { ?>
               <td class="norme_absence">Pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
             </tr>
             <tr>
-              <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>N'a pas donn&eacute; de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
+              <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>N'a pas donn&eacute; de justification</b><?php } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
             </tr>
             <tr>
               <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -1074,15 +1074,15 @@ if ($type == "D" or $type == "tous") { ?>
 <?php 	}
 	} ?>
 
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
   <table style="margin: auto; width: 600px;" border="0" cellspacing="2" cellpadding="0">
     <tr>
-	<? /* modification nombre colonne pour ajout classe didier */ ?>
+	<?php /* modification nombre colonne pour ajout classe didier */ ?>
       <td colspan="5" class="titre_tableau_gestion" nowrap><b>Dispense</b></td>
     </tr>
     <tr class="fond_vert">
-	<? /* ajout possibilité de tri par colonne en mode afficher  et ajout colonne classe didier*/ ?>
+	<?php /* ajout possibilité de tri par colonne en mode afficher  et ajout colonne classe didier*/ ?>
       <td rowspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='nom, prenom';document.form1.submit()">Nom Pr&eacute;nom</a><?php } else {echo 'Nom Pr&eacute;nom';}?></td>
 	  <td rowspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='classe';document.form1.submit()">Classe</a><?php } else {echo 'Classe';}?></td>
       <td colspan="2" class="norme_absence_blanc"><?php if ($recherche == "afficher") { ?><a onClick="javascript:document.form1.tri.value='d_date_absence_eleve';document.form1.submit()">Date</a><?php } else {echo 'Date';}?></td>
@@ -1112,7 +1112,7 @@ if ($type == "D" or $type == "tous") { ?>
     ?>
     <tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; showdiv(event, 'd<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hidediv('d<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
       <td class="norme_absence"><?php echo "<b>".strtoupper($data_recherche['nom'])."</b><br />".ucfirst($data_recherche['prenom']); ?><br /></td>
-      <? /* ajout colonne classe didier*/ ?>
+      <?php /* ajout colonne classe didier*/ ?>
 	  <td class="norme_absence centre"><?php echo $data_recherche['classe']; ?></td>
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['d_date_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['a_date_absence_eleve']); ?></td>
@@ -1122,7 +1122,7 @@ if ($type == "D" or $type == "tous") { ?>
     	}
 	} ?>
   </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 
 <?php
@@ -1255,7 +1255,7 @@ if ($type == "I" or $type == "tous") { ?>
     	}
 	} ?>
   </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 <p><br /></p>

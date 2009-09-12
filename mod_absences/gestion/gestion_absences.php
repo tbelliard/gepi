@@ -66,7 +66,7 @@ include "gestion_absences_liste.php";?>
           }
 ?>
 <br />
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center; margin: auto;">
     <table style="margin: auto; width: 500px;" border="0" cellspacing="2" cellpadding="0">
        <tr class="fond_rouge">
@@ -81,7 +81,7 @@ include "gestion_absences_liste.php";?>
                   </tr>
              <?php $cpt_aff_liste = $cpt_aff_liste + 1; } ?>
     </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 <?php /* fiche élève */ 
@@ -496,7 +496,7 @@ $retardnj='';
     </form>
 
      
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 	</div>	
 	
@@ -535,7 +535,7 @@ $retardnj='';
     </form>
 
      
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 	</div>	
 	
@@ -792,7 +792,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 
 
 <?php if ($choix === 'lemessager' and $fiche_eleve === '' and $select_fiche_eleve === '') { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+<?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
 <br />
 <form method="post" action="gestion_absences.php?choix=lemessager" name="form1">A la date du <input name="du" type="text" size="11" maxlength="11" value="<?php if(isset($du)) { echo $du; } ?>" /><a href="#calend" onclick="<?php echo $cal->get_strPopup('../../lib/calendrier/pop.calendrier.php',350,170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a> <input type="submit" name="Submit" value="&gt;&gt;" /></form>
@@ -835,7 +835,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 	   </td>
        </tr>
     </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
@@ -917,7 +917,7 @@ if ($choix === 'alert' and $fiche_eleve === '' and $select_fiche_eleve === '') {
 </td>
        </tr>
     </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php
 }
