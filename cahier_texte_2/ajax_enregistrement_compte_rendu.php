@@ -58,7 +58,7 @@ $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GE
 
 // uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
-$uid_prime = isset($_SESSION['uid_prime']) ? $uid_prime : 1;
+$uid_prime = isset($_SESSION['uid_prime']) ? $_SESSION['uid_prime'] : 1;
 if ($uid_post==$uid_prime) {
 	echo("Erreur enregistrement de compte rendu : formulaire dejà posté précédemment.");
 	die();
