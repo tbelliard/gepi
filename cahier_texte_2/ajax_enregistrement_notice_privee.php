@@ -50,7 +50,7 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_
 
 // uid de pour ne pas refaire renvoyer plusieurs fois le meme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
-$uid_prime = isset($_SESSION['uid_prime']) ? $uid_prime : 1;
+$uid_prime = isset($_SESSION['uid_prime']) ? $_SESSION['uid_prime'] : 1;
 if ($uid_post==$uid_prime) {
 	echo("Erreur enregistrement de notice privee : formulaire dejà posté précédemment.");
 	die();
