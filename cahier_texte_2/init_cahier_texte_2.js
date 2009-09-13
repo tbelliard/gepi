@@ -629,20 +629,20 @@ function getTomorrowCalendarUnixDate() {
 }
 
 //gestion de la fonctionnalite chaine des fenetre liste notice et edition notice
-chaineActive = false;
+chaineActive = true;
 function updateChaineIcones() {
 	if ($('div_chaine_liste_notices') != null) {
 		if (chaineActive == true) {
-			$('div_chaine_liste_notices').innerHTML= "<img id=\"chaine_liste_notice\" onClick=\"toggleChaineIcones(); updateEditionNoticeChaine();\" style=\"border: 0px; vertical-align : middle\" src=\"../images/icons/chaine.png\" alt=\"Lier\" title=\"Lier la liste avec la fenetre edition de notices\" />";
+			$('div_chaine_liste_notices').innerHTML= "<img id=\"chaine_liste_notice\" onClick=\"toggleChaineIcones(); updateEditionNoticeChaine();\" style=\"border: 0px; vertical-align : middle\" src=\"../images/icons/chaine.png\" alt=\"Lier\" title=\"Delier la liste avec la fenetre edition de notices\" />";
 		} else {
-			$('div_chaine_liste_notices').innerHTML= "<img id=\"chaine_liste_notice\" onClick=\"toggleChaineIcones(); updateEditionNoticeChaine();\" style=\"border: 0px; vertical-align : middle\" src=\"../images/icons/chaine_brisee.png\" alt=\"Lier\" title=\"Delier la liste de la fenetre edition de notices\" />";
+			$('div_chaine_liste_notices').innerHTML= "<img id=\"chaine_liste_notice\" onClick=\"toggleChaineIcones(); updateEditionNoticeChaine();\" style=\"border: 0px; vertical-align : middle\" src=\"../images/icons/chaine_brisee.png\" alt=\"Lier\" title=\"Lier la liste de la fenetre edition de notices\" />";
 		}
 	}
 	if ($('div_chaine_edition_notice') != null) {
 		if (chaineActive == true) {
-			$('div_chaine_edition_notice').innerHTML= "<img id=\"chaine_liste_notice\" onClick=\"toggleChaineIcones(); updateListeNoticesChaine();\" style=\"border: 0px; vertical-align : middle\" src=\"../images/icons/chaine.png\" alt=\"Lier\" title=\"Lier la liste avec la fenetre edition de notices\" />";
+			$('div_chaine_edition_notice').innerHTML= "<img id=\"chaine_liste_notice\" onClick=\"toggleChaineIcones(); updateListeNoticesChaine();\" style=\"border: 0px; vertical-align : middle\" src=\"../images/icons/chaine.png\" alt=\"Lier\" title=\"Delier la liste avec la fenetre edition de notices\" />";
 		} else {
-			$('div_chaine_edition_notice').innerHTML= "<img id=\"chaine_liste_notice\" onClick=\"toggleChaineIcones(); updateListeNoticesChaine();\" style=\"border: 0px; vertical-align : middle\" src=\"../images/icons/chaine_brisee.png\" alt=\"Lier\" title=\"Delier la liste de la fenetre edition de notices\" />";
+			$('div_chaine_edition_notice').innerHTML= "<img id=\"chaine_liste_notice\" onClick=\"toggleChaineIcones(); updateListeNoticesChaine();\" style=\"border: 0px; vertical-align : middle\" src=\"../images/icons/chaine_brisee.png\" alt=\"Lier\" title=\"Lier la liste de la fenetre edition de notices\" />";
 		}
 	}
 }
