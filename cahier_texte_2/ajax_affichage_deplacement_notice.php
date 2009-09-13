@@ -46,6 +46,7 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_
 //}
 echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
 echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\"> deplacement de notice</legend> ";
+echo "<input type='hidden' id='id_ct' name='id_ct' value='".$id_ct."' />";
 echo "<table style=\"border-style:solid; border-width:0px;\" cellspacing='20px'><tr><td>";
 echo "<select id=\"id_groupe_deplacement\" name=\"id_groupe_deplacement\">";
 echo "<option value='-1'>(choisissez un groupe de destination)</option>\n";
