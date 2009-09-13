@@ -46,7 +46,7 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_
 //}
 echo "<form enctype=\"multipart/form-data\" name=\"duplication_notice_form\" id=\"duplication_notice_form\" action=\"ajax_duplication_notice.php\" method=\"post\">\n";
 echo "<input type='hidden' id='id_ct' name='id_ct' value='".$id_ct."' />";
-echo "<input type='hidden' name='type' value='".$type."' />";
+echo "<input type='hidden' id='type' name='type' value='".$type."' />";
 echo "<input type='hidden' id='date_duplication' name='date_duplication'/>";
 echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
 echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\"> Duplication de notice</legend> ";
@@ -54,7 +54,11 @@ echo "<table style=\"border-style:solid; border-width:0px;\" cellspacing='20px'>
 echo "<select id=\"id_groupe_duplication\" name=\"id_groupe_duplication\">";
 echo "<option value='-1'>(choisissez un groupe de destination)</option>\n";
 foreach ($utilisateur->getGroupes() as $group) {
-	echo "<option value='".$group->getId()."'>";
+	echo "<option value='".$group->getId()."'";
+	if ($group->getId() == $id_groupe) {
+		echo " selected='true' ";
+	}
+	echo ">";
 	echo $group->getDescriptionAvecClasses();
 	echo "</option>\n";
 }
