@@ -327,7 +327,7 @@ function suppressionCompteRendu(message, id_ct_a_supprimer) {
       					if (object_en_cours_edition == 'compte_rendu' && $('id_ct') != null && $F('id_ct') == id_ct_a_supprimer) {
 								getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:	function() {initWysiwyg();}});
 						}
-				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe, { onComplete: function() {updateDivModification();}});
+				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + $F('id_groupe_colonne_gauche'), { onComplete: function() {updateDivModification();}});
 						new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 					}
 				}
@@ -347,7 +347,7 @@ function suppressionDevoir(message, id_devoir_a_supprimer, id_groupe) {
       					if (object_en_cours_edition == 'devoir' && $('id_devoir') != null && $F('id_devoir') == id_devoir_a_supprimer) {
 							getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:	function() {initWysiwyg();}});
 						}
-				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe, { onComplete: function() {updateDivModification();}});
+				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + $F('id_groupe_colonne_gauche'), { onComplete: function() {updateDivModification();}});
 						new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
       				}
     			}
@@ -367,7 +367,7 @@ function suppressionNoticePrivee(message, id_notice_privee_a_supprimer, id_group
       					if (object_en_cours_edition == 'notice_privee' && $('id_ct') != null && $F('id_ct') == id_notice_privee_a_supprimer) {
 							getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:	function() {initWysiwyg();}});
 						}
-				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe, { onComplete: function() {updateDivModification();}});
+				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + $F('id_groupe_colonne_gauche'), { onComplete: function() {updateDivModification();}});
 						new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
       				}
     			}
