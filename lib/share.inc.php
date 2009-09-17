@@ -3855,6 +3855,9 @@ function calcul_moy_med() {
 	for(i=0;i<$cpt;i++) {
 		if(document.getElementById('n'+i)) {
 			valeur=document.getElementById('n'+i).value;
+
+			valeur=valeur.replace(',','.');
+
 			if((valeur!='abs')&&(valeur!='disp')&&(valeur!='-')&&(valeur!='')) {
 				tab_valeur[j]=valeur;
 				// Tambouille pour éviter que 'valeur' soit pris pour une chaine de caractères
