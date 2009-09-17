@@ -526,7 +526,7 @@ if ($nombreligne == '0') {
 			}
 			$elementlist = substr($elementlist, 0, -1);
 			//echo "<td><center><a href=\"javascript:CochePeriode($elementlist)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecochePeriode($elementlist)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
-			echo "<td><center><a href=\"javascript:CocheLigne($ki)changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($ki);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
+			echo "<td><center><a href=\"javascript:CocheLigne($ki);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($ki);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
 			echo "</tr>\n";
 
 			//=========================
