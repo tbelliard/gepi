@@ -31,7 +31,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -51,14 +51,15 @@ if (isset($_POST['isposted'])) {
         } else {
             $matiere_categorie = $_POST['matiere_categorie'];
         }
-        if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{1,19}$", $matiere_name)) {
+        //if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{1,19}$", $matiere_name)) {
+        if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{1,50}$", $matiere_name)) {
             $verify_query = mysql_query("SELECT * from matieres WHERE matiere='$matiere_name'");
             $verify = mysql_num_rows($verify_query);
             if ($verify == 0) {
                 //========================
-        // MODIF: boireaus
-        // Quand on poste un &, c'est un &amp; qui est reçu.
-        //$matiere_nom_complet = $_POST['matiere_nom_complet'];
+                // MODIF: boireaus
+                // Quand on poste un &, c'est un &amp; qui est reçu.
+                //$matiere_nom_complet = $_POST['matiere_nom_complet'];
                 $matiere_nom_complet = html_entity_decode_all_version($_POST['matiere_nom_complet']);
                 //========================
                 $matiere_priorite = $_POST['matiere_priorite'];
@@ -74,7 +75,7 @@ if (isset($_POST['isposted'])) {
                 $ok = 'no';
             }
         } else {
-            $msg = "L'identifiant de matière doit être constitué uniquement de lettres et de chiffres !";
+            $msg = "L'identifiant de matière doit être constitué uniquement de lettres et de chiffres avec un maximum de 50 caractères !";
             $ok = 'no';
         }
     } else {
@@ -147,7 +148,7 @@ if (isset($_GET['current_matiere'])) {
 <td>
 <?php
 if (!isset($_GET['current_matiere'])) {
-    echo "<input type=text size='15' name='reg_current_matiere' onchange='changement()' />";
+    echo "<input type=text size='15' maxlength='50' name='reg_current_matiere' onchange='changement()' />";
 } else {
     echo "<input type=hidden name=matiere_name value=\"".$current_matiere."\" />".$current_matiere;
 }
