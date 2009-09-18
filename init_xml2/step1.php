@@ -785,6 +785,7 @@
 					$nb_err_etab=0;
 					unset($tab_list_etab);
 					$tab_list_etab=array();
+					$info_anomalie="";
 					for($i=0;$i<count($eleves);$i++){
 						// On ne traite que les élèves affectés dans une classe ($tab_ele_id)
 						if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)){
@@ -820,6 +821,10 @@
 								if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
 								$sql.="elenom='".addslashes($eleves[$i]['nom'])."', ";
 								$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
+								if(!isset($eleves[$i]["code_sexe"])) {
+									$eleves[$i]["code_sexe"]=1;
+									$info_anomalie.="Le sexe de ".$eleves[$i]['nom']." ".$eleves[$i]['prenom']." n'est pas renseigné dans le fichier XML.<br />\n";
+								}
 								$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
 								$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";
 								$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
@@ -987,6 +992,10 @@
 					}
 					else{
 						echo "<p>$nb_err erreurs</p>\n";
+					}
+
+					if($info_anomalie!='') {
+						echo "<p style='color:red;'>$info_anomalie</p>\n";
 					}
 				}
 
