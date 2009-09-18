@@ -555,6 +555,7 @@ if (!isset($suite)) {
 	// A REVOIR... à moins que cette page soit déjà longue en traitement...
 
 	$temoin_div_sans_services=0;
+	$temoin_service_sans_enseignant=0;
 	echo "<h3>Création des groupes classe entière</h3>\n";
 	for ($i=0;$i<count($divisions);$i++) {
 		$classe=$divisions[$i]['code'];
@@ -617,47 +618,54 @@ if (!isset($suite)) {
 						echo "<blockquote>\n";
 	
 						echo "Professeur(s): ";
-						for($k=0;$k<count($divisions[$i]['services'][$j]['enseignants']);$k++) {
+						if(!isset($divisions[$i]['services'][$j]['enseignants'])) {
+							echo "<p style='color:red;'>Aucun enseignant n'est associé à ce service.<br />L'emploi du temps a-t-il été correctement renseigné lors de la remontée vers STS?</p>\n";
+							$temoin_service_sans_enseignant++;
+						}
+						else {
 	
-							$sql="select col1 from tempo2 where col2='P".$divisions[$i]['services'][$j]['enseignants'][$k]['id']."';";
-							$res_prof=mysql_query($sql);
-							$login_prof=@mysql_result($res_prof, 0, 'col1');
-	
-							if ($login_prof!='') {
-								// Associer le groupe au prof:    j_groupes_professeurs
-								$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='$login_prof';";
-								$res_grp_prof=mysql_query($sql);
-								if(mysql_num_rows($res_grp_prof)==0) {
-									$sql="INSERT INTO j_groupes_professeurs SET id_groupe='$id_groupe', login='$login_prof';";
-									if($insert=mysql_query($sql)) {
-										echo "<span style='color:green;'>";
+							for($k=0;$k<count($divisions[$i]['services'][$j]['enseignants']);$k++) {
+		
+								$sql="select col1 from tempo2 where col2='P".$divisions[$i]['services'][$j]['enseignants'][$k]['id']."';";
+								$res_prof=mysql_query($sql);
+								$login_prof=@mysql_result($res_prof, 0, 'col1');
+		
+								if ($login_prof!='') {
+									// Associer le groupe au prof:    j_groupes_professeurs
+									$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='$login_prof';";
+									$res_grp_prof=mysql_query($sql);
+									if(mysql_num_rows($res_grp_prof)==0) {
+										$sql="INSERT INTO j_groupes_professeurs SET id_groupe='$id_groupe', login='$login_prof';";
+										if($insert=mysql_query($sql)) {
+											echo "<span style='color:green;'>";
+										}
+										else {
+											echo "<span style='color:red;'>";
+										}
+										echo "$login_prof</span>";
+									}
+		
+									// Associer le prof à la matière: j_professeurs_matieres
+									$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$mat' AND id_professeur='$login_prof';";
+									$res_prof_mat=mysql_query($sql);
+									echo " (";
+									if(mysql_num_rows($res_prof_mat)==0) {
+										$sql="INSERT INTO j_professeurs_matieres SET id_matiere='$mat', id_professeur='$login_prof';";
+										if($insert=mysql_query($sql)) {
+											echo "<span style='color:green;'>";
+										}
+										else {
+											echo "<span style='color:red;'>";
+										}
 									}
 									else {
-										echo "<span style='color:red;'>";
+										echo "<span style='color:black;'>";
 									}
-									echo "$login_prof</span>";
+									echo "$mat</span>)";
+		
 								}
-	
-								// Associer le prof à la matière: j_professeurs_matieres
-								$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$mat' AND id_professeur='$login_prof';";
-								$res_prof_mat=mysql_query($sql);
-								echo " (";
-								if(mysql_num_rows($res_prof_mat)==0) {
-									$sql="INSERT INTO j_professeurs_matieres SET id_matiere='$mat', id_professeur='$login_prof';";
-									if($insert=mysql_query($sql)) {
-										echo "<span style='color:green;'>";
-									}
-									else {
-										echo "<span style='color:red;'>";
-									}
-								}
-								else {
-									echo "<span style='color:black;'>";
-								}
-								echo "$mat</span>)";
-	
+								//else {echo "prof inconnu";}
 							}
-							//else {echo "prof inconnu";}
 						}
 						echo "<br />\n";
 	
@@ -878,6 +886,13 @@ if (!isset($suite)) {
 	}
 	else {
 		echo "<p style='color:red;'>$temoin_div_sans_services divisions n'ont pas de services déclarés.<br />Le fichier STS fourni n'est peut-être pas complet.<br />Cela arrive notamment quand l'emploi du temps n'a pas été remonté vers STS.<br />Vous devriez contrôler cela avant de procéder à l'étape d'importation des options suivies par les élèves.</p>\n";
+	}
+
+	if($temoin_service_sans_enseignant==1) {
+		echo "<p style='color:red;'>$temoin_service_sans_enseignant enseignement (<i>service</i>) a été déclaré sans enseignant associé.<br />Les élèves pratiquent-ils l'auto-formation en autonomie ou le STS est-il mal renseigné?</p>\n";
+	}
+	elseif($temoin_service_sans_enseignant>1) {
+		echo "<p style='color:red;'>$temoin_service_sans_enseignant enseignements (<i>services</i>) ont été déclarés sans enseignant associé.<br />Les élèves pratiquent-ils l'auto-formation en autonomie ou le STS est-il mal renseigné?</p>\n";
 	}
 
 	//}
