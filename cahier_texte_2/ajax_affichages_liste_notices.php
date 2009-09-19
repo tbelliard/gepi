@@ -82,7 +82,7 @@ echo "<div id=\"div_chaine_liste_notices\" style=\"display:inline;\"><img id=\"c
 
 echo "<p style='font-size:9pt'>";
 if(getSettingValue('cahier_texte_acces_public')!='no'){
-	echo "<a href='../public/index.php?id_groupe=" . $current_group->getId() ."' target='_blank'>Visualiser le cahier de textes en accès public</a>\n<br>";
+	echo "<a href='../public/index.php?id_groupe=" . $current_group->getId() ."' target='_blank'>Visualiser l'accès public</a>\n<br>";
 } else {
 	echo "<a href='./see_all.php'>Visualiser les cahiers de textes (accès restreint)</a>\n<br>";
 }
@@ -202,8 +202,8 @@ else
 $legend = "";
 if ($compteur_nb_total_notices > $compteur_notices_affiches) {
 	echo "<fieldset style=\"border: 1px solid grey; font-size: 0.8em; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
-	echo "<legend style=\"font-variant: small-caps; border: 1px solid grey;\">".$legend."</legend>";
-	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"javascript:
+	echo $legend;
+	echo "<a href=\"#\" onclick=\"javascript:
 			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?affiche_tout=oui&id_groupe=".$current_group->getId()."',
 					{ onComplete:
 						function(transport) {
