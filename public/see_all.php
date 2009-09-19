@@ -135,6 +135,7 @@ if ($html != '') {
 
 echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><b>CAHIER DE TEXTES: compte-rendus de séance</b></div><br />";
 
+$current_time = time();
 $req_notices =
     "select 'c' type, contenu, date_ct, id_ct
     from ct_entry
@@ -142,6 +143,7 @@ $req_notices =
     and id_groupe='".$id_groupe."'
     and date_ct != ''
     and date_ct >= '".getSettingValue("begin_bookings")."'
+    and date_ct <= '$current_time'
     and date_ct <= '".getSettingValue("end_bookings")."')
     ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
 $res_notices = mysql_query($req_notices);
