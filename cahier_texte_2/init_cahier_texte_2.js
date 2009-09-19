@@ -40,7 +40,7 @@ function getWinListeNotices() {
 				hideEffect: Element.hide,
 				top:110,
 				left:0,
-				width:330,
+				width:300,
 				height:GetHeight() - 160}
 			);
 		$('win_liste_notices_content').setStyle({	
@@ -63,8 +63,8 @@ function getWinEditionNotice() {
 				showEffect: Element.show,
 				hideEffect: Element.hide,
 				top:110,
-				left:334,
-				width:GetWidth()-360,
+				left:304,
+				width:GetWidth()-310,
 				height:GetHeight() - 160}
 			);
 		$('win_edition_notice_content').setStyle({	
@@ -296,19 +296,20 @@ function initWysiwyg() {
 		    language : 'fr',
 		    skin : 'kama',
 		    resize_enabled : false,
+		    startupFocus : true,
 		    toolbar :
 		    [
-			['Source','-','NewPage','Preview','-','Templates'],
 			['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
 			['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 			['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
-			['Maximize', 'ShowBlocks','-','About'],
-			'/',
-			['NumberedList','BulletedList','-','Outdent','Indent'],
+			['NumberedList','BulletedList'],
 			['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-			['Link','Unlink','Image','Table','HorizontalRule','Smiley','SpecialChar'],
+			'/',
+			['Outdent','Indent'],
+			['Link','Unlink','Table','HorizontalRule','Smiley','SpecialChar'],
 			['Styles','Format','Font','FontSize'],
-			['TextColor','BGColor']
+			['TextColor','BGColor'],
+			['Maximize', 'About']
 		    ]
 		} );
 		//hide the bottom bar of CKEditor
