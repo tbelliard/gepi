@@ -365,18 +365,13 @@ echo "<tr>\n";
 
 // Première cellule de la première ligne du tableau
 echo "<td valign='top'>\n";
+
 echo "<p>Nous sommes le :&nbsp;<br />";
 echo "<script type=\"text/javascript\">";
 echo "<!--\n";
 echo "new LiveClock();\n";
 echo "//-->";
 echo "</SCRIPT>";
-
-if (getSettingValue("GepiCahierTexteVersion") == '2') {
-echo "&nbsp;&nbsp;<button style='width: 200px;' onclick=\"javascript:window.location.replace('../cahier_texte_2/index.php?cdt_version_pref=2')
-				\">Utiliser la version 2 du cahier de textes</button>\n";
-}
-
 echo "</p>\n";
 
 
@@ -429,7 +424,12 @@ echo "</td>";
 // Deuxième cellule de la première ligne du tableau
 echo "<td style=\"text-align: center; vertical-align: top;\">\n";
 echo "<p><span class='grand'>Cahier de textes</span><br />";
-
+if (getSettingValue("GepiCahierTexteVersion") == '2') {
+echo "<a href=\"../cahier_texte_2/index.php?cdt_version_pref=2\">\n";
+echo "<img src='../images/icons/cdt1_2.png' alt='Utiliser la version 2 du cahier de textes' class='link' title='Utiliser la version 2 du cahier de textes'/> </a>";
+//echo "&nbsp;&nbsp;<button style='width: 200px;' onclick=\"javascript:window.location.replace('../cahier_texte_2/index.php?cdt_version_pref=2')
+//				\">Utiliser la version 2 du cahier de textes</button>\n";
+}
 if ($id_groupe != null) {
 
 	if(getSettingValue('cahier_texte_acces_public')!='no'){

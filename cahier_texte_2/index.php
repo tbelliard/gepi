@@ -102,9 +102,10 @@ echo "<button style='width: 200px;' onclick=\"javascript:
 echo "</td>";
 
 echo "<td width='20 px'>";
-echo "<button style='width: 200px;' onclick=\"javascript:window.location.replace('./index.php?cdt_version_pref=1')
-				\">Utiliser la version 1 du cahier de textes</button>\n";
-
+echo "<a href=\"./index.php?cdt_version_pref=1\">\n";
+echo "<img src='../images/icons/cdt2_1.png' alt='Utiliser la version 1 du cahier de textes' class='link' title='Utiliser la version 1 du cahier de textes'/> </a>";
+//echo "<button style='width: 200px;' onclick=\"javascript:window.location.replace('./index.php?cdt_version_pref=1')
+//				\">Utiliser la version 1 du cahier de textes</button>\n";
 echo "</td>";
 // **********************************************
 // Affichage des différents groupes du professeur
