@@ -44,6 +44,9 @@ if (!checkAccess()) {
 }
 
 $ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele_lieu_naissance") : "n";
+$ne_pas_tester_les_changements_de_classes=getSettingValue("no_test_chgt_clas") ? getSettingValue("no_test_chgt_clas") : "y";
+// INSERT INTO setting SET name='no_test_chgt_clas', value='n';
+// UPDATE setting SET value='n' WHERE name='no_test_chgt_clas';
 
 function extr_valeur($lig){
 	unset($tabtmp);
@@ -2121,11 +2124,13 @@ else{
 					echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
 					echo $tab_ele_id[$i];
 
+					$tab_ele_id_diff[]=$tab_ele_id[$i];
+
 					//echo "$reserve_sql<br/>";
 					//echo "\$temoin_chgt_ancien_etab=$temoin_chgt_ancien_etab<br />";
 					flush();
 					$cpt++;
-					$cpt_tab_ele_id_diff;
+					$cpt_tab_ele_id_diff++;
 				}
 				else{
 					// Inutile de tester les différences sur le régime si des différences ont déjà été repérées et que l'ELE_ID est déjà en tab_ele_id_diff[]
@@ -2171,7 +2176,7 @@ else{
 								// Pour le cas où on est dans la dernière tranche:
 								$tab_ele_id_diff[]=$tab_ele_id[$i];
 								$cpt++;
-								$cpt_tab_ele_id_diff;
+								$cpt_tab_ele_id_diff++;
 							}
 						}
 
@@ -2212,11 +2217,57 @@ else{
 								// Pour le cas où on est dans la dernière tranche:
 								$tab_ele_id_diff[]=$tab_ele_id[$i];
 								$cpt++;
-								$cpt_tab_ele_id_diff;
+								$cpt_tab_ele_id_diff++;
 							}
 						}
 
 					}
+				}
+			}
+
+
+			if($ne_pas_tester_les_changements_de_classes!='y') {
+				//echo "<p>Contrôle des changements de classes&nbsp;: ";
+				for($i=0;$i<min(20,count($tab_ele_id));$i++){
+					//==============================================
+					// Recherche des changements de classes
+					if(!isset($tab_ele_id_diff)) {$tab_ele_id_diff=array();}
+					if(!in_array($tab_ele_id[$i],$tab_ele_id_diff)) {
+						$sql="SELECT classe FROM classes c, eleves e, j_eleves_classes jec WHERE c.id=jec.id_classe AND jec.login=e.login AND e.ele_id='$tab_ele_id[$i]' ORDER BY jec.periode DESC LIMIT 1;";
+						$test_clas1=mysql_query($sql);
+		
+						if(mysql_num_rows($test_clas1)>0) {
+							$lig_clas1=mysql_fetch_object($test_clas1);
+		
+							$sql="SELECT DIVCOD FROM temp_gep_import2 t WHERE t.ELE_ID='$tab_ele_id[$i]';";
+							$test_clas2=mysql_query($sql);
+							if(mysql_num_rows($test_clas2)>0) {
+								$lig_clas2=mysql_fetch_object($test_clas2);
+		
+								if(strtolower($lig_clas1->classe)!=strtolower($lig_clas2->DIVCOD)) {
+									if($cpt==0){
+										echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
+										echo "<br />\n";
+										echo "En voici le(s) ELE_ID: ";
+									}
+									else{
+										echo ", ";
+									}
+
+									//echo "<span style='color:green'>";
+									echo $tab_ele_id[$i];
+									//echo "</span>";
+									echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
+									//echo "<br />\n";
+									// Pour le cas où on est dans la dernière tranche:
+									$tab_ele_id_diff[]=$tab_ele_id[$i];
+									$cpt++;
+									$cpt_tab_ele_id_diff++;
+								}
+							}
+						}
+					}
+					//==============================================
 				}
 			}
 
@@ -2446,6 +2497,7 @@ else{
 				$cpt_modif=0;
 				$cpt_new=0;
 				$alt=1;
+				$cpt_chgt_classe=0;
 				for($k = 1; ($k < $nblignes+1); $k++){
 					$temoin_modif="";
 					$temoin_nouveau="";
@@ -2625,9 +2677,33 @@ else{
 									// Apparemment, aucune info n'est encore saisie dans j_eleves_regime
 								}
 
-
 								// Rechercher s'il y a un changement de classe?
+								$temoin_chgt_classe="n";
+								if($ne_pas_tester_les_changements_de_classes!='y') {
+									$sql="SELECT c.classe, c.id FROM classes c, eleves e, j_eleves_classes jec WHERE c.id=jec.id_classe AND jec.login=e.login AND e.ele_id='$tab_ele_id_diff[$w]' ORDER BY jec.periode DESC LIMIT 1;";
+									$test_clas1=mysql_query($sql);
+					
+									if(mysql_num_rows($test_clas1)>0) {
+										$lig_clas1=mysql_fetch_object($test_clas1);
 
+										if(strtolower($lig_clas1->classe)!=strtolower($lig->DIVCOD)) {
+											$temoin_chgt_classe="y";
+											$temoin_modif='y';
+											$cpt_modif++;
+											$cpt_chgt_classe++;
+										}
+										/*
+										$sql="SELECT DIVCOD FROM temp_gep_import2 t WHERE t.ELE_ID='$tab_ele_id[$i]';"
+										$test_clas2=mysql_query($sql);
+										if(mysql_num_rows($test_clas2)>0) {
+											$lig_clas2=mysql_fetch_object($test_clas2);
+					
+											if(strtolower($lig_clas1->classe)!=strtolower($lig_clas2->DIVCOD)) {
+											}
+										}
+										*/
+									}
+								}
 
 								// Rechercher s'il y a un changement dans l'établissement d'origine
 								$sql="SELECT id_etablissement FROM j_eleves_etablissements jee WHERE jee.id_eleve='$lig_ele->elenoet';";
@@ -2858,9 +2934,20 @@ else{
 								echo "<input type='hidden' name='modif_".$cpt."_regime' value=\"$tmp_regime\" />\n";
 								echo "</td>\n";
 
+								// Classe
 								//echo "<td style='text-align: center; background-color: white;'>";
-								echo "<td style='text-align: center;'>";
-								echo "$affiche[9]";
+								echo "<td style='text-align: center;";
+								if($temoin_chgt_classe=="y") {
+									echo " background-color: red;";
+									echo "'>";
+									echo "<a href='../classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=A_EFFECTUER_Changement_de_classe_vers_".remplace_accents(stripslashes($affiche[9]))."_pour_".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom),'all')."' target='_blank'>";
+									echo "$lig_clas1->classe -&gt; $affiche[9]";
+									echo "</a>";
+								}
+								else {
+									echo "'>";
+									echo "$affiche[9]";
+								}
 								echo "</td>\n";
 
 
@@ -3052,6 +3139,10 @@ else{
 				echo "</table>\n";
 				//echo "<p>On compte $cpt_modif champs modifiés et $cpt_new nouveaux élèves.</p>\n";
 				//fclose($fp);
+
+				if($cpt_chgt_classe>0) {
+					echo "<p><span style='font-weight:bold; color:red;'>Attention</span>&nbsp;: Un changement de classe au moins a été repéré.<br />Pour effectuer le changement de classe, cliquez sur la cellule rouge correspondante.</p>\n";
+				}
 
 				echo "<script type='text/javascript'>
 	function modifcase(mode){
