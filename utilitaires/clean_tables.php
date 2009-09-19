@@ -1540,6 +1540,87 @@ col2 varchar(100) NOT NULL default ''
 			echo "<p>Aucune erreur n'a été relevée.</p>\n";
 		}
 	}
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'clean_edt') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<p><b>Nettoyage des tables EDT&nbsp;:</b> \n";
+	$tab_table=array('edt_classes', 'edt_cours', 'edt_calendrier');
+	for($i=0;$i<count($tab_table);$i++) {
+		if($i>0) {echo ", ";}
+		echo $tab_table[$i];
+		$sql="TRUNCATE TABLE $tab_table[$i];";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+	}
+	echo "</p>\n";
+
+	echo "<p>Terminé.</p>\n";
+
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'clean_absences') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	$date_limite=isset($_POST['date_limite']) ? $_POST['date_limite'] : NULL;
+	if(isset($date_limite)) {
+		$tmp_tab=explode("/",$date_limite);
+		$jour=$tmp_tab[0];
+		$mois=$tmp_tab[1];
+		$annee=$tmp_tab[2];
+
+		if(!checkdate($mois,$jour,$annee)) {
+			echo "<p style='color:red;'>La date saisie $date_limite n'est pas valide.</p>\n";
+			unset($date_limite);
+			require("../lib/footer.inc.php");
+			die();
+		}
+	}
+
+	if(!isset($date_limite)) {
+		echo "<p style='color:red;'>Abandon&nbsp;: Aucune date limite n'a été saisie.</p>\n";
+	}
+	else {
+		echo "<p><b>Nettoyage des tables absences&nbsp;:</b> \n";
+
+		/*
+		$tab_table=array('absences_rb', 'absences_repas', 'absences_eleves');
+		for($i=0;$i<count($tab_table);$i++) {
+			if($i>0) {echo ", ";}
+			echo $tab_table[$i];
+			$sql="DELETE FROM $tab_table[$i] WHERE ;";
+			$suppr=mysql_query($sql);
+		}
+		*/
+
+		echo "absences_rb";
+		$sql="DELETE FROM absences_rb WHERE date_saisie < ".mktime("0","0","0",$mois,$jour,$annee).";";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+		echo ", ";
+
+		echo "absences_eleves";
+		$sql="DELETE FROM absences_eleves WHERE a_date_absence_eleve < date('$annee-$mois-$jour');";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+		echo ", ";
+
+		echo "absences_repas";
+		$sql="DELETE FROM absences_repas WHERE a_date_absence_eleve < date('$annee-$mois-$jour');";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+		echo ", ";
+
+		echo "lettres_suivis";
+		$sql="DELETE FROM lettres_suivis WHERE emis_date_lettre_suivi < date('$annee-$mois-$jour');";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+
+		echo "</p>\n";
+	
+		echo "<p>Terminé.</p>\n";
+	}
 
 } else {
     echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
@@ -1605,6 +1686,29 @@ col2 varchar(100) NOT NULL default ''
     echo "<center><input type=submit value=\"Contrôler les tables 'j_eleves_cpe' et 'j_eleves_professeurs'\" /></center>\n";
     echo "<input type='hidden' name='action' value='check_jec_jep_point' />\n";
     echo "</form>\n";
+
+    echo "<hr />\n";
+
+    echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'edt_classes', 'edt_cours', 'edt_calendrier' du module emploi du temps de Gepi.</p>\n";
+    echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+    echo "<center><input type=submit value=\"Vider les tables Emploi du temps\" /></center>\n";
+    echo "<input type='hidden' name='action' value='clean_edt' />\n";
+    echo "</form>\n";
+
+    echo "<hr />\n";
+
+    echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'absences_rb', 'absences_repas' et 'absences_eleves' du module absences de Gepi.</p>\n";
+    echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+    echo "<center>\n";
+	echo "<input type=submit value=\"Vider les tables enregistrements du module absences\" />\n";
+	$annee=strftime("%Y");
+	$mois=strftime("%m");
+	if($mois<=7) {$annee--;}
+    echo "pour les absences antérieures au <input type='text' name='date_limite' size='10' value='31/07/$annee' />\n";
+	echo "</center>\n";
+    echo "<input type='hidden' name='action' value='clean_absences' />\n";
+    echo "</form>\n";
+
 }
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
