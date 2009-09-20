@@ -303,11 +303,11 @@ else{
 }
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-
+/*
 echo "<div id='coefinfo' style='display:none; float:right; width:200px; border: 1px solid black; background-color: white;'>\n";
 echo "Si le coefficient est 0, la moyenne de <b>$nom_court</b> n'intervient pas dans le calcul de la moyenne du carnet de note.\n";
 echo "</div>\n";
-
+*/
 /*
 echo "\$id_racine=$id_racine<br />\n";
 echo "\$id_conteneur=$id_conteneur<br />\n";
@@ -667,6 +667,14 @@ if($interface_simplifiee=="y"){
 	echo "<input type='hidden' name = 'ponderation' value='".$ponderation."' />\n";
 
 	echo "</div>\n";
+
+
+
+	//echo "<div id='coefinfo' style='display:none; float:right; width:200px; border: 1px solid black; background-color: white;'>\n";
+	echo "<div id='coefinfo' style='display:none; text-align:justify; float:right; width:30em; border: 1px solid black; background-color: white;'>\n";
+	echo "Si le coefficient est 0, la moyenne de <b>$nom_court</b> n'intervient pas dans le calcul de la moyenne du carnet de note.\n";
+	echo "</div>\n";
+
 }
 else{
 	// AFFICHAGE CLASSIQUE COMPLET:
