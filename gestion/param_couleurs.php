@@ -612,6 +612,7 @@ echo "<div class='norme'>\n";
 	<option value='rose'>Rose</option>
 	<option value='vert'>Vert</option>
 	<option value='bleu'>Bleu</option>
+	<option value='chocolat'>Chocolat</option>
 </select>\n";
 
 	echo "</p>\n";
@@ -1722,6 +1723,35 @@ function valide_modele(choix) {
 		var id_couleur_infobulle_fond_corps_R=200
 		var id_couleur_infobulle_fond_corps_V=200
 		var id_couleur_infobulle_fond_corps_B=250
+	}
+	//=============================================================
+	// Chocolat
+	if(choix=='chocolat') {
+		choix_valide='y';
+
+		var id_style_body_backgroundcolor_R=226
+		var id_style_body_backgroundcolor_V=198
+		var id_style_body_backgroundcolor_B=170
+		
+		// Haut du dégradé
+		var id_degrade_haut_R=53
+		var id_degrade_haut_V=26
+		var id_degrade_haut_B=0
+		
+		// Bas du dégradé
+		var id_degrade_bas_R=147
+		var id_degrade_bas_V=77
+		var id_degrade_bas_B=0
+		
+		// Couleur de fond de l'entête des infobulles
+		var id_couleur_infobulle_fond_entete_R=180
+		var id_couleur_infobulle_fond_entete_V=100
+		var id_couleur_infobulle_fond_entete_B=0
+		
+		// Couleur de fond du corps des infobulles
+		var id_couleur_infobulle_fond_corps_R=216
+		var id_couleur_infobulle_fond_corps_V=180
+		var id_couleur_infobulle_fond_corps_B=160
 	}
 
 	if(choix_valide=='y') {
