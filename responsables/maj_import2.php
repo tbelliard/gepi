@@ -2069,7 +2069,7 @@ else{
 			$cpt_tab_ele_id_diff=count($tab_ele_id_diff);
 			$cpt=0;
 			for($i=0;$i<min(20,count($tab_ele_id));$i++){
-
+				/*
 				// AJOUTER SELON LA VALEUR DE ele_lieu_naissance
 				// LE TEST DE DIFFERENCE SUR lieu_naissance
 				if($ele_lieu_naissance=="y") {
@@ -2099,7 +2099,35 @@ else{
 									)
 									AND e.ele_id='$tab_ele_id[$i]';";
 				}
-				//echo "$sql<br />";
+				*/
+				if($ele_lieu_naissance=="y") {
+					$sql="SELECT e.ele_id FROM eleves e, temp_gep_import2 t, tempo2 t2
+							WHERE e.ele_id=t.ELE_ID AND
+									e.ele_id=t2.col1 AND
+									(
+										e.nom COLLATE latin1_bin != t.ELENOM OR
+										e.prenom COLLATE latin1_bin != t.ELEPRE OR
+										e.sexe!=t.ELESEXE OR
+										e.naissance!=t2.col2 OR
+										e.lieu_naissance!=t.LIEU_NAISSANCE OR
+										e.no_gep!=t.ELENONAT
+									)
+									AND e.ele_id='$tab_ele_id[$i]';";
+				}
+				else {
+					$sql="SELECT e.ele_id FROM eleves e, temp_gep_import2 t, tempo2 t2
+							WHERE e.ele_id=t.ELE_ID AND
+									e.ele_id=t2.col1 AND
+									(
+										e.nom COLLATE latin1_bin != t.ELENOM OR
+										e.prenom COLLATE latin1_bin != t.ELEPRE OR
+										e.sexe!=t.ELESEXE OR
+										e.naissance!=t2.col2 OR
+										e.no_gep!=t.ELENONAT
+									)
+									AND e.ele_id='$tab_ele_id[$i]';";
+				}
+				//if(($tab_ele_id[$i]==352022)||($tab_ele_id[$i]==374123)||($tab_ele_id[$i]==392276)) {echo "$sql<br />";}
 				//if($tab_ele_id[$i]=='305034') {echo "$sql<br />";}
 				//$reserve_sql=$sql;
 				info_debug($sql);
@@ -2379,7 +2407,7 @@ else{
 				echo "<p>Le parcours des différences est terminé.</p>\n";
 
 				echo "<input type='hidden' name='step' value='4' />\n";
-				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='10' size='3' /> sur $cpt_tab_ele_id_diff<br />\n";
+				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='".min($cpt_tab_ele_id_diff,10)."' size='3' /> sur $cpt_tab_ele_id_diff<br />\n";
 				echo "<input type='submit' value='Afficher les différences' /></p>\n";
 
 				// On vide la table dont on va se resservir:
@@ -2559,6 +2587,8 @@ else{
 						$affiche[7]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELENONAT))));
 						$affiche[8]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELEREG))));
 						$affiche[9]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->DIVCOD))));
+
+						//echo "<tr><td colspan='13' style='text-align:left;'>'$lig->ELENOM' et '$affiche[0]' - '$lig->ELEPRE' et '$affiche[1]'</td></tr>\n";
 
 						$affiche[10]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ETOCOD_EP))));
 
@@ -6185,7 +6215,7 @@ else{
 			//echo "$sql<br />";
 			$test=mysql_query($sql);
 			$nb_tmp_modif=mysql_num_rows($test);
-			echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='20' size='3' /> sur un total de $nb_tmp_modif.<br />\n";
+			echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='".min(20,$nb_tmp_modif)."' size='3' /> sur un total de $nb_tmp_modif.<br />\n";
 
 			echo "<input type='submit' value='Afficher les différences' /></p>\n";
 
@@ -7510,7 +7540,7 @@ else{
 				info_debug($sql);
 				$test=mysql_query($sql);
 				$nb_associations_a_consulter=mysql_num_rows($test);
-				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='20' size='3' /> sur un total de $nb_associations_a_consulter.<br />\n";
+				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='".min(20,$nb_associations_a_consulter)."' size='3' /> sur un total de $nb_associations_a_consulter.<br />\n";
 
 				echo "Ne pas proposer de supprimer des responsables non associés à des élèves <input type='checkbox' name='suppr_resp_non_assoc' value='n' /><br />\n";
 				echo "<input type='submit' value='Afficher les différences' /></p>\n";
