@@ -77,7 +77,7 @@ if(mysql_num_rows($test)==0){
 	echo "<p>Aucun élève ne semble encore présent dans la base.</p>\n";
 }
 else{
-	$sql="SELECT * FROM eleves WHERE ele_id LIKE 'e%';";
+	$sql="SELECT * FROM eleves WHERE ele_id LIKE 'e%' OR ele_id LIKE '';";
 	$res_ele=mysql_query($sql);
 
 	if(mysql_num_rows($res_ele)==0){
