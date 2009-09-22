@@ -48,6 +48,38 @@ $ne_pas_tester_les_changements_de_classes=getSettingValue("no_test_chgt_clas") ?
 // INSERT INTO setting SET name='no_test_chgt_clas', value='n';
 // UPDATE setting SET value='n' WHERE name='no_test_chgt_clas';
 
+$auth_sso=getSettingValue("auth_sso") ? getSettingValue("auth_sso") : "";
+
+if($auth_sso=='lcs') {
+	function connect_ldap($l_adresse,$l_port,$l_login,$l_pwd) {
+		$ds = @ldap_connect($l_adresse, $l_port);
+		if($ds) {
+			// On dit qu'on utilise LDAP V3, sinon la V2 par d?faut est utilis? et le bind ne passe pas.
+			$norme = @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+			// Acc?s non anonyme
+			if ($l_login != '') {
+				// On tente un bind
+				$b = @ldap_bind($ds, $l_login, $l_pwd);
+			} else {
+				// Acc?s anonyme
+				$b = @ldap_bind($ds);
+			}
+			if ($b) {
+				return $ds;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	// Initialisation
+	$lcs_ldap_people_dn = 'ou=people,'.$lcs_ldap_base_dn;
+	$lcs_ldap_groups_dn = 'ou=groups,'.$lcs_ldap_base_dn;
+
+}
+
 function extr_valeur($lig){
 	unset($tabtmp);
 	//$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
@@ -3418,153 +3450,285 @@ else{
 				info_debug($sql);
 				$vide_table = mysql_query($sql);
 
+				//echo "<p>\$auth_sso=$auth_sso</p>";
+				if($auth_sso=='lcs') {
+					// On se connecte au LDAP
+					$ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
+					//echo "<p>CONNEXION AU LDAP</p>";
+				}
 
-				echo "<p>Ajout de ";
-				while($lig=mysql_fetch_object($res_new)){
-					// ON VERIFIE QU'ON N'A PAS DEJA UN ELEVE DE MEME ele_id DANS eleves
-					// CELA PEUT ARRIVER SI ON JOUE AVEC F5
-					$sql="SELECT 1=1 FROM eleves WHERE ele_id='$lig->ELE_ID'";
-					info_debug($sql);
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0){
-						//echo "New: $lig->ELE_ID : $lig->ELENOM $lig->ELEPRE<br />";
+				/*
+				if(($auth_sso!='')&&($auth_sso!='lcs')) {
+					// ProblËme... si on fait Áa on bloque Èventuellement des collËgues qui ne donnaient pas l'accËs aux ÈlËves mais avaient une auth sso
+					echo "<p style='color:red'>Vous Ítes auth_sso=$auth_sso<br />Il faut ajouter manuellement les comptes ÈlËves avec le login appropriÈ (<i>celui correspondant ‡ votre authentification</i>) et le bon numÈro gep (<i>elenoet</i>)&nbsp;:<br />\n";
 
-						if($cpt>0){echo ", ";}
-
-						$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
-
-						/*
-						switch($lig->ELEREG){
-							case 0:
-								$regime="ext.";
-								break;
-							case 2:
-								$regime="d/p";
-								break;
-							case 3:
-								$regime="int.";
-								break;
-							case 4:
-								$regime="i-e";
-								break;
+					while($lig=mysql_fetch_object($res_new)){
+						// ON VERIFIE QU'ON N'A PAS DEJA UN ELEVE DE MEME ele_id DANS eleves
+						// CELA PEUT ARRIVER SI ON JOUE AVEC F5
+						$sql="SELECT 1=1 FROM eleves WHERE ele_id='$lig->ELE_ID'";
+						info_debug($sql);
+						$test=mysql_query($sql);
+						if(mysql_num_rows($test)==0){
+							if($cpt>0){echo ", ";}
+							echo addslashes($lig->ELENOM)." ".addslashes($lig->ELEPRE);
+							$cpt++;
 						}
-						*/
-						$regime=traite_regime_sconet($lig->ELEREG);
-						// Si le rÈgime est en erreur, on impose 'd/p' comme le moins mauvais choix dans ce cas
-						if("$regime"=="ERR"){
-							$regime="d/p";
-						}
+					}
 
-						switch($lig->ELEDOUBL){
-							case "O":
-								$doublant="R";
-								break;
-							case "N":
-								$doublant="-";
-								break;
-						}
-
-						$tmp_nom=strtr($lig->ELENOM,"‡‚‰ÈËÍÎÓÔÙˆ˘˚¸Á¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-						$tmp_prenom=strtr($lig->ELEPRE,"‡‚‰ÈËÍÎÓÔÙˆ˘˚¸Á¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-
-						// GÈnÈrer un login...
-						$temp1 = strtoupper($tmp_nom);
-						$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
-						$temp1 = strtr($temp1, " '-", "___");
-						$temp1 = substr($temp1,0,7);
-						$temp2 = strtoupper($tmp_prenom);
-						$temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
-						$temp2 = strtr($temp2, " '-", "___");
-						$temp2 = substr($temp2,0,1);
-						$login_eleve = $temp1.'_'.$temp2;
-
-						// On teste l'unicitÈ du login que l'on vient de crÈer
-						$k = 2;
-						$test_unicite = 'no';
-						$temp = $login_eleve;
-						while ($test_unicite != 'yes') {
-							//$test_unicite = test_unique_e_login($login_eleve,$i);
-							$test_unicite = test_unique_login($login_eleve);
-							if ($test_unicite != 'yes') {
-								$login_eleve = $temp.$k;
-								$k++;
+					echo "</p>\n";
+				}
+				else {
+				*/
+					echo "<p>Ajout de ";
+					while($lig=mysql_fetch_object($res_new)){
+						// ON VERIFIE QU'ON N'A PAS DEJA UN ELEVE DE MEME ele_id DANS eleves
+						// CELA PEUT ARRIVER SI ON JOUE AVEC F5
+						$sql="SELECT 1=1 FROM eleves WHERE ele_id='$lig->ELE_ID'";
+						info_debug($sql);
+						$test=mysql_query($sql);
+						if(mysql_num_rows($test)==0){
+							//echo "New: $lig->ELE_ID : $lig->ELENOM $lig->ELEPRE<br />";
+	
+							if($cpt>0){echo ", ";}
+	
+							$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
+	
+							/*
+							switch($lig->ELEREG){
+								case 0:
+									$regime="ext.";
+									break;
+								case 2:
+									$regime="d/p";
+									break;
+								case 3:
+									$regime="int.";
+									break;
+								case 4:
+									$regime="i-e";
+									break;
 							}
-						}
+							*/
+							$regime=traite_regime_sconet($lig->ELEREG);
+							// Si le rÈgime est en erreur, on impose 'd/p' comme le moins mauvais choix dans ce cas
+							if("$regime"=="ERR"){
+								$regime="d/p";
+							}
+	
+							switch($lig->ELEDOUBL){
+								case "O":
+									$doublant="R";
+									break;
+								case "N":
+									$doublant="-";
+									break;
+							}
 
-						// On ne renseigne plus l'ERENO et on n'a pas l'EMAIL dans temp_gep_import2
-						$sql="INSERT INTO eleves SET login='$login_eleve',
-												nom='".addslashes($lig->ELENOM)."',
-												prenom='".addslashes($lig->ELEPRE)."',
-												sexe='".$lig->ELESEXE."',
-												naissance='".$naissance."',
-												no_gep='".$lig->ELENONAT."',
-												elenoet='".$lig->ELENOET."',
-												ele_id='".$lig->ELE_ID."'";
-						if($ele_lieu_naissance=="y") {
-							$sql.=", lieu_naissance='".$lig->LIEU_NAISSANCE."'";
-						}
-						$sql.=";";
-						info_debug($sql);
-						$insert=mysql_query($sql);
-						if($insert){
-							echo "\n<span style='color:blue;'>";
-						}
-						else{
-							echo "\n<span style='color:red;'>";
-							$erreur++;
-						}
-						//echo "$sql<br />\n";
-						echo "$lig->ELEPRE $lig->ELENOM";
-						echo "</span>";
+							// Initialisation
+							$login_eleve="";
 
+							if($auth_sso=='lcs') {
 
-						$sql="INSERT INTO j_eleves_regime SET doublant='$doublant',
-									regime='$regime',
-									login='$login_eleve';";
-						info_debug($sql);
-						$res2=mysql_query($sql);
-						if(!$res2){
-							echo " <span style='color:red;'>(*)</span>";
-							$erreur++;
-						}
+								// LDAP attribute
+								$ldap_people_attr = array(
+								"uid",               // login
+								"cn",                // Prenom  Nom
+								"sn",               // Nom
+								"givenname",            // Pseudo
+								"mail",              // Mail
+								"homedirectory",           // Home directory personnal web space
+								"description",
+								"loginshell",
+								"gecos",             // Date de naissance,Sexe (F/M),
+								"employeenumber"    // identifiant gep
+								);
 
+								//$filtre = "(employeenumber=".$lig->ELENOET.")";
+								$filtre="(|(employeenumber=".$lig->ELENOET.")(employeenumber=".sprintf("%05d",$lig->ELENOET)."))";
+								$result= ldap_search ($ds, $lcs_ldap_people_dn, $filtre);
+								if ($result) {
+									$info = @ldap_get_entries( $ds, $result );
+									if($info[0]["uid"]["count"]==0) {
+										echo "<span style='color:red;'>Aucun enregistrement n'a ÈtÈ trouvÈ dans le LDAP pour l'ÈlËve ".$lig->ELENOM." ".$lig->ELEPRE."</span><br />\n";
+										$erreur++;
+									}
+									if($info[0]["uid"]["count"]>1) {
+										echo "<span style='color:red;'>Plusieurs enregistrements ont ÈtÈ trouvÈs dans le LDAP pour l'ÈlËve ".$lig->ELENOM." ".$lig->ELEPRE." avec l'employeenumber '$lig->ELENOET'.<br />C'est une anomalie.</span><br />\n";
+										$erreur++;
+									}
+									elseif($info[0]["uid"]["count"]==1) {
+										$login_eleve=$info[0]["uid"][0];
+	
+										/*
+										for ( $u = 0; $u < $info[0]["uid"]["count"] ; $u++ ) {
+											$uid = $info[0]["memberuid"][$u] ;
+											if (trim($uid) !="") {
+												$eleve_de[$current_classe_id]=$uid;
+												// Extraction des infos sur l'ÈlËve :
+												$result2 = @ldap_read ( $ds, "uid=".$uid.",".$lcs_ldap_people_dn, "(objectclass=posixAccount)", $ldap_people_attr );
+												if ($result2) {
+													$info2 = @ldap_get_entries ( $ds, $result2 );
+													if ( $info2["count"]) {
+														// Traitement du champ gecos pour extraction de date de naissance, sexe
+														$gecos = $info2[0]["gecos"][0];
+														$tmp = split ("[\,\]",$info2[0]["gecos"][0],4);
+														$ret_people = array (
+														"uid"         => $info2[0]["uid"][0],
+														"nom"         => stripslashes( utf8_decode($info2[0]["sn"][0]) ),
+														"fullname"        => stripslashes( utf8_decode($info2[0]["cn"][0]) ),
+														"pseudo"      => utf8_decode($info2[0]["givenname"][0]),
+														"email"       => $info2[0]["mail"][0],
+														"homedirectory"   => $info2[0]["homedirectory"][0],
+														"description" => utf8_decode($info2[0]["description"][0]),
+														"shell"           => $info2[0]["loginshell"][0],
+														"sexe"            => $tmp[2],
+														"naissance"       => $tmp[1],
+														"no_gep"          => $info2[0]["employeenumber"][0]
+														);
+														$long = strlen($ret_people["fullname"]) - strlen($ret_people["nom"]);
+														$prenom = substr($ret_people["fullname"], 0, $long) ;
+							
+							
+														$add = add_eleve($uid,$ret_people["nom"],$prenom,$tmp[2],$tmp[1],$ret_people["no_gep"]);
+														$get_periode_num = mysql_result(mysql_query("SELECT count(*) FROM periodes WHERE (id_classe = '" . $current_classe_id . "')"), 0);
+														$check = mysql_result(mysql_query("SELECT count(*) FROM j_eleves_classes WHERE (login = '" . $uid . "')"), 0);
+														if ($check > 0)
+															$del = mysql_query("DELETE from j_eleves_classes WHERE login = '" . $uid . "'");
+														for ($k=1;$k<$get_periode_num+1;$k++) {
+															$res = mysql_query("INSERT into j_eleves_classes SET login = '" . $uid . "', id_classe = '" . $current_classe_id . "', periode = '" . $k . "'");
+														}
+														$check = mysql_result(mysql_query("SELECT count(*) FROM j_eleves_regime WHERE (login = '" . $uid . "')"), 0);
+														if ($check > 0)
+															$del = mysql_query("DELETE from j_eleves_regime WHERE login = '" . $uid . "'");
+														$res = mysql_query("INSERT into j_eleves_regime SET login = '" . $uid . "',
+														regime  = 'd/p',
+														doublant  = '-'");
+													}
+													@ldap_free_result ( $result2 );
+												}
+												$date_naissance = substr($tmp[1],6,2)."-".substr($tmp[1],4,2)."-".substr($tmp[1],0,4) ;
+												echo "<tr><td>".$current_classe."</td><td>".$uid."</td><td>".$ret_people["nom"]."</td><td>".$prenom."</td><td>".$tmp[2]."</td><td>".$date_naissance."</td><td>".$ret_people["no_gep"]."</td></tr>\n";
+											}
+										}
+										*/
+									}
 
-						if(strtolower($lig->ETOCOD_EP)!=strtolower($gepiSchoolRne)) {
-							$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
-							info_debug($sql);
-							$test_ee=mysql_query($sql);
-							if(mysql_num_rows($test_ee)>0) {
-								if($lig->ETOCOD_EP!="") {
-									$sql="UPDATE j_eleves_etablissements SET id_etablissement='$lig->ETOCOD_EP' WHERE id_eleve='$lig->ELENOET';";
-									info_debug($sql);
-									$update_ee=mysql_query($sql);
+									@ldap_free_result ( $result );
 								}
 								else {
-									$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
-									info_debug($sql);
-									$del_ee=mysql_query($sql);
+									echo "<p>Echec de la recherche dans le LDAP de l'ELENOET pour $lig->ELENOET ($lig->ELENOM $lig->ELEPRE).</p>";
 								}
 							}
 							else {
-								$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$lig->ELENOET', id_etablissement='$lig->ETOCOD_EP';";
-								info_debug($sql);
-								$insert_ee=mysql_query($sql);
+								// GÈnÈration d'un login ÈlËve type auth_native_gepi: NOM_P
+
+								$tmp_nom=strtr($lig->ELENOM,"‡‚‰ÈËÍÎÓÔÙˆ˘˚¸Á¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
+								$tmp_prenom=strtr($lig->ELEPRE,"‡‚‰ÈËÍÎÓÔÙˆ˘˚¸Á¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
+		
+								// GÈnÈrer un login...
+								$temp1 = strtoupper($tmp_nom);
+								$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
+								$temp1 = strtr($temp1, " '-", "___");
+								$temp1 = substr($temp1,0,7);
+								$temp2 = strtoupper($tmp_prenom);
+								$temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
+								$temp2 = strtr($temp2, " '-", "___");
+								$temp2 = substr($temp2,0,1);
+								$login_eleve = $temp1.'_'.$temp2;
+		
+								// On teste l'unicitÈ du login que l'on vient de crÈer
+								$k = 2;
+								$test_unicite = 'no';
+								$temp = $login_eleve;
+								while ($test_unicite != 'yes') {
+									//$test_unicite = test_unique_e_login($login_eleve,$i);
+									$test_unicite = test_unique_login($login_eleve);
+									if ($test_unicite != 'yes') {
+										$login_eleve = $temp.$k;
+										$k++;
+									}
+								}
 							}
+	
+							if($login_eleve=='') {
+								echo "<p style='color:red;'>Le login de $lig->ELENOM $lig->ELEPRE n'a pas pu Ítre gÈnÈrÈ ni rÈcupÈrÈ.</p>\n";
+							}
+							else {
+								// On ne renseigne plus l'ERENO et on n'a pas l'EMAIL dans temp_gep_import2
+								$sql="INSERT INTO eleves SET login='$login_eleve',
+														nom='".addslashes($lig->ELENOM)."',
+														prenom='".addslashes($lig->ELEPRE)."',
+														sexe='".$lig->ELESEXE."',
+														naissance='".$naissance."',
+														no_gep='".$lig->ELENONAT."',
+														elenoet='".$lig->ELENOET."',
+														ele_id='".$lig->ELE_ID."'";
+								if($ele_lieu_naissance=="y") {
+									$sql.=", lieu_naissance='".$lig->LIEU_NAISSANCE."'";
+								}
+								$sql.=";";
+								info_debug($sql);
+								$insert=mysql_query($sql);
+								if($insert){
+									echo "\n<span style='color:blue;'>";
+								}
+								else{
+									echo "\n<span style='color:red;'>";
+									$erreur++;
+								}
+								//echo "$sql<br />\n";
+								echo "$lig->ELEPRE $lig->ELENOM";
+								echo "</span>";
+		
+		
+								$sql="INSERT INTO j_eleves_regime SET doublant='$doublant',
+											regime='$regime',
+											login='$login_eleve';";
+								info_debug($sql);
+								$res2=mysql_query($sql);
+								if(!$res2){
+									echo " <span style='color:red;'>(*)</span>";
+									$erreur++;
+								}
+		
+		
+								if(strtolower($lig->ETOCOD_EP)!=strtolower($gepiSchoolRne)) {
+									$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
+									info_debug($sql);
+									$test_ee=mysql_query($sql);
+									if(mysql_num_rows($test_ee)>0) {
+										if($lig->ETOCOD_EP!="") {
+											$sql="UPDATE j_eleves_etablissements SET id_etablissement='$lig->ETOCOD_EP' WHERE id_eleve='$lig->ELENOET';";
+											info_debug($sql);
+											$update_ee=mysql_query($sql);
+										}
+										else {
+											$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
+											info_debug($sql);
+											$del_ee=mysql_query($sql);
+										}
+									}
+									else {
+										$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$lig->ELENOET', id_etablissement='$lig->ETOCOD_EP';";
+										info_debug($sql);
+										$insert_ee=mysql_query($sql);
+									}
+								}
+		
+		
+								// On remplit aussi une table pour l'association avec la classe:
+								// On fait le mÍme traitement que dans step2.php
+								// (dans step1.php, on a fait le mÍme traitement que pour le remplissage de temp_gep_import2 ici)
+								$classe=traitement_magic_quotes(corriger_caracteres($lig->DIVCOD));
+								$sql="INSERT INTO temp_ele_classe SET ele_id='".$lig->ELE_ID."', divcod='$classe'";
+								info_debug($sql);
+								$insert=mysql_query($sql);
+							}
+							$cpt++;
 						}
-
-
-						// On remplit aussi une table pour l'association avec la classe:
-						// On fait le mÍme traitement que dans step2.php
-						// (dans step1.php, on a fait le mÍme traitement que pour le remplissage de temp_gep_import2 ici)
-						$classe=traitement_magic_quotes(corriger_caracteres($lig->DIVCOD));
-						$sql="INSERT INTO temp_ele_classe SET ele_id='".$lig->ELE_ID."', divcod='$classe'";
-						info_debug($sql);
-						$insert=mysql_query($sql);
-
-						$cpt++;
 					}
-				}
-				echo "</p>\n";
+					echo "</p>\n";
+				//}
 			}
 
 			echo "<p><br /></p>\n";
@@ -3716,7 +3880,12 @@ else{
 						echo "<input type='hidden' name='login_eleve[$cpt]' value='".$lig_ele->login."' />\n";
 						echo "</td>\n";
 
-						$sql="SELECT c.id FROM classes c WHERE c.classe='$lig_ele->divcod';";
+						if($auth_sso=='lcs') {
+							$sql="SELECT c.id FROM classes c WHERE c.classe='".my_ereg_replace("'","_",my_ereg_replace(" ","_",$lig_ele->divcod))."';";
+						}
+						else {
+							$sql="SELECT c.id FROM classes c WHERE c.classe='$lig_ele->divcod';";
+						}
 						info_debug($sql);
 						$res_classe=mysql_query($sql);
 						if(mysql_num_rows($res_classe)>0){
@@ -3727,16 +3896,24 @@ else{
 							echo "<input type='hidden' name='id_classe[$cpt]' value='$lig_classe->id' />\n";
 							echo "</td>\n";
 
-							$sql="SELECT p.num_periode FROM periodes p, classes c
+							if($auth_sso=='lcs') {
+								$sql="SELECT p.num_periode FROM periodes p, classes c
+													WHERE p.id_classe=c.id AND
+															c.classe='".my_ereg_replace("'","_",my_ereg_replace(" ","_",$lig_ele->divcod))."'
+													ORDER BY num_periode;";
+							}
+							else {
+								$sql="SELECT p.num_periode FROM periodes p, classes c
 													WHERE p.id_classe=c.id AND
 															c.classe='$lig_ele->divcod'
 													ORDER BY num_periode;";
+							}
 							info_debug($sql);
 							$res_per=mysql_query($sql);
 							$cpt_periode=1;
 							while($lig_per=mysql_fetch_object($res_per)){
 								echo "<td>\n";
-								echo "<input type='checkbox' name='periode_".$cpt."_[$cpt_periode]' id='case".$cpt."_".$cpt_periode."'  value='$cpt_periode' />\n";
+								echo "<input type='checkbox' name='periode_".$cpt."_[$cpt_periode]' id='case".$cpt."_".$cpt_periode."' value='$cpt_periode' />\n";
 								echo "</td>\n";
 								$cpt_periode++;
 							}
@@ -3763,7 +3940,7 @@ else{
 
 							for($i=1;$i<=$max_per;$i++){
 								echo "<td style='background-color: orange;'>\n";
-								echo "<input type='checkbox' name='periode_".$cpt."_[$i]' value='$i' />\n";
+								echo "<input type='checkbox' name='periode_".$cpt."_[$i]' id='case".$cpt."_".$i."' value='$i' />\n";
 								echo "</td>\n";
 							}
 						}
