@@ -1,25 +1,25 @@
 <?php
 /*
- * $Id$
- *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- *
- * This file is part of GEPI.
- *
- * GEPI is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * GEPI is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GEPI; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+* $Id$
+*
+* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 // Initialisations files
 //require_once("../lib/initialisations.inc.php");
@@ -29,13 +29,13 @@ require_once("./lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-    //header("Location: ../logout.php?auto=1");
-    header("Location: ./logout.php?auto=1");
-    die();
+	//header("Location: ../logout.php?auto=1");
+	header("Location: ./logout.php?auto=1");
+	die();
 } else if ($resultat_session == '0') {
-    //header("Location: ../logout.php?auto=1");
-    header("Location: ./logout.php?auto=1");
-    die();
+	//header("Location: ../logout.php?auto=1");
+	header("Location: ./logout.php?auto=1");
+	die();
 };
 
 
@@ -43,22 +43,31 @@ if ($resultat_session == 'c') {
 // INSERT INTO `droits` VALUES ('/cahier_notes/verif_prof.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'Vérification des notes/appréciations saisies sur le bulletin', '');
 // INSERT INTO `droits` VALUES ('/accueil_simpl_prof.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'Page d accueil simplifiée pour les profs', '');
 if (!checkAccess()) {
-    //header("Location: ../logout.php?auto=1");
-    header("Location: ./logout.php?auto=1");
-    die();
+	//header("Location: ../logout.php?auto=1");
+	header("Location: ./logout.php?auto=1");
+	die();
 }
 
 
-
+/*
 //On vérifie si le module est activé
 if (getSettingValue("active_carnets_notes")!='y') {
-    die("Le module n'est pas activé.");
+	die("Le module n'est pas activé.");
 }
-
+*/
 
 $active_carnets_notes=getSettingValue("active_carnets_notes");
 $active_cahiers_texte=getSettingValue("active_cahiers_texte");
 $active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes");
+
+if(($active_carnets_notes!='y')&&($active_cahiers_texte!='y')&&($active_module_trombinoscopes!='y')) {
+	//die("Le module n'est pas activé.");
+	$sql="UPDATE preferences SET value='n' WHERE name='accueil_simpl' AND login='".$_SESSION['login']."';";
+	$res=mysql_query($sql);
+
+	header("Location: ./accueil.php");
+	die();
+}
 
 
 // Préférences des profs à récupérer par la suite dans la table 'preferences':
@@ -152,35 +161,35 @@ echo "<center>\n";
 //Affichage des messages
 $today=mktime(0,0,0,date("m"),date("d"),date("Y"));
 $appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, auteur, destinataires FROM messages
-    WHERE (
-    texte != '' and
-    date_debut <= '".$today."' and
-    date_fin >= '".$today."'
-    )
-    order by id DESC");
+	WHERE (
+	texte != '' and
+	date_debut <= '".$today."' and
+	date_fin >= '".$today."'
+	)
+	order by id DESC");
 $nb_messages = mysql_num_rows($appel_messages);
 $ind = 0;
 $texte_messages = '';
 $affiche_messages = 'no';
 while ($ind < $nb_messages) {
-    $destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
-    if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
-        if ($affiche_messages == 'yes') $texte_messages .= "<hr />";
-        $affiche_messages = 'yes';
-        $content = mysql_result($appel_messages, $ind, 'texte');
-        // Mise en forme du texte
+	$destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
+	if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
+		if ($affiche_messages == 'yes') $texte_messages .= "<hr />";
+		$affiche_messages = 'yes';
+		$content = mysql_result($appel_messages, $ind, 'texte');
+		// Mise en forme du texte
 //        $auteur1 = mysql_result($appel_messages, $ind, 'auteur');
 //        $nom_auteur = sql_query1("SELECT nom from utilisateurs where login = '".$auteur1."'");
 //        $prenom_auteur = sql_query1("SELECT prenom from utilisateurs where login = '".$auteur1."'");
 //        $texte_messages .= "<span class='small'>Message de </span>: ".$prenom_auteur." ".$nom_auteur;
-        $texte_messages .= $content;
-    }
-    $ind++;
+		$texte_messages .= $content;
+	}
+	$ind++;
 }
 if ($affiche_messages == 'yes') {
-    echo "<table id='messagerie' summary=\"Ce tableau contient les informations sur lesquelles on souhaite attirer l'attention\">\n";
-    echo "<tr><td>".$texte_messages;
-    echo "</td></tr></table>\n";
+	echo "<table id='messagerie' summary=\"Ce tableau contient les informations sur lesquelles on souhaite attirer l'attention\">\n";
+	echo "<tr><td>".$texte_messages;
+	echo "</td></tr></table>\n";
 }
 
 // Récupérer le nombre max de périodes
@@ -387,12 +396,12 @@ echo "<script type='text/javascript'>
 		}
 	}
 
-    var fen;
-    function ouvre_popup_visu_groupe(id_groupe,id_classe){
-        //eval(\"fen=window.open('../groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=300,height=400,menubar=yes,scrollbars=yes')\");
-        eval(\"fen=window.open('groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=300,height=400,menubar=yes,scrollbars=yes')\");
-        setTimeout('fen.focus()',500);
-    }
+	var fen;
+	function ouvre_popup_visu_groupe(id_groupe,id_classe){
+		//eval(\"fen=window.open('../groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=300,height=400,menubar=yes,scrollbars=yes')\");
+		eval(\"fen=window.open('groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=300,height=400,menubar=yes,scrollbars=yes')\");
+		setTimeout('fen.focus()',500);
+	}
 
 </script>\n";
 
@@ -447,19 +456,22 @@ if($colspan>0){
 echo "<table class='contenu' summary=\"Tableau de la liste des enseignements avec les liens vers le Carnet de notes, les bulletins, les graphes,...\">\n";
 echo "<tr>\n";
 echo "<th";
-if($colspan>0){echo " rowspan='3'";}
+//if($colspan>0){echo " rowspan='3'";}
+if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0)){echo " rowspan='3'";}
 echo ">\n";
 echo "Groupe</th>\n";
 
 echo "<th";
-if($colspan>0){echo " rowspan='3'";}
+//if($colspan>0){echo " rowspan='3'";}
+if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0)){echo " rowspan='3'";}
 echo ">\n";
 echo "Classes</th>\n";
 
 //if($active_cahiers_texte=="y"){
 if(($active_cahiers_texte=="y")&&($pref_accueil_ct=="y")){
 	echo "<th";
-	if($colspan>0){echo " rowspan='3'";}
+	//if($colspan>0){echo " rowspan='3'";}
+	if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0)){echo " rowspan='3'";}
 	echo ">\n";
 	echo "Cahier de Textes\n";
 	echo "</th>\n";
@@ -469,7 +481,8 @@ if(($active_cahiers_texte=="y")&&($pref_accueil_ct=="y")){
 //if($active_module_trombinoscopes=="y"){
 if(($active_module_trombinoscopes=="y")&&($pref_accueil_trombino=="y")){
 	echo "<th";
-	if($colspan>0){echo " rowspan='3'";}
+	//if($colspan>0){echo " rowspan='3'";}
+	if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0)){echo " rowspan='3'";}
 	echo ">\n";
 	echo "Trombino<br />scope\n";
 	echo "</th>\n";
@@ -478,181 +491,184 @@ if(($active_module_trombinoscopes=="y")&&($pref_accueil_trombino=="y")){
 //echo "count(\$tab_noms_periodes)=".count($tab_noms_periodes)."<br />";
 //echo "\$maxper=$maxper<br />";
 
-if($colspan>0){
-	if(count($tab_noms_periodes)!=$maxper) {
-		for($i=1;$i<=$maxper;$i++){
-			//echo "<th colspan='$colspan'>";
-			echo "<th colspan='".$colspan_per[$i]."'>";
-			/*
-			if($affiche_periode[$i]=="y"){
-				echo "Période $i";
+if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")){
+	if($colspan>0){
+		if(count($tab_noms_periodes)!=$maxper) {
+			for($i=1;$i<=$maxper;$i++){
+				//echo "<th colspan='$colspan'>";
+				echo "<th colspan='".$colspan_per[$i]."'>";
+				/*
+				if($affiche_periode[$i]=="y"){
+					echo "Période $i";
+				}
+				else{
+				*/
+					echo "<span id='h_lien_affiche_$i'>";
+					echo "<a href='#' onClick=\"modif_col($i,'affiche');return false;\">";
+					echo "P$i";
+					echo "</a>";
+					echo "</span>\n";
+	
+					echo "<span id='h_lien_cache_$i'>";
+					echo "<a href='#' onClick=\"modif_col($i,'cache');return false;\">";
+					echo "Période $i";
+					echo "</a>";
+					echo "</span>\n";
+				//}
+				echo "</th>\n";
 			}
-			else{
-			*/
-				echo "<span id='h_lien_affiche_$i'>";
-				echo "<a href='#' onClick=\"modif_col($i,'affiche');return false;\">";
-				echo "P$i";
-				echo "</a>";
-				echo "</span>\n";
-
-				echo "<span id='h_lien_cache_$i'>";
-				echo "<a href='#' onClick=\"modif_col($i,'cache');return false;\">";
-				echo "Période $i";
-				echo "</a>";
-				echo "</span>\n";
-			//}
-			echo "</th>\n";
 		}
-	}
-	else{
-		for($i=0;$i<count($tab_noms_periodes);$i++){
-			$j=$i+1;
-			//echo "<th colspan='$colspan'>";
-			echo "<th colspan='".$colspan_per[$j]."'>";
-			/*
-			if($affiche_periode[$j]=="y"){
-				echo "$tab_noms_periodes[$i]";
+		else{
+			for($i=0;$i<count($tab_noms_periodes);$i++){
+				$j=$i+1;
+				//echo "<th colspan='$colspan'>";
+				echo "<th colspan='".$colspan_per[$j]."'>";
+				/*
+				if($affiche_periode[$j]=="y"){
+					echo "$tab_noms_periodes[$i]";
+				}
+				else{
+					echo "P$j\n";
+				}
+				*/
+					echo "<span id='h_lien_affiche_$j'>";
+					echo "<a href='#' onClick=\"modif_col($j,'affiche');return false;\">";
+					echo "P$j";
+					echo "</a>";
+					echo "</span>\n";
+	
+					echo "<span id='h_lien_cache_$j'>";
+					echo "<a href='#' onClick=\"modif_col($j,'cache');return false;\">";
+					echo $tab_noms_periodes[$i];
+					echo "</a>";
+					echo "</span>\n";
+				echo "</th>\n";
 			}
-			else{
-				echo "P$j\n";
-			}
-			*/
-				echo "<span id='h_lien_affiche_$j'>";
-				echo "<a href='#' onClick=\"modif_col($j,'affiche');return false;\">";
-				echo "P$j";
-				echo "</a>";
-				echo "</span>\n";
-
-				echo "<span id='h_lien_cache_$j'>";
-				echo "<a href='#' onClick=\"modif_col($j,'cache');return false;\">";
-				echo $tab_noms_periodes[$i];
-				echo "</a>";
-				echo "</span>\n";
-			echo "</th>\n";
 		}
 	}
 }
-
 echo "</tr>\n";
 
 
-//$test_acces_bull_simp=array();
-if($colspan>0){
-	echo "<tr>\n";
-	for($i=1;$i<=$maxper;$i++){
-		//if($affiche_periode[$i]=="y"){
-		if($pref_accueil_cn=="y"){
-			echo "<th rowspan='2'>\n";
-			echo "<span id='h_cn_$i'>Carnet de notes</span>\n";
-			echo "</th>\n";
-		}
-
-		if($pref_accueil_bull=="y"){
-			echo "<th colspan='2'>\n";
-			echo "<span id='h_b_$i'>Bulletin</span>\n";
-			echo "</th>\n";
-		}
-
-		if($pref_accueil_visu=="y"){
-			/*
-			$test_acces_bull_simp[$i]="n";
-			for($k=0;$k<count($groups);$k++){
-				if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
-					$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
-											j_groupes_professeurs jgp
-									WHERE jeg.id_groupe= jgp.id_groupe AND
-											jeg.periode='$j' AND
-											jgp.login='".$_SESSION['login']."';";
-					$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
-					if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
-				}
-
-				if((getSettingValue("GepiAccesBulletinSimplePP") == "yes")&&($test_acces_bull_simp[$i]=="n")) {
-					$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
-													j_eleves_professeurs jep
-											WHERE jep.login=jeg.login AND
-													jeg.periode='$i' AND
-													jep.professeur='".$_SESSION['login']."';";
-					$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
-					if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
-				}
-			}
-			*/
-
-			if($test_acces_bull_simp[$i]=="y") {
-				echo "<th colspan='2'>\n";
-			}
-			else {
-				echo "<th>\n";
-			}
-			echo "<span id='h_v_$i'>Visualisation</span>\n";
-			echo "</th>\n";
-		}
-
-		if($pref_accueil_liste_pdf=="y"){
-			echo "<th rowspan='2'>\n";
-			echo "<span id='h_liste_pdf_$i'>Liste PDF</span>\n";
-			echo "</th>\n";
-		}
-	}
-	echo "</tr>\n";
-}
-
-//$test_acces_bull_simp=array();
-if($colspan>0){
-	echo "<tr>\n";
-	for($i=1;$i<=$maxper;$i++){
-		//if($affiche_periode[$i]=="y"){
-		if($pref_accueil_bull=="y"){
-			echo "<th>\n";
-			echo "<span id='h_bn_$i'>Notes</span>";
-			echo "</th>\n";
-
-			echo "<th>\n";
-			echo "<span id='h_ba_$i'>Appr.</span>";
-			echo "</th>\n";
-		}
-
-		if($pref_accueil_visu=="y"){
-			echo "<th>\n";
-			echo "<span id='h_g_$i'>Graphe</span>";
-			echo "</th>\n";
-
-			/*
-			$test_acces_bull_simp[$i]="n";
-			for($k=0;$k<count($groups);$k++){
-				if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
-					$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
-											j_groupes_professeurs jgp
-									WHERE jeg.id_groupe= jgp.id_groupe AND
-											jeg.periode='$j' AND
-											jgp.login='".$_SESSION['login']."';";
-					$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
-					if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
-				}
-
-				if((getSettingValue("GepiAccesBulletinSimplePP") == "yes")&&($test_acces_bull_simp[$i]=="n")) {
-					$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
-													j_eleves_professeurs jep
-											WHERE jep.login=jeg.login AND
-													jeg.periode='$i' AND
-													jep.professeur='".$_SESSION['login']."';";
-					$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
-					if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
-				}
-			}
-			*/
-
-			if($test_acces_bull_simp[$i]=="y") {
-				echo "<th>\n";
-				echo "<span id='h_bs_$i'>Bull.Simp</span>";
+if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")){
+	//$test_acces_bull_simp=array();
+	if($colspan>0){
+		echo "<tr>\n";
+		for($i=1;$i<=$maxper;$i++){
+			//if($affiche_periode[$i]=="y"){
+			if($pref_accueil_cn=="y"){
+				echo "<th rowspan='2'>\n";
+				echo "<span id='h_cn_$i'>Carnet de notes</span>\n";
 				echo "</th>\n";
 			}
-
+	
+			if($pref_accueil_bull=="y"){
+				echo "<th colspan='2'>\n";
+				echo "<span id='h_b_$i'>Bulletin</span>\n";
+				echo "</th>\n";
+			}
+	
+			if($pref_accueil_visu=="y"){
+				/*
+				$test_acces_bull_simp[$i]="n";
+				for($k=0;$k<count($groups);$k++){
+					if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
+						$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+												j_groupes_professeurs jgp
+										WHERE jeg.id_groupe= jgp.id_groupe AND
+												jeg.periode='$j' AND
+												jgp.login='".$_SESSION['login']."';";
+						$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
+						if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
+					}
+	
+					if((getSettingValue("GepiAccesBulletinSimplePP") == "yes")&&($test_acces_bull_simp[$i]=="n")) {
+						$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+														j_eleves_professeurs jep
+												WHERE jep.login=jeg.login AND
+														jeg.periode='$i' AND
+														jep.professeur='".$_SESSION['login']."';";
+						$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
+						if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
+					}
+				}
+				*/
+	
+				if($test_acces_bull_simp[$i]=="y") {
+					echo "<th colspan='2'>\n";
+				}
+				else {
+					echo "<th>\n";
+				}
+				echo "<span id='h_v_$i'>Visualisation</span>\n";
+				echo "</th>\n";
+			}
+	
+			if($pref_accueil_liste_pdf=="y"){
+				echo "<th rowspan='2'>\n";
+				echo "<span id='h_liste_pdf_$i'>Liste PDF</span>\n";
+				echo "</th>\n";
+			}
 		}
-		//}
+		echo "</tr>\n";
 	}
-	echo "</tr>\n";
+	
+	//$test_acces_bull_simp=array();
+	if($colspan>0){
+		echo "<tr>\n";
+		for($i=1;$i<=$maxper;$i++){
+			//if($affiche_periode[$i]=="y"){
+			if($pref_accueil_bull=="y"){
+				echo "<th>\n";
+				echo "<span id='h_bn_$i'>Notes</span>";
+				echo "</th>\n";
+	
+				echo "<th>\n";
+				echo "<span id='h_ba_$i'>Appr.</span>";
+				echo "</th>\n";
+			}
+	
+			if($pref_accueil_visu=="y"){
+				echo "<th>\n";
+				echo "<span id='h_g_$i'>Graphe</span>";
+				echo "</th>\n";
+	
+				/*
+				$test_acces_bull_simp[$i]="n";
+				for($k=0;$k<count($groups);$k++){
+					if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
+						$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+												j_groupes_professeurs jgp
+										WHERE jeg.id_groupe= jgp.id_groupe AND
+												jeg.periode='$j' AND
+												jgp.login='".$_SESSION['login']."';";
+						$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
+						if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
+					}
+	
+					if((getSettingValue("GepiAccesBulletinSimplePP") == "yes")&&($test_acces_bull_simp[$i]=="n")) {
+						$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+														j_eleves_professeurs jep
+												WHERE jep.login=jeg.login AND
+														jeg.periode='$i' AND
+														jep.professeur='".$_SESSION['login']."';";
+						$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
+						if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
+					}
+				}
+				*/
+	
+				if($test_acces_bull_simp[$i]=="y") {
+					echo "<th>\n";
+					echo "<span id='h_bs_$i'>Bull.Simp</span>";
+					echo "</th>\n";
+				}
+	
+			}
+			//}
+		}
+		echo "</tr>\n";
+	}
 }
 
 // https://127.0.0.1/steph/gepi-trunk/cahier_texte/index.php?id_groupe=29&year=2007&month=6&day=30&edit_devoir=
@@ -818,382 +834,383 @@ for($i=0;$i<count($groups);$i++){
 
 
 
-	if($colspan>0){
-		for($j=1;$j<=count($groups[$i]["periodes"]);$j++){
-
-			//if($affiche_periode[$j]=="y"){
-				$statut_verrouillage=$groups[$i]["classe"]["ver_periode"]["all"][$j];
-				if($statut_verrouillage==0){
-					//$couleur=" bgcolor='gray'";
-					$class_style="verrouillagetot";
-				}
-				elseif($statut_verrouillage==3){
-					//$couleur=" bgcolor='lightgreen'";
-					$class_style="deverrouille";
-				}
-				else{
-					//$couleur=" bgcolor='silver'";
-					$class_style="verrouillagepart";
-				}
-
-				// Saisie de notes dans le carnet de notes:
-				//echo "<td class='$class_style'><a href='index.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."'><img src='../images/icons/notes1.png' width='16' height='16' alt='Saisie de notes' border='0' /></a></td>\n";
-				if($pref_accueil_cn=="y"){
-					echo "<td class='$class_style'>\n";
-					echo "<div id='h_cn_".$i."_".$j."'>";
-					//echo "<a href='index.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."'>";
-					echo "<a href='cahier_notes/index.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."'";
-					if($pref_accueil_infobulles=="y"){
-						echo " onmouseover=\"afficher_div('info_cn_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\"";
+	if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")){
+		if($colspan>0){
+			for($j=1;$j<=count($groups[$i]["periodes"]);$j++){
+	
+				//if($affiche_periode[$j]=="y"){
+					$statut_verrouillage=$groups[$i]["classe"]["ver_periode"]["all"][$j];
+					if($statut_verrouillage==0){
+						//$couleur=" bgcolor='gray'";
+						$class_style="verrouillagetot";
 					}
-					echo ">";
-
-					//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
-						//echo "<img src='../images/icons/carnet_notes.png' width='32' height='32' alt='Saisie de notes' border='0' />";
-						echo "<img src='images/icons/carnet_notes.png' width='32' height='32' alt='Saisie de notes' border='0' />";
-					/*
+					elseif($statut_verrouillage==3){
+						//$couleur=" bgcolor='lightgreen'";
+						$class_style="deverrouille";
 					}
-					if($accueil_aff_txt_icon==3){
-						echo "<br />";
+					else{
+						//$couleur=" bgcolor='silver'";
+						$class_style="verrouillagepart";
 					}
-					if($accueil_aff_txt_icon>=2){
-						echo "Saisie de notes sur le carnet de notes";
-					}
-					*/
-					echo "</a>";
-
-					if($pref_accueil_infobulles=="y"){
-						//echo "<div id='info_cn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\">Cet outil vous permet de constituer un carnet de notes pour saisir les notes de toutes vos évaluations du groupe ".htmlentities($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-						echo "<div id='info_cn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\">Carnet de notes de ".htmlentities($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-
-						$tab_liste_infobulles[]='info_cn_'.$i.'_'.$j;
-					}
-
-					/*
-					echo "<script type='text/javascript'>
-	cacher_div('info_cn_".$i."_".$j."');
-</script>\n";
-					*/
-					echo "</div>\n";
-					echo "</td>\n";
-				}
-
-
-				if($pref_accueil_bull=="y"){
-					// Calcul du nombre de notes et du nombre d'appréciations présentes sur le bulletin
-					$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='".$groups[$i]['id']."' AND periode='".$groups[$i]['periodes'][$j]['num_periode']."';";
-					// AND statut='' ?
-					$test=mysql_query($sql);
-					$nb_notes_bulletin=mysql_num_rows($test);
-
-					$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='".$groups[$i]['id']."' AND periode='".$groups[$i]['periodes'][$j]['num_periode']."';";
-					// AND statut='' ?
-					$test=mysql_query($sql);
-					$nb_app_bulletin=mysql_num_rows($test);
-
-					$effectif_groupe=count($groups[$i]["eleves"][$groups[$i]['periodes'][$j]['num_periode']]["users"]);
-
-
-					// Note sur le bulletin:
-					//echo "<td class='$class_style'><a href='../saisie/saisie_notes.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'><img src='../images/icons/bulletin.png' width='32' height='34' alt='Notes' border='0' /></a>";
-					echo "<td class='$class_style'>\n";
-					echo "<div id='h_bn_".$i."_".$j."'>";
-					//echo "<a href='../saisie/saisie_notes.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'>";
-					//echo "<a href='saisie/saisie_notes.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'";
-					echo "<a href='saisie/saisie_notes.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."'";
-					if($pref_accueil_infobulles=="y"){
-						echo " onmouseover=\"afficher_div('info_bn_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_bn_".$i."_".$j."');\"";
-					}
-					echo ">";
-
-					//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
-						//echo "<img src='../images/icons/bulletin.png' width='32' height='34' alt='Notes' border='0' />";
-						echo "<img src='images/icons/bulletin.png' width='32' height='34' alt='Notes' border='0' />";
-					/*
-					}
-					if($accueil_aff_txt_icon==3){
-						echo "<br />";
-					}
-					if($accueil_aff_txt_icon>=2){
-						echo "Saisie de notes sur le bulletin";
-					}
-					*/
-					echo "</a>";
-
-					echo "<br />\n";
-					echo "<span style='font-size: xx-small;'>";
-					//if($nb_notes_bulletin==$effectif_groupe){echo "<font color='green'>";}else{echo "<font color='red'>";}
-					if($nb_notes_bulletin==$effectif_groupe){echo "<span class='saisies_effectuees'>";}else{echo "<span class='saisies_manquantes'>";}
-					echo "($nb_notes_bulletin/$effectif_groupe)";
-					//echo "</font>";
-					echo "</span>";
-					echo "</span>";
-
-					if($pref_accueil_infobulles=="y"){
-						//echo "<div id='info_bn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_bn_".$i."_".$j."');\">Cet outil permet de saisir les moyennes du bulletin du groupe ".htmlentities($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-						echo "<div id='info_bn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 15em;' onmouseout=\"cacher_div('info_bn_".$i."_".$j."');\">Saisie des moyennes ".htmlentities($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-
-						$tab_liste_infobulles[]='info_bn_'.$i.'_'.$j;
-					}
-
-					/*
-					echo "<script type='text/javascript'>
-	cacher_div('info_bn_".$i."_".$j."');
-</script>\n";
-					*/
-					echo "</div>\n";
-					echo "</td>\n";
-
-
-					// Appréciation sur le bulletin:
-					//echo "<td class='$class_style'><a href='../saisie/saisie_appreciations.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'><img src='../images/icons/bulletin.png' width='32' height='34' alt='Appréciations' border='0' /></a>";
-					echo "<td class='$class_style'>\n";
-					echo "<div id='h_ba_".$i."_".$j."'>";
-					//echo "<a href='../saisie/saisie_appreciations.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'>";
-					//echo "<a href='saisie/saisie_appreciations.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'";
-					echo "<a href='saisie/saisie_appreciations.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."'";
-					if($pref_accueil_infobulles=="y"){
-						echo " onmouseover=\"afficher_div('info_ba_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_ba_".$i."_".$j."');\"";
-					}
-					echo ">";
-
-					//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
-						//echo "<img src='../images/icons/bulletin.png' width='32' height='34' alt='Appréciations' border='0' />";
-						echo "<img src='images/icons/bulletin.png' width='32' height='34' alt='Appréciations' border='0' />";
-					/*
-					}
-					if($accueil_aff_txt_icon==3){
-						echo "<br />";
-					}
-					if($accueil_aff_txt_icon>=2){
-						echo "Saisie des appréciations sur le bulletin";
-					}
-					*/
-					echo "</a>";
-					echo "<br />\n";
-
-					echo "<span style='font-size: xx-small;'>";
-					//if($nb_app_bulletin==$effectif_groupe){echo "<font color='green'>";}else{echo "<font color='red'>";}
-					if($nb_app_bulletin==$effectif_groupe){echo "<span class='saisies_effectuees'>";}else{echo "<span class='saisies_manquantes'>";}
-					echo "($nb_app_bulletin/$effectif_groupe)";
-					//echo "</font>";
-					echo "</span>";
-					echo "</span>";
-
-
-					if($pref_accueil_infobulles=="y"){
-						//echo "<div id='info_ba_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_ba_".$i."_".$j."');\">Cet outil permet de saisir les appréciations du bulletin du groupe ".htmlentities($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-						echo "<div id='info_ba_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 15em;' onmouseout=\"cacher_div('info_ba_".$i."_".$j."');\">Saisie des appréciations ".htmlentities($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-
-						$tab_liste_infobulles[]='info_ba_'.$i.'_'.$j;
-					}
-
-					/*
-					echo "<script type='text/javascript'>
-	cacher_div('info_ba_".$i."_".$j."');
-</script>\n";
-					*/
-					echo "</div>\n";
-					echo "</td>\n";
-				}
-
-
-				if($pref_accueil_visu=="y"){
-					// Graphe:
-					echo "<td class='$class_style'>\n";
-					echo "<div id='h_g_".$i."_".$j."'>";
-					$cpt=0;
-					foreach($groups[$i]["classes"]["classes"] as $classe){
-						if($cpt>0){echo "<br />\n";}
-						//echo "<a href='../visualisation/affiche_eleve.php?id_classe=".$classe['id']."'>";
-						echo "<a href='visualisation/affiche_eleve.php?id_classe=".$classe['id']."'";
+	
+					// Saisie de notes dans le carnet de notes:
+					//echo "<td class='$class_style'><a href='index.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."'><img src='../images/icons/notes1.png' width='16' height='16' alt='Saisie de notes' border='0' /></a></td>\n";
+					if($pref_accueil_cn=="y"){
+						echo "<td class='$class_style'>\n";
+						echo "<div id='h_cn_".$i."_".$j."'>";
+						//echo "<a href='index.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."'>";
+						echo "<a href='cahier_notes/index.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."'";
 						if($pref_accueil_infobulles=="y"){
-							echo " onmouseover=\"afficher_div('info_graphe_".$i."_".$j."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_graphe_".$i."_".$j."_".$cpt."');\"";
+							echo " onmouseover=\"afficher_div('info_cn_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\"";
 						}
 						echo ">";
-
+	
 						//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
-							//echo "<img src='../images/icons/graphes.png' width='32' height='32' alt='Graphe' border='0' />";
-							echo "<img src='images/icons/graphes.png' width='32' height='32' alt='Graphe' border='0' />";
+							//echo "<img src='../images/icons/carnet_notes.png' width='32' height='32' alt='Saisie de notes' border='0' />";
+							echo "<img src='images/icons/carnet_notes.png' width='32' height='32' alt='Saisie de notes' border='0' />";
 						/*
 						}
 						if($accueil_aff_txt_icon==3){
 							echo "<br />";
 						}
 						if($accueil_aff_txt_icon>=2){
-							echo "Visualisation graphique";
-							if(count($groups[$i]["classes"]["classes"])>1){echo " de";}
+							echo "Saisie de notes sur le carnet de notes";
 						}
 						*/
-						if(count($groups[$i]["classes"]["classes"])>1){echo " ".$classe['classe'];}
-
-						echo "</a>\n";
-
-
+						echo "</a>";
+	
 						if($pref_accueil_infobulles=="y"){
-							//echo "<div id='info_graphe_".$i."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_graphe_".$i."_".$j."_".$cpt."');\">Visualisation graphique des résultats des élèves de la classe de ".$classe['classe']." pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-							echo "<div id='info_graphe_".$i."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 10em;' onmouseout=\"cacher_div('info_graphe_".$i."_".$j."_".$cpt."');\">Outil graphique<br />".$classe['classe']."<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-
-							$tab_liste_infobulles[]='info_graphe_'.$i.'_'.$j.'_'.$cpt;
+							//echo "<div id='info_cn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\">Cet outil vous permet de constituer un carnet de notes pour saisir les notes de toutes vos évaluations du groupe ".htmlentities($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+							echo "<div id='info_cn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\">Carnet de notes de ".htmlentities($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+	
+							$tab_liste_infobulles[]='info_cn_'.$i.'_'.$j;
 						}
-
+	
 						/*
 						echo "<script type='text/javascript'>
-	cacher_div('info_graphe_".$i."_".$j."_".$cpt."');
-</script>\n";
+		cacher_div('info_cn_".$i."_".$j."');
+	</script>\n";
 						*/
-						$cpt++;
-					}
-					echo "</div>\n";
-					echo "</td>\n";
-
-
-					// Bulletin simplifié:
-					// https://127.0.0.1/steph/gepi-trunk/prepa_conseil/index3.php?id_classe=4
-					// https://127.0.0.1/steph/gepi-trunk/prepa_conseil/edit_limite.php
-					// <input type=\"radio\" name=\"choix_edit\" value=\"1\" checked />
-					// <select onchange=\"change_periode()\" size=1 name=\"periode1\">
-					// <select size=1 name=\"periode2\">
-					// <input type=hidden name=id_classe value=$id_classe />
-
-					if($test_acces_bull_simp[$j]=="y") {
-						echo "<td class='$class_style'>\n";
-						echo "<div id='h_bs_".$i."_".$j."'>";
-						$cpt=0;
-						foreach($groups[$i]["classes"]["classes"] as $classe){
-							if($cpt>0){echo "<br />\n";}
-
-							$affiche_bull_simp_cette_classe="n";
-
-							if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
-								$affiche_bull_simp_cette_classe="y";
-							}
-							elseif(getSettingValue("GepiAccesBulletinSimplePP") == "yes") {
-								$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
-															j_eleves_professeurs jep,
-															j_eleves_classes jec
-														WHERE jep.login=jeg.login AND
-																jec.login=jeg.login AND
-																jec.periode=jeg.periode AND
-																jeg.periode='$j' AND
-																jec.id_classe='".$classe['id']."' AND
-																jep.professeur='".$_SESSION['login']."';";
-								$res_test_affiche_bull_simp_cette_classe=mysql_num_rows(mysql_query($sql));
-								//echo "$sql";
-								if($res_test_affiche_bull_simp_cette_classe>0) {$affiche_bull_simp_cette_classe="y";}
-							}
-
-							if($affiche_bull_simp_cette_classe=="y") {
-								//echo "<a href='../prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\"><img src='../images/icons/bulletin_simpl.png' width='37' height='34' alt='Bulletin simplifié' border='0' />";
-								//echo "<a href='../prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\">";
-								echo "<a href='prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\"";
-
-								if($pref_accueil_infobulles=="y"){
-									echo " onmouseover=\"afficher_div('info_bs_".$i."_".$j."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_bs_".$i."_".$j."_".$cpt."');\"";
-								}
-								echo ">";
-
-								//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
-									//echo "<img src='../images/icons/bulletin_simp.png' width='34' height='34' alt='Bulletin simplifié' border='0' />";
-									echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Bulletin simplifié' border='0' />";
-								/*
-								}
-								if($accueil_aff_txt_icon==3){
-									echo "<br />";
-								}
-								if($accueil_aff_txt_icon>=2){
-									echo "Visualisation graphique";
-									if(count($groups[$i]["classes"]["classes"])>1){echo " de";}
-								}
-								*/
-								if(count($groups[$i]["classes"]["classes"])>1){echo " ".$classe['classe'];}
-
-								echo "</a>\n";
-
-								if($pref_accueil_infobulles=="y"){
-									//echo "<div id='info_bs_".$i."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_bs_".$i."_".$j."_".$cpt."');\">Ceci vous permet de visulaliser les bulletins simplifiés des élèves de la classe de ".$classe['classe']." pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-									echo "<div id='info_bs_".$i."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 10em;' onmouseout=\"cacher_div('info_bs_".$i."_".$j."_".$cpt."');\">Bulletins simplifiés<br />".$classe['classe']."<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-
-									$tab_liste_infobulles[]='info_bs_'.$i.'_'.$j.'_'.$cpt;
-								}
-
-								/*
-								echo "<script type='text/javascript'>
-			cacher_div('info_bs_".$i."_".$j."_".$cpt."');
-		</script>\n";
-								*/
-								$cpt++;
-							}
-
-						}
 						echo "</div>\n";
 						echo "</td>\n";
 					}
+	
+	
+					if($pref_accueil_bull=="y"){
+						// Calcul du nombre de notes et du nombre d'appréciations présentes sur le bulletin
+						$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='".$groups[$i]['id']."' AND periode='".$groups[$i]['periodes'][$j]['num_periode']."';";
+						// AND statut='' ?
+						$test=mysql_query($sql);
+						$nb_notes_bulletin=mysql_num_rows($test);
+	
+						$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='".$groups[$i]['id']."' AND periode='".$groups[$i]['periodes'][$j]['num_periode']."';";
+						// AND statut='' ?
+						$test=mysql_query($sql);
+						$nb_app_bulletin=mysql_num_rows($test);
+	
+						$effectif_groupe=count($groups[$i]["eleves"][$groups[$i]['periodes'][$j]['num_periode']]["users"]);
+	
+	
+						// Note sur le bulletin:
+						//echo "<td class='$class_style'><a href='../saisie/saisie_notes.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'><img src='../images/icons/bulletin.png' width='32' height='34' alt='Notes' border='0' /></a>";
+						echo "<td class='$class_style'>\n";
+						echo "<div id='h_bn_".$i."_".$j."'>";
+						//echo "<a href='../saisie/saisie_notes.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'>";
+						//echo "<a href='saisie/saisie_notes.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'";
+						echo "<a href='saisie/saisie_notes.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."'";
+						if($pref_accueil_infobulles=="y"){
+							echo " onmouseover=\"afficher_div('info_bn_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_bn_".$i."_".$j."');\"";
+						}
+						echo ">";
+	
+						//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
+							//echo "<img src='../images/icons/bulletin.png' width='32' height='34' alt='Notes' border='0' />";
+							echo "<img src='images/icons/bulletin.png' width='32' height='34' alt='Notes' border='0' />";
+						/*
+						}
+						if($accueil_aff_txt_icon==3){
+							echo "<br />";
+						}
+						if($accueil_aff_txt_icon>=2){
+							echo "Saisie de notes sur le bulletin";
+						}
+						*/
+						echo "</a>";
+	
+						echo "<br />\n";
+						echo "<span style='font-size: xx-small;'>";
+						//if($nb_notes_bulletin==$effectif_groupe){echo "<font color='green'>";}else{echo "<font color='red'>";}
+						if($nb_notes_bulletin==$effectif_groupe){echo "<span class='saisies_effectuees'>";}else{echo "<span class='saisies_manquantes'>";}
+						echo "($nb_notes_bulletin/$effectif_groupe)";
+						//echo "</font>";
+						echo "</span>";
+						echo "</span>";
+	
+						if($pref_accueil_infobulles=="y"){
+							//echo "<div id='info_bn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_bn_".$i."_".$j."');\">Cet outil permet de saisir les moyennes du bulletin du groupe ".htmlentities($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+							echo "<div id='info_bn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 15em;' onmouseout=\"cacher_div('info_bn_".$i."_".$j."');\">Saisie des moyennes ".htmlentities($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+	
+							$tab_liste_infobulles[]='info_bn_'.$i.'_'.$j;
+						}
+	
+						/*
+						echo "<script type='text/javascript'>
+		cacher_div('info_bn_".$i."_".$j."');
+	</script>\n";
+						*/
+						echo "</div>\n";
+						echo "</td>\n";
+	
+	
+						// Appréciation sur le bulletin:
+						//echo "<td class='$class_style'><a href='../saisie/saisie_appreciations.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'><img src='../images/icons/bulletin.png' width='32' height='34' alt='Appréciations' border='0' /></a>";
+						echo "<td class='$class_style'>\n";
+						echo "<div id='h_ba_".$i."_".$j."'>";
+						//echo "<a href='../saisie/saisie_appreciations.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'>";
+						//echo "<a href='saisie/saisie_appreciations.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."&amp;retour_cn=yes'";
+						echo "<a href='saisie/saisie_appreciations.php?id_groupe=".$groups[$i]['id']."&amp;periode_cn=".$groups[$i]['periodes'][$j]['num_periode']."'";
+						if($pref_accueil_infobulles=="y"){
+							echo " onmouseover=\"afficher_div('info_ba_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_ba_".$i."_".$j."');\"";
+						}
+						echo ">";
+	
+						//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
+							//echo "<img src='../images/icons/bulletin.png' width='32' height='34' alt='Appréciations' border='0' />";
+							echo "<img src='images/icons/bulletin.png' width='32' height='34' alt='Appréciations' border='0' />";
+						/*
+						}
+						if($accueil_aff_txt_icon==3){
+							echo "<br />";
+						}
+						if($accueil_aff_txt_icon>=2){
+							echo "Saisie des appréciations sur le bulletin";
+						}
+						*/
+						echo "</a>";
+						echo "<br />\n";
+	
+						echo "<span style='font-size: xx-small;'>";
+						//if($nb_app_bulletin==$effectif_groupe){echo "<font color='green'>";}else{echo "<font color='red'>";}
+						if($nb_app_bulletin==$effectif_groupe){echo "<span class='saisies_effectuees'>";}else{echo "<span class='saisies_manquantes'>";}
+						echo "($nb_app_bulletin/$effectif_groupe)";
+						//echo "</font>";
+						echo "</span>";
+						echo "</span>";
+	
+	
+						if($pref_accueil_infobulles=="y"){
+							//echo "<div id='info_ba_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_ba_".$i."_".$j."');\">Cet outil permet de saisir les appréciations du bulletin du groupe ".htmlentities($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+							echo "<div id='info_ba_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 15em;' onmouseout=\"cacher_div('info_ba_".$i."_".$j."');\">Saisie des appréciations ".htmlentities($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+	
+							$tab_liste_infobulles[]='info_ba_'.$i.'_'.$j;
+						}
+	
+						/*
+						echo "<script type='text/javascript'>
+		cacher_div('info_ba_".$i."_".$j."');
+	</script>\n";
+						*/
+						echo "</div>\n";
+						echo "</td>\n";
+					}
+	
+	
+					if($pref_accueil_visu=="y"){
+						// Graphe:
+						echo "<td class='$class_style'>\n";
+						echo "<div id='h_g_".$i."_".$j."'>";
+						$cpt=0;
+						foreach($groups[$i]["classes"]["classes"] as $classe){
+							if($cpt>0){echo "<br />\n";}
+							//echo "<a href='../visualisation/affiche_eleve.php?id_classe=".$classe['id']."'>";
+							echo "<a href='visualisation/affiche_eleve.php?id_classe=".$classe['id']."'";
+							if($pref_accueil_infobulles=="y"){
+								echo " onmouseover=\"afficher_div('info_graphe_".$i."_".$j."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_graphe_".$i."_".$j."_".$cpt."');\"";
+							}
+							echo ">";
+	
+							//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
+								//echo "<img src='../images/icons/graphes.png' width='32' height='32' alt='Graphe' border='0' />";
+								echo "<img src='images/icons/graphes.png' width='32' height='32' alt='Graphe' border='0' />";
+							/*
+							}
+							if($accueil_aff_txt_icon==3){
+								echo "<br />";
+							}
+							if($accueil_aff_txt_icon>=2){
+								echo "Visualisation graphique";
+								if(count($groups[$i]["classes"]["classes"])>1){echo " de";}
+							}
+							*/
+							if(count($groups[$i]["classes"]["classes"])>1){echo " ".$classe['classe'];}
+	
+							echo "</a>\n";
+	
+	
+							if($pref_accueil_infobulles=="y"){
+								//echo "<div id='info_graphe_".$i."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_graphe_".$i."_".$j."_".$cpt."');\">Visualisation graphique des résultats des élèves de la classe de ".$classe['classe']." pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+								echo "<div id='info_graphe_".$i."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 10em;' onmouseout=\"cacher_div('info_graphe_".$i."_".$j."_".$cpt."');\">Outil graphique<br />".$classe['classe']."<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+	
+								$tab_liste_infobulles[]='info_graphe_'.$i.'_'.$j.'_'.$cpt;
+							}
+	
+							/*
+							echo "<script type='text/javascript'>
+		cacher_div('info_graphe_".$i."_".$j."_".$cpt."');
+	</script>\n";
+							*/
+							$cpt++;
+						}
+						echo "</div>\n";
+						echo "</td>\n";
+	
+	
+						// Bulletin simplifié:
+						// https://127.0.0.1/steph/gepi-trunk/prepa_conseil/index3.php?id_classe=4
+						// https://127.0.0.1/steph/gepi-trunk/prepa_conseil/edit_limite.php
+						// <input type=\"radio\" name=\"choix_edit\" value=\"1\" checked />
+						// <select onchange=\"change_periode()\" size=1 name=\"periode1\">
+						// <select size=1 name=\"periode2\">
+						// <input type=hidden name=id_classe value=$id_classe />
+	
+						if($test_acces_bull_simp[$j]=="y") {
+							echo "<td class='$class_style'>\n";
+							echo "<div id='h_bs_".$i."_".$j."'>";
+							$cpt=0;
+							foreach($groups[$i]["classes"]["classes"] as $classe){
+								if($cpt>0){echo "<br />\n";}
+	
+								$affiche_bull_simp_cette_classe="n";
+	
+								if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
+									$affiche_bull_simp_cette_classe="y";
+								}
+								elseif(getSettingValue("GepiAccesBulletinSimplePP") == "yes") {
+									$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+																j_eleves_professeurs jep,
+																j_eleves_classes jec
+															WHERE jep.login=jeg.login AND
+																	jec.login=jeg.login AND
+																	jec.periode=jeg.periode AND
+																	jeg.periode='$j' AND
+																	jec.id_classe='".$classe['id']."' AND
+																	jep.professeur='".$_SESSION['login']."';";
+									$res_test_affiche_bull_simp_cette_classe=mysql_num_rows(mysql_query($sql));
+									//echo "$sql";
+									if($res_test_affiche_bull_simp_cette_classe>0) {$affiche_bull_simp_cette_classe="y";}
+								}
+	
+								if($affiche_bull_simp_cette_classe=="y") {
+									//echo "<a href='../prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\"><img src='../images/icons/bulletin_simpl.png' width='37' height='34' alt='Bulletin simplifié' border='0' />";
+									//echo "<a href='../prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\">";
+									echo "<a href='prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\"";
+	
+									if($pref_accueil_infobulles=="y"){
+										echo " onmouseover=\"afficher_div('info_bs_".$i."_".$j."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_bs_".$i."_".$j."_".$cpt."');\"";
+									}
+									echo ">";
+	
+									//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
+										//echo "<img src='../images/icons/bulletin_simp.png' width='34' height='34' alt='Bulletin simplifié' border='0' />";
+										echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Bulletin simplifié' border='0' />";
+									/*
+									}
+									if($accueil_aff_txt_icon==3){
+										echo "<br />";
+									}
+									if($accueil_aff_txt_icon>=2){
+										echo "Visualisation graphique";
+										if(count($groups[$i]["classes"]["classes"])>1){echo " de";}
+									}
+									*/
+									if(count($groups[$i]["classes"]["classes"])>1){echo " ".$classe['classe'];}
+	
+									echo "</a>\n";
+	
+									if($pref_accueil_infobulles=="y"){
+										//echo "<div id='info_bs_".$i."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_bs_".$i."_".$j."_".$cpt."');\">Ceci vous permet de visulaliser les bulletins simplifiés des élèves de la classe de ".$classe['classe']." pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+										echo "<div id='info_bs_".$i."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 10em;' onmouseout=\"cacher_div('info_bs_".$i."_".$j."_".$cpt."');\">Bulletins simplifiés<br />".$classe['classe']."<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+	
+										$tab_liste_infobulles[]='info_bs_'.$i.'_'.$j.'_'.$cpt;
+									}
+	
+									/*
+									echo "<script type='text/javascript'>
+				cacher_div('info_bs_".$i."_".$j."_".$cpt."');
+			</script>\n";
+									*/
+									$cpt++;
+								}
+	
+							}
+							echo "</div>\n";
+							echo "</td>\n";
+						}
+					}
+	
+	
+					if($pref_accueil_liste_pdf=="y"){
+						echo "<td class='$class_style'>\n";
+						echo "<div id='h_listes_".$i."_".$j."'>";
+						// ?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."
+						//echo "<a href='../impression/liste_pdf.php' onClick=\"valide_liste_pdf('".$groups[$i]['id']."','".$groups[$i]['periodes'][$j]['num_periode']."'); return false;\" target='_blank'>";
+						echo "<a href='impression/liste_pdf.php' onClick=\"valide_liste_pdf('".$groups[$i]['id']."','".$groups[$i]['periodes'][$j]['num_periode']."'); return false;\" target='_blank'";
+						if($pref_accueil_infobulles=="y"){
+							echo " onmouseover=\"afficher_div('info_liste_pdf_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_liste_pdf_".$i."_".$j."');\"";
+						}
+						echo ">";
+	
+						//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
+							//echo "<img src='../images/icons/bulletin_simp.png' width='34' height='34' alt='Listes PDF' border='0' />";
+							echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Listes PDF' border='0' />";
+						/*
+						}
+						if($accueil_aff_txt_icon==3){
+							echo "<br />";
+						}
+						if($accueil_aff_txt_icon>=2){
+							echo "Liste PDF des élèves";
+						}
+						*/
+						echo "</a>";
+	
+						if($pref_accueil_infobulles=="y"){
+							//echo "<div id='info_liste_pdf_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_liste_pdf_".$i."_".$j."');\">Ceci vous permet d'imprimer en PDF des listes d'élèves de la classe de ".$classe['classe']." pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+							echo "<div id='info_liste_pdf_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 12em;' onmouseout=\"cacher_div('info_liste_pdf_".$i."_".$j."');\">Listes PDF des élèves<br />".$classe['classe']."<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+	
+							$tab_liste_infobulles[]='info_liste_pdf_'.$i.'_'.$j;
+						}
+	
+						/*
+						echo "<script type='text/javascript'>
+		cacher_div('info_liste_pdf_".$i."_".$j."');
+	</script>\n";
+						*/
+						echo "</div>\n";
+						echo "</td>\n";
+					}
+	
+				/*
 				}
-
-
-				if($pref_accueil_liste_pdf=="y"){
-					echo "<td class='$class_style'>\n";
-					echo "<div id='h_listes_".$i."_".$j."'>";
-					// ?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."
-					//echo "<a href='../impression/liste_pdf.php' onClick=\"valide_liste_pdf('".$groups[$i]['id']."','".$groups[$i]['periodes'][$j]['num_periode']."'); return false;\" target='_blank'>";
-					echo "<a href='impression/liste_pdf.php' onClick=\"valide_liste_pdf('".$groups[$i]['id']."','".$groups[$i]['periodes'][$j]['num_periode']."'); return false;\" target='_blank'";
-					if($pref_accueil_infobulles=="y"){
-						echo " onmouseover=\"afficher_div('info_liste_pdf_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_liste_pdf_".$i."_".$j."');\"";
-					}
-					echo ">";
-
-					//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
-						//echo "<img src='../images/icons/bulletin_simp.png' width='34' height='34' alt='Listes PDF' border='0' />";
-						echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Listes PDF' border='0' />";
-					/*
-					}
-					if($accueil_aff_txt_icon==3){
-						echo "<br />";
-					}
-					if($accueil_aff_txt_icon>=2){
-						echo "Liste PDF des élèves";
-					}
-					*/
-					echo "</a>";
-
-					if($pref_accueil_infobulles=="y"){
-						//echo "<div id='info_liste_pdf_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_liste_pdf_".$i."_".$j."');\">Ceci vous permet d'imprimer en PDF des listes d'élèves de la classe de ".$classe['classe']." pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-						echo "<div id='info_liste_pdf_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 12em;' onmouseout=\"cacher_div('info_liste_pdf_".$i."_".$j."');\">Listes PDF des élèves<br />".$classe['classe']."<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-
-						$tab_liste_infobulles[]='info_liste_pdf_'.$i.'_'.$j;
-					}
-
-					/*
-					echo "<script type='text/javascript'>
-	cacher_div('info_liste_pdf_".$i."_".$j."');
-</script>\n";
-					*/
-					echo "</div>\n";
-					echo "</td>\n";
+				else{
+					echo "<td colspan='5'>X</td>\n";
 				}
-
-			/*
+				*/
 			}
-			else{
-				echo "<td colspan='5'>X</td>\n";
-			}
-			*/
-		}
-
-		// On complète les colonnes à laisser vides si jamais, par exemple, on traite une ligne à deux périodes alors que d'autres groupes ont trois périodes donc trois colonnes.
-		for($k=$j;$k<=$maxper;$k++){
-			for($n=0;$n<$colspan;$n++){
+	
+			// On complète les colonnes à laisser vides si jamais, par exemple, on traite une ligne à deux périodes alors que d'autres groupes ont trois périodes donc trois colonnes.
+			for($k=$j;$k<=$maxper;$k++){
+				for($n=0;$n<$colspan;$n++){
+					echo "<td>-</td>\n";
+				}
+				/*
 				echo "<td>-</td>\n";
+				echo "<td>-</td>\n";
+				echo "<td>-</td>\n";
+				*/
 			}
-			/*
-			echo "<td>-</td>\n";
-			echo "<td>-</td>\n";
-			echo "<td>-</td>\n";
-			*/
 		}
 	}
-
 
 	echo "</tr>\n";
 	flush();
