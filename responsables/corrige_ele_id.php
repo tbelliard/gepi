@@ -851,17 +851,22 @@ else{
 				if(isset($ele_id)) {
 					//for($i=0;$i<count($ele_id);$i++){
 					for($i=0;$i<$nb_ele_id;$i++){
-						$sql="DELETE FROM temp_gep_import2 WHERE elenoet='$elenoet[$i]';";
+						//$sql="DELETE FROM temp_gep_import2 WHERE elenoet='$elenoet[$i]';";
+						$sql="DELETE FROM temp_gep_import2 WHERE elenoet='$elenoet[$i]' OR elenoet='".sprintf("%05d",$elenoet[$i])."';";
+						affiche_debug("$sql<br />\n");
 						$nettoyage=mysql_query($sql);
 
 						if($elenoet[$i]!='') {
 							if((isset($ele_id[$i]))&&($ele_id[$i]!='')) {
 								//$sql="INSERT INTO tempo2 SET col1='$ele_id[$i]', col2='$elenoet[$i]';";
 								// Ou on fait les corrections dès maintenant.
-								$sql="UPDATE eleves SET ele_id='$ele_id[$i]' WHERE elenoet='$elenoet[$i]';";
+								//$sql="UPDATE eleves SET ele_id='$ele_id[$i]' WHERE elenoet='$elenoet[$i]';";
+								$sql="UPDATE eleves SET ele_id='$ele_id[$i]' WHERE elenoet='$elenoet[$i]' OR elenoet='".sprintf("%05d",$elenoet[$i])."';";
+								affiche_debug("$sql<br />\n");
 								$correction1=mysql_query($sql);
 
 								$sql="UPDATE responsables2 SET ele_id='$ele_id[$i]' WHERE ele_id='$old_ele_id[$i]';";
+								affiche_debug("$sql<br />\n");
 								$correction2=mysql_query($sql);
 								$cpt++;
 							}
@@ -875,7 +880,9 @@ else{
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "<input type='hidden' name='step' value='2' />\n";
 
-			$sql="SELECT e.login,e.nom,e.prenom,e.naissance,e.sexe,e.elenoet, e.ele_id AS old_ele_id,t.ele_id FROM eleves e, temp_gep_import2 t WHERE e.elenoet=t.elenoet AND e.ele_id!=t.ele_id ORDER BY e.nom, e.prenom LIMIT 20;";
+			//$sql="SELECT e.login,e.nom,e.prenom,e.naissance,e.sexe,e.elenoet, e.ele_id AS old_ele_id,t.ele_id FROM eleves e, temp_gep_import2 t WHERE e.elenoet=t.elenoet AND e.ele_id!=t.ele_id ORDER BY e.nom, e.prenom LIMIT 20;";
+			$sql="SELECT e.login,e.nom,e.prenom,e.naissance,e.sexe,e.elenoet, e.ele_id AS old_ele_id,t.ele_id FROM eleves e, temp_gep_import2 t WHERE LPAD(e.elenoet,5,'0')=LPAD(t.elenoet,5,'0') AND e.ele_id!=t.ele_id ORDER BY e.nom, e.prenom LIMIT 20;";
+			affiche_debug("$sql<br />\n");
 			$res=mysql_query($sql);
 
 			if(mysql_num_rows($res)==0){
