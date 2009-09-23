@@ -219,7 +219,7 @@
 			echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-			echo "<p>Veuillez fournir le fichier XML: \n";
+			echo "<p>Veuillez fournir le fichier XML <b>sts_emp_<i>RNE</i>_<i>ANNEE</i>.xml</b>&nbsp;: \n";
 			echo "<p><input type=\"file\" size=\"65\" name=\"xml_file\" />\n";
 			echo "<p><input type=\"hidden\" name=\"step\" value=\"0\" />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
