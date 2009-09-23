@@ -266,15 +266,16 @@ function updateDivModification() {
 		compte_rendu_en_cours_de_modification($F('div_id_ct'));
 	}
 }
-function compte_rendu_en_cours_de_modification(id_ct) {
-	var tabdiv=document.getElementsByTagName("div");
-    for(var i=0; i < tabdiv.length; i++){
-      if (tabdiv[i].identify().match('compte_rendu_en_cours_')) {
-      	tabdiv[i].hide();
-      }
-    }
 
-    divElement = document.getElementById('compte_rendu_en_cours_' + id_ct);
+function compte_rendu_en_cours_de_modification(id_ct) {
+    var tabdiv=document.getElementsByTagName("div");
+    for(var i=0; i < tabdiv.length; i++){
+	if (tabdiv[i].id.match('compte_rendu_en_cours_')) {
+	    Element.extend(tabdiv[i]);
+	    tabdiv[i].hide();
+	}
+    }
+    divElement = $('compte_rendu_en_cours_' + id_ct);
     if (divElement != null) {
     	divElement.update('en modification');
     	divElement.show();
