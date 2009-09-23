@@ -1778,6 +1778,19 @@ else{
 						}
 					}
 					echo "<br />\n";
+
+					$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$ele_login';";
+					$test_encore_dans_une_classe_sur_une_periode=mysql_query($sql);
+					if(mysql_num_rows($test_encore_dans_une_classe_sur_une_periode)==0) {
+						$sql="DELETE FROM j_eleves_cpe WHERE e_login='$ele_login';";
+						if(!mysql_query($sql)) {
+							echo "<span style='color:red;'>ERREUR lors de la suppression de la responsabilité CPE.</span><br />\n";
+						}
+						$sql="DELETE FROM j_eleves_professeurs WHERE login='$ele_login';";
+						if(!mysql_query($sql)) {
+							echo "<span style='color:red;'>ERREUR lors de la suppression de la responsabilité professeur principal.</span><br />\n";
+						}
+					}
 				}
 				echo "</p>\n";
 			}
