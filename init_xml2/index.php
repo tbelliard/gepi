@@ -57,7 +57,13 @@ require_once("../lib/header.inc");
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
 		echo "Avez-vous pensé à <a href='#' onmouseover=\"afficher_div('archivage','y',20,20);\" onclick=\"return false;\">archiver</a> l'année qui se termine ?</p>\n";
-		$texte="<p>L'archivage de l'année en cours vous permettra, une fois passé à l'année suivante, de consulter les bulletins antérieurs de chacun de vos élèves, pour peu qu'ils aient été scolarisés dans votre établissement.</p><p>Cela nécessite l'activation du <a href='../mod_annees_anterieures/admin.php?quitter_la_page=y' target='_blank'>module 'Années antérieures'</a>.</p>";
+		$texte="<p>L'archivage de l'année en cours vous permettra, une fois passé à l'année suivante, de consulter les bulletins antérieurs de chacun de vos élèves, pour peu qu'ils aient été scolarisés dans votre établissement.</p>";
+		if (getSettingValue("active_annees_anterieures")=='y') {
+			$texte.="<p>Procéder à l'<a href='../mod_annees_anterieures/conservation_annee_anterieure.php'>archivage de l'année</a>.</p>";
+		}
+		else {
+			$texte.="<p>Cela nécessite l'activation du <a href='../mod_annees_anterieures/admin.php?quitter_la_page=y' target='_blank'>module 'Années antérieures'</a>.</p>";
+		}
 		$tabdiv_infobulle[]=creer_div_infobulle('archivage',"Archivage d'une année","",$texte,"",30,0,'y','y','n','n');
 	}
 
