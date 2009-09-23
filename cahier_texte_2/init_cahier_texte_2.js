@@ -292,26 +292,50 @@ function initWysiwyg() {
 		    CKEDITOR.remove(CKEDITOR.instances['contenu']);
 		}
 		//creation de l'instance
-		CKEDITOR.replace( 'contenu', {
-		    language : 'fr',
-		    skin : 'kama',
-		    resize_enabled : false,
-		    startupFocus : true,
-		    toolbar :
-		    [
-			['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
-			['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
-			['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
-			['NumberedList','BulletedList'],
-			['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-			'/',
-			['Outdent','Indent'],
-			['Link','Unlink','Table','HorizontalRule','Smiley','SpecialChar'],
-			['Styles','Format','Font','FontSize'],
-			['TextColor','BGColor'],
-			['Maximize', 'About']
-		    ]
-		} );
+		//En fonction de la largeur, on change le menu pour eviter de le couper si la largeur est trop petite
+		if (GetWidth() < 1100) {
+		    CKEDITOR.replace( 'contenu', {
+			language : 'fr',
+			skin : 'kama',
+			resize_enabled : false,
+			startupFocus : true,
+			toolbar :
+			[
+			    ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
+			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
+			    ['NumberedList','BulletedList'],
+			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+			    ['Outdent','Indent'],
+			    ['Link','Unlink','Table','HorizontalRule','Smiley','SpecialChar'],
+			    ['Styles','Format','Font','FontSize'],
+			    ['TextColor','BGColor'],
+			    ['Maximize', 'About']
+			]
+		    } );
+		} else {
+		    CKEDITOR.replace( 'contenu', {
+			language : 'fr',
+			skin : 'kama',
+			resize_enabled : false,
+			startupFocus : true,
+			toolbar :
+			[
+			    ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
+			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
+			    ['NumberedList','BulletedList'],
+			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+			    '/',
+			    ['Outdent','Indent'],
+			    ['Link','Unlink','Table','HorizontalRule','Smiley','SpecialChar'],
+			    ['Styles','Format','Font','FontSize'],
+			    ['TextColor','BGColor'],
+			    ['Maximize', 'About']
+			]
+		    } );
+		}
+
 		//hide the bottom bar of CKEditor
 		$('cke_bottom_contenu').hide();
 	}
