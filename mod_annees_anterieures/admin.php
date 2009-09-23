@@ -47,12 +47,23 @@ if (isset($_POST['activer'])) {
 
 
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+//**************** EN-TETE *******************************
 // header
 $titre_page = "Gestion du module Années antérieures";
 require_once("../lib/header.inc");
+//**************** EN-TETE *******************************
+
+$quitter_la_page=isset($_GET['quitter_la_page']) ? $_GET['quitter_la_page'] : NULL;
+if(!isset($quitter_la_page)){
+	echo "<p class='bold'><a href='../accueil_modules.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+}
+else {
+	echo "<p class=bold><a href=\"#\"";
+	echo " onclick=\"self.close();\"";
+	echo ">Refermer la page</a></p>\n";
+}
 
 ?>
-<p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <h2>Configuration générale</h2>
 <i>La désactivation du module Années antérieures n'entraîne aucune suppression des données. Lorsque le module est désactivé, personne n'a accès au module.</i>
 <br />
