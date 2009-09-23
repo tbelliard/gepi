@@ -275,6 +275,9 @@ temoin VARCHAR( 50 ) NOT NULL
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo "<p>Veuillez fournir le fichier ResponsablesAvecAdresses.xml:<br />\n";
 			echo "<input type=\"file\" size=\"65\" name=\"responsables_xml_file\" /><br />\n";
+			if ($gepiSettings['unzipped_max_filesize']>=0) {
+				echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ResponsablesAvecAdresses.zip)</p>";
+			}
 			echo "<input type='hidden' name='step' value='0' />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "<p><input type='submit' value='Valider' /></p>\n";

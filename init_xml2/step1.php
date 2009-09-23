@@ -154,6 +154,9 @@
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo "<p>Veuillez fournir le fichier ElevesAvecAdresses.xml (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
 			echo "<input type=\"file\" size=\"65\" name=\"eleves_xml_file\" /><br />\n";
+			if ($gepiSettings['unzipped_max_filesize']>=0) {
+				echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ElevesSansAdresses.zip)</p>";
+			}
 			echo "<input type='hidden' name='step' value='0' />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "<p><input type='submit' value='Valider' /></p>\n";
@@ -254,6 +257,7 @@
 								die();
 							}
 
+							//unlink("$dest_file"); // Pour Wamp...
 							$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
 							if ($res_extract != 0) {
 								echo "<p>Le fichier uploadé a été dézippé.</p>\n";
@@ -1202,7 +1206,10 @@
 				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 				echo "<p>Les codes numériques des options doivent maintenant être traduits en leurs équivalents alphabétiques (<i>ex.: 030201 -&gt; AGL1</i>).</p>\n";
 				echo "<p>Veuillez fournir le fichier Nomenclature.xml:<br />\n";
-				echo "<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" /><br />\n";
+				echo "<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" /></p>\n";
+				if ($gepiSettings['unzipped_max_filesize']>=0) {
+					echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : Nomenclature.zip)</p>";
+				}
 				//echo "<input type='hidden' name='etape' value='$etape' />\n";
 				echo "<input type='hidden' name='step' value='4' />\n";
 				echo "<input type='hidden' name='is_posted' value='yes' />\n";
