@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+header('Content-Type: text/html; charset=ISO-8859-1');
 //Attention, la sortie standard de ce script (echo), doit etre soit une erreur soit l'id de la noice. La sortie est utilisée dans un javascript
 //
 // On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
