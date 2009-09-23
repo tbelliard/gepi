@@ -55,14 +55,21 @@ if (getSettingValue("active_cahiers_texte")!='y') {
     die("Le module n'est pas activé.");
 }
 
-//on regarde si les preferences pour le cdt ont change
+$message_avertissement_navigateur = "";
+////on regarde si les preferences pour le cdt ont change
 if (getSettingValue("GepiCahierTexteVersion") == '2') {
     //on regarde les preferences de l'utilisateur
     if 	(getPref($_SESSION['login'],'cdt_version',"non renseigne") != "1" ) {
-	header("Location: ../cahier_texte_2/index.php");
-	die();
+	if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6' ) !== FALSE) {
+	    //on reste sur le cdt1, le navigateur n'etant pas compatible avec le cdt2
+	    $message_avertissement_navigateur = "Votre navigateur n'est pas compatible avec le cahier de texte 2, mais vous pouvez utiliser la version 1.";
+	} else {
+	    header("Location: ../cahier_texte_2/index.php");
+	    die();
+	}
     }
 }
+
 
 //Ajout Eric traitement Visa
 $visa_cdt_inter_modif_notices_visees=getSettingValue("visa_cdt_inter_modif_notices_visees");
@@ -366,6 +373,7 @@ echo "<tr>\n";
 // Première cellule de la première ligne du tableau
 echo "<td valign='top'>\n";
 
+echo $message_avertissement_navigateur;
 echo "<p>Nous sommes le :&nbsp;<br />";
 echo "<script type=\"text/javascript\">";
 echo "<!--\n";
