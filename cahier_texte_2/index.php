@@ -65,7 +65,7 @@ $utilisation_jsdivdrag = "non";
 $windows_effects = "non";
 $message_deconnexion = "non";
 
-//on regarde si les preferences pour le cdt ont change
+//on regarde si les preferences pour le cdt sont precisees dans la requete
 $cdt_version_pref = isset($_POST["cdt_version_pref"]) ? $_POST["cdt_version_pref"] :(isset($_GET["cdt_version_pref"]) ? $_GET["cdt_version_pref"] :NULL);
 if ($cdt_version_pref != null) {
     $utilisateur->setPreferenceValeur("cdt_version", $cdt_version_pref);
@@ -74,6 +74,12 @@ if ($cdt_version_pref != null) {
 //on regarde les preference de l'utilisateur
 if ($utilisateur->getPreferenceValeur("cdt_version") == "1") {
     header("Location: ../cahier_texte/index.php?cdt_version_pref=1");
+    die();
+}
+
+//on reste sur le cdt1, le navigateur n'etant pas compatible avec le cdt2
+if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6' ) !== FALSE) {
+    header("Location: ../cahier_texte/index.php");
     die();
 }
 
