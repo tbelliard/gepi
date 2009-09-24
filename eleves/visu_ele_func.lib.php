@@ -1144,7 +1144,9 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 				}
 				elseif ($eleve_note != '') {
 					$affiche_note = $eleve_note;
-					if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
+					//if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
+					if((getSettingValue("note_autre_que_sur_referentiel")=="V") || 
+						((isset($snnote['note_sur']))&&($snnote['note_sur']!=getSettingValue("referentiel_note")))) {
 						$affiche_note .= "/".$eleve_note_sur;
 					}
 				}
