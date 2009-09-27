@@ -424,7 +424,7 @@ if($colspan>0){
 								WHERE jeg.id_groupe= jgp.id_groupe AND
 										jeg.periode='$i' AND
 										jgp.login='".$_SESSION['login']."' AND
-										jeg.id_groupe='".$groups[$k]['id']."';";
+										jeg.id_groupe='".$groups[$k]['id']."' LIMIT 1;";
 				$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
 				if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
 			}
@@ -435,7 +435,7 @@ if($colspan>0){
 										WHERE jep.login=jeg.login AND
 												jeg.periode='$i' AND
 												jep.professeur='".$_SESSION['login']."' AND
-												jeg.id_groupe='".$groups[$k]['id']."';";
+												jeg.id_groupe='".$groups[$k]['id']."' LIMIT 1;";
 				//echo "$sql<br />";
 				$res_test_acces_bull_simp=mysql_num_rows(mysql_query($sql));
 				if($res_test_acces_bull_simp>0) {$test_acces_bull_simp[$i]="y";break;}
