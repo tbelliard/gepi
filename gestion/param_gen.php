@@ -674,8 +674,9 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 		<td><input type="text" name="longmin_pwd" size="20" value="<?php echo(getSettingValue("longmin_pwd")); ?>" onchange='changement()' />
 		</td>
 	</tr>
-        <?php if (isset($use_custom_denominations) && $use_custom_denominations) {
-          ?>
+		<?php 
+			if (isset($use_custom_denominations) && $use_custom_denominations) {
+		?>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Dénomination des professeurs :</td>
@@ -697,7 +698,9 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 		<br/>Pluriel :<input type="text" name="denomination_responsables" size="20" value="<?php echo(getSettingValue("denomination_responsables")); ?>" onchange='changement()' />
 		</td>
 	</tr>
-        <?php } ?>
+		<?php 
+			} 
+		?>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Dénomination du professeur chargé du suivi des élèves :</td>
@@ -1013,6 +1016,9 @@ echo "<td><b><i>Pas de logo actuellement</i></b></td>\n";
 }
 echo "</tr></table></form>\n";
 ?>
+
+<p><i>Remarques&nbsp;</i> Les transparences sur les images PNG, GIF ne permettent pas une impression PDF (<i>canal alpha non supporté par fpdf</i>).<br />
+Il a aussi été signalé que les JPEG progressifs/entrelacés peuvent perturber la génération de PDF.</p>
 
 <hr />
 <form enctype="multipart/form-data" action="param_gen.php" method="post" name="form3" style="width: 100%;">
