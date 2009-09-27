@@ -9,6 +9,7 @@ function get_groups_for_prof($_login,$mode=NULL) {
     //$query = mysql_query("select id_groupe from j_groupes_professeurs WHERE login = '" . $_login . "'");
 	// Par discipline puis par classe
 	if(!isset($mode)){
+		/*
 		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere,  jgc.id_classe
 						FROM j_groupes_professeurs jgp, j_groupes_matieres jgm, j_groupes_classes jgc
 						WHERE (" .
@@ -17,8 +18,19 @@ function get_groups_for_prof($_login,$mode=NULL) {
 						AND jgp.id_groupe=jgc.id_groupe) " .
 						"GROUP BY jgp.id_groupe ".
 						"ORDER BY jgm.id_matiere, jgc.id_classe" ;
+		*/
+		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere,  jgc.id_classe
+						FROM j_groupes_professeurs jgp, j_groupes_matieres jgm, j_groupes_classes jgc, classes c
+						WHERE (" .
+						"login = '" . $_login . "'
+						AND jgp.id_groupe=jgm.id_groupe
+						AND jgp.id_groupe=jgc.id_groupe
+						AND jgc.id_classe=c.id) " .
+						"GROUP BY jgp.id_groupe ".
+						"ORDER BY jgm.id_matiere, c.classe" ;
 	}
 	else{
+		/*
 		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere,  jgc.id_classe
 						FROM j_groupes_professeurs jgp, j_groupes_matieres jgm, j_groupes_classes jgc
 						WHERE (" .
@@ -27,6 +39,16 @@ function get_groups_for_prof($_login,$mode=NULL) {
 						AND jgp.id_groupe=jgc.id_groupe) " .
 						"GROUP BY jgp.id_groupe ".
 						"ORDER BY jgc.id_classe, jgm.id_matiere" ;
+		*/
+		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere, jgc.id_classe
+						FROM j_groupes_professeurs jgp, j_groupes_matieres jgm, j_groupes_classes jgc, classes c
+						WHERE (" .
+						"login = '" . $_login . "'
+						AND jgp.id_groupe=jgm.id_groupe
+						AND jgp.id_groupe=jgc.id_groupe
+						AND jgc.id_classe=c.id) " .
+						"GROUP BY jgp.id_groupe ".
+						"ORDER BY c.classe, jgm.id_matiere" ;
 	}
 	$query = mysql_query($requete_sql);
 
@@ -37,6 +59,9 @@ function get_groups_for_prof($_login,$mode=NULL) {
         $_id_groupe = mysql_result($query, $i, "id_groupe");
         $groups[] = get_group($_id_groupe);
     }
+
+	// current_group["classes"]["classes"][$c_id]["classe"]
+
 	//echo $requete_sql;
     return $groups;
 }
@@ -105,8 +130,11 @@ function get_group($_id_groupe) {
     // Classes
 
     //$get_classes = mysql_query("SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.categorie_id, j.saisie_ects, j.valeur_ects FROM classes c, j_groupes_classes j WHERE (" .
-    $get_classes = mysql_query("SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.mode_moy, j.categorie_id, j.saisie_ects, j.valeur_ects FROM classes c, j_groupes_classes j WHERE (" .
-                                    "c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "') ORDER BY c.classe, c.nom_complet;");
+    $sql="SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.mode_moy, j.categorie_id, j.saisie_ects, j.valeur_ects FROM classes c, j_groupes_classes j WHERE (" .
+                                    "c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "') ORDER BY c.classe, c.nom_complet;";
+    //                                "c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "')");
+	//echo "$sql<br />";
+    $get_classes = mysql_query($sql);
     //                                "c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "')");
     $nb_classes = mysql_num_rows($get_classes);
     for ($k=0;$k<$nb_classes;$k++) {
