@@ -140,12 +140,18 @@ function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
 
     $nouveau = false;
     if (!isset($id_document)) {
-    $query = "INSERT INTO ct_documents SET taille='$taille', emplacement='$dest_path', id_ct='$id_ct', titre='".corriger_caracteres($doc_name[$cpt_doc])."'";
+	if (isset($edit_devoir))
+	    $query = "INSERT INTO ct_devoirs_documents SET taille='$taille', emplacement='$dest_path', id_ct_devoir='$id_ct', titre='".corriger_caracteres($doc_name[$cpt_doc])."'";
+	else
+	    $query = "INSERT INTO ct_documents SET taille='$taille', emplacement='$dest_path', id_ct='$id_ct', titre='".corriger_caracteres($doc_name[$cpt_doc])."'";
         sql_query($query);
         $id_document = mysql_insert_id();
         $nouveau = true;
     } else {
-        $query = "UPDATE ct_documents SET taille='$taille', emplacement='$dest_path', id_ct='$id_ct', titre='$titre' WHERE id_document=$id_document";
+	if (isset($edit_devoir))
+	    $query = "UPDATE ct_devoirs_documents SET taille='$taille', emplacement='$dest_path', id_ct_devoir='$id_ct', titre='$titre' WHERE id_document=$id_document";
+	else
+	    $query = "UPDATE ct_documents SET taille='$taille', emplacement='$dest_path', id_ct='$id_ct', titre='$titre' WHERE id_document=$id_document";
         sql_query($query);
     }
     return "Téléchargement réussi !";
@@ -181,7 +187,10 @@ if (!empty($doc_file['tmp_name'][0])) {
 // Suppression d'un document
 if ((isset($_GET["action"])) and ($_GET["action"] == 'del')) {
     $id_document = $_GET['id_del'];
-    $sql = "select emplacement from ct_documents where (id = '$id_document' and id_ct='$id_ct')";
+    if (isset($edit_devoir))
+	$sql = "select emplacement from ct_devoirs_documents where (id = '$id_document' and id_ct_devoir='$id_ct')";
+    else
+	$sql = "select emplacement from ct_documents where (id = '$id_document' and id_ct='$id_ct')";
     $empl = sql_query1($sql);
     if ($empl == -1) {
         $msg = "Il n' a pas de document à supprimer.";
@@ -190,7 +199,11 @@ if ((isset($_GET["action"])) and ($_GET["action"] == 'del')) {
         if (file_exists($empl)) {
             $msg = "Problème : le document n'a pa pu être supprimé. Contactez l'administrateur du site.";
         } else {
-            if (sql_query("delete from ct_documents where id = '$id_document'")) {
+	    if (isset($edit_devoir))
+		$sql_query = "delete from ct_devoirs_documents where id = '$id_document'";
+	    else
+		$sql_query = "delete from ct_documents where id = '$id_document'";
+            if (sql_query($sql_query)) {
                 $msg = "Supression réussie";
             } else {
                 $msg = "Un problème est survenu lors de la suppression du document. Contactez l'administrateur du site.";
@@ -202,7 +215,10 @@ if ((isset($_GET["action"])) and ($_GET["action"] == 'del')) {
 // Changement de nom
 if (!empty($doc_name_modif) and !empty($id_document)) {
     if ((trim($doc_name_modif)) != '') {
-        $query = "UPDATE ct_documents SET titre='".corriger_caracteres($doc_name_modif)."' WHERE id='".$_POST['id_document']."'";
+	if (isset($edit_devoir))
+	    $query = "UPDATE ct_devoirs_documents SET titre='".corriger_caracteres($doc_name_modif)."' WHERE id='".$_POST['id_document']."'";
+	else
+	    $query = "UPDATE ct_documents SET titre='".corriger_caracteres($doc_name_modif)."' WHERE id='".$_POST['id_document']."'";
         if (sql_query($query)) {
             $msg = "Changement de nom réussi";
         } else {
