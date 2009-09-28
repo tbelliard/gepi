@@ -191,6 +191,18 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter
 $titre_page = "Gestion des enseignements";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
+
+$display_mat_cat="n";
+$sql="SELECT display_mat_cat FROM classes WHERE id='$id_classe';";
+$res_display_mat_cat=mysql_query($sql);
+if(mysql_num_rows($res_display_mat_cat)>0) {
+	$lig_display_mat_cat=mysql_fetch_object($res_display_mat_cat);
+	$display_mat_cat=$lig_display_mat_cat->display_mat_cat;
+}
+else {
+	echo "<p style='color:red;'>Anomalie&nbsp;: Les infos concernant 'display_mat_cat' n'ont pas pu être récupérées pour cette classe.</p>\n";
+}
+
 echo "<table border='0' summary='Menu'><tr>\n";
 echo "<td width='40%' align='left'>";
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
@@ -501,15 +513,22 @@ for($i=0;$i<10;$i++){
         echo "<td>Catégorie : ";
         echo "<select onchange=\"changement()\" size=1 id='categorie_".$cpt_grp."' name='categorie_" .$current_group["id"]. "'>";
         echo "<option value='0'";
-        if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == "0") echo " SELECTED";
+        if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == "0") {echo " SELECTED";}
         echo ">Aucune</option>";
         foreach ($mat_categories as $cat) {
             echo "<option value='".$cat->id . "'";
-            if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == $cat->id) echo " SELECTED";
+            if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == $cat->id) {
+               echo " SELECTED";
+            }
             echo ">".html_entity_decode_all_version($cat->nom_court)."</option>";
         }
 
         echo "</select>";
+        if(($display_mat_cat=='y')&&($current_group["classes"]["classes"][$id_classe]["categorie_id"]=="0")) {
+            //echo "<br />\n";
+            $message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/wiki/gepi/Enseignement_invisible";
+            echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
+        }
         echo "</td>";
 
         // Coefficient
