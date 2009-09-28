@@ -1853,10 +1853,11 @@ function affiche_docs_joints($id_ct,$type_notice) {
 // documents joints
 $html = '';
 $architecture="/documents/cl_dev";
-if ($type_notice == "t")
-    $sql = "SELECT titre, emplacement FROM ct_documents WHERE id_ct='$id_ct' AND emplacement LIKE '%".$architecture."%'  ORDER BY 'titre'";
-else
-    $sql = "SELECT titre, emplacement FROM ct_documents WHERE id_ct='$id_ct' AND emplacement NOT LIKE '%".$architecture."%'  ORDER BY 'titre'";
+if ($type_notice == "t") {
+    $sql = "SELECT titre, emplacement FROM ct_devoirs_documents WHERE id_ct_devoir='$id_ct' ORDER BY 'titre'";
+} else if ($type_notice == "c") {
+    $sql = "SELECT titre, emplacement FROM ct_documents WHERE id_ct='$id_ct' ORDER BY 'titre'";
+}
 
 $res = sql_query($sql);
   if (($res) and (sql_count($res)!=0)) {
