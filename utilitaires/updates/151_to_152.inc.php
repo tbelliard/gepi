@@ -869,7 +869,7 @@ auth CHAR( 1 ) default 'n'
 			}
 		}
 
-    $test = sql_query1("SHOW TABLES LIKE 'plugins_menus'");
+		$test = sql_query1("SHOW TABLES LIKE 'plugins_menus'");
 		if ($test == -1) {
 			$result .= "<br />Création de la table 'plugins_menus'. ";
 			$sql="CREATE TABLE IF NOT EXISTS plugins_menus (
@@ -908,6 +908,30 @@ description_item VARCHAR( 255 ) NOT NULL
 		}
 		else {
 			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
+		}
+
+		//==========================================================
+
+		$test = sql_query1("SHOW TABLES LIKE 'ref_wiki'");
+		if ($test == -1) {
+			$result .= "<br />Création de la table 'ref_wiki'. ";
+			$sql="CREATE TABLE ref_wiki (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY , ref VARCHAR( 255 ) NOT NULL , url VARCHAR( 255 ) NOT NULL , INDEX ( ref ) );";
+			$result_inter = traite_requete($sql);
+			if ($result_inter != '') {
+				$result .= "<br />Erreur sur la création de la table 'ref_wiki': ".$result_inter."<br />";
+			}
+			else {
+				$result .= "<br />&nbsp;->Ajout d'un enregistrement pour 'enseignement_invisible' dans 'ref_wiki'<br />";
+				$query = mysql_query("INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/wiki/gepi/Enseignement_invisible');");
+				if ($query) {
+					$result .= "<font color=\"green\">Ok !</font><br />";
+				} else {
+					$result .= "<font color=\"red\">Erreur</font><br />";
+				}
+			}
+		}
+		else {
+			$result .= "<br />La table 'ref_wiki' existe déjà. ";
 		}
 
 ?>

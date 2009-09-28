@@ -198,6 +198,18 @@ $res_display_mat_cat=mysql_query($sql);
 if(mysql_num_rows($res_display_mat_cat)>0) {
 	$lig_display_mat_cat=mysql_fetch_object($res_display_mat_cat);
 	$display_mat_cat=$lig_display_mat_cat->display_mat_cat;
+
+	$url_wiki="#";
+	$sql="SELECT * FROM ref_wiki WHERE ref='enseignement_invisible';";
+	$res_ref_wiki=mysql_query($sql);
+	if(mysql_num_rows($res_ref_wiki)>0) {
+		$lig_wiki=mysql_fetch_object($res_ref_wiki);
+		$url_wiki=$lig_wiki->url;
+	}
+	$titre="Enseignement invisible";
+	$texte="<p>Cet enseignement n'apparaîtra pas sur les bulletins ni sur les relevés de notes.<br />";
+	$texte.="Voir <a href='$url_wiki' target='_blank'>Enseignement invisible sur les bulletins et relevés de notes</a>.<br />";
+	$tabdiv_infobulle[]=creer_div_infobulle('enseignement_invisible',$titre,"",$texte,"",25,0,'y','y','n','n');
 }
 else {
 	echo "<p style='color:red;'>Anomalie&nbsp;: Les infos concernant 'display_mat_cat' n'ont pas pu être récupérées pour cette classe.</p>\n";
@@ -527,7 +539,13 @@ for($i=0;$i<10;$i++){
         if(($display_mat_cat=='y')&&($current_group["classes"]["classes"][$id_classe]["categorie_id"]=="0")) {
             //echo "<br />\n";
             $message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/wiki/gepi/Enseignement_invisible";
+            //echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
+
+            echo "<a href='#' onclick=\"afficher_div('enseignement_invisible','y',-100,20);return false;\"";
+            echo ">";
             echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
+            echo "</a>";
+
         }
         echo "</td>";
 

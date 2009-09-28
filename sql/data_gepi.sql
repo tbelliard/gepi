@@ -810,3 +810,4 @@ INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsPP', 'no');
 INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsScolarite', 'yes');
 INSERT INTO setting VALUES ('gepiSchoolStatut', 'public');
 INSERT INTO setting VALUES ('gepiSchoolAcademie', '');
+INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/wiki/gepi/Enseignement_invisible');
