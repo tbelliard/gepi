@@ -94,7 +94,7 @@ CREATE TABLE `absences_motifs` (`id_motif_absence` int(11) NOT NULL auto_increme
 DROP TABLE IF EXISTS groupes;
 CREATE TABLE `groupes` (`id` int(11) NOT NULL auto_increment, `name` varchar(60) NOT NULL default '', `description` text NOT NULL, `recalcul_rang` varchar(10) NOT NULL default '', PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS j_groupes_classes;
-CREATE TABLE `j_groupes_classes` (`id_groupe` int(11) NOT NULL default '0', `id_classe` int(11) NOT NULL default '0', `priorite` smallint(6) NOT NULL, `coef` decimal(3,1) NOT NULL, `categorie_id` int(11) NOT NULL default '1', saisie_ects BOOLEAN NOT NULL DEFAULT 0, valeur_ects DECIMAL(3,1) NOT NULL, PRIMARY KEY  (`id_groupe`,`id_classe`));
+CREATE TABLE `j_groupes_classes` (`id_groupe` int(11) NOT NULL default '0', `id_classe` int(11) NOT NULL default '0', `priorite` smallint(6) NOT NULL, `coef` decimal(3,1) NOT NULL, `categorie_id` int(11) NOT NULL default '1', saisie_ects BOOLEAN NOT NULL DEFAULT 0, valeur_ects DECIMAL(3,1) NOT NULL, mode_moy enum('-','sup10','bonus') NOT NULL default '-', PRIMARY KEY  (`id_groupe`,`id_classe`));
 DROP TABLE IF EXISTS j_groupes_matieres;
 CREATE TABLE `j_groupes_matieres` (`id_groupe` int(11) NOT NULL default '0',`id_matiere` varchar(50) NOT NULL default '', PRIMARY KEY  (`id_groupe`,`id_matiere`));
 DROP TABLE IF EXISTS j_groupes_professeurs;
