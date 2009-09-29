@@ -831,3 +831,9 @@ td.menu_droit {
   background-color: white;
   color: blue;
 }
+
+#fixe {
+position:fixed;
+bottom: 4em;
+right: 4em;
+}
