@@ -299,6 +299,7 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 
 //=========================
 // On ne propose l'infobulle de navigation que pour une classe déjà existante.
+$ouvrir_infobulle_nav="n";
 if(isset($id_classe)) {
 	$titre="Navigation";
 	$texte="";
