@@ -319,7 +319,7 @@ else {
 $texte.="<script type='text/javascript'>
 	// <![CDATA[
 	function modif_mode_infobulle_nav() {
-		new Ajax.Updater($('save_mode_nav'),'classes_ajax_lib.php?mode=ouvrir_infobulle_nav',{method: 'get'});
+		new Ajax.Updater($('save_mode_nav'),'../classes/classes_ajax_lib.php?mode=ouvrir_infobulle_nav',{method: 'get'});
 	}
 	//]]>
 </script>\n";
