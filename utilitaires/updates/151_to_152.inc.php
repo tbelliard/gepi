@@ -934,4 +934,22 @@ description_item VARCHAR( 255 ) NOT NULL
 			$result .= "<br />La table 'ref_wiki' existe déjà. ";
 		}
 
+		$result .= "&nbsp;->Migration des fichiers joint des devoirs au format cdt2<br />";
+		$query = mysql_query("insert into ct_devoirs_documents (id_ct_devoir, titre, taille, emplacement) select id_ct as id_ct_devoir ,titre, taille, emplacement from ct_documents where emplacement like '%/documents/cl_dev%' ;");
+		if ($query == true) {
+			$result .= "<font color=\"blue\">Migration effectuée</font><br />";
+			$result .= "&nbsp;->Suppression des fichiers joints devoir au format cdt1<br/>";
+
+			$query = mysql_query("DELETE FROM ct_documents where emplacement like '%/documents/cl_dev%';");
+			if ($query == true) {
+			    $result .= "<font color=\"blue\">Suppression effectuée</font><br />";
+			} else {
+			    $result .= "<font color=\"red\">Erreur</font><br />";
+			    $result .= "Error: (" . mysql_errno() . ") " . mysql_error() . "< br/>";
+			}
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= "Error: (" . mysql_errno() . ") " . mysql_error() . "< br/>";
+		}
+
 ?>
