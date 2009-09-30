@@ -176,7 +176,14 @@
 			echo "</td>\n";
 		}
 		echo "<td>\n";
-		echo "&nbsp;";
+		//echo "&nbsp;";
+
+		$titre_infobulle="Paramètres par défaut\n";
+		$texte_infobulle="Les paramètres par défaut sont proposés d'après le paramétrage de la classe.<br />\n";
+		$texte_infobulle.="En compte administrateur&nbsp;: <b>Gestion des bases/Gestion des classes/&lt;une_classe&gt; Paramètres/Paramètres des relevés de notes</b><br />ou<br /><b>Gestion des bases/Gestion des classes/Paramétrage de plusieurs classes par lots/Paramètres des relevés de notes</b>\n";
+		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_parametres_defaut_releve',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_parametres_defaut_releve','y',100,100);\"  onmouseout=\"cacher_div('a_propos_parametres_defaut_releve');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
