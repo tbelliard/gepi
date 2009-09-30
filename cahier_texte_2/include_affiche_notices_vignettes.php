@@ -23,6 +23,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 		$html_balise .=(" ");
 		$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								suppressionDevoir('".strftime("%A %d %B %Y", $devoir->getDateCt())."','".$devoir->getIdCt()."', '".$devoir->getIdGroupe()."');
+								new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 								return false;
 							\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
 	} else {
@@ -64,6 +65,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 		$html_balise .=(" ");
 		$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								suppressionNoticePrivee('".strftime("%A %d %B %Y", $notice_privee->getDateCt())."','".$notice_privee->getIdCt()."', '".$notice_privee->getIdGroupe()."');
+								new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 								return false;
 							\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
 	$html_balise .= '</div>';
@@ -97,6 +99,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 			$html_balise .=(" ");
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
 							suppressionCompteRendu('".strftime("%A %d %B %Y", $compte_rendu->getDateCt())."',".$compte_rendu->getIdCt().");
+							new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 							return false;
 						\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
 		}
