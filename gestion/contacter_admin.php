@@ -103,6 +103,11 @@ case "envoi":
 	.($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\n" :"")
 	."X-Mailer: PHP/" . phpversion());
 	*/
+	//$gepiPrefixeSujetMail="[clg-tartemplume]";
+	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+	//$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail");
+	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+
 	$gepiAdminAdress=getSettingValue("gepiAdminAdress");
 	if($gepiAdminAdress==""){
 		echo "<p><span style='color:red;>ERREUR</span>: L'adresse mail de l'administrateur n'est pas renseignée.</p>\n";
@@ -110,7 +115,7 @@ case "envoi":
 		die();
 	}
 	$envoi = mail($gepiAdminAdress,
-		"Demande d'aide dans GEPI",
+		$gepiPrefixeSujetMail."Demande d'aide dans GEPI",
 		$message,
 	"From: ".($email_reponse != "" ? "$nama <$email_reponse>" : $gepiAdminAdress)."\r\n"
 	.($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\n" :"")

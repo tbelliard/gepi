@@ -99,8 +99,11 @@ case "envoi":
     if ($email_reponse == '') {
         echo "<br /><br /><br /><P style=\"text-align: center\">Votre message n'a pas été envoyé : vous devez indiquer une adresse e-mail pour la réponse !</p>";
     } else {
+		$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+
         $envoi = mail(getSettingValue("gepiAdminAdress"),
-            "Demande d'aide dans GEPI",
+            $gepiPrefixeSujetMail."Demande d'aide dans GEPI",
             $message,
            "From: ".($email_reponse != "" ? "$nama <$email_reponse>" : getSettingValue("gepiAdminAdress"))."\r\n"
            .($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\n" :"")
