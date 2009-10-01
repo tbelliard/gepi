@@ -1995,9 +1995,12 @@ function tentative_intrusion($_niveau, $_description) {
 			if ($block_user) $message .= "Le compte de l'utilisateur a été désactivé.\n";
 		}
 
+		$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+
 		// On envoie le mail
 		$envoi = mail(getSettingValue("gepiAdminAdress"),
-		    "GEPI : Alerte sécurité -- Tentative d'intrusion",
+		    $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion",
 		    $message,
 		   "From: Mail automatique Gepi\r\n"."X-Mailer: PHP/" . phpversion());
 	}
