@@ -193,7 +193,9 @@ if (isset ($_POST['maj'])) {
             require 'updates/151_to_152.inc.php';
 	}
 
-
+	if (($force_maj == 'yes') or (quelle_maj("1.5.3"))) {
+            require 'updates/152_to_153.inc.php';
+	}
 
 	// Mise à jour du numéro de version
 	saveSetting("version", $gepiVersion);

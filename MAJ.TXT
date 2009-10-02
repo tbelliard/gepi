@@ -1,20 +1,15 @@
-GEPI-1.5.1-rc2 -- Procédure de mise à jour
+GEPI-trunk -- Procédure de mise à jour
 ==========================================
 
 *************
 Mise en garde
 *************
 
-La procédure de mise à jour vers cette version de Gepi est utilisable à partir d'une version GEPI-1.2 ou plus récente.
-Si vous travaillez actuellement sur une version plus ancienne que GEPI-1.2, cette procédure de mise à jour ne fonctionnera pas.
+La procédure de mise à jour vers cette version de Gepi est utilisable à partir d'une version GEPI-1.5.0 ou plus récente.
+Si vous travaillez actuellement sur une version plus ancienne que GEPI-1.5.0, cette procédure de mise à jour ne fonctionnera pas.
 
 Ne prenez pas de risque, n'utilisez *que* des versions estampillées *stable* pour une utilisation en production.
 
-Les changements dans la gestion des groupes entre la version 1.4.2 et la version 1.4.3 sont très importants
-et altèrent en profondeur le fonctionnement de Gepi. Il est donc indispensable de faire une sauvegarde de votre base
-de données avant d'effectuer la mise à jour, et d'en faire une nouvelle immédiatement après la mise à jour (il n'est
-pas du tout conseillé de tenter la restauration d'une sauvegarde effectuée avec une version 1.4.2 sur une version 1.4.3 ou supérieure,
-étant donné les changements profonds opérés sur la structure de la base de données lors du passage à la 1.4.3.
 
 ****************************************************
 Installation - Etape 0 : téléchargement de l'archive

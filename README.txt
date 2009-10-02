@@ -1,4 +1,4 @@
-GEPI-1.5.1-rc2
+GEPI-trunk
 ==============
 
 Thomas BELLIARD <thomas.belliard@free.fr>
@@ -96,7 +96,5 @@ de la liste de diffusion des utilisateurs.
 5. Documentation
 =======================================
 
-GEPI a été développé de manière à être le plus intuitif possible, et donc ne
-nécessiter aucune documentation.
-Cependant, nous comptons sur vos remarques pour en développer une qui soit la
-plus adaptée possible aux besoins des utilisateurs.
+La documentation de Gepi se trouve à l'adresse suivante :
+http://www.sylogix.org/wiki/gepi.
