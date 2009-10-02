@@ -176,6 +176,7 @@ function get_group($_id_groupe) {
     }
 
     // Périodes
+    $temp["periodes"]=array();
     // Pour le nom et le nombre de periodes, on suppose qu'elles sont identiques dans toutes les classes du groupe
       $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '". $temp["classes"]["list"][0] ."' ORDER BY num_periode");
       $nb_periode = mysql_num_rows($periode_query) + 1 ;
