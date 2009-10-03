@@ -82,6 +82,7 @@ $mode=isset($_GET['mode']) ? $_GET['mode'] : NULL;
 if(getSettingValue('active_annees_anterieures')!="y"){
 	// A DEGAGER
 	// A VOIR: Comment enregistrer une tentative d'accès illicite?
+	tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder au module Années antérieures qui n'est pas activé.");
 
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -109,6 +110,11 @@ elseif($_SESSION['statut']=="professeur"){
 	$AAProfClasses=getSettingValue('AAProfClasses');
 	$AAProfGroupes=getSettingValue('AAProfGroupes');
 
+	//echo "\$AAProfTout=$AAProfTout<br />";
+	//echo "\$AAProfPrinc=$AAProfPrinc<br />";
+	//echo "\$AAProfClasses=$AAProfClasses<br />";
+	//echo "\$AAProfGroupes=$AAProfGroupes<br />";
+
 	if($AAProfTout=="yes"){
 		// Le professeur a accès aux données antérieures de tous les élèves
 		$acces="y";
@@ -124,9 +130,16 @@ elseif($_SESSION['statut']=="professeur"){
 	}
 	elseif($AAProfClasses=="yes"){
 		// Le professeur a accès aux données antérieures des élèves des classes pour lesquelles il fournit un enseignement (sans nécessairement avoir tous les élèves de la classe)
+		/*
 		$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_professeurs jgp
 						WHERE jeg.login='$logineleve' AND
 								jeg.id_groupe=jgc.id_groupe AND
+								jgc.id_groupe=jgp.id_groupe AND
+								jgp.login='".$_SESSION['login']."';";
+		*/
+		$sql="SELECT 1=1 FROM j_eleves_classes jec, j_groupes_classes jgc, j_groupes_professeurs jgp
+						WHERE jec.login='$logineleve' AND
+								jec.id_classe=jgc.id_classe AND
 								jgc.id_groupe=jgp.id_groupe AND
 								jgp.login='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
@@ -215,6 +228,9 @@ elseif($_SESSION['statut']=="eleve"){
 if($acces!="y"){
 	// A DEGAGER
 	// A VOIR: Comment enregistrer une tentative d'accès illicite?
+	$ajout_info="";
+	if(isset($logineleve)) {$ajout_info=" de $logineleve";}
+	tentative_intrusion(1, "Tentative illicite d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder à des données d'Années antérieures".$ajout_info.".");
 
 	header("Location: ../logout.php?auto=1");
 	die();

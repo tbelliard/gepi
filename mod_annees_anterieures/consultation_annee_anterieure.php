@@ -45,6 +45,7 @@ if (!checkAccess()) {
 if(getSettingValue('active_annees_anterieures')!="y"){
 	// A DEGAGER
 	// A VOIR: Comment enregistrer une tentative d'accès illicite?
+	tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder au module Années antérieures qui n'est pas activé.");
 
 	header("Location: ../logout.php?auto=1");
 	//echo "active_annees_anterieures=".getSettingValue('active_annees_anterieures');
@@ -87,6 +88,11 @@ elseif($_SESSION['statut']=="professeur"){
 	$AAProfClasses=getSettingValue('AAProfClasses');
 	$AAProfGroupes=getSettingValue('AAProfGroupes');
 
+	//echo "\$AAProfTout=$AAProfTout<br />";
+	//echo "\$AAProfPrinc=$AAProfPrinc<br />";
+	//echo "\$AAProfClasses=$AAProfClasses<br />";
+	//echo "\$AAProfGroupes=$AAProfGroupes<br />";
+
 	if($AAProfTout=="yes"){
 		// Le professeur a accès aux données antérieures de tous les élèves
 		$acces="y";
@@ -95,6 +101,7 @@ elseif($_SESSION['statut']=="professeur"){
 
 		if(isset($id_classe)){
 			$sql_ele="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom,e.prenom";
+			//echo "$sql_ele<br />";
 		}
 	}
 	elseif($AAProfClasses=="yes"){
@@ -109,6 +116,7 @@ elseif($_SESSION['statut']=="professeur"){
 										jgp.login='".$_SESSION['login']."' AND
 										jgc.id_classe=c.id
 										ORDER BY c.classe;";
+		//echo "$sql_classes<br />";
 
 		if(isset($id_classe)){
 			$sql_ele="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,
@@ -116,19 +124,29 @@ elseif($_SESSION['statut']=="professeur"){
 								WHERE jec.id_classe='$id_classe' AND
 										jec.login=e.login
 								ORDER BY e.nom,e.prenom";
+			//echo "$sql_ele<br />";
 		}
 
 		// On vérifie qu'il n'y a pas tentative d'intrusion illicite:
 		if(isset($logineleve)){
+			/*
 			$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_professeurs jgp
 							WHERE jeg.login='$logineleve' AND
 									jeg.id_groupe=jgc.id_groupe AND
+									jgc.id_groupe=jgp.id_groupe AND
+									jgp.login='".$_SESSION['login']."';";
+			*/
+			$sql="SELECT 1=1 FROM j_eleves_classes jec, j_groupes_classes jgc, j_groupes_professeurs jgp
+							WHERE jec.login='$logineleve' AND
+									jec.id_classe=jgc.id_classe AND
 									jgc.id_groupe=jgp.id_groupe AND
 									jgp.login='".$_SESSION['login']."';";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0){
 				// A DEGAGER
 				// A VOIR: Comment enregistrer une tentative d'accès illicite?
+				//echo "$sql<br />";
+				tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve qui n'est pas élève d'une de ses classes.");
 				header("Location: ../logout.php?auto=1");
 				die();
 			}
@@ -146,6 +164,7 @@ elseif($_SESSION['statut']=="professeur"){
 														jeg.login=jec.login AND
 														jec.id_classe=c.id
 														ORDER BY c.classe;";
+		//echo "$sql_classes<br />";
 
 		if(isset($id_classe)){
 			$sql_ele="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,
@@ -160,6 +179,7 @@ elseif($_SESSION['statut']=="professeur"){
 										jgp.id_groupe=jgc.id_groupe AND
 										jgp.login='".$_SESSION['login']."'
 								ORDER BY e.nom,e.prenom";
+			//echo "$sql_ele<br />";
 		}
 
 		// On vérifie qu'il n'y a pas tentative d'intrusion illicite:
@@ -172,6 +192,8 @@ elseif($_SESSION['statut']=="professeur"){
 			if(mysql_num_rows($test)==0){
 				// A DEGAGER
 				// A VOIR: Comment enregistrer une tentative d'accès illicite?
+				//echo "$sql<br />";
+				tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve qui n'est pas élève d'un de ses enseignements.");
 				header("Location: ../logout.php?auto=1");
 				die();
 			}
@@ -185,6 +207,7 @@ elseif($_SESSION['statut']=="professeur"){
 												WHERE jep.professeur='".$_SESSION['login']."' AND
 														jep.id_classe=c.id
 														ORDER BY c.classe";
+		//echo "$sql_classes<br />";
 
 		if(isset($id_classe)){
 			$sql_ele="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,
@@ -193,6 +216,7 @@ elseif($_SESSION['statut']=="professeur"){
 										jep.login=e.login AND
 										jep.professeur='".$_SESSION['login']."'
 								ORDER BY e.nom,e.prenom";
+			//echo "$sql_ele<br />";
 		}
 
 		// On vérifie qu'il n'y a pas tentative d'intrusion illicite:
@@ -203,6 +227,8 @@ elseif($_SESSION['statut']=="professeur"){
 			if(mysql_num_rows($test)==0){
 				// A DEGAGER
 				// A VOIR: Comment enregistrer une tentative d'accès illicite?
+				//echo "$sql<br />";
+				tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve dont il n'est pas ".getSettingValue("gepi_prof_suivi").".");
 				header("Location: ../logout.php?auto=1");
 				die();
 			}
@@ -259,6 +285,7 @@ elseif($_SESSION['statut']=="cpe"){
 				if(mysql_num_rows($test)==0){
 					// A DEGAGER
 					// A VOIR: Comment enregistrer une tentative d'accès illicite?
+					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve dont il n'est pas responsable.");
 					header("Location: ../logout.php?auto=1");
 					die();
 				}
@@ -317,6 +344,7 @@ elseif($_SESSION['statut']=="scolarite"){
 				if(mysql_num_rows($test)==0){
 					// A DEGAGER
 					// A VOIR: Comment enregistrer une tentative d'accès illicite?
+					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve qui n'est pas élève d'une des classes dont le CPE est responsable.");
 					header("Location: ../logout.php?auto=1");
 					die();
 				}
@@ -345,6 +373,7 @@ elseif($_SESSION['statut']=="responsable"){
 																resp_pers rp
 								WHERE rp.login='".$_SESSION['login']."' AND
 										rp.pers_id=r.pers_id AND
+										(r.resp_legal='1' OR r.resp_legal='2') AND
 										r.ele_id=e.ele_id AND
 										e.login=jec.login AND
 										jec.id_classe=c.id
@@ -365,6 +394,7 @@ elseif($_SESSION['statut']=="responsable"){
 											jec.login=e.login AND
 											rp.login='".$_SESSION['login']."' AND
 											rp.pers_id=r.pers_id AND
+											(r.resp_legal='1' OR r.resp_legal='2') AND
 											r.ele_id=e.ele_id
 									ORDER BY e.nom,e.prenom;";
 			}
@@ -376,11 +406,13 @@ elseif($_SESSION['statut']=="responsable"){
 								WHERE rp.login='".$_SESSION['login']."' AND
 										rp.pers_id=r.pers_id AND
 										r.ele_id=e.ele_id AND
+										(r.resp_legal='1' OR r.resp_legal='2') AND
 										e.login='$logineleve'";
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)==0){
 					// A DEGAGER
 					// A VOIR: Comment enregistrer une tentative d'accès illicite?
+					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve dont il n'est pas responsable.");
 					header("Location: ../logout.php?auto=1");
 					die();
 				}
@@ -412,6 +444,8 @@ elseif($_SESSION['statut']=="eleve"){
 if($acces!="y"){
 	// A DEGAGER
 	// A VOIR: Comment enregistrer une tentative d'accès illicite?
+
+	tentative_intrusion(1, "Tentative illicite d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder à des données d'Années antérieures.");
 
 	header("Location: ../logout.php?auto=1");
 	//echo "\$acces=$acces";
