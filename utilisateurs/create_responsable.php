@@ -153,8 +153,8 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login"));
 				// generate_unique_login() peut retourner 'false' en cas de pb
 			}
-	
-			if($reg_login) {
+
+			if(($reg_login)&&($reg_login!='')) {
 				// Si on a un accès LDAP en écriture, on créé le compte sur le LDAP
 				// On ne procède que si le LDAP est configuré en écriture, qu'on a activé
 				// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a été choisi pour cet utilisateur.
