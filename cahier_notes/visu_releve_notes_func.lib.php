@@ -1971,6 +1971,13 @@ function releve_pdf($tab_rel,$i) {
 									$chaine_notes.=" (coef ".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['coef'].")";
 								}
 							}
+
+							//$chaine_notes.=" rn_app=".$tab_rel['rn_app'];
+							//$chaine_notes.=" display_app=".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app'];
+
+							if(($tab_rel['rn_app']=='y')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app']=='1')) {
+								$chaine_notes.=" ".str_replace("&#039;", "'", unhtmlentities($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']));
+							}
 	
 							$kk++;
 						}
