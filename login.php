@@ -216,13 +216,12 @@ if ($session_gepi->auth_locale && isset($_POST['login']) && isset($_POST['no_ant
 						<p class='droite'>
 						<input type='submit' name='submit' value='Valider' style='font-variant: small-caps;' tabindex='3' />
 						</p>
-						<p id='mot_passe'>
-							<?php
-								if (getSettingValue("enable_password_recovery") == "yes") {
-									echo "<a class='small' href='recover_password.php'>Mot de passe oublié ?</a>";
-								}
-							?>
-						</p>
+						<?php
+							if (getSettingValue("enable_password_recovery") == "yes") {
+								//echo "<a class='small' href='recover_password.php'>Mot de passe oublié ?</a>";
+								echo "<p id='mot_passe'><a class='small' href='recover_password.php'>Mot de passe oublié ?</a></p>\n";
+							}
+						?>
 				</div>
 			</div>
 		</form>
