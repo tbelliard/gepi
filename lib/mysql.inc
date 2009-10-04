@@ -1,8 +1,7 @@
 <?php
 /*
- * Last modification  : 18/03/2005
- *
- */
+$Id$
+*/
 
 // mysql.inc - Simple PHP database support for MySQL.
 // Include this file after defining the following variables:
