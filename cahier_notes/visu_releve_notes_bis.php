@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/visu_releve_notes_bis.php';";
@@ -68,6 +68,7 @@ if(!isset($_POST['choix_parametres'])) {
 //============== ENTETE BULLETIN HTML ================
 elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 	include("header_releve_html.php");
+	//debug_var();
 }
 //============ FIN ENTETE BULLETIN HTML ==============
 //====================================================
@@ -281,6 +282,24 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 										)
 									ORDER BY c.classe;";
 		}
+		elseif(getSettingValue("GepiAccesReleveProfP")=="yes") {
+			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' LIMIT 1;";
+			$test_acces=mysql_query($sql);
+			if(mysql_num_rows($test_acces)>0) {
+				$sql="SELECT DISTINCT c.* FROM j_eleves_professeurs jep,
+											classes c
+									WHERE (
+										c.id=jep.id_classe AND
+										jep.professeur='".$_SESSION['login']."'
+										)
+									ORDER BY c.classe;";
+			}
+			else {
+				echo "<p>Vous n'êtes pas ".getSettingValue("gepi_prof_suivi").", donc pas autorisé à accéder aux relevés de notes des élèves.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+		}
 		else {
 			echo "<p>Vous n'êtes pas autorisé à accéder aux relevés de notes des élèves.</p>\n";
 			require("../lib/footer.inc.php");
@@ -347,7 +366,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 
 
 	$nb_grp_prof=0;
-	if($_SESSION['statut']=='professeur') {
+	if(($_SESSION['statut']=='professeur')&&((getSettingValue("GepiAccesReleveProfToutesClasses") == "yes")||(getSettingValue("GepiAccesReleveProf") == "yes")||(getSettingValue("GepiAccesReleveProfTousEleves") == "yes"))) {
 		echo "<p><b>Alternativement</b>, vous pouvez choisir un groupe:</p>\n";
 
 		$groupes_prof=get_groups_for_prof($_SESSION['login']);
@@ -956,6 +975,23 @@ document.getElementById('div_param_releve').style.display='none';
 							jec.id_classe='".$tab_id_classe[$i]."'
 				ORDER BY e.nom,e.prenom;";
 			// On fait le filtrage des élèves plus bas dans le cas du prof
+		}
+		elseif(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiAccesReleveProfP")=="yes")) {
+			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND id_classe='".$tab_id_classe[$i]."' LIMIT 1;";
+			$test_acces=mysql_query($sql);
+			if(mysql_num_rows($test_acces)>0) {
+				$sql="SELECT DISTINCT e.* FROM eleves e,
+								j_eleves_classes jec
+					WHERE jec.login=e.login AND
+								jec.id_classe='".$tab_id_classe[$i]."'
+					ORDER BY e.nom,e.prenom;";
+			}
+			else {
+				// On pourrait mettre un tentative_intrusion()
+				echo "<p>Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." de cette classe, donc pas autorisé à accéder aux relevés de notes de ces élèves.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
 		}
 		elseif(($_SESSION['statut']=='eleve')&&(getSettingValue("GepiAccesReleveEleve") == "yes")) {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE (jec.id_classe='".$tab_id_classe[$i]."' AND jec.login='".$_SESSION['login']."' AND jec.login=e.login);";

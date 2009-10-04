@@ -356,6 +356,11 @@
 							$verif=mysql_query($sql);
 							if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
 						}
+						elseif (getSettingValue("GepiAccesReleveProfP") == "yes") {
+							$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND login='".$current_eleve_login[$i]."';";
+							$verif=mysql_query($sql);
+							if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
+						}
 						else {
 							/*
 							tentative_intrusion(2, "Tentative d'un professeur d'accéder à un relevé de notes (".$current_eleve_login[$i].") sans y être autorisé.");
