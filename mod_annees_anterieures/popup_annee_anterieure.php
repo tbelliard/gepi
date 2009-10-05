@@ -119,15 +119,6 @@ elseif($_SESSION['statut']=="professeur"){
 		// Le professeur a accès aux données antérieures de tous les élèves
 		$acces="y";
 	}
-	elseif($AAProfPrinc=="yes"){
-		// Le professeur a accès aux données antérieures des élèves dont il est Professeur Principal
-		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND
-														login='$logineleve';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0){
-			$acces="y";
-		}
-	}
 	elseif($AAProfClasses=="yes"){
 		// Le professeur a accès aux données antérieures des élèves des classes pour lesquelles il fournit un enseignement (sans nécessairement avoir tous les élèves de la classe)
 		/*
@@ -142,6 +133,7 @@ elseif($_SESSION['statut']=="professeur"){
 								jec.id_classe=jgc.id_classe AND
 								jgc.id_groupe=jgp.id_groupe AND
 								jgp.login='".$_SESSION['login']."';";
+		//echo "$sql<br />";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
 			$acces="y";
@@ -153,6 +145,17 @@ elseif($_SESSION['statut']=="professeur"){
 						WHERE jeg.login='$logineleve' AND
 								jeg.id_groupe=jgp.id_groupe AND
 								jgp.login='".$_SESSION['login']."';";
+		//echo "$sql<br />";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0){
+			$acces="y";
+		}
+	}
+	elseif($AAProfPrinc=="yes"){
+		// Le professeur a accès aux données antérieures des élèves dont il est Professeur Principal
+		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND
+														login='$logineleve';";
+		//echo "$sql<br />";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
 			$acces="y";
