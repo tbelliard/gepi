@@ -44,13 +44,6 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-$propUser = ($_SESSION["statut"] == "eleve") ? ElevePeer::retrieveByLOGIN($_SESSION["login"]) :
-              ($_SESSION["statut"] == "responsable" ? ResponsableElevePeer::retrieveByLogin($_SESSION["login"]) : NULL);
-if ($propUser == null) {
-	header("Location: ../logout.php?auto=1");
-	die();
-}
-
 if (getSettingValue("GepiCahierTexteVersion") != '2') {
   tentative_intrusion(1, "Tentative d'accès au cahier de textes v2 alors qu'il n'est pas ouvert.");
   header("Location: ../cahier_texte/consultation.php");
