@@ -7111,7 +7111,7 @@ else{
 						}
 
 						$sql="SELECT 1=1 FROM resp_pers WHERE pers_id='$lig1->col2'";
-					info_debug($sql);
+						info_debug($sql);
 						$test=mysql_query($sql);
 
 						if(mysql_num_rows($test)==0){
@@ -7121,10 +7121,10 @@ else{
 													nom='".addslashes(strtoupper($lig->nom))."',
 													prenom='".addslashes(maj_ini_prenom($lig->prenom))."',
 													civilite='".ucfirst(strtolower($lig->civilite))."',
-													tel_pers='".$lig->tel_pers."',
-													tel_port='".$lig->tel_port."',
-													tel_prof='".$lig->tel_prof."',
-													mel='".$lig->mel."',
+													tel_pers='".addslashes($lig->tel_pers)."',
+													tel_port='".addslashes($lig->tel_port)."',
+													tel_prof='".addslashes($lig->tel_prof)."',
+													mel='".addslashes($lig->mel)."',
 													adr_id='".$lig->adr_id."';";
 							info_debug($sql);
 							$insert=mysql_query($sql);
@@ -7142,10 +7142,10 @@ else{
 							$sql="UPDATE resp_pers SET nom='".addslashes(strtoupper($lig->nom))."',
 													prenom='".addslashes(maj_ini_prenom($lig->prenom))."',
 													civilite='".ucfirst(strtolower($lig->civilite))."',
-													tel_pers='".$lig->tel_pers."',
-													tel_port='".$lig->tel_port."',
-													tel_prof='".$lig->tel_prof."',
-													mel='".$lig->mel."',
+													tel_pers='".addslashes($lig->tel_pers)."',
+													tel_port='".addslashes($lig->tel_port)."',
+													tel_prof='".addslashes($lig->tel_prof)."',
+													mel='".addslashes($lig->mel)."',
 													adr_id='".$lig->adr_id."'
 												WHERE pers_id='$lig1->col2';";
 							info_debug($sql);
@@ -7974,6 +7974,7 @@ else{
 					if(mysql_num_rows($res1)==0){
 						// L'association responsable/eleve n'existe pas encore
 						$resp_new[]="$ele_id:$pers_id";
+						info_debug("Nouvelle association $ele_id:$pers_id\n");
 
 
 						$alt=$alt*(-1);
@@ -8001,6 +8002,7 @@ else{
 							$ligne_courante.="<td style='background-color:red;'>&nbsp;</td>\n";
 							//$ligne_courante.="<td colspan='5'>Aucune personne associée???</td>\n";
 							$ligne_courante.="<td colspan='7'>Aucune personne associée???</td>\n";
+							info_debug("Aucune personne associée???\n");
 
 							//=========================
 							// AJOUT: boireaus 20071129
@@ -8146,6 +8148,7 @@ else{
 							//$resp_modif[]="$affiche[0]:$affiche[1]";
 							$resp_modif[]="$ele_id:$pers_id";
 
+							info_debug("Modification association $ele_id:$pers_id -> $resp_legal\n");
 
 							$alt=$alt*(-1);
 							/*
@@ -8171,6 +8174,7 @@ else{
 
 								$ligne_courante.="<td style='background-color:red;'>&nbsp;</td>\n";
 								$ligne_courante.="<td colspan='5'>Aucune personne associée???</td>\n";
+								info_debug("Aucune personne associée???\n");
 
 								//=========================
 								// AJOUT: boireaus 20071129
@@ -8307,6 +8311,7 @@ else{
 						else {
 							$sql="UPDATE tempo2 SET col1='t_diff_pas_modif' WHERE col2='t_".$ele_id."_".$pers_id."'";
 							info_debug($sql);
+							info_debug("Pas de modif de responsabilité\n");
 							$update=mysql_query($sql);
 						}
 					}
