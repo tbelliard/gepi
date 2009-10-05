@@ -89,6 +89,9 @@ $duree ='';
 $h_deb ='';
 $num_incident = '';
 
+//echo "\$mode=$mode<br />";
+//echo "\$id_incident=$id_incident<br />";
+
 // mode = module_discipline, on vient de la page saisie incident du module discipline
 // mode = module_retenue, on vient de la partie sanction du module discipline et de la sanction : retenue
 if (($mode=='module_discipline')||($mode=='module_retenue')) {
@@ -149,6 +152,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 	$fct_resp = ucfirst($fct_resp);
 		
 	} else {
+		//$nature_incident="";
 		return "INCIDENT INCONNU";
 	}
 	
@@ -246,6 +250,10 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 } // formulaire_retenue
 
 //$nature_incident='Scrogneugneu';
+
+// Quand on génère la retenue par le module Modèle OpenOffice, la $nature_incident n'est pas récupérée.
+// Elle ne l'est que si on génère la retenue depuis le module Discipline
+if(!isset($nature_incident)) {$nature_incident="";}
 
 //
 // Fin zone de traitement Les données qui seront fusionnées au modèle
