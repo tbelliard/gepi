@@ -1518,7 +1518,7 @@ function releve_pdf($tab_rel,$i) {
 		//BLOC IDENTITE ELEVE
 		$pdf->SetXY($X_cadre_eleve,$Y_cadre_eleve);
 		$pdf->SetFont($caractere_utilse,'B',14);
-		$pdf->Cell(90,7,strtoupper($tab_rel['eleve'][$i]['nom'])." ".ucfirst($tab_rel['eleve'][$i]['prenom']),0,2,'');
+		$pdf->Cell(90,7,strtoupper($tab_rel['eleve'][$i]['nom'])." ".ucfirst($tab_rel['eleve'][$i]['prenom']).$affiche_bloc_observation,0,2,'');
 		$pdf->SetFont($caractere_utilse,'',10);
 		//$pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,'');
 		if($tab_rel['eleve'][$i]['sexe']=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}
@@ -1952,7 +1952,7 @@ function releve_pdf($tab_rel,$i) {
 							else {
 								$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['note'];
 							}
-	
+
 							if($tab_rel['rn_nomdev']=='y') {
 								$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].")";
 							}
@@ -1975,10 +1975,35 @@ function releve_pdf($tab_rel,$i) {
 							//$chaine_notes.=" rn_app=".$tab_rel['rn_app'];
 							//$chaine_notes.=" display_app=".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app'];
 
-							if(($tab_rel['rn_app']=='y')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app']=='1')) {
+							if(($tab_rel['rn_app']=='y')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app']=='1')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']!='')) {
 								$chaine_notes.=" ".str_replace("&#039;", "'", unhtmlentities($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']));
 							}
 	
+							$kk++;
+						}
+						elseif(($tab_rel['rn_app']=='y')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app']=='1')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']!='')) {
+
+							if($tab_rel['rn_nomdev']=='y') {
+								$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].")";
+							}
+	
+							if($tab_rel['rn_datedev']=='y') {
+								$chaine_notes.=" (".formate_date($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['date']).")";
+							}
+	
+							if($tab_rel['rn_coefdev_si_diff']=='y') {
+								if($tab_rel['eleve'][$i]['groupe'][$m]['differents_coef']=='y') {
+									$chaine_notes.=" (coef ".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['coef'].")";
+								}
+							}
+							else {
+								if($tab_rel['rn_toutcoefdev']=='y') {
+									$chaine_notes.=" (coef ".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['coef'].")";
+								}
+							}
+
+							$chaine_notes.=" ".str_replace("&#039;", "'", unhtmlentities($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']));
+
 							$kk++;
 						}
 					}
