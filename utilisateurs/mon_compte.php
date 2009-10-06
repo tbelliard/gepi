@@ -144,15 +144,15 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		}
 	}
 	if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe")
-	 if ($user_show_email != $reg_show_email) {
-	  if ($reg_show_email != "no" and $reg_show_email != "yes") $reg_show_email = "no";
+	if ($user_show_email != $reg_show_email) {
+	if ($reg_show_email != "no" and $reg_show_email != "yes") $reg_show_email = "no";
 		$reg = mysql_query("UPDATE utilisateurs SET show_email = '$reg_show_email' WHERE login = '" . $_SESSION['login'] . "'");
 		if ($reg) {
 			if($msg!="") {$msg.="<br />";}
 			$msg.="Le paramétrage d'affichage de votre email a été modifié !";
 			$no_modif = "no";
 		}
-	 }
+	}
 
 	//======================================
 	// pour le module trombinoscope
@@ -169,7 +169,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		$ancien_prenom = mysql_result($calldata_photo, $i_photo, "prenom");
 
 		$repertoire = '../photos/personnels/';
-  		$ancien_code_photo = md5(strtolower($user_login));
+		$ancien_code_photo = md5(strtolower($user_login));
 		$nouveau_code_photo = $ancien_code_photo;
 
 		/*
@@ -182,9 +182,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		}
 		*/
 
-        // DEBUG:
-        //echo "\$ancien_code_photo=$ancien_code_photo<br />\n";
-        //echo "\$nouveau_code_photo=$nouveau_code_photo<br />\n";
+		// DEBUG:
+		//echo "\$ancien_code_photo=$ancien_code_photo<br />\n";
+		//echo "\$nouveau_code_photo=$nouveau_code_photo<br />\n";
 
 		if(isset($ancien_code_photo)) {
 			if($ancien_code_photo != ""){
@@ -203,9 +203,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 					}
 				}
 
-                // DEBUG:
-                //echo "\$HTTP_POST_FILES['filephoto']['tmp_name']=".$HTTP_POST_FILES['filephoto']['tmp_name']."<br />\n";
-                //echo "\$_FILES['filephoto']['tmp_name']=".$_FILES['filephoto']['tmp_name']."<br />\n";
+				// DEBUG:
+				//echo "\$HTTP_POST_FILES['filephoto']['tmp_name']=".$HTTP_POST_FILES['filephoto']['tmp_name']."<br />\n";
+				//echo "\$_FILES['filephoto']['tmp_name']=".$_FILES['filephoto']['tmp_name']."<br />\n";
 
 				// filephoto
 				//if(isset($HTTP_POST_FILES['filephoto']['tmp_name'])){
@@ -214,58 +214,58 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 					$filephoto_tmp=$_FILES['filephoto']['tmp_name'];
 					//if ( $filephoto_tmp != '' and $valide_form === 'oui' ){
 					if ($filephoto_tmp!=''){
-  						//$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
+						//$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
 						//$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
 						//$filephoto_type=$HTTP_POST_FILES['filephoto']['type'];
-  						$filephoto_name=$_FILES['filephoto']['name'];
+						$filephoto_name=$_FILES['filephoto']['name'];
 						$filephoto_size=$_FILES['filephoto']['size'];
 						$filephoto_type=$_FILES['filephoto']['type'];
 						if (!preg_match('/jpg$/',strtolower($filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ){
 								if($msg!="") {$msg.="<br />";}
 								$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
 							} else {
-								  // Tester la taille max de la photo?
-								  if(is_uploaded_file($filephoto_tmp)){
-									  $dest_file = "../photos/personnels/$nouveau_code_photo.jpg";
-									  //$source_file=stripslashes("$filephoto_tmp");
-									  $source_file=$filephoto_tmp;
-  									$res_copy=copy("$source_file" , "$dest_file");
-	  								if($res_copy){
-		  								//$msg.="Mise en place de la photo effectuée.";
-		  								if($msg!="") {$msg.="<br />";}
-										$msg.="Mise en place de la photo effectuée. <br />Il peut être nécessaire de rafraîchir la page, voire de vider le cache du navigateur<br />pour qu'un changement de photo soit pris en compte.";
-			  							$no_modif="no";
-
-											if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-					               // si le redimensionnement des photos est activé on redimenssionne
-					               $source = imagecreatefromjpeg("../photos/personnels/$nouveau_code_photo.jpg"); // La photo est la source
-					               if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
-					               if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
-
-                				// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
-					              $largeur_source = imagesx($source);
-					              $hauteur_source = imagesy($source);
-              					$largeur_destination = imagesx($destination);
-					              $hauteur_destination = imagesy($destination);
-
-					              // On crée la miniature
-					              imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
-              					if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
-              					// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
-					              imagejpeg($destination, "../photos/personnels/$nouveau_code_photo.jpg",100);
-					            }
-
-				  					}
-					  				else{
+								// Tester la taille max de la photo?
+								if(is_uploaded_file($filephoto_tmp)){
+									$dest_file = "../photos/personnels/$nouveau_code_photo.jpg";
+									//$source_file=stripslashes("$filephoto_tmp");
+									$source_file=$filephoto_tmp;
+									$res_copy=copy("$source_file" , "$dest_file");
+									if($res_copy){
+										//$msg.="Mise en place de la photo effectuée.";
 										if($msg!="") {$msg.="<br />";}
-						  				$msg.="Erreur lors de la mise en place de la photo.";
-							  		}
-								  }
+										$msg.="Mise en place de la photo effectuée. <br />Il peut être nécessaire de rafraîchir la page, voire de vider le cache du navigateur<br />pour qu'un changement de photo soit pris en compte.";
+										$no_modif="no";
 
-						  else{
+										if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+											// si le redimensionnement des photos est activé on redimenssionne
+											$source = imagecreatefromjpeg("../photos/personnels/$nouveau_code_photo.jpg"); // La photo est la source
+											if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
+											if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
+			
+											// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
+											$largeur_source = imagesx($source);
+											$hauteur_source = imagesy($source);
+											$largeur_destination = imagesx($destination);
+											$hauteur_destination = imagesy($destination);
+			
+											// On crée la miniature
+											imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
+											if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
+											// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
+											imagejpeg($destination, "../photos/personnels/$nouveau_code_photo.jpg",100);
+										}
+
+									}
+									else{
+										if($msg!="") {$msg.="<br />";}
+										$msg.="Erreur lors de la mise en place de la photo.";
+									}
+								}
+
+						else{
 							if($msg!="") {$msg.="<br />";}
-							  $msg.="Erreur lors de l'upload de la photo.";
-						  }
+							$msg.="Erreur lors de l'upload de la photo.";
+						}
 						}
 					}
 				}
@@ -341,24 +341,24 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 											$msg.="Mise en place de la photo effectuée. <br />Il peut être nécessaire de rafraîchir la page, voire de vider le cache du navigateur<br />pour qu'un changement de photo soit pris en compte.";
 											$no_modif="no";
 
-												if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-									// si le redimensionnement des photos est activé on redimenssionne
-									$source = imagecreatefromjpeg("../photos/eleves/$reg_no_gep.jpg"); // La photo est la source
-									if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
-									if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
-
-									// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
-									$largeur_source = imagesx($source);
-									$hauteur_source = imagesy($source);
-									$largeur_destination = imagesx($destination);
-									$hauteur_destination = imagesy($destination);
-
-									// On crée la miniature
-									imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
-									if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
-									// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
-									imagejpeg($destination, "../photos/eleves/$reg_no_gep.jpg",100);
-									}
+											if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+												// si le redimensionnement des photos est activé on redimenssionne
+												$source = imagecreatefromjpeg("../photos/eleves/$reg_no_gep.jpg"); // La photo est la source
+												if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
+												if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
+			
+												// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
+												$largeur_source = imagesx($source);
+												$hauteur_source = imagesy($source);
+												$largeur_destination = imagesx($destination);
+												$hauteur_destination = imagesy($destination);
+			
+												// On crée la miniature
+												imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
+												if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
+												// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
+												imagejpeg($destination, "../photos/eleves/$reg_no_gep.jpg",100);
+											}
 
 										}
 										else{
@@ -375,9 +375,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 							}
 						}
 						elseif($nb_elenoet==0){
-								if($msg!="") {$msg.="<br />";}
-								//$msg.="Le numéro GEP de l'élève n'est pas enregistré dans la table 'eleves'.";
-								$msg.="Le numéro interne Sconet (elenoet) de l'élève n'est pas enregistré dans la table 'eleves'.";
+							if($msg!="") {$msg.="<br />";}
+							//$msg.="Le numéro GEP de l'élève n'est pas enregistré dans la table 'eleves'.";
+							$msg.="Le numéro interne Sconet (elenoet) de l'élève n'est pas enregistré dans la table 'eleves'.";
 						}
 						else{
 							if($msg!="") {$msg.="<br />";}
@@ -393,15 +393,15 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 				} else {
 						if($msg!="") {$msg.="<br />";}
 						$msg.="Le numéro interne Sconet (elenoet) est vide. Impossible de continuer. Veuillez signaler ce problème à l'administrateur.";
-        }
+		}
 			} else {
 				if($msg!="") {$msg.="<br />";}
 				$msg.="Vous n'avez pas numéro interne Sconet. Impossible de continuer. Veuillez signaler ce problème à l'administrateur.";
-      }
+	}
 		} else {
 			if($msg!="") {$msg.="<br />";}
 			$msg.="Vous n'avez pas numéro interne Sconet. Impossible de continuer. Veuillez signaler ce problème à l'administrateur.";
-    	}
+		}
 	}
 
 	//======================================
@@ -524,10 +524,10 @@ echo "<tr><td>\n";
 		echo "<tr><td>Email : </td><td>".$user_email."<input type=\"hidden\" name=\"reg_email\" value=\"".$user_email."\" /></td></tr>\n";
 	}
 	if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe") {
-	    $affiche_bouton_submit = 'yes';
-	    echo "<tr><td></td><td><label for='reg_show_email' style='cursor: pointer;'><input type='checkbox' name='reg_show_email' id='reg_show_email' value='yes'";
-	    if ($user_show_email == "yes") echo " CHECKED";
-	    echo "/> Autoriser l'affichage de mon adresse email<br />pour les utilisateurs non personnels de l'établissement **</label></td></tr>\n";
+		$affiche_bouton_submit = 'yes';
+		echo "<tr><td></td><td><label for='reg_show_email' style='cursor: pointer;'><input type='checkbox' name='reg_show_email' id='reg_show_email' value='yes'";
+		if ($user_show_email == "yes") echo " CHECKED";
+		echo "/> Autoriser l'affichage de mon adresse email<br />pour les utilisateurs non personnels de l'établissement **</label></td></tr>\n";
 	}
 	echo "<tr><td>Statut : </td><td>".statut_accentue($user_statut)."</td></tr>\n";
 	echo "</table>\n";
@@ -542,7 +542,14 @@ if(($_SESSION['statut']=='administrateur')||
 ($_SESSION['statut']=='eleve')
 ) {
 	$user_login=$_SESSION['login'];
-	if(getSettingValue("active_module_trombinoscopes")=='y'){
+
+	//echo "active_module_trombino_pers=".getSettingValue("active_module_trombino_pers")."<br />";
+	//echo "active_module_trombinoscopes=".getSettingValue("active_module_trombinoscopes")."<br />";
+
+	//if(getSettingValue("active_module_trombinoscopes")=='y'){
+	if((($_SESSION['statut']=='eleve')&&(getSettingValue("active_module_trombinoscopes")=='y'))||
+		(($_SESSION['statut']!='eleve')&&(getSettingValue("active_module_trombino_pers")=='y'))) {
+
 		// pour module trombinoscope
 		$photo_largeur_max=150;
 		$photo_hauteur_max=150;
@@ -586,22 +593,24 @@ if(($_SESSION['statut']=='administrateur')||
 				}
 
 				// Cas particulier des élèves pour une gestion plus fine avec les AIDs
-        if ((getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') and ($_SESSION['statut']=='eleve')) {
-            // Une catégorie d'AID pour accès au trombino existe-t-elle ?
-            if (getSettingValue("num_aid_trombinoscopes")!='') {
-                // L'AID existe t-elle ?
-                $test1 = sql_query1("select count(indice_aid) from aid_config where indice_aid='".getSettingValue("num_aid_trombinoscopes")."'");
-                if ($test1!="0")
-                    $test_eleve = sql_query1("select count(login) from j_aid_eleves where login='".$_SESSION['login']."' and indice_aid='".getSettingValue("num_aid_trombinoscopes")."'");
-                else
-                    $test_eleve = "1";
-				    } else {
-				        $test_eleve = "1";
-				    }
-        }
+				if ((getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') and ($_SESSION['statut']=='eleve')) {
+					// Une catégorie d'AID pour accès au trombino existe-t-elle ?
+					if (getSettingValue("num_aid_trombinoscopes")!='') {
+						// L'AID existe t-elle ?
+						$test1 = sql_query1("select count(indice_aid) from aid_config where indice_aid='".getSettingValue("num_aid_trombinoscopes")."'");
+						if ($test1!="0") {
+							$test_eleve = sql_query1("select count(login) from j_aid_eleves where login='".$_SESSION['login']."' and indice_aid='".getSettingValue("num_aid_trombinoscopes")."'");
+						}
+						else {
+							$test_eleve = "1";
+						}
+					} else {
+						$test_eleve = "1";
+					}
+				}
 
-        if ((getSettingValue($GepiAccesModifMaPhoto)=='yes') and ($test_eleve!=0)) {
-          $affiche_bouton_submit ='yes';
+				if ((getSettingValue($GepiAccesModifMaPhoto)=='yes') and ($test_eleve!=0)) {
+					$affiche_bouton_submit ='yes';
 					echo "<div align='center'>\n";
 					//echo "<span id='lien_photo' style='font-size:xx-small;'>";
 					echo "<div id='lien_photo' style='border: 1px solid black; padding: 5px; margin: 5px;'>";
@@ -610,7 +619,7 @@ if(($_SESSION['statut']=='administrateur')||
 						//echo "Modifier le fichier photo</a>\n";
 						echo "Modifier le fichier photo</a>\n";
 					}
-					else{
+					else {
 						//echo "Envoyer un fichier photo</a>\n";
 						echo "Envoyer<br />un fichier<br />photo</a>\n";
 					}
@@ -619,10 +628,9 @@ if(($_SESSION['statut']=='administrateur')||
 					echo "<div id='div_upload_photo' style='display:none;'>";
 					echo "<input type='file' name='filephoto' size='30' />\n";
 					echo "<input type='submit' name='Envoi_photo' value='Envoyer' />\n";
-      		if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-					  echo "<br /><span class='small'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels).
-            <br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>"."<br /><span class='small'>Les photos doivent de plus être au format JPEG avec l'extension '<strong>.jpg</strong>'.</span>";
-          }
+					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+						echo "<br /><span class='small'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels).<br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>"."<br /><span class='small'>Les photos doivent de plus être au format JPEG avec l'extension '<strong>.jpg</strong>'.</span>";
+					}
 
 					if("$photo"!=""){
 						if(file_exists($photo)){
@@ -639,7 +647,7 @@ if(($_SESSION['statut']=='administrateur')||
 			}
 
 		}
-		else{
+		else {
 			echo "<table style='text-align: center;' summary='Photo'>\n";
 			echo "<tr>\n";
 			echo "<td style='text-align: center;'>\n";
@@ -648,7 +656,7 @@ if(($_SESSION['statut']=='administrateur')||
 
 				$photo="../photos/personnels/".$code_photo.".jpg";
 				$temoin_photo="non";
-				if(file_exists($photo)){
+				if(file_exists($photo)) {
 					$temoin_photo="oui";
 					echo "<div align='center'>\n";
 					$dimphoto=redimensionne_image2($photo);
@@ -657,7 +665,7 @@ if(($_SESSION['statut']=='administrateur')||
 					echo "<div style='clear:both;'></div>\n";
 				}
 				if(getSettingValue($GepiAccesModifMaPhoto)=='yes') {
-				  $affiche_bouton_submit ='yes';
+					$affiche_bouton_submit ='yes';
 					echo "<div align='center'>\n";
 					echo "<span style='font-size:xx-small;'>\n";
 					echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">\n";
@@ -673,16 +681,16 @@ if(($_SESSION['statut']=='administrateur')||
 
 					echo "<input type='submit' name='Envoi_photo' value='Envoyer' />\n";
 
-      		if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-					  echo "<br /><span class='small'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels).
-            <br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>"."<br /><span class='small'>Les photos doivent de plus être au format JPEG avec l'extension '<strong>.jpg</strong>'.</span>";
-          }
-          echo "<br />\n";
+					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+						echo "<br /><span class='small'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels).<br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>"."<br /><span class='small'>Les photos doivent de plus être au format JPEG avec l'extension '<strong>.jpg</strong>'.</span>";
+					}
+					echo "<br />\n";
 					echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' />\n";
 					echo "&nbsp;<label for='suppr_filephoto' style='cursor: pointer; cursor: hand;'>Supprimer la photo existante</label>\n";
 					echo "</div>\n";
 					echo "</div>\n";
 				}
+
 			echo "</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
@@ -692,8 +700,9 @@ if(($_SESSION['statut']=='administrateur')||
 }
 echo "</td>\n";
 echo "</table>\n";
-if ($affiche_bouton_submit=='yes')
-    echo "<p><input type='submit' value='Enregistrer' /></p>\n";
+if ($affiche_bouton_submit=='yes') {
+	echo "<p><input type='submit' value='Enregistrer' /></p>\n";
+}
 /*
 //Supp ERIC
 $tab_class_mat =  make_tables_of_classes_matieres();
