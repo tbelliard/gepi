@@ -517,7 +517,7 @@
 								d.date >= '".$date_debut."' and
 								d.date <= '".$date_fin."'
 								)
-								ORDER BY d.date
+								ORDER BY d.date, d.nom_court, d.nom_complet
 								";
 							}
 							else {
@@ -529,7 +529,7 @@
 								cn.id_groupe = '".$current_groupe."' and
 								cn.periode = '".$periode_num."'
 								)
-								ORDER BY d.date
+								ORDER BY d.date, d.nom_court, d.nom_complet
 								";
 							}
 							$query_notes = mysql_query($sql1);
