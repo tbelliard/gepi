@@ -1437,7 +1437,12 @@ function releve_pdf($tab_rel,$i) {
 	//Police Arial Gras 6
 	$pdf->SetFont('Arial','B',8);
 	// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
-	$pdf->Cell(0,4.5, $releve_formule_bas,0,0,'C');
+	if($tab_rel['rn_formule']!="") {
+		$pdf->Cell(0,4.5, $tab_rel['rn_formule'],0,0,'C');
+	}
+	else {
+		$pdf->Cell(0,4.5, $releve_formule_bas,0,0,'C');
+	}
 	//================================
 
 
