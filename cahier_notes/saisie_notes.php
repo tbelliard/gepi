@@ -576,7 +576,8 @@ $nb_dev_sous_cont = 0;
 
 // Premier formulaire pour masquer ou non les colonnes "commentaires" non vides des évaluations verrouillées
 if ($id_devoir == 0) {
-	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post name=\"form1\">\n";
+	//echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post name=\"form1\">\n";
+	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post name=\"form1b\">\n";
 	echo "<fieldset style=\"padding-top: 0px; padding-bottom: 0px;  margin-left: 0px; margin-right: 100px;\">\n";
 	echo "<table summary='Paramètres'><tr><td>Masquer les colonnes \"commentaires\" non vides (mode visualisation uniquement) :
 	</td><td><input type=\"checkbox\" name=\"affiche_comment\"  ";
