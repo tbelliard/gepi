@@ -365,8 +365,26 @@ while ($i < $nombre_ligne) {
 	$description_groupe = htmlentities(mysql_result($call_group, $i, "description"));
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
-	echo "<td>".$nom_groupe;
+	echo "<td>";
+
+	$sql="SELECT u.nom,u.prenom FROM j_groupes_professeurs jgp, utilisateurs u WHERE
+			jgp.login=u.login AND
+			jgp.id_groupe='".$id_groupe."'
+			ORDER BY u.nom,u.prenom";
+	$res_prof=mysql_query($sql);
+	$texte_alternatif="Pas de prof???";
+	if(mysql_num_rows($res_prof)>0){
+		$texte_alternatif="";
+		while($ligne=mysql_fetch_object($res_prof)){
+			$texte_alternatif.=", ".ucfirst(strtolower($ligne->prenom))." ".strtoupper($ligne->nom);
+		}
+		$texte_alternatif=substr($texte_alternatif,2);
+	}
+
+	echo "<a href='../groupes/edit_group.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;mode=groupe' title='$texte_alternatif'>";
+	echo $nom_groupe;
 	echo "<br /><span style='font-size:xx-small;'>$description_groupe</span>";
+	echo "</a>";
 	echo "</td>\n";
 	$j = 1;
 	while ($j < $nb_periode) {
