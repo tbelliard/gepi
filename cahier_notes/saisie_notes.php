@@ -872,7 +872,26 @@ foreach ($liste_eleves as $eleve) {
 			}
 			if ($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N") {
 				//$mess_note[$i][$k] = $mess_note[$i][$k]."\" onfocus=\"javascript:this.select()\" onchange=\"verifcol($num_id);changement()\" />";
-				$mess_note[$i][$k] = $mess_note[$i][$k]."\" onfocus=\"javascript:this.select()\" onchange=\"verifcol($num_id);calcul_moy_med();changement()\" />";
+				//$mess_note[$i][$k] = $mess_note[$i][$k]."\" onfocus=\"javascript:this.select()\" onchange=\"verifcol($num_id);calcul_moy_med();changement()\" />";
+				$mess_note[$i][$k] = $mess_note[$i][$k]."\" onfocus=\"javascript:this.select()";
+
+				if(getSettingValue("gepi_pmv")!="n"){
+					$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login[$i]';";
+					$res_ele=mysql_query($sql);
+					if(mysql_num_rows($res_ele)>0) {
+						$lig_ele=mysql_fetch_object($res_ele);
+						if(file_exists("../photos/eleves/".$lig_ele->elenoet.".jpg")) {
+							$mess_note[$i][$k].=";affiche_photo('".$lig_ele->elenoet.".jpg','".addslashes(strtoupper($eleve_nom[$i])." ".ucfirst(strtolower($eleve_prenom[$i])))."')";
+						}
+						else {
+							$mess_note[$i][$k].=";document.getElementById('div_photo_eleve').innerHTML='';";
+						}
+					}
+					else {
+						$mess_note[$i][$k].=";document.getElementById('div_photo_eleve').innerHTML='';";
+					}
+					$mess_note[$i][$k].="\" onchange=\"verifcol($num_id);calcul_moy_med();changement()\" />";
+				}
 			}
 			$mess_note[$i][$k] .= "</td>\n";
 			//=========================================================
@@ -1639,11 +1658,19 @@ if ($id_devoir==0) {
 echo "</tr></table>\n";
 
 //===================================
-if(isset($id_devoir)) {
-	echo "<div style='position: fixed; top: 220px; right: 200px;'>\n";
+if((isset($id_devoir))&&($id_devoir!=0)) {
+	echo "<div style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
 	//javascript_tab_stat('tab_stat_',$nombre_lignes);
 	javascript_tab_stat('tab_stat_',$num_id);
+
+	echo "<br />\n<div id='div_photo_eleve'></div>\n";
 	echo "</div>\n";
+
+	echo "<script type='text/javascript'>
+	function affiche_photo(photo,nom_prenom) {
+		document.getElementById('div_photo_eleve').innerHTML='<img src=\"../photos/eleves/'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom;
+	}
+</script>\n";
 }
 //===================================
 
