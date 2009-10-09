@@ -73,8 +73,42 @@ if ($id_devoir)  {
 	$query = mysql_query("SELECT id_racine FROM cn_conteneurs WHERE id = '$id_conteneur'");
 	$id_racine = mysql_result($query, 0, 'id_racine');
 } else {
-	header("Location: ../logout.php?auto=1");
-	die();
+	//debug_var();
+
+	if (($_SESSION['statut']=='professeur')&&(isset($_GET['id_groupe'])&&(isset($_GET['periode_num'])))) {
+		//if (isset($id_groupe) and isset($periode_num)) {
+		$id_groupe = $_GET['id_groupe'];
+		$periode_num = $_GET['periode_num'];
+
+		if (is_numeric($id_groupe) && $id_groupe > 0) {
+			$current_group = get_group($id_groupe);
+
+			$login_prof = $_SESSION['login'];
+			$appel_cahier_notes = mysql_query("SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe' and periode='$periode_num')");
+			$nb_cahier_note = mysql_num_rows($appel_cahier_notes);
+			if ($nb_cahier_note == 0) {
+				$nom_complet_matiere = $current_group["matiere"]["nom_complet"];
+				$nom_court_matiere = $current_group["matiere"]["matiere"];
+				$reg = mysql_query("INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($current_group["description"])."', nom_complet='". traitement_magic_quotes($nom_complet_matiere)."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
+				if ($reg) {
+					$id_racine = mysql_insert_id();
+					$reg = mysql_query("UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine'");
+					$reg = mysql_query("INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode_num', id_cahier_notes='$id_racine'");
+				}
+			} else {
+				$id_racine = mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
+			}
+			$id_conteneur=$id_racine;
+		}
+		else {
+			header("Location: ../logout.php?auto=1");
+			die();
+		}
+	}
+	else {
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
 }
 
 
@@ -348,7 +382,7 @@ $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans e
 $titre_page = "Saisie des notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-
+debug_var();
 //=======================================================
 // MODIF: boireaus
 // Avertissement redescendu ici pour éviter d'avoir une page web avec une section Javascript avant même la balise <html>
@@ -415,7 +449,8 @@ while ($j < $nb_dev) {
 	$j++;
 }
 
-echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"index.php\" method=\"get\">\n";
+//echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"index.php\" method=\"get\">\n";
+echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"saisie_notes.php\" method=\"get\">\n";
 echo "<p class='bold'>\n";
 echo "<a href=\"../accueil.php\"  onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
 echo "<a href='index.php'  onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes enseignements </a>|";
@@ -1604,10 +1639,12 @@ if ($id_devoir==0) {
 echo "</tr></table>\n";
 
 //===================================
-echo "<div style='position: fixed; top: 220px; right: 200px;'>\n";
-//javascript_tab_stat('tab_stat_',$nombre_lignes);
-javascript_tab_stat('tab_stat_',$num_id);
-echo "</div>\n";
+if(isset($id_devoir)) {
+	echo "<div style='position: fixed; top: 220px; right: 200px;'>\n";
+	//javascript_tab_stat('tab_stat_',$nombre_lignes);
+	javascript_tab_stat('tab_stat_',$num_id);
+	echo "</div>\n";
+}
 //===================================
 
 // Préparation du pdf
