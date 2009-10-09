@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -542,7 +542,12 @@ if ($nombreligne == '0') {
 
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
-		echo "<td><p>".strtoupper($nom_eleve)." ".$prenom_eleve."\n";
+		echo "<td><p>";
+
+		echo "<a href='../eleves/modify_eleve.php?eleve_login=".$login_eleve."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Editer la fiche élève' target='_blank' style='color: black;'>";
+ 		echo strtoupper($nom_eleve)." ".$prenom_eleve;
+		echo "</a>\n";
+
 		//=========================
 		// AJOUT: boireaus 20071010
 		echo "<input type='hidden' name='log_eleve[$k]' value=\"$login_eleve\" />\n";
