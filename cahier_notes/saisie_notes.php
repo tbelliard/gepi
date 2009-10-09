@@ -382,7 +382,7 @@ $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans e
 $titre_page = "Saisie des notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-debug_var();
+//debug_var();
 //=======================================================
 // MODIF: boireaus
 // Avertissement redescendu ici pour éviter d'avoir une page web avec une section Javascript avant même la balise <html>
