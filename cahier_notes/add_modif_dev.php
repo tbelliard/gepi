@@ -139,13 +139,30 @@ if (isset($_POST['ok'])) {
 				$tmp_group=get_group($id_autre_groupe[$i]);
 				if($tmp_group["classe"]["ver_periode"]["all"][$periode_num]>=2) {
 
+					$tmp_id_racine="";
+
 					$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='".$tmp_group['id']."' AND periode='$periode_num');";
 					//echo "$sql<br />\n";
 					$res_idcn=mysql_query($sql);
-					if(mysql_num_rows($res_idcn)>0) {
+					if(mysql_num_rows($res_idcn)==0) {
+						// On crée le cahier de notes
+
+						$tmp_nom_complet_matiere = $tmp_group["matiere"]["nom_complet"];
+						$tmp_nom_court_matiere = $tmp_group["matiere"]["matiere"];
+						$reg = mysql_query("INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($tmp_group["description"])."', nom_complet='". traitement_magic_quotes($tmp_nom_complet_matiere)."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
+						if ($reg) {
+							$tmp_id_racine = mysql_insert_id();
+							$reg = mysql_query("UPDATE cn_conteneurs SET id_racine='$tmp_id_racine', parent = '0' WHERE id='$tmp_id_racine'");
+							$reg = mysql_query("INSERT INTO cn_cahier_notes SET id_groupe = '".$tmp_group['id']."', periode = '$periode_num', id_cahier_notes='$tmp_id_racine'");
+						}
+
+					}
+					else {
 						$lig_tmp=mysql_fetch_object($res_idcn);
 						$tmp_id_racine=$lig_tmp->id_cahier_notes;
+					}
 
+					if($tmp_id_racine!="") {
 						// La même boite existe-t-elle dans cet autre enseignement?
 						if($id_emplacement!=$id_racine) {
 							$sql="SELECT * FROM cn_conteneurs WHERE nom_court='".addslashes($nom_court_conteneur)."' AND id_racine='$tmp_id_racine';";
