@@ -144,6 +144,18 @@
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td style='text-align:left;'>Afficher le bloc observations (<i>relevé PDF</i>)\n";
+
+		$titre_infobulle="Bloc observations en PDF\n";
+		$texte_infobulle="<p>Le bloc observations est affiché si une des conditions suivantes est remplie&nbsp;:</p>\n";
+		$texte_infobulle.="<ul>\n";
+		$texte_infobulle.="<li>La case Bloc observations est cochée.</li>\n";
+		$texte_infobulle.="<li>Une des cases signature est cochée.</li>\n";
+		$texte_infobulle.="</ul>\n";
+		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_bloc_observations',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_bloc_observations','y',100,100);\"  onmouseout=\"cacher_div('a_propos_bloc_observations');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+		echo "</p>\n";
+
 		echo "</td>\n";
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<td>\n";
@@ -188,7 +200,21 @@
 		echo "</tr>\n";
 		echo "</table>\n";
 
-		echo "<p>Formule à afficher en bas de page (<i>relevé HTML</i>):</p>\n";
+		//echo "<p>Formule à afficher en bas de page (<i>relevé HTML</i>):</p>\n";
+		echo "<p>Formule à afficher en bas de page&nbsp;: \n";
+
+		$titre_infobulle="Formule de bas de page\n";
+		$texte_infobulle="La formule de bas de page (<i>par défaut</i>) peut être paramétrée dans <b>Gestion des bases/Gestion des classes/&lt;une_classe&gt; Paramètres/Paramètres des relevés de notes</b><br />ou<br /><b>Gestion des bases/Gestion des classes/Paramétrage de plusieurs classes par lots/Paramètres des relevés de notes</b><br />\n";
+		$texte_infobulle.="&nbsp;<br />\n";
+		$texte_infobulle.="Si la formule dans le champ ci-dessous est vide, c'est la formule définie dans <b>Paramètres du relevé HTML</b> qui est utilisée.<br />\n";
+		$texte_infobulle.="&nbsp;<br />\n";
+		$texte_infobulle.="Une différence entre les relevés HTML et PDF&nbsp;:<br />\n";
+		$texte_infobulle.="Dans le cas du relevé HTML la formule de <b>Paramètres du relevé HTML</b> est affichée en plus de la formule ci-dessous.<br />\n";
+		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_formule_bas_de_page',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_formule_bas_de_page','y',100,100);\"  onmouseout=\"cacher_div('a_propos_formule_bas_de_page');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+		echo "</p>\n";
+
 		echo "<table border='0' summary='Tableau des formules de bas de page'>\n";
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<tr><td><b>".get_class_from_id($tab_id_classe[$i])."</b>: </td>";
