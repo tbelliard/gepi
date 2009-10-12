@@ -39,7 +39,7 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    // Database configuration file
    require_once("../../secure/connect.inc.php");
    //propel objects
-   set_include_path("../../orm/propel-build/classes" . PATH_SEPARATOR . "../../orm/propel" . PATH_SEPARATOR . "../orm" . PATH_SEPARATOR . get_include_path());
+   set_include_path("../../orm/propel-build/classes" . PATH_SEPARATOR . "../../orm/propel" . PATH_SEPARATOR . "../../orm" . PATH_SEPARATOR . get_include_path());
    require_once("propel/Propel.php");
    //require_once("propel/logger/BasicFileLogger.php");
    //$logger = new BasicFileLogger();
@@ -51,7 +51,7 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    // Database configuration file
    require_once("../../../secure/connect.inc.php");
    //propel objects
-   set_include_path("../../../orm/propel-build/classes" . PATH_SEPARATOR . "../../../orm/propel" . PATH_SEPARATOR . "../orm" . PATH_SEPARATOR . get_include_path());
+   set_include_path("../../../orm/propel-build/classes" . PATH_SEPARATOR . "../../../orm/propel" . PATH_SEPARATOR . "../../../orm" . PATH_SEPARATOR . get_include_path());
    require_once("propel/Propel.php");
    //require_once("propel/logger/BasicFileLogger.php");
    //$logger = new BasicFileLogger();
