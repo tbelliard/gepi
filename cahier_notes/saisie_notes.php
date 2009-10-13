@@ -890,8 +890,8 @@ foreach ($liste_eleves as $eleve) {
 					else {
 						$mess_note[$i][$k].=";document.getElementById('div_photo_eleve').innerHTML='';";
 					}
-					$mess_note[$i][$k].="\" onchange=\"verifcol($num_id);calcul_moy_med();changement()\" />";
 				}
+				$mess_note[$i][$k].="\" onchange=\"verifcol($num_id);calcul_moy_med();changement();\" />";
 			}
 			$mess_note[$i][$k] .= "</td>\n";
 			//=========================================================
