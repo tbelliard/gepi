@@ -780,16 +780,19 @@ else {
 						else{
 							$mess_mdp = "Mot de passe d'après la date de naissance";
 						}
+            $_auth_mode = 'gepi';
 						//echo "<tr><td colspan='4'>NUMEN: $affiche[5] $pwd</td></tr>";
 					} elseif ($_POST['sso']== "no") {
 						$pwd = md5(rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9));
 						$mess_mdp = $pwd;
+            $_auth_mode = 'gepi';
 						//echo "<tr><td colspan='4'>Choix 2: $pwd</td></tr>";
 			//                       $mess_mdp = "Inconnu (compte bloqué)";
 					} elseif ($_POST['sso'] == "yes") {
 						$pwd = '';
 						$mess_mdp = "aucun (sso)";
 						$changemdp = 'n';
+            $_auth_mode = 'sso';
 						//echo "<tr><td colspan='4'>sso</td></tr>";
 					}
 
@@ -797,7 +800,7 @@ else {
 
 					//$res = mysql_query("INSERT INTO utilisateurs VALUES ('".$login_prof."', '".$prof[$k]["nom_usage"]."', '".$premier_prenom."', '".$civilite."', '".$pwd."', '', 'professeur', 'actif', 'y', '')");
 					//$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y'";
-					$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."'";
+					$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."', auth_mode='".$_auth_mode."'";
 					$res = mysql_query($sql);
 					// Pour debug:
 					//echo "<tr><td colspan='4'>$sql</td></tr>";
