@@ -149,6 +149,7 @@ if (!empty($doc_file['name'][0])) {
 //traitement de changement de nom de fichiers joint
 // Changement de nom
 if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_document)) {
+	$titre = corriger_caracteres($doc_name_modif);
 	$criteria = new Criteria(CahierTexteCompteRenduFichierJointPeer::DATABASE_NAME);
 	$criteria->add(CahierTexteCompteRenduFichierJointPeer::ID, $id_document, '=');
 	$documents = $ctCompteRendu->getCahierTexteCompteRenduFichierJoints($criteria);

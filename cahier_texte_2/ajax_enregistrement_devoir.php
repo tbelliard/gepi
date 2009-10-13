@@ -21,9 +21,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-header('Content-Type: text/html; charset=ISO-8859-1');
 //Attention, la sortie standard de ce script (echo), doit etre soit une erreur soit l'id de la noice. La sortie est utilisée dans un javascript
-//
+
+header('Content-Type: text/html; charset=ISO-8859-1');
 // On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
@@ -45,12 +45,12 @@ if ($utilisateur == null) {
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_devoir"]) ? $_GET["id_devoir"] :NULL);
 $date_devoir = isset($_POST["date_devoir"]) ? $_POST["date_devoir"] :(isset($_GET["date_devoir"]) ? $_GET["date_devoir"] :NULL);
 $contenu = isset($_POST["contenu"]) ? $_POST["contenu"] :NULL;
-
+$heure_entry = isset($_POST["heure_entry"]) ? $_POST["heure_entry"] :(isset($_GET["heure_entry"]) ? $_GET["heure_entry"] :NULL);
 $uid_post = isset($_POST["uid_post"]) ? $_POST["uid_post"] :(isset($_GET["uid_post"]) ? $_GET["uid_post"] :0);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 
 //parametre d'enregistrement de fichiers joints
-if (empty($_FILES['doc_file'])) { echo "doc file empty"; $doc_file=''; } else { $doc_file=$_FILES['doc_file'];}
+if (empty($_FILES['doc_file'])) { $doc_file=''; } else { $doc_file=$_FILES['doc_file'];}
 $doc_name = isset($_POST["doc_name"]) ? $_POST["doc_name"] :(isset($_GET["doc_name"]) ? $_GET["doc_name"] :NULL);
 
 //parametre de changement de titre de fichier joint.
@@ -61,7 +61,7 @@ $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GE
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid_prime = isset($_SESSION['uid_prime']) ? $_SESSION['uid_prime'] : 1;
 if ($uid_post==$uid_prime) {
-	echo("Erreur enregistrement de devoir : formulaire dejà  posté précédemment. Merci de recharger la page avant de refaire des modifications.");
+	echo("Erreur enregistrement de devoir : formulaire dejà  posté précédemment.");
 	die();
 }
 $_SESSION['uid_prime'] = $uid_post;
@@ -114,7 +114,7 @@ if ($contenu_cor == "" or $contenu_cor == "<br>") $contenu_cor = "...";
 $ctTravailAFaire->setContenu($contenu_cor);
 $ctTravailAFaire->setDateCt($date_devoir);
 $ctTravailAFaire->setGroupe($groupe);
-
+//$ctTravailAFaire->setHeureEntry($heure_entry);
 
 //enregistrement de l'objet
 $ctTravailAFaire->save();
@@ -137,7 +137,7 @@ if (!empty($doc_file['name'][0])) {
 				$ctDocument->setTaille($doc_file['size'][$index_doc]);
 				$ctDocument->setEmplacement($file_path);
 				if ($doc_name[$index_doc] != null) {
-					$ctDocument->setTitre(corriger_caracteres($doc_name[$cpt_doc]));
+					$ctDocument->setTitre(corriger_caracteres($doc_name[$index_doc]));
 				} else {
 					$ctDocument->setTitre(basename($file_path));
 				}
@@ -153,9 +153,9 @@ if (!empty($doc_file['name'][0])) {
 // Changement de nom
 if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_document)) {
 	$titre = corriger_caracteres($doc_name_modif);
-	$criteria = new Criteria(CtDevoirDocumentPeer::DATABASE_NAME);
-	$criteria->add(CtDevoirDocumentPeer::ID, $id_document, '=');
-	$documents = $ctTravailAFaire->getCtDevoirDocuments($criteria);
+	$criteria = new Criteria(CahierTexteTravailAFaireFichierJointPeer::DATABASE_NAME);
+	$criteria->add(CahierTexteTravailAFaireFichierJointPeer::ID, $id_document, '=');
+	$documents = $ctTravailAFaire->getCahierTexteTravailAFaireFichierJoints($criteria);
 
 	if (empty($documents)) {
 		echo "Erreur enregistrement de devoir : document non trouvé.";
@@ -166,7 +166,6 @@ if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_docum
 		echo "Erreur enregistrement de devoir :  document non trouvé.";
 		die();
 	}
-	require_once ("../lib/traitement_data.inc.php");
 	$document->setTitre(corriger_caracteres($doc_name_modif));
 	$document->save();
 }
