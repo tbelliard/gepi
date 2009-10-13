@@ -656,6 +656,10 @@ elseif(!isset($choix_periode)) {
 //======================================================
 //==============CHOIX DE LA SELECTION D'ELEVES==========
 elseif(!isset($_POST['valide_select_eleves'])) {
+
+	if(isset($display_date_debut)) {$_SESSION['display_date_debut']=$display_date_debut;}
+	if(isset($display_date_fin)) {$_SESSION['display_date_fin']=$display_date_fin;}
+
 	echo "<p class='bold'>";
 	if($_SESSION['statut']=='professeur') {
 		echo "<a href='index.php'>Retour</a>";
