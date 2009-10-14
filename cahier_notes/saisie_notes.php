@@ -384,8 +384,10 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
 //=======================================================
+/*
 // MODIF: boireaus
 // Avertissement redescendu ici pour éviter d'avoir une page web avec une section Javascript avant même la balise <html>
+// C'est apparemment encore trop haut avec M$Excel+Firefox
 if (isset($_POST['notes'])) {
 	echo "<script type=\"text/javascript\" language=\"javascript\">
 	<!--
@@ -393,6 +395,7 @@ if (isset($_POST['notes'])) {
 	//-->
 	</script>\n";
 }
+*/
 //=======================================================
 ?>
 <script type="text/javascript" language=javascript>
@@ -1152,8 +1155,8 @@ echo "</tr>";
 // quatrième ligne
 //
 echo "<tr><td class='cn' valign='top'><b>" .
-		"<a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=nom'>Nom Prénom</a></b></td>";
-if ($multiclasses) echo "<td><a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=classe'>Classe</a></td>";
+		"<a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=nom' onclick=\"return confirm_abandon (this, change,'$themessage')\">Nom Prénom</a></b></td>";
+if ($multiclasses) echo "<td><a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=classe' onclick=\"return confirm_abandon (this, change,'$themessage')\">Classe</a></td>";
 echo "\n";
 
 //$data_pdf[0][] = "Nom Prénom\Coef.";
@@ -1735,6 +1738,20 @@ if ($id_devoir) {
 	echo "<center><input type='submit' value='Importer'  onclick=\"return confirm_abandon (this, change, '$themessage')\" /></center>\n";
 	echo "<p><b>Remarque importante :</b> l'importation ne prend en compte que les élèves dont le nom est affiché ci-dessus !<br />Soyez donc vigilant à ne coller que les notes de ces élèves, dans le bon ordre.</p>\n";
 	echo "</form></fieldset>\n";
+
+	//=======================================================
+	// MODIF: boireaus
+	// Avertissement redescendu ici pour éviter d'avoir une page web avec une section Javascript avant même la balise <html>
+	if (isset($_POST['notes'])) {
+		echo "<script type=\"text/javascript\" language=\"javascript\">
+		<!--
+		alert(\"Attention, les notes importées ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton 'Enregistrer') !\");
+		changement();
+		//-->
+		</script>\n";
+	}
+	//=======================================================
+
 }
 
 ?>
