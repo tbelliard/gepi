@@ -1032,6 +1032,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		$use_cell_ajustee,
 
+		// Pour permettre de récupérer via global dans releve_pdf() le numéro du parent dont on imprime le bulletin avec au verso le relevé de notes:
+		$num_resp_bull,
+
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
 		//=========================================
