@@ -339,7 +339,7 @@ echo "</p>\n";
 echo "</form>\n";
 ?>
 
-<p><b>Remarque : </b>Connectez vous avec un compte ayant le statut "scolarité" pour éditer les bulletins et avoir accès à d'autres paramètres d'affichage.</p>
+<p><b>Remarque&nbsp;: </b>Connectez vous avec un compte ayant le statut "scolarité" pour éditer les bulletins et avoir accès à d'autres paramètres d'affichage.</p>
 
 <?php
 
@@ -425,19 +425,19 @@ if (isset($id_classe)) {
 
 ?>
 <form enctype="multipart/form-data" action="modify_nom_class.php" method=post>
-<p>Nom court de la classe : <input type=text size=30 name=reg_class_name value = "<?php echo $classe; ?>" onchange='changement()' /></p>
-<p>Nom complet de la classe : <input type=text size=50 name=reg_nom_complet value = "<?php echo $nom_complet; ?>"  onchange='changement()' /></p>
-<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant) : <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
+<p>Nom court de la classe&nbsp;: <input type=text size=30 name=reg_class_name value = "<?php echo $classe; ?>" onchange='changement()' /></p>
+<p>Nom complet de la classe&nbsp;: <input type=text size=50 name=reg_nom_complet value = "<?php echo $nom_complet; ?>"  onchange='changement()' /></p>
+<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant)&nbsp;: <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
 <?php
 if ($gepiSettings['active_mod_ects'] == "y") {
     ?>
-<p>Fonction du signataire sus-nommé (ex.: "Proviseur") : <br /><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></p>
+<p>Fonction du signataire sus-nommé (ex.: "Proviseur")&nbsp;: <br /><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></p>
 <?php
 }
     ?>
-<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus :<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>"  onchange='changement()' /></p>
+<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus&nbsp;:<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>"  onchange='changement()' /></p>
 
-<p><b>Formatage de l'identité des professeurs pour les bulletins :</b>
+<p><b>Formatage de l'identité des professeurs pour les bulletins&nbsp;:</b>
 <br /><br />
 <input type="radio" name="reg_format" id='reg_format_np' value="<?php echo "np"; ?>" <?php if ($format_nom=="np") echo " checked "; ?> onchange='changement()' />
 <label for='reg_format_np' style='cursor: pointer;'>Nom Prénom (Durand Albert)</label>
@@ -471,13 +471,13 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <table style="border: 0;" cellpadding="5" cellspacing="5">
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres généraux : </b></h2>
+	  <h2><b>Paramètres généraux&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    <label for='display_mat_cat' style='cursor: pointer;'>Afficher les catégories de matières sur le bulletin (HTML), les relevés de notes (HTML), et les outils de visualisation :</label>
+    <label for='display_mat_cat' style='cursor: pointer;'>Afficher les catégories de matières sur le bulletin (HTML), les relevés de notes (HTML), et les outils de visualisation&nbsp;:</label>
     </td>
     <td><input type="checkbox" value="y" name="display_mat_cat" id="display_mat_cat"  <?php   if ($display_mat_cat=="y") echo " checked "; ?> onchange='changement()' />
     </td>
@@ -534,7 +534,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <!-- ========================================= -->
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres bulletin HTML : </b></h2>
+	  <h2><b>Paramètres bulletin HTML&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
@@ -548,7 +548,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    <label for='display_address' style='cursor: pointer;'>Afficher le bloc adresse du responsable de l'élève :</label>
+    <label for='display_address' style='cursor: pointer;'>Afficher le bloc adresse du responsable de l'élève&nbsp;:</label>
     </td>
     <td><input type="checkbox" value="y" name="display_address" id="display_address"  <?php   if ($display_address=="y") echo " checked "; ?>  onchange='changement()' />
     </td>
@@ -556,7 +556,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    <label for='display_coef' style='cursor: pointer;'>Afficher les coefficients des matières (uniquement si au moins un coef différent de 0) :</label>
+    <label for='display_coef' style='cursor: pointer;'>Afficher les coefficients des matières (uniquement si au moins un coef différent de 0)&nbsp;:</label>
     </td>
     <td><input type="checkbox" value="y" name="display_coef" id="display_coef"  <?php   if ($display_coef=="y") echo " checked "; ?>  onchange='changement()' />
     </td>
@@ -564,7 +564,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    <label for='display_moy_gen' style='cursor: pointer;'>Afficher les moyennes générales sur les bulletins (uniquement si au moins un coef différent de 0) :</label>
+    <label for='display_moy_gen' style='cursor: pointer;'>Afficher les moyennes générales sur les bulletins (uniquement si au moins un coef différent de 0)&nbsp;:</label>
     </td>
     <td><input type="checkbox" value="y" name="display_moy_gen" id="display_moy_gen"  <?php   if ($display_moy_gen=="y") echo " checked "; ?> onchange='changement()' />
     </td>
@@ -572,7 +572,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    <label for='display_nbdev' style='cursor: pointer;'>Afficher le nombre de devoirs sur le bulletin :</label>
+    <label for='display_nbdev' style='cursor: pointer;'>Afficher le nombre de devoirs sur le bulletin&nbsp;:</label>
     </td>
     <td><input type="checkbox" value="y" name="display_nbdev" id="display_nbdev"  <?php   if ($display_nbdev=="y") echo " checked "; ?> onchange='changement()' />
     </td>
@@ -580,13 +580,13 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <!-- ========================================= -->
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres bulletin PDF : </b></h2>
+	  <h2><b>Paramètres bulletin PDF&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
-	   Sélectionner le modèle de bulletin pour l'impression en PDF :
+	   Sélectionner le modèle de bulletin pour l'impression en PDF&nbsp;:
 	</td>
 	<td><?php
 	    // Pour la classe, quel est le modèle de bulletin déja selectionné
@@ -614,7 +614,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <!-- ========================================= -->
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres des relevés de notes : </b></h2>
+	  <h2><b>Paramètres des relevés de notes&nbsp;: </b></h2>
 	</td>
 </tr>
 <!--
@@ -634,56 +634,56 @@ Afficher une case pour la signature du chef d'établissement
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-	<label for='rn_nomdev' style='cursor: pointer;'>Afficher le nom des devoirs :</label></td>
+	<label for='rn_nomdev' style='cursor: pointer;'>Afficher le nom des devoirs&nbsp;:</label></td>
     <td><input type="checkbox" value="y" name="rn_nomdev" id="rn_nomdev"  <?php   if ($rn_nomdev=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-	<label for='rn_toutcoefdev' style='cursor: pointer;'>Afficher tous les coefficients des devoirs :</label></td>
+	<label for='rn_toutcoefdev' style='cursor: pointer;'>Afficher tous les coefficients des devoirs&nbsp;:</label></td>
     <td><input type="checkbox" value="y" name="rn_toutcoefdev" id="rn_toutcoefdev"  <?php   if ($rn_toutcoefdev=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-	<label for='rn_coefdev_si_diff' style='cursor: pointer;'>Afficher les coefficients des devoirs si des coefficients différents sont présents :</label></td>
+	<label for='rn_coefdev_si_diff' style='cursor: pointer;'>Afficher les coefficients des devoirs si des coefficients différents sont présents&nbsp;:</label></td>
     <td><input type="checkbox" value="y" name="rn_coefdev_si_diff" id="rn_coefdev_si_diff"  <?php   if ($rn_coefdev_si_diff=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-	<label for='rn_datedev' style='cursor: pointer;'>Afficher les dates des devoirs :</label></td>
+	<label for='rn_datedev' style='cursor: pointer;'>Afficher les dates des devoirs&nbsp;:</label></td>
     <td><input type="checkbox" value="y" name="rn_datedev" id="rn_datedev"  <?php   if ($rn_datedev=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td>Formule/Message à insérer sous le relevé de notes :</td>
+	<td style="font-variant: small-caps;">Formule/Message à insérer sous le relevé de notes&nbsp;:</td>
 	<td><input type=text size=40 name="rn_formule" value="<?php echo $rn_formule; ?>" onchange='changement()' /></td>
 </tr>
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-	<label for='rn_sign_chefetab' style='cursor: pointer;'>Afficher une case pour la signature du chef d'établissement :</label></td>
+	<label for='rn_sign_chefetab' style='cursor: pointer;'>Afficher une case pour la signature du chef d'établissement&nbsp;:</label></td>
     <td><input type="checkbox" value="y" name="rn_sign_chefetab" id="rn_sign_chefetab"  <?php   if ($rn_sign_chefetab=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-	<label for='rn_sign_pp' style='cursor: pointer;'>Afficher une case pour la signature du prof principal :</label></td>
+	<label for='rn_sign_pp' style='cursor: pointer;'>Afficher une case pour la signature du prof principal&nbsp;:</label></td>
     <td><input type="checkbox" value="y" name="rn_sign_pp" id="rn_sign_pp"  <?php   if ($rn_sign_pp=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-	<label for='rn_sign_resp' style='cursor: pointer;'>Afficher une case pour la signature des parents/responsables :</label></td>
+	<label for='rn_sign_resp' style='cursor: pointer;'>Afficher une case pour la signature des parents/responsables&nbsp;:</label></td>
     <td><input type="checkbox" value="y" name="rn_sign_resp" id="rn_sign_resp"  <?php   if ($rn_sign_resp=="y") echo " checked "; ?>  onchange='changement()' /></td>
 </tr>
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Nombre de lignes pour la signature :</td>
+    <td style="font-variant: small-caps;">Nombre de lignes pour la signature&nbsp;:</td>
     <td><input type="text" name="rn_sign_nblig" value="<?php echo $rn_sign_nblig;?>" onchange='changement()' /></td>
 </tr>
 
@@ -692,27 +692,27 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     ?>
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres des attestations ECTS : </b></h2>
+	  <h2><b>Paramètres des attestations ECTS&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Type de formation (ex: "Classe préparatoire scientifique") :</td>
+    <td style="font-variant: small-caps;">Type de formation (ex: "Classe préparatoire scientifique")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_type_formation" value="<?php echo $ects_type_formation;?>" onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Nom complet du parcours de formation (ex: "BCPST (Biologie, Chimie, Physique et Sciences de la Terre)") :</td>
+    <td style="font-variant: small-caps;">Nom complet du parcours de formation (ex: "BCPST (Biologie, Chimie, Physique et Sciences de la Terre)")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_parcours" value="<?php echo $ects_parcours;?>" onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Nom cours du parcours de formation (ex: "BCPST") :</td>
+    <td style="font-variant: small-caps;">Nom cours du parcours de formation (ex: "BCPST")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_code_parcours" value="<?php echo $ects_code_parcours;?>" onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Domaines d'étude (ex: "Biologie, Chimie, Physique, Mathématiques, Sciences de la Terre") :</td>
+    <td style="font-variant: small-caps;">Domaines d'étude (ex: "Biologie, Chimie, Physique, Mathématiques, Sciences de la Terre")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_domaines_etude" value="<?php echo $ects_domaines_etude;?>" onchange='changement()' /></td>
 </tr>
 

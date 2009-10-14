@@ -505,7 +505,7 @@ while ($per < $max_periode) {
 
 
 		?>
-		<p class='bold'>Pour la ou les classe(s) sélectionnée(s) ci-dessus : </p>
+		<p class='bold'>Pour la ou les classe(s) sélectionnée(s) ci-dessus&nbsp;: </p>
 		<p>Aucune modification ne sera apportée aux champs laissés vides</p>
 
 		<table width=100% border=2 cellspacing=1  cellpadding=3 class='boireaus'>
@@ -529,14 +529,14 @@ while ($per < $max_periode) {
 		?>
 
 		</table>
-		<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant) :
+		<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant)&nbsp;:
 		<br /><input type="text" size="30" name="<?php echo "nb_".$per."_reg_suivi_par"; ?>" value="" /></p>
         <?php if ($gepiSettings['active_mod_ects'] == "y") { ?>
-            <p>Fonction du signataire sus-nommé (ex.: "Proviseur") : <br /><input type="text" size="40" name="ects_fonction_signataire_attestation_<?php echo $per;?>" value="" /></p>
+            <p>Fonction du signataire sus-nommé (ex.: "Proviseur")&nbsp;: <br /><input type="text" size="40" name="ects_fonction_signataire_attestation_<?php echo $per;?>" value="" /></p>
         <?php } ?>
-		<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus :
+		<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus&nbsp;:
 		<br /><input type="text" size="80" name="<?php echo "nb_".$per."_reg_formule"; ?>" value="" /></p>
-		<p>Formatage de l'identité des professeurs :
+		<p>Formatage de l'identité des professeurs&nbsp;:
 
 		<br />
 		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_np" value="<?php echo "nb_".$per."_np"; ?>" />
@@ -569,7 +569,7 @@ while ($per < $max_periode) {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-weight: bold;">
-	<input type='checkbox' name='change_coef' id='change_coef' value='y' /> Passer les coefficients de tous les enseignements à :
+	<input type='checkbox' name='change_coef' id='change_coef' value='y' /> Passer les coefficients de tous les enseignements à&nbsp;:
 	</td>
 	<td>
 	<select name='coef_enseignements' onchange="document.getElementById('change_coef').checked=true">
@@ -588,7 +588,7 @@ while ($per < $max_periode) {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-weight: bold; vertical-align:top;">
-	<input type='checkbox' name='creer_enseignement' id='creer_enseignement' value='y' /> Créer un enseignement de :
+	<input type='checkbox' name='creer_enseignement' id='creer_enseignement' value='y' /> Créer un enseignement de&nbsp;:
 	</td>
 	<?php
 		$sql="SELECT DISTINCT matiere,nom_complet FROM matieres ORDER BY nom_complet,matiere;";
@@ -651,13 +651,13 @@ while ($per < $max_periode) {
 <table border='0'>
 <tr>
 	<td colspan='3'>
-	<h2><b>Paramètres généraux : </b></h2>
+	<h2><b>Paramètres généraux&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-weight: bold;">
-	Afficher les rubriques de matières sur le bulletin (HTML),<br />les relevés de notes (HTML), et les outils de visualisation :
+	Afficher les rubriques de matières sur le bulletin (HTML),<br />les relevés de notes (HTML), et les outils de visualisation&nbsp;:
 	</td>
 	<td>
 	<?php
@@ -710,7 +710,7 @@ while ($per < $max_periode) {
 </tr>
 	<tr>
 	<td colspan='3'>
-	<h2><b>Paramètres bulletin HTML : </b></h2>
+	<h2><b>Paramètres bulletin HTML&nbsp;: </b></h2>
 	</td>
 	<td>
 	</td>
@@ -718,7 +718,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-		<b>Afficher sur le bulletin le rang de chaque élève : </b>
+		<b>Afficher sur le bulletin le rang de chaque élève&nbsp;: </b>
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_rang_".$per; ?>" value="y" />Oui
@@ -729,7 +729,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-	<b>Afficher le bloc adresse du responsable de l'élève : </b>
+	<b>Afficher le bloc adresse du responsable de l'élève&nbsp;: </b>
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_address_".$per; ?>" value="y" />Oui
@@ -740,7 +740,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-	<b>Afficher les coefficients des matières<br />(<i>uniquement si au moins un coef différent de 0</i>) : </b>
+	<b>Afficher les coefficients des matières<br />(<i>uniquement si au moins un coef différent de 0</i>)&nbsp;: </b>
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_coef_".$per; ?>" value="y" />Oui
@@ -751,7 +751,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-	<b>Afficher les moyennes générales sur les bulletins<br />(<i>uniquement si au moins un coef différent de 0</i>) : </b>
+	<b>Afficher les moyennes générales sur les bulletins<br />(<i>uniquement si au moins un coef différent de 0</i>)&nbsp;: </b>
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_moy_gen_".$per; ?>" value="y" />Oui
@@ -762,7 +762,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-	<b>Afficher sur le bulletin le nombre de devoirs : </b>
+	<b>Afficher sur le bulletin le nombre de devoirs&nbsp;: </b>
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_nbdev_".$per; ?>" value="y" />Oui
@@ -771,7 +771,7 @@ while ($per < $max_periode) {
 	</tr>
 	<tr>
 	<td colspan='3'>
-	<h2><b>Paramètres bulletin PDF : </b></h2>
+	<h2><b>Paramètres bulletin PDF&nbsp;: </b></h2>
 	</td>
 	<td>
 	</td>
@@ -779,7 +779,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
-	Sélectionner le modèle de bulletin pour l'impression en PDF :
+	Sélectionner le modèle de bulletin pour l'impression en PDF&nbsp;:
 	</td>
 	<td><?php
 		echo "<select tabindex=\"5\" name=\"modele_bulletin_".$per."\">";
@@ -800,12 +800,12 @@ while ($per < $max_periode) {
 <!-- ========================================= -->
 <tr>
 	<td colspan='3'>
-	<h2><b>Paramètres des relevés de notes : </b></h2>
+	<h2><b>Paramètres des relevés de notes&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Afficher le nom des devoirs :</td>
+	<td style="font-variant: small-caps;">Afficher le nom des devoirs&nbsp;:</td>
 	<td>
 		<input type="radio" name="<?php echo "rn_nomdev_".$per; ?>" value="y" />Oui
 		<input type="radio" name="<?php echo "rn_nomdev_".$per; ?>" value="n" />Non
@@ -813,7 +813,7 @@ while ($per < $max_periode) {
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Afficher tous les coefficients des devoirs :</td>
+	<td style="font-variant: small-caps;">Afficher tous les coefficients des devoirs&nbsp;:</td>
 	<td>
 		<input type="radio" name="<?php echo "rn_toutcoefdev_".$per; ?>" value="y" />Oui
 		<input type="radio" name="<?php echo "rn_toutcoefdev_".$per; ?>" value="n" />Non
@@ -821,7 +821,7 @@ while ($per < $max_periode) {
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Afficher les coefficients des devoirs si des coefficients différents sont présents :</td>
+	<td style="font-variant: small-caps;">Afficher les coefficients des devoirs si des coefficients différents sont présents&nbsp;:</td>
 	<td>
 		<input type="radio" name="<?php echo "rn_coefdev_si_diff_".$per; ?>" value="y" />Oui
 		<input type="radio" name="<?php echo "rn_coefdev_si_diff_".$per; ?>" value="n" />Non
@@ -829,7 +829,7 @@ while ($per < $max_periode) {
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Afficher les dates des devoirs :</td>
+	<td style="font-variant: small-caps;">Afficher les dates des devoirs&nbsp;:</td>
 	<td>
 		<input type="radio" name="<?php echo "rn_datedev_".$per; ?>" value="y" />Oui
 		<input type="radio" name="<?php echo "rn_datedev_".$per; ?>" value="n" />Non
@@ -838,13 +838,13 @@ while ($per < $max_periode) {
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td>Formule/Message à insérer sous le relevé de notes :</td>
+	<td style="font-variant: small-caps;">Formule/Message à insérer sous le relevé de notes&nbsp;:</td>
 	<td><input type=text size=40 name="rn_formule_<?php echo $per;?>" value="" /></td>
 </tr>
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Afficher une case pour la signature du chef d'établissement :</td>
+	<td style="font-variant: small-caps;">Afficher une case pour la signature du chef d'établissement&nbsp;:</td>
 	<td>
 		<input type="radio" name="<?php echo "rn_sign_chefetab_".$per; ?>" value="y" />Oui
 		<input type="radio" name="<?php echo "rn_sign_chefetab_".$per; ?>" value="n" />Non
@@ -852,7 +852,7 @@ while ($per < $max_periode) {
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Afficher une case pour la signature du prof principal :</td>
+	<td style="font-variant: small-caps;">Afficher une case pour la signature du prof principal&nbsp;:</td>
 	<td>
 		<input type="radio" name="<?php echo "rn_sign_pp_".$per; ?>" value="y" />Oui
 		<input type="radio" name="<?php echo "rn_sign_pp_".$per; ?>" value="n" />Non
@@ -860,7 +860,7 @@ while ($per < $max_periode) {
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Afficher une case pour la signature des parents/responsables :</td>
+	<td style="font-variant: small-caps;">Afficher une case pour la signature des parents/responsables&nbsp;:</td>
 	<td>
 		<input type="radio" name="<?php echo "rn_sign_resp_".$per; ?>" value="y" />Oui
 		<input type="radio" name="<?php echo "rn_sign_resp_".$per; ?>" value="n" />Non
@@ -869,7 +869,7 @@ while ($per < $max_periode) {
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Nombre de lignes pour la signature :</td>
+	<td style="font-variant: small-caps;">Nombre de lignes pour la signature&nbsp;:</td>
 	<td><input type="text" name="rn_sign_nblig_<?php echo $per;?>" value="" size="3" /></td>
 </tr>
 
@@ -878,27 +878,27 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     ?>
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres des attestations ECTS : </b></h2>
+	  <h2><b>Paramètres des attestations ECTS&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Type de formation (ex: "Classe préparatoire scientifique") :</td>
+    <td style="font-variant: small-caps;">Type de formation (ex: "Classe préparatoire scientifique")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_type_formation_<?php echo $per;?>" value="" /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Nom complet du parcours de formation (ex: "BCPST (Biologie, Chimie, Physique et Sciences de la Terre)") :</td>
+    <td style="font-variant: small-caps;">Nom complet du parcours de formation (ex: "BCPST (Biologie, Chimie, Physique et Sciences de la Terre)")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_parcours_<?php echo $per;?>" value="" /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Nom cours du parcours de formation (ex: "BCPST") :</td>
+    <td style="font-variant: small-caps;">Nom cours du parcours de formation (ex: "BCPST")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_code_parcours_<?php echo $per;?>" value="" /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Domaines d'étude (ex: "Biologie, Chimie, Physique, Mathématiques, Sciences de la Terre") :</td>
+    <td style="font-variant: small-caps;">Domaines d'étude (ex: "Biologie, Chimie, Physique, Mathématiques, Sciences de la Terre")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_domaines_etude_<?php echo $per;?>" value="" /></td>
 </tr>
 <?php
