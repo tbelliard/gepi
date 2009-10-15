@@ -115,13 +115,16 @@
 	$releve_affiche_tel=getSettingValue("releve_affiche_tel") ? getSettingValue("releve_affiche_tel") : "n";
 	$releve_affiche_fax=getSettingValue("releve_affiche_fax") ? getSettingValue("releve_affiche_fax") : "n";
 
-	if($releve_affiche_fax=="y"){
+	//if($releve_affiche_fax=="y"){
 		$gepiSchoolFax=getSettingValue("gepiSchoolFax");
-	}
+	//}
 
-	if($releve_affiche_tel=="y"){
+	//if($releve_affiche_tel=="y"){
 		$gepiSchoolTel=getSettingValue("gepiSchoolTel");
-	}
+	//}
+
+	$releve_affiche_mail=getSettingValue("releve_affiche_mail") ? getSettingValue("releve_affiche_mail") : "n";
+	$gepiSchoolEmail=getSettingValue('gepiSchoolEmail');
 
 	$releve_affiche_INE_eleve=getSettingValue("releve_affiche_INE_eleve") ? getSettingValue("releve_affiche_INE_eleve") : "n";
 

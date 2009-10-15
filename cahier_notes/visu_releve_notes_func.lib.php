@@ -1,6 +1,29 @@
 <?php
 
 /*
+*
+* $Id$
+*
+* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+/*
 function decompte_debug($motif,$texte) {
 	global $tab_instant, $debug;
 	if($debug=="y") {
@@ -174,6 +197,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 
 		$releve_affiche_tel,
 		$releve_affiche_fax,
+		$releve_affiche_mail,
 		$releve_intitule_app,
 		$releve_affiche_INE_eleve,
 		$releve_affiche_formule,
@@ -528,6 +552,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				echo "<br />\n".$gepiSchoolAdress1."<br />\n".$gepiSchoolAdress2."<br />\n".$gepiSchoolZipCode." ".$gepiSchoolCity;
 				if($releve_affiche_tel=="y"){echo "<br />\nTel: ".$gepiSchoolTel;}
 				if($releve_affiche_fax=="y"){echo "<br />\nFax: ".$gepiSchoolFax;}
+				if($releve_affiche_mail=="y"){echo "<br />\nEmail: ".$gepiSchoolMail;}
 			}
 			echo "</p>\n";
 
@@ -817,6 +842,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 				if($releve_affiche_tel=="y"){echo "<br />\nTel: ".$gepiSchoolTel;}
 				if($releve_affiche_fax=="y"){echo "<br />\nFax: ".$gepiSchoolFax;}
+				if($releve_affiche_mail=="y"){echo "<br />\nEmail: ".$gepiSchoolMail;}
 			}
 			echo "</p>\n";
 
@@ -1175,6 +1201,7 @@ function releve_pdf($tab_rel,$i) {
 		$gepiSchoolPays,
 		$gepiSchoolTel,
 		$gepiSchoolFax,
+		$gepiSchoolEmail,
 		$gepiYear,
 
 		$logo_etab,
@@ -1212,8 +1239,11 @@ function releve_pdf($tab_rel,$i) {
 		$X_cadre_note,
 		$hauteur_cachet,
 
-		// Paramètres du modèle PDF
-		$tab_modele_pdf,
+		$releve_affiche_tel,
+		$releve_affiche_fax,
+		$releve_affiche_mail,
+
+		// A AJOUTER: ine et ancien étab
 
 		$affiche_releve_formule,
 		$releve_formule_bas,
@@ -1577,7 +1607,7 @@ function releve_pdf($tab_rel,$i) {
 			else {
 				$classe_aff=$pdf->WriteHTML(' '.unhtmlentities($tab_rel['classe_nom_complet']).' ('.unhtmlentities($tab_rel['classe']).')');
 			}
-	
+
 			$pdf->Cell(90,5,$classe_aff,0,2,'');
 			$pdf->SetX($X_cadre_eleve);
 			$pdf->SetFont($caractere_utilse,'',10);
@@ -1588,7 +1618,8 @@ function releve_pdf($tab_rel,$i) {
 			$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
 			//if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png')) {
 			//if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png')) {
-			if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==1 and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo=='jpg' or $format_du_logo=='png')) {
+			//if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==1 and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo=='jpg' or $format_du_logo=='png')) {
+			if((file_exists($logo))&&(getSettingValue('logo_etab')!='')&&(($format_du_logo=='jpg')||($format_du_logo=='png'))) {
 				$valeur=redimensionne_image($logo, $L_max_logo, $H_max_logo);
 				//$X_logo et $Y_logo; placement du bloc identite de l'établissement
 				$X_logo=$X_entete_etab;
@@ -1619,6 +1650,7 @@ function releve_pdf($tab_rel,$i) {
 			$pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
 			//$gepiSchoolTel = getSettingValue('gepiSchoolTel');
 			//$gepiSchoolFax = getSettingValue('gepiSchoolFax');
+			/*
 			if($tab_modele_pdf["entente_tel"][$classe_id]==='1' and $tab_modele_pdf["entente_fax"][$classe_id]==='1') {
 				$entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax;
 			}
@@ -1628,11 +1660,23 @@ function releve_pdf($tab_rel,$i) {
 			if($tab_modele_pdf["entente_fax"][$classe_id]==='1' and empty($entete_communic)) {
 				$entete_communic = 'Fax: '.$gepiSchoolFax;
 			}
+			*/
+			if(($releve_affiche_tel=='y')&&($gepiSchoolTel!="")&&($releve_affiche_fax=='y')&&($gepiSchoolFax!="")) {
+				$entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax;
+			}
+			elseif(($releve_affiche_tel=='y')&&($gepiSchoolTel!="")) {
+				$entete_communic = 'Tél: '.$gepiSchoolTel;
+			}
+			elseif(($releve_affiche_fax=='y')&&($gepiSchoolFax!="")) {
+				$entete_communic = 'Fax: '.$gepiSchoolFax;
+			}
+
 			if(isset($entete_communic) and $entete_communic!='') {
 				$pdf->Cell(90,5, $entete_communic,0,2,'');
 			}
-			if($tab_modele_pdf["entente_mel"][$classe_id]==='1') {
-				$gepiSchoolEmail = getSettingValue('gepiSchoolEmail');
+
+			//if($tab_modele_pdf["entente_mel"][$classe_id]==='1') {
+			if(($releve_affiche_mail=='y')&&($gepiSchoolEmail!='')) {
 				$pdf->Cell(90,5, $gepiSchoolEmail,0,2,'');
 			}
 	
@@ -1672,7 +1716,7 @@ function releve_pdf($tab_rel,$i) {
 					}
 				}
 				$pdf->Cell(90,7, $texte_1_responsable,0,2,'');
-	
+
 				$pdf->SetFont($caractere_utilse,'',10);
 				//$texte_1_responsable = $adresse1_parents[$ident_eleve_aff][$responsable_place];
 				$texte_1_responsable=$tab_adr_ligne2[$num_resp];
@@ -1710,9 +1754,12 @@ function releve_pdf($tab_rel,$i) {
 						$grandeur_texte='ok';
 					}
 				}
-	
+
 				$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
 				$pdf->Cell(90,5, '',0,2,'');
+
+				// $tab_adr_ligne4[$num_resp] est perdue
+
 				//$texte_1_responsable = $cp_parents[$ident_eleve_aff][$responsable_place]." ".$ville_parents[$ident_eleve_aff][$responsable_place];
 				$texte_1_responsable=$tab_adr_ligne5[$num_resp];
 				$hauteur_caractere=10;

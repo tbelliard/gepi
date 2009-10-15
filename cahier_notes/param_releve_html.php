@@ -425,6 +425,13 @@ if(isset($_POST['releve_affiche_fax'])) {
     }
 }
 
+if(isset($_POST['releve_affiche_mail'])) {
+    if (!saveSetting("releve_affiche_mail", $_POST['releve_affiche_mail'])) {
+        $msg .= "Erreur lors de l'enregistrement de releve_affiche_mail !";
+        $reg_ok = 'no';
+    }
+}
+
 
 if (isset($NON_PROTECT['releve_formule_bas'])) {
     $imp = traitement_magic_quotes($NON_PROTECT['releve_formule_bas']);
@@ -519,7 +526,7 @@ $nb_ligne=1;
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_body_marginleft' style='cursor: pointer;'>Marge gauche de la page (en pixels) :</label>
+        <label for='releve_body_marginleft' style='cursor: pointer;'>Marge gauche de la page (en pixels)&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_body_marginleft" id="releve_body_marginleft" size="20" value="<?php
 			if(getSettingValue("releve_body_marginleft")) {
@@ -533,7 +540,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_titlesize' style='cursor: pointer;'>Taille en points des gros titres :</label>
+        <label for='releve_titlesize' style='cursor: pointer;'>Taille en points des gros titres&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_titlesize" id="releve_titlesize" size="20" value="<?php
 			if(getSettingValue("releve_titlesize")) {
@@ -547,7 +554,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_textsize' style='cursor: pointer;'>Taille en points du texte (hormis les titres) :</label>
+        <label for='releve_textsize' style='cursor: pointer;'>Taille en points du texte (hormis les titres)&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_textsize" id="releve_textsize" size="20" value="<?php
 			if(getSettingValue("releve_textsize")) {
@@ -562,7 +569,7 @@ $nb_ligne=1;
     <!-- Début AJOUT: boireaus -->
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='p_releve_margin' style='cursor: pointer;'>Marges hautes et basses des paragraphes en points du texte (hormis les titres) :</label>
+        <label for='p_releve_margin' style='cursor: pointer;'>Marges hautes et basses des paragraphes en points du texte (hormis les titres)&nbsp;:</label>
         </td>
         <td><input type="text" name="p_releve_margin" id="p_releve_margin" size="20" value="<?php
 		if(getSettingValue("p_releve_margin")!=""){
@@ -577,7 +584,7 @@ $nb_ligne=1;
     <!-- Fin AJOUT: boireaus -->
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_largeurtableau' style='cursor: pointer;'>Largeur du tableau en pixels :</label>
+        <label for='releve_largeurtableau' style='cursor: pointer;'>Largeur du tableau en pixels&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_largeurtableau" id="releve_largeurtableau" size="20" value="<?php
 		if(getSettingValue("releve_largeurtableau")!=""){
@@ -591,7 +598,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_col_matiere_largeur' style='cursor: pointer;'>Largeur de la première colonne (matières) en pixels :</label><br />
+        <label for='releve_col_matiere_largeur' style='cursor: pointer;'>Largeur de la première colonne (matières) en pixels&nbsp;:</label><br />
         <span class="small">(Si le contenu d'une cellule de la colonne est plus grand que la taille prévue, la mention ci-dessus devient caduque. La colonne sera dans ce cas dimensionnée par le navigateur lui-même.)</span>
         </td>
         <td><input type="text" name="releve_col_matiere_largeur" id="releve_col_matiere_largeur" size="20" value="<?php
@@ -606,7 +613,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_col_hauteur' style='cursor: pointer;'>Hauteur minimale des lignes en pixels ("0" si automatique) :</label><br />
+        <label for='releve_col_hauteur' style='cursor: pointer;'>Hauteur minimale des lignes en pixels ("0" si automatique)&nbsp;:</label><br />
         <span class="small">(Si le contenu d'une cellule est tel que la hauteur fixée ci-dessus est insuffisante, la hauteur de la ligne sera dimensionnée par le navigateur lui-même.)</span>
         </td>
         <td><input type="text" name="releve_col_hauteur" id="releve_col_hauteur" size="20" value="<?php
@@ -621,7 +628,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_cellpadding' style='cursor: pointer;'>Espace en pixels entre le bord d'une cellule du tableau et le contenu de la cellule :</label>
+        <label for='releve_cellpadding' style='cursor: pointer;'>Espace en pixels entre le bord d'une cellule du tableau et le contenu de la cellule&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_cellpadding" id="releve_cellpadding" size="20" value="<?php
 		if(getSettingValue("releve_cellpadding")!=""){
@@ -635,7 +642,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_cellspacing' style='cursor: pointer;'>Espace en pixels entre les cellules du tableau :</label>
+        <label for='releve_cellspacing' style='cursor: pointer;'>Espace en pixels entre les cellules du tableau&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_cellspacing" id="releve_cellspacing" size="20" value="<?php
 		if(getSettingValue("releve_cellspacing")!=""){
@@ -649,7 +656,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_ecart_entete' style='cursor: pointer;'>Espace (nombre de lignes vides) entre l'en-tête du relevé et le tableau des notes et appréciations :</label>
+        <label for='releve_ecart_entete' style='cursor: pointer;'>Espace (nombre de lignes vides) entre l'en-tête du relevé et le tableau des notes et appréciations&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_ecart_entete" id="releve_ecart_entete" size="20" value="<?php
 		if(getSettingValue("releve_ecart_entete")!=""){
@@ -663,7 +670,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Bordures des cellules du tableau des moyennes et appréciations :
+        Bordures des cellules du tableau des moyennes et appréciations&nbsp;:
         </td>
         <td>
 		<?php
@@ -685,7 +692,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_categ_font_size' style='cursor: pointer;'>Taille en points du texte des catégories de matières (<i>lorsqu'elles sont affichées</i>) :</label>
+        <label for='releve_categ_font_size' style='cursor: pointer;'>Taille en points du texte des catégories de matières (<i>lorsqu'elles sont affichées</i>)&nbsp;:</label>
         </td>
 	<?php
 		if(getSettingValue("releve_categ_font_size")){
@@ -700,7 +707,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_categ_bgcolor' style='cursor: pointer;'>Couleur de fond des lignes de catégories de matières (<i>lorsqu'elles sont affichées</i>) :</label>
+        <label for='releve_categ_bgcolor' style='cursor: pointer;'>Couleur de fond des lignes de catégories de matières (<i>lorsqu'elles sont affichées</i>)&nbsp;:</label>
         </td>
 	<?php
 		if(getSettingValue("releve_categ_bgcolor")){
@@ -731,7 +738,7 @@ $nb_ligne=1;
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Faire apparaitre le nom de l'établissement sur le relevé :<br />(<i>certains établissements ont le nom dans le Logo</i>)
+        Faire apparaitre le nom de l'établissement sur le relevé&nbsp;:<br />(<i>certains établissements ont le nom dans le Logo</i>)
         </td>
 	<?php
 		if(getSettingValue("releve_affich_nom_etab")){
@@ -758,7 +765,7 @@ $nb_ligne=1;
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Faire apparaitre l'adresse de l'établissement sur le relevé :<br />(<i>certains établissements ont l'adresse dans le Logo</i>)
+        Faire apparaitre l'adresse de l'établissement sur le relevé&nbsp;:<br />(<i>certains établissements ont l'adresse dans le Logo</i>)
         </td>
 	<?php
 		if(getSettingValue("releve_affich_adr_etab")){
@@ -800,7 +807,7 @@ $nb_ligne=1;
 <table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des informations devant figurer sur le relevé de notes">
 <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le nom court de la classe :
+        Afficher le nom court de la classe&nbsp;:
         </td>
         <!--td style='width:8em; text-align:right;'-->
         <td style='width:8em;'>
@@ -816,7 +823,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher la mention "doublant" ou "doublante", le cas échéant :
+        Afficher la mention "doublant" ou "doublante", le cas échéant&nbsp;:
         </td>
         <td>
         <?php
@@ -831,7 +838,7 @@ $nb_ligne=1;
     </tr>
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les informations sur l'élève sur une seule ligne <i>(si non une information par ligne)</i> :
+        Afficher les informations sur l'élève sur une seule ligne <i>(si non une information par ligne)</i>&nbsp;:
         </td>
         <td>
         <?php
@@ -846,7 +853,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro du relevé :
+        Afficher le numéro du relevé&nbsp;:
         </td>
         <td>
         <?php
@@ -862,7 +869,7 @@ $nb_ligne=1;
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le nom du professeur principal et du chef d'établissement :
+        Afficher le nom du professeur principal et du chef d'établissement&nbsp;:
         </td>
         <td>
         <?php
@@ -878,7 +885,7 @@ $nb_ligne=1;
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher l'établissement d'origine sur le relevé :
+        Afficher l'établissement d'origine sur le relevé&nbsp;:
         </td>
         <td>
         <?php
@@ -901,7 +908,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 	echo ">\n";
 ?>
         <td style="font-variant: small-caps;">
-        Afficher la photo de l'élève sur le relevé :
+        Afficher la photo de l'élève sur le relevé&nbsp;:
         </td>
         <td>
 <?php
@@ -930,11 +937,11 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 	}
 ?>
     <tr id='ligne_releve_photo_hauteur_max'>
-	<td style="font-variant: small-caps;"><label for='releve_photo_hauteur_max' style='cursor: pointer;'>Hauteur maximale de la photo en pixels :</label></td>
+	<td style="font-variant: small-caps;"><label for='releve_photo_hauteur_max' style='cursor: pointer;'>Hauteur maximale de la photo en pixels&nbsp;:</label></td>
 	<td><input type="text" name="releve_photo_hauteur_max" id="releve_photo_hauteur_max" size='4' value="<?php echo $releve_photo_hauteur_max;?>" /></td>
     </tr>
     <tr id='ligne_releve_photo_largeur_max'>
-	<td style="font-variant: small-caps;"><label for='releve_photo_largeur_max' style='cursor: pointer;'>Largeur maximale de la photo en pixels :</label></td>
+	<td style="font-variant: small-caps;"><label for='releve_photo_largeur_max' style='cursor: pointer;'>Largeur maximale de la photo en pixels&nbsp;:</label></td>
 	<td><input type="text" name="releve_photo_largeur_max" id="releve_photo_largeur_max" size='4' value="<?php echo $releve_photo_largeur_max;?>" />
 
 	<script type='text/javascript'>
@@ -964,7 +971,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro de téléphone de l'établissement :
+        Afficher le numéro de téléphone de l'établissement&nbsp;:
         </td>
         <td>
         <?php
@@ -981,7 +988,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro de fax de l'établissement :
+        Afficher le numéro de fax de l'établissement&nbsp;:
         </td>
         <td>
         <?php
@@ -998,7 +1005,24 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro INE de l'élève :
+        Afficher l'adresse email de l'établissement&nbsp;:
+        </td>
+        <td>
+        <?php
+        echo "<input type=\"radio\" name=\"releve_affiche_mail\" id=\"releve_affiche_maily\" value=\"y\" ";
+        if (getSettingValue("releve_affiche_mail") == 'y') echo " checked";
+        echo " /><label for='releve_affiche_maily' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"releve_affiche_mail\" id=\"releve_affiche_mailn\" value=\"n\" ";
+        if (getSettingValue("releve_affiche_mail") != 'y') echo " checked";
+        echo " /><label for='releve_affiche_mailn' style='cursor: pointer;'>&nbsp;Non</label>";
+
+        ?>
+        </td>
+    </tr>
+
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Afficher le numéro INE de l'élève&nbsp;:
         </td>
         <td>
         <?php
@@ -1016,7 +1040,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher la formule figurant en bas de chaque relevé de notes :
+        Afficher la formule figurant en bas de chaque relevé de notes&nbsp;:
         </td>
         <td>
         <?php
@@ -1045,7 +1069,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 	if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++;
 	echo ">\n";
     echo "<td style='font-variant: small-caps;' colspan='2'>\n";
-	echo "<label for='no_anti_inject_releve_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque relevé :</label>\n";
+	echo "<label for='no_anti_inject_releve_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque relevé&nbsp;:</label>\n";
 	echo "<input type='text' name='no_anti_inject_releve_formule_bas' id='no_anti_inject_releve_formule_bas' size='100' value=\"".getSettingValue("releve_formule_bas")."\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -1078,7 +1102,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_addressblock_padding_right' style='cursor: pointer;'>Espace en mm entre la marge droite de la feuille et le bloc "adresse" :</label>
+        <label for='releve_addressblock_padding_right' style='cursor: pointer;'>Espace en mm entre la marge droite de la feuille et le bloc "adresse"&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_addressblock_padding_right" id="releve_addressblock_padding_right" size="20" value="<?php
 		if(!getSettingValue("releve_addressblock_padding_right")){
@@ -1096,7 +1120,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
      </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_addressblock_padding_top' style='cursor: pointer;'>Espace en mm entre la marge haute de la feuille et le bloc "adresse" :</label>
+        <label for='releve_addressblock_padding_top' style='cursor: pointer;'>Espace en mm entre la marge haute de la feuille et le bloc "adresse"&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_addressblock_padding_top" id="releve_addressblock_padding_top" size="20" value="<?php
 
@@ -1117,7 +1141,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_addressblock_padding_text' style='cursor: pointer;'>Espace vertical en mm entre le bloc "adresse" et le bloc des résultats :</label>
+        <label for='releve_addressblock_padding_text' style='cursor: pointer;'>Espace vertical en mm entre le bloc "adresse" et le bloc des résultats&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_addressblock_padding_text" id="releve_addressblock_padding_text" size="20" value="<?php
 
@@ -1135,7 +1159,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_addressblock_length' style='cursor: pointer;'>Longueur en mm du bloc "adresse" :</label>
+        <label for='releve_addressblock_length' style='cursor: pointer;'>Longueur en mm du bloc "adresse"&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_addressblock_length" id="releve_addressblock_length" size="20" value="<?php
 
@@ -1153,7 +1177,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_addressblock_font_size' style='cursor: pointer;'>Taille en points des textes du bloc "adresse" :</label>
+        <label for='releve_addressblock_font_size' style='cursor: pointer;'>Taille en points des textes du bloc "adresse"&nbsp;:</label>
         </td>
 	<?php
 		if(!getSettingValue("releve_addressblock_font_size")){
@@ -1170,7 +1194,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_addressblock_logo_etab_prop' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement :</label>
+        <label for='releve_addressblock_logo_etab_prop' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement&nbsp;:</label>
         </td>
 	<?php
 		if(!getSettingValue("releve_addressblock_logo_etab_prop")){
@@ -1187,7 +1211,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_addressblock_classe_annee' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au bloc "Classe, année, période" :</label>
+        <label for='releve_addressblock_classe_annee' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au bloc "Classe, année, période"&nbsp;:</label>
         </td>
 	<?php
 		if(!getSettingValue("releve_addressblock_classe_annee")){
@@ -1205,7 +1229,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_ecart_bloc_nom' style='cursor: pointer;'>Nombre de sauts de ligne entre le bloc Logo+Etablissement et le bloc Nom, prénom,... de l'élève :</label>
+        <label for='releve_ecart_bloc_nom' style='cursor: pointer;'>Nombre de sauts de ligne entre le bloc Logo+Etablissement et le bloc Nom, prénom,... de l'élève&nbsp;:</label>
         </td>
 	<?php
 		if(!getSettingValue("releve_ecart_bloc_nom")){
@@ -1222,7 +1246,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <font color='red'>Activer l'affichage des bordures pour comprendre la présentation avec bloc "adresse"</font> :<br />
+        <font color='red'>Activer l'affichage des bordures pour comprendre la présentation avec bloc "adresse"</font>&nbsp;:<br />
 		<span style='font-size:x-small;'>Il faut ajuster les paramètres des champs '<i>Espace en mm entre la marge haute de la feuille et le bloc "adresse"</i>', '<i>Longueur en mm du bloc "adresse"</i>' et '<i>Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement</i>' pour que les cadres bleu et vert n'entrent pas en collision (<i>vous pouvez modifier la taille de la fenêtre du navigateur à l'aide de la souris pour comprendre les éventuelles abérrations de présentation pour certaines combinaisons de valeurs</i>).</span>
         </td>
 	<?php
