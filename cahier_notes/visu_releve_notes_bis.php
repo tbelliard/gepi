@@ -524,7 +524,7 @@ elseif(!isset($choix_periode)) {
     echo "<input type='text' name = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" />";
     echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 	echo "<br />\n";
-    echo " (Veillez à respecter le format jj/mm/aaaa)</label>\n";
+    echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -651,6 +651,15 @@ elseif(!isset($choix_periode)) {
 
 	echo "<p><input type='submit' name='valide_choix_periode' value='Valider' /></p>\n";
 	echo "</form>\n";
+
+	echo "<p><br /></p>\n";
+
+	echo "<p><i>Remarque&nbsp;:</i></p>\n";
+	echo "<blockquote>\n";
+	echo "<p>Les relevés d'une date à une autre ne font apparaître que les matières dans lesquelles il y a des notes.<br />\n";
+	echo "Les relevés pour une période complète en revanche font apparaître toutes les matières, même si aucune note n'est saisie.</p>\n";
+	echo "On choisit en général la période complète lorsqu'on veut imprimer un relevé en même temps que le bulletin (<i>au verso par exemple</i>) et en fin de période, il est bon d'avoir toutes les matières.</p>\n";
+	echo "</blockquote>\n";
 
 }
 //======================================================
