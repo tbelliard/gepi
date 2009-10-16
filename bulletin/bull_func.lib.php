@@ -1035,9 +1035,17 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		// Pour permettre de récupérer via global dans releve_pdf() le numéro du parent dont on imprime le bulletin avec au verso le relevé de notes:
 		$num_resp_bull,
 
+		// Pour récupérer le 1 relevé par page en verso du bulletin... variable récupérée via 'global' dans la fonction releve_pdf()
+		$nb_releve_par_page,
+
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
 		//=========================================
+
+	if(($nb_releve_par_page!=1)||($nb_releve_par_page!=2)) {
+		// Actuellement, on n'a qu'un bulletin par page/recto donc qu'un relevé de notes par verso, mais sait-on jamais un jour...
+		$nb_releve_par_page=1;
+	}
 
 	// Préparation des lignes d'adresse
 

@@ -54,6 +54,16 @@ if (!checkAccess()) {
 // Ajouter un témoin pour ne pas générer d'affichage pouvant empêcher la génération de relevé PDF...
 //+++++++++++++++++++++++++
 
+$contexte_document_produit="releve_notes";
+/*
+$deux_releves_par_page=isset($_POST('deux_releves_par_page']) ? $_POST('deux_releves_par_page'] : "non";
+
+if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+	$deux_releves_par_page="non";
+	//$un_seul_bull_par_famille="oui";
+}
+*/
+
 //====================================================
 //=============== ENTETE STANDARD ====================
 //if (!isset($_POST['valide_select_eleves'])) {
@@ -815,6 +825,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		echo "<input type='hidden' name='choix_parametres' value='y' />\n";
 		//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
 		echo "<input type='hidden' name='un_seul_bull_par_famille' value='oui' />\n";
+
+		echo "<input type='hidden' name='deux_releves_par_page' value='non' />\n";
 	}
 	else {
 		echo "<p>\n";
@@ -833,10 +845,13 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		if (($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
 			echo "<table border='0' summary='Tableau de paramètres'>\n";
 			echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' /></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de relevé de notes pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
+
+			echo "<tr><td valign='top'><input type='checkbox' name='deux_releves_par_page' id='deux_releves_par_page' value='oui' /></td><td><label for='deux_releves_par_page' style='cursor: pointer;'>Produire deux relevés par page.</label></td></tr>\n";
 			echo "</table>\n";
 		}
 		else {
 			echo "<input type='hidden' name='un_seul_bull_par_famille' value='oui' />\n";
+			echo "<input type='hidden' name='deux_releves_par_page' value='non' />\n";
 		}
 
 		// AJOUTER LES PARAMETRES...
@@ -1581,6 +1596,17 @@ function ToutDeCocher() {
 else {
 	$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : "html";
 	$un_seul_bull_par_famille=isset($_POST['un_seul_bull_par_famille']) ? $_POST['un_seul_bull_par_famille'] : "non";
+	$deux_releves_par_page=isset($_POST['deux_releves_par_page']) ? $_POST['deux_releves_par_page'] : "non";
+
+	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+		$deux_releves_par_page="non";
+		$un_seul_bull_par_famille="oui";
+	}
+
+	$nb_releve_par_page=1;
+	if($deux_releves_par_page=="oui") {
+		$nb_releve_par_page=2;
+	}
 
 	// Prof principal
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
@@ -1674,7 +1700,10 @@ else {
 		return $regime;
 	}
 
-	$compteur=0;
+	// Compteur pour gérer les 2 relevés par page en PDF
+	$compteur_releve=0;
+	// Compteur pour les insertions de saut de page en HTML
+	$compteur_releve_bis=0;
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 		$id_classe=$tab_id_classe[$loop_classe];
 		$classe=get_class_from_id($id_classe);
@@ -1728,7 +1757,7 @@ else {
 					echo "</div>\n";
 				}
 
-				//$compteur=0;
+				//$compteur_releve=0;
 				if(isset($tab_releve[$id_classe][$periode_num]['eleve'])) {
 					for($i=0;$i<count($tab_releve[$id_classe][$periode_num]['eleve']);$i++) {
 	
@@ -1783,7 +1812,8 @@ else {
 										flush();
 	
 										// Saut de page si jamais ce n'est pas le premier bulletin
-										if($compteur>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+										//if($compteur_releve>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+										if($compteur_releve_bis>0) {echo "<p class='saut'>&nbsp;</p>\n";}
 	
 										// Génération du bulletin de l'élève
 										releve_html($tab_releve[$id_classe][$periode_num],$i,-1);
@@ -1800,7 +1830,8 @@ else {
 	
 									}
 	
-									$compteur++;
+									//$compteur_releve++;
+									$compteur_releve_bis++;
 	
 								}
 							//}

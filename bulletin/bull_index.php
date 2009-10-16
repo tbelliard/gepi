@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/bulletin/bull_index.php';";
@@ -53,6 +53,10 @@ $intercaler_releve_notes=isset($_POST['intercaler_releve_notes']) ? $_POST['inte
 
 $mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : NULL;
 
+// Variable non encore utilisée:
+$contexte_document_produit="bulletin";
+// Pour sur le verso du bulletin n'avoir qu'un relevé de notes et pas deux... et surtout pas celui de l'élève suivant dans la liste:
+$nb_releve_par_page=1;
 
 //====================================================
 //=============== ENTETE STANDARD ====================

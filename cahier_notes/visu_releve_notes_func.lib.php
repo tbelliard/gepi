@@ -1253,6 +1253,10 @@ function releve_pdf($tab_rel,$i) {
 		// Pour gérer un appel depuis l'impression de bulletins avec le relevé de notes au verso
 		$num_resp_bull,
 
+		// Pour gérer les 2 relevés par page
+		$compteur_releve,
+		$nb_releve_par_page,
+
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
 
@@ -1473,11 +1477,22 @@ function releve_pdf($tab_rel,$i) {
 		// Par contre si on met l'adresse sur le relevé et pas sur le bulletin, on récupère toujours l'adresse n°1 sur le relevé
 	}
 
+	// Pour un relevé en recto/verso avec le bulletin,
+	// il ne faut qu'un relevé par page, mais si on devait utiliser cette fonction
+	// pour remplacer un jour le dispositif relevé PDF, il faudrait revoir cela:
+	//$nb_releve_par_page=2;
+
 	//for($loop_rel=0;$loop_rel<$nb_bulletins;$loop_rel++) {
 	for($loop_rel=0;$loop_rel<$nb_releves;$loop_rel++) {
-		$pdf->AddPage("P");
-		$pdf->SetFontSize(10);
-	
+		if(($nb_releve_par_page==1)||(($compteur_releve/2-(floor($compteur_releve/2)))==0)) {
+			$pdf->AddPage("P");
+			$pdf->SetFontSize(10);
+		}
+
+		//$pdf->SetXY(5,5);
+		//$pdf->Cell(0,4.5,"Debug Rel.".($compteur_releve/2)." ".(floor($compteur_releve/2)),0,0,'C');
+
+/*
 		//================================
 		// On insère le footer dès que la page est créée:
 		//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
@@ -1492,7 +1507,7 @@ function releve_pdf($tab_rel,$i) {
 			$pdf->Cell(0,4.5,unhtmlentities($releve_formule_bas),0,0,'C');
 		}
 		//================================
-	
+*/
 	
 		/*
 		if($nb_releve_par_page === '1' and $active_bloc_adresse_parent != '1') { $hauteur_cadre_note_global = 250; }
@@ -1500,18 +1515,25 @@ function releve_pdf($tab_rel,$i) {
 		if($nb_releve_par_page === '2') { $hauteur_cadre_note_global = 102; }
 		*/
 	
+		/*
 		// Pour un relevé en recto/verso avec le bulletin,
 		// il ne faut qu'un relevé par page, mais si on devait utiliser cette fonction
 		// pour remplacer un jour le dispositif relevé PDF, il faudrait revoir cela:
 		$nb_releve_par_page=1;
-	
+		*/
 	
 		//$active_bloc_adresse_parent=0;
 		$active_bloc_adresse_parent=($tab_rel['rn_adr_resp']=='y') ? 1 : 0;
 		//$hauteur_cadre_note_global = 250;
-		if($active_bloc_adresse_parent!=1) { $hauteur_cadre_note_global = 250; }
-		if($active_bloc_adresse_parent==1) { $hauteur_cadre_note_global = 205; }
-	
+
+		if($nb_releve_par_page==1) {
+			if($active_bloc_adresse_parent!=1) { $hauteur_cadre_note_global = 250; }
+			if($active_bloc_adresse_parent==1) { $hauteur_cadre_note_global = 205; }
+		}
+		else {
+			$hauteur_cadre_note_global = 102;
+		}
+
 		// A FAIRE:
 		// Pour la hauteur, prendre en compte la saisie d'une formule $tab_rel['rn_formule'] (non vide)
 		// et le caractère vide ou non de getSettingValue("bull_formule_bas")
@@ -1556,18 +1578,62 @@ function releve_pdf($tab_rel,$i) {
 			$Y_cadre_eleve = '5';
 			$Y_entete_etab='5';
 			*/
-			if($active_bloc_adresse_parent!='1') {
-				$Y_cadre_note = '32';
-				$Y_cadre_eleve = '5';
-				$Y_entete_etab='5';
+
+			if($nb_releve_par_page==1) {
+				if($active_bloc_adresse_parent!='1') {
+					$Y_cadre_note = '32';
+					$Y_cadre_eleve = '5';
+					$Y_entete_etab='5';
+				}
+				else {
+					$Y_cadre_note = '75';
+					$Y_cadre_eleve = '5';
+					$Y_entete_etab='5';
+				}
 			}
 			else {
-				$Y_cadre_note = '75';
-				$Y_cadre_eleve = '5';
-				$Y_entete_etab='5';
+				if($compteur_releve/2-(floor($compteur_releve/2))==0) {
+					$Y_cadre_note = '32';
+					$Y_cadre_eleve = '5';
+					$Y_entete_etab='5';
+				}
+				else {
+					/*
+					$Y_cadre_note = $Y_cadre_note+145;
+					$Y_cadre_eleve = $Y_cadre_eleve+145;
+					$Y_entete_etab=$Y_entete_etab+145;
+					*/
+					$Y_cadre_note = 32+145;
+					$Y_cadre_eleve = 5+145;
+					$Y_entete_etab = 5+145;
+				}
 			}
-	
-	
+
+
+			//================================
+			// On insère le footer dès que la page est créée:
+			//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+			if($nb_releve_par_page==1) {
+				$pdf->SetXY(5,-10);
+			}
+			elseif($compteur_releve/2-(floor($compteur_releve/2))==0) {
+				$pdf->SetXY(5,-10);
+			}
+			else {
+				$pdf->SetXY(5,145-10);
+			}
+			//Police Arial Gras 6
+			$pdf->SetFont('Arial','B',8);
+			// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
+			if($tab_rel['rn_formule']!="") {
+				$pdf->Cell(0,4.5,unhtmlentities($tab_rel['rn_formule']),0,0,'C');
+			}
+			else {
+				$pdf->Cell(0,4.5,unhtmlentities($releve_formule_bas),0,0,'C');
+			}
+			//================================
+
+
 			//BLOC IDENTITE ELEVE
 			$pdf->SetXY($X_cadre_eleve,$Y_cadre_eleve);
 			$pdf->SetFont($caractere_utilse,'B',14);
@@ -1580,7 +1646,9 @@ function releve_pdf($tab_rel,$i) {
 			$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
 	
 			$pdf->Cell(90,5,'',0,2,'');
-	
+
+			//$pdf->Cell(0,4.5,"Debug Rel.".($compteur_releve/2)." ".(floor($compteur_releve/2)),0,0,'C');
+
 			/*
 			if ( $aff_classe_nom === '1' or $aff_classe_nom === '3' ) {
 				$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($tab_rel['classe_nom_complet']).'<B>');
@@ -2185,7 +2253,9 @@ function releve_pdf($tab_rel,$i) {
 				}
 			}
 			//}
-	}
+
+		$compteur_releve++;
+	} // Fin de la boucle sur les deux responsables séparés
 
 		/*
 		//PUB ;)
