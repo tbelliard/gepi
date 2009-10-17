@@ -71,7 +71,14 @@ if ($id_devoir)  {
 } else if ((isset($_POST['id_conteneur'])) or (isset($_GET['id_conteneur']))) {
 	$id_conteneur = isset($_POST['id_conteneur']) ? $_POST['id_conteneur'] : (isset($_GET['id_conteneur']) ? $_GET['id_conteneur'] : NULL);
 	$query = mysql_query("SELECT id_racine FROM cn_conteneurs WHERE id = '$id_conteneur'");
-	$id_racine = mysql_result($query, 0, 'id_racine');
+	if(mysql_num_rows($query)==0) {
+		$msg="Le conteneur numero $id_conteneur n'existe pas. C'est une anomalie.";
+		header("Location: index.php?msg=$msg");
+		die();
+	}
+	else {
+		$id_racine = mysql_result($query, 0, 'id_racine');
+	}
 } else {
 	//debug_var();
 
