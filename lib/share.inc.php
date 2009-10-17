@@ -963,138 +963,149 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 // Affichage de la liste des conteneurs
 //
 function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_periode) {
-    global $gepiClosedPeriodLabel;
-    global $id_groupe;
-    global $eff_groupe;
-    if((isset($id_groupe))&&(!isset($eff_groupe))) {
-        $sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
-        $res_ele_grp=mysql_query($sql);
-        $eff_groupe=mysql_num_rows($res_ele_grp);
-    }
-    //
-    // Cas particulier de la racine
-    //
-    //$message_cont = "Etes-vous sûr de vouloir supprimer le conteneur ci-dessous et les évaluations qu\\'il contient ?";
-    if(getSettingValue("gepi_denom_boite_genre")=='m'){
-	//$lela="le";$il_ou_elle="il";
-	$message_cont = "Etes-vous sûr de vouloir supprimer le ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
-	$message_cont_non_vide = "Le ".getSettingValue("gepi_denom_boite")." est non vide. Il ne peut pas être supprimé.";
-    }
-    else{
-	//$lela="la";$il_ou_elle="elle";
-	$message_cont = "Etes-vous sûr de vouloir supprimer la ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
-	$message_cont_non_vide = "La ".getSettingValue("gepi_denom_boite")." est non vide. Elle ne peut pas être supprimée.";
-    }
-    //$message_cont = "Etes-vous sûr de vouloir supprimer $lela ".getSettingValue("gepi_denom_boite")." ci-dessous et les évaluations qu\\'il contient ?";
-    //$message_cont = "Etes-vous sûr de vouloir supprimer $lela ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
-    //$message_cont_non_vide = ucfirst($lela)." ".getSettingValue("gepi_denom_boite")." est non vide. ".ucfirst($il_ou_elle)." ne peut pas être supprimé.";
-    $message_dev = "Etes-vous sûr de vouloir supprimer l\\'évaluation ci-dessous et les notes qu\\'elle contient ?";
-    //$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent='0' and id_racine='$id_conteneur')");
-    $sql="SELECT * FROM cn_conteneurs WHERE (parent='0' and id_racine='$id_conteneur')";
-    //echo "$sql<br />\n";
-    $appel_conteneurs = mysql_query($sql);
-    $nb_cont = mysql_num_rows($appel_conteneurs);
-    if ($nb_cont != 0) {
-        echo "<ul>\n";
-        $id_cont = mysql_result($appel_conteneurs, 0, 'id');
-        $id_parent = mysql_result($appel_conteneurs, 0, 'parent');
-        $id_racine = mysql_result($appel_conteneurs, 0, 'id_racine');
-        $nom_conteneur = mysql_result($appel_conteneurs, 0, 'nom_court');
-        echo "<li>\n";
-        echo "$nom_conteneur ";
-        //echo "id=$id_cont id_racine=$id_racine parent=$id_parent ";
-        if ($ver_periode <= 1) {
-            echo " (<strong>".$gepiClosedPeriodLabel."</strong>) ";
-        }
-        echo "- <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
-        $appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
-        $nb_dev  = mysql_num_rows($appel_dev);
-        if ($nb_dev != 0) $empty = 'no';
-        if ($ver_periode >= 2) {
-            $j = 0;
-            if($nb_dev>0){
-                echo "<ul>\n";
-                while ($j < $nb_dev) {
-                    $nom_dev = mysql_result($appel_dev, $j, 'nom_court');
-                    $id_dev = mysql_result($appel_dev, $j, 'id');
-                    echo "<li>\n";
-                    echo "<font color='green'>$nom_dev</font>";
-                    echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
+	global $gepiClosedPeriodLabel;
+	global $id_groupe;
+	global $eff_groupe;
+	if((isset($id_groupe))&&(!isset($eff_groupe))) {
+		$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
+		$res_ele_grp=mysql_query($sql);
+		$eff_groupe=mysql_num_rows($res_ele_grp);
+	}
+	//
+	// Cas particulier de la racine
+	//
+	//$message_cont = "Etes-vous sûr de vouloir supprimer le conteneur ci-dessous et les évaluations qu\\'il contient ?";
+	if(getSettingValue("gepi_denom_boite_genre")=='m'){
+		//$lela="le";$il_ou_elle="il";
+		$message_cont = "Etes-vous sûr de vouloir supprimer le ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
+		$message_cont_non_vide = "Le ".getSettingValue("gepi_denom_boite")." est non vide. Il ne peut pas être supprimé.";
+	}
+	else{
+		//$lela="la";$il_ou_elle="elle";
+		$message_cont = "Etes-vous sûr de vouloir supprimer la ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
+		$message_cont_non_vide = "La ".getSettingValue("gepi_denom_boite")." est non vide. Elle ne peut pas être supprimée.";
+	}
+	//$message_cont = "Etes-vous sûr de vouloir supprimer $lela ".getSettingValue("gepi_denom_boite")." ci-dessous et les évaluations qu\\'il contient ?";
+	//$message_cont = "Etes-vous sûr de vouloir supprimer $lela ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
+	//$message_cont_non_vide = ucfirst($lela)." ".getSettingValue("gepi_denom_boite")." est non vide. ".ucfirst($il_ou_elle)." ne peut pas être supprimé.";
+	$message_dev = "Etes-vous sûr de vouloir supprimer l\\'évaluation ci-dessous et les notes qu\\'elle contient ?";
+	//$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent='0' and id_racine='$id_conteneur')");
+	$sql="SELECT * FROM cn_conteneurs WHERE (parent='0' and id_racine='$id_conteneur')";
+	//echo "$sql<br />\n";
+	$appel_conteneurs = mysql_query($sql);
+	$nb_cont = mysql_num_rows($appel_conteneurs);
+	if ($nb_cont != 0) {
+		echo "<ul>\n";
+		$id_cont = mysql_result($appel_conteneurs, 0, 'id');
+		$id_parent = mysql_result($appel_conteneurs, 0, 'parent');
+		$id_racine = mysql_result($appel_conteneurs, 0, 'id_racine');
+		$nom_conteneur = mysql_result($appel_conteneurs, 0, 'nom_court');
+		echo "<li>\n";
+		echo "$nom_conteneur ";
+		//echo "id=$id_cont id_racine=$id_racine parent=$id_parent ";
+		if ($ver_periode <= 1) {
+			echo " (<strong>".$gepiClosedPeriodLabel."</strong>) ";
+		}
+		echo "- <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
+		$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
+		$nb_dev  = mysql_num_rows($appel_dev);
+		if ($nb_dev != 0) {$empty = 'no';}
+		if ($ver_periode >= 2) {
+			$j = 0;
+			if($nb_dev>0){
+				echo "<ul>\n";
+				while ($j < $nb_dev) {
+					$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
+					$id_dev = mysql_result($appel_dev, $j, 'id');
+					echo "<li>\n";
+					echo "<font color='green'>$nom_dev</font>";
+					echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
 
-                    $sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='$id_dev' AND statut!='-' AND statut!='v';";
-                    $res_eff_dev=mysql_query($sql);
-                    $eff_dev=mysql_num_rows($res_eff_dev);
-                    echo " <span title=\"Effectif des notes saisies/effectif total de l'enseignement\" style='font-size:small;";
-                    if(isset($eff_groupe)) {if($eff_dev==$eff_groupe) {echo "color:green;";} else {echo "color:red;";}}
-                    echo "'>($eff_dev";
-                    if(isset($eff_groupe)) {echo "/$eff_groupe";}
-                    echo ")</span>";
+					$sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='$id_dev' AND statut!='-' AND statut!='v';";
+					$res_eff_dev=mysql_query($sql);
+					$eff_dev=mysql_num_rows($res_eff_dev);
+					echo " <span title=\"Effectif des notes saisies/effectif total de l'enseignement\" style='font-size:small;";
+					if(isset($eff_groupe)) {if($eff_dev==$eff_groupe) {echo "color:green;";} else {echo "color:red;";}}
+					echo "'>($eff_dev";
+					if(isset($eff_groupe)) {echo "/$eff_groupe";}
+					echo ")</span>";
 
-                    echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
-                    echo "</li>\n";
-                    $j++;
-                }
-                echo "</ul>\n";
-            }
-        }
-    }
-    if ($ver_periode >= 2) {
-        $appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent='$id_conteneur') order by nom_court");
-        $nb_cont = mysql_num_rows($appel_conteneurs);
-        if($nb_cont>0){
-            echo "<ul>\n";
-            $i = 0;
-            while ($i < $nb_cont) {
-                $id_cont = mysql_result($appel_conteneurs, $i, 'id');
-                $id_parent = mysql_result($appel_conteneurs, $i, 'parent');
-                $id_racine = mysql_result($appel_conteneurs, $i, 'id_racine');
-                $nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
-                if ($id_cont != $id_parent) {
-                    echo "<li>\n";
-                    //echo "$nom_conteneur - <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
-                    echo "$nom_conteneur - <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
-                    //$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont'");
-                    $appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
-                    $nb_dev  = mysql_num_rows($appel_dev);
-                    if ($nb_dev != 0) $empty = 'no';
+					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
+					echo "</li>\n";
+					$j++;
+				}
+				echo "</ul>\n";
+			}
+		}
+	}
+	if ($ver_periode >= 2) {
+		$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent='$id_conteneur') order by nom_court");
+		$nb_cont = mysql_num_rows($appel_conteneurs);
+		if($nb_cont>0) {
+			echo "<ul>\n";
+			$i = 0;
+			while ($i < $nb_cont) {
+				$id_cont = mysql_result($appel_conteneurs, $i, 'id');
+				$id_parent = mysql_result($appel_conteneurs, $i, 'parent');
+				$id_racine = mysql_result($appel_conteneurs, $i, 'id_racine');
+				$nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
+				if ($id_cont != $id_parent) {
+					echo "<li>\n";
+					//echo "$nom_conteneur - <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
+					echo "$nom_conteneur - <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
+					//$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont'");
+					$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
+					$nb_dev  = mysql_num_rows($appel_dev);
+					if ($nb_dev != 0) {$empty = 'no';}
 
-		    // Existe-t-il des sous-conteneurs?
-		    $sql="SELECT 1=1 FROM cn_conteneurs WHERE (parent='$id_cont')";
-		    $test_sous_cont=mysql_query($sql);
-		    $nb_sous_cont=mysql_num_rows($test_sous_cont);
-		    //echo "<br />$sql<br />$nb_sous_cont<br />";
+					// Existe-t-il des sous-conteneurs?
+					$sql="SELECT 1=1 FROM cn_conteneurs WHERE (parent='$id_cont')";
+					$test_sous_cont=mysql_query($sql);
+					$nb_sous_cont=mysql_num_rows($test_sous_cont);
+					//echo "<br />$sql<br />$nb_sous_cont<br />";
 
-                    if(($nb_dev==0)&&($nb_sous_cont==0)){
-			echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
-		    }
-		    else{
-			echo " - <a href = '#' onclick='alert(\"$message_cont_non_vide\")'><font color='gray'>Suppression</font></a>\n";
-		    }
+					if(($nb_dev==0)&&($nb_sous_cont==0)) {
+						echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
+					}
+					else {
+						echo " - <a href = '#' onclick='alert(\"$message_cont_non_vide\")'><font color='gray'>Suppression</font></a>\n";
+					}
 
-                    $j = 0;
-                    if($nb_dev>0){
-                        echo "<ul>\n";
-                        while ($j < $nb_dev) {
-                            $nom_dev = mysql_result($appel_dev, $j, 'nom_court');
-                            $id_dev = mysql_result($appel_dev, $j, 'id');
-                            echo "<li>\n";
-                            echo "<font color='green'>$nom_dev</font> - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a> - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
-                            echo "</li>\n";
-                            $j++;
-                        }
-                        echo "</ul>\n";
-                    }
-                    }
-                if ($id_conteneur != $id_cont) affiche_devoirs_conteneurs($id_cont,$periode_num, $empty,$ver_periode);
-                if ($id_cont != $id_parent) {
-                    echo "</li>\n";
-                    }
-                $i++;
-            }
-            echo "</ul>\n";
-        }
-    }
-    if ($empty != 'no') return 'yes';
+					$j = 0;
+					if($nb_dev>0) {
+						echo "<ul>\n";
+						while ($j < $nb_dev) {
+							$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
+							$id_dev = mysql_result($appel_dev, $j, 'id');
+							echo "<li>\n";
+							echo "<font color='green'>$nom_dev</font> - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
+
+							$sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='$id_dev' AND statut!='-' AND statut!='v';";
+							$res_eff_dev=mysql_query($sql);
+							$eff_dev=mysql_num_rows($res_eff_dev);
+							echo " <span title=\"Effectif des notes saisies/effectif total de l'enseignement\" style='font-size:small;";
+							if(isset($eff_groupe)) {if($eff_dev==$eff_groupe) {echo "color:green;";} else {echo "color:red;";}}
+							echo "'>($eff_dev";
+							if(isset($eff_groupe)) {echo "/$eff_groupe";}
+							echo ")</span>";
+
+							echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
+							echo "</li>\n";
+							$j++;
+						}
+						echo "</ul>\n";
+					}
+				}
+				if ($id_conteneur != $id_cont) {affiche_devoirs_conteneurs($id_cont,$periode_num, $empty,$ver_periode);}
+				if ($id_cont != $id_parent) {
+					echo "</li>\n";
+				}
+				$i++;
+			}
+			echo "</ul>\n";
+		}
+	}
+	if ($empty != 'no') return 'yes';
 }
 
 
