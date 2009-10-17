@@ -103,19 +103,22 @@ if (isset($_POST['ok'])) {
 	unset($tab_group);
 	$tab_group=array();
 
+	$msg="";
+
     $reg_ok = "yes";
     $new='no';
     if ((isset($_POST['new_devoir'])) and ($_POST['new_devoir'] == 'yes')) {
         $reg = mysql_query("insert into cn_devoirs (id_racine,id_conteneur,nom_court) values ('$id_racine','$id_conteneur','nouveau')");
         $id_devoir = mysql_insert_id();
         $new='yes';
-        if (!$reg)  $reg_ok = "no";
+        if (!$reg) {$reg_ok = "no";}
 
 		$creation_dev_autres_groupes=isset($_POST['creation_dev_autres_groupes']) ? $_POST['creation_dev_autres_groupes'] : 'n';
 		$id_autre_groupe=isset($_POST['id_autre_groupe']) ? $_POST['id_autre_groupe'] : array();
 		if(($creation_dev_autres_groupes=='y')&&(count($id_autre_groupe)>0)) {
 			// Créer un tableau des id_groupe, id_cahier_notes=id_racine, id_conteneur, id_devoir
 
+			// On récupère le nom, la description,... de l'emplacement/boite/conteneur pour pouvoir créer le même si nécessaire
 			$id_emplacement=isset($_POST['id_emplacement']) ? $_POST['id_emplacement'] : $id_racine;
 
 			$sql="SELECT * FROM cn_conteneurs WHERE id='$id_emplacement';";
@@ -132,11 +135,12 @@ if (isset($_POST['ok'])) {
 			$display_parents_conteneur=$lig_conteneur->display_parents;
 			$display_bulletin_conteneur=$lig_conteneur->display_bulletin;
 
-			// Vérifier que la période est bien ouverte en saisie
 			$cpt=0;
+			// Boucle sur les autres enseignements sur lesquels créer le même devoir
 			for($i=0;$i<count($id_autre_groupe);$i++) {
 				//$tab_group[$i]=get_group($id_autre_groupe);
 				$tmp_group=get_group($id_autre_groupe[$i]);
+				// Vérifier que la période est bien ouverte en saisie
 				if($tmp_group["classe"]["ver_periode"]["all"][$periode_num]>=2) {
 
 					$tmp_id_racine="";
@@ -152,19 +156,21 @@ if (isset($_POST['ok'])) {
 						$reg = mysql_query("INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($tmp_group["description"])."', nom_complet='". traitement_magic_quotes($tmp_nom_complet_matiere)."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
 						if ($reg) {
 							$tmp_id_racine = mysql_insert_id();
+							// On renseigne le champ id_racine avec la même valeur que l'id du conteneur: c'est la racine du cahier de notes
 							$reg = mysql_query("UPDATE cn_conteneurs SET id_racine='$tmp_id_racine', parent = '0' WHERE id='$tmp_id_racine'");
+							// On déclare le cahier de notes avec cet identifiant
 							$reg = mysql_query("INSERT INTO cn_cahier_notes SET id_groupe = '".$tmp_group['id']."', periode = '$periode_num', id_cahier_notes='$tmp_id_racine'");
 						}
-
 					}
 					else {
 						$lig_tmp=mysql_fetch_object($res_idcn);
 						$tmp_id_racine=$lig_tmp->id_cahier_notes;
 					}
 
-					if($tmp_id_racine!="") {
-						// La même boite existe-t-elle dans cet autre enseignement?
+					if(($tmp_id_racine!="")&&(is_numeric($tmp_id_racine))) {
+						// Si le conteneur/boite n'est pas à la racine, on teste s'il faut créer un conteneur/boite dans l'autre enseignement
 						if($id_emplacement!=$id_racine) {
+							// La même boite existe-t-elle dans cet autre enseignement?
 							$sql="SELECT * FROM cn_conteneurs WHERE nom_court='".addslashes($nom_court_conteneur)."' AND id_racine='$tmp_id_racine';";
 							//echo "$sql<br />\n";
 							$test_conteneur=mysql_query($sql);
@@ -173,10 +179,10 @@ if (isset($_POST['ok'])) {
 								$tmp_id_conteneur=$lig_tmp->id;
 							}
 							else {
-								// On met le devoir à la racine
-								// Dans le futur, il faudrait tenter de créer ici une boite comme celle du devoir modèle (si une case a été cochée)
+								// Par défaut, on met le devoir à la racine si le conteneur de même nom n'existe pas
 								$tmp_id_conteneur=$tmp_id_racine;
 
+								// si la case 'creer_conteneur' a été cochée, on crée ici une boite comme celle du devoir modèle
 								if((isset($_POST['creer_conteneur']))&&($_POST['creer_conteneur']=="y")) {
 									$sql="INSERT INTO cn_conteneurs SET id_racine='$tmp_id_racine',
 																		nom_court='".addslashes($nom_court_conteneur)."',
@@ -189,8 +195,13 @@ if (isset($_POST['ok'])) {
 																		display_parents='".addslashes($display_parents_conteneur)."',
 																		display_bulletin='".addslashes($display_bulletin_conteneur)."',
 																		parent='$tmp_id_racine';";
-									$insert_conteneur=mysql_query($sql);
-									$tmp_id_conteneur=mysql_insert_id();
+									if($insert_conteneur=mysql_query($sql)) {
+										$tmp_id_conteneur=mysql_insert_id();
+									}
+									else {
+										// Sinon, le devoir sera a la racine... mais on met un avertissement
+										$msg.="Le conteneur/boite pour l'enseignement ".$tmp_group["name"]." (n°".$tmp_group["id"].") en ".$tmp_group["classlist_string"]." n'a pas été créé.<br />";
+									}
 								}
 
 							}
@@ -200,17 +211,23 @@ if (isset($_POST['ok'])) {
 							$tmp_id_conteneur=$tmp_id_racine;
 						}
 
-						$sql="insert into cn_devoirs (id_racine,id_conteneur,nom_court) values ('$tmp_id_racine','$tmp_id_conteneur','nouveau');";
-						//echo "$sql<br />\n";
-						$creation_dev=mysql_query($sql);
-						$tmp_id_devoir = mysql_insert_id();
-
-						$tab_group[$cpt]=$tmp_group;
-						$tab_group[$cpt]['id_racine']=$tmp_id_racine;
-						$tab_group[$cpt]['id_conteneur']=$tmp_id_conteneur;
-						$tab_group[$cpt]['id_devoir']=$tmp_id_devoir;
-
-						$cpt++;
+						if((is_numeric($tmp_id_conteneur))&&(is_numeric($tmp_id_racine))) {
+							$sql="insert into cn_devoirs (id_racine,id_conteneur,nom_court) values ('$tmp_id_racine','$tmp_id_conteneur','nouveau');";
+							//echo "$sql<br />\n";
+							$creation_dev=mysql_query($sql);
+							$tmp_id_devoir = mysql_insert_id();
+	
+							$tab_group[$cpt]=$tmp_group;
+							$tab_group[$cpt]['id_racine']=$tmp_id_racine;
+							$tab_group[$cpt]['id_conteneur']=$tmp_id_conteneur;
+							$tab_group[$cpt]['id_devoir']=$tmp_id_devoir;
+	
+							$cpt++;
+						}
+						else {
+							$msg.="Le devoir n'a pas pu être créé pour le conteneur '$tmp_id_conteneur' de racine '$tmp_id_racine'.<br />";
+							$reg_ok="no";
+						}
 					}
 				}
 			}
@@ -371,36 +388,38 @@ if (isset($_POST['ok'])) {
     }
 	//====================================================
 
-    if (isset($_POST['display_parents'])) {
+	if (isset($_POST['display_parents'])) {
 		if($_POST['display_parents']==1) {
-            $display_parents=1;
+			$display_parents=1;
 		}
 		else {
-		        $display_parents=0;
+			$display_parents=0;
 		}
-    } else {
-        $display_parents=0;
-    }
+	} else {
+		$display_parents=0;
+	}
 
-    $reg = mysql_query("UPDATE cn_devoirs SET display_parents = '$display_parents' WHERE id = '$id_devoir'");
-    if (!$reg)  $reg_ok = "no";
+	$reg = mysql_query("UPDATE cn_devoirs SET display_parents = '$display_parents' WHERE id = '$id_devoir'");
+	if (!$reg) {$reg_ok = "no";}
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET display_parents='$display_parents' WHERE id='".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
 		$reg=mysql_query($sql);
 	}
 
-    if (isset($_POST['display_parents_app'])) {
-		    if($_POST['display_parents_app']==1)
-            $display_parents_app=1;
-		    else
-		        $display_parents_app=0;
-    } else {
-        $display_parents_app=0;
-    }
+	if (isset($_POST['display_parents_app'])) {
+		if($_POST['display_parents_app']==1) {
+			$display_parents_app=1;
+		}
+		else {
+			$display_parents_app=0;
+		}
+	} else {
+		$display_parents_app=0;
+	}
 
-    $reg = mysql_query("UPDATE cn_devoirs SET display_parents_app = '$display_parents_app' WHERE id = '$id_devoir'");
-    if (!$reg)  $reg_ok = "no";
+	$reg = mysql_query("UPDATE cn_devoirs SET display_parents_app = '$display_parents_app' WHERE id = '$id_devoir'");
+	if (!$reg) {$reg_ok = "no";}
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET display_parents_app='$display_parents_app' WHERE id='".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
@@ -445,12 +464,12 @@ if (isset($_POST['ok'])) {
     recherche_enfant($id_racine);
     //==========================================================
 
-    if ($reg_ok=='yes') {
-        if ($new=='yes') $msg = "Nouvel enregistrement réussi.";
-        else $msg="Les modifications ont été effectuées avec succès.";
-    } else {
-        $msg = "Il y a eu un problème lors de l'enregistrement";
-    }
+	if ($reg_ok=='yes') {
+		if ($new=='yes') {$msg.="Nouvel enregistrement réussi.";}
+		else {$msg.="Les modifications ont été effectuées avec succès.";}
+	} else {
+		$msg.="Il y a eu un problème lors de l'enregistrement";
+	}
 
     //==========================================================
     // Ajout d'un test:
