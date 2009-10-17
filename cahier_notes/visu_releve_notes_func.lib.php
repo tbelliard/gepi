@@ -225,6 +225,9 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		// Paramètre transmis depuis la page d'impression des bulletins
 		$un_seul_bull_par_famille,
 
+		// Pour afficher un message expliquant les deux relevés
+		$nb_releves,
+
 		//============================================
 		// Tableaux provenant de /lib/global.inc
 		$type_etablissement,

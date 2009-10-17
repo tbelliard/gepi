@@ -1704,6 +1704,8 @@ else {
 	$compteur_releve=0;
 	// Compteur pour les insertions de saut de page en HTML
 	$compteur_releve_bis=0;
+	// Initialisation pour récup global dans releve_html() et signalement ensuite s'il s'agit de deux relevés pour des parents séparés
+	$nb_releves=1;
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 		$id_classe=$tab_id_classe[$loop_classe];
 		$classe=get_class_from_id($id_classe);
@@ -1817,8 +1819,11 @@ else {
 	
 										// Génération du bulletin de l'élève
 										releve_html($tab_releve[$id_classe][$periode_num],$i,-1);
-		
-										echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les relevés</div></div>\n";
+
+										$chaine_info_deux_releves="";
+										if(($un_seul_bull_par_famille=="non")&&($nb_releves>1)) {$chaine_info_deux_releves=".<br /><span style='color:red'>Plusieurs relevés pour une même famille&nbsp: les adresses des deux responsables diffèrent.</span><br /><span style='color:red'>Si vous ne souhaitez pas de deuxième relevé, pensez à cocher la case 'Un seul relevé par famille'.</span>";}
+
+										echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les relevés".$chaine_info_deux_releves."</div></div>\n";
 	
 										flush();
 									}
