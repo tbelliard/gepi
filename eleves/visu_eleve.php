@@ -704,7 +704,8 @@ Patientez pendant l'extraction des données... merci.
 				if ($rep_d['nom_fichier'] == '/voir_abs' AND $rep_d['autorisation'] == 'V') {
 					$acces_absences = "y";
 				}
-				if ($rep_d['nom_fichier'] == '/voir_anna' AND $rep_d['autorisation'] == 'V') {
+				//if ($rep_d['nom_fichier'] == '/voir_anna' AND $rep_d['autorisation'] == 'V') {
+				if ($rep_d['nom_fichier'] == '/mod_annees_anterieures/popup_annee_anterieure.php' AND $rep_d['autorisation'] == 'V') {
 					$acces_anna = "y";
 				}
 

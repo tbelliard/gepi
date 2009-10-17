@@ -31,7 +31,8 @@ if ($resultat_session == 'c') {
     die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
-    die();};
+    die();
+}
 
 // INSERT INTO droits VALUES ('/mod_annees_anterieures/consultation_annee_anterieure.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'Consultation des données d années antérieures', '');
 if (!checkAccess()) {
@@ -438,6 +439,21 @@ elseif($_SESSION['statut']=="eleve"){
 			$lig_classe=mysql_fetch_object($res_classe);
 			$id_classe=$lig_classe->id;
 		}
+	}
+}
+elseif($_SESSION['statut']=="autre") {
+	$sql="SELECT 1=1 FROM droits_speciaux ds WHERE ds.id_statut='".$_SESSION['statut_special_id']."' AND ds.nom_fichier='/mod_annees_anterieures/consultation_annee_anterieure.php' AND ds.autorisation='V';";
+	$res_acces=mysql_query($sql);
+
+	if(mysql_num_rows($res_acces)>0){
+		$acces="y";
+
+		$sql_classes="SELECT DISTINCT id,classe FROM classes ORDER BY classe";
+	
+		if(isset($id_classe)){
+			$sql_ele="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom,e.prenom";
+		}
+
 	}
 }
 

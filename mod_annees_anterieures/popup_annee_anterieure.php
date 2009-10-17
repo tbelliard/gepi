@@ -227,6 +227,17 @@ elseif($_SESSION['statut']=="eleve"){
 		$acces="y";
 	}
 }
+elseif($_SESSION['statut']=="autre"){
+	//$sql="SELECT 1=1 FROM droits_speciaux ds, droits_utilisateurs du, droits_statut dst WHERE dst.id=ds.id_statut AND du.id_statut=dst.id AND du.login_user='".$_SESSION['login']."' AND ds.nom_fichier='/voir_anna' AND ds.autorisation='V';";
+	//$sql="SELECT 1=1 FROM droits_speciaux ds WHERE ds.id_statut='".$_SESSION['statut_special_id']."' AND ds.nom_fichier='/voir_anna' AND ds.autorisation='V';";
+
+	$sql="SELECT 1=1 FROM droits_speciaux ds WHERE ds.id_statut='".$_SESSION['statut_special_id']."' AND ds.nom_fichier='/mod_annees_anterieures/popup_annee_anterieure.php' AND ds.autorisation='V';";
+	$res_acces=mysql_query($sql);
+
+	if(mysql_num_rows($res_acces)>0){
+		$acces="y";
+	}
+}
 
 if($acces!="y"){
 	// A DEGAGER
@@ -234,6 +245,7 @@ if($acces!="y"){
 	$ajout_info="";
 	if(isset($logineleve)) {$ajout_info=" de $logineleve";}
 	tentative_intrusion(1, "Tentative illicite d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder à des données d'Années antérieures".$ajout_info.".");
+	//echo "DEBUG: Tentative illicite d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder à des données d'Années antérieures".$ajout_info.".";
 
 	header("Location: ../logout.php?auto=1");
 	die();

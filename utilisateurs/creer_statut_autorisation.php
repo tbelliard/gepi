@@ -48,7 +48,9 @@ $autorise[12]= array('/voir_ens');
 $autorise[13]= array('/voir_notes');
 $autorise[14]= array('/voir_bulle');
 $autorise[15]= array('/voir_abs');
-$autorise[16]= array('/voir_anna');
+//$autorise[16]= array('/voir_anna');
+//$autorise[16]= array('/mod_annees_anterieures/popup_annee_anterieure.php');
+$autorise[16]= array('/mod_annees_anterieures/consultation_annee_anterieure.php', '/mod_annees_anterieures/popup_annee_anterieure.php');
 $autorise[17]= array('/mod_trombinoscopes/trombinoscopes.php', '/mod_trombinoscopes/trombi_impr.php');
 $autorise[18]= array('/mod_discipline/index.php',
 					 '/mod_discipline/saisie_incident.php',
