@@ -546,5 +546,164 @@ function tab_lignes_adresse($ele_login) {
 	}
 }
 
+function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
+	$retour="";
+
+	if($date_debut!="") {
+		// Tester la validité de la date
+		// Si elle n'est pas valide... la vider
+
+	}
+
+	if($date_fin!="") {
+		// Tester la validité de la date
+		// Si elle n'est pas valide... la vider
+
+	}
+
+	$restriction_date="";
+	if(($date_debut!="")&&($date_fin!="")) {
+		$restriction_date.=" AND (si.date>='$date_debut' AND si.date<='$date_fin') ";
+	}
+	elseif($date_debut!="") {
+		$restriction_date.=" AND (si.date>='$date_debut') ";
+	}
+	elseif($date_fin!="") {
+		$restriction_date.=" AND (si.date<='$date_fin') ";
+	}
+
+	$sql="SELECT * FROM s_incidents si, s_protagonistes sp WHERE si.id_incident=sp.id_incident AND sp.login='$ele_login' $restriction_date ORDER BY si.date;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$retour="<p>Tableau des incidents concernant ".p_nom($ele_login)."</p>\n";
+		$retour.="<table class='boireaus' border='1' summary='Tableau des incidents concernant $ele_login'>\n";
+		$retour.="<tr>\n";
+		$retour.="<th>Num</th>\n";
+		$retour.="<th>Date</th>\n";
+		$retour.="<th>Qualité</th>\n";
+		$retour.="<th>Description</th>\n";
+		$retour.="<th>Suivi</th>\n";
+		$retour.="</tr>\n";
+		$alt_1=1;
+		while($lig=mysql_fetch_object($res)) {
+			$alt_1=$alt_1*(-1);
+			$retour.="<tr class='lig$alt_1'>\n";
+
+				$retour.="<td>".$lig->id_incident."</td>\n";
+
+				// Modifier l'accès Consultation d'incident... on ne voit actuellement que ses propres incidents
+				//$retour.="<td><a href='' target='_blank'>".$lig->id_incident."</a></td>\n";
+
+			$retour.="<td>".formate_date($lig->date)."</td>\n";
+			$retour.="<td>".$lig->qualite."</td>\n";
+			$retour.="<td>";
+			$retour.="<p style='font-weight: bold;'>".$lig->nature."</p>\n";
+			$retour.="<p>".$lig->description."</p>\n";
+			/*
+			$sql="SELECT * FROM s_protagonistes WHERE id_incident='$lig->id_incident' ORDER BY qualite;";
+			$res_prot=mysql_query($sql);
+			if(mysql_num_rows($res_prot)>0) {
+				$retour.="<p>";
+				while($lig_prot=mysql_fetch_object($res_prot)) {
+					$retour.=$lig_prot->login." (<i>".$lig_prot->qualite."</i>)<br />\n";
+				}
+				$retour.="</p>\n";
+			}
+			*/
+			$retour.="</td>\n";
+
+			$retour.="<td style='padding: 2px;'>";
+
+			$sql="SELECT * FROM s_protagonistes WHERE id_incident='$lig->id_incident' ORDER BY qualite;";
+			$res_prot=mysql_query($sql);
+			if(mysql_num_rows($res_prot)>0) {
+				$retour.="<table class='boireaus' border='1' summary='Protagonistes de l incident n°$lig->id_incident'>\n";
+
+				$alt_2=1;
+				while($lig_prot=mysql_fetch_object($res_prot)) {
+					$alt_2=$alt_2*(-1);
+					$retour.="<tr class='lig$alt_2'>\n";
+					$retour.="<td>".p_nom($lig_prot->login)."</td>\n";
+					$retour.="<td>".$lig_prot->qualite."</td>\n";
+
+					$retour.="<td style='padding: 3px;'>\n";
+					$alt=1;
+
+					$sql="SELECT * FROM s_traitement_incident sti, s_mesures sm WHERE sti.id_incident='$lig->id_incident' AND sti.login_ele='$lig_prot->login' AND sm.id=sti.id_mesure ORDER BY mesure;";
+					//echo "$sql<br />\n";
+					$res_suivi=mysql_query($sql);
+					if(mysql_num_rows($res_suivi)>0) {
+
+						//$retour.="<p style='text-align:left;'>Tableau des mesures pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident</p>\n";
+						$retour.="<p style='text-align:left; font-weight: bold;'>Mesures</p>\n";
+
+						$retour.="<table class='boireaus' border='1' summary='Tableau des mesures pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident'>\n";
+
+						$retour.="<tr>\n";
+						$retour.="<th>Nature</th>\n";
+						$retour.="<th>Mesure</th>\n";
+						$retour.="</tr>\n";
+
+						while($lig_suivi=mysql_fetch_object($res_suivi)) {
+							$alt=$alt*(-1);
+							$retour.="<tr class='lig$alt'>\n";
+							$retour.="<td>$lig_suivi->mesure</td>\n";
+							if($lig_suivi->type=='prise') {
+								$retour.="<td>prise par $lig_suivi->login_u</td>\n";
+							}
+							else {
+								$retour.="<td>demandée par $lig_suivi->login_u</td>\n";
+							}
+							$retour.="</tr>\n";
+						}
+						$retour.="</table>\n";
+
+					}
+
+					$sql="SELECT * FROM s_sanctions s WHERE s.id_incident='$lig->id_incident' AND s.login='$lig_prot->login' ORDER BY nature;";
+					//echo "$sql<br />\n";
+					$res_suivi=mysql_query($sql);
+					if(mysql_num_rows($res_suivi)>0) {
+
+						//$retour.="<p style='text-align:left;'>Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident</p>\n";
+						$retour.="<p style='text-align:left; font-weight: bold;'>Sanctions</p>\n";
+
+						$retour.="<table class='boireaus' border='1' summary='Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident'>\n";
+
+						$retour.="<tr>\n";
+						$retour.="<th>Nature</th>\n";
+						$retour.="<th>Description</th>\n";
+						$retour.="<th>Effectuée</th>\n";
+						$retour.="</tr>\n";
+
+						while($lig_suivi=mysql_fetch_object($res_suivi)) {
+							$alt=$alt*(-1);
+							$retour.="<tr class='lig$alt'>\n";
+							$retour.="<td>$lig_suivi->nature</td>\n";
+							$retour.="<td>$lig_suivi->description</td>\n";
+							$retour.="<td>$lig_suivi->effectuee</td>\n";
+							$retour.="</tr>\n";
+						}
+						$retour.="</table>\n";
+
+					}
+
+					$retour.="</td>\n";
+
+					$retour.="</tr>\n";
+				}
+				$retour.="</table>\n";
+			}
+
+			$retour.="</td>\n";
+		}
+		$retour.="</table>\n";
+	}
+	else {
+		$retour="<p>Aucun incident relevé.</p>\n";
+	}
+
+	return $retour;
+}
 
 ?>

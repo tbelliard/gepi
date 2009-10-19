@@ -333,6 +333,7 @@ Patientez pendant l'extraction des données... merci.
 	$tab_couleur['cdt']="linen";
 	$tab_couleur['anna']="blanchedalmond";
 	$tab_couleur['absences']="azure";
+	$tab_couleur['discipline']="salmon";
 
 	// On vérifie que l'élève existe
 	$sql="SELECT 1=1 FROM eleves WHERE login='$ele_login';";
@@ -388,6 +389,7 @@ Patientez pendant l'extraction des données... merci.
 		$acces_bulletins="n";
 		$acces_anna="n";
 		$acces_absences="n";
+		$acces_discipline="n";
 
 		$active_annees_anterieures=getSettingValue('active_annees_anterieures');
 
@@ -401,6 +403,7 @@ Patientez pendant l'extraction des données... merci.
 			if($active_annees_anterieures=='y') {
 				$acces_anna="y";
 			}
+			$acces_discipline="y";
 		}
 		elseif($_SESSION['statut']=='scolarite') {
 			$sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jec.id_classe=jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jec.login='".$ele_login."';";
@@ -416,6 +419,8 @@ Patientez pendant l'extraction des données... merci.
 			$acces_responsables="y";
 			$acces_enseignements="y";
 			$acces_absences="y";
+
+			$acces_discipline="y";
 
 			$GepiAccesReleveScol=getSettingValue('GepiAccesReleveScol');
 			if($GepiAccesReleveScol=="yes") {
@@ -454,6 +459,8 @@ Patientez pendant l'extraction des données... merci.
 			$acces_enseignements="y";
 			$acces_absences="y";
 
+			$acces_discipline="y";
+
 			$GepiAccesReleveCpe=getSettingValue('GepiAccesReleveCpe');
 			if($GepiAccesReleveCpe=="yes") {
 				$acces_releves="y";
@@ -484,6 +491,8 @@ Patientez pendant l'extraction des données... merci.
 			$acces_releves="n";
 			$acces_bulletins="n";
 			$acces_absences="n";
+
+			$acces_discipline="y";
 
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login='".$ele_login."' AND professeur='".$_SESSION['login']."';";
 			$test=mysql_query($sql);
@@ -680,7 +689,8 @@ Patientez pendant l'extraction des données... merci.
 					}
 				}
 			}
-		}elseif($_SESSION['statut'] == 'autre'){
+		}
+		elseif($_SESSION['statut'] == 'autre'){
 
 			// On récupère les droits de ce statuts pour savoir ce qu'on peut afficher
 			$sql_d = "SELECT * FROM droits_speciaux WHERE id_statut = '" . $_SESSION['statut_special_id'] . "'";
@@ -704,12 +714,13 @@ Patientez pendant l'extraction des données... merci.
 				if ($rep_d['nom_fichier'] == '/voir_abs' AND $rep_d['autorisation'] == 'V') {
 					$acces_absences = "y";
 				}
-				//if ($rep_d['nom_fichier'] == '/voir_anna' AND $rep_d['autorisation'] == 'V') {
-				if ($rep_d['nom_fichier'] == '/mod_annees_anterieures/popup_annee_anterieure.php' AND $rep_d['autorisation'] == 'V') {
+				if ($rep_d['nom_fichier'] == '/voir_anna' AND $rep_d['autorisation'] == 'V') {
 					$acces_anna = "y";
 				}
 
 			}
+
+			// A GERER $acces_discipline="y";
 
 		}
 
@@ -720,6 +731,14 @@ Patientez pendant l'extraction des données... merci.
 		}
 		else {
 			$acces_cdt="n";
+		}
+
+		$active_mod_discipline=getSettingValue("active_mod_discipline");
+		if($active_mod_discipline=='y') {
+			$acces_discipline="y";
+		}
+		else {
+			$acces_discipline="n";
 		}
 
 		//===========================================
@@ -1009,6 +1028,22 @@ Patientez pendant l'extraction des données... merci.
 			echo "background-color: ".$tab_couleur['absences']."; ";
 			echo "'>";
 			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=absences' onclick=\"affiche_onglet('absences');return false;\">Absences</a>";
+			echo "</div>\n";
+		}
+
+
+		// Onglet Discipline
+		if($acces_discipline=="y") {
+			echo "<div id='t_discipline' class='t_onglet' style='";
+			if($onglet=='discipline') {
+				echo "border-bottom-color: ".$tab_couleur['discipline']."; ";
+			}
+			else {
+				echo "border-bottom-color: black; ";
+			}
+			echo "background-color: ".$tab_couleur['discipline']."; ";
+			echo "'>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=discipline' onclick=\"affiche_onglet('discipline');return false;\">Discipline</a>";
 			echo "</div>\n";
 		}
 
@@ -1820,6 +1855,31 @@ Patientez pendant l'extraction des données... merci.
 
 			echo "</div>\n";
 		}
+
+
+		//===================================================
+
+		//========================
+		// Onglet DISCIPLINE
+		//========================
+
+		//echo "\$acces_discipline=$acces_discipline<br />";
+		//echo "\$onglet=$onglet<br />";
+
+		if($acces_discipline=="y") {
+			echo "<div id='discipline' class='onglet' style='";
+			if($onglet!="discipline") {echo " display:none;";}
+			echo "background-color: ".$tab_couleur['discipline']."; ";
+			echo "'>";
+			echo "<h2>Incidents \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+
+			echo $tab_ele['tab_mod_discipline'];
+
+			echo "</div>\n";
+		}
+		//===================================================
+
+
 		//===================================================
 
 		//========================
@@ -1952,7 +2012,8 @@ Patientez pendant l'extraction des données... merci.
 		//========================
 
 		// Liste des onglets de niveau 1
-		$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins','cdt','anna','absences');
+		//$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins','cdt','anna','absences');
+		$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins','cdt','anna','absences','discipline');
 		$chaine_tab_onglets="tab_onglets=new Array(";
 		for($i=0;$i<count($tab_onglets);$i++) {
 			if($i>0) {$chaine_tab_onglets.=", ";}

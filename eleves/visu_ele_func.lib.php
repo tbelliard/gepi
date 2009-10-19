@@ -694,10 +694,25 @@ function info_eleve($ele_login) {
 			$s++;
 		}
 
-	}else{
+	}
+	else {
 		// rien et on laisse
 	}
 
+	//$acces_mod_discipline="n";
+	//if($acces_mod_discipline=='y') {
+	//if($acces_discipline=='y') {
+		// Affecter auparavant la valeur de $acces_mod_discipline sur deux tests:
+		// - Module actif
+		// - Accès au module discipline précisé dans Gestion générale/Droits d'accès
+
+		require_once("../mod_discipline/sanctions_func_lib.php");
+
+		// tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin);
+		// $mode=all ou bien qualité: responsable, victime, témoin,...
+		$tab_ele['tab_mod_discipline']=tab_mod_discipline($ele_login,"all","","");
+
+	//}
 
 	return $tab_ele;
 }
