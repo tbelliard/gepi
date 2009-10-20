@@ -1032,19 +1032,27 @@ Patientez pendant l'extraction des données... merci.
 		}
 
 
-		// Onglet Discipline
-		if($acces_discipline=="y") {
-			echo "<div id='t_discipline' class='t_onglet' style='";
-			if($onglet=='discipline') {
-				echo "border-bottom-color: ".$tab_couleur['discipline']."; ";
+		$gepiVersion=getSettingValue('version');
+		$tmp_tab_gepiVersion=explode(".",$gepiVersion);
+		if(($gepiVersion=='trunk')||
+			($tmp_tab_gepiVersion[0]>1)||
+			(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]>5))||
+			(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]==5)&&($tmp_tab_gepiVersion[2]>2))||
+			(getSettingValue('discipline_experimental')=='y')) {
+			// Onglet Discipline
+			if($acces_discipline=="y") {
+				echo "<div id='t_discipline' class='t_onglet' style='";
+				if($onglet=='discipline') {
+					echo "border-bottom-color: ".$tab_couleur['discipline']."; ";
+				}
+				else {
+					echo "border-bottom-color: black; ";
+				}
+				echo "background-color: ".$tab_couleur['discipline']."; ";
+				echo "'>";
+				echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=discipline' onclick=\"affiche_onglet('discipline');return false;\">Discipline</a>";
+				echo "</div>\n";
 			}
-			else {
-				echo "border-bottom-color: black; ";
-			}
-			echo "background-color: ".$tab_couleur['discipline']."; ";
-			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=discipline' onclick=\"affiche_onglet('discipline');return false;\">Discipline</a>";
-			echo "</div>\n";
 		}
 
 		// Onglet Années antérieures
@@ -1600,6 +1608,9 @@ Patientez pendant l'extraction des données... merci.
 				//====================================
 
 				// Liste des infos à faire apparaitre sur le relevé de notes:
+				// Si des appréciations ont été saisies et que dans les paramètres du devoir il est précisé qu'elles doivent être visibles des parents, il n'y a pas de raison de ne pas les afficher
+				$tab_ele['rn_app']='y';
+				/*
 				$tab_ele['rn_app']='n';
 				$tab_ele['rn_nomdev']='y';
 				$tab_ele['rn_toutcoefdev']='y';
@@ -1609,6 +1620,7 @@ Patientez pendant l'extraction des données... merci.
 				$tab_ele['rn_sign_pp']='n';
 				$tab_ele['rn_sign_resp']='n';
 				$tab_ele['rn_formule']='';
+				*/
 
 				for($n_per=$periode_numero_1;$n_per<=$periode_numero_2;$n_per++) {
 					$periode1=$n_per;
@@ -1859,23 +1871,31 @@ Patientez pendant l'extraction des données... merci.
 
 		//===================================================
 
-		//========================
-		// Onglet DISCIPLINE
-		//========================
-
-		//echo "\$acces_discipline=$acces_discipline<br />";
-		//echo "\$onglet=$onglet<br />";
-
-		if($acces_discipline=="y") {
-			echo "<div id='discipline' class='onglet' style='";
-			if($onglet!="discipline") {echo " display:none;";}
-			echo "background-color: ".$tab_couleur['discipline']."; ";
-			echo "'>";
-			echo "<h2>Incidents \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-
-			echo $tab_ele['tab_mod_discipline'];
-
-			echo "</div>\n";
+		$gepiVersion=getSettingValue('version');
+		$tmp_tab_gepiVersion=explode(".",$gepiVersion);
+		if(($gepiVersion=='trunk')||
+			($tmp_tab_gepiVersion[0]>1)||
+			(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]>5))||
+			(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]==5)&&($tmp_tab_gepiVersion[2]>2))||
+			(getSettingValue('discipline_experimental')=='y')) {
+			//========================
+			// Onglet DISCIPLINE
+			//========================
+	
+			//echo "\$acces_discipline=$acces_discipline<br />";
+			//echo "\$onglet=$onglet<br />";
+	
+			if($acces_discipline=="y") {
+				echo "<div id='discipline' class='onglet' style='";
+				if($onglet!="discipline") {echo " display:none;";}
+				echo "background-color: ".$tab_couleur['discipline']."; ";
+				echo "'>";
+				echo "<h2>Incidents \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+	
+				echo $tab_ele['tab_mod_discipline'];
+	
+				echo "</div>\n";
+			}
 		}
 		//===================================================
 

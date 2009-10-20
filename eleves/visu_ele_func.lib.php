@@ -161,6 +161,20 @@ function info_eleve($ele_login) {
 			$tab_ele['classe'][$cpt]['classe']=$lig_clas->classe;
 			$tab_ele['classe'][$cpt]['nom_complet']=$lig_clas->nom_complet;
 
+
+			// On devrait mettre $tab_ele['classe'][$cpt]['rn_nomdev'], mais j'ai mis $tab_ele['rn_nomdev']
+			// C'est imparfait si l'élève n'est pas dans la même classe sur toutes les périodes , mais cela permet de garder le même code pour visu_releve_notes_func.lib.php et la présente page
+			//$tab_ele['rn_app']=$lig_clas->; // Ca ne correspond pas à un champ dans la table 'classes'
+			$tab_ele['rn_nomdev']=$lig_clas->rn_nomdev;
+			$tab_ele['rn_toutcoefdev']=$lig_clas->rn_toutcoefdev;
+			$tab_ele['rn_coefdev_si_diff']=$lig_clas->rn_coefdev_si_diff;
+			$tab_ele['rn_datedev']=$lig_clas->rn_datedev;
+			$tab_ele['rn_sign_chefetab']=$lig_clas->rn_sign_chefetab;
+			$tab_ele['rn_sign_pp']=$lig_clas->rn_sign_pp;
+			$tab_ele['rn_sign_resp']=$lig_clas->rn_sign_resp;
+			$tab_ele['rn_formule']=$lig_clas->rn_formule;
+
+
 			// Liste des périodes dans la classe
 			$sql="SELECT p.* FROM periodes p, j_eleves_classes jec WHERE jec.login='$ele_login' AND p.num_periode=jec.periode AND jec.id_classe='".$lig_clas->id."' ORDER BY p.num_periode;";
 			$res_per=mysql_query($sql);
@@ -702,6 +716,13 @@ function info_eleve($ele_login) {
 	//$acces_mod_discipline="n";
 	//if($acces_mod_discipline=='y') {
 	//if($acces_discipline=='y') {
+	$gepiVersion=getSettingValue('version');
+	$tmp_tab_gepiVersion=explode(".",$gepiVersion);
+	if(($gepiVersion=='trunk')||
+		($tmp_tab_gepiVersion[0]>1)||
+		(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]>5))||
+		(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]==5)&&($tmp_tab_gepiVersion[2]>2))||
+		(getSettingValue('discipline_experimental')=='y')) {
 		// Affecter auparavant la valeur de $acces_mod_discipline sur deux tests:
 		// - Module actif
 		// - Accès au module discipline précisé dans Gestion générale/Droits d'accès
@@ -711,8 +732,7 @@ function info_eleve($ele_login) {
 		// tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin);
 		// $mode=all ou bien qualité: responsable, victime, témoin,...
 		$tab_ele['tab_mod_discipline']=tab_mod_discipline($ele_login,"all","","");
-
-	//}
+	}
 
 	return $tab_ele;
 }

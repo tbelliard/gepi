@@ -572,7 +572,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 		$restriction_date.=" AND (si.date<='$date_fin') ";
 	}
 
-	$sql="SELECT * FROM s_incidents si, s_protagonistes sp WHERE si.id_incident=sp.id_incident AND sp.login='$ele_login' $restriction_date ORDER BY si.date;";
+	$sql="SELECT * FROM s_incidents si, s_protagonistes sp WHERE si.id_incident=sp.id_incident AND sp.login='$ele_login' $restriction_date ORDER BY si.date DESC;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		$retour="<p>Tableau des incidents concernant ".p_nom($ele_login)."</p>\n";
@@ -594,7 +594,13 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 				// Modifier l'accès Consultation d'incident... on ne voit actuellement que ses propres incidents
 				//$retour.="<td><a href='' target='_blank'>".$lig->id_incident."</a></td>\n";
 
-			$retour.="<td>".formate_date($lig->date)."</td>\n";
+			$retour.="<td>".formate_date($lig->date);
+
+			$retour.="<br />\n";
+
+			$retour.="<span style='font-size:small;'>".u_p_nom($lig->declarant)."</span>";
+
+			$retour.="</td>\n";
 			$retour.="<td>".$lig->qualite."</td>\n";
 			$retour.="<td>";
 			$retour.="<p style='font-weight: bold;'>".$lig->nature."</p>\n";
@@ -649,10 +655,10 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 							$retour.="<tr class='lig$alt'>\n";
 							$retour.="<td>$lig_suivi->mesure</td>\n";
 							if($lig_suivi->type=='prise') {
-								$retour.="<td>prise par $lig_suivi->login_u</td>\n";
+								$retour.="<td>prise par ".u_p_nom($lig_suivi->login_u)."</td>\n";
 							}
 							else {
-								$retour.="<td>demandée par $lig_suivi->login_u</td>\n";
+								$retour.="<td>demandée par ".u_p_nom($lig_suivi->login_u)."</td>\n";
 							}
 							$retour.="</tr>\n";
 						}
@@ -672,6 +678,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 
 						$retour.="<tr>\n";
 						$retour.="<th>Nature</th>\n";
+						$retour.="<th>Date</th>\n";
 						$retour.="<th>Description</th>\n";
 						$retour.="<th>Effectuée</th>\n";
 						$retour.="</tr>\n";
@@ -680,6 +687,43 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 							$alt=$alt*(-1);
 							$retour.="<tr class='lig$alt'>\n";
 							$retour.="<td>$lig_suivi->nature</td>\n";
+							$retour.="<td>";
+
+							if($lig_suivi->nature=='retenue') {
+								$sql="SELECT * FROM s_retenues WHERE id_sanction='$lig_suivi->id_sanction';";
+								$res_retenue=mysql_query($sql);
+								if(mysql_num_rows($res_retenue)>0) {
+									$lig_retenue=mysql_fetch_object($res_retenue);
+									$retour.=formate_date($lig_retenue->date)." (<i>".$lig_retenue->duree."H</i>)";
+								}
+								else {
+									$retour.="X";
+								}
+							}
+							elseif($lig_suivi->nature=='exclusion') {
+								$sql="SELECT * FROM s_exclusions WHERE id_sanction='$lig_suivi->id_sanction';";
+								$res_exclusion=mysql_query($sql);
+								if(mysql_num_rows($res_exclusion)>0) {
+									$lig_exclusion=mysql_fetch_object($res_exclusion);
+									$retour.="du ".formate_date($lig_exclusion->date_debut)." (<i>$lig_exclusion->heure_debut</i>) au ".formate_date($lig_exclusion->date_fin)." (<i>$lig_exclusion->heure_fin</i>)<br />$lig_exclusion->lieu";
+								}
+								else {
+									$retour.="X";
+								}
+							}
+							elseif($lig_suivi->nature=='travail') {
+								$sql="SELECT * FROM s_travail WHERE id_sanction='$lig_suivi->id_sanction';";
+								$res_travail=mysql_query($sql);
+								if(mysql_num_rows($res_travail)>0) {
+									$lig_travail=mysql_fetch_object($res_travail);
+									$retour.="pour le ".formate_date($lig_travail->date_retour)."  (<i>$lig_travail->heure_retour</i>)";
+								}
+								else {
+									$retour.="X";
+								}
+							}
+
+							$retour.="</td>\n";
 							$retour.="<td>$lig_suivi->description</td>\n";
 							$retour.="<td>$lig_suivi->effectuee</td>\n";
 							$retour.="</tr>\n";
