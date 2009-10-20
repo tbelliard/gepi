@@ -2883,6 +2883,13 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1){
   }
    // Cas des élèves
    if ($repertoire == "eleves") {
+     // En multisite, le login est préférable à l'ELENOET
+     if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y'){
+       // On récupère l'INE de cet élève
+       $sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
+       $query = mysql_query($sql);
+       $_elenoet_ou_login = mysql_result($query, 'login');
+     }
     	$photo="";
 	    if(file_exists($chemin."../photos/eleves/$_elenoet_ou_login.jpg")){
 		    $photo="$_elenoet_ou_login.jpg";

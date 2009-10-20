@@ -890,8 +890,9 @@ foreach ($liste_eleves as $eleve) {
 					$res_ele=mysql_query($sql);
 					if(mysql_num_rows($res_ele)>0) {
 						$lig_ele=mysql_fetch_object($res_ele);
-						if(file_exists("../photos/eleves/".$lig_ele->elenoet.".jpg")) {
-							$mess_note[$i][$k].=";affiche_photo('".$lig_ele->elenoet.".jpg','".addslashes(strtoupper($eleve_nom[$i])." ".ucfirst(strtolower($eleve_prenom[$i])))."')";
+            $_photo_eleve = (isset ($multisite) AND $multisite == 'y') ? $eleve_login[$i] : $lig_ele->elenoet;
+						if(file_exists("../photos/eleves/".$_photo_eleve.".jpg")) {
+							$mess_note[$i][$k].=";affiche_photo('".$_photo_eleve.".jpg','".addslashes(strtoupper($eleve_nom[$i])." ".ucfirst(strtolower($eleve_prenom[$i])))."')";
 						}
 						else {
 							$mess_note[$i][$k].=";document.getElementById('div_photo_eleve').innerHTML='';";

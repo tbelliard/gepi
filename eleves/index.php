@@ -1299,7 +1299,9 @@ if(isset($quelles_classes)) {
 			//echo "<td style='white-space: nowrap;'><input name='photo[$i]' type='file' />\n";
 			echo "<td style='white-space: nowrap; text-align:left;'><input name='photo[$i]' type='file' />\n";
 
-			echo "<input type='hidden' name='quiestce[$i]' value=\"$elenoet\" />\n";
+      // Dans le cas du multisite, on préfère le login pour afficher les photos
+      $nom_photo_test = (isset ($multisite) AND $multisite == 'y') ? $eleve_login : $elenoet;
+			echo "<input type='hidden' name='quiestce[$i]' value=\"$nom_photo_test\" />\n";
 
 			$photo=nom_photo($elenoet);
 			$temoin_photo="";
