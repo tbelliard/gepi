@@ -572,6 +572,10 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 		$restriction_date.=" AND (si.date<='$date_fin') ";
 	}
 
+	$tab_incident=array();
+	$tab_sanction=array();
+	$tab_mesure=array();
+
 	$sql="SELECT * FROM s_incidents si, s_protagonistes sp WHERE si.id_incident=sp.id_incident AND sp.login='$ele_login' $restriction_date ORDER BY si.date DESC;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
@@ -602,6 +606,17 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 
 			$retour.="</td>\n";
 			$retour.="<td>".$lig->qualite."</td>\n";
+			$temoin_eleve_responsable_de_l_incident='n';
+			if(strtolower(strtolower($lig->qualite)=='responsable')) {
+				if(isset($tab_incident[addslashes($lig->nature)])) {
+					$tab_incident[addslashes($lig->nature)]++;
+				}
+				else {
+					$tab_incident[addslashes($lig->nature)]=1;
+				}
+				$temoin_eleve_responsable_de_l_incident='y';
+			}
+
 			$retour.="<td>";
 			$retour.="<p style='font-weight: bold;'>".$lig->nature."</p>\n";
 			$retour.="<p>".$lig->description."</p>\n";
@@ -656,6 +671,15 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 							$retour.="<td>$lig_suivi->mesure</td>\n";
 							if($lig_suivi->type=='prise') {
 								$retour.="<td>prise par ".u_p_nom($lig_suivi->login_u)."</td>\n";
+
+								if($temoin_eleve_responsable_de_l_incident=='y') {
+									if(isset($tab_mesure[addslashes($lig_suivi->mesure)])) {
+										$tab_mesure[addslashes($lig_suivi->mesure)]++;
+									}
+									else {
+										$tab_mesure[addslashes($lig_suivi->mesure)]=1;
+									}
+								}
 							}
 							else {
 								$retour.="<td>demandée par ".u_p_nom($lig_suivi->login_u)."</td>\n";
@@ -688,6 +712,15 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 							$retour.="<tr class='lig$alt'>\n";
 							$retour.="<td>$lig_suivi->nature</td>\n";
 							$retour.="<td>";
+
+							if($temoin_eleve_responsable_de_l_incident=='y') {
+								if(isset($tab_sanction[addslashes($lig_suivi->nature)])) {
+									$tab_sanction[addslashes($lig_suivi->nature)]++;
+								}
+								else {
+									$tab_sanction[addslashes($lig_suivi->nature)]=1;
+								}
+							}
 
 							if($lig_suivi->nature=='retenue') {
 								$sql="SELECT * FROM s_retenues WHERE id_sanction='$lig_suivi->id_sanction';";
@@ -742,6 +775,63 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 			$retour.="</td>\n";
 		}
 		$retour.="</table>\n";
+
+		// Totaux
+		$retour.="<p style='font-weight: bold;'>Totaux des incidents/mesures/sanctions en tant que Responsable.</p>\n";
+
+		$retour.="<div style='float:left; width:33%;'>\n";
+		$retour.="<p style='font-weight: bold;'>Incidents</p>\n";
+		if(count($tab_incident)>0) {
+			$retour.="<table class='boireaus' border='1' summary='Totaux incidents'>\n";
+			$retour.="<tr><th>Nature</th><th>Total</th></tr>\n";
+			$alt=1;
+			foreach($tab_incident as $key => $value) {
+				$alt=$alt*(-1);
+				$retour.="<tr class='lig$alt'><td>".$key."</td><td>".$value."</td></tr>\n";
+			}
+			$retour.="</table>\n";
+		}
+		else {
+			$retour.="<p>Aucun incident relevé en qualité de responsable.</p>\n";
+		}
+		$retour.="</div>\n";
+
+		$retour.="<div style='float:left; width:33%;'>\n";
+		if(count($tab_mesure)>0) {
+			$retour.="<p style='font-weight: bold;'>Mesures prises</p>\n";
+			$retour.="<table class='boireaus' border='1' summary='Totaux mesures prises'>\n";
+			$retour.="<tr><th>Mesure</th><th>Total</th></tr>\n";
+			$alt=1;
+			foreach($tab_mesure as $key => $value) {
+				$alt=$alt*(-1);
+				$retour.="<tr class='lig$alt'><td>".$key."</td><td>".$value."</td></tr>\n";
+			}
+			$retour.="</table>\n";
+		}
+		else {
+			$retour.="<p>Aucune mesure prise en qualité de responsable.</p>\n";
+		}
+		$retour.="</div>\n";
+
+		$retour.="<div style='float:left; width:33%;'>\n";
+		$retour.="<p style='font-weight: bold;'>Sanctions</p>\n";
+		if(count($tab_sanction)>0) {
+			$retour.="<table class='boireaus' border='1' summary='Totaux sanctions'>\n";
+			$retour.="<tr><th>Nature</th><th>Total</th></tr>\n";
+			$alt=1;
+			foreach($tab_sanction as $key => $value) {
+				$alt=$alt*(-1);
+				$retour.="<tr class='lig$alt'><td>".$key."</td><td>".$value."</td></tr>\n";
+			}
+			$retour.="</table>\n";
+		}
+		else {
+			$retour.="<p>Aucune mesure prise en qualité de responsable.</p>\n";
+		}
+		$retour.="</div>\n";
+
+		$retour.="<div style='clear:both;'></div>\n";
+
 	}
 	else {
 		$retour="<p>Aucun incident relevé.</p>\n";

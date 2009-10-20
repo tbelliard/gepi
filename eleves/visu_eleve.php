@@ -718,6 +718,10 @@ Patientez pendant l'extraction des données... merci.
 					$acces_anna = "y";
 				}
 
+				if ($rep_d['nom_fichier'] == '/mod_discipline/saisie_incident.php' AND $rep_d['autorisation'] == 'V') {
+					$acces_discipline="y";
+				}
+
 			}
 
 			// A GERER $acces_discipline="y";
