@@ -516,10 +516,15 @@ elseif(!isset($choix_periode)) {
 
 	//=======================
 	// Pour éviter de refaire le choix des dates en changeant de classe, on utilise la SESSION...
-    $annee = strftime("%Y");
-    $mois = strftime("%m");
-    $jour = strftime("%d");
-	$display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : (isset($_SESSION['display_date_debut']) ? $_SESSION['display_date_debut'] : $jour."/".$mois."/".$annee);
+	$annee = strftime("%Y");
+	$mois = strftime("%m");
+	$jour = strftime("%d");
+
+	if($mois>7) {$date_debut_tmp="01/09/$annee";} else {$date_debut_tmp="01/09/".($annee-1);}
+
+	//$display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : (isset($_SESSION['display_date_debut']) ? $_SESSION['display_date_debut'] : $jour."/".$mois."/".$annee);
+	$display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : (isset($_SESSION['display_date_debut']) ? $_SESSION['display_date_debut'] : $date_debut_tmp);
+
 	$display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : (isset($_SESSION['display_date_fin']) ? $_SESSION['display_date_fin'] : $jour."/".$mois."/".$annee);
 	//=======================
 
