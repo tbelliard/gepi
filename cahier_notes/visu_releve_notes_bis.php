@@ -1044,6 +1044,7 @@ document.getElementById('div_param_releve').style.display='none';
 							r.pers_id=rp.pers_id AND
 							rp.login='".$_SESSION['login']."' AND
 							jec.id_classe='".$tab_id_classe[$i]."' AND
+							(r.resp_legal='1' OR r.resp_legal='2') AND
 							jec.login=e.login);";
 		}
 		//echo "$sql<br />";
