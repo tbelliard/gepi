@@ -12,4 +12,15 @@
  * Exemple : $result .= "<font color='gree'>Champ XXX ajouté avec succès</font>";
  */
 
+$result .= "&nbsp;->Extension à 255 caractères du champ 'SESSION_ID' de la table 'log'<br />";
+$query = mysql_query("ALTER TABLE `log` CHANGE `SESSION_ID` `SESSION_ID` VARCHAR( 255 ) NOT NULL;");
+if ($query) {
+        $result .= "<font color=\"green\">Ok !</font><br />";
+} else {
+        $result .= "<font color=\"red\">Erreur</font><br />";
+}
+
+//===================================================
+
+
 ?>
