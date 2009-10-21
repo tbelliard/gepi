@@ -80,6 +80,8 @@ function info_eleve($ele_login) {
 		$acces_cdt,
 		$acces_anna;
 
+	global $date_debut_disc, $date_fin_disc;
+
 	unset($tab_ele);
 	$tab_ele=array();
 
@@ -731,7 +733,8 @@ function info_eleve($ele_login) {
 
 		// tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin);
 		// $mode=all ou bien qualité: responsable, victime, témoin,...
-		$tab_ele['tab_mod_discipline']=tab_mod_discipline($ele_login,"all","","");
+
+		$tab_ele['tab_mod_discipline']=tab_mod_discipline($ele_login,"all",$date_debut_disc,$date_fin_disc);
 	}
 
 	return $tab_ele;

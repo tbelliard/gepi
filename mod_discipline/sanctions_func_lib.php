@@ -552,13 +552,53 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 	if($date_debut!="") {
 		// Tester la validité de la date
 		// Si elle n'est pas valide... la vider
+		if(my_ereg("/",$date_debut)) {
+			$tmp_tab_date=explode("/",$date_debut);
 
+			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
+				$date_debut="";
+			}
+			else {
+				$date_debut=$tmp_tab_date[2]."-".$tmp_tab_date[1]."-".$tmp_tab_date[0];
+			}
+		}
+		elseif(my_ereg("-",$date_debut)) {
+			$tmp_tab_date=explode("-",$date_debut);
+	
+			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[2],$tmp_tab_date[0])) {
+				$date_debut="";
+			}
+		}
+		else {
+			$date_debut="";
+		}
 	}
 
 	if($date_fin!="") {
 		// Tester la validité de la date
 		// Si elle n'est pas valide... la vider
+		// Tester la validité de la date
+		// Si elle n'est pas valide... la vider
+		if(my_ereg("/",$date_fin)) {
+			$tmp_tab_date=explode("/",$date_fin);
 
+			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
+				$date_fin="";
+			}
+			else {
+				$date_fin=$tmp_tab_date[2]."-".$tmp_tab_date[1]."-".$tmp_tab_date[0];
+			}
+		}
+		elseif(my_ereg("-",$date_fin)) {
+			$tmp_tab_date=explode("-",$date_fin);
+	
+			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[2],$tmp_tab_date[0])) {
+				$date_fin="";
+			}
+		}
+		else {
+			$date_fin="";
+		}
 	}
 
 	$restriction_date="";
@@ -577,6 +617,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 	$tab_mesure=array();
 
 	$sql="SELECT * FROM s_incidents si, s_protagonistes sp WHERE si.id_incident=sp.id_incident AND sp.login='$ele_login' $restriction_date ORDER BY si.date DESC;";
+	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		$retour="<p>Tableau des incidents concernant ".p_nom($ele_login)."</p>\n";
@@ -787,7 +828,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 			$alt=1;
 			foreach($tab_incident as $key => $value) {
 				$alt=$alt*(-1);
-				$retour.="<tr class='lig$alt'><td>".$key."</td><td>".$value."</td></tr>\n";
+				$retour.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td></tr>\n";
 			}
 			$retour.="</table>\n";
 		}
@@ -804,7 +845,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 			$alt=1;
 			foreach($tab_mesure as $key => $value) {
 				$alt=$alt*(-1);
-				$retour.="<tr class='lig$alt'><td>".$key."</td><td>".$value."</td></tr>\n";
+				$retour.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td></tr>\n";
 			}
 			$retour.="</table>\n";
 		}
@@ -821,7 +862,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 			$alt=1;
 			foreach($tab_sanction as $key => $value) {
 				$alt=$alt*(-1);
-				$retour.="<tr class='lig$alt'><td>".$key."</td><td>".$value."</td></tr>\n";
+				$retour.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td></tr>\n";
 			}
 			$retour.="</table>\n";
 		}

@@ -66,6 +66,18 @@ $onglet=isset($_POST['onglet']) ? $_POST['onglet'] : (isset($_GET['onglet']) ? $
 $onglet2=isset($_POST['onglet2']) ? $_POST['onglet2'] : (isset($_GET['onglet2']) ? $_GET['onglet2'] : NULL);
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
+//$date_debut_disc=isset($_POST['date_debut_disc']) ? $_POST['date_debut_disc'] : "";
+//$date_fin_disc=isset($_POST['date_fin_disc']) ? $_POST['date_fin_disc'] : "";
+
+$annee = strftime("%Y");
+$mois = strftime("%m");
+$jour = strftime("%d");
+
+if($mois>7) {$date_debut_tmp="01/09/$annee";} else {$date_debut_tmp="01/09/".($annee-1);}
+
+$date_debut_disc=isset($_POST['date_debut_disc']) ? $_POST['date_debut_disc'] : (isset($_SESSION['date_debut_disc']) ? $_SESSION['date_debut_disc'] : $date_debut_tmp);
+$date_fin_disc=isset($_POST['date_fin_disc']) ? $_POST['date_fin_disc'] : (isset($_SESSION['date_fin_disc']) ? $_SESSION['date_fin_disc'] : "$jour/$mois/$annee");
+
 // ===================== entete Gepi ======================================//
 require_once("../lib/header.inc");
 // ===================== fin entete =======================================//
@@ -1895,7 +1907,35 @@ Patientez pendant l'extraction des données... merci.
 				echo "background-color: ".$tab_couleur['discipline']."; ";
 				echo "'>";
 				echo "<h2>Incidents \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-	
+
+				//=======================
+				//Configuration du calendrier
+				include("../lib/calendrier/calendrier.class.php");
+				$cal1 = new Calendrier("form_date_disc", "date_debut_disc");
+				$cal2 = new Calendrier("form_date_disc", "date_fin_disc");
+				//=======================
+
+
+				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_date_disc' method='post' />\n";
+				echo "<p>Extraire les incidents entre le ";
+				//echo "<input type='text' name='date_debut_disc' value='' />\n";
+				echo "<input type='text' name = 'date_debut_disc' size='10' value = \"".$date_debut_disc."\" />\n";
+				echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+
+				echo "et le ";
+				//echo "<input type='text' name='date_fin_disc' value='' />\n";
+				echo "<input type='text' name = 'date_fin_disc' size='10' value = \"".$date_fin_disc."\" />\n";
+				echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+
+				echo "<input type='submit' name='restreindre_intervalle_dates' value='Valider' />\n";
+
+				echo "<input type='hidden' name='onglet' value='discipline' />\n";
+				echo "<input type='hidden' name='ele_login' value=\"$ele_login\" />\n";
+				//echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+
+				echo "</p>\n";
+				echo "</form>\n";
+
 				echo $tab_ele['tab_mod_discipline'];
 	
 				echo "</div>\n";
