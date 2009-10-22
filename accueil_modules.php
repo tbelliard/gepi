@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-$niveau_arbo = 0;
+$niveau_arbo=0;
 
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
    header("Location: ../logout.php?auto=1");
    die();
-};
+}
 
 $tab[0] = "administrateur";
 $tab[1] = "professeur";
@@ -68,8 +68,8 @@ function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_) {
     }
 }
 if (!checkAccess()) {
-    header("Location: ./logout.php?auto=1");
-die();
+	header("Location: ./logout.php?auto=1");
+	die();
 }
 $titre_page = "Accueil - Administration des modules";
 $racine_gepi = 'yes';
@@ -82,9 +82,9 @@ echo "<center>";
 $chemin = array(
 "/cahier_texte_admin/index.php",
 "/cahier_notes_admin/index.php");
-if ($force_abs) $chemin[] = "/mod_absences/admin/index.php";
+if ($force_abs) {$chemin[] = "/mod_absences/admin/index.php";}
 $chemin[] = "/edt_organisation/edt.php";
-if ($force_msj) $chemin[] = "/mod_miseajour/admin/index.php";
+if ($force_msj) {$chemin[] = "/mod_miseajour/admin/index.php";}
 $chemin[] = "/mod_trombinoscopes/trombinoscopes_admin.php";
 $chemin[] = "/mod_notanet/notanet_admin.php";
 $chemin[] = "/mod_inscription/inscription_admin.php";
@@ -93,9 +93,9 @@ $chemin[] = "/cahier_texte_admin/rss_cdt_admin.php";
 $titre = array(
 "Cahier de textes",
 "Carnets de notes");
-if ($force_abs) $titre[] = "Absences";
+if ($force_abs) {$titre[] = "Absences";}
 $titre[] = "Emploi du temps";
-if ($force_msj) $titre[] = "Mise à jour automatisée";
+if ($force_msj) {$titre[] = "Mise à jour automatisée";}
 $titre[] = "Trombinoscope";
 $titre[] = "Notanet/Fiches Brevet";
 $titre[] = "Inscription";
@@ -104,9 +104,9 @@ $titre[] = "<img src=\"images/icons/rss.png\" alt='rss' />&nbsp;-&nbsp;Flux rss"
 $expli = array(
 "Pour gérer les cahiers de texte, (configuration générale, ...)",
 "Pour gérer les carnets de notes (configuration générale, ...)");
-if ($force_abs) $expli[] = "Pour gérer le module absences";
+if ($force_abs) {$expli[] = "Pour gérer le module absences";}
 $expli[] = "Pour gérer l'ouverture de l'emploi du temps de Gepi.";
-if ($force_msj) $expli[] = "Pour gérer le module de mise à jour de GEPI";
+if ($force_msj) {$expli[] = "Pour gérer le module de mise à jour de GEPI";}
 $expli[] = "Pour gérer le module trombinoscope";
 $expli[] = "Pour gérer le module Notanet/Fiches Brevet";
 $expli[] = "Pour gérer simplement les inscriptions des ".$gepiSettings['denomination_professeurs']." par exemple à des stages ou bien des interventions dans les collèges";
