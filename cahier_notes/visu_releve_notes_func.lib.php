@@ -1708,17 +1708,22 @@ function releve_pdf($tab_rel,$i) {
 	
 			// BLOC ADRESSE ETABLISSEMENT
 			$pdf->SetXY($X_etab,$Y_etab);
-			$pdf->SetFont($caractere_utilse,'',14);
-			//$gepiSchoolName = getSettingValue('gepiSchoolName');
-			$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
-			$pdf->SetFont($caractere_utilse,'',10);
-			//$gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
-			$pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
-			//$gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
-			$pdf->Cell(90,5, $gepiSchoolAdress2,0,2,'');
-			//$gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
-			//$gepiSchoolCity = getSettingValue('gepiSchoolCity');
-			$pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
+			if(getSettingValue('releve_affich_nom_etab')!='n') {
+				$pdf->SetFont($caractere_utilse,'',14);
+				//$gepiSchoolName = getSettingValue('gepiSchoolName');
+				$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
+			}
+
+			if(getSettingValue('releve_affich_adr_etab')!='n') {
+				$pdf->SetFont($caractere_utilse,'',10);
+				//$gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
+				$pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
+				//$gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
+				$pdf->Cell(90,5, $gepiSchoolAdress2,0,2,'');
+				//$gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
+				//$gepiSchoolCity = getSettingValue('gepiSchoolCity');
+				$pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
+			}
 			//$gepiSchoolTel = getSettingValue('gepiSchoolTel');
 			//$gepiSchoolFax = getSettingValue('gepiSchoolFax');
 			/*
@@ -1924,6 +1929,10 @@ function releve_pdf($tab_rel,$i) {
 							$id_groupe_selectionne=$tab_rel['eleve'][$i]['groupe'][$m]['id_groupe'];
 							//MATIERE
 							$pdf->SetXY($X_cadre_note,$Y_cadre_note+$hauteur_utilise);
+							// On dessine le cadre
+							$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere, "", 'LRBT', 2, '');
+							// Et on revient aux coordonnées initiales pour écrire dans la cellule en plusieurs fois
+							$pdf->SetXY($X_cadre_note,$Y_cadre_note+$hauteur_utilise);
 		
 							// on affiche les nom des regroupements
 							/*
@@ -1964,6 +1973,7 @@ function releve_pdf($tab_rel,$i) {
 							$text_prof = '';
 		
 							//if ( $nb_releve_par_page === '2' ) {
+
 							if ($nb_releve_par_page==2) {
 								$nb_pass_count_2 = 0;
 								while ( !empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count_2]) )
@@ -1978,17 +1988,55 @@ function releve_pdf($tab_rel,$i) {
 								}
 								//$nb_prof_matiere = 1;
 							}
+
 							if ( $nb_prof_matiere != 1 ) {
 								$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
 							}
-		
-							while ($nb_prof_matiere > $nb_pass_count) {
-		
-								// calcul de la hauteur du caractère du prof
-								//if ( $nb_releve_par_page === '1' ) {
-								if ($nb_releve_par_page==1) {
-									$text_prof = affiche_utilisateur($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count],$id_classe);
+
+							if ($nb_releve_par_page==1) {
+								while ($nb_prof_matiere > $nb_pass_count) {
+			
+									// calcul de la hauteur du caractère du prof
+									//if ( $nb_releve_par_page === '1' ) {
+									if ($nb_releve_par_page==1) {
+										$text_prof = affiche_utilisateur($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count],$id_classe);
+									}
+
+									if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 9; }
+									elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 7; }
+									elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
+									$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_prof);
+									$val = $pdf->GetStringWidth($text_prof);
+									$taille_texte = ($largeur_cadre_matiere-0.6);
+									$grandeur_texte='test';
+									while($grandeur_texte!='ok') {
+										if($taille_texte<$val)
+										{
+											$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
+											$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_prof);
+											$val = $pdf->GetStringWidth($text_prof);
+										}
+										else {
+											$grandeur_texte='ok';
+										}
+									}
+									$grandeur_texte='test';
+									$pdf->SetX($X_cadre_note);
+									//$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, 'prof '.$text_prof, 'LRB', 2, '');
+			
+									if( empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count+1]) or $nb_prof_matiere === 1 ) {
+										$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LRB', 2, '');
+									}
+									if( !empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count+1]) and $nb_prof_matiere != 1 ) {
+										$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LR', 2, '');
+									}
+			
+									$nb_pass_count = $nb_pass_count + 1;
 								}
+							}
+							else {
+								// Deux relevés par page
+
 								if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 9; }
 								elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 7; }
 								elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
@@ -2010,17 +2058,17 @@ function releve_pdf($tab_rel,$i) {
 								$grandeur_texte='test';
 								$pdf->SetX($X_cadre_note);
 								//$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, 'prof '.$text_prof, 'LRB', 2, '');
-		
+								/*
 								if( empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count+1]) or $nb_prof_matiere === 1 ) {
 									$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LRB', 2, '');
 								}
 								if( !empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count+1]) and $nb_prof_matiere != 1 ) {
 									$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LR', 2, '');
 								}
-		
-								$nb_pass_count = $nb_pass_count + 1;
+								*/
+								$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LR', 2, '');
+
 							}
-		
 							//			if(isset($prof_groupe[$id_groupe_selectionne][0]) and $prof_groupe[$id_groupe_selectionne][0] != '') { $prof_1 = $prof_groupe[$id_groupe_selectionne][0]; } else { $prof_1 = ''; }
 							//			if(isset($prof_groupe[$id_groupe_selectionne][1]) and $prof_groupe[$id_groupe_selectionne][1] != '') { $prof_2 = $prof_groupe[$id_groupe_selectionne][1]; } else { $prof_2 = ''; }
 							//			if(isset($prof_groupe[$id_groupe_selectionne][2]) and $prof_groupe[$id_groupe_selectionne][2] != '') { $prof_3 = $prof_groupe[$id_groupe_selectionne][2]; } else { $prof_3 = ''; }
