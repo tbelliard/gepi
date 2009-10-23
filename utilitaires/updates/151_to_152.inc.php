@@ -524,7 +524,7 @@ lieu VARCHAR( 255 ) NOT NULL
 		$result .= "&nbsp;->Ajout d'un champ 'saisie_ects' à la table 'j_groupes_classes': ";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM j_groupes_classes LIKE 'saisie_ects'"));
 		if ($test1 == 0) {
-			$query = mysql_query("ALTER TABLE j_groupes_classes ADD saisie_ects BOOLEAN NOT NULL DEFAULT 0;");
+			$query = mysql_query("ALTER TABLE j_groupes_classes ADD saisie_ects TINYINT(1) NOT NULL DEFAULT 0;");
 			if ($query) {
 				$result .= "<font color=\"green\">Ok !</font><br />";
 			} else {
