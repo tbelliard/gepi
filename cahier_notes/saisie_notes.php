@@ -1185,11 +1185,11 @@ while ($i < $nb_dev) {
 		if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur[$i]!=getSettingValue("referentiel_note")) {
 			$data_pdf[0][] = "/".$note_sur[$i]." (".number_format($coef[$i],1, ',', ' ').")";
 			if ($ramener_sur_referentiel[$i] != 'V') {
-				echo "<font size=-2>Note sur $note_sur[$i]<br />";
+				echo "<font size=-2>Note sur ".$note_sur[$i]."<br />";
 			} else {
-				$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'y','y','n','n');
 				echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_$i','y',-150,20	);\" >";
-				echo "<font size=-2>Note sur $note_sur[$i]";
+				echo "<font size=-2>Note sur ".$note_sur[$i];
 				echo "</a><br />";
 			}
 		} else {
@@ -1222,9 +1222,9 @@ if ($id_devoir==0) {
 				if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur_s_dev[$i][$m]!=getSettingValue("referentiel_note")) {
 					$data_pdf[0][] = "/".$note_sur_s_dev[$i][$m]." (".number_format($coef_s_dev[$i][$m],1, ',', ' ').")";
 					if ($ramener_sur_referentiel[$i] != 'V') {
-						echo "<font size=-2>Note sur $note_sur_s_dev[$i][$m]<br />";
+						echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m]."<br />";
 					} else {
-						$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+						$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'y','y','n','n');
 						echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_s_dev_".$i."_".$m."','y',-150,20	);\" >";
 						echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m];
 						echo "</a><br />";
