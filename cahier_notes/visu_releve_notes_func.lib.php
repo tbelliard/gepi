@@ -1289,6 +1289,8 @@ function releve_pdf($tab_rel,$i) {
 		$tab_adr_ligne3[0]="";
 		$tab_adr_ligne4[0]="";
 		$tab_adr_ligne5[0]="";
+
+		$nb_releves=1;
 	}
 	else {
 		if (isset($tab_rel['eleve'][$i]['resp'][1])) {
