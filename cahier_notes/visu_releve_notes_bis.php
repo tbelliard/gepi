@@ -955,7 +955,8 @@ document.getElementById('div_param_releve').style.display='none';
 
 				echo "<br />\n";
 
-				echo "<a href=\"javascript:CocheColonneSelectEleves(".$i.",".$j.");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Cocher tous les élèves' /></a> / <a href=\"javascript:DecocheColonneSelectEleves(".$i.",".$j.");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Décocher tous les élèves' /></a>\n";
+				//echo "<a href=\"javascript:CocheColonneSelectEleves(".$i.",".$j.");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Cocher tous les élèves' /></a> / <a href=\"javascript:DecocheColonneSelectEleves(".$i.",".$j.");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Décocher tous les élèves' /></a>\n";
+				echo "<a href=\"javascript:CocheColonneSelectEleves(".$i.",".$j.");\"><img src='../images/enabled.png' width='15' height='15' alt='Cocher tous les élèves' /></a> / <a href=\"javascript:DecocheColonneSelectEleves(".$i.",".$j.");\"><img src='../images/disabled.png' width='15' height='15' alt='Décocher tous les élèves' /></a>\n";
 
 				echo "</th>\n";
 			}
@@ -977,7 +978,8 @@ document.getElementById('div_param_releve').style.display='none';
 			echo "<th>\n";
 			echo "Du $display_date_debut au $display_date_fin<br />\n";
 
-			echo "<a href=\"javascript:CocheColonneSelectEleves(".$i.",'".$periode."');changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Cocher tous les élèves' /></a> / <a href=\"javascript:DecocheColonneSelectEleves(".$i.",'".$periode."');changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Décocher tous les élèves' /></a>\n";
+			//echo "<a href=\"javascript:CocheColonneSelectEleves(".$i.",'".$periode."');changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Cocher tous les élèves' /></a> / <a href=\"javascript:DecocheColonneSelectEleves(".$i.",'".$periode."');changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Décocher tous les élèves' /></a>\n";
+			echo "<a href=\"javascript:CocheColonneSelectEleves(".$i.",'".$periode."');\"><img src='../images/enabled.png' width='15' height='15' alt='Cocher tous les élèves' /></a> / <a href=\"javascript:DecocheColonneSelectEleves(".$i.",'".$periode."');\"><img src='../images/disabled.png' width='15' height='15' alt='Décocher tous les élèves' /></a>\n";
 
 			echo "</th>\n";
 		}
@@ -1341,7 +1343,9 @@ function decocher_tous_eleves() {
 	document.forms['formulaire'].submit();
 }\n";
 	}
-	echo "</script>\n";
+	echo "// On coche tous les élèves par défaut:
+cocher_tous_eleves();
+</script>\n";
 
 	//echo "<p><a href='javascript:test_check_ele();return false;'>Test élève</a></p>\n";
 	//echo "<p><a href='#' onclick='test_check_ele();return false;'>Test élève</a></p>\n";
