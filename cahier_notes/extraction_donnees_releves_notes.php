@@ -391,7 +391,7 @@
 					// Si c'est un élève
 					elseif (($_SESSION['statut'] == 'eleve') AND
 							(getSettingValue("GepiAccesReleveEleve") == "yes") AND
-							$current_eleve_login[$i]==$_SESSION['login']) {
+							strtolower($current_eleve_login[$i])==strtolower($_SESSION['login'])) {
 						$autorisation_acces='y';
 					}
 					// Si c'est un responsable
@@ -405,6 +405,8 @@
 						$verif=mysql_query($sql);
 						if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
 					}
+					//echo "\$current_eleve_login[$i]=$current_eleve_login[$i]<br />\n";
+					//echo "\$_SESSION['login']=".$_SESSION['login']."<br />\n";
 					//echo "$sql<br />";
 					//$autorisation_acces='y';
 					//===============================================
