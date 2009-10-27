@@ -539,6 +539,8 @@ else {
 				}
 	*/
 
+	$tab_nouveaux_profs=array();
+
 	$alt=1;
 	for($k=0;$k<count($prof);$k++){
 		if(isset($prof[$k]["fonction"])){
@@ -780,19 +782,16 @@ else {
 						else{
 							$mess_mdp = "Mot de passe d'après la date de naissance";
 						}
-            $_auth_mode = 'gepi';
 						//echo "<tr><td colspan='4'>NUMEN: $affiche[5] $pwd</td></tr>";
 					} elseif ($_POST['sso']== "no") {
 						$pwd = md5(rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9));
 						$mess_mdp = $pwd;
-            $_auth_mode = 'gepi';
 						//echo "<tr><td colspan='4'>Choix 2: $pwd</td></tr>";
 			//                       $mess_mdp = "Inconnu (compte bloqué)";
 					} elseif ($_POST['sso'] == "yes") {
 						$pwd = '';
 						$mess_mdp = "aucun (sso)";
 						$changemdp = 'n';
-            $_auth_mode = 'sso';
 						//echo "<tr><td colspan='4'>sso</td></tr>";
 					}
 
@@ -800,10 +799,12 @@ else {
 
 					//$res = mysql_query("INSERT INTO utilisateurs VALUES ('".$login_prof."', '".$prof[$k]["nom_usage"]."', '".$premier_prenom."', '".$civilite."', '".$pwd."', '', 'professeur', 'actif', 'y', '')");
 					//$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y'";
-					$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."', auth_mode='".$_auth_mode."'";
+					$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."'";
 					$res = mysql_query($sql);
 					// Pour debug:
 					//echo "<tr><td colspan='4'>$sql</td></tr>";
+
+					$tab_nouveaux_profs[]="$login_prof|$mess_mdp";
 
 					if(!$res){$nb_reg_no++;}
 					$res = mysql_query("INSERT INTO tempo2 VALUES ('".$login_prof."', '"."P".$prof[$k]["id"]."')");
@@ -829,8 +830,21 @@ else {
 	//fclose($fp);
 	echo "</table>\n";
 
+
+	if((isset($tab_nouveaux_profs))&&(count($tab_nouveaux_profs)>0)) {
+		echo "<form action='../utilisateurs/impression_bienvenue.php' method='post' target='_blank'>\n";
+		echo "<p>Imprimer les fiches bienvenue pour les nouveaux professeurs&nbsp;: \n";
+		for($i=0;$i<count($tab_nouveaux_profs);$i++) {
+			$tmp_tab=explode('|',$tab_nouveaux_profs[$i]);
+			echo "<input type='hidden' name='user_login[]' value='$tmp_tab[0]' />\n";
+			echo "<input type='hidden' name='mot_de_passe[]' value='$tmp_tab[1]' />\n";
+		}
+		echo "<input type='submit' value='Imprimer' /></p>\n";
+		echo "</form>\n";
+	}
+
 	if ($nb_reg_no != 0) {
-		echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.\n";
+		echo "<p>Lors de l'enregistrement des données il y a eu <span style='color:red;'>$nb_reg_no erreurs</span>. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.\n";
 	}
 	else {
 		echo "<p>L'importation des professeurs dans la base GEPI a été effectuée avec succès !</p>\n";
