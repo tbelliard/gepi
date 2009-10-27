@@ -284,7 +284,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 	            "ct.date_ct = '$jour')");
 
         } elseif ($selected_eleve) {
-	        $sql="SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	        $sql="SELECT DISTINCT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
@@ -407,7 +407,7 @@ echo "<div class=\"centre_cont_texte\">\n";
         // On regarde pour chaque jour, s'il y a des devoirs dans à faire
           if ($selected_eleve) {
 // On détermine la période active, pour ne pas avoir de duplication des entrées
-	         $appel_devoirs_cahier_texte = mysql_query("SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	         $appel_devoirs_cahier_texte = mysql_query("SELECT DISTINCT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
