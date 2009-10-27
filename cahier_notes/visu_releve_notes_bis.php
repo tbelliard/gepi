@@ -852,6 +852,9 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 			echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' /></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de relevé de notes pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
 
 			echo "<tr><td valign='top'><input type='checkbox' name='deux_releves_par_page' id='deux_releves_par_page' value='oui' /></td><td><label for='deux_releves_par_page' style='cursor: pointer;'>Produire deux relevés par page (<i>PDF</i>).</label></td></tr>\n";
+
+			echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' /></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les relevés par établissement d'origine.</label></td></tr>\n";
+
 			echo "</table>\n";
 		}
 		else {
@@ -1608,6 +1611,8 @@ else {
 	$un_seul_bull_par_famille=isset($_POST['un_seul_bull_par_famille']) ? $_POST['un_seul_bull_par_famille'] : "non";
 	$deux_releves_par_page=isset($_POST['deux_releves_par_page']) ? $_POST['deux_releves_par_page'] : "non";
 
+	$tri_par_etab_orig=isset($_POST['tri_par_etab_orig']) ? $_POST['tri_par_etab_orig'] : "n";
+
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 		$deux_releves_par_page="non";
 		$un_seul_bull_par_famille="oui";
@@ -1771,8 +1776,21 @@ else {
 
 				//$compteur_releve=0;
 				if(isset($tab_releve[$id_classe][$periode_num]['eleve'])) {
+
+					unset($tmp_tab);
+					unset($rg);
+					//$tri_par_etab_orig="y";
+					if($tri_par_etab_orig=='y') {
+						for($k=0;$k<count($tab_releve[$id_classe][$periode_num]['eleve']);$k++) {
+							$rg[$k]=$k;
+							$tmp_tab[$k]=$tab_releve[$id_classe][$periode_num]['eleve'][$k]['etab_id'];
+						}
+						array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
+					}
+
 					for($i=0;$i<count($tab_releve[$id_classe][$periode_num]['eleve']);$i++) {
-	
+						if($tri_par_etab_orig=='n') {$rg[$i]=$i;}
+
 						if(isset($tab_releve[$id_classe][$periode_num]['selection_eleves'])) {
 							//if (in_array($tab_releve[$id_classe][$periode_num]['eleve'][$i]['login'],$tab_releve[$id_classe][$periode_num]['selection_eleves'])) {
 	
@@ -1819,7 +1837,7 @@ else {
 								if($autorisation_acces=='y') {
 									if($mode_bulletin!="pdf") {
 										echo "<script type='text/javascript'>
-	document.getElementById('td_ele').innerHTML='".$tab_releve[$id_classe][$periode_num]['eleve'][$i]['login']."';
+	document.getElementById('td_ele').innerHTML='".$tab_releve[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']."';
 </script>\n";
 										flush();
 	
@@ -1828,12 +1846,12 @@ else {
 										if($compteur_releve_bis>0) {echo "<p class='saut'>&nbsp;</p>\n";}
 	
 										// Génération du bulletin de l'élève
-										releve_html($tab_releve[$id_classe][$periode_num],$i,-1);
+										releve_html($tab_releve[$id_classe][$periode_num],$rg[$i],-1);
 
 										$chaine_info_deux_releves="";
 										if(($un_seul_bull_par_famille=="non")&&($nb_releves>1)) {$chaine_info_deux_releves=".<br /><span style='color:red'>Plusieurs relevés pour une même famille&nbsp: les adresses des deux responsables diffèrent.</span><br /><span style='color:red'>Si vous ne souhaitez pas de deuxième relevé, pensez à cocher la case 'Un seul relevé par famille'.</span>";}
 
-										echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les relevés".$chaine_info_deux_releves."</div></div>\n";
+										echo "<div class='espacement_bulletins'><div align='center'>Espacement (<i>non imprimé</i>) entre les relevés".$chaine_info_deux_releves."</div></div>\n";
 	
 										flush();
 									}
@@ -1841,7 +1859,7 @@ else {
 										// Relevé PDF
 	
 										// Génération du relevé PDF de l'élève
-										releve_pdf($tab_releve[$id_classe][$periode_num],$i);
+										releve_pdf($tab_releve[$id_classe][$periode_num],$rg[$i]);
 	
 									}
 	
