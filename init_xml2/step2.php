@@ -161,6 +161,12 @@ $liste_tables_del = array(
 "cn_devoirs",
 "cn_notes_conteneurs",
 "cn_notes_devoirs",
+/*
+"ct_entry",
+"ct_documents",
+"ct_devoirs_entry",
+"ct_private_entry"
+*/
 //"setting"
 );
 
@@ -206,6 +212,14 @@ if (isset($is_posted)) {
 	$sql="DELETE FROM utilisateurs WHERE statut='eleve';";
 	$del=mysql_query($sql);
 
+	// Liste des comptes scolarité pour associer aux nouvelles classes
+	$sql="SELECT login FROM utilisateurs WHERE statut='scolarite';";
+	$res_scol=mysql_query($sql);
+	$tab_user_scol=array();
+	if(mysql_num_rows($res_scol)>0) {
+		while($lig_scol=mysql_fetch_object($res_scol)) {$tab_user_scol[]=$lig_scol->login;}
+	}
+
     // On va enregistrer la liste des classes, ainsi que les périodes qui leur seront attribuées
     //$call_data = mysql_query("SELECT distinct(DIVCOD) classe FROM temp_gep_import WHERE DIVCOD!='' ORDER BY DIVCOD");
     $call_data = mysql_query("SELECT distinct(DIVCOD) classe FROM temp_gep_import2 WHERE DIVCOD!='' ORDER BY DIVCOD");
@@ -221,6 +235,19 @@ if (isset($is_posted)) {
             //$reg_classe = mysql_query("INSERT INTO classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".traitement_magic_quotes(corriger_caracteres($reg_formule[$classe]))."', format_nom='np'");
             //$reg_classe = mysql_query("INSERT INTO classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".html_entity_decode(traitement_magic_quotes(corriger_caracteres($reg_formule[$classe])))."', format_nom='np'");
             $reg_classe = mysql_query("INSERT INTO classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".html_entity_decode(traitement_magic_quotes(corriger_caracteres($reg_formule[$classe])))."', format_nom='cni'");
+
+			$id_classe=mysql_insert_id();
+			for($loop=0;$loop<count($tab_user_scol);$loop++) {
+				// TEST déjà assoc... cela peut arriver si des scories subsistent...
+				$sql="SELECT 1=1 FROM j_scol_classes WHERE login='$tab_user_scol[$loop]' AND id_classe='$id_classe';";
+				$test_j_scol_class=mysql_query($sql);
+				if(mysql_num_rows($test_j_scol_class)==0) {
+					//$tab_user_scol
+					$sql="INSERT INTO j_scol_classes SET login='$tab_user_scol[$loop]', id_classe='$id_classe';";
+					$insert_j_scol_class=mysql_query($sql);
+				}
+			}
+
         } else {
             //$reg_classe = mysql_query("UPDATE classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".traitement_magic_quotes(corriger_caracteres($reg_formule[$classe]))."', format_nom='np' WHERE classe='$classe'");
             //$reg_classe = mysql_query("UPDATE classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".html_entity_decode(traitement_magic_quotes(corriger_caracteres($reg_formule[$classe])))."', format_nom='np' WHERE classe='$classe'");
