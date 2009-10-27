@@ -644,18 +644,20 @@
 							$tab_ele['etab_ville'] = @mysql_result($data_etab, 0, "ville");
 
 							if ($tab_ele['etab_niveau']!='') {
-							foreach ($type_etablissement as $type_etab => $nom_etablissement) {
-								if ($tab_ele['etab_niveau'] == $type_etab) {
-									$tab_ele['etab_niveau_nom']=$nom_etablissement;
+								foreach ($type_etablissement as $type_etab => $nom_etablissement) {
+									if ($tab_ele['etab_niveau'] == $type_etab) {
+										$tab_ele['etab_niveau_nom']=$nom_etablissement;
+									}
 								}
-							}
-							if ($tab_ele['etab_cp']==0) {
-								$tab_ele['etab_cp']='';
-							}
-							if ($tab_ele['etab_type']=='aucun')
-								$tab_ele['etab_type']='';
-							else
-								$tab_ele['etab_type']= $type_etablissement2[$tab_ele['etab_type']][$tab_ele['etab_niveau']];
+								if ($tab_ele['etab_cp']==0) {
+									$tab_ele['etab_cp']='';
+								}
+								if ($tab_ele['etab_type']=='aucun') {
+									$tab_ele['etab_type']='';
+								}
+								else {
+									$tab_ele['etab_type']= $type_etablissement2[$tab_ele['etab_type']][$tab_ele['etab_niveau']];
+								}
 							}
 						}
 
