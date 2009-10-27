@@ -538,6 +538,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui' /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
 		*/
 		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui' /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer, dans le calcul des moyennes générales, les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
+
+		echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' /></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les relevés par établissement d'origine.</label></td></tr>\n";
 	//}
 	echo "</table>\n";
 
@@ -852,6 +854,8 @@ else {
 	$coefficients_a_1=isset($_POST['coefficients_a_1']) ? $_POST['coefficients_a_1'] : "non";
 
 	$use_cell_ajustee=isset($_POST['use_cell_ajustee']) ? $_POST['use_cell_ajustee'] : "y";
+
+	$tri_par_etab_orig=isset($_POST['tri_par_etab_orig']) ? $_POST['tri_par_etab_orig'] : "n";
 
 	//========================================
 	/*
@@ -2609,14 +2613,28 @@ else {
 				echo "</div>\n";
 			}
 
+
+			unset($tmp_tab);
+			unset($rg);
+			//$tri_par_etab_orig="y";
+			if($tri_par_etab_orig=='y') {
+				for($k=0;$k<count($tab_bulletin[$id_classe][$periode_num]['eleve']);$k++) {
+					$rg[$k]=$k;
+					$tmp_tab[$k]=$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id'];
+				}
+				array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
+			}
+
+
 			//$compteur=0;
 			//for($i=0;$i<count($tab_bulletin[$id_classe][$periode_num]['eleve']);$i++) {
 			for($i=0;$i<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$i++) {
+				if($tri_par_etab_orig=='n') {$rg[$i]=$i;}
 
 				if(isset($tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
-					if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'])) {
+					if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login'])) {
 
-						if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
+						if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
 
 							// ++++++++++++++++++++++++++++++++++++++
 							// ++++++++++++++++++++++++++++++++++++++
@@ -2632,14 +2650,14 @@ else {
 
 							if($mode_bulletin=="html") {
 								echo "<script type='text/javascript'>
-	document.getElementById('td_ele').innerHTML='".$tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login']."';
+	document.getElementById('td_ele').innerHTML='".$tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']."';
 </script>\n";
 							}
 
 
 							if($mode_bulletin=="html") {
-								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
-								decompte_debug($motif,"$motif élève $i avant");
+								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
+								decompte_debug($motif,"$motif élève $rg[$i] avant");
 								flush();
 
 								// Saut de page si jamais ce n'est pas le premier bulletin
@@ -2647,14 +2665,14 @@ else {
 
 								// Génération du bulletin de l'élève
 								//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i);
-								bulletin_html($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+								bulletin_html($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
 
-								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
-								decompte_debug($motif,"$motif élève $i après");
+								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
+								decompte_debug($motif,"$motif élève $rg[$i] après");
 								flush();
 							}
 							else {
-								bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+								bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
 							}
 
 
