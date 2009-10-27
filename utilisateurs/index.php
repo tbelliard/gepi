@@ -294,6 +294,8 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
     echo " | Réinitialiser mots de passe : " .
     		"<a href=\"reset_passwords.php?mode=html\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\" target='_blank'>HTML</a>" .
     		" - <a href=\"reset_passwords.php?mode=csv\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera un fichier CSV contenant les informations nécessaires à un traitement automatisé.')\" target='_blank'>CSV</a>";
+
+	echo " | <a href='impression_bienvenue.php?mode=personnels'>Fiches bienvenue</a>";
 }
 ?>
  | <a href="tab_profs_matieres.php">Affecter les matières aux professeurs</a>

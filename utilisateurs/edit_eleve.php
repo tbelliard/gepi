@@ -300,6 +300,7 @@ if(mysql_num_rows($quels_eleves)==0){
 	require("../lib/footer.inc.php");
 	die;
 }
+echo " | <a href='impression_bienvenue.php?mode=eleve'>Fiches bienvenue</a>";
 echo "</p>\n";
 
 //echo "<p><b>Actions par lot</b> :";

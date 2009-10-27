@@ -294,6 +294,7 @@ aff_time();
 		require("../lib/footer.inc.php");
 		die;
 	}
+	echo " | <a href='impression_bienvenue.php?mode=responsable'>Fiches bienvenue</a>";
 	echo "</p>\n";
 
 	aff_time();

@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 04/04/2005
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -36,50 +36,471 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+if(!isset($user_login)) {
+	$tab_mode=array('personnels', 'responsable', 'eleve');
+	if((!isset($mode))||(!in_array($mode,$tab_mode))) {
+		//$mode="personnels";
+		$mode="";
+		$url_retour_index_utilisateurs="index.php";
+	}
+	elseif($mode=='responsable') {
+		$url_retour_index_utilisateurs="edit_responsable.php";
+	}
+	elseif($mode=='eleve') {
+		$url_retour_index_utilisateurs="edit_eleve.php";
+	}
+	else {
+		$url_retour_index_utilisateurs="index.php?mode=$mode";
+	}
+
+	if($mode=="personnels") {
+		$tab_statut=array('professeur', 'scolarite', 'cpe', 'autre');
+		if(!isset($user_statut)) {
+			// Imprimer les fiches bienvenue pour une ou des catégories... ou pour une sélection d'utilisateurs, ou pour une classe...
+
+			//**************** EN-TETE *****************************
+			$titre_page = "Gestion des utilisateurs | Impression fiches utilisateurs";
+			require_once("../lib/header.inc");
+			//**************** FIN EN-TETE *****************
+	
+			echo "<p class='bold'>";
+			echo "<a href='$url_retour_index_utilisateurs'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+			echo " | <a href='".$_SERVER['PHP_SELF']."'> Fiches bienvenue</a>";
+			echo "</p>\n";
+	
+			echo "<form action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
+			echo "<p>Imprimer les fiches bienvenue pour une ou des catégories</p>\n";
+			for($i=0;$i<count($tab_statut);$i++) {
+				echo "<input type='checkbox' name='user_statut[]' id='user_statut_$tab_statut[$i]' value='$tab_statut[$i]' /><label for='user_statut_$tab_statut[$i]'> $tab_statut[$i]</label><br />\n";
+			}
+			echo "<input type='hidden' name='mode' value='$mode' />\n";
+			echo "<input type='submit' value='Valider' /></p>\n";
+			echo "</form>\n";
+		
+			require("../lib/footer.inc.php");
+			die();
+		}
+	
+		$user_login=array();
+		for($i=0;$i<count($user_statut);$i++) {
+			if(in_array($user_statut[$i],$tab_statut)) {
+				$sql="SELECT login FROM utilisateurs WHERE statut='$user_statut[$i]' AND etat='actif' ORDER BY nom, prenom;";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					while($lig=mysql_fetch_object($res)) {$user_login[]=$lig->login;}
+				}
+			}
+		}
+	}
+	elseif($mode=="responsable") {
+		if(!isset($id_classe)) {
+			//**************** EN-TETE *****************************
+			$titre_page = "Gestion des utilisateurs | Impression fiches responsables";
+			require_once("../lib/header.inc");
+			//**************** FIN EN-TETE *****************
+	
+			echo "<p class='bold'>";
+			echo "<a href='$url_retour_index_utilisateurs'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+			echo " | <a href='".$_SERVER['PHP_SELF']."'> Fiches bienvenue</a>";
+			echo "</p>\n";
+
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,
+													j_eleves_classes jec,
+													eleves e,
+													responsables2 r,
+													resp_pers rp,
+													utilisateurs u
+										WHERE jec.login=e.login AND
+												e.ele_id=r.ele_id AND
+												r.pers_id=rp.pers_id AND
+												rp.login=u.login AND
+												jec.id_classe=c.id
+										ORDER BY classe;";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)==0) {
+				echo "<p>Aucune compte responsable n'a encore été créé.</p>\n";
+			}
+			else {
+				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
+				echo "<p>Choisissez les classes pour lesquelles générer les fiches bienvenue&nbsp;:<br />\n";
+				while ($lig=mysql_fetch_object($res)) {
+					echo "<input type='checkbox' name='id_classe[]' id='id_classe_$lig->id' value='$lig->id'><label for='id_classe_$lig->id'> ".$lig->classe."</label><br />\n";
+				}
+				echo "<input type='submit' value='Valider' /></p>\n";
+				echo "<input type='hidden' name='mode' value='$mode' />\n";
+				echo "</form>\n";
+			}
+
+			require("../lib/footer.inc.php");
+			die();
+		}
+		else {
+			$user_login=array();
+
+			if(is_array($id_classe)) {
+				for($i=0;$i<count($id_classe);$i++) {
+					if(is_numeric($id_classe[$i])) {
+						$sql="SELECT u.login FROM j_eleves_classes jec,
+																eleves e,
+																responsables2 r,
+																resp_pers rp,
+																utilisateurs u
+													WHERE jec.login=e.login AND
+															e.ele_id=r.ele_id AND
+															r.pers_id=rp.pers_id AND
+															rp.login=u.login AND
+															jec.id_classe='$id_classe[$i]'
+													ORDER BY u.nom, u.prenom;";
+						$res=mysql_query($sql);
+						if(mysql_num_rows($res)>0) {
+							while ($lig=mysql_fetch_object($res)) {
+								if(!in_array($lig->login,$user_login)) {
+									$user_login[]=$lig->login;
+								}
+							}
+						}
+					}
+				}
+			}
+			elseif(is_numeric($id_classe)) {
+				$sql="SELECT u.login FROM j_eleves_classes jec,
+														eleves e,
+														responsables2 r,
+														resp_pers rp,
+														utilisateurs u
+											WHERE jec.login=e.login AND
+													e.ele_id=r.ele_id AND
+													r.pers_id=rp.pers_id AND
+													rp.login=u.login AND
+													jec.id_classe='$id_classe[$i]'
+											ORDER BY u.nom, u.prenom;";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					while ($lig=mysql_fetch_object($res)) {
+						if(!in_array($lig->login,$user_login)) {
+							$user_login[]=$lig->login;
+						}
+					}
+				}
+			}
+			else {
+				$msg="L'identifiant de classe est erroné: '$id_classe'.";
+			}
+		}
+	}
+	elseif($mode=="eleve") {
+		if(!isset($id_classe)) {
+			//**************** EN-TETE *****************************
+			$titre_page = "Gestion des utilisateurs | Impression fiches élèves";
+			require_once("../lib/header.inc");
+			//**************** FIN EN-TETE *****************
+	
+			echo "<p class='bold'>";
+			echo "<a href='$url_retour_index_utilisateurs'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+			echo " | <a href='".$_SERVER['PHP_SELF']."'> Fiches bienvenue</a>";
+			echo "</p>\n";
+
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec, utilisateurs u
+									WHERE jec.login=u.login AND
+											jec.id_classe=c.id
+									ORDER BY classe;";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)==0) {
+				echo "<p>Aucune compte élève n'a encore été créé.</p>\n";
+			}
+			else {
+				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
+				echo "<p>Choisissez les classes pour lesquelles générer les fiches bienvenue&nbsp;:<br />\n";
+				while ($lig=mysql_fetch_object($res)) {
+					echo "<input type='checkbox' name='id_classe[]' id='id_classe_$lig->id' value='$lig->id'><label for='id_classe_$lig->id'> ".$lig->classe."</label><br />\n";
+				}
+				echo "<input type='submit' value='Valider' /></p>\n";
+				echo "<input type='hidden' name='mode' value='$mode' />\n";
+				echo "</form>\n";
+			}
+
+			require("../lib/footer.inc.php");
+			die();
+		}
+		else {
+			$user_login=array();
+
+			if(is_array($id_classe)) {
+				for($i=0;$i<count($id_classe);$i++) {
+					if(is_numeric($id_classe[$i])) {
+						$sql="SELECT DISTINCT u.login FROM j_eleves_classes jec, utilisateurs u
+										WHERE jec.login=u.login AND
+												jec.id_classe='$id_classe[$i]'
+										ORDER BY u.nom, u.prenom;";
+						$res=mysql_query($sql);
+						if(mysql_num_rows($res)>0) {
+							while ($lig=mysql_fetch_object($res)) {
+								if(!in_array($lig->login,$user_login)) {
+									$user_login[]=$lig->login;
+								}
+							}
+						}
+					}
+				}
+			}
+			elseif(is_numeric($id_classe)) {
+				$sql="SELECT DISTINCT u.login FROM j_eleves_classes jec, utilisateurs u
+								WHERE jec.login=u.login AND
+										jec.id_classe='$id_classe'
+								ORDER BY u.nom, u.prenom;";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					while ($lig=mysql_fetch_object($res)) {
+						if(!in_array($lig->login,$user_login)) {
+							$user_login[]=$lig->login;
+						}
+					}
+				}
+			}
+			else {
+				$msg="L'identifiant de classe est erroné: '$id_classe'.";
+			}
+		}
+	}
+	else {
+		//**************** EN-TETE *****************************
+		$titre_page = "Gestion des utilisateurs | Impression fiches utilisateurs";
+		require_once("../lib/header.inc");
+		//**************** FIN EN-TETE *****************
+
+		echo "<p class='bold'>";
+		echo "<a href='$url_retour_index_utilisateurs'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour index utilisateurs</a>";
+		echo "</p>\n";
+
+		echo "<p>Fiches bienvenue&nbsp;:</p>";
+		echo "<ul>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=personnels'>personnels</a></li>";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=responsable'>responsables</a></li>";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=eleve'>élèves</a></li>";
+		echo "</ul>\n";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	if(count($user_login)==0) {
+		//**************** EN-TETE *****************************
+		$titre_page = "Gestion des utilisateurs | Impression fiches utilisateurs";
+		require_once("../lib/header.inc");
+		//**************** FIN EN-TETE *****************
+		echo "<p class='bold'>";
+		echo "<a href='$url_retour_index_utilisateurs'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour index utilisateurs</a>";
+		echo " | <a href='".$_SERVER['PHP_SELF']."'> Fiches bienvenue</a>";
+		echo "</p>\n";
+
+		echo "<p>Aucun utilisateur (<i>$mode</i>) n'a été sélectionné.</p>\n";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+}
+
 //**************** EN-TETE *****************************
-//$titre_page = "Gestion des utilisateurs | Impression nouveaux utilisateurs";
+//$titre_page = "Gestion des utilisateurs | Impression fiches utilisateurs";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-$call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE login='$user_login'");
+//function fiche_bienvenue($user_login, $mot_de_passe=NULL,$user_statut='personnels') {
+function fiche_bienvenue($user_login, $mot_de_passe=NULL) {
 
-$user_login = mysql_result($call_user_info, "0", "login");
-$user_nom = mysql_result($call_user_info, "0", "nom");
-$user_prenom = mysql_result($call_user_info, "0", "prenom");
-$user_statut = mysql_result($call_user_info, "0", "statut");
-$user_email = mysql_result($call_user_info, "0", "email");
-$call_matieres = mysql_query("SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
-$nb_mat = mysql_num_rows($call_matieres);
-$k = 0;
-while ($k < $nb_mat) {
-    $user_matiere[$k] = mysql_result($call_matieres, $k, "id_matiere");
-    $k++;
+	$call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE login='$user_login'");
+	
+	//$user_login = mysql_result($call_user_info, "0", "login");
+	$user_nom = mysql_result($call_user_info, "0", "nom");
+	$user_prenom = mysql_result($call_user_info, "0", "prenom");
+	$user_statut = mysql_result($call_user_info, "0", "statut");
+	$user_email = mysql_result($call_user_info, "0", "email");
+
+	if($user_statut=='professeur') {
+		$call_matieres = mysql_query("SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
+		$nb_mat = mysql_num_rows($call_matieres);
+		$k = 0;
+		while ($k < $nb_mat) {
+			$user_matiere[$k] = mysql_result($call_matieres, $k, "id_matiere");
+			$k++;
+		}
+	}
+
+	/*
+	$call_data = mysql_query("SELECT * FROM classes");
+	$nombre_classes = mysql_num_rows($call_data);
+	$i = 0;
+	while ($i < $nombre_classes){
+		$classe[$i] = mysql_result($call_data, $i, "classe");
+		$i++;
+	}
+	*/
+
+	if($user_statut=='responsable') {
+		$impression = getSettingValue("ImpressionFicheParent");
+	}
+	elseif($user_statut=='eleve') {
+		$impression = getSettingValue("ImpressionFicheEleve");
+	}
+	else {
+		$impression = getSettingValue("Impression");
+	}
+
+	echo "<table border='0' summary='Destinataire fiche bienvenue $user_login'>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "A l'attention de&nbsp;: \n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<span class=\"bold\">$user_prenom $user_nom</span>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "Nom de login&nbsp;: \n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<span class = \"bold\">$user_login</span>";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	if (isset($mot_de_passe)) {
+		$mot_de_passe = urldecode($mot_de_passe);
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "Mot de passe&nbsp;: \n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<span class = \"bold\">$mot_de_passe</span>";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+	
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "Adresse E-mail&nbsp;: ";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<span class = \"bold\">$user_email</span>";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	if($user_statut=='eleve') {
+		$tab_tmp_info_classes=get_noms_classes_from_ele_login($user_login);
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "Élève de&nbsp;: \n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<span class = \"bold\">".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</span>";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+	elseif($user_statut=='responsable') {
+		$tab_tmp_ele=get_enfants_from_resp_login($user_login);
+		$chaine_enfants="";
+		if(count($tab_tmp_ele)>0) {
+			$chaine_enfants=$tab_tmp_ele[1];
+			$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[0]);
+			if(count($tab_tmp_info_classes)>0) {
+				$chaine_enfants.=" (<em>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</em>)";
+			}
+			for($i=3;$i<count($tab_tmp_ele);$i+=2) {
+				$chaine_enfants.=", ".$tab_tmp_ele[$i];
+				unset($tab_tmp_info_classes);
+				$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[$i-1]);
+				if(count($tab_tmp_info_classes)>0) {
+					$chaine_enfants.=" (<em>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</em>)";
+				}
+			}
+		}
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "Responsable de&nbsp;: \n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<span class = \"bold\">$chaine_enfants</span>";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	echo "</table>\n";
+
+	echo $impression;
+	if($impression=='') {
+		echo "<div class='info_fiche_bienvenue'><div align='center'>Information (<i>non imprimée</i>) : La fiche bienvenue pour <b
+	>$user_statut</b> n'est pas renseignée.<br />Vous pouvez paramétrer les fiches bienvenue à la page suivante&nbsp;: <a href='../gestion/modify_impression.php?fiche=";
+		if($user_statut=='responsable') {echo 'responsables';}
+		elseif($user_statut=='eleve') {echo 'eleves';}
+		else {echo 'personnels';}
+		echo "' target='_blank'>Clic</a></div></div>\n";
+
+	}
 }
-$call_data = mysql_query("SELECT * FROM classes");
-$nombre_classes = mysql_num_rows($call_data);
-$i = 0;
-while ($i < $nombre_classes){
-    $classe[$i] = mysql_result($call_data, $i, "classe");
-    $i++;
+
+if(is_array($user_login)) {
+	if((isset($mode))&&($mode=='responsable')) {
+		$nb_fiches=getSettingValue("ImpressionNombreParent");
+	}
+	elseif((isset($mode))&&($mode=='eleve')) {
+		$nb_fiches=getSettingValue("ImpressionNombreEleve");
+	}
+	else {
+		$nb_fiches=getSettingValue("ImpressionNombre");
+	}
+
+	$saut=1;
+	for($i=0;$i<count($user_login);$i++) {
+		if(isset($mot_de_passe[$i])) {
+			fiche_bienvenue($user_login[$i], $mot_de_passe[$i]);
+		}
+		else {
+			fiche_bienvenue($user_login[$i]);
+		}
+
+		if ($saut==$nb_fiches) {
+			echo "<p class='saut'>&nbsp;</p>\n";
+			$saut=1;
+		}
+		else {
+			$saut++;
+		}
+	}
+}
+else {
+	if(isset($mot_de_passe)) {
+		fiche_bienvenue($user_login, $mot_de_passe);
+	}
+	else {
+		fiche_bienvenue($user_login);
+	}
 }
 
-$impression = getSettingValue("Impression");
+echo "<style type='text/css'>
+@media screen{
+	.info_fiche_bienvenue {
+			width: 100%;
+			height: 50px;
+			border:1px solid red;
+			background-color: white;
+			text-align: center;
+	}
+}
 
+@media print{
+	.info_fiche_bienvenue {
+		display:none;
+	}
+}
+</style>\n";
+
+require("../lib/footer.inc.php");
 ?>
-<p>A l'attention de  <?php echo "<span class = \"bold\">$user_prenom $user_nom</span>"; ?>
-<br />Nom de login : <?php echo "<span class = \"bold\">$user_login</span>"; ?>
-<?php if (isset($mot_de_passe)) {
-    $mot_de_passe = urldecode($mot_de_passe);
-    echo "<br />Mot de passe : <span class = \"bold\">$mot_de_passe</span>";
-}
-?>
-<br />Adresse E-mail : <?php echo "<span class = \"bold\">$user_email</span>"; ?>
-</p>
-<?php echo $impression;?>
-<?php require("../lib/footer.inc.php");?>
