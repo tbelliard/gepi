@@ -677,8 +677,25 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesGestElevesProf !";
 	}
 
+	if(getSettingValue('active_mod_discipline')=='y') {
+		if (isset($_POST['visuDiscProfClasses'])) {
+			$temp = "yes";
+		} else {
+			$temp = "no";
+		}
+		if (!saveSetting("visuDiscProfClasses", $temp)) {
+			$msg .= "Erreur lors de l'enregistrement de visuDiscProfClasses !";
+		}
 
-
+		if (isset($_POST['visuDiscProfGroupes'])) {
+			$temp = "yes";
+		} else {
+			$temp = "no";
+		}
+		if (!saveSetting("visuDiscProfGroupes", $temp)) {
+			$msg .= "Erreur lors de l'enregistrement de visuDiscProfGroupes !";
+		}
+	}
 
 
 	$tab_droits_ele_trombi=array('GepiAccesEleTrombiTousEleves',
@@ -821,6 +838,24 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 				<td style='border: 0px;'><label for='GepiAccesModifMaPhotoProfesseur' style='cursor: pointer;'> a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'
 				</label></td>
 			</tr>
+
+			<?php
+				if(getSettingValue('active_mod_discipline')=='y') {
+			?>
+				<tr valign='top'>
+					<td style='border: 0px;'><input type="checkbox" name="visuDiscProfClasses" id="visuDiscProfClasses" value="yes" <?php if (getSettingValue("visuDiscProfClasses")=='yes') echo "checked"; ?> onchange='changement();' /></td>
+					<td style='border: 0px;'><label for='visuDiscProfClasses' style='cursor: pointer;'> peut visualiser dans le module Discipline les incidents concernant les élèves de ses classes.</label><br />
+					(<span style='font-size: small;'>Par défaut un professeur ne voit que les incidents qu'il a déclaré ou le concernant directement comme protagoniste</span>)</td>
+				</tr>
+
+				<tr valign='top'>
+					<td style='border: 0px;'><input type="checkbox" name="visuDiscProfGroupes" id="visuDiscProfGroupes" value="yes" <?php if (getSettingValue("visuDiscProfGroupes")=='yes') echo "checked"; ?> onchange='changement();' /></td>
+					<td style='border: 0px;'><label for='visuDiscProfGroupes' style='cursor: pointer;'> peut visualiser dans le module Discipline les incidents concernant les élèves de ses enseignements.</label><br />
+					(<span class='small'>Par défaut un professeur ne voit que les incidents qu'il a déclaré ou le concernant directement comme protagoniste</span>)</td>
+				</tr>
+			<?php
+				}
+			?>
 
 			</table>
 		</td>

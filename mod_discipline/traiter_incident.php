@@ -445,19 +445,63 @@ if(!isset($id_incident)) {
 	$sql2.=")";
 
 	//if($_SESSION['statut']=='professeur') {
-	if((($_SESSION['statut']=='professeur'))&&($declarant_incident=="")) {
-		// Pour qu'un professeur principal puisse consulter les incidents mettant en cause ses élèves
-		$ajout2_sql=" UNION (SELECT DISTINCT si.* FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE sp.id_incident=si.id_incident AND sp.login=jep.login AND jep.professeur='".$_SESSION['login']."'";
+	if($_SESSION['statut']=='professeur') {
+		if($declarant_incident=="") {
+			if(getSettingValue('visuDiscProfClasses')=='yes') {
+				$ajout2_sql=" UNION (SELECT DISTINCT si.* FROM s_incidents si, 
+																s_protagonistes sp, 
+																j_eleves_classes jec,
+																j_groupes_classes jgc,
+																j_groupes_professeurs jgp
+											WHERE sp.id_incident=si.id_incident AND 
+													sp.login=jec.login AND
+													jgp.id_groupe=jgc.id_groupe AND
+													jgc.id_classe=jec.id_classe AND
+													jgp.login='".$_SESSION['login']."'";
+		
+				$ajout2_sql.=$ajout_sql;
+		
+				$sql.=$ajout2_sql;
+				$sql2.=$ajout2_sql;
+				if($incidents_clos!="y") {$sql.=" AND si.etat!='clos'";}
+		
+				$sql.=")";
+				$sql2.=")";
+			}
+			elseif(getSettingValue('visuDiscProfGroupes')=='yes') {
+				$ajout2_sql=" UNION (SELECT DISTINCT si.* FROM s_incidents si, 
+																s_protagonistes sp, 
+																j_eleves_groupes jeg, 
+																j_groupes_professeurs jgp 
+											WHERE sp.id_incident=si.id_incident AND 
+													sp.login=jeg.login AND 
+													jgp.id_groupe=jeg.id_groupe AND
+													jgp.login='".$_SESSION['login']."'";
+		
+				$ajout2_sql.=$ajout_sql;
+		
+				$sql.=$ajout2_sql;
+				$sql2.=$ajout2_sql;
+				if($incidents_clos!="y") {$sql.=" AND si.etat!='clos'";}
+		
+				$sql.=")";
+				$sql2.=")";
+			}
 
-		$ajout2_sql.=$ajout_sql;
-
-		$sql.=$ajout2_sql;
-		$sql2.=$ajout2_sql;
-		if($incidents_clos!="y") {$sql.=" AND si.etat!='clos'";}
-
-		$sql.=")";
-		$sql2.=")";
+			// Pour qu'un professeur principal puisse consulter les incidents mettant en cause ses élèves
+			$ajout2_sql=" UNION (SELECT DISTINCT si.* FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE sp.id_incident=si.id_incident AND sp.login=jep.login AND jep.professeur='".$_SESSION['login']."'";
+	
+			$ajout2_sql.=$ajout_sql;
+	
+			$sql.=$ajout2_sql;
+			$sql2.=$ajout2_sql;
+			if($incidents_clos!="y") {$sql.=" AND si.etat!='clos'";}
+	
+			$sql.=")";
+			$sql2.=")";
+		}
 	}
+
 
 	//$sql.=" ORDER BY si.date DESC, si.heure DESC;";
 	//$sql2.=" ORDER BY si.date DESC, si.heure DESC;";
