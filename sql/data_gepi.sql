@@ -814,3 +814,4 @@ INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.or
 INSERT INTO droits VALUES('/saisie/export_cmnt_type_prof.php','F','V','F','F','F','F','F','F', 'Export appréciations-types pour les profs','');
 INSERT INTO setting VALUES ('note_autre_que_sur_referentiel', 'F');
 INSERT INTO setting VALUES ('referentiel_note', '20');
+INSERT INTO droits VALUES ( '/mod_discipline/disc_stat.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Statistiques', '');

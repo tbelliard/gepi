@@ -1,26 +1,26 @@
 <?php
 
 /*
- * $Id$
- *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- *
- * This file is part of GEPI.
- *
- * GEPI is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * GEPI is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GEPI; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+* $Id$
+*
+* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 // SQL : INSERT INTO droits VALUES ( '/mod_discipline/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Index', '');
 // maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Index', '');;";
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 	die();
 }
 
@@ -273,35 +273,35 @@ $phrase_commentaire="";
 
 //Début de la table configuration
 if($_SESSION['statut']=='administrateur') {
-  echo "<table class='menu' summary='Discipline'>\n";
-  echo "<tr>\n";
-  echo "<th colspan='2'><img src='../images/icons/control-center.png' alt='Configuration du module discipline' class='link'/> - Configuration du module</th>\n";
-  echo "</tr>\n";
-  
-  echo "<tr>\n";
-  echo "<td width='30%'><a href='../mod_discipline/definir_lieux.php'>Définition des lieux</a>";
-  echo "</td>\n";
-  echo "<td>Définir la liste des lieux des incidents.</td>\n";
-  echo "</tr>\n";
-
-  echo "<tr>\n";
-  echo "<td width='30%'><a href='../mod_discipline/definir_roles.php'>Définition des rôles</a>";
-  echo "</td>\n";
-  echo "<td>Définir la liste des rôles des protagonistes.</td>\n";
-  echo "</tr>\n";
-
-  echo "<tr>\n";
-  echo "<td width='30%'><a href='../mod_discipline/definir_mesures.php'>Définition des mesures</a>";
-  echo "</td>\n";
-  echo "<td>Définir la liste des mesures prises comme suite à un incident.</td>\n";
-  echo "</tr>\n";
-
-  echo "<tr>\n";
-  echo "<td width='30%'><a href='../mod_discipline/definir_autres_sanctions.php'>Définition des types de sanctions</a>";
-  echo "</td>\n";
-  echo "<td>Définir la liste des sanctions pouvant être prises comme suite à un incident.</td>\n";
-  echo "</tr>\n";
-  echo "</table>\n";
+	echo "<table class='menu' summary='Discipline'>\n";
+	echo "<tr>\n";
+	echo "<th colspan='2'><img src='../images/icons/control-center.png' alt='Configuration du module discipline' class='link'/> - Configuration du module</th>\n";
+	echo "</tr>\n";
+	
+	echo "<tr>\n";
+	echo "<td width='30%'><a href='../mod_discipline/definir_lieux.php'>Définition des lieux</a>";
+	echo "</td>\n";
+	echo "<td>Définir la liste des lieux des incidents.</td>\n";
+	echo "</tr>\n";
+	
+	echo "<tr>\n";
+	echo "<td width='30%'><a href='../mod_discipline/definir_roles.php'>Définition des rôles</a>";
+	echo "</td>\n";
+	echo "<td>Définir la liste des rôles des protagonistes.</td>\n";
+	echo "</tr>\n";
+	
+	echo "<tr>\n";
+	echo "<td width='30%'><a href='../mod_discipline/definir_mesures.php'>Définition des mesures</a>";
+	echo "</td>\n";
+	echo "<td>Définir la liste des mesures prises comme suite à un incident.</td>\n";
+	echo "</tr>\n";
+	
+	echo "<tr>\n";
+	echo "<td width='30%'><a href='../mod_discipline/definir_autres_sanctions.php'>Définition des types de sanctions</a>";
+	echo "</td>\n";
+	echo "<td>Définir la liste des sanctions pouvant être prises comme suite à un incident.</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 }
 //fin de la table confiuration
 
@@ -322,19 +322,19 @@ if(($_SESSION['statut']=='administrateur')||
 ($_SESSION['statut']=='professeur') ||
 ($_SESSION['statut']=='autre')) {
 
-  $temoin = false;
-  $sql="SELECT 1=1 FROM s_incidents si
-  LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
-  WHERE sp.id_incident IS NULL;";
-  $test=mysql_query($sql);
-  if(mysql_num_rows($test)>0) {
-    $temoin = true;
-    echo "<tr>\n";
-    echo "<td width='30%'><a href='../mod_discipline/incidents_sans_protagonistes.php'>Incidents sans protagonistes</a>";
-    echo "</td>\n";
-    echo "<td>Liste des incidents signalés sans protagonistes.</td>\n";
-    echo "</tr>\n";
-  }
+	$temoin = false;
+	$sql="SELECT 1=1 FROM s_incidents si
+	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
+	WHERE sp.id_incident IS NULL;";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		$temoin = true;
+		echo "<tr>\n";
+		echo "<td width='30%'><a href='../mod_discipline/incidents_sans_protagonistes.php'>Incidents sans protagonistes</a>";
+		echo "</td>\n";
+		echo "<td>Liste des incidents signalés sans protagonistes.</td>\n";
+		echo "</tr>\n";
+	}
 }
 
 
@@ -342,19 +342,19 @@ $sql="SELECT 1=1 FROM s_incidents si WHERE si.declarant='".$_SESSION['login']."'
 $test=mysql_query($sql);
 $nb_incidents_incomplets=mysql_num_rows($test);
 if($nb_incidents_incomplets>0) {
-  echo "<tr>\n";
-  echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php?declarant_incident=".$_SESSION['login']."&amp;nature_incident='>Incidents incomplets</a>";
-  echo "</td>\n";
-  echo "<td style='color:red;'>Vous avez signalé ";
-  if($nb_incidents_incomplets==1) {
-		echo "un incident";
-	}
-	else {
-		echo "$nb_incidents_incomplets incidents";
-	}
-  echo " sans préciser la nature de l'incident.<br />Pour faciliter la gestion des incidents, il faudrait compléter.\n";
-  echo "</td>\n";
-  echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php?declarant_incident=".$_SESSION['login']."&amp;nature_incident='>Incidents incomplets</a>";
+	echo "</td>\n";
+	echo "<td style='color:red;'>Vous avez signalé ";
+	if($nb_incidents_incomplets==1) {
+			echo "un incident";
+		}
+		else {
+			echo "$nb_incidents_incomplets incidents";
+		}
+	echo " sans préciser la nature de l'incident.<br />Pour faciliter la gestion des incidents, il faudrait compléter.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 }
 
 echo "</table>\n";
@@ -363,21 +363,21 @@ echo "</table>\n";
 
 //Table Traiter
 if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($_SESSION['statut']=='scolarite')) {
-  echo "<table class='menu' summary='Discipline'>\n";
-  echo "<tr>\n";
-  echo "<th colspan='2'><img src='../images/icons/saisie.png' alt='Traiter un incident' class='link'/> - Traiter un incident</th>\n";
-  echo "</tr>\n";
-  echo "<tr>\n";
-  if ($temoin) {
-    echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Traiter les suites d'un incident</a> (<i>avec protagonistes</i>)";
-  } else {
-    echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Traiter les suites d'un incident</a>";
-  }
-  echo "</td>\n";
-  echo "<td>Traiter les suites d'un incident : définir une punition ou une sanction</td>\n";
-  echo "</tr>\n";
-
-  echo "</table>\n";
+	echo "<table class='menu' summary='Discipline'>\n";
+	echo "<tr>\n";
+	echo "<th colspan='2'><img src='../images/icons/saisie.png' alt='Traiter un incident' class='link'/> - Traiter un incident</th>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	if ($temoin) {
+		echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Traiter les suites d'un incident</a> (<i>avec protagonistes</i>)";
+	} else {
+		echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Traiter les suites d'un incident</a>";
+	}
+	echo "</td>\n";
+	echo "<td>Traiter les suites d'un incident : définir une punition ou une sanction</td>\n";
+	echo "</tr>\n";
+	
+	echo "</table>\n";
 }
 //Fin table traiter
 
@@ -389,46 +389,48 @@ echo "<th colspan='2'><img src='../images/icons/chercher.png' alt='consulter les
 echo "</tr>\n";
 
 if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($_SESSION['statut']=='scolarite')) {
-  echo "<tr>\n";
-  echo "<td width='30%'><a href='../mod_discipline/liste_sanctions_jour.php'>Liste des sanctions du jour</a>";
-  echo "</td>\n";
-  echo "<td>Visualiser la liste des sanctions du jour (Exclusion, retenue, ...)</td>\n";
-  echo "</tr>\n";
-
-  echo "<tr>\n";
-  echo "<td width='30%'>Effectuer des recherches/statistiques diverses<br /><span style='color: red;'>A FAIRE</span>";
-  echo "</td>\n";
-  echo "<td>Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<i>en précisant ou non le rôle dans l'incident</i>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,...</td>\n";
-  echo "</tr>\n";
-
-} elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
-  //$sql="SELECT 1=1 FROM s_protagonistes WHERE login='".$_SESSION['login']."';";
-  // declarant ou protagoniste
-  $sql="SELECT 1=1 FROM s_protagonistes, s_incidents WHERE ((login='".$_SESSION['login']."')||(declarant='".$_SESSION['login']."'));";
-  $test=mysql_query($sql);
-  if((mysql_num_rows($test)>0)) { //on a bien un prof ou statut autre comme déclarant ou un protagoniste 
 	echo "<tr>\n";
-	echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
+	echo "<td width='30%'><a href='../mod_discipline/liste_sanctions_jour.php'>Liste des sanctions du jour</a>";
 	echo "</td>\n";
-	echo "<td>Visualiser la liste des incidents déclarés et leurs traitements.</td>\n";
+	echo "<td>Visualiser la liste des sanctions du jour (Exclusion, retenue, ...)</td>\n";
 	echo "</tr>\n";
-  } else { //le prof n'est ni déclarant ni protagoniste. Pour un elv dont il est PP y a t--il des incidents de déclaré ?
-        $sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp WHERE sp.login=jep.login AND jep.professeur='".$_SESSION['login']."';";
+	
+	echo "<tr>\n";
+	//echo "<td width='30%'>Effectuer des recherches/statistiques diverses<br /><span style='color: red;'>A FAIRE</span>";
+		echo "<td width='30%'><a href='disc_stat.php'>Effectuer des recherches/statistiques diverses</a><br /><span style='color: red;'>A FAIRE</span>";
+	echo "</td>\n";
+	echo "<td>Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<i>en précisant ou non le rôle dans l'incident</i>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,...</td>\n";
+	echo "</tr>\n";
+
+}
+elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
+	//$sql="SELECT 1=1 FROM s_protagonistes WHERE login='".$_SESSION['login']."';";
+	// declarant ou protagoniste
+	$sql="SELECT 1=1 FROM s_protagonistes, s_incidents WHERE ((login='".$_SESSION['login']."')||(declarant='".$_SESSION['login']."'));";
+	$test=mysql_query($sql);
+	if((mysql_num_rows($test)>0)) { //on a bien un prof ou statut autre comme déclarant ou un protagoniste 
+		echo "<tr>\n";
+		echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
+		echo "</td>\n";
+		echo "<td>Visualiser la liste des incidents déclarés et leurs traitements.</td>\n";
+		echo "</tr>\n";
+	} else { //le prof n'est ni déclarant ni protagoniste. Pour un elv dont il est PP y a t--il des incidents de déclaré ?
+		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp WHERE sp.login=jep.login AND jep.professeur='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
 		if ((mysql_num_rows($test)>0)) { //Oui
-		    echo "<tr>\n";
+			echo "<tr>\n";
 			echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
 			echo "</td>\n";
 			echo "<td>Visualiser la liste des incidents déclarés et leurs traitements.</td>\n";
 			echo "</tr>\n";
-        } else { //non
+		} else { //non
 			echo "<tr>\n";
 			echo "<td width='30%'>Consulter les suites des incidents</a>";
 			echo "</td>\n";
 			echo "<td><p>Aucun incident (<i>avec protagoniste</i>) vous concernant n'est encore déclaré.</td>\n";
 			echo "</tr>\n";
 		}
-  }
+	}
 }
 echo "</table>\n";
 //Fin table afficher
@@ -445,6 +447,7 @@ echo "<li><p>Le module ne conserve pas un historique des modifications d'un inci
 echo "<li><p>Un professeur peut saisir un incident, mais ne peut pas saisir les sanctions.<br />
 Un professeur ne peut modifier que les incidents (<i>non clos</i>) qu'il a lui-même déclaré.<br />Il ne peut consulter que les incidents (<i>et leurs suites</i>) qu'il a déclarés, ou dont il est protagoniste, ou encore dont un des élèves, dont il est professeur principal, est protagoniste.</p></li>\n";
 //echo "<li><p><em>A FAIRE:</em> Ajouter des tests 'changement()' dans les pages de saisie pour ne pas quitter une étape sans enregistrer.</p></li>\n";
+echo "<li><p><em>A FAIRE:</em> Permettre de consulter d'autres incidents que les siens propres.<br />Eventuellement avec limitation aux élèves de ses classes.</p></li>\n";
 echo "<li><p><em>A FAIRE ENCORE:</em> Permettre d'archiver les incidents/sanctions d'une année et vider les tables incidents/sanctions lors de l'initialisation pour éviter des blagues avec les login élèves réattribués à de nouveaux élèves (<i>homonymie,...</i>)</p></li>\n";
 //echo "<li><p></p></li>\n";
 echo "</ul>\n";

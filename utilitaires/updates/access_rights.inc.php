@@ -580,6 +580,9 @@ $tab_req[] = "INSERT INTO droits SET id='/mod_genese_classes/import_options.php'
 $tab_req[] = "INSERT INTO droits VALUES ('/eleves/import_communes.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Import des communes de naissance', '');";
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_notanet/fb_lille_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Fiches brevet PDF pour Lille', '');";
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_notanet/fb_creteil_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Fiches brevet PDF pour Creteil', '');";
+
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/disc_stat.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Statistiques', '');";
+
 //$tab_req[] = "INSERT INTO droits VALUES ( '/mod_plugins/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajouter/enlever des plugins', '');";
 
 //$tab_req[] = "";
