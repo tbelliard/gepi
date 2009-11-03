@@ -802,14 +802,23 @@ if ($editable_user) {
 	else
 		echo "Il doit comporter au moins une lettre et au moins un chiffre.";
 
-
-	echo "<br />Il est fortement conseillé de ne pas choisir un mot de passe trop simple</b>.
-	<br /><b>Votre mot de passe est strictement personnel, vous ne devez pas le diffuser, il garantit la sécurité de votre travail.</b></p>\n";
+	echo "<br /><span style='color: red;'>Il est fortement conseillé de ne pas choisir un mot de passe trop simple</b>.</span>";
+	echo "<br /><b>Votre mot de passe est strictement personnel, vous ne devez pas le diffuser,<span style='color: red;'> il garantit la sécurité de votre travail.</b></span></p>\n";
+	echo "<script type=\"text/javascript\" src=\"../lib/pwd_strength.js\"></script>";	
 
 	echo "<table summary='Mot de passe'><tr>\n";
 	echo "<td>Ancien mot de passe : </td><td><input type=password name=no_anti_inject_password_a size=20 /></td>\n";
 	echo "</tr><tr>\n";
-	echo "<td>Nouveau mot de passe (".getSettingValue("longmin_pwd") ." caractères minimum) :</td><td> <input type=password name=no_anti_inject_password1 size=20 /></td>\n";
+	echo "<td>Nouveau mot de passe (".getSettingValue("longmin_pwd") ." caractères minimum) :</td>";
+	echo "<td> <input id=\"mypassword\" type=password name=no_anti_inject_password1 size=20 onkeyup=\"runPassword(this.value, 'mypassword');\" />";
+	echo "<td>";
+	echo "Complexité de votre mot de passe : ";	
+	echo "		<div style=\"width: 150px;\"> ";
+	echo "			<div id=\"mypassword_text\" style=\"font-size: 11px;\"></div>";
+	echo "			<div id=\"mypassword_bar\" style=\"font-size: 1px; height: 3px; width: 0px; border: 1px solid white;\"></div> ";
+	echo "		</div>";
+	echo "</td>\n";
+	echo "</td>\n";
 	echo "</tr><tr>\n";
 	echo "<td>Nouveau mot de passe (à confirmer) : </td><td><input type=password name=reg_password2 size=20 /></td>\n";
 	echo "</tr></table>\n";
