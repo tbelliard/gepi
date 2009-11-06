@@ -108,6 +108,8 @@ class infos{
 
 		if(!in_array('pdo_mysql',$extensions)) {$retour.="<span style='color:red'>ATTENTION&nbsp;</span> Il semble que le module 'pdo_mysql' ne soit pas présent.<br />Cela risque de rendre impossible l'utilisation des modules cahier_texte_2, mod_ects, mod_plugins,...<br />";}
 
+		if(in_array('suhosin',$extensions)) {$retour.="<span style='color:red'>ATTENTION&nbsp;</span> Il semble que le module '<b>suhosin</b>' soit présent.<br />Si les restrictions imposées par ce module sont trop sévères, certaines pages de Gepi peuvent être perturbées.<br /><em>Exemple de perturbation&nbsp;:</em> Seule une partie des valeurs des formulaires est transmise parce que le module limite le nombre de variables pouvant être envoyées en POST par un formulaire.<br />";}
+
 		return $retour;
 	}
 	function memoryLimit(){
