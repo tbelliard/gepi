@@ -2698,7 +2698,12 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	return $div;
 }
 
-function debug_var(){
+$debug_var_count=array();
+function debug_var() {
+	global $debug_var_count;
+
+	$debug_var_count['POST']=0;
+
 	// Fonction destinée à afficher les variables transmises d'une page à l'autre: GET, POST et SESSION
 	echo "<div style='border: 1px solid black; background-color: white; color: black;'>\n";
 
@@ -2735,7 +2740,7 @@ function debug_var(){
 		}
 	}
 </script>\n";
-
+	/*
 	echo "<table summary=\"Tableau de debug\">\n";
 	foreach($_POST as $post => $val){
 		//echo "\$_POST['".$post."']=".$val."<br />\n";
@@ -2756,6 +2761,52 @@ function debug_var(){
 		echo "</td></tr>\n";
 	}
 	echo "</table>\n";
+	*/
+
+	function tab_debug_var($chaine_tab_niv1,$tableau,$pref_chaine,$cpt_debug) {
+		//global $cpt_debug;
+		global $debug_var_count;
+
+		echo " (<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)\n";
+
+		echo "<table id='container_debug_var_$cpt_debug' summary=\"Tableau de debug\">\n";
+		foreach($tableau as $post => $val) {
+			echo "<tr><td valign='top'>".$pref_chaine."['".$post."']=</td><td>".$val;
+
+			if(is_array($tableau[$post])) {
+
+				tab_debug_var($chaine_tab_niv1,$tableau[$post],$pref_chaine.'['.$post.']',$cpt_debug);
+
+				$cpt_debug++;
+			}
+			else {
+				$debug_var_count[$chaine_tab_niv1]++;
+			}
+	
+			echo "</td></tr>\n";
+		}
+		echo "</table>\n";
+	}
+
+
+	echo "<table summary=\"Tableau de debug\">\n";
+	foreach($_POST as $post => $val) {
+		echo "<tr><td valign='top'>\$_POST['".$post."']=</td><td>".$val;
+
+		if(is_array($_POST[$post])) {
+			tab_debug_var('POST',$_POST[$post],'$_POST['.$post.']',$cpt_debug);
+
+			$cpt_debug++;
+		}
+		else {
+			$debug_var_count['POST']++;
+		}
+
+		echo "</td></tr>\n";
+	}
+	echo "</table>\n";
+
+	echo "<p>Nombre de valeurs en POST: <b>".$debug_var_count['POST']."</b></p>\n";
 	echo "</div>\n";
 	echo "</blockquote>\n";
 
