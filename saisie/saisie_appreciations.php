@@ -43,12 +43,18 @@ if (!checkAccess()) {
 }
 
 
-// Initialistion
+// Initialisation
 $id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 if (is_numeric($id_groupe) && $id_groupe > 0) {
 	$current_group = get_group($id_groupe);
 } else {
 	$current_group = false;
+
+	// Pourquoi poursuivre si le groupe n'est pas trouvé?
+	$mess=rawurlencode("Anomalie: Vous arrivez sur cette page sans que l'enseignement soit sélectionné ! Si vous aviez bien sélectionné un enseignement, il se peut que vous ayez un module php du type 'suhosin' qui limite le nombre de variables pouvant être postées dans un formulaire.");
+	header("Location: index.php?msg=$mess");
+	die();
+
 }
 
 if (count($current_group["classes"]["list"]) > 1) {
@@ -247,6 +253,8 @@ $javascript_specifique = "saisie/scripts/js_saisie";
 $titre_page = "Saisie des appréciations";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
 
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 
@@ -787,7 +795,8 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k].="<td>Contenu du carnet de notes : ".$liste_notes."<br />\n";
 				$mess[$k].="<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
 
-				$mess[$k].="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
+				//Supprimé le 07/11/2009:
+				//$mess[$k].="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
 
 				//$mess[$k].="<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"";
 				//$mess[$k].="<textarea id=\"n".$k.$num_id."\" style='white-space: nowrap;' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"";
