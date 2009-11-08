@@ -73,16 +73,66 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	// Affichage de la durée de chargement de la page
 
 	if (!isset($niveau_arbo)) $niveau_arbo = 1;
-	 if ($niveau_arbo == "0") {
-	   require ("./lib/microtime.php");
+
+	if ($niveau_arbo == "0") {
+		require ("./lib/microtime.php");
 	} elseif ($niveau_arbo == "1") {
-	   require ("../lib/microtime.php");
+		require ("../lib/microtime.php");
 	} elseif ($niveau_arbo == "2") {
-	    require ("../../lib/microtime.php");
+		require ("../../lib/microtime.php");
 	} elseif ($niveau_arbo == "3") {
-	    require ("../../../lib/microtime.php");
+		require ("../../../lib/microtime.php");
 	}
 ?>
 </div>
+
+<?php
+	// Pour permettre l'affichage du nombre de champs dans les formulaires, insérer:
+	// insert into setting set name='affich_debug_info_form', value='y';
+	// insert into setting set name='login_debug_info_form', value='LOGIN1|LOGIN2|LOGIN3|...';
+	// insert into setting set name='statut_debug_info_form', value='professeur|administrateur|...';
+
+	if(getSettingValue('affich_debug_info_form')=='y') {
+		$affiche_lien_info_forms="n";
+
+		$liste_login_debug_info_form=getSettingValue('login_debug_info_form');
+		if($liste_login_debug_info_form!='') {
+			$tab_tmp=explode('|',$liste_login_debug_info_form);
+			if(in_array($_SESSION['login'],$tab_tmp)) {
+				$affiche_lien_info_forms="y";
+			}
+		}
+
+		$liste_statut_debug_info_form=getSettingValue('statut_debug_info_form');
+		if($liste_statut_debug_info_form!='') {
+			$tab_tmp=explode('|',$liste_statut_debug_info_form);
+			if(in_array('all',$tab_tmp)) {
+				$affiche_lien_info_forms="y";
+			}
+			elseif(in_array($_SESSION['statut'],$tab_tmp)) {
+				$affiche_lien_info_forms="y";
+			}
+		}
+
+		if($affiche_lien_info_forms=="y") {
+			echo "<a name='div_info_formulaires'></a>\n";
+			echo "<a href='#div_info_formulaires' onclick=\"info_form('div_info_formulaires'); afficher_div('div_info_formulaires','y',10,10); return false;\">\n";
+			if ($niveau_arbo == "0") {
+				$chemin_img_info_forms="images/ico_question_petit.png";
+			} elseif ($niveau_arbo == "1") {
+				$chemin_img_info_forms="../images/ico_question_petit.png";
+			} elseif ($niveau_arbo == "2") {
+				$chemin_img_info_forms="../../images/ico_question_petit.png";
+			} elseif ($niveau_arbo == "3") {
+				$chemin_img_info_forms="../../../images/ico_question_petit.png";
+			}
+			echo "<img src='$chemin_img_info_forms' width='15' height='15' title='Image info forms' />";
+
+			echo "</a>\n";
+			echo "<div id='div_info_formulaires' style='color:red; border:1px solid black; background-color: white; width: 40em; display:none; margin: 1em;'></div>\n";
+		}
+	}
+?>
+
 </body>
 </html>
