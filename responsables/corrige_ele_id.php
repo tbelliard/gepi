@@ -350,7 +350,11 @@ else{
 				else{
 					echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
 
-					$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
+					$sql="DROP TABLE IF EXISTS temp_gep_import2;";
+					//echo "$sql<br />";
+					$suppr_table = mysql_query($sql);
+
+					$sql="CREATE TABLE IF NOT EXISTS temp_gep_import2 (
 					`ID_TEMPO` varchar(40) NOT NULL default '',
 					`LOGIN` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`ELENOM` varchar(40) $chaine_mysql_collate NOT NULL default '',
@@ -889,7 +893,8 @@ else{
 				//Illegal mix of collations
 				if(my_eregi("Illegal mix of collations",mysql_error())) {
 					//echo "<span style='color:red'>".mysql_error()."</span>\n";
-					echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'<br />\n";
+					echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'&nbsp;:<br />\n";
+					echo "<span style='color:red'>".mysql_error()."</span><br />\n";
 					echo "Il faudrait supprimer la table 'temp_gep_import2', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
 					echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
 				}

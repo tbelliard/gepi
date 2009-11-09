@@ -1955,8 +1955,8 @@ else{
 						echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
 						//Illegal mix of collations
 						if(my_eregi("Illegal mix of collations",mysql_error())) {
-							//echo "<span style='color:red'>".mysql_error()."</span>\n";
-							echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'<br />\n";
+							echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'&nbsp;:<br />\n";
+							echo "<span style='color:red'>".mysql_error()."</span><br />\n";
 							echo "Il faudrait supprimer la table 'temp_gep_import2', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
 							echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
 						}
@@ -3497,6 +3497,10 @@ else{
 			$res_new=mysql_query($sql);
 			if(mysql_num_rows($res_new)>0){
 
+				$sql="DROP TABLE IF EXISTS temp_ele_classe;";
+				info_debug($sql);
+				$nettoyage = mysql_query($sql);
+
 				$sql="CREATE TABLE IF NOT EXISTS temp_ele_classe (
 				`ele_id` varchar(40) $chaine_mysql_collate NOT NULL default '',
 				`divcod` varchar(40) $chaine_mysql_collate NOT NULL default ''
@@ -4992,6 +4996,10 @@ else{
 			}
 			else{
 
+				$sql="DROP TABLE IF EXISTS temp_responsables2_import;";
+				info_debug($sql);
+				$nettoyage = mysql_query($sql);
+
 				//$sql="CREATE TABLE IF NOT EXISTS responsables2 (
 				$sql="CREATE TABLE IF NOT EXISTS temp_responsables2_import (
 						`ele_id` varchar(10) $chaine_mysql_collate NOT NULL,
@@ -5549,7 +5557,8 @@ else{
 							//Illegal mix of collations
 							if(my_eregi("Illegal mix of collations",mysql_error())) {
 								//echo "<span style='color:red'>".mysql_error()."</span>\n";
-								echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_responsables2_import.ele_id'<br />\n";
+								echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_responsables2_import.ele_id'&nbsp;:<br />\n";
+								echo "<span style='color:red'>".mysql_error()."</span><br />\n";
 								echo "Il faudrait supprimer la table 'temp_responsables2_import', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
 								echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
 							}
@@ -5609,7 +5618,8 @@ else{
 							//Illegal mix of collations
 							if(my_eregi("Illegal mix of collations",mysql_error())) {
 								//echo "<span style='color:red'>".mysql_error()."</span>\n";
-								echo "Il semble qu'il y ait un problème de 'collation' entre les tables 'resp_pers' et 'temp_resp_pers_import'<br />\n";
+								echo "Il semble qu'il y ait un problème de 'collation' entre les tables 'resp_pers' et 'temp_resp_pers_import'&nbsp;:<br />\n";
+								echo "<span style='color:red'>".mysql_error()."</span><br />\n";
 								echo "Il faudrait supprimer la table 'temp_resp_pers_import', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour vos champs 'resp_pers'.<br />\n";
 								echo "Si par exemple, les champs de 'temp_resp_pers_import' ont pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
 							}
