@@ -880,66 +880,79 @@ else{
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "<input type='hidden' name='step' value='2' />\n";
 
+
 			//$sql="SELECT e.login,e.nom,e.prenom,e.naissance,e.sexe,e.elenoet, e.ele_id AS old_ele_id,t.ele_id FROM eleves e, temp_gep_import2 t WHERE e.elenoet=t.elenoet AND e.ele_id!=t.ele_id ORDER BY e.nom, e.prenom LIMIT 20;";
 			$sql="SELECT e.login,e.nom,e.prenom,e.naissance,e.sexe,e.elenoet, e.ele_id AS old_ele_id,t.ele_id FROM eleves e, temp_gep_import2 t WHERE LPAD(e.elenoet,5,'0')=LPAD(t.elenoet,5,'0') AND e.ele_id!=t.ele_id ORDER BY e.nom, e.prenom LIMIT 20;";
 			affiche_debug("$sql<br />\n");
-			$res=mysql_query($sql);
-
-			if(mysql_num_rows($res)==0){
-				if(isset($_POST['is_posted'])) {
-					echo "<p>Il n'y a plus d'ELENOET pour lequel effectuer une correction.</p>\n";
-					echo "<p>Terminé.</p>\n";
+			if(!$res=mysql_query($sql)) {
+				echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
+				//Illegal mix of collations
+				if(my_eregi("Illegal mix of collations",mysql_error())) {
+					//echo "<span style='color:red'>".mysql_error()."</span>\n";
+					echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'<br />\n";
+					echo "Il faudrait supprimer la table 'temp_gep_import2', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
+					echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
+				}
+				echo "</p>\n";
+			}
+			else {
+				if(mysql_num_rows($res)==0){
+					if(isset($_POST['is_posted'])) {
+						echo "<p>Il n'y a plus d'ELENOET pour lequel effectuer une correction.</p>\n";
+						echo "<p>Terminé.</p>\n";
+					}
+					else{
+						echo "<p>Aucun ELENOET trouvé pour effectuer une correction.</p>\n";
+					}
 				}
 				else{
-					echo "<p>Aucun ELENOET trouvé pour effectuer une correction.</p>\n";
-				}
-			}
-			else{
-				echo "<p>Cocher les lignes pour lesquelles corriger l'ELE_ID dans la table 'eleves' (<i>et éventuellement dans la table 'responsables2'</i>) d'après la proposition en dernière colonne.</p>\n";
-				echo "<table class='boireaus'>\n";
-				echo "<tr>\n";
-				echo "<th>";
-				echo "<a href=\"javascript:modifcase('coche')\">";
-				echo "<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
-				echo " / ";
-				echo "<a href=\"javascript:modifcase('decoche')\">";
-				echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
-				echo "</th>\n";
-				echo "<th>Login</th>\n";
-				echo "<th>Nom</th>\n";
-				echo "<th>Prénom</th>\n";
-				echo "<th>Sexe</th>\n";
-				echo "<th>Naissance</th>\n";
-				echo "<th>ELENOET</th>\n";
-				echo "<td style='font-weight:bold; text-align:center; background-color:plum;'>ELE_ID</td>\n";
-				echo "</tr>\n";
-				$alt=1;
-				$cpt=0;
-				while($lig=mysql_fetch_object($res)){
-					$alt=$alt*(-1);
-					echo "<tr class='lig$alt'>\n";
-					echo "<td>";
-					echo "<input type='checkbox' name='ele_id[$cpt]' id='ele_id_$cpt' value='$lig->ele_id' />\n";
-					echo "<input type='hidden' name='elenoet[$cpt]' value='$lig->elenoet' />\n";
-					echo "<input type='hidden' name='old_ele_id[$cpt]' value='$lig->old_ele_id' />\n";
-					echo "</td>\n";
-					echo "<td>$lig->login</td>\n";
-					echo "<td>$lig->nom</td>\n";
-					echo "<td>$lig->prenom</td>\n";
-					echo "<td>$lig->sexe</td>\n";
-					echo "<td>$lig->naissance</td>\n";
-					echo "<td>$lig->elenoet</td>\n";
-					echo "<td>$lig->ele_id</td>\n";
+					echo "<p>Cocher les lignes pour lesquelles corriger l'ELE_ID dans la table 'eleves' (<i>et éventuellement dans la table 'responsables2'</i>) d'après la proposition en dernière colonne.</p>\n";
+					echo "<table class='boireaus'>\n";
+					echo "<tr>\n";
+					echo "<th>";
+					echo "<a href=\"javascript:modifcase('coche')\">";
+					echo "<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
+					echo " / ";
+					echo "<a href=\"javascript:modifcase('decoche')\">";
+					echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+					echo "</th>\n";
+					echo "<th>Login</th>\n";
+					echo "<th>Nom</th>\n";
+					echo "<th>Prénom</th>\n";
+					echo "<th>Sexe</th>\n";
+					echo "<th>Naissance</th>\n";
+					echo "<th>ELENOET</th>\n";
+					echo "<td style='font-weight:bold; text-align:center; background-color:plum;'>ELE_ID</td>\n";
 					echo "</tr>\n";
-					$cpt++;
+					$alt=1;
+					$cpt=0;
+					while($lig=mysql_fetch_object($res)){
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+						echo "<td>";
+						echo "<input type='checkbox' name='ele_id[$cpt]' id='ele_id_$cpt' value='$lig->ele_id' />\n";
+						echo "<input type='hidden' name='elenoet[$cpt]' value='$lig->elenoet' />\n";
+						echo "<input type='hidden' name='old_ele_id[$cpt]' value='$lig->old_ele_id' />\n";
+						echo "</td>\n";
+						echo "<td>$lig->login</td>\n";
+						echo "<td>$lig->nom</td>\n";
+						echo "<td>$lig->prenom</td>\n";
+						echo "<td>$lig->sexe</td>\n";
+						echo "<td>$lig->naissance</td>\n";
+						echo "<td>$lig->elenoet</td>\n";
+						echo "<td>$lig->ele_id</td>\n";
+						echo "</tr>\n";
+						$cpt++;
+					}
+					echo "</table>\n";
+					echo "<input type='hidden' name='nb_ele_id' value='$cpt' />\n";
+					echo "<input type='submit' name='validation' value='Valider' />\n";
 				}
-				echo "</table>\n";
-				echo "<input type='hidden' name='nb_ele_id' value='$cpt' />\n";
-				echo "<input type='submit' name='validation' value='Valider' />\n";
 			}
 			echo "</form>\n";
 
-			echo "<script type='text/javascript'>
+			if(isset($cpt)) {
+				echo "<script type='text/javascript'>
 	function modifcase(mode){
 		for(i=0;i<$cpt;i++){
 			if(document.getElementById('ele_id_'+i)){
@@ -953,6 +966,7 @@ else{
 		}
 	}
 </script>\n";
+			}
 
 			break;
 	}

@@ -1950,7 +1950,22 @@ else{
 					$sql="SELECT 1=1 FROM eleves e, temp_gep_import2 t WHERE e.ele_id=t.ELE_ID AND t.ELE_ID='$lig->ELE_ID'";
 					//echo "$sql<br />\n";
 					info_debug($sql);
-					$test=mysql_query($sql);
+					//$test=mysql_query($sql);
+					if(!$test=mysql_query($sql)) {
+						echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
+						//Illegal mix of collations
+						if(my_eregi("Illegal mix of collations",mysql_error())) {
+							//echo "<span style='color:red'>".mysql_error()."</span>\n";
+							echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'<br />\n";
+							echo "Il faudrait supprimer la table 'temp_gep_import2', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
+							echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
+						}
+						echo "</p>\n";
+	
+						require("../lib/footer.inc.php");
+						die();
+					}
+
 					if(mysql_num_rows($test)==0){
 						if($cpt>0){$chaine_nouveaux.=", ";}
 						$chaine_nouveaux.=$lig->ELE_ID;
@@ -5174,12 +5189,13 @@ else{
 						`adr2` varchar(100) $chaine_mysql_collate NOT NULL,
 						`adr3` varchar(100) $chaine_mysql_collate NOT NULL,
 						`adr4` varchar(100) $chaine_mysql_collate NOT NULL,
-						`cp` varchar(6) NOT $chaine_mysql_collate NULL,
+						`cp` varchar(6) $chaine_mysql_collate NOT NULL,
 						`pays` varchar(50) $chaine_mysql_collate NOT NULL,
 						`commune` varchar(50) $chaine_mysql_collate NOT NULL,
 						`statut` varchar(100) $chaine_mysql_collate NOT NULL,
 					PRIMARY KEY  (`adr_id`));";
 				info_debug($sql);
+				//echo "$sql<br />";
 				$create_table = mysql_query($sql);
 
 				$sql="TRUNCATE TABLE temp_resp_adr_import;";
@@ -5526,7 +5542,24 @@ else{
 												tr.ele_id=e.ele_id";
 						//echo "$sql<br />";
 						info_debug($sql);
-						$test=mysql_query($sql);
+						//$test=mysql_query($sql);
+
+						if(!$test=mysql_query($sql)) {
+							echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
+							//Illegal mix of collations
+							if(my_eregi("Illegal mix of collations",mysql_error())) {
+								//echo "<span style='color:red'>".mysql_error()."</span>\n";
+								echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_responsables2_import.ele_id'<br />\n";
+								echo "Il faudrait supprimer la table 'temp_responsables2_import', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
+								echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
+							}
+							echo "</p>\n";
+		
+							require("../lib/footer.inc.php");
+							die();
+						}
+
+
 						if(mysql_num_rows($test)>0){
 							info_debug("$lig->pers_id est bien un nouveau");
 							if($cpt>0){
@@ -5570,7 +5603,22 @@ else{
 												AND rp.pers_id='".$lig->pers_id."';";
 						//echo "$sql<br />\n";
 						info_debug($sql);
-						$test=mysql_query($sql);
+						//$test=mysql_query($sql);
+						if(!$test=mysql_query($sql)) {
+							echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
+							//Illegal mix of collations
+							if(my_eregi("Illegal mix of collations",mysql_error())) {
+								//echo "<span style='color:red'>".mysql_error()."</span>\n";
+								echo "Il semble qu'il y ait un problème de 'collation' entre les tables 'resp_pers' et 'temp_resp_pers_import'<br />\n";
+								echo "Il faudrait supprimer la table 'temp_resp_pers_import', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour vos champs 'resp_pers'.<br />\n";
+								echo "Si par exemple, les champs de 'temp_resp_pers_import' ont pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
+							}
+							echo "</p>\n";
+		
+							require("../lib/footer.inc.php");
+							die();
+						}
+
 						if(mysql_num_rows($test)>0){
 							info_debug("... avec une diff au moins dans resp_pers");
 							if($cpt>0) {
