@@ -233,10 +233,14 @@ if ($affiche_categories == "y") {
 
 
 // Si le rang des élèves est demandé, on met à jour le champ rang de la table matieres_notes
+/*
 if (($aff_rang) and ($referent=="une_periode")) {
 	$periode_num=$num_periode;
 	include "../lib/calcul_rang.inc.php";
+	// Oui, mais pour la visualisation des moyennes des carnets de notes, 
+	// ce rang ne correspond pas nécessairement tant que la recopie des moyennes n'est pas faite.
 }
+*/
 
 /*
 // On regarde si on doit afficher les moyennes des catégories de matières
@@ -343,6 +347,10 @@ while($j < $nb_lignes_tableau) {
 
 	// Colonne rang
 	if (($aff_rang) and ($referent=="une_periode")) {
+		$ind_colonne_rang=$ind;
+		// La table j_eleves_classes ne contient les bonnes infos de rang qu'une fois la recopie des moyennes effectuée.
+		// Elle s'appuye sur la table matieres_notes qui n'est remplie qu'une fois la recopie faite, c'est-à-dire en fin de période... pas au moment où on utilise la Visualisation des moyennes des carnets de notes!
+		/*
 		$rang = sql_query1("select rang from j_eleves_classes where (
 		periode = '".$num_periode."' and
 		id_classe = '".$id_classe."' and
@@ -350,6 +358,9 @@ while($j < $nb_lignes_tableau) {
 		");
 		if (($rang == 0) or ($rang == -1)) $rang = "-";
 		$col[$ind][$j+$ligne_supl] = $rang;
+		*/
+		$col[$ind][$j+$ligne_supl]="-";
+
 		$ind++;
 	}
 
@@ -816,8 +827,6 @@ while($i < $lignes_groupes){
 		$j++;
 	}
 
-
-
 	//================================
 	// MODIF: boireaus
 	if ($referent == "une_periode") {
@@ -1074,6 +1083,38 @@ if ($ligne_supl == 1) {
 	}
 
 
+	// Colonne Rang: Cas du choix d'une période: on calcule le rang d'après la moyenne générale de l'élève
+	if (($aff_rang)&&(isset($ind_colonne_rang))) {
+		// On va calculer les rangs
+		//$ind_colonne_rang
+		// Initialisation:
+		$k=0;
+		unset($tmp_tab);
+		unset($rg);
+		//while($k <= $nb_lignes_tableau) {
+		while($k < $nb_lignes_tableau) {
+			$rg[$k]=$k;
+
+			//echo $col[1][$k+1].": ".$col[$nb_col][$k+1]." et total_coef:".$total_coef_eleve[$k+1]."<br />";
+			$tmp_tab[$k]=$col[$nb_col][$k+$ligne_supl];
+
+			// Initialisation:
+			$col[$ind_colonne_rang][$k]="-";
+			$k++;
+		}
+
+		array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
+
+		$k=0;
+		while($k < $nb_lignes_tableau) {
+			if(isset($rg[$k])) {
+				$col[$ind_colonne_rang][$rg[$k]+1]=$k+1;
+			}
+			$k++;
+		}
+
+	}
+
 	// Colonne rang (en fin de tableau (dernière colonne) dans le cas Année entière)
 	if (($aff_rang) and ($referent!="une_periode")) {
 		// Calculer le rang dans le cas année entière
@@ -1094,7 +1135,8 @@ if ($ligne_supl == 1) {
 		my_echo("<table>");
 		my_echo("<tr>");
 		my_echo("<td>");
-			my_echo("<table>");
+		my_echo("<table>");
+		unset($rg);
 		unset($tmp_tab);
 		$k=0;
 		unset($rg);
@@ -1108,10 +1150,10 @@ if ($ligne_supl == 1) {
 				my_echo("</tr>");
 			}
 			else {
+				$tmp_tab[$k]="?";
 				my_echo("<tr>");
 				my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k] --</td>");
 				my_echo("</tr>");
-				$tmp_tab[$k]="?";
 			}
 
 			$k++;
@@ -1119,7 +1161,9 @@ if ($ligne_supl == 1) {
 			my_echo("</table>");
 		my_echo("</td>");
 
-		array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
+		if(isset($tmp_tab)) {
+			array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
+		}
 
 		my_echo("<td>");
 			my_echo("<table>");
@@ -1207,6 +1251,7 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 		my_echo("<table>");
 		my_echo("<tr><td valign='top'>");
 		unset($tmp_tab);
+		unset($rg);
 		for($loop=0;$loop<$nb_lignes_tableau;$loop++) {
 		//for($loop=$b_inf;$loop<$b_sup;$loop++) {
 			// Il faut le POINT au lieu de la VIRGULE pour obtenir un tri correct sur les notes
