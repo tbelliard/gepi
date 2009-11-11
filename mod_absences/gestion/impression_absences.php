@@ -26,6 +26,7 @@ $niveau_arbo = 2;
 require_once("../../lib/initialisations.inc.php");
 //mes fonctions
 include("../lib/functions.php");
+/*debug_var();*/
 
 extract($_GET, EXTR_OVERWRITE);
 extract($_POST, EXTR_OVERWRITE);
@@ -45,8 +46,13 @@ die();
 
 	if (empty($_GET['id_lettre_suivi']) and empty($_POST['id_lettre_suivi'])) {$id_lettre_suivi[0]="";}
 	   else { if (isset($_GET['id_lettre_suivi'])) {$id_lettre_suivi=$_GET['id_lettre_suivi'];} if (isset($_POST['id_lettre_suivi'])) {$id_lettre_suivi=$_POST['id_lettre_suivi'];} }
+	
+
+
 	if (empty($_GET['lettre_action']) and empty($_POST['lettre_action'])) { $lettre_action = ''; }
      	   else { if (isset($_GET['lettre_action'])) { $lettre_action=$_GET['lettre_action']; } if (isset($_POST['lettre_action'])) { $lettre_action=$_POST['lettre_action']; } }
+	
+	
 
 	if (empty($_GET['classe_multiple']) and empty($_POST['classe_multiple'])) { $classe_multiple = ''; }
 	   else { if (isset($_GET['classe_multiple'])) { $classe_multiple = $_GET['classe_multiple']; } if (isset($_POST['classe_multiple'])) { $classe_multiple = $_POST['classe_multiple']; } }
@@ -58,6 +64,7 @@ die();
 
 	$form_pdf_lettre = 'cache';
 // redirection vers la création des courrier en pdf
+// si au moins 1 lettre a été cochée et lettre_action = originaux ( c'est a dire passage préalable par le form2 de selection de
 if($id_lettre_suivi[0] != '' and $lettre_action === 'originaux')
 {
 //	$_SESSION['id_lettre_suivi'] = $id_lettre_suivi;
@@ -423,12 +430,14 @@ if(!empty($nom_lettre_cadre) and empty($id) and $valide_form === 'yes')
        $req_sql2 = mysql_query($req_delete);
  }*/
 
-// pour réinitialiser la date d'envoie d'un docuement
+//IMPRESSIONS LETTRES AUX PARENTS
+
+// pour réinitialiser la date d'envoi d'un document
 if($action_laf === 'reinit_envoi' and $valide_form === 'yes')
  {
 	if(!empty($id))
 	{
-		// on vérifie s'il n'y a pas eu de réponse pour cette envio si oui on ne peut pas réinitialiser
+		// on vérifie s'il n'y a pas eu de réponse pour cette envoi si oui on ne peut pas réinitialiser
                 $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id."' AND (reponse_date_lettre_suivi = '' OR reponse_date_lettre_suivi != '0000-00-00') AND statu_lettre_suivi = 'recus'"),0);
                 if ($test_existance === '0')
 		{
@@ -438,7 +447,7 @@ if($action_laf === 'reinit_envoi' and $valide_form === 'yes')
 	}
  }
 
-// pour modifier le status d'un courrier
+// pour modifier le statut d'un courrier
 if($action_laf === 'modif_status' and $valide_form === 'yes')
  {
 	if(!empty($id))
@@ -558,19 +567,25 @@ affichercacher('div_1');
 // affiché.
 </script>
 
+<!-- ENTETE PRINCIPAL -->
 <p class=bold><a href='gestion_absences.php?type=<?php echo $type; ?>&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>|
 <a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> |
 <a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> |
 <a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> |
 <a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
 </p>
+<!-- ENTETE PROPOSANT LES CHOIX -->
 <div class="norme_absence centre">
 	[ <a href="impression_absences.php?type_impr=laf">Lettres aux familles</a> |
 	 <a href="impression_absences.php?type_impr=bda">Bilan des absences</a> |
 	 <a href="impression_absences.php?type_impr=bpc">Bilan conseils</a> |
 	 <a href="impression_absences.php?type_impr=bj">Bilan journalier</a> |
 	 <a href="impression_absences.php?type_impr=fic">Fiches récapitulatives</a> |
-	 <a href="impression_absences.php?type_impr=eti">Etiquettes</a> ]</div><br />
+	 <a href="impression_absences.php?type_impr=eti">Etiquettes</a> |
+	 <a href='impression_absences.php?type_impr=crea_lettre'>Gestion de la création des types de lettre</a> ]
+	 </div><br />
+
+
 
 <?php if($type_impr == "laf") { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
@@ -580,7 +595,7 @@ affichercacher('div_1');
 
 	/* ******************************************************************* */
 	/* DEBUT - Bloc form pour la génération du PDF des lettres aux parents */
-	if ( $form_pdf_lettre === 'affiche' )
+	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='Sélectionner pour envoi' )
 	{
 
 		?>
@@ -588,18 +603,134 @@ affichercacher('div_1');
 	  		<fieldset style="width: 90%; margin: auto; border: 1px solid;"><legend>Votre sélection</legend>
 	  		 	<input type="hidden" name="id_lettre_suivi" value='<?php echo serialize($id_lettre_suivi); ?>' />
 	  		 	<input type="hidden" name="lettre_action" value="<?php echo $lettre_action; ?>" />
-	  		 	<center><input type="submit" id="valider_pdf" name="creer_pdf" value="Générer le fichier PDF" /></center>
+				En cliquant sur le bouton ci-après, vous imprimez les lettres sélectionnées et passer leur état à Envoyé
+	  		 	<center>
+				<input type="submit" id="valider_pdf" name="creer_pdf" value="Générer le fichier PDF" />
+				</center>
 			</fieldset>
 		</form>
-		<?php
+
+
+	<?php
 
 	}
 	/* FIN - Bloc form pour la génération du PDF des lettres aux parents */
 	/* ***************************************************************** */
 
+
+	/* ******************************************************************* */
+	/* DEBUT - Bloc form pour l'effacement des lettres aux parents */
+	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='Effacer les lettres selectionnées' and $_POST['id_lettre_suivi'][0]!='')
+	{
+	$rq_efface_courriers='';
+	$succes_efface_courriers=1;
+	foreach ($_POST['id_lettre_suivi'] as $i => $value) 
+		{
+		$rq_efface_courriers='DELETE FROM `lettres_suivis` WHERE `id_lettre_suivi`='.$_POST['id_lettre_suivi'][$i].';';
+		$resultat_efface_courriers = mysql_query($rq_efface_courriers) or die('Erreur SQL !'.$rq_efface_courriers.'<br />'.mysql_error());
+		if ($resultat_efface_courriers!=1){$succes_efface_courriers=0;}
+		}
+	if($succes_efface_courriers==1){echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les lettres ont été effacées !</td></tr></table>');}
+	}
+	/* FIN - Bloc form pour l'effacement des lettres aux parents  */
+	/* ***************************************************************** */
+
+	/* ******************************************************************* */
+	/* DEBUT - Bloc form pour l'assemblage des courriers */
+	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='Assembler les courriers' and $_POST['id_lettre_suivi'][0]!='')
+	{
+		/*On filtre la liste sur les courriers EN ATTENTE*/
+		$liste='';
+		foreach ($_POST['id_lettre_suivi'] as $i => $value) 
+			{
+				if ($i!=0){$liste=$liste.','.$value;}else{$liste=$value;}
+			}
+		/*echo($liste);*/
+		$rq_liste='SELECT `id_lettre_suivi`,`quirecois_lettre_suivi`,`partdenum_lettre_suivi` FROM `lettres_suivis` WHERE `id_lettre_suivi` IN ('.$liste.') AND `envoye_date_lettre_suivi` = "0000-00-00" AND `statu_lettre_suivi`="en attente" ORDER BY `quirecois_lettre_suivi`,`emis_date_lettre_suivi`;';
+		$resultat_rq_liste = mysql_query($rq_liste) or die('Erreur SQL !'.$rq_liste.'<br />'.mysql_error());
+		/* boucle de rassemblement des absences concernées par un courrier*/
+		$precedent=Array("","","");
+		while($courrier=mysql_fetch_array($resultat_rq_liste))
+			{
+			/*echo(" ".$courrier[0]." ".$courrier[1]." ".$courrier[2]." <br>");*/
+			if ($precedent[1]==$courrier[1])
+				{
+					/*Même login, donc ajouter courier2 à listeabsences */
+					$liste_absences=ereg_replace(",{2,}", ",",$liste_absences.','.$courrier[2]);
+					/*echo($liste_absences.'<BR>');*/
+					/*et ecrire  le sql du courier n°courier[0] avec liste absences*/
+					$rq_ajout_courrier='UPDATE `lettres_suivis` SET `envoye_date_lettre_suivi`=0000-00-00 ,`quirecois_lettre_suivi`="'.$courrier[1].'",`quiemet_lettre_suivi`="'.$_SESSION['login'].'" ,`partdenum_lettre_suivi`="'.$liste_absences.'",`statu_lettre_suivi`="en attente", `reponse_date_lettre_suivi`=0000-00-00 ,`envoye_heure_lettre_suivi`=0  WHERE ( `id_lettre_suivi`="'.$courrier[0].'");';
+					/*echo($rq_ajout_courrier);*/
+					mysql_query($rq_ajout_courrier) or die('Erreur SQL !'.$rq_liste.'<br />'.mysql_error());
+					/*on doit effacer l enregistrement précédent[0] dans sql*/
+					$rq_suppr_prece='DELETE FROM `lettres_suivis` WHERE `id_lettre_suivi`='.$precedent[0].';';
+					/*echo($rq_suppr_prece.'<br>');*/
+					mysql_query($rq_suppr_prece) or die('Erreur SQL !'.$rq_suppr_prece.'<br />'.mysql_error());
+					$precedent=$courrier;
+				}
+			else 
+				{			
+					/*login différent donc on réinitialise precedent*/
+					$precedent=$courrier;
+					$liste_absences=ereg_replace(",{2,}", ",",$courrier[2]);
+					/*$liste_absences=ereg_replace("^,", "", $courrier[2]);*/
+					/*echo($liste_absences.'<BR>');*/
+				}
+			}
+		echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les courriers sélectionnés ont été fusionnés !</td></tr></table>');
+	}
+	/* FIN - Bloc form pour l'assemblage des courriers  */
+	/* ***************************************************************** */
+
+
+
+	/* ******************************************************************* */
+	/* DEBUT - Bloc form pour repasser les courriers au statut EN ATTENTE */
+	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='Réinitialiser les envois de courriers' and $_POST['id_lettre_suivi'][0]!='')
+	{
+	$rq_repasse_courriers_attente='';
+	$succes_repasse_courriers_attente=1;
+	foreach ($_POST['id_lettre_suivi'] as $i => $value) 
+		{
+		$rq_repasse_courriers_attente=' UPDATE `lettres_suivis` SET `envoye_date_lettre_suivi`=0000-00-00 ,`quireception_lettre_suivi`="",`quienvoi_lettre_suivi`="" ,`statu_lettre_suivi`="en attente", `reponse_date_lettre_suivi`=0000-00-00 ,`envoye_heure_lettre_suivi`=0  WHERE ( `id_lettre_suivi`='.$_POST['id_lettre_suivi'][$i].' AND `reponse_date_lettre_suivi`=0000-00-00 );';
+		$resultat_repasse_courriers_attente = mysql_query($rq_repasse_courriers_attente) or die('Erreur SQL !'.$rq_repasse_courriers_attente.'<br />'.mysql_error());
+		if ($resultat_repasse_courriers_attente!=1){$succes_repasse_courriers_attente=0;}
+		/*echo($rq_repasse_courriers_attente);*/
+		}
+	if($succes_repasse_courriers_attente==1){echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les lettres ont été réinitialisées !</td></tr></table>');}
+	}
+	/* FIN - Bloc form pour repasser les courriers au statut EN ATTENTE  */
+	/* ***************************************************************** */
+
+
+
+	/* ******************************************************************* */
+	/* DEBUT - Bloc form pour réception de reponse */
+	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='Considérer les réponses comme recues' and $_POST['id_lettre_suivi'][0]!='')
+	{
+	$rq_reponse_recue='';
+	$succes_reponse_recue=1;
+	foreach ($_POST['id_lettre_suivi'] as $i => $value) 
+		{
+		$today = date("Y-m-d");
+		/*echo($today);
+		echo($_SESSION['login']);*/
+		$rq_reponse_recue='UPDATE `lettres_suivis` SET `quireception_lettre_suivi`="'.$_SESSION['login'].'", `reponse_date_lettre_suivi`="'.$today.'", `statu_lettre_suivi`="recus" WHERE ( `id_lettre_suivi`='.$_POST['id_lettre_suivi'][$i].' AND `envoye_date_lettre_suivi`!=0000-00-00 );';
+		$resultat_rq_reponse_recue = mysql_query($rq_reponse_recue) or die('Erreur SQL !'.$rq_reponse_recue.'<br />'.mysql_error());
+		if ($resultat_rq_reponse_recue!=1){$succes_reponse_recue=0;}
+		/*echo($rq_reponse_recue);*/
+		}
+	if($succes_reponse_recue==1){echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les lettres sélectionnées ont été reçues !</td></tr></table>');}
+	}
+	/* FIN - Bloc form pour réception de reponse */
+	/* ***************************************************************** */
+
+
 	?>
 
-    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form1">
+<!-- DEBUT DU FORMULAIRE DE CHOIX D'AFFICHAGE DES LETTRES  FORM1 -->
+  
+  <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form1">
       <fieldset style="width: 460px; margin: auto; padding: 4px" class="couleur_ligne_3">
          <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
             <div class="titre_tableau_gestion">Lettres aux familles</div>
@@ -659,6 +790,8 @@ affichercacher('div_1');
 <option value="5" <?php if(!empty($action_lettre) and $action_lettre === '5') { ?>selected="selected"<?php } ?>>ne pas tenir compte de la date</option>
 </select>
 
+<!--INSERER ICI UNE POSSIBILITE DE CHOIX DE CLASSE -->
+
 <input name="du" type="text" size="9" maxlength="10" style="width: 80px; border: 1px solid #000000;" value="<?php if(isset($du)) { echo $du; } ?>" /><a href="#calend" onClick="<?php echo $cal->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br />
 <input type="submit" name="Submit" value="Lister la sélection" style="cursor: pointer;" /></td>
 </tr>
@@ -668,8 +801,11 @@ affichercacher('div_1');
 
       </fieldset>
     </form>
-    <br />
+<!-- Fin du FORMULAIRE de Choix du type de lettre-->
 
+<br />
+
+<!-- TABLEAU DES LETTRES -- COCHABLE !   --- FORM2 -->
 <?php /*   <form method="post" action="lettre_pdf.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;lettre_action=originaux" name="form2"> */ ?>
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;lettre_action=originaux" name="form2">
       <?php if($type_impr == "laf" and $choix != '') { ?>
@@ -732,8 +868,9 @@ affichercacher('div_1');
 	      	<td align="center" nowrap="nowrap" valign="middle" style="text-align: left;"><label for="sel<?php echo $i; ?>"><?php echo '<strong>'.$donner_liste_courrier['nom'].' '.$donner_liste_courrier['prenom'].'</strong> ('.classe_de($donner_liste_courrier['login']).')'; ?></label></td>
 	      	<td align="center" nowrap="nowrap" valign="middle"><small><?php echo lettre_type($donner_liste_courrier['type_lettre_suivi']); ?></small></td>
 	      	<td align="center" nowrap="nowrap" valign="middle"><?php $datation = date_frl($donner_liste_courrier['emis_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['emis_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quiemet_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['emis_date_lettre_suivi']).'</span>'; ?></td>
-	      	<td align="center" nowrap="nowrap" valign="middle"><?php if($donner_liste_courrier['envoye_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['envoye_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['envoye_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quienvoi_lettre_suivi']); ?><span title="<?php echo $datation; ?>"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'recus' ) { echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); } else { ?><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=reinit_envoi&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>" onClick="return confirm('Etes-vous sur de vouloire réinitialiser la date d\'envoi ?')"><?php echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); ?></a><?php } ?></span><?php } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
-	      	<td align="center" nowrap="nowrap" valign="middle"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'envoyer' ) { ?><?php } elseif($donner_liste_courrier['reponse_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['reponse_date_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['reponse_date_lettre_suivi']).'</span>';  } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
+	      	<td align="center" nowrap="nowrap" valign="middle">
+							<?php if($donner_liste_courrier['envoye_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['envoye_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['envoye_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quienvoi_lettre_suivi']); ?>
+							<span title="<?php echo $datation; ?>"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'recus' ) { echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); } else { ?><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=reinit_envoi&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>" 							onClick="return confirm('Etes-vous sur de vouloir réinitialiser la date d\'envoi ?')"><?php echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); ?></a><?php } ?></span><?php } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>	      	<td align="center" nowrap="nowrap" valign="middle"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'envoyer' ) { ?><?php } elseif($donner_liste_courrier['reponse_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['reponse_date_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['reponse_date_lettre_suivi']).'</span>';  } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
 	      	<td align="center" nowrap="nowrap" valign="middle"><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=aff_status&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>#n<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>" title="modifier l'état de réception"><?php echo $donner_liste_courrier['statu_lettre_suivi']; ?></a></td>
 	    </tr>
 			<?php
@@ -765,11 +902,11 @@ affichercacher('div_1');
 			<td colspan="7" class="norme_absence_blanc"><?php if($nombre_d_entre!='' and $nombre_d_entre!='0') { ?>Nombre de lettres affichées <strong><?php echo $nombre_d_entre.'</strong>'; } else { ?>Aucune sélection<?php } ?></td>
 	    </tr>
         <tr>
-            <td colspan="6" class="norme_absence">
+            <td colspan="2" class="norme_absence">
 				<?php $varcoche = $varcoche."'form2'"; ?>
 				<a href="javascript:CocheCheckbox(<?php echo $varcoche; ?>)">Cocher</a> | <a href="javascript:DecocheCheckbox(<?php echo $varcoche; ?>)">Décocher</a>
 			</td>
-            <td class="centre">
+            <td colspan="7" class="centre">
                 <input type="hidden" name="du" value="<?php echo $du; ?>" />
                 <input type="hidden" name="nbi" value="<?php echo $i; ?>" />
 
@@ -778,20 +915,31 @@ affichercacher('div_1');
 				<input type="hidden" name="action_lettre" value="<?php echo $action_lettre; ?>" />
 				<input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
 				<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
-
-                <input type="submit" name="Submit3" value="Sélectionner" />
+		
+		<input type="submit" name="Submit3" value="Effacer les lettres selectionnées"  onClick="return confirm('Etes-vous sur de vouloir supprimer les courriers cochés ?')" />
+                <br>
+		<input type="submit" name="Submit3" value="Assembler les courriers" onClick="return confirm('Si plusieurs courriers  sont en attente pour un élève, ils seront rassemblés en un seul courrier demandant justification pour toutes les absences. Etes-vous sûr de vouloir procéder à ce changement ?')" />
+		<br>
+		<input type="submit" name="Submit3" value="Réinitialiser les envois de courriers" onClick="return confirm('Le statut des courriers sélectionnés redeviendra EN ATTENTE et pourront être réexpédiés. Etes-vous sûr de vouloir procéder à ce changement ?')"/>
+		<br>
+		<input type="submit" name="Submit3" onClick="return confirm('Ceci va créer un fichier PDF des courriers aux parents. Les courriers changeront alors de statut et la date d'envoi sera enregistrée. Etes-vous sûr de vouloir envoyer les courriers sélectionnés ?')"  value="Sélectionner pour envoi" />
+		<br>
+		<input type="submit" name="Submit3" value="Considérer les réponses comme recues" onClick="return confirm('Les courriers qui ont été envoyés passeront à REPONSE RECUE. Etes-vous sur de vouloir procéder à ce changement ?')"/>		
             </td>
         </tr>
 	</tbody>
 </table>
       <?php } ?>
       </form>
+<!-- FIN DU TABLEAU DES LETTRES -->
+
+
 
 <?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
 
-
+<!-- DEBUT DU FORMULAIRE POUR CHOIX DU BILAN DES ABSENCES -->
 <?php if($type_impr == "bda") { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
@@ -862,6 +1010,8 @@ affichercacher('div_1');
 </div>
 <?php } ?>
 
+
+<!-- FORMULAIRE BILAN POUR CONSEIL -->
 <?php if($type_impr == "bpc") { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
@@ -934,6 +1084,7 @@ affichercacher('div_1');
 <?php } ?>
 
 
+<!-- FORMULAIRE DE SELECTION DE LA DATE POUR LE BILAN JOURNALIER -->
 <?php
 if ( $type_impr == "bj" ) { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
@@ -956,7 +1107,7 @@ if ( $type_impr == "bj" ) { ?>
 <?php } ?>
 
 
-
+<!-- FORMULAIRE DE SELECTION POUR LA FICHE RECAPITULATIVE ELEVE, CLASSE, DATES -->
 <?php // fiche récapitulative des absences
  if($type_impr === 'fic') { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
@@ -1002,11 +1153,17 @@ if ( $type_impr == "bj" ) { ?>
 		     <?php if(empty($classe_multiple[0]) and empty($eleve_multiple[0])) { ?><option value="" disabled="disabled">Vide</option><?php } ?>
 		  </optgroup>
 		  </select></td></tr></table>
-                du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal_3->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a> au <input name="au" id="au" type="text" size="11" maxlength="11" value="<?php echo $au; ?>" onClick="getDate(au,'form3')" /><a href="#calend" onClick="<?php  echo $cal_4->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>&nbsp;<input type="submit" name="Submit2" value="&gt;&gt;" />
+                du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" />
+		<a href="#calend" onClick="<?php  echo $cal_3->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>">
+		<img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a> au <input name="au" id="au" type="text" size="11" maxlength="11" value="<?php echo $au; ?>" onClick="getDate(au,'form3')" />
+		<a href="#calend" onClick="<?php  echo $cal_4->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>">
+		<img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>&nbsp;
+		<input type="submit" name="Submit2" value="Valider" />
             </div>
       </fieldset>
     </form>
 
+<!-- UNE FOIS LA SELECTION ELEVE, CLASSE, DATES FAITE, FORMULAIRE PERMETTANT DE COMPOSER  LE PDF -->
      <?php if ( !empty($classe_multiple[0]) ) { ?>
     <?php /* <form method="post" action="fiche_pdf.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>" name="form4"> */ ?>
     <form method="post" action="fiche_pdf.php" name="form4">
@@ -1024,6 +1181,9 @@ if ( $type_impr == "bj" ) { ?>
 </div>
 <?php } ?>
 
+
+
+<!-- FORMULAIRE ETIQUETTES -->
 <?php if($type_impr == "eti") { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
@@ -1129,6 +1289,7 @@ if ( $type_impr == "bj" ) { ?>
 
 
 
+<!-- FORMULAIRE GERER LES TYPES DE LETTRES -->
 <?php if($type_impr === 'crea_lettre') { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
@@ -1361,14 +1522,7 @@ if($sous_rubrique === 'gb') { ?>
 <?php } ?>
 
 
-<?php /* div de centrage du tableau pour ie5 */ ?>
-<?php if($type_impr === 'laf') { ?>
-<div style="text-align: center;">
-<br /><br />[ <a href='../gestion/impression_absences.php?type_impr=crea_lettre'>Gestion de la création des types de lettre</a> ]
 
-<?php /* fin du div de centrage du tableau pour ie5 */ ?>
-</div>
-<?php } ?>
 
 <?php
 // système de test
