@@ -30,8 +30,8 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -43,7 +43,7 @@ if (!checkAccess()) {
 }
 
 
-// Initialisation
+// Initialistion
 $id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 if (is_numeric($id_groupe) && $id_groupe > 0) {
 	$current_group = get_group($id_groupe);
@@ -54,7 +54,6 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
 	$mess=rawurlencode("Anomalie: Vous arrivez sur cette page sans que l'enseignement soit sélectionné ! Si vous aviez bien sélectionné un enseignement, il se peut que vous ayez un module php du type 'suhosin' qui limite le nombre de variables pouvant être postées dans un formulaire.");
 	header("Location: index.php?msg=$mess");
 	die();
-
 }
 
 if (count($current_group["classes"]["list"]) > 1) {
@@ -643,6 +642,9 @@ $prev_classe = null;
 // Compteur pour les élèves
 $i=0;
 //=========================
+// Pour permettre le remplacement de la chaine _PRENOM_ par le prénom de l'élève dans les commentaires types (ctp.php)
+$chaine_champs_input_prenom="";
+//=========================
 foreach ($liste_eleves as $eleve_login) {
 
 	$k=1;
@@ -777,7 +779,7 @@ foreach ($liste_eleves as $eleve_login) {
 				}
 
 				if ($current_eleve_nbct ==0) {
-				$liste_notes='Pas de note dans le carnet pour cette période.';
+					$liste_notes='Pas de note dans le carnet pour cette période.';
 				}
 
 				//$mess[$k] = "<td>".$note."</td>\n<td><textarea id=\"".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows=2 cols=100 wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
@@ -797,6 +799,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 				//Supprimé le 07/11/2009:
 				//$mess[$k].="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
+				$chaine_champs_input_prenom.="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
 
 				//$mess[$k].="<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"";
 				//$mess[$k].="<textarea id=\"n".$k.$num_id."\" style='white-space: nowrap;' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"";
@@ -941,6 +944,15 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 </form>
 
 <?php
+
+// ====================== DISPOSITIF CTP ========================
+// Pour permettre le remplacement de la chaine _PRENOM_ par le prénom de l'élève dans les commentaires types (ctp.php)
+// Les champs INPUT des prénoms sont insérés hors du formulaire principal pour éviter d'envoyer trop de champs lors du submit (problèmes avec suhosin qui limite le nombre de champs pouvant être POSTés)
+echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form2' method=\"post\">\n";
+echo $chaine_champs_input_prenom;
+echo "</form>\n";
+// ==============================================================
+
 // ====================== SYSTEME  DE SAUVEGARDE ========================
 // Dans tous les cas, suite à une demande de restauration, et quelle que soit la réponse, les sauvegardes doivent être effacées
 if ($restauration == "oui" OR $restauration == "non") {
