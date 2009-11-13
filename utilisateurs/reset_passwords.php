@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -48,6 +48,9 @@ if (!checkAccess()) {
 $mode_impression = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : false);
 
 $mdp_INE=isset($_GET["mdp_INE"]) ? $_GET["mdp_INE"] : NULL;
+
+$affiche_adresse_resp=isset($_GET["affiche_adresse_resp"]) ? $_GET["affiche_adresse_resp"] : "n";
+
 
 //comme il y a une redirection pour une page Csv ou PDF, il ne faut pas envoyer les entêtes dans ces 2 cas
 if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
@@ -603,6 +606,111 @@ while ($p < $nb_users) {
 		//echo "get_class_from_ele_login($user_login)=".get_class_from_ele_login($user_login)."<br />";
 		$tab_tmp_classe=get_class_from_ele_login($user_login);
 
+		//$affiche_adresse_resp="y";
+		if($affiche_adresse_resp=='y') {
+			// Récupération des variables du bloc adresses:
+			// Liste de récupération à extraire de la boucle élèves pour limiter le nombre de requêtes... A FAIRE
+			// Il y a d'autres récupération de largeur et de positionnement du bloc adresse à extraire...
+			// PROPORTION 30%/70% POUR LE 1er TABLEAU ET ...
+			$largeur1=getSettingValue("addressblock_logo_etab_prop") ? getSettingValue("addressblock_logo_etab_prop") : 40;
+			$largeur2=100-$largeur1;
+		
+			// Taille des polices sur le bloc adresse:
+			$addressblock_font_size=getSettingValue("addressblock_font_size") ? getSettingValue("addressblock_font_size") : 12;
+		
+			// Taille de la cellule Classe et Année scolaire sur le bloc adresse:
+			$addressblock_classe_annee=getSettingValue("addressblock_classe_annee") ? getSettingValue("addressblock_classe_annee") : 35;
+			// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, Année,...
+			$addressblock_classe_annee2=round(100*$addressblock_classe_annee/(100-$largeur1));
+		
+			// Débug sur l'entête pour afficher les cadres
+			$addressblock_debug=getSettingValue("addressblock_debug") ? getSettingValue("addressblock_debug") : "n";
+
+			$addressblock_length=getSettingValue("addressblock_length") ? getSettingValue("addressblock_length") : 6;
+			$addressblock_padding_top=getSettingValue("addressblock_padding_top") ? getSettingValue("addressblock_padding_top") : 0;
+			$addressblock_padding_text=getSettingValue("addressblock_padding_text") ? getSettingValue("addressblock_padding_text") : 0;
+			$addressblock_padding_right=getSettingValue("addressblock_padding_right") ? getSettingValue("addressblock_padding_right") : 0;
+
+			//$addressblock_debug="y";
+
+			/*
+			$ligne1="NOM PRENOM";
+			$ligne2="3 rue de....";
+			$ligne3="27300 BERNAY";
+			*/
+
+			$sql="SELECT ra.*,rp.nom,rp.prenom,rp.civilite FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
+			$res_adr_resp=mysql_query($sql);
+			if(mysql_num_rows($res_adr_resp)==0) {
+				$ligne1="<font color='red'><b>ADRESSE MANQUANTE</b></font>";
+				$ligne2="";
+				$ligne3="";
+			}
+			else {
+				$lig_adr_resp=mysql_fetch_object($res_adr_resp);
+
+				$ligne1=$lig_adr_resp->civilite." ".$lig_adr_resp->nom." ".$lig_adr_resp->prenom;
+				$ligne2=$lig_adr_resp->adr1;
+				$ligne3=$lig_adr_resp->cp." ".$lig_adr_resp->commune;
+
+				if($lig_adr_resp->civilite="") {
+					$ligne1=$lig_adr_resp->civilite." ".$lig_adr_resp->nom." ".$lig_adr_resp->prenom;
+				}
+				else {
+					$ligne1="M.".$lig_adr_resp->nom." ".$lig_adr_resp->prenom;
+				}
+
+				$ligne2=$lig_adr_resp->adr1;
+				if($lig_adr_resp->adr2!=""){
+					$ligne2.="<br />\n".$lig_adr_resp->adr2;
+				}
+				if($lig_adr_resp->adr3!=""){
+					$ligne2.="<br />\n".$lig_adr_resp->adr3;
+				}
+				if($lig_adr_resp->adr4!=""){
+					$ligne2.="<br />\n".$lig_adr_resp->adr4;
+				}
+				$ligne3=$lig_adr_resp->cp." ".$lig_adr_resp->commune;
+
+				if(($lig_adr_resp->pays!="")&&(strtolower($lig_adr_resp->pays)!=strtolower(getSettingValue('gepiSchoolPays')))) {
+					if($ligne3!=" "){
+						$ligne3.="<br />";
+					}
+					$ligne3.=$lig_adr_resp->pays;
+				}
+
+			}
+
+			echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
+
+			// Cadre adresse du responsable:
+			echo "<div style='float:right;
+width:".$addressblock_length."mm;
+padding-top:".$addressblock_padding_top."mm;
+padding-bottom:".$addressblock_padding_text."mm;
+padding-right:".$addressblock_padding_right."mm;\n";
+			if($addressblock_debug=="y"){echo "border: 1px solid blue;\n";}
+			echo "font-size: ".$addressblock_font_size."pt;
+'>
+<div align='left'>
+$ligne1<br />
+$ligne2<br />
+$ligne3
+</div>
+</div>\n";
+
+
+
+			// Cadre contenant le tableau Logo+Ad_etab et le nom, prénom,... de l'élève:
+			echo "<div style='float:left;
+left:0px;
+top:0px;
+width:".$largeur1."%;\n";
+			if($addressblock_debug=="y"){echo "border: 1px solid green;\n";}
+			echo "'>\n";
+
+		}
+
 		echo "<table border='0' summary=\"$user_login\">\n";
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
@@ -649,7 +757,17 @@ while ($p < $nb_users) {
 
 		echo "<tr><td>Adresse de courriel : </td><td><span class = \"bold\">" . $user_email . "&nbsp;</span></td></tr>\n";
 		echo "</table>\n";
+
+		if($affiche_adresse_resp=='y') {
+			echo "</div>\n";
+
+			echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
+		}
+
+		// La fiche bienvenue:
 		echo $impression;
+
+		// Saut de page toutes les $nb_fiches fiches
 		if ($saut == $nb_fiches) {
 			echo "<p class='saut'>&nbsp;</p>\n";
 			$saut = 1;
@@ -781,6 +899,135 @@ while ($p < $nb_users) {
 		}
 		*/
 
+		//$affiche_adresse_resp="y";
+		if($affiche_adresse_resp=='y') {
+			// Récupération des variables du bloc adresses:
+			// Liste de récupération à extraire de la boucle élèves pour limiter le nombre de requêtes... A FAIRE
+			// Il y a d'autres récupération de largeur et de positionnement du bloc adresse à extraire...
+			// PROPORTION 30%/70% POUR LE 1er TABLEAU ET ...
+			$largeur1=getSettingValue("addressblock_logo_etab_prop") ? getSettingValue("addressblock_logo_etab_prop") : 40;
+			$largeur2=100-$largeur1;
+		
+			// Taille des polices sur le bloc adresse:
+			$addressblock_font_size=getSettingValue("addressblock_font_size") ? getSettingValue("addressblock_font_size") : 12;
+		
+			// Taille de la cellule Classe et Année scolaire sur le bloc adresse:
+			$addressblock_classe_annee=getSettingValue("addressblock_classe_annee") ? getSettingValue("addressblock_classe_annee") : 35;
+			// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, Année,...
+			$addressblock_classe_annee2=round(100*$addressblock_classe_annee/(100-$largeur1));
+		
+			// Débug sur l'entête pour afficher les cadres
+			$addressblock_debug=getSettingValue("addressblock_debug") ? getSettingValue("addressblock_debug") : "n";
+
+			$addressblock_length=getSettingValue("addressblock_length") ? getSettingValue("addressblock_length") : 6;
+			$addressblock_padding_top=getSettingValue("addressblock_padding_top") ? getSettingValue("addressblock_padding_top") : 0;
+			$addressblock_padding_text=getSettingValue("addressblock_padding_text") ? getSettingValue("addressblock_padding_text") : 0;
+			$addressblock_padding_right=getSettingValue("addressblock_padding_right") ? getSettingValue("addressblock_padding_right") : 0;
+
+			$addressblock_debug="y";
+			// Récupération des variables du bloc adresses:
+			// Liste de récupération à extraire de la boucle élèves pour limiter le nombre de requêtes... A FAIRE
+			// Il y a d'autres récupération de largeur et de positionnement du bloc adresse à extraire...
+			// PROPORTION 30%/70% POUR LE 1er TABLEAU ET ...
+			$largeur1=getSettingValue("addressblock_logo_etab_prop") ? getSettingValue("addressblock_logo_etab_prop") : 40;
+			$largeur2=100-$largeur1;
+		
+			// Taille des polices sur le bloc adresse:
+			$addressblock_font_size=getSettingValue("addressblock_font_size") ? getSettingValue("addressblock_font_size") : 12;
+		
+			// Taille de la cellule Classe et Année scolaire sur le bloc adresse:
+			$addressblock_classe_annee=getSettingValue("addressblock_classe_annee") ? getSettingValue("addressblock_classe_annee") : 35;
+			// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, Année,...
+			$addressblock_classe_annee2=round(100*$addressblock_classe_annee/(100-$largeur1));
+		
+			// Débug sur l'entête pour afficher les cadres
+			$addressblock_debug=getSettingValue("addressblock_debug") ? getSettingValue("addressblock_debug") : "n";
+
+			$addressblock_length=getSettingValue("addressblock_length") ? getSettingValue("addressblock_length") : 6;
+			$addressblock_padding_top=getSettingValue("addressblock_padding_top") ? getSettingValue("addressblock_padding_top") : 0;
+			$addressblock_padding_text=getSettingValue("addressblock_padding_text") ? getSettingValue("addressblock_padding_text") : 0;
+			$addressblock_padding_right=getSettingValue("addressblock_padding_right") ? getSettingValue("addressblock_padding_right") : 0;
+
+			//$addressblock_debug="y";
+
+			/*
+			$ligne1="NOM PRENOM";
+			$ligne2="3 rue de....";
+			$ligne3="27300 BERNAY";
+			*/
+
+			$sql="SELECT ra.*,rp.nom,rp.prenom,rp.civilite FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
+			$res_adr_resp=mysql_query($sql);
+			if(mysql_num_rows($res_adr_resp)==0) {
+				$ligne1="<font color='red'><b>ADRESSE MANQUANTE</b></font>";
+				$ligne2="";
+				$ligne3="";
+			}
+			else {
+				$lig_adr_resp=mysql_fetch_object($res_adr_resp);
+
+				$ligne1=$lig_adr_resp->civilite." ".$lig_adr_resp->nom." ".$lig_adr_resp->prenom;
+				$ligne2=$lig_adr_resp->adr1;
+				$ligne3=$lig_adr_resp->cp." ".$lig_adr_resp->commune;
+
+				if($lig_adr_resp->civilite="") {
+					$ligne1=$lig_adr_resp->civilite." ".$lig_adr_resp->nom." ".$lig_adr_resp->prenom;
+				}
+				else {
+					$ligne1="M.".$lig_adr_resp->nom." ".$lig_adr_resp->prenom;
+				}
+
+				$ligne2=$lig_adr_resp->adr1;
+				if($lig_adr_resp->adr2!=""){
+					$ligne2.="<br />\n".$lig_adr_resp->adr2;
+				}
+				if($lig_adr_resp->adr3!=""){
+					$ligne2.="<br />\n".$lig_adr_resp->adr3;
+				}
+				if($lig_adr_resp->adr4!=""){
+					$ligne2.="<br />\n".$lig_adr_resp->adr4;
+				}
+				$ligne3=$lig_adr_resp->cp." ".$lig_adr_resp->commune;
+
+				if(($lig_adr_resp->pays!="")&&(strtolower($lig_adr_resp->pays)!=strtolower(getSettingValue('gepiSchoolPays')))) {
+					if($ligne3!=" "){
+						$ligne3.="<br />";
+					}
+					$ligne3.=$lig_adr_resp->pays;
+				}
+
+			}
+
+			echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
+
+			// Cadre adresse du responsable:
+			echo "<div style='float:right;
+width:".$addressblock_length."mm;
+padding-top:".$addressblock_padding_top."mm;
+padding-bottom:".$addressblock_padding_text."mm;
+padding-right:".$addressblock_padding_right."mm;\n";
+			if($addressblock_debug=="y"){echo "border: 1px solid blue;\n";}
+			echo "font-size: ".$addressblock_font_size."pt;
+'>
+<div align='left'>
+$ligne1<br />
+$ligne2<br />
+$ligne3
+</div>
+</div>\n";
+
+
+
+			// Cadre contenant le tableau Logo+Ad_etab et le nom, prénom,... de l'élève:
+			echo "<div style='float:left;
+left:0px;
+top:0px;
+width:".$largeur1."%;\n";
+			if($addressblock_debug=="y"){echo "border: 1px solid green;\n";}
+			echo "'>\n";
+
+		}
+
 		echo "<table border='0' summary=\"$user_login\">\n";
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
@@ -843,6 +1090,18 @@ while ($p < $nb_users) {
 		echo "<tr><td>Adresse de courriel : </td><td><span class = \"bold\">" . $user_email . "&nbsp;</span></td></tr>\n";
 		echo "</table>";
 
+		if($affiche_adresse_resp=='y') {
+			echo "</div>\n";
+		}
+
+		/*
+		// Bloc adresse responsable
+		$addressblock_padding_right,
+		$addressblock_padding_top,
+		$addressblock_padding_text,
+		$addressblock_length,
+		$addressblock_font_size,
+		*/
 
 		echo $impression;
 		if ($saut == $nb_fiches) {

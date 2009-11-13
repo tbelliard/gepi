@@ -233,17 +233,15 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				// On est ici en mode de création par classe
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
 				// =====================
-				// MODIF: boireaus 20071102
 				if ($_POST['classe'] == "all") {
 				    $msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+				    $msg .= " ou <a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;affiche_adresse_resp=y&amp;creation_comptes_classe=y'>(Impression HTML avec adresse)</a>";
 					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=csv&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
-
 					$msg.="<br/>";
-
 				} elseif (is_numeric($_POST['classe'])) {
 					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= " ou <a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;affiche_adresse_resp=y&amp;creation_comptes_classe=y'>(Impression HTML avec adresse)</a>";
 					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
-
 					$msg.="<br/>";
 				}
 				// =====================
