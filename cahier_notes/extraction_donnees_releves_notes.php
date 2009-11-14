@@ -67,6 +67,22 @@
 	// GepiAccesOptionsReleveEleve
 	//+++++++++++++++++++++++++++++++++++
 
+	// AJOUT 20091113
+	function recherche_conteneurs_enfants($id_parent) {
+		global $tab_conteneurs_enfants;
+		//$sql="SELECT id FROM cn_conteneurs where parent='$id_parent' AND parent=id;";
+		$sql="SELECT id FROM cn_conteneurs where parent='$id_parent';";
+		//echo "$sql<br />";
+		$res_conteneurs_enfants=mysql_query($sql);
+		if(mysql_num_rows($res_conteneurs_enfants)>0) {
+			while($lig=mysql_fetch_object($res_conteneurs_enfants)) {
+				$tab_conteneurs_enfants[]=$lig->id;
+				recherche_conteneurs_enfants($lig->id);
+				//echo "recherche_conteneurs_enfants($lig->id)<br />";
+			}
+		}
+	}
+
 
 	// Boucle sur les classes
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
@@ -506,11 +522,95 @@
 								$tab_ele['groupe'][$j]['differents_coef']=$differents_coef;
 							}
 
+							/*
+							// AJOUT 20091113
+
+							function recherche_conteneurs_enfants($id_parent) {
+								global $tab_conteneurs_enfants;
+								//$sql="SELECT id FROM cn_conteneurs where parent='$id_parent' AND parent=id;";
+								$sql="SELECT id FROM cn_conteneurs where parent='$id_parent';";
+								echo "$sql<br />";
+								$res_conteneurs_enfants=mysql_query($sql);
+								if(mysql_num_rows($res_conteneurs_enfants)>0) {
+									while($lig=mysql_fetch_object($res_conteneurs_enfants)) {
+										$tab_conteneurs_enfants[]=$lig->id;
+										recherche_conteneurs_enfants($lig->id);
+										echo "recherche_conteneurs_enfants($lig->id)<br />";
+									}
+								}
+							}
+							*/
+
+							//unset($tab_tmp);
+							//$tab_tmp=array();
+							// PB: en mode intervalle, on ne sait pas quel cahier de notes récupérer (quelle période?)
+							$sql="SELECT DISTINCT id_cahier_notes, periode FROM cn_cahier_notes WHERE id_groupe='$current_groupe' ORDER BY periode;";
+							//echo "$sql<br />\n";
+							$res_grp_id_cn=mysql_query($sql);
+							while($lig_grp_id_cn=mysql_fetch_object($res_grp_id_cn)) {
+								//$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['id_racine']=$lig_grp_id_cn->id_cahier_notes;
+
+								$sql="SELECT id, nom_court, nom_complet, display_parents FROM cn_conteneurs where id_racine='$lig_grp_id_cn->id_cahier_notes' AND parent=id_racine;";
+								//echo "$sql<br />";
+								$res_conteneurs_niv1=mysql_query($sql);
+								if(mysql_num_rows($res_conteneurs_niv1)>0) {
+									$cpt=0;
+									while($lig_cnt=mysql_fetch_object($res_conteneurs_niv1)) {
+										unset($tab_conteneurs_enfants);
+										$tab_conteneurs_enfants=array();
+
+										//if($cpt>0) {$tab_ele['groupe'][$j]['id_cn']['existence_sous_conteneurs']='y';}
+										if($cpt>0) {$tab_ele['groupe'][$j]['existence_sous_conteneurs']='y';}
+
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['periode']=$lig_grp_id_cn->periode;
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['id_racine']=$lig_cnt->id;
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['nom_court']=$lig_cnt->nom_court;
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['nom_complet']=$lig_cnt->nom_complet;
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['display_parents']=$lig_cnt->display_parents;
+
+										recherche_conteneurs_enfants($lig_cnt->id);
+										//echo "recherche_conteneurs_enfants($lig->id)<br />";
+
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['conteneurs_enfants']=$tab_conteneurs_enfants;
+
+										$sql="SELECT cnc.* FROM cn_notes_conteneurs cnc, cn_conteneurs cc WHERE (
+										cnc.login='".$current_eleve_login[$i]."' AND
+										cnc.id_conteneur=cc.id AND
+										cc.id='$lig_cnt->id'
+										);";
+										$res_note_conteneur=mysql_query($sql);
+										if(mysql_num_rows($res_note_conteneur)==0) {
+											$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']="-";
+										}
+										else {
+											$lig_note_conteneur=mysql_fetch_object($res_note_conteneur);
+											if($lig_note_conteneur->statut=='y') {
+												$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']=$lig_note_conteneur->note;
+											}
+											else {
+												$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']="-";
+											}
+										}
+
+										$cpt++;
+									}
+
+									/*
+									for($i=0;$i<count($tab_tmp);$i++) {
+										echo "<p><b>".$tab_tmp[$i]['id_racine']."&nbsp;:</b> ";
+										for($j=0;$j<count($tab_tmp[$i]['conteneurs_enfants']);$j++) {
+											echo $tab_tmp[$i]['conteneurs_enfants'][$j]." - ";
+										}
+										echo "</p>";
+									}
+									*/
+								}
+							}
 
 							//if ($choix_periode ==0) {
 							if ($choix_periode=="intervalle") {
 								//$sql1="SELECT d.coef, nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-								$sql1="SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+								$sql1="SELECT cn.id_cahier_notes, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								nd.login = '".$current_eleve_login[$i]."' and
 								nd.id_devoir = d.id and
 								d.display_parents='1' and
@@ -523,7 +623,7 @@
 								";
 							}
 							else {
-								$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+								$sql1 = "SELECT cn.id_cahier_notes, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								nd.login = '".$current_eleve_login[$i]."' and
 								nd.id_devoir = d.id and
 								d.display_parents='1' and
@@ -588,6 +688,10 @@
 									$tab_ele['groupe'][$j]['devoir'][$m]['note_sur']=$note_sur;
 									$tab_ele['groupe'][$j]['devoir'][$m]['coef']=$coef_devoir;
 									// On ne récupère pas le nom long du devoir?
+
+									// AJOUT 20091113
+									$tab_ele['groupe'][$j]['devoir'][$m]['id_cahier_notes']=@mysql_result($query_notes,$mm,'cn.id_cahier_notes');
+									$tab_ele['groupe'][$j]['devoir'][$m]['id_conteneur']=@mysql_result($query_notes,$mm,'d.id_conteneur');
 
 									//echo "\$eleve_nom_court=$eleve_nom_court<br />";
 									//echo "\$eleve_note=$eleve_note<br />";
