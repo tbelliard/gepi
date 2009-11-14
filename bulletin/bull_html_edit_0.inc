@@ -322,7 +322,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 			else {
 				$n = 0;
 				// Première boite
-				echo "<td style='text-align: center; height: ".$col_hauteur."px; width: ".$col_boite_largeur."px;'><span class='bulletin'>";
+				echo "<td style='text-align: left; height: ".$col_hauteur."px; width: ".$col_boite_largeur."px;'><span class='bulletin'>";
 				echo $tab_bull['groupe'][$j][$i]['cn_nom'][$n].":".nf($tab_bull['groupe'][$j][$i]['cn_note'][$n]);
 				echo "</span></td>\n";
 				$n++;
