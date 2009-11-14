@@ -243,7 +243,7 @@ if(!isset($tab_id_classe)) {
 			echo "<td align='left'>\n";
 		}
 
-		echo "<label for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' /> $lig_clas->classe</label>";
+		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)' /> $lig_clas->classe</label>";
 		echo "<br />\n";
 		$cpt++;
 	}
@@ -262,9 +262,22 @@ if(!isset($tab_id_classe)) {
 		for (var k=0;k<$cpt;k++) {
 			if(document.getElementById('tab_id_classe_'+k)){
 				document.getElementById('tab_id_classe_'+k).checked = mode;
+				change_style_classe(k);
 			}
 		}
 	}
+
+	function change_style_classe(num) {
+		if(document.getElementById('tab_id_classe_'+num)) {
+			if(document.getElementById('tab_id_classe_'+num).checked) {
+				document.getElementById('label_tab_id_classe_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('label_tab_id_classe_'+num).style.fontWeight='normal';
+			}
+		}
+	}
+
 </script>\n";
 
 
@@ -322,7 +335,13 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 					$ligne_debug[$i].="<td style='background-color:lightgreen; text-align:center;'>Close</td>\n";
 				}
 				elseif($lig_per->verouiller=="N") {
-					$ligne_debug[$i].="<td style='background-color:red; text-align:center;'>Non close</td>\n";
+					$ligne_debug[$i].="<td style='background-color:red; text-align:center;'>Non close";
+					/*
+					if($_SESSION['statut']=='scolarite') {
+						$ligne_debug[$i].=" <a href='verrouillage.php' target='_blank'><img src='../images/icons/configure.png' width='16' height='16' title='Verrouillage/déverrouillage'/></a>\n";
+					}
+					*/
+					$ligne_debug[$i].="</td>\n";
 					if(!in_array($lig_per->num_periode,$tab_periode_num_excluses)) {$tab_periode_num_excluses[]=$lig_per->num_periode;}
 				}
 				else {
@@ -356,7 +375,11 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 			echo "<td style='background-color:lightgreen; text-align:center;'><input type='checkbox' name='tab_periode_num[]' value='$i' /></td>\n";
 		}
 		else {
-			echo "<td style='background-color:red; text-align:center;'>Période non close<br />pour une classe au moins</td>\n";
+			echo "<td style='background-color:red; text-align:center;'>Période non close<br />pour une classe au moins";
+			if($_SESSION['statut']=='scolarite') {
+				echo " <a href='verrouillage.php' target='_blank'><img src='../images/icons/configure.png' width='16' height='16' title='Verrouillage/déverrouillage'/></a>\n";
+			}
+			echo "</td>\n";
 		}
 	}
 	echo "</tr>\n";
