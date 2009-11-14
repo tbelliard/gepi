@@ -4261,7 +4261,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				}
 				*/
 				$info_absence = $info_absence." du suivi : <i>".affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe'])."</i>)";
-				$pdf->MultiCellTag(200, 5, $info_absence, '', 'J', '');
+				//$pdf->MultiCellTag(200, 5, $info_absence, '', 'J', '');
+				// A FAIRE PEUT-ETRE: 
+				$pdf->MultiCellTag(200, 5, traite_accents_utf8($info_absence), '', 'J', '');
 
 				//=========================
 				// MODIF: boireaus 20081220
