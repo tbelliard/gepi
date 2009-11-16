@@ -1360,6 +1360,9 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 }
 //========================
 
+// Pour permettre d'afficher moyenne, médiane, quartiles,... en mode Visualisation du carnet de notes
+$chaine_input_moy="";
+
 //
 // Affichage des lignes "elèves"
 //
@@ -1510,12 +1513,18 @@ while($i < $nombre_lignes) {
 		}
 		// ===================================
 		echo "<td class='cn' bgcolor='$couleur_moy_cont'><center><b>$moy</b></center></td>\n";
+		if($moy=='&nbsp;') {
+			$chaine_input_moy.="<input type='hidden' name='n$i' id='n$i' value='' />\n";
+		}
+		else {
+			$chaine_input_moy.="<input type='hidden' name='n$i' id='n$i' value='$moy' />\n";
+		}
 	}
 	echo "</tr>\n";
 
 	$i++;
 }
-
+$nombre_lignes=$i;
 
 //=========================
 // AJOUT: boireaus 20080607
@@ -1704,6 +1713,21 @@ if ($id_devoir) echo "<input type='hidden' name='is_posted' value=\"yes\" />\n";
 <?php if ($id_devoir != 0) echo "<br /><center><div id=\"fixe\"><input type='submit' value='Enregistrer' /></div></center>\n"; ?>
 </form>
 <?php
+
+//===================================
+//echo "\$id_devoir=$id_devoir<br />";
+//if((isset($id_devoir))&&($id_devoir==0)) {
+if((!isset($id_devoir))||($id_devoir=='')) {
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form_calcul_mediane'>\n";
+	echo $chaine_input_moy;
+	echo "</form>\n";
+	
+	echo "<div style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
+	javascript_tab_stat('tab_stat_',$nombre_lignes);
+	echo "</div>\n";
+}
+//===================================
+
 if ($id_devoir) {
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
