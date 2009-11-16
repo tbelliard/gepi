@@ -3534,6 +3534,63 @@ function eleve_suivant(){
 			if($sexe1=="F"){echo "e";}
 			echo " le $naissance1[2]/$naissance1[1]/$naissance1[0] (<i>soit $age1 $precision1</i>).</p>";
 
+
+
+			$acces_bull_simp="n";
+			if(($_SESSION['statut']=="responsable")&&(getSettingValue('GepiAccesBulletinSimpleParent')=='yes')) {
+				$acces_bull_simp="y";
+			}
+			elseif(($_SESSION['statut']=="eleve")&&(getSettingValue('GepiAccesBulletinSimpleEleve')=='yes')) {
+				$acces_bull_simp="y";
+			}
+			elseif($_SESSION['statut']=="professeur") {
+
+				if(getSettingValue('GepiAccesBulletinSimplePP')=='yes') {
+					$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login='$eleve1' AND professeur='".$_SESSION['login']."';";
+					$test_acces_bull_simp=mysql_query($sql);
+					if(mysql_num_rows($test_acces_bull_simp)>0) {
+						$acces_bull_simp="y";
+					}
+				}
+
+				if(getSettingValue('GepiAccesBulletinSimpleProfToutesClasses')=='yes') {
+					$acces_bull_simp="y";
+				}
+				elseif(getSettingValue('GepiAccesBulletinSimpleProfTousEleves')=='yes') {
+					$sql="SELECT 1=1 FROM j_eleves_classes jec, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jec.login='$eleve1' AND jec.id_classe=jgc.id_classe AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."';";
+					$test_acces_bull_simp=mysql_query($sql);
+					if(mysql_num_rows($test_acces_bull_simp)>0) {
+						$acces_bull_simp="y";
+					}
+				}
+				elseif(getSettingValue('GepiAccesBulletinSimpleProf')=='yes') {
+					$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE jeg.login='$eleve1' AND jgp.id_groupe=jeg.id_groupe AND jgp.login='".$_SESSION['login']."';";
+					$test_acces_bull_simp=mysql_query($sql);
+					if(mysql_num_rows($test_acces_bull_simp)>0) {
+						$acces_bull_simp="y";
+					}
+				}
+			}
+			elseif($_SESSION['statut']=="scolarite") {
+				$acces_bull_simp="y";
+			}
+			elseif($_SESSION['statut']=="cpe") {
+				$acces_bull_simp="y";
+			}
+			elseif($_SESSION['statut']=="administrateur") {
+				$acces_bull_simp="y";
+			}
+
+
+			if($acces_bull_simp=="y") {
+				if($choix_periode=='toutes_periodes') {
+					echo "<p align='center'><a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" target=\"_blank\">Voir le bulletin simplifié</a></p>";
+				}
+				else {
+					echo "<p align='center'><a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" target=\"_blank\">Voir le bulletin simplifié</a></p>";
+				}
+			}
+
 			// A FAIRE:
 			// Faire apparaitre les absences...
 		}
