@@ -3990,4 +3990,71 @@ calcul_moy_med();
 </script>
 ";
 }
+
+
+function calcule_moy_mediane_quartiles($tab) {
+	$tab2=array();
+
+	//echo "<p>";
+	$total=0;
+	for($i=0;$i<count($tab);$i++) {
+		//echo "\$tab[$i]=".$tab[$i]."<br />\n";
+		if(($tab[$i]!='')&&($tab[$i]!='-')&&($tab[$i]!='&nbsp;')&&($tab[$i]!='abs')&&($tab[$i]!='disp')) {
+			$tab2[]=my_ereg_replace(',','.',$tab[$i]);
+			$total+=my_ereg_replace(',','.',$tab[$i]);
+		}
+	}
+
+	// Initialisation
+	$tab_retour['moyenne']='-';
+	$tab_retour['mediane']='-';
+	$tab_retour['min']='-';
+	$tab_retour['max']='-';
+	$tab_retour['q1']='-';
+	$tab_retour['q3']='-';
+
+	if(count($tab2)>0) {
+		sort($tab2);
+
+		/*
+		echo "<p>";
+		for($i=0;$i<count($tab2);$i++) {
+			echo "\$tab2[$i]=".$tab2[$i]."<br />\n";
+		}
+		*/
+
+		$moyenne=round(10*$total/count($tab2))/10;
+	
+		if(count($tab2)%2==0) {
+			$mediane=($tab2[count($tab2)/2-1]+$tab2[count($tab2)/2])/2;
+		}
+		else {
+			$mediane=$tab2[(count($tab2)-1)/2];
+		}
+
+		$min=min($tab2);
+		$max=max($tab2);
+
+		if(count($tab2)>=4) {
+			$q1=$tab2[ceil(count($tab2)/4)-1];
+			$q3=$tab2[ceil(3*count($tab2)/4)-1];
+		}
+
+		$tab_retour['moyenne']=$moyenne;
+		$tab_retour['mediane']=$mediane;
+		$tab_retour['min']=$min;
+		$tab_retour['max']=$max;
+		$tab_retour['q1']=$q1;
+		$tab_retour['q3']=$q3;
+	}
+
+	/*
+	echo "<p>";
+	foreach($tab_retour as $key => $value) {
+		echo "\$tab_retour['$key']=".$value."<br />\n";
+	}
+	*/
+
+	return $tab_retour;
+}
 ?>
