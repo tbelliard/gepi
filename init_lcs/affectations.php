@@ -107,7 +107,11 @@ if (isset($_POST['is_posted'])) {
     echo "<tr><td>Classe</td><td>Matière</td><td>identifiants prof.</td></tr>\n";
 
     // Première boucle sur les classes :
-    $res = sql_query("select id, classe from classes");
+    //================================================
+    // Modif: boireaus 20091119
+    //$res = sql_query("select id, classe from classes");
+    $res = sql_query("select id, nom_complet from classes");
+    //================================================
     if (!$res) die("problème : impossible de sélectionner les classes.");
     for ($i = 0; ($row = sql_row($res, $i)); $i++) {
         $id_classe = $row[0];
@@ -119,7 +123,11 @@ if (isset($_POST['is_posted'])) {
             $id_matiere = $row2[0];
             $nom_complet = $row2[1];
             // On cherche tous groupes qui commence par "Cours_Matiere_Classe"
-            $nom_cours = "Cours_".$id_matiere."_".$nom_classe."_";
+            //================================================
+            // Modif: boireaus 20091119
+            //$nom_cours = "Cours_".$id_matiere."_".$nom_classe."_";
+            $nom_cours = "Cours_".$id_matiere."_".$nom_classe;
+            //================================================
             $sr = ldap_search($ds,$ldap_base,"(cn=".$nom_cours."*)");
             $info = ldap_get_entries($ds,$sr);
             $ordre = 0;
