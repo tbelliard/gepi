@@ -26,3 +26,13 @@
 .txt_rouge {
 	color:red;
 }
+
+#soumettre{
+	font-variant: small-caps;
+}
+
+#p_bt_gabarit{
+	text-align:center;
+	font-variant: small-caps;
+}
+

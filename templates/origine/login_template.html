@@ -69,7 +69,7 @@
 <!-- identification -->
 	<form action='login.php' method='post' >
 		<div id ='identification'>
-
+				
 <!-- Utilisation multisite -->
 			<p class ='cache'>
 				<input type="hidden" name="rne" value="[onshow.tbs_multisite]" />
@@ -81,14 +81,14 @@
 				<h1>[onshow.tbs_gepiSchoolName]</h1>
 				<p class='annee'>[onshow.tbs_gepiYear]</p>
 			</div>
-
+					
 			<div id='div_login'>
 
 <!-- Message -->
 				<p class='message'>[tbs_message.classe;att=class;attadd]
 					[tbs_message;block=p][tbs_message.texte]
 				</p>
-
+				
 <!-- Cadenas -->
 				<div>
 					<img class='cadenas' src='images/icons/lock.png' alt="" title="" />
@@ -97,20 +97,20 @@
 <!-- Identifiant -->
 				<p class='droite' title="Saisissez l'identifiant qui vous a été donné.">
 					<label for='login'>Identifiant</label>
-					<input type='text' id='login' name='login' size='18' />
+					<input type='text' id='login' name='login' size='17' />
 				</p>
 
 <!-- Mot de passe -->
 				<p class='droite' title="Saisissez votre mot de passe en respectant les minuscules et les majuscules." >
 					<label for='no_anti_inject_password'>Mot de passe</label>
-					<input type='password' id='no_anti_inject_password' name='no_anti_inject_password' size='18' onkeypress='capsDetect(arguments[0]);'/>
+					<input type='password' id='no_anti_inject_password' name='no_anti_inject_password' size='17' onkeypress='capsDetect(arguments[0]);'/>
 				</p>
 
 <!-- Bouton valider -->
 				<p class='droite' title="Envoyer les identifiants">
-					<input type='submit' name='submit' id='soumettre' value='Valider' style='font-variant: small-caps;' />
+					<input type='submit' name='submit' id='soumettre' value='Valider' />
 				</p>
-
+									
 <!-- Mot de passe oublié -->
 				<p id='mot_passe' title="Cliquez pour demander un nouveau mot de passe">
 				&nbsp;
@@ -123,7 +123,7 @@
 
 	</form>
 
-
+	
 <!-- Switcher de gabarit -->
 	<form enctype="multipart/form-data" id= "switcher" action="login.php" method="get">
 		<p class='switcher'>
@@ -134,8 +134,8 @@
 			</select>
 		</p>
 		<!-- Bouton valider -->
-		<p style="text-align:center;">
-			<input type='submit' name='bt_gabarit' id="bt_gabarit" value='Choisir' style="font-variant: small-caps;" />
+		<p id="p_bt_gabarit" >
+			<input type='submit' name='bt_gabarit' id="bt_gabarit" value='Choisir' />
 		</p>
 
 	</form>
@@ -148,7 +148,7 @@
 				Se connecter en utilisant le service d'authentification unique
 			</a>
 		</p>
-
+		
 <!-- Information vie privée -->
 		<p>
 			<a href="gestion/info_vie_privee.php" onclick="centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes');return false;">
@@ -159,7 +159,7 @@
 		</p>
 
 <!-- Ecrire aux administrateurs -->
-
+		
 		<p>
 			<!-- <a href="javascript:pigeon('[tbs_blk2.nom;block=p]','[tbs_blk2.fai]');">Contacter l'administrateur</a> -->
 			<a href="mailto:[tbs_blk2.nom;block=p]%40[tbs_blk2.fai]?subject=GEPI">Contacter l'administrateur</a>
@@ -190,7 +190,8 @@
 	</div> 
 
 
-
+		
 
 </body>
 </html>
+
