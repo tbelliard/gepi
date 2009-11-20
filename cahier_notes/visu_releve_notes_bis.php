@@ -363,7 +363,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 			echo "<td align='left'>\n";
 		}
 
-		echo "<label for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='unCheckRadio();' /> $lig_clas->classe</label>";
+		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='unCheckRadio();change_style_classe($cpt)' /> $lig_clas->classe</label>";
 		echo "<br />\n";
 		$cpt++;
 	}
@@ -371,6 +371,19 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
+
+echo "<script type='text/javascript'>
+	function change_style_classe(num) {
+		if(document.getElementById('tab_id_classe_'+num)) {
+			if(document.getElementById('tab_id_classe_'+num).checked) {
+				document.getElementById('label_tab_id_classe_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('label_tab_id_classe_'+num).style.fontWeight='normal';
+			}
+		}
+	}
+</script>\n";
 
 	echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout décocher</a></p>\n";
 
@@ -405,6 +418,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 		for (var k=0;k<$cpt;k++) {
 			if(document.getElementById('tab_id_classe_'+k)){
 				document.getElementById('tab_id_classe_'+k).checked = mode;
+				change_style_classe(k);
 			}
 		}
 
@@ -415,6 +429,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 		for (var k=0;k<$nb_grp_prof;k++) {
 			if(document.getElementById('id_groupe_'+k)){
 				document.getElementById('id_groupe_'+k).checked = false;
+				change_style_classe(k);
 			}
 		}
 	}
