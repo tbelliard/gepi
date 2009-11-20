@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 27/09/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -132,8 +132,8 @@ if ($max_periode <= 0) {
    die();
 }
 
-echo "<FORM METHOD=\"post\" ACTION=\"matieres_param.php\">\n";
-echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <INPUT TYPE=SUBMIT VALUE='Enregistrer' /></p>\n";
+echo "<form method=\"post\" action=\"matieres_param.php\">\n";
+echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type='submit' value='Enregistrer' /></p>\n";
 echo "<p>Sur cette page, vous pouvez modifier les coefficients et les priorités d'affichage d'une ou plusieurs matières
 par lots de classes cochées ci-dessous.</p>\n";
 
@@ -151,14 +151,17 @@ while ($nbc < $nb_classe) {
 }
 $nb_ligne = intval($nb_classe/3);
 if ($nb_ligne*3 < $nb_classe) $nb_ligne++;
-echo "<table width = 100% border=1>\n";
+//echo "<table width = 100% border=1>\n";
+echo "<table width='100%' border='1' class='boireaus' summary='Choix des classes'>\n";
 $i ='0';
 //============================================
 // AJOUT: boireaus
 $cpt_classe=0;
+$alt=1;
 //============================================
 while ($i < $nb_ligne) {
-    echo "<tr>\n";
+	$alt=$alt*(-1);
+    echo "<tr class='lig$alt white_over'>\n";
     $j = 0;
     while ($j < 3) {
         unset($nom_case);
@@ -170,7 +173,7 @@ while ($i < $nb_ligne) {
     // MODIF: boireaus
         //if ($nom_classe != '') echo "<input type=\"checkbox\" name=\"".$nom_case."\" />&nbsp;".$nom_classe;
         if ($nom_classe != ''){
-        echo "<input type=\"checkbox\" name=\"".$nom_case."\" id=\"classe_num".$cpt_classe."\" />&nbsp;".$nom_classe;
+        echo "<input type=\"checkbox\" name=\"".$nom_case."\" id=\"classe_num".$cpt_classe."\" onchange='change_style_classe($cpt_classe)' /><label id=\"label_classe_num".$cpt_classe."\" for='classe_num".$cpt_classe."'>&nbsp;".$nom_classe."</label>";
         $cpt_classe++;
     }
     //============================================
@@ -186,10 +189,22 @@ echo "</table>\n";
 //============================================
 // AJOUT: boireaus
 echo "<script type='text/javascript' language='javascript'>
+	function change_style_classe(num) {
+		if(document.getElementById('classe_num'+num)) {
+			if(document.getElementById('classe_num'+num).checked) {
+				document.getElementById('label_classe_num'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('label_classe_num'+num).style.fontWeight='normal';
+			}
+		}
+	}
+
     function coche_tout(){
         cpt=0;
         while(cpt<$cpt_classe){
             document.getElementById('classe_num'+cpt).checked=true;
+			change_style_classe(cpt);
             cpt++;
         }
     }
@@ -198,6 +213,7 @@ echo "<script type='text/javascript' language='javascript'>
         cpt=0;
         while(cpt<$cpt_classe){
             document.getElementById('classe_num'+cpt).checked=false;
+			change_style_classe(cpt);
             cpt++;
         }
     }
@@ -208,17 +224,18 @@ echo "<script type='text/javascript' language='javascript'>
 <p class='bold'>Pour la ou les classe(s) sélectionnée(s) ci-dessus : </p>
 <p>Remarque : Aucune modification n'est apportée aux champs laissés vides.</p>
 
-<table width = '100%' border= '1' cellpadding = '5'>
+<table width='100%' border='1' cellpadding='5' class='boireaus' summary='Paramétrage des matières'>
 <tr>
-    <td><p class='bold'>Identifiant matière</p></td>
-    <td><p class='bold'>Nom complet</p></td>
-    <td><p class='bold'>Ordre d'affichage</p></td>
-    <td><p class='bold'>Coefficient</p></td>
-    <td><p class='bold'>Catégorie</p></td>
+    <th><p class='bold'>Identifiant matière</p></th>
+    <th><p class='bold'>Nom complet</p></th>
+    <th><p class='bold'>Ordre d'affichage</p></th>
+    <th><p class='bold'>Coefficient</p></th>
+    <th><p class='bold'>Catégorie</p></th>
 </tr>
 
 <?php
 $i = 0;
+$alt=1;
 while ($i < $nb_matieres){
     $current_matiere = @mysql_result($matieres_list, $i, "matiere");
     $current_matiere_nom = @mysql_result($matieres_list, $i, "nom_complet");
@@ -230,7 +247,8 @@ while ($i < $nb_matieres){
     )");
     $nb_mat = mysql_num_rows($matquery);
     if ($nb_mat != 0) {
-        echo "<tr><td>$current_matiere</td>\n";
+		$alt=$alt*(-1);
+        echo "<tr class='lig$alt white_over'><td>$current_matiere</td>\n";
         //echo "<td>$current_matiere_nom</td>\n";
         echo "<td>".htmlentities($current_matiere_nom)."</td>\n";
         echo "<td>\n";
@@ -267,8 +285,8 @@ $i++;
 }
 ?>
 </table>
-<center><INPUT TYPE=SUBMIT VALUE='Enregistrer' /></center>
-<input type=hidden name=is_posted value="yes" />
+<center><input type='submit' value='Enregistrer' /></center>
+<input type='hidden' name='is_posted' value="yes" />
 
 <?php
 /*$i = 0;
