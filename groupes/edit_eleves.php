@@ -212,6 +212,7 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
 require_once("../lib/header.inc");
@@ -285,12 +286,15 @@ function DecochePeriode() {
 
 <?php
 
-
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
+echo "<p class='bold'>\n";
+echo "<a href='edit_class.php?id_classe=$id_classe'";
+echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+echo "</p>";
+
 ?>
-<p class="bold">
-<a href="edit_class.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <?php
 	echo "<h3>Gérer les élèves de l'enseignement : ";
@@ -341,7 +345,9 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 		}
 		echo "</select>\n";
 		echo "<br />\n";
-		echo "<input type='button' name='Copie' value='Recopie des élèves associés' onclick=\"recopie_grp_ele(document.getElementById('choix_modele_copie').selectedIndex);\" />\n";
+		echo "<input type='button' name='Copie' value='Recopie des élèves associés' onclick=\"recopie_grp_ele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
+		echo "<br />\n";
+		echo "<input type='button' name='Copie' value='Copie INVERSE des élèves associés' onclick=\"recopie_inverse_grp_ele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
 		echo "</p>\n";
 
 		echo "<script type='text/javascript'>\n";
@@ -357,7 +363,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 
 <p>
-<b><a href="javascript:CocheCase(true)">Tout cocher</a> - <a href="javascript:CocheCase(false)">Tout décocher</a></b>
+<b><a href="javascript:CocheCase(true);changement();">Tout cocher</a> - <a href="javascript:CocheCase(false);changement();">Tout décocher</a></b>
 </p>
 <form enctype="multipart/form-data" action="edit_eleves.php" name="formulaire" method='post'>
 <p><input type='submit' value='Enregistrer' /></p>
@@ -471,7 +477,7 @@ foreach ($current_group["periodes"] as $period) {
 			//echo "<a href=\"javascript:CochePeriode(" . $elements[$period["num_periode"]] . ")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecochePeriode(" . $elements[$period["num_periode"]] . ")\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 
 			if(count($total_eleves)>0) {
-				echo "<a href=\"javascript:CocheColonne(".$period["num_periode"].")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$period["num_periode"].")\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+				echo "<a href=\"javascript:CocheColonne(".$period["num_periode"].");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$period["num_periode"].");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 			}
 			//=========================
 			echo "<br/>Inscrits : " . count($current_group["eleves"][$period["num_periode"]]["list"]);
@@ -599,6 +605,7 @@ foreach ($current_group["periodes"] as $period) {
 						//echo "<input type='checkbox' name='eleve_".$period["num_periode"] . "_" . $e_login."' ";
 						echo "<input type='checkbox' name='eleve_".$period["num_periode"]."_".$num_eleve."' id='case_".$period["num_periode"]."_".$num_eleve."' ";
 						//=========================
+						echo " onchange='changement();'";
 						if (in_array($e_login, (array)$current_group["eleves"][$period["num_periode"]]["list"])) {
 								echo " checked />";
 						} else {
@@ -642,11 +649,11 @@ foreach ($current_group["periodes"] as $period) {
 			if (!$setting) $setting = array(null);
 			echo "<td><input type='text' size='3' name='setting_coef_" . $e_login . "' value='" . $setting[0] . "' /></td>\n";
 			*/
-			echo "<td><a href=\"javascript:CocheLigne($num_eleve)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($num_eleve)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></td>\n";
+			echo "<td><a href=\"javascript:CocheLigne($num_eleve);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($num_eleve);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></td>\n";
 			$setting = get_eleve_groupe_setting($e_login, $id_groupe, "coef");
 			if (!$setting) $setting = array(null);
 			//echo "<td><input type='text' size='3' name='setting_coef[".$num_eleve."]' value='".$setting[0]."' /></td>\n";
-			echo "<td><input type='text' size='3' name='setting_coef_".$num_eleve."' value='".$setting[0]."' /></td>\n";
+			echo "<td><input type='text' size='3' name='setting_coef_".$num_eleve."' value='".$setting[0]."' onchange='changement();' /></td>\n";
 			//=========================
 	
 			echo "</tr>\n";
@@ -679,7 +686,7 @@ foreach ($current_group["periodes"] as $period) {
 			}
 		}
 	}
-	
+
 	function recopie_grp_ele(num) {
 		tab=eval('tab_grp_ele_'+num);
 		//alert('tab[0]='+tab[0]);
@@ -697,7 +704,24 @@ foreach ($current_group["periodes"] as $period) {
 			}
 		}
 	}
-	
+
+	function recopie_inverse_grp_ele(num) {
+		tab=eval('tab_grp_ele_'+num);
+		//alert('tab[0]='+tab[0]);
+
+		for(j=0;j<$nb_eleves;j++) {
+			CocheLigne(j);
+		}
+
+		for(i=0;i<tab.length;i++) {
+			for(j=0;j<$nb_eleves;j++) {
+				if(document.getElementById('login_eleve_'+j).value==tab[i]) {
+					DecocheLigne(j);
+				}
+			}
+		}
+	}
+
 	</script>
 	";
 }
