@@ -38,12 +38,27 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+// Ebauche de liste des variables reçues:
+// $choix_edit correspond au choix de ce qui doit être affiché:
+// Pour $choix_edit=1:
+//    - Tous les élèves que le prof a en cours, ou rattaché à une classe qu'a le prof, ou tous les élèves selon le choix paramétré en admin dans Droits d'accès
+//    - En compte scolarité ou cpe: Tous les élèves de la classe
+// $choix_edit=2
+//    - Uniquement l'élève sélectionné: la variable $login_eleve, qui est de toute façon affectée, doit alors être prise en compte pour limiter l'affichage à cet élève
+// $choix_edit=3
+//    - Ce choix correspond aux classes avec plusieur professeurs principaux
+//      On a alors une variable $login_prof affectée pour limiter les affichages aux élèves suivi par un des profs principaux seulement
+//      Cette variable $login_prof ne devrait être prise en compte que dans le cas $choix_edit==3
+// $choix_edit=4
+//    - Affichage du bulletin des avis sur la classe
+
 include "../lib/periodes.inc.php";
 include "../lib/bulletin_simple.inc.php";
 //==============================
@@ -122,6 +137,8 @@ $choix_edit == "2") {
 	}
 }
 
+//debug_var();
+
 // On a passé les barrières, on passe au traitement
 
 $gepiYear = getSettingValue("gepiYear");
@@ -198,7 +215,9 @@ if ($choix_edit != '2') {
 	getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes") {
 
 		// On ne sélectionne que les élèves que le professeur a en cours
-	    if ($choix_edit == '1') {
+	    //if ($choix_edit == '1') {
+	    if (($choix_edit == '1')||(!isset($login_prof))) {
+			// On a alors $choix_edit==1 ou $choix_edit==4
 	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
@@ -209,6 +228,7 @@ if ($choix_edit != '2') {
 				"jgp.login = '".$_SESSION['login']."') " .
 				"ORDER BY e.nom,e.prenom");
 	    } else {
+			// On a alors $choix_edit==3 uniquement les élèves du professeur principal $login_prof
 	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp, j_eleves_professeurs jep " .
 				"WHERE (" .
@@ -224,9 +244,9 @@ if ($choix_edit != '2') {
 	} else {
 	    // On sélectionne sans restriction
 
-		// A REVOIR: l'ajout de !isset($login_prof) est destiné à éviter une erreur en compte scolarité... il me semble
 	    //if ($choix_edit == '1') {
 	    if (($choix_edit == '1')||(!isset($login_prof))) {
+			// On a alors $choix_edit==1 ou $choix_edit==4
 	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
 	        		"FROM eleves e, j_eleves_classes c " .
 	        		"WHERE (" .
@@ -234,6 +254,7 @@ if ($choix_edit != '2') {
 	        		"e.login = c.login" .
 	        		") ORDER BY e.nom,e.prenom");
 	    } else {
+			// On a alors $choix_edit==3
 	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
 	        		"FROM eleves e, j_eleves_classes c, j_eleves_professeurs p " .
 	        		"WHERE (" .
