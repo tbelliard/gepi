@@ -1981,5 +1981,37 @@ echo "</table>";
         Fin module Epreuves blanches
 *****************************/
 
+/*************************
+        Module Examens blancs
+*************************/
+//insert into setting set name='active_mod_epreuve_blanche', value='y';
+if (getSettingValue("active_mod_examen_blanc")=='y') {
+$chemin = array();
+$chemin[]="/mod_examen_blanc/index.php";
+$titre = array();
+$titre[] = "Examens blancs";
+
+$expli = array();
+$expli[] = "Organisation d'examens blancs,...";
+
+$nb_ligne = count($chemin);
+$affiche = 'no';
+for ($i=0;$i<$nb_ligne;$i++) {
+if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+}
+if ($affiche=='yes') {
+echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Examens blancs</h2>\n";
+echo "<table class='menu' summary=\"Module Examens blancs. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+for ($i=0;$i<$nb_ligne;$i++) {
+affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+}
+echo "</table>";
+}
+}
+
+/*****************************
+        Fin module Examens blancs
+*****************************/
+
 require_once ("./lib/footer.inc.php");
 ?>

@@ -153,6 +153,16 @@ $chemin[] = "/mod_genese_classes/admin.php";
 $titre[] = "Génèse des classes";
 $expli[] = "Pour gérer le module Génèse des classes.";
 
+//Module Epreuve blanche
+$chemin[] = "/mod_epreuve_blanche/admin.php";
+$titre[] = "Epreuves blanches";
+$expli[] = "Pour gérer des épreuves blanches (anonymat des copies,...).";
+
+//Module Examen blanc
+$chemin[] = "/mod_examen_blanc/admin.php";
+$titre[] = "Examens blancs";
+$expli[] = "Pour gérer des examens blancs.";
+
 $nb_ligne = count($chemin);
 //
 // Outils d'administration

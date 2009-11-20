@@ -1,5 +1,7 @@
 <?php
 /* 
+ * $Id$
+ *
  * Ce fichier est toujours appelé lors d'une mise à jour.
  * Il réinitialise totalement la table 'droits' avec les informations détaillées
  * ci-après
@@ -582,6 +584,27 @@ $tab_req[] = "INSERT INTO droits VALUES ( '/mod_notanet/fb_lille_pdf.php', 'V', 
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_notanet/fb_creteil_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Fiches brevet PDF pour Creteil', '');";
 
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/disc_stat.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Statistiques', '');";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/admin.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Epreuves blanches: Activation/désactivation du module', statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_examen_blanc/admin.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Examens blancs: Activation/désactivation du module', statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/index.php', administrateur='V', professeur='V', cpe='F', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Epreuve blanche: Accueil', statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/transfert_cn.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Epreuve blanche: Transfert vers carnet de notes',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/saisie_notes.php',administrateur='V',professeur='V',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Epreuve blanche: Saisie des notes',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/genere_emargement.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Epreuve blanche: Génération émargement',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/definir_salles.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Epreuve blanche: Définir les salles',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/attribuer_copies.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Epreuve blanche: Attribuer les copies aux professeurs',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/bilan.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Epreuve blanche: Bilan',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/genere_etiquettes.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Epreuve blanche: Génération étiquettes',statut='';";
+
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_examen_blanc/saisie_notes.php',administrateur='V',professeur='V',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Examen blanc: Saisie devoir hors enseignement',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_examen_blanc/index.php',administrateur='V',professeur='V',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Examen blanc: Accueil',statut='';";
+
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_examen_blanc/releve.php',administrateur='V',professeur='V',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Examen blanc: Relevé',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_examen_blanc/bull_exb.php',administrateur='V',professeur='V',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Examen blanc: Bulletins',statut='';";
+
 
 //$tab_req[] = "INSERT INTO droits VALUES ( '/mod_plugins/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajouter/enlever des plugins', '');";
 
