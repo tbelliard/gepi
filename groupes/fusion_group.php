@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -488,16 +488,16 @@ if(!isset($tab_classe)) {
 				//echo "<input type='checkbox' name='classe_" . $id_classe_temp . "' id='classe_" . $id_classe_temp . "' value='yes'";
 				//if($id_classe_temp!=$id_classe){
 				if (!in_array($id_classe_temp, $reg_clazz)){
-					echo "<label for='classe_".$id_classe_temp."' style='cursor: pointer;'><input type='checkbox' name='tab_classe[$i]' id='classe_" . $id_classe_temp . "' value='$id_classe_temp'";
+					echo "<label id='label_classe_".$id_classe_temp."' for='classe_".$id_classe_temp."' style='cursor: pointer;'><input type='checkbox' name='tab_classe[$i]' id='classe_" . $id_classe_temp . "' value='$id_classe_temp'";
 					if (in_array($id_classe_temp, $reg_clazz)){
 						echo " checked";
 					}
-					echo " onchange='changement();'";
+					echo " onchange='change_style_classe($id_classe_temp);changement();'";
 					echo " /> $classe</label>\n";
 				}
 				else{
 					echo "<input type='hidden' name='tab_classe[$i]' value='$id_classe_temp' />\n";
-					echo "<img src='../images/enabled.png' width='20' height='20' alt='Classe originelle du groupe' title='Classe originelle du groupe' /> $classe";
+					echo "<img src='../images/enabled.png' width='20' height='20' alt='Classe originelle du groupe' title='Classe originelle du groupe' /> <b>$classe</b>";
 				}
 				if (in_array($id_classe_temp, $reg_clazz)){
 					// Pour contrôler les suppressions de classes.
@@ -518,6 +518,19 @@ if(!isset($tab_classe)) {
 		echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
 
 		echo "</form>\n";
+
+		echo "<script type='text/javascript'>
+	function change_style_classe(num) {
+		if(document.getElementById('classe_'+num)) {
+			if(document.getElementById('classe_'+num).checked) {
+				document.getElementById('label_classe_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('label_classe_'+num).style.fontWeight='normal';
+			}
+		}
+	}
+</script>\n";
 
 	} else {
 		echo "<p>Aucune classe définie !</p>\n";
