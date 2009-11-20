@@ -235,104 +235,106 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 
 	$m=0;
 	$tiret = "no";
-	while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
-		if(in_array($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur'],$tab_id_conteneur)) {
-			// Note de l'élève sur le devoir:
-			$eleve_note=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['note'];
-			// Statut de l'élève sur le devoir:
-			$eleve_statut=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['statut'];
-			// Appréciation de l'élève sur le devoir:
-			$eleve_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['app'];
-			// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
-			$eleve_display_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['display_app'];
-			// Nom court du devoir:
-			$eleve_nom_court=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['nom_court'];
-			// Date du devoir:
-			$eleve_date=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['date'];
-			// Coef du devoir:
-			$eleve_coef=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['coef'];
-	
-			//==========================================
-			// On teste s'il y aura une "Note" à afficher
-			if (($eleve_statut != '') and ($eleve_statut != 'v')) {
-				$affiche_note = $eleve_statut;
-			}
-			elseif ($eleve_statut == 'v') {
-				$affiche_note = "";
-			}
-			elseif ($eleve_note != '') {
-				$affiche_note = $eleve_note;
-			}
-			else {
-				$affiche_note = "";
-			}
-			//==========================================
-	
-			// Nom du devoir ou pas
-			if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-				if ($affiche_note=="") {
-					if ($tab_rel['rn_nomdev']!="y") {
-						$affiche_note = $eleve_nom_court;
-					}
-					else {
-						$affiche_note = " ";
-					}
+	if(isset($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
+		while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
+			if(in_array($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur'],$tab_id_conteneur)) {
+				// Note de l'élève sur le devoir:
+				$eleve_note=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['note'];
+				// Statut de l'élève sur le devoir:
+				$eleve_statut=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['statut'];
+				// Appréciation de l'élève sur le devoir:
+				$eleve_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['app'];
+				// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
+				$eleve_display_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['display_app'];
+				// Nom court du devoir:
+				$eleve_nom_court=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['nom_court'];
+				// Date du devoir:
+				$eleve_date=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['date'];
+				// Coef du devoir:
+				$eleve_coef=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['coef'];
+		
+				//==========================================
+				// On teste s'il y aura une "Note" à afficher
+				if (($eleve_statut != '') and ($eleve_statut != 'v')) {
+					$affiche_note = $eleve_statut;
 				}
-			}
-	
-			// Si une "Note" doit être affichée
-			if ($affiche_note != '') {
-				if ($tiret == "yes") {
-					if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
-						$retour.="\n";
-					}
-					else {
-						$retour.=" - ";
-					}
+				elseif ($eleve_statut == 'v') {
+					$affiche_note = "";
 				}
-				if($tab_rel['rn_nomdev']=="y"){
-					//$retour.="$eleve_nom_court: <b>".$affiche_note."</b>";
-					$retour.="$eleve_nom_court: ".$affiche_note;
+				elseif ($eleve_note != '') {
+					$affiche_note = $eleve_note;
 				}
-				else{
-					//$retour.="<b>".$affiche_note."</b>";
-					$retour.=$affiche_note;
+				else {
+					$affiche_note = "";
 				}
-	
-				// Coefficient (si on affiche tous les coef...
-				// ou si on ne les affiche que s'il y a plusieurs coef différents)
-				if(($tab_rel['rn_toutcoefdev']=="y")||
-					(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['eleve'][$i]['groupe'][$j]['differents_coef']=="y"))) {
-					//$retour.=" (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
-					$retour.=" (".$chaine_coef.$eleve_coef.")";
-				}
-	
-				// Si on a demandé à afficher les appréciations
-				// et si le prof a coché l'autorisation d'accès à l'appréciations
+				//==========================================
+		
+				// Nom du devoir ou pas
 				if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-					$retour.=" - Appréciation : ";
-					if ($eleve_app!="") {
-						$retour.=$eleve_app;
-					}
-					else {
-						$retour.="-";
+					if ($affiche_note=="") {
+						if ($tab_rel['rn_nomdev']!="y") {
+							$affiche_note = $eleve_nom_court;
+						}
+						else {
+							$affiche_note = " ";
+						}
 					}
 				}
-	
-				if($tab_rel['rn_datedev']=="y"){
-					// Format: 2006-09-28 00:00:00
-					$tmpdate=explode(" ",$eleve_date);
-					$tmpdate=explode("-",$tmpdate[0]);
-					//$retour.=" (<i><small>$tmpdate[2]/$tmpdate[1]/$tmpdate[0]</small></i>)";
-					$retour.=" ($tmpdate[2]/$tmpdate[1]/$tmpdate[0])";
+		
+				// Si une "Note" doit être affichée
+				if ($affiche_note != '') {
+					if ($tiret == "yes") {
+						if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
+							$retour.="\n";
+						}
+						else {
+							$retour.=" - ";
+						}
+					}
+					if($tab_rel['rn_nomdev']=="y"){
+						//$retour.="$eleve_nom_court: <b>".$affiche_note."</b>";
+						$retour.="$eleve_nom_court: ".$affiche_note;
+					}
+					else{
+						//$retour.="<b>".$affiche_note."</b>";
+						$retour.=$affiche_note;
+					}
+		
+					// Coefficient (si on affiche tous les coef...
+					// ou si on ne les affiche que s'il y a plusieurs coef différents)
+					if(($tab_rel['rn_toutcoefdev']=="y")||
+						(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['eleve'][$i]['groupe'][$j]['differents_coef']=="y"))) {
+						//$retour.=" (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
+						$retour.=" (".$chaine_coef.$eleve_coef.")";
+					}
+		
+					// Si on a demandé à afficher les appréciations
+					// et si le prof a coché l'autorisation d'accès à l'appréciations
+					if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
+						$retour.=" - Appréciation : ";
+						if ($eleve_app!="") {
+							$retour.=$eleve_app;
+						}
+						else {
+							$retour.="-";
+						}
+					}
+		
+					if($tab_rel['rn_datedev']=="y"){
+						// Format: 2006-09-28 00:00:00
+						$tmpdate=explode(" ",$eleve_date);
+						$tmpdate=explode("-",$tmpdate[0]);
+						//$retour.=" (<i><small>$tmpdate[2]/$tmpdate[1]/$tmpdate[0]</small></i>)";
+						$retour.=" ($tmpdate[2]/$tmpdate[1]/$tmpdate[0])";
+					}
+					//====================================================================
+					// Après un tour avec affichage dans la boucle:
+					$tiret = "yes";
 				}
-				//====================================================================
-				// Après un tour avec affichage dans la boucle:
-				$tiret = "yes";
 			}
+	
+			$m++;
 		}
-
-		$m++;
 	}
 
 	return $retour;
