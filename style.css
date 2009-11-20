@@ -754,6 +754,13 @@ table.boireaus {
 .boireaus .modif {
 	background-color: #eeaaff;
 }
+
+.padd_et_bordg td {
+	padding: 5px;
+	padding-right: 10px;
+	padding-left: 10px;
+	border: 1px solid #BBBBBB;
+}
 /* ===================== */
 .white_hover:hover {
 	background-color:white;
