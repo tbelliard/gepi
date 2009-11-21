@@ -90,8 +90,14 @@ $variables_non_protegees = 'yes';
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
 
+// Si on est sur LCS, on récupère l'identité de connexion:
+//if ($is_lcs_plugin=='yes') {list ($idpers,$login) = isauth();}
+// Inutile, c'est déjà fait dans lib/initialisations.inc.php
+
 # On redirige vers le login SSO si le login local ou ldap n'est pas activé.
-if ($session_gepi->auth_sso && !$session_gepi->auth_locale && !$session_gepi->auth_ldap) {
+//if ($session_gepi->auth_sso && !$session_gepi->auth_locale && !$session_gepi->auth_ldap) {
+if (($session_gepi->auth_sso && !$session_gepi->auth_locale && ! $session_gepi->auth_ldap) ||
+(($is_lcs_plugin=='yes')&&($login!=""))) {
 	header("Location:login_sso.php");
 	exit();
 }
