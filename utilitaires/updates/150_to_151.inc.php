@@ -2197,7 +2197,12 @@ valeur VARCHAR( 255 ) NOT NULL
 		// Modification de la table utilisateurs (ajout de auth_mode)
 		$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'auth_mode'"));
 		if ($test == 0) {
-			$result_inter .= traite_requete("ALTER TABLE utilisateurs ADD auth_mode ENUM( 'gepi', 'ldap', 'sso' ) NOT NULL DEFAULT 'gepi';");
+			if($is_lcs_plugin=='yes') {
+				$result_inter .= traite_requete("ALTER TABLE utilisateurs ADD auth_mode ENUM( 'gepi', 'ldap', 'sso' ) NOT NULL DEFAULT 'sso';");
+			}
+			else {
+				$result_inter .= traite_requete("ALTER TABLE utilisateurs ADD auth_mode ENUM( 'gepi', 'ldap', 'sso' ) NOT NULL DEFAULT 'gepi';");
+			}
 			if ($result_inter == '') {
 				$result .= "<font color=\"green\">Le champ auth_mode a bien été créé dans la table utilisateurs !</font><br />";
 				if (getSettingValue("use_sso") == 'yes') {
@@ -2213,11 +2218,17 @@ valeur VARCHAR( 255 ) NOT NULL
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'auth_locale'");
 		$res_test=mysql_num_rows($req_test);
 		if ($res_test==0){
-			$result_inter = traite_requete("INSERT INTO setting VALUES ('auth_locale', 'yes');");
+			if($is_lcs_plugin=='yes') {
+				$valeur_auth_locale='no';
+			}
+			else {
+				$valeur_auth_locale='yes';
+			}
+			$result_inter = traite_requete("INSERT INTO setting VALUES ('auth_locale', '$valeur_auth_locale');");
 			if ($result_inter == '') {
-				$result.="<font color=\"green\">Définition du paramètre auth_locale à 'yes': Ok !</font><br />";
+				$result.="<font color=\"green\">Définition du paramètre auth_locale à '$valeur_auth_locale': Ok !</font><br />";
 			} else {
-				$result.="<font color=\"red\">Définition du paramètre auth_locale à 'yes': Erreur !</font><br />";
+				$result.="<font color=\"red\">Définition du paramètre auth_locale à '$valeur_auth_locale': Erreur !</font><br />";
 			}
 		} else {
 			$result .= "<font color=\"blue\">Le paramètre auth_locale existe déjà dans la table setting.</font><br />";
@@ -2239,11 +2250,17 @@ valeur VARCHAR( 255 ) NOT NULL
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'auth_sso'");
 		$res_test=mysql_num_rows($req_test);
 		if ($res_test==0){
-			$result_inter = traite_requete("INSERT INTO setting VALUES ('auth_sso', 'no');");
+			if($is_lcs_plugin=='yes') {
+				$valeur_auth_sso='lcs';
+			}
+			else {
+				$valeur_auth_sso='no';
+			}
+			$result_inter = traite_requete("INSERT INTO setting VALUES ('auth_sso', '$valeur_auth_sso');");
 			if ($result_inter == '') {
-				$result.="<font color=\"green\">Définition du paramètre auth_sso à 'no': Ok !</font><br />";
+				$result.="<font color=\"green\">Définition du paramètre auth_sso à '$valeur_auth_sso': Ok !</font><br />";
 			} else {
-				$result.="<font color=\"red\">Définition du paramètre auth_sso à 'no': Erreur !</font><br />";
+				$result.="<font color=\"red\">Définition du paramètre auth_sso à '$valeur_auth_sso': Erreur !</font><br />";
 			}
 		} else {
 			$result .= "<font color=\"blue\">Le paramètre auth_sso existe déjà dans la table setting.</font><br />";
@@ -2388,8 +2405,15 @@ app TEXT NOT NULL
 
 		// Ajouts d'index
 		$result .= "&nbsp;->Ajout de l'index 'statut' à la table utilisateurs<br />";
-		$req_test = mysql_query("SHOW INDEX FROM utilisateurs WHERE Key_name = 'statut'");
-		$req_res = mysql_num_rows($req_test);
+		//$req_test = mysql_query("SHOW INDEX FROM utilisateurs WHERE Key_name = 'statut'");
+		//$req_res = mysql_num_rows($req_test);
+		$req_res=0;
+		$req_test = mysql_query("SHOW INDEX FROM utilisateurs ");
+		if (mysql_num_rows($req_test)!=0) {
+			while ($enrg = mysql_fetch_object($req_test)) {
+				if ($enrg-> Key_name == 'statut') {$req_res++;}
+			}
+		}
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `utilisateurs` ADD INDEX statut ( `statut` )");
 			if ($query) {
@@ -2402,8 +2426,15 @@ app TEXT NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout de l'index 'etat' à la table utilisateurs<br />";
-		$req_test = mysql_query("SHOW INDEX FROM utilisateurs WHERE Key_name = 'etat'");
-		$req_res = mysql_num_rows($req_test);
+		//$req_test = mysql_query("SHOW INDEX FROM utilisateurs WHERE Key_name = 'etat'");
+		//$req_res = mysql_num_rows($req_test);
+		$req_res=0;
+		$req_test = mysql_query("SHOW INDEX FROM utilisateurs ");
+		if (mysql_num_rows($req_test)!=0) {
+			while ($enrg = mysql_fetch_object($req_test)) {
+				if ($enrg-> Key_name == 'etat') {$req_res++;}
+			}
+		}
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `utilisateurs` ADD INDEX etat ( `etat` )");
 			if ($query) {
@@ -2417,8 +2448,15 @@ app TEXT NOT NULL
 
 
 		$result .= "&nbsp;->Ajout de l'index 'login' à la table resp_pers<br />";
-		$req_test = mysql_query("SHOW INDEX FROM resp_pers WHERE Key_name = 'login'");
-		$req_res = mysql_num_rows($req_test);
+		//$req_test = mysql_query("SHOW INDEX FROM resp_pers WHERE Key_name = 'login'");
+		//$req_res = mysql_num_rows($req_test);
+		$req_res=0;
+		$req_test = mysql_query("SHOW INDEX FROM resp_pers ");
+		if (mysql_num_rows($req_test)!=0) {
+			while ($enrg = mysql_fetch_object($req_test)) {
+				if ($enrg-> Key_name == 'login') {$req_res++;}
+			}
+		}
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `resp_pers` ADD INDEX login ( `login` )");
 			if ($query) {
@@ -2431,8 +2469,15 @@ app TEXT NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout de l'index 'adr_id' à la table resp_pers<br />";
-		$req_test = mysql_query("SHOW INDEX FROM resp_pers WHERE Key_name = 'adr_id'");
-		$req_res = mysql_num_rows($req_test);
+		//$req_test = mysql_query("SHOW INDEX FROM resp_pers WHERE Key_name = 'adr_id'");
+		//$req_res = mysql_num_rows($req_test);
+		$req_res=0;
+		$req_test = mysql_query("SHOW INDEX FROM resp_pers ");
+		if (mysql_num_rows($req_test)!=0) {
+			while ($enrg = mysql_fetch_object($req_test)) {
+				if ($enrg-> Key_name == 'adr_id') {$req_res++;}
+			}
+		}
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `resp_pers` ADD INDEX adr_id ( `adr_id` )");
 			if ($query) {
@@ -2446,8 +2491,15 @@ app TEXT NOT NULL
 
 
 		$result .= "&nbsp;->Ajout de l'index 'pers_id' à la table responsables2<br />";
-		$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'pers_id'");
-		$req_res = mysql_num_rows($req_test);
+		//$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'pers_id'");
+		//$req_res = mysql_num_rows($req_test);
+		$req_res=0;
+		$req_test = mysql_query("SHOW INDEX FROM responsables2 ");
+		if (mysql_num_rows($req_test)!=0) {
+			while ($enrg = mysql_fetch_object($req_test)) {
+				if ($enrg-> Key_name == 'pers_id') {$req_res++;}
+			}
+		}
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `responsables2` ADD INDEX pers_id ( `pers_id` )");
 			if ($query) {
@@ -2460,8 +2512,15 @@ app TEXT NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout de l'index 'ele_id' à la table responsables2<br />";
-		$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'ele_id'");
-		$req_res = mysql_num_rows($req_test);
+		//$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'ele_id'");
+		//$req_res = mysql_num_rows($req_test);
+		$req_res=0;
+		$req_test = mysql_query("SHOW INDEX FROM responsables2 ");
+		if (mysql_num_rows($req_test)!=0) {
+			while ($enrg = mysql_fetch_object($req_test)) {
+				if ($enrg-> Key_name == 'ele_id') {$req_res++;}
+			}
+		}
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `responsables2` ADD INDEX ele_id ( `ele_id` )");
 			if ($query) {
@@ -2474,8 +2533,15 @@ app TEXT NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout de l'index 'resp_legal' à la table responsables2<br />";
-		$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'resp_legal'");
-		$req_res = mysql_num_rows($req_test);
+		//$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'resp_legal'");
+		//$req_res = mysql_num_rows($req_test);
+		$req_res=0;
+		$req_test = mysql_query("SHOW INDEX FROM responsables2 ");
+		if (mysql_num_rows($req_test)!=0) {
+			while ($enrg = mysql_fetch_object($req_test)) {
+				if ($enrg-> Key_name == 'resp_legal') {$req_res++;}
+			}
+		}
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `responsables2` ADD INDEX resp_legal ( `resp_legal` )");
 			if ($query) {
@@ -2488,8 +2554,15 @@ app TEXT NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout de l'index 'ele_id' à la table eleves<br />";
-		$req_test = mysql_query("SHOW INDEX FROM eleves WHERE Key_name = 'ele_id'");
-		$req_res = mysql_num_rows($req_test);
+		//$req_test = mysql_query("SHOW INDEX FROM eleves WHERE Key_name = 'ele_id'");
+		//$req_res = mysql_num_rows($req_test);
+		$req_res=0;
+		$req_test = mysql_query("SHOW INDEX FROM eleves ");
+		if (mysql_num_rows($req_test)!=0) {
+			while ($enrg = mysql_fetch_object($req_test)) {
+				if ($enrg-> Key_name == 'ele_id') {$req_res++;}
+			}
+		}
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `eleves` ADD INDEX ele_id ( `ele_id` )");
 			if ($query) {
@@ -2502,8 +2575,15 @@ app TEXT NOT NULL
 		}
 
 		$result .= "&nbsp;->Ajout de l'index 'id_classe' à la table j_eleves_classes<br />";
-		$req_test = mysql_query("SHOW INDEX FROM j_eleves_classes WHERE Key_name = 'id_classe'");
-		$req_res = mysql_num_rows($req_test);
+		//$req_test = mysql_query("SHOW INDEX FROM j_eleves_classes WHERE Key_name = 'id_classe'");
+		//$req_res = mysql_num_rows($req_test);
+		$req_res=0;
+		$req_test = mysql_query("SHOW INDEX FROM j_eleves_classes ");
+		if (mysql_num_rows($req_test)!=0) {
+			while ($enrg = mysql_fetch_object($req_test)) {
+				if ($enrg-> Key_name == 'id_classe') {$req_res++;}
+			}
+		}
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `j_eleves_classes` ADD INDEX id_classe ( `id_classe` )");
 			if ($query) {

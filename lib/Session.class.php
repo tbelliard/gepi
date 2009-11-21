@@ -675,11 +675,15 @@ class Session {
 	}
 
 	private function authenticate_lcs() {
+		/*
 		include LCS_PAGE_AUTH_INC_PHP;
 		include LCS_PAGE_LDAP_INC_PHP;
 		# LCS a besoin de quelques variables extérieures...
 		# L'initialisation ci-dessous n'est pas très propre, il faudra
 		# reprendre ça...
+		*/
+		global $login, $idpers;
+
 		$DBAUTH = $GLOBALS['DBAUTH'];
 		$HTTP_COOKIE_VARS = $GLOBALS['HTTP_COOKIE_VARS'];
 		$authlink = $GLOBALS['authlink'];
@@ -689,7 +693,7 @@ class Session {
 		$db_nopersist = $GLOBALS['db_nopersist'];
 		$dbDb = $GLOBALS['dbDb'];
 
-		list ($idpers,$login) = isauth();
+		//list ($idpers,$login) = isauth();
 		if ($idpers) {
 			list($user, $groups)=people_get_variables($login, false);
 			#TODO: Utiliser les infos des lignes ci-dessous pour mettre à jour

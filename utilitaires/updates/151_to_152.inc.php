@@ -1,4 +1,5 @@
 <?php
+
 		$result .= "<br /><br /><b>Mise à jour vers la version 1.5.2" . $rc . $beta . " :</b><br />";
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_display_portail'");
@@ -711,8 +712,15 @@ lieu VARCHAR( 255 ) NOT NULL
 
 		// Ajouts d'index
 		$result .= "&nbsp;->Ajout de l'index 'annee' à la table archivage_disciplines<br />";
-		$req_test = mysql_query("SHOW INDEX FROM archivage_disciplines WHERE Key_name = 'annee'");
-		$req_res = mysql_num_rows($req_test);
+		//$req_test = mysql_query("SHOW INDEX FROM archivage_disciplines WHERE Key_name = 'annee'");
+		//$req_res = mysql_num_rows($req_test);
+		$req_res=0;
+		$req_test = mysql_query("SHOW INDEX FROM archivage_disciplines ");
+		if (mysql_num_rows($req_test)!=0) {
+			while ($enrg = mysql_fetch_object($req_test)) {
+				if ($enrg-> Key_name == 'annee') {$req_res++;}
+			}
+		}
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `archivage_disciplines` ADD INDEX annee ( `annee` )");
 			if ($query) {
@@ -726,8 +734,15 @@ lieu VARCHAR( 255 ) NOT NULL
 
 		// Ajouts d'index
 		$result .= "&nbsp;->Ajout de l'index 'INE' à la table archivage_disciplines<br />";
-		$req_test = mysql_query("SHOW INDEX FROM archivage_disciplines WHERE Key_name = 'INE'");
-		$req_res = mysql_num_rows($req_test);
+		//$req_test = mysql_query("SHOW INDEX FROM archivage_disciplines WHERE Key_name = 'INE'");
+		//$req_res = mysql_num_rows($req_test);
+		$req_res=0;
+		$req_test = mysql_query("SHOW INDEX FROM archivage_disciplines ");
+		if (mysql_num_rows($req_test)!=0) {
+			while ($enrg = mysql_fetch_object($req_test)) {
+				if ($enrg-> Key_name == 'INE') {$req_res++;}
+			}
+		}
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `archivage_disciplines` ADD INDEX INE ( `INE` )");
 			if ($query) {

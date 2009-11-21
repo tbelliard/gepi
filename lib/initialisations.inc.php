@@ -9,21 +9,56 @@ if($utiliser_mb=="y") {
 */
 //======================================
 
+$is_lcs_plugin="no";
 // Pour les scripts situés à la racine de GEPI
 if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
-  if (file_exists("./secure/config_lcs.inc.php"))
-    include "./secure/config_lcs.inc.php";
+	if (file_exists("./secure/config_lcs.inc.php")) {
+		include "./secure/config_lcs.inc.php";
+		$is_lcs_plugin="yes";
+	}
+}
 // Pour les scripts situés dans un sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
-} else if (isset($niveau_arbo) and ($niveau_arbo == "2")) {
-  if (file_exists("../../secure/config_lcs.inc.php"))
-    include "../../secure/config_lcs.inc.php";
+else if (isset($niveau_arbo) and ($niveau_arbo == "2")) {
+	if (file_exists("../../secure/config_lcs.inc.php")) {
+		include "../../secure/config_lcs.inc.php";
+		$is_lcs_plugin="yes";
+	}
+}
 // Pour les scripts situés dans un sous-sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
-} else if (isset($niveau_arbo) and ($niveau_arbo == "3")) {
-  if (file_exists("../../../secure/config_lcs.inc.php"))
-    include "../../../secure/config_lcs.inc.php";
-} else {
-  if (file_exists("../secure/config_lcs.inc.php"))
-    include "../secure/config_lcs.inc.php";
+else if (isset($niveau_arbo) and ($niveau_arbo == "3")) {
+	if (file_exists("../../../secure/config_lcs.inc.php")) {
+		include "../../../secure/config_lcs.inc.php";
+		$is_lcs_plugin="yes";
+	}
+}
+else {
+	if (file_exists("../secure/config_lcs.inc.php")) {
+		include "../secure/config_lcs.inc.php";
+		$is_lcs_plugin="yes";
+	}
+}
+
+if($is_lcs_plugin=='yes') {
+	//authentification lcs
+	require_once ('/usr/share/lcs/Plugins/Gepi/secure/config_lcs.cfg');
+	include LCS_PAGE_AUTH_INC_PHP;
+	include LCS_PAGE_LDAP_INC_PHP;
+	list ($idpers,$login) = isauth();
+	/*
+	//on se reconnecte à la base gepi
+	if (empty($db_nopersist))
+		$db_c = mysql_pconnect($dbHost, $dbUser, $dbPass);
+	else
+		$db_c = mysql_connect($dbHost, $dbUser, $dbPass);
+	
+	if (!$db_c || !mysql_select_db ($dbDb))
+	{
+		echo "\n<p>Erreur grave: Echec de la connexion à la base de données";
+		exit;
+	}
+
+	// Ce n'est plus utile. On realise cette operation plus loin lors de l'include connect.inc.php
+	*/
 }
 
 $version = substr(phpversion(), 0, 1);

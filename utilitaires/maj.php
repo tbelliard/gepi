@@ -163,11 +163,14 @@ if (($resultat_session == '0') and ($valid != 'yes')) {
 };
 
 if ((isset ($_SESSION['statut'])) and ($_SESSION['statut'] != 'administrateur')) {
-	echo "<center><p class=grand><font color=red>Mise à jour de la base MySql de GEPI.<br />Vous n'avez pas les droits suffisants pour accéder à cette page.</font></p></center></body></html>";
-	die();
+	if(($is_lcs_plugin!='yes')||($login_user!='admin')) {
+		echo "<center><p class=grand><font color=red>Mise à jour de la base MySql de GEPI.<br />Vous n'avez pas les droits suffisants pour accéder à cette page.</font></p></center></body></html>";
+		die();
+	}
 }
 
 if (isset ($_POST['maj'])) {
+//if ((isset ($_POST['maj'])) || (($is_lcs_plugin!='yes')&&(isset($login_user))&&($login_user=='admin'))) {
 	$pb_maj = '';
 	// On commence la mise à jour
 	$mess = "Mise à jour effectuée.<br />(lisez attentivement le résultat de la mise à jour, en bas de cette page)";
