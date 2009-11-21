@@ -31,6 +31,9 @@ include("../lib/functions.php");
 extract($_GET, EXTR_OVERWRITE);
 extract($_POST, EXTR_OVERWRITE);
 
+//$absencenj=isset($_POST['absencenj']) ? $_POST['absencenj'] : '';
+//$retardnj=isset($_POST['retardnj']) ? $_POST['retardnj'] : '';
+
 header('Content-Type: application/pdf');
 
 // Global configuration file
@@ -52,7 +55,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
 die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
@@ -102,6 +105,8 @@ function redimensionne_logo($photo, $L_max, $H_max)
     else { if (isset($_GET['au'])) {$au=$_GET['au'];} if (isset($_POST['au'])) {$au=$_POST['au'];} }
 	if (empty($_GET['absencenj']) and empty($_POST['absencenj'])) { $absencenj = ''; }
 	   else { if (isset($_GET['absencenj'])) { $absencenj = $_GET['absencenj']; } if (isset($_POST['absencenj'])) { $absencenj = $_POST['absencenj']; } }
+	if (empty($_GET['retardnj']) and empty($_POST['retardnj'])) { $retardnj = ''; }
+	   else { if (isset($_GET['retardnj'])) { $retardnj = $_GET['retardnj']; } if (isset($_POST['retardnj'])) { $retardnj = $_POST['retardnj']; } }
 
     if ($au == "" or $au == "JJ/MM/AAAA") { $au = $du; }
 
