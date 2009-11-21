@@ -551,7 +551,7 @@
 								//$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['id_racine']=$lig_grp_id_cn->id_cahier_notes;
 
 								$sql="SELECT id, nom_court, nom_complet, display_parents FROM cn_conteneurs where id_racine='$lig_grp_id_cn->id_cahier_notes' AND parent=id_racine;";
-								//echo "$sql<br />";
+								//if($current_groupe==1136) {echo "$sql<br />";}
 								$res_conteneurs_niv1=mysql_query($sql);
 								if(mysql_num_rows($res_conteneurs_niv1)>0) {
 									$cpt=0;
@@ -560,7 +560,9 @@
 										$tab_conteneurs_enfants=array();
 
 										//if($cpt>0) {$tab_ele['groupe'][$j]['id_cn']['existence_sous_conteneurs']='y';}
-										if($cpt>0) {$tab_ele['groupe'][$j]['existence_sous_conteneurs']='y';}
+										//if($cpt>0) {$tab_ele['groupe'][$j]['existence_sous_conteneurs']='y';}
+
+										$tab_ele['groupe'][$j]['existence_sous_conteneurs']='y';
 
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['periode']=$lig_grp_id_cn->periode;
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['id_racine']=$lig_cnt->id;
@@ -578,6 +580,7 @@
 										cnc.id_conteneur=cc.id AND
 										cc.id='$lig_cnt->id'
 										);";
+										//if($current_groupe==1136) {echo "$sql<br />";}
 										$res_note_conteneur=mysql_query($sql);
 										if(mysql_num_rows($res_note_conteneur)==0) {
 											$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']="-";
