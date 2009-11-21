@@ -31,6 +31,7 @@
 *	$tbs_password_recovery					adresse page de récupération de mot de passe oublié
 * $tbs_SSO_lien										adresse page de login SSO
 *	$tbs_admin_java									nom du script pour contacter l'administrateur
+*	$tbsStyleScreenAjout						chemin du fichier Style_Screen_Ajout.css
 *	
 *	----- tableaux -----
 *	$tbs_Site_ferme									message de fermeture									tbs_blk1
