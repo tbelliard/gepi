@@ -168,7 +168,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$description=isset($_POST['description']) ? $_POST['description'] : "";
 		//$type_anonymat=isset($_POST['type_anonymat']) ? $_POST['type_anonymat'] : "ele_id";
 
-		if(strlen(ereg_replace("[A-Za-z _.-]","",remplace_accents($intitule,'all')))!=0) {$intitule=ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸_.-]"," ",$intitule);}
+		if(strlen(my_ereg_replace("[A-Za-z0-9 _.-]","",remplace_accents($intitule,'all')))!=0) {$intitule=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸0-9_.-]"," ",$intitule);}
 		if($intitule=="") {$intitule="Examen blanc";}
 
 		//$tab_anonymat=array('elenoet','ele_id','no_gep','alea');
@@ -371,7 +371,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 	}
 	elseif((isset($id_exam))&&($mode=='ajout_groupes')) {
-		// Ajout de groupes pour l'épreuve sélectionnée
+		// Ajout de groupes pour l'examen sélectionnée
 		$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : array());
 		$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : (isset($_GET['matiere']) ? $_GET['matiere'] : array());
 		$groupe_hors_enseignement=isset($_POST['groupe_hors_enseignement']) ? $_POST['groupe_hors_enseignement'] : (isset($_GET['groupe_hors_enseignement']) ? $_GET['groupe_hors_enseignement'] : "n");
@@ -472,7 +472,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	}
 */
 	elseif((isset($id_exam))&&($mode=='modif_choix_dev')) {
-		// Ajout de groupes pour l'épreuve sélectionnée
+		// Ajout de groupes pour l'examen sélectionnée
 		$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : array());
 		$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : (isset($_GET['matiere']) ? $_GET['matiere'] : array());
 
@@ -666,7 +666,7 @@ require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
-//debug_var();
+debug_var();
 
 //echo "<div class='noprint'>\n";
 //echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
@@ -688,7 +688,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "</p>\n";
 
 			echo "<ul>\n";
-			// Créer une épreuve blanche
+			// Créer un examen blanc
 			echo "<li>\n";
 			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=creer_exam'>Créer un nouvel examen</a></p>\n";
 			echo "</li>\n";
@@ -749,7 +749,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "<td>Date de l'examen&nbsp;:</td>\n";
 			echo "<td>\n";
 			//echo "<input type='text' name='date' value='$date_defaut' />\n";
-			echo "<input type='text' name='date' id='date_epreuve' value='$date_defaut' size='10' onchange='changement()' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
+			echo "<input type='text' name='date' id='date_examen' value='$date_defaut' size='10' onchange='changement()' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
 			echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -778,7 +778,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		}
 	}
 	//===========================================================================
-	// Modification/compléments sur une épreuve
+	// Modification/compléments sur une examen
 	elseif($mode=='modif_exam') {
 		echo " | <a href='".$_SERVER['PHP_SELF']."'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -897,7 +897,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			//if($etat!='clos') {
 				//echo "<input type='text' name='date' value='$date_defaut' size='10' onchange='changement()' />\n";
-				echo "<input type='text' name='date' id='date_epreuve' value='$date_defaut' size='10' onchange='changement()' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
+				echo "<input type='text' name='date' id='date_examen' value='$date_defaut' size='10' onchange='changement()' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
 				echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 			//}
 			//else {
@@ -1409,7 +1409,7 @@ function checkbox_change(cpt) {
 
 			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_exam&amp;id_exam=$id_exam'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Epreuve $id_exam</a>\n";
+			echo ">Examen $id_exam</a>\n";
 			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_exam&amp;id_exam=$id_exam&amp;aff=classes'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			echo ">Choix des classes</a>\n";
@@ -1419,7 +1419,7 @@ function checkbox_change(cpt) {
 			echo "</p>\n";
 
 
-			$sql="SELECT * FROM eb_epreuves WHERE id='$id_exam';";
+			$sql="SELECT * FROM ex_examens WHERE id='$id_exam';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
 				echo "<p style='color:red;'>ERREUR&nbsp;: L'examen $id_exam n'existe pas.</p>\n";
@@ -1453,7 +1453,7 @@ function checkbox_change(cpt) {
 
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 
-			echo "<p class='bold'>Choix des groupes pour l'épreuve $id_exam&nbsp;: Classe ".get_class_from_id($id_classe)." et matière $matiere</p>\n";
+			echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Classe ".get_class_from_id($id_classe)." et matière $matiere</p>\n";
 
 			$tab_groupes_inscrits=array();
 			//$sql="SELECT eg.id_groupe FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$matiere' AND jgc.id_classe='$id_classe' AND jgc.id_groupe=eg.id_groupe;";
@@ -1548,7 +1548,7 @@ function checkbox_change(cpt) {
 
 			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_exam&amp;id_exam=$id_exam'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Epreuve $id_exam</a>\n";
+			echo ">Examen $id_exam</a>\n";
 			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_exam&amp;id_exam=$id_exam&amp;aff=classes'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			echo ">Choix des classes</a>\n";
@@ -1560,7 +1560,7 @@ function checkbox_change(cpt) {
 			echo ">Choix des groupes</a>\n";
 			echo "</p>\n";
 
-			$sql="SELECT * FROM eb_epreuves WHERE id='$id_exam';";
+			$sql="SELECT * FROM ex_examens WHERE id='$id_exam';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
 				echo "<p style='color:red;'>ERREUR&nbsp;: L'examen $id_exam n'existe pas.</p>\n";
@@ -1585,7 +1585,7 @@ function checkbox_change(cpt) {
 
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 
-			echo "<p class='bold'>Choix des groupes pour l'épreuve $id_exam&nbsp;: Classe ".get_class_from_id($id_classe)." et matière $matiere</p>\n";
+			echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Classe ".get_class_from_id($id_classe)." et matière $matiere</p>\n";
 
 			$tab_dev_inscrits=array();
 			$sql="SELECT eg.id_dev FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$matiere';";
