@@ -70,6 +70,8 @@ $avec_salle=isset($_POST['avec_salle']) ? $_POST['avec_salle'] : (isset($_GET['a
 
 include('lib_eb.php');
 
+//debug_var();
+
 if(isset($imprime)) {
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	//echo "$sql<br />";
@@ -83,6 +85,7 @@ if(isset($imprime)) {
 		$date_epreuve=formate_date("$lig_ep->date");
 	
 		$sql="SELECT * FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
+		//echo "$sql<br />";
 		$res_salle=mysql_query($sql);
 		while($lig_salle=mysql_fetch_object($res_salle)) {
 			$salle[]=$lig_salle->salle;
@@ -197,7 +200,7 @@ if(isset($imprime)) {
 
 					$current_group=$groupe_name[$i]." (".$groupe_classes[$i].")";
 					$pdf->AddPage("P");
-					$salle_courante=$salle[$i];
+					//$salle_courante=$salle[$i];
 
 					//Entête du PDF
 					//$pdf->SetLineWidth(0.7);
