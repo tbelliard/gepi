@@ -273,14 +273,23 @@ if(isset($style_screen_ajout)) {
 		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
 		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
 		// Il faudra définir un nom de la forme style_screen_ajout_RNE.css pour le multisite
-    if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-        if (@file_exists($gepiPath.'/style_screen_ajout_'.getSettingValue("gepiSchoolRne").'.css')) {
-				echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout_".getSettingValue("gepiSchoolRne").".css' />\n";
-        }
-		} else {
-			//if (is_file("$gepiPath/style_screen_ajout.css")) {
+		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			if (@file_exists($gepiPath.'/style_screen_ajout_'.getSettingValue("gepiSchoolRne").'.css')) {
+					echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout_".getSettingValue("gepiSchoolRne").".css' />\n";
+			}
+		}
+		else {
+			if(isset($niveau_arbo)) {
+				if((($niveau_arbo==0)&&(file_exists('./style_screen_ajout.css')))||
+				(($niveau_arbo==1)&&(file_exists('../style_screen_ajout.css')))||
+				(($niveau_arbo==2)&&(file_exists('../../style_screen_ajout.css')))) {
+					echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+				}
+			}
+			elseif(file_exists('../style_screen_ajout.css')) {
+				// La plupart du temps, on ne renseigne pas $niveau_arbo pour le niveau 1
 				echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
-			//}
+			}
 		}
 	}
 }
