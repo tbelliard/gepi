@@ -168,7 +168,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$description=isset($_POST['description']) ? $_POST['description'] : "";
 		$type_anonymat=isset($_POST['type_anonymat']) ? $_POST['type_anonymat'] : "ele_id";
 
-		if(strlen(ereg_replace("[A-Za-z _.-]","",remplace_accents($intitule,'all')))!=0) {$intitule=ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸_.-]"," ",$intitule);}
+		if(strlen(my_ereg_replace("[A-Za-z0-9 _.-]","",remplace_accents($intitule,'all')))!=0) {$intitule=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸0-9_.-]"," ",$intitule);}
 		if($intitule=="") {$intitule="Epreuve blanche";}
 
 		$tab_anonymat=array('elenoet','ele_id','no_gep','alea');
