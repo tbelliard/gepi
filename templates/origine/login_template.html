@@ -43,7 +43,9 @@
 	<link rel="stylesheet" type="text/css" href="./css/style_ecran_login_IE.css" media="screen" />
 <![endif]-->
 
-<link rel='stylesheet' type='text/css' href='./style_screen_ajout.css' />
+[onshow;block=begin; when [tbsStyleScreenAjout]!=n]
+<link rel='stylesheet' type='text/css' href='[onshow.tbsStyleScreenAjout]' />
+[onshow;block=end]
 <!-- fin des feuilles de style -->
 
 <!-- feuille de style perso -->
@@ -59,7 +61,7 @@
 			[tbs_blk1;block=end]
 	</p>
 
-<!-- Cahier de texte public -->
+<!-- Cahier de texte public -->	
 	<div id='ct_public'>
 		<a href='public/index.php?id_classe=-1'>
 			<img src="images/icons/cahier_texte.png" alt='' class='link' />&nbsp;[onshow.tbs_CdT_public_titre;magnet=div]
@@ -74,17 +76,17 @@
 			<p class ='cache'>
 				<input type="hidden" name="rne" value="[onshow.tbs_multisite]" />
 			</p>
-
-<!-- Entête -->
-
+				
+<!-- Entête -->				
+								
 			<div id='div_login_entete'>
 				<h1>[onshow.tbs_gepiSchoolName]</h1>
 				<p class='annee'>[onshow.tbs_gepiYear]</p>
 			</div>
 					
 			<div id='div_login'>
-
-<!-- Message -->
+			
+<!-- Message -->	
 				<p class='message'>[tbs_message.classe;att=class;attadd]
 					[tbs_message;block=p][tbs_message.texte]
 				</p>
@@ -92,21 +94,21 @@
 <!-- Cadenas -->
 				<div>
 					<img class='cadenas' src='images/icons/lock.png' alt="" title="" />
-				</div>
-
-<!-- Identifiant -->
+				</div>		
+							
+<!-- Identifiant -->				
 				<p class='droite' title="Saisissez l'identifiant qui vous a été donné.">
 					<label for='login'>Identifiant</label>
 					<input type='text' id='login' name='login' size='17' />
 				</p>
-
-<!-- Mot de passe -->
+						
+<!-- Mot de passe -->				
 				<p class='droite' title="Saisissez votre mot de passe en respectant les minuscules et les majuscules." >
 					<label for='no_anti_inject_password'>Mot de passe</label>
 					<input type='password' id='no_anti_inject_password' name='no_anti_inject_password' size='17' onkeypress='capsDetect(arguments[0]);'/>
 				</p>
-
-<!-- Bouton valider -->
+					
+<!-- Bouton valider -->				
 				<p class='droite' title="Envoyer les identifiants">
 					<input type='submit' name='submit' id='soumettre' value='Valider' />
 				</p>
@@ -115,7 +117,7 @@
 				<p id='mot_passe' title="Cliquez pour demander un nouveau mot de passe">
 				&nbsp;
 					<a class='small' href='[onshow.tbs_password_recovery;magnet=a]'>
-						Mot de passe oublié ?
+						Mot de passe oublié ? 
 					</a>
 				</p>
 			</div>
@@ -133,7 +135,7 @@
 				<option value='[tbs_blk3.value]' [tbs_blk3.selection]>[tbs_blk3;block=option;bmagnet=(form)] [tbs_blk3.texte]</option>
 			</select>
 		</p>
-		<!-- Bouton valider -->
+		<!-- Bouton valider -->				
 		<p id="p_bt_gabarit" >
 			<input type='submit' name='bt_gabarit' id="bt_gabarit" value='Choisir' />
 		</p>
@@ -174,16 +176,16 @@
 		</a>
 		<br />
 		Copyright &copy; 2001-2008
-		<a href="mailto:th&#111;mas%2eb%65lliard&#64;fr&#101;e&#46;%66r?subject=GEPI">Thomas Belliard</a>
+		<a href="mailto:th&#111;mas%2eb%65lliard&#64;fr&#101;e&#46;%66r?subject=GEPI">Thomas Belliard</a> 
 , <a href="mailto:lau&#114;ent%2ed%65lin&#101;au&#64;ac%2dpo%69tiers&#46;fr?subject=GEPI">Laurent Delineau</a>
 , <a href="mailto:eric%2eebrun&#64;ac%2dpoitiers&#46;fr?subject=GEPI">Eric Lebrun</a>
-, <a href="mailto:st%65phane&#46;boireau%40ac%2drouen%2efr?subject=GEPI">Stéphane Boireau</a>
+, <a href="mailto:st%65phane&#46;boireau%40ac%2drouen%2efr?subject=GEPI">Stéphane Boireau</a> 
 , <a href="mailto:coll%65gerb%40f&#114;ee.%66r?subject=GEPI">Julien Jocal</a>
 		<!--<a href="javascript:pigeon('thomas.belliard','free.fr');">Thomas Belliard</a>
-, <a href="javascript:pigeon('laurent.delineau','ac-poitiers.fr');">Laurent Delineau</a>
-, <a href="javascript:pigeon('eric.lebrun','ac-poitiers.fr');">Eric Lebrun</a>
-, <a href="javascript:pigeon('stephane.boireau','ac-rouen.fr');">Stéphane Boireau</a>
-, <a href="javascript:pigeon('collegerb','free.fr');">Julien Jocal</a>  -->
+, <a href="javascript:pigeon('laurent.delineau','ac-poitiers.fr');">Laurent Delineau</a> 
+, <a href="javascript:pigeon('eric.lebrun','ac-poitiers.fr');">Eric Lebrun</a> 
+, <a href="javascript:pigeon('stephane.boireau','ac-rouen.fr');">Stéphane Boireau</a> 
+, <a href="javascript:pigeon('collegerb','free.fr');">Julien Jocal</a>  --> 
 		<br/><br/>
 		<img src='/www/gepi/images/php-powered.png' alt="php powered" />&nbsp;
 		<img src='/www/gepi/images/mysql-powered.png' alt="mysql powered" />

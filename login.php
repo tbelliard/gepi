@@ -31,7 +31,7 @@
 *	$tbs_password_recovery					adresse page de récupération de mot de passe oublié
 * $tbs_SSO_lien										adresse page de login SSO
 *	$tbs_admin_java									nom du script pour contacter l'administrateur
-*
+*	
 *	----- tableaux -----
 *	$tbs_Site_ferme									message de fermeture									tbs_blk1
 * $tbs_message										message sous l'entête									tbs_message
@@ -48,7 +48,7 @@
 
 
 /*
-table à ajouter pour pouvoir utiliser plusieurs gabarits et données du gabarit d'origine
+table à ajouter pour pouvoir utiliser plusieurs gabarits et données du gabarit d'origine 
 
 CREATE TABLE `gabarits` (
 `index` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -164,7 +164,7 @@ $test = 'templates/accueil_externe.php' ;
 //Nom année
 	$tbs_gepiSchoolName = getSettingValue("gepiSchoolName");
 	$tbs_gepiYear = getSettingValue("gepiYear");
-
+	
 //==================================
 //Message
 	if (isset($message)) {
@@ -173,14 +173,14 @@ $test = 'templates/accueil_externe.php' ;
 		//$tbs_message_class = "message";
 		$tbs_message[] =array("classe"=>"","texte" => "Afin d'utiliser Gepi, vous devez vous identifier.");
 	}
-
+	
 //==================================
 //	Mot de passe oublié
 	$tbs_password_recovery = "";
 	if (getSettingValue("enable_password_recovery") == "yes") {
 		$tbs_password_recovery = "recover_password.php";
-	}
-
+	}	
+	
 //==================================
 //	authentification unique
 	$tbs_SSO_lien = "";
@@ -188,6 +188,33 @@ $test = 'templates/accueil_externe.php' ;
 		$tbs_SSO_lien = 'login_sso.php';
 	}
 
+	
+//==================================
+//	Feuille de style style_screen_ajout.css
+if (isset($style_screen_ajout))  {
+
+	// Styles paramétrables depuis l'interface:
+	if($style_screen_ajout=='y') {
+		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			if (@file_exists('./style_screen_ajout_'.getSettingValue("gepiSchoolRne").'.css')) {
+				$tbsStyleScreenAjout=$gepiPath."/style_screen_ajout_".getSettingValue("gepiSchoolRne").".css";	
+			}else {
+				$tbsStyleScreenAjout="n";	
+			}
+		} else {
+			if (@file_exists('./style_screen_ajout.css')) {
+				$tbsStyleScreenAjout=$gepiPath."/style_screen_ajout.css";	
+			}else {
+				$tbsStyleScreenAjout="n";	
+			}
+		}
+	} else {
+		$tbsStyleScreenAjout="n";	
+	}
+} else {
+	$tbsStyleScreenAjout="n";	
+}
+	
 
 
 //==================================
@@ -231,7 +258,7 @@ $test = 'templates/accueil_externe.php' ;
 		}
 		*/
 	}
-
+	
 
 //==================================
 //	gabarits dynamiques
@@ -250,7 +277,7 @@ $test = mysql_query("SHOW TABLES LIKE 'gabarits'");
 		$sql="SELECT texte, repertoire, pardefaut FROM gabarits ;";
 		$res_gab=mysql_query($sql);
 	if($res_gab){
-
+	
 		if(mysql_num_rows($res_gab)>0) {
 			while($lig_gab=mysql_fetch_object($res_gab)) {
 				$texte_gab=$lig_gab->texte;
@@ -262,10 +289,10 @@ $test = mysql_query("SHOW TABLES LIKE 'gabarits'");
 				}else{
 					$value_gab="";
 				}
-			$tbs_dossier_gabarit[]=array("texte"=>$texte_gab, "selection"=>$value_gab, "value"=>$repertoire_gab);
+			$tbs_dossier_gabarit[]=array("texte"=>$texte_gab, "selection"=>$value_gab, "value"=>$repertoire_gab);	
 			}
 		}
-
+		
 	}else{
 		$gabarit="origine";
 	}
@@ -276,9 +303,9 @@ $test = mysql_query("SHOW TABLES LIKE 'gabarits'");
 	else{
 		$gabarit="origine";
 	}
+	
 
-
-
+	
 //==================================
 // Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 //debug_var();
@@ -297,20 +324,20 @@ $test = mysql_query("SHOW TABLES LIKE 'gabarits'");
 			die();
 		}
 			include_once($_SESSION['tbs_class']);
-
-
+			
+		
 
 	$_SESSION['rep_gabarits'] = $gabarit;
 
 //==================================
 // Appel de script externe
-
+	
 	$entete_externe = "templates/".$_SESSION['rep_gabarits']."/login_entete_externe.php" ;
 	$corps_externe = "templates/".$_SESSION['rep_gabarits']."/login_corps_externe.php" ;
 	$pied_externe = "templates/".$_SESSION['rep_gabarits']."/login_pied_externe.php" ;
 
 	$fichier_gabarits='templates/'.$_SESSION['rep_gabarits'].'/login_template.html' ;
-
+		
 	$TBS = new clsTinyButStrong ;
 	$TBS->LoadTemplate($fichier_gabarits) ;
 	$TBS->MergeBlock('tbs_blk1',$tbs_Site_ferme);
