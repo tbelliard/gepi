@@ -556,6 +556,100 @@ if($tab_bull['display_moy_gen']=='y') {
 // Fin de la partie moyenne générale
 //===============================================================================
 
+
+//===============================================================================
+if($affiche_deux_moy_gen==1) {
+	// Début de la partie moyenne générale avec coef 1
+	if($tab_bull['display_moy_gen']=='y') {
+		// Affichage des moyennes générales
+		if ($tab_bull['test_coef']!=0) {
+	
+			$total_coeff_eleve=0;
+			for($j=0;$j<count($tab_bull['groupe']);$j++) {
+				// Si l'élève suit l'option
+				if(isset($tab_bull['coef_eleve'][$i][$j])) {
+					$total_coeff_eleve+=$tab_bull['coef_eleve'][$i][$j];
+				}
+			}
+	
+			if ($total_coeff_eleve) {
+				echo "<tr>\n";
+				echo "<td style='text-align: left;'><span class='bulletin'><b>Moy.gén.non coef.</b></span></td>\n";
+	
+				// Coef
+				if($tab_bull['affiche_coef']=='y') {
+					echo "<td style='text-align: center;'><span class='bulletin'>-</span></td>\n";
+				}
+	
+				// Nb dev
+				if($tab_bull['affiche_nbdev']=='y') {
+					echo "<td style='text-align: center;'><span class='bulletin'>-</span></td>\n";
+				}
+	
+				if($min_max_moyclas!=1) {
+					echo "<td style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_min_classe_noncoef'])."</span></td>\n";
+					//$tab_bull['moy_gen_classe'][$i]
+					echo "<td style='text-align: center;'><span class='bulletin'><b>".nf($tab_bull['moy_generale_classe_noncoef'])."</b></span></td>\n";
+					echo "<td style='text-align: center;'><span class='bulletin'>".nf($tab_bull['moy_max_classe_noncoef'])."</span></td>\n";
+				}
+				else {
+					echo "<td style='text-align: center;'><span class='bullminclasmax'>".nf($tab_bull['moy_min_classe_noncoef'])."</span><br />\n";
+					//$tab_bull['moy_gen_classe'][$i]
+					echo "<span class='bullminclasmax'><b>".nf($tab_bull['moy_generale_classe_noncoef'])."</b></span><br />\n";
+					echo "<span class='bullminclasmax'>".nf($tab_bull['moy_max_classe_noncoef'])."</span></td>\n";
+				}
+	
+				echo "<td style='text-align: center; font-weight:bold;'><span class='bulletin'>".nf($tab_bull['moy_gen_eleve_noncoef'][$i])."</span></td>\n";
+	
+				if ($tab_bull['affiche_graph']=='y') {
+					echo "<td style='text-align: center;'>";
+	
+					/*
+					if((isset($tab_bull['place_eleve_classe'][$i]))&&($tab_bull['place_eleve_classe'][$i]!="")) {
+						//echo $place_eleve_classe[$i]." ";
+						echo "<img height='40' width='40' src='../visualisation/draw_artichow4.php?place_eleve=".$tab_bull['place_eleve_classe'][$i].
+							"&amp;temp1=".$tab_bull['quartile1_classe_gen'].
+							"&amp;temp2=".$tab_bull['quartile2_classe_gen'].
+							"&amp;temp3=".$tab_bull['quartile3_classe_gen'].
+							"&amp;temp4=".$tab_bull['quartile4_classe_gen'].
+							"&amp;temp5=".$tab_bull['quartile5_classe_gen'].
+							"&amp;temp6=".$tab_bull['quartile6_classe_gen'].
+							"&amp;nb_data=7' alt='Quartiles' />\n";
+					}
+					else {
+					*/
+						echo "-";
+					//}
+	
+					echo "</td>\n";
+				}
+	
+				// Rang
+				if($tab_bull['affiche_rang']=='y') {
+					echo "<td style='text-align: center;'><span class='bulletin'>";
+					/*
+					if(isset($tab_bull['rang_classe'][$i])) {
+						echo $tab_bull['rang_classe'][$i]."/".$tab_bull['eff_classe'];
+					}
+					else {
+					*/
+						echo "-";
+					//}
+					echo "</span></td>\n";
+				}
+	
+				echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>\n";
+				//echo $tab_bull['avis'][$i];
+				echo "-";
+				echo "</span></td>\n";
+				echo "</tr>\n";
+			}
+		}
+	}
+}
+// Fin de la partie moyenne générale avec coef 1
+//===============================================================================
+
 echo "</table>\n";
 
 ?>

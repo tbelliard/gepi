@@ -335,14 +335,13 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 					$ligne_debug[$i].="<td style='background-color:lightgreen; text-align:center;'>Close</td>\n";
 				}
 				elseif($lig_per->verouiller=="N") {
-					$ligne_debug[$i].="<td style='background-color:red; text-align:center;'>Non close";
+					$ligne_debug[$i].="<td style='background-color:red; text-align:center;'>Non close</td>\n";
+					if(!in_array($lig_per->num_periode,$tab_periode_num_excluses)) {$tab_periode_num_excluses[]=$lig_per->num_periode;}
 					/*
 					if($_SESSION['statut']=='scolarite') {
 						$ligne_debug[$i].=" <a href='verrouillage.php' target='_blank'><img src='../images/icons/configure.png' width='16' height='16' title='Verrouillage/déverrouillage'/></a>\n";
 					}
 					*/
-					$ligne_debug[$i].="</td>\n";
-					if(!in_array($lig_per->num_periode,$tab_periode_num_excluses)) {$tab_periode_num_excluses[]=$lig_per->num_periode;}
 				}
 				else {
 					$ligne_debug[$i].="<td style='background-color:orange; text-align:center;'>Partiellement close</td>\n";
@@ -560,7 +559,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		echo "</tr>\n";
 		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui' /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
 		*/
-		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui' /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer, dans le calcul des moyennes générales, les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
+		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui'  /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer, dans le calcul des moyennes générales, les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
 
 		echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' /></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les relevés par établissement d'origine.</label></td></tr>\n";
 	//}
@@ -1215,6 +1214,7 @@ else {
 			$tab_modele_pdf["affiche_date_edition"][$tab_id_classe[$loop_classe]] = '1'; // affiche la date d'édition
 			$tab_modele_pdf["affiche_ine"][$tab_id_classe[$loop_classe]] = '0'; // affiche l'INE de l'élève
 
+			$tab_modele_pdf["affiche_moyenne_general_coef_1"][$tab_id_classe[$loop_classe]] = '0'; // affichage des moyennes générales avec coef 1 en plus des autres coeff saisis dans Gestion des classes/<Classe> Enseignements
 
 			//================================
 			//================================
@@ -1734,13 +1734,23 @@ else {
 			// Tableau d'indice [$i] élève.. mais cette moyenne générale ne prend en compte que les options suivies par l'élève si bien que les moyennes générales de classe diffèrent selon les élèves
 			$tab_bulletin[$id_classe][$periode_num]['moy_gen_classe']=$moy_gen_classe;
 			$tab_bulletin[$id_classe][$periode_num]['moy_gen_eleve']=$moy_gen_eleve;
+			//===============
+			// Ajout J.Etheve
+			$tab_bulletin[$id_classe][$periode_num]['moy_gen_classe_noncoef']=$moy_gen_classe1;
+			$tab_bulletin[$id_classe][$periode_num]['moy_gen_eleve_noncoef']=$moy_gen_eleve1;
+			//===============
 
 			// Variables récupérées de calcul_moy_gen.inc.php
 			// Variables simples
 			$tab_bulletin[$id_classe][$periode_num]['moy_min_classe']=$moy_min_classe;
 			$tab_bulletin[$id_classe][$periode_num]['moy_generale_classe']=$moy_generale_classe;
 			$tab_bulletin[$id_classe][$periode_num]['moy_max_classe']=$moy_max_classe;
-
+			//===============
+			// Ajout J.Etheve
+			$tab_bulletin[$id_classe][$periode_num]['moy_min_classe_noncoef']=$moy_min_classe1;
+			$tab_bulletin[$id_classe][$periode_num]['moy_generale_classe_noncoef']=$moy_generale_classe1;
+			$tab_bulletin[$id_classe][$periode_num]['moy_max_classe_noncoef']=$moy_max_classe1;
+			//===============
 			$tab_bulletin[$id_classe][$periode_num]['moy_min_classe_grp']=$moy_min_classe_grp;
 			$tab_bulletin[$id_classe][$periode_num]['moy_classe_grp']=$current_classe_matiere_moyenne;
 			/*
@@ -1750,6 +1760,22 @@ else {
 			}
 			*/
 			$tab_bulletin[$id_classe][$periode_num]['moy_max_classe_grp']=$moy_max_classe_grp;
+
+
+			if($mode_bulletin=="pdf") {
+				$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_general_coef_1']=$tab_modele_pdf["affiche_moyenne_general_coef_1"][$tab_id_classe[$loop_classe]];
+				if(($temoin_tous_coef_a_1=='y')||($coefficients_a_1=="oui")) {
+					// Si tous les coeff sont à 1, on n'imprime pas deux lignes de moyenne générale (moy.gen.coefficientée d'après Gestion des classes/<Classe> Enseignements et moy.gen avec coef à 1) même si la case est cochée dans le modèle PDF.
+					// Si on force les coef à 1, on n'affiche pas non plus deux lignes de moyenne générale
+					$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_general_coef_1']=0;
+				}
+			}
+			else {
+				// Pour l'instant en mode HTML, on ne propose pas les deux moyennes
+				// Il faut décider où on fait le paramétrage.
+				// Les paramètres HTML sont généraux à toutes les classes sauf ceux décidés directement dans bull_index.php alors que les paramètres PDF sont essentiellement liés aux modèles.
+				$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_general_coef_1']=0;
+			}
 
 			// Variables récupérées de calcul_moy_gen.inc.php
 			// Quartiles au niveau moyenne générale:
@@ -2636,7 +2662,8 @@ else {
 				echo "</div>\n";
 			}
 
-
+			//======================================
+			// Pour le tri par établissement d'origine
 			unset($tmp_tab);
 			unset($rg);
 			//$tri_par_etab_orig="y";
@@ -2647,7 +2674,7 @@ else {
 				}
 				array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
 			}
-
+			//======================================
 
 			//$compteur=0;
 			//for($i=0;$i<count($tab_bulletin[$id_classe][$periode_num]['eleve']);$i++) {
@@ -2655,8 +2682,10 @@ else {
 				if($tri_par_etab_orig=='n') {$rg[$i]=$i;}
 
 				if(isset($tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
+					//if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'])) {
 					if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login'])) {
 
+						//if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
 						if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
 
 							// ++++++++++++++++++++++++++++++++++++++
@@ -2679,6 +2708,8 @@ else {
 
 
 							if($mode_bulletin=="html") {
+								//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
+								//decompte_debug($motif,"$motif élève $i avant");
 								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
 								decompte_debug($motif,"$motif élève $rg[$i] avant");
 								flush();
@@ -2688,13 +2719,17 @@ else {
 
 								// Génération du bulletin de l'élève
 								//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i);
+								//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
 								bulletin_html($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
 
+								//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
+								//decompte_debug($motif,"$motif élève $i après");
 								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
 								decompte_debug($motif,"$motif élève $rg[$i] après");
 								flush();
 							}
 							else {
+								//bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
 								bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
 							}
 

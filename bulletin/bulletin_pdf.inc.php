@@ -149,6 +149,8 @@
 	$champ_bull_pdf[]="affiche_date_edition";
 	$champ_bull_pdf[]="affiche_ine";
 
+	$champ_bull_pdf[]="affiche_moyenne_general_coef_1";
+
 	//=========================
 	// AJOUT: boireaus 20081224
 	$champ_bull_pdf[]="affiche_nom_etab";
@@ -318,6 +320,8 @@
 	$val_defaut_champ_bull_pdf["affiche_moyenne_maxi_general"]=1;
 	$val_defaut_champ_bull_pdf["affiche_date_edition"]=1;
 	$val_defaut_champ_bull_pdf["affiche_ine"]=0;
+
+	$val_defaut_champ_bull_pdf["affiche_moyenne_general_coef_1"]=0;
 
 	//=========================
 	// AJOUT: boireaus 20081224
