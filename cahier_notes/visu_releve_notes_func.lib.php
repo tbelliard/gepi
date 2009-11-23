@@ -1135,6 +1135,8 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				echo "<tr>\n";
 				echo "<td class='releve'>\n";
 				echo "<b>".htmlentities($tab_rel['eleve'][$i]['groupe'][$j]['matiere_nom_complet'])."</b>";
+				//echo $tab_rel['eleve'][$i]['groupe'][$j]['id_groupe'];
+
 				$k = 0;
 				While ($k < count($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'])) {
 					echo "<br /><i>".affiche_utilisateur(htmlentities($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'][$k]),$id_classe)."</i>";
@@ -1153,6 +1155,9 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 					//if((isset($tab_rel['eleve'][$i]['groupe'][$j]['affiche_boites']))&&($tab_rel['eleve'][$i]['groupe'][$j]['affiche_boites']=='y')) {
 					//if((isset($tab_rel['eleve'][$i]['groupe'][$j]['id_cn']['existence_sous_conteneurs']))&&($tab_rel['eleve'][$i]['groupe'][$j]['id_cn']['existence_sous_conteneurs']=='y')) {
 					if((isset($tab_rel['eleve'][$i]['groupe'][$j]['existence_sous_conteneurs']))&&($tab_rel['eleve'][$i]['groupe'][$j]['existence_sous_conteneurs']=='y')) {
+
+						//echo "AZERTY";
+
 						$temoin_conteneur=0;
 						foreach($tab_rel['eleve'][$i]['groupe'][$j]['id_cn'] as $tmp_id_cn => $tab_id_cn) {
 
@@ -1925,8 +1930,14 @@ function releve_pdf($tab_rel,$i) {
 			if($tab_rel['eleve'][$i]['sexe']=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}
 	
 			//$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.affiche_date_naissance($tab_rel['eleve'][$i]['naissance']).', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
-			$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
-	
+			//$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
+			if(getSettingValue('releve_bazar_utf8')=='y') {
+				$pdf->Cell(90,5,traite_accents_utf8('Né').$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
+			}
+			else {
+				$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
+			}
+
 			$pdf->Cell(90,5,'',0,2,'');
 
 			//$pdf->Cell(0,4.5,"Debug Rel.".($compteur_releve/2)." ".(floor($compteur_releve/2)),0,0,'C');
@@ -1961,8 +1972,13 @@ function releve_pdf($tab_rel,$i) {
 			$pdf->Cell(90,5,$classe_aff,0,2,'');
 			$pdf->SetX($X_cadre_eleve);
 			$pdf->SetFont($caractere_utilse,'',10);
-			$pdf->Cell(90,5,'Année scolaire '.$annee_scolaire,0,2,'');
-	
+			if(getSettingValue('releve_bazar_utf8')=='y') {
+				$pdf->Cell(90,5,traite_accents_utf8('Année scolaire ').$annee_scolaire,0,2,'');
+			}
+			else {
+				$pdf->Cell(90,5,'Année scolaire '.$annee_scolaire,0,2,'');
+			}
+
 			// BLOC IDENTITE DE L'ETABLISSEMENT
 			$logo = '../images/'.getSettingValue('logo_etab');
 			$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
@@ -2145,13 +2161,23 @@ function releve_pdf($tab_rel,$i) {
 			//$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.' '.date_frc($_SESSION['date_debut_aff']).' au '.date_frc($_SESSION['date_fin_aff']), $var_encadrement_titre,0,'C');
 			// A REVOIR...
 			//$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.' Période '.$tab_rel['nom_periode'], $var_encadrement_titre,0,'C');
-			if(isset($tab_rel['nom_periode'])) {
-				$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.$tab_rel['nom_periode'], $var_encadrement_titre,0,'C');
+			if(getSettingValue('releve_bazar_utf8')=='y') {
+				if(isset($tab_rel['nom_periode'])) {
+					$pdf->Cell(0, $hauteur_du_titre, traite_accents_utf8($titre_du_cadre).$tab_rel['nom_periode'], $var_encadrement_titre,0,'C');
+				}
+				else {
+					$pdf->Cell(0, $hauteur_du_titre, traite_accents_utf8($titre_du_cadre).$tab_rel['intervalle']['debut'].' au '.$tab_rel['intervalle']['fin'], $var_encadrement_titre,0,'C');
+				}
 			}
 			else {
-				$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.$tab_rel['intervalle']['debut'].' au '.$tab_rel['intervalle']['fin'], $var_encadrement_titre,0,'C');
+				if(isset($tab_rel['nom_periode'])) {
+					$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.$tab_rel['nom_periode'], $var_encadrement_titre,0,'C');
+				}
+				else {
+					$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.$tab_rel['intervalle']['debut'].' au '.$tab_rel['intervalle']['fin'], $var_encadrement_titre,0,'C');
+				}
 			}
-	
+
 			$hauteur_utilise = $hauteur_du_titre;
 	
 			/*
