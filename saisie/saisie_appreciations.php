@@ -691,6 +691,40 @@ foreach ($liste_eleves as $eleve_login) {
 			//
 			// si l'élève suit la matière
 			//
+
+			$notes_conteneurs="";
+			// On contrôle s'il y a des boites avec moyennes à afficher
+			$sql="SELECT DISTINCT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='" . $current_group["id"] . "' AND periode='$k';";
+			//if($current_group["id"]==1148) {echo "$sql<br />";}
+			$test_cn=mysql_query($sql);
+			if(mysql_num_rows($test_cn)>0) {
+				$lig_cn=mysql_fetch_object($test_cn);
+				$sql="SELECT cc.nom_court, cc.nom_complet, cnc.note, cnc.statut FROM cn_conteneurs cc, cn_notes_conteneurs cnc 
+					WHERE cc.id_racine='$lig_cn->id_cahier_notes' AND 
+						cc.display_bulletin='1' AND 
+						cc.id_racine='$lig_cn->id_cahier_notes' AND 
+						cc.parent!='0' AND
+						cnc.id_conteneur=cc.id AND 
+						cnc.login='$eleve_login';";
+				//if($current_group["id"]==1148) {echo "$sql<br />";}
+				$test_cn_moy=mysql_query($sql);
+				if(mysql_num_rows($test_cn_moy)>0) {
+					$lig_cnc=mysql_fetch_object($test_cn_moy);
+					$notes_conteneurs.="<center>\n";
+					$notes_conteneurs.=ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;: ";
+					if($lig_cnc->statut=='y') {$notes_conteneurs.=$lig_cnc->note;} else {$notes_conteneurs.=$lig_cnc->statut;}
+
+					$cpt_cnc=1;
+					while($lig_cnc=mysql_fetch_object($test_cn_moy)) {
+						$notes_conteneurs.=", ";
+						$notes_conteneurs.=ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;: ";
+						if($lig_cnc->statut=='y') {$notes_conteneurs.=$lig_cnc->note;} else {$notes_conteneurs.=$lig_cnc->statut;}
+					}
+					$notes_conteneurs.="</center><br />\n";
+				}
+			}
+
+
 			if ($restauration != "oui" AND $restauration != "non") {
 				// On récupère l'appréciation tempo pour la rajouter à $eleve_app
 				$app_t_query = mysql_query("SELECT * FROM matieres_appreciations_tempo WHERE
@@ -743,7 +777,11 @@ foreach ($liste_eleves as $eleve_login) {
 				// si la période est verrouillée
 				//
 				$mess[$k] = '';
+				//$mess[$k] =$mess[$k]."<td>".$note."</td>\n<td>";
 				$mess[$k] =$mess[$k]."<td>".$note."</td>\n<td>";
+
+				$mess[$k].=$notes_conteneurs;
+
 				if ($eleve_app != '') {
 					//$mess[$k] =$mess[$k].$eleve_app;
 					if((strstr($eleve_app,">"))||(strstr($eleve_app,"<"))){
@@ -793,8 +831,9 @@ foreach ($liste_eleves as $eleve_login) {
 
 				//$mess[$k] = "<td>".$note."</td>\n<td>Contenu du carnet de notes : ".$liste_notes."<br /><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onfocus=\"focus_suivant(".$k.$num_id.");\">".$eleve_app."</textarea></td>\n";
 
+				//$mess[$k]="<td>".$note."</td>\n";
 				$mess[$k]="<td>".$note."</td>\n";
-				$mess[$k].="<td>Contenu du carnet de notes : ".$liste_notes."<br />\n";
+				$mess[$k].="<td>".$notes_conteneurs."Contenu du carnet de notes : ".$liste_notes."<br />\n";
 				$mess[$k].="<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
 
 				//Supprimé le 07/11/2009:
