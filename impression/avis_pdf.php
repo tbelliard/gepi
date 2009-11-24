@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 10/02/2007
+ * $Id$
  *
  * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -163,7 +163,8 @@ if ($id_liste_groupes!=NULL) {
 		// Impressions RAPIDES
 		if ($id_groupe!=NULL) { // C'est un groupe
 			$donnees_eleves = traite_donnees_groupe($id_groupe,$id_periode,$nb_eleves);
-			$id_classe=$donnees_eleves['id_classe'][0];
+			//$id_classe=$donnees_eleves['id_classe'][0];
+			$id_classe=$donnees_eleves[0]['id_classe'];
 		} elseif ($id_classe!=NULL) { // C'est une classe
 			$donnees_eleves = traite_donnees_classe($id_classe,$id_periode,$nb_eleves);
 		} //fin c'est une classe
@@ -172,7 +173,8 @@ if ($id_liste_groupes!=NULL) {
 		if ($id_liste_groupes!=NULL) {
 			$donnees_eleves = traite_donnees_groupe($id_liste_groupes[$i_pdf],$id_periode,$nb_eleves);
 			$id_groupe=$id_liste_groupes[$i_pdf];
-			$id_classe=$donnees_eleves['id_classe'][0];
+			//$id_classe=$donnees_eleves['id_classe'][0];
+			$id_classe=$donnees_eleves[0]['id_classe'];
 		}
 
 		if ($id_liste_classes!=NULL) {
@@ -225,7 +227,9 @@ if ($id_liste_groupes!=NULL) {
 			  if ($id_groupe != NULL) {
 				 $id_classe=$donnees_eleves['id_classe'][0];
 			   }
-			   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves['login'][0]."' and id_classe='$id_classe')";
+			   //$sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves['login'][0]."' and id_classe='$id_classe')";
+			   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves[0]['login']."' and id_classe='$id_classe')";
+				//echo "$sql<br />\n";
 			   $call_profsuivi_eleve = mysql_query($sql);
 			   $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
 
@@ -233,7 +237,8 @@ if ($id_liste_groupes!=NULL) {
 			} else {
 
 			  if ($id_groupe != NULL) {
-				$current_classe = $donnees_eleves['id_classe'][0]; // on suppose qu'il n'y a dans un groupe que des personnes d'une même classe ... Bof Bof
+				//$current_classe = $donnees_eleves['id_classe'][0]; // on suppose qu'il n'y a dans un groupe que des personnes d'une même classe ... Bof Bof
+				$current_classe = $donnees_eleves[0]['id_classe']; // on suppose qu'il n'y a dans un groupe que des personnes d'une même classe ... Bof Bof
 			  }
 			  $pdf->CellFitScale($L_entete_classe,$H_entete_classe,'Classe de '.$current_classe,'LTRB',2,'C');
 			}
@@ -283,15 +288,18 @@ if ($id_liste_groupes!=NULL) {
 
 			// Le tableau
 			while($nb_eleves_i < $nb_eleves) {	
-			    $login_elv = $donnees_eleves['login'][$nb_eleves_i];
-                $sql_current_eleve_avis = "SELECT avis FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='$id_periode')";			
+			    //$login_elv = $donnees_eleves['login'][$nb_eleves_i];
+			    $login_elv = $donnees_eleves[$nb_eleves_i]['login'];
+                $sql_current_eleve_avis = "SELECT avis FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='$id_periode')";
+				//echo "$sql_current_eleve_avis<br />\n";
          	    $current_eleve_avis_query = mysql_query($sql_current_eleve_avis);
                 $current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 
 				$y_tmp = $pdf->GetY();
 				$pdf->Setxy($X_tableau,$y_tmp);
 				$pdf->SetFont($caractere_utilise,'B',9);
-				$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
+				//$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
+				$texte = strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".ucfirst($donnees_eleves[$nb_eleves_i]['prenom']);
 				$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
 			
 				$y_tmp = $pdf->GetY();

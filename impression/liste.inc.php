@@ -1,4 +1,8 @@
-<?PHP
+<?php
+/*
+$Id$
+*/
+
 // Traitement des données pour une classe référencée par id_classe et id_periode
 // retourne un tableau avec les données de la base
 // modifie la variable nombre_eleve
@@ -9,12 +13,27 @@ global $prefix_base ;
 $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
     $requete='SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id  AND '.$prefix_base.'periode='.$id_periode. ' AND ' .$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'j_eleves_regime.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'; 		//on compte les élèves sélectionné
 	//echo $requete;
-	//echo "<br>";
+	//echo "$requete<br />";
 	$call_eleve = mysql_query($requete);	
 	$nb_eleves = @mysql_num_rows($call_eleve);
 	
 	$nombre_eleves = $nb_eleves; // parametre de la fonction
-	
+
+	/*
+	echo "<table class='boireaus'>";
+	echo "<tr>";
+	echo "<td>Num</td>";
+	echo "<th>Login</th>";
+	echo "<th>Ereno</th>";
+	echo "<th>Nom</th>";
+	echo "<th>Prenom</th>";
+	echo "<th>Naissance</th>";
+	echo "<th>Nom_complet</th>";
+	echo "<th>Doublant</th>";
+	echo "<th>Regime</th>";
+	echo "<th>id_classe</th>";
+	echo "</tr>";
+	*/
 	$cpt_i = 0;
 	while ( $donner = @mysql_fetch_array( $call_eleve ))
 	{
@@ -29,7 +48,14 @@ $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
 		$donnees_eleves[$cpt_i]['id_classe'] = $donner['id']; // ID de la classe
 		 
 		$ident_eleve_sel1=$donner['login'];
-	    
+		/*
+		echo "<tr>";
+		echo "<td>$cpt_i</td>";
+		foreach($donnees_eleves[$cpt_i] as $key => $value) {
+			echo "<td>$value</td>";
+		}
+		echo "</tr>";
+		*/
 		$cpt_i++;
 	
 	/*if($ereno[$cpt_i]!='') 
@@ -65,6 +91,7 @@ $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
 			}
 			*/
 	}
+	//echo "</table>";
     return $donnees_eleves;
 }
 
@@ -85,7 +112,7 @@ global $prefix_base ;
 		$eleve_prenom = $current_eleve["prenom"];
 
 		$sql="SELECT classe, nom_complet FROM classes WHERE id='".$current_eleve["classe"]."'";
-		//echo $sql;
+	    //echo "$sql<br />";
 		$res_tmp=mysql_query($sql);
 		if(mysql_num_rows($res_tmp)==0){
 			die("$eleve_login ne serait dans aucune classe???</body></html>");
@@ -97,7 +124,7 @@ global $prefix_base ;
 		}
 		// La fonction get_group() dans /lib/groupes.inc.php ne récupère pas le sexe et la date de naissance,ereno...
 		$sql="SELECT id_classe,naissance,ereno,doublant,regime FROM eleves, j_eleves_classes, j_eleves_regime WHERE eleves.login='$eleve_login' AND j_eleves_classes.login='$eleve_login' AND j_eleves_regime.login='$eleve_login'";
-	    //echo $sql;
+	    //echo "$sql<br />";
 		$res_tmp=mysql_query($sql);
 
 		if(mysql_num_rows($res_tmp)==0){
@@ -128,11 +155,14 @@ global $prefix_base ;
         $cpt_i++;
 	}
     $nombre_eleves = $cpt_i; // parametre de la fonction
-/*	
+
+	/*
 	echo "<pre>";
 	print_r($donnees_eleves);
 	echo "</pre>";
-*/	
+	*/
+
+	//echo "tri=$tri<br />";
     if ($tri=='classes') {
 		foreach($donnees_eleves as $sortarray)
 		{
@@ -140,11 +170,13 @@ global $prefix_base ;
 			@array_multisort($column, SORT_ASC, $donnees_eleves);
 		}
 	}
-/*	
+
+	/*
 	echo "<pre>";
 	print_r($donnees_eleves);
 	echo "</pre>";
-*/
+	*/
+
     return $donnees_eleves;
 }
 ?>
