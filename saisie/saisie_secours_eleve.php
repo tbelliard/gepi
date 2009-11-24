@@ -78,7 +78,7 @@ if((isset($_POST['is_posted']))&&
 		$msg.="La période choisie ".$nom_periode[$periode_num]." est close.\n";
 	}
 
-	if($msg="") {
+	if($msg=="") {
 		//echo "count(\$id_groupe)=".count($id_groupe)."<br />";
 		for($k=0;$k<count($id_groupe);$k++) {
 
