@@ -28,6 +28,7 @@ $pb_maj = '';
 
 // Initialisations files
 require_once ("../lib/initialisations.inc.php");
+require_once ("./update_functions.php");
 
 
 // Resume session

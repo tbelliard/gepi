@@ -14,6 +14,9 @@
  * Exemple : $result .= "<font color='gree'>Champ XXX ajouté avec succès</font>";
  */
 
+$result .= "<br /><br /><b>Mise à jour vers la version 1.5.3" . $rc . $beta . " :</b><br />";
+
+
 $result .= "&nbsp;->Extension à 255 caractères du champ 'SESSION_ID' de la table 'log'<br />";
 $query = mysql_query("ALTER TABLE `log` CHANGE `SESSION_ID` `SESSION_ID` VARCHAR( 255 ) NOT NULL;");
 if ($query) {
@@ -195,5 +198,42 @@ if ($test == -1) {
 		$result .= "<br />Erreur sur la création de la table 'eb_profs': ".$result_inter."<br />";
 	}
 }
+
+
+
+//---------------
+// Ajouts d'index
+
+$result .= add_index('absences_creneaux','heures_debut_fin','heuredebut_definie_periode, heurefin_definie_periode');
+$result .= add_index('absences_rb','eleve_debut_fin_retard','eleve_id, debut_ts, fin_ts, retard_absence');
+$result .= add_index('classes','classe','classe');
+$result .= add_index('ct_entry','date_ct','date_ct');
+$result .= add_index('ct_entry','id_date_heure','id_groupe, date_ct, heure_entry');
+$result .= add_index('ct_devoirs_entry','groupe_date','id_groupe, date_ct');
+$result .= add_index('cn_devoirs','conteneur_date','`id_conteneur`, `date`');
+$result .= add_index('cn_cahier_notes','groupe_periode','`id_groupe`, `periode`');
+$result .= add_index('cn_conteneurs','parent_racine','`parent`, `id_racine`');
+$result .= add_index('cn_conteneurs','racine_bulletin','`id_racine`, `display_bulletin`');
+$result .= add_index('cn_notes_devoirs','devoir_statut','`id_devoir`, `statut`');
+$result .= add_index('groupes','id_name','`id`, `name`');
+$result .= add_index('j_eleves_professeurs','classe_professeur','`id_classe`, `professeur`');
+$result .= add_index('j_eleves_professeurs','professeur_classe','`professeur`, `id_classe`');
+$result .= add_index('j_eleves_groupes','login','`login`');
+$result .= add_index('j_eleves_classes','login_periode','`login`,`periode`');
+$result .= add_index('j_groupes_classes','id_classe_coef','`id_classe`,`coef`');
+$result .= add_index('j_groupes_classes','saisie_ects_id_groupe','`saisie_ects`,`id_groupe`');
+$result .= add_index('j_groupes_professeurs','login','`login`');
+$result .= add_index('log','start_time','`START`');
+$result .= add_index('log','end_time','`END`');
+$result .= add_index('log','login_session_start','`LOGIN`,`SESSION_ID`,`START`');
+$result .= add_index('matieres_notes','groupe_periode_statut','`id_groupe`,`periode`,`statut`');
+$result .= add_index('matieres_appreciations_tempo','groupe_periode','`id_groupe`,`periode`');
+$result .= add_index('messages','date_debut_fin','`date_debut`,`date_fin`');
+$result .= add_index('preferences','login_name','`login`,`name`');
+$result .= add_index('periodes','id_classe','`id_classe`');
+
+
+
+
 
 ?>

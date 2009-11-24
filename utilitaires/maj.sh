@@ -3,6 +3,7 @@
 
 // Initialisations, pour avoir l'environnement disponible.
 require_once ("../lib/initialisations.inc.php");
+require_once ("./update_functions.php");
 
 // Initialisation des options
 $force = false; // Force une application de tous les scripts de mise à jour
