@@ -192,10 +192,13 @@ if (isset($_POST['is_posted'])) {
 		$k++;
 	}
 
-	// A partir de là, toutes les appréciations ont été sauvegardées proprement, on vide la table tempo
-	$effacer = mysql_query("DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
-	OR die('Erreur dans l\'effacement de la table temporaire (1) :'.mysql_error());
+	if($msg=='') {
+		// On ne vide que si l'enregistrement s'est bien passé
 
+		// A partir de là, toutes les appréciations ont été sauvegardées proprement, on vide la table tempo
+		$effacer = mysql_query("DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
+		OR die('Erreur dans l\'effacement de la table temporaire (1) :'.mysql_error());
+	}
 
 	/*
 	foreach ($current_group["eleves"]["all"]["list"] as $reg_eleve_login) {
@@ -281,7 +284,12 @@ if (($periode_cn != 0)&&($_SESSION['statut']!='secours')) {
 //echo "|<a href='saisie_notes.php?id_groupe=$id_groupe&periode_cn=$periode_cn' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les moyennes</a>";
 echo " | <a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les moyennes</a>";
 // enregistrement du chemin de retour pour la fonction imprimer
-$_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?". $_SERVER['QUERY_STRING'];
+if($_SERVER['QUERY_STRING']!='') {
+	$_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?". $_SERVER['QUERY_STRING'];
+}
+else {
+	$_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?id_groupe=$id_groupe";
+}
 echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>\n";
 
 //=========================
