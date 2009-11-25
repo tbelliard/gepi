@@ -203,11 +203,11 @@ if ($test == -1) {
 $test = sql_query1("SHOW TABLES LIKE 'synthese_app_classe'");
 if ($test == -1) {
 	$result .= "<br />Création de la table 'synthese_app_classe'. ";
-	$sql="CREATE TABLE IF NOT EXISTS synthese_app_classe (  
-		id_classe int(11) NOT NULL default '0',  
-		periode int(11) NOT NULL default '0',  
-		synthese text NOT NULL,  
-		PRIMARY KEY  (id_classe,periode))
+	$sql="CREATE TABLE IF NOT EXISTS synthese_app_classe (
+		id_classe int(11) NOT NULL default '0',
+		periode int(11) NOT NULL default '0',
+		synthese text NOT NULL,
+		PRIMARY KEY  (id_classe,periode)
 		);";
 	//echo "$sql<br />";
 	$result_inter = traite_requete($sql);
