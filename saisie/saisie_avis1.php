@@ -47,6 +47,36 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_
 include "../lib/periodes.inc.php";
 
 if (isset($_POST['is_posted'])) {
+
+	// Synthèse
+	$i = '1';
+	while ($i < $nb_periode) {
+		if ($ver_periode[$i] != "O"){
+			if (isset($NON_PROTECT["synthese_".$i])){
+				// On enregistre la synthese
+				$synthese=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["synthese_".$i]));
+		
+				$synthese=my_ereg_replace('(\\\r\\\n)+',"\r\n",$synthese);
+		
+				$sql="SELECT 1=1 FROM synthese_app_classe WHERE id_classe='$id_classe' AND periode='$i';";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)==0) {
+					$sql="INSERT INTO synthese_app_classe SET id_classe='$id_classe', periode='$i', synthese='$synthese';";
+					$insert=mysql_query($sql);
+					if(!$insert) {$msg="Erreur lors de l'enregistrement de la synthèse.";}
+					//else {$msg="La synthèse a été enregistrée.";}
+				}
+				else {
+					$sql="UPDATE synthese_app_classe SET synthese='$synthese' WHERE id_classe='$id_classe' AND periode='$i';";
+					$update=mysql_query($sql);
+					if(!$update) {$msg="Erreur lors de la mise à jour de la synthèse.";}
+					//else {$msg="La synthèse a été mise à jour.";}
+				}
+			}
+		}
+		$i++;
+	}
+
 	if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
 		$quels_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
 		WHERE (c.id_classe='$id_classe' AND
@@ -341,8 +371,63 @@ function focus_suivant(num){
 	}
 
 
-	$i = "0";
+	echo "<table width=\"750\" class='boireaus' border='1' cellspacing='2' cellpadding='5' summary=\"Synthèse de classe\">\n";
+	echo "<tr>\n";
+	echo "<th width=\"200\"><div align=\"center\"><b>&nbsp;</b></div></th>\n";
+	echo "<th><div align=\"center\"><b>Synthèse de classe</b>\n";
+	echo "</div></th>\n";
+	echo "</tr>\n";
+	//========================
+
+	$k='1';
+	while ($k < $nb_periode) {
+		$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$k');";
+		//echo "$sql<br />";
+		$res_current_synthese=mysql_query($sql);
+		$current_synthese[$k] = @mysql_result($res_current_synthese, 0, "synthese");
+		if ($current_synthese[$k] == '') {$current_synthese[$k] = ' -';}
+
+		$k++;
+	}
+
+	//$i = "0";
 	$num_id=10;
+
+	$k='1';
+	$alt=1;
+	while ($k < $nb_periode) {
+		$alt=$alt*(-1);
+		if ($ver_periode[$k] != "N") {
+			echo "<tr class='lig$alt'>\n<td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
+		} else {
+			echo "<tr class='lig$alt'>\n<td>$nom_periode[$k]</td>\n";
+		}
+
+		if ($ver_periode[$k] != "O") {
+			echo "<td>\n";
+			echo "<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_synthese_".$k."\" rows='2' cols='120' class='wrap' onchange=\"changement()\">";
+			//=========================
+
+			echo "$current_synthese[$k]";
+			echo "</textarea>\n";
+			echo "</td>\n";
+		}
+		else {
+			echo "<td><p class=\"medium\">";
+			echo nl2br($current_synthese[$k]);
+			echo "</p></td>\n";
+		}
+		echo "</tr>\n";
+		$k++;
+	}
+	$num_id++;
+	//$i++;
+	echo "</table>\n<br />\n<br />\n";
+
+
+
+	$i = "0";
+	//$num_id=10;
 	while($i < $nombre_lignes) {
 		$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
 		$current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");

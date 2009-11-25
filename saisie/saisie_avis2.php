@@ -136,6 +136,9 @@ $themessage = 'Des appréciations ont été modifiées. Voulez-vous vraiment quitter
 $titre_page = "Saisie des avis | Saisie";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
+
 ?>
 <script type="text/javascript" language="javascript">
 change = 'no';
@@ -337,6 +340,21 @@ echo "</form>\n";
         $i++;
     }
     echo "</table>\n";
+
+	$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$periode_num');";
+	$res_current_synthese=mysql_query($sql);
+	$current_synthese= @mysql_result($res_current_synthese, 0, "synthese");
+	if ($current_synthese=='') {$current_synthese='-';}
+
+	echo "<p><b>Synthèse des avis sur le groupe classe&nbsp;:</b></p>\n";
+    echo "<table class='boireaus' border='1' cellspacing='2' cellpadding='5' width='100%' summary='Synthese'>";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<td width='20%'>\n<a href='saisie_synthese_app_classe.php?num_periode=$periode_num&amp;id_classe=$id_classe#synthese'>Saisir la synthèse</a></td>\n";
+	echo "<td><p class=\"medium\">".nl2br($current_synthese)."</p></td>\n";
+	echo "</tr>\n";
+    echo "</table>\n";
+
 }
 
 

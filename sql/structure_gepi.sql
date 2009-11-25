@@ -291,3 +291,4 @@ CREATE TABLE IF NOT EXISTS eb_copies (id int(11) unsigned NOT NULL auto_incremen
 CREATE TABLE IF NOT EXISTS eb_salles (id int(11) unsigned NOT NULL auto_increment,salle VARCHAR( 255 ) NOT NULL ,id_epreuve int(11) unsigned NOT NULL,PRIMARY KEY ( id ));
 CREATE TABLE IF NOT EXISTS eb_groupes (id int(11) unsigned NOT NULL auto_increment,id_epreuve int(11) unsigned NOT NULL,id_groupe int(11) unsigned NOT NULL,transfert varchar(1) NOT NULL DEFAULT 'n',PRIMARY KEY ( id ));
 CREATE TABLE IF NOT EXISTS eb_profs (id int(11) unsigned NOT NULL auto_increment,id_epreuve int(11) unsigned NOT NULL,login_prof VARCHAR(255) NOT NULL default '',PRIMARY KEY ( id ));
+CREATE TABLE IF NOT EXISTS synthese_app_classe (  id_classe int(11) NOT NULL default '0',  periode int(11) NOT NULL default '0',  synthese text NOT NULL,  PRIMARY KEY  (id_classe,periode));
