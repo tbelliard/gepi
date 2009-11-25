@@ -75,13 +75,17 @@ if (isset($_POST['is_posted'])) {
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 
-	$quels_eleves = mysql_query("SELECT e.* FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login = j.login and j.indice_aid='$indice_aid')");
+	$sql="SELECT e.* FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login = j.login and j.indice_aid='$indice_aid')";
+	//echo "$sql<br />";
+	$quels_eleves=mysql_query($sql);
 	$lignes = mysql_num_rows($quels_eleves);
 	$j = '0';
 	while($j < $lignes) {
 		$reg_eleve_login = mysql_result($quels_eleves, $j, "login");
+		//echo "\$reg_eleve_login=$reg_eleve_login<br />";
 		//$call_classe = mysql_query("SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login = '$reg_eleve_login' ORDER BY periode DESC");
 		$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login = '$reg_eleve_login' ORDER BY periode DESC";
+		//echo "$sql<br />";
 		$call_classe = mysql_query($sql);
 		//echo "$sql<br />";
 		// On passe en revue tous les élèves inscrits à l'AID, même si ils ne sont pas dans une classe...
@@ -102,7 +106,11 @@ if (isset($_POST['is_posted'])) {
 						unset($log_eleve);
 						$log_eleve=$_POST['log_eleve_'.$k];
 						unset($note_eleve);
-						$note_eleve=$_POST['note_eleve_'.$k];
+						// On n'a pas nécessairement de note
+						// cf: if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
+						if(isset($_POST['note_eleve_'.$k])) {
+							$note_eleve=$_POST['note_eleve_'.$k];
+						}
 						//=========================
 
 						//=========================
@@ -112,12 +120,13 @@ if (isset($_POST['is_posted'])) {
 						//for($i=0;$i<count($log_eleve);$i++){
 						for($i=0;$i<$indice_max_log_eleve;$i++){
 							if(isset($log_eleve[$i])){
-								if("$reg_eleve_login"."_t".$k=="$log_eleve[$i]"){
+								if(strtolower("$reg_eleve_login"."_t".$k)==strtolower("$log_eleve[$i]")){
 									$num_eleve=$i;
 									break;
 								}
 							}
 						}
+						//echo "\$num_eleve=$num_eleve<br />";
 						if($num_eleve!=-1){
 							//=========================
 							// MODIF: boireaus 20071003
@@ -135,9 +144,8 @@ if (isset($_POST['is_posted'])) {
 							}
 							$elev_statut = '';
 							//=========================
-							// MODIF: boireaus 20071003
-							//if (isset($_POST[$nom_log2])) {
-								//$note = $_POST[$nom_log2];
+							if(isset($note_eleve[$num_eleve])) {
+								// cf: if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
 								$note=$note_eleve[$num_eleve];
 
 								if (($note == 'disp')) {
@@ -162,7 +170,7 @@ if (isset($_POST['is_posted'])) {
 									$note = '';
 									$elev_statut = 'other';
 								}
-							//}
+							}
 							//=========================
 
 							$test_eleve_app_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
@@ -215,6 +223,7 @@ $themessage  = 'Des notes ou des appréciations ont été modifiées. Voulez-vous vr
 $titre_page = "Saisie des appréciations ".$nom_aid;
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+//debug_var();
 ?>
 <script type="text/javascript" language="javascript">
 change = 'no';
@@ -272,7 +281,7 @@ if (!isset($aid_id)) {
 	$aid_nom = mysql_result($calldata, 0, "nom");
 	?>
 	<p class='grand'>Appréciations <?php echo "$nom_aid : $aid_nom"; ?></p>
-	<table border=1 cellspacing=2 cellpadding=5>
+	<table class='boireaus' border=1 cellspacing=2 cellpadding=5>
 	<?php
 	$num_id=10;
 	$num = '1';
@@ -292,7 +301,7 @@ if (!isset($aid_id)) {
 									a.indice_aid='$indice_aid') ORDER BY e.nom, e.prenom");
 		$nombre_lignes = mysql_num_rows($appel_login_eleves);
 		if ($nombre_lignes != '0') { ?>
-			<tr><td><b>Nom Prénom</b></td>
+			<tr><th><b>Nom Prénom</b></th>
 			<?php
 			$call_data = mysql_query("SELECT * FROM $nom_table WHERE num = '$num' ");
 			$id_classe = mysql_result($call_data, '0', 'id_classe');
@@ -301,13 +310,14 @@ if (!isset($aid_id)) {
 			$i = "1";
 			while ($i < $num + 1) {
 				$nom_periode[$i] = mysql_result($periode_query, $i-1, "nom_periode");
-				echo "<td><b>$nom_periode[$i]</b></td>\n";
+				echo "<th><b>$nom_periode[$i]</b></th>\n";
 				$i++;
 			}
 			?>
 			</tr>
 			<?php
 				$i = "0";
+				$alt=1;
 				while($i < $nombre_lignes) {
 					$current_eleve_login = mysql_result($appel_login_eleves, $i, 'login');
 					$appel_donnees_eleves = mysql_query("SELECT * FROM eleves WHERE (login = '$current_eleve_login')");
@@ -317,7 +327,8 @@ if (!isset($aid_id)) {
 					$current_eleve_classe = mysql_result($appel_classe_eleve, '0', "classe");
 					$current_eleve_id_classe = mysql_result($appel_classe_eleve, '0', "id");
 
-					echo "<tr><td>$current_eleve_nom $current_eleve_prenom $current_eleve_classe</td>\n";
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'><td>$current_eleve_nom $current_eleve_prenom $current_eleve_classe</td>\n";
 					$k = '1';
 
 					$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$current_eleve_id_classe'  ORDER BY num_periode");
