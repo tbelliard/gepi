@@ -1,4 +1,7 @@
 <?php
+/*
+$Id$
+*/
 // Ensemble de méthodes utilisées par le script d'initialisation
 
 function add_index($tablename, $indexname, $indexcolumns) {
