@@ -130,7 +130,7 @@ $titre_page = "Import de devoirs dans le cahier de notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php?id_racine=<?php echo $id_racine;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a></p>
+<p class='bold'><a href="index.php?id_racine=<?php echo $id_racine;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a></p>
 <?php
 
 $titre=htmlentities($current_group['description'])." (".$nom_periode.")";
@@ -154,6 +154,27 @@ if (!isset($is_posted)) {
 
 	echo "<p><input type=submit value='Valider' /></p>\n";
 	echo "</form>\n";
+
+	echo "<p><br /</p>\n";
+
+	echo "<p><i>NOTE&nbsp;</i>: Le format du CSV est un peu complexe.<br />
+La première ligne sert à repérer les champs.<br />
+Le premier champ des lignes élèves doit contenir la chaine GEPI_LOGIN_ELEVE.</p>
+
+<pre>
+GEPI_INFOS;GEPI_LOGIN_ELEVE;NOM;PRENOM;CLASSE;MOYENNE;GEPI_COL_1ER_DEVOIR
+GEPI_DEV_NOM_COURT;;;;;Nom court du devoir:;Devoir1;Devoir2;Oral1
+GEPI_DEV_COEF;;;;;Coefficient:;3,0;3,0;1,0
+GEPI_DEV_NOTE_SUR;;;;;Notation sur:;20;20;20
+GEPI_DEV_DATE;;;;;Date:;15/09/2009;12/10/2009;15/11/2009
+GEPI_LOGIN_ELEVE;ABBA_B;ABBA;Bart;3 A2;;15,5;15,0;12,0
+GEPI_LOGIN_ELEVE;GOLADE_L;GOLADE;Larry;3 A2;;11,0;14,0;13,0
+GEPI_LOGIN_ELEVE;ZETOFRE_M_L;ZETOFREY;Melanie;3 A2;;10,5;14,5;19,0
+...
+</pre>
+
+<p>Il est plus simple de créer une évaluation et d'Exporter ensuite le carnet de notes (<i>même vide</i>) pour disposer d'un CSV correctement formaté.</p>\n";
+
 }
 else{
 	if(!isset($_POST['valide_insertion_devoirs'])) {
