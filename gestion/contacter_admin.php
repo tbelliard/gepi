@@ -114,8 +114,14 @@ case "envoi":
 		require("../lib/footer.inc.php");
 		die();
 	}
+
+	$objet_msg=isset($_POST['objet_msg']) ? $_POST['objet_msg'] : "Demande d'aide dans GEPI";
+	$objet_msg=trim($objet_msg);
+	unslashes($objet_msg);
+	if($objet_msg=='') {$objet_msg="Demande d'aide dans GEPI";}
+
 	$envoi = mail($gepiAdminAdress,
-		$gepiPrefixeSujetMail."Demande d'aide dans GEPI",
+		$gepiPrefixeSujetMail.$objet_msg,
 		$message,
 	"From: ".($email_reponse != "" ? "$nama <$email_reponse>" : $gepiAdminAdress)."\r\n"
 	.($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\n" :"")
@@ -170,6 +176,7 @@ default://formulaire d'envoi
 	<form action="contacter_admin.php" method="post" name="doc">
 	<input type="hidden" name="nama" value="<?php echo $_SESSION['prenom']." ".$_SESSION['nom']; ?>" />
 	<input type="hidden" name="action" value="envoi" />
+	Sujet&nbsp;: <input type='text' name='objet_msg' value="Demande d'aide dans GEPI" size='35' maxlength='80' />
 	<textarea name="message" cols="50" rows="5">Contenu du message : </textarea><br />
 
 	<?php
