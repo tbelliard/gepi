@@ -40,7 +40,8 @@ else {
 
 if($is_lcs_plugin=='yes') {
 	//authentification lcs
-	require_once ('/usr/share/lcs/Plugins/Gepi/secure/config_lcs.cfg');
+	//require_once ('/usr/share/lcs/Plugins/Gepi/secure/config_lcs.cfg');
+	require_once ('/usr/share/lcs/Plugins/Gepi/secure/config_lcs.inc.php');
 	include LCS_PAGE_AUTH_INC_PHP;
 	include LCS_PAGE_LDAP_INC_PHP;
 	list ($idpers,$login) = isauth();
