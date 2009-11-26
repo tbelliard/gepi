@@ -40,7 +40,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -189,6 +189,12 @@ if(isset($_POST['valid_envoi_mail_connexion'])){
 	}
 }
 
+if(isset($_POST['valid_message'])){
+	$message_login=isset($_POST['message_login']) ? $_POST['message_login'] : 0;
+	//$sql="UPDATE setting SET value='$message_login' WHERE name='message_login'";
+	saveSetting('message_login',$message_login);
+}
+
 
 // End standart header
 require_once("../lib/header.inc");
@@ -200,7 +206,7 @@ if ($mode_navig == 'accueil') {
     $retour = "index.php";
 }
 
-echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+echo "<p class='bold'><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 
 
@@ -294,6 +300,61 @@ echo "<center><input type=\"submit\" name=\"valid_acti_mdp\" value=\"Valider\" /
 echo "</form>\n";
 
 echo "<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
+
+
+//
+// Message sur la page de login
+//
+echo "<a name='message_login'></a>\n";
+echo "<h3 class='gepi'>Faire apparaitre un message sur la page de login</h3>\n";
+
+$message_login=getSettingValue("message_login");
+if($message_login=='') {$message_login=0; saveSetting('message_login',$message_login);}
+
+$sql="SELECT * FROM message_login ORDER BY texte;";
+$res=mysql_query($sql);
+if(mysql_num_rows($res)==0) {
+	echo "<p>Aucun message n'a encore été saisi.</p>\n";
+	echo "<p><a href='saisie_message_connexion.php'>Saisir de nouveaux messages.</a></p>\n";
+}
+else {
+	echo "<form action=\"gestion_connect.php\" name=\"form_message_login\" method=\"post\">\n";
+
+	echo "<table summary='Choix du message'>\n";
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "<input type='radio' name='message_login' id='message_login0' value='0' ";
+	if($message_login==0) {echo "checked ";}
+	echo "/>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<label for='message_login0'> Aucun message</label><br />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	while($lig=mysql_fetch_object($res)) {
+		echo "<tr>\n";
+		echo "<td valign='top'>\n";
+		echo "<input type='radio' name='message_login' id='message_login$lig->id' value='$lig->id'";
+		if($message_login==$lig->id) {echo "checked ";}
+		echo ">\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<label for='message_login$lig->id'> ".nl2br($lig->texte)."</label><br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+	echo "</table>\n";
+
+	echo "<center><input type=\"submit\" name=\"valid_message\" value=\"Valider\" /></center>\n";
+	echo "</form>\n";
+
+	echo "<p><a href='saisie_message_connexion.php'>Saisir de nouveaux messages ou modifier des messages existants.</a></p>\n";
+
+}
+
+echo "<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
+
+
 
 /*
 //

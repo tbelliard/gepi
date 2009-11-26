@@ -268,6 +268,20 @@ if (isset($style_screen_ajout))  {
 	
 
 //==================================
+
+$test = mysql_query("SHOW TABLES LIKE 'message_login'");
+if(mysql_num_rows($test)>0) {
+	$sql="SELECT ml.texte FROM message_login ml, setting s WHERE s.value=ml.id AND s.name='message_login';";
+	//echo "$sql <br />";
+	$res=mysql_query($sql);
+
+	if(mysql_num_rows($res)>0) {
+		$lig_page_login=mysql_fetch_object($res);
+		$msg_page_login=$lig_page_login->texte;
+	}
+}
+
+//==================================
 //	gabarits dynamiques
 
 
@@ -351,6 +365,15 @@ $test = mysql_query("SHOW TABLES LIKE 'gabarits'");
 	$TBS->MergeBlock('tbs_blk2',$tbs_admin_adr);
 	$TBS->MergeBlock('tbs_blk3',$tbs_dossier_gabarit);
 	$TBS->MergeBlock("tbs_message",$tbs_message);
+	/*
+	if(isset($lig_page_login)) {
+		$TBS->MergeBlock("msg_page_login",$lig_page_login);
+	}
+	if(isset($msg_page_login)) {
+		$TBS->MergeBlock("msg_page_login",$msg_page_login);
+	}
+	*/
+
 	$TBS->Show() ;
 
 // ------ on vide les tableaux -----

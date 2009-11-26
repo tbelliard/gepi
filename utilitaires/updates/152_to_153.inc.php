@@ -217,6 +217,65 @@ if ($test == -1) {
 }
 
 
+
+$test = sql_query1("SHOW TABLES LIKE 'message_login'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'message_login'. ";
+	$sql="CREATE TABLE IF NOT EXISTS message_login (
+		id int(11) NOT NULL auto_increment,
+		texte text NOT NULL,PRIMARY KEY  (id)
+		);";
+	//echo "$sql<br />";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'message_login': ".$result_inter."<br />";
+	}
+}
+
+
+$test = mysql_query("SELECT 1=1 FROM message_login;");
+if (mysql_num_rows($test)==0) {
+	$result .= "<br />Insertion d'un message de login: ";
+	$sql="INSERT INTO message_login SET texte='Espace pour un message en page de login';";
+	//echo "$sql<br />";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur lors de l'insertion: ".$result_inter."<br />";
+	}
+	else {
+		$result.="<font color=\"green\">Ok !</font><br />";
+
+		$id_tmp=mysql_insert_id();
+		$sql="SELECT 1=1 FROM setting WHERE name='message_login';";
+		$test=mysql_query($sql);
+		if (mysql_num_rows($test)==0) {
+			$result .= "Insertion de l'indice du message de login: ";
+
+			$sql="INSERT INTO setting SET name='message_login', value='$id_tmp';";
+			$result_inter=traite_requete($sql);
+			if ($result_inter != '') {
+				$result .= "<br />Erreur lors de l'insertion de l'indice du message de login à afficher: ".$result_inter."<br />";
+			}
+			else {
+				$result.="<font color=\"green\">Ok !</font><br />";
+			}
+		}
+		else {
+			// Ca ne devrait pas arriver
+			$result .= "<br />Mise à jour de l'indice du message de login: ";
+			$sql="UPDATE setting SET value='$id_tmp' WHERE name='message_login';";
+			$result_inter=traite_requete($sql);
+			if ($result_inter != '') {
+				$result .= "<br />Erreur lors de la mise à jour de l'indice du message de login à afficher: ".$result_inter."<br />";
+			}
+			else {
+				$result.="<font color=\"green\">Ok !</font><br />";
+			}
+		}
+	}
+	$result.="<br />";
+}
+
 //---------------
 // Ajouts d'index
 

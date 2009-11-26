@@ -607,6 +607,8 @@ $tab_req[] = "INSERT INTO droits SET id='/mod_examen_blanc/bull_exb.php',adminis
 
 $tab_req[] = "INSERT INTO droits VALUES ('/saisie/saisie_synthese_app_classe.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Synthèse des appréciations sur le groupe classe.', '');";
 
+$tab_req[] = "INSERT INTO droits VALUES ('/gestion/saisie_message_connexion.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Saisie de messages de connexion.', '');";
+
 //$tab_req[] = "INSERT INTO droits VALUES ( '/mod_plugins/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajouter/enlever des plugins', '');";
 
 //$tab_req[] = "";

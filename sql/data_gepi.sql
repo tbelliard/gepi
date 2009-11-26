@@ -830,3 +830,4 @@ INSERT INTO droits SET id='/mod_examen_blanc/index.php',administrateur='V',profe
 INSERT INTO droits SET id='/mod_examen_blanc/releve.php',administrateur='V',professeur='V',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Examen blanc: Relevé',statut='';
 INSERT INTO droits SET id='/mod_examen_blanc/bull_exb.php',administrateur='V',professeur='V',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Examen blanc: Bulletins',statut='';
 INSERT INTO droits VALUES ('/saisie/saisie_synthese_app_classe.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Synthèse des appréciations sur le groupe classe.', '');
+INSERT INTO droits VALUES ('/gestion/saisie_message_connexion.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Saisie de messages de connexion.', '');
