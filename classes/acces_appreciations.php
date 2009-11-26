@@ -292,7 +292,7 @@ while($lig=mysql_fetch_object($res_classe)){
 }
 
 $acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
-if($acces_app_ele_resp=="") {$acces_app_ele_resp='manuel';}
+if($acces_app_ele_resp=="") {$acces_app_ele_resp='manuel';saveSetting('acces_app_ele_resp','manuel');}
 $delais_apres_cloture=getSettingValue('delais_apres_cloture');
 
 echo "<p>Vous pouvez définir ici quand les comptes utilisateurs pour des responsables et des élèves peuvent accéder aux appréciations des professeurs et avis du conseil de classe.<br />
@@ -440,14 +440,17 @@ if($acces_app_ele_resp=='manuel') {
 			if(count($nom_periode)>0){
 				echo "<tr class='lig$alt white_hover'>\n";
 				echo "<td>".$tab_classe[$j]['classe'];
-				echo "<input type='hidden' name='id_classe[$j]' value='$id_classe' />\n";
+				echo "<input type='text' name='id_classe[$j]' value='$id_classe' />\n";
 				echo "</td>\n";
 
 				for($i=1;$i<=count($nom_periode);$i++) {
 
+					echo "<td>\n";
+
 					// Avec le nouveau dispositif, on ne distingue pas élève et responsable
 					//$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='$tab_statut[$k]';";
 					$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='eleve';";
+					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
 						$mode="manuel";
@@ -456,13 +459,16 @@ if($acces_app_ele_resp=='manuel') {
 
 						// On synchronise aussi pour les responsables
 						$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='responsable';";
+						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
 							$sql="INSERT INTO matieres_appreciations_acces SET acces='$accessible', id_classe='$id_classe', periode='$i', statut='responsable';";
+							//echo "$sql<br />\n";
 							$insert=mysql_query($sql);
 						}
 						else {
 							$sql="UPDATE matieres_appreciations_acces SET acces='$accessible' WHERE id_classe='$id_classe' AND periode='$i' AND statut='responsable';";
+							//echo "$sql<br />\n";
 							$update=mysql_query($sql);
 						}
 					}
@@ -485,18 +491,22 @@ if($acces_app_ele_resp=='manuel') {
 
 							// On force la valeur en mode 'manuel'
 							$sql="UPDATE matieres_appreciations_acces SET acces='$accessible' WHERE id_classe='$id_classe' AND periode='$i';";
+							//echo "$sql<br />\n";
 							$update=mysql_query($sql);
 
 
 							// On synchronise aussi pour les responsables
 							$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='responsable';";
+							//echo "$sql<br />\n";
 							$res=mysql_query($sql);
 							if(mysql_num_rows($res)==0) {
 								$sql="INSERT INTO matieres_appreciations_acces SET acces='$accessible', id_classe='$id_classe', periode='$i', statut='responsable';";
+								//echo "$sql<br />\n";
 								$insert=mysql_query($sql);
 							}
 							else {
 								$sql="UPDATE matieres_appreciations_acces SET acces='$accessible' WHERE id_classe='$id_classe' AND periode='$i' AND statut='responsable';";
+								//echo "$sql<br />\n";
 								$update=mysql_query($sql);
 							}
 						}
@@ -523,18 +533,22 @@ if($acces_app_ele_resp=='manuel') {
 
 							// On force la valeur en mode 'manuel'
 							$sql="UPDATE matieres_appreciations_acces SET acces='$accessible' WHERE id_classe='$id_classe' AND periode='$i';";
+							//echo "$sql<br />\n";
 							$update=mysql_query($sql);
 
 
 							// On synchronise aussi pour les responsables
 							$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='responsable';";
+							//echo "$sql<br />\n";
 							$res=mysql_query($sql);
 							if(mysql_num_rows($res)==0) {
 								$sql="INSERT INTO matieres_appreciations_acces SET acces='$accessible', id_classe='$id_classe', periode='$i', statut='responsable';";
+								//echo "$sql<br />\n";
 								$insert=mysql_query($sql);
 							}
 							else {
 								$sql="UPDATE matieres_appreciations_acces SET acces='$accessible' WHERE id_classe='$id_classe' AND periode='$i' AND statut='responsable';";
+								//echo "$sql<br />\n";
 								$update=mysql_query($sql);
 							}
 
@@ -542,10 +556,25 @@ if($acces_app_ele_resp=='manuel') {
 						else {
 							$mode='manuel';
 							$accessible=$lig->acces;
+
+							// On synchronise pour les responsables
+							$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='responsable';";
+							//echo "$sql<br />\n";
+							$res=mysql_query($sql);
+							if(mysql_num_rows($res)==0) {
+								$sql="INSERT INTO matieres_appreciations_acces SET acces='$accessible', id_classe='$id_classe', periode='$i', statut='responsable';";
+								//echo "$sql<br />\n";
+								$insert=mysql_query($sql);
+							}
+							else {
+								$sql="UPDATE matieres_appreciations_acces SET acces='$accessible' WHERE id_classe='$id_classe' AND periode='$i' AND statut='responsable';";
+								//echo "$sql<br />\n";
+								$update=mysql_query($sql);
+							}
 						}
 					}
 
-					echo "<td>\n";
+					//echo "<td>\n";
 
 						$current_statut='ele_resp';
 						$id_div=$current_statut."_".$j."_".$i;
