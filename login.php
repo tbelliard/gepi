@@ -270,6 +270,7 @@ if (isset($style_screen_ajout))  {
 //==================================
 
 $test = mysql_query("SHOW TABLES LIKE 'message_login'");
+$msg_page_login="";
 if(mysql_num_rows($test)>0) {
 	$sql="SELECT ml.texte FROM message_login ml, setting s WHERE s.value=ml.id AND s.name='message_login';";
 	//echo "$sql <br />";
