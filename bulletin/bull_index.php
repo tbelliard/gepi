@@ -2574,7 +2574,8 @@ else {
 						//echo $lig_avis->avis;
 					}
 					else {
-						$tab_bulletin[$id_classe][$periode_num]['avis'][$i]="-";
+						//$tab_bulletin[$id_classe][$periode_num]['avis'][$i]="-";
+						$tab_bulletin[$id_classe][$periode_num]['avis'][$i]="";
 					}
 
 					// On affecte la partie élève $tab_ele dans $tab_bulletin
