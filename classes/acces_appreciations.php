@@ -440,7 +440,7 @@ if($acces_app_ele_resp=='manuel') {
 			if(count($nom_periode)>0){
 				echo "<tr class='lig$alt white_hover'>\n";
 				echo "<td>".$tab_classe[$j]['classe'];
-				echo "<input type='text' name='id_classe[$j]' value='$id_classe' />\n";
+				echo "<input type='hidden' name='id_classe[$j]' value='$id_classe' />\n";
 				echo "</td>\n";
 
 				for($i=1;$i<=count($nom_periode);$i++) {
