@@ -1,6 +1,6 @@
 <?php
 /* $Id$ */
-
+/*
 function get_nom_prenom_eleve($login_ele) {
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
 	$res=mysql_query($sql);
@@ -12,7 +12,7 @@ function get_nom_prenom_eleve($login_ele) {
 		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 	}
 }
-
+*/
 function bull_exb($tab_ele,$i) {
 	global
 		//= = = == = = == = = == = = == = = == = = == = = == = = == = = == = = == = = =

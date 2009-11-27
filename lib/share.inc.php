@@ -4057,4 +4057,17 @@ function calcule_moy_mediane_quartiles($tab) {
 
 	return $tab_retour;
 }
+
+
+function get_nom_prenom_eleve($login_ele) {
+	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		return "Elève inconnu";
+	}
+	else {
+		$lig=mysql_fetch_object($res);
+		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
+	}
+}
 ?>
