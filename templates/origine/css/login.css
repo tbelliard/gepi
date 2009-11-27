@@ -5,7 +5,6 @@
 }
 
 .maintenance{
-	position:absolute;
 	top:2.6em;
 	width:90%;
 	margin-left:5%;
@@ -27,12 +26,4 @@
 	color:red;
 }
 
-#soumettre{
-	font-variant: small-caps;
-}
-
-#p_bt_gabarit{
-	text-align:center;
-	font-variant: small-caps;
-}
 
