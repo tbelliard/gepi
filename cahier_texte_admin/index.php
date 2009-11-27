@@ -119,6 +119,10 @@ if (isset($_POST['delai_devoirs'])) {
 
 &nbsp;Désactiver les cahiers de textes (consultation et édition)</label><br />
 <h2>Version des cahiers de textes</h2>
+<?php $extensions = get_loaded_extensions();
+		if(!in_array('pdo_mysql',$extensions)) {
+		    echo "<span style='color:red'>ATTENTION&nbsp;</span> Il semble que l'extension php 'pdo_mysql' ne soit pas présente.<br />Cela risque de rendre impossible l'utilisation de la version 2 du cahier de texte<br />";
+		}?>
 <p style="font-style: italic;">La version 2 du cahier de texte necessite php 5.2.x minimum</p>
 	<label for='version_1' style='cursor: pointer;'>
 	<input type="radio" name="version" id="version_1" value="1" <?php if (getSettingValue("GepiCahierTexteVersion")=='1') echo " checked='checked'"; ?> />
