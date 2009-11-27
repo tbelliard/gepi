@@ -77,6 +77,7 @@ if ($utilisateur->getPreferenceValeur("cdt_version") == "1") {
     die();
 }
 
+
 //on reste sur le cdt1, le navigateur n'etant pas compatible avec le cdt2
 if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6' ) !== FALSE) {
     header("Location: ../cahier_texte/index.php");
@@ -86,6 +87,10 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6' ) !== FALSE) {
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 //-----------------------------------------------------------------------------------
+
+// si l'id d'un groupe est spécifié, on l'enregistre dans un champ hidden, il sera utilisé par le javascript d'initialisation pour basculer vers le groupe concerné
+echo "<input type='hidden' name='id_groupe_init' id='id_groupe_init' value='" . $_SESSION['id_groupe_session'] . "' />";
+
 echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entète\">\n";
 echo "<tr>\n";
 echo "<td valign='center'>\n";

@@ -109,6 +109,9 @@ if ($ctTravailAFaire->getVise() == 'y') {
 	die();
 }
 
+//on mets le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
+$_SESSION['id_groupe_session'] = $ctTravailAFaire->getIdGroupe();
+
 // Initialisation du type de couleur (voir global.inc.php)
 $type_couleur = "t";
 

@@ -109,6 +109,14 @@ if (empty($_FILES['doc_file'])) { $doc_file=''; } else { $doc_file=$_FILES['doc_
 // Initialisation de la valeur delai
 $delai = getSettingValue("delai_devoirs");
 
+//on mets le groupe dans la session, pour naviguer entre absence, cahier de texte et autres
+if ($id_groupe != "") {
+    $_SESSION['id_groupe_session'] = $id_groupe;
+} else if ($_SESSION['id_groupe_session'] != "") {
+     $id_groupe = $_SESSION['id_groupe_session'];
+}
+
+
 // $id_ct : identifiant de la notice
 // $edit_devoir : si $edit_devoir est défini, la notice est de type "devoir à faire", sinon, elle est de type "compte-rendu"
 // $id_groupe : identifiant du groupe

@@ -46,7 +46,19 @@ if (getSettingValue("active_carnets_notes")!='y') {
 
 unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : (isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : NULL);
-//$periode_num = isset($_POST["periode_num"]) ? $_POST["periode_num"] : (isset($_GET["periode_num"]) ? $_GET["periode_num"] : NULL);
+if ($id_groupe == "no_group") {
+    $id_groupe = NULL;
+    unset($_GET['id_groupe']);
+    $_SESSION['id_groupe_session'] = "";
+}
+
+//on mets le groupe dans la session, pour naviguer entre absence, cahier de texte et autres
+if ($id_groupe != NULL) {
+    $_SESSION['id_groupe_session'] = $id_groupe;
+} else if ($_SESSION['id_groupe_session'] != "") {
+     $_GET['id_groupe'] = $_SESSION['id_groupe_session'];
+     $id_groupe = $_SESSION['id_groupe_session'];
+}
 
 if (is_numeric($id_groupe) && $id_groupe > 0) {
     $current_group = get_group($id_groupe);
@@ -230,7 +242,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
 	echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
     echo "<p class='bold'>\n";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a> | \n";
-    echo "<a href='index.php'> Mes enseignements </a> | \n";
+    echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a> | \n";
 
 
 
@@ -468,7 +480,7 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 
     echo "<p class=bold>";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
-    echo "<a href='index.php'> Mes enseignements </a>|</p>\n";
+    echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a>|</p>\n";
     echo "<p class='bold'>Enseignement : ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
 
     echo "<H3>Visualisation/modification - Choisissez la période : </H3>\n";

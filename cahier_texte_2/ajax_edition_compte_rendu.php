@@ -121,6 +121,9 @@ if ($ctCompteRendu->getDateCt() == null) {
 	$type_couleur = "c";
 }
 
+//on mets le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
+$_SESSION['id_groupe_session'] = $ctCompteRendu->getIdGroupe();
+
 // **********************************************
 // Affichage des différents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.

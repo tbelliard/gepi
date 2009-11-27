@@ -84,6 +84,16 @@ $d_date_absence_eleve = isset($_POST["d_date_absence_eleve"]) ? $_POST["d_date_a
 $classe = isset($_POST["classe"]) ? $_POST["classe"] : "";
 $eleve_initial = isset($_POST["eleve_initial"]) ? $_POST["eleve_initial"] :"";
 
+//on mets le groupe dans la session, pour naviguer entre absence, cahier de texte et autres
+if ($classe != "") {
+    $_SESSION['id_groupe_session'] = $classe;
+}
+
+$passer_cahier_texte = isset($_POST["passer_cahier_texte"]) ? $_POST["passer_cahier_texte"] :false;
+if ($passer_cahier_texte == "true") {
+    header("Location: ../../cahier_texte/index.php");
+}
+
 if (!empty($d_date_absence_eleve) AND $etape=='1' AND !empty($eleve_absent)) {
 	$d_date_absence_eleve = date_fr($d_date_absence_eleve);
 }
@@ -702,7 +712,9 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	foreach($groups as $group) {
 		if(!empty($classe) and $classe == $group["id"]) {
 			$selected = ' selected="selected"';
-		}else{
+		}else if ($_SESSION['id_groupe_session'] != "" and $_SESSION['id_groupe_session'] == $group["id"])  {
+			$selected = ' selected="selected"';
+		} else {
 			$selected = '';
 		}
 		echo '
@@ -840,6 +852,10 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	?>
 			<p class="choix_fin">
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
+			</p>
+			<p class="choix_fin">
+				<input type="hidden" name="passer_cahier_texte" id="passer_cahier_texte" value="false" />
+				<input value="Enregistrer et passer au cahier de texte" name="Valider" type="submit"  onclick="document.getElementById('passer_cahier_texte').value = true; this.form.submit(); this.disabled=true; this.value='En cours'" />
 			</p>
 
 <!-- Afichage du tableau de la liste des élèves -->
@@ -1192,6 +1208,9 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	</p>
 		<div style="text-align: center; margin: 20px;">
 			<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
+		</div>
+		<div style="text-align: center; margin: 20px;">
+				<input value="Enregistrer et passer au cahier de texte" name="Valider" type="submit"  onclick="document.getElementById('passer_cahier_texte').value = true; this.form.submit(); this.disabled=true; this.value='En cours'" />
 		</div>
 	</form>
 	<p class="info_importante">Quand vous saisissez vos absences (avec ou sans absent),
