@@ -89,7 +89,11 @@ require_once("../lib/header.inc");
 //-----------------------------------------------------------------------------------
 
 // si l'id d'un groupe est spécifié, on l'enregistre dans un champ hidden, il sera utilisé par le javascript d'initialisation pour basculer vers le groupe concerné
-echo "<input type='hidden' name='id_groupe_init' id='id_groupe_init' value='" . $_SESSION['id_groupe_session'] . "' />";
+echo "<input type='hidden' name='id_groupe_init' id='id_groupe_init' value='";
+if (isset($_SESSION['id_groupe_session'])) {
+	echo $_SESSION['id_groupe_session'];
+}
+echo "' />";
 
 echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entète\">\n";
 echo "<tr>\n";

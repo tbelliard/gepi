@@ -55,7 +55,7 @@ if ($id_groupe == "no_group") {
 //on mets le groupe dans la session, pour naviguer entre absence, cahier de texte et autres
 if ($id_groupe != NULL) {
     $_SESSION['id_groupe_session'] = $id_groupe;
-} else if ($_SESSION['id_groupe_session'] != "") {
+} else if (isset($_SESSION['id_groupe_session']) && $_SESSION['id_groupe_session'] != "") {
      $_GET['id_groupe'] = $_SESSION['id_groupe_session'];
      $id_groupe = $_SESSION['id_groupe_session'];
 }
