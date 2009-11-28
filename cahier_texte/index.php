@@ -64,7 +64,12 @@ if (getSettingValue("GepiCahierTexteVersion") == '2') {
 	    //on reste sur le cdt1, le navigateur n'etant pas compatible avec le cdt2
 	    $message_avertissement_navigateur = "Votre navigateur n'est pas compatible avec le cahier de texte 2, mais vous pouvez utiliser la version 1.";
 	} else {
-	    header("Location: ../cahier_texte_2/index.php");
+	    $temp_header = "Location: ../cahier_texte_2/index.php";
+	    $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
+	    if ($id_groupe != NULL) {
+		    $temp_header .= "?id_groupe=" . $id_groupe;
+	    }
+	    header($temp_header);
 	    die();
 	}
     }

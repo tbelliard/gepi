@@ -90,7 +90,10 @@ require_once("../lib/header.inc");
 
 // si l'id d'un groupe est spécifié, on l'enregistre dans un champ hidden, il sera utilisé par le javascript d'initialisation pour basculer vers le groupe concerné
 echo "<input type='hidden' name='id_groupe_init' id='id_groupe_init' value='";
-if (isset($_SESSION['id_groupe_session'])) {
+$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
+if ($id_groupe != NULL) {
+	echo $_GET["id_groupe"];
+} else if (isset($_SESSION['id_groupe_session'])) {
 	echo $_SESSION['id_groupe_session'];
 }
 echo "' />";
