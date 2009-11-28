@@ -112,7 +112,7 @@ $delai = getSettingValue("delai_devoirs");
 //on mets le groupe dans la session, pour naviguer entre absence, cahier de texte et autres
 if ($id_groupe != "") {
     $_SESSION['id_groupe_session'] = $id_groupe;
-} else if ($_SESSION['id_groupe_session'] != "") {
+} else if (isset($_SESSION['id_groupe_session']) and  $_SESSION['id_groupe_session'] != "") {
      $id_groupe = $_SESSION['id_groupe_session'];
 }
 
