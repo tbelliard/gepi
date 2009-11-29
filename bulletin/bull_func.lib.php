@@ -927,9 +927,19 @@ width:".$largeur1."%;\n";
 
         if ($bull_affiche_signature == 'y') {
             // 2) Le nom du professeur principal
+			/*
 			if(isset($tab_bull['eleve'][$i]['pp']['login'])) {
 				echo "<b>".ucfirst($gepi_prof_suivi)."</b> ";
 				echo "<i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
+			}
+			*/
+			if(isset($tab_bull['eleve'][$i]['pp'][0])) {
+				echo "<b>".ucfirst($gepi_prof_suivi)."</b> ";
+				echo "<i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp'][0]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
+				for($i_pp=1;$i_pp<count($tab_bull['eleve'][$i]['pp']);$i_pp++) {
+					echo ", ";
+					echo "<i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp'][$i_pp]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
+				}
 			}
 
 			echo "</td>\n";
@@ -4693,11 +4703,14 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',$taille);
 				// Le nom du professeur principal
 				$pp_classe[$i]="";
-				if(isset($tab_bull['eleve'][$i]['pp']['login'])) {
-					//echo "<b>".ucfirst($gepi_prof_suivi)."</b> ";
-					//$pp_classe[$i]=affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe']);
-					//$pp_classe[$i]=ucfirst($gepi_prof_suivi)." ".affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe']);
-					$pp_classe[$i]="<b>".ucfirst($gepi_prof_suivi)."</b> <i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
+				//if(isset($tab_bull['eleve'][$i]['pp']['login'])) {
+				if(isset($tab_bull['eleve'][$i]['pp'][0]['login'])) {
+					$pp_classe[$i]="<b>".ucfirst($gepi_prof_suivi)."</b> ";
+					$pp_classe[$i].="<i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp'][0]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
+					for($i_pp=1;$i_pp<count($tab_bull['eleve'][$i]['pp']);$i_pp++) {
+						$pp_classe[$i].=", ";
+						$pp_classe[$i].="<i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
+					}
 				}
 				else {
 					$pp_classe[$i]="";

@@ -2002,13 +2002,17 @@ else {
 					$res_pp=mysql_query($sql);
 					//echo "$sql<br />";
 					if(mysql_num_rows($res_pp)>0) {
-						$lig_pp=mysql_fetch_object($res_pp);
 						$tab_ele['pp']=array();
 
-						$tab_ele['pp']['login']=$lig_pp->login;
-						$tab_ele['pp']['nom']=$lig_pp->nom;
-						$tab_ele['pp']['prenom']=$lig_pp->prenom;
-						$tab_ele['pp']['civilite']=$lig_pp->civilite;
+						$cpt_pp=0;
+						while($lig_pp=mysql_fetch_object($res_pp)) {
+							$tab_ele['pp'][$cpt_pp]=array();
+							$tab_ele['pp'][$cpt_pp]['login']=$lig_pp->login;
+							$tab_ele['pp'][$cpt_pp]['nom']=$lig_pp->nom;
+							$tab_ele['pp'][$cpt_pp]['prenom']=$lig_pp->prenom;
+							$tab_ele['pp'][$cpt_pp]['civilite']=$lig_pp->civilite;
+							$cpt_pp++;
+						}
 					}
 
 					// Récup infos responsables
