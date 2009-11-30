@@ -3,8 +3,8 @@
 ********************************************************
 TinyButStrong - Template Engine for Pro and Beginners
 ------------------------
-Version  : 3.5.0b2009-09-19 for PHP 4
-Date     : 2009-09-19
+Version  : 3.5.0 for PHP 4
+Date     : 2009-11-12
 Web site : http://www.tinybutstrong.com
 Author   : http://www.tinybutstrong.com/onlyyou.html
 ********************************************************
@@ -493,7 +493,7 @@ var $ObjectRef = false;
 var $NoErr = false;
 var $Assigned = array();
 // Undocumented (can change at any version)
-var $Version = '3.5.0b2009-09-19';
+var $Version = '3.5.0';
 var $HtmlCharSet = '';
 var $TurboBlock = true;
 var $VarPrefix = '';
@@ -590,25 +590,25 @@ function LoadTemplate($File,$HtmlCharSet='') {
 	return $Ok;
 }
 
-function GetBlockSource($BlockName,$List=false,$KeepDefTags=true) {
+function GetBlockSource($BlockName,$List=false,$KeepDefTags=true,$ReplaceWith=false) {
 	$RetVal = array();
 	$Nbr = 0;
 	$Pos = 0;
 	$FieldOutside = false;
 	$P1 = false;
 	$Mode = ($KeepDefTags) ? 3 : 2;
+	$PosBeg1 = 0;
 	while ($Loc = $this->meth_Locator_FindBlockNext($this->Source,$BlockName,$Pos,'.',$Mode,$P1,$FieldOutside)) {
-		$P1 = false;
 		$Nbr++;
-		$RetVal[$Nbr] = $Loc->BlockSrc;
-		if (!$List) return $RetVal[$Nbr];
+		if ($Nbr==1) $PosBeg1 = $Loc->PosBeg;
+		if ($List) $RetVal[$Nbr] = $Loc->BlockSrc;
 		$Pos = $Loc->PosEnd;
+		$P1 = false;
 	}
-	if ($List) {
-		return $RetVal;
-	} else {
-		return false;
-	}
+	if ($Nbr==0) return false;
+	if (!$List) $RetVal = substr($this->Source,$PosBeg1,$Pos-$PosBeg1+1);
+	if ($ReplaceWith!==false) $this->Source = substr($this->Source,0,$PosBeg1).$ReplaceWith.substr($this->Source,$Pos+1);
+	return $RetVal;
 }
 
 function MergeBlock($BlockLst,$SrcId='assigned',$Query='') {
@@ -741,8 +741,8 @@ function PlugIn($Prm1,$Prm2=0) {
 			$this->_piOnFrm_Ok = false;
 			return true;
 		case -10:  // Restore
-			$this->_PlugIns_Ok = $this->_PlugIns_Ok_save;
-			$this->_piOnFrm_Ok = $this->_piOnFrm_Ok_save;
+			if (isset($this->_PlugIns_Ok_save)) $this->_PlugIns_Ok = $this->_PlugIns_Ok_save;
+			if (isset($this->_piOnFrm_Ok_save)) $this->_piOnFrm_Ok = $this->_piOnFrm_Ok_save;
 			return true;
 		}
 
@@ -2543,10 +2543,12 @@ function meth_Misc_Charset($HtmlCharSet) {
 				$HtmlCharSet = '';
 			}
 		}
+	} elseif (is_array($HtmlCharSet)) {
+		$this->_HtmlCharFct = true;
 	} elseif ($HtmlCharSet===false) {
 		$this->Protect = false;
 	} else {
-		$this->meth_Misc_Alert('with LoadTemplate() method','the CharSet argument is not a string.');
+		$this->meth_Misc_Alert('with LoadTemplate() method','the CharSet argument is not a string nor an array.');
 		$HtmlCharSet = '';
 	}
 	$this->HtmlCharSet = $HtmlCharSet;
