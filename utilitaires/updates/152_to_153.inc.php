@@ -236,7 +236,7 @@ if ($test == -1) {
 $test = mysql_query("SELECT 1=1 FROM message_login;");
 if (mysql_num_rows($test)==0) {
 	$result .= "<br />Insertion d'un message de login: ";
-	$sql="INSERT INTO message_login SET texte='Espace pour un message en page de login';";
+	$sql="INSERT INTO message_login SET texte='Espace pour un message en page de login paramétrable en Gestion des connexions.';";
 	//echo "$sql<br />";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
