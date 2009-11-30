@@ -569,7 +569,7 @@ width:".$largeur1."%;\n";
 					if ($tab_bull['eleve'][$i]['doublant'] == 'R'){
 					echo "<br />";
 					echo "Redoublant";
-					if (strtoupper($tab_bull['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (strtoupper($tab_bull['eleve'][$i]['sexe'])== "F") {echo "e";}
 					}
 				}
 
@@ -598,7 +598,7 @@ width:".$largeur1."%;\n";
 				if ($bull_mention_doublant == 'yes'){
 					if ($tab_bull['eleve'][$i]['doublant'] == 'R'){
 						echo ", Redoublant";
-						if (strtoupper($tab_bull['eleve'][$i]['sexe'])!= "F") {echo "e";}
+						if (strtoupper($tab_bull['eleve'][$i]['sexe'])== "F") {echo "e";}
 					}
 				}
 				if ($bull_mention_nom_court == 'yes') {
@@ -705,7 +705,7 @@ width:".$largeur1."%;\n";
 					if ($tab_bull['eleve'][$i]['doublant'] == 'R'){
 					echo "<br />";
 					echo "Redoublant";
-					if (strtoupper($tab_bull['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (strtoupper($tab_bull['eleve'][$i]['sexe'])== "F") {echo "e";}
 					}
 				}
 
@@ -737,7 +737,7 @@ width:".$largeur1."%;\n";
 				if ($bull_mention_doublant == 'yes'){
 					if ($tab_bull['eleve'][$i]['doublant'] == 'R'){
 					echo ", Redoublant";
-					if (strtoupper($tab_bull['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (strtoupper($tab_bull['eleve'][$i]['sexe'])== "F") {echo "e";}
 					}
 				}
 				if ($bull_mention_nom_court == 'yes') {
