@@ -560,7 +560,7 @@
 
 					// Colonne Max:
 				    echo "<td style=\"text-align: center;\">";
-					echo "<span class='bulletin'>".nf($moy_max_classe.)."</span>";
+					echo "<span class='bulletin'>".nf($moy_max_classe)."</span>";
 				    echo "</td>\n";
 				} else {
 				    //Eric Ajout colonne min classe max une seule cellule
