@@ -38,7 +38,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
 die();
-};
+}
 include("../fckeditor/fckeditor.php") ;
 
 // Check access
@@ -715,7 +715,8 @@ function SetDefaultValues(nb){
 </script>
 
 <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>
-| <a href="./index.php"> Imprimer les bulletins au format HTML</a>
+| <!--a href="./index.php"> Imprimer les bulletins au format HTML</a-->
+<a href="./bull_index.php"> Imprimer les bulletins</a>
 | <a href="./param_bull_pdf.php"> Paramètres d'impression des bulletins PDF</a>
 </p>
 
