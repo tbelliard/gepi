@@ -36,8 +36,8 @@ if($tab_bull['affiche_nbdev']=="y"){
 if($min_max_moyclas!=1) {
 	// Trois colonnes séparées pour min/moy/max
 	echo "<td style='width: ".$col_note_largeur."px; text-align: center;'><span class='bulletin'>Min</span></td>\n";
-	echo "<td style='width: ".$col_note_largeur."px; text-align: center;'><span class='bulletin'>Max</span></td>\n";
 	echo "<td style='width: ".$col_note_largeur."px; text-align: center;'><span class='bulletin'>Classe</span></td>\n";
+	echo "<td style='width: ".$col_note_largeur."px; text-align: center;'><span class='bulletin'>Max</span></td>\n";
 }
 else{
 	// Min/Classe/Max en une seule colonne
