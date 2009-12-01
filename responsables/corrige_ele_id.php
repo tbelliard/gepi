@@ -867,11 +867,20 @@ else{
 								//$sql="UPDATE eleves SET ele_id='$ele_id[$i]' WHERE elenoet='$elenoet[$i]';";
 								$sql="UPDATE eleves SET ele_id='$ele_id[$i]' WHERE elenoet='$elenoet[$i]' OR elenoet='".sprintf("%05d",$elenoet[$i])."';";
 								affiche_debug("$sql<br />\n");
+								//echo "$sql<br />\n";
+								/*
+								$fsql=fopen("/tmp/fich_debug.sql","a+");
+								fwrite($fsql,"$sql\n");
+								fclose($fsql);
+								*/
 								$correction1=mysql_query($sql);
 
-								$sql="UPDATE responsables2 SET ele_id='$ele_id[$i]' WHERE ele_id='$old_ele_id[$i]';";
-								affiche_debug("$sql<br />\n");
-								$correction2=mysql_query($sql);
+								if($old_ele_id[$i]!='') {
+									$sql="UPDATE responsables2 SET ele_id='$ele_id[$i]' WHERE ele_id='$old_ele_id[$i]';";
+									affiche_debug("$sql<br />\n");
+									//echo "$sql<br />\n";
+									$correction2=mysql_query($sql);
+								}
 								$cpt++;
 							}
 						}
