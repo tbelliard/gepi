@@ -518,17 +518,6 @@ echo "
 		<img src='../../images/icons/back.png' alt='Retour' class='back_link'/>
 		Retour à l'accueil
 	</a>";
-if($etape=="2" or $etape=="3") {
-	echo " |
-	<a href='prof_ajout_abs.php?passage_form=manuel'>
-		Retour étape 1/2
-	</a>";
-}
-if (getSettingValue("liste_absents") == "y") {
-	echo "
-	 |<a href=\"../lib/tableau.php?type=A&amp;pagedarriver=prof_ajout_abs\"> Visualiser les absences</a>\n";
-}
-echo "</p>";
 
 //++++++++++++++++ Affichage des opérations réussies ou ratées+++++ absences_rb +++++++++++++
 if (isset($echo)) {
@@ -578,6 +567,18 @@ if (isset($echo)) {
 
 		}
 	}
+
+if($etape=="2" or $etape=="3") {
+	echo " |
+	<a href='prof_ajout_abs.php?passage_form=manuel'>
+		Retour étape 1/2
+	</a>";
+}
+if (getSettingValue("liste_absents") == "y") {
+	echo "
+	 |<a href=\"../lib/tableau.php?type=A&amp;pagedarriver=prof_ajout_abs\"> Visualiser les absences</a>\n";
+}
+echo "</p>";
 
 if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $etape != '3' ) or $msg_erreur != '' ) {
 ?>
