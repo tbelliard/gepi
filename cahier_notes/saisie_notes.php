@@ -966,12 +966,17 @@ if ($id_devoir==0) {
 
 // Affichage première ligne
 
-echo "<tr><td class='cn'>&nbsp;</td>\n";
-if ($multiclasses) echo "<td class='cn'>&nbsp;</td>\n";
+echo "<tr><th class='cn'>&nbsp;</th>\n";
+if ($multiclasses) echo "<th class='cn'>&nbsp;</th>\n";
 echo "\n";
 if ($nb_dev != 0) {
 	if($nom_conteneur!=""){
-		echo "<th class='cn' colspan='$nb_colspan' valign='top'><center>$nom_conteneur</center></th>\n";
+		//echo "<th class='cn' colspan='$nb_colspan' valign='top'><center>$nom_conteneur</center></th>\n";
+		echo "<th class='cn' colspan='$nb_colspan' valign='top'>\n";
+		//echo "<center>$nom_conteneur</center>\n";
+		echo "<div style='float:right; width:16;'><a href='javascript:affichage_quartiles();'><img src='../images/icons/wizard.png' width='16' height='16' alt='Afficher les quartiles et éventuellement la photo élève' title='Afficher les quartiles et éventuellement la photo élève' /></a></div>\n";
+		echo "$nom_conteneur\n";
+		echo "</th>\n";
 	}
 	else{
 		echo "<th class='cn' colspan='$nb_colspan' valign='top'><center>&nbsp;</center></th>\n";
@@ -1679,7 +1684,8 @@ echo "</tr></table>\n";
 
 //===================================
 if((isset($id_devoir))&&($id_devoir!=0)) {
-	echo "<div style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
+	//echo "<div id='div_quartiles' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
+	echo "<div id='div_quartiles' style='position: fixed; top: 220px; right: 200px; text-align:center; display:none;'>\n";
 	//javascript_tab_stat('tab_stat_',$nombre_lignes);
 	javascript_tab_stat('tab_stat_',$num_id);
 
@@ -1715,6 +1721,9 @@ if ($id_devoir) echo "<input type='hidden' name='is_posted' value=\"yes\" />\n";
 <?php
 
 //===================================
+
+// Affichage des quartiles flottants
+
 //echo "\$id_devoir=$id_devoir<br />";
 //if((isset($id_devoir))&&($id_devoir==0)) {
 if((!isset($id_devoir))||($id_devoir=='')) {
@@ -1722,7 +1731,8 @@ if((!isset($id_devoir))||($id_devoir=='')) {
 	echo $chaine_input_moy;
 	echo "</form>\n";
 	
-	echo "<div style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
+	//echo "<div id='div_quartiles' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
+	echo "<div id='div_quartiles' style='position: fixed; top: 220px; right: 200px; text-align:center; display:none;'>\n";
 	javascript_tab_stat('tab_stat_',$nombre_lignes);
 	echo "</div>\n";
 }
@@ -1786,6 +1796,9 @@ if ($id_devoir) {
 
 }
 
+// Pour qu'un professeur puisse avoir une préférence d'affichage par défaut ou non des quartiles:
+$aff_quartiles_par_defaut=getPref($_SESSION['login'],'aff_quartiles_cn',"n");
+
 ?>
 <br />
 * En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (note et commentaire portés sur la copie, ...).
@@ -1803,5 +1816,18 @@ if(document.getElementById('n10')){
 	document.getElementById('n10').focus();
 }
 
+function affichage_quartiles() {
+	if(document.getElementById('div_quartiles').style.display=='none') {
+		document.getElementById('div_quartiles').style.display='';
+	}
+	else {
+		document.getElementById('div_quartiles').style.display='none';
+	}
+}
+<?php
+if($aff_quartiles_par_defaut=='y') {
+	echo "affichage_quartiles();\n";
+}
+?>
 </script>
 <?php require("../lib/footer.inc.php");?>
