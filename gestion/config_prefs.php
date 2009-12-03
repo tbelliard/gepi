@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id : $
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -258,6 +258,28 @@ if(isset($enregistrer)){
 					else{
 						$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
 					}
+				}
+			}
+		}
+
+		if ($_SESSION['statut']=='professeur') {
+			$aff_quartiles_cn=isset($_POST['aff_quartiles_cn']) ? $_POST['aff_quartiles_cn'] : "n";
+
+			$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_quartiles_cn'";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)==0) {
+				$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='aff_quartiles_cn', value='$aff_quartiles_cn'";
+				//echo $sql."<br />\n";
+				if(!mysql_query($sql)){
+					$msg.="Erreur lors de l'enregistrement de aff_quartiles_cn<br />\n";
+					//$msg.="Erreur lors de l'enregistrement de l'affichage par défaut ou non des moyenne, médiane, quartiles,... sur les carnets de notes.<br />\n";
+				}
+			}
+			else {
+				$sql="UPDATE preferences SET value='$aff_quartiles_cn' WHERE login='".$_SESSION['login']." AND name='aff_quartiles_cn'";
+				//echo $sql."<br />\n";
+				if(!mysql_query($sql)){
+					$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
 				}
 			}
 		}
@@ -559,6 +581,28 @@ else{
 
 
 
+	if($_SESSION['statut']=='professeur') {
+		echo "<p><br /></p>\n";
+		echo "<p><b>Paramètres du carnet de notes&nbsp;:</b></p>\n";
+
+		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_quartiles_cn'";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			$aff_quartiles_cn="n";
+		}
+		else {
+			$lig_test=mysql_fetch_object($test);
+			$aff_quartiles_cn=$lig_test->value;
+		}
+
+		echo "<p>\n";
+		echo "<input type='checkbox' name='aff_quartiles_cn' id='aff_quartiles_cn' value='y' ";
+		if($aff_quartiles_cn=='y') {echo 'checked';}
+		echo "/><label for='aff_quartiles_cn'> Afficher par défaut, les moyenne, médiane, quartiles, min, max et les phtos des élèves sur les carnets de notes.</label>\n";
+		echo "</p>\n";
+	}
+
+
 
 	if(($page=="add_modif_dev")||($_SESSION['statut']=='professeur')){
 		echo "<p>Paramétrage de la page de <b>création d'évaluation</b> pour les ".$gepiSettings['denomination_professeurs']."</p>\n";
@@ -650,10 +694,6 @@ else{
 
 		echo "</table>\n";
 	}
-
-
-
-
 
 
 	if(($page=="add_modif_conteneur")||($_SESSION['statut']=='professeur')){
