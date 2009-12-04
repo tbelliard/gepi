@@ -22,13 +22,13 @@
 
  
 function observeur(){
-	document.getElementById('bt_gabarit').className="cache";
-	document.getElementById('titre_switcher').className="cache";
-	document.getElementById('login').focus();
-	
+		var d = $('bt_gabarit');
+		if (d != null) {
+			document.getElementById('bt_gabarit').className="cache";
+			document.getElementById('titre_switcher').className="cache";
+		}
+	document.getElementById('login').focus();	
 	new Event.observe("template", 'change', changetemplate,false);	
-  //new Event.observe("info_vie_privee", 'click', traiterEvenement,false);
-  // on stoppe l'évènement
   
 }
 
