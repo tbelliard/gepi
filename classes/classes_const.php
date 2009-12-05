@@ -494,7 +494,7 @@ if ($nombreligne == '0') {
 	echo "<p>Il n'y a pas d'élèves actuellement dans cette classe.</p>\n";
 } else {
 	$k = '0';
-	echo "<table border='1' cellpadding='5' class='boireaus' summary='Elèves'>\n";
+	echo "<table class='boireaus' border='1' cellpadding='5' class='boireaus' summary='Elèves'>\n";
 	echo "<tr>\n";
 	echo "<th>Nom Prénom </th>\n";
 	echo "<th>Régime</th>\n";
@@ -541,7 +541,7 @@ if ($nombreligne == '0') {
 		$cpe_login = "cpe_".$login_eleve;
 
 		$alt=$alt*(-1);
-		echo "<tr class='lig$alt'>\n";
+		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td><p>";
 
 		echo "<a href='../eleves/modify_eleve.php?eleve_login=".$login_eleve."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Editer la fiche élève' target='_blank' style='color: black;'>";

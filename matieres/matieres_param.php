@@ -161,7 +161,7 @@ $alt=1;
 //============================================
 while ($i < $nb_ligne) {
 	$alt=$alt*(-1);
-    echo "<tr class='lig$alt white_over'>\n";
+    echo "<tr class='lig$alt white_hover'>\n";
     $j = 0;
     while ($j < 3) {
         unset($nom_case);
@@ -248,7 +248,7 @@ while ($i < $nb_matieres){
     $nb_mat = mysql_num_rows($matquery);
     if ($nb_mat != 0) {
 		$alt=$alt*(-1);
-        echo "<tr class='lig$alt white_over'><td>$current_matiere</td>\n";
+        echo "<tr class='lig$alt white_hover'><td>$current_matiere</td>\n";
         //echo "<td>$current_matiere_nom</td>\n";
         echo "<td>".htmlentities($current_matiere_nom)."</td>\n";
         echo "<td>\n";

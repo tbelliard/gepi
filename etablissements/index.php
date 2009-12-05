@@ -118,7 +118,7 @@ while ($i < $nombre_lignes){
     }
 	$current_cp = mysql_result($call_data, $i, "cp");
     $current_ville = mysql_result($call_data, $i, "ville");
-    echo "<tr class='lig$alt'><td><a href='modify_etab.php?id=$current_id'>$current_id</a></td>\n";
+    echo "<tr class='lig$alt white_hover'><td><a href='modify_etab.php?id=$current_id'>$current_id</a></td>\n";
     echo "<td>$current_nom</td>\n";
     echo "<td>$current_niveau_nom</td>\n";
     echo "<td>$current_type</td>\n";
