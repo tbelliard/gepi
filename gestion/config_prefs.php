@@ -265,10 +265,10 @@ if(isset($enregistrer)){
 		if ($_SESSION['statut']=='professeur') {
 			$aff_quartiles_cn=isset($_POST['aff_quartiles_cn']) ? $_POST['aff_quartiles_cn'] : "n";
 
-			$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_quartiles_cn'";
+			$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_quartiles_cn';";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0) {
-				$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='aff_quartiles_cn', value='$aff_quartiles_cn'";
+				$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='aff_quartiles_cn', value='$aff_quartiles_cn';";
 				//echo $sql."<br />\n";
 				if(!mysql_query($sql)){
 					$msg.="Erreur lors de l'enregistrement de aff_quartiles_cn<br />\n";
@@ -276,12 +276,34 @@ if(isset($enregistrer)){
 				}
 			}
 			else {
-				$sql="UPDATE preferences SET value='$aff_quartiles_cn' WHERE login='".$_SESSION['login']." AND name='aff_quartiles_cn'";
+				$sql="UPDATE preferences SET value='$aff_quartiles_cn' WHERE login='".$_SESSION['login']."' AND name='aff_quartiles_cn';";
 				//echo $sql."<br />\n";
 				if(!mysql_query($sql)){
-					$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
+					$msg.="Erreur lors de l'enregistrement de aff_quartiles_cn pour ".$_SESSION['login']."<br />\n";
 				}
 			}
+
+
+			$aff_photo_saisie_app=isset($_POST['aff_photo_saisie_app']) ? $_POST['aff_photo_saisie_app'] : "n";
+
+			$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_photo_saisie_app';";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)==0) {
+				$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='aff_photo_saisie_app', value='$aff_photo_saisie_app'";
+				//echo $sql."<br />\n";
+				if(!mysql_query($sql)){
+					$msg.="Erreur lors de l'enregistrement de aff_photo_saisie_app<br />\n";
+					//$msg.="Erreur lors de l'enregistrement de l'affichage par défaut ou non des moyenne, médiane, quartiles,... sur les carnets de notes.<br />\n";
+				}
+			}
+			else {
+				$sql="UPDATE preferences SET value='$aff_photo_saisie_app' WHERE login='".$_SESSION['login']."' AND name='aff_photo_saisie_app';";
+				//echo $sql."<br />\n";
+				if(!mysql_query($sql)){
+					$msg.="Erreur lors de l'enregistrement de $tab[$j] pour ".$_SESSION['login']."<br />\n";
+				}
+			}
+
 		}
 	}
 
@@ -777,6 +799,28 @@ else{
 
 
 
+
+
+	if($_SESSION['statut']=='professeur') {
+		echo "<p><br /></p>\n";
+		echo "<p><b>Paramètres de saisie des appréciations&nbsp;:</b></p>\n";
+
+		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_photo_saisie_app'";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			$aff_photo_saisie_app="n";
+		}
+		else {
+			$lig_test=mysql_fetch_object($test);
+			$aff_photo_saisie_app=$lig_test->value;
+		}
+
+		echo "<p>\n";
+		echo "<input type='checkbox' name='aff_photo_saisie_app' id='aff_photo_saisie_app' value='y' ";
+		if($aff_photo_saisie_app=='y') {echo 'checked';}
+		echo "/><label for='aff_photo_saisie_app'> Afficher par défaut les phtos des élèves lors de la saisie des appréciations sur les bulletins.</label>\n";
+		echo "</p>\n";
+	}
 
 
 
