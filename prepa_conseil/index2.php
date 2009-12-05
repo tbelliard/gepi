@@ -294,10 +294,31 @@ if (isset($id_classe)) {
 		echo "<td>$lig_cg->id_groupe</td>\n";
 		echo "<td>".htmlentities($lig_cg->name)."</td>\n";
 		echo "<td>".htmlentities($lig_cg->description)."</td>\n";
-		echo "<td><input type='text' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()\" name='coef_perso[$lig_cg->id_groupe]' value='$lig_cg->coef' size='3' autocomplete='off' /></td>\n";
-		echo "<td><input type='checkbox' name='note_sup_10[$lig_cg->id_groupe]' value='y' ";
-		if($lig_cg->mode_moy=='sup10') {echo "checked ";}
-		echo "/></td>\n";
+		echo "<td>\n";
+		$val_coef_perso=$lig_cg->coef;
+		$nom_matiere='';
+
+		$sql="SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe='$lig_cg->id_groupe';";
+		$res_nom_matiere=mysql_query($sql);
+		if(mysql_num_rows($res_nom_matiere)>0) {
+			$lig_nom_matiere=mysql_fetch_object($res_nom_matiere);
+			$nom_matiere=$lig_nom_matiere->id_matiere;
+			if(isset($_SESSION['coef_perso_'.$nom_matiere])) {
+				$val_coef_perso=$_SESSION['coef_perso_'.$nom_matiere];
+			}
+		}
+		echo "<input type='text' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()\" name='coef_perso[$lig_cg->id_groupe]' value='\n";
+		echo $val_coef_perso;
+		echo "' size='3' autocomplete='off' />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<input type='checkbox' name='note_sup_10[$lig_cg->id_groupe]' value='y' ";
+		if(($nom_matiere!='')&&(isset($_SESSION['note_sup_10_'.$nom_matiere]))) {
+			echo "checked ";
+		}
+		elseif($lig_cg->mode_moy=='sup10') {echo "checked ";}
+		echo "/>\n";
+		echo "</td>\n";
 		echo "</tr>\n";
 		$num_id++;
 	}

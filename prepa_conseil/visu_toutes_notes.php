@@ -504,8 +504,14 @@ while($i < $lignes_groupes) {
     $current_mode_moy = mysql_result($groupeinfo, $i, "mode_moy");
     // A FAIRE: A l'affichage, il faudrait mettre 1.0(*) quand le coeff n'est pas 1.0 pour tous les élèves à cause de coeffs personnalisés.
     if($utiliser_coef_perso=='y') {
-        if(isset($coef_perso[$var_group_id])) {$current_coef=$coef_perso[$var_group_id];}
-        if(isset($note_sup_10[$var_group_id])) {$col[$nb_col][1]='X';}
+        if(isset($coef_perso[$var_group_id])) {
+			$current_coef=$coef_perso[$var_group_id];
+			$_SESSION['coef_perso_'.$current_group['matiere']['matiere']]=$coef_perso[$var_group_id];
+		}
+        if(isset($note_sup_10[$var_group_id])) {
+			$col[$nb_col][1]='X';
+			$_SESSION['note_sup_10_'.$current_group['matiere']['matiere']]='y';
+		}
     }
     else {
         if($current_mode_moy=='sup10') {$col[$nb_col][1]='X';}
