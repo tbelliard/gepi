@@ -469,7 +469,9 @@ if ($insert_mass_appreciation_type=="y") {
 
 echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 
-
+echo "<div id='div_photo_eleve' class='infobulle_corps' style='position: fixed; top: 220px; right: 20px; text-align:center; border:1px solid black; display:none;'></div>\n";
+//echo "<div id='div_photo_eleve' class='infobulle_corps' style='position: fixed; top: 220px; right: 20px; text-align:center; background-color:white; border:1px solid black; display:none;'></div>\n";
+//echo "<div id='div_photo_eleve' style='position: fixed; top: 220px; right: 200px; text-align:center; border:1px solid black;'>&nbsp;</div>\n";
 
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
@@ -596,7 +598,9 @@ while ($k < $nb_periode) {
 		$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_grp_".$k."\" rows='2' cols='100' onchange=\"changement()\"";
 		// onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"
 
-		$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';\"";
+		$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
+		$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
+		$mess[$k].="\"";
 
 		$mess[$k].=">".$app_grp[$k]."</textarea>\n";
 	}
@@ -612,7 +616,9 @@ echo "<table width=\"750\" class='boireaus' cellspacing=\"2\" cellpadding=\"5\" 
 echo "<tr>\n";
 echo "<th width=\"200\"><div align=\"center\">&nbsp;</div></th>\n";
 echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
-echo "<th><div align=\"center\"><b>Appréciation sur le groupe/classe</b>\n";
+echo "<th>\n";
+echo "<div style='float:right; width:16;'><a href='javascript:affichage_div_photo();'><img src='../images/icons/wizard.png' width='16' height='16' alt='Afficher les quartiles et éventuellement la photo élève' title='Afficher la photo élève pendant la saisie' /></a></div>\n";
+echo "<div align=\"center\"><b>Appréciation sur le groupe/classe</b>\n";
 echo "</div></th>\n";
 echo "</tr>\n";
 //=================================================
@@ -857,7 +863,28 @@ foreach ($liste_eleves as $eleve_login) {
 				// Pour revenir au champ suivant après validation/enregistrement:
 				// MODIF: boireaus 20080520
 				//$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");\"";
-				$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';\"";
+				$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
+				//================================================
+				if(getSettingValue("gepi_pmv")!="n"){
+					$sql="SELECT elenoet FROM eleves WHERE login='".$eleve_login."';";
+					//echo "$sql<br />";
+					$res_ele=mysql_query($sql);
+					if(mysql_num_rows($res_ele)>0) {
+						$lig_ele=mysql_fetch_object($res_ele);
+						$_photo_eleve = (isset ($multisite) AND $multisite == 'y') ? $eleve_login : $lig_ele->elenoet;
+						if(file_exists("../photos/eleves/".$_photo_eleve.".jpg")) {
+							$mess[$k].=";affiche_photo('".$_photo_eleve.".jpg','".addslashes(strtoupper($eleve_nom)." ".ucfirst(strtolower($eleve_prenom)))."')";
+						}
+						else {
+							$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
+						}
+					}
+					else {
+						$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
+					}
+				}
+				//================================================
+				$mess[$k].="\"";
 				//==================================
 
 				$mess[$k].=">".$eleve_app."</textarea>\n";
@@ -991,6 +1018,28 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 </form>
 
 <?php
+
+$aff_photo_par_defaut=getPref($_SESSION['login'],'aff_photo_saisie_app',"n");
+
+echo "<script type='text/javascript'>
+function affichage_div_photo() {
+	if(document.getElementById('div_photo_eleve').style.display=='none') {
+		document.getElementById('div_photo_eleve').style.display='';
+	}
+	else {
+		document.getElementById('div_photo_eleve').style.display='none';
+	}
+}
+
+function affiche_photo(photo,nom_prenom) {
+	document.getElementById('div_photo_eleve').innerHTML='<img src=\"../photos/eleves/'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom;
+}
+";
+if($aff_photo_par_defaut=='y') {
+	echo "affichage_div_photo();\n";
+}
+//echo "affichage_div_photo();\n";
+echo "</script>\n";
 
 // ====================== DISPOSITIF CTP ========================
 // Pour permettre le remplacement de la chaine _PRENOM_ par le prénom de l'élève dans les commentaires types (ctp.php)
