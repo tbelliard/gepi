@@ -197,34 +197,35 @@ if (isset($_GET['action'])) {
     <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="matieres_categories.php?action=add">Ajouter une catégorie</a></p>
     <p>Remarque : la catégorie par défaut ne peut pas être supprimée. Elle est automatiquement associée aux matières existantes et aux nouvelles matières, et pour tous les groupes. Vous pouvez la renommer (Autres, Hors catégories, etc.), mais laissez toujours un nom générique.</p>
 
-    <table width = '100%' border= '1' cellpadding = '5'>
+    <table class='boireaus' width='100%' border='1' cellpadding='5' summary='Tableau des catégories'>
 <tr>
-    <td><p class='bold'><a href='./matieres_categories.php?orderby=nom_court'>Nom court</a></p></td>
-    <td><p class='bold'><a href='./matieres_categories.php?orderby=m.nom_complet'>Intitulé complet</a></p></td>
-    <td><p class='bold'><a href='./matieres_categories.php?orderby=m.priority,m.nom_complet'>Ordre d'affichage<br />par défaut</a></p></td>
-    <td><p class='bold'>Supprimer</p></td>
+    <th><p class='bold'><a href='./matieres_categories.php?orderby=nom_court'>Nom court</a></p></th>
+    <th><p class='bold'><a href='./matieres_categories.php?orderby=m.nom_complet'>Intitulé complet</a></p></th>
+    <th><p class='bold'><a href='./matieres_categories.php?orderby=m.priority,m.nom_complet'>Ordre d'affichage<br />par défaut</a></p></th>
+    <th><p class='bold'>Supprimer</p></th>
 </tr>
     <?php
-
+	$alt=1;
     $res = mysql_query("SELECT id, nom_court, nom_complet, priority FROM matieres_categories ORDER BY $orderby");
     while ($current_cat = mysql_fetch_array($res, MYSQL_ASSOC)) {
-        echo "<tr>";
-        echo "<td><a href='matieres_categories.php?action=edit&categorie_id=".$current_cat["id"]."'>".html_entity_decode_all_version($current_cat["nom_court"])."</a></td>";
-        echo "<td>".html_entity_decode_all_version($current_cat["nom_complet"])."</td>";
-        echo "<td>".$current_cat["priority"]."</td>";
+		$alt=$alt*(-1);
+        echo "<tr class='lig$alt white_hover'>\n";
+        echo "<td><a href='matieres_categories.php?action=edit&categorie_id=".$current_cat["id"]."'>".html_entity_decode_all_version($current_cat["nom_court"])."</a></td>\n";
+        echo "<td>".html_entity_decode_all_version($current_cat["nom_complet"])."</td>\n";
+        echo "<td>".$current_cat["priority"]."</td>\n";
         echo "<td>";
         if ($current_cat["id"] != "1") {
-            echo "<form enctype='multipart/form-data' action='matieres_categories.php' name='formulaire' method=post>";
-            echo "<input type='hidden' name='action' value='delete'>";
-            echo "<input type='hidden' name='categorie_id' value='".$current_cat["id"]."'>";
-            echo "<input type='submit' value='Supprimer'></form>";
+            echo "<form enctype='multipart/form-data' action='matieres_categories.php' name='formulaire' method=post>\n";
+            echo "<input type='hidden' name='action' value='delete' />\n";
+            echo "<input type='hidden' name='categorie_id' value='".$current_cat["id"]."' />\n";
+            echo "<input type='submit' value='Supprimer' />\n</form>\n";
         } else {
             echo "Catégorie par défaut (suppression impossible)";
-            echo"</td>";
         }
-        echo "</tr>";
+		echo "</td>\n";
+        echo "</tr>\n";
     }
-    echo "</table>";
+    echo "</table>\n";
 }
 require("../lib/footer.inc.php");
 ?>
