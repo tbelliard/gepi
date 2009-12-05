@@ -1,6 +1,6 @@
 <?php
 /*
-* Last modification  : 30/08/2006
+* $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -62,6 +62,11 @@ if (isset($_POST['action'])) {
             $error = true;
             $res = false;
         }
+        if (strtolower($_POST['nom_court']) == 'aucune') {
+            $msg .= "Le nom court ne peut pas être 'Aucune'.<br/>";
+            $error = true;
+            $res = false;
+        }
         if ($_POST['nom_complet'] == '') {
             $msg .= "L'intitulé ne peut pas être vide.<br/>";
             $error = true;
@@ -86,6 +91,11 @@ if (isset($_POST['action'])) {
 
         if ($_POST['nom_court'] == '') {
             $msg .= "Le nom court ne peut pas être vide.<br/>";
+            $error = true;
+            $res = false;
+        }
+        if (strtolower($_POST['nom_court']) == 'aucune') {
+            $msg .= "Le nom court ne peut pas être 'Aucune'.<br/>";
             $error = true;
             $res = false;
         }
@@ -167,6 +177,9 @@ if (isset($_GET['action'])) {
         $current_cat = mysql_fetch_array($res, MYSQL_ASSOC);
 
         if ($current_cat) {
+			if($current_cat["nom_court"]=='Aucune') {
+				echo "<p style='color:red'>ANOMALIE&nbsp;: Il ne devrait pas exister de catégorie intitulée 'Aucune'.<br />Voir <a href='http://www.sylogix.org/wiki/gepi/Enseignement_invisible'>http://www.sylogix.org/wiki/gepi/Enseignement_invisible</a> et <a href='http://www.sylogix.org/wiki/gepi/Suppr_Cat_Aucune'>http://www.sylogix.org/wiki/gepi/Suppr_Cat_Aucune</a> pour des explications</p>\n";
+			}
             echo "<form enctype='multipart/form-data' action='matieres_categories.php' name='formulaire' method=post>";
             echo "<input type='hidden' name='action' value='edit'>";
             echo "<input type='hidden' name='categorie_id' value='".$current_cat["id"] . "'>";
@@ -205,6 +218,7 @@ if (isset($_GET['action'])) {
     <th><p class='bold'>Supprimer</p></th>
 </tr>
     <?php
+	$temoin_anomalie_categ_Aucune='n';
 	$alt=1;
     $res = mysql_query("SELECT id, nom_court, nom_complet, priority FROM matieres_categories ORDER BY $orderby");
     while ($current_cat = mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -224,8 +238,12 @@ if (isset($_GET['action'])) {
         }
 		echo "</td>\n";
         echo "</tr>\n";
+		if($current_cat["nom_court"]=='Aucune') {$temoin_anomalie_categ_Aucune='y';}
     }
     echo "</table>\n";
+	if($temoin_anomalie_categ_Aucune=='y') {
+		echo "<p style='color:red'>ANOMALIE&nbsp;: Il ne devrait pas exister de catégorie intitulée 'Aucune'.<br />Voir <a href='http://www.sylogix.org/wiki/gepi/Enseignement_invisible'>http://www.sylogix.org/wiki/gepi/Enseignement_invisible</a> et <a href='http://www.sylogix.org/wiki/gepi/Suppr_Cat_Aucune'>http://www.sylogix.org/wiki/gepi/Suppr_Cat_Aucune</a> pour des explications</p>\n";
+	}
 }
 require("../lib/footer.inc.php");
 ?>
