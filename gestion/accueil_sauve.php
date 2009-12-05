@@ -1532,7 +1532,7 @@ La seconde méthode est lourde en ressources mais passera sur toutes les configur
 
 <span class='small'><b>Remarques</b> :</span>
 <ul>
-<li><span class='small'>Les répertoires "documents" (contenant les documents joints aux cahiers de texte) et "photos" (contenant les photos du trombinoscope) ne seront pas sauvegardés.<br/>
+<li><span class='small'>Les répertoires "documents" (contenant les documents joints aux cahiers de textes) et "photos" (contenant les photos du trombinoscope) ne seront pas sauvegardés.<br/>
 Un outil de sauvegarde spécifique se trouve en bas de <a href='#zip'>cette page</a>.</span></li>
 <li><span class='small'>Valeur de la <b>durée d'une portion</b> en secondes : <input type="text" name="duree" value="<?php echo $_SESSION['defaulttimeout']; ?>" size="5" />
 <input type='checkbox' name='sauve_duree' value='yes' /> Mémoriser la durée de la portion pour la prochaine fois
@@ -1642,7 +1642,7 @@ echo "<h3 id=\"zip\">Créer une archive (Zip) de dossiers de Gepi</h3>\n";
 echo "Une fois créée, pour télécharger l'archive, rendez-vous à la section \"Fichiers de restauration\" de cette page. <br />";
 echo "<p style=\"color: red;\">ATTENTION : veillez à supprimer le fichier créé une fois l'archive téléchargée.</p>";
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
-echo "<br />Dossier à sauvegarder :<br /><input type=\"radio\" name=\"dossier\" value=\"photos\" checked/> Dossier Photos (_photos_le_DATE_a_HEURE.zip)<br/><input type=\"radio\" name=\"dossier\" value=\"cdt\" /> Dossier documents du cahiers de textes (_cdt_le_DATE_a_HEURE.zip)<br />\n";
+echo "<br />Dossier à sauvegarder :<br /><input type=\"radio\" name=\"dossier\" value=\"photos\" checked/> Dossier Photos (_photos_le_DATE_a_HEURE.zip)<br/><input type=\"radio\" name=\"dossier\" value=\"cdt\" /> Dossier documents du cahier de textes (_cdt_le_DATE_a_HEURE.zip)<br />\n";
 echo "<br />\n";
 echo "<input type=\"hidden\" name=\"action\" value=\"zip\" />\n
 	  <input type=\"submit\" value=\"Créer l'archive\" name=\"bouton3\" />\n
