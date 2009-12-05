@@ -366,7 +366,7 @@ $titre = array(
 $expli = array(
 "Pour accéder aux outils de gestion (sécurité, configuration générale, bases de données, initialisation de GEPI).",
 "Pour gérer les bases (établissements, utilisateurs, matières, classes, ".$gepiSettings['denomination_eleves'].", ".$gepiSettings['denomination_responsables'].", AIDs).",
-"Pour gérer les modules (cahiers de texte, carnet de notes, absences, trombinoscope)."
+"Pour gérer les modules (cahiers de textes, carnet de notes, absences, trombinoscope)."
 );
 if (getSettingValue('use_ent') == 'y') {
 	// On ajoute les pages du module
@@ -401,7 +401,7 @@ if ($affiche=='yes') {
 		echo "<input type='hidden' name='action' value='dump' />";
 	}
 	echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></p></form>\n";
-	echo "<p class='small'>Les répertoires \"documents\" (<em>contenant les documents joints aux cahiers de texte</em>) et \"photos\" (<em>contenant les photos du trombinoscope</em>) ne seront pas sauvegardés.\n";
+	echo "<p class='small'>Les répertoires \"documents\" (<em>contenant les documents joints aux cahiers de textes</em>) et \"photos\" (<em>contenant les photos du trombinoscope</em>) ne seront pas sauvegardés.\n";
 	echo "Un outil de sauvegarde spécifique se trouve en bas de la page <a href='./gestion/accueil_sauve.php#zip'>gestion des sauvegardes</a></p>\n";
 	echo "</td></tr>";
 	for ($i=0;$i<$nb_ligne;$i++) {
@@ -510,7 +510,7 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
 /***********
 	Saisie
 ***********/
-// On teste si on l'utilisateur est un prof avec des matières. Si oui, on affiche les lignes relatives au cahier de texte et au carnet de notes
+// On teste si on l'utilisateur est un prof avec des matières. Si oui, on affiche les lignes relatives au cahier de textes et au carnet de notes
 $test_prof_matiere = sql_count(sql_query("SELECT login FROM j_groupes_professeurs WHERE login = '".$_SESSION['login']."'"));
 // On teste si le l'utilisateur est prof de suivi. Si oui on affiche la ligne relative remplissage de l'avis du conseil de classe
 $test_prof_suivi = sql_count(sql_query("SELECT professeur FROM j_eleves_professeurs  WHERE professeur = '".$_SESSION['login']."'"));
@@ -535,7 +535,7 @@ if ($conditions_ects) $chemin[] = "/mod_ects/index_saisie.php";
 
 $titre = array();
 $titre[] = "Gestion des absences";
-if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_cahiers_texte")=='y')) $titre[] = "Cahier de texte";
+if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_cahiers_texte")=='y')) $titre[] = "Cahier de textes";
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $titre[] = "Carnet de notes : saisie des notes";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $titre[] = "Bulletin : saisie des moyennes et des appréciations par matière";
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $titre[] = "Bulletin : saisie des avis du conseil";
@@ -543,7 +543,7 @@ if ($conditions_ects) $titre[] = "Crédits ECTS";
 
 $expli = array();
 $expli[] = "Cet outil vous permet d'enregistrer les absences des ".$gepiSettings['denomination_eleves'].". Elles figureront sur le bulletin scolaire.";
-if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_cahiers_texte")=='y')) $expli[] = "Cet outil vous permet de constituer un cahier de texte pour chacune de vos classes.";
+if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_cahiers_texte")=='y')) $expli[] = "Cet outil vous permet de constituer un cahier de textes pour chacune de vos classes.";
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $expli[] = "Cet outil vous permet de constituer un carnet de notes pour chaque période et de saisir les notes de toutes vos évaluations.";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $expli[] = "Cet outil permet de saisir directement, sans passer par le carnet de notes, les moyennes et les appréciations du bulletin";
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $expli[] = "Cet outil permet la saisie des avis du conseil de classe.";
@@ -591,10 +591,30 @@ if(file_exists('saisie/commentaires_types.php')) {
         $expli[] = "Permet de définir des commentaires-types pour l'avis du conseil de classe.";
     }
 }
-
+/*
 //==============================
-
-
+if($_SESSION['statut']=='professeur') {
+	// Le prof est-il PP
+	$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jep.professeur='".$_SESSION['login']."' AND jec.login=jep.login;";
+	$res_classe=mysql_query($sql);
+	if(mysql_num_rows($res_classe)>0) {
+		$chemin[] = "/saisie/saisie_synthese_app_classe.php";
+		$titre[] = "Saisie des synthèses de classes";
+		$expli[] = "Permet de saisir une synthèse des appréciations effectuées par les professeurs sur le groupe classe.";
+	}
+}
+elseif($_SESSION['statut']=='scolarite') {
+	$sql="SELECT 1=1 FROM j_scol_classes WHERE login='".$_SESSION['login']."';";
+	//echo "$sql<br />";
+	$res_classe=mysql_query($sql);
+	if(mysql_num_rows($res_classe)>0) {
+		$chemin[] = "/saisie/saisie_synthese_app_classe.php";
+		$titre[] = "Saisie des synthèses de classes";
+		$expli[] = "Permet de saisir une synthèse des appréciations effectuées par les professeurs sur le groupe classe.";
+	}
+}
+//==============================
+*/
 $nb_ligne = count($chemin);
 $affiche = 'no';
 for ($i=0;$i<$nb_ligne;$i++) {
@@ -878,7 +898,7 @@ $chemin = array();
 $titre = array();
 $expli = array();
 
-// Cahier de texte
+// Cahier de textes
 $condition = (
 	getSettingValue("active_cahiers_texte")=='y' AND (
 		($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesCahierTexteParent") == 'yes')
@@ -886,7 +906,7 @@ $condition = (
 	));
 if ($condition) {
     $chemin[] = "/cahier_texte/consultation.php";
-    $titre[] = "Cahier de texte";
+    $titre[] = "Cahier de textes";
     if ($_SESSION['statut'] == "responsable") {
     	$expli[] = "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les ".$gepiSettings['denomination_eleves']." dont vous êtes le ".$gepiSettings['denomination_responsable'].".";
     } else {
@@ -1065,7 +1085,7 @@ if ($nb_total != 0) {
 	Outils de gestion des Bulletins scolaires
 **********************************************/
 
-// On teste si on l'utilisateur est un prof avec des matières. Si oui, on affiche les lignes relatives au cahier de texte et au carnet de notes
+// On teste si on l'utilisateur est un prof avec des matières. Si oui, on affiche les lignes relatives au cahier de textes et au carnet de notes
 $test_prof_matiere = sql_count(sql_query("SELECT login FROM j_groupes_professeurs WHERE login = '".$_SESSION['login']."'"));
 // On teste si le l'utilisateur est prof de suivi. Si oui on affiche la ligne relative remplissage de l'avis du conseil de classe
 $test_prof_suivi = sql_count(sql_query("SELECT professeur FROM j_eleves_professeurs  WHERE professeur = '".$_SESSION['login']."'"));

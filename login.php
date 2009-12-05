@@ -24,7 +24,7 @@
 
 
 /* ---------Variables envoyées au gabarit
-*	$tbs_CdT_public_titre						cahier de texte public activé
+*	$tbs_CdT_public_titre						cahier de textes public activé
 *	$tbs_multisite									rne si on est en multisite
 *	$tbs_gepiSchoolName							nom de l'établissement
 *	$tbs_gepiYear										année scolaire en cours
@@ -151,10 +151,10 @@ $test = 'templates/accueil_externe.php' ;
 
 
 //==================================
-//On vérifie si le module cahiers de texte public est activé
+//On vérifie si le module cahiers de textes public est activé
 	$tbs_CdT_public_titre =  "" ;
 	if (getSettingValue("active_cahiers_texte")=='y' and getSettingValue("cahier_texte_acces_public") == "yes" and getSettingValue("disable_login")!='yes') {
-		$tbs_CdT_public_titre = "Consulter les cahiers de texte (accès public)";
+		$tbs_CdT_public_titre = "Consulter les cahiers de textes (accès public)";
 	}
 //==================================
 //Utilisation tbs_multisite
@@ -269,8 +269,8 @@ if (isset($style_screen_ajout))  {
 
 //==================================
 
-$test = mysql_query("SHOW TABLES LIKE 'message_login'");
 $msg_page_login="";
+$test = mysql_query("SHOW TABLES LIKE 'message_login'");
 if(mysql_num_rows($test)>0) {
 	$sql="SELECT ml.texte FROM message_login ml, setting s WHERE s.value=ml.id AND s.name='message_login';";
 	//echo "$sql <br />";

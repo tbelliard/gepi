@@ -1,12 +1,8 @@
 <?php
 
 /*
-
- * Last modification  : 07/04/2005
-
- *
-
- */
+$Id$
+*/
 
 
 
@@ -68,7 +64,7 @@ class Calendar
    function getDateLink($day, $month, $year) {
       global $id_classe;
       global $selected_eleve_login;
-      return "<a title=\"Voir le cahier de texte pour cette journée\" href=\"".$this->dmy."year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=".$this->id_groupe . $this->getRneMultisite() . "\"";
+      return "<a title=\"Voir le cahier de textes pour cette journée\" href=\"".$this->dmy."year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=".$this->id_groupe . $this->getRneMultisite() . "\"";
    }
 
 
