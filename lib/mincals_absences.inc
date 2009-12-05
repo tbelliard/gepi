@@ -49,7 +49,7 @@ class Calendar
 
    function getDateLink($day, $month, $year) {
     global $vocab;
-      if ($this->dmy=='gestion_absences') return "<a title=\"Voir le cahier de texte pour cette journée\" href=".$this->dmy.".php?year=$year&month=$month&day=$day&id_classe=".$this->id_classe."&type=".$this->type;
+      if ($this->dmy=='gestion_absences') return "<a title=\"Voir le cahier de textes pour cette journée\" href=".$this->dmy.".php?year=$year&month=$month&day=$day&id_classe=".$this->id_classe."&type=".$this->type;
 
 
    }

@@ -241,7 +241,7 @@ if(isset($style_specifique)) {
 if(isset($accessibilite)) {
 	if($accessibilite=="y") {
 		echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/accessibilite.css' media='screen' />\n";
-		// Feuilles de styles Paramètres de configuration du cahier de texte à partir de /lib/global.inc
+		// Feuilles de styles Paramètres de configuration du cahier de textes à partir de /lib/global.inc
 		// echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/maj_global.css' media='screen' />\n";
       // Feuilles de styles imprimante
 		echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/accessibilite_print.css' media='print' />\n";
