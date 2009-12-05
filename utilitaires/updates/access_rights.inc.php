@@ -609,6 +609,8 @@ $tab_req[] = "INSERT INTO droits VALUES ('/saisie/saisie_synthese_app_classe.php
 
 $tab_req[] = "INSERT INTO droits VALUES ('/gestion/saisie_message_connexion.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Saisie de messages de connexion.', '');";
 
+$tab_req[] = "INSERT INTO droits VALUES ('/groupes/repartition_ele_grp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Répartir des élèves dans des groupes', '');";
+
 //$tab_req[] = "INSERT INTO droits VALUES ( '/mod_plugins/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajouter/enlever des plugins', '');";
 
 //$tab_req[] = "";
