@@ -276,6 +276,20 @@ if (mysql_num_rows($test)==0) {
 	$result.="<br />";
 }
 
+$result .= "&nbsp;->Ajout d'un champ date_decompte à la table 'messages'<br />";
+$test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM messages LIKE 'date_decompte';"));
+if ($test_date_decompte>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE messages ADD date_decompte INT NOT NULL DEFAULT '0';");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
 //---------------
 // Ajouts d'index
 

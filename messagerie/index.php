@@ -54,6 +54,7 @@ if (!checkAccess()) {
 include("../lib/calendrier/calendrier.class.php");
 $cal1 = new Calendrier("formulaire", "display_date_debut");
 $cal2 = new Calendrier("formulaire", "display_date_fin");
+$cal3 = new Calendrier("formulaire", "display_date_decompte");
 
 // initialisation de $id_mess
 $id_mess = isset($_POST["id_mess"]) ? $_POST["id_mess"] :(isset($_GET["id_mess"]) ? $_GET["id_mess"] :NULL);
@@ -62,6 +63,13 @@ $order_by = isset($_POST["order_by"]) ? $_POST["order_by"] :(isset($_GET["order_
 if ($order_by != "date_debut" and $order_by != "date_fin" and $order_by != "id") {
 	$order_by = "date_debut";
 }
+
+/*
+function formate_date_decompte($date_decompte) {
+	//$tmp_date=getdate($date_decompte);
+	return strftime("%d/%m/%Y à %H:%M",$date_decompte);
+}
+*/
 
 //
 // Suppression d'un message
@@ -117,12 +125,43 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
         $msg = "ATTENTION : La date de fin d'affichage n'est pas valide.<br />L'enregistrement ne peut avoir lieu.";
         $record = 'no';
     }
+
+    if ($record == 'yes') {
+		if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_decompte'])) {
+			$anneed = substr($_POST['display_date_decompte'],6,4);
+			$moisd = substr($_POST['display_date_decompte'],3,2);
+			$jourd = substr($_POST['display_date_decompte'],0,2);
+			//echo "$jourd/$moisd/$anneed<br />";
+			while ((!checkdate($moisf, $jourf, $anneef)) and ($jourf > 0)) {
+				$jourf--;
+				//echo "$jourd/$moisd/$anneed<br />";
+			}
+			$date_decompte=mktime(0,0,0,$moisd,$jourd,$anneed);
+			//echo strftime("%d/%m/%Y à %H:%M",$date_decompte)."<br />";
+
+			if (my_ereg("([0-9]{1,2}):([0-9]{0,2})", str_ireplace('h',':',$_POST['display_heure_decompte']))) {
+				$heured = substr($_POST['display_heure_decompte'],0,2);
+				$minuted = substr($_POST['display_heure_decompte'],3,2);
+				$date_decompte=$date_decompte+$heured*3600+$minuted*60;
+				//echo strftime("%d/%m/%Y à %H:%M",$date_decompte)."<br />";
+			} else {
+				$msg = "ATTENTION : L'heure de décompte n'est pas valide.<br />L'enregistrement ne peut avoir lieu.";
+				$record = 'no';
+			}
+
+		} else {
+			$msg = "ATTENTION : La date de décompte n'est pas valide.<br />L'enregistrement ne peut avoir lieu.";
+			$record = 'no';
+		}
+	}
+
     if ($record == 'yes') {
       if (isset($_POST['id_mess'])) {
           $req = mysql_query("UPDATE messages
           SET texte = '".$contenu_cor."',
           date_debut = '".$date_debut."',
           date_fin = '".$date_fin."',
+          date_decompte = '".$date_decompte."',
           auteur='".$_SESSION['login']."',
           destinataires = '".$destinataires."'
           WHERE (id ='".$_POST['id_mess']."')");
@@ -131,6 +170,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
           SET texte = '".$contenu_cor."',
           date_debut = '".$date_debut."',
           date_fin = '".$date_fin."',
+          date_decompte = '".$date_decompte."',
           auteur='".$_SESSION['login']."',
           destinataires = '".$destinataires."'
           ");
@@ -140,6 +180,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
           unset($contenu_cor);
           unset($_POST['display_date_debut']);
           unset($_POST['display_date_fin']);
+          unset($_POST['display_date_decompte']);
           unset($id_mess);
           unset($destinataires);
       } else {
@@ -180,7 +221,7 @@ echo "<span class='small'>Classer par : ";
 echo "<a href='index.php?order_by=date_debut'>date début</a> | <a href='index.php?order_by=date_fin'>date fin</a> | <a href='index.php?order_by=id'>date création</a>\n";
 echo "</span><br /><br />\n";
 
-$appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, auteur, destinataires FROM messages
+$appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, date_decompte, auteur, destinataires FROM messages
 WHERE (texte != '') order by ".$order_by." DESC");
 
 $nb_messages = mysql_num_rows($appel_messages);
@@ -190,6 +231,7 @@ while ($ind < $nb_messages) {
   // Mise en forme du texte
   $date_debut1 = mysql_result($appel_messages, $ind, 'date_debut');
   $date_fin1 = mysql_result($appel_messages, $ind, 'date_fin');
+  $date_decompte1 = mysql_result($appel_messages, $ind, 'date_decompte');
   $auteur1 = mysql_result($appel_messages, $ind, 'auteur');
   $destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
 //  $nom_auteur = sql_query1("SELECT nom from utilisateurs where login = '".$auteur1."'");
@@ -198,8 +240,12 @@ while ($ind < $nb_messages) {
   $id_message =  mysql_result($appel_messages, $ind, 'id');
 
 //  echo "<b><i>Message de </i></b>: ".$prenom_auteur." ".$nom_auteur.";
-   echo "<b><i>Affichage </i></b>: du <b>".strftime("%a %d %b %Y", $date_debut1)."</b> au <b>".strftime("%a %d %b %Y", $date_fin1)."</b>
-   <br /><b><i>Destinataire(s) </i></b> : ";
+   echo "<b><i>Affichage </i></b>: du <b>".strftime("%a %d %b %Y", $date_debut1)."</b> au <b>".strftime("%a %d %b %Y", $date_fin1)."</b>\n";
+   if(strstr($content,'_DECOMPTE_')) {
+      //echo "<br />Avec décompte des jours jusqu'au ".formate_date_decompte($date_decompte1);
+      echo "<br />Avec décompte des jours jusqu'au ".strftime("%d/%m/%Y à %H:%M",$date_decompte1);
+   }
+   echo "<br /><b><i>Destinataire(s) </i></b> : ";
 	/*
 	if (strpos($destinataires1, "p")) echo "professeurs - ";
 	if (strpos($destinataires1, "c")) echo "c.p.e. - ";
@@ -248,27 +294,39 @@ echo "<td valign=\"top\">\n";
 //
 if (isset($id_mess)) {
     $titre_mess = "Modification d'un message";
-    $appel_message = mysql_query("SELECT  id, texte, date_debut, date_fin, auteur, destinataires  FROM messages
+    $appel_message = mysql_query("SELECT  id, texte, date_debut, date_fin, date_decompte, auteur, destinataires  FROM messages
     WHERE (id = '".$id_mess."')");
     $contenu = mysql_result($appel_message, 0, 'texte');
     $date_debut = mysql_result($appel_message, 0, 'date_debut');
     $date_fin = mysql_result($appel_message, 0, 'date_fin');
+    $date_decompte = mysql_result($appel_message, 0, 'date_decompte');
     $destinataires = mysql_result($appel_message, 0, 'destinataires');
     $display_date_debut = strftime("%d", $date_debut)."/".strftime("%m", $date_debut)."/".strftime("%Y", $date_debut);
     $display_date_fin = strftime("%d", $date_fin)."/".strftime("%m", $date_fin)."/".strftime("%Y", $date_fin);
+    $display_date_decompte = strftime("%d", $date_decompte)."/".strftime("%m", $date_decompte)."/".strftime("%Y", $date_decompte);
+
+	// Récupération du nombre de secondes
+	$tmp_sec_decompte=$date_decompte-mktime(0,0,0,strftime("%m", $date_decompte),strftime("%d", $date_decompte),strftime("%Y", $date_decompte));
+	$tmp_heure_decompte=floor($tmp_sec_decompte/3600);
+	$tmp_minute_decompte=floor(($tmp_sec_decompte-3600*$tmp_heure_decompte)/60);
+	$display_heure_decompte=sprintf("%02d",$tmp_heure_decompte).":".sprintf("%02d",$tmp_minute_decompte);
 } else {
     $titre_mess = "Nouveau message";
     if (isset($contenu_cor)) $contenu = $contenu_cor ; else $contenu = '';
-    if (isset($_POST['display_date_debut']) and isset($_POST['display_date_fin'])) {
+    //if (isset($_POST['display_date_debut']) and isset($_POST['display_date_fin'])) {
+    if (isset($_POST['display_date_debut']) and isset($_POST['display_date_fin']) and isset($_POST['display_date_decompte'])) {
         $display_date_debut = $_POST['display_date_debut'];
         $display_date_fin = $_POST['display_date_fin'];
+        $display_date_decompte = $_POST['display_date_decompte'];
     } else {
         $annee = strftime("%Y");
         $mois = strftime("%m");
         $jour = strftime("%d");
         $display_date_debut = $jour."/".$mois."/".$annee;
         $display_date_fin = $jour."/".$mois."/".$annee;
+        $display_date_decompte = $display_date_fin;
     }
+	$display_heure_decompte=isset($_POST['display_heure_decompte']) ? $_POST['display_heure_decompte'] : "08:00";
     if (!isset($destinataires)) $destinataires = '_p';
 
 }
@@ -287,16 +345,26 @@ echo "<tr><td  colspan=\"4\" align=\"center\"><input type=\"submit\" value=\"Enr
 if (isset($id_mess)) echo "<input type=\"submit\" value=\"Annuler\" style=\"font-variant: small-caps;\" name=\"cancel\" />\n";
 
 echo "</td></tr>\n";
+
 //Dates
 echo "<tr><td colspan=\"4\">\n";
-echo "<i>Le message sera affiché :</i><br />de la date : ";
+echo "<p><i>Le message sera affiché :</i><br />de la date : ";
 echo "<input type='text' name = 'display_date_debut' size='8' value = \"".$display_date_debut."\" />\n";
 echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
 echo "&nbsp;à la date : ";
 echo "<input type='text' name = 'display_date_fin' size='8' value = \"".$display_date_fin."\" />\n";
 echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
-echo " (Respectez le format jj/mm/aaaa)</td></tr>\n";
-//Destiantaires
+echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)</p></td></tr>\n";
+
+//Date pour décompte
+echo "<tr><td colspan=\"4\">\n";
+echo "<p><i>Décompte des jours jusqu'au :</i> ";
+echo "<input type='text' name = 'display_date_decompte' size='8' value = \"".$display_date_decompte."\" />\n";
+echo "<a href=\"#\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
+echo " à <input type='text' name = 'display_heure_decompte' size='8' value = \"".$display_heure_decompte."\" />\n";
+echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)<br />Saisir une chaine <b>_DECOMPTE_</b> dans le corps du message pour que cette date soit prise en compte.</p></td></tr>\n";
+
+//Destinataires
 echo "<tr><td  colspan=\"4\"><i>Destinataires du message :</i></td></tr>\n";
 echo "<tr>\n";
 echo "<td><input type=\"checkbox\" id=\"desti_p\" name=\"desti_p\" value=\"desti_p\"";

@@ -160,7 +160,7 @@ echo "<center>\n";
 
 //Affichage des messages
 $today=mktime(0,0,0,date("m"),date("d"),date("Y"));
-$appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, auteur, destinataires FROM messages
+$appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, date_decompte, auteur, destinataires FROM messages
 	WHERE (
 	texte != '' and
 	date_debut <= '".$today."' and
@@ -182,6 +182,34 @@ while ($ind < $nb_messages) {
 //        $nom_auteur = sql_query1("SELECT nom from utilisateurs where login = '".$auteur1."'");
 //        $prenom_auteur = sql_query1("SELECT prenom from utilisateurs where login = '".$auteur1."'");
 //        $texte_messages .= "<span class='small'>Message de </span>: ".$prenom_auteur." ".$nom_auteur;
+		if(strstr($content, '_DECOMPTE_')) {
+			$nb_sec=mysql_result($appel_messages, $ind, 'date_decompte')-mktime();
+			if($nb_sec>0) {
+				$decompte_remplace="";
+			}
+			elseif($nb_sec==0) {
+				$decompte_remplace=" <span style='color:red'>Vous êtes à l'instant T</span> ";
+			}
+			else {
+				$nb_sec=$nb_sec*(-1);
+				$decompte_remplace=" <span style='color:red'>date dépassée de</span> ";
+			}
+
+			$decompte_j=floor($nb_sec/(24*3600));
+			$decompte_h=floor(($nb_sec-$decompte_j*24*3600)/3600);
+			$decompte_m=floor(($nb_sec-$decompte_j*24*3600-$decompte_h*3600)/60);
+
+			if($decompte_j==1) {$decompte_remplace.=$decompte_j." jour ";}
+			elseif($decompte_j>1) {$decompte_remplace.=$decompte_j." jours ";}
+
+			if($decompte_h==1) {$decompte_remplace.=$decompte_h." heure ";}
+			elseif($decompte_h>1) {$decompte_remplace.=$decompte_h." heures ";}
+
+			if($decompte_m==1) {$decompte_remplace.=$decompte_m." minute";}
+			elseif($decompte_m>1) {$decompte_remplace.=$decompte_m." minutes";}
+
+			$content=my_ereg_replace("_DECOMPTE_",$decompte_remplace,$content);
+		}
 		$texte_messages .= $content;
 	}
 	$ind++;
