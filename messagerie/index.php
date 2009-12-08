@@ -362,7 +362,18 @@ echo "<p><i>Décompte des jours jusqu'au :</i> ";
 echo "<input type='text' name = 'display_date_decompte' size='8' value = \"".$display_date_decompte."\" />\n";
 echo "<a href=\"#\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
 echo " à <input type='text' name = 'display_heure_decompte' size='8' value = \"".$display_heure_decompte."\" />\n";
-echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)<br />Saisir une chaine <b>_DECOMPTE_</b> dans le corps du message pour que cette date soit prise en compte.</p></td></tr>\n";
+echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)<br />Saisir une chaine <b>_DECOMPTE_</b> dans le corps du message pour que cette date soit prise en compte.\n";
+
+$titre_infobulle="DECOMPTE\n";
+$texte_infobulle="Afin d'afficher un compte à rebours, vous devez écrire un texte du style&nbsp;:<br />Il vous reste _DECOMPTE_ pour saisir vos appréciations du 1er trimestre.<br />\n";
+//$texte_infobulle.="\n";
+$tabdiv_infobulle[]=creer_div_infobulle('a_propos_DECOMPTE',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_DECOMPTE','y',100,100);\"  onmouseout=\"cacher_div('a_propos_DECOMPTE');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+
+echo "</p>";
+
+echo "</td></tr>\n";
 
 //Destinataires
 echo "<tr><td  colspan=\"4\"><i>Destinataires du message :</i></td></tr>\n";
