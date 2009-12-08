@@ -353,6 +353,7 @@ if(($mode_impression!='pdf')&&($mode_impression!='csv')) {
 // =====================
 
 $p = 0;
+$pcsv=0;
 $saut = 1;
 while ($p < $nb_users) {
 
@@ -775,6 +776,8 @@ width:".$largeur1."%;\n";
 			$saut++;
 		}
 
+		//$p++;
+
 		break;
 
 	case 'csv' :
@@ -782,14 +785,14 @@ width:".$largeur1."%;\n";
 		// MODIF: boireaus 20071102
 		// Dans le cas du CSV, on ne génère pas plusieurs fois la ligne correspondant à un même parent
 		// Dans le cas du HTML et PDF par contre, on affiche autant de fois qu'il y a d'élève à qui distribuer l'info, mais sans générer plusieurs fois le mot de passe pour le parent (le même mot de passe pour le parent sur les fiches distribuées à ses différents enfants).
-		if($temoin_user_deja_traite!="y"){
+		if($temoin_user_deja_traite!="y") {
 
 			// création d'un tableau contenant toutes les informations à exporter
-			$donnees_personne_csv['login'][$p] = $user_login;
-			$donnees_personne_csv['nom'][$p] = $user_nom;
-			$donnees_personne_csv['prenom'][$p] = $user_prenom;
-			$donnees_personne_csv['new_password'][$p] = $new_password ;
-			$donnees_personne_csv['user_email'][$p] = $user_email;
+			$donnees_personne_csv['login'][$pcsv] = $user_login;
+			$donnees_personne_csv['nom'][$pcsv] = $user_nom;
+			$donnees_personne_csv['prenom'][$pcsv] = $user_prenom;
+			$donnees_personne_csv['new_password'][$pcsv] = $new_password ;
+			$donnees_personne_csv['user_email'][$pcsv] = $user_email;
 
 
 			if ($user_status) {
@@ -799,35 +802,35 @@ width:".$largeur1."%;\n";
 					$sql_classe = "SELECT DISTINCT classe FROM `classes` c, `j_eleves_classes` jec WHERE (jec.login='".$user_login."' AND jec.id_classe=c.id)";
 					$data_user_classe = mysql_query($sql_classe);
 					$classe_eleve = mysql_result($data_user_classe, 0, "classe");
-					$donnees_personne_csv['classe'][$p] = $classe_eleve;
+					$donnees_personne_csv['classe'][$pcsv] = $classe_eleve;
 				}
 
 				//on poursuit le tableau $donnees_personne_csv avec l'adresse pour un mailling et des élèves associées
 				if ($user_status =='responsable') {
 
-					$donnees_personne_csv['classe'][$p] = $classe_resp;
+					$donnees_personne_csv['classe'][$pcsv] = $classe_resp;
 
-					$resp_num_legal= mysql_result($call_user_info, $p, "resp_legal");
-					$resp_civilite= mysql_result($call_user_info, $p, "civilite");
-					$resp_adr1=mysql_result($call_user_info, $p, "adr1");
-					$resp_adr1=mysql_result($call_user_info, $p, "adr1");
-					$resp_adr2=mysql_result($call_user_info, $p, "adr2");
-					$resp_adr3=mysql_result($call_user_info, $p, "adr3");
-					$resp_adr4=mysql_result($call_user_info, $p, "adr4");
-					$resp_cp=mysql_result($call_user_info, $p, "cp");
-					$resp_commune=mysql_result($call_user_info, $p, "commune");
-					$resp_pays=mysql_result($call_user_info, $p, "pays");
+					$resp_num_legal= mysql_result($call_user_info, $pcsv, "resp_legal");
+					$resp_civilite= mysql_result($call_user_info, $pcsv, "civilite");
+					$resp_adr1=mysql_result($call_user_info, $pcsv, "adr1");
+					$resp_adr1=mysql_result($call_user_info, $pcsv, "adr1");
+					$resp_adr2=mysql_result($call_user_info, $pcsv, "adr2");
+					$resp_adr3=mysql_result($call_user_info, $pcsv, "adr3");
+					$resp_adr4=mysql_result($call_user_info, $pcsv, "adr4");
+					$resp_cp=mysql_result($call_user_info, $pcsv, "cp");
+					$resp_commune=mysql_result($call_user_info, $pcsv, "commune");
+					$resp_pays=mysql_result($call_user_info, $pcsv, "pays");
 
 					//on met les données dans le tableau
-					$donnees_personne_csv['resp_legal'][$p] = $resp_num_legal;
-					$donnees_personne_csv['civilite'][$p] = $resp_civilite;
-					$donnees_personne_csv['adr1'][$p] = $resp_adr1;
-					$donnees_personne_csv['adr2'][$p] = $resp_adr2;
-					$donnees_personne_csv['adr3'][$p] = $resp_adr3;
-					$donnees_personne_csv['adr4'][$p] = $resp_adr4;
-					$donnees_personne_csv['cp'][$p] = $resp_cp;
-					$donnees_personne_csv['commune'][$p] = $resp_commune;
-					$donnees_personne_csv['pays'][$p] = $resp_pays;
+					$donnees_personne_csv['resp_legal'][$pcsv] = $resp_num_legal;
+					$donnees_personne_csv['civilite'][$pcsv] = $resp_civilite;
+					$donnees_personne_csv['adr1'][$pcsv] = $resp_adr1;
+					$donnees_personne_csv['adr2'][$pcsv] = $resp_adr2;
+					$donnees_personne_csv['adr3'][$pcsv] = $resp_adr3;
+					$donnees_personne_csv['adr4'][$pcsv] = $resp_adr4;
+					$donnees_personne_csv['cp'][$pcsv] = $resp_cp;
+					$donnees_personne_csv['commune'][$pcsv] = $resp_commune;
+					$donnees_personne_csv['pays'][$pcsv] = $resp_pays;
 
 					// On crée une chaine de caractères par élèves (Prénom, Nom, classe nom long et classe nom court)
 					$nb_elv=sizeof($elv_resp['nom']);
@@ -840,18 +843,19 @@ width:".$largeur1."%;\n";
 						if ($elv_resp['nom'][$i]!='') {$chaine_elv.=" (".$elv_resp['classe'][$i].")";}
 
 						switch ($i) {
-							case 0 : $donnees_personne_csv['elv1'][$p] = $chaine_elv; Break;
-							case 1 : $donnees_personne_csv['elv2'][$p] = $chaine_elv; Break;
-							case 2 : $donnees_personne_csv['elv3'][$p] = $chaine_elv; Break;
-							case 3 : $donnees_personne_csv['elv4'][$p] = $chaine_elv; Break;
-							case 4 : $donnees_personne_csv['elv5'][$p] = $chaine_elv; Break;
-							case 5 : $donnees_personne_csv['elv6'][$p] = $chaine_elv; Break;
-							case 6 : $donnees_personne_csv['elv7'][$p] = $chaine_elv; Break;
+							case 0 : $donnees_personne_csv['elv1'][$pcsv] = $chaine_elv; Break;
+							case 1 : $donnees_personne_csv['elv2'][$pcsv] = $chaine_elv; Break;
+							case 2 : $donnees_personne_csv['elv3'][$pcsv] = $chaine_elv; Break;
+							case 3 : $donnees_personne_csv['elv4'][$pcsv] = $chaine_elv; Break;
+							case 4 : $donnees_personne_csv['elv5'][$pcsv] = $chaine_elv; Break;
+							case 5 : $donnees_personne_csv['elv6'][$pcsv] = $chaine_elv; Break;
+							case 6 : $donnees_personne_csv['elv7'][$pcsv] = $chaine_elv; Break;
 						}
 						$i++;
 					}
 				}
 			}
+			$pcsv++;
 		}
 		//===========================
 
@@ -875,6 +879,9 @@ width:".$largeur1."%;\n";
 		}
 
 		$donnees_personne_csv['classe'][$p] = $classe_eleve;
+
+		//$p++;
+
 		break;
 
 	default:
@@ -1110,6 +1117,8 @@ width:".$largeur1."%;\n";
 		} else {
 			$saut++;
 		}
+
+		//$p++;
 
 	} //fin switch
 
