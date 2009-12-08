@@ -25,7 +25,8 @@
 /* fichier pour visionner les EdT des salles */
 
 echo '
-	<form action="index_edt.php" name="liste_salle" method="post">
+	<form action="index_edt.php" id="liste_salle" method="post">
+	<p>
 	';
 
 $tab_select = renvoie_liste("salle");
@@ -46,15 +47,15 @@ if($indice_salle_select != -1){
 		$precedent = $indice_salle_select - 1;
 		echo "
 		<span class=\"edt_suivant\">
-			<a href='index_edt.php?visioedt=salle1&amp;login_edt=".$tab_select[$precedent]["id_salle"]."&amp;type_edt_2=salle'>Salle précédente</a>
+			<a href='index_edt.php?visioedt=salle1&amp;login_edt=".$tab_select[$precedent]["id_salle"]."&amp;type_edt_2=salle'>".PREVIOUS_CLASSROOM."</a>
 		</span>
 			";
 	}
 }
 
 echo '
-		<select name="login_edt" onchange=\'document.liste_salle.submit();\'>
-			<option value="rien">Liste des salles</option>
+		<select name="login_edt" onchange=\'document.getElementById("liste_salle").submit();\'>
+			<option value="rien">'.CHOOSE_CLASSROOM.'</option>
 	';
 
 
@@ -95,13 +96,14 @@ if($indice_salle_select != -1){
 		//$suivant=$indice_prof_select+1;
 		echo "
 		<span class=\"edt_suivant\">
-			<a href='index_edt.php?visioedt=salle1&amp;login_edt=".$tab_select[$suivant]["id_salle"]."&amp;type_edt_2=salle'>Salle suivante</a>
+			<a href='index_edt.php?visioedt=salle1&amp;login_edt=".$tab_select[$suivant]["id_salle"]."&amp;type_edt_2=salle'>".NEXT_CLASSROOM."</a>
 		</span>
 			";
 	}
 }
 
 echo '
+	</p>
 	</form>
 	';
 

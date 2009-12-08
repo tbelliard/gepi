@@ -1,8 +1,7 @@
 <?php
-// PAS BON DU TOUT A REVOIR
+
 /**
- * Fichier destiné à effacer une entrée dans l'emploi du temps
- * Il reçoit par GET un id de cours à supprimer
+ * Fichier destiné à permettre la suppression d'un cours
  *
  * @version $Id$
  *
@@ -24,8 +23,9 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+require_once("./choix_langue.php");
 
-$titre_page = "Emploi du temps - Effacer un cours";
+$titre_page = TITLE_DELETE_LESSON;
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 
@@ -33,7 +33,9 @@ $niveau_arbo = 1;
 require_once("../lib/initialisations.inc.php");
 
 // fonctions edt
+
 require_once("./fonctions_edt.php");
+require_once("./fonctions_cours.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -45,67 +47,143 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// INSERT INTO `gepi`.`droits` (`id` ,`administrateur` ,`professeur` ,`cpe` ,`scolarite` ,`eleve` ,`responsable` ,`secours` ,`description` ,`statut`) VALUES ('/edt_organisation/effacer_cours.php', 'V', 'V', 'F', 'F', 'F', 'F', 'F', 'Effacer un cours des EdT', '');
 // Sécurité
+
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
-if (param_edt($_SESSION["statut"]) != "yes") {
-  if ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y'){
-    // On autorise la lecture de cette page
-  }else{
-    Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
-  }
+if (param_edt($_SESSION["statut"]) != "yes" OR ( ($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof") != 'y') )) {
+	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
-// CSS et js particulier à l'EdT
-$javascript_specifique = "edt_organisation/script/fonctions_edt";
-$style_specifique = "edt_organisation/style_edt";
-
-// On insère l'entête de Gepi
-require_once("../lib/header.inc");
-
-// On ajoute le menu EdT
-require_once("./menu.inc.php"); ?>
-
-
-<br />
-<!-- la page du corps de l'EdT -->
-
-	<div id="lecorps">
-
-<?php
-// Initialisation des variables
-$supprimer_cours = isset($_GET["supprimer_cours"]) ? $_GET["supprimer_cours"] : NULL;
-$type_edt = isset($_GET["type_edt"]) ? $_GET["type_edt"] : NULL;
-$identite = isset($_GET["identite"]) ? $_GET["identite"] : NULL;
-
-if ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND strtolower($identite) != strtolower($_SESSION["login"])){
-  Die("Vous ne pouvez pas effacer un cours d'un coll&egrave;gue");
+// On vérifie que le droit soit le bon pour le profil scolarité
+	$autorise = "non";
+if ($_SESSION["statut"] == "administrateur") {
+	$autorise = "oui";
 }
-$effacer_cours = mysql_query("DELETE FROM edt_cours WHERE id_cours = '".$supprimer_cours."'") OR die ('Impossible d\'effacer ce cours');
-
-if (!$effacer_cours) {
-	echo '<span class="refus">Revenez en arrière avec la flèche de votre navigateur et recommencez.</span>';
+elseif ($_SESSION["statut"] == "scolarite" AND $gepiSettings['scolarite_modif_cours'] == "y") {
+	$autorise = "oui";
+}
+elseif(($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof") == 'y')){
+  $autorise = "oui";
 }
 else {
-	echo '
-		<span class="accept">Ce cours est effacé !</span>
-		<form name="retour" method="post" action="index_edt.php">
-		<input type="hidden" name="visioedt" value="'.$type_edt.'1" />
-		<input type="hidden" name="login_edt" value="'.$identite.'" />
-		<input type="hidden" name="type_edt_2" value="'.$type_edt.'" />
-		<input type="image" src="../images/icons/back.png" border="0" name="submit" alt="Revenir" title="Revenir" /> Revenir
-		</form>
-		';
+	$autorise = "non";
+	exit('Vous n\'êtes pas autorisé à modifier les cours des emplois du temps, contacter l\'administrateur de Gepi');
+}
+
+
+// ===== Initialisation des variables =====
+$type_edt = isset($_GET["type_edt"]) ? $_GET["type_edt"] : (isset($_POST["type_edt"]) ? $_POST["type_edt"] : NULL);
+$identite = isset($_GET["identite"]) ? $_GET["identite"] : (isset($_POST["identite"]) ? $_POST["identite"] : NULL);
+$supprimer_cours = isset($_GET["supprimer_cours"]) ? $_GET["supprimer_cours"] : (isset($_POST["supprimer_cours"]) ? $_POST["supprimer_cours"] : NULL);
+$confirme_suppression = isset($_GET["confirme_suppression"]) ? "yes" : (isset($_POST["confirme_suppression"]) ? "yes" : "no");
+$annuler_suppression = isset($_GET["annuler_suppression"]) ? "yes" : (isset($_POST["annuler_suppression"]) ? "yes" : "no");
+$period_id=isset($_GET['period_id']) ? $_GET['period_id'] : (isset($_POST['period_id']) ? $_POST['period_id'] : NULL);
+$message = "";
+
+// ================= On supprime un cours si ça a été demandé
+
+if (isset($supprimer_cours) AND $confirme_suppression=="yes") {
+    if ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND strtolower($identite) != strtolower($_SESSION["login"])){
+      $message = CANT_DELETE_OTHER_COURSE;
+    }
+    else if (($_SESSION["statut"] == "administrateur") OR ($_SESSION["statut"] == "scolarite") OR (($_SESSION["statut"] == "professeur") AND (getSettingValue("edt_remplir_prof") == 'y'))){
+
+        // ---- formattage du paramètre pour éviter une injection SQL
+        settype($supprimer_cours, "int");
+        // ---- En cas de rechargement de page, on ne fait pas la suppression deux fois.
+        $test_avant_effacement = mysql_query("SELECT * FROM edt_cours WHERE id_cours= '".$supprimer_cours."'");
+        if (mysql_num_rows($test_avant_effacement) != 0) {
+            // --- suppression effective.
+            $effacer_cours = mysql_query("DELETE FROM edt_cours WHERE id_cours = '".$supprimer_cours."'") OR die ('Impossible d\'effacer ce cours');
+            if (!$effacer_cours) {
+	            $message = DELETE_FAILURE;
+            }
+            else {
+	            $message = DELETE_SUCCESS;
+            }
+        }
+        else {
+	        $message = DELETE_NOTHING;
+        }
+    }
+    else {
+	        $message = DELETE_BAD_RIGHTS;
+    }
+}
+
+$_SESSION["message"] = $message;
+
+/*/ CSS et js particulier à l'EdT
+$javascript_specifique = "edt_organisation/script/fonctions_edt";
+$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
+
+// +++++++++++++++ entête de Gepi +++++++++
+require_once("../lib/header.inc");
+// +++++++++++++++ entête de Gepi +++++++++
+
+// On ajoute le menu EdT
+require_once("./menu.inc.php");
+*/
+if ($confirme_suppression=="yes" OR $annuler_suppression=="yes"){
+	$aff_refresh = "onload=\"window.close();\"";
+}else{
+	$aff_refresh = "onunload=\"window.opener.location.href='./index_edt.php?visioedt=prof1&amp;login_edt=".$identite."&amp;type_edt_2=prof';\"";
+}
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	<html lang="fr">
+	<head>
+	<title>Gepi - Supprimer un cours</title>
+	<link rel="stylesheet" type="text/css" href="./style_edt.css" />
+	<script type='text/javascript' src='./script/fonctions_edt.js'></script>
+	</head>
+	<body <?php echo $aff_refresh; ?>>
+
+
+<div id="edt_popup_contain">
+
+<!-- la page du corps de l'EdT -->
+
+	<div id="edt_popup_lecorps">
+
+<?php
+
+// Si tout est ok, on affiche le cours reçu en GET ou POST
+if ($autorise == "oui") {
+
+	// On affiche les différents items du cours
+echo '
+<div class="ButtonBarCenter">
+	<fieldset>
+		<legend>'.DELETE_CONFIRM.'</legend>
+		<form action="effacer_cours.php" method="post">
+		    <input type="hidden" name="supprimer_cours" value="'.$supprimer_cours.'" />
+		    <input type="hidden" name="type_edt" value="'.$type_edt.'" />
+		    <input type="hidden" name="identite" value="'.$identite.'" />	';
+echo '	
+		<input type="submit" name="confirme_suppression" value="'.CONFIRM_BUTTON.'" />
+		<input type="submit" name="annuler_suppression" value="'.ABORT_BUTTON.'" />
+		
+		</form>';
+echo '
+	</fieldset>
+</div>
+	';
+
+}// if $autorise...
+else {
+	die();
 }
 ?>
 
 	</div>
-<br />
-<br />
+
 <?php
+
 // inclusion du footer
 require("../lib/footer.inc.php");
 ?>

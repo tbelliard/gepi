@@ -27,7 +27,8 @@
 $login_edt = isset($_GET['login_edt']) ? $_GET['login_edt'] : (isset($_POST['login_edt']) ? $_POST['login_edt'] : NULL);
 
 echo '
-	<form action="index_edt.php" name="liste_prof" method="post">
+	<form action="index_edt.php" id="liste_prof" method="post">
+		<p>
 	';
 
 $tab_select = renvoie_liste("prof");
@@ -48,15 +49,15 @@ if($indice_prof_select!=-1){
 		$precedent=$indice_prof_select-1;
 		echo "
 		<span class=\"edt_suivant\">
-			<a href='index_edt.php?visioedt=prof1&amp;login_edt=".$tab_select[$precedent]["login"]."&amp;type_edt_2=prof'>Prof. précédent</a>
+			<a href='index_edt.php?visioedt=prof1&amp;login_edt=".$tab_select[$precedent]["login"]."&amp;type_edt_2=prof'>".PREVIOUS_TEACHER."</a>
 		</span>
 			";
 	}
 }
 
 echo '
-		<select name="login_edt" onchange=\'document.liste_prof.submit();\'>
-			<option value="rien">Choix du professeur</option>
+		<select name="login_edt" onchange=\'document.getElementById("liste_prof").submit();\'>
+			<option value="rien">'.CHOOSE_TEACHER.'</option>
 	';
 for($i=0; $i<count($tab_select); $i++) {
 	if(isset($login_edt)){
@@ -88,13 +89,14 @@ if($indice_prof_select!=-1){
 		//$suivant=$indice_prof_select+1;
 		echo "
 		<span class=\"edt_suivant\">
-			<a href='index_edt.php?visioedt=prof1&amp;login_edt=".$tab_select[$suivant]["login"]."&amp;type_edt_2=prof'>Prof. suivant</a>
+			<a href='index_edt.php?visioedt=prof1&amp;login_edt=".$tab_select[$suivant]["login"]."&amp;type_edt_2=prof'>".NEXT_TEACHER."</a>
 		</span>
 			";
 	}
 }
 
 echo "
+	</p>
 	</form>
 	";
 ?>

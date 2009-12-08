@@ -32,8 +32,13 @@ $niveau_arbo = 1;
 require_once("../lib/initialisations.inc.php");
 
 // fonctions edt
-require_once("./fonctions_edt.php");
-
+require_once('./choix_langue.php');
+require_once("./fonctions_edt.php");        // --- fonctions de base communes à tous les emplois du temps
+require_once("./fonctions_edt_prof.php");      // --- edt prof
+require_once("./fonctions_edt_classe.php");      // --- edt classe
+require_once("./fonctions_edt_salle.php");      // --- edt salle
+require_once("./fonctions_edt_eleve.php");      // --- edt eleve
+require_once("./fonctions_calendrier.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -52,14 +57,28 @@ if (!checkAccess()) {
 
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
-$style_specifique = "edt_organisation/style_edt";
+$ua = getenv("HTTP_USER_AGENT");
+if (strstr($ua, "MSIE 6.0")) {
+	$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt_ie6";
+}
+else {
+	$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
+}
+
+//ob_start( 'ob_gzhandler' );
 
 // On insère l'entête de Gepi
 require_once("../lib/header.inc");
+
+$ua = getenv("HTTP_USER_AGENT");
+if (strstr($ua, "MSIE 6.0")) {
+	echo "<div class=\"cadreInformation\">Votre navigateur (Internet Explorer 6) est obsolète et se comporte mal vis à vis de l'affichage des emplois du temps. Faites absolument une mise à jour vers les versions 7 ou 8 ou changez de navigateur (FireFox, Chrome, Opera, Safari)</div>";
+}
+
 
 // On ajoute le menu EdT
 require_once("./menu.inc.php");
@@ -84,7 +103,10 @@ if (isset($page_inc_edt) AND $page_inc_edt !== "") {
 	</div>
 <br />
 <br />
+
 <?php
 // inclusion du footer
 require("../lib/footer.inc.php");
+
+
 ?>

@@ -23,8 +23,9 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+require_once("./choix_langue.php");
 
-$titre_page = "Paramétrer les couleurs des matières";
+$titre_page = TITLE_EDT_PARAM_COLORS;
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 
@@ -33,7 +34,7 @@ require_once("../lib/initialisations.inc.php");
 
 // fonctions edt
 require_once("./fonctions_edt.php");
-
+//require_once("./fonctions_edt_2.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -51,7 +52,7 @@ if (!checkAccess()) {
 }*/
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
-$style_specifique = "edt_organisation/style_edt";
+$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 $utilisation_jsdivdrag = "";
 //==============PROTOTYPE===============
 $utilisation_prototype = "ok";
@@ -69,12 +70,12 @@ require_once("./menu.inc.php");
 
 	<div id="lecorps">
 
-<h3 class="gepi">Cliquez sur la couleur pour la modifier.</h3>
-<p>Pour voir ces couleurs dans les emplois du temps, il faut modifier les param&egrave;tres.</p>
+<h3 class="gepi"><?php echo CLICK_ON_COLOR ?></h3>
+<p><?php echo TEXT1_EDT_PARAM_COLORS ?></p>
 
 <table id="edt_table_couleurs">
 	<thead>
-	<tr><th>Mati&egrave;re</th><th>nom court</th><th>Couleur</th></tr>
+	<tr><th><?php echo FIELD ?></th><th><?php echo SHORT_NAME ?></th><th><?php echo COLOR ?></th></tr>
 	</thead>
 
 	<tbody>
@@ -98,8 +99,8 @@ $nbre_matieres = mysql_num_rows($req_sql);
 		<tr id="M_'.$aff_matiere[$i]["court"].'">
 			<td>'.$aff_matiere[$i]["long"].'</td>
 			<td>'.$aff_matiere[$i]["court"].'</td>
-			<td style="background-color: '.$color.';">
-				<p onclick="couleursEdtAjax(\'M_'.$aff_matiere[$i]["court"].'\', \'non\');">Modifier</p>
+			<td class="cadreCouleur'.$color.'">
+				<p onclick="couleursEdtAjax(\'M_'.$aff_matiere[$i]["court"].'\', \'non\');">'.MODIFY_COLOR.'</p>
 			</td>
 		</tr>
 		';

@@ -26,7 +26,7 @@
 
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
 
 // Sécurité, on vérifie le paramétrage de cette fonctionnalité
@@ -167,12 +167,15 @@ echo "<select name=\"semaine\">\n";
 echo "<option value='rien'>Semaine</option>\n";
 	$tab_select_semaine = array();
 
+    $tab_select_semaine = RecupereLundisVendredis();
+
 	for($d=0;$d<52;$d++) {
 		$tab_select_semaine[$d]["id_semaine"] = mysql_result($req_semaine, $d, "id_edt_semaine");
 		$tab_select_semaine[$d]["num_semaine"] = mysql_result($req_semaine, $d, "num_edt_semaine");
 		$tab_select_semaine[$d]["type_semaine"] = mysql_result($req_semaine, $d, "type_edt_semaine");
 
-		echo "<option value='".$tab_select_semaine[$d]["id_semaine"]."'>Semaine n° ".$tab_select_semaine[$d]["num_semaine"]." (".$tab_select_semaine[$d]["type_semaine"].") </option>\n";
+
+		echo "<option value='".$tab_select_semaine[$d]["id_semaine"]."'>Semaine n° ".$tab_select_semaine[$d]["num_semaine"]." (".$tab_select_semaine[$d]["type_semaine"].") : ".$tab_select_semaine[$d]["lundis"]." - ".$tab_select_semaine[$d]["vendredis"]." </option>\n";
 
 	}
 echo "</select>\n<br />\n<em><font size=\"2\"> * champs obligatoires  </font></em>\n";

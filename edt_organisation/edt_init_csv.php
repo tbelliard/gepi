@@ -51,11 +51,11 @@ if (!checkAccess()) {
 }
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
-$style_specifique = "edt_organisation/style_edt";
+$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 //==============PROTOTYPE===============
 $utilisation_prototype = "ok";
 //============fin PROTOTYPE=============

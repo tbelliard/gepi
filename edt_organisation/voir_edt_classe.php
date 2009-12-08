@@ -26,6 +26,7 @@
 
 echo '
 	<form action="index_edt.php" id="liste_classe_id" method="post">
+	<p>
 	';
 
 	$tab_select = renvoie_liste("classe");
@@ -46,7 +47,7 @@ if($indice_classe_select != -1){
 		$precedent = $indice_classe_select-1;
 		echo "
 		<span class=\"edt_suivant\">
-			<a href='index_edt.php?visioedt=classe1&amp;login_edt=".$tab_select[$precedent]["id"]."&amp;type_edt_2=classe'>Classe précédente</a>
+			<a href='index_edt.php?visioedt=classe1&amp;login_edt=".$tab_select[$precedent]["id"]."&amp;type_edt_2=classe'>".PREVIOUS_CLASS."</a>
 		</span>
 			";
 	}
@@ -55,7 +56,7 @@ if($indice_classe_select != -1){
 echo '
 	
 		<select name="login_edt" onchange=\'document.getElementById("liste_classe_id").submit();\'>
-			<option value="rien">Choix de la classe</option>
+			<option value="rien">'.CHOOSE_CLASS.'</option>
 	';
 
 for($i=0;$i<count($tab_select);$i++) {
@@ -86,13 +87,14 @@ if($indice_classe_select != -1){
 		//$suivant=$indice_prof_select+1;
 		echo "
 		<span class=\"edt_suivant\">
-			<a href='index_edt.php?visioedt=classe1&amp;login_edt=".$tab_select[$suivant]["id"]."&amp;type_edt_2=classe'>Classe suivante</a>
+			<a href='index_edt.php?visioedt=classe1&amp;login_edt=".$tab_select[$suivant]["id"]."&amp;type_edt_2=classe'>".NEXT_CLASS."</a>
 		</span>
 			";
 	}
 }
 
 echo '
+	</p>
 	</form>
 	';
 

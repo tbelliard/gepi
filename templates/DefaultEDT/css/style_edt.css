@@ -1,0 +1,1931 @@
+/*
+$Id: style_edt.css $
+*/
+
+@media print{
+
+	#header, #version_gepi, #menu_edt, #agauche , #bandeau, .ButtonBarCommutator{
+		display: none;
+	}
+
+	span {
+		display: none;
+	}
+}
+
+
+#menu_edt dl, dt, dd, ul, li {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+/* CSS du menu EdT */
+
+.dates_header {
+	background-image : url(../images/dates.png);
+	background-position: top left ;
+	background-repeat: no-repeat;
+    margin: 10px 0px 0px 0px;
+    height:41px;
+}
+.dates {
+
+    background-color:#ffffff;
+    margin: 0px 0px 0px 0px;
+	width: 128px;
+    border-bottom : 1px solid black;
+    border-right : 1px solid black;
+    border-left : 1px solid black;
+    padding:5px 0px 5px 10px;
+
+}
+
+.dates_text {
+	font-size: x-small;
+	color: black;
+}
+#menu_edt {
+	/* position: absolute; */
+	/* top: 200px; */
+	/*left: 10px; */
+    float:left;
+	width: 8em;
+}
+#menu_edt dt {
+	/*cursor: pointer;*/
+	margin: 10px 0;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	font-weight: bold;
+	color: grey;
+	border: 2px solid gray;
+	background: silver;
+	padding: 5px;
+}
+#menu_edt dd {
+	border: 1px #6d6d83;
+	margin-right: 7px;
+}
+#menu_edt li {
+	text-align: center;
+	border: 1px solid grey;
+	margin-top: 2px;
+	background: #E9E9E9;
+}
+#menu_edt li:hover {
+	border: 1px solid white;
+}
+#menu_edt li a, #menu_edt dt a {
+	color: black;
+	text-decoration: none;
+	display: block;
+	border: 0 none;
+	height: 100%;
+	background: #E9E9E4;
+}
+#menu_edt li a:hover, #menu_edt dt a:hover {
+	background: silver;
+	color: white;
+}
+
+#agauche {
+	/*background-color: #E9E9E4;*/
+    position:absolute;
+	float: left;
+	width: 150px;
+	height: 1000px;
+	font: normal normal 11pt Verdana, sans-serif;
+}
+
+/* CSS du corps de page EdT */
+#lecorps {
+	position: relative;
+	/*background-color: #E9E9E4;*/
+	margin-left: 150px;
+	font: normal normal 15pt Verdana, sans-serif;
+}
+
+#edteleve {
+	position: relative;
+	/*background-color: #E9E9E4;*/
+	margin-left: 10px;
+	font: normal normal 15pt Verdana, sans-serif;
+}
+
+fieldset {
+	border: 1px solid grey;
+}
+
+legend {
+	background-color: silver;
+	border: 1px solid grey;
+	color: white;
+	font-weight: bold;
+}
+
+label {
+	font-size: 1em;
+	cursor: pointer;
+}
+
+#edt_popup_lecorps {
+	background-color: #E9E9E4;
+	font: normal normal 15pt Verdana, sans-serif;
+}
+
+#edt_popup_contain {
+	background-color: #E9E9E4;
+}
+
+/* Affichage du tableau EdT */
+#aff_edt {
+	border: 1px solid black;
+	border-collapse: collapse;
+	padding: 0 0 0 0;
+	width: 158px;
+	height: 75px;
+}
+
+.edt_admin {
+	font-size: 8px;
+}
+
+table {
+	layout: fixed;
+}
+
+.tab_edt {
+	border: 1px solid black;
+	border-collapse: separate;
+}
+
+.tab_edt th {
+	border: 1px solid black;
+	background-color: #6d6d83;
+	font: normal normal 11pt Verdana, sans-serif;
+	color: white;
+	height: 35px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.tab_edt td {
+	border: 1px solid silver;
+	/*border: 1px solid #E9E9E4;*/
+	font: normal normal 9pt Verdana, sans-serif;
+	text-align: center;
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+	width: 160px;
+	height: 35px;
+}
+
+.tab_edt_1 {
+	border: 0;
+	width: 100%;
+	font-size: 0.6em;
+	padding: 0;
+	margin: 0 0 0 0;
+	border-spacing: 0;
+	text-align: center;
+	border-collapse: collapse;
+}
+
+.edt_suivant {
+	font-size: 11px;
+	font-weight: bold;
+    padding: 1px;
+}
+
+.edt_suivant:hover {
+	background-color: lightblue;
+	padding: 1px;
+}
+
+.edt_suivant a:hover {
+	color: black;
+}
+
+/* Calendrier edt */
+#edt_calendar {
+	border: 1px groove rgb(180, 180, 255);
+	border-collapse: collapse;
+	border-spacing: 1px;
+	text-align: center;
+	background-color: rgb(200, 200, 255);
+}
+
+#edt_calendar td {
+	height: 30px;
+}
+
+.premiere_ligne td {
+	background-color: rgb(200, 200, 200);
+	font-size: 11px;
+	font-weight: bold;
+	color: white;
+}
+
+.lignepaire {
+	background-color: white;/*rgb(240, 240, 255);*/
+}
+
+.ligneimpaire {
+	background-color: rgb(230, 230, 230);
+}
+
+.bonnelargeur {
+	width: 110px;
+}
+
+.modif_supr {
+	width: 30px;
+}
+
+#div_classes_concernees {
+	position: absolute;
+	width: 400px;
+	height: 50px;
+	margin-right: 150px;
+	margin-left: 400px;
+}
+
+#aide_calendar, #aide_initcsv {
+	width: 750px;
+	padding: 10px;
+	background-color: silver;
+}
+
+#saisie_new_periode, #modif_periode {
+	height: 400px; /* à agrandir pour des établissements avec beaucoup de classes*/
+}
+
+#saisie_new_periode label {
+	font-size: x-small;
+	font-weight: normal;
+	font-style: italic;
+}
+
+#modif_periode label {
+	font-size: x-small;
+	font-weight: normal;
+	font-style: italic;
+}
+
+#div_classes_concernees label {
+	font-size: medium;
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* Couleurs des champs de formulaire */
+#lecorps .focus {
+	background: #E9E9E4;
+	color: black;
+}
+#lecorps .normal {
+	background: white;
+	color: black;
+}
+
+#chercher {
+	border: none;
+	padding: 0;
+	margin: 0;
+	width: 35em;
+}
+
+#lien a:hover {
+	background-color: rgb(200, 200, 255);
+}
+
+.legende {
+	font-size: xx-small;
+	font-weight: normal;
+	font-style: italic;
+}
+
+.accept {
+	font-size: x-small;
+	color: green;
+}
+
+.refus {
+	font-size: x-small;
+	color: red;
+}
+
+#edt_modif td {
+	text-align: center;
+	height: 32px;
+	width: 250px;
+}
+
+#edt_modif td:hover {
+	background-color: rgb(200, 200, 255);
+}
+
+/* Le tableau des paramètres couleurs des matières */
+#edt_table_couleurs {
+	border: 1px solid grey;
+}
+
+#edt_table_couleurs th {
+	background-color: silver;
+	color: black;
+	font-weight: normal;
+	text-align: center;
+	width: 200px;
+}
+
+#edt_table_couleurs td {
+	height: 40px;
+	border: 1px solid grey;
+}
+
+#edt_table_couleurs td p {
+	cursor: pointer;
+}
+
+#divCsv2 label {
+	text-align: right;
+	margin: 0;
+	padding: 0 .5em 0 0;
+	line-height: 1.8;
+}
+.edt_lien {
+	border: 1px solid grey;
+	background: #FFFFFF;
+	width: 200px;
+	text-align: center;
+	cursor: pointer;
+	margin-left: 100px;
+}
+div.mode_gr {
+border: 2px solid grey; padding: 2 2 2 2;
+}
+.creneau {
+height: 55px; text-align: center; vertical-align: middle; border-right: 1px dotted #99C; position: absolute; margin-top: 5px; border-bottom: 2px solid grey;
+}
+.creneau_d {
+height: 55px; text-align: center; vertical-align: middle; position: absolute; margin-top: 5px; border-bottom: 2px solid grey;
+}
+.prem {
+border-bottom: 2px dotted silver;
+}
+.creneauB {
+height: 55px; text-align: center; vertical-align: middle; border-right: 1px dotted #99C; position: absolute; margin-top: 5px;
+}
+.creneau_dB {
+height: 55px; text-align: center; vertical-align: middle; position: absolute; margin-top: 5px; border: 0px;
+}
+.affedtcours {
+position: absolute; border: 1px solid black; -moz-border-radius: 10px; overflow: hidden; padding: 2px;
+}
+.abs_appear {
+position: absolute; background-color: yellow; border: 1px solid silver;
+}
+
+/* ========================  Style de l'emploi du temps ======================== */
+#fenetre{
+	margin: 25px 0px 25px 25px;
+    float:left;
+	width : 98%; 
+
+}
+
+#fenetre .contenu ul {
+	list-style:none;
+	margin:0 20px 0 20px;
+	padding : 0;
+	white-space :nowrap;
+}
+
+#fenetre .contenu {
+            position:relative;
+         /*    top:100px;*/
+/*            left:28px;*/
+    /* float:left; */
+    /* position:relative; */
+	width: 90%; 
+    background-color:white;
+	font-size: 1em;
+	padding:5px 0 0 0px;
+	margin:0px 0px 0px 0px;
+}
+
+#fenetre .contenu li {
+	text-decoration:none;
+	margin : 5px 0 0 0;
+	white-space :nowrap;
+ }
+
+#fenetre .contenu li:hover{
+	color: #55FFAA;
+	text-decoration:none;
+	background-color : #FFFFFF ;
+	white-space :nowrap;
+ }
+
+
+#fenetre .contenu p.centrer  {
+	text-align:center;
+}
+#fenetre .contenu a {
+	font-size:1em;
+	color: #994400;
+	text-decoration:none;
+}
+
+
+#fenetre p.w3c  {
+	float:left;
+}
+#fenetre p.w3c  a{
+	text-decoration:none;
+	color: #000000;
+}
+
+#fenetre p.w3c  img{
+	text-decoration:none;
+	border:none;
+	color: #000000;
+}
+
+
+#fenetre p.w3c  a:hover{
+	text-decoration:none;
+	color: #000000;
+	background:none;
+	padding-left:0;
+}
+
+#fenetre img{
+	text-decoration:none;
+	border:0px;
+	color: #000000;
+}
+#fenetre .contenu .tableau{
+	padding: 10px 20px 20px 10px;
+	margin: 0px 0px 0px 0px;
+	width : 98%;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 0.8em;
+	color: black;
+	text-align: left;
+}
+#fenetre .contenu .tableau .entete{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 30px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: brown;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+	/*background-image : url(../images/entete.png);*/
+	/*background-position: top left ;*/
+	/*background-repeat: no-repeat;*/
+	background-color: orange ; 
+
+}
+
+#fenetre .contenu .tableau .colonne0{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 61px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+
+#fenetre .contenu .tableau .colonne1{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 61px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+
+#fenetre .contenu .tableau .colonne2{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 121px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+#fenetre .contenu .tableau .colonne3{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 181px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+#fenetre .contenu .tableau .colonne4{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 241px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+#fenetre .contenu .tableau .colonne5{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 301px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+#fenetre .contenu .tableau .colonne6{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 361px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+#fenetre .contenu .tableau .colonne7{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 421px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+#fenetre .contenu .tableau .colonne8{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 481px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+#fenetre .contenu .tableau .colonne9{
+    float:left;
+    position:relative;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 541px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+#fenetre .contenu .tableau .colonne10{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 601px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .colonne11{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 661px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .colonne12{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    width:14%;
+	height : 721px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+#fenetre .contenu .tableau .creneaux1{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 61px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .creneaux2{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 121px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .creneaux3{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 181px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .creneaux4{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 241px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .creneaux5{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 301px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .creneaux6{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 361px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .creneaux7{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 421px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .creneaux8{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 481px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .creneaux9{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 541px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .creneaux10{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 601px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .creneaux11{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 661px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+
+#fenetre .contenu .tableau .creneaux12{
+    float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 02px 02px 02px 02px;
+    max-width:50px;
+    width:10%;
+	height : 721px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+
+}
+#fenetre .spacer {
+    clear:both;
+}
+
+#fenetre .contenu .tableau .cellule1{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 30px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 50%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+
+}
+
+#fenetre .contenu .tableau .cellule2{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 60px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+
+#fenetre .contenu .tableau .cellule3{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 90px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+
+#fenetre .contenu .tableau .cellule4{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 120px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+
+#fenetre .contenu .tableau .cellule5{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 150px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+
+#fenetre .contenu .tableau .cellule6{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 180px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+#fenetre .contenu .tableau .cellule7{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 210px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+#fenetre .contenu .tableau .cellule8{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 240px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+#fenetre .contenu .tableau .cellule9{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 270px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+#fenetre .contenu .tableau .cellule10{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 300px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+#fenetre .contenu .tableau .cellule11{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 330px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+#fenetre .contenu .tableau .cellule12{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 360px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+#fenetre .contenu .tableau .cellule13{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 390px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+#fenetre .contenu .tableau .cellule14{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 420px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+#fenetre .contenu .tableau .cellule15{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 450px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+#fenetre .contenu .tableau .cellule16{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 480px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 60%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+#fenetre .contenu .tableau .demicellule1{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 30px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+
+#fenetre .contenu .tableau .demicellule2{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 60px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+
+}
+#fenetre .contenu .tableau .demicellule3{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 90px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule4{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 120px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule5{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 150px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule6{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 180px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule7{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 210px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule8{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 240px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule9{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 270px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule10{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 300px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule11{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 330px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule12{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 360px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule13{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 390px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule14{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 420px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule15{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 450px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .demicellule16{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:50%;
+	height : 480px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule1{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 30px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+
+#fenetre .contenu .tableau .tierscellule2{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 60px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+
+}
+#fenetre .contenu .tableau .tierscellule3{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 90px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule4{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 120px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule5{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 150px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule6{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 180px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule7{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 210px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule8{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 240px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule9{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 270px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule10{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 300px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule11{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 330px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule12{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 360px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule13{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 390px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule14{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 420px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule15{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 450px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+#fenetre .contenu .tableau .tierscellule16{
+    float:left;
+	margin: 00px 0px 00px 00px;
+    border:0px solid #000000; 
+    width:33%;
+	height : 480px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+    overflow:hidden;
+}
+.ButtonBar {
+    position:absolute;
+    bottom:0;
+    left:0;
+    margin:0;
+}
+
+.ButtonBar .image {
+    float:right;
+    margin:0;
+}
+
+#ButtonBarPrint {
+    position:absolute;
+    top:15px;
+    right:5px;
+    margin:0;
+	background-image : url(../images/print_button.png);
+	background-position: top left ;
+	background-repeat: no-repeat;
+    width : 76px;
+    height : 70px;
+}
+.ButtonBarCommutator {
+    position:absolute;
+    top:15px;
+    right:80px;
+    margin:0;
+    width : 76px;
+    height : 70px;
+}
+
+#ButtonBarPrint a {
+    display:block;
+}
+
+#ButtonBarPrint li {
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:block;
+    position:absolute;
+}
+
+#ButtonBarPrint1 {
+    width : 76px;
+    height : 70px;
+}
+#ButtonBarPrint1 a{
+    height : 70px;
+}
+#ButtonBarPrint1 a:hover {
+	background-image : url(../images/print_button2.png);
+	background-position: top left ;
+	background-repeat: no-repeat;
+}
+
+/* ================= Affichage de la barre du commutateur de périodes ================= */
+#ButtonBarArrows {
+    width: 100%;
+}
+
+#AlignLeft {
+    width: 100%; 
+    float:left;
+}
+
+.Period {
+    float:left;
+    background-color:white;
+    border:1px solid black;
+    height:17px;
+    padding:0px 3px 0px 3px;
+    font-size:0.6em;
+}
+
+.spacer {
+    clear:both;
+}
+
+.ButtonBarArrowRight {
+    float:left;
+    margin:0px 0px 0px 0px;
+    padding:0;
+	background-image : url(../images/arrow1right.png);
+	background-position: top left ;
+	background-repeat: no-repeat;
+    width : 21px;
+    height : 19px;
+    display:block;
+}
+
+.ButtonBarArrowRight a {
+    display:block;
+}
+
+.ButtonBarArrowRight li {
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:block;
+}
+
+.ButtonBarArrowRight1 {
+    width : 21px;
+    height : 19px;
+}
+.ButtonBarArrowRight1 a{
+    height : 19px;
+}
+.ButtonBarArrowRight1 a:hover {
+	background-image : url(../images/arrow2right.png);
+	background-position: top left ;
+	background-repeat: no-repeat;
+}
+
+.ButtonBarArrowLeft {
+    float:left; 
+    margin:0px 0px 0px 28px;
+    padding:0;
+	background-image : url(../images/arrow1left.png);
+	background-position: top left ;
+	background-repeat: no-repeat;
+    width : 21px;
+    height : 19px;
+    /* display:block; */
+}
+
+.ButtonBarArrowLeft a {
+    display:block;
+}
+
+.ButtonBarArrowLeft li {
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:block;
+}
+
+.ButtonBarArrowLeft1 {
+    width : 21px;
+    height : 19px;
+}
+.ButtonBarArrowLeft1 a{
+    height : 19px;
+}
+.ButtonBarArrowLeft1 a:hover {
+	background-image : url(../images/arrow2left.png);
+	background-position: top left ;
+	background-repeat: no-repeat;
+}
+
+.ButtonBarCenter {
+    bottom:0;
+    left:100px;
+    margin: 100px 50% 0 100px;
+}
+
+.horaires{
+    float:left;
+	margin: 0px 0px 0px 00px;
+    border:0px solid #000000; 
+    width:100%;
+	height : 60px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 80%;
+	color: white;
+	text-align: center;
+	background-image : url(../images/horaires.png);
+	background-position: top left ;
+	background-repeat: no-repeat;
+	background-color: #ffffff ;
+}
+
+.cadre {
+    position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     padding:0 0 0 0;
+     height:100%;
+}
+
+.cadreCouleur {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:white;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreHachure {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:white;
+     padding:0 0 0 0;
+     height:100%;
+	 background-image : url(../images/hachure.png);
+	 background-position: top left ;
+	 background-repeat: repeat;
+     overflow:hidden;
+}
+
+/* ========================== pour les messages d'erreur ==================== */
+.cadreRouge {
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:red;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+.cadreInformation {
+     position:relative;
+     border:1px solid #000000;
+     background-color:blue;
+     padding:2px 2px 2px 2px;
+     height:100%;
+     width:100%;
+     text-align:center;
+     color:white;
+     font-size:80%;
+     margin:0px 0px 15px 0px;
+}
+/* ========================== couleurs pour les cours ==================== */
+/* pour conserver une compatibilité avec l'ancien système de gestion des couleurs */
+/* chaque div peut avoir deux noms : le nom numéroté (nouveau système) ou le nom avec sa couleur(ancien système) */
+.cadreCouleur1 , .cadreCouleurblue{
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:blue;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+.cadreCouleur2 , .cadreCouleurfuchsia {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:fuchsia;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+.cadreCouleur3 , .cadreCouleurlime {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:lime;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+.cadreCouleur4 , .cadreCouleurmaroon {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:maroon;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+.cadreCouleur5 , .cadreCouleurpurple {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:purple;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur6 , .cadreCouleurred {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:red;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur7, .cadreCouleurwhite {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:white;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur8 , .cadreCouleuryellow {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:yellow;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+.cadreCouleur9 , .cadreCouleuraqua {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:aqua;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur10 , .cadreCouleurgrey {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:grey;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur11 , .cadreCouleurgreen {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:green;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur12 , .cadreCouleurolive {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:olive;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur13 , .cadreCouleurteal {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:teal;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleurnone {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+/* =================== Création d'un cadre blanc arrondi ============= */
+#droite {
+	background-image:url('../images/right.png');
+	background-repeat: repeat-y;
+    background-position: right;
+    position:absolute;
+    top:0px;
+    right:-28px;
+    height:100%;
+    width:28px;
+}
+
+#gauche {
+	background-image:url('../images/left.png');
+	background-repeat: repeat-y;
+    background-position: right;
+    position:absolute;
+    top:0px;
+    left:-28px;
+    height:100%;
+    width:28px;
+}
+
+#partiecentralehaut {
+	height:28px;
+    position:absolute;
+	background-image:url('../images/top.png');
+	background-repeat: repeat-x;
+    width:100%;
+	top:-28px;
+    left:00px;
+}
+
+#partiecentralebas {
+	height:28px;
+    position:absolute;
+	background-image:url('../images/bottom.png');
+	background-repeat: repeat-x;
+    width:100%;
+	bottom:-28px;
+    left:00px;
+}
+
+#coingh {
+    width:28px;
+    position:absolute;
+	height:28px;
+	background-image:url('../images/top_left.png');
+    top:-28px;
+    left:-28px;		
+	background-repeat: no-repeat;
+}
+
+#coindh {
+    position:absolute;
+    width:28px;
+	height:28px;
+	background-image:url('../images/top_right.png');
+	top:-28px;
+    right:-28px;
+	background-repeat: no-repeat;
+}
+
+#coingb {
+    position:absolute;
+    bottom:-28px;
+    left:-28px;
+    width:28px;
+	height:28px;
+	background-image:url('../images/bottom_left.png');
+	float: left;
+}
+
+#coindb {
+    position:absolute;
+    bottom:-28px;
+    right:-28px;
+    width:28px;
+	height:28px;
+	background-image:url('../images/bottom_right.png');
+	float:right;
+}

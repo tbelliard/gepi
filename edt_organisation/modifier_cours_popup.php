@@ -23,8 +23,9 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+require_once("./choix_langue.php");
 
-$titre_page = "Modifier un cours de l'emploi du temps";
+$titre_page = TITLE_MODIFY_LESSON_POPUP;
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 
@@ -53,7 +54,7 @@ if (!checkAccess()) {
 }
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes" OR ( ($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof") != 'y') )) {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
 // On vérifie que le droit soit le bon pour le profil scolarité
 	$autorise = "non";
@@ -88,6 +89,7 @@ $periode_calendrier = isset($_POST["periode_calendrier"]) ? $_POST["periode_cale
 $aid = isset($_POST["aid"]) ? $_POST["aid"] : NULL;
 $horaire = isset($_GET["horaire"]) ? $_GET["horaire"] : (isset($_POST["horaire"]) ? $_POST["horaire"] : NULL);
 $cours = isset($_GET["cours"]) ? $_GET["cours"] : (isset($_POST["cours"]) ? $_POST["cours"] : NULL);
+$period_id=isset($_GET['period_id']) ? $_GET['period_id'] : (isset($_POST['period_id']) ? $_POST['period_id'] : NULL);
 $message = "";
 
 // Dans le cas d'un professeur, on s'assure qu'il s'agit bien de son edt
@@ -100,31 +102,27 @@ if (($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof
 
 // Traitement des changements
 if (isset($modifier_cours) AND $modifier_cours == "ok") {
-
-	// On modifie sans vérification ?
-	$req_modif = mysql_query("UPDATE edt_cours SET id_groupe = '$enseignement',
-	 id_salle = '$login_salle',
-	 jour_semaine = '$ch_jour_semaine',
-	 id_definie_periode = '$ch_heure',
-	 duree = '$duree',
-	 heuredeb_dec = '$heure_debut',
-	 id_semaine = '$choix_semaine',
-	 id_calendrier = '$periode_calendrier'
-	WHERE id_cours = '".$id_cours."'")
-	or die('Erreur dans la mofication du cours : '.mysql_error().'');
-
-}elseif (isset($modifier_cours) AND $modifier_cours == "non") {
-	// on initialise les variables de vérification
-	$verif_salle = verifSalle($login_salle, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine);
-	// On crée le cours après quelques vérifications
-	// Est-ce que le prof est libre ?
-	if (verifProf($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine) == "oui") {
-		// puisqu'il n'y a pas de cours pour ce prof, on peut passer à la vérif suivante
-		// Est-ce que la salle est libre ?
-		if ($verif_salle == "oui") {
-			// puisque ce prof et cette salle sont libres, on peut vérifier si le groupe en question est libre aussi
-			// Normalement, cela devrait fonctionner avec les AID aussi
-			if (verifGroupe($enseignement, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine) == "oui") {
+	if (ProfDisponible($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, $id_cours, $message, $periode_calendrier)) {
+        if (SalleDisponible($login_salle, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, $id_cours, $message, $periode_calendrier)) {
+            if (GroupeDisponible($enseignement, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, $id_cours, $message, $periode_calendrier)) {
+	            $req_modif = mysql_query("UPDATE edt_cours SET id_groupe = '$enseignement',
+	                id_salle = '$login_salle',
+	                jour_semaine = '$ch_jour_semaine',
+	                id_definie_periode = '$ch_heure',
+	                duree = '$duree',
+	                heuredeb_dec = '$heure_debut',
+	                id_semaine = '$choix_semaine',
+	                id_calendrier = '$periode_calendrier'
+	                WHERE id_cours = '".$id_cours."'")
+	                or die('Erreur dans la mofication du cours : '.mysql_error().'');
+	        }
+        }
+    }
+}
+elseif (isset($modifier_cours) AND $modifier_cours == "non") {
+	if (ProfDisponible($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, -1, $message, $periode_calendrier)) {
+		if (SalleDisponible($login_salle, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, -1, $message, $periode_calendrier)) {
+            if (GroupeDisponible($enseignement, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, -1, $message, $periode_calendrier)) {
 				$nouveau_cours = mysql_query("INSERT INTO edt_cours SET id_groupe = '$enseignement',
 					 id_salle = '$login_salle',
 					 jour_semaine = '$ch_jour_semaine',
@@ -135,25 +133,20 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 					 id_calendrier = '$periode_calendrier',
 					 login_prof = '".$identite."'")
 				OR DIE('Erreur dans la création du cours : '.mysql_error());
-
-			}else {
-				$message = "Les élèves ont déjà cours.";
 			}
-		}else {
-			$message = "La salle n'est pas libre.".$verif_salle;
 		}
-	}else{
-		$message = "Ce cours en chevauche un autre.";
-	}
-
+    }
 } else {
 	// On ne fait rien
 }
 
+// ======== récupérer le message transmis en cas de problème lors de la création/modification du cours
+
+$_SESSION["message"] = $message;
 
 /*/ CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
-$style_specifique = "edt_organisation/style_edt";
+$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
 // +++++++++++++++ entête de Gepi +++++++++
 require_once("../lib/header.inc");
@@ -172,7 +165,7 @@ if (isset($modifier_cours) AND ($modifier_cours == "ok" OR $modifier_cours == "n
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 	<html lang="fr">
 	<head>
-	<title>Gepi - Modifier un cours</title>
+	<title><?php echo TITLE_PAGE ?></title>
 	<link rel="stylesheet" type="text/css" href="./style_edt.css" />
 	<script type='text/javascript' src='./script/fonctions_edt.js'></script>
 
@@ -216,10 +209,10 @@ $affmessage = NULL;
 	// On affiche les différents items du cours
 echo '
 	<fieldset>
-		<legend>Modification du cours</legend>
+		<legend>'.LESSON_MODIFICATION.'</legend>
 		<form action="modifier_cours_popup.php" method="post">
 
-			<h2>'.$rep_prof["prenom"].' '.$rep_prof["nom"].' ('.$id_cours.') '.$affmessage.'</h2>
+			<!-- <h2>'.$rep_prof["prenom"].' '.$rep_prof["nom"].' ('.$id_cours.') '.$affmessage.'</h2> -->
 
 	<table id="edt_modif" summary="Choisir les informations du cours">
 		<tr class="ligneimpaire">
@@ -230,10 +223,12 @@ echo '
 		// Si c'est un AID, on inscrit son nom
 		$explode = explode("|", $rep_cours["id_groupe"]);
 		if ($explode[0] == "AID") {
-			$nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$explode[1]."'"));
-			$aff_intro = $nom_aid["nom"];
+			$nom_aid = mysql_fetch_array(mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$explode[1]."'"));
+		    $req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
+		    $rep_nom_complet = mysql_fetch_array($req_nom_complet);
+			$aff_intro = $rep_nom_complet["nom"]." : ".$nom_aid["nom"];
 		}else {
-			$aff_intro = 'Choix de l\'enseignement';
+			$aff_intro = CHOOSE_LESSON;
 		}
 echo '
 				<option value="'.$rep_cours["id_groupe"].'">'.$aff_intro.'</option>
@@ -260,9 +255,12 @@ echo '
 	// On ajoute les AID s'il y en a
 	$tab_aid = renvoieAid("prof", $identite);
 	for($i = 0; $i < count($tab_aid); $i++) {
-		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
+		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
+		$req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
+		$rep_nom_complet = mysql_fetch_array($req_nom_complet);
+
 		echo '
-				<option value="AID|'.$tab_aid[$i]["id_aid"].'">'.$nom_aid["nom"].'</option>
+				<option value="AID|'.$tab_aid[$i]["id_aid"].'">'.$rep_nom_complet["nom"].' : '.$nom_aid["nom"].'</option>
 		';
 	}
 
@@ -320,7 +318,7 @@ echo '
 			</td>
 			<td>
 			<select name="ch_heure">
-				<option value="rien">Horaire</option>';
+				<option value="rien">'.HOURS.'</option>';
 
 	// On propose aussi le choix de l'horaire
 
@@ -394,35 +392,50 @@ if (isset($rep_cours["heuredeb_dec"])) {
 
 echo '
 			<select name="heure_debut">
-				<option value="0"'.$selected0.'>Le cours commence au début d\'un créneau</option>
-				<option value="0.5"'.$selected5.'>Le cours commence au milieu d\'un créneau</option>
+				<option value="0"'.$selected0.'>'.LESSON_START_AT_THE_BEGINNING.'</option>
+				<option value="0.5"'.$selected5.'>'.LESSON_START_AT_THE_MIDDLE.'</option>
 			</select>
 
 			</td>
 			<td>
 	';
 	// On détermine le selected de la duree
-	$selected[1] = $selected[2] = $selected[3] = $selected[4] = $selected[5] = $selected[6] = $selected[7] = $selected[8] = '';
+    $selected = array();
+	$selected[1] = $selected[2] = $selected[3] = $selected[4] = $selected[5] = $selected[6] = $selected[7] = $selected[8] = " ";
+	$selected[9] = $selected[10] = $selected[11] = $selected[12] = $selected[13] = $selected[14] = $selected[15] = $selected[16] = " ";
 	if (isset($rep_cours["duree"])) {
-		$selected[$rep_cours["duree"]] = " selected='selected'";
+        $index = $rep_cours["duree"];
+		$selected[$index] = " selected='selected'";       
 	}
+    else {
+		$selected[2] = " selected='selected'";
+	}
+
 echo '
 			<select name="duree">
-				<option value="2"'.$selected[2].'>1 heure</option>
-				<option value="3"'.$selected[3].'>1.5 heure</option>
-				<option value="4"'.$selected[4].'>2 heures</option>
-				<option value="5"'.$selected[5].'>2.5 heures</option>
-				<option value="6"'.$selected[6].'>3 heures</option>
-				<option value="7"'.$selected[7].'>3.5 heures</option>
-				<option value="8"'.$selected[8].'>4 heures</option>
-				<option value="1"'.$selected[1].'>1/2 heure</option>
+				<option value="1"'.$selected[1].'>'.HOUR1.'</option>
+				<option value="2"'.$selected[2].'>'.HOUR2.'</option>
+				<option value="3"'.$selected[3].'>'.HOUR3.'</option>
+				<option value="4"'.$selected[4].'>'.HOUR4.'</option>
+				<option value="5"'.$selected[5].'>'.HOUR5.'</option>
+				<option value="6"'.$selected[6].'>'.HOUR6.'</option>
+				<option value="7"'.$selected[7].'>'.HOUR7.'</option>
+				<option value="8"'.$selected[8].'>'.HOUR8.'</option>
+				<option value="9"'.$selected[9].'>'.HOUR9.'</option>
+				<option value="10"'.$selected[10].'>'.HOUR10.'</option>
+				<option value="11"'.$selected[11].'>'.HOUR11.'</option>
+				<option value="12"'.$selected[12].'>'.HOUR12.'</option>
+				<option value="13"'.$selected[13].'>'.HOUR13.'</option>
+				<option value="14"'.$selected[14].'>'.HOUR14.'</option>
+				<option value="15"'.$selected[15].'>'.HOUR15.'</option>
+				<option value="16"'.$selected[16].'>'.HOUR16.'</option>
 			</select>
 
 			</td>
 			<td>
 
 			<select name="choix_semaine">
-				<option value="0">Toutes les semaines</option>
+				<option value="0">'.ALL_WEEKS.'</option>
 		';
 		// on récupère les types de semaines
 
@@ -452,7 +465,7 @@ echo '
 			<td>
 
 			<select  name="login_salle">
-				<option value="rien">Salle</option>
+				<option value="rien">'.CLASSROOM.'</option>
 	';
 	// Choix de la salle
 	$tab_select_salle = renvoie_liste("salle");
@@ -483,7 +496,7 @@ echo '
 			<td>
 
 			<select name="periode_calendrier">
-				<option value="0">Année entière</option>
+				<option value="0">'.ENTIRE_YEAR.'</option>
 	';
 	// Choix de la période définie dans le calendrier
 	$req_calendrier = mysql_query("SELECT * FROM edt_calendrier WHERE etabferme_calendrier = '1' AND etabvacances_calendrier = '0'");
@@ -526,8 +539,8 @@ echo '
 		echo '		<input type="hidden" name="modifier_cours" value="ok" />';
 	}
 		echo '
-		<input type="submit" name="Enregistre" value="Enregistrer" />
-		<input type="submit" name="Enregistrer" value="Enregistrer et fermer" />
+		<input type="submit" name="Enregistre" value='.REGISTER.' />
+		
 
 			</td>
 

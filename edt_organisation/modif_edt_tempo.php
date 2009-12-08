@@ -58,8 +58,7 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 }
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
-$style_specifique = "edt_organisation/style_edt";
-
+$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 // On insère l'entête de Gepi
 require_once("../lib/header.inc");
 

@@ -26,7 +26,7 @@
 
 // Initialisations
 require_once("../lib/initialisations.inc.php");
-
+require_once("./choix_langue.php");
 // fonctions edt
 require_once("./fonctions_edt.php");
 
@@ -47,7 +47,7 @@ if (!checkAccess()) {
 }
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
 // Initialisation des variables
 $M_couleur = isset($_GET["var1"]) ? $_GET["var1"] : NULL;
@@ -74,23 +74,23 @@ if ($nouvelle_couleur == "non") {
 	echo '
 <td>'.htmlentities($aff_matiere_long).'</td>
 <td>'.$matiere.'</td>
-<td style="background-color: '.$couleur.';">
+<td class="cadreCouleur'.$couleur.'">
 	<form id="choixCouleur" method="get" action="">
 		<select id="selectColeur" name="couleur">
-			<option value="rien">Couleurs...</option>
-			<option value="blue" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'blue\');">Bleu</option>
-			<option value="fuchsia" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'fuchsia\');">Fushia</option>
-			<option value="lime" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'lime\');">Vert citron</option>
-			<option value="maroon" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'maroon\');">Brun</option>
-			<option value="purple" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'purple\');">Mauve</option>
-			<option value="red" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'red\');">Rouge</option>
-			<option value="white" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'white\');">Blanc</option>
-			<option value="yellow" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'yellow\');">Jaune</option>
-			<option value="aqua" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'aqua\');">Bleu clair</option>
-			<option value="grey" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'grey\');">Gris</option>
-			<option value="green" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'green\');">Vert</option>
-			<option value="olive" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'olive\');">Vert olive</option>
-			<option value="teal" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'teal\');">Turquoise</option>
+			<option value="rien"class="cadre" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'none\');">'.NO_COLOR.'</option>
+			<option value="blue" class="cadreCouleur1" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'1\');"></option>
+			<option value="fuchsia" class="cadreCouleur2" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'2\');"></option>
+			<option value="lime" class="cadreCouleur3" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'3\');"></option>
+			<option value="maroon" class="cadreCouleur4" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'4\');"></option>
+			<option value="purple" class="cadreCouleur5" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'5\');"></option>
+			<option value="red" class="cadreCouleur6" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'6\');"></option>
+			<option value="white" class="cadreCouleur7" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'7\');"></option>
+			<option value="yellow" class="cadreCouleur8" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'8\');"></option>
+			<option value="aqua" class="cadreCouleur9" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'9\');"></option>
+			<option value="grey" class="cadreCouleur10" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'10\');"></option>
+			<option value="green" class="cadreCouleur11" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'11\');"></option>
+			<option value="olive" class="cadreCouleur12" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'12\');"></option>
+			<option value="teal" class="cadreCouleur13" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'13\');"></option>
 		</select>
 	</form>
 </td>
@@ -103,7 +103,7 @@ if ($nouvelle_couleur == "non") {
 	if ($nbre_rep !== 0) {
 		$miseajour = mysql_query("UPDATE edt_setting SET valeur = '".$nouvelle_couleur."'
 													WHERE reglage = '".$M_couleur."'")
-												OR DIE ('Impossible de mettre à jour la table edt_setting');
+												OR DIE (IMPOSSIBLE_TO_UPDATE);
 	} else {
 		$create = mysql_query("INSERT INTO edt_setting (`id`, `reglage`, `valeur`)
 												VALUES ('', '$M_couleur', '$nouvelle_couleur')");
@@ -112,8 +112,8 @@ if ($nouvelle_couleur == "non") {
 	echo '
 <td>'.htmlentities($aff_matiere_long).'</td>
 <td>'.$matiere.'</td>
-<td style="background-color: '.$nouvelle_couleur.';">
-	<p onclick="couleursEdtAjax(\''.$M_couleur.'\', \'non\');">Modifier</p>
+<td class="cadreCouleur'.$nouvelle_couleur.'">
+	<p onclick="couleursEdtAjax(\''.$M_couleur.'\', \'non\');">'.MODIFY.'</p>
 </td>
 	';
 }

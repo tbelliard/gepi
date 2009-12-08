@@ -47,7 +47,7 @@ if (!checkAccess()) {
     die();
 }
 // ====== CSS particulier à l'EdT ================
-$style_specifique = "edt_organisation/style_edt";
+$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 // ====== Entête de Gepi =========================
 require_once("../lib/header.inc");
 // ===============================================

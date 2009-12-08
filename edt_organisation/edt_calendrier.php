@@ -52,11 +52,11 @@ if (!checkAccess()) {
 }
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
-$style_specifique = "edt_organisation/style_edt";
+$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 $utilisation_jsdivdrag = "";
 //==============PROTOTYPE===============
 $utilisation_prototype = "ok";
@@ -94,6 +94,8 @@ $etabferme = isset($_POST["etabferme"]) ? $_POST["etabferme"] : NULL;
 $vacances = isset($_POST["vacances"]) ? $_POST["vacances"] : NULL;
 $supprimer = isset($_GET["supprimer"]) ? $_GET["supprimer"] : NULL;
 $modifier = isset($_GET["modifier"]) ? $_GET["modifier"] : (isset($_POST["modifier"]) ? $_POST["modifier"] : NULL);
+$copier_edt = isset($_GET["copier_edt"]) ? $_GET["copier_edt"] : (isset($_POST["copier_edt"]) ? $_POST["copier_edt"] : NULL);
+$coller_edt = isset($_GET["coller_edt"]) ? $_GET["coller_edt"] : (isset($_POST["coller_edt"]) ? $_POST["coller_edt"] : NULL);
 $modif_ok = isset($_POST["modif_ok"]) ? $_POST["modif_ok"] : NULL;
 $message_new = NULL;
 
@@ -108,9 +110,84 @@ $date_jour = date("d/m/Y"); //jour/mois/année
 $heure_etab_deb = $req_heures["ouverture_horaire_etablissement"];
 $heure_etab_fin = $req_heures["fermeture_horaire_etablissement"];
 */
-/* On efface quand c'est demandé */
+/* ============================================ On efface quand c'est demandé ====================================== */
+
 if (isset($calendrier) AND isset($supprimer)) {
+
 	$req_supp = mysql_query("DELETE FROM edt_calendrier WHERE id_calendrier = '".$supprimer."'") or Die ('Suppression impossible !');
+    if ($supprimer != 0) {
+        $req_supp_cours = mysql_query("DELETE FROM edt_cours WHERE id_calendrier = '".$supprimer."'") or Die ('Suppression impossible !');
+    }
+
+}
+/* ============================================ On copie le contenu de l'edt ====================================== */
+
+if (isset($calendrier) AND isset($copier_edt)) {
+    $_SESSION['copier_periode_edt'] = $copier_edt;
+    $req_edt_periode = mysql_query("SELECT nom_calendrier FROM edt_calendrier WHERE id_calendrier ='".$copier_edt."'");
+    $rep_edt_periode = mysql_fetch_array($req_edt_periode);
+    $message = "Le contenu de la période \"".$rep_edt_periode['nom_calendrier']."\" est prêt à être dupliqué"; 
+}
+
+/* ============================================ On colle le contenu de l'edt dans la nouvelle période ====================================== */
+
+if (isset($calendrier) AND isset($coller_edt) AND isset($_SESSION['copier_periode_edt'])) {
+    if (PeriodExistsInDB($_SESSION['copier_periode_edt'])) {
+        if (PeriodExistsInDB($coller_edt)) {
+            if ($coller_edt != $_SESSION['copier_periode_edt']) {
+                $req_edt_periode = mysql_query("SELECT * FROM edt_cours WHERE 
+                                                            id_calendrier = '".$_SESSION['copier_periode_edt']."'
+                                                            ") or die(mysql_error());  
+                $i = 0;
+                while ($rep_edt_periode = mysql_fetch_array($req_edt_periode)) {
+                    $sql = "SELECT id_cours FROM edt_cours WHERE 
+                             id_groupe = '".$rep_edt_periode['id_groupe']."' AND
+					         id_salle = '".$rep_edt_periode['id_salle']."' AND
+					         jour_semaine = '".$rep_edt_periode['jour_semaine']."' AND
+					         id_definie_periode = '".$rep_edt_periode['id_definie_periode']."' AND
+					         duree = '".$rep_edt_periode['duree']."' AND
+					         heuredeb_dec = '".$rep_edt_periode['heuredeb_dec']."' AND
+					         id_semaine = '".$rep_edt_periode['id_semaine']."' AND
+					         id_calendrier = '".$coller_edt."' AND
+					         login_prof = '".$rep_edt_periode['login_prof']."'
+                            ";
+                    $verif_existence = mysql_query($sql) OR DIE('Erreur dans la vérification du cours : '.mysql_error());
+                    if (mysql_num_rows($verif_existence) == 0) {
+				        $nouveau_cours = mysql_query("INSERT INTO edt_cours SET 
+                             id_groupe = '".$rep_edt_periode['id_groupe']."',
+					         id_salle = '".$rep_edt_periode['id_salle']."',
+					         jour_semaine = '".$rep_edt_periode['jour_semaine']."',
+					         id_definie_periode = '".$rep_edt_periode['id_definie_periode']."',
+					         duree = '".$rep_edt_periode['duree']."',
+					         heuredeb_dec = '".$rep_edt_periode['heuredeb_dec']."',
+					         id_semaine = '".$rep_edt_periode['id_semaine']."',
+					         id_calendrier = '".$coller_edt."',
+					         login_prof = '".$rep_edt_periode['login_prof']."'")
+				        OR DIE('Erreur dans la création du cours : '.mysql_error());
+                        $i++;
+                    }
+                }
+                if ($i == 0) {
+                    $message = "la duplication a déjà été réalisée";
+                }
+                else {
+                    $message = "duplication réalisée. ".$i." cours ont été copiés avec succès";
+                }
+            }
+            else {
+                $message = "vous ne pouvez pas dupliquer une période sur elle-même"; 
+            } 
+        }
+        else {
+            $message = "la période cible n'existe pas";
+        }
+    }
+    else {
+        $message = "la période à dupliquer n'existe pas";
+    }
+}
+if (isset($message)) {
+    echo "<div class=\"cadreInformation\">".$message."</div>";
 }
 
 //+++++++++++ AIDE pour le calendrier ++++++++
@@ -456,6 +533,8 @@ echo '
 		<td>Cours<br />Vacances</td>
 		<td></td>
 		<td></td>
+		<td></td>
+		<td></td>
 	</tr>
 ';
 	// On affiche toutes les lignes déjà entrées
@@ -536,8 +615,11 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 		<!--<td>'.$rep_affcalendar[$i]["numero_periode"].'</td>-->
 		<td>'.$ouvert_ferme.'</td>
 		<td>'.$aff_cours.'</td>
-		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;modifier='.$rep_affcalendar[$i]["id_calendrier"].'"><img src="../images/icons/configure.png" title="Modifier" alt="Modifier" /></a></td>
-		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;supprimer='.$rep_affcalendar[$i]["id_calendrier"].'" onclick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../images/icons/delete.png" title="Supprimer" alt="Supprimer" /></a></td>
+		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;modifier='.$rep_affcalendar[$i]["id_calendrier"].'"><img src="../templates/'.NameTemplateEDT().'/images/clef.png" title="Modifier" alt="Modifier" /></a></td>
+		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;supprimer='.$rep_affcalendar[$i]["id_calendrier"].'" onclick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../templates/'.NameTemplateEDT().'/images/delete2.png" title="Supprimer" alt="Supprimer" /></a></td>
+		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;copier_edt='.$rep_affcalendar[$i]["id_calendrier"].'"><img src="../templates/'.NameTemplateEDT().'/images/copier.png" title="Copier" alt="Copier" /></a></td>
+		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;coller_edt='.$rep_affcalendar[$i]["id_calendrier"].'" onclick="return confirm(\'Confirmez-vous le collage ?\')"><img src="../templates/'.NameTemplateEDT().'/images/coller.png" title="Coller" alt="Coller" /></a></td>
+
 	</tr>
 		';
 	}

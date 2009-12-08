@@ -31,6 +31,12 @@ $analyse = explode("/", $serveur_script);
 		die();
 	}
 
+// ========================= Récupérer le bon fichier de langue
+
+require_once('./choix_langue.php');
+
+
+require_once('./fonctions_calendrier.php');
 //===========================INITIALISATION DES VARIABLES=======
 
 // Pour éviter d'avoir un décalage dans les infobulles
@@ -87,47 +93,71 @@ function statutAutreSetting(){
 		return 'oui';
 	}
 }
+
+
+
 ?>
 <!-- On affiche le menu edt -->
 
 	<div id="agauche">
 
 <?php
-if (getSettingValue("use_only_cdt") == 'y' AND $_SESSION["statut"] == 'professeur'){}else{ ?>
-  		<span class="refus"><?php echo ('Semaine n° '.date("W")); ?></span>
+
+if (getSettingValue("use_only_cdt") != 'y' OR $_SESSION["statut"] != 'professeur') 
+{ ?>
+        <div class="dates_header"></div>
+        <div class="dates">
+  		<p>
+		<?php echo (WEEK_NUMBER.date("W")); ?>
+		</p>
+
+        <p class="dates_text">
+        <?php AfficheDatesDebutFinSemaine() ?>
+		</p>
+
+		<p>
+		<?php AffichePeriode(time()); ?>
+		</p>
+
+		<p>
+		<?php 
+			$semActu = typeSemaineActu();
+			if ($semActu != NULL) {
+				echo "Semaine ".typeSemaineActu();
+			}
+		?>
+		</p>
+        </div>
 
 		<dl id="menu_edt">
-			<dd>
-<br />
-			</dd>
 
-		<dt<?php echo menuEdtJs("1"); ?>>Visionner</dt>
+		<dt<?php echo menuEdtJs("1"); ?>><?php echo VIEWS ?></dt>
 
-			<dd id="sEdTmenu1"<?php echo displaydd("1"); ?>>
+			<dd id="sEdTmenu1" <?php echo displaydd("1"); ?>>	<!-- Régis -->
 				<ul>
 					<?php if (statutAutreSetting() == 'oui') {
 						echo '
-					<li><a href="index_edt.php?visioedt=prof1">Professeur</a></li>';
+					<li><a href="index_edt.php?visioedt=prof1">'.TEACHERS.'</a></li>';
 					}?>
-					<li><a href="index_edt.php?visioedt=classe1">Classe</a></li>
+					<li><a href="index_edt.php?visioedt=classe1"><?php echo CLASSES ?></a></li>
 					<?php if (statutAutreSetting() == 'oui') {
 						echo '
-					<li><a href="index_edt.php?visioedt=salle1">Salle</a></li>';
+					<li><a href="index_edt.php?visioedt=salle1">'.CLASSROOMS.'</a></li>';
 					}?>
-					<li><a href="index_edt.php?visioedt=eleve1">El&egrave;ve</a></li>
+					<li><a href="index_edt.php?visioedt=eleve1"><?php echo STUDENTS ?></a></li>
 				</ul>
 			</dd>
-<?php /*
+<?php /* 
 if ($_SESSION['statut'] == "administrateur") {
 echo '
-		<dt'.menuEdtJs("2").'>Modifier</dt>
+		<dt'.menuEdtJs("2").'>'.MODIFY.'</dt>
 
 			<dd id="sEdTmenu2"'.displaydd("2").'>
 				<ul>
 					<li><a href="modif_edt_tempo.php">temporairement</a></li>
 				</ul>
 			</dd>';
-}*/
+} */
 
 	// La fonction chercher_salle est paramétrable
 $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
@@ -142,11 +172,11 @@ $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 	// En fonction du résultat, on propose l'affichage ou non
 	if ($aff_ok == "oui" OR $_SESSION["statut"] == $aff_ok) {
 		echo '
-		<dt'.menuEdtJs("3").'>Chercher</dt>
+		<dt'.menuEdtJs("3").'>'.LOOKFOR.'</dt>
 
-			<dd id="sEdTmenu3"'.displaydd("3").'>
+			<dd id="sEdTmenu3" '.displaydd("3").'>
 				<ul>
-					<li><a href="index_edt.php?salleslibres=ok">Salles libres</a></li>
+					<li><a href="index_edt.php?salleslibres=ok">'.FREE_CLASSROOMS.'</a></li>
 				</ul>
 			</dd>
 			';
@@ -154,31 +184,31 @@ $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 
 if ($_SESSION['statut'] == "administrateur") {
 	echo '
-		<dt'.menuEdtJs("4").'>Admin</dt>
+		<dt'.menuEdtJs("4").'>'.ADMINISTRATOR.'</dt>
 
-			<dd id="sEdTmenu4"'.displaydd("4").'>
+			<dd id="sEdTmenu4" '.displaydd("4").'>
 				<ul>
-					<li style="font-size: 0.9em;"><a href="voir_groupe.php">Les enseignements</a></li>';
+					<li style="font-size: 0.9em;"><a href="voir_groupe.php">'.LESSONS.'</a></li>';
 
 if (getSettingValue("mod_edt_gr") == "y") {
 	echo '
-	<li><a href="../edt_gestion_gr/edt_aff_gr.php">Les groupes</a></li>';
+	<li><a href="../edt_gestion_gr/edt_aff_gr.php">'.GROUPS.'</a></li>';
 }
 
 	echo '
-					<li><a href="ajouter_salle.php">Les Salles</a></li>
-					<li><a href="edt_initialiser.php">Initialiser</a></li>
-					<li><a href="edt_parametrer.php">Paramétrer</a></li>
-					<li><a href="edt_param_couleurs.php">Couleurs</a></li>
+					<li><a href="ajouter_salle.php">'.CLASSROOMS.'</a></li>
+					<li><a href="edt_initialiser.php">'.INITIALIZE.'</a></li>
+					<li><a href="edt_parametrer.php">'.PARAMETER.'</a></li>
+					<li><a href="edt_param_couleurs.php">'.COLORS.'</a></li>
 				</ul>
 			</dd>
 
-		<dt'.menuEdtJs("5").'>Calendrier</dt>
+		<dt'.menuEdtJs("5").'>'.CALENDAR.'</dt>
 
-			<dd id="sEdTmenu5"'.displaydd("5").'>
+			<dd id="sEdTmenu5" '.displaydd("5").'>
 				<ul>
-					<li><a href="edt_calendrier.php">Périodes</a></li>
-					<li><a href="../mod_absences/admin/admin_config_semaines.php?action=visualiser">Semaines</a></li>
+					<li><a href="edt_calendrier.php">'.PERIODS.'</a></li>
+					<li><a href="../mod_absences/admin/admin_config_semaines.php?action=visualiser">'.WEEKS.'</a></li>
 				</ul>
 			</dd>
 		';
@@ -189,4 +219,5 @@ if (getSettingValue("mod_edt_gr") == "y") {
 <?php
 }
 ?>
+
 	</div>

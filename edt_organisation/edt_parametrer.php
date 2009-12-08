@@ -23,8 +23,9 @@
  */
 
 // Fichier utilisé par l'administrateur pour paramétrer l'EdT de Gepi
+require_once("./choix_langue.php");
 
-$titre_page = "Emploi du temps - Paramètres";
+$titre_page = TITLE_EDT_PARAMETRER;
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 
@@ -48,11 +49,11 @@ if (!checkAccess()) {
 }
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
-$style_specifique = "edt_organisation/style_edt";
+$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 //=========Utilisation de prototype et des js de base ===========
 $utilisation_prototype = "";
 $utilisation_jsbase = "";
@@ -169,13 +170,13 @@ if (isset($aff_message)) {
 <tr><td>
 
 <fieldset id="matiere">
-	<legend>Les matières</legend>
+	<legend><?php echo FIELDS_PARAM ?></legend>
 		<p>
 			<input type="radio" id="edtMatiereCourt" name="edt_aff_matiere" value="court" <?php echo (aff_checked("edt_aff_matiere", "court")); ?>/>
-			<label for="edtMatiereCourt">Noms courts (du type HG,...).</label>
+			<label for="edtMatiereCourt"><?php echo FIELDS_PARAM_BUTTON1 ?></label>
 <br />
 			<input type="radio" id="edtMatiereLong" name="edt_aff_matiere" value="long" <?php echo (aff_checked("edt_aff_matiere", "long")); ?>/>
-			<label for="edtMatiereLong">Noms longs (Histoire Géographie,...).</label>
+			<label for="edtMatiereLong"><?php echo FIELDS_PARAM_BUTTON2 ?></label>
 
 		</p>
 </fieldset>

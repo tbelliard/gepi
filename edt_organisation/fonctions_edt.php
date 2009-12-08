@@ -24,6 +24,931 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// =============================================================================
+//
+//                                  PROTOS
+//
+// void     function AfficheBarCommutateurPeriodes($login_edt, $visioedt, $type_edt_2)
+// array    function EtudeDeCasTroisCours($tab_cours) 
+// void     function AfficherEDT($tab_data, $type_edt, $login_edt, $period)
+// array    function ConstruireEnteteEDT() 
+// array    function ConstruireCreneauxEDT() 
+// void     function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_creneaux, $id_groupe, $id_cours, $taille_box, $couleur, $contenu)
+// string   function NameTemplateEDT()
+// void     function AfficheImprimante($display_print)
+// void     function AfficheIconePlusNew($type_edt,$heuredeb_dec,$login_edt,$jour_sem,$id_creneaux, $period)
+// void     function AfficheIconePlusAdd($type_edt,$heuredeb_dec,$login_edt,$jour_sem,$id_creneaux, $period)
+// void     function AfficheModifierIcone($type_edt,$login_edt,$id_cours, $period)
+// void     function AfficheEffacerIcone($type_edt,$login_edt,$id_cours, $period)
+// string   function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement)
+
+
+// ======================================================
+//
+//
+//
+// ======================================================
+function EtudeDeCasTroisCours($tab_cours) 
+{
+    // ====================== travail préparatoire
+    $tab_cas['indice'] = 0;
+
+    $duree1 = $tab_cours['duree'][0];
+    $heuredeb_dec1 = $tab_cours['heuredeb_dec'][0];
+    $id_semaine1 = $tab_cours['id_semaine'][0];
+    
+    $duree2 = $tab_cours['duree'][1];
+    $heuredeb_dec2 = $tab_cours['heuredeb_dec'][1];
+    $id_semaine2 = $tab_cours['id_semaine'][1];
+    
+    $duree3 = $tab_cours['duree'][2];
+    $heuredeb_dec3 = $tab_cours['heuredeb_dec'][2];
+    $id_semaine3 = $tab_cours['id_semaine'][2];
+
+    $somme_heures = $heuredeb_dec1 + $heuredeb_dec2 + $heuredeb_dec3;
+    $somme_durees = 0;
+
+    if (($heuredeb_dec1 == 0.5) AND ($duree1 > 1)) {
+        $duree1 = 1;
+    }
+    if (($heuredeb_dec2 == 0.5) AND ($duree2 > 1)) {
+        $duree2 = 1;
+    }
+    if (($heuredeb_dec3 == 0.5) AND ($duree3 > 1)) {
+        $duree3 = 1;
+    }
+    if ($duree1 == 1) {
+        $somme_durees += 1;
+    } 
+    else {
+        $somme_durees += 2;
+    }   
+
+    if ($duree2 == 1) {
+        $somme_durees += 1;
+    } 
+    else {
+        $somme_durees += 2;
+    }   
+
+    if ($duree3 == 1) {
+        $somme_durees += 1;
+    } 
+    else {
+        $somme_durees += 2;
+    }  
+    // ======================== Etudes des cas
+    if ($somme_heures == 0) {
+        if ($somme_durees == 3) {
+            $tab_cas['cas_detecte'] = 26;
+        } 
+        else if ($somme_durees == 4) {
+            $tab_cas['cas_detecte'] = 30;
+        }
+        else if ($somme_durees == 5) {
+            $tab_cas['cas_detecte'] = 29;
+        }
+        else if ($somme_durees == 6) {
+            $tab_cas['cas_detecte'] = 22;
+        }  
+        else {
+            $tab_cas['cas_detecte'] = "erreur 1";
+        } 
+    }  
+    else if ($somme_heures == 0.5) {
+        if ($somme_durees == 5) {
+            $tab_cas['cas_detecte'] = 23;
+        } 
+        else if ($somme_durees == 4) {
+            $tab_cas['cas_detecte'] = 21;
+        } 
+        else if ($somme_durees == 3) {
+            if ($heuredeb_dec1 == 0.5) {
+                if ($id_semaine1 == "0") {
+                    $tab_cas['cas_detecte'] = 18;
+                    $tab_cas['indice'] = 0;
+                }
+                else if (($id_semaine1 == $id_semaine2) OR ($id_semaine1 == $id_semaine3)){
+                    $tab_cas['cas_detecte'] = 20;
+                    $tab_cas['indice'] = 0;
+                }
+                else {
+                    $tab_cas['cas_detecte'] = 27;
+                    $tab_cas['indice'] = 0;
+                }
+            } 
+            else if ($heuredeb_dec2 == 0.5) {
+                if ($id_semaine2 == "0") {
+                    $tab_cas['cas_detecte'] = 18;
+                    $tab_cas['indice'] = 1;
+                }
+                else if (($id_semaine2 == $id_semaine1) OR ($id_semaine2 == $id_semaine3)){
+                    $tab_cas['cas_detecte'] = 20;
+                    $tab_cas['indice'] = 1;
+                }
+                else {
+                    $tab_cas['cas_detecte'] = 27;
+                    $tab_cas['indice'] = 1;
+                }
+            }
+            else if ($heuredeb_dec3 == 0.5) {
+                if ($id_semaine3 == "0") {
+                    $tab_cas['cas_detecte'] = 18;
+                    $tab_cas['indice'] = 2;
+                }
+                else if (($id_semaine3 == $id_semaine1) OR ($id_semaine3 == $id_semaine2)){
+                    $tab_cas['cas_detecte'] = 20;
+                    $tab_cas['indice'] = 2;
+                }
+                else {
+                    $tab_cas['cas_detecte'] = 27;
+                    $tab_cas['indice'] = 2;
+                }
+            }
+            else {
+                $tab_cas['cas_detecte'] = "erreur 2";
+            }
+        } 
+        else {
+            $tab_cas['cas_detecte'] = "erreur 3";
+        }
+    }  
+    else if ($somme_heures == 1) {
+        if ($somme_durees == 4) {
+            $tab_cas['cas_detecte'] = 24;
+        } 
+        else if ($somme_durees == 3) {
+            if ($heuredeb_dec1 == 0) {
+                if ($id_semaine1 == "0") {
+                    $tab_cas['cas_detecte'] = 17;
+                    $tab_cas['indice'] = 0;
+                }
+                else if (($id_semaine1 == $id_semaine2) OR ($id_semaine1 == $id_semaine3)){
+                    $tab_cas['cas_detecte'] = 19;
+                    $tab_cas['indice'] = 0;
+                }
+                else {
+                    $tab_cas['cas_detecte'] = 28;
+                    $tab_cas['indice'] = 0;
+                }
+            } 
+            else if ($heuredeb_dec2 == 0) {
+                if ($id_semaine2 == "0") {
+                    $tab_cas['cas_detecte'] = 17;
+                    $tab_cas['indice'] = 1;
+                }
+                else if (($id_semaine2 == $id_semaine1) OR ($id_semaine2 == $id_semaine3)){
+                    $tab_cas['cas_detecte'] = 19;
+                    $tab_cas['indice'] = 1;
+                }
+                else {
+                    $tab_cas['cas_detecte'] = 28;
+                    $tab_cas['indice'] = 1;
+                }
+            }
+            else if ($heuredeb_dec3 == 0) {
+                if ($id_semaine3 == "0") {
+                    $tab_cas['cas_detecte'] = 17;
+                    $tab_cas['indice'] = 2;
+                }
+                else if (($id_semaine3 == $id_semaine1) OR ($id_semaine3 == $id_semaine2)){
+                    $tab_cas['cas_detecte'] = 19;
+                    $tab_cas['indice'] = 2;
+                }
+                else {
+                    $tab_cas['cas_detecte'] = 28;
+                    $tab_cas['indice'] = 2;
+                }
+            }
+            else {
+                $tab_cas['cas_detecte'] = "erreur 4";
+            }
+        } 
+        else {
+            $tab_cas['cas_detecte'] = "erreur 5";
+        }
+    } 
+    else if ($somme_heures == 1.5) {
+        $tab_cas['cas_detecte'] = 25;
+    } 
+    else {
+        $tab_cas['cas_detecte'] = "erreur 6";
+    } 
+    return $tab_cas;
+}
+// =============================================================================
+//
+//                  Permet d'afficher un emploi du temps 
+//
+// =============================================================================
+function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $period) 
+{
+
+    echo ("<div id=\"fenetre\">\n");
+
+    echo("<div class=\"contenu\">
+
+		<div id=\"coingh\"></div>
+        <div id=\"coindh\"></div>
+        <div id=\"partiecentralehaut\"></div>
+        <div id=\"droite\"></div>
+        <div id=\"gauche\"></div>
+		<div id=\"coingb\"></div>
+		<div id=\"coindb\"></div>
+		<div id=\"partiecentralebas\"></div>
+
+        <div class=\"tableau\">\n");
+
+// ===== affichage de l'entête
+
+    $i = 0;
+    while(isset($entetes['entete'][$i])) {
+        echo("<div class=\"entete\"><div class=\"cadre\"><strong>".$entetes['entete'][$i]."</strong></div></div>\n");
+        $i++;
+    }
+    echo("<div class=\"spacer\"></div>\n");
+
+
+// ===== affichage des colonnes
+    $jour = 0;
+    $isIconeAddUsable = true;
+    while (isset($entetes['entete'][$jour])) {
+
+        echo("<div class=\"colonne".$creneaux['nb_creneaux']."\">\n");
+        $jour_sem = $entetes['entete'][$jour];
+        $index_box = 0;
+        while (isset($tab_data[$jour]['type'][$index_box]))
+        {
+            if ($tab_data[$jour]['type'][$index_box] == "vide") {
+                
+                echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\"><div class=\"cadre\">\n");
+                echo ("<div class=\"ButtonBar\">");
+                AfficheIconePlusNew($type_edt,$tab_data[$jour]['heuredeb_dec'][$index_box],$login_edt,$jour_sem,$tab_data[$jour]['id_creneau'][$index_box], $period);
+                echo ("</div>\n");
+                echo ("</div></div>\n");  
+ 
+            }
+            else if ($tab_data[$jour]['type'][$index_box] == "erreur")
+            {
+    
+                echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\"><div class=\"cadreRouge\">\n");
+                echo $tab_data[$jour]['contenu'][$index_box];
+                echo ("<div class=\"ButtonBar\">");
+                echo ("</div>\n");
+                echo ("</div></div>\n");  
+    
+            }
+            else if ($tab_data[$jour]['type'][$index_box] == "conteneur")
+            {
+                echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\">\n");
+                $isIconeAddUsable = false;
+        
+            }
+            else if ($tab_data[$jour]['type'][$index_box] == "cours")
+            {
+                echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\"><div class=\"".$tab_data[$jour]['couleur'][$index_box]."\">");
+                echo $tab_data[$jour]['contenu'][$index_box];
+                echo ("<div class=\"ButtonBar\">");
+                AfficheEffacerIcone($type_edt,$login_edt,$tab_data[$jour]['id_cours'][$index_box], $period);
+                AfficheModifierIcone($type_edt,$login_edt,$tab_data[$jour]['id_cours'][$index_box], $period);
+                if ($isIconeAddUsable)
+                {
+                    AfficheIconePlusAdd($type_edt,0,$login_edt,$jour_sem,$tab_data[$jour]['id_creneau'][$index_box], $period);
+                }
+                echo ("</div>\n");
+                echo ("</div></div>\n");   
+   
+            }
+            else if ($tab_data[$jour]['type'][$index_box] == "fin_conteneur")
+            {
+                echo("</div>\n");
+                $isIconeAddUsable = true;
+            }
+            else 
+            {
+                // ========= type de box non implémentée
+    
+            }
+
+
+            $index_box++;
+        }
+
+        echo("</div>\n");
+        $jour++;
+    }
+
+// ===== affichage de la colonne créneaux
+
+    echo ("<div class=\"creneaux".$creneaux['nb_creneaux']."\">\n");
+
+    for ($i = 0; $i < $creneaux['nb_creneaux']; $i++)
+    {
+        echo("<div class=\"horaires\"><div class=\"cadre\"><strong>".$creneaux['creneaux'][$i]."</strong></div></div>\n");
+    }
+
+    echo("</div></div><div class=\"spacer\"></div></div></div>");
+
+}
+
+// =============================================================================
+//
+//                  
+//
+// =============================================================================
+function ConstruireEnteteEDT() 
+{
+    $table_data = array();
+
+    $req_jours = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(mysql_error());
+    $jour_sem_tab = array();
+    while($data_sem_tab = mysql_fetch_array($req_jours)) {
+	    $jour_sem_tab[] = $data_sem_tab["jour_horaire_etablissement"];
+        $tab_data['entete'][] = $data_sem_tab["jour_horaire_etablissement"];
+    }
+    return $tab_data;
+}
+// =============================================================================
+//
+//                  
+//
+// =============================================================================
+function ConstruireCreneauxEDT() 
+{
+    $table_data = array();
+    $req_id_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux
+							    WHERE type_creneaux != 'pause'") or die(mysql_error());
+    $nbre_lignes = mysql_num_rows($req_id_creneaux);
+    if ($nbre_lignes == 0) {
+        $nbre_lignes = 1;
+    }
+    if ($nbre_lignes > 12) {
+        $nbre_lignes = 12;
+    }
+    $tab_data['nb_creneaux'] = $nbre_lignes;
+
+    $reglages_creneaux = GetSettingEdt("edt_aff_creneaux");
+    //Cas où le nom des créneaux sont inscrits à gauche
+    if ($reglages_creneaux == "noms") {
+	    $tab_creneaux = retourne_creneaux();
+	    $i=0;
+	    while($i<count($tab_creneaux)){
+		    $tab_id_creneaux = retourne_id_creneaux();
+		    $c=0;
+		    while($c<count($tab_id_creneaux)){
+                $tab_data['creneaux'][$i] = $tab_creneaux[$i];
+			    $i ++;
+			    $c ++;
+		    }
+	    }
+    }
+    
+    // Cas où les heures sont inscrites à gauche au lieu du nom des créneaux
+    elseif ($reglages_creneaux == "heures") {
+	    $tab_horaire = retourne_horaire();
+	    for($i=0; $i<count($tab_horaire); ) {
+    
+	    $tab_id_creneaux = retourne_id_creneaux();
+		    $c=0;
+		    while($c<count($tab_id_creneaux)){
+                $tab_data['creneaux'][$i] = $tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"];
+			    $i++;
+			    $c ++;
+		    }
+	    }
+    }
+    return $tab_data;
+}
+
+// =============================================================================
+//
+// =============================================================================
+function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_creneaux, $id_groupe, $id_cours, $taille_box, $couleur, $contenu)
+{
+    $tab_data_jour['type'][$index_box] = $type;
+    $tab_data_jour['duree'][$index_box] = $taille_box;
+    $tab_data_jour['contenu'][$index_box] = $contenu;
+    $tab_data_jour['couleur'][$index_box] = $couleur;
+    $tab_data_jour['id_creneau'][$index_box] = $id_creneaux;
+    $tab_data_jour['id_cours'][$index_box] = $id_cours;
+    $tab_data_jour['id_groupe'][$index_box] = $id_groupe;
+    if ($elapse_time%2 == 0)
+    {
+        $tab_data_jour['heuredeb_dec'][$index_box] = 0;
+    }
+    else
+    {
+        $tab_data_jour['heuredeb_dec'][$index_box] = 1;
+    }
+    $index_box++;
+}
+
+
+// =============================================================================
+//
+//     	Récupère le nom du dossier gepi/templates/... utilisé     
+//
+// =============================================================================
+function NameTemplateEDT()
+{
+    return "DefaultEDT";
+}
+// ======================================================
+//
+//      Lorsqu'on est en mode "emploi du temps"
+//      permet de passer d'une période à l'autre
+//      fonction associée à gepi/edt_organisation/index_edt.php
+//
+// ======================================================
+function AfficheBarCommutateurPeriodes($login_edt, $visioedt, $type_edt_2)
+{
+    if (isset($_SESSION['period_id'])) {
+        $period_next = ReturnNextIdPeriod($_SESSION['period_id']);
+        $period_previous = ReturnPreviousIdPeriod($_SESSION['period_id']);
+    }
+    else {
+        $period_next = ReturnNextIdPeriod(ReturnIdPeriod(date("U")));
+        $period_previous = ReturnPreviousIdPeriod(ReturnIdPeriod(date("U")));
+
+    }
+    echo ("<div id=\"ButtonBarArrows\">");
+
+    echo "<ul class=\"ButtonBarArrowLeft\">";
+    echo "<li class=\"ButtonBarArrowLeft1\">";
+    echo ("<a href=\"./index_edt.php?period_id=".$period_previous."&amp;visioedt=".$visioedt."&amp;login_edt=".$login_edt."&amp;type_edt_2=".$type_edt_2."\"></a>");
+    echo "</li>";
+    echo "</ul>";
+
+
+    $req_periode = mysql_query("SELECT * FROM edt_calendrier WHERE id_calendrier='".$_SESSION['period_id']."'");
+    $rep_periode = mysql_fetch_array($req_periode);
+
+    echo "<ul class=\"Period\">";
+    echo "Période visualisée : ".$rep_periode['nom_calendrier'];
+    echo "</ul>";
+
+
+    echo "<ul class=\"ButtonBarArrowRight\">";
+    echo "<li class=\"ButtonBarArrowRight1\">";
+    echo ("<a href=\"./index_edt.php?period_id=".$period_next."&amp;visioedt=".$visioedt."&amp;login_edt=".$login_edt."&amp;type_edt_2=".$type_edt_2."\"></a>");
+    echo "</li>";
+    echo "</ul>";
+
+
+    echo ("</div>");
+    echo "<div class=\"spacer\"></div>";
+}
+
+// ======================================================
+//
+//      Lorsqu'on est en mode "emploi du temps"
+//      permet de passer d'une période à l'autre
+//      fonction associée à gepi/edt_organisation/edt_eleve.php
+//
+// ======================================================
+function AfficheBarCommutateurPeriodesEleve()
+{
+    if (isset($_SESSION['period_id'])) {
+        $period_next = ReturnNextIdPeriod($_SESSION['period_id']);
+        $period_previous = ReturnPreviousIdPeriod($_SESSION['period_id']);
+    }
+    else {
+        $period_next = ReturnNextIdPeriod(ReturnIdPeriod(date("U")));
+        $period_previous = ReturnPreviousIdPeriod(ReturnIdPeriod(date("U")));
+
+    }
+    echo ("<div id=\"ButtonBarArrows\">");
+
+    echo "<ul class=\"ButtonBarArrowLeft\">";
+    echo "<li class=\"ButtonBarArrowLeft1\">";
+    echo ("<a href=\"./edt_eleve.php?period_id=".$period_previous."\"></a>");
+    echo "</li>";
+    echo "</ul>";
+
+
+    $req_periode = mysql_query("SELECT * FROM edt_calendrier WHERE id_calendrier='".$_SESSION['period_id']."'");
+    $rep_periode = mysql_fetch_array($req_periode);
+
+    echo "<ul class=\"Period\">";
+    echo "Période visualisée : ".$rep_periode['nom_calendrier'];
+    echo "</ul>";
+
+
+    echo "<ul class=\"ButtonBarArrowRight\">";
+    echo "<li class=\"ButtonBarArrowRight1\">";
+    echo ("<a href=\"./edt_eleve.php?period_id=".$period_next."\"></a>");
+    echo "</li>";
+    echo "</ul>";
+
+
+    echo ("</div>");
+    echo "<div class=\"spacer\"></div>";
+}
+// =============================================================================
+//
+//          Affiche une petite imprimante
+//
+// =============================================================================
+function AfficheImprimante($display_print)
+{
+
+    if ($display_print) {
+
+        echo "<ul id=\"ButtonBarPrint\">";
+        echo "<li id=\"ButtonBarPrint1\">";
+	    echo "<a href='javascript:window.print()'></a>";
+        echo "</li>";
+        echo "</ul>";
+
+    }
+}
+
+// =============================================================================
+//
+//          Affiche la bascule
+//
+// =============================================================================
+function AfficheBascule($display_commutator, $login_edt, $visioedt, $type_edt_2)
+{
+
+    if ($display_commutator) {
+        if (!isset($_SESSION['bascule_edt'])) {
+            echo "<div class=\"ButtonBarCommutator\">";
+            echo "<a href=\"./index_edt.php?bascule_edt=semaine&amp;visioedt=".$visioedt."&amp;login_edt=".$login_edt."&amp;type_edt_2=".$type_edt_2."\"><img src=\"../templates/".NameTemplateEDT()."/images/bascule_periode2.png\" title=\"Bascule vers emploi du temps semaine\" alt=\"Bascule vers emploi du temps semaine\" /></a>";
+            echo "</div>";
+        }
+        else if ($_SESSION['bascule_edt'] == 'periode') {
+            echo "<div class=\"ButtonBarCommutator\">";
+            echo "<a href=\"./index_edt.php?bascule_edt=semaine&amp;visioedt=".$visioedt."&amp;login_edt=".$login_edt."&amp;type_edt_2=".$type_edt_2."\"><img src=\"../templates/".NameTemplateEDT()."/images/bascule_periode2.png\" title=\"Bascule vers emploi du temps semaine\" alt=\"Bascule vers emploi du temps semaine\" /></a>";
+            echo "</div>";
+        }
+        else if ($_SESSION['bascule_edt'] == 'semaine') {
+            echo "<div class=\"ButtonBarCommutator\">";
+            echo "<a href=\"./index_edt.php?bascule_edt=periode&amp;visioedt=".$visioedt."&amp;login_edt=".$login_edt."&amp;type_edt_2=".$type_edt_2."\"><img src=\"../templates/".NameTemplateEDT()."/images/bascule_semaine2.png\" title=\"Bascule vers emploi du temps periode\" alt=\"Bascule vers emploi du temps periode\" /></a>";
+            echo "</div>";
+        }
+    }
+}
+
+// =============================================================================
+//
+//          Affiche un "+" pour créer un nouveau cours sur un créneau vide
+//
+// =============================================================================
+function AfficheIconePlusNew($type_edt,$heuredeb_dec,$login_edt,$jour_sem,$id_creneaux, $period)
+{
+
+    // On envoie le lien si et seulement si c'est un administrateur ou un scolarite ou si l'admin a donné le droit aux professeurs
+    if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite" OR ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND strtolower($login_edt) == strtolower($_SESSION["login"]))) AND $type_edt == "prof") {
+        $deb = "milieu";
+        if ($heuredeb_dec == 0) 
+        {
+            $deb = "debut";
+        }
+        echo ("<span class=\"image\">");
+	    echo "<a href='javascript:centrerpopup(\"modifier_cours_popup.php?period_id=".$period."&amp;cours=aucun&amp;identite=".$login_edt."&amp;horaire=".$jour_sem."|".$id_creneaux."|".$deb."\",700,205,\"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no\")'>
+        <img src=\"../templates/".NameTemplateEDT()."/images/ico_plus2.png\" title=\"Cr&eacute;er un cours\" alt=\"Cr&eacute;er un cours\" /></a>";
+        echo ("</span>\n");
+    }
+}
+
+// =============================================================================
+//
+//              Affiche un "+" pour ajouter un cours sur un créneau contenant déjà quelque chose
+//
+// =============================================================================
+function AfficheIconePlusAdd($type_edt,$heuredeb_dec,$login_edt,$jour_sem,$id_creneaux, $period)
+{
+
+    // On envoie le lien si et seulement si c'est un administrateur ou un scolarite ou si l'admin a donné le droit aux professeurs
+    if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite" OR ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND strtolower($login_edt) == strtolower($_SESSION["login"]))) AND $type_edt == "prof") {
+        $deb = "milieu";
+        if ($heuredeb_dec == 0) 
+        {
+            $deb = "debut";
+        }
+        echo ("<span class=\"image\">");
+	    echo "<a href='javascript:centrerpopup(\"modifier_cours_popup.php?period_id=".$period."&amp;cours=aucun&amp;identite=".$login_edt."&amp;horaire=".$jour_sem."|".$id_creneaux."|".$deb."\",700,205,\"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no\")'>
+        <img src=\"../templates/".NameTemplateEDT()."/images/ico_plus2.png\" title=\"Ajouter un cours\" alt=\"Ajouter un cours\" /></a>";
+        echo ("</span>\n");
+    }
+}
+// =============================================================================
+//
+//          Affiche un petit crayon pour éditer le cours
+//
+// =============================================================================
+function AfficheModifierIcone($type_edt,$login_edt,$id_cours, $period)
+{
+
+    // On envoie le lien si et seulement si c'est un administrateur ou un scolarite ou si l'admin a donné le droit aux professeurs
+    if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite" OR ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND strtolower($login_edt) == strtolower($_SESSION["login"]))) AND $type_edt == "prof") {
+        echo ("<span class=\"image\">");
+	    echo "<a href='javascript:centrerpopup(\"modifier_cours_popup.php?period_id=".$period."&amp;id_cours=".$id_cours."&amp;type_edt=".$type_edt."&amp;identite=".$login_edt."\",700,205,\"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no\")'>
+        <img src=\"../templates/".NameTemplateEDT()."/images/edit16.png\" title=\"Modifier\" alt=\"Modifier\" /></a>";
+        echo ("</span>\n");
+    }
+}
+
+
+// =============================================================================
+//
+//          Affiche un "X" pour supprimer le cours
+//
+// =============================================================================
+function AfficheEffacerIcone($type_edt,$login_edt,$id_cours, $period)
+{
+
+    // On envoie le lien si et seulement si c'est un administrateur ou un scolarite ou si l'admin a donné le droit aux professeurs
+    if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite" OR ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND strtolower($login_edt) == strtolower($_SESSION["login"]))) AND $type_edt == "prof") {
+        echo ("<span class=\"image\">");
+	    //echo "<a href=\"./index_edt.php?visioedt=prof1&amp;login_edt=".$login_edt."&amp;type_edt_2=prof&amp;supprimer_cours=".$id_cours."&amp;type_edt=".$type_edt."&amp;identite=".$login_edt."\"onclick=\"return confirm('Confirmez-vous cette suppression ?')\")'>
+        echo "<a href='javascript:centrerpopup(\"effacer_cours.php?period_id=".$period."&amp;supprimer_cours=".$id_cours."&amp;type_edt=".$type_edt."&amp;identite=".$login_edt."\",600,55,\"scrollbars=0,statusbar=0,resizable=0,menubar=no,toolbar=no,status=no\")'>        
+        <img src=\"../templates/".NameTemplateEDT()."/images/delete2.png\" title=\"Supprimer\" alt=\"Supprimer\" /></a>";
+        echo ("</span>\n");
+    }
+}
+
+// =============================================================================
+//
+//          fonction de Julien Jocal reprise et adaptée
+//
+// =============================================================================
+function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $id_semaine, $period)
+{
+    if (($period != NULL) AND ($period != '0')) {
+        $calendrier = "(id_calendrier = '".$period."' OR id_calendrier = '0')";
+    }
+    else {
+        $calendrier = "1=1";
+    }
+    if ($id_semaine == "") {
+	    // On récupère l'id
+	    $req_recup_id = mysql_fetch_array(mysql_query("SELECT id_cours, login_prof FROM edt_cours WHERE
+										    id_groupe = '".$enseignement."' AND
+										    jour_semaine = '".$jour_semaine."' AND
+										    id_definie_periode = '".$id_creneaux."' AND
+                                            $calendrier
+                                            "));
+
+	}
+    else {
+	    // On récupère l'id
+	    $req_recup_id = mysql_fetch_array(mysql_query("SELECT id_cours, login_prof FROM edt_cours WHERE
+										    id_groupe = '".$enseignement."' AND
+										    jour_semaine = '".$jour_semaine."' AND
+                                            id_semaine = '".$id_semaine."' AND
+										    id_definie_periode = '".$id_creneaux."'AND
+                                            $calendrier
+                                            "));
+
+
+	}
+	// On vérifie si $enseignement est ou pas pas un AID (en vérifiant qu'il est bien renseigné)
+	$analyse = explode("|", $enseignement);
+	if ($analyse[0] == "AID") 
+    {
+		//echo "c'est un AID";
+		$req_nom_aid = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$analyse[1]."'");
+		$rep_nom_aid = mysql_fetch_array($req_nom_aid);
+
+		// On récupère le nom de l'aid
+		$req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$rep_nom_aid["indice_aid"]."'");
+		$rep_nom_complet = mysql_fetch_array($req_nom_complet);
+		$aff_matiere = $rep_nom_complet["nom"]." ".$rep_nom_aid["nom"];
+
+		$contenu="";
+
+		// On compte les élèves de l'aid $aff_nbre_eleve
+		$req_nbre_eleves = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$analyse[1]."' ORDER BY login");
+		$aff_nbre_eleve = mysql_num_rows($req_nbre_eleves);
+		for($a=0; $a < $aff_nbre_eleve; $a++) {
+			$rep_eleves[$a]["login"] = mysql_result($req_nbre_eleves, $a, "login");
+			$noms = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_eleves[$a]["login"]."'"));
+			$contenu .= $noms["nom"]." ".$noms["prenom"]."<br />";
+		}
+		$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
+		$id_div_p = $jour_semaine.$rep_nom_aid["nom"].$id_creneaux.$enseignement;
+		$id_div = strtr($id_div_p, " -|/'&;", "wwwwwww");
+		//$classe_js = "<a href=\"#\" onclick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_nom_aid["nom"]."</a>
+		//	".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
+		$classe_js = $rep_nom_aid["nom"];
+
+		// On dresse la liste des noms de prof (on n'affiche que le premier)
+		//$noms_prof = mysql_fetch_array(mysql_query("SELECT nom, civilite FROM j_aid_utilisateurs jau, utilisateurs u WHERE
+		//							id_aid = '".$analyse[1]."' AND
+		//							jau.id_utilisateur = u.login
+		//							ORDER BY nom LIMIT 1")); // on n'en garde qu'un
+		$req_nom_prof = mysql_query("SELECT nom, civilite FROM utilisateurs WHERE login ='".$req_recup_id['login_prof']."'");
+		$rep_nom_prof = mysql_fetch_array($req_nom_prof);
+
+		//$rep_nom_prof['civilite'] = $noms_prof["nom"].' ';//$noms_prof["civilite"].' '.
+		//$rep_nom_prof['nom'] = " ";
+
+
+	}
+    elseif ($analyse[0] == '' OR $analyse[0] == 'inc')
+    {
+
+		// le groupe n'est pas renseigné, donc, on affiche en fonction
+		$aff_matiere = 'inc.';
+		$classe_js = NULL;
+		$aff_nbre_eleve = '0';
+		$aff_sem = NULL;
+		$rep_salle = NULL;
+
+	}
+    elseif ($analyse[0] == 'EDT')
+    {
+
+		// le groupe est un edt_gr donc on cherche les infos qui vont bien
+		if ($analyse[1] != '') {
+			/*/ on récupère les infos de cet edt_gr
+			$edt_gr = mysql_query("SELECT egn.nom, egn.nom_long, egc.id_classe, ege.id_eleve
+												FROM edt_gr_nom egn, edt_gr_classes egc, edt_gr_eleves ege
+												WHERE egn.id = '".$analyse[1]."'
+												AND egn.id = egc.id_gr_nom
+												AND egn.id = ege.id_gr_nom
+												ORDER BY ege.id_eleve LIMIT 1")
+											OR trigger_error('Erreur', E_USER_WARNING);
+			*/
+			$edt_gr = mysql_query("SELECT nom, nom_long FROM edt_gr_nom WHERE id = '".$analyse[1]."'")
+											OR trigger_error('Erreur', E_USER_WARNING);
+			$aff_gr = mysql_fetch_array($edt_gr);
+
+			$aff_matiere = $aff_gr["nom"];
+			$classe_js = $aff_gr["nom_long"];
+
+			$query_p = mysql_query("SELECT nom, civilite FROM edt_gr_profs egp, utilisateurs u
+																WHERE u.login = egp.id_utilisateurs
+																AND egp.id_gr_nom = '".$analyse[1]."'") OR trigger_error('Erreur ', E_USER_ERROR);
+			$rep_nom_prof = mysql_fetch_array($query_p);
+
+
+			$aff_nbre_eleve = '0';
+			$aff_sem = NULL;
+			$rep_salle = NULL;
+
+		}else{
+
+			$aff_matiere = 'inc.';
+			$classe_js = NULL;
+			$aff_nbre_eleve = '0';
+			$aff_sem = NULL;
+			$rep_salle = NULL;
+		}
+
+	}
+    else 
+    {
+
+		// on récupère le nom court des groupes en question
+		$req_id_classe = mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe ='".$enseignement."'");
+        $res="";
+        while ($rep_id_classe = mysql_fetch_array($req_id_classe)) {
+    		$req_classe = mysql_query("SELECT classe FROM classes WHERE id ='".$rep_id_classe['id_classe']."'");
+            $rep_classe = mysql_fetch_array($req_classe);
+		    $res = $res." ".$rep_classe['classe'];
+        }
+        $rep_classe['classe'] = $res;
+		// On récupère la période active en passant d'abord par le calendrier
+		$query_cal = mysql_query("SELECT numero_periode FROM edt_calendrier WHERE
+														debut_calendrier_ts <= '".date("U")."'
+														AND fin_calendrier_ts >= '".date("U")."'
+														AND numero_periode != '0'
+														AND classe_concerne_calendrier LIKE '%".$rep_id_classe['id_classe']."%'")
+									OR trigger_error('Impossible de lire le calendrier.', E_USER_NOTICE);
+		$p_c = mysql_fetch_array($query_cal);
+
+		$query_periode = mysql_query("SELECT num_periode FROM periodes WHERE verouiller = 'N' OR verouiller = 'P'")
+									OR trigger_error('Impossible de récupérer la bonne période.', E_USER_NOTICE);
+		$p = mysql_fetch_array($query_periode);
+
+		$per = isset($p_c["numero_periode"]) ? $p_c["numero_periode"] : (isset($p["num_periode"]) ? $p["num_periode"] : "1");
+
+		// On compte le nombre d'élèves
+		$req_compter_eleves = mysql_query("SELECT COUNT(*) FROM j_eleves_groupes WHERE periode = '".$per."' AND id_groupe ='".$enseignement."'");
+		$rep_compter_eleves = mysql_fetch_array($req_compter_eleves);
+		$aff_nbre_eleve = $rep_compter_eleves[0];
+
+		// On récupère la liste des élèves de l'enseignement
+		if (($type_edt == "prof") OR ($type_edt == "salle")) {
+			$current_group = get_group($enseignement);
+
+			$contenu="";
+
+			// $per étant le numéro de la période
+			if (isset($current_group["eleves"][$per]["users"])) {
+				foreach ($current_group["eleves"][$per]["users"] as $eleve_login) {
+					$contenu .= $eleve_login['nom']." ".$eleve_login['prenom']."<br />";
+				}
+			}
+
+			$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
+
+			//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
+			$id_div_p = $jour_semaine.$rep_classe['classe'].$id_creneaux.rand();
+			$id_div = strtr($id_div_p, " -|/'&;", "wwwwwww");
+			//$classe_js = "<a href=\"#\" onclick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>
+			//	".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
+            $classe_js = $rep_classe['classe'];
+		}
+		// On récupère le nom et la civilite du prof en question
+        if ($id_semaine == "") {
+            $req_login_prof = mysql_query("SELECT login_prof FROM edt_cours WHERE 
+                                                                        id_groupe ='".$enseignement."' AND
+                                                                        id_definie_periode = '".$id_creneaux."' AND
+                                                                        jour_semaine = '".$jour_semaine."' AND
+                                                                        $calendrier");
+		}
+        else {
+
+        $req_login_prof = mysql_query("SELECT login_prof FROM edt_cours WHERE 
+                                                                    id_groupe ='".$enseignement."' AND
+                                                                    id_definie_periode = '".$id_creneaux."' AND
+                                                                    jour_semaine = '".$jour_semaine."' AND
+                                                                    id_semaine = '".$id_semaine."'  AND
+                                                                    $calendrier");
+		}
+		$rep_login_prof = mysql_fetch_array($req_login_prof);
+		//$req_nom_prof = mysql_query("SELECT nom, civilite FROM utilisateurs WHERE login ='".$rep_login_prof['login']."'");
+		$req_nom_prof = mysql_query("SELECT nom, civilite FROM utilisateurs WHERE login ='".$rep_login_prof['login_prof']."'");
+		$rep_nom_prof = mysql_fetch_array($req_nom_prof);
+
+		// On récupère le nom de l'enseignement en question (en fonction du paramètre long ou court)
+		if (GetSettingEdt("edt_aff_matiere") == "long") {
+		    $req_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere IN (SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe ='".$enseignement."') ");
+		    $rep_matiere = mysql_fetch_array($req_matiere);
+			$aff_matiere = $rep_matiere['nom_complet'];
+            $aff_matiere = my_ereg_replace('[&]','&amp;',$aff_matiere);
+
+		}else {
+			$req_2_matiere = mysql_query("SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe ='".$enseignement."'");
+			$rep_2_matiere = mysql_fetch_array($req_2_matiere);
+			$aff_matiere = $rep_2_matiere['id_matiere'];
+		}
+
+	} // fin du else après les aid
+
+	// On récupère le type de semaine si besoin
+	$req_sem = mysql_query("SELECT id_semaine FROM edt_cours WHERE id_cours ='".$req_recup_id["id_cours"]."'");
+	$rep_sem = mysql_fetch_array($req_sem);
+	if ($rep_sem["id_semaine"] == "0") {
+		$aff_sem = '';
+	}else {
+		$aff_sem = '<span style="font-color:#663333;"> - Sem.'.$rep_sem["id_semaine"].'</span>';
+	}
+
+	// On récupère le nom complet de la salle en question
+	if (GetSettingEdt("edt_aff_salle") == "nom") {
+		$salle_aff = "nom_salle";
+	}else {
+		$salle_aff = "numero_salle";
+	}
+	//$req_id_salle = mysql_query("SELECT id_salle FROM edt_cours WHERE id_groupe ='".$enseignement."' AND id_definie_periode ='".$id_creneaux."' AND jour_semaine ='".$jour_semaine."'");
+    $req_id_salle = mysql_query("SELECT id_salle FROM edt_cours WHERE id_cours ='".$req_recup_id["id_cours"]."'");
+	$rep_id_salle = mysql_fetch_array($req_id_salle);
+	$req_salle = mysql_query("SELECT ".$salle_aff." FROM salle_cours WHERE id_salle ='".$rep_id_salle['id_salle']."'");
+	$tab_rep_salle = mysql_fetch_array($req_salle);
+	$rep_salle = $tab_rep_salle[0];
+
+	if (!isset($rep_nom_prof['nom'])){
+        $rep_nom_prof['nom'] = " ";
+    }
+
+	if ($type_edt == "prof"){
+	    if ($analyse[0] != "AID") 
+        {
+		    $ChaineComplete =$aff_matiere." ".$classe_js."<br />\n";
+        }
+        else
+        {
+		    $ChaineComplete =$aff_matiere."<br />\n";
+        } 
+        $ChaineComplete = $ChaineComplete.$aff_sem." <i>".$rep_salle."</i>";
+        if ($aff_nbre_eleve != 0)
+        {
+            //$ChaineComplete = $ChaineComplete.",".$aff_nbre_eleve." él.\n";
+        }
+        return $ChaineComplete;
+	}elseif (($type_edt == "classe") OR ($type_edt == "eleve")){
+		return ($aff_matiere."<br />".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i> ".$aff_sem."");
+	}elseif ($type_edt == "salle"){
+	    if ($analyse[0] != "AID") 
+        {
+		    $ChaineComplete =$aff_matiere."<br/>".$rep_nom_prof['nom']." ".$classe_js."<br />\n";
+        }
+        else
+        {
+		    $ChaineComplete =$aff_matiere."<br/>".$rep_nom_prof['nom']."<br/>\n";
+        } 
+        $ChaineComplete = $ChaineComplete.$aff_sem;
+        return $ChaineComplete;
+		//return ("".$aff_matiere."<br />\n".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']." ".$aff_sem."<br />\n".$classe_js."\n");
+	}else{
+		return '';
+	}
+}
 
 // Fonction qui renvoie le nombre de lignes du tableau EdT
 
@@ -171,7 +1096,7 @@ function semaine_actu(){
 		$semaine = date("W") + ($sem);
 
 		$query_s = mysql_query("SELECT type_edt_semaine FROM edt_semaines WHERE id_edt_semaine = '".$semaine."' LIMIT 1");
-		$rep["type"] = mysql_result($query_s, "type_edt_semaine");
+		$rep["type"] = mysql_result($query_s, 0);
 
 		return $rep;
 	}
@@ -946,7 +1871,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 	if ($rep_sem["id_semaine"] == "0") {
 		$aff_sem = '';
 	}else {
-		$aff_sem = '<font color="#663333"> - Sem.'.$rep_sem["id_semaine"].'</font>';
+		$aff_sem = '<span style="font-color:#663333;"> - Sem.'.$rep_sem["id_semaine"].'</span>';
 	}
 
 	// On récupère le nom complet de la salle en question
@@ -1045,7 +1970,7 @@ function construction_tab_edt($heure, $heuredeb_dec){
 
 function renvoie_liste($type) {
 
-	$rep_liste = "";
+	$rep_liste = array();
 	if ($type == "prof") {
 		$req_liste = mysql_query("SELECT nom, prenom, login FROM utilisateurs WHERE etat ='actif' AND statut='professeur' ORDER BY nom");
 

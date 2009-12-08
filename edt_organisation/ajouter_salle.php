@@ -23,7 +23,9 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-$titre_page = "Emploi du temps";
+require_once("./choix_langue.php");
+
+$titre_page = TITLE_ADD_CLASSROOM;
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 
@@ -50,11 +52,11 @@ if (!checkAccess()) {
 }
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
-$style_specifique = "edt_organisation/style_edt";
+$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
 // On insère l'entête de Gepi
 require_once("../lib/header.inc");
@@ -78,11 +80,11 @@ $modif_salle = isset($_POST["modif_salle"]) ? $_POST["modif_salle"] : NULL;
 $new_name = isset($_POST["new_name"]) ? $_POST["new_name"] : NULL;
 ?>
 
-G&eacute;rer les salles de Gepi
+<?php echo MANAGE_GEPI_CLASSROOMS ?>
 <br /><br />
 <fieldset id="aj_salle">
 
-	<legend>Ajouter une salle dans la base de donn&eacute;es</legend>
+	<legend><?php echo ADD_CLASSROOM_IN_DB ?></legend>
 <form name="ajouter_salle" action="ajouter_salle.php" method="post">
 	<table cellspacing="0" border="0">
 
@@ -253,7 +255,7 @@ if (isset($new_name) AND $new_name != "" ) {
 			<tr>
 				<td></td>
 				<td>
-	<span class="accept">La salle numéro '.$num_salle.' s\'appelle désormais : '.unslashes($new_name_propre).'.</span>
+	<span class="accept">'; printf(CHANGE_CLASSROOM_NAME, $num_salle, unslashes($new_name_propre)); echo'</span>
 		</form>';
 }
 ?>
