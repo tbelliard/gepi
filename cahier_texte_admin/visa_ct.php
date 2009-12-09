@@ -89,12 +89,12 @@ if (isset($_POST['visa_ct'])) {
       //$aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
       $aujourdhui = date("U");
 
-
-      $sql_insertion_visa = "INSERT INTO `ct_entry` VALUES (NULL, '00:00:00', '".$id_groupe."', '".$aujourdhui."', '".$id_prop."', '".$texte_visa_cdt."', 'y', 'y')";
+      $id_sequence="0";
+      $sql_insertion_visa = "INSERT INTO `ct_entry` VALUES (NULL, '00:00:00', '".$id_groupe."', '".$aujourdhui."', '".$id_prop."', '".$id_sequence."', '".$texte_visa_cdt."', 'y', 'y')";
       //echo $sql_insertion_visa;
       $insertion_visa = sql_query($sql_insertion_visa);
       if ($error == 'no') {
-        $msg = "Cahiers de texte signé.";
+        $msg = "Cahier(s) de textes signé(s).";
       } else {
         $msg = "Il y a eu un problème lors de la signature du cahier de textes.";
       }
