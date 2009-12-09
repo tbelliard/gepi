@@ -748,7 +748,35 @@ if (!isset($quelles_classes)) {
 		}
 		// =====================================================
 
+		$sql="SELECT 1=1 FROM eleves e
+			LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet
+			where jee.id_eleve is NULL;";
+		$test_no_etab=mysql_query($sql);
+		if(mysql_num_rows($test_no_etab)==0){
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "&nbsp;\n";
+			echo "</td>\n";
+			echo "<td>\n";
 
+			//echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='no_etab' onclick='verif2()' /></span>\n";
+
+			echo "<span class='norme'>Tous les élèves ont leur établissement d'origine renseigné.</span><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		else{
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='radio' name='quelles_classes' id='quelles_classes_no_etab' value='no_etab' onclick='verif2()' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='quelles_classes_no_etab' style='cursor: pointer;'>\n";
+			echo "<span class='norme'>Les élèves dont l'établissement d'origine n'est pas renseigné (<i>".mysql_num_rows($test_no_etab)."</i>).</span><br />\n";
+			echo "</label>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
 
 		// A FAIRE:
 		// Liste des élèves dont le nom commence par/contient...
@@ -1183,6 +1211,21 @@ if(isset($quelles_classes)) {
 
 			echo "<p align='center'>Liste des élèves dont le nom commence par <b>$motif_rech</b></p>\n";
 		}
+		elseif ($quelles_classes == 'no_etab') {
+			if(my_ereg('classe',$order_type)){
+				$sql="SELECT distinct e.*,c.classe FROM j_eleves_classes jec, classes c, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
+				//echo "$sql<br />\n";
+				$calldata=mysql_query($sql);
+			}
+			else{
+				$sql="SELECT e.* FROM eleves e
+					LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet
+					where jee.id_eleve is NULL ORDER BY $order_type;";
+				//echo "$sql<br />\n";
+				$calldata=mysql_query($sql);
+			}
+		}
+
 	}
 
 	echo "<table border='1' cellpadding='2' class='boireaus'  summary='Tableau des élèves de la classe'>\n";
