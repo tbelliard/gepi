@@ -335,6 +335,11 @@ require_once("../lib/header.inc");
 		document.getElementById('quelles_classes_recherche').checked=true;
 		verif2();
 	}
+
+	function verif4(){
+		document.getElementById('quelles_classes_rech_prenom').checked=true;
+		verif2();
+	}
 </script>
 
 <?php
@@ -794,6 +799,19 @@ if (!isset($quelles_classes)) {
 		echo "</td>\n";
 		echo "</tr>\n";
 
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_prenom' value='rech_prenom' onclick='verif2()' />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont le prénom commence par: \n";
+		echo "<input type='text' name='motif_rech' value='' onclick='verif4()' size='5' />\n";
+		echo "</span><br />\n";
+		echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
 		// =====================================================
 
 		$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
@@ -1188,6 +1206,28 @@ if(isset($quelles_classes)) {
 				$calldata=mysql_query($sql);
 
 			}
+
+		} else if ($quelles_classes == 'rech_prenom') {
+			/*
+			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
+			ORDER BY $order_type
+			");
+			*/
+			if(my_ereg('classe',$order_type)){
+				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
+					WHERE prenom like '".$motif_rech."%' AND
+							jec.login=e.login AND
+							c.id=jec.id_classe
+					ORDER BY $order_type";
+			}
+			else{
+				$sql="SELECT e.* FROM eleves e WHERE prenom like '".$motif_rech."%'
+												ORDER BY $order_type";
+			}
+			//echo "$sql<br />\n";
+			$calldata = mysql_query($sql);
+
+			echo "<p align='center'>Liste des élèves dont le prenom commence par <b>$motif_rech</b></p>\n";
 
 		} else if ($quelles_classes == 'recherche') {
 			/*
