@@ -967,4 +967,67 @@ description_item VARCHAR( 255 ) NOT NULL
 			$result .= "Error: (" . mysql_errno() . ") " . mysql_error() . "< br/>";
 		}
 
+
+	// CORRECTIF: Pour remettre les choses d'équerre sur des base qui ont connu l'époque avec paramétrage différencié entre eleves et responsables
+	$nb_err_synchro_acces_app=0;
+	$sql="SELECT DISTINCT id FROM classes;";
+	//echo "$sql<br />";
+	$res_classe=mysql_query($sql);
+	if(mysql_num_rows($res_classe)>0) {
+		$result.="&nbsp;->Synchronisation des paramétrages élèves et responsables pour l'accès aux appréciations.<br />";
+		while($lig_clas=mysql_fetch_object($res_classe)) {
+			$sql="SELECT * FROM matieres_appreciations_acces WHERE statut='eleve' AND id_classe='$lig_clas->id';";
+			//echo "$sql<br />";
+			$res_ele=mysql_query($sql);
+			if(mysql_num_rows($res_ele)>0) {
+				while($lig_ele=mysql_fetch_object($res_ele)) {
+					$sql="SELECT 1=1 FROM matieres_appreciations_acces WHERE statut='responsable' AND id_classe='$lig_clas->id' AND periode='$lig_ele->periode';";
+					//echo "$sql<br />";
+					$test_resp=mysql_query($sql);
+					if(mysql_num_rows($test_resp)>0) {
+						$sql="UPDATE matieres_appreciations_acces SET acces='$lig_ele->acces', date='$lig_ele->date' WHERE statut='responsable' AND id_classe='$lig_clas->id' AND periode='$lig_ele->periode';";
+						//echo "$sql<br />";
+						$query=mysql_query($sql);
+						if(!$query) {$nb_err_synchro_acces_app++;}
+					}
+					else {
+						$sql="INSERT INTO matieres_appreciations_acces SET acces='$lig_ele->acces', date='$lig_ele->date', statut='responsable', id_classe='$lig_clas->id', periode='$lig_ele->periode';";
+						//echo "$sql<br />";
+						$query=mysql_query($sql);
+						if(!$query) {$nb_err_synchro_acces_app++;}
+					}
+				}
+			}
+	
+			$sql="SELECT * FROM matieres_appreciations_acces WHERE statut='responsable' AND id_classe='$lig_clas->id';";
+			//echo "$sql<br />";
+			$res_resp=mysql_query($sql);
+			if(mysql_num_rows($res_resp)>0) {
+				while($lig_resp=mysql_fetch_object($res_resp)) {
+					$sql="SELECT 1=1 FROM matieres_appreciations_acces WHERE statut='eleve' AND id_classe='$lig_clas->id' AND periode='$lig_resp->periode';";
+					//echo "$sql<br />";
+					$test_ele=mysql_query($sql);
+					if(mysql_num_rows($test_ele)>0) {
+						$sql="UPDATE matieres_appreciations_acces SET acces='$lig_resp->acces', date='$lig_resp->date' WHERE statut='eleve' AND id_classe='$lig_clas->id' AND periode='$lig_resp->periode';";
+						//echo "$sql<br />";
+						$query=mysql_query($sql);
+						if(!$query) {$nb_err_synchro_acces_app++;}
+					}
+					else {
+						$sql="INSERT INTO matieres_appreciations_acces SET acces='$lig_resp->acces', date='$lig_resp->date', statut='eleve', id_classe='$lig_clas->id', periode='$lig_resp->periode';";
+						//echo "$sql<br />";
+						$query=mysql_query($sql);
+						if(!$query) {$nb_err_synchro_acces_app++;}
+					}
+				}
+			}
+		}
+		if($nb_err_synchro_acces_app==0) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		}
+		else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+		}
+	}
+
 ?>
