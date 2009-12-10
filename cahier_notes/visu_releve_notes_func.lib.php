@@ -2271,42 +2271,84 @@ function releve_pdf($tab_rel,$i) {
 							//$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere/2, $nom_matiere." ".count($tab_rel['eleve'][$i]['groupe'][$m]['prof_login']), 'LRT', 2, '');
 							//$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere/2, $nom_matiere." ".$tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][0], 'LRT', 2, '');
 							$nom_matiere = '';
-		
-							$nb_prof_matiere = count($tab_rel['eleve'][$i]['groupe'][$m]['prof_login']);
-							$espace_matiere_prof = $hauteur_cadre_matiere/2;
-							$nb_pass_count = '0';
-							$text_prof = '';
-		
-							//if ( $nb_releve_par_page === '2' ) {
 
-							if ($nb_releve_par_page==2) {
-								$nb_pass_count_2 = 0;
-								while ( !empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count_2]) )
-								{
-									if ( $nb_pass_count_2 === 0 ) {
-										$text_prof = affiche_utilisateur($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count_2],$id_classe);
-									}
-									if ( $nb_pass_count_2 != 0 ) {
-										$text_prof = $text_prof.', '.affiche_utilisateur($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count_2],$id_classe);
-									}
-									$nb_pass_count_2 = $nb_pass_count_2 + 1;
-								}
-								//$nb_prof_matiere = 1;
+							if(isset($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'])) {
+								$nb_prof_matiere = count($tab_rel['eleve'][$i]['groupe'][$m]['prof_login']);
+							}
+							else {
+								$nb_prof_matiere = 0;
 							}
 
-							if ( $nb_prof_matiere != 1 ) {
-								$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
-							}
-
-							if ($nb_releve_par_page==1) {
-								while ($nb_prof_matiere > $nb_pass_count) {
+							if($nb_prof_matiere>0) {
+								$espace_matiere_prof = $hauteur_cadre_matiere/2;
+								$nb_pass_count = '0';
+								$text_prof = '';
 			
-									// calcul de la hauteur du caractère du prof
-									//if ( $nb_releve_par_page === '1' ) {
-									if ($nb_releve_par_page==1) {
-										$text_prof = affiche_utilisateur($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count],$id_classe);
+								//if ( $nb_releve_par_page === '2' ) {
+	
+								if ($nb_releve_par_page==2) {
+									$nb_pass_count_2 = 0;
+									while ( !empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count_2]) )
+									{
+										if ( $nb_pass_count_2 === 0 ) {
+											$text_prof = affiche_utilisateur($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count_2],$id_classe);
+										}
+										if ( $nb_pass_count_2 != 0 ) {
+											$text_prof = $text_prof.', '.affiche_utilisateur($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count_2],$id_classe);
+										}
+										$nb_pass_count_2 = $nb_pass_count_2 + 1;
 									}
-
+									//$nb_prof_matiere = 1;
+								}
+	
+								if ( $nb_prof_matiere != 1 ) {
+									$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
+								}
+	
+								if ($nb_releve_par_page==1) {
+									while ($nb_prof_matiere > $nb_pass_count) {
+				
+										// calcul de la hauteur du caractère du prof
+										//if ( $nb_releve_par_page === '1' ) {
+										if ($nb_releve_par_page==1) {
+											$text_prof = affiche_utilisateur($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count],$id_classe);
+										}
+	
+										if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 9; }
+										elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 7; }
+										elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
+										$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_prof);
+										$val = $pdf->GetStringWidth($text_prof);
+										$taille_texte = ($largeur_cadre_matiere-0.6);
+										$grandeur_texte='test';
+										while($grandeur_texte!='ok') {
+											if($taille_texte<$val)
+											{
+												$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
+												$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_prof);
+												$val = $pdf->GetStringWidth($text_prof);
+											}
+											else {
+												$grandeur_texte='ok';
+											}
+										}
+										$grandeur_texte='test';
+										$pdf->SetX($X_cadre_note);
+										//$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, 'prof '.$text_prof, 'LRB', 2, '');
+				
+										if( empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count+1]) or $nb_prof_matiere === 1 ) {
+											$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LRB', 2, '');
+										}
+										if( !empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count+1]) and $nb_prof_matiere != 1 ) {
+											$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LR', 2, '');
+										}
+				
+										$nb_pass_count = $nb_pass_count + 1;
+									}
+								}
+								else {
+									// Deux relevés par page
+	
 									if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 9; }
 									elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 7; }
 									elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
@@ -2328,73 +2370,41 @@ function releve_pdf($tab_rel,$i) {
 									$grandeur_texte='test';
 									$pdf->SetX($X_cadre_note);
 									//$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, 'prof '.$text_prof, 'LRB', 2, '');
-			
+									/*
 									if( empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count+1]) or $nb_prof_matiere === 1 ) {
 										$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LRB', 2, '');
 									}
 									if( !empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count+1]) and $nb_prof_matiere != 1 ) {
 										$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LR', 2, '');
 									}
-			
-									$nb_pass_count = $nb_pass_count + 1;
-								}
-							}
-							else {
-								// Deux relevés par page
-
-								if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 9; }
-								elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 7; }
-								elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
-								$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_prof);
-								$val = $pdf->GetStringWidth($text_prof);
-								$taille_texte = ($largeur_cadre_matiere-0.6);
-								$grandeur_texte='test';
-								while($grandeur_texte!='ok') {
-									if($taille_texte<$val)
-									{
-										$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
-										$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_prof);
-										$val = $pdf->GetStringWidth($text_prof);
-									}
-									else {
-										$grandeur_texte='ok';
-									}
-								}
-								$grandeur_texte='test';
-								$pdf->SetX($X_cadre_note);
-								//$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, 'prof '.$text_prof, 'LRB', 2, '');
-								/*
-								if( empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count+1]) or $nb_prof_matiere === 1 ) {
-									$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LRB', 2, '');
-								}
-								if( !empty($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count+1]) and $nb_prof_matiere != 1 ) {
+									*/
 									$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LR', 2, '');
+	
 								}
-								*/
-								$pdf->Cell($largeur_cadre_matiere, $espace_matiere_prof, $text_prof, 'LR', 2, '');
-
-							}
-							//			if(isset($prof_groupe[$id_groupe_selectionne][0]) and $prof_groupe[$id_groupe_selectionne][0] != '') { $prof_1 = $prof_groupe[$id_groupe_selectionne][0]; } else { $prof_1 = ''; }
-							//			if(isset($prof_groupe[$id_groupe_selectionne][1]) and $prof_groupe[$id_groupe_selectionne][1] != '') { $prof_2 = $prof_groupe[$id_groupe_selectionne][1]; } else { $prof_2 = ''; }
-							//			if(isset($prof_groupe[$id_groupe_selectionne][2]) and $prof_groupe[$id_groupe_selectionne][2] != '') { $prof_3 = $prof_groupe[$id_groupe_selectionne][2]; } else { $prof_3 = ''; }
-							/*			 $nom_prof = $prof_1;
-							$hauteur_caractere = 8;
-							$pdf->SetFont($caractere_utilse,'I',$hauteur_caractere);
-							$val = $pdf->GetStringWidth($nom_prof);
-							$taille_texte = $largeur_cadre_matiere;
-							$grandeur_texte='test';
-							while($grandeur_texte!='ok') {
-							if($taille_texte<$val)
-							{
-								$hauteur_caractere = $hauteur_caractere-0.3;
+								//			if(isset($prof_groupe[$id_groupe_selectionne][0]) and $prof_groupe[$id_groupe_selectionne][0] != '') { $prof_1 = $prof_groupe[$id_groupe_selectionne][0]; } else { $prof_1 = ''; }
+								//			if(isset($prof_groupe[$id_groupe_selectionne][1]) and $prof_groupe[$id_groupe_selectionne][1] != '') { $prof_2 = $prof_groupe[$id_groupe_selectionne][1]; } else { $prof_2 = ''; }
+								//			if(isset($prof_groupe[$id_groupe_selectionne][2]) and $prof_groupe[$id_groupe_selectionne][2] != '') { $prof_3 = $prof_groupe[$id_groupe_selectionne][2]; } else { $prof_3 = ''; }
+								/*			 $nom_prof = $prof_1;
+								$hauteur_caractere = 8;
 								$pdf->SetFont($caractere_utilse,'I',$hauteur_caractere);
 								$val = $pdf->GetStringWidth($nom_prof);
-							} else { $grandeur_texte='ok'; }
-								}
-		
-							$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere/2, $nom_prof, 'LRB', 2, '');*/
-							//$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere/3, $prof_2, 'LR', 2, '');
-							//$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere/4, $prof_3, 'LRB', 2, '');
+								$taille_texte = $largeur_cadre_matiere;
+								$grandeur_texte='test';
+								while($grandeur_texte!='ok') {
+								if($taille_texte<$val)
+								{
+									$hauteur_caractere = $hauteur_caractere-0.3;
+									$pdf->SetFont($caractere_utilse,'I',$hauteur_caractere);
+									$val = $pdf->GetStringWidth($nom_prof);
+								} else { $grandeur_texte='ok'; }
+									}
+			
+								$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere/2, $nom_prof, 'LRB', 2, '');*/
+								//$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere/3, $prof_2, 'LR', 2, '');
+								//$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere/4, $prof_3, 'LRB', 2, '');
+
+							}
+
 							$hauteur_utilise=$hauteur_utilise+$hauteur_cadre_matiere;
 						}
 					}
