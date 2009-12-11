@@ -21,7 +21,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-function log_debug($texte){
+function log_debug($texte) {
 	$fich=fopen("/tmp/debug.txt","a+");
 	fwrite($fich,$texte."\n");
 	fclose($fich);
@@ -58,6 +58,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 //log_debug('Après checkAccess()');
 
 //log_debug(debug_var());
+//debug_var();
 
 $gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 if($_SESSION['statut']=="professeur") {
@@ -806,7 +807,7 @@ if (!isset($quelles_classes)) {
 		echo "<td>\n";
 		echo "<label for='' style='cursor: pointer;'>\n";
 		echo "<span class='norme'>Elève dont le prénom commence par: \n";
-		echo "<input type='text' name='motif_rech' value='' onclick='verif4()' size='5' />\n";
+		echo "<input type='text' name='motif_rech_p' value='' onclick='verif4()' size='5' />\n";
 		echo "</span><br />\n";
 		echo "</label>\n";
 		echo "</td>\n";
@@ -1208,6 +1209,8 @@ if(isset($quelles_classes)) {
 			}
 
 		} else if ($quelles_classes == 'rech_prenom') {
+			$motif_rech=$motif_rech_p;
+
 			/*
 			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
 			ORDER BY $order_type
