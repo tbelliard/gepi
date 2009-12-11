@@ -138,7 +138,11 @@ if ($action == "rendre_inactif") {
 	}
 
 } elseif ($action == "supprimer") {
-	if ($gepiSettings['ldap_write_access']) {
+	$ldap_write_access=false;
+
+	//if ($gepiSettings['ldap_write_access']) {
+	if ($gepiSettings['ldap_write_access']=='yes') {
+		//echo "\$ldap_write_access<br />";
 		$ldap_write_access = true;
 		$ldap_server = new LDAPServer;
 	}
@@ -214,6 +218,7 @@ if ($action == "rendre_inactif") {
 		}
 	}
 } elseif ($action == "change_auth_mode") {
+	$ldap_write_access = false;
 	if ($gepiSettings['ldap_write_access'] == "yes") {
 		$ldap_write_access = true;
 		$ldap_server = new LDAPServer;
