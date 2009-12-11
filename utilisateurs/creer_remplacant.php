@@ -243,7 +243,8 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					$affiche[0] = traitement_magic_quotes(corriger_caracteres($affiche[0]));
 					// Mot de passe
 					//echo "<tr><td colspan='4'>strlen($affiche[5])=".strlen($affiche[5])."<br />\$affiche[4]=$affiche[4]<br />\$_POST['sso']=".$_POST['sso']."</td></tr>";
-					if ($_POST['sso']== "no") {
+					//if ($_POST['sso']== "no") {
+					if((!isset($_POST['sso']))||($_POST['sso']== "no")) {
 						$pwd = md5(rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9));
 						$mess_mdp = $pwd;
 						//echo "<tr><td colspan='4'>Choix 2: $pwd</td></tr>";
