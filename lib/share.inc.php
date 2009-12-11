@@ -3506,16 +3506,24 @@ function traite_accents_utf8($chaine) {
 	}
 }
 
-function nf($nombre) {
+function nf($nombre,$nb_chiffre_apres_virgule=1) {
 	// Formatage des nombres
 	// Precision:
-	$precision=0.1;
-	$nb_chiffre_apres_virgule=1;
+	// Pour être sûr d'avoir un entier
+	$nb_chiffre_apres_virgule=floor($nb_chiffre_apres_virgule);
+	if($nb_chiffre_apres_virgule<1) {
+		$precision=0.1;
+		$nb_chiffre_apres_virgule=0;
+	}
+	else {
+		$precision=pow(10,-1*$nb_chiffre_apres_virgule);
+	}
 
 	if(($nombre=='')||($nombre=='-')) {
 		$valeur=$nombre;
 	}
 	else {
+		$nombre=strtr($nombre,",",".");
 		$valeur=number_format(round($nombre/$precision)*$precision, $nb_chiffre_apres_virgule, ',', '');
 		//$valeur=strtr($valeur,".",",");
 	}
