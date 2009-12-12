@@ -1688,7 +1688,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$valeur=redimensionne_image($photo[$i], $L_photo_max, $H_photo_max);
 				$X_photo = $tab_modele_pdf["X_eleve"][$classe_id]+ 0.20 + $ajouter;
 				$Y_photo = $tab_modele_pdf["Y_eleve"][$classe_id]+ 0.25 + $ajouter;
-				$L_photo = $valeur[0]; $H_photo = $valeur[1];
+				$L_photo = $valeur[0];
+				$H_photo = $valeur[1];
 				$X_eleve_2 = $tab_modele_pdf["X_eleve"][$classe_id] + $L_photo + $ajouter + 1;
 				$Y_eleve_2 = $Y_photo;
 				$pdf->Image($photo[$i], $X_photo, $Y_photo, $L_photo, $H_photo);
@@ -1697,7 +1698,34 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 
 			$pdf->SetXY($X_eleve_2,$Y_eleve_2);
-			$pdf->Cell(90,7, traite_accents_utf8($tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']),0,2,'');
+
+			//$pdf->Cell(90,7, traite_accents_utf8($tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']),0,2,'');
+			$nom_prenom=traite_accents_utf8($tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']);
+
+			$hauteur_caractere_nom_prenom=14;
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_nom_prenom);
+			$val = $pdf->GetStringWidth($nom_prenom);
+			if($tab_modele_pdf["active_photo"][$classe_id]==='1' and $photo[$i]!='' and file_exists($photo[$i])) {
+				$taille_texte = 90-$L_photo; // Espace max
+			}
+			else {
+				$taille_texte = 90; // Espace max
+			}
+			if($taille_texte<10) {$taille_texte=90;} // Sécurité pour ne pas risquer une boucle infinie
+			$grandeur_texte='test';
+			while($grandeur_texte!='ok') {
+				if($taille_texte<$val) {
+					$hauteur_caractere_nom_prenom=$hauteur_caractere_nom_prenom-0.3;
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_nom_prenom);
+					$val = $pdf->GetStringWidth($nom_prenom);
+				} else {
+					$grandeur_texte='ok';
+				}
+			}
+			$grandeur_texte='test';
+			$pdf->Cell(90,7, $nom_prenom,0,2,'');
+
+
 			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 			if($tab_modele_pdf["affiche_date_naissance"][$classe_id]==='1') {
 				if($tab_bull['eleve'][$i]['naissance']!="") {
