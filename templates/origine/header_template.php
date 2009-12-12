@@ -53,8 +53,8 @@
 
 				var digital=new Date()
 				var seconds=(digital-debut)/1000
-				if (seconds>[onshow.tbs_temps_max] - seconds_before_alert) {
-					var seconds_reste = Math.floor([onshow.tbs_temps_max] - seconds);
+				if (seconds>1800 - seconds_before_alert) {
+					var seconds_reste = Math.floor(1800 - seconds);
 					now=new Date()
 					var hrs=now.getHours();
 					var mins=now.getMinutes();

@@ -19,11 +19,11 @@
 
 <div class="bandeau_colonne">
 	<!-- Bouton rétrécir le bandeau -->
-		<a class='change_taille_gd' href="#" onclick="modifier_taille_bandeau();change_mode_header('y', '[onshow.tbs_bouton_taille;magnet=a]');return false;">
+		<a class='change_taille_gd' href="#" onclick="modifier_taille_bandeau();change_mode_header('y', '<?php echo $tbs_bouton_taille;?>');return false;">
 			<img src="<?php echo $tbs_bouton_taille;?>/images/up.png" alt='Cacher le bandeau' title='Cacher le bandeau' />
 		</a>
 	<!-- Bouton agrandir le bandeau -->
-		<a class='change_taille_pt' href="#" onclick="modifier_taille_bandeau();change_mode_header('n', '[onshow.tbs_bouton_taille;magnet=a]');return false;">
+		<a class='change_taille_pt' href="#" onclick="modifier_taille_bandeau();change_mode_header('n', '<?php echo $tbs_bouton_taille;?>');return false;">
 			<img src="<?php echo $tbs_bouton_taille;?>/images/down.png" alt='Afficher le bandeau' title='Afficher le bandeau' />
 		</a>
 
