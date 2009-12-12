@@ -1,0 +1,176 @@
+/* $Id: bandeau.css */
+
+body{
+	font-family:	verdana,sans-serif;
+	margin:0em;
+	padding:0em;
+}
+
+h1 {
+	margin:0em;
+	padding:0em;
+	text-align:center;
+	font-style: normal;
+	font-variant: small-caps;
+	font-weight: normal;
+	font-size:1.6em;
+}
+p{
+	margin:0em;
+	padding:0em;
+}
+
+#headerMessage {
+	width:99%;
+}
+
+/* Bandeau */
+#bandeau {
+	display:table;
+	margin:0em;
+	padding:0em 0em 0.1em 0em;
+	width:100%;
+}
+#bandeau p{
+	font-size:0.9em;
+}
+
+/* Couleurs des liens */
+#bandeau a:link {
+	color: #F3F3F3;
+}
+#bandeau a:visited {
+	color: #F3F3F3;
+}
+#bandeau a:hover {
+	color: white;
+}
+
+/* Couleurs des bandeaux */
+.gd_bandeau_darkfade {
+	background-image: url(../../../images/background/darkfade.png);
+	background-repeat: repeat-x;
+	background-color:#4a4a50;
+}
+.pt_bandeau_darkfade {
+	background-image: url(../../../images/background/darkfade_small.png);
+	background-repeat: repeat-x;
+	background-color:#4a4a50;
+}
+.gd_bandeau_degrade1 {
+	background-image: url(../../../images/background/degrade1.png);
+	background-repeat: repeat-x;
+}
+.pt_bandeau_degrade1 {
+	background-image: url(../../../images/background/degrade1_small.png);
+	background-repeat: repeat-x;
+}
+#bandeau .rouge {
+	color:#ff0000;
+	font-weight: bold;
+}
+
+/* Création des colonnes */
+
+.bandeau_colonne {
+	display:table-cell;
+	margin:0em;
+	padding:0em 0.5em;
+	width:49%; 
+	color: white;
+}
+
+.bandeau_colonne + .bandeau_colonne {
+	text-align:right;
+}
+
+/* Placement des boutons */
+.gd_bandeau .change_taille_pt {
+	display:none;
+}
+.gd_bandeau .change_taille_gd img {
+	margin-top:0.1em;
+	padding:0.1em;
+	float:left;
+}
+.pt_bandeau .change_taille_gd {
+	display:none;
+}
+.pt_bandeau .change_taille_pt img {
+	margin-top:0.1em;
+	padding:0.1em;
+	float:left;
+}
+
+/* menu de droite */
+#bandeau ol {
+	margin:0em;
+	padding:0em;
+}
+
+.bandeau_colonne li {
+	margin:0em;
+	padding:0em;
+	display: inline;
+	font-size:0.9em;
+}	
+
+#bandeau_menu_deux {
+	border-top-width: 1px;
+	border-top-style: dotted;
+	border-top-color: orange;
+}	
+#bandeau_menu_deux li + li {
+	border-left: 1px solid #a0a0a0;
+	padding-left:0.4em;
+}	
+
+/* barre de menu prof */
+#essaiMenu {
+	margin: 0em 0em 0em 0em;
+	padding: 0.1em;
+	background: #4a4579;
+	color: #FFF;
+}
+#essaiMenu li {
+	display: inline;
+	margin: 0em; 
+	padding: 0em 0.5em 0em 0em;
+	/* border-top: 1px solid #a0a0a0; */
+	/* border-left: 1px solid #a0a0a0; */
+	/* border-bottom: 1px solid #040404; */
+	/* border-right: 1px solid #040404; */
+	font-weight: bold;
+	font-size: 0.8em;
+}
+#essaiMenu li + li {
+	border-left: 1px solid #a0a0a0;
+	padding-left:0.4em;
+}
+#essaiMenu a {
+	margin: 0em; 
+	padding: 0em;
+	color: white;
+}
+#essaiMenu a:hover {
+	color: #99FFFF;
+}
+
+/* petit bandeau */
+.pt_bandeau #bandeau_menu_deux {
+	display:none;
+}
+.pt_bandeau h1 {
+	font-size: 1.2em;
+}
+.pt_bandeau p {
+	display:none;
+}
+.pt_bandeau #bd_nom {
+	display:block;
+	width:70%;
+	float:left;
+}
+.pt_bandeau .menu_bandeau {
+	display:none;
+}

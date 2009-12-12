@@ -1,0 +1,25 @@
+/* $Id: accueil_ie.css */
+
+.div_tableau {
+	border-width:thin;
+	border-style:solid; 
+	border-color:lightgrey; 
+}
+
+.ie_gauche {
+	margin:0;
+	width:27%; 
+	border-style:none; 
+	font-size:medium;
+	font-weight:normal;
+	float:left;
+}
+.ie_droite {
+	margin:0;
+	width:64%; 
+	border-style:none; 
+	font-size:medium;
+	font-weight:normal;
+	float:right;
+}
+	

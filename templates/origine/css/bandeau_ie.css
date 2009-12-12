@@ -1,0 +1,23 @@
+/* $Id: bandeau_ie.css */
+
+h1 {
+	font-size: 2em;
+}
+#bandeau {
+	margin:0em
+	padding:0em;
+}
+#bandeau p {
+	font-size: 1em;
+}
+.bandeau_colonne {
+	width:48%;
+	float:left;
+}
+.pt_bandeau #bd_nom {
+	width:83%;
+	padding-right:1em;
+}
+#bd_colonne_droite{
+	text-align:right;
+}
