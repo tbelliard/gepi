@@ -736,6 +736,8 @@ while ($i < $nb_dev) {
 	$i++;
 }
 
+// Tableau destiner à stocker l'id du champ de saisie de note (n$num_id) correspondant à l'élève $i
+$indice_ele_saisie=array();
 
 $i = 0;
 $num_id=10;
@@ -855,6 +857,8 @@ foreach ($liste_eleves as $eleve) {
 				// ========================
 				// MODIF: boireaus 20071010
 				//$mess_note[$i][$k] .= "<input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_note."\" value=\"";
+
+				$indice_ele_saisie[$i]=$num_id;
 				$mess_note[$i][$k] .= "<input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve[$i]\" ";
 				$mess_note[$i][$k] .= "autocomplete='off' ";
 				$mess_note[$i][$k] .= "value=\"";
@@ -890,7 +894,7 @@ foreach ($liste_eleves as $eleve) {
 					$res_ele=mysql_query($sql);
 					if(mysql_num_rows($res_ele)>0) {
 						$lig_ele=mysql_fetch_object($res_ele);
-            $_photo_eleve = (isset ($multisite) AND $multisite == 'y') ? $eleve_login[$i] : $lig_ele->elenoet;
+						$_photo_eleve = (isset ($multisite) AND $multisite == 'y') ? $eleve_login[$i] : $lig_ele->elenoet;
 						if(file_exists("../photos/eleves/".$_photo_eleve.".jpg")) {
 							$mess_note[$i][$k].=";affiche_photo('".$_photo_eleve.".jpg','".addslashes(strtoupper($eleve_nom[$i])." ".ucfirst(strtolower($eleve_prenom[$i])))."')";
 						}
@@ -954,9 +958,10 @@ echo "<table class='boireaus' cellspacing='2' cellpadding='1' summary=\"Tableau 
 if ($id_devoir==0) {
 	// Mode consultation
 	$nb_colspan = $nb_dev;
+	//$nb_colspan = $nb_dev+1; // +1 pour la colonne Moyenne // Il y a un pb de colspan sur la première ligne selon que la période est ouverte ou non dirait-on.
 	$i = 0;
 	while ($i < $nb_dev) {
-		if ((($nocomment[$i]!='yes') and ($_SESSION['affiche_comment'] == 'yes')) or ($id_dev[$i] == $id_devoir)) $nb_colspan++;
+		if ((($nocomment[$i]!='yes') and ($_SESSION['affiche_comment'] == 'yes')) or ($id_dev[$i] == $id_devoir)) {$nb_colspan++;}
 		$i++;
 	}
 } else {
@@ -967,14 +972,15 @@ if ($id_devoir==0) {
 // Affichage première ligne
 
 echo "<tr><th class='cn'>&nbsp;</th>\n";
-if ($multiclasses) echo "<th class='cn'>&nbsp;</th>\n";
+if ($multiclasses) {echo "<th class='cn'>&nbsp;</th>\n";}
 echo "\n";
 if ($nb_dev != 0) {
 	if($nom_conteneur!=""){
 		//echo "<th class='cn' colspan='$nb_colspan' valign='top'><center>$nom_conteneur</center></th>\n";
 		echo "<th class='cn' colspan='$nb_colspan' valign='top'>\n";
 		//echo "<center>$nom_conteneur</center>\n";
-		echo "<div style='float:right; width:16;'><a href='javascript:affichage_quartiles();'><img src='../images/icons/wizard.png' width='16' height='16' alt='Afficher les quartiles et éventuellement la photo élève' title='Afficher les quartiles et éventuellement la photo élève' /></a></div>\n";
+		echo "<div style='float:right; width:16;'><a href='javascript:affichage_quartiles();'><img src='../images/icons/wizard.png' width='16' height='16' alt='Afficher les quartiles' title='Afficher les quartiles' /></a></div>\n";
+
 		echo "$nom_conteneur\n";
 		echo "</th>\n";
 	}
@@ -1016,7 +1022,7 @@ if ($id_devoir==0) {
 			else{
 				$cellule_nom_sous_cont="&nbsp;";
 			}
-			if ($nb_dev_s_cont[$i] != 0){ echo "<th class=cn colspan='$nb_dev_s_cont[$i]' valign='top'><center>$cellule_nom_sous_cont</center></th>\n";}
+			if ($nb_dev_s_cont[$i] != 0) { echo "<th class=cn colspan='$nb_dev_s_cont[$i]' valign='top'><center>$cellule_nom_sous_cont</center></th>\n";}
 			// ===============================
 		}
 		if($nom_sous_cont[$i]!=""){
@@ -1039,7 +1045,8 @@ if ($id_devoir==0) {
 if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) and ($id_devoir==0)){
 	if($nom_conteneur!=""){
 		echo "<td class=cn  valign='top'><center><b>$nom_conteneur</b><br />";
-	}else{
+	}
+	else{
 		echo "<td class=cn  valign='top'><center><b>&nbsp;</b><br />";
 	}
 	echo "<a href=\"./add_modif_conteneur.php?mode_navig=retour_saisie&amp;id_conteneur=$id_conteneur&amp;id_retour=$id_conteneur\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">Configuration</a><br /><br /><font color='red'>Aff.&nbsp;bull.</font></center></td>\n";
@@ -1388,12 +1395,32 @@ while($i < $nombre_lignes) {
 	echo "<tr class='lig$alt'>\n";
 	if ($eleve_classe[$i] != $prev_classe && $prev_classe != null && $order_by == "classe") {
 		//echo "<td class=cn style='border-top: 2px solid blue;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
-		echo "<td class=cn style='border-top: 2px solid blue; text-align:left;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
+		echo "<td class=cn style='border-top: 2px solid blue; text-align:left;'>\n";
+
+		//echo "<div style='float:right; width:16;'><a href='javascript:affiche_div_photo();'><img src='../images/icons/buddy.png' width='16' height='16' alt='Afficher la photo élève' title='Afficher la photo élève' /></a></div>\n";
+
+		echo "$eleve_nom[$i] $eleve_prenom[$i]\n";
+		echo "</td>";
 		if ($multiclasses) echo "<td style='border-top: 2px solid blue;'>$eleve_classe[$i]</td>";
 		echo "\n";
 	} else {
 		//echo "<td class=cn>$eleve_nom[$i] $eleve_prenom[$i]</td>";
-		echo "<td class=cn style='text-align:left;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
+		echo "<td class=cn style='text-align:left;'>\n";
+
+		if($id_devoir!=0) {
+			echo "<div style='float:right; width:16;'><a href=\"javascript:";
+			if(isset($indice_ele_saisie[$i])) {
+				echo "if(document.getElementById('n'+".$indice_ele_saisie[$i].")) {document.getElementById('n'+".$indice_ele_saisie[$i].").focus()};";
+				echo "affiche_div_photo();";
+			}
+			else {
+				echo "affiche_div_photo();";
+			}
+			echo "\"><img src='../images/icons/buddy.png' width='16' height='16' alt='Afficher la photo élève' title='Afficher la photo élève' /></a></div>\n";
+		}
+
+		echo "$eleve_nom[$i] $eleve_prenom[$i]\n";
+		echo "</td>";
 		if ($multiclasses) echo "<td>$eleve_classe[$i]</td>";
 		echo "\n";
 	}
@@ -1684,17 +1711,29 @@ echo "</tr></table>\n";
 
 //===================================
 if((isset($id_devoir))&&($id_devoir!=0)) {
-	//echo "<div id='div_quartiles' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
-	echo "<div id='div_quartiles' style='position: fixed; top: 220px; right: 200px; text-align:center; display:none;'>\n";
-	//javascript_tab_stat('tab_stat_',$nombre_lignes);
-	javascript_tab_stat('tab_stat_',$num_id);
+	echo "<div id='div_q_p' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
+		echo "<div id='div_quartiles' style='text-align:center; display:none;'>\n";
+		//javascript_tab_stat('tab_stat_',$nombre_lignes);
+		javascript_tab_stat('tab_stat_',$num_id);
+		echo "</div>\n";
 
-	echo "<br />\n<div id='div_photo_eleve'></div>\n";
+		echo "<br />\n";
+
+		echo "<div id='div_photo_eleve' style='text-align:center; display:none;'></div>\n";
 	echo "</div>\n";
 
 	echo "<script type='text/javascript'>
+	function affiche_div_photo() {
+		if(document.getElementById('div_photo_eleve').style.display=='none') {
+			document.getElementById('div_photo_eleve').style.display='';
+		}
+		else {
+			document.getElementById('div_photo_eleve').style.display='none';
+		}
+	}
+
 	function affiche_photo(photo,nom_prenom) {
-		document.getElementById('div_photo_eleve').innerHTML='<img src=\"../photos/eleves/'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom;
+ 		document.getElementById('div_photo_eleve').innerHTML='<img src=\"../photos/eleves/'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom;
 	}
 </script>\n";
 }
@@ -1726,14 +1765,17 @@ if ($id_devoir) echo "<input type='hidden' name='is_posted' value=\"yes\" />\n";
 
 //echo "\$id_devoir=$id_devoir<br />";
 //if((isset($id_devoir))&&($id_devoir==0)) {
-if((!isset($id_devoir))||($id_devoir=='')) {
+//if((!isset($id_devoir))||($id_devoir=='')) {
+if((!isset($id_devoir))||($id_devoir=='')||($id_devoir=='0')) {
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form_calcul_mediane'>\n";
 	echo $chaine_input_moy;
 	echo "</form>\n";
 	
 	//echo "<div id='div_quartiles' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
-	echo "<div id='div_quartiles' style='position: fixed; top: 220px; right: 200px; text-align:center; display:none;'>\n";
-	javascript_tab_stat('tab_stat_',$nombre_lignes);
+	echo "<div id='div_q_p' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
+		echo "<div id='div_quartiles' style='text-align:center; display:none;'>\n";
+		javascript_tab_stat('tab_stat_',$nombre_lignes);
+		echo "</div>\n";
 	echo "</div>\n";
 }
 //===================================
@@ -1798,7 +1840,8 @@ if ($id_devoir) {
 
 // Pour qu'un professeur puisse avoir une préférence d'affichage par défaut ou non des quartiles:
 $aff_quartiles_par_defaut=getPref($_SESSION['login'],'aff_quartiles_cn',"n");
-
+$aff_photo_cn_par_defaut=getPref($_SESSION['login'],'aff_photo_cn',"n");
+//echo $aff_quartiles_par_defaut."<br />";
 ?>
 <br />
 * En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (note et commentaire portés sur la copie, ...).
@@ -1827,6 +1870,9 @@ function affichage_quartiles() {
 <?php
 if($aff_quartiles_par_defaut=='y') {
 	echo "affichage_quartiles();\n";
+}
+if($aff_photo_cn_par_defaut=='y') {
+	echo "affiche_div_photo();\n";
 }
 ?>
 </script>

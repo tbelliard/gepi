@@ -284,6 +284,27 @@ if(isset($enregistrer)){
 			}
 
 
+			$aff_photo_cn=isset($_POST['aff_photo_cn']) ? $_POST['aff_photo_cn'] : "n";
+
+			$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_photo_cn';";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)==0) {
+				$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='aff_photo_cn', value='$aff_photo_cn';";
+				//echo $sql."<br />\n";
+				if(!mysql_query($sql)){
+					$msg.="Erreur lors de l'enregistrement de aff_photo_cn<br />\n";
+					//$msg.="Erreur lors de l'enregistrement de l'affichage par défaut ou non des moyenne, médiane, photo,... sur les carnets de notes.<br />\n";
+				}
+			}
+			else {
+				$sql="UPDATE preferences SET value='$aff_photo_cn' WHERE login='".$_SESSION['login']."' AND name='aff_photo_cn';";
+				//echo $sql."<br />\n";
+				if(!mysql_query($sql)){
+					$msg.="Erreur lors de l'enregistrement de aff_photo_cn pour ".$_SESSION['login']."<br />\n";
+				}
+			}
+
+
 			$aff_photo_saisie_app=isset($_POST['aff_photo_saisie_app']) ? $_POST['aff_photo_saisie_app'] : "n";
 
 			$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_photo_saisie_app';";
@@ -616,11 +637,25 @@ else{
 			$lig_test=mysql_fetch_object($test);
 			$aff_quartiles_cn=$lig_test->value;
 		}
-
 		echo "<p>\n";
 		echo "<input type='checkbox' name='aff_quartiles_cn' id='aff_quartiles_cn' value='y' ";
 		if($aff_quartiles_cn=='y') {echo 'checked';}
-		echo "/><label for='aff_quartiles_cn'> Afficher par défaut, les moyenne, médiane, quartiles, min, max et les phtos des élèves sur les carnets de notes.</label>\n";
+		echo "/><label for='aff_quartiles_cn'> Afficher par défaut, les moyenne, médiane, quartiles, min, max sur les carnets de notes.</label>\n";
+		echo "</p>\n";
+
+		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_photo_cn'";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			$aff_photo_cn="n";
+		}
+		else {
+			$lig_test=mysql_fetch_object($test);
+			$aff_photo_cn=$lig_test->value;
+		}
+		echo "<p>\n";
+		echo "<input type='checkbox' name='aff_photo_cn' id='aff_photo_cn' value='y' ";
+		if($aff_photo_cn=='y') {echo 'checked';}
+		echo "/><label for='aff_photo_cn'> Afficher par défaut la photo des élèves sur les carnets de notes.</label>\n";
 		echo "</p>\n";
 	}
 
