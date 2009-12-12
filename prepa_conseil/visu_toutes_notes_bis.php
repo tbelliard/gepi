@@ -153,8 +153,9 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesPr
 $nb_lignes_eleves = mysql_num_rows($appel_donnees_eleves);
 $nb_lignes_tableau = $nb_lignes_eleves;
 
-//Initialisation
-/*
+//==============================
+// Initialisation
+// Conservé pour le mode annee
 $moy_classe_point = 0;
 $moy_classe_effectif = 0;
 $moy_classe_min = 20;
@@ -163,7 +164,7 @@ $moy_cat_classe_point = array();
 $moy_cat_classe_effectif = array();
 $moy_cat_classe_min = array();
 $moy_cat_classe_max = array();
-*/
+//==============================
 
 // On teste la présence d'au moins un coeff pour afficher la colonne des coef
 $test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
@@ -594,7 +595,11 @@ while($i < $lignes_groupes) {
 	//$current_group = get_group($var_group_id);
 
 	// On choisit une période pour la récup des infos générales sur le groupe (id, coef,... bref des trucs qui ne dépendent pas de la période)
+	/*
 	if(isset($num_periode)) {$p=$num_periode;}
+	else {$p=1;}
+	*/
+	if($referent=='une_periode') {$p=$num_periode;}
 	else {$p=1;}
 
 	$var_group_id=$tab_moy['current_group'][$i]['id'];
