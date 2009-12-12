@@ -16,16 +16,16 @@
 
 	if (!isset($niveau_arbo)) $niveau_arbo = 1;
 	 if ($niveau_arbo == "0") {
-	   require ("./lib/microtime.php");
+	   require ("./lib/microtime_template.php");
 	   $gepiPath2=".";
 	} elseif ($niveau_arbo == "1") {
-	   require ("../lib/microtime.php");
+	   require ("../lib/microtime_template.php");
 	   $gepiPath2="..";
 	} elseif ($niveau_arbo == "2") {
-	    require ("../../lib/microtime.php");
+	    require ("../../lib/microtime_template.php");
 	   $gepiPath2="../..";
 	} elseif ($niveau_arbo == "3") {
-	    require ("../../../lib/microtime.php");
+	    require ("../../../lib/microtime_template.php");
 	   $gepiPath2="../../..";
 	}
 	if(getSettingValue("gepi_pmv")!="n"){
