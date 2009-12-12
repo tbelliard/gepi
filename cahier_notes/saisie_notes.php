@@ -451,6 +451,7 @@ while ($j < $nb_dev) {
         $note_sur[$j] = mysql_result($appel_dev, $j, 'note_sur');
         $ramener_sur_referentiel[$j] = mysql_result($appel_dev, $j, 'ramener_sur_referentiel');
 	$facultatif[$j] = mysql_result($appel_dev, $j, 'facultatif');
+	$display_parents[$j] = mysql_result($appel_dev, $j, 'display_parents');
 	$date = mysql_result($appel_dev, $j, 'date');
 	$annee = substr($date,0,4);
 	$mois =  substr($date,5,2);
@@ -1074,16 +1075,34 @@ $i = 0;
 while ($i < $nb_dev) {
 	// En mode saisie, on n'affiche que le devoir à saisir
 	if (($id_devoir==0) or ($id_dev[$i] == $id_devoir)) {
-		if ($coef[$i] != 0) $tmp = " bgcolor = $couleur_calcul_moy "; else $tmp = '';
+		if ($coef[$i] != 0) {$tmp = " bgcolor = $couleur_calcul_moy ";} else {$tmp = '';}
 		//$header_pdf[] = $nom_dev[$i]." (".$display_date[$i].")";
 		$header_pdf[] = traite_accents_utf8($nom_dev[$i]." (".$display_date[$i].")");
 		$w_pdf[] = $w2;
-		if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)
-			echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=$id_dev[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">$nom_dev[$i]</a></b><br /><font size=-2>($display_date[$i])</font></center></td>\n";
-		else
-			echo "<td class=cn".$tmp." valign='top'><center><b>".$nom_dev[$i]."</b><br /><font size=-2>($display_date[$i])</font></center></td>\n";
+		if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
+			echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=$id_dev[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">$nom_dev[$i]</a></b><br /><font size=-2>($display_date[$i])</font>\n";
+			if($display_parents[$i]!=0) {
+				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />\n";
+			}
+			else {
+				echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";
+			}
+			echo "</center></td>\n";
+		}
+		else {
+			echo "<td class=cn".$tmp." valign='top'><center><b>".$nom_dev[$i]."</b><br /><font size=-2>($display_date[$i])</font>\n";
+			if($display_parents[$i]!=0) {
+				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />\n";
+			}
+			else {
+				echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";
+			}
+			echo "</center></td>\n";
+		}
+
 		if ((($nocomment[$i]!='yes') and ($_SESSION['affiche_comment'] == 'yes')) or ($id_dev[$i] == $id_devoir)) {
-			echo "<td class=cn  valign='top'><center>Commentaire&nbsp;*</center></td>\n";
+			echo "<td class=cn  valign='top'><center>Commentaire&nbsp;*\n";
+			echo "</center></td>\n";
 			$header_pdf[] = "Commentaire";
 			//$w_pdf[] = $w2;
 			//if ($multiclasses) $w_pdf[] = $w2;
