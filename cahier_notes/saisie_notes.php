@@ -979,7 +979,7 @@ if ($nb_dev != 0) {
 		//echo "<th class='cn' colspan='$nb_colspan' valign='top'><center>$nom_conteneur</center></th>\n";
 		echo "<th class='cn' colspan='$nb_colspan' valign='top'>\n";
 		//echo "<center>$nom_conteneur</center>\n";
-		echo "<div style='float:right; width:16;'><a href='javascript:affichage_quartiles();'><img src='../images/icons/wizard.png' width='16' height='16' alt='Afficher les quartiles' title='Afficher les quartiles' /></a></div>\n";
+		echo "<div style='float:right; width:16;'><a href='javascript:affichage_quartiles();'><img src='../images/icons/histogramme.png' width='16' height='16' alt='Afficher les quartiles' title='Afficher les quartiles' /></a></div>\n";
 
 		echo "$nom_conteneur\n";
 		echo "</th>\n";
