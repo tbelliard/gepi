@@ -372,6 +372,7 @@ while ($i < $nombreligne){
     // Affichage des login, noms et prénoms
     $col[$i][1] = $user_login;
     $col[$i][2] = "$user_nom $user_prenom";
+    $col[$i][2] .= "<a name='$user_login'></a>";
     // ajout pour le trombinoscope
     $col[$i]['civ'] = $user_civilite;
     // fin ajout
@@ -445,7 +446,7 @@ while ($i < $nombreligne){
     // MODIF: boireaus
         //$col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&id_groupe=".$user_classe["group_id"] . "'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />";
         //$col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;retour=oui'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />";
-        $col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />\n";
+        $col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />\n";
     //======================================
         $k++;
     }
