@@ -290,6 +290,18 @@ else {
 	}
 }
 
+
+// Ajout d'une table pays
+$test = sql_query1("SHOW TABLES LIKE 'pays'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'pays'. ";
+	$sql="CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_court VARCHAR( 50 ) NOT NULL ,nom_long VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( code_pays ));";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'pays': ".$result_inter."<br />";
+	}
+}
+
 //---------------
 // Ajouts d'index
 

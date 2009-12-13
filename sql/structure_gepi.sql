@@ -305,3 +305,5 @@ DROP TABLE IF EXISTS synthese_app_classe;
 CREATE TABLE IF NOT EXISTS synthese_app_classe (  id_classe int(11) NOT NULL default '0',  periode int(11) NOT NULL default '0',  synthese text NOT NULL,  PRIMARY KEY  (id_classe,periode));
 DROP TABLE IF EXISTS message_login;
 CREATE TABLE message_login (id int(11) NOT NULL auto_increment,texte text NOT NULL,PRIMARY KEY  (id));
+DROP TABLE IF EXISTS pays;
+CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_court VARCHAR( 50 ) NOT NULL ,nom_long VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( code_pays ));

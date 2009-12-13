@@ -153,15 +153,30 @@ function maj_ini_prenom($prenom){
 function get_commune($code_commune_insee,$mode){
 	$retour="";
 
-	$sql="SELECT * FROM communes WHERE code_commune_insee='$code_commune_insee';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
-		if($mode==0) {
-			$retour=$lig->commune;
+	if(strstr($code_commune_insee,'@')) {
+		// On a affaire à une commune étrangère
+		$tmp_tab=split('@',$code_commune_insee);
+		$sql="SELECT * FROM pays WHERE code_pays='$tmp_tab[0]';";
+		$res_pays=mysql_query($sql);
+		if(mysql_num_rows($res_pays)==0) {
+			$retour=$tmp_tab[1]." ($tmp_tab[0])";
 		}
 		else {
-			$retour=$lig->commune." (<i>".$lig->departement."</i>)";
+			$lig_pays=mysql_fetch_object($res_pays);
+			$retour=$tmp_tab[1]." (".$lig_pays->nom_long.")";
+		}
+	}
+	else {
+		$sql="SELECT * FROM communes WHERE code_commune_insee='$code_commune_insee';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+			if($mode==0) {
+				$retour=$lig->commune;
+			}
+			else {
+				$retour=$lig->commune." (<i>".$lig->departement."</i>)";
+			}
 		}
 	}
 	return $retour;
@@ -979,7 +994,9 @@ else{
 				"DATE_ENTREE",
 				"CODE_MOTIF_SORTIE",
 				"CODE_SEXE",
-				"CODE_COMMUNE_INSEE_NAISS"
+				"CODE_COMMUNE_INSEE_NAISS",
+				"CODE_PAYS",
+				"VILLE_NAISS"
 				);
 
 
@@ -1219,7 +1236,8 @@ else{
 							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
 							if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
 
-							if(isset($eleves[$i]["code_commune_insee_naiss"])){$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";}
+							if((isset($eleves[$i]["code_pays"]))&&($eleves[$i]["code_pays"]!='')&&(isset($eleves[$i]["ville_nais"]))&&($eleves[$i]["ville_nais"]!='')) {$sql.="lieu_naissance='".$eleves[$i]["code_pays"]."@".addslashes($eleves[$i]["ville_nais"])."', ";}
+							elseif(isset($eleves[$i]["code_commune_insee_naiss"])) {$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";}
 
 							$sql=substr($sql,0,strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
