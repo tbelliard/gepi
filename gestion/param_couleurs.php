@@ -298,7 +298,7 @@ fieldset#login_box div#header {
 	background-image: url(\"./images/background/degrade1_small.png\");
 }
 
-#table_header {
+#table_header {
 	background-image: url(\"./images/background/degrade1.png\");
 }
 
