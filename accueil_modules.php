@@ -56,11 +56,26 @@ function acces($id,$statut) {
 
 
 
-function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_) {
+function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_,$key_setting) {
     if (acces($chemin_,$statut_)==1)  {
         $temp = substr($chemin_,1);
         echo "<tr>\n";
         //echo "<td width=30%><a href=$temp>$titre_</a></span>";
+        echo "<td>\n";
+		if($key_setting!='') {
+			$sql="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND (value='y' OR value='yes');";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)>0) {
+				echo "<img src='images/enabled.png' width='20' height='20' title='Module actif' alt='Module actif' />\n";
+			}
+			else {
+				echo "<img src='images/disabled.png' width='20' height='20' title='Module inactif' alt='Module inactif' />\n";
+			}
+		}
+		else {
+			echo "<img src='images/icons/ico_question.png' width='19' height='19' title='Etat inconnu' alt='Etat inconnu' />\n";
+		}
+        echo "</td>\n";
         echo "<td width='30%'><a href=$temp>$titre_</a>";
         echo "</td>\n";
         echo "<td>$expli_</td>\n";
@@ -79,16 +94,32 @@ require_once("./lib/header.inc");
 <?php if (isset($msg)) { echo "<font color='red' size=2>$msg</font>"; }
 echo "<center>";
 
+$key_setting=array('active_cahiers_texte',
+'active_carnets_notes');
 $chemin = array(
 "/cahier_texte_admin/index.php",
 "/cahier_notes_admin/index.php");
-if ($force_abs) {$chemin[] = "/mod_absences/admin/index.php";}
+
+if ($force_abs) {
+	$chemin[] = "/mod_absences/admin/index.php";
+	$key_setting[]='active_module_absence%';
+}
 $chemin[] = "/edt_organisation/edt.php";
-if ($force_msj) {$chemin[] = "/mod_miseajour/admin/index.php";}
+$key_setting[]='autorise_edt%';
+
+if ($force_msj) {
+	$chemin[] = "/mod_miseajour/admin/index.php";
+	$key_setting[]='active_module_msj';
+}
+
 $chemin[] = "/mod_trombinoscopes/trombinoscopes_admin.php";
+$key_setting[]='active_module_trombinoscopes';
 $chemin[] = "/mod_notanet/notanet_admin.php";
+$key_setting[]='active_notanet';
 $chemin[] = "/mod_inscription/inscription_admin.php";
+$key_setting[]='active_inscription%';
 $chemin[] = "/cahier_texte_admin/rss_cdt_admin.php";
+$key_setting[]='rss_cdt_eleve';
 
 $titre = array(
 "Cahier de textes",
@@ -117,51 +148,61 @@ $expli[] = "Gestion des flux rss des cahiers de textes produits par Gepi";
 $chemin[] = "/utilisateurs/creer_statut_admin.php";
 $titre[] = "Créer des statuts personnalisés";
 $expli[] = "Définir des statuts supplémentaires en personnalisant les droits d'accès.";
+$key_setting[]='statuts_prives';
 
 // Années antérieures
 $chemin[] = "/mod_annees_anterieures/admin.php";
 $titre[] = "Années antérieures";
 $expli[] = "Pour gérer le module Années antérieures";
+$key_setting[]='active_annees_anterieures';
 
 // Module ateliers
 $chemin[] = "/mod_ateliers/ateliers_config.php";
 $titre[] = "Ateliers";
 $expli[] = "Gestion et mise en place d'ateliers de type conférences (gestion des ateliers, des intervenants, des inscriptions...).";
+$key_setting[]='active_ateliers';
 
 // Module discipline
 $chemin[] = "/mod_discipline/discipline_admin.php";
 $titre[] = "Discipline";
 $expli[] = "Pour gérer le module Discipline.";
+$key_setting[]='active_mod_discipline';
 
 //Module modèle Open_Office
 $chemin[] = "/mod_ooo/ooo_admin.php";
 $titre[] = "Modèle OpenOffice";
 $expli[] = "Pour gérer les modèles Open Office de Gepi.";
+$key_setting[]='active_mod_ooo';
 
 //Module ECTS
 $chemin[] = "/mod_ects/ects_admin.php";
 $titre[] = "Saisie ECTS";
 $expli[] = "Pour gérer les crédits ECTS attribués pour chaque enseignement.";
+$key_setting[]='active_mod_ects';
 
 //Module Plugins
 $chemin[] = "/mod_plugins/index.php";
 $titre[] = "Gérer les plugins";
 $expli[] = "Interface d'administration des plugins personnels de l'établissement.";
+$key_setting[]='';
 
 //Module Génèse des classes
 $chemin[] = "/mod_genese_classes/admin.php";
 $titre[] = "Génèse des classes";
 $expli[] = "Pour gérer le module Génèse des classes.";
+$key_setting[]='active_mod_genese_classes';
 
 //Module Epreuve blanche
 $chemin[] = "/mod_epreuve_blanche/admin.php";
 $titre[] = "Epreuves blanches";
 $expli[] = "Pour gérer des épreuves blanches (anonymat des copies,...).";
+$key_setting[]='active_mod_epreuve_blanche';
 
 //Module Examen blanc
 $chemin[] = "/mod_examen_blanc/admin.php";
 $titre[] = "Examens blancs";
 $expli[] = "Pour gérer des examens blancs.";
+$key_setting[]='active_mod_examen_blanc';
 
 $nb_ligne = count($chemin);
 //
@@ -175,10 +216,10 @@ if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table class='menu' summary='Administration des modules'>\n";
     echo "<tr>\n";
-    echo "<th colspan='2'><img src='./images/icons/control-center.png' alt='Admin modules' class='link'/> - Administration des modules</th>\n";
+    echo "<th colspan='3'><img src='./images/icons/control-center.png' alt='Admin modules' class='link'/> - Administration des modules</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
-        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut'],$key_setting[$i]);
     }
     echo "</table>\n";
 }
