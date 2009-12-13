@@ -44,7 +44,7 @@ function accent_min($texte){
 function accent_maj($texte){
 	return strtr($texte,"âäàáãåçêëèéîïìíñôöòóõûüùúıÿ","ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕÛÜÙÚİ¾");
 }
-
+/*
 function get_commune($code_commune_insee,$mode){
 	$retour="";
 
@@ -64,7 +64,7 @@ function get_commune($code_commune_insee,$mode){
 	}
 	return $retour;
 }
-
+*/
 function tabmatieres($type_brevet){
 	//====================
 	// AJOUT: boireaus 20080329

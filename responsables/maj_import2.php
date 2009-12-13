@@ -149,7 +149,7 @@ function maj_ini_prenom($prenom){
 }
 
 
-
+/*
 function get_commune($code_commune_insee,$mode){
 	$retour="";
 
@@ -174,14 +174,17 @@ function get_commune($code_commune_insee,$mode){
 			if($mode==0) {
 				$retour=$lig->commune;
 			}
-			else {
+			elseif($mode==1) {
 				$retour=$lig->commune." (<i>".$lig->departement."</i>)";
+			}
+			elseif($mode==2) {
+				$retour=$lig->commune." (".$lig->departement.")";
 			}
 		}
 	}
 	return $retour;
 }
-
+*/
 
 // Etape...
 $step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);

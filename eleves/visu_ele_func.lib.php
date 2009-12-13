@@ -48,7 +48,7 @@ function jour_en_fr($en){
 	}
 	else {return "";}
 }
-
+/*
 function get_commune($code_commune_insee,$mode){
 	$retour="";
 
@@ -65,7 +65,7 @@ function get_commune($code_commune_insee,$mode){
 	}
 	return $retour;
 }
-
+*/
 function info_eleve($ele_login) {
 	global $ele_lieu_naissance;
 	global $active_cahiers_texte;

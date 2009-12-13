@@ -4078,4 +4078,39 @@ function get_nom_prenom_eleve($login_ele) {
 		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 	}
 }
+
+function get_commune($code_commune_insee,$mode){
+	$retour="";
+
+	if(strstr($code_commune_insee,'@')) {
+		// On a affaire à une commune étrangère
+		$tmp_tab=split('@',$code_commune_insee);
+		$sql="SELECT * FROM pays WHERE code_pays='$tmp_tab[0]';";
+		$res_pays=mysql_query($sql);
+		if(mysql_num_rows($res_pays)==0) {
+			$retour=$tmp_tab[1]." ($tmp_tab[0])";
+		}
+		else {
+			$lig_pays=mysql_fetch_object($res_pays);
+			$retour=$tmp_tab[1]." (".$lig_pays->nom_long.")";
+		}
+	}
+	else {
+		$sql="SELECT * FROM communes WHERE code_commune_insee='$code_commune_insee';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+			if($mode==0) {
+				$retour=$lig->commune;
+			}
+			elseif($mode==1) {
+				$retour=$lig->commune." (<i>".$lig->departement."</i>)";
+			}
+			elseif($mode==2) {
+				$retour=$lig->commune." (".$lig->departement.")";
+			}
+		}
+	}
+	return $retour;
+}
 ?>
