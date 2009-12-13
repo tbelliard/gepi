@@ -2077,7 +2077,8 @@ if(isset($eleve_login)){
 						if("$lig_adr->commune"!=""){$chaine_adr2.="$lig_adr->commune";}
 						if("$lig_adr->pays"!=""){$chaine_adr2.=" (<i>$lig_adr->pays</i>)";}
 
-						if("$chaine_adr1"=="$chaine_adr2"){
+						//if("$chaine_adr1"=="$chaine_adr2"){
+						if(casse_mot("$chaine_adr1",'min')==casse_mot("$chaine_adr2",'min')){
 							echo "$chaine_adr2<br />\n<span style='color: red;'>Les adresses sont identiques, mais sont enregistrées sous deux identifiants différents (<i>$adr_id_1er_resp et $lig_adr->adr_id</i>); vous devriez modifier l'adresse pour pointer vers le même identifiant d'adresse.</span>";
 						}
 						else{
