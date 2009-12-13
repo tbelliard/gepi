@@ -105,7 +105,7 @@ function maj_ini_prenom($prenom) {
 }
 */
 
-
+/*
 function get_commune($code_commune_insee,$mode) {
 	$retour="";
 
@@ -122,7 +122,7 @@ function get_commune($code_commune_insee,$mode) {
 	}
 	return $retour;
 }
-
+*/
 
 // Etape...
 $step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
