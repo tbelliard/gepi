@@ -217,8 +217,7 @@
 				<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" />
 			</p>
 		</form>
-		<!--p class='small'-->
-		<p style='font-size:x-small'>
+		<p class='small'>
 			Les répertoires \"documents\" (<em>contenant les documents joints aux cahiers de texte</em>) et \"photos\" (<em>contenant les photos du trombinoscope</em>) ne seront pas sauvegardés.<br />
 			Un outil de sauvegarde spécifique se trouve en bas de la page <a href='./gestion/accueil_sauve.php#zip'>gestion des sauvegardes</a>.
 		</p>
