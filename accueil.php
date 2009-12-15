@@ -1333,7 +1333,7 @@ if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getS
 { $titre[] = "Accès des ".$gepiSettings['denomination_eleves']." et ".$gepiSettings['denomination_responsables']." aux appréciations"; }
 //==========================================================
 
-if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettinégValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
 { $titre[] = "Paramètres d'impression des bulletins";}
 if ($_SESSION['statut']=='scolarite')
 { $titre[] = "Gestion des fiches ".$gepiSettings['denomination_responsables'];}
