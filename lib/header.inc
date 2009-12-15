@@ -562,7 +562,8 @@ if (isset($titre_page)) {
 								echo ",%0d%0aCordialement.'>Contacter l'administrateur</a>";
 							}
 							else {
-								echo("<a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
+								//echo("<a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
+								echo("<a href=\"$gepiPath/gestion/contacter_admin.php\" onclick=\"centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes');return false;\" target='_blank'>Contacter l'administrateur</a>");
 							}
 						}
 					echo "</li>\n";

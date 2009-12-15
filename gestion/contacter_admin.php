@@ -48,8 +48,15 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
 ?>
-<H1 class='gepi'>GEPI - Obtenir de l'aide de l'administrateur.</H1>
+<h1 class='gepi'>GEPI - Obtenir de l'aide de l'administrateur.</h1>
 <?php
+
+$objet_msg=isset($_POST['objet_msg']) ? $_POST['objet_msg'] : "Demande d'aide dans GEPI";
+if($objet_msg=='') {
+	echo "<p style='color:red'>Le sujet du mail n'a pas été renseigné.<br />Veuillez corriger.</p>\n";
+	$action="";
+}
+
 switch($action)
 {
 //envoi du message
@@ -115,10 +122,12 @@ case "envoi":
 		die();
 	}
 
-	$objet_msg=isset($_POST['objet_msg']) ? $_POST['objet_msg'] : "Demande d'aide dans GEPI";
+	//$objet_msg=isset($_POST['objet_msg']) ? $_POST['objet_msg'] : "Demande d'aide dans GEPI";
 	$objet_msg=trim($objet_msg);
 	unslashes($objet_msg);
-	if($objet_msg=='') {$objet_msg="Demande d'aide dans GEPI";}
+	//echo "\$objet_msg=$objet_msg<br />";
+	//stripslashes($objet_msg);
+	//if($objet_msg=='') {$objet_msg="Demande d'aide dans GEPI";}
 
 	$envoi = mail($gepiAdminAdress,
 		$gepiPrefixeSujetMail.$objet_msg,
@@ -152,7 +161,7 @@ case "envoi":
 		}
 		echo "<br /><br /><br />\n";
 		echo "<a href=\"javascript:self.close();\">Fermer</a></p>\n";
-
+		echo "<noscript><p style='color:red;'>Il n'est pas possible de refermer la fenêtre par le lien ci-dessus lorsque javascript est désactivé.</p></noscript>\n";
 	} else {
 		echo "<br /><br /><br /><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font></p>\n";
 	}
@@ -176,78 +185,97 @@ default://formulaire d'envoi
 	<form action="contacter_admin.php" method="post" name="doc">
 	<input type="hidden" name="nama" value="<?php echo $_SESSION['prenom']." ".$_SESSION['nom']; ?>" />
 	<input type="hidden" name="action" value="envoi" />
-	Sujet&nbsp;: <input type='text' name='objet_msg' value="Demande d'aide dans GEPI" size='35' maxlength='80' />
-	<textarea name="message" cols="50" rows="5">Contenu du message : </textarea><br />
+	<p>Sujet&nbsp;<span style='color:red' alt='Ce champ doit être renseigné' title='Ce champ doit être renseigné'>(*)</span>&nbsp;: <!--input type='text' name='objet_msg' value="Demande d'aide dans GEPI" size='35' maxlength='80' /--><input type='text' name='objet_msg' id='objet_msg' value="" size='35' maxlength='80' /><br />
 
 	<?php
+	echo "<textarea valign='bottom' name='message' cols='50' rows='5'>Contenu du message : $message</textarea><br />\n";
 
-	echo "E-mail pour la réponse : ";
+
+	echo "E-mail pour la réponse&nbsp;: ";
 	if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
-		echo "(<i>facultatif, une réponse vous sera adressée dans votre casier si vous ne précisez pas d'e-mail</i>)";
+		echo "(<i style='font-size:small;'>facultatif, une réponse vous sera adressée dans votre casier si vous ne précisez pas d'e-mail</i>)";
 	}
 	echo "<br />\n";
 
 	echo "<input type='text' name='email_reponse' id='email_reponse' size='40' maxlength='256' ";
-
-	$sql="SELECT email FROM utilisateurs WHERE login='".$_SESSION['login']."';";
-	$res_mail=mysql_query($sql);
-	if(mysql_num_rows($res_mail)>0) {
-		$lig_mail=mysql_fetch_object($res_mail);
-		echo "value='$lig_mail->email' ";
+	if($email_reponse!='') {
+		echo "value='$email_reponse' ";
+	}
+	else {
+		$sql="SELECT email FROM utilisateurs WHERE login='".$_SESSION['login']."';";
+		$res_mail=mysql_query($sql);
+		if(mysql_num_rows($res_mail)>0) {
+			$lig_mail=mysql_fetch_object($res_mail);
+			echo "value='$lig_mail->email' ";
+		}
 	}
 	echo "/>\n";
 	echo "<br />\n";
 
 	if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
-		echo "Ou numéro de votre casier en salle des professeurs pour la réponse :";
+		echo "Ou numéro de votre casier en salle des professeurs pour la réponse&nbsp;:<br />";
 
-		echo "<input type='text' name='casier' size='40' maxlength='256' value='Casier N°' />\n";
+		if($casier!='') {
+			echo "<input type='text' name='casier' size='40' maxlength='256' value='$casier' />\n";
+		}
+		else {
+			echo "<input type='text' name='casier' size='40' maxlength='256' value='Casier N°' />\n";
+		}
 		echo "<br />\n";
 	}
+	echo "</p>\n";
 
 	echo "<p align='center'>";
 	//echo "<input type='submit' value='Envoyer le message' />\n";
 	echo "<input type='button' value='Envoyer le message' onClick='verif_et_valide_envoi();' />\n";
 	echo "</p>\n";
 
-	echo "</form>\n";
-
 	echo "<script type='text/javascript'>
 	function verif_et_valide_envoi() {
-		if(document.getElementById('email_reponse')) {
-			email=document.getElementById('email_reponse').value;
+		if(document.getElementById('objet_msg').value=='') {
+			alert('Aucun sujet n\\' a été précisé. Veuillez corriger.')
+		}
+		else {
 
-			if(email=='') {
-				//confirmation=confirm('Vous n avez pas saisi d adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
-				confirmation=confirm('Vous n\\'avez pas saisi d\\'adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
-
-				if(confirmation) {
-					document.forms['doc'].submit();
-				}
-			}
-			else {
-				//var verif = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/
-				//var verif2 = /^[a-zA-Z0-9_-]{1,}[.][a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/
-				//if (verif.exec(email) == null) {
-				//if ((verif.exec(email) == null)&&(verif2.exec(email) == null)) {
-				var verif = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}$/
-				if (verif.exec(email) == null) {
-					confirmation=confirm('L\\'adresse courriel/email saisie ne semble pas valide.\\nVeuillez contrôler la saisie et confirmer votre envoi si l\\'adresse est correcte.\\nSouhaitez-vous néanmoins poster le message?');
-
-					if(confirmation) {
+			if(document.getElementById('email_reponse')) {
+				email=document.getElementById('email_reponse').value;
+	
+				if(email=='') {
+					//confirmation=confirm('Vous n avez pas saisi d adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
+					confirmation=confirm('Vous n\\'avez pas saisi d\\'adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
+	
+					if(confirmation) {	
 						document.forms['doc'].submit();
 					}
 				}
 				else {
-					document.forms['doc'].submit();
+					//var verif = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/
+					//var verif2 = /^[a-zA-Z0-9_-]{1,}[.][a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/
+					//if (verif.exec(email) == null) {
+					//if ((verif.exec(email) == null)&&(verif2.exec(email) == null)) {
+					var verif = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}$/
+					if (verif.exec(email) == null) {
+						confirmation=confirm('L\\'adresse courriel/email saisie ne semble pas valide.\\nVeuillez contrôler la saisie et confirmer votre envoi si l\\'adresse est correcte.\\nSouhaitez-vous néanmoins poster le message?');
+	
+						if(confirmation) {
+							document.forms['doc'].submit();
+						}
+					}
+					else {
+						document.forms['doc'].submit();
+					}
 				}
 			}
-		}
-		else {
-			document.forms['doc'].submit();
+			else {
+				document.forms['doc'].submit();
+			}
 		}
 	}
 </script>\n";
+	echo "<noscript>\n";
+	echo "<p align='center'><input type='submit' value='Envoyer le message sans javascript' /></p>\n";
+	echo "</noscript>\n";
+	echo "</form>\n";
 
 	break;
 }
