@@ -790,7 +790,10 @@
 	for($k=1;$k<=$nb_series;$k++){
 		//$largeur_eleve[$k] = strlen($eleve[$k]) * ImageFontWidth($taille_police);
 		//$total_largeur_eleves=$total_largeur_eleves+$largeur_eleve[$k];
-		$largeur_chaine[$k] = strlen($chaine[$k]) * ImageFontWidth($taille_police);
+
+		//$largeur_chaine[$k] = strlen($chaine[$k]) * ImageFontWidth($taille_police);
+		$largeur_chaine[$k] = strlen($chaine[$k]." (".nf($mgen[$k]).")") * ImageFontWidth($taille_police);
+
 		$total_largeur_chaines=$total_largeur_chaines+$largeur_chaine[$k];
 	}
 
@@ -816,7 +819,8 @@
 			$xtmp=$xtmp+$espace;
 			//imagestring ($img, $taille_police, $xtmp, 5, $eleve[$k], $couleureleve[$k]);
 			//$xtmp=$xtmp+$largeur_eleve[$k];
-			imagestring ($img, $taille_police, $xtmp, ImageFontHeight($taille_police)+5, strtr($chaine[$k],"_"," "), $couleureleve[$k]);
+			//imagestring ($img, $taille_police, $xtmp, ImageFontHeight($taille_police)+5, strtr($chaine[$k],"_"," "), $couleureleve[$k]);
+			imagestring ($img, $taille_police, $xtmp, ImageFontHeight($taille_police)+5, strtr($chaine[$k],"_"," ")." (".nf($mgen[$k]).")", $couleureleve[$k]);
 			$xtmp=$xtmp+$largeur_chaine[$k];
 		}
 
@@ -833,7 +837,8 @@
 			$xtmp=$xtmp+$espace;
 			//imagestring ($img, $taille_police, $xtmp, 5, $eleve[$k], $couleureleve[$k]);
 			//$xtmp=$xtmp+$largeur_eleve[$k];
-			imagestring ($img, $taille_police, $xtmp, 5, strtr($chaine[$k],"_"," "), $couleureleve[$k]);
+			//imagestring ($img, $taille_police, $xtmp, 5, strtr($chaine[$k],"_"," "), $couleureleve[$k]);
+			imagestring ($img, $taille_police, $xtmp, 5, strtr($chaine[$k],"_"," ")." (".nf($mgen[$k]).")", $couleureleve[$k]);
 			$xtmp=$xtmp+$largeur_chaine[$k];
 		}
 	}
