@@ -1,11 +1,11 @@
 <?php
 
-//	header('Content-Type: application/pdf');
+	header('Content-Type: application/pdf');
 
 	// Global configuration file
 	// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
 	//Le problème peut être résolu en ajoutant la ligne suivante :
-//	Header('Pragma: public');
+	Header('Pragma: public');
 
 	require('../fpdf/fpdf.php');
 	require('../fpdf/ex_fpdf.php');
