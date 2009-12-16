@@ -414,6 +414,8 @@ if (isset($titre_page)) {
 		
 	}elseif($_SESSION["statut"] == "autre") {
 		$tbs_statut[]=array("classe"=>"" , "texte"=>$_SESSION["statut_special"]);
+	}elseif($_SESSION["statut"] == "secours") {
+		$tbs_statut[]=array("classe"=>"" , "texte"=>"<strong class='rouge'>compte secours</strong>");
 	}
 					
 	//On vérifie si le module de mise à jour est activé
