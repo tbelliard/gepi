@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -220,6 +220,8 @@ $titre_page = "Saisie des moyennes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 // Couleurs utilisées
 $couleur_devoirs = '#AAE6AA';
 $couleur_fond = '#AAE6AA';
@@ -227,7 +229,9 @@ $couleur_moy_cn = '#96C8F0';
 
 
 
-if (!isset($periode_cn)) $periode_cn = 0;
+if (!isset($periode_cn)) {$periode_cn = 0;}
+
+//echo "\$periode_cn=$periode_cn<br />\n";
 
 if($periode_cn==0){
 	//echo "A";
@@ -269,10 +273,12 @@ if ($periode_cn != 0) {
 if ($periode_cn != 0) {
 	$login_prof = $_SESSION['login'];
 
-	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$periode_cn');";
-	$appel_cahier_notes = mysql_query($sql);
-	if(mysql_num_rows($appel_cahier_notes)==0) {
-		// En passant à enseignement suivant, il peut arriver que l'on passe d'une enseignement à trois périodes à un enseignement à 2 périodes.
+	// On teste si la première classe du groupe a bien la période $periode_cn (on ne peut pas associer un groupe a des classes qui n'ont pas le même nombre de périodes)
+	$sql="SELECT 1=1 FROM periodes WHERE (id_classe='".$current_group["classes"]["list"][0]."' and num_periode='$periode_cn');";
+	//echo "$sql<br />";
+	$test_periode_premiere_classe_du_groupe=mysql_query($sql);
+	if(mysql_num_rows($test_periode_premiere_classe_du_groupe)==0) {
+		// En passant à enseignement suivant, il peut arriver que l'on passe d'un enseignement à trois périodes à un enseignement à 2 périodes.
 		// Si on arrive sur l'enseignement à deux périodes avec un periode_cn=3, on obtient des erreurs
 
 		$sql="SELECT num_periode FROM periodes p, j_groupes_classes jgc WHERE p.verouiller='N' AND jgc.id_classe=p.id_classe AND jgc.id_groupe='".$current_group["id"]."' ORDER BY num_periode LIMIT 1;";
@@ -284,10 +290,17 @@ if ($periode_cn != 0) {
 		else {
 			$periode_cn=1;
 		}
-		$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$periode_cn');";
-		$appel_cahier_notes = mysql_query($sql);
 	}
-	$id_racine = @mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
+
+	// On récupére, si le cahier de notes est initialisé l'identifiant du cahier de notes.
+	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$periode_cn');";
+	//echo "$sql<br />";
+	$appel_cahier_notes = mysql_query($sql);
+	if(mysql_num_rows($appel_cahier_notes)>0) {
+		$id_racine = mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
+	}
+
+	//$id_racine = @mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
 }
 
 
@@ -708,6 +721,8 @@ if ($order_by != "classe") {
 	}
 }
 
+//$tmp_tab_test=array();
+
 $eleve_login = null;
 $num_id = 10;
 $prev_classe = null;
@@ -889,8 +904,10 @@ foreach ($liste_eleves as $eleve_login) {
 						//$mess[$k] = $mess[$k]."<td id=\"td_".$k.$num_id."\" ".$temp."><center><input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_t[$k]."\" value=";
 						if ($eleve_statut != '') {
 							$mess[$k] = $mess[$k]."\"".$eleve_statut."\"";
+							//$tmp_tab_test[]=$eleve_statut;
 						} else {
 							$mess[$k] = $mess[$k]."\"".$eleve_note."\"";
+							//$tmp_tab_test[]=$eleve_note;
 						}
 						$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" />\n";
 					}
@@ -1141,5 +1158,15 @@ if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
 		document.getElementById('n310').focus();
 	}
 </script>
+
+<?php
+	/*
+	echo "<div style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
+	javascript_tab_stat('tab_stat_',$nb_periode.$num_id);
+	echo "</div>\n";
+
+	//calcule_moy_mediane_quartiles($tmp_tab_test);
+	*/
+?>
 <p><br /></p>
 <?php require("../lib/footer.inc.php");?>
