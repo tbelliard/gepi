@@ -1272,6 +1272,8 @@ if ($nb_total != 0) {
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
 				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			}else{
+				$tbs_menu[$nummenu]['entree'][]=array('lien'=>"" , 'titre'=>"", 'expli'=>"");
 			}
 		}
 
