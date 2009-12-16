@@ -191,13 +191,14 @@ if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
 	$unite_div_infobulle="em";
 	// Pour l'overflow dans les DIV d'aide, il vaut mieux laisser 'em'.
 
+	// Variable passée à 'ok' en fin de page via le /lib/footer.inc.php
+	echo "<script type='text/javascript'>
+		var temporisation_chargement='n';
+	</script>\n";
+
 	echo "<script type='text/javascript' src='$gepiPath/lib/brainjar_drag.js'></script>\n";
 	echo "<script type='text/javascript' src='$gepiPath/lib/position.js'></script>\n";
 
-	// Variable passée à 'ok' en fin de page via le /lib/footer.inc.php
-	echo "<script type='text/javascript'>
-		temporisation_chargement='n';
-	</script>\n";
 
 } // if(isset($utilisation_jsdivdrag...
 
