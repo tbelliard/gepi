@@ -1239,8 +1239,18 @@ else{
 							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
 							if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
 
-							if((isset($eleves[$i]["code_pays"]))&&($eleves[$i]["code_pays"]!='')&&(isset($eleves[$i]["ville_nais"]))&&($eleves[$i]["ville_nais"]!='')) {$sql.="lieu_naissance='".$eleves[$i]["code_pays"]."@".addslashes($eleves[$i]["ville_nais"])."', ";}
-							elseif(isset($eleves[$i]["code_commune_insee_naiss"])) {$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";}
+							//affiche_debug("eleve_id=".$eleves[$i]["eleve_id"]."<br />");
+							//affiche_debug("code_pays=".$eleves[$i]["code_pays"]."<br />");
+							//affiche_debug("ville_naiss=".$eleves[$i]["ville_naiss"]."<br />");
+							//affiche_debug("code_commune_insee_naiss=".$eleves[$i]["code_commune_insee_naiss"]."<br />");
+
+							if((isset($eleves[$i]["code_pays"]))&&($eleves[$i]["code_pays"]!='')&&
+								(isset($eleves[$i]["ville_naiss"]))&&($eleves[$i]["ville_naiss"]!='')) {
+									$sql.="lieu_naissance='".$eleves[$i]["code_pays"]."@".addslashes($eleves[$i]["ville_naiss"])."', ";
+							}
+							elseif(isset($eleves[$i]["code_commune_insee_naiss"])) {
+								$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";
+							}
 
 							$sql=substr($sql,0,strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
@@ -2959,6 +2969,9 @@ else{
 										echo ">";
 									}
 									echo "$new_date";
+
+//echo "_".$ele_lieu_naissance;
+
 									if($affiche[11]!="") {echo " à ".get_commune($affiche[11],1);}
 									echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
 									echo "<input type='hidden' name='modif_".$cpt."_lieu_naissance' value='".$affiche[11]."' />\n";
