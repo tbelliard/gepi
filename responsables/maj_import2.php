@@ -1734,7 +1734,7 @@ else{
 
 				echo "<input type='hidden' name='step' value='2c' />\n";
 				echo "<p><input type='submit' value='Valider' /></p>\n";
-	
+
 				echo "<script type='text/javascript'>
 	function modifcase(mode){
 		for(i=0;i<$cpt;i++){
@@ -8493,13 +8493,17 @@ else{
 				}
 
 
+				echo "<p align='center'><input type=submit value='Contrôler les suppressions de responsabilités' /></p>\n";
+
 				//echo "<p align='center'><input type=submit value='Terminer' /></p>\n";
+				/*
 				echo "<p>Retour à:</p>\n";
 				echo "<ul>\n";
 				echo "<li><a href='../accueil.php'>l'accueil</a></li>\n";
 				echo "<li><a href='index.php'>l'index Responsables</a></li>\n";
 				echo "<li><a href='../eleves/index.php'>l'index Elèves</a></li>\n";
 				echo "</ul>\n";
+				*/
 			}
 
 			echo "</form>\n";
@@ -8511,11 +8515,174 @@ else{
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
-			echo "A FAIRE: Lister les associations de responsables2 qui ne sont plus dans temp_resp...<br />Il faudrait faire de même à la fin des recherches sur resp_pers, resp_adr et eleves.";
+			echo "<h2>Traitement des responsabilités disparues</h2>\n";
+
+			$sql="SELECT ele_id, pers_id FROM responsables2 WHERE CONCAT(ele_id,'_',pers_id) NOT IN (SELECT CONCAT(ele_id,'_',pers_id) FROM temp_responsables2_import);";
+			$res=mysql_query($sql);
+			$nb=mysql_num_rows($res);
+			if($nb==0) {
+				echo "<p>Toutes les associations inscrites dans votre table de responsabilités sont bien présentes dans le fichier XML importé.<br />
+				Il ne reste donc pas d'association indésirable (<i>sous réserve que vous ayez bien tenu compte des éventuelles modifications proposées lors de la phase Responsabilités</i>).</p>\n";
+
+				echo "<p>Retour à:</p>\n";
+				echo "<ul>\n";
+				echo "<li><a href='../accueil.php'>l'accueil</a></li>\n";
+				echo "<li><a href='index.php'>l'index Responsables</a></li>\n";
+				echo "<li><a href='../eleves/index.php'>l'index Elèves</a></li>\n";
+				echo "</ul>\n";
+			}
+			else {
+				if($nb==1) {
+					echo "<p>$nb suppression de responsabilité a été relevée.<br />Votre base comporte une responsabilité qui n'est plus présente dans le fichier XML importé.</p>\n";
+				}
+				else {
+					echo "<p>$nb suppressions de responsabilités ont été relevées.<br />Votre base comporte des responsabilités qui ne sont plus présentes dans le fichier XML importé.</p>\n";
+				}
+
+				echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+
+				echo "<table class='boireaus' summary='Tableau des responsabilités disparues'>\n";
+				echo "<tr>\n";
+				echo "<th colspan='2'>\n";
+				echo "Elève\n";
+				echo "</th>\n";
+				echo "<th colspan='2'>\n";
+				echo "Responsable\n";
+				echo "</th>\n";
+				echo "<th rowspan='2'>\n";
+				echo "Suppression<br />\n";
+
+				echo "<a href=\"javascript:modifcase('coche')\">";
+				echo "<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
+				echo " / ";
+				echo "<a href=\"javascript:modifcase('decoche')\">";
+				echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+				echo "</th>\n";
+				echo "</tr>\n";
+
+				echo "<tr>\n";
+				echo "<th>\n";
+				echo "Ele_id\n";
+				echo "</th>\n";
+				echo "<th>\n";
+				echo "Nom prénom\n";
+				echo "</th>\n";
+				echo "<th>\n";
+				echo "Nom prénom\n";
+				echo "</th>\n";
+				echo "<th>\n";
+				echo "Resp_legal\n";
+				echo "</th>\n";
+				echo "</tr>\n";
+
+				$alt=1;
+				$cpt=0;
+				while($lig=mysql_fetch_object($res)) {
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt white_hover'>\n";
+					echo "<td>\n";
+					echo $lig->ele_id;
+					echo "</td>\n";
+
+					echo "<td>\n";
+					$sql="SELECT nom,prenom FROM eleves WHERE ele_id='$lig->ele_id';";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)==0) {
+						echo "Elève inconnu";
+					}
+					else {
+						$lig2=mysql_fetch_object($res2);
+						echo casse_mot($lig2->nom)." ".casse_mot($lig2->prenom,'majf2');
+					}
+					echo "</td>\n";
+
+
+					echo "<td>\n";
+					// Civilite Nom Prenom du responsable
+					$sql="SELECT civilite,nom,prenom,resp_legal FROM resp_pers rp, responsables2 r WHERE rp.pers_id='$lig->pers_id' AND rp.pers_id=r.pers_id AND r.ele_id='$lig->ele_id';";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)==0) {
+						echo "Reponsable inconnu";
+						echo "</td>\n";
+						echo "<td>\n";
+						// avec rang responsabilité initiale
+						echo "?";
+					}
+					else {
+						$lig2=mysql_fetch_object($res2);
+						echo $lig2->civilite." ".casse_mot($lig2->nom)." ".casse_mot($lig2->prenom,'majf2');
+						echo "</td>\n";
+						echo "<td>\n";
+						// avec rang responsabilité initiale
+						echo $lig2->resp_legal;
+					}
+					echo "</td>\n";
+
+					echo "<td><input type='checkbox' name='suppr_resp_ele[]' id='suppr_resp_ele_$cpt' value='".$lig->ele_id."_".$lig->pers_id."' /></td>\n";
+					echo "</tr>\n";
+					$cpt++;
+				}
+
+
+				echo "<input type='hidden' name='step' value='21' />\n";
+				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				echo "</form>\n";
+
+				echo "<script type='text/javascript'>
+	function modifcase(mode){
+		for(i=0;i<$cpt;i++){
+			if(document.getElementById('suppr_resp_ele_'+i)){
+				if(mode=='coche'){
+					document.getElementById('suppr_resp_ele_'+i).checked=true;
+				}
+				else{
+					document.getElementById('suppr_resp_ele_'+i).checked=false;
+				}
+			}
+		}
+	}
+</script>\n";
+
+			}
 
 			break;
 		case "21":
-			echo "<h2>THE END ?</h2>\n";
+			echo "<h2>Traitement des responsabilités disparues</h2>\n";
+
+			$suppr_resp_ele=isset($_POST['suppr_resp_ele']) ? $_POST['suppr_resp_ele'] : NULL;
+
+			if(isset($suppr_resp_ele)) {
+				$nb_suppr=0;
+				$nb_err=0;
+				for($i=0;$i<count($suppr_resp_ele);$i++) {
+					//echo "<p>\$suppr_resp_ele[$i]=$suppr_resp_ele[$i]<br />";
+					$tmp_tab=explode("_",$suppr_resp_ele[$i]);
+					$ele_id=$tmp_tab[0];
+					$pers_id=$tmp_tab[1];
+
+					$sql="DELETE FROM responsables2 WHERE pers_id='$pers_id' AND ele_id='$ele_id';";
+					//echo "$sql<br />";
+					$res=mysql_query($sql);
+					if(!$res) {
+						$nb_err++;
+					}
+					else {
+						$nb_suppr++;
+					}
+				}
+
+				echo "<p>$nb_suppr suppression(s) de responsabilité(s).<br />$nb_err erreur(s).</p>\n";
+			}
+
+			echo "<p><br /></p>\n";
+
+			echo "<p>Retour à:</p>\n";
+			echo "<ul>\n";
+			echo "<li><a href='../accueil.php'>l'accueil</a></li>\n";
+			echo "<li><a href='index.php'>l'index Responsables</a></li>\n";
+			echo "<li><a href='../eleves/index.php'>l'index Elèves</a></li>\n";
+			echo "</ul>\n";
+
 			break;
 	}
 }
