@@ -169,7 +169,7 @@ $moy_cat_classe_max = array();
 // On teste la présence d'au moins un coeff pour afficher la colonne des coef
 $test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 $ligne_supl = 0;
-if ($test_coef != 0) $ligne_supl = 1;
+if ($test_coef != 0) {$ligne_supl = 1;}
 
 $temoin_note_sup10="n";
 if($utiliser_coef_perso=='y') {
@@ -230,10 +230,12 @@ if ($affiche_categories) {
 
 if($referent=="une_periode") {
 	$p=$num_periode;
+	// Pour faire un tour dans la boucle seulement:
 	$periode_limit=$p+1;
 }
 else {
 	$p=1;
+	// Pour aller jusqu'à la dernière période
 	$periode_limit=$nb_periode;
 	// $nb_periode initialisé par periodes.inc.php vaut 4 dans le cas où il y a 3 trimestres
 }
@@ -527,6 +529,7 @@ if (($aff_rang) and ($referent=="une_periode")) {
 
 //=============================
 // Utilisé pour referent=annee
+// On initialise les totaux coef et notes pour les lignes élèves ($j)
 $j = '0';
 while($j < $nb_lignes_tableau) {
 	//$total_coef[$j+$ligne_supl] = 0;
@@ -762,19 +765,23 @@ while($i < $lignes_groupes) {
 			while ($p < $nb_periode) {
 
 				// On récupère l'indice de l'élève dans $tab_moy pour la période $num_periode
-				$indice_j_ele=$tab_moy['periodes'][$p]['tab_login_indice'][$current_eleve_login[$j]];
+				//$indice_j_ele=$tab_moy['periodes'][$p]['tab_login_indice'][$current_eleve_login[$j]];
 				//$coef_eleve=$tab_moy['periodes'][$p]['current_coef_eleve'][$indice_j_ele][$i];
 
 				if (!in_array($current_eleve_login[$j], $current_group["eleves"][$p]["list"])) {
 					$non_suivi = $non_suivi*2;
 				} else {
+					// On récupère l'indice de l'élève dans $tab_moy pour la période $num_periode
+					$indice_j_ele=$tab_moy['periodes'][$p]['tab_login_indice'][$current_eleve_login[$j]];
+
 					//$current_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$current_eleve_login[$j]' AND id_groupe='" . $current_group["id"] . "' AND periode='$p')");
 					//$current_eleve_statut = @mysql_result($current_eleve_note_query, 0, "statut");
 
 					$current_eleve_statut=$tab_moy['periodes'][$p]['current_eleve_statut'][$i][$indice_j_ele];
 					$current_eleve_note=$tab_moy['periodes'][$p]['current_eleve_note'][$i][$indice_j_ele];
 
-					if ($current_eleve_statut == "") {
+					//if ($current_eleve_statut == "") {
+					if(($current_eleve_statut=="")&&($current_eleve_note!="")&&($current_eleve_note!="-")) {
 						//$temp = @mysql_result($current_eleve_note_query, 0, "note");
 						$temp=$current_eleve_note;
 						if  ($temp != '')  {
@@ -782,6 +789,14 @@ while($i < $lignes_groupes) {
 							$coef_moy++;
 						}
 					}
+
+					/*
+					if($current_eleve_login[$j]=='BABOUIN_D') {
+						echo "<p>\$tab_moy['periodes'][$p]['current_eleve_statut'][$i][$indice_j_ele]=".$current_eleve_statut."<br />";
+						echo "\$tab_moy['periodes'][$p]['current_eleve_note'][$i][$indice_j_ele]=".$current_eleve_note."<br />";
+						echo "\$moy=$moy et \$coef_moy=$coef_moy<br />";
+					}
+					*/
 				}
 				$p++;
 			}
