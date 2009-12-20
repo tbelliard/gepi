@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -74,14 +74,19 @@ $nom_table = "class_temp".SESSION_ID();
 if (isset($_POST['is_posted'])) {
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
+	//echo "\$indice_max_log_eleve=$indice_max_log_eleve<br />";
 
 	$sql="SELECT e.* FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login = j.login and j.indice_aid='$indice_aid')";
 	//echo "$sql<br />";
 	$quels_eleves=mysql_query($sql);
 	$lignes = mysql_num_rows($quels_eleves);
+	//echo "\$lignes=$lignes (nombre d'élèves inscrits dans l'AID)<br />";
 	$j = '0';
 	while($j < $lignes) {
 		$reg_eleve_login = mysql_result($quels_eleves, $j, "login");
+
+		//echo "<hr /><p>Elève $reg_eleve_login<br />";
+
 		//echo "\$reg_eleve_login=$reg_eleve_login<br />";
 		//$call_classe = mysql_query("SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login = '$reg_eleve_login' ORDER BY periode DESC");
 		$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login = '$reg_eleve_login' ORDER BY periode DESC";
@@ -92,15 +97,18 @@ if (isset($_POST['is_posted'])) {
 		// ... par contre, dans la partie saisie, seuls les élèves effectivement dans une classe sont proposés.
 		if(mysql_num_rows($call_classe)>0){
 			$id_classe = mysql_result($call_classe, '0', "id_classe");
-			$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode");
+			$sql="SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode";
+			//echo "$sql<br />";
+			$periode_query = mysql_query($sql);
 			$nb_periode = mysql_num_rows($periode_query) ;
 			if ($type_note == 'last') {$last_periode_aid = min($nb_periode,$display_end);}
 			$k='1';
 			while ($k < $nb_periode + 1) {
+				//echo "<p>Période $k<br />";
 				if (($k >= $display_begin) and ($k <= $display_end)) {
 					$ver_periode[$k] = mysql_result($periode_query, $k-1, "verouiller");
 					if ($ver_periode[$k] == "N"){
-
+						//echo "La période n'est pas fermée en saisie.<br />";
 						//=========================
 						// AJOUT: boireaus 20071003
 						unset($log_eleve);
@@ -112,6 +120,8 @@ if (isset($_POST['is_posted'])) {
 							$note_eleve=$_POST['note_eleve_'.$k];
 						}
 						//=========================
+
+						//echo "\$log_eleve=$log_eleve et \$note_eleve=$note_eleve<br />";
 
 						//=========================
 						// AJOUT: boireaus 20071003
@@ -128,6 +138,7 @@ if (isset($_POST['is_posted'])) {
 						}
 						//echo "\$num_eleve=$num_eleve<br />";
 						if($num_eleve!=-1){
+							//echo "L'élève a été trouvé dans le tableau \$log_eleve soumis.<br />";
 							//=========================
 							// MODIF: boireaus 20071003
 							//$nom_log = $reg_eleve_login."_t".$k;
@@ -142,6 +153,9 @@ if (isset($_POST['is_posted'])) {
 							else{
 								$app = "";
 							}
+
+							//echo "\$app=$app<br />";
+
 							$elev_statut = '';
 							//=========================
 							if(isset($note_eleve[$num_eleve])) {
@@ -173,19 +187,33 @@ if (isset($_POST['is_posted'])) {
 							}
 							//=========================
 
-							$test_eleve_app_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
+							//echo "\$note=$note et \$elev_statut=$elev_statut<br />";
+
+							$sql="SELECT * FROM aid_appreciations WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
+							//echo "$sql<br />";
+							$test_eleve_app_query = mysql_query($sql);
 							$test = mysql_num_rows($test_eleve_app_query);
 							if ($test != "0") {
+								//echo "Il y avait déjà un enregistrement.<br />";
 								if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
-									$register = mysql_query("UPDATE aid_appreciations SET appreciation='$app', note='$note',statut='$elev_statut' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
+									$sql="UPDATE aid_appreciations SET appreciation='$app', note='$note',statut='$elev_statut' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
+									//echo "$sql<br />";
+									$register=mysql_query($sql);
 								} else {
-									$register = mysql_query("UPDATE aid_appreciations SET appreciation='$app' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
+									$sql="UPDATE aid_appreciations SET appreciation='$app' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
+									//echo "$sql<br />";
+									$register=mysql_query($sql);
 								}
 							} else {
+								//echo "Il n'y avait pas encore d'enregistrement.<br />";
 								if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
-									$register = mysql_query("INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app', note = '$note', statut='$elev_statut', indice_aid='$indice_aid'");
+									$sql="INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app', note = '$note', statut='$elev_statut', indice_aid='$indice_aid';";
+									//echo "$sql<br />";
+									$register=mysql_query($sql);
 								} else {
-									$register = mysql_query("INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app',statut='$elev_statut', indice_aid='$indice_aid'");
+									$sql="INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app',statut='$elev_statut', indice_aid='$indice_aid';";
+									//echo "$sql<br />";
+									$register=mysql_query($sql);
 								}
 							}
 							if (!$register) {$msg = "Erreur lors de l'enregistrement des données de la période $k ";} else {$msg = "Les modifications ont été enregistrées !";$affiche_message = 'yes';}
@@ -273,16 +301,20 @@ if (!isset($aid_id)) {
 		}
 	}
 } else {
-	?>
-	| <a href="saisie_aid.php?indice_aid=<?php echo $indice_aid; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">Choix <?php echo $nom_aid; ?></a></p>
-	<form enctype="multipart/form-data" action="saisie_aid.php" method=post>
-	<center><input type=submit value=Enregistrer /></center><?php
+
+	echo " | <a href='saisie_aid.php?indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix $nom_aid</a></p>\n";
+
+	echo "<form enctype='multipart/form-data' action='saisie_aid.php' method='post'>\n";
+	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+
 	$calldata = mysql_query("SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
 	$aid_nom = mysql_result($calldata, 0, "nom");
-	?>
-	<p class='grand'>Appréciations <?php echo "$nom_aid : $aid_nom"; ?></p>
-	<table class='boireaus' border=1 cellspacing=2 cellpadding=5>
-	<?php
+
+
+	echo "<p class='grand'>Appréciations $nom_aid : $aid_nom</p>\n";
+	echo "<table class='boireaus' border=1 cellspacing=2 cellpadding=5>\n";
+
+	$indice_max_log_eleve=0;
 	$num_id=10;
 	$num = '1';
 	// Initialisation de $num3 pour le cas où il n'y a pas de période ouverte:
@@ -300,9 +332,10 @@ if (!isset($aid_id)) {
 									c.num = $num AND
 									a.indice_aid='$indice_aid') ORDER BY e.nom, e.prenom");
 		$nombre_lignes = mysql_num_rows($appel_login_eleves);
-		if ($nombre_lignes != '0') { ?>
-			<tr><th><b>Nom Prénom</b></th>
-			<?php
+		if ($nombre_lignes != '0') {
+			echo "<tr>\n";
+			echo "<th><b>Nom Prénom</b></th>\n";
+
 			$call_data = mysql_query("SELECT * FROM $nom_table WHERE num = '$num' ");
 			$id_classe = mysql_result($call_data, '0', 'id_classe');
 			$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode");
@@ -313,28 +346,32 @@ if (!isset($aid_id)) {
 				echo "<th><b>$nom_periode[$i]</b></th>\n";
 				$i++;
 			}
-			?>
-			</tr>
-			<?php
-				$i = "0";
-				$alt=1;
-				while($i < $nombre_lignes) {
-					$current_eleve_login = mysql_result($appel_login_eleves, $i, 'login');
-					$appel_donnees_eleves = mysql_query("SELECT * FROM eleves WHERE (login = '$current_eleve_login')");
-					$current_eleve_nom = mysql_result($appel_donnees_eleves, '0', "nom");
-					$current_eleve_prenom = mysql_result($appel_donnees_eleves, '0', "prenom");
-					$appel_classe_eleve = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_classes cc WHERE (cc.login = '$current_eleve_login' AND cc.id_classe = c.id) ORDER BY cc.periode DESC");
-					$current_eleve_classe = mysql_result($appel_classe_eleve, '0', "classe");
-					$current_eleve_id_classe = mysql_result($appel_classe_eleve, '0', "id");
+			while ($i < $nb_periode_max + 1) {
+				echo "<th>X</th>\n";
+				$i++;
+			}
+			echo "</tr>\n";
 
-					$alt=$alt*(-1);
-					echo "<tr class='lig$alt'><td>$current_eleve_nom $current_eleve_prenom $current_eleve_classe</td>\n";
-					$k = '1';
+			$i = "0";
+			$alt=1;
+			while($i < $nombre_lignes) {
+				$current_eleve_login = mysql_result($appel_login_eleves, $i, 'login');
+				$appel_donnees_eleves = mysql_query("SELECT * FROM eleves WHERE (login = '$current_eleve_login')");
+				$current_eleve_nom = mysql_result($appel_donnees_eleves, '0', "nom");
+				$current_eleve_prenom = mysql_result($appel_donnees_eleves, '0', "prenom");
+				$appel_classe_eleve = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_classes cc WHERE (cc.login = '$current_eleve_login' AND cc.id_classe = c.id) ORDER BY cc.periode DESC");
+				$current_eleve_classe = mysql_result($appel_classe_eleve, '0', "classe");
+				$current_eleve_id_classe = mysql_result($appel_classe_eleve, '0', "id");
 
-					$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$current_eleve_id_classe'  ORDER BY num_periode");
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt'>\n";
+				echo "<td>$current_eleve_nom $current_eleve_prenom $current_eleve_classe</td>\n";
+				$k = '1';
 
-					while ($k < $num + 1) {
-						if (($k >= $display_begin) and ($k <= $display_end)) {
+				$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$current_eleve_id_classe'  ORDER BY num_periode");
+
+				while ($k < $num + 1) {
+					if (($k >= $display_begin) and ($k <= $display_end)) {
 
 						$current_eleve_app_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
 						$current_eleve_statut_t[$k] = @mysql_result($current_eleve_app_query, 0, "statut");
@@ -403,26 +440,38 @@ if (!isset($aid_id)) {
 								}
 								//echo " onchange=\"changement()\" /></td>\n";
 								echo " onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num3.");changement()\" />\n";
-								echo "</td>\n";
 							}
+							echo "</td>\n";
 						}
 					} else {
 						echo "<td>-</td>\n";
 					}
 					$k++;
 				}
+
+				while ($k < $nb_periode_max + 1) {
+					echo "<td>X</td>\n";
+					$k++;
+				}
+
+				echo "</tr>\n";
+
 				$i++;
 				$num_id++;
+
+				$indice_max_log_eleve++;
 			}
 		}
 		$num++;
 	}
 	?>
 	</table>
+
 	<table>
 	<tr><td>
 	<?php
-		echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
+		//echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
+		echo "<input type='hidden' name='indice_max_log_eleve' value='$indice_max_log_eleve' />\n";
 	?>
 	<input type=hidden name=is_posted value="yes" />
 	<input type=hidden name=aid_id value="<?php echo "$aid_id";?>" />
