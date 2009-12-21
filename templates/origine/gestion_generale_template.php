@@ -64,23 +64,7 @@
 		<img src='$value[image]' alt='' /> - $value[texte]
 	</h2>
 				";
-						if ($value['texte']=="Administration") {
-							echo "
-<!-- sauvegarde -->	
-	<div class=\"div_tableau cellule_1\">
-		<form enctype=\"multipart/form-data\" action=\"gestion/accueil_sauve.php\" method=\"post\" id=\"formulaire\" >
-			<p>
-				<input type='hidden' name='action' value='system_dump' />
-				<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" />
-			</p>
-		</form>
-		<p class='small'>
-			Les répertoires \"documents\" (<em>contenant les documents joints aux cahiers de texte</em>) et \"photos\" (<em>contenant les photos du trombinoscope</em>) ne seront pas sauvegardés.<br />
-			Un outil de sauvegarde spécifique se trouve en bas de la page <a href='./gestion/accueil_sauve.php#zip'>gestion des sauvegardes</a>.
-		</p>
-	</div>	
-				";
-						}
+						
 							echo "
 <!-- autres menus -->		
 <!-- accueil_menu_template.php -->
