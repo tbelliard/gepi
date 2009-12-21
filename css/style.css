@@ -44,3 +44,12 @@ a:active {
 .rouge {
 	color:red;
 }
+
+#container {
+	margin-bottom:1em;
+}
+
+#container p {
+	margin-left:1em;
+}
+

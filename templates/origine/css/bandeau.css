@@ -70,6 +70,10 @@ p{
 	font-weight: bold;
 }
 
+#bd_nom {
+	font-weight: bold;
+}
+
 /* Création des colonnes */
 
 .bandeau_colonne {
