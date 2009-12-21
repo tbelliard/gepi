@@ -20,14 +20,14 @@
 	
 <!-- corrections internet Exploreur -->	
 	<!--[if lte IE 7]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie.css' media='screen' />
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/bandeau_ie.css' media='screen' />
+		<link title='bandeau' rel='stylesheet' type='text/css' href='./../templates/origine/css/accueil_ie.css' media='screen' />
+		<link title='bandeau' rel='stylesheet' type='text/css' href='./../templates/origine/css/bandeau_ie.css' media='screen' />
 	<![endif]-->
 	<!--[if lte IE 6]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie6.css' media='screen' />
+		<link title='bandeau' rel='stylesheet' type='text/css' href='./../templates/origine/css/accueil_ie6.css' media='screen' />
 	<![endif]-->
 	<!--[if IE 7]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie7.css' media='screen' />
+		<link title='bandeau' rel='stylesheet' type='text/css' href='./../templates/origine/css/accueil_ie7.css' media='screen' />
 	<![endif]-->
 
 <!-- Fin des styles -->
