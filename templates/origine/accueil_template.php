@@ -34,8 +34,8 @@
 <!-- ******************************************** -->
 <!-- Appelle les sous-modèles                     -->
 <!-- templates/origine/header_template.php        -->
-<!-- templates/origine/accueil_menu_template.html -->
-<!-- templates/origine/bandeau_template.html      -->
+<!-- templates/origine/accueil_menu_template.php  -->
+<!-- templates/origine/bandeau_template.php      -->
 <!-- ******************************************** -->
 
 <!-- ************************* -->
