@@ -20,6 +20,34 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+ 
+/* ---------Variables envoyées au gabarit
+*
+*	$tbs_menu
+*				-> classe								classe CSS
+*				-> image								icone du lien
+*				-> texte								texte du titre du menu
+*				-> entree								entrées du menu
+*							-> lien						lien vers la page
+*							-> titre   				texte du lien
+*							-> expli					explications
+*	$niveau_arbo									Niveau dans l'arborescence
+*	$titre_page										Titre de la page
+*	$tbs_last_connection					Vide, pour ne pas avoir d'erreur dans le bandeau
+*	$tbs_retour										Lien retour arrière
+*	$tbs_ariane										Fil d'arianne
+*
+*
+*	Variables héritées de :
+*
+*	header_template.inc
+*	header_barre_prof_template.inc
+*	footer_template.inc.php
+*
+ */
+
+
 $niveau_arbo = 0;
 
 // Initialisations files
@@ -53,36 +81,49 @@ function acces($id,$statut) {
     }
 }
 
-function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_) {
+// function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_) {
+function affiche_ligne($chemin_,$statut_) {
 
 	$tmp_tab=explode("#",$chemin_);
-    //if (acces($chemin_,$statut_)==1)  {
-    if (acces($tmp_tab[0],$statut_)==1)  {
-        $temp = substr($chemin_,1);
-        echo "<tr>";
-        //echo "<td width='30%'><a href=$temp>$titre_</a></span>";
-        echo "<td width='30%'><a href=$temp>$titre_</a>";
-        echo"</td>";
-        echo "<td>$expli_</td>";
-        echo "</tr>";
-    }
+	//if (acces($chemin_,$statut_)==1)  {
+	if (acces($tmp_tab[0],$statut_)==1)  {
+		$temp = substr($chemin_,1);
+	/*
+		  echo "<tr>";
+		  //echo "<td width='30%'><a href=$temp>$titre_</a></span>";
+		  echo "<td width='30%'><a href=$temp>$titre_</a>";
+		  echo"</td>";
+		  echo "<td>$expli_</td>";
+		  echo "</tr>";
+	*/
+		return $temp;
+	}else{
+		return false;
+	}
 }
+
 
 if (!checkAccess()) {
     header("Location: ./logout.php?auto=1");
     die();
 }
 
-$niveau_arbo = 0;
+// Begin standart header
+
 $titre_page = "Accueil - Administration des bases";
+$tbs_last_connection="";
 
-require_once("./lib/header.inc");
+// ====== Inclusion des balises head et du bandeau =====
+include_once("./lib/header_template.inc");
 
-?>
-<p class=bold><a href="./accueil.php"><img src='./images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<?php if (isset($msg)) { echo "<font color='red' size='2'>$msg</font>"; }
+//require_once("./lib/header.inc");
 
-echo "<center>";
+$tbs_retour="./accueil.php";
+$tbs_ariane[0]=array("titre" => "accueil" , "lien"=>"accueil.php");
+
+//if (isset($msg)) { echo "<font color='red' size='2'>$msg</font>"; }
+
+//<center>
 
 
 
@@ -146,6 +187,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=750 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+    /*
    echo "<table class='menu' summary='Administration des bases'>\n";
     echo "<tr>\n";
     echo "<th colspan='2'><img src='./images/icons/database.png' alt='Bases' class='link'/> - Administration des bases</th>\n";
@@ -154,9 +196,30 @@ if ($affiche=='yes') {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
     echo "</table>\n";
+    */
+    
+    $nummenu=0;
+		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/database.png' , 'texte'=>"Administration des bases");
+	 
+		for ($i=0;$i<$nb_ligne;$i++) {
+			$numitem=$i;
+			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
+			if ($adresse != false) {
+				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			}
+		}
+    
 }
 
-?>
 
-</center>
-<?php require_once "./lib/footer.inc.php"; ?>
+// </center>
+
+//require_once "./lib/footer.inc.php"; 
+$tbs_microtime	="";
+$tbs_pmv="";
+require_once ("./lib/footer_template.inc.php");
+
+include('./templates/origine/accueil_admin_template.php');
+
+// ------ on vide les tableaux -----
+?>
