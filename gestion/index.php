@@ -77,12 +77,13 @@ include_once("./../lib/header_template.inc");
 // require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-?>
+/*
 <!-- <p class='bold'><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></p> -->
-<?php 
+*/
 	$tbs_retour="../accueil.php"; 
 	$tbs_ariane[0]=array("titre" => "accueil" , "lien"=>"../accueil.php");
-?>
+
+/*
 <!-- 
 <center>
 -->
@@ -112,7 +113,7 @@ include_once("./../lib/header_template.inc");
 </tr>
 </table>
  -->
-<?php 
+*/
 	$nummenu=0;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'../images/icons/securite.png' , 'texte'=>"Sécurité");
 	$chemin = array();
@@ -139,8 +140,7 @@ include_once("./../lib/header_template.inc");
   $expli = "Voir la configuration du serveur php/Mysql pour v&eacute;rifier la compatibilit&eacute; avec Gepi.";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
 
-?>
-
+/*
 <!--
 <table class='menu' summary='Menu général'>
 <tr>
@@ -176,7 +176,8 @@ include_once("./../lib/header_template.inc");
 </tr>
 </table>
  -->
-<?php 
+*/ 
+ 
 	$nummenu=1;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'../images/icons/configure.png' , 'texte'=>"Général");
 	$chemin = array();
@@ -213,8 +214,7 @@ include_once("./../lib/header_template.inc");
   $expli = "Paramétrage des couleurs de fond d'écran et du dégradé d'entête.";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
   
-?>
-
+/*
 <!--
 <table class='menu' summary='Menu gestion des BDD'>
 <tr>
@@ -252,7 +252,8 @@ include_once("./../lib/header_template.inc");
 
 </table>
  -->
-<?php 
+*/
+ 
 	$nummenu=2;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'../images/icons/database.png' , 'texte'=>"Gestion des bases de données");
 	$chemin = array();
@@ -290,8 +291,7 @@ include_once("./../lib/header_template.inc");
   $expli = "Permet de contrôler le volume occupé par les dossiers temporaires (<i>utilisés notamment pour générer les fichiers tableur OpenOffice (ODS), lorsque la fonction est activée dans le module carnet de notes</i>), de supprimer ces dossiers,...";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli); 
   
-?>
-
+/*
 <!--
 <table class='menu' summary='Menu initialisation'>
 <tr>
@@ -347,7 +347,8 @@ if (LDAPServer::is_setup()) {
 <!--
 </table>
  -->
-<?php 
+*/
+
 	$nummenu=3;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'../images/icons/package.png' , 'texte'=>"Outils d'initialisation");
 	$chemin = array();
@@ -386,16 +387,12 @@ if (LDAPServer::is_setup()) {
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
 	
 	
-	
-	
-?>	
-	
+/*
 <!--
 </center>
  -->
+ */
 
-
-<?php 
 	$tbs_microtime	="";
 	$tbs_pmv="";
 	require_once ("./../lib/footer_template.inc.php");
