@@ -248,7 +248,24 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
-
+					if((isset($_POST['forcer_recalcul_rang']))&&($_POST['forcer_recalcul_rang']=='y')) {
+						$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode DESC LIMIT 1;";
+						$res_per=mysql_query($sql);
+						if(mysql_num_rows($res_per)>0) {
+							$lig_per=mysql_fetch_object($res_per);
+							$recalcul_rang="";
+							for($i=0;$i<$lig_per->num_periode;$i++) {$recalcul_rang.="y";}
+							$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
+							//echo "$sql<br />";
+							$res=mysql_query($sql);
+							if(!$res) {
+								$msg.="<br />Erreur lors de la programmation du recalcul des rangs pour la classe ".get_nom_classe($id_classe).".";
+							}
+						}
+						else {
+							$msg.="<br />Aucune période n'est définie pour cette classe.<br />Recalcul des rangs impossible pour la classe ".get_nom_classe($id_classe).".";
+						}
+					}
 
 
 					if((isset($_POST['creer_enseignement']))&&($_POST['creer_enseignement']=='y')) {
@@ -564,11 +581,13 @@ while ($per < $max_periode) {
 		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cni' style='cursor: pointer;'>Civ. Nom initiale-Prénom (M. Durand A.)</label>
 		<br />
 <br />
-<h2>Enseignements</h2>
+
+<h2><b>Enseignements</b></h2>
 <table border='0'>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-weight: bold;">
+	<!--td style="font-weight: bold;"-->
+	<td>
 	<input type='checkbox' name='change_coef' id='change_coef' value='y' /> Passer les coefficients de tous les enseignements à&nbsp;:
 	</td>
 	<td>
@@ -587,7 +606,8 @@ while ($per < $max_periode) {
 <table border='0'>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-weight: bold; vertical-align:top;">
+	<!--td style="font-weight: bold; vertical-align:top;"-->
+	<td style="vertical-align:top;">
 	<input type='checkbox' name='creer_enseignement' id='creer_enseignement' value='y' /> Créer un enseignement de&nbsp;:
 	</td>
 	<?php
@@ -647,6 +667,19 @@ while ($per < $max_periode) {
 </tr>
 </table>
 
+<?php
+	$titre="Recalcul des rangs";
+	$texte="<p>Un utilisateur a rencontré un jour le problème suivant&nbsp;:<br />Le rang était calculé pour les enseignements, mais pas pour le rang général de l'élève.<br />Ce lien permet de forcer le recalcul des rangs pour les enseignements comme pour le rang général.<br />Le recalcul sera effectué lors du prochain affichage de bulletin ou de moyennes.</p>";
+	$tabdiv_infobulle[]=creer_div_infobulle('recalcul_rang',$titre,"",$texte,"",25,0,'y','y','n','n');
+?>
+
+<table border='0'>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td><input type='checkbox' name='forcer_recalcul_rang' id='forcer_recalcul_rang' value='y' /><label for='forcer_recalcul_rang'>Forcer le recalcul des rangs</label> <a href='#' onclick="afficher_div('recalcul_rang','y',-100,20);return false;"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Forcer le recalcul des rangs' title='Forcer le recalcul des rangs' /></a>.</td>
+</tr>
+</table>
+
 <br />
 <table border='0'>
 <tr>
@@ -656,7 +689,8 @@ while ($per < $max_periode) {
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-weight: bold;">
+	<!--td style="font-weight: bold;"-->
+	<td>
 	Afficher les rubriques de matières sur le bulletin (HTML),<br />les relevés de notes (HTML), et les outils de visualisation&nbsp;:
 	</td>
 	<td>
@@ -669,7 +703,8 @@ while ($per < $max_periode) {
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-weight: bold;" valign="top">
+	<!--td style="font-weight: bold;" valign="top"-->
+	<td valign="top">
 	Paramétrage des catégories de matière pour cette classe<br />
 	(<i>la prise en compte de ce paramètrage est conditionnée<br />
 	par le fait de cocher la case<br />
@@ -707,7 +742,8 @@ while ($per < $max_periode) {
 		?>
 		</table>
 	</td>
-</tr>
+	</tr>
+
 	<tr>
 	<td colspan='3'>
 	<h2><b>Paramètres bulletin HTML&nbsp;: </b></h2>
@@ -715,10 +751,11 @@ while ($per < $max_periode) {
 	<td>
 	</td>
 	</tr>
+
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-		<b>Afficher sur le bulletin le rang de chaque élève&nbsp;: </b>
+		Afficher sur le bulletin le rang de chaque élève&nbsp;: 
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_rang_".$per; ?>" value="y" />Oui
@@ -729,7 +766,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-	<b>Afficher le bloc adresse du responsable de l'élève&nbsp;: </b>
+	Afficher le bloc adresse du responsable de l'élève&nbsp;: 
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_address_".$per; ?>" value="y" />Oui
@@ -740,7 +777,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-	<b>Afficher les coefficients des matières<br />(<i>uniquement si au moins un coef différent de 0</i>)&nbsp;: </b>
+	Afficher les coefficients des matières<br />(<i>uniquement si au moins un coef différent de 0</i>)&nbsp;: 
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_coef_".$per; ?>" value="y" />Oui
@@ -751,7 +788,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-	<b>Afficher les moyennes générales sur les bulletins<br />(<i>uniquement si au moins un coef différent de 0</i>)&nbsp;: </b>
+	Afficher les moyennes générales sur les bulletins<br />(<i>uniquement si au moins un coef différent de 0</i>)&nbsp;: 
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_moy_gen_".$per; ?>" value="y" />Oui
@@ -762,7 +799,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-	<b>Afficher sur le bulletin le nombre de devoirs&nbsp;: </b>
+	Afficher sur le bulletin le nombre de devoirs&nbsp;: 
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_nbdev_".$per; ?>" value="y" />Oui
