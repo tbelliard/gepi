@@ -45,13 +45,24 @@ if (!is_numeric($id_classe)) $id_classe = 0;
 $classe = get_classe($id_classe);
 
 if(isset($_GET['forcer_recalcul_rang'])) {
-	$sql="update groupes set recalcul_rang='yyy' where id in (select id_groupe from j_groupes_classes where id_classe='$id_classe');";
-	$res=mysql_query($sql);
-	if(!$res) {
-		$msg="Erreur lors de la programmation du recalcul des rangs pour cette classe.";
+	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode DESC LIMIT 1;";
+	$res_per=mysql_query($sql);
+	if(mysql_num_rows($res_per)>0) {
+		$lig_per=mysql_fetch_object($res_per);
+		$recalcul_rang="";
+		for($i=0;$i<$lig_per->num_periode;$i++) {$recalcul_rang.="y";}
+		$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		if(!$res) {
+			$msg="Erreur lors de la programmation du recalcul des rangs pour cette classe.";
+		}
+		else {
+			$msg="Recalcul des rangs programmé pour cette classe.";
+		}
 	}
 	else {
-		$msg="Recalcul des rangs programmé pour cette classe.";
+		$msg="Aucune période n'est définie pour cette classe.<br />Recalcul des rangs impossible pour cette classe.";
 	}
 }
 
@@ -505,7 +516,7 @@ $call_nom_class = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
 $display_rang = mysql_result($call_nom_class, 0, 'display_rang');
 if($display_rang=='y') {
 	$titre="Recalcul des rangs";
-	$texte="<p>Un utilisateur a rencontré un jour le problème suivant&nbsp;:<br />Le rang était calculé pour les enseignements, mais pas pour le rang général de l'élève.<br />Ce lien permet de forcer le recalcul des rangs pour les enseignements comme pour le rang général.</p>";
+	$texte="<p>Un utilisateur a rencontré un jour le problème suivant&nbsp;:<br />Le rang était calculé pour les enseignements, mais pas pour le rang général de l'élève.<br />Ce lien permet de forcer le recalcul des rangs pour les enseignements comme pour le rang général.<br />Le recalcul sera effectué lors du prochain affichage de bulletin ou de moyennes.</p>";
 	$tabdiv_infobulle[]=creer_div_infobulle('recalcul_rang',$titre,"",$texte,"",25,0,'y','y','n','n');
 	
 	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;'>\n";
