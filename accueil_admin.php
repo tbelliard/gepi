@@ -49,7 +49,6 @@
 
 
 $niveau_arbo = 0;
-
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
 
@@ -109,7 +108,6 @@ if (!checkAccess()) {
 }
 
 // Begin standart header
-
 $titre_page = "Accueil - Administration des bases";
 $tbs_last_connection="";
 
@@ -119,7 +117,7 @@ include_once("./lib/header_template.inc");
 //require_once("./lib/header.inc");
 
 $tbs_retour="./accueil.php";
-$tbs_ariane[0]=array("titre" => "accueil" , "lien"=>"accueil.php");
+$tbs_ariane[0]=array("titre" => "accueil" , "lien"=>"./accueil.php");
 
 //if (isset($msg)) { echo "<font color='red' size='2'>$msg</font>"; }
 
@@ -218,6 +216,11 @@ if ($affiche=='yes') {
 $tbs_microtime	="";
 $tbs_pmv="";
 require_once ("./lib/footer_template.inc.php");
+	
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+//debug_var();
+
 
 include('./templates/origine/accueil_admin_template.php');
 
