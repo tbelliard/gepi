@@ -329,54 +329,80 @@ if(!isset($step)) {
 	$sql="TRUNCATE TABLE tempo2;";
 	$res0=mysql_query($sql);
 
-	echo "<p>Les lieux de naissance sont manquants pour ";
+	$retour_commune_manquante="";
+	$retour_commune_etrangere="";
 	$cpt=0;
+	$cpt2=0;
 	while($lig=mysql_fetch_object($res)) {
 		if($lig->lieu_naissance!='') {
-			if($cpt>0) {echo ", ";}
-			echo casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
-			//$sql="INSERT INTO tempo2 SET col1='$lig->login', col2='$lig->lieu_naissance';";
-			//$res2=mysql_query($sql);
-			$cpt++;
+
+			if(strstr($lig->lieu_naissance,'@')) {
+				if($cpt2>0) {$retour_commune_etrangere.="<br />";}
+				$retour_commune_etrangere.=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2')." <span style='font-size:small'>(".get_commune($lig->lieu_naissance,1).")</span>";
+				$cpt2++;
+			}
+			else {
+				if($cpt>0) {$retour_commune_manquante.=", ";}
+				$retour_commune_manquante.=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
+				$cpt++;
+			}
+
 		}
 	}
-	echo "</p>\n";
+
+	if($cpt>0) {
+		echo "<p>Les lieux de naissance sont manquants pour ";
+		echo $retour_commune_manquante;
+		echo "</p>\n";
+	}
+	else {
+		echo "<p>Tous les lieux de naissance dans une commune française sont renseignés.</p>\n";
+	}
+
+	if($retour_commune_etrangere!='') {
+		echo "<p>Les lieux de naissance dans des communes étrangères sont&nbsp;:</p>\n";
+		echo "<p style='margin-left:3em;'>";
+		echo $retour_commune_etrangere;
+		echo "</p>\n";
+		echo "<p>Si ces lieux sont correctement renseignés, vous n'avez rien à faire.<br />Sinon... il faut attendre qu'une page soit développée pour remplir les lieux de naissance à l'étranger en dehors de la méthode 'Import Sconet'.</p>\n";
+	}
+
 	echo "<p><br /></p>\n";
 
-	echo "<p>Vous allez importer les correspondances code_commune_insee/nom de commune depuis un fichier CSV.<br />
+	if($cpt>0) {
+		echo "<p>Vous allez importer les correspondances code_commune_insee/nom de commune depuis un fichier CSV.<br />
 Ce fichier est volumineux (<i>la France compte quelques communes;o</i>).<br />
 Il serait dommage de faire enfler inutilement votre base en la remplissant avec toutes les communes de France.<br />
 Cette page va donc parcourir le fichier, remplir une table temporaire et n'en retenir finalement que les communes correspondant à vos élèves.<br />
-Le fichier à fournir ci-dessous peut être téléchargé ici&nbsp;: <a href='http://stephane.boireau.free.fr/informatique/gepi/communes.csv.zip'>http://stephane.boireau.free.fr/informatique/gepi/communes.csv.zip</a></p>\n";
+Le fichier à fournir ci-dessous peut être téléchargé ici&nbsp;: <a href='https://www.sylogix.org/attachments/114/communes.csv.zip'>https://www.sylogix.org/attachments/114/communes.csv.zip</a></p>\n";
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-
-	//echo "<input type=hidden name='is_posted' value='yes' />\n";
-	echo "<input type=hidden name='step' value='0' />\n";
-	//echo "<input type=hidden name='mode' value='1' />\n";
-	if ($gepiSettings['unzipped_max_filesize']>=0) {
-		echo "<p>Sélectionnez le fichier <b>communes.csv.zip</b>&nbsp;:<br />\n";
+		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	
+		//echo "<input type=hidden name='is_posted' value='yes' />\n";
+		echo "<input type=hidden name='step' value='0' />\n";
+		//echo "<input type=hidden name='mode' value='1' />\n";
+		if ($gepiSettings['unzipped_max_filesize']>=0) {
+			echo "<p>Sélectionnez le fichier <b>communes.csv.zip</b>&nbsp;:<br />\n";
+		}
+		else {
+			echo "<p>Veuillez dézipper le fichier (<i>évitez de l'ouvrir/modifier/enregistrer avec un tableur</i>) et fournissez le fichier <b>communes.csv</b>&nbsp;:<br />\n";
+		}
+		echo "<input type=\"file\" size=\"80\" name=\"communes_csv_file\" /><br />\n";
+	
+		echo "Parcourir le fichier par tranches de <input type=\"text\" size=\"6\" name=\"nblig\" value=\"500\" /> lignes.<br />\n";
+		//==============================
+		// AJOUT pour tenir compte de l'automatisation ou non:
+		//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+		echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label></p>\n";
+		//==============================
+	
+		echo "<p><input type='submit' value='Valider' /></p>\n";
+		echo "</form>\n";
+	
+		echo "<p><br /></p>\n";
+	
+		echo "<p style='color:red;'>A FAIRE: proposer d'importer une bonne fois pour toutes les communes.<br />Signaler la taille de la table obtenue.</p>\n";
 	}
-	else {
-		echo "<p>Veuillez dézipper le fichier (<i>évitez de l'ouvrir/modifier/enregistrer avec un tableur</i>) et fournissez le fichier <b>communes.csv</b>&nbsp;:<br />\n";
-	}
-	echo "<input type=\"file\" size=\"80\" name=\"communes_csv_file\" /><br />\n";
-
-	echo "Parcourir le fichier par tranches de <input type=\"text\" size=\"6\" name=\"nblig\" value=\"500\" /> lignes.<br />\n";
-	//==============================
-	// AJOUT pour tenir compte de l'automatisation ou non:
-	//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
-	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label></p>\n";
-	//==============================
-
-	echo "<p><input type='submit' value='Valider' /></p>\n";
-	echo "</form>\n";
-
-	echo "<p><br /></p>\n";
-
-	echo "<p style='color:red;'>A FAIRE: proposer d'importer une bonne fois pour toutes les communes.<br />Signaler la taille de la table obtenue.</p>\n";
-
-
 }
 else {
 	if($step>0) {
@@ -658,13 +684,18 @@ else {
 					}
 	
 					// A FAIRE: Lister les élèves
-					$sql="SELECT e.login,e.nom,e.prenom,e.lieu_naissance FROM tempo2 t, eleves e WHERE e.login=t.login ORDER BY e.nom, e.prenom;";
+					$sql="SELECT e.login,e.nom,e.prenom,e.lieu_naissance FROM tempo2 t, eleves e WHERE e.login=t.col1 ORDER BY e.nom, e.prenom;";
 					$res=mysql_query($sql);
 					$cpt=0;
-					while($lig=mysql_fetch_object($res)) {
-						if($cpt>0) {echo ", ";}
-						echo casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
-						$cpt++;
+					if(mysql_num_rows($res)==0) {
+						echo "Aucun élève trouvé";
+					}
+					else {
+						while($lig=mysql_fetch_object($res)) {
+							if($cpt>0) {echo ", ";}
+							echo casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
+							$cpt++;
+						}
 					}
 					echo ".</p>\n";
 				}
