@@ -945,6 +945,9 @@ if (isset($eleve_login)) {
         $eleve_naissance_mois = "??";
         $eleve_naissance_jour = "????";
     }
+
+    $eleve_lieu_naissance = mysql_result($call_eleve_info, "0", "lieu_naissance");
+
     //$eleve_no_resp = mysql_result($call_eleve_info, "0", "ereno");
     $reg_no_nat = mysql_result($call_eleve_info, "0", "no_gep");
     $reg_no_gep = mysql_result($call_eleve_info, "0", "elenoet");
@@ -1012,6 +1015,9 @@ if (isset($eleve_login)) {
     if (isset($birth_year)) $eleve_naissance_annee = $birth_year;
     if (isset($birth_month)) $eleve_naissance_mois = $birth_month;
     if (isset($birth_day)) $eleve_naissance_jour = $birth_day;
+
+    if (isset($reg_lieu_naissance)) {$eleve_lieu_naissance=$reg_lieu_naissance;}
+
     //$eleve_no_resp = 0;
     $eleve_no_resp1 = 0;
     $eleve_no_resp2 = 0;
@@ -1809,16 +1815,27 @@ if($_SESSION['statut']!="professeur") {
 <table class='boireaus' cellpadding='5' summary='Sexe'>
 <tr><td><div class='norme'><b>Sexe :</b> <br />
 <?php
-if (!(isset($eleve_sexe))) $eleve_sexe="M";
+if (!(isset($eleve_sexe))) {$eleve_sexe="M";}
 ?>
 <label for='reg_sexeM' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeM' value=M <?php if ($eleve_sexe == "M") { echo "CHECKED" ;} ?> onchange='changement();' /> Masculin</label>
 <label for='reg_sexeF' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeF' value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> onchange='changement();' /> Féminin</label>
-</div></td><td><div class='norme'>
+</div></td>
+
+<td><div class='norme'>
 <b>Date de naissance (respecter format 00/00/0000) :</b> <br />
 Jour <input type=text name=birth_day size=2 onchange='changement();' value=<?php if (isset($eleve_naissance_jour)) echo $eleve_naissance_jour;?> />
 Mois<input type=text name=birth_month size=2 onchange='changement();' value=<?php if (isset($eleve_naissance_mois)) echo $eleve_naissance_mois;?> />
 Année<input type=text name=birth_year size=4 onchange='changement();' value=<?php if (isset($eleve_naissance_annee)) echo $eleve_naissance_annee;?> />
-</div></td></tr>
+
+<?php
+if(getSettingValue('ele_lieu_naissance')=='y') {
+	echo "<br />\n";
+	echo "<b>Lieu de naissance&nbsp;:</b> ".get_commune($eleve_lieu_naissance,1)."\n";
+}
+?>
+</div></td>
+
+</tr>
 </table></center>
 
 <p><b>Remarque</b> :
