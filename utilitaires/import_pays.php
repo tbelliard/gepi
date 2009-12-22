@@ -67,10 +67,18 @@ if(!isset($is_posted)) {
 
 	echo "<p>Cette page est destinée à importer les correspondances identifiant_pays/nom_pays d'après un fichier CSV.</p>\n";
 	
-	echo "<p>Veuillez préciser le nom complet du fichier <b>CSV</b> à importer.";
+	//echo "<p>Veuillez préciser le nom complet du fichier <b>CSV</b> à importer.";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='POST'>\n";
 	echo "<input type='hidden' name='is_posted' value='yes' />\n";
-	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
+
+	if ($gepiSettings['unzipped_max_filesize']>=0) {
+		echo "<p>Sélectionnez le fichier <b>pays.csv.zip</b>&nbsp;:<br />\n";
+	}
+	else {
+		echo "<p>Veuillez dézipper le fichier (<i>évitez de l'ouvrir/modifier/enregistrer avec un tableur</i>) et fournissez le fichier <b>pays.csv</b>&nbsp;:<br />\n";
+	}
+
+	echo "<input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 	echo "<p><input type=submit value='Valider' /></p>\n";
 	echo "</form>\n";
 	
@@ -78,7 +86,7 @@ if(!isset($is_posted)) {
 	
 	
 	echo "<p><i>NOTE</i>&nbsp;:</p>\n";
-	echo "<p style='margin-left:3em;'>Le format du fichier CSV est le suivant&nbsp;:<br /><b>code_pays;nom_pays</b><br />Le fichier proposé à l'import est <a href='https://www.sylogix.org/attachments/113/pays.csv.zip'>pays.csv.zip</a>.<br />Il provient d'une extraction du fichier Geographique.xml de Sconet légerement retouché/complété.</p>\n";
+	echo "<p style='margin-left:3em;'>Le format du fichier CSV est le suivant&nbsp;:<br /><b>code_pays;nom_pays</b><br />Le fichier proposé à l'import est <a href='https://www.sylogix.org/attachments/122/pays.csv.zip'>pays.csv.zip</a>.<br />Il provient d'une extraction du fichier Geographique.xml de Sconet légerement retouché/complété.</p>\n";
 }
 else {
 	echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Import des pays</a>";
@@ -92,9 +100,108 @@ else {
 			echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici</a> pour recommencer !</center></p>";
 		}
 		else {
-		
-			$fp=fopen($csv_file['tmp_name'],"r");
-		
+
+
+			if(!file_exists($csv_file['tmp_name'])) {
+				echo "<p style='color:red;'>Le fichier aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+
+				echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+				echo "post_max_size=$post_max_size<br />\n";
+				echo "upload_max_filesize=$upload_max_filesize<br />\n";
+				echo "et le volume de ".$csv_file['name']." serait<br />\n";
+				echo "\$csv_file['size']=".volume_human($csv_file['size'])."<br />\n";
+				echo "</p>\n";
+				// Il ne faut pas aller plus loin...
+				// SITUATION A GERER
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			echo "<p>Le fichier a été uploadé.</p>\n";
+
+			$tempdir=get_user_temp_directory();
+			if(!$tempdir) {
+				echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
+				// Il ne faut pas aller plus loin...
+				// SITUATION A GERER
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			$post_max_size=ini_get('post_max_size');
+			$upload_max_filesize=ini_get('upload_max_filesize');
+			$max_execution_time=ini_get('max_execution_time');
+			$memory_limit=ini_get('memory_limit');
+
+			$source_file=$csv_file['tmp_name'];
+			$dest_file="../temp/".$tempdir."/pays.csv";
+
+			$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
+			if($unzipped_max_filesize>=0) {
+				$fichier_emis=$csv_file['name'];
+				$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+				if (($extension_fichier_emis==".zip")||($csv_file['type']=="application/zip"))
+					{
+
+					$dest_zip_file="../temp/".$tempdir."/pays.csv.zip";
+					$res_copy=copy("$source_file" , "$dest_zip_file");
+
+					require_once('../lib/pclzip.lib.php');
+					//$archive = new PclZip($dest_file);
+					$archive = new PclZip($dest_zip_file);
+
+					if (($list_file_zip = $archive->listContent()) == 0) {
+						echo "<p style='color:red;'>Erreur : ".$archive->errorInfo(true)."</p>\n";
+						require("../lib/footer.inc.php");
+						die();
+					}
+
+					if(sizeof($list_file_zip)!=1) {
+						echo "<p style='color:red;'>Erreur : L'archive contient plus d'un fichier.</p>\n";
+						require("../lib/footer.inc.php");
+						die();
+					}
+
+					/*
+					echo "<p>\$list_file_zip[0]['filename']=".$list_file_zip[0]['filename']."<br />\n";
+					echo "\$list_file_zip[0]['size']=".$list_file_zip[0]['size']."<br />\n";
+					echo "\$list_file_zip[0]['compressed_size']=".$list_file_zip[0]['compressed_size']."</p>\n";
+					*/
+					//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
+
+					if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
+						echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+						require("../lib/footer.inc.php");
+						die();
+					}
+
+					$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
+					if ($res_extract != 0) {
+						echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+						$fichier_extrait=$res_extract[0]['filename'];
+						//echo "Fichier extrait: ".$fichier_extrait."<br />";
+						//unlink("$dest_file"); // Pour Wamp...
+						$res_copy=rename("$fichier_extrait" , "$dest_file");
+					}
+					else {
+						echo "<p style='color:red'>Echec de l'extraction de l'archive ZIP.</p>\n";
+						require("../lib/footer.inc.php");
+						die();
+					}
+				}
+				else {
+					$res_copy=copy("$source_file" , "$dest_file");
+				}
+			}
+			else {
+				$res_copy=copy("$source_file" , "$dest_file");
+			}
+
+			//echo "\$dest_file=$dest_file<br />";
+
+			//$fp=fopen($csv_file['tmp_name'],"r");
+			$fp=fopen($dest_file,"r");
+
 			if(!$fp){
 				echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
 				echo "<p><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici</a> pour recommencer !</center></p>\n";
@@ -124,14 +231,15 @@ else {
 					}
 				}
 		
-				if($temoin!=count($tabchamps)){
+				if($temoin!=count($tabchamps)) {
 					echo "<p><b>ERREUR:</b> La ligne d'entête du fichier n'est pas conforme à ce qui est attendu.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici</a> pour recommencer !</center></p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
-		
-				$fp=fopen($csv_file['tmp_name'],"r");
+
+				//$fp=fopen($csv_file['tmp_name'],"r");
+				$fp=fopen($dest_file,"r");
 				// On lit une ligne pour passer la ligne d'entête:
 				$ligne = fgets($fp, 4096);
 				//=========================
@@ -155,7 +263,7 @@ else {
 						$tabligne=explode(";",my_ereg_replace('"','',$ligne));
 	
 						$code_pays[]=my_ereg_replace("[^0-9]","",corriger_caracteres($tabligne[$tabindice[0]]));
-						$nom_pays[]=my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version($tabligne[$tabindice[1]])));
+						$nom_pays[]=my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))));
 	
 					}
 				}
@@ -176,7 +284,7 @@ else {
 					while($lig=mysql_fetch_object($res_pays)) {
 						$tab_code_pays_connus[]=$lig->code_pays;
 						$tab_nom_pays_connus[$lig->code_pays]=$lig->nom_pays;
-						echo "\$tab_nom_pays_connus[$lig->code_pays]=".$tab_nom_pays_connus[$lig->code_pays]."<br />";
+						//echo "\$tab_nom_pays_connus[$lig->code_pays]=".$tab_nom_pays_connus[$lig->code_pays]."<br />";
 					}
 				}
 
@@ -255,6 +363,8 @@ else {
 		
 				echo "</div>\n";
 				//================
+
+				//unlink($dest_file);
 			}
 		}
 	}
@@ -282,10 +392,10 @@ else {
 			for($i=0;$i<$nb_pays;$i++) {
 				if(isset($code_pays[$i])) {
 					if(in_array($code_pays[$i],$tab_code_pays_connus)) {
-						$sql="UPDATE pays SET nom_pays='".addslashes(my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version($nom_pays[$i]))))."' WHERE code_pays='$code_pays[$i]';";
+						$sql="UPDATE pays SET nom_pays='".addslashes(my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$nom_pays[$i])))))."' WHERE code_pays='$code_pays[$i]';";
 					}
 					else {
-						$sql="INSERT INTO pays SET nom_pays='".addslashes(my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version($nom_pays[$i]))))."', code_pays='$code_pays[$i]';";
+						$sql="INSERT INTO pays SET nom_pays='".addslashes(my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$nom_pays[$i])))))."', code_pays='$code_pays[$i]';";
 					}
 					//echo "$sql<br />";
 					$res=mysql_query($sql);
