@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -44,6 +44,16 @@ $id_classe = isset($_GET['id_classe']) ? $_GET['id_classe'] : (isset($_POST['id_
 if (!is_numeric($id_classe)) $id_classe = 0;
 $classe = get_classe($id_classe);
 
+if(isset($_GET['forcer_recalcul_rang'])) {
+	$sql="update groupes set recalcul_rang='yyy' where id in (select id_groupe from j_groupes_classes where id_classe='$id_classe');";
+	$res=mysql_query($sql);
+	if(!$res) {
+		$msg="Erreur lors de la programmation du recalcul des rangs pour cette classe.";
+	}
+	else {
+		$msg="Recalcul des rangs programmé pour cette classe.";
+	}
+}
 
 // =================================
 // AJOUT: boireaus
@@ -484,8 +494,35 @@ if(count($groups)==0){
 <input type='radio' name='ordre' id='ordre_alpha' value='ordre_alpha' /><label for='ordre_alpha' style='cursor: pointer;'> suivant l'ordre alphabétique des matières.</label>
 </fieldset>
 </td>
+
 <td><input type='submit' value='Enregistrer' /></td>
+
 <td width='40%'>
+<?php
+
+
+$call_nom_class = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
+$display_rang = mysql_result($call_nom_class, 0, 'display_rang');
+if($display_rang=='y') {
+	$titre="Recalcul des rangs";
+	$texte="<p>Un utilisateur a rencontré un jour le problème suivant&nbsp;:<br />Le rang était calculé pour les enseignements, mais pas pour le rang général de l'élève.<br />Ce lien permet de forcer le recalcul des rangs pour les enseignements comme pour le rang général.</p>";
+	$tabdiv_infobulle[]=creer_div_infobulle('recalcul_rang',$titre,"",$texte,"",25,0,'y','y','n','n');
+	
+	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;'>\n";
+	echo "<p>Pour cette classe, <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;forcer_recalcul_rang=y' onclick=\"return confirm_abandon (this, change, '$themessage')\">forcer le recalcul des rangs</a> ";
+	
+	echo "<a href='#' onclick=\"afficher_div('recalcul_rang','y',-100,20);return false;\"";
+	echo ">";
+	echo "<img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Forcer le recalcul des rangs' title='Forcer le recalcul des rangs' />\n";
+	echo "</a>";
+	
+	echo ".</p>\n";
+	echo "</fieldset>\n";
+}
+?>
+
+<br />
+
 <fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;">
 <!--a href='javascript:coeff();'>Mettre tous les coefficients à</a-->
 <input type='button' value='Mettre tous les coefficients à' onClick='coeff(); changement();' />
@@ -663,7 +700,7 @@ for($i=0;$i<10;$i++){
         //echo "<td>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" /></td></tr>";
         echo "<td>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" />";
         echo "<br />\n";
-        echo "<input type='checkbox' name='note_sup_10_".$current_group["id"]."' id='note_sup_10_".$current_group["id"]."' value='y' ";
+        echo "<input type='checkbox' name='note_sup_10_".$current_group["id"]."' id='note_sup_10_".$current_group["id"]."' value='y' onchange=\"changement()\" ";
         if($current_group["classes"]["classes"][$id_classe]["mode_moy"]=="sup10") {echo "checked ";}
         echo "/><label for='note_sup_10_".$current_group["id"]."'> Note&gt;10</label>\n";
         echo "</td>\n";
