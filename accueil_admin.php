@@ -116,8 +116,8 @@ include_once("./lib/header_template.inc");
 
 //require_once("./lib/header.inc");
 
-$tbs_retour="./accueil.php";
-$tbs_ariane[0]=array("titre" => "accueil" , "lien"=>"./accueil.php");
+$tbs_retour="accueil.php";
+$tbs_ariane[0]=array("titre" => "accueil" , "lien"=>"accueil.php");
 
 //if (isset($msg)) { echo "<font color='red' size='2'>$msg</font>"; }
 
