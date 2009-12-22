@@ -295,10 +295,36 @@ else {
 $test = sql_query1("SHOW TABLES LIKE 'pays'");
 if ($test == -1) {
 	$result .= "<br />Création de la table 'pays'. ";
-	$sql="CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_court VARCHAR( 50 ) NOT NULL ,nom_long VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( code_pays ));";
+	$sql="CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_pays VARCHAR( 255 ) NOT NULL, PRIMARY KEY ( code_pays ));";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-		$result .= "<br />Erreur sur la création de la table 'pays': ".$result_inter."<br />";
+		$result .= "<br />Erreur lors de la création de la table 'pays': ".$result_inter."<br />";
+	}
+	else {
+		$result .= "<font color=\"green\">Ok !</font><br />";
+	}
+}
+
+$test=mysql_num_rows(mysql_query("SHOW COLUMNS FROM pays LIKE 'nom_court';"));
+if($test>0) {
+	$result .= "<br />Destruction de la table 'pays' mal formatée.";
+	$sql="DROP TABLE pays;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur lors de la destruction de la table 'pays': ".$result_inter."<br />";
+	}
+	else {
+		$result .= "<font color=\"green\">Ok !</font>";
+
+		$result .= "<br />Re-création de la table 'pays'.";
+		$sql="CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_pays VARCHAR( 255 ) NOT NULL, PRIMARY KEY ( code_pays ));";
+		$result_inter = traite_requete($sql);
+		if ($result_inter != '') {
+			$result .= "<br />Erreur lors de la création de la table 'pays': ".$result_inter."<br />";
+		}
+		else {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		}
 	}
 }
 

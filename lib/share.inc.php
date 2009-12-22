@@ -4092,7 +4092,7 @@ function get_commune($code_commune_insee,$mode){
 		}
 		else {
 			$lig_pays=mysql_fetch_object($res_pays);
-			$retour=$tmp_tab[1]." (".$lig_pays->nom_long.")";
+			$retour=$tmp_tab[1]." (".$lig_pays->nom_pays.")";
 		}
 	}
 	else {
