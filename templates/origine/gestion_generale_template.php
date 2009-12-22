@@ -11,23 +11,23 @@
 <!-- on inclut l'entête -->
 	<?php include('./../templates/origine/header_template.php');?>
 	
-	<link rel="stylesheet" type="text/css" href="./../accessibilite.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="./../accessibilite_print.css" media="print" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $gepiPath;?>/accessibilite.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $gepiPath;?>/accessibilite_print.css" media="print" />
 
-	<link rel="stylesheet" type="text/css" href="./../templates/origine/css/accueil.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="./../templates/origine/css/bandeau.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="./../templates/origine/css/gestion_generale.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $gepiPath;?>/templates/origine/css/accueil.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $gepiPath;?>/templates/origine/css/bandeau.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $gepiPath;?>/templates/origine/css/gestion_generale.css" media="screen" />
 	
 <!-- corrections internet Exploreur -->	
 	<!--[if lte IE 7]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./../templates/origine/css/accueil_ie.css' media='screen' />
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./../templates/origine/css/bandeau_ie.css' media='screen' />
+		<link title='bandeau' rel='stylesheet' type='text/css' href='<?php echo $gepiPath;?>/templates/origine/css/accueil_ie.css' media='screen' />
+		<link title='bandeau' rel='stylesheet' type='text/css' href='<?php echo $gepiPath;?>/templates/origine/css/bandeau_ie.css' media='screen' />
 	<![endif]-->
 	<!--[if lte IE 6]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./../templates/origine/css/accueil_ie6.css' media='screen' />
+		<link title='bandeau' rel='stylesheet' type='text/css' href='<?php echo $gepiPath;?>/templates/origine/css/accueil_ie6.css' media='screen' />
 	<![endif]-->
 	<!--[if IE 7]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./../templates/origine/css/accueil_ie7.css' media='screen' />
+		<link title='bandeau' rel='stylesheet' type='text/css' href='<?php echo $gepiPath;?>/templates/origine/css/accueil_ie7.css' media='screen' />
 	<![endif]-->
 
 <!-- Fin des styles -->
@@ -36,7 +36,7 @@
 <body onload="show_message_deconnexion();">	
 
 <!-- on inclut le bandeau -->
-	<?php include('./../templates/origine/bandeau_template.php');?>
+	<?php include($gepiPath2.'/templates/origine/bandeau_template.php');?>
 	
 <!-- fin bandeau_template.html      -->
 
@@ -48,7 +48,7 @@
 	</p>
 	<p class='bold'>
 		<a href="<?php echo $tbs_retour;?>">
-			<img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour
+			<img src="<?php echo $gepiPath2;?>/images/icons/back.png" alt='Retour' class='back_link' /> Retour
 		</a>
 	</p>
 
@@ -71,7 +71,7 @@
 				";
 						if (count($value['entree'])) {
 							foreach ($value['entree'] as $newentree) {
-								include('./../templates/origine/accueil_menu_template.php');
+								include($gepiPath2.'/templates/origine/accueil_menu_template.php');
 							}
 						}
 							echo "

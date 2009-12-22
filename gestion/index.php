@@ -47,6 +47,8 @@
 *
  */
 
+$niveau_arbo = 1;
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -68,7 +70,6 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 // Begin standart header
-$niveau_arbo = 1;
 $titre_page = "Gestion générale";
 $tbs_last_connection="";
 
