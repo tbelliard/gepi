@@ -181,7 +181,8 @@ elseif((isset($mode))&&($mode=='export_csv')) {
 		}
 		else {
 			// Pouvoir choisir les champs?
-			$csv="N_ANONYMAT;LOGIN_ELE;NOTE;LOGIN_PROF;\n";
+			//$csv="N_ANONYMAT;LOGIN_ELE;NOTE;LOGIN_PROF;\n";
+			$csv="N_ANONYMAT;LOGIN_ELE;NOM_PRENOM_ELE;CLASSE;NOTE;LOGIN_PROF;NOM_PROF\n";
 			while($lig=mysql_fetch_object($res)) {
 				$note="";
 				if($lig->statut=='v') {
@@ -193,7 +194,8 @@ elseif((isset($mode))&&($mode=='export_csv')) {
 				else {
 					$note=$lig->note;
 				}
-				$csv.=$lig->n_anonymat.";".$lig->login_ele.";".$note.";".$lig->login_prof.";\n";
+				$tmp_tab=get_class_from_ele_login($lig->login_ele);
+				$csv.=$lig->n_anonymat.";".$lig->login_ele.";".get_nom_prenom_eleve($lig->login_ele).";".$tmp_tab['liste'].";".$note.";".$lig->login_prof.";".affiche_utilisateur($lig->login_prof,$tmp_tab['id0']).";\n";
 			}
 		}
 
