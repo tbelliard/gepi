@@ -183,6 +183,47 @@ if(isset($imprime)) {
 
 					// Je ne parviens pas à faire reprendre la numérotation à 1 lors d'un changement de salle
 				}
+
+				function EnteteEmargement()
+				{
+					global $intitule_epreuve;
+					global $date_epreuve;
+					global $salle_courante;
+					global $fonte, $MargeDroite, $largeur_page, $MargeGauche, $sc_interligne, $salle, $i;
+					//global $num_page;
+					//global $decompte_page;
+
+					$this->SetFont($fonte,'B',14);
+					$this->Setxy(10,10);
+					$this->Cell($largeur_page-$MargeDroite-$MargeGauche,20,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
+
+					$x1=$this->GetX();
+					$y1=$this->GetY();
+
+					$this->SetFont($fonte,'B',12);
+					$texte='Epreuve : ';
+					$largeur_tmp=$this->GetStringWidth($texte);
+					$this->Cell($largeur_tmp,$this->FontSize*$sc_interligne,$texte,'',0,'L');
+					$this->SetFont($fonte,'',12);
+					$texte=$intitule_epreuve;
+					$this->Cell($this->GetStringWidth($texte),$this->FontSize*$sc_interligne,$texte,'',1,'L');
+
+					$this->SetFont($fonte,'B',12);
+					$texte='Date : ';
+					$this->Cell($largeur_tmp,$this->FontSize*$sc_interligne,$texte,'',0,'L');
+					$this->SetFont($fonte,'',12);
+					$texte=$date_epreuve;
+					$this->Cell($this->GetStringWidth($texte),$this->FontSize*$sc_interligne,$texte,'',1,'L');
+
+					//$x2=$this->GetX();
+					$y2=$this->GetY();
+
+					$this->SetFont($fonte,'B',12);
+					$texte="Salle $salle[$i]";
+					$larg_tmp=$sc_interligne*($this->GetStringWidth($texte));
+					$this->SetXY($largeur_page-$larg_tmp-$MargeDroite,$y1+($y2-$y1)/4);
+					$this->Cell($larg_tmp,$this->FontSize*$sc_interligne,$texte,'LRBT',1,'C');
+				}
 			}
 
 			// Définition de la page
@@ -191,7 +232,7 @@ if(isset($imprime)) {
 			$pdf->SetTopMargin($MargeHaut);
 			$pdf->SetRightMargin($MargeDroite);
 			$pdf->SetLeftMargin($MargeGauche);
-			$pdf->SetAutoPageBreak(true, $MargeBas);
+			//$pdf->SetAutoPageBreak(true, $MargeBas);
 
 			// Couleur des traits
 			$pdf->SetDrawColor(0,0,0);
@@ -216,6 +257,13 @@ if(isset($imprime)) {
 					$pdf->AddPage("P");
 					$salle_courante=$salle[$i];
 
+					// Initialisation:
+					$x1="";
+					$y1="";
+					$y2="";
+
+					$pdf->EnteteEmargement();
+/*
 					//Entête du PDF
 					//$pdf->SetLineWidth(0.7);
 					$pdf->SetFont($fonte,'B',14);
@@ -248,6 +296,11 @@ if(isset($imprime)) {
 					$larg_tmp=$sc_interligne*($pdf->GetStringWidth($texte));
 					$pdf->SetXY($largeur_page-$larg_tmp-$MargeDroite,$y1+($y2-$y1)/4);
 					$pdf->Cell($larg_tmp,$pdf->FontSize*$sc_interligne,$texte,'LRBT',1,'C');
+*/
+
+					$x1=10;
+					$y1=30;
+					$y2=41;
 
 					$pdf->SetXY($x1,$y2);
 
@@ -300,8 +353,43 @@ if(isset($imprime)) {
 					}
 					*/
 					for($j=0;$j<count($tab_nom);$j++) {
+						if($pdf->GetY()>270) {
+							$pdf->AddPage("P");
+							$pdf->EnteteEmargement();
+							$pdf->SetXY($x1,$y2);
+
+							$texte='Nom prénom';
+							$larg_col1=$larg_max+4;
+							$pdf->Cell($larg_col1,10,$texte,'LRBT',0,'C');
+							$larg_col2=0;
+							if($imprime=='avec_num_anonymat') {
+								$texte='Num.anonymat';
+								$larg_col2=$pdf->GetStringWidth($texte)+4;
+								$pdf->Cell($larg_col2,10,$texte,'LRBT',0,'C');
+							}
+							$texte='Signature';
+							$larg_col3=$largeur_page-$MargeDroite-$MargeGauche-$larg_col1-$larg_col2;
+							$pdf->Cell($larg_col3,10,$texte,'LRBT',1,'C');
+
+						}
+
+						$pdf->SetFont($fonte,'B',10);
+
+						$largeur_dispo=$larg_col1;
+						$h_cell=10;
+						$hauteur_max_font=10;
+						$hauteur_min_font=4;
+						$bordure='LRBT';
+						$v_align='C';
+						$align='L';
+
 						$texte=$tab_nom[$j];
-						$pdf->Cell($larg_col1,10,$texte,'LRBT',0,'C');
+						//$pdf->Cell($larg_col1,10,$texte,'LRBT',0,'C');
+						$x=$pdf->GetX();
+						$y=$pdf->GetY();
+						cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
+						$pdf->SetXY($x+$largeur_dispo,$y);
+
 						if($imprime=='avec_num_anonymat') {
 							$texte=$tab_n_anonymat[$j];
 							$pdf->Cell($larg_col2,10,$texte,'LRBT',0,'C');
