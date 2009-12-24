@@ -290,7 +290,7 @@ if((isset($mode))&&($mode=='imprime')) {
 							$num_page++;
 							$pdf->AddPage("P");
 							$y=$y0;
-							$ajout_test="Chgt page";
+							//$ajout_test="Chgt page";
 							$cpt=0;
 						}
 
@@ -325,6 +325,7 @@ if((isset($mode))&&($mode=='imprime')) {
 					$pdf->SetXY($x,$y);
 					$texte=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2')."\n";
 					$texte.="Naissance: ".formate_date($lig->naissance)."\n";
+					$texte.="Numéro: ".$lig->n_anonymat;
 					//cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align='C',$align='L',$increment=0.3,$r_interligne=0.3) {
 					cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
 
