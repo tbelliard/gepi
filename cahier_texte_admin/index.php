@@ -203,7 +203,7 @@ Dans ce cas, les professeurs font figurer les devoirs à faire dans la même case 
 
 <hr />
 <h2>Astuce</h2>
-<p>Si vous ne souhaitez utiliser que le module Cahier de textes dans Gepi, consultez la page suivante&nbsp;: <br /><a href='https://www.sylogix.org/wiki/gepi/Use_only_cdt' target='_blank'>https://www.sylogix.org/wiki/gepi/Use_only_cdt</a></p>
+<p>Si vous souhaitez n'utiliser que le module Cahier de textes dans Gepi, consultez la page suivante&nbsp;: <br /><a href='https://www.sylogix.org/wiki/gepi/Use_only_cdt' target='_blank'>https://www.sylogix.org/wiki/gepi/Use_only_cdt</a></p>
 <?php
 	require("../lib/footer.inc.php");
 ?>
