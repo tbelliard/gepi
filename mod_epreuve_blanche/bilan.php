@@ -455,6 +455,174 @@ if(isset($imprime)) {
 			die();
 
 		}
+		elseif($mode=="csv") {
+
+			$csv="";
+			if($avec_n_anonymat=='y') {
+				$csv.='Num.anonymat;';
+			}
+
+			//$pdf->SetFont($fonte,'B',10);
+			$csv.='Nom prénom;';
+
+			$csv.='Note;';
+
+			if($avec_correcteur=='y') {
+				$csv.='Correcteur;';
+			}
+
+			if($avec_salle=='y') {
+				$csv.='Salle;';
+			}
+
+			if($imprime=='etendu') {
+				$csv.="Professeur habituel;";
+	
+				$tab_prof_habituel=array();
+				$maxper=0;
+				for($i=0;$i<count($id_groupe);$i++) {
+					$sql="SELECT periode FROM matieres_notes WHERE id_groupe='$id_groupe[$i]' ORDER BY periode DESC LIMIT 1;";
+					$res=mysql_query($sql);
+					if(mysql_num_rows($res)>0) {
+						$lig=mysql_fetch_object($res);
+						if($lig->periode>$maxper) {$maxper=$lig->periode;}
+					}
+	
+					$tab_prof_habituel[$i]="";
+					$tab_champs=array('profs');
+					$tmp_group=get_group($id_groupe[$i]);
+					for($k=0;$k<count($tmp_group["profs"]["list"]);$k++) {
+						if($k>0) {$tab_prof_habituel[$i].=", ";}
+						$tab_prof_habituel[$i].=get_denomination_prof($tmp_group["profs"]["list"][$k]);
+					}
+				}
+				for($i=0;$i<$maxper;$i++) {
+					$j=$i+1;
+					$csv.="Période $j;";
+				}
+			}
+			$csv.="\n";
+
+
+			$compteur=0;
+			//for($i=0;$i<count($id_salle);$i++) {
+			for($i=0;$i<count($id_groupe);$i++) {
+
+				//$sql="SELECT e.nom, e.prenom, e.login, ec.n_anonymat, ec.note, ec.statut, ec.login_prof,  FROM eb_copies ec, eleves e WHERE e.login=ec.login_ele AND ec.id_salle='$id_salle[$i]' AND ec.id_epreuve='$id_epreuve' ORDER BY e.nom,e.prenom;";
+
+				if($imprime=='etendu') {
+					$tab_note_per=array();
+					$sql="SELECT * FROM matieres_notes WHERE id_groupe='$id_groupe[$i]' ORDER BY periode, login;";
+					$res=mysql_query($sql);
+					if(mysql_num_rows($res)>0) {
+						while($lig=mysql_fetch_object($res)) {
+							if($lig->statut=='') {
+								$tab_note_per[$lig->periode][$lig->login]=$lig->note;
+							}
+							else {
+								$tab_note_per[$lig->periode][$lig->login]=$lig->statut;
+							}
+						}
+					}
+				}
+
+				$sql="SELECT DISTINCT e.nom, e.prenom, e.login, ec.n_anonymat, ec.note, ec.statut, ec.login_prof, es.salle FROM eb_copies ec, eb_salles es, eb_groupes eg, eleves e, j_eleves_groupes jeg WHERE e.login=ec.login_ele AND ec.id_salle=es.id AND ec.id_epreuve='$id_epreuve' AND es.id_epreuve='$id_epreuve' AND eg.id_epreuve='$id_epreuve' AND eg.id_groupe='$id_groupe[$i]' AND jeg.login=e.login AND jeg.id_groupe=eg.id_groupe ORDER BY e.nom,e.prenom;";
+				//echo "$sql<br />";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+
+					$current_group=$groupe_name[$i]." (".$groupe_classes[$i].")";
+
+					$tab_ele_login=array();
+					$tab_nom=array();
+					$tab_n_anonymat=array();
+					$tab_note=array();
+					$tab_correcteur=array();
+					$tab_salle=array();
+					$tab_distinct_correcteur=array();
+					$cpt=0;
+					$larg_max=0;
+					while($lig=mysql_fetch_object($res)) {
+						$tab_ele_login[$cpt]=$lig->login;
+						$tab_nom[$cpt]=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
+						$tab_n_anonymat[$cpt]=$lig->n_anonymat;
+
+						$tab_salle[$cpt]=$lig->salle;
+
+						if($lig->statut=='v') {
+							$tab_note[$cpt]="";
+						}
+						elseif($lig->statut!='') {
+							$tab_note[$cpt]=$lig->statut;
+						}
+						else {
+							$tab_note[$cpt]=$lig->note;
+						}
+
+						$tab_correcteur[$cpt]=$lig->login_prof;
+						if(!in_array($lig->login_prof,$tab_distinct_correcteur)) {
+							$tab_distinct_correcteur["$lig->login_prof"]=get_denomination_prof($lig->login_prof);
+						}
+
+						$cpt++;
+					}
+
+					for($j=0;$j<count($tab_nom);$j++) {
+						if($avec_n_anonymat=='y') {
+							$csv.=$tab_n_anonymat[$j].";";
+						}
+
+						$csv.=$tab_nom[$j].";";
+						$csv.=$tab_note[$j].";";
+
+						if($avec_correcteur=='y') {
+							$csv.=$tab_distinct_correcteur[$tab_correcteur[$j]].";";
+						}
+
+						if($avec_salle=='y') {
+							$csv.=$tab_salle[$j].";";
+						}
+
+						if($imprime=='etendu') {
+							$csv.=$tab_prof_habituel[$i].";";
+							for($k=1;$k<=$maxper;$k++) {
+								if(isset($tab_note_per[$k][$tab_ele_login[$j]])) {
+									$csv.=$tab_note_per[$k][$tab_ele_login[$j]];
+								}
+								$csv.=";";
+							}
+						}
+
+						$csv.="\n";
+					}
+
+					//===========================================================
+
+					$compteur++;
+				}
+			}
+
+
+			$nom_fic="bilan_epreuve_$id_epreuve.csv";
+	
+			$now = gmdate('D, d M Y H:i:s') . ' GMT';
+			header('Content-Type: text/x-csv');
+			header('Expires: ' . $now);
+			// lem9 & loic1: IE need specific headers
+			if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+				header('Content-Disposition: inline; filename="' . $nom_fic . '"');
+				header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+				header('Pragma: public');
+			}
+			else {
+				header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
+				header('Pragma: no-cache');
+			}
+	
+			echo $csv;
+			die();
+
+		}
 	}
 }
 
@@ -471,6 +639,8 @@ require_once("../lib/header.inc");
 //echo "<div class='noprint'>\n";
 //echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 echo "<p class='bold'><a href='index.php?id_epreuve=$id_epreuve&amp;mode=modif_epreuve'>Retour</a>";
+echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=csv&amp;imprime=standard&amp;avec_n_anonymat=y&amp;avec_correcteur=y&amp;avec_salle=y'>Export CSV</a>";
+echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=csv&amp;imprime=etendu&amp;avec_n_anonymat=y&amp;avec_correcteur=y&amp;avec_salle=y'>Export CSV étendu</a>";
 //echo "</p>\n";
 //echo "</div>\n";
 
