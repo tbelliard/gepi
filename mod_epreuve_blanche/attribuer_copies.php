@@ -154,11 +154,16 @@ if(mysql_num_rows($res)==0) {
 //$liste_profs="";
 $login_prof=array();
 $info_prof=array();
+$eff_habituel_prof=array();
 while($lig=mysql_fetch_object($res)) {
 	//if($liste_profs!="") {$liste_profs.=",";}
 	//$liste_profs.=$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1);
 	$login_prof[]=$lig->login;
 	$info_prof[]=$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1);
+
+	$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id AND jgp.id_groupe=jeg.id_groupe AND jeg.id_groupe=g.id AND jgp.login='".$lig->login."';";
+	$res_eff_prof=mysql_query($sql);
+	$eff_habituel_prof[]=mysql_num_rows($res_eff_prof);
 }
 
 //$tri=isset($_POST['tri']) ? $_POST['tri'] : (isset($_GET['tri']) ? $_GET['tri'] : "groupe");
@@ -219,7 +224,13 @@ if($tri=='groupe') {
 		$tab_groupes[]=$lig->id;
 	
 		$current_group=get_group($lig->id);
-		echo "<p>"."<b>".$current_group['classlist_string']."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)"."</p>\n";
+
+		echo "<p>"."<b>".$current_group['classlist_string']."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>) (<i>";
+		for($k=0;$k<count($current_group["profs"]["list"]);$k++) {
+			if($k>0) {echo ", ";}
+			echo get_denomination_prof($current_group["profs"]["list"][$k]);
+		}
+		echo "</i>)</p>\n";
 		echo "<blockquote>\n";
 	
 		//$sql="SELECT * FROM eb_copies ec, eb_groupes eg WHERE id_epreuve='$id_epreuve' AND...;";
@@ -283,6 +294,7 @@ if($tri=='groupe') {
 			for($i=0;$i<count($info_prof);$i++) {
 				echo "<th>\n";
 				echo "<span id='eff_prof_".$lig->id."_$i'>Effectif</span>";
+				echo "/".$eff_habituel_prof[$i]."\n";
 				echo "</th>\n";
 			}
 			echo "<th>\n";
@@ -295,7 +307,7 @@ if($tri=='groupe') {
 		$alt=1;
 		for($j=0;$j<count($current_group["eleves"]["all"]["list"]);$j++) {
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'>\n";
+			echo "<tr class='lig$alt white_hover'>\n";
 			echo "<td style='text-align:left;'>\n";
 			$login_ele=$current_group["eleves"]["all"]["list"][$j];
 			echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
@@ -434,6 +446,19 @@ function coche(colonne,rang_groupe,mode) {
 	}
 }
 elseif($tri=='salle') {
+
+	$tab_ele_prof_habituel=array();
+	for($i=0;$i<count($login_prof);$i++) {
+	
+		$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id AND jgp.id_groupe=jeg.id_groupe AND jeg.id_groupe=g.id AND jgp.login='".$login_prof[$i]."';";
+		$res_ele_prof=mysql_query($sql);
+		if(mysql_num_rows($res_ele_prof)>0) {
+			while($lig=mysql_fetch_object($res_ele_prof)) {
+				$tab_ele_prof_habituel[$lig->login]=$login_prof[$i];
+			}
+		}
+	}
+
 	$sql="SELECT DISTINCT es.* FROM eb_salles es WHERE id_epreuve='$id_epreuve' ORDER BY es.salle;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -501,6 +526,7 @@ elseif($tri=='salle') {
 			for($i=0;$i<count($info_prof);$i++) {
 				echo "<th>\n";
 				echo "<span id='eff_prof_".$lig->id."_$i'>Effectif</span>";
+				echo "/".$eff_habituel_prof[$i]."\n";
 				echo "</th>\n";
 			}
 			echo "<th>\n";
@@ -518,7 +544,7 @@ elseif($tri=='salle') {
 		//$tab_ele_prof=array();
 		while($lig2=mysql_fetch_object($res2)) {
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'>\n";
+			echo "<tr class='lig$alt white_hover'>\n";
 			echo "<td style='text-align:left;'>\n";
 			$login_ele=$lig2->login_ele;
 			echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
@@ -534,6 +560,11 @@ elseif($tri=='salle') {
 			$affect="n";
 			for($i=0;$i<count($info_prof);$i++) {
 				echo "<td>\n";
+
+				if((isset($tab_ele_prof_habituel[$login_ele]))&&($tab_ele_prof_habituel[$login_ele]==$login_prof[$i])) {
+					echo "<div style='float:right; width:17px;'><img src='../images/icons/flag.png' width='17' height='18' title='Professeur habituel de cet élève' alt='Professeur habituel de cet élève' /></div>\n";
+				}
+
 				if($etat!='clos') {
 					echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
 					echo "onchange='calcule_effectif();changement();' ";
@@ -544,6 +575,7 @@ elseif($tri=='salle') {
 				else {
 					if($lig2->login_prof==$login_prof[$i]) {echo "X";$affect="y";}
 				}
+
 				echo "</td>\n";
 			}
 			echo "<td>\n";
