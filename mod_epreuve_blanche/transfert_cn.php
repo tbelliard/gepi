@@ -20,7 +20,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-$variables_non_protegees = 'yes';
+//$variables_non_protegees = 'yes';
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -95,6 +95,71 @@ function recherche_enfant($id_parent_tmp) {
 
 
 $id_epreuve=isset($_POST['id_epreuve']) ? $_POST['id_epreuve'] : (isset($_GET['id_epreuve']) ? $_GET['id_epreuve'] : NULL);
+
+if(isset($_GET['creer_cn'])) {
+	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
+	}
+	else {
+
+		$id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
+		$periode=isset($_GET['periode']) ? $_GET['periode'] : NULL;
+
+		if(!isset($id_groupe)) {
+			$msg="Aucun groupe n'a été choisi.\n";
+		}
+		elseif(!isset($periode)) {
+			$msg="Aucun période n'a été choisie.\n";
+		}
+		else {
+			$sql="SELECT 1=1 FROM groupes WHERE id='$id_groupe';";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)==0) {
+				$msg="Le groupe n°$id_groupe choisi n'existe pas.\n";
+			}
+			else {
+				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode';";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)==0) {
+					$msg="Aucun élève n'est affecté dans le groupe n°$id_groupe sur la période $periode.\n";
+				}
+				else {
+					$sql="SELECT 1=1 FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode';";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)>0) {
+						$msg="Le cahier de notes existe déjà pour le groupe n°$id_groupe sur la période $periode.\n";
+					}
+					else {
+						// On va créer le cahier de notes
+
+						$tab_champs=array('matieres');
+						$tmp_group=get_group($id_groupe,$tab_champs);
+
+						$nom_complet_matiere = $tmp_group["matiere"]["nom_complet"];
+						$nom_court_matiere = $tmp_group["matiere"]["matiere"];
+						$reg = mysql_query("INSERT INTO cn_conteneurs SET id_racine='', nom_court='".traitement_magic_quotes($tmp_group["description"])."', nom_complet='". traitement_magic_quotes($nom_complet_matiere)."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'");
+						if ($reg) {
+							$id_racine = mysql_insert_id();
+							$reg = mysql_query("UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine'");
+							$reg = mysql_query("INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode', id_cahier_notes='$id_racine'");
+							if(!$reg) {
+								$msg="Erreur lors de la création du cahier de notes.\n";
+							}
+							else {
+								$msg="Cahier de notes n°$id_racine créé pour le groupe n°$id_groupe sur la période $periode.\n";
+							}
+						}
+						else {
+							$msg="Erreur lors de la création d'un conteneur racine pour le cahier de notes.\n";
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 if(isset($_POST['transfert_cn'])) {
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
@@ -409,12 +474,16 @@ for($j=0;$j<$cpt;$j++) {
 		elseif(isset($tab_grp[$j]['id_cn'][$i])) {
 			echo "<td>";
 			//echo "<input type='checkbox' name='id_cn[]' value='".$tab_grp[$j]['id_cn'][$i]."' />";
+			//echo $tab_grp[$j]['id_cn'][$i];
 			echo "<input type='checkbox' name='id_cn[]' id='checkbox_".$i."_".$tab_grp[$j]['id_cn'][$i]."' value='$i|".$tab_grp[$j]['id_cn'][$i]."' ";
 			if($tab_grp[$j]['transfert']=='y') {
 				echo "onchange=\"alert_transfert('checkbox_".$i."_".$tab_grp[$j]['id_cn'][$i]."')\" ";
 			}
 			echo "/>";
 			echo "</td>\n";
+		}
+		elseif(isset($tab_grp[$j]['ver_periode'][$i])) {
+			echo "<td><img src='../images/icons/flag.png' width='17' height='18' title='Cahier de note non initialisé pour cette période' alt='Cahier de note non initialisé pour cette période' /> <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=".$tab_grp[$j]['id']."&amp;periode=$i&amp;creer_cn=y'><img src='../images/icons/wizard.png' width='16' height='16' title='Créer le cahier de note' alt='Créer le cahier de note' /></a></td>\n";
 		}
 		else {
 			echo "<td>-</td>\n";
