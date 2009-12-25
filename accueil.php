@@ -2075,6 +2075,9 @@ if (getSettingValue("active_mod_ooo")=='y') {
 	$nb_ligne = count($chemin);
 	$affiche = 'no';
 	for ($i=0;$i<$nb_ligne;$i++) {
+		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+	}
+	if ($affiche=='yes') {
 /*
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
@@ -2181,6 +2184,9 @@ if (getSettingValue("active_mod_genese_classes")=='y') {
 	$nb_ligne = count($chemin);
 	$affiche = 'no';
 	for ($i=0;$i<$nb_ligne;$i++) {
+		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+	}
+	if ($affiche=='yes') {
 /*
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
