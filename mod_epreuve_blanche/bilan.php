@@ -476,6 +476,7 @@ if(isset($imprime)) {
 			}
 
 			if($imprime=='etendu') {
+				$csv.="Classe;";
 				$csv.="Professeur habituel;";
 	
 				$tab_prof_habituel=array();
@@ -584,6 +585,9 @@ if(isset($imprime)) {
 						}
 
 						if($imprime=='etendu') {
+							$tmp_tab=get_class_from_ele_login($tab_ele_login[$j]);
+							$csv.=$tmp_tab['liste'].";";
+
 							$csv.=$tab_prof_habituel[$i].";";
 							for($k=1;$k<=$maxper;$k++) {
 								if(isset($tab_note_per[$k][$tab_ele_login[$j]])) {
