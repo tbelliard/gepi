@@ -2153,10 +2153,13 @@ while ($plugin = mysql_fetch_object($query)){
 	 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
+			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin[$i] , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+/*
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
 				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
+*/
 		}		
 			
     }
