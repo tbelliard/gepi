@@ -161,7 +161,7 @@
 								if ("$value[texte]"!="") {
 						echo "
 		<li>
-			<a href='$value[lien]'>&nbsp;$value[texte]</a>
+			<a href='".$tbs_gepiPath."$value[lien]'>&nbsp;$value[texte]</a>
 		</li>
 									";
 								}
