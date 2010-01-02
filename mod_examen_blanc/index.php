@@ -70,6 +70,8 @@ include('lib_exb.php');
 
 //=========================================================
 
+/*
+
 // Création des tables
 
 $sql="CREATE TABLE IF NOT EXISTS ex_examens (
@@ -125,7 +127,6 @@ PRIMARY KEY ( id )
 $create_table=mysql_query($sql);
 
 
-
 //=========================================================
 // A TRANSFERER VERS utilitaires/updates/152_to_153.inc.php et sql/structure_gepi.sql
 $result="";
@@ -145,7 +146,7 @@ else {
 	echo $result;
 }
 //=========================================================
-
+*/
 
 
 //=========================================================
@@ -1837,7 +1838,7 @@ function radio_change(i,cpt) {
 }
 //=============================================================================
 
-echo "<span style='color:red;'>ALTER TABLE ex_groupes ADD valeur VARCHAR( 255 ) NOT NULL ;</span> à mettre en utilitaires/updates/152_to_153.inc.php et sql/structure_gepi.sql";
+//echo "<span style='color:red;'>ALTER TABLE ex_groupes ADD valeur VARCHAR( 255 ) NOT NULL ;</span> à mettre en utilitaires/updates/152_to_153.inc.php et sql/structure_gepi.sql";
 
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");

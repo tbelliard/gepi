@@ -328,6 +328,23 @@ if($test>0) {
 	}
 }
 
+//$result="";
+$result.="&nbsp;->Ajout d'un champ 'valeur' à la table 'ex_groupes'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ex_groupes LIKE 'valeur';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE ex_groupes ADD valeur VARCHAR(255) NOT NULL;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+	//echo $result;
+}
+
+
 //---------------
 // Ajouts d'index
 

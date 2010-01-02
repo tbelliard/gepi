@@ -288,7 +288,7 @@ CREATE TABLE IF NOT EXISTS ex_matieres (id int(11) unsigned NOT NULL auto_increm
 DROP TABLE IF EXISTS ex_classes;
 CREATE TABLE IF NOT EXISTS ex_classes (id int(11) unsigned NOT NULL auto_increment,id_exam int(11) unsigned NOT NULL,id_classe int(11) unsigned NOT NULL,PRIMARY KEY ( id ));
 DROP TABLE IF EXISTS ex_groupes;
-CREATE TABLE IF NOT EXISTS ex_groupes (id int(11) unsigned NOT NULL auto_increment,id_exam int(11) unsigned NOT NULL,matiere varchar(50) NOT NULL,id_groupe int(11) unsigned NOT NULL,type VARCHAR( 255 ) NOT NULL ,id_dev int(11) NOT NULL DEFAULT '0',PRIMARY KEY ( id ));
+CREATE TABLE IF NOT EXISTS ex_groupes (id int(11) unsigned NOT NULL auto_increment,id_exam int(11) unsigned NOT NULL,matiere varchar(50) NOT NULL,id_groupe int(11) unsigned NOT NULL,type VARCHAR( 255 ) NOT NULL ,id_dev int(11) NOT NULL DEFAULT '0', valeur VARCHAR( 255 ) NOT NULL , PRIMARY KEY ( id ));
 DROP TABLE IF EXISTS ex_notes;
 CREATE TABLE IF NOT EXISTS ex_notes (id int(11) unsigned NOT NULL auto_increment,id_ex_grp int(11) unsigned NOT NULL,login VARCHAR(255) NOT NULL default '',note float(10,1) NOT NULL default '0.0',statut varchar(4) NOT NULL default '',PRIMARY KEY ( id ));
 DROP TABLE IF EXISTS eb_epreuves;
