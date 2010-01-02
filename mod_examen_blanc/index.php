@@ -108,6 +108,7 @@ matiere varchar(50) NOT NULL,
 id_groupe int(11) unsigned NOT NULL,
 type VARCHAR( 255 ) NOT NULL ,
 id_dev int(11) NOT NULL DEFAULT '0',
+valeur VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY ( id )
 );";
 $create_table=mysql_query($sql);
@@ -122,6 +123,30 @@ PRIMARY KEY ( id )
 );";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
+
+
+
+//=========================================================
+// A TRANSFERER VERS utilitaires/updates/152_to_153.inc.php et sql/structure_gepi.sql
+$result="";
+$result.="&nbsp;->Ajout d'un champ 'valeur' à la table 'ex_groupes'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ex_groupes LIKE 'valeur';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE ex_groupes ADD valeur VARCHAR(255) NOT NULL;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+
+	echo $result;
+}
+//=========================================================
+
+
 
 //=========================================================
 
@@ -487,8 +512,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$nb_enr=0;
 			for($i=0;$i<count($id_groupe);$i++) {
 				$id_dev=isset($_POST['id_dev_'.$i]) ? $_POST['id_dev_'.$i] : 0;
-				$sql="UPDATE ex_groupes SET id_dev='$id_dev' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
+
+				if(substr($id_dev,0,1)=='P') {
+					$tmp_per=substr($id_dev,1);
+					$sql="UPDATE ex_groupes SET id_dev='0', type='moy_bull', valeur='$tmp_per' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
+				}
+				else {
+					$sql="UPDATE ex_groupes SET id_dev='$id_dev' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
+				}
 				$res=mysql_query($sql);
+
 /*
 				if($id_dev==-1) {
 					$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
@@ -1014,6 +1047,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				echo "</tr>\n";
 
 				$tab_dev=array();
+				$tab_bull=array();
 				for($j=0;$j<count($tab_matiere);$j++) {
 					echo "<tr>\n";
 					echo "<th>".htmlentities($tab_matiere[$j])."\n";
@@ -1038,7 +1072,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					}
 					echo "</th>\n";
 
-					// Mettre un javascript pour augmenter/réduire le coef avec les flèches
+					// Mettre un javascript pour augmenter/réduire le coef avec les flèches: FAIT
 					echo "<td><input type='text' name='coef[$j]' id='coef_$j' value='$tab_coef[$j]' size='2' onKeyDown=\"nombre_plus_moins(this.id,event);\"  onchange='changement()' /></td>\n";
 					echo "<td><input type='checkbox' name='bonus[$j]' id='bonus_$j' value='y' onchange='changement()' ";
 					if($tab_bonus[$j]=='y') {echo "checked ";}
@@ -1048,7 +1082,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						echo "<td>\n";
 
 						//$sql="SELECT DISTINCT g.*, eg.type, eg.id_dev FROM groupes g, ex_groupes eg, j_groupes_classes jgc WHERE g.id=eg.id_groupe AND g.id=jgc.id_groupe AND eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' ORDER BY g.name, g.description;";
-						$sql="SELECT DISTINCT g.*, eg.type, eg.id_dev FROM groupes g, ex_groupes eg, j_groupes_classes jgc WHERE g.id=eg.id_groupe AND g.id=jgc.id_groupe AND eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND jgc.id_classe='$tab_id_classe[$i]' ORDER BY g.name, g.description;";
+						$sql="SELECT DISTINCT g.*, eg.type, eg.id_dev, eg.valeur FROM groupes g, ex_groupes eg, j_groupes_classes jgc WHERE g.id=eg.id_groupe AND g.id=jgc.id_groupe AND eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND jgc.id_classe='$tab_id_classe[$i]' ORDER BY g.name, g.description;";
 						//echo "$sql<br />";
 						$res_groupes=mysql_query($sql);
 
@@ -1118,6 +1152,71 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 											$tabdiv_infobulle[]=creer_div_infobulle('div_dev_'.$lig->id_dev,$titre,"",$texte,"",30,0,'y','y','n','n');
 										}
 									}
+									echo "</span>\n";
+								}
+								elseif($lig->type=='moy_bull') {
+									echo "<br />\n";
+									echo "<span style='font-size:small;'>\n";
+
+									echo "<a href='#' onmouseover=\"delais_afficher_div('div_moy_bull_".$lig->id."_".$lig->valeur."','y',10,-10,1000,20,20)\" onmouseout=\"cacher_div('div_moy_bull_".$lig->id."_".$lig->valeur."')\" onclick='return false;'>";
+									echo "Moy.bulletin P".$lig->valeur;
+									echo "</a>\n";
+
+
+									if(!in_array("moy_bull_".$lig->id."_".$lig->valeur,$tab_bull)) {
+										$tab_bull[]="moy_bull_".$lig->id."_".$lig->valeur;
+
+										$sql="SELECT nom_periode FROM periodes WHERE num_periode='$lig->valeur' AND id_classe='$tab_id_classe[$i]';";
+										$res_per=mysql_query($sql);
+										$lig_per=mysql_fetch_object($res_per);
+
+										$titre="Moyennes bulletins (<i>$lig_per->nom_periode</i>)";
+										$texte="<p><b>Moyennes des élèves sur les bulletins pour la période $lig_per->nom_periode</b>";
+
+										// Effectif du groupe sur la période
+										$sql="SELECT * FROM j_eleves_groupes WHERE id_groupe='$lig->id' AND periode='$lig->valeur';";
+										//echo "$sql<br />\n";
+										$res_grp=mysql_query($sql);
+										$eff_grp=mysql_num_rows($res_grp);
+
+										// Nombre de notes saisies
+										//$sql="SELECT * FROM matieres_notes WHERE id_groupe='$lig->id' AND periode='$lig->valeur';";
+										$sql="SELECT * FROM matieres_notes mn, j_eleves_groupes jeg WHERE jeg.id_groupe=mn.id_groupe AND jeg.periode=mn.periode AND mn.login=jeg.login AND mn.id_groupe='$lig->id' AND mn.periode='$lig->valeur';";
+										//echo "$sql<br />\n";
+										$res_notes_bull=mysql_query($sql);
+										$eff_notes_bull=mysql_num_rows($res_notes_bull);
+
+										if($eff_notes_bull>0) {
+											$texte.="<br />\n";
+											$eff_non_note=0;
+											$eff_abs=0;
+											$eff_disp=0;
+
+											while($lig_nb=mysql_fetch_object($res_notes_bull)) {
+												if($lig_nb->statut=='-') {$eff_non_note++;}
+												elseif($lig_nb->statut=='abs') {$eff_abs++;}
+												elseif($lig_nb->statut=='disp') {$eff_disp++;}
+											}
+
+											if($eff_grp==$eff_notes_bull) {
+												$texte.="<span style='color:green;'>$eff_notes_bull/$eff_grp</span>";
+											}
+											else {
+												$texte.="<span style='color:red;'>$eff_non_vide/$eff_tot</span>";
+											}
+
+											$texte.="<br />\n";
+											if($eff_abs>0) {$texte.="$eff_abs absent(s)<br />\n";}
+											if($eff_disp>0) {$texte.="$eff_disp dispensé(s)<br />\n";}
+											if($eff_non_note>0) {$texte.="$eff_non_note non noté(s)<br />\n";}
+										}
+										else {
+											$texte.="<span style='color:red;'>Aucune moyenne saisie</span>";
+										}
+
+										$tabdiv_infobulle[]=creer_div_infobulle("div_moy_bull_".$lig->id."_".$lig->valeur,$titre,"",$texte,"",30,0,'y','y','n','n');
+									}
+
 									echo "</span>\n";
 								}
 								/*
@@ -1540,6 +1639,10 @@ function checkbox_change(cpt) {
 }
 </script>\n";
 
+			echo "<p><br /></p>\n";
+			echo "<p><i>Remarque à propos des notes hors enseignement&nbsp;:</i> On crée normalement un 'groupe' hors enseignement pour une note devant être prise en compte alors qu'elle ne correspond pas à un enseignement dispensé sur l'année (<i>exemple: note de français pour le BAC</i>).<br />On ne devrait pas alors avoir de situation bizarre comme celle proposée/commentée ci-dessous&nbsp;:<br />Si un élève est inscrit pour une même matière à la fois avec un devoir (<i>ou une moyenne de bulletin</i>) et avec une note hors enseignement, c'est la note hors enseignement qui est prise en compte.</p>\n";
+			echo "<p><br /></p>\n";
+
 		}
 		//=============================================================================
 		elseif($aff=='choix_dev') {
@@ -1640,18 +1743,31 @@ function checkbox_change(cpt) {
 							$periode_precedente=-1;
 							while($lig2=mysql_fetch_object($res2)) {
 								if($lig2->periode!=$periode_precedente) {
-									$sql="SELECT nom_periode FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$lig2->periode';";
+									unset($lig3);
+
+									echo "<label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;' alt='Moyenne du bulletin pour la période' title='Moyenne du bulletin pour la période'>";
+									$sql="SELECT nom_periode, verouiller FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$lig2->periode';";
 									$res3=mysql_query($sql);
 									if(mysql_num_rows($res3)>0) {
 										$lig3=mysql_fetch_object($res3);
-
-										echo "<span class='bold'>".htmlentities($lig3->nom_periode)."</span><br />\n";
+										echo "<span class='bold'>".htmlentities($lig3->nom_periode)."</span>\n";
 									}
 									else {
 										// Ca ne devrait pas arriver...
-										echo "<span class='bold'>Période ".$lig2->periode."</span><br />\n";
+										echo "<span class='bold'>Période ".$lig2->periode."</span>\n";
 									}
+									echo "</label>\n";
+
+									echo "&nbsp;<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='P$lig2->periode' ";
+									echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" />";
+
+									if(isset($lig3)) {
+										if($lig3->verouiller=='N') {echo "<img src='../images/icons/flag.png' width='17' height='18' alt='ATTENTION: Période non close' title='ATTENTION: Période non close' />\n";}
+									}
+									echo "<br />\n";
 									$periode_precedente=$lig2->periode;
+
+									$cpt++;
 								}
 
 								echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='$lig2->id' ";
@@ -1696,16 +1812,20 @@ function checkbox_change(cpt) {
 function radio_change(i,cpt) {
 	for(j=0;j<$cpt;j++) {
 		if(document.getElementById('id_dev_'+i+'_'+j)) {
-			document.getElementById('texte_id_dev_'+i+'_'+j).style.fontWeight='normal';
+			if(document.getElementById('texte_id_dev_'+i+'_'+j)) {
+				document.getElementById('texte_id_dev_'+i+'_'+j).style.fontWeight='normal';
+			}
 		}
 	}
 
 	if(document.getElementById('id_dev_'+i+'_'+cpt)) {
-		if(document.getElementById('id_dev_'+i+'_'+cpt).checked) {
-			document.getElementById('texte_id_dev_'+i+'_'+cpt).style.fontWeight='bold';
-		}
-		else {
-			document.getElementById('texte_id_dev_'+i+'_'+cpt).style.fontWeight='normal';
+		if(document.getElementById('texte_id_dev_'+i+'_'+cpt)) {
+			if(document.getElementById('id_dev_'+i+'_'+cpt).checked) {
+				document.getElementById('texte_id_dev_'+i+'_'+cpt).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('texte_id_dev_'+i+'_'+cpt).style.fontWeight='normal';
+			}
 		}
 	}
 }
@@ -1716,6 +1836,8 @@ function radio_change(i,cpt) {
 	}
 }
 //=============================================================================
+
+echo "<span style='color:red;'>ALTER TABLE ex_groupes ADD valeur VARCHAR( 255 ) NOT NULL ;</span> à mettre en utilitaires/updates/152_to_153.inc.php et sql/structure_gepi.sql";
 
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");

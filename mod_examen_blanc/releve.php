@@ -245,52 +245,83 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				
 					$tab_note=array();
 					$tab_dev=array();
+					$tab_bull=array();
 					for($i=0;$i<$nb_classes;$i++) {
+						//echo "\$tab_id_classe[$i]=$tab_id_classe[$i]<br />";
+						//echo "\$tab_classe[$i]=$tab_classe[$i]<br />";
 						for($j=0;$j<$nb_matieres;$j++) {
 							//$sql="SELECT * FROM ex_groupes eg WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]';";
-							$sql="SELECT eg.id_dev FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND jgc.id_groupe=eg.id_groupe AND jgc.id_classe='$tab_id_classe[$i]';";
+							$sql="SELECT eg.id_dev, eg.type, eg.valeur, eg.id_groupe FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND jgc.id_groupe=eg.id_groupe AND jgc.id_classe='$tab_id_classe[$i]';";
 							//echo "$sql<br />\n";
 							$res_groupe=mysql_query($sql);
 							if(mysql_num_rows($res_groupe)>0) {
 								while($lig_groupe=mysql_fetch_object($res_groupe)) {
-									$sql="SELECT * FROM cn_notes_devoirs WHERE id_devoir='$lig_groupe->id_dev';";
-									//echo "$sql<br />\n";
-									$res_dev=mysql_query($sql);
-									if(mysql_num_rows($res_dev)>0) {
-										while($lig_dev=mysql_fetch_object($res_dev)) {
-											//$tab_note["$lig_dev->login"]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
-											//$tab_note["$lig_dev->login"]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
-											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
-											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
-											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_dev"]=$lig_groupe->id_dev;
-										}
-					
-										if(!in_array($lig_groupe->id_dev,$tab_dev)) {
-											$tab_dev[]=$lig_groupe->id_dev;
-					
-											$sql="SELECT cd.nom_court, cd.nom_complet, cd.description, cd.date, ccn.periode FROM cn_devoirs cd, cn_cahier_notes ccn WHERE ccn.id_cahier_notes=cd.id_racine AND cd.id='$lig_groupe->id_dev';";
-											//echo "$sql<br />\n";
-											$res_info_dev=mysql_query($sql);
-					
-											$lig_info_dev=mysql_fetch_object($res_info_dev);
-											$sql="SELECT nom_periode FROM periodes WHERE num_periode='$lig_info_dev->periode' AND id_classe='$tab_id_classe[$i]';";
-											//echo "$sql<br />\n";
-											$res_per=mysql_query($sql);
-											$lig_per=mysql_fetch_object($res_per);
-					
-											$titre="Devoir n°$lig_groupe->id_dev (<i>$lig_per->nom_periode</i>)";
-											$texte="<p><b>".htmlentities($lig_info_dev->nom_court)."</b>";
-											if($lig_info_dev->nom_court!=$lig_info_dev->nom_complet) {
-												$texte.=" (<i>".htmlentities($lig_info_dev->nom_complet)."</i>)";
+
+									if($lig_groupe->type=='moy_bull') {
+										$sql="SELECT * FROM matieres_notes WHERE id_groupe='$lig_groupe->id_groupe' AND periode='$lig_groupe->valeur';";
+										//echo "$sql<br />\n";
+										$res_bull=mysql_query($sql);
+										if(mysql_num_rows($res_bull)>0) {
+											while($lig_bull=mysql_fetch_object($res_bull)) {
+												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_bull->statut;
+												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_bull->note;
+
+												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["infobulle"]='bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur;
 											}
-											$texte.="<br />";
-											if($lig_info_dev->description!='') {
-												$texte.=htmlentities($lig_info_dev->description);
+
+											if(!in_array('bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur,$tab_bull)) {
+												$tab_bull[]='bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur;
+
+												$titre="Moyenne du bulletin (<i>$lig_per->nom_periode</i>)";
+												$texte="<p><b>Moyenne du bulletin sur la période $lig_per->nom_periode</b>";
+												$texte.="<br />";
+
+												$reserve_header_tabdiv_infobulle[]=creer_div_infobulle('div_bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur,$titre,"",$texte,"",30,0,'y','y','n','n');
 											}
-											//$tabdiv_infobulle[]=creer_div_infobulle('div_dev_'.$lig_groupe->id_dev,$titre,"",$texte,"",30,0,'y','y','n','n');
-											$reserve_header_tabdiv_infobulle[]=creer_div_infobulle('div_dev_'.$lig_groupe->id_dev,$titre,"",$texte,"",30,0,'y','y','n','n');
+
 										}
 									}
+									else {
+										$sql="SELECT * FROM cn_notes_devoirs WHERE id_devoir='$lig_groupe->id_dev';";
+										//echo "$sql<br />\n";
+										$res_dev=mysql_query($sql);
+										if(mysql_num_rows($res_dev)>0) {
+											while($lig_dev=mysql_fetch_object($res_dev)) {
+												//$tab_note["$lig_dev->login"]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
+												//$tab_note["$lig_dev->login"]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
+												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
+												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
+												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_dev"]=$lig_groupe->id_dev;
+											}
+
+											if(!in_array($lig_groupe->id_dev,$tab_dev)) {
+												$tab_dev[]=$lig_groupe->id_dev;
+						
+												$sql="SELECT cd.nom_court, cd.nom_complet, cd.description, cd.date, ccn.periode FROM cn_devoirs cd, cn_cahier_notes ccn WHERE ccn.id_cahier_notes=cd.id_racine AND cd.id='$lig_groupe->id_dev';";
+												//echo "$sql<br />\n";
+												$res_info_dev=mysql_query($sql);
+
+												$lig_info_dev=mysql_fetch_object($res_info_dev);
+												$sql="SELECT nom_periode FROM periodes WHERE num_periode='$lig_info_dev->periode' AND id_classe='$tab_id_classe[$i]';";
+												//echo "$sql<br />\n";
+												$res_per=mysql_query($sql);
+												$lig_per=mysql_fetch_object($res_per);
+
+												$titre="Devoir n°$lig_groupe->id_dev (<i>$lig_per->nom_periode</i>)";
+												$texte="<p><b>".htmlentities($lig_info_dev->nom_court)."</b>";
+												if($lig_info_dev->nom_court!=$lig_info_dev->nom_complet) {
+													$texte.=" (<i>".htmlentities($lig_info_dev->nom_complet)."</i>)";
+												}
+												$texte.="<br />";
+												if($lig_info_dev->description!='') {
+													$texte.=htmlentities($lig_info_dev->description);
+												}
+												//$tabdiv_infobulle[]=creer_div_infobulle('div_dev_'.$lig_groupe->id_dev,$titre,"",$texte,"",30,0,'y','y','n','n');
+												$reserve_header_tabdiv_infobulle[]=creer_div_infobulle('div_dev_'.$lig_groupe->id_dev,$titre,"",$texte,"",30,0,'y','y','n','n');
+											}
+										}
+									}
+
 								}
 							}
 							/*
@@ -308,7 +339,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 							*/
 						}
 					}
-				
+
+					// On recherche les notes hors enseignement:
 					for($j=0;$j<$nb_matieres;$j++) {
 						$sql="SELECT en.* FROM ex_groupes eg, ex_notes en WHERE eg.id=en.id_ex_grp AND eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]';";
 						//echo "$sql<br />\n";
@@ -649,6 +681,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 							echo $tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'];
 							echo "</a>\n";
 						}
+						elseif(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['infobulle'])) {
+							echo "<a href='#' onmouseover=\"delais_afficher_div('div_".$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['infobulle']."','y',10,-10,1000,20,20)\" onmouseout=\"cacher_div('div_".$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['infobulle']."')\" onclick='return false;'>";
+							echo $tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'];
+							echo "</a>\n";
+						}
 						else {
 							echo $tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'];
 						}
@@ -665,6 +702,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['id_dev'])) {
 							echo "<a href='#' onmouseover=\"delais_afficher_div('div_dev_".$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['id_dev']."','y',10,-10,1000,20,20)\" onmouseout=\"cacher_div('div_dev_".$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['id_dev']."')\" onclick='return false;'>";
 							echo strtr($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note'],".",",");
+							echo "</a>\n";
+						}
+						elseif(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['infobulle'])) {
+							echo "<a href='#' onmouseover=\"delais_afficher_div('div_".$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['infobulle']."','y',10,-10,1000,20,20)\" onmouseout=\"cacher_div('div_".$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['infobulle']."')\" onclick='return false;'>";
+							echo $tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note'];
 							echo "</a>\n";
 						}
 						else {
