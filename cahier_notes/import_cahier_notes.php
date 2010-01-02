@@ -31,12 +31,12 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 
 // INSERT INTO `droits` VALUES ('/cahier_notes/import_cahier_notes.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'Import CSV du cahier de notes', '');
@@ -129,6 +129,7 @@ function recherche_enfant($id_parent_tmp){
 $titre_page = "Import de devoirs dans le cahier de notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+//debug_var();
 ?>
 <p class='bold'><a href="index.php?id_racine=<?php echo $id_racine;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a></p>
 <?php
@@ -179,6 +180,12 @@ GEPI_LOGIN_ELEVE;ZETOFRE_M_L;ZETOFREY;Melanie;3 A2;;10,5;14,5;19,0
 else{
 	if(!isset($_POST['valide_insertion_devoirs'])) {
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+
+		/*
+		foreach($csv_file as $key => $value) {
+			echo "\$csv_file[$key]=$value<br />";
+		}
+		*/
 
 		if (trim($csv_file['name'])=='') {
 			echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
@@ -467,7 +474,8 @@ else{
 				echo "</tr>\n";
 
 				echo "<tr>\n";
-				echo "<th>&nbsp;</th>\n";
+				//echo "<th>&nbsp;</th>\n";
+				echo "<th>Cocher le(s) devoir(s) à importer</th>\n";
 				for($i=0;$i<count($nomc_dev);$i++){
 					if($nomc_dev[$i]!=""){
 						echo "<th><input type='checkbox' name='valide_import_dev[$i]' value='y' /></th>\n";
@@ -483,7 +491,9 @@ else{
 					if(isset($tab_dev[$i]['login'])){
 						echo "<td>";
 						echo "<input type='hidden' name='login_ele[$i]' value=\"".$tab_dev[$i]['login']."\" />\n";
-						echo $tab_dev[$i]['login'];
+						//echo $tab_dev[$i]['login'];
+						echo get_nom_prenom_eleve($tab_dev[$i]['login']);
+
 						echo "</td>\n";
 						//for($j=0;$j<count($id_dev);$j++){
 						for($j=0;$j<$nb_dev;$j++){
@@ -675,7 +685,8 @@ else{
 		for($i=0;$i<count($login_ele);$i++){
 			if($i>0){echo ", ";}
 			if(isset($login_ele[$i])) {
-				echo $login_ele[$i];
+				//echo $login_ele[$i];
+				echo get_nom_prenom_eleve($login_ele[$i]);
 				//for($j=0;$j<count($id_dev);$j++){
 				for($j=0;$j<count($nomc_dev);$j++){
 					if(isset($valide_import_dev[$j])){
