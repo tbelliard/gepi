@@ -2779,7 +2779,7 @@ function debug_var() {
 
 				$cpt_debug++;
 			}
-			else {
+			elseif(isset($debug_var_count[$chaine_tab_niv1])) {
 				$debug_var_count[$chaine_tab_niv1]++;
 			}
 	
@@ -2870,6 +2870,36 @@ function debug_var() {
 		echo "<tr><td>\$_SERVER['".$variable."']=</td><td>".$valeur."</td></tr>\n";
 	}
 	echo "</table>\n";
+	echo "</div>\n";
+	echo "</blockquote>\n";
+
+
+	echo "<p>Variables envoyées en FILES: ";
+	if(count($_FILES)==0) {
+		echo "aucune";
+	}
+	else {
+		echo "(<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)";
+	}
+	echo "</p>\n";
+	echo "<blockquote>\n";
+	echo "<div id='container_debug_var_$cpt_debug'>\n";
+	$cpt_debug++;
+
+	echo "<table summary=\"Tableau de debug\">\n";
+	foreach($_FILES as $key => $val) {
+		echo "<tr><td valign='top'>\$_FILES['".$key."']=</td><td>".$val;
+
+		if(is_array($_FILES[$key])) {
+			tab_debug_var('FILES',$_FILES[$key],'$_FILES['.$key.']',$cpt_debug);
+
+			$cpt_debug++;
+		}
+
+		echo "</td></tr>\n";
+	}
+	echo "</table>\n";
+
 	echo "</div>\n";
 	echo "</blockquote>\n";
 
