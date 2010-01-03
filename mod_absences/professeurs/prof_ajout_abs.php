@@ -854,11 +854,12 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 			<p class="choix_fin">
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
+			<?php if (getSettingValue("active_cahiers_texte")=='y') { ?>
 			<p class="choix_fin">
 				<input type="hidden" name="passer_cahier_texte" id="passer_cahier_texte" value="false" />
 				<input value="Enregistrer et passer au cahier de texte" name="Valider" type="submit"  onclick="document.getElementById('passer_cahier_texte').value = true; this.form.submit(); this.disabled=true; this.value='En cours'" />
 			</p>
-
+			<?php } ?>
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
 	<?php echo '<p>'.$nbre_eleves.' élèves.</p>'; ?>
@@ -1210,9 +1211,11 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		<div style="text-align: center; margin: 20px;">
 			<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 		</div>
+		<?php if (getSettingValue("active_cahiers_texte")=='y') { ?>
 		<div style="text-align: center; margin: 20px;">
 				<input value="Enregistrer et passer au cahier de texte" name="Valider" type="submit"  onclick="document.getElementById('passer_cahier_texte').value = true; this.form.submit(); this.disabled=true; this.value='En cours'" />
 		</div>
+		<?php } ?>
 	</form>
 	<p class="info_importante">Quand vous saisissez vos absences (avec ou sans absent),
 	Gepi enregistre la date et l'heure ainsi que votre identifiant.</p>
