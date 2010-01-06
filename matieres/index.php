@@ -30,7 +30,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -161,7 +161,7 @@ while ($i < $nombre_lignes){
     $current_matiere_categorie_id = mysql_result($call_data, $i, "categorie_id");
 
     if ($current_matiere_priorite > 1) $current_matiere_priorite -= 10;
-    echo "<tr class='lig$alt'><td><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon().">$current_matiere</a></td>\n";
+    echo "<tr class='lig$alt white_hover'><td><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon().">$current_matiere</a></td>\n";
     //echo "<td>$current_matiere_nom</td>";
     //echo "<td>".html_entity_decode($current_matiere_nom)."</td>";
     echo "<td>".htmlentities($current_matiere_nom)."</td>\n";
