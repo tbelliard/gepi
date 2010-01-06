@@ -92,12 +92,6 @@ if (!$_SESSION["login"]) {
 		$tbs_menu_prof[]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof' , "texte"=>"Emploi du tps");
 	}else{$barre_edt = '';}
 
-	// Module emploi du temps
-	if (getSettingValue("autorise_edt_tous") == "y") {
-		//$barre_edt = '<li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
-		$tbs_menu_prof[]=array("lien"=> "/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt=".$_SESSION['login']."&amp;type_edt_2=prof" , "texte"=>"Emploi du tps");
-	}else{$barre_edt = '';}
-
 	// Module discipline
 	if (getSettingValue("active_mod_discipline")=='y') {
 	    //$barre_discipline = "<li><a href=".$gepiPath."/mod_discipline/index.php>Discipline</a></li>";
