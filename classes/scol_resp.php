@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 22/08/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 //INSERT INTO `droits` VALUES ('/classes/scol_resp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Affectation des comptes scolarité aux classes', '');
 if (!checkAccess()) {
@@ -229,7 +229,7 @@ else{
 
 			//if($j%2==0){$bgcolor="style='background-color: gray;'";}else{$bgcolor='';}
 			//echo "<tr $bgcolor>\n";
-			echo "<tr class='lig$alt'>\n";
+			echo "<tr class='lig$alt white_hover'>\n";
 			echo "<td style='text-align:center;'>";
 			echo "<input type='hidden' name='tab_id_clas[$j]' value='$lig_clas->id' />\n";
 			echo "$lig_clas->classe";
