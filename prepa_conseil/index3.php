@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -232,7 +232,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				//echo "<td style='padding: 0 10px 0 10px'>\n";
 				echo "<td align='left'>\n";
 			}
-			echo "<a href='index3.php?id_classe=$id_classe'>$classe_liste</a><br />\n";
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>$classe_liste</a><br />\n";
 			$i++;
 		}
 		echo "</table>\n";
@@ -251,7 +251,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	echo "<p>Cliquez sur le nom d'un ".$gepiSettings['denomination_eleve']." pour visualiser son bulletin simplifié :</p>";
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-		echo "<p><a href='index3.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
 	}
 } else if (!isset($choix_edit)) {
 	// ====================

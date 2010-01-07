@@ -231,7 +231,7 @@ while ($i < $nombre_eleves) {
 
 // Pour débugger:
 $lignes_debug="";
-$ele_login_debug="BUISINE_L";
+$ele_login_debug="DUPRE_C";
 
 // Témoin destiné à tester si tous les coefficients sont à 1
 // S'ils le sont, on n'imprime pas deux lignes de moyenne générale (moy.gen.coefficientée d'après Gestion des classes/<Classe> Enseignements et moy.gen avec coef à 1) même si la case est cochée dans le modèle PDF.
@@ -261,7 +261,8 @@ while ($j < $nombre_groupes) {
 
 	if((isset($utiliser_coef_perso))&&($utiliser_coef_perso=='y')) {
 		if(isset($coef_perso[$current_group[$j]["id"]])) {
-			$current_coef[$j]=$current_group[$j]["id"];
+			//$current_coef[$j]=$current_group[$j]["id"];
+			$current_coef[$j]=$coef_perso[$current_group[$j]["id"]];
 		}
 	}
 
@@ -273,6 +274,12 @@ while ($j < $nombre_groupes) {
 
 	$current_mode_moy[$j]=mysql_result($appel_liste_groupes, $j, "mode_moy");
 	calc_moy_debug("\$current_mode_moy[$j]=mysql_result(\$appel_liste_groupes, $j, \"mode_moy\")=$current_mode_moy[$j]\n");
+
+	if((isset($utiliser_coef_perso))&&($utiliser_coef_perso=='y')) {
+		if(isset($mode_moy_perso[$current_group[$j]["id"]])) {
+			$current_mode_moy[$j]=$mode_moy_perso[$current_group[$j]["id"]];
+		}
+	}
 
 	if ($current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"] != $prev_cat) {
 		$prev_cat = $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"];
@@ -447,6 +454,7 @@ while ($j < $nombre_groupes) {
 					$coef_eleve = $current_coef[$j];
 				}
 
+				// On refait ce test pour dans le cas des coef_perso autres que ceux de eleves_groupes_settings forcer les coef choisis dans prepa_conseil/index2bis.php
 				if(isset($utiliser_coef_perso)) {
 					if(isset($coef_perso[$current_group[$j]["id"]])) {
 						$coef_eleve=$coef_perso[$current_group[$j]["id"]];
@@ -457,9 +465,13 @@ while ($j < $nombre_groupes) {
 			// Ajout d'après J.Etheve
 			$coef_eleve1=1;
 			//===============
+			// Réserve pour les moyennes de catégorie plus bas:
+			$coef_eleve_reserve=$coef_eleve;
+			// Pour les catégories, on ne tient pas compte des mode_moy
+			//===============
 
 			if($current_mode_moy[$j]=='sup10') {
-				// Si la matière est une matière à bonus (seules les notes supérieures à 10 comptent), on passe le coef à zéro si la note n'est pas numérique ou si elle est inférieure à 10.
+				// Si la matière est une matière à "bonus" (seules les notes supérieures à 10 comptent), on passe le coef à zéro si la note n'est pas numérique ou si elle est inférieure à 10.
 				if(($current_eleve_note[$j][$i]!="")&&($current_eleve_note[$j][$i]!="-")&&($current_eleve_note[$j][$i]<10)) {
 					$coef_eleve=0;
 					//===============
@@ -515,7 +527,8 @@ while ($j < $nombre_groupes) {
 			//echo "\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."<br />";
 
 			//=====================================
-			if ($coef_eleve!=0) {
+			//if ($coef_eleve!=0) {
+			if ($coef_eleve_reserve!=0) {
 				//if (($current_eleve_note[$j][$i] != '') and ($current_eleve_statut[$j][$i] == '')) {
 				if (($current_eleve_note[$j][$i] != '') and ($current_eleve_note[$j][$i] != '-') and ($current_eleve_statut[$j][$i] == '')) {
 
@@ -566,22 +579,37 @@ while ($j < $nombre_groupes) {
 					// La note compte normalement pour le mode avec coef forcés à 1:	
 					$moy_gen_eleve1[$i] += $coef_eleve1*$current_eleve_note[$j][$i];
 
+					/*
 					// La note est toujours comptée pour la moyenne de catégorie quel que soit le mode
+					// NON: Dans le cas sup10, $coef_eleve=0 si la note est en dessous de 10
+					//      Et dans le cas bonus, le coef compterait dans la moyenne de catégorie
 					$total_coef_cat_eleve[$i][$prev_cat] += $coef_eleve;
 					calc_moy_debug("\$total_coef_cat_eleve[$i][$prev_cat]=".$total_coef_cat_eleve[$i][$prev_cat]."\n");
 					$moy_cat_eleve[$i][$prev_cat] += $coef_eleve*$current_eleve_note[$j][$i];
 					calc_moy_debug("\$moy_cat_eleve[$i][$prev_cat]=".$moy_cat_eleve[$i][$prev_cat]."\n");
+					*/
+					// On fait en sorte que les coef comptent au niveau des catégories: on ne prend pas en compte les mode_moy
+					// On prend le coef pour la moyenne de catégorie
+					$total_coef_cat_eleve[$i][$prev_cat] += $coef_eleve_reserve;
+					calc_moy_debug("\$total_coef_cat_eleve[$i][$prev_cat]=".$total_coef_cat_eleve[$i][$prev_cat]."\n");
+					$moy_cat_eleve[$i][$prev_cat] += $coef_eleve_reserve*$current_eleve_note[$j][$i];
+					calc_moy_debug("\$moy_cat_eleve[$i][$prev_cat]=".$moy_cat_eleve[$i][$prev_cat]."\n");
+
 
 					if($current_eleve_login[$i]==$ele_login_debug) {
+						$lignes_debug.="\$current_mode_moy[$j]=".$current_mode_moy[$j]."<br />";
 						$lignes_debug.="\$total_coef_cat_eleve[$i][$prev_cat]=".$total_coef_cat_eleve[$i][$prev_cat]."<br />";
 						$lignes_debug.="\$moy_gen_eleve[$i]=".$moy_gen_eleve[$i]."<br />";
+						$lignes_debug.="\$total_coef_eleve[$i]=".$total_coef_eleve[$i]."<br />";
 						$lignes_debug.="\$moy_cat_eleve[$i][$prev_cat]=".$moy_cat_eleve[$i][$prev_cat]."<br />";
+						$lignes_debug.="\$total_coef_cat_eleve[$i][$prev_cat]=".$total_coef_cat_eleve[$i][$prev_cat]."<br />";
 					}
 
 				}
 			}
 			//=====================================
 
+/*
 			//=====================================
 			// Il ne faut pas augmenter si il n'y a aucune note dans la matière $j.
 			if($current_classe_matiere_moyenne[$j]!="") {
@@ -635,7 +663,7 @@ while ($j < $nombre_groupes) {
 				}
 			}
 			//=====================================
-
+*/
 		}
 		$i++;
 		calc_moy_debug("==============================\n");
@@ -658,6 +686,11 @@ while ($i < $nombre_eleves) {
 		//$moy_gen_eleve[$i] = $moy_gen_eleve[$i]/$total_coef[$i];
 		if($temoin_au_moins_une_matiere_avec_note[$i]=="y") {
 			$moy_gen_eleve[$i] = $moy_gen_eleve[$i]/$total_coef_eleve[$i];
+
+			if($current_eleve_login[$i]==$ele_login_debug) {
+				$lignes_debug.="\$moy_gen_eleve[$i]=".$moy_gen_eleve[$i]."/".$total_coef_eleve[$i]."=".$moy_gen_eleve[$i]."<br />";
+			}
+
 			//===============
 			// Ajout J.Etheve
 			if ($total_coef_eleve1[$i] != 0) {
@@ -681,7 +714,7 @@ while ($i < $nombre_eleves) {
 		if($current_eleve_login[$i]==$ele_login_debug) {
 			$lignes_debug.="\$moy_gen_eleve[$i]=".$moy_gen_eleve[$i]."<br />";
 		}
-
+/*
 		if($total_coef_classe[$i] != 0){
 			//$moy_gen_classe[$i] = $moy_gen_classe[$i]/$total_coef[$i];
 			if($current_eleve_login[$i]==$ele_login_debug) {
@@ -707,7 +740,7 @@ while ($i < $nombre_eleves) {
 		if($current_eleve_login[$i]==$ele_login_debug) {
 			$lignes_debug.="\$moy_gen_classe[$i]=".$moy_gen_classe[$i]."<br />";
 		}
-
+*/
 		// Préparation des données pour affichage des graphiques
 		if ($affiche_graph == 'y')  {
 			if ($moy_gen_eleve[$i] >= 15) {$quartile1_classe_gen++; $place_eleve_classe[$i] = 1;}
@@ -723,14 +756,14 @@ while ($i < $nombre_eleves) {
 
 	} else {
 		$moy_gen_eleve[$i] = "-";
-		$moy_gen_classe[$i] = "-";
+//		$moy_gen_classe[$i] = "-";
 		//===============
 		// Ajout J.Etheve
 		//$moy_gen_eleve[$i] = "-";
 		//$moy_gen_classe[$i] = "-";
 		// Correction
 		$moy_gen_eleve1[$i] = "-";
-		$moy_gen_classe1[$i] = "-";
+//		$moy_gen_classe1[$i] = "-";
 		//===============
 	}
 
@@ -923,6 +956,15 @@ else {
 	$moy_generale_classe1="-";
 }
 //===============
+
+
+//===============================================
+// On se débarrasse des $moy_gen_classe[$i] mal fichus mais encore appelés ici ou là dans d'autres pages: 20100102
+for ( $i=0 ; $i < $nb_elv_classe ; $i++ ) {
+	$moy_gen_classe[$i]=$moy_generale_classe;
+	$moy_gen_classe1[$i]=$moy_generale_classe1;
+}
+//===============================================
 
 /*
 for ( $i=0 ; $i < sizeof($moy_gen_eleve) ; $i++ ) {

@@ -31,7 +31,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -64,6 +64,7 @@ if (isset($id_classe)) {
 $titre_page = "Visualisation des notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+//debug_var();
 ?>
 <!--p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a-->
 <?php
@@ -283,7 +284,9 @@ if (isset($id_classe)) {
 	echo "<th>Nom de l'enseignement</th>\n";
 	echo "<th>Description de l'enseignement</th>\n";
 	echo "<th>Coefficient</th>\n";
+	echo "<th>Standard</th>\n";
 	echo "<th>Note&gt;10</th>\n";
+	echo "<th>Bonus</th>\n";
 	echo "</tr>\n";
 
 	$alt=1;
@@ -303,22 +306,49 @@ if (isset($id_classe)) {
 		if(mysql_num_rows($res_nom_matiere)>0) {
 			$lig_nom_matiere=mysql_fetch_object($res_nom_matiere);
 			$nom_matiere=$lig_nom_matiere->id_matiere;
-			if(isset($_SESSION['coef_perso_'.$nom_matiere])) {
-				$val_coef_perso=$_SESSION['coef_perso_'.$nom_matiere];
+			//if(isset($_SESSION['coef_perso_'.$nom_matiere])) {
+			if(isset($_SESSION['coef_perso_'.$lig_cg->id_groupe])) {
+				//$val_coef_perso=$_SESSION['coef_perso_'.$nom_matiere];
+				$val_coef_perso=$_SESSION['coef_perso_'.$lig_cg->id_groupe];
 			}
 		}
 		echo "<input type='text' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()\" name='coef_perso[$lig_cg->id_groupe]' value='\n";
 		echo $val_coef_perso;
 		echo "' size='3' autocomplete='off' />\n";
 		echo "</td>\n";
+
 		echo "<td>\n";
-		echo "<input type='checkbox' name='note_sup_10[$lig_cg->id_groupe]' value='y' ";
-		if(($nom_matiere!='')&&(isset($_SESSION['note_sup_10_'.$nom_matiere]))) {
+		echo "<input type='radio' name='mode_moy_perso[$lig_cg->id_groupe]' value='-' ";
+		//if(($nom_matiere!='')&&(isset($_SESSION['mode_moy_'.$nom_matiere]))&&($_SESSION['mode_moy_'.$nom_matiere]=='-')) {
+		if(($nom_matiere!='')&&(isset($_SESSION['mode_moy_'.$nom_matiere]))&&($_SESSION['mode_moy_'.$lig_cg->id_groupe]=='-')) {
+			echo "checked ";
+		}
+		elseif($lig_cg->mode_moy=='-') {echo "checked ";}
+		echo "/>\n";
+		echo "</td>\n";
+
+
+		echo "<td>\n";
+		echo "<input type='radio' name='mode_moy_perso[$lig_cg->id_groupe]' value='sup10' ";
+		//if(($nom_matiere!='')&&(isset($_SESSION['mode_moy_'.$nom_matiere]))&&($_SESSION['mode_moy_'.$nom_matiere]=='sup10')) {
+		if(($nom_matiere!='')&&(isset($_SESSION['mode_moy_'.$nom_matiere]))&&($_SESSION['mode_moy_'.$lig_cg->id_groupe]=='sup10')) {
 			echo "checked ";
 		}
 		elseif($lig_cg->mode_moy=='sup10') {echo "checked ";}
 		echo "/>\n";
 		echo "</td>\n";
+
+
+		echo "<td>\n";
+		echo "<input type='radio' name='mode_moy_perso[$lig_cg->id_groupe]' value='bonus' ";
+		//if(($nom_matiere!='')&&(isset($_SESSION['mode_moy_'.$nom_matiere]))&&($_SESSION['mode_moy_'.$nom_matiere]=='bonus')) {
+		if(($nom_matiere!='')&&(isset($_SESSION['mode_moy_'.$nom_matiere]))&&($_SESSION['mode_moy_'.$lig_cg->id_groupe]=='bonus')) {
+			echo "checked ";
+		}
+		elseif($lig_cg->mode_moy=='bonus') {echo "checked ";}
+		echo "/>\n";
+		echo "</td>\n";
+
 		echo "</tr>\n";
 		$num_id++;
 	}
@@ -387,7 +417,7 @@ display_div_coef_perso();
 			//echo "<td style='padding: 0 10px 0 10px'>\n";
 			echo "<td align='left'>\n";
 		}
-		echo "<a href='index2.php?id_classe=$id_classe'>".ucfirst($display_class)."</a><br />\n";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>".ucfirst($display_class)."</a><br />\n";
 		$i++;
 		}
 		echo "</table>\n";

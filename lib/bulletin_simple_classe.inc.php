@@ -5,7 +5,8 @@
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
 
-function bulletin_classe($total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories) {
+//function bulletin_classe_bis($tab_moy,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories) {
+function bulletin_classe($tab_moy,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories) {
 global $nb_notes,$nombre_eleves,$type_etablissement,$type_etablissement2;
 
 //global $avec_rapport_effectif;
@@ -27,10 +28,12 @@ $affiche_coef=sql_query1("SELECT display_coef FROM classes WHERE id='".$id_class
 
 //=========================
 // AJOUT: boireaus 20080316
-global $tab_moy_gen;
+//global $tab_moy_gen;
 //global $tab_moy_cat_classe;
 global $display_moy_gen;
 //=========================
+
+global $affiche_deux_moy_gen;
 
 //echo "\$affiche_categories=$affiche_categories<br />";
 if(!getSettingValue("bull_intitule_app")){
@@ -43,9 +46,6 @@ else{
 $nb_periodes = $periode2 - $periode1 + 1;
 
 //============================
-//*********
-// A FAIRE:
-//*********
 // Liste des profs principaux:
 $data_profsuivi = mysql_query("SELECT DISTINCT u.login FROM utilisateurs u, j_eleves_professeurs j WHERE (j.professeur = u.login AND j.id_classe='$id_classe') ");
 $current_profsuivi_login=array();
@@ -142,22 +142,9 @@ while ($z < $nb_aid) {
 // Boucle 'groupes'
 //------------------------------
 
-
+/*
 if ($affiche_categories) {
 	// On utilise les valeurs spécifiées pour la classe en question
-	/*
-	$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe ".
-	"FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
-	"WHERE ( " .
-	"jeg.login = '" . $current_eleve_login ."' AND " .
-	"jgc.id_groupe = jeg.id_groupe AND " .
-	"jgc.categorie_id = jmcc.categorie_id AND " .
-	"jgc.id_classe = '".$id_classe."' AND " .
-	"jgm.id_groupe = jgc.id_groupe AND " .
-	"m.matiere = jgm.id_matiere" .
-	") " .
-	"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
-	*/
 	$sql="SELECT DISTINCT jgc.id_groupe ".
 	"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
 	"WHERE ( " .
@@ -171,17 +158,6 @@ if ($affiche_categories) {
 	$appel_liste_groupes = mysql_query($sql);
 
 } else {
-	/*
-	$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef " .
-	"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_eleves_groupes jeg " .
-	"WHERE ( " .
-	"jeg.login = '" . $current_eleve_login . "' AND " .
-	"jgc.id_groupe = jeg.id_groupe AND " .
-	"jgc.id_classe = '".$id_classe."' AND " .
-	"jgm.id_groupe = jgc.id_groupe" .
-	") " .
-	"ORDER BY jgc.priorite,jgm.id_matiere");
-	*/
 	$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef " .
 	"FROM j_groupes_classes jgc, j_groupes_matieres jgm " .
 	"WHERE ( " .
@@ -194,7 +170,9 @@ if ($affiche_categories) {
 // La ligne suivante a été remplacée par les requêtes intégrant le classement par catégories de matières
 // $appel_liste_groupes = mysql_query("SELECT DISTINCT jeg.id_groupe id_groupe FROM j_eleves_groupes jeg, j_groupes_classes jgc WHERE (jeg.login = '" . $current_eleve_login . "' AND jeg.id_groupe = jgc.id_groupe AND jgc.id_classe = '" . $id_classe . "') ORDER BY jgc.priorite");
 $nombre_groupes = mysql_num_rows($appel_liste_groupes);
+*/
 
+// Récupération des noms de catgories
 $get_cat = mysql_query("SELECT id FROM matieres_categories");
 $categories = array();
 while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
@@ -206,6 +184,10 @@ foreach ($categories as $cat_id) {
 	$cat_names[$cat_id] = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
 }
 
+// Nombre de groupes sur la classe
+$nombre_groupes=count($tab_moy['current_group']);
+
+/*
 //$total_cat_eleve = array();
 $total_cat_classe = array();
 
@@ -251,19 +233,24 @@ while ($nb < $periode2+1) {
 	//echo "\$nb=$nb<br />\n";
 	$nb++;
 }
-
 $j = 0;
+*/
 
 $prev_cat_id = null;
 
-while ($j < $nombre_groupes) {
+//while ($j < $nombre_groupes) {
+for($j=0;$j<$nombre_groupes;$j++) {
 
 		//echo "<table width=$larg_tab border=1 cellspacing=0 cellpadding=1 style='margin-bottom: 0px; border-bottom: 1px solid black; border-top: none;'>";
 
 	$inser_ligne='no';
 
-	$group_id = mysql_result($appel_liste_groupes, $j, "id_groupe");
-	$current_group = get_group($group_id);
+	//$group_id = mysql_result($appel_liste_groupes, $j, "id_groupe");
+	//$current_group = get_group($group_id);
+
+	// On récupère le groupe depuis $tab_moy
+	$current_group=$tab_moy['current_group'][$j];
+
 	// Coefficient pour le groupe
 	$current_coef = $current_group["classes"]["classes"][$id_classe]["coef"];
 
@@ -273,13 +260,14 @@ while ($j < $nombre_groupes) {
 	//echo "\$current_matiere_nom_complet=$current_matiere_nom_complet<br />\n";
 	$nb=$periode1;
 	while ($nb < $periode2+1) {
-		$current_classe_matiere_moyenne_query = mysql_query("SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
-		$current_classe_matiere_moyenne[$nb] = mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
+		//$current_classe_matiere_moyenne_query = mysql_query("SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
+		//$current_classe_matiere_moyenne[$nb] = mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
+		$current_classe_matiere_moyenne[$nb]=$tab_moy['periodes'][$nb]['current_classe_matiere_moyenne'][$j];
 
 
-		$test_current_classe_matiere_moyenne_query = mysql_query("SELECT 1=1 FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
-		$nb_moyennes_current_classe_matiere[$nb]=mysql_num_rows($test_current_classe_matiere_moyenne_query);
-		if($nb_moyennes_current_classe_matiere[$nb]==0) {$current_classe_matiere_moyenne[$nb]='-';}
+		//$test_current_classe_matiere_moyenne_query = mysql_query("SELECT 1=1 FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
+		//$nb_moyennes_current_classe_matiere[$nb]=mysql_num_rows($test_current_classe_matiere_moyenne_query);
+		//if($nb_moyennes_current_classe_matiere[$nb]==0) {$current_classe_matiere_moyenne[$nb]='-';}
 
 
 		// On teste si des notes de une ou plusieurs boites du carnet de notes doivent être affichées
@@ -509,7 +497,8 @@ while ($j < $nombre_groupes) {
 
 
 			echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>\n";
-			$note=number_format($current_classe_matiere_moyenne[$nb],1, ',', ' ');
+			//$note=number_format($current_classe_matiere_moyenne[$nb],1, ',', ' ');
+			$note=nf($current_classe_matiere_moyenne[$nb]);
 			if ($note != "0,0")  {echo $note;} else {echo "-";}
 			echo "</td>\n";
 			/*
@@ -594,6 +583,7 @@ while ($j < $nombre_groupes) {
 			$nb++;
 		}
 
+		/*
 		// On calcule les moyennes générales de la classe :
 		//if ($test_coef != 0) {
 		$nb=$periode1;
@@ -631,9 +621,10 @@ while ($j < $nombre_groupes) {
 			//}
 			$nb++;
 		}
+		*/
 		//}
 	//}
-	$j++;
+	//$j++;
 //  echo "</table>";
 }
 
@@ -722,6 +713,7 @@ if($display_moy_gen=="y") {
 
 
 			echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
+			/*
 			if ($total_points_classe[$nb] != 0) {
 				//$moy_classe=number_format($total_points_classe[$nb]/$total_coef[$nb],1, ',', ' ');
 				//=========================
@@ -732,8 +724,14 @@ if($display_moy_gen=="y") {
 			} else {
 				$moy_classe = '-';
 			}
-			//echo "$moy_classe";
-			echo nf($moy_classe);
+			*/
+			echo nf($tab_moy['periodes'][$nb]['moy_generale_classe'],2);
+
+			if ($affiche_deux_moy_gen==1) {
+				echo "<br />\n";
+				$moy_classe1=$tab_moy['periodes'][$nb]['moy_generale_classe1'];
+				echo "<i>".nf($moy_classe1,2)."</i>\n";
+			}
 			echo "</td>\n";
 			/*
 			echo "<td class='bull_simpl' align=\"center\">\n";
@@ -768,6 +766,7 @@ if($display_moy_gen=="y") {
 					}
 
 					if($affiche_cat_moyenne){
+						/*
 						//if ($total_cat_coef[$nb][$cat_id] != "0") {
 						//if ($total_cat_coef_eleve[$nb][$cat_id] != "0") {
 							//$moy_eleve=number_format($total_cat_eleve[$nb][$cat_id]/$total_cat_coef[$nb][$cat_id],1, ',', ' ');
@@ -784,6 +783,19 @@ if($display_moy_gen=="y") {
 							//echo $cat_names[$cat_id] . " - <b>$moy_eleve</b> (classe : " . $moy_classe . ")<br/>\n";
 							echo $cat_names[$cat_id] . " - <b>$moy_classe</b><br />\n";
 						//}
+						*/
+						$moy_classe="-";
+						$loop_i=0;
+						while($loop_i<count($tab_moy['periodes'][$nb]['current_eleve_login'])) {
+							if(isset($tab_moy['periodes'][$nb]['moy_cat_classe'][$loop_i][$cat_id])) {
+								$moy_classe=$tab_moy['periodes'][$nb]['moy_cat_classe'][$loop_i][$cat_id];
+								break;
+							}
+							$loop_i++;
+						}
+
+						echo $cat_names[$cat_id] . " - <b>".nf($moy_classe,2)."</b><br/>\n";
+
 					}
 				}
 				echo "</td>\n</tr>\n";

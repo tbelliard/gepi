@@ -125,10 +125,13 @@ if (isset($_POST['is_posted'])) {
     }
 
     foreach ($_POST as $key => $value) {
-        $pattern = "/^note\_sup\_10\_/";
+        //$pattern = "/^note\_sup\_10\_/";
+        $pattern = "/^mode\_moy\_/";
         if (preg_match($pattern, $key)) {
             $group_id = preg_replace($pattern, "", $key);
-            $options[$group_id]["mode_moy"] = "sup10";
+            //$options[$group_id]["mode_moy"] = "sup10";
+            $options[$group_id]["mode_moy"] = $value;
+			//echo "mode_moy pour $group_id : $value<br />";
         }
     }
 
@@ -709,11 +712,40 @@ for($i=0;$i<10;$i++){
 
         // Coefficient
         //echo "<td>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" /></td></tr>";
-        echo "<td>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" />";
+        echo "<td align='center'>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" />";
         echo "<br />\n";
+
+		/*
         echo "<input type='checkbox' name='note_sup_10_".$current_group["id"]."' id='note_sup_10_".$current_group["id"]."' value='y' onchange=\"changement()\" ";
         if($current_group["classes"]["classes"][$id_classe]["mode_moy"]=="sup10") {echo "checked ";}
         echo "/><label for='note_sup_10_".$current_group["id"]."'> Note&gt;10</label>\n";
+		*/
+
+		echo "<table class='boireaus' summary='Mode de prise en compte dans la moyenne'>\n";
+		echo "<tr>\n";
+		echo "<th class='small'><label for='note_standard_".$current_group["id"]."' title='La note compte normalement dans la moyenne.'>La note<br />compte</label></th>\n";
+		echo "<th class='small'><label for='note_bonus_".$current_group["id"]."' title='Les points au-dessus de 10 coefficientés sont ajoutés sans augmenter le total des coefficients.'>Bonus</label></th>\n";
+		echo "<th class='small'><label for='note_sup_10_".$current_group["id"]."' title='La note ne compte que si elle est supérieure ou égale à 10'>Sup10</label></th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td>\n";
+        echo "<input type='radio' name='mode_moy_".$current_group["id"]."' id='note_standard_".$current_group["id"]."' value='-' onchange=\"changement()\" ";
+        if($current_group["classes"]["classes"][$id_classe]["mode_moy"]=="-") {echo "checked ";}
+        echo "/>\n";
+		echo "</td>\n";
+		echo "<td>\n";
+        echo "<input type='radio' name='mode_moy_".$current_group["id"]."' id='note_bonus_".$current_group["id"]."' value='bonus' onchange=\"changement()\" ";
+        if($current_group["classes"]["classes"][$id_classe]["mode_moy"]=="bonus") {echo "checked ";}
+        echo "/>\n";
+		echo "</td>\n";
+		echo "<td>\n";
+        echo "<input type='radio' name='mode_moy_".$current_group["id"]."' id='note_sup_10_".$current_group["id"]."' value='sup10' onchange=\"changement()\" ";
+        if($current_group["classes"]["classes"][$id_classe]["mode_moy"]=="sup10") {echo "checked ";}
+        echo "/>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+
         echo "</td>\n";
         echo "</tr>\n";
 
@@ -838,6 +870,16 @@ Les coefficients réglés ici ne s'appliquent donc qu'à la classe
     echo $classe_tmp["classe"];
 ?>
 , même dans le cas des enseignements concernant des regroupements de plusieurs classes.</li>
+<li>
+	Les modes de prise en compte de la moyenne d'un enseignement dans la moyenne générale sont les suivants&nbsp;:
+	<ul>
+		<li>La note compte&nbsp;: La note compte normalement dans la moyenne.</li>
+		<li>Bonus&nbsp;: Les points au-dessus de 10 sont coefficientés et ajoutés au total des points, mais le total des coefficients n'est pas augmenté.</li>
+		<li>Sup10&nbsp;: La note n'est comptée que si elle est supérieure à 10.<br />
+		Remarque&nbsp;: Cela n'améliore pas nécessairement la moyenne générale de l'élève puisque s'il avait 13 de moyenne générale sans cette note, il perd des points s'il a 12 à un enseignement compté sup10.<br />
+		Et l'élève qui a 9 à cet enseignement ne perd pas de point... injuste, non?</li>
+	</ul>
+</li>
 </ul>
 <?php
 

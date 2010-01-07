@@ -364,7 +364,7 @@ function update_group_class_options($_id_groupe, $_id_classe, $_options) {
     if (!is_numeric($_options["priorite"])) {$_options["priorite"] = 0;}
 
     if(!isset($_options["mode_moy"])) {$_options["mode_moy"]="-";}
-    elseif ($_options["mode_moy"]!='sup10') {$_options["mode_moy"]="-";}
+    elseif (($_options["mode_moy"]!='sup10')&&($_options["mode_moy"]!='bonus')) {$_options["mode_moy"]="-";}
 
     if ((!isset($_options["saisie_ects"]))||(!in_array($_options["saisie_ects"],array("0","1")))) {$_options["saisie_ects"] = 0;}
     if ((!isset($_options["valeur_ects"]))||(!is_numeric($_options["valeur_ects"]))) {$_options["valeur_ects"] = 0;}
