@@ -60,12 +60,31 @@ require_once("../../lib/header.inc");
 // ajout du champ num_semaines_etab
 $num_interne = isset($_GET["num_interne"]) ? $_GET["num_interne"] : (isset($_POST["num_interne"]) ? $_POST["num_interne"] : NULL);
 
+// ==============================
+//
+//
+//
+// ==============================
+
+function NumLastWeek() {
+/* On regarde si on est entre Aout ou décembre auquel cas on est en année scolaire AA - AA+1
+ou si on est avant auquel cas on est en année scolaire AA-1 - AA
+*/
+ if (date("m") >= 8) {
+     $derniere_semaine=date("W",mktime(0, 0, 0, 12, 28, date("Y")));
+ }else{
+     $derniere_semaine=date("W",mktime(0, 0, 0, 12, 28, (date("Y")-1)));
+ }
+ return $derniere_semaine;
+} 
 
 // ajout et mise à jour de la base
 if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 {
 	$i = '0';
-	while ( $i < '52' )
+    $fin = NumLastWeek();
+
+	while ( $i < $fin )
 	{
 		if( isset($num_semaine[$i]) and !empty($num_semaine[$i]) )
 		{
@@ -126,18 +145,23 @@ if ($action === "visualiser") {
 // En timestamp Unix GMT, cette date vaut 1186358400 secondes
 // RAPPEL : une journée a 86400 secondes et une semaine en a 604800
 
+
+
 function trouverDates($numero_semaine){
 	// fonction qui permet de déterminer la date de début de la semaine (lundi)
 	$ts_depart = 1186358400;
 	$ts_depart = 1217887200; // 5 aout 2008 à 00:00:00
-  $ts_depart = 1249336800;
+    $ts_depart = 1249336800;
+
+    $fin_temp = NumLastWeek();
+
 	if ($numero_semaine == 32) {
 		$ts = $ts_depart;
-	}elseif ($numero_semaine > 32 AND $numero_semaine <= 52) {
+	}elseif ($numero_semaine > 32 AND $numero_semaine <= $fin_temp) {
 		$coef_multi = $numero_semaine - 32;
 		$ts = $ts_depart + ($coef_multi * 604800);
 	}elseif ($numero_semaine < 32 AND $numero_semaine >= 1) {
-		$coef_multi = (52 - 32) + $numero_semaine;
+		$coef_multi = ($fin_temp - 32) + $numero_semaine;
 		$ts = $ts_depart + ($coef_multi * 604800);
 	}else {
 		$ts = "";
@@ -160,7 +184,8 @@ function trouverDates($numero_semaine){
     	// attention, on part du lundi à 00:00:00, le samedi matin à la même heure est donc 86400*5 fois plus loin (et pas 6*86400 fois).
 		$i = '31';
 		$ic = '1';
-		$fin = '52';
+		$fin = NumLastWeek();
+        $fin_annee = $fin;
 	    while ( $i < $fin ) {
 			if ($ic === '1') {
 				$ic = '2';
@@ -174,13 +199,13 @@ function trouverDates($numero_semaine){
 			<td><input type="hidden" name="num_semaine[<?php echo $i; ?>]" value="<?php echo $num_semaine[$i]; ?>" /><strong><?php echo $num_semaine[$i]; ?></strong></td>
 			<td><input type="text" name="num_interne[<?php echo $i; ?>]" size="3" value="<?php echo $num_interne[$i]; ?>" class="input_sans_bord" /></td>
 			<td><input name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
-			<td> lundi <?php echo gmdate("d-m-Y", trouverDates($i+1)); ?> </td>
+			<td> lundi <?php echo gmdate("d-m-Y", (int) trouverDates($i+1)); ?> </td>
 			<td> samedi <?php echo gmdate("d-m-Y", (trouverDates($i+1) + 5*86400)); ?> </td>
 
 
 		</tr>
 	<?php
-			if ($i == '51') {
+			if ($i == $fin_annee-1) {
 				$i = '0';
 				$fin = '31';
 			} else {

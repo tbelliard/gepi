@@ -74,6 +74,7 @@ $truncate_cours = isset($_POST["truncate_edt"]) ? $_POST["truncate_edt"] : NULL;
 $etape = NULL;
 $aff_etape = NULL;
 
+echo 	'<div id="lecorps">';
 // On teste d'abord pour savoir à quelle étape on est
 $query = mysql_query("SELECT nom_export FROM edt_init WHERE ident_export = 'fichierTexte'");
 // On affiche le numéro de l'étape
@@ -331,6 +332,7 @@ la derni&egrave;re sera la plus longue. Par contre, les 8 premi&egrave;re &eacut
 			<p><input type="submit" value="Valider" /></p>
 		</form>
 
+<?php echo '</div>' ?>
 <?php
 require_once("../lib/footer.inc.php");
 ?>
