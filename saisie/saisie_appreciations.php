@@ -709,10 +709,11 @@ foreach ($liste_eleves as $eleve_login) {
 			$notes_conteneurs="";
 			// On contrôle s'il y a des boites avec moyennes à afficher
 			$sql="SELECT DISTINCT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='" . $current_group["id"] . "' AND periode='$k';";
-			//if($current_group["id"]==1148) {echo "$sql<br />";}
+			//if($current_group["id"]==637) {echo "$sql<br />";}
 			$test_cn=mysql_query($sql);
 			if(mysql_num_rows($test_cn)>0) {
 				$lig_cn=mysql_fetch_object($test_cn);
+				/*
 				$sql="SELECT cc.nom_court, cc.nom_complet, cnc.note, cnc.statut FROM cn_conteneurs cc, cn_notes_conteneurs cnc 
 					WHERE cc.id_racine='$lig_cn->id_cahier_notes' AND 
 						cc.display_bulletin='1' AND 
@@ -720,21 +721,29 @@ foreach ($liste_eleves as $eleve_login) {
 						cc.parent!='0' AND
 						cnc.id_conteneur=cc.id AND 
 						cnc.login='$eleve_login';";
-				//if($current_group["id"]==1148) {echo "$sql<br />";}
+				*/
+				$sql="SELECT cc.nom_court, cc.nom_complet, cnc.note, cnc.statut FROM cn_conteneurs cc, cn_notes_conteneurs cnc 
+					WHERE cc.id_racine='$lig_cn->id_cahier_notes' AND 
+						cc.id_racine='$lig_cn->id_cahier_notes' AND 
+						cc.parent!='0' AND
+						cnc.id_conteneur=cc.id AND 
+						cnc.login='$eleve_login';";
+				//if($current_group["id"]==637) {echo "$sql<br />";}
 				$test_cn_moy=mysql_query($sql);
 				if(mysql_num_rows($test_cn_moy)>0) {
 					$lig_cnc=mysql_fetch_object($test_cn_moy);
-					$notes_conteneurs.="<center>\n";
-					$notes_conteneurs.=ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;: ";
+					//$notes_conteneurs.="<center>\n";
+					$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;:</b> ";
 					if($lig_cnc->statut=='y') {$notes_conteneurs.=$lig_cnc->note;} else {$notes_conteneurs.=$lig_cnc->statut;}
 
 					$cpt_cnc=1;
 					while($lig_cnc=mysql_fetch_object($test_cn_moy)) {
 						$notes_conteneurs.=", ";
-						$notes_conteneurs.=ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;: ";
+						$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;:</b> ";
 						if($lig_cnc->statut=='y') {$notes_conteneurs.=$lig_cnc->note;} else {$notes_conteneurs.=$lig_cnc->statut;}
 					}
-					$notes_conteneurs.="</center><br />\n";
+					//$notes_conteneurs.="</center><br />\n";
+					$notes_conteneurs.="<br />\n";
 				}
 			}
 
@@ -813,20 +822,51 @@ foreach ($liste_eleves as $eleve_login) {
 				// Ajout Eric affichage des notes au dessus de la saisie des appréciations
 				$liste_notes ='';
 				// Nombre de contrôles
-				$sql="SELECT cnd.note, cd.note_sur FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$eleve_login."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$k' AND cnd.statut='';";
+				//$sql="SELECT cnd.note, cd.note_sur FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$eleve_login."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$k' AND cnd.statut='';";
+
+				$sql="SELECT cnd.note, cd.*, cc.nom_court AS nom_court_conteneur FROM 
+						cn_notes_devoirs cnd, 
+						cn_devoirs cd, 
+						cn_cahier_notes ccn, 
+						cn_conteneurs cc
+					WHERE cnd.login='".$eleve_login."' AND 
+						cnd.id_devoir=cd.id AND 
+						cd.id_racine=ccn.id_cahier_notes AND 
+						ccn.id_groupe='".$current_group["id"]."' AND 
+						ccn.periode='$k' AND 
+						cnd.statut='' AND
+						cc.id=cd.id_conteneur
+					ORDER BY cc.nom_court, cd.date;";
+
 				//echo "\n<!--sql=$sql-->\n";
 				$result_nbct=mysql_query($sql);
 				$current_eleve_nbct=mysql_num_rows($result_nbct);
 
 				// on prend les notes dans $string_notes
 				$liste_notes='';
-				if ($result_nbct ) {
-					while ($snnote =  mysql_fetch_assoc($result_nbct)) {
-						if ($liste_notes != '') $liste_notes .= ", ";
-						$liste_notes .= $snnote['note'];
+				$liste_notes_detaillees='';
+				$conteneur_precedent='';
+				if ($result_nbct) {
+					while ($snnote=mysql_fetch_assoc($result_nbct)) {
+						if ($liste_notes != '') {$liste_notes .= ", ";}
+						$liste_notes.=$snnote['note'];
 						if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
 							$liste_notes .= "/".$snnote['note_sur'];
 						}
+
+						if($conteneur_precedent!=$snnote['nom_court_conteneur']) {
+							$liste_notes_detaillees.="<p><b>".$snnote['nom_court_conteneur']."&nbsp;:</b> <br />";
+							$conteneur_precedent=$snnote['nom_court_conteneur'];
+						}
+
+						//if ($liste_notes_detaillees!='') {$liste_notes_detaillees.=", ";}
+						$liste_notes_detaillees.=$snnote['nom_court']."&nbsp;: ";
+						$liste_notes_detaillees.=$snnote['note'];
+						if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
+							$liste_notes_detaillees.= "/".$snnote['note_sur'];
+						}
+						$liste_notes_detaillees.=" (coef&nbsp;".$snnote['coef'].")";
+						$liste_notes_detaillees.=" (".formate_date($snnote['date']).")<br />";
 					}
 				}
 
@@ -834,28 +874,33 @@ foreach ($liste_eleves as $eleve_login) {
 					$liste_notes='Pas de note dans le carnet pour cette période.';
 				}
 
-				//$mess[$k] = "<td>".$note."</td>\n<td><textarea id=\"".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows=2 cols=100 wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
-
-				//$mess[$k] = "<td>".$note."</td>\n<td>Contenu du carnet de notes : ".$liste_notes."<br /><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
-
-				//$mess[$k] = "<td>".$note."</td>\n<td>Contenu du carnet de notes : ".$liste_notes."<br /><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onfocus=\"document.getElementById('info_focus').value='n".$k.$num_id."'\">".$eleve_app."</textarea></td>\n";
-
-				//=========================
-				// MODIF: boireaus 20071003
-
-				//$mess[$k] = "<td>".$note."</td>\n<td>Contenu du carnet de notes : ".$liste_notes."<br /><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onfocus=\"focus_suivant(".$k.$num_id.");\">".$eleve_app."</textarea></td>\n";
-
-				//$mess[$k]="<td>".$note."</td>\n";
 				$mess[$k]="<td>".$note."</td>\n";
-				$mess[$k].="<td>".$notes_conteneurs."Contenu du carnet de notes : ".$liste_notes."<br />\n";
+				$mess[$k].="<td>".$notes_conteneurs."Contenu du carnet de notes : ";
+				//$mess[$k].="<a href='#' onmouseover=\"delais_afficher_div('notes_".$eleve_login."_".$k."','y',-100,20,1000,10,10);\" onclick=\"return false;\">";
+				if($liste_notes_detaillees!='') {
+
+					$titre="Notes de $eleve_nom $eleve_prenom sur la période $k";
+					$texte="";
+					//$texte.="<div align='center'>\n";
+					$texte.=$liste_notes_detaillees;
+					//$texte.="</div>\n";
+					$tabdiv_infobulle[]=creer_div_infobulle('notes_'.$eleve_login.'_'.$k,$titre,"",$texte,"",30,0,'y','y','n','n');
+
+					$mess[$k].="<a name='".$eleve_login."_".$k."'></a>";
+					$mess[$k].="<a href='#".$eleve_login."_".$k."' onclick=\"afficher_div('notes_".$eleve_login."_".$k."','y',-100,20);return false;\">";
+					$mess[$k].=$liste_notes;
+					$mess[$k].="</a>";
+				}
+				else {
+					$mess[$k].=$liste_notes;
+				}
+				$mess[$k].="<br />\n";
 				$mess[$k].="<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
 
-				//Supprimé le 07/11/2009:
+				//Supprimé le 07/11/2009 pour reduire le nombre de variables transmises (pb suhosin):
 				//$mess[$k].="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
 				$chaine_champs_input_prenom.="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
 
-				//$mess[$k].="<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"";
-				//$mess[$k].="<textarea id=\"n".$k.$num_id."\" style='white-space: nowrap;' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"";
 				$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"";
 
 				//==================================
