@@ -4116,13 +4116,14 @@ function get_commune($code_commune_insee,$mode){
 		// On a affaire à une commune étrangère
 		$tmp_tab=split('@',$code_commune_insee);
 		$sql="SELECT * FROM pays WHERE code_pays='$tmp_tab[0]';";
+		//echo "$sql<br />";
 		$res_pays=mysql_query($sql);
 		if(mysql_num_rows($res_pays)==0) {
-			$retour=$tmp_tab[1]." ($tmp_tab[0])";
+			$retour=stripslashes($tmp_tab[1])." ($tmp_tab[0])";
 		}
 		else {
 			$lig_pays=mysql_fetch_object($res_pays);
-			$retour=$tmp_tab[1]." (".$lig_pays->nom_pays.")";
+			$retour=stripslashes($tmp_tab[1])." (".$lig_pays->nom_pays.")";
 		}
 	}
 	else {
