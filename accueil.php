@@ -2112,11 +2112,12 @@ if (getSettingValue("active_mod_ooo")=='y') {
 *****************************/
 
 $query = mysql_query('SELECT * FROM plugins WHERE ouvert = "y"');
-while ($plugin = mysql_fetch_object($query)){
 
-  $chemin = array();
-  $titre = array();
-  $expli = array();
+$chemin = array();
+$titre = array();
+$expli = array();
+
+while ($plugin = mysql_fetch_object($query)){
 
   $querymenu = mysql_query('SELECT * FROM plugins_menus WHERE plugin_id = "'.$plugin->id.'"');
   while ($menuItem = mysql_fetch_object($querymenu)){
@@ -2149,7 +2150,7 @@ while ($plugin = mysql_fetch_object($query)){
 */
 
 		$nummenu=20;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/package.png' , 'texte'=>$nomPlugin);
+		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/package.png' , 'texte'=>'Plugins');
 	 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
@@ -2455,7 +2456,7 @@ require_once ("./lib/footer_template.inc.php");
 	
 //==================================
 // Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
-//debug_var();
+// $affiche_debug=debug_var2();
 
 
 include('./templates/origine/accueil_template.php');
