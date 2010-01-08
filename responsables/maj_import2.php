@@ -235,7 +235,7 @@ $titre_page = "Mise à jour eleves/responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-//debug_var();
+debug_var();
 
 if(isset($step)) {
 	if(($step==0)||
@@ -2653,6 +2653,16 @@ else{
 
 						if($ele_lieu_naissance=="y") {
 							$affiche[11]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->LIEU_NAISSANCE))));
+
+							/*
+							if($affiche[0]=='KILIC') {
+								echo "<tr><td colspan='13' style='text-align:left;'>DEBUG: ";
+								echo "\$lig->LIEU_NAISSANCE=$lig->LIEU_NAISSANCE<br />";
+								echo "corriger_caracteres(dbase_filter(trim(\$lig->LIEU_NAISSANCE)))=".corriger_caracteres(dbase_filter(trim($lig->LIEU_NAISSANCE)))."<br />";
+								echo "\$affiche[11]=$affiche[11]<br />";
+								echo "</td></tr>\n";
+							}
+							*/
 						}
 
 						//if(trim($ligne)!=""){
@@ -2697,7 +2707,8 @@ else{
 									(stripslashes($lig_ele->prenom)!=stripslashes($affiche[1]))||
 									($lig_ele->sexe!=$affiche[2])||
 									($lig_ele->naissance!=$new_date)||
-									($lig_ele->lieu_naissance!=$affiche[11])||
+									//($lig_ele->lieu_naissance!=$affiche[11])||
+									($lig_ele->lieu_naissance!=stripslashes($affiche[11]))||
 									($lig_ele->no_gep!=$affiche[7])){
 										$temoin_modif='y';
 										$cpt_modif++;
@@ -2951,7 +2962,8 @@ else{
 
 								if($ele_lieu_naissance=="y") {
 									echo "<td";
-									if(($lig_ele->naissance!=$new_date)||($lig_ele->lieu_naissance!=$affiche[11])) {
+									//if(($lig_ele->naissance!=$new_date)||($lig_ele->lieu_naissance!=$affiche[11])) {
+									if(($lig_ele->naissance!=$new_date)||($lig_ele->lieu_naissance!=stripslashes($affiche[11]))) {
 										//echo " background-color:lightgreen;'>";
 										echo " class='modif'>";
 										if(($lig_ele->naissance!='')||($lig_ele->lieu_naissance!='')) {
@@ -2974,7 +2986,7 @@ else{
 
 									if($affiche[11]!="") {echo " à ".get_commune($affiche[11],1);}
 									echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
-									echo "<input type='hidden' name='modif_".$cpt."_lieu_naissance' value='".$affiche[11]."' />\n";
+									echo "<input type='hidden' name='modif_".$cpt."_lieu_naissance' value=\"".stripslashes($affiche[11])."\" />\n";
 									echo "</td>\n";
 								}
 								else {
@@ -3168,7 +3180,7 @@ else{
 								echo "$new_date";
 								if($ele_lieu_naissance=="y") {
 									echo " à ".get_commune($affiche[11],1);
-									echo "<input type='hidden' name='new_".$cpt."_lieu_naissance' value='".$affiche[11]."' />\n";
+									echo "<input type='hidden' name='new_".$cpt."_lieu_naissance' value=\"".stripslashes($affiche[11])."\" />\n";
 								}
 								echo "<input type='hidden' name='new_".$cpt."_naissance' value='$new_date' />\n";
 								echo "</td>\n";
@@ -3383,7 +3395,7 @@ else{
 											no_gep='".$lig->ELENONAT."'";
 
 					if($ele_lieu_naissance=="y") {
-						$sql.=", lieu_naissance='".$lig->LIEU_NAISSANCE."'";
+						$sql.=", lieu_naissance='".addslashes($lig->LIEU_NAISSANCE)."'";
 					}
 
 					// Je ne pense pas qu'on puisse corriger un ELENOET manquant...
@@ -8491,7 +8503,6 @@ else{
 					echo ".</p>\n";
 					echo "<p>$cpt_nett associations aberrantes supprimées.</p>\n";
 				}
-
 
 				echo "<p align='center'><input type=submit value='Contrôler les suppressions de responsabilités' /></p>\n";
 
