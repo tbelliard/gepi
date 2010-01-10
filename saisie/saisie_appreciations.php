@@ -665,6 +665,22 @@ echo "<br />\n";
 //=================================
 
 
+//=================================
+$acces_bull_simp='n';
+if(($_SESSION['statut']=="professeur") AND 
+((getSettingValue("GepiAccesBulletinSimpleProf")=="yes")||
+(getSettingValue("GepiAccesBulletinSimpleProfToutesClasses")=="yes")||
+(getSettingValue("GepiAccesBulletinSimpleProfTousEleves")=="yes")
+)) {
+	$acces_bull_simp='y';
+}
+/*
+if($_SESSION['statut']=="secours") {
+	$acces_bull_simp='y';
+}
+*/
+//=================================
+
 
 $prev_classe = null;
 //=================================================
@@ -1021,7 +1037,7 @@ foreach ($liste_eleves as $eleve_login) {
 			}
 		}
 
-		if($id_premiere_classe!='') {
+		if(($id_premiere_classe!='')&&($acces_bull_simp=='y')) {
 			echo "<div style='float:right; width: 17px; margin-right: 1px;'>\n";
 			echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$id_premiere_classe','$num_per1','$num_per2');return false;\">";
 			echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle' />";
@@ -1081,7 +1097,7 @@ foreach ($liste_eleves as $eleve_login) {
 			if ($current_group["classe"]["ver_periode"]["all"][$k] == 0) {
 				echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">\n";
 				//if($current_id_classe!='') {
-				if(isset($current_id_classe[$k])) {
+				if((isset($current_id_classe[$k]))&&($acces_bull_simp=='y')) {
 					//echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\">";
 					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
 					echo $nom_periode[$k];
@@ -1097,7 +1113,7 @@ foreach ($liste_eleves as $eleve_login) {
 				echo "<tr class='lig$alt'><td>\n";
 
 				//if($current_id_classe!='') {
-				if(isset($current_id_classe[$k])) {
+				if((isset($current_id_classe[$k]))&&($acces_bull_simp=='y')) {
 					//echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\">";
 					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
 					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve_login."&id_classe=$current_id_classe&periode1=$k&periode2=$k\" onclick=\"affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\" target=\"_blank\">";
