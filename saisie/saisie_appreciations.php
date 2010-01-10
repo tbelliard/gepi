@@ -469,9 +469,29 @@ if ($insert_mass_appreciation_type=="y") {
 
 echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 
+//===========================================================
 echo "<div id='div_photo_eleve' class='infobulle_corps' style='position: fixed; top: 220px; right: 20px; text-align:center; border:1px solid black; display:none;'></div>\n";
 //echo "<div id='div_photo_eleve' class='infobulle_corps' style='position: fixed; top: 220px; right: 20px; text-align:center; background-color:white; border:1px solid black; display:none;'></div>\n";
 //echo "<div id='div_photo_eleve' style='position: fixed; top: 220px; right: 200px; text-align:center; border:1px solid black;'>&nbsp;</div>\n";
+
+//===========================================================
+echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+
+	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
+		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+		echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
+		echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+		echo "</a>\n";
+		echo "</div>\n";
+
+		echo "<div id='titre_entete_bull_simp'></div>\n";
+	echo "</div>\n";
+	
+	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+	echo "</div>\n";
+
+echo "</div>\n";
+//===========================================================
 
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
@@ -982,7 +1002,34 @@ foreach ($liste_eleves as $eleve_login) {
 		echo "<tr>\n";
 		echo "<th width=\"200\"><div align=\"center\">&nbsp;</div></th>\n";
 		echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
-		echo "<th><div align=\"center\"><b>$eleve_nom $eleve_prenom</b>\n";
+		echo "<th>\n";
+
+		$num_per1=0;
+		$id_premiere_classe="";
+		$current_id_classe=array();
+		$sql="SELECT id_classe,periode FROM j_eleves_classes WHERE login='$eleve_login' ORDER BY periode;";
+		$res_classe=mysql_query($sql);
+		if(mysql_num_rows($res_classe)>0) {
+			$lig_classe=mysql_fetch_object($res_classe);
+			$id_premiere_classe=$lig_classe->id_classe;
+			$current_id_classe[$lig_classe->periode]=$lig_classe->id_classe;
+			$num_per1=$lig_classe->periode;
+			$num_per2=$num_per1;
+			while($lig_classe=mysql_fetch_object($res_classe)) {
+				$current_id_classe[$lig_classe->periode]=$lig_classe->id_classe;
+				$num_per2=$lig_classe->periode;
+			}
+		}
+
+		if($id_premiere_classe!='') {
+			echo "<div style='float:right; width: 17px; margin-right: 1px;'>\n";
+			echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$id_premiere_classe','$num_per1','$num_per2');return false;\">";
+			echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle' />";
+			echo "</a>";
+			echo "</div>\n";
+		}
+
+		echo "<div align=\"center\"><b>$eleve_nom $eleve_prenom</b>\n";
 
 		//==========================
 		// AJOUT: boireaus 20071115
@@ -990,6 +1037,7 @@ foreach ($liste_eleves as $eleve_login) {
 		if($temoin_photo=="y"){
 			//echo " <a href='#' onmouseover=\"afficher_div('photo_$eleve_login','y',-100,20);\"";
 			echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-100,20,1000,10,10);\"";
+			echo " onclick=\"afficher_div('photo_$eleve_login','y',-100,20); return false;\"";
 			echo ">";
 			echo "<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
 			echo "</a>";
@@ -1018,11 +1066,49 @@ foreach ($liste_eleves as $eleve_login) {
 		$k=1;
 		$alt=1;
 		while ($k < $nb_periode) {
+
+			/*
+			$current_id_classe="";
+			$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$eleve_login' AND periode='$k';";
+			$res_classe=mysql_query($sql);
+			if(mysql_num_rows($res_classe)>0) {
+				$lig_classe=mysql_fetch_object($res_classe);
+				$current_id_classe=$lig_classe->id_classe;
+			}
+			*/
+
 			$alt=$alt*(-1);
 			if ($current_group["classe"]["ver_periode"]["all"][$k] == 0) {
-				echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
-			} else {
-				echo "<tr class='lig$alt'><td>$nom_periode[$k]</td>\n";
+				echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">\n";
+				//if($current_id_classe!='') {
+				if(isset($current_id_classe[$k])) {
+					//echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\">";
+					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
+					echo $nom_periode[$k];
+					echo "</a>";
+				}
+				else {
+					echo $nom_periode[$k];
+				}
+				echo "</span>\n";
+				echo "</td>\n";
+			}
+			else {
+				echo "<tr class='lig$alt'><td>\n";
+
+				//if($current_id_classe!='') {
+				if(isset($current_id_classe[$k])) {
+					//echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\">";
+					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
+					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve_login."&id_classe=$current_id_classe&periode1=$k&periode2=$k\" onclick=\"affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\" target=\"_blank\">";
+					echo $nom_periode[$k];
+					echo "</a>";
+				}
+				else {
+					echo $nom_periode[$k];
+				}
+
+				echo "</td>\n";
 			}
 			echo $mess[$k];
 			$k++;
@@ -1063,6 +1149,20 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 </form>
 
 <?php
+
+
+
+echo "<script type='text/javascript'>
+	// <![CDATA[
+	function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
+		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
+		new Ajax.Updater($('corps_bull_simp'),'ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
+	}
+	//]]>
+</script>\n";
+
+
+//===========================================================================
 
 $aff_photo_par_defaut=getPref($_SESSION['login'],'aff_photo_saisie_app',"n");
 

@@ -551,6 +551,7 @@ if ($on_continue == 'yes') {
 			if($couleur_lignes=='y') {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
+				$alt2=$alt;
 			}
 			else {
 				echo "<tr>\n";
@@ -584,7 +585,16 @@ if ($on_continue == 'yes') {
 			$nb=$periode1;
 			$print_tr = 'no';
 			while ($nb < $periode2+1) {
-				if ($print_tr == 'yes') echo "<tr style='border-width: 5px;'>\n";
+				if ($print_tr == 'yes') {
+					//echo "<tr style='border-width: 5px;'>\n";
+					if($couleur_lignes=='y') {
+						$alt2=$alt2*(-1);
+						echo "<tr class='lig$alt2' style='border-width: 5px;'>\n";
+					}
+					else {
+						echo "<tr>\n";
+					}
+				}
 				//=========================
 				// MODIF: boireaus 20080315
 				//echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>\n";
