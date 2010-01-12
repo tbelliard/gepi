@@ -619,8 +619,11 @@ $tab_req[] = "INSERT INTO droits VALUES ('/prepa_conseil/visu_toutes_notes_bis.p
 
 $tab_req[] = "INSERT INTO `droits` VALUES ('/utilitaires/import_pays.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Import des pays', '');";
 
-$tab_req[] = "INSERT INTO droits VALUES ('/saisie/ajax_edit_limite.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Edition des bulletins simplifiés (documents de travail)', '');";
+$tab_req[] = "INSERT INTO droits SET id='/mod_apb/admin.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Gestion du module Admissions PostBac',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_apb/index.php',administrateur='F',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Export XML pour le système Admissions Post-Bac',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_apb/export_xml.php',administrateur='F',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Export XML pour le système Admissions Post-Bac',statut='';";
 
+$tab_req[] = "INSERT INTO droits VALUES ('/saisie/ajax_edit_limite.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Edition des bulletins simplifiés (documents de travail)', '');";
 //$tab_req[] = "INSERT INTO droits VALUES ( '/mod_plugins/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajouter/enlever des plugins', '');";
 
 //$tab_req[] = "";

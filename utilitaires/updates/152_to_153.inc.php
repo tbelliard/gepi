@@ -377,7 +377,48 @@ $result .= add_index('preferences','login_name','`login`,`name`');
 $result .= add_index('periodes','id_classe','`id_classe`');
 
 
+//--------------------
+// Admissions Post-Bac
 
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'active_mod_apb'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('active_mod_apb', 'n');");
+  if ($result_inter == '') {
+    $result.="<font color=\"green\">Définition du paramètre active_mod_apb à 'n': Ok !</font><br />";
+  } else {
+    $result.="<font color=\"red\">Définition du paramètre active_mod_apb à 'n': Erreur !</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">Le paramètre active_mod_apb existe déjà dans la table setting.</font><br />";
+}
 
+$result .= "&nbsp;->Ajout d'un champ apb_niveau à la table 'classes'<br />";
+$test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'apb_niveau';"));
+if ($test_date_decompte>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE classes ADD apb_niveau VARCHAR(15) NOT NULL DEFAULT '';");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+$result .= "&nbsp;->Ajout d'un champ apb_langue_vivante à la table 'j_groupes_classes'<br />";
+$test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM j_groupes_classes LIKE 'apb_langue_vivante';"));
+if ($test_date_decompte>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE j_groupes_classes ADD apb_langue_vivante VARCHAR(3) NOT NULL DEFAULT '';");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
 
 ?>
