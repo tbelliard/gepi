@@ -134,7 +134,7 @@ while ($classe = mysql_fetch_object($req_classes)) {
                         'classe' => $classe->classe,
                         'id' => $classe->id,
 												'nom' => $classe->nom_complet,
-												'annee' => apb_annee($gepiSettings['gepiYear']),
+												'annee' => strftime("%Y"), // L'année ici correspond toujours à l'année courante.
 												'niveau' => $classe->apb_niveau,
 												'decoupage' => $classe->periodes);
   // On s'occupe des limites de périodes, pour n'exporter que jusqu'à la dernière période saisie
@@ -319,7 +319,7 @@ foreach($data_eleves as &$eleve) {
 // Génération du fichier XML à partir des données rassemblées ci-dessus
 
 
-$doc = new DOMDocument();
+$doc = new DOMDocument('1.0','iso-8859-15');
 
 // La racine : <fichier>
 $root = $doc->createElement('fichier');
