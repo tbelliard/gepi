@@ -204,6 +204,12 @@ $titre[] = "Examens blancs";
 $expli[] = "Pour gérer des examens blancs.";
 $key_setting[]='active_mod_examen_blanc';
 
+//Module "Admissions Post-Bac"
+$chemin[] = "/mod_apb/admin.php";
+$titre[] = "Admissions Post-Bac";
+$expli[] = "Pour gérer l'export XML vers la plateforme 'Admissions post-bac'.";
+$key_setting[]='active_mod_apb';
+
 $nb_ligne = count($chemin);
 //
 // Outils d'administration

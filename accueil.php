@@ -2449,6 +2449,48 @@ if (getSettingValue("active_mod_examen_blanc")=='y') {
         Fin module Examen blanc
 *****************************/
 
+
+/*********************************
+    Module Admissions Post-Bac
+**********************************/
+
+if (getSettingValue("active_mod_apb")=='y') {
+	$chemin = array();
+	$chemin[]="/mod_apb/index.php";
+	$titre = array();
+	$titre[] = "Export APB";
+
+	$expli = array();
+	$expli[] = "Export du fichier XML pour le système Admissions Post-Bac";
+
+	$nb_ligne = count($chemin);
+	$affiche = 'no';
+	for ($i=0;$i<$nb_ligne;$i++) {
+		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+	}
+	if ($affiche=='yes') {
+		$nummenu=26;
+		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Export Post-Bac");
+	 
+		for ($i=0;$i<$nb_ligne;$i++) {
+			$numitem=$i;
+			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
+			if ($adresse != false) {
+				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			}
+		}
+	}
+}
+
+/*****************************
+      Fin module APB
+*****************************/
+
+
+
+
+
+
 $tbs_microtime	="";
 $tbs_pmv="";
 require_once ("./lib/footer_template.inc.php");
