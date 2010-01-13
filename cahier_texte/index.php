@@ -655,6 +655,22 @@ foreach ($current_group["classes"]["list"] as $_id_classe) {
     }
 }
 
+//================================================
+/*
+$sql="select * FROM ct_entry WHERE id_ct='5';";
+$res_test=mysql_query($sql);
+if(mysql_num_rows($res_test)>0) {
+	$lig=mysql_fetch_object($res_test);
+	if(strstr($lig->contenu,"<![endif]-->")) {
+		echo "<div style='background-color:white; border: 1px dashed black;'>\n";
+		// Pour dépolluer les copier/coller depuis M$Office
+		echo ereg_replace('.*<\!\[endif\]-->',"",$lig->contenu);
+		echo "</div>\n";
+	}
+}
+*/
+//================================================
+
 //Modif vise ==> ERIC ajout champs vise visa dans les requetes
 // recherche et affichage des prochains travaux futurs pour la matière en cours
 $req_devoirs_arendre =
@@ -727,7 +743,13 @@ while (true) {
     // dans le cas ou il y a plusieurs notices pour une journée, il faut les numéroter.
 
     // Passage en HTML
-	$content = &$not_dev->contenu;
+	// INSERT INTO setting SET name='depolluer_MSOffice', value='y';
+	if(getSettingValue('depolluer_MSOffice')=='y') {
+		$content = &my_ereg_replace('.*<\!\[endif\]-->',"",$not_dev->contenu);
+	}
+	else {
+		$content = &$not_dev->contenu;
+	}
 
     include ("../lib/transform.php");
     // Documents joints
@@ -766,6 +788,7 @@ while (true) {
 
 	//Modif  Eric visa des notices et interdiction de modifier suite à un visa des notices
     $html_balise = '<div style="margin: 0px; float: right;">';
+	//$html_balise.=" $not_dev->id_ct ";
     if ($not_dev->type == "c") {
 	    if (($not_dev->vise != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')){
         $html_balise .=("<a href=\"index.php?id_ct=$not_dev->id_ct&amp;id_groupe=" . $current_group["id"] . "\"><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");

@@ -301,7 +301,14 @@ while (true) {
 		}
 	}
 	// Passage en HTML
-	$content = &$not_dev->contenu;
+	//$content = &$not_dev->contenu;
+	// INSERT INTO setting SET name='depolluer_MSOffice', value='y';
+	if(getSettingValue('depolluer_MSOffice')=='y') {
+		$content = &my_ereg_replace('.*<\!\[endif\]-->',"",$not_dev->contenu);
+	}
+	else {
+		$content = &$not_dev->contenu;
+	}
 	include ("../lib/transform.php");
 	$html .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
 	echo "<h3 class='see_all_h3'>\n<strong>\n";
