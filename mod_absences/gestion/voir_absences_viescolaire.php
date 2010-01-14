@@ -209,6 +209,7 @@ $aff_classe = array();
 		$reponse[$i]["classe"] = mysql_result($query, $i, "classe");
 
 		$td_classe[$i] = '';
+                $td_classe1[$i] = '';
 		$aff_classe[$i] = $reponse[$i]["classe"];
 	}
 
@@ -221,6 +222,7 @@ $periode = mysql_fetch_array($periode_active);
 $nbre_per = count($periode);
 $_periode = isset($periode[0]) ? $periode[0] : '1';
 
+// On mouline alors sur la liste des enregistrements des absences
 for($i = 0; $i < $nbre_rep; $i++) {
 	//$req_prof = mysql_fetch_array(mysql_query("SELECT login_saisie FROM absences_rb WHERE id = '".$rep_absences[$i]["id_abs"]."'")) or die ('erreur 1a : '.mysql_error());
 	$rep_prof = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$rep_absences[$i]["login_saisie"]."'")) or die ('erreur 1b : '.mysql_error());
@@ -228,8 +230,8 @@ for($i = 0; $i < $nbre_rep; $i++) {
 	if ($rep_absences[$i]["eleve_id"] != "appel") {
 		$nbre_abs_cren++; // on incrémente le nombre d'absents du créneau
 		$rep_nom = mysql_fetch_array(mysql_query("SELECT nom, prenom, regime FROM eleves e, j_eleves_regime jer
-																			 WHERE e.login = jer.login
-																			 AND e.login = '".$rep_absences[$i]["eleve_id"]."'"));
+								WHERE e.login = jer.login
+								AND e.login = '".$rep_absences[$i]["eleve_id"]."'"));
 			// traitement du régime pour dissocier les 3 états
 			if ($rep_nom["regime"] == "d/p") {
 				$dp++;
@@ -241,22 +243,53 @@ for($i = 0; $i < $nbre_rep; $i++) {
 
 		$req_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$i]["eleve_id"]."' AND periode = '".$_periode."'"));
 		$rep_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$req_classe[0]."'"));
+                // On compte aussi le nombre de classes concernées par cet enseignement
+                $query_classe1 = (mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_absences[$i]["groupe_id"]."'"));
+                $req_classe1 = array();
+                while ($row = mysql_fetch_array($query_classe1, MYSQL_NUM)) {
+                  $req_classe1[] = $row[0];
+                }
+                
+                // On explose pour vérifier qu'il ne s'agit pas d'une aid
+		$verif_aid = explode("|", $rep_absences[$i]["groupe_id"]);
+                if ($verif_aid[0] == "AID"){
+                  $rep_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.mysql_error());
+                  // On construit alors l'affichage de cette info qui doit permettre à la vie scolaire de savoir
+                  // quand un prof a fait l'appel alors qu'il est avec un aid
+                  $aff_aid_absences .= "".$rep_prof["nom"]." ".$rep_prof["prenom"]." a fait l'appel avec le groupe ".$rep_aid["nom"]."<br />";
+                }elseif(count($req_classe1) >= 2){
+                  // Dans le cas où cet enseignement regroupe plusieurs classes, on marque sur les autres classes qu'elles sont en groupe
+                  $queryb_classe1 = (mysql_query("SELECT classe FROM classes WHERE id IN ('".implode("','", $req_classe1)."')"));
+                  $rep_classe1 = array();
+                  while ($row1 = mysql_fetch_array($queryb_classe1, MYSQL_NUM)) {
+                    $rep_classe1[] = $row1[0];
+                  }
+                }
 	}
 	else if ($rep_absences[$i]["eleve_id"] == "appel") {
 		// On vide les variables inutiles
 		$rep_nom["nom"] = "";
 		$rep_nom["prenom"] = "";
-		// On explose poour vérifier qu'il ne s'agit pas d'un aid
+		// On explose poour vérifier qu'il ne s'agit pas d'une aid
 		$verif_aid = explode("|", $rep_absences[$i]["groupe_id"]);
 		if ($verif_aid[0] == "AID") {
 			$rep_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.mysql_error());
 			// On construit alors l'affichage de cette info qui doit permettre à la vie scolaire de savoir
 			// quand un prof a fait l'appel alors qu'il est avec un aid
 			$aff_aid_absences .= "".$rep_prof["nom"]." ".$rep_prof["prenom"]." a fait l'appel avec le groupe ".$rep_aid["nom"]."<br />";
-			$rep_classe[0] = "";
+			$rep_classe = array();$rep_classe[0] = "";
 		} else {
-			$req_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_absences[$i]["groupe_id"]."'"));
-			$rep_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$req_classe[0]."'"));
+			$query_classe = (mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_absences[$i]["groupe_id"]."'"));
+                        $req_classe = array();
+                        while ($row = mysql_fetch_array($query_classe, MYSQL_NUM)) {
+                          $req_classe[] = $row[0];
+                        }
+			$queryb_classe = (mysql_query("SELECT classe FROM classes WHERE id IN ('".implode("','", $req_classe)."')"));
+                        $rep_classe = array();
+                        while ($row1 = mysql_fetch_array($queryb_classe, MYSQL_NUM)) {
+                          $rep_classe[] = $row1[0];
+                        }
+
 		}
 	}
 
@@ -276,7 +309,7 @@ for($i = 0; $i < $nbre_rep; $i++) {
 		$modif_f = "</a>";
 	} else {
 		$etat = "";
-		$modif = "<a href=\"./voir_absences_viescolaire.php?vers_retard=".$rep_absences[$i]["id_abs"]."&amp;choix_creneau=".$choix_creneau."\" title=\"Absent\"><b>";
+		$modif = "<a href=\"./voir_absences_viescolaire.php?vers_retard=".$rep_absences[$i]["id_abs"]."&amp;choix_creneau=".$choix_creneau."\" title=\"Absent, par ".$rep_prof["nom"]." ".$rep_prof["prenom"]."\"><b>";
 		$modif_f = "</b></a>";
 	}
 
@@ -287,10 +320,20 @@ for($i = 0; $i < $nbre_rep; $i++) {
 	}
 
 	// On lance la moulinette pour afficher la liste des absents pour chaque classe
+        $nbre_classe_ce_groupe = count($req_classe);
 	for($c = 0; $c < $nbre_classe; $c++){
-		if ($rep_classe[0] == $aff_classe[$c]) {
-			$td_classe[$c] .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
-		}
+          // on vérifie d'abord que les enseignements qui regroupent plusieurs classes sont bien marqués si une seule de ces classes a des absents
+          $verif_groupes = isset($req_classe1) ? count($req_classe1) : 0;
+          for ($b = 0 ; $b < $verif_groupes ; ++$b){
+            if (isset($rep_classe1) AND array_key_exists($b, $rep_classe1) AND $rep_classe1[$b] == $aff_classe[$c]) {
+              $td_classe1[$c] = '<span>Classe en groupes avec '.implode(', ', $rep_classe1).'</span><br />';
+            }
+          }
+          for ($a = 0 ; $a < $nbre_classe_ce_groupe ; ++$a){
+            if (array_key_exists($a, $rep_classe) AND $rep_classe[$a] == $aff_classe[$c]) {
+              $td_classe[$c] .= '<span title="Par '.$rep_prof["nom"].' '.$rep_prof["prenom"].'">'.$modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."</span><br />\n";
+            }
+          }
 	}
 } // for
 
@@ -382,7 +425,7 @@ for($a = 0; $a < $nbre_classe; $a++){
 			<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white; -moz-border-radius: 10px; padding: 10px;">
 			'.afficherCoursClasse($aff_classe[$a], $choix_creneau).'</div>
 		</td>
-		<td style="width: 250px;">'.$td_classe[$a].'</td>';
+		<td style="width: 250px;">'.$td_classe1[$a].$td_classe[$a].'</td>';
 	if ($a == ($nbre_classe - 1) AND $modulo == 1) {
 		// c'est qu'on est arrivé à la dernière ligne et que le nombre de classes est impair
 		echo '
@@ -398,7 +441,7 @@ for($a = 0; $a < $nbre_classe; $a++){
 				<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white;">
 				'.afficherCoursClasse($aff_classe[$a], $choix_creneau).'</div>
 			</td>
-			<td style="width: 250px;">'.$td_classe[$a].'</td>
+			<td style="width: 250px;">'.$td_classe1[$a].$td_classe[$a].'</td>
 		</tr>';
 	}
 }
