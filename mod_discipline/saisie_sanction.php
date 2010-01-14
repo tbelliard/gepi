@@ -183,6 +183,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 			$msg.="La date proposée n'était pas valide. Elle a été remplacée par la date du jour courant.";
 		}
 		$date_debut="$annee-$mois-$jour";
+		$tmp_timestamp_debut=mktime(0, 0, 0, $mois, $jour, $annee);
 
 		if(!isset($date_fin)) {
 			if(!isset($date_debut)) {
@@ -210,6 +211,15 @@ if(isset($_POST['enregistrer_sanction'])) {
 			$msg.="La date proposée n'était pas valide. Elle a été remplacée par la date du jour courant.";
 		}
 		$date_fin="$annee-$mois-$jour";
+		$tmp_timestamp_fin=mktime(0, 0, 0, $mois, $jour, $annee);
+
+		if($tmp_timestamp_debut>$tmp_timestamp_fin) {
+			$tmp_date_debut=$date_fin;
+			$date_fin=$date_debut;
+			$date_debut=$date_fin;
+
+			$msg.="La date de fin était antérieure à la date de début de l'exclusion.<br />Les dates ont été interverties.<br />";
+		}
 
 		if (isset($NON_PROTECT["travail"])){
 			$travail=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["travail"]));
