@@ -214,9 +214,18 @@ if(isset($_POST['enregistrer_sanction'])) {
 		$tmp_timestamp_fin=mktime(0, 0, 0, $mois, $jour, $annee);
 
 		if($tmp_timestamp_debut>$tmp_timestamp_fin) {
+			//echo "\$date_debut=$date_debut<br />";
+			//echo "\$date_fin=$date_fin<br />";
+			//echo "\$tmp_timestamp_debut=$tmp_timestamp_debut<br />";
+			//echo "\$tmp_timestamp_fin=$tmp_timestamp_fin<br />";
+
+			//echo "MODIF:<br />";
 			$tmp_date_debut=$date_fin;
+			//echo "\$tmp_date_debut=$date_fin<br />";
 			$date_fin=$date_debut;
-			$date_debut=$date_fin;
+			//echo "\$date_fin=$date_debut<br />";
+			$date_debut=$tmp_date_debut;
+			//echo "\$date_debut=$tmp_date_debut<br />";
 
 			$msg.="La date de fin était antérieure à la date de début de l'exclusion.<br />Les dates ont été interverties.<br />";
 		}
