@@ -418,19 +418,18 @@ while ($i < $nombre_ligne) {
 					}
 				}
 
-				if($temoin!=""){
-					echo "<td><center>".$temoin;
-					if($_SESSION['statut']=="administrateur"){
+				echo "<td style='text-align:center'>";
+				if($temoin!="") {
+					echo $temoin;
+					if($_SESSION['statut']=="administrateur") {
 						echo "<input type='hidden' name=".$id_groupe."_".$j." value='checked' />";
 					}
-					else{
+					else {
 						echo "<img src='../images/enabled.png' width='15' height='15' alt='Inscrit' />";
 					}
-					echo "</center></td>\n";
 				}
-				else{
-					echo "<td><center>";
-					if($_SESSION['statut']=="administrateur"){
+				else {
+					if($_SESSION['statut']=="administrateur") {
 						$msg_erreur="Cette case est validée et ne devrait pas l être. Validez le formulaire pour corriger.";
 						echo "<a href='#' alt='$msg_erreur' title='$msg_erreur'><font color='red'>ERREUR</font></a>";
 					}
@@ -438,12 +437,27 @@ while ($i < $nombre_ligne) {
 						$msg_erreur="Cette case est validée et ne devrait pas l être. Contactez l administrateur pour corriger.";
 						echo "<a href='#' alt='$msg_erreur' title='$msg_erreur'><font color='red'>ERREUR</font></a>";
 					}
-					echo "</center></td>\n";
 					$nb_erreurs++;
 				}
+
+
+				// Test sur la présence de notes dans cn ou de notes/app sur bulletin
+				if (!test_before_eleve_removal($login_eleve, $id_groupe, $j)) {
+					echo "<img id='img_bull_non_vide_".$j."_".$i."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+				}
+	
+				$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$login_eleve."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$id_groupe."' AND ccn.periode = '".$j."')";
+				$test_cn=mysql_query($sql);
+				$nb_notes_cn=mysql_num_rows($test_cn);
+				if($nb_notes_cn>0) {
+					echo "<img id='img_cn_non_vide_".$j."_".$i."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+					//echo "$sql<br />";
+				}
+
+				echo "</td>\n";
 			}
 		}
-		else{
+		else {
 
 			/*
 			// Un autre test à faire:
@@ -451,12 +465,48 @@ while ($i < $nombre_ligne) {
 			$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$j' AND login='$login_eleve'";
 			*/
 
+			echo "<td style='text-align:center'>\n";
+			if($_SESSION['statut']=="administrateur"){
+				echo "<input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' \n";
+				if (mysql_num_rows($test)>0) {
+					echo "checked ";
+				}
+				echo "/>\n";
+			}
+			else {
+				if (mysql_num_rows($test)==0) {
+					echo "&nbsp;\n";
+				}
+				else {
+					echo "<img src='../images/enabled.png' width='15' height='15' alt='Inscrit' />\n";
+				}
+			}
+
+			// Test sur la présence de notes dans cn ou de notes/app sur bulletin
+			if (!test_before_eleve_removal($login_eleve, $id_groupe, $j)) {
+				echo "<img id='img_bull_non_vide_".$j."_".$i."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+			}
+
+			$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$login_eleve."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$id_groupe."' AND ccn.periode = '".$j."')";
+			$test_cn=mysql_query($sql);
+			$nb_notes_cn=mysql_num_rows($test_cn);
+			if($nb_notes_cn>0) {
+				echo "<img id='img_cn_non_vide_".$j."_".$i."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+				//echo "$sql<br />";
+			}
+			echo "</td>\n";
+
+			/*
 			//=========================
 			// MODIF: boireaus
 			if (mysql_num_rows($test) == "0") {
 				//echo "<td><center><input type=checkbox name=".$id_groupe."_".$j." /></center></td>\n";
 				if($_SESSION['statut']=="administrateur"){
-					echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' /></center></td>\n";
+					echo "<td>\n";
+					echo "<center>\n";
+					echo "<input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' />\n";
+					echo "</center>\n";
+					echo "</td>\n";
 				}
 				else {
 					echo "<td>&nbsp;</td>\n";
@@ -464,12 +514,13 @@ while ($i < $nombre_ligne) {
 			} else {
 				if($_SESSION['statut']=="administrateur"){
 					//echo "<td><center><input type=checkbox name=".$id_groupe."_".$j." CHECKED /></center></td>\n";
-					echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' CHECKED /></center></td>\n";
+					echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' checked /></center></td>\n";
 				}
 				else {
 					echo "<td><center><img src='../images/enabled.png' width='15' height='15' alt='Inscrit' /></center></td>\n";
 				}
 			}
+			*/
 			//=========================
 		}
 		$j++;
