@@ -769,13 +769,15 @@ foreach ($liste_eleves as $eleve_login) {
 				if(mysql_num_rows($test_cn_moy)>0) {
 					$lig_cnc=mysql_fetch_object($test_cn_moy);
 					//$notes_conteneurs.="<center>\n";
-					$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;:</b> ";
+					//$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;:</b> ";
+					$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_court))."&nbsp;:</b> ";
 					if($lig_cnc->statut=='y') {$notes_conteneurs.=$lig_cnc->note;} else {$notes_conteneurs.=$lig_cnc->statut;}
 
 					$cpt_cnc=1;
 					while($lig_cnc=mysql_fetch_object($test_cn_moy)) {
 						$notes_conteneurs.=", ";
-						$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;:</b> ";
+						//$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;:</b> ";
+						$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_court))."&nbsp;:</b> ";
 						if($lig_cnc->statut=='y') {$notes_conteneurs.=$lig_cnc->note;} else {$notes_conteneurs.=$lig_cnc->statut;}
 					}
 					//$notes_conteneurs.="</center><br />\n";
@@ -911,7 +913,8 @@ foreach ($liste_eleves as $eleve_login) {
 				}
 
 				$mess[$k]="<td>".$note."</td>\n";
-				$mess[$k].="<td>".$notes_conteneurs."Contenu du carnet de notes : ";
+				//$mess[$k].="<td>".$notes_conteneurs."Contenu du carnet de notes : ";
+				$mess[$k].="<td>Contenu du carnet de notes : ";
 				//$mess[$k].="<a href='#' onmouseover=\"delais_afficher_div('notes_".$eleve_login."_".$k."','y',-100,20,1000,10,10);\" onclick=\"return false;\">";
 				if($liste_notes_detaillees!='') {
 
@@ -930,7 +933,11 @@ foreach ($liste_eleves as $eleve_login) {
 				else {
 					$mess[$k].=$liste_notes;
 				}
-				$mess[$k].="<br />\n";
+				if($notes_conteneurs!='') {
+					$mess[$k].="<br />\n";
+					$mess[$k].=$notes_conteneurs;
+				}
+				//$mess[$k].="<br />\n";
 				$mess[$k].="<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
 
 				//Supprimé le 07/11/2009 pour reduire le nombre de variables transmises (pb suhosin):
@@ -1016,9 +1023,9 @@ foreach ($liste_eleves as $eleve_login) {
 
 		echo "<table width=\"750\" class='boireaus' cellspacing=\"2\" cellpadding=\"5\" summary=\"Tableau de $eleve_nom $eleve_prenom\">\n";
 		echo "<tr>\n";
-		echo "<th width=\"200\"><div align=\"center\">&nbsp;</div></th>\n";
-		echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
-		echo "<th>\n";
+		//echo "<th width=\"200\">\n";
+		echo "<th align='center' width=\"200\">\n";
+		//echo "<div align=\"center\">&nbsp;</div>\n";
 
 		$num_per1=0;
 		$id_premiere_classe="";
@@ -1038,12 +1045,16 @@ foreach ($liste_eleves as $eleve_login) {
 		}
 
 		if(($id_premiere_classe!='')&&($acces_bull_simp=='y')) {
-			echo "<div style='float:right; width: 17px; margin-right: 1px;'>\n";
+			//echo "<div style='float:right; width: 17px; margin-right: 1px;'>\n";
 			echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$id_premiere_classe','$num_per1','$num_per2');return false;\">";
-			echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle' />";
+			echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 			echo "</a>";
-			echo "</div>\n";
+			//echo "</div>\n";
 		}
+
+		echo "</th>\n";
+		echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
+		echo "<th>\n";
 
 		echo "<div align=\"center\"><b>$eleve_nom $eleve_prenom</b>\n";
 
@@ -1096,33 +1107,40 @@ foreach ($liste_eleves as $eleve_login) {
 			$alt=$alt*(-1);
 			if ($current_group["classe"]["ver_periode"]["all"][$k] == 0) {
 				echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">\n";
+
+				echo $nom_periode[$k];
+
 				//if($current_id_classe!='') {
 				if((isset($current_id_classe[$k]))&&($acces_bull_simp=='y')) {
 					//echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\">";
-					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
-					echo $nom_periode[$k];
+					echo " <a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
+					//echo $nom_periode[$k];
+					echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple de la période en infobulle' title='Bulletin simple de la période en infobulle' />";
 					echo "</a>";
 				}
-				else {
-					echo $nom_periode[$k];
-				}
+				//else {
+				//	echo $nom_periode[$k];
+				//}
 				echo "</span>\n";
 				echo "</td>\n";
 			}
 			else {
 				echo "<tr class='lig$alt'><td>\n";
 
+				echo $nom_periode[$k];
+
 				//if($current_id_classe!='') {
 				if((isset($current_id_classe[$k]))&&($acces_bull_simp=='y')) {
 					//echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\">";
 					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
 					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve_login."&id_classe=$current_id_classe&periode1=$k&periode2=$k\" onclick=\"affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\" target=\"_blank\">";
-					echo $nom_periode[$k];
+					//echo $nom_periode[$k];
+					echo " <img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple de la période en infobulle' title='Bulletin simple de la période en infobulle' />";
 					echo "</a>";
 				}
-				else {
-					echo $nom_periode[$k];
-				}
+				//else {
+				//	echo $nom_periode[$k];
+				//}
 
 				echo "</td>\n";
 			}
