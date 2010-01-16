@@ -235,7 +235,7 @@ $titre_page = "Mise à jour eleves/responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-debug_var();
+//debug_var();
 
 if(isset($step)) {
 	if(($step==0)||
@@ -363,7 +363,12 @@ function test_stop_suite_bis(num,cpt_saut_lignes){
 }
 
 echo "<p class='bold'>";
-echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if(isset($_SESSION['retour_apres_maj_sconet'])) {
+	echo "<a href=\"".$_SESSION['retour_apres_maj_sconet']."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+}
+else {
+	echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+}
 //echo "</p>\n";
 
 
