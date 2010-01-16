@@ -65,7 +65,8 @@ case "envoi":
 
 	$corps_message=$message;
 
-	$message = "Demandeur : ".$nama."\n";
+	$message = "Demande d'aide depuis GEPI :\n";
+	$message .= "Demandeur : ".$nama."\n";
 	$message .= "Statut : ".$_SESSION['statut']."\n";
 	// ===============
 	// Modif 20070927:
