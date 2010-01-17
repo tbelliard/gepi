@@ -1203,7 +1203,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 												$texte.="<span style='color:green;'>$eff_notes_bull/$eff_grp</span>";
 											}
 											else {
-												$texte.="<span style='color:red;'>$eff_non_vide/$eff_tot</span>";
+												//$texte.="<span style='color:red;'>$eff_non_vide/$eff_tot</span>";
+												$texte.="<span style='color:red;'>$eff_notes_bull/$eff_grp</span>";
 											}
 
 											$texte.="<br />\n";

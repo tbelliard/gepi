@@ -272,6 +272,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 											if(!in_array('bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur,$tab_bull)) {
 												$tab_bull[]='bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur;
 
+												$sql="SELECT nom_periode FROM periodes WHERE num_periode='$lig_groupe->valeur' AND id_classe='$tab_id_classe[$i]';";
+												//echo "$sql<br />\n";
+												$res_per=mysql_query($sql);
+												$lig_per=mysql_fetch_object($res_per);
+
 												$titre="Moyenne du bulletin (<i>$lig_per->nom_periode</i>)";
 												$texte="<p><b>Moyenne du bulletin sur la période $lig_per->nom_periode</b>";
 												$texte.="<br />";
