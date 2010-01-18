@@ -1692,12 +1692,19 @@ function checkbox_change(cpt) {
 
 			echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Classe ".get_class_from_id($id_classe)." et matière $matiere</p>\n";
 
+			$tab_moy_bull_inscrits=array();
 			$tab_dev_inscrits=array();
-			$sql="SELECT eg.id_dev FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$matiere';";
+			//$sql="SELECT eg.id_dev FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$matiere';";
+			$sql="SELECT eg.id_dev,eg.id_groupe,eg.type,eg.valeur FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$matiere';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
 				while($lig=mysql_fetch_object($res)) {
-					$tab_dev_inscrits[]=$lig->id_dev;
+					if($lig->type=='moy_bull') {
+						$tab_moy_bull_inscrits[$lig->id_groupe]=$lig->valeur;
+					}
+					elseif($lig->type=='') {
+						$tab_dev_inscrits[]=$lig->id_dev;
+					}
 				}
 			}
 
@@ -1761,7 +1768,13 @@ function checkbox_change(cpt) {
 									echo "</label>\n";
 
 									echo "&nbsp;<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='P$lig2->periode' ";
-									echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" />";
+									echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
+
+									if((isset($tab_moy_bull_inscrits[$lig->id]))&&($tab_moy_bull_inscrits[$lig->id]==$lig2->periode)) {
+										echo "checked ";
+									}
+
+									echo "/>";
 
 									if(isset($lig3)) {
 										if($lig3->verouiller=='N') {echo "<img src='../images/icons/flag.png' width='17' height='18' alt='ATTENTION: Période non close' title='ATTENTION: Période non close' />\n";}
