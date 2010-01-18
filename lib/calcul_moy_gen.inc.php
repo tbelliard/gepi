@@ -41,6 +41,8 @@ $quartile4_grp=array();
 $quartile5_grp=array();
 $quartile6_grp=array();
 
+$place_eleve_classe=array();
+
 // On appelle la liste des élèves de la classe
 /*
 $appel_liste_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c
