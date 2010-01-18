@@ -170,9 +170,17 @@ $moy_cat_classe_max = array();
 //==============================
 
 // On teste la présence d'au moins un coeff pour afficher la colonne des coef
-$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+$sql="SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0);";
+//echo "$sql<br />";
+//$test_coef=mysql_num_rows(mysql_query($sql));
+$nb_coef_non_nuls=mysql_num_rows(mysql_query($sql));
 $ligne_supl = 0;
-if ($test_coef != 0) {$ligne_supl = 1;}
+if ($nb_coef_non_nuls!=0) {$ligne_supl = 1;}
+//echo "\$test_coef=$test_coef<br />";
+//echo "\$ligne_supl=$ligne_supl<br />";
+// Dans calcul_moy_gen.inc.php, $test_coef est le résultat d'une requête mysql_query()
+// On met en réserve le $test_coef correspondant au nombre de coef non nuls
+//$test_coef_avant_calcul_moy_gen=$test_coef;
 
 $temoin_note_sup10="n";
 $temoin_note_bonus="n";
@@ -390,6 +398,9 @@ while($j < $nb_lignes_tableau) {
 	$current_eleve_login[$j] = mysql_result($appel_donnees_eleves, $j, "login");
 	$col[1][$j+$ligne_supl] = @mysql_result($appel_donnees_eleves, $j, "nom")." ".@mysql_result($appel_donnees_eleves, $j, "prenom");
 	$ind = 2;
+
+	//echo "<p>\$current_eleve_login[$j]=$current_eleve_login[$j]<br />";
+	//echo "\$col[1][$j+$ligne_supl]=".$col[1][$j+$ligne_supl]."<br />";
 	//=======================================
 	// colonne date de naissance
 	if ($aff_date_naiss){
@@ -490,7 +501,11 @@ if (($aff_rang) and ($referent=="une_periode")){
 	$ligne1_csv[]="Rang de l'élève";
 }
 
-if ($test_coef != 0) {$col[1][0] = "Coefficient";}
+//echo "\$test_coef=$test_coef<br />";
+// Dans calcul_moy_gen.inc.php, $test_coef est le résultat d'une requête mysql_query()
+//$test_coef=$test_coef_avant_calcul_moy_gen;
+
+if($nb_coef_non_nuls!=0) {$col[1][0] = "Coefficient";}
 
 // Etiquettes des trois dernières lignes
 $col[1][$nb_lignes_tableau+$ligne_supl] = "Moyenne";
@@ -502,7 +517,7 @@ $k= 1;
 
 //=========================
 if ($aff_date_naiss){
-	if ($test_coef != 0) $col[$ind][0] = "-";
+	if ($nb_coef_non_nuls != 0) $col[$ind][0] = "-";
 	$col[$ind][$nb_lignes_tableau+$ligne_supl] = "-";
 	$col[$ind][$nb_lignes_tableau+1+$ligne_supl] = "-";
 	$col[$ind][$nb_lignes_tableau+2+$ligne_supl] = "-";
@@ -513,7 +528,7 @@ if ($aff_date_naiss){
 //=========================
 
 if ($aff_reg) {
-	if ($test_coef != 0) $col[$ind][0] = "-";
+	if ($nb_coef_non_nuls != 0) $col[$ind][0] = "-";
 	$col[$ind][$nb_lignes_tableau+$ligne_supl] = "-";
 	$col[$ind][$nb_lignes_tableau+1+$ligne_supl] = "-";
 	$col[$ind][$nb_lignes_tableau+2+$ligne_supl] = "-";
@@ -522,7 +537,7 @@ if ($aff_reg) {
 	$ind++;
 }
 if ($aff_doub) {
-	if ($test_coef != 0) $col[$ind][0] = "-";
+	if ($nb_coef_non_nuls != 0) $col[$ind][0] = "-";
 	$col[$ind][$nb_lignes_tableau+$ligne_supl] = "-";
 	$col[$ind][$nb_lignes_tableau+1+$ligne_supl] = "-";
 	$col[$ind][$nb_lignes_tableau+2+$ligne_supl] = "-";
@@ -531,7 +546,7 @@ if ($aff_doub) {
 	$ind++;
 }
 if ($aff_abs) {
-	if ($test_coef != 0) $col[$ind][0] = "-";
+	if ($nb_coef_non_nuls != 0) $col[$ind][0] = "-";
 	$col[$ind][$nb_lignes_tableau+$ligne_supl] = "-";
 	$col[$ind][$nb_lignes_tableau+1+$ligne_supl] = "-";
 	$col[$ind][$nb_lignes_tableau+2+$ligne_supl] = "-";
@@ -540,7 +555,7 @@ if ($aff_abs) {
 	$ind++;
 }
 if (($aff_rang) and ($referent=="une_periode")) {
-	if ($test_coef != 0) $col[$ind][0] = "-";
+	if ($nb_coef_non_nuls != 0) $col[$ind][0] = "-";
 	$col[$ind][$nb_lignes_tableau+$ligne_supl] = "-";
 	$col[$ind][$nb_lignes_tableau+1+$ligne_supl] = "-";
 	$col[$ind][$nb_lignes_tableau+2+$ligne_supl] = "-";
@@ -732,6 +747,8 @@ while($i < $lignes_groupes) {
 				$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
 				$coef_eleve=$tab_moy['periodes'][$num_periode]['current_coef_eleve'][$indice_j_ele][$i];
 
+				//echo "\$current_eleve_login[$j]=$current_eleve_login[$j]<br />";
+				//echo "\$indice_j_ele=$indice_j_ele<br />";
 				/*
 				$current_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$current_eleve_login[$j]' AND id_groupe='" . $current_group["id"] . "' AND periode='$num_periode')");
 				$current_eleve_statut = @mysql_result($current_eleve_note_query, 0, "statut");
@@ -739,7 +756,9 @@ while($i < $lignes_groupes) {
 
 				$current_eleve_statut=$tab_moy['periodes'][$num_periode]['current_eleve_statut'][$i][$indice_j_ele];
 				$current_eleve_note=$tab_moy['periodes'][$num_periode]['current_eleve_note'][$i][$indice_j_ele];
-	
+
+				//echo "\$current_eleve_note=$current_eleve_note<br />";
+
 				if ($current_eleve_statut != "") {
 					$col[$k][$j+$ligne_supl] = $current_eleve_statut;
 				}
@@ -748,6 +767,7 @@ while($i < $lignes_groupes) {
 				}
 				else {
 					$temp=$current_eleve_note;
+					//echo "\$current_eleve_note=$current_eleve_note<br />";
 					if($temp != '')  {
 						$col[$k][$j+$ligne_supl] = number_format($temp,1, ',', ' ');
 						if ($current_coef > 0) {
@@ -806,7 +826,7 @@ while($i < $lignes_groupes) {
 						$col[$k][$j+$ligne_supl] = '-';
 					}
 				}
-	
+				//echo "\$col[$k][$j+$ligne_supl]=".$col[$k][$j+$ligne_supl]."<br />";
 			}
 
 		}
@@ -1002,6 +1022,7 @@ while($i < $lignes_groupes) {
 			}
 		}
 		$j++;
+		//echo "<br />";
 	}
 
 
@@ -1024,7 +1045,7 @@ while($i < $lignes_groupes) {
 	}
 
 
-	if ($test_coef != 0) {
+	if ($nb_coef_non_nuls != 0) {
 		if ($current_coef > 0) {
 			// A FAIRE: A l'affichage, il faudrait mettre 1.0(*) quand le coeff n'est pas 1.0 pour tous les élèves à cause de coeffs personnalisés.
 			$col[$k][0] = number_format($current_coef,1, ',', ' ');
@@ -1093,7 +1114,16 @@ while($i < $lignes_groupes) {
 	$i++;
 }
 // Fin de la boucle sur la liste des groupes/enseignements
+/*
+echo "<p style='color:red'>";
+for($loop=0;$loop<$nb_lignes_tableau;$loop++) {
 
+	//echo "\$col[1][$loop+$ligne_supl]=".$col[1][$j+$ligne_supl]."<br />";
+	echo "\$col[1][$loop+$ligne_supl]=".$col[1][$loop+$ligne_supl]."<br />";
+
+}
+echo "</p>";
+*/
 //==================================================================================================================
 //==================================================================================================================
 //==================================================================================================================
@@ -1399,7 +1429,16 @@ if ($ligne_supl >= 1) {
 	}
 
 }
+/*
+echo "<p style='color:green'>";
+for($loop=0;$loop<$nb_lignes_tableau;$loop++) {
 
+	//echo "\$col[1][$loop+$ligne_supl]=".$col[1][$j+$ligne_supl]."<br />";
+	echo "\$col[1][$loop+$ligne_supl]=".$col[1][$loop+$ligne_supl]."<br />";
+
+}
+echo "</p>";
+*/
 //====================
 // DEBUG:
 //echo $lignes_debug;
