@@ -41,7 +41,7 @@ if (!checkAccess()) {
 }
 
 $id_classe = isset($_GET['id_classe']) ? $_GET['id_classe'] : (isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL);
-if (!is_numeric($id_classe)) $id_classe = 0;
+if (!is_numeric($id_classe)) {$id_classe = 0;}
 $classe = get_classe($id_classe);
 
 if(isset($_GET['forcer_recalcul_rang'])) {
@@ -221,19 +221,30 @@ require_once("../lib/header.inc");
 if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['confirm_delete_group']))) {
 	// On va détailler ce qui serait supprimé en cas de confirmation
 	$tmp_group=get_group($_GET['id_groupe']);
+	echo "<div style='border: 2px solid red;'>\n";
 	echo "<p><b>ATTENTION&nbsp;:</b> Vous souhaitez supprimer l'enseignement suivant&nbsp;: ".$tmp_group['name']." (<i>".$tmp_group['description']."</i>) en ".$tmp_group['classlist_string']."<br />\n";
 	echo "Voici quelques éléments sur l'enseignement&nbsp;:</p>\n";
 	$suppression_possible='y';
+
+	$lien_bull_simp="";
+	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode DESC LIMIT 1;";
+	//echo "$sql<br />";
+	$res_per=mysql_query($sql);
+	if(mysql_num_rows($res_per)>0) {
+		$lig_per=mysql_fetch_object($res_per);
+
+		$lien_bull_simp="<a href='../prepa_conseil/edit_limite.php?choix_edit=1&amp;id_classe=$id_classe&amp;periode1=1&amp;periode2=$lig_per->num_periode' target='_blank'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple dans une nouvelle page' title='Bulletin simple dans une nouvelle page' /></a>";
+	}
 
 	echo "<p style='margin-left:5em;'>";
 	$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='".$_GET['id_groupe']."';";
 	$test_mn=mysql_query($sql);
 	$nb_mn=mysql_num_rows($test_mn);
 	if($nb_mn==0) {
-		echo "Aucun note sur les bulletins.<br />\n";
+		echo "Aucune note sur les bulletins.<br />\n";
 	}
 	else {
-		echo "<span style='color:red;'>$nb_mn note(s) sur les bulletins</span> (<i>toutes périodes confondues</i>).<br />\n";
+		echo "<span style='color:red;'>$nb_mn note(s) sur les bulletins</span> (<i>toutes périodes confondues</i>)&nbsp;: $lien_bull_simp<br />\n";
 		$suppression_possible='n';
 	}
 
@@ -241,10 +252,10 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	$test_ma=mysql_query($sql);
 	$nb_ma=mysql_num_rows($test_ma);
 	if($nb_ma==0) {
-		echo "Aucun note sur les bulletins.<br />\n";
+		echo "Aucune appréciation sur les bulletins.<br />\n";
 	}
 	else {
-		echo "<span style='color:red;'>$nb_ma appréciation(s) sur les bulletins</span> (<i>toutes périodes confondues</i>).<br />\n";
+		echo "<span style='color:red;'>$nb_ma appréciation(s) sur les bulletins</span> (<i>toutes périodes confondues</i>)&nbsp;: $lien_bull_simp<br />\n";
 		$suppression_possible='n';
 	}
 
@@ -254,7 +265,7 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	$test_notice_cdt=mysql_query($sql);
 	$nb_notice_cdt=mysql_num_rows($test_notice_cdt);
 	if($nb_notice_cdt==0) {
-		echo "Aucun notice dans le cahier de textes.<br />\n";
+		echo "Aucune notice dans le cahier de textes.<br />\n";
 	}
 	else {
 		echo "$nb_notice_cdt notice(s) dans le cahier de textes.<br />\n";
@@ -312,6 +323,7 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	else {
 		echo "<p style='color:red;'>Des données existantes bloquent la suppression du groupe.<br />Aucune note ni appréciation du bulletin ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.</p>";
 	}
+	echo "</div>\n";
 }
 
 
@@ -576,7 +588,8 @@ for($i=0;$i<10;$i++){
         echo "<br/>";
         echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
         echo "<table border = '0' width='100%' summary='Suppression'><tr><td width='25%'>";
-        echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe' onclick=\"return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\"><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
+        //echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe' onclick=\"return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\"><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
+        echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe'><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
         echo " -- <span class=\"norme\">";
         echo "<b>";
         if ($total == "1") {
