@@ -31,7 +31,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // INSERT INTO `droits` VALUES ('/cahier_notes/export_cahier_notes.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'Export CSV/ODS du cahier de notes', '');
 if (!checkAccess()) {
@@ -55,13 +55,13 @@ $type_export=isset($_POST["type_export"]) ? $_POST["type_export"] : NULL;
 $nettoyage=isset($_GET["nettoyage"]) ? $_GET["nettoyage"] : NULL;
 
 
-if($_SESSION['user_temp_directory']!='y'){
+if($_SESSION['user_temp_directory']!='y') {
 	$type_export="CSV";
 }
 else{
 	if(getSettingValue("export_cn_ods")=='y') {
 		$user_tmp=get_user_temp_directory();
-		if(!$user_tmp){
+		if(!$user_tmp) {
 			/*
 			$msg="Votre dossier temporaire n'est pas accessible.";
 			header("Location: index.php?msg=".rawurlencode($msg));
@@ -78,19 +78,22 @@ else{
 
 		$chemin_modele_ods="export_cn_modele_ods";
 
-		if(isset($nettoyage)){
-			if(!ereg(".ods$",$nettoyage)){
+		if(isset($nettoyage)) {
+			$id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
+			$periode_num=isset($_GET['periode_num']) ? $_GET['periode_num'] : NULL;
+
+			if(!ereg(".ods$",$nettoyage)) {
 				$msg="Le fichier n'est pas d'extension ODS.";
 			}
-			elseif(!ereg("^".$_SESSION['login'],$nettoyage)){
+			elseif(!ereg("^".$_SESSION['login'],$nettoyage)) {
 				$msg="Vous tentez de supprimer des fichiers qui ne vous appartiennent pas.";
 			}
-			else{
-				if(strlen(my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0){
+			else {
+				if(strlen(my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0) {
 					$msg="Le fichier proposé n'est pas valide: '".my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
 				}
 				else{
-					if(!file_exists("$chemin_temp/$nettoyage")){
+					if(!file_exists("$chemin_temp/$nettoyage")) {
 						$msg="Le fichier choisi n'existe pas.";
 					}
 					else{
@@ -100,7 +103,13 @@ else{
 				}
 			}
 
-			header("Location: index.php?msg=$msg");
+			// LES VARIABLES DEVRAIENT TOUJOURS ETRE RENSEIGNEES
+			if((isset($id_groupe))&&(isset($periode_num))) {
+				header("Location: index.php?id_groupe=$id_groupe&periode_num=$periode_num&msg=$msg");
+			}
+			else {
+				header("Location: index.php?msg=$msg");
+			}
 			die();
 		}
 	}
@@ -137,6 +146,10 @@ include "../lib/periodes.inc.php";
 
 // On teste si la periode est vérouillée !
 if (($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) and (isset($id_devoir)) and ($id_devoir!='') ) {
+	// ON NE DOIT JAMAIS ENTRER ICI
+	// CELA RESSEMBLE A UNE SCORIE
+	// POUR L'IMPORT CE TEST SERAIT UTILE, MAIS PAS POUR L'EXPORT
+	// VERIFIER ET VIRER
     $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes dont la période est bloquée !");
     header("Location: index.php?msg=$mess");
     die();
@@ -154,8 +167,8 @@ $nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
 //echo "\$is_posted=$is_posted<br />";
 //echo "\$type_export=$type_export<br />";
 
-//if((!isset($is_posted))||(!isset($type_export))){
-if(!isset($type_export)){
+//if((!isset($is_posted))||(!isset($type_export))) {
+if(!isset($type_export)) {
 	//**************** EN-TETE *****************
 	$titre_page = "Export des notes";
 	require_once("../lib/header.inc");
@@ -198,7 +211,7 @@ $nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_g
 $nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group["classlist_string"],'all'));
 $nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode,'all'));
 
-if($type_export=="CSV"){
+if($type_export=="CSV") {
 
 	// Génération du CSV
 
@@ -246,7 +259,7 @@ if($type_export=="CSV"){
 	// On peut faire plus simple: La fonction MOYENNE de OpenOffice Calc tient compte des valeurs non numériques.
 
 	$cpt=0;
-	while($lig_dev=mysql_fetch_object($appel_dev)){
+	while($lig_dev=mysql_fetch_object($appel_dev)) {
 
 		$id_dev[$cpt]=$lig_dev->id;
 		$nomc_dev[$cpt]=$lig_dev->nom_court;
@@ -272,9 +285,9 @@ if($type_export=="CSV"){
 		//$sql="SELECT SUM(note) AS somme,COUNT(note) AS nb FROM cn_devoirs WHERE (id='$id_dev[$cpt]' AND statut='')";
 		$sql="SELECT SUM(note) AS somme,COUNT(note) AS nb FROM cn_notes_devoirs WHERE (id_devoir='$id_dev[$cpt]' AND statut='')";
 		$res_moy=mysql_query($sql);
-		if($res_moy){
+		if($res_moy) {
 			$lig_moy=mysql_fetch_array($res_moy);
-			if($lig_moy[1]!=0){
+			if($lig_moy[1]!=0) {
 				$moy=strtr(round(10*$lig_moy[0]/$lig_moy[1])/10,".",",");
 				//echo "$lig_moy[0]/$lig_moy[1]=".$moy."<br />";
 				$ligne_info_dev[4].=";".$moy;
@@ -290,7 +303,7 @@ if($type_export=="CSV"){
 		$cpt++;
 	}
 
-	for($i=0;$i<count($ligne_info_dev);$i++){
+	for($i=0;$i<count($ligne_info_dev);$i++) {
 		//echo "$ligne_info_dev[$i]<br />\n";
 		$fd.="$ligne_info_dev[$i]\n";
 	}
@@ -351,7 +364,7 @@ if($type_export=="CSV"){
 
 			$note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
 
-			if(mysql_num_rows($note_query)==0){
+			if(mysql_num_rows($note_query)==0) {
 				$eleve_note='';
 				$eleve_statut='-';
 			}
@@ -367,11 +380,11 @@ if($type_export=="CSV"){
 			// Problème avec les 17.5 qui sont convertis en dates -> 17/05/07
 			$eleve_note=strtr($eleve_note,".",",");
 
-			if($eleve_statut=='v'){
+			if($eleve_statut=='v') {
 				// Pas de note saisie -> statut = v pour vide
 				$eleve_note="-";
 			}
-			elseif($eleve_statut!=''){
+			elseif($eleve_statut!='') {
 				$eleve_note=$eleve_statut;
 			}
 
@@ -390,8 +403,8 @@ if($type_export=="CSV"){
 	echo $fd;
 	die();
 }
-//elseif($type_export=="ODS"){
-elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
+//elseif($type_export=="ODS") {
+elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 	// Génération d'un fichier tableur...
 	// ... il faudra prévoir un nettoyage.
@@ -405,7 +418,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	$id_dev=array();
 
 	$cpt=0;
-	while($lig_dev=mysql_fetch_object($appel_dev)){
+	while($lig_dev=mysql_fetch_object($appel_dev)) {
 
 		$id_dev[$cpt]=$lig_dev->id;
 		// Certains caractères comme le '°' que l'on met par exemple dans 'Devoir n°2' posent pb...
@@ -422,7 +435,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 		$date_dev[$cpt]=$tmptab[0];
 		// Pour le fichier ODS, on veut des dates au format aaaa-mm-jj
 		$tmptab2=explode("-",$tmptab[0]);
-		if(strlen($tmptab2[0])==4){$tmptab2[0]=substr($tmptab2[0],2,2);}
+		if(strlen($tmptab2[0])==4) {$tmptab2[0]=substr($tmptab2[0],2,2);}
 		$date_dev_fr[$cpt]=$tmptab2[2]."/".$tmptab2[1]."/".$tmptab2[0];
 
 
@@ -430,9 +443,9 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 		$moy="";
 		$sql="SELECT SUM(note) AS somme,COUNT(note) AS nb FROM cn_notes_devoirs WHERE (id_devoir='$id_dev[$cpt]' AND statut='')";
 		$res_moy=mysql_query($sql);
-		if($res_moy){
+		if($res_moy) {
 			$lig_moy=mysql_fetch_array($res_moy);
-			if($lig_moy[1]!=0){
+			if($lig_moy[1]!=0) {
 				$moy=strtr(round(10*$lig_moy[0]/$lig_moy[1])/10,".",",");
 			}
 		}
@@ -523,8 +536,8 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 	//$ecriture=fwrite($fichier_tmp_xml,'');
 
-	//for($i=0;$i<count($nomc_dev);$i++){
-	for($i=0;$i<$nb_dev;$i++){
+	//for($i=0;$i<count($nomc_dev);$i++) {
+	for($i=0;$i<$nb_dev;$i++) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce6" office:value-type="string"><text:p>'.$nomc_dev[$i].'</text:p></table:table-cell>');
 	}
 
@@ -543,8 +556,8 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="3"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>Coefficient</text:p></table:table-cell>');
 
-	//for($i=0;$i<count($coef_dev);$i++){
-	for($i=0;$i<$nb_dev;$i++){
+	//for($i=0;$i<count($coef_dev);$i++) {
+	for($i=0;$i<$nb_dev;$i++) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce6" office:value-type="float" office:value="'.strtr($coef_dev[$i],",",".").'"><text:p>'.$coef_dev[$i].'</text:p></table:table-cell>');
 	}
 
@@ -563,8 +576,8 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="3"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>Note sur :</text:p></table:table-cell>');
 
-	//for($i=0;$i<count($coef_dev);$i++){
-	for($i=0;$i<$nb_dev;$i++){
+	//for($i=0;$i<count($coef_dev);$i++) {
+	for($i=0;$i<$nb_dev;$i++) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce6" office:value-type="float" office:value="'.strtr($note_sur_dev[$i],",",".").'"><text:p>'.$note_sur_dev[$i].'</text:p></table:table-cell>');
 	}
 
@@ -583,8 +596,8 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="3"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>Date</text:p></table:table-cell>');
 
-	//for($i=0;$i<count($date_dev);$i++){
-	for($i=0;$i<$nb_dev;$i++){
+	//for($i=0;$i<count($date_dev);$i++) {
+	for($i=0;$i<$nb_dev;$i++) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce7" office:value-type="date" office:date-value="'.$date_dev[$i].'"><text:p>'.$date_dev_fr[$i].'</text:p></table:table-cell>');
 	}
 
@@ -600,15 +613,15 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 	$alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	$tabcol=array();
-	for($i=0;$i<strlen($alphabet);$i++){
+	for($i=0;$i<strlen($alphabet);$i++) {
 		$tabcol[$i]=substr($alphabet,$i,1);
 	}
-	for($i=strlen($alphabet);$i<2*strlen($alphabet);$i++){
+	for($i=strlen($alphabet);$i<2*strlen($alphabet);$i++) {
 		$tabcol[$i]="A".substr($alphabet,$i-strlen($alphabet),1);
 	}
 
 	/*
-	for($i=0;$i<count($tabcol);$i++){
+	for($i=0;$i<count($tabcol);$i++) {
 		echo $tabcol[$i]." - ";
 	}
 	*/
@@ -619,8 +632,8 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 	$num_col=6;
 
-	//for($i=0;$i<count($moy_dev);$i++){
-	for($i=0;$i<$nb_dev;$i++){
+	//for($i=0;$i<count($moy_dev);$i++) {
+	for($i=0;$i<$nb_dev;$i++) {
 		//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100])))" office:value-type="float" office:value="'.$valeur_defaut.'"><text:p>'.$valeur_defaut.'</text:p></table:table-cell>');
 
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100])))" office:value-type="float" office:value="'.strtr($moy_dev[$i],',','.').'"><text:p>'.$moy_dev[$i].'</text:p></table:table-cell>');
@@ -628,7 +641,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 		$num_col++;
 	}
 
-	for($i=$num_col;$i<count($tabcol);$i++){
+	for($i=$num_col;$i<count($tabcol);$i++) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100])))"><text:p/></table:table-cell>');
 		//echo "$num_col - ";
 		$num_col++;
@@ -643,7 +656,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	$order_by="";
 
 	// On commence par mettre la liste dans l'ordre souhaité
-	if($order_by != "classe"){
+	if($order_by != "classe") {
 		$liste_eleves = $current_group["eleves"][$periode_num]["users"];
 	}
 	else{
@@ -698,7 +711,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 		while ($k < $nb_dev) {
 			$note_query=mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
 
-			if(mysql_num_rows($note_query)==0){
+			if(mysql_num_rows($note_query)==0) {
 				$eleve_note='';
 				$eleve_statut='-';
 			}
@@ -709,13 +722,13 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 			//$eleve_login_note=$eleve_login[$i]."_note";
 
-			if($eleve_statut=='v'){
+			if($eleve_statut=='v') {
 				// Pas de note saisie -> statut = v pour vide
 				$eleve_note="-";
 
 				$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_note.'</text:p></table:table-cell>');
 			}
-			elseif($eleve_statut!=''){
+			elseif($eleve_statut!='') {
 				$eleve_note=$eleve_statut;
 
 				$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_note.'</text:p></table:table-cell>');
@@ -743,7 +756,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 	// ===================
 
-	for($i=$num_lig;$i<=100;$i++){
+	for($i=$num_lig;$i<=100;$i++) {
 		//'.$tabcol[$num_col].'
 
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell/><table:table-cell table:number-columns-repeated="3"/>');
@@ -814,7 +827,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	$zip->save("$tmp_fich.zip");
 
 
-	if(file_exists("$chemin_temp/$nom_fic")){unlink("$chemin_temp/$nom_fic");}
+	if(file_exists("$chemin_temp/$nom_fic")) {unlink("$chemin_temp/$nom_fic");}
 	//rename("$tmp_fich.zip","$chemin_ods/$chaine_tmp.$nom_fic");
 	rename("$tmp_fich.zip","$chemin_temp/$nom_fic");
 
@@ -853,7 +866,8 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 	// AJOUTER UN LIEN POUR FAIRE LE MENAGE... et permettre à l'admin de faire le ménage.
 	echo "<p>Pour ne pas encombrer inutilement le serveur et par soucis de confidentialité, il est recommandé de supprimer le fichier du serveur après récupération du fichier ci-dessus.<br />\n";
-	echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=$nom_fic'>Supprimer le fichier</a>.";
+	//echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=$nom_fic'>Supprimer le fichier</a>.";
+	echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=$nom_fic&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num'>Supprimer le fichier</a>.";
 	//echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=".$nom_fic."_truc'>Supprimer le fichier 2</a>.";
 	//echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=_truc".$nom_fic."'>Supprimer le fichier 3</a>.";
 	echo "</p>\n";
