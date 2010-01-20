@@ -815,6 +815,20 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
     $nbre_per = count($periode);
     $_periode = isset($periode[0]) ? $periode[0] : '1';
 
+    // ======================== Correctif : On récupère la période actuelle si elle a été paramétrée dans l'emploi du temps
+
+    $req_periode_courante = mysql_query("SELECT numero_periode FROM edt_calendrier WHERE
+                                        debut_calendrier_ts < ".date("U")." AND
+                                        fin_calendrier_ts > ".date("U")."
+                            ");
+    if ($rep_periode_courante = mysql_fetch_array($req_periode_courante)) {
+        if ($rep_periode_courante["numero_periode"] != 0) {
+            $_periode = $rep_periode_courante["numero_periode"];
+        }
+    }
+    //echo $_periode."<br/>";
+    // ======================== fin de correctif
+
 	// on vérifie que l'enseignement envoyé n'est pas une AID
 	$test = explode("|", $classe);
 	if ($test[0] == "AID") {
@@ -822,11 +836,54 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		$aid_nom = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$test[1]."'"));
 		$current_groupe["description"] = $aid_nom["nom"];
 		$current_groupe["classlist_string"] = "AID";
-		$nbre_eleves = mysql_num_rows(mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE id_aid = '".$test[1]."'"));
+		//$nbre_eleves = mysql_num_rows(mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE id_aid = '".$test[1]."'"));
+		$req_logins_eleves = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE id_aid = '".$test[1]."'");
 	}else{
 		$current_groupe = get_group($classe);
-		$nbre_eleves = mysql_num_rows(mysql_query("SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe = '".$classe."' AND periode = '" . $_periode . "'"));
+		//$nbre_eleves = mysql_num_rows(mysql_query("SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe = '".$classe."' AND periode = '" . $_periode . "'"));
+		$req_logins_eleves = mysql_query("SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe = '".$classe."' AND periode = '" . $_periode . "'");
 	}
+
+    // ================= Calculer le nbre d'élèves 
+    $nbre_eleves = 0;
+    while ($rep_logins_eleves = mysql_fetch_array($req_logins_eleves)) {
+        $req_periode_courante = mysql_query("SELECT numero_periode FROM edt_calendrier WHERE
+                                            debut_calendrier_ts < ".date("U")." AND
+                                            fin_calendrier_ts > ".date("U")."
+                                ");
+        if ($rep_periode_courante = mysql_fetch_array($req_periode_courante)) {
+            if ($rep_periode_courante["numero_periode"] != 0) {
+                $test = explode("|", $classe);
+                if ( $test[0] != "AID") {
+                    $req_eleve_dispo = mysql_query("SELECT login FROM j_eleves_groupes WHERE
+                                                    login = '".$rep_logins_eleves["login"]."' AND
+                                                    id_groupe = '".$classe."' AND
+                                                    periode = '".$rep_periode_courante["numero_periode"]."' 
+                                                    
+                                        ");
+                    if (mysql_num_rows($req_eleve_dispo) != 0) {
+                        $nbre_eleves++;
+                    }
+                }
+                else {
+                    $req_eleve_dispo = mysql_query("SELECT login FROM j_aid_eleves WHERE 
+	                                                    id_aid = '".$test[1]."' AND
+	                                                    indice_aid IN (SELECT indice_aid FROM aid_config WHERE
+			                                            display_begin <= '".$rep_periode_courante["numero_periode"]."' AND
+			                                            display_end >= '".$rep_periode_courante["numero_periode"]."' ) 
+                                                    ");
+                    if (mysql_num_rows($req_eleve_dispo) != 0) {
+                        $nbre_eleves++;
+                    }
+                }
+            } else {
+                $nbre_eleves++;
+            } 
+        } else {
+            $nbre_eleves++;
+        }
+        
+    }
 
 ?>
 	<div class="centre_tout_moyen">
@@ -854,12 +911,11 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 			<p class="choix_fin">
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
-			<?php if (getSettingValue("active_cahiers_texte")=='y') { ?>
 			<p class="choix_fin">
 				<input type="hidden" name="passer_cahier_texte" id="passer_cahier_texte" value="false" />
 				<input value="Enregistrer et passer au cahier de texte" name="Valider" type="submit"  onclick="document.getElementById('passer_cahier_texte').value = true; this.form.submit(); this.disabled=true; this.value='En cours'" />
 			</p>
-			<?php } ?>
+
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
 	<?php echo '<p>'.$nbre_eleves.' élèves.</p>'; ?>
@@ -970,7 +1026,58 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	$cpt_eleve = '0';
 	$ic = '1';
 	$ligne= '0';
+    $test = explode("|", $classe);
+    $req_periode_courante = mysql_query("SELECT numero_periode FROM edt_calendrier WHERE
+                                        debut_calendrier_ts < ".date("U")." AND
+                                        fin_calendrier_ts > ".date("U")."
+                            ");
+    if ($rep_periode_courante = mysql_fetch_array($req_periode_courante)) {
+        $periode_courante = $rep_periode_courante["numero_periode"];
+    }
+    else {
+        $periode_courante = 0;
+    }
+
 	while ($data_liste_eleve = mysql_fetch_array($execution_liste_eleve)) {
+
+        // =============== Filtrage supplémentaire pour masquer les élèves "désaffectés" de la période courante
+        // =============== si cette période a été définie dans les périodes des edt.
+        $eleve_dispo = true;
+        if ($periode_courante != 0) {
+            if ( $test[0] != "AID") {
+                // =============== Si l'élève actuel a été supprimé de la période courante
+                // =============== on bloque son affichage
+                $req_eleve_dispo = mysql_query("SELECT login FROM j_eleves_groupes WHERE
+                                                login = '".$data_liste_eleve["login"]."' AND
+                                                id_groupe = '".$classe."' AND
+                                                periode = '".$periode_courante."' 
+                                                
+                                    ");
+                if (mysql_num_rows($req_eleve_dispo) != 0) {
+                    $eleve_dispo = true;
+                } else {
+                    $eleve_dispo = false;
+                }
+            }
+            else {
+                // =============== Si l'AID n'est pas définie sur la période courante, on bloque l'affichage
+                // =============== des élèves
+                $req_eleve_dispo = mysql_query("SELECT login FROM j_aid_eleves WHERE 
+	                                                id_aid = '".$test[1]."' AND
+	                                                indice_aid IN (SELECT indice_aid FROM aid_config WHERE
+			                                        display_begin <= '".$periode_courante."' AND
+			                                        display_end >= '".$periode_courante."' ) 
+                                                ");
+                if (mysql_num_rows($req_eleve_dispo) != 0) {
+                    $eleve_dispo = true;
+                } else {
+                    $eleve_dispo = false;
+                }
+            }
+        }
+
+        // ==================== fin du filtrage
+        if ($eleve_dispo) {
 		$ligne= $ligne+1;
 		if ($ic === '1') {
 			$ic='2';
@@ -1184,6 +1291,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 <?php
 		$type_saisie="A";
 		$cpt_eleve = $cpt_eleve + 1;
+    } //if ($eleve_dispo)
 	} //while ($data_liste_eleve = mysql_fetch_array($execution_liste_eleve)
 // Régis j'en suis là
 ?>
@@ -1211,11 +1319,9 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		<div style="text-align: center; margin: 20px;">
 			<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 		</div>
-		<?php if (getSettingValue("active_cahiers_texte")=='y') { ?>
 		<div style="text-align: center; margin: 20px;">
 				<input value="Enregistrer et passer au cahier de texte" name="Valider" type="submit"  onclick="document.getElementById('passer_cahier_texte').value = true; this.form.submit(); this.disabled=true; this.value='En cours'" />
 		</div>
-		<?php } ?>
 	</form>
 	<p class="info_importante">Quand vous saisissez vos absences (avec ou sans absent),
 	Gepi enregistre la date et l'heure ainsi que votre identifiant.</p>
