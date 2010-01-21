@@ -243,6 +243,9 @@ for($i = 0; $i < $nbre_rep; $i++) {
 
 		$req_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$i]["eleve_id"]."' AND periode = '".$_periode."'"));
 		$rep_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$req_classe[0]."'"));
+        if ($rep_classe === false) {
+            $rep_classe = array();
+        }
                 // On compte aussi le nombre de classes concernées par cet enseignement
                 $query_classe1 = (mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_absences[$i]["groupe_id"]."'"));
                 $req_classe1 = array();
