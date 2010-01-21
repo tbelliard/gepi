@@ -4497,12 +4497,23 @@ else{
 					echo "</th>\n";
 					echo "</tr>\n";
 
+					$tab_champs_grp=array('matieres','profs');
+
 					$nb_erreurs=0;
 					$i=0;
 					$alt=-1;
 					while ($i < $nombre_ligne) {
 						$id_groupe = mysql_result($call_group, $i, "id");
 						$nom_groupe = mysql_result($call_group, $i, "name");
+
+						$tmp_group=get_group($id_groupe,$tab_champs_grp);
+						$chaine_profs="";
+						//for($loop=0;$loop<count($tmp_group[])) {}
+						foreach($tmp_group["profs"]["users"] as $login_prof) {
+							$chaine_profs.=", ";
+							$chaine_profs.=$login_prof['civilite']."&nbsp;".$login_prof['nom']." ".substr($login_prof['prenom'],0,1);
+						}
+						if($chaine_profs!='') {$chaine_profs=substr($chaine_profs,2);}
 
 						$alt=$alt*(-1);
 						/*
@@ -4515,8 +4526,12 @@ else{
 						}
 						echo ";'>\n";
 						*/
-						echo "<tr class='lig$alt'>\n";
+						echo "<tr class='lig$alt white_hover'>\n";
 						echo "<td>".$nom_groupe;
+						echo "<br />";
+						//echo "<span style='font-size: x-small'>".$tmp_group['description']."</span>";
+						//echo "<br />";
+						echo "<span style='font-size: x-small'>".$chaine_profs."</span>";
 						echo "</td>\n";
 						$j = 1;
 						while ($j < $nb_periode) {
