@@ -4497,7 +4497,7 @@ else{
 					echo "</th>\n";
 					echo "</tr>\n";
 
-					$tab_champs_grp=array('matieres','profs');
+					$tab_champs_grp=array('matieres','profs','classes');
 
 					$nb_erreurs=0;
 					$i=0;
@@ -4528,6 +4528,7 @@ else{
 						*/
 						echo "<tr class='lig$alt white_hover'>\n";
 						echo "<td>".$nom_groupe;
+						echo " <span style='font-size: x-small'>(".$tmp_group['classlist_string'].")</span>";
 						echo "<br />";
 						//echo "<span style='font-size: x-small'>".$tmp_group['description']."</span>";
 						//echo "<br />";
