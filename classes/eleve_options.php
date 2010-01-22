@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -317,7 +317,7 @@ $nombre_ligne = mysql_num_rows($call_group);
 //echo "<table border = '1' cellpadding='5' cellspacing='0'>\n<tr><td><b>Matière</b></td>";
 //echo "<table border = '1' cellpadding='5' cellspacing='0'>\n";
 echo "<table border = '1' cellpadding='5' cellspacing='0' class='boireaus'>\n";
-echo "<tr align='center'><td><b>Matière</b></td>\n";
+echo "<tr align='center'><th><b>Matière</b></th>\n";
 //=========================
 $j = 1;
 $chaine_coche="";
@@ -325,8 +325,8 @@ $chaine_decoche="";
 while ($j < $nb_periode) {
 	//=========================
 	// MODIF: boireaus
-	//echo "<td><b>".$nom_periode[$j]."</b></td>";
-	echo "<td><b>".$nom_periode[$j]."</b>";
+	//echo "<th><b>".$nom_periode[$j]."</b></th>";
+	echo "<th><b>".$nom_periode[$j]."</b>";
 	if($_SESSION['statut']=="administrateur"){
 		echo "<br />\n";
 		//echo "<input type='button' name='coche_col_$j' id='id_coche_col_$j' value='Coche' onClick='coche($j,\"col\")' />/\n";
@@ -336,7 +336,7 @@ while ($j < $nb_periode) {
 		echo "<a href='javascript:modif_case($j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 		echo "<a href='javascript:modif_case($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 	}
-	echo "</td>\n";
+	echo "</th>\n";
 
 	$chaine_coche.="modif_case($j,\"col\",true);";
 	$chaine_decoche.="modif_case($j,\"col\",false);";
@@ -344,13 +344,13 @@ while ($j < $nb_periode) {
 	//=========================
 	$j++;
 }
-//echo "<td>&nbsp;</td>\n";
+//echo "<th>&nbsp;</th>\n";
 
 if($_SESSION['statut']=="administrateur"){
-	echo "<td>\n";
+	echo "<th>\n";
 	echo "<a href='javascript:$chaine_coche'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 	echo "<a href='javascript:$chaine_decoche'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
-	echo "</td>\n";
+	echo "</th>\n";
 }
 
 echo "</tr>\n";
@@ -364,7 +364,7 @@ while ($i < $nombre_ligne) {
 	//$description_groupe = mysql_result($call_group, $i, "description");
 	$description_groupe = htmlentities(mysql_result($call_group, $i, "description"));
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
+	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td>";
 
 	$sql="SELECT u.nom,u.prenom FROM j_groupes_professeurs jgp, utilisateurs u WHERE
@@ -380,6 +380,16 @@ while ($i < $nombre_ligne) {
 		}
 		$texte_alternatif=substr($texte_alternatif,2);
 	}
+
+	$sql="SELECT DISTINCT c.classe FROM classes c, j_groupes_classes jgc WHERE jgc.id_groupe='$id_groupe' AND c.id=jgc.id_classe ORDER BY c.classe;";
+	$res_clas_grp=mysql_query($sql);
+	$liste_classes_du_groupe="";
+	while($lig_classe=mysql_fetch_object($res_clas_grp)) {
+		$liste_classes_du_groupe.=", ".$lig_classe->classe;
+	}
+	if($liste_classes_du_groupe!='') {$liste_classes_du_groupe=substr($liste_classes_du_groupe,2);}
+
+	$texte_alternatif.=" (".$liste_classes_du_groupe.")";
 
 	echo "<a href='../groupes/edit_group.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;mode=groupe' title='$texte_alternatif'>";
 	echo $nom_groupe;
@@ -405,18 +415,29 @@ while ($i < $nombre_ligne) {
 				$sql="SELECT DISTINCT id_classe FROM j_groupes_classes WHERE id_groupe='$id_groupe'";
 				$res_grp=mysql_query($sql);
 				$temoin="";
+				//$liste_classes_du_groupe="";
 				while($lig_clas=mysql_fetch_object($res_grp)){
+					/*
+					$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
+					$res_tmp=mysql_query($sql);
+					$lig_tmp=mysql_fetch_object($res_tmp);
+					$liste_classes_du_groupe.=", ";
+					$liste_classes_du_groupe.=$lig_tmp->classe;
+					*/
 					$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$lig_clas->id_classe' AND login='$login_eleve' AND periode='$j'";
 					$res_test_ele=mysql_query($sql);
 					if(mysql_num_rows($res_test_ele)==1){
+						
 						$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
 						$res_tmp=mysql_query($sql);
 						$lig_tmp=mysql_fetch_object($res_tmp);
+						
 						$clas_tmp=$lig_tmp->classe;
 
 						$temoin=$clas_tmp;
 					}
 				}
+				//if($liste_classes_du_groupe!='') {$liste_classes_du_groupe=substr($liste_classes_du_groupe,2);}
 
 				echo "<td style='text-align:center'>";
 				if($temoin!="") {
