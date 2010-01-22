@@ -126,6 +126,16 @@ if((isset($_POST['suppr_incident']))&&($_SESSION['statut']!='professeur')) {
 						$temoin_erreur="y";
 					}
 				}
+
+				if($temoin_erreur=="n") {
+					$sql="DELETE FROM s_sanctions s WHERE s.id_incident='$suppr_incident[$i]';";
+					$res=mysql_query($sql);
+					if(!$res) {
+						$msg.="ERREUR lors de la suppression de la sanction associée à l'incident ".$suppr_incident[$i].".<br />\n";
+						$temoin_erreur="y";
+					}
+				}
+
 			}
 
 			if($temoin_erreur=="n") {
