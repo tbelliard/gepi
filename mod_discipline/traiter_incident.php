@@ -668,7 +668,8 @@ if(!isset($id_incident)) {
 		echo "<option value='$lig_nature->nature'";
 		if($nature_incident==$lig_nature->nature) {echo " selected='selected'";}
 		if($lig_nature->nature!='') {
-			echo ">".$lig_nature->nature."</option>\n";
+			//echo ">".$lig_nature->nature."</option>\n";
+			echo ">".substr($lig_nature->nature,0,40)."</option>\n";
 		}
 		else {
 			echo ">(vide)</option>\n";

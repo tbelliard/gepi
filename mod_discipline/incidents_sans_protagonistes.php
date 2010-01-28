@@ -320,7 +320,8 @@ if(!isset($id_incident)) {
 	while($lig_nature=mysql_fetch_object($res_natures)) {
 		echo "<option value='$lig_nature->nature'";
 		if($nature_incident==$lig_nature->nature) {echo " selected='selected'";}
-		echo ">".$lig_nature->nature."</option>\n";
+		//echo ">".$lig_nature->nature."</option>\n";
+		echo ">".substr($lig_nature->nature,0,40)."</option>\n";
 	}
 	echo "</select>\n";
 	echo "</th>\n";
