@@ -396,12 +396,74 @@ if (isset($fiche)) {
 		$coefficients_a_1="n";
 		$affiche_graph="n";
 
-		unset($tab_moy_gen);
+//		unset($tab_moy_gen);
 		//unset($tab_moy_cat_classe);
 		for($loop=1;$loop<=$periode_num;$loop++) {
 			$periode_num=$loop;
 			include "../lib/calcul_moy_gen.inc.php";
-			$tab_moy_gen[$loop]=$moy_generale_classe;
+//			$tab_moy_gen[$loop]=$moy_generale_classe;
+
+
+			//==============================================
+			//==============================================
+			//==============================================
+			$tab_moy['periodes'][$periode_num]=array();
+			$tab_moy['periodes'][$periode_num]['tab_login_indice']=$tab_login_indice;         // [$login_eleve]
+			$tab_moy['periodes'][$periode_num]['moy_gen_eleve']=$moy_gen_eleve;               // [$i]
+			$tab_moy['periodes'][$periode_num]['moy_gen_eleve1']=$moy_gen_eleve1;             // [$i]
+			//$tab_moy['periodes'][$periode_num]['moy_gen_classe1']=$moy_gen_classe1;           // [$i]
+			$tab_moy['periodes'][$periode_num]['moy_generale_classe']=$moy_generale_classe;
+			$tab_moy['periodes'][$periode_num]['moy_generale_classe1']=$moy_generale_classe1;
+			$tab_moy['periodes'][$periode_num]['moy_max_classe']=$moy_max_classe;
+			$tab_moy['periodes'][$periode_num]['moy_min_classe']=$moy_min_classe;
+		
+			// Il faudrait récupérer/stocker les catégories?
+			$tab_moy['periodes'][$periode_num]['moy_cat_eleve']=$moy_cat_eleve;               // [$i][$cat]
+			$tab_moy['periodes'][$periode_num]['moy_cat_classe']=$moy_cat_classe;             // [$i][$cat]
+			$tab_moy['periodes'][$periode_num]['moy_cat_min']=$moy_cat_min;                   // [$i][$cat]
+			$tab_moy['periodes'][$periode_num]['moy_cat_max']=$moy_cat_max;                   // [$i][$cat]
+		
+			$tab_moy['periodes'][$periode_num]['quartile1_classe_gen']=$quartile1_classe_gen;
+			$tab_moy['periodes'][$periode_num]['quartile2_classe_gen']=$quartile2_classe_gen;
+			$tab_moy['periodes'][$periode_num]['quartile3_classe_gen']=$quartile3_classe_gen;
+			$tab_moy['periodes'][$periode_num]['quartile4_classe_gen']=$quartile4_classe_gen;
+			$tab_moy['periodes'][$periode_num]['quartile5_classe_gen']=$quartile5_classe_gen;
+			$tab_moy['periodes'][$periode_num]['quartile6_classe_gen']=$quartile6_classe_gen;
+			$tab_moy['periodes'][$periode_num]['place_eleve_classe']=$place_eleve_classe;
+		
+			$tab_moy['periodes'][$periode_num]['current_eleve_login']=$current_eleve_login;   // [$i]
+			//$tab_moy['periodes'][$periode_num]['current_group']=$current_group;
+			//if($loop==$periode1) {
+			if($loop==1) {
+				$tab_moy['current_group']=$current_group;                                     // [$j]
+			}
+			$tab_moy['periodes'][$periode_num]['current_eleve_note']=$current_eleve_note;     // [$j][$i]
+			$tab_moy['periodes'][$periode_num]['current_eleve_statut']=$current_eleve_statut; // [$j][$i]
+			//$tab_moy['periodes'][$periode_num]['current_group']=$current_group;
+			$tab_moy['periodes'][$periode_num]['current_coef']=$current_coef;                 // [$j]
+			$tab_moy['periodes'][$periode_num]['current_classe_matiere_moyenne']=$current_classe_matiere_moyenne; // [$j]
+		
+			$tab_moy['periodes'][$periode_num]['current_coef_eleve']=$current_coef_eleve;     // [$i][$j] ATTENTION
+			$tab_moy['periodes'][$periode_num]['moy_min_classe_grp']=$moy_min_classe_grp;     // [$j]
+			$tab_moy['periodes'][$periode_num]['moy_max_classe_grp']=$moy_max_classe_grp;     // [$j]
+			if(isset($current_eleve_rang)) {
+				// $current_eleve_rang n'est pas renseigné si $affiche_rang='n'
+				$tab_moy['periodes'][$periode_num]['current_eleve_rang']=$current_eleve_rang; // [$j][$i]
+			}
+			$tab_moy['periodes'][$periode_num]['quartile1_grp']=$quartile1_grp;               // [$j]
+			$tab_moy['periodes'][$periode_num]['quartile2_grp']=$quartile2_grp;               // [$j]
+			$tab_moy['periodes'][$periode_num]['quartile3_grp']=$quartile3_grp;               // [$j]
+			$tab_moy['periodes'][$periode_num]['quartile4_grp']=$quartile4_grp;               // [$j]
+			$tab_moy['periodes'][$periode_num]['quartile5_grp']=$quartile5_grp;               // [$j]
+			$tab_moy['periodes'][$periode_num]['quartile6_grp']=$quartile6_grp;               // [$j]
+			$tab_moy['periodes'][$periode_num]['place_eleve_grp']=$place_eleve_grp;           // [$j][$i]
+		
+			$tab_moy['periodes'][$periode_num]['current_group_effectif_avec_note']=$current_group_effectif_avec_note; // [$j]
+
+			//==============================================
+			//==============================================
+			//==============================================
+
 
 			//echo "\$id_classe=$id_classe<br />\n";
 			//echo "\$periode_num=$periode_num<br />\n";
@@ -417,7 +479,8 @@ if (isset($fiche)) {
 	//echo "\$test_coef=$test_coef<br />";
 	//=====================================
 
-	bulletin($current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
+	//bulletin($current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
+	bulletin($tab_moy,$current_eleve_login,'',0,1,$periode_num,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
 	$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 	$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_avis2.php\" method=\"post\">\n";
