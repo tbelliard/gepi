@@ -385,9 +385,14 @@ if (isset($fiche)) {
 		$periode_num=$periode_courante;
 	}
 
+	// Variable temporaire utilisée pour conserver le nombre de coef supérieurs à zéro parce que test_coef et réaffecté dans calcul_moy_gen.inc.php
+	$nb_coef_superieurs_a_zero=$test_coef;
+
 	//=====================================
 	// Ajout pour faire apparaitre la moyenne générale
-	if($test_coef>0) {
+	//if($test_coef>0) {
+	// On ne restreint plus ici: il faut lancer calcul_moy_gen pour extraire les moyennes mêmes si on n'afficha pas les moyennes générales.
+
 		// Mise en réserve de variables modifiées dans le calcul de moyennes générales
 		$periode_num_reserve=$periode_num;
 		$current_eleve_login_reserve=$current_eleve_login;
@@ -478,7 +483,10 @@ if (isset($fiche)) {
 		// Rétablissement des variables après calcul des moyennes générales
 		$periode_num=$periode_num_reserve;
 		$current_eleve_login=$current_eleve_login_reserve;
-	}
+	//}
+
+	$test_coef=$nb_coef_superieurs_a_zero;
+
 	//echo "\$test_coef=$test_coef<br />";
 	//=====================================
 
