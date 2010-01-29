@@ -398,7 +398,7 @@ if (isset($fiche)) {
 
 //		unset($tab_moy_gen);
 		//unset($tab_moy_cat_classe);
-		for($loop=1;$loop<=$periode_num;$loop++) {
+		for($loop=1;$loop<=$periode_num_reserve;$loop++) {
 			$periode_num=$loop;
 			include "../lib/calcul_moy_gen.inc.php";
 //			$tab_moy_gen[$loop]=$moy_generale_classe;
