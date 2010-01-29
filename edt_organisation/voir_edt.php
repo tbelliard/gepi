@@ -79,16 +79,16 @@ if ($_SESSION['bascule_edt'] == 'periode') {
 
 $ua = getenv("HTTP_USER_AGENT");
 if (!strstr($ua, "MSIE 6.0")) {
-    echo ("<div id=\"fenetre\">\n");
+    echo ("<div class=\"fenetre\">\n");
     echo("<div class=\"contenu\">
-		<div id=\"coingh\"></div>
-        <div id=\"coindh\"></div>
-        <div id=\"partiecentralehaut\"></div>
-        <div id=\"droite\"></div>
-        <div id=\"gauche\"></div>
-        <div id=\"coingb\"></div>
-		<div id=\"coindb\"></div>
-		<div id=\"partiecentralebas\"></div>\n");
+		<div class=\"coingh\"></div>
+        <div class=\"coindh\"></div>
+        <div class=\"partiecentralehaut\"></div>
+        <div class=\"droite\"></div>
+        <div class=\"gauche\"></div>
+        <div class=\"coingb\"></div>
+		<div class=\"coindb\"></div>
+		<div class=\"partiecentralebas\"></div>\n");
 }        
 echo "<span class=\"legende\">".TITLE_VOIR_EDT."</span>\n";
 

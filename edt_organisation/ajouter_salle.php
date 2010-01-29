@@ -71,6 +71,7 @@ require_once("./menu.inc.php"); ?>
 	<div id="lecorps">
 
 <?php
+    require_once("./menu.inc.new.php");
 	// Initialisation des variables
 $ajoutsalle=isset($_GET['ajoutsalle']) ? $_GET['ajoutsalle'] : (isset($_POST['ajoutsalle']) ? $_POST['ajoutsalle'] : NULL);
 $numero_salle = isset($_POST["numerosalle"]) ? $_POST["numerosalle"] : NULL;

@@ -70,6 +70,7 @@ require_once("./menu.inc.php");
 	<div id="lecorps">
 
 <?php
+    require_once("./menu.inc.new.php");
 	echo'
 	<h3>Voici la liste de tous les enseignements enregistrés dans la base de Gepi</h3>
 	<table class="tab_edt">

@@ -70,6 +70,7 @@ require_once("./menu.inc.php"); ?>
 
 	<div id="lecorps">
 <?php
+    require_once("./menu.inc.new.php");
 	// Initialisation des variables de la page
 $initialiser = isset($_POST["initialiser"]) ? $_POST["initialiser"] : NULL;
 $choix_prof = isset($_POST["prof"]) ? $_POST["prof"] : NULL;

@@ -244,18 +244,18 @@ function EtudeDeCasTroisCours($tab_cours)
 function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $period) 
 {
 
-    echo ("<div id=\"fenetre\">\n");
+    echo ("<div class=\"fenetre\">\n");
 
     echo("<div class=\"contenu\">
 
-		<div id=\"coingh\"></div>
-        <div id=\"coindh\"></div>
-        <div id=\"partiecentralehaut\"></div>
-        <div id=\"droite\"></div>
-        <div id=\"gauche\"></div>
-		<div id=\"coingb\"></div>
-		<div id=\"coindb\"></div>
-		<div id=\"partiecentralebas\"></div>
+		<div class=\"coingh\"></div>
+        <div class=\"coindh\"></div>
+        <div class=\"partiecentralehaut\"></div>
+        <div class=\"droite\"></div>
+        <div class=\"gauche\"></div>
+		<div class=\"coingb\"></div>
+		<div class=\"coindb\"></div>
+		<div class=\"partiecentralebas\"></div>
 
         <div class=\"tableau\">\n");
 
@@ -484,7 +484,7 @@ function AfficheBarCommutateurPeriodes($login_edt, $visioedt, $type_edt_2)
     $rep_periode = mysql_fetch_array($req_periode);
 
     echo "<ul class=\"Period\">";
-    echo "Période visualisée : ".$rep_periode['nom_calendrier'];
+    echo "<li>Période visualisée : ".$rep_periode['nom_calendrier']."</li>";
     echo "</ul>";
 
 

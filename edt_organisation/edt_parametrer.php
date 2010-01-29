@@ -156,11 +156,13 @@ require_once("../lib/header.inc");
 // On ajoute le menu EdT
 require_once("./menu.inc.php");
 ?>
-
+<br/>
 <!-- la page du corps de l'EdT -->
 
 	<div id="lecorps">
 <?php
+
+    require_once("./menu.inc.new.php");
 if (isset($aff_message)) {
 	echo $aff_message;
 }
@@ -239,7 +241,7 @@ if (isset($aff_message)) {
 		</td>
 		<td>
 <fieldset id="param_edtmenu">
-	<legend>Le fonctionnement du menu</legend>
+	<legend>Le fonctionnement du menu pour ie6</legend>
 	<p>
 		<input type="radio" id="edtMenuOver" name="param_menu_edt" value="mouseover" <?php echo (aff_checked("param_menu_edt", "mouseover")); ?>/>
 		<label for="edtMenuOver">Les liens s'affichent quand la souris passe sur le titre.</label>

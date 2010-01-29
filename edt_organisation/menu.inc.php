@@ -5,7 +5,7 @@
  *
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -129,6 +129,13 @@ if (getSettingValue("use_only_cdt") != 'y' OR $_SESSION["statut"] != 'professeur
 		</p>
         </div>
 
+        
+        <?php
+        // =================== On active ce menu uniquement pour IE6 ==================
+        $ua = getenv("HTTP_USER_AGENT");
+        if (strstr($ua, "MSIE 6.0")) {
+        ?>
+
 		<dl id="menu_edt">
 
 		<dt<?php echo menuEdtJs("1"); ?>><?php echo VIEWS ?></dt>
@@ -169,6 +176,7 @@ $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 	}
 	else
 	$aff_ok = "non";
+    
 	// En fonction du résultat, on propose l'affichage ou non
 	if ($aff_ok == "oui" OR $_SESSION["statut"] == $aff_ok) {
 		echo '
@@ -215,6 +223,7 @@ if (getSettingValue("mod_edt_gr") == "y") {
 }
 ?>
 		</dl>
+        <?php } ?>
 <br />
 <?php
 }

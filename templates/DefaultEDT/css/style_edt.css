@@ -4,7 +4,7 @@ $Id: style_edt.css $
 
 @media print{
 
-	#header, #version_gepi, #menu_edt, #agauche , #bandeau, .ButtonBarCommutator{
+	#header, #version_gepi, #menu_edt, #agauche , #bandeau, .ButtonBarCommutator, .menu_deroulant{
 		display: none;
 	}
 
@@ -389,21 +389,21 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 }
 
 /* ========================  Style de l'emploi du temps ======================== */
-#fenetre{
+.fenetre{
 	margin: 25px 0px 25px 25px;
     float:left;
 	width : 98%; 
 
 }
 
-#fenetre .contenu ul {
+.fenetre .contenu ul {
 	list-style:none;
 	margin:0 20px 0 20px;
 	padding : 0;
 	white-space :nowrap;
 }
 
-#fenetre .contenu {
+.fenetre .contenu {
             position:relative;
          /*    top:100px;*/
 /*            left:28px;*/
@@ -416,13 +416,13 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	margin:0px 0px 0px 0px;
 }
 
-#fenetre .contenu li {
+.fenetre .contenu li {
 	text-decoration:none;
 	margin : 5px 0 0 0;
 	white-space :nowrap;
  }
 
-#fenetre .contenu li:hover{
+.fenetre .contenu li:hover{
 	color: #55FFAA;
 	text-decoration:none;
 	background-color : #FFFFFF ;
@@ -430,44 +430,44 @@ position: absolute; background-color: yellow; border: 1px solid silver;
  }
 
 
-#fenetre .contenu p.centrer  {
+.fenetre .contenu p.centrer  {
 	text-align:center;
 }
-#fenetre .contenu a {
+.fenetre .contenu a {
 	font-size:1em;
 	color: #994400;
 	text-decoration:none;
 }
 
 
-#fenetre p.w3c  {
+.fenetre p.w3c  {
 	float:left;
 }
-#fenetre p.w3c  a{
+.fenetre p.w3c  a{
 	text-decoration:none;
 	color: #000000;
 }
 
-#fenetre p.w3c  img{
+.fenetre p.w3c  img{
 	text-decoration:none;
 	border:none;
 	color: #000000;
 }
 
 
-#fenetre p.w3c  a:hover{
+.fenetre p.w3c  a:hover{
 	text-decoration:none;
 	color: #000000;
 	background:none;
 	padding-left:0;
 }
 
-#fenetre img{
+.fenetre img{
 	text-decoration:none;
 	border:0px;
 	color: #000000;
 }
-#fenetre .contenu .tableau{
+.fenetre .contenu .tableau{
 	padding: 10px 20px 20px 10px;
 	margin: 0px 0px 0px 0px;
 	width : 98%;
@@ -476,7 +476,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	color: black;
 	text-align: left;
 }
-#fenetre .contenu .tableau .entete{
+.fenetre .contenu .tableau .entete{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -495,7 +495,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .colonne0{
+.fenetre .contenu .tableau .colonne0{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -509,7 +509,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-bottom: 1px solid #004A7A;
 }
 
-#fenetre .contenu .tableau .colonne1{
+.fenetre .contenu .tableau .colonne1{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -523,7 +523,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-bottom: 1px solid #004A7A;
 }
 
-#fenetre .contenu .tableau .colonne2{
+.fenetre .contenu .tableau .colonne2{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -536,7 +536,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-right: 1px solid #004A7A;
 	border-bottom: 1px solid #004A7A;
 }
-#fenetre .contenu .tableau .colonne3{
+.fenetre .contenu .tableau .colonne3{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -549,7 +549,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-right: 1px solid #004A7A;
 	border-bottom: 1px solid #004A7A;
 }
-#fenetre .contenu .tableau .colonne4{
+.fenetre .contenu .tableau .colonne4{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -562,7 +562,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-right: 1px solid #004A7A;
 	border-bottom: 1px solid #004A7A;
 }
-#fenetre .contenu .tableau .colonne5{
+.fenetre .contenu .tableau .colonne5{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -575,7 +575,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-right: 1px solid #004A7A;
 	border-bottom: 1px solid #004A7A;
 }
-#fenetre .contenu .tableau .colonne6{
+.fenetre .contenu .tableau .colonne6{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -588,7 +588,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-right: 1px solid #004A7A;
 	border-bottom: 1px solid #004A7A;
 }
-#fenetre .contenu .tableau .colonne7{
+.fenetre .contenu .tableau .colonne7{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -601,7 +601,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-right: 1px solid #004A7A;
 	border-bottom: 1px solid #004A7A;
 }
-#fenetre .contenu .tableau .colonne8{
+.fenetre .contenu .tableau .colonne8{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -614,7 +614,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-right: 1px solid #004A7A;
 	border-bottom: 1px solid #004A7A;
 }
-#fenetre .contenu .tableau .colonne9{
+.fenetre .contenu .tableau .colonne9{
     float:left;
     position:relative;
 	padding: 00px 00px 00px 00px;
@@ -628,7 +628,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-right: 1px solid #004A7A;
 	border-bottom: 1px solid #004A7A;
 }
-#fenetre .contenu .tableau .colonne10{
+.fenetre .contenu .tableau .colonne10{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -643,7 +643,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .colonne11{
+.fenetre .contenu .tableau .colonne11{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -658,7 +658,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .colonne12{
+.fenetre .contenu .tableau .colonne12{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -672,7 +672,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-bottom: 1px solid #004A7A;
 
 }
-#fenetre .contenu .tableau .creneaux1{
+.fenetre .contenu .tableau .creneaux1{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -688,7 +688,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .creneaux2{
+.fenetre .contenu .tableau .creneaux2{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -704,7 +704,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .creneaux3{
+.fenetre .contenu .tableau .creneaux3{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -720,7 +720,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .creneaux4{
+.fenetre .contenu .tableau .creneaux4{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -736,7 +736,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .creneaux5{
+.fenetre .contenu .tableau .creneaux5{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -752,7 +752,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .creneaux6{
+.fenetre .contenu .tableau .creneaux6{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -768,7 +768,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .creneaux7{
+.fenetre .contenu .tableau .creneaux7{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -784,7 +784,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .creneaux8{
+.fenetre .contenu .tableau .creneaux8{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -800,7 +800,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .creneaux9{
+.fenetre .contenu .tableau .creneaux9{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -816,7 +816,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .creneaux10{
+.fenetre .contenu .tableau .creneaux10{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -832,7 +832,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .creneaux11{
+.fenetre .contenu .tableau .creneaux11{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -848,7 +848,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .creneaux12{
+.fenetre .contenu .tableau .creneaux12{
     float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 02px 02px 02px 02px;
@@ -863,11 +863,11 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	border-bottom: 1px solid #004A7A;
 
 }
-#fenetre .spacer {
+.fenetre .spacer {
     clear:both;
 }
 
-#fenetre .contenu .tableau .cellule1{
+.fenetre .contenu .tableau .cellule1{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -881,7 +881,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 
 }
 
-#fenetre .contenu .tableau .cellule2{
+.fenetre .contenu .tableau .cellule2{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -894,7 +894,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
 }
 
-#fenetre .contenu .tableau .cellule3{
+.fenetre .contenu .tableau .cellule3{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -907,7 +907,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
 }
 
-#fenetre .contenu .tableau .cellule4{
+.fenetre .contenu .tableau .cellule4{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -920,7 +920,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
 }
 
-#fenetre .contenu .tableau .cellule5{
+.fenetre .contenu .tableau .cellule5{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -933,7 +933,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
 }
 
-#fenetre .contenu .tableau .cellule6{
+.fenetre .contenu .tableau .cellule6{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -945,7 +945,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	text-align: center;
 	background-color: #cccccc ;
 }
-#fenetre .contenu .tableau .cellule7{
+.fenetre .contenu .tableau .cellule7{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -957,7 +957,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	text-align: center;
 	background-color: #cccccc ;
 }
-#fenetre .contenu .tableau .cellule8{
+.fenetre .contenu .tableau .cellule8{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -969,7 +969,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	text-align: center;
 	background-color: #cccccc ;
 }
-#fenetre .contenu .tableau .cellule9{
+.fenetre .contenu .tableau .cellule9{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -981,7 +981,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	text-align: center;
 	background-color: #cccccc ;
 }
-#fenetre .contenu .tableau .cellule10{
+.fenetre .contenu .tableau .cellule10{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -993,7 +993,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	text-align: center;
 	background-color: #cccccc ;
 }
-#fenetre .contenu .tableau .cellule11{
+.fenetre .contenu .tableau .cellule11{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -1005,7 +1005,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	text-align: center;
 	background-color: #cccccc ;
 }
-#fenetre .contenu .tableau .cellule12{
+.fenetre .contenu .tableau .cellule12{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -1017,7 +1017,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	text-align: center;
 	background-color: #cccccc ;
 }
-#fenetre .contenu .tableau .cellule13{
+.fenetre .contenu .tableau .cellule13{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -1029,7 +1029,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	text-align: center;
 	background-color: #cccccc ;
 }
-#fenetre .contenu .tableau .cellule14{
+.fenetre .contenu .tableau .cellule14{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -1041,7 +1041,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	text-align: center;
 	background-color: #cccccc ;
 }
-#fenetre .contenu .tableau .cellule15{
+.fenetre .contenu .tableau .cellule15{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -1053,7 +1053,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	text-align: center;
 	background-color: #cccccc ;
 }
-#fenetre .contenu .tableau .cellule16{
+.fenetre .contenu .tableau .cellule16{
     float:left;
 	margin: 0px 0px 0px 00px;
     border:0px solid #000000; 
@@ -1065,7 +1065,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	text-align: center;
 	background-color: #cccccc ;
 }
-#fenetre .contenu .tableau .demicellule1{
+.fenetre .contenu .tableau .demicellule1{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1079,7 +1079,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
     overflow:hidden;
 }
 
-#fenetre .contenu .tableau .demicellule2{
+.fenetre .contenu .tableau .demicellule2{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1093,7 +1093,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
     overflow:hidden;
 
 }
-#fenetre .contenu .tableau .demicellule3{
+.fenetre .contenu .tableau .demicellule3{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1106,7 +1106,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule4{
+.fenetre .contenu .tableau .demicellule4{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1119,7 +1119,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule5{
+.fenetre .contenu .tableau .demicellule5{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1132,7 +1132,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule6{
+.fenetre .contenu .tableau .demicellule6{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1145,7 +1145,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule7{
+.fenetre .contenu .tableau .demicellule7{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1158,7 +1158,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule8{
+.fenetre .contenu .tableau .demicellule8{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1171,7 +1171,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule9{
+.fenetre .contenu .tableau .demicellule9{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1184,7 +1184,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule10{
+.fenetre .contenu .tableau .demicellule10{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1197,7 +1197,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule11{
+.fenetre .contenu .tableau .demicellule11{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1210,7 +1210,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule12{
+.fenetre .contenu .tableau .demicellule12{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1223,7 +1223,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule13{
+.fenetre .contenu .tableau .demicellule13{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1236,7 +1236,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule14{
+.fenetre .contenu .tableau .demicellule14{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1249,7 +1249,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule15{
+.fenetre .contenu .tableau .demicellule15{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1262,7 +1262,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .demicellule16{
+.fenetre .contenu .tableau .demicellule16{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1275,7 +1275,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule1{
+.fenetre .contenu .tableau .tierscellule1{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1289,7 +1289,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
     overflow:hidden;
 }
 
-#fenetre .contenu .tableau .tierscellule2{
+.fenetre .contenu .tableau .tierscellule2{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1303,7 +1303,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
     overflow:hidden;
 
 }
-#fenetre .contenu .tableau .tierscellule3{
+.fenetre .contenu .tableau .tierscellule3{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1316,7 +1316,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule4{
+.fenetre .contenu .tableau .tierscellule4{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1329,7 +1329,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule5{
+.fenetre .contenu .tableau .tierscellule5{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1342,7 +1342,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule6{
+.fenetre .contenu .tableau .tierscellule6{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1355,7 +1355,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule7{
+.fenetre .contenu .tableau .tierscellule7{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1368,7 +1368,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule8{
+.fenetre .contenu .tableau .tierscellule8{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1381,7 +1381,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule9{
+.fenetre .contenu .tableau .tierscellule9{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1394,7 +1394,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule10{
+.fenetre .contenu .tableau .tierscellule10{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1407,7 +1407,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule11{
+.fenetre .contenu .tableau .tierscellule11{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1420,7 +1420,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule12{
+.fenetre .contenu .tableau .tierscellule12{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1433,7 +1433,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule13{
+.fenetre .contenu .tableau .tierscellule13{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1446,7 +1446,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule14{
+.fenetre .contenu .tableau .tierscellule14{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1459,7 +1459,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule15{
+.fenetre .contenu .tableau .tierscellule15{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1472,7 +1472,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-color: #cccccc ;
     overflow:hidden;
 }
-#fenetre .contenu .tableau .tierscellule16{
+.fenetre .contenu .tableau .tierscellule16{
     float:left;
 	margin: 00px 0px 00px 00px;
     border:0px solid #000000; 
@@ -1848,7 +1848,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
      overflow:hidden;
 }
 /* =================== Création d'un cadre blanc arrondi ============= */
-#droite {
+.droite {
 	background-image:url('../images/right.png');
 	background-repeat: repeat-y;
     background-position: right;
@@ -1859,7 +1859,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
     width:28px;
 }
 
-#gauche {
+.gauche {
 	background-image:url('../images/left.png');
 	background-repeat: repeat-y;
     background-position: right;
@@ -1870,7 +1870,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
     width:28px;
 }
 
-#partiecentralehaut {
+.partiecentralehaut {
 	height:28px;
     position:absolute;
 	background-image:url('../images/top.png');
@@ -1880,7 +1880,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
     left:00px;
 }
 
-#partiecentralebas {
+.partiecentralebas {
 	height:28px;
     position:absolute;
 	background-image:url('../images/bottom.png');
@@ -1890,7 +1890,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
     left:00px;
 }
 
-#coingh {
+.coingh {
     width:28px;
     position:absolute;
 	height:28px;
@@ -1900,7 +1900,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-repeat: no-repeat;
 }
 
-#coindh {
+.coindh {
     position:absolute;
     width:28px;
 	height:28px;
@@ -1910,7 +1910,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-repeat: no-repeat;
 }
 
-#coingb {
+.coingb {
     position:absolute;
     bottom:-28px;
     left:-28px;
@@ -1920,7 +1920,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	float: left;
 }
 
-#coindb {
+.coindb {
     position:absolute;
     bottom:-28px;
     right:-28px;
@@ -1928,4 +1928,272 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	height:28px;
 	background-image:url('../images/bottom_right.png');
 	float:right;
+}
+/* =================== Création d'un menu déroulant ============= */
+.menu_deroulant {
+    white-space:nowrap /*IE hack*/; 
+    float:left; 
+    width:80%;
+    border-bottom:1px solid grey; 
+    color:rgb(0,0,0); 
+    font-size:80%;
+    margin:0px 00px 10px 5%;
+
+}
+.menu_deroulant ul {
+    list-style-type:none;
+
+}
+.menu_deroulant ul li {
+    float:left; 
+    z-index:auto !important /*Non-IE6*/; 
+    z-index:1000 /*IE6*/; 
+    border-right:solid 1px rgb(175,175,175);
+	white-space :nowrap;
+    background-color:rgb(255,255,255);
+}
+/* ==== barre de menu principale === */
+.menu_deroulant ul li a {
+    float:none !important /*Non-IE6*/; 
+    float:left /*IE-6*/; 
+    display:block; 
+    height:2.0em; 
+    line-height:2.0em; 
+    padding:0 8px 0 8px; 
+    text-decoration:none; 
+    font-weight:normal; 
+    color: rgb(100,100,100);
+}
+.menu_deroulant ul li ul {
+    display:none; 
+    border:none;
+}
+
+/*Non-IE6 hovering*/
+.menu_deroulant ul li:hover {
+    position:relative;
+}
+.menu_deroulant ul li:hover a {
+    background-color:rgb(210,210,210); 
+    text-decoration:none;
+}
+/* ==== position des menus déroulant === */
+.menu_deroulant ul li:hover ul {
+    display:block; 
+    width:10.0em; 
+    position:absolute; 
+    z-index:999; 
+    top:1.9em; 
+    margin-top:0.1em; 
+    left:0;
+}
+.menu_deroulant ul li:hover ul li a {
+    white-space:normal; 
+    display:block; 
+    width:18.0em; 
+    height:auto; 
+    line-height:1.3em; 
+    margin-left:-1px; 
+    padding:4px 4px 4px 4px; 
+    border-left:solid 1px rgb(175,175,175); 
+    border-bottom: solid 1px rgb(175,175,175); 
+    background-color:rgb(237,237,237); 
+    font-weight:normal; 
+    color:rgb(50,50,50);
+}
+.menu_deroulant ul li:hover ul li a:hover {
+    background-color:rgb(210,210,210); 
+    text-decoration:none;
+}
+
+/*IE6 hovering*/
+.menu_deroulant table {
+    position:absolute; 
+    top:0; 
+    left:0; 
+    border-collapse:collapse;
+}
+.menu_deroulant ul li a:hover {
+    position:relative /*IE hack*/; 
+    z-index:1000 /*IE hack*/; 
+    background-color:rgb(210,210,210); 
+    text-decoration:none;
+}
+.menu_deroulant ul li a:hover ul {
+    display:block; 
+    width:10.0em; 
+    position:absolute; 
+    z-index:999; 
+    top:3.1em; 
+    left:0; 
+    margin-top:0.1em;
+}
+.menu_deroulant ul li a:hover ul li a {
+    white-space:normal; 
+    display:block; 
+    width:10.0em; 
+    height:1px; 
+    line-height:1.3em; 
+    padding:4px 16px 4px 16px; 
+    border-left:solid 1px rgb(175,175,175); 
+    border-bottom: solid 1px rgb(175,175,175); 
+    background-color:rgb(237,237,237); 
+    font-weight:normal; 
+    color:rgb(50,50,50);
+}
+.menu_deroulant ul li a:hover ul li a:hover {
+    background-color:rgb(210,210,210); 
+    text-decoration:none;
+}
+
+/* ========================= voir_base.php ======================== */
+.titre_voir_base_7 {
+    float:left;
+    text-align:center;
+    font-size:45%;
+    padding:3px;
+    margin:0px;
+    border:1px solid black;
+    width:7%;
+    background-color:#ABF175;
+}
+.titre_voir_base_15 {
+    float:left;
+    text-align:center;
+    font-size:45%;
+    padding:3px;
+    margin:0px;
+    border:1px solid black;
+    width:15%;
+    background-color:#ABF175;
+}
+.cellule_voir_base_7 {
+    float:left;
+    text-align:center;
+    font-size:45%;
+    padding:3px;
+    margin:0px;
+    border:1px solid black;
+    width:7%;
+    background-color:#FAFFBD;
+}
+.cellule_voir_base_15 {
+    float:left;
+    text-align:center;
+    font-size:45%;
+    padding:3px;
+    margin:0px;
+    border:1px solid black;
+    width:15%;
+    background-color:#FAFFBD;
+}
+
+/* ========================= transferer_edt.php ======================== */
+.titre_nom_t_edt {
+    float:left;
+    height:20px;
+    text-align:center;
+    font-size:0.6em;
+    padding:0px;
+    margin:0px 0px 0px 5%;
+    border-bottom:1px solid black;
+    width:30%;
+    background-color:#ABF175;
+
+}
+.titre_prenom_t_edt {
+    float:left;
+    height:20px;
+    text-align:center;
+    font-size:0.6em;
+    padding:0px;
+    margin:0px;
+    border-bottom:1px solid black;
+    width:20%;
+    background-color:#ABF175;
+
+}
+.titre_creneau_t_edt {
+    float:left;
+    height:20px;
+    text-align:center;
+    font-size:0.6em;
+    padding:0px;
+    margin:0px;
+    border-bottom:1px solid black;
+    border-left:1px solid black;
+    width:15%;
+    background-color:#ABF175;
+}
+.texte_nom_t_edt {
+    float:left;
+    height:22px;
+    text-align:center;
+    font-size:0.6em;
+    padding:0px;
+    margin:0px 0px 0px 5%;
+    border-bottom:1px solid black;
+    width:30%;
+    background-color:#FAFFBD;
+}
+
+.texte_prenom_t_edt {
+    float:left;
+    height:22px;
+    text-align:center;
+    font-size:0.6em;
+    padding:0px;
+    margin:0px;
+    border-bottom:1px solid black;
+    width:20%;
+    background-color:#FAFFBD;
+}
+
+.texte_creneau_t_edt {
+    float:left;
+    height:22px;
+    text-align:center;
+    font-size:0.6em;
+    padding:0px;
+    margin:0px;
+    border-bottom:1px solid black;
+    border-left:1px solid black;
+    width:15%;
+    background-color:#FAFFBD;
+}
+
+.bouton_supprimer_t_edt {
+    float:left;
+    width:22px;
+    height:22px;
+    font-size:0.6em;
+    padding:0px;
+    margin:0px;
+    border-bottom:1px solid black;
+    background-color:#FAFFBD;
+
+}
+.bouton_copier_t_edt {
+    float:left;
+    height:22px;
+    text-align:center;
+    font-size:0.6em;
+    padding:0px 0px 0px 0px;
+    margin:0px;
+    border-bottom:1px solid black;
+    width:20px;
+    background-color:#FAFFBD;
+
+}
+.bouton_coller_t_edt {
+    float:left;
+    width:22px;
+    height:22px;
+    text-align:center;
+    font-size:0.6em;
+    padding:0px;
+    margin:0px;
+    border-bottom:1px solid black;
+    background-color:#FAFFBD;
+
 }

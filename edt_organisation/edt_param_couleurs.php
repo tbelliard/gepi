@@ -69,7 +69,7 @@ require_once("./menu.inc.php");
 <!-- la page du corps de l'EdT -->
 
 	<div id="lecorps">
-
+    <?php require_once("./menu.inc.new.php"); ?>
 <h3 class="gepi"><?php echo CLICK_ON_COLOR ?></h3>
 <p><?php echo TEXT1_EDT_PARAM_COLORS ?></p>
 

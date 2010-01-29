@@ -56,10 +56,7 @@ function AfficheDatesDebutFinSemaine() {
 		echo "gloups";
 	}
         echo strftime("%d %b ", $ts);
-        $ts = time();
-        while (date("D", $ts) != "Fri") {
-        $ts+=86400;
-        }
+        $ts+=86400*5;
         echo " - ";
         echo strftime("%d %b %Y", $ts);
 }

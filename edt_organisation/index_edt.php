@@ -95,6 +95,7 @@ $_SESSION["retour"] = "index_edt";
 	<div id="lecorps">
 
 <?php
+    require_once("./menu.inc.new.php");
 if (isset($page_inc_edt) AND $page_inc_edt !== "") {
 	include($page_inc_edt);
 }
