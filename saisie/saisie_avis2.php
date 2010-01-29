@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 include "../lib/bulletin_simple.inc.php";
 if (!checkAccess()) {
@@ -359,6 +359,9 @@ echo "</form>\n";
 
 
 if (isset($fiche)) {
+
+	echo "<p><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></p>\n";
+
 	// On teste la présence d'au moins un coeff pour afficher la colonne des coef
 	$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 
