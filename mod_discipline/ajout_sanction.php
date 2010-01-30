@@ -21,8 +21,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-
+header('Content-Type: text/html; charset=ISO-8859-1');
 $variables_non_protegees = 'yes';
 
 // Initialisations files
