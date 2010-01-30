@@ -359,7 +359,7 @@ echo '
 
 
 	// On vérifie comment ce cours commence
-	// A revoir car ça ne marche pas
+	
 	if (isset($deb_creer)) {
 		// On vérifie comment ce nouveau cours commence
 		if ($deb_creer == "debut") {
@@ -494,38 +494,66 @@ echo '
 
 			</td>
 			<td>
+    ';
 
-			<select name="periode_calendrier">
-				<option value="0">'.ENTIRE_YEAR.'</option>
-	';
-	// Choix de la période définie dans le calendrier
 	$req_calendrier = mysql_query("SELECT * FROM edt_calendrier WHERE etabferme_calendrier = '1' AND etabvacances_calendrier = '0'");
 	$nbre_calendrier = mysql_num_rows($req_calendrier);
-		for ($a=0; $a<$nbre_calendrier; $a++) {
-			$rep_calendrier[$a]["id_calendrier"] = mysql_result($req_calendrier, $a, "id_calendrier");
-			$rep_calendrier[$a]["nom_calendrier"] = mysql_result($req_calendrier, $a, "nom_calendrier");
+    if ($nbre_calendrier == 0) {
+        echo '		<input type="hidden" name="periode_calendrier" value="0" />';
 
-		if(isset($rep_cours["id_calendrier"])){
-			if($rep_cours["id_calendrier"] == $rep_calendrier[$a]["id_calendrier"]){
-				$selected=" selected='selected'";
-			}
-			else{
-				$selected="";
-			}
-		}
-		else{
-			$selected="";
-		}
+    }
+    else {
 
-			echo '
-				<option value="'.$rep_calendrier[$a]["id_calendrier"].'"'.$selected.'>'.$rep_calendrier[$a]["nom_calendrier"].'</option>
-			';
-		}
+        echo '
+			        <select name="periode_calendrier">
+				        <option value="0">'.ENTIRE_YEAR.'</option>
+	        ';
+		    
+	    // ================================================== Choix de la période définie dans le calendrier ================================
+    
+        $req_id_classe = mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_cours['id_groupe']."' ");
+        
+        // ==== On récupère l'id de la classe concernée
+        if ($rep_id_classe = mysql_fetch_array($req_id_classe)) {
+            $id_classe = $rep_id_classe['id_classe'];
+        }
+        else {
+            $id_classe = 0;
+        }
+    
+	    for ($a=0; $a<$nbre_calendrier; $a++) {
+		    $rep_calendrier[$a]["id_calendrier"] = mysql_result($req_calendrier, $a, "id_calendrier");
+		    $rep_calendrier[$a]["nom_calendrier"] = mysql_result($req_calendrier, $a, "nom_calendrier");
+		    $rep_calendrier[$a]["classe_concerne_calendrier"] = mysql_result($req_calendrier, $a, "classe_concerne_calendrier");
+            $classes_concernes = explode(";", $rep_calendrier[$a]['classe_concerne_calendrier']);
+            if ((in_array($id_classe, $classes_concernes) AND ($id_classe != 0)) OR ($id_classe == 0)) {
+    
+	            if(isset($rep_cours["id_calendrier"])){
+		            if($rep_cours["id_calendrier"] == $rep_calendrier[$a]["id_calendrier"]){
+			            $selected=" selected='selected'";
+		            }
+		            else{
+			            $selected="";
+		            }
+	            }
+	            else{
+		            $selected="";
+	            }
+        
+		        echo '
+			        <option value="'.$rep_calendrier[$a]["id_calendrier"].'"'.$selected.'>'.$rep_calendrier[$a]["nom_calendrier"].'</option>
+		        ';
+            }
+            unset($classes_concernes);
+	    }
+    
+        echo '
+			    </select>
+            ';
+    }
+    echo '</td>';
 
-echo '
-			</select>
-
-			</td>
+    echo '
 			<td>
 		<input type="hidden" name="id_cours" value="'.$id_cours.'" />
 		<input type="hidden" name="type_edt" value="'.$type_edt.'" />
