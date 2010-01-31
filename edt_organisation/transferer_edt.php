@@ -204,8 +204,8 @@ if (!strstr($ua, "MSIE 6.0")) {
 		echo "<div class=\"texte_prenom_t_edt\">".$rep_profs['prenom']."</div>";
 		echo "<div class=\"texte_creneau_t_edt\">".mysql_num_rows($req_cours)."</div>";
 		echo "<div class=\"bouton_supprimer_t_edt\"><a href=\"./transferer_edt.php?supprimer=ok&amp;login=".$rep_profs['login']." \" ><img src=\"../templates/".NameTemplateEDT()."/images/erase.png\" title=\"Supprimer l'emploi du temps\" alt=\"Supprimer\" /></a></div>";
-		echo "<div class=\"bouton_copier_t_edt\"><a href=\"./transferer_edt.php?couper=ok&amp;login=".$rep_profs['login']."\" title=\"Déplacer cet emploi du temps\"><img src=\"../templates/".NameTemplateEDT()."/images/copy.png\" title=\"Déplacer cet emploi du temps\" alt=\"Supprimer\" /></a></div>";
-		echo "<div class=\"bouton_coller_t_edt\"><a href=\"./transferer_edt.php?coller=ok&amp;login=".$rep_profs['login']."\" ><img src=\"../templates/".NameTemplateEDT()."/images/paste.png\" title=\"Enseignant destinataire\" alt=\"coller\" /></a></div>";
+		echo "<div class=\"bouton_copier_t_edt\"><a href=\"./transferer_edt.php?couper=ok&amp;login=".$rep_profs['login']."\" title=\"Déplacer cet emploi du temps\"><img src=\"../templates/".NameTemplateEDT()."/images/copy.png\" title=\"Déplacer cet emploi du temps\" alt=\"Copier\" /></a></div>";
+		echo "<div class=\"bouton_coller_t_edt\"><a href=\"./transferer_edt.php?coller=ok&amp;login=".$rep_profs['login']."\" ><img src=\"../templates/".NameTemplateEDT()."/images/paste.png\" title=\"Enseignant destinataire\" alt=\"Coller\" /></a></div>";
         echo "<div style=\"clear:both;\"></div>";
 	}
 

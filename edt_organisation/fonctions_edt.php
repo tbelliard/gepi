@@ -259,29 +259,24 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
 
         <div class=\"tableau\">\n");
 
-// ===== affichage de l'entête
-
-    $i = 0;
-    while(isset($entetes['entete'][$i])) {
-        echo("<div class=\"entete\"><div class=\"cadre\"><strong>".$entetes['entete'][$i]."</strong></div></div>\n");
-        $i++;
-    }
-    echo("<div class=\"spacer\"></div>\n");
-
 
 // ===== affichage des colonnes
+// ===== Les "display:none" sont utilisés pour l'accessibilité
     $jour = 0;
     $isIconeAddUsable = true;
     while (isset($entetes['entete'][$jour])) {
 
         echo("<div class=\"colonne".$creneaux['nb_creneaux']."\">\n");
         $jour_sem = $entetes['entete'][$jour];
+        echo("<h2 class=\"entete\"><div class=\"cadre\"><strong>".$jour_sem."</strong></div></h2>\n");
         $index_box = 0;
         while (isset($tab_data[$jour]['type'][$index_box]))
         {
             if ($tab_data[$jour]['type'][$index_box] == "vide") {
                 
-                echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\"><div class=\"cadre\">\n");
+                echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\">");
+                echo("<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n");
+                echo ("<div class=\"cadre\">\n");
                 echo ("<div class=\"ButtonBar\">");
                 AfficheIconePlusNew($type_edt,$tab_data[$jour]['heuredeb_dec'][$index_box],$login_edt,$jour_sem,$tab_data[$jour]['id_creneau'][$index_box], $period);
                 echo ("</div>\n");
@@ -291,7 +286,9 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
             else if ($tab_data[$jour]['type'][$index_box] == "erreur")
             {
     
-                echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\"><div class=\"cadreRouge\">\n");
+                echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\">");
+                echo("<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n");
+                echo("<div class=\"cadreRouge\">\n");
                 echo $tab_data[$jour]['contenu'][$index_box];
                 echo ("<div class=\"ButtonBar\">");
                 echo ("</div>\n");
@@ -306,7 +303,9 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
             }
             else if ($tab_data[$jour]['type'][$index_box] == "cours")
             {
-                echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\"><div class=\"".$tab_data[$jour]['couleur'][$index_box]."\">");
+                echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\">");
+                echo("<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n");
+                echo ("<div class=\"".$tab_data[$jour]['couleur'][$index_box]."\">");
                 echo $tab_data[$jour]['contenu'][$index_box];
                 echo ("<div class=\"ButtonBar\">");
                 AfficheEffacerIcone($type_edt,$login_edt,$tab_data[$jour]['id_cours'][$index_box], $period);
@@ -341,7 +340,7 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
 // ===== affichage de la colonne créneaux
 
     echo ("<div class=\"creneaux".$creneaux['nb_creneaux']."\">\n");
-
+    echo ("<div class=\"entete_creneaux\"></div>\n");
     for ($i = 0; $i < $creneaux['nb_creneaux']; $i++)
     {
         echo("<div class=\"horaires\"><div class=\"cadre\"><strong>".$creneaux['creneaux'][$i]."</strong></div></div>\n");
@@ -432,6 +431,7 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
     $tab_data_jour['id_creneau'][$index_box] = $id_creneaux;
     $tab_data_jour['id_cours'][$index_box] = $id_cours;
     $tab_data_jour['id_groupe'][$index_box] = $id_groupe;
+    $tab_data_jour['elapse_time'][$index_box] = $elapse_time;
     if ($elapse_time%2 == 0)
     {
         $tab_data_jour['heuredeb_dec'][$index_box] = 0;
@@ -440,6 +440,34 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
     {
         $tab_data_jour['heuredeb_dec'][$index_box] = 1;
     }
+
+    // ====================== Récupérer la durée chiffrée du cours (en heures)
+    preg_match_all('#[0-9]+#',$taille_box,$extract);
+    if (isset($extract[0][0])) {
+        $extract[0][0] = $extract[0][0] / 2;
+        $tab_data_jour['duree_valeur'][$index_box] = $extract[0][0];
+    }
+    else {
+        $tab_data_jour['duree_valeur'][$index_box] = 0;
+    }
+    // ===================== Récupérer le créneau de début de séance
+	$tab_creneaux = retourne_creneaux();
+    $index_creneau = $elapse_time;
+    if ($index_creneau % 2 != 0) {
+        $index_creneau--;
+    }
+    $index_creneau = $index_creneau / 2;
+    if ($index_creneau >= count($tab_creneaux)) {
+        $index_creneau = 0;
+    }
+    $tab_data_jour['affiche_creneau'][$index_box] = $tab_creneaux[$index_creneau];
+    if ($elapse_time % 2 != 0) {
+        $tab_data_jour['affiche_creneau'][$index_box] .= " milieu ";
+    }
+    else {
+        $tab_data_jour['affiche_creneau'][$index_box] .= " début ";
+    }
+
     $index_box++;
 }
 
