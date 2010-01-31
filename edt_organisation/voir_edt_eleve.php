@@ -223,7 +223,7 @@ if($indice_eleve_select != -1){
 			echo "<input type=\"hidden\" name=\"choix_lettre\" value=\"ok\" />\n";
 		}
 
-if($indice_eleve_select != -1){
+if($indice_eleve_select != count($tab_select)){
 	$suivant = $indice_eleve_select+1;
 	if($suivant<count($tab_select)){
 

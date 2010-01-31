@@ -90,7 +90,7 @@ echo '
 			<input type="hidden" name="visioedt" value="salle1" />
 	';
 
-if($indice_salle_select != -1){
+if($indice_salle_select != count($tab_select)){
 	$suivant = $indice_salle_select + 1;
 	if($suivant<count($tab_select)){
 		//$suivant=$indice_prof_select+1;

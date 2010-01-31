@@ -81,7 +81,7 @@ echo '
 			<input type="hidden" name="visioedt" value="classe1" />
 	';
 
-if($indice_classe_select != -1){
+if($indice_classe_select != count($tab_select)){
 	$suivant = $indice_classe_select+1;
 	if($suivant<count($tab_select)){
 		//$suivant=$indice_prof_select+1;

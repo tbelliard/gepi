@@ -83,7 +83,7 @@ echo '
 			<input type="hidden" name="visioedt" value="prof1" />
 	';
 
-if($indice_prof_select!=-1){
+if($indice_prof_select!=count($tab_select)){
 	$suivant=$indice_prof_select+1;
 	if($suivant<count($tab_select)){
 		//$suivant=$indice_prof_select+1;
