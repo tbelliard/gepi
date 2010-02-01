@@ -140,19 +140,16 @@ echo '
 echo '	<!-- Début des fichiers en javascript -->'."\n";
 echo '<script type="text/javascript" src="'.$gepiPath.'/lib/functions.js"></script>'."\n";
 
-// Ajout du framework prototype 1.5.1.1 conditionné à la variable $utilisation_prototype="ok"
-$prototype = "ok"; //isset($utilisation_prototype) ? $utilisation_prototype : NULL;
-	if ($prototype == "ok") {
-		// On affiche alors le lien qui charge Prototype
-    	echo '<script type="text/javascript" src="'.$gepiPath.'/lib/prototype.js"></script>'."\n";
-	}
+// Ajout du framework prototype 1.6.0.3
+echo '<script type="text/javascript" src="'.$gepiPath.'/lib/prototype.js"></script>'."\n";
+
 // Ajout de la librairie Scriptaculous.js conditionné à la variable $utilisation_scriptaculous="ok"
 $scriptaculous = isset($utilisation_scriptaculous) ? $utilisation_scriptaculous : NULL;
 $script_effet = isset($scriptaculous_effet) ? $scriptaculous_effet : NULL;
-	 if ($scriptaculous == "ok") {
-	 	// On affiche le lien qui charge scriptaculous
-	 	echo '<script type="text/javascript" src="'.$gepiPath.'/lib/scriptaculous.js?load='.$script_effet.'"></script>'."\n";
-	 }
+if ($scriptaculous == "ok") {
+  // On affiche le lien qui charge scriptaculous
+  echo '<script type="text/javascript" src="'.$gepiPath.'/lib/scriptaculous.js?load='.$script_effet.'"></script>'."\n";
+}
 // Utilisation de windows.js
 $windows = isset($utilisation_win) ? $utilisation_win : NULL;
 if ($windows == 'oui') {
