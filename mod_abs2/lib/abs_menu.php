@@ -30,6 +30,8 @@ if (!$_SESSION["login"]) {
     die();
 }
 
+$aff_aide = NULL;
+/*
 // On permet de modifier la couleur du menu pour savoir où on est
 $menu = isset($menu) ? $menu : '';
 $aff_saisir = $aff_suivre = $aff_traiter = $aff_envoyer = $aff_stats = $aff_exporter = $aff_parametrer = NULL;
@@ -78,5 +80,25 @@ echo '
 		<li' . $aff_exporter . '><a href="exports_absences.php"><img src="../images/icons/absences.png" alt="Exports" /> - Exports</a></li>
 		<li' . $aff_parametrer . '><a href="parametrage_absences.php"><img src="../images/icons/configure.png" alt="param&eacute;trer" /> - Param&egrave;tres</a></li>
 	</ol>
-	<div id="aidmenu" style="display: none;">' . $aff_aide . '</div>';
+	*/
+if (getSettingValue("active_mod_discipline") == "y"){
+  $_discipline = '<li><a href="../mod_discipline/index.php">Sanctions</a></li>';
+}else{
+  $_discipline = '';
+}
+echo '<div id="aidmenu" style="display: none;">' . $aff_aide . '</div>';
 ?>
+<ul class="css-tabs" id="menutabs">
+	<li><a href="ajax.php?mod=abs">Absences, retards</a></li>
+          <li><a href="ajax.php?mod=bil">Bilans</a></li>
+	<li><a href="ajax.php?mod=sta">Statistiques</a></li>
+        <li><a href="ajax.php?mod=cou">Courrier</a></li>
+        <li><a href="ajax.php?mod=ele">Fiches élève</a></li>
+        <li><a href="parametrage_absences.php">Paramètres</a></li>
+        <?php echo $_discipline; ?>
+</ul>
+
+
+<div class="css-panes" id="containDiv">
+  <div style="display:block"></div>
+</div>

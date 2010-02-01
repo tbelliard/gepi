@@ -1,7 +1,5 @@
 function observeur(){
-	//Event.observe(document, 'click', voirElementHTML);
   Event.observe(document, 'click', traiterEvenement);
-  //Event.observe(document, 'keydown', voirElementTouch);
   Event.observe(document, 'keydown', func_KeyDown);
 }
 /* Fonction utilisee pour debugguer 
@@ -19,7 +17,12 @@ function voirElementTouch(event){
 function traiterEvenement(event){
   var elementCliquer = Event.element(event);
   var premierSelectCliquer = Event.findElement(event,"select") ? Event.findElement(event,"select") : null;
+  var ulCliquer = Event.findElement(event,"ul") ? Event.findElement(event,"ul") : null;
   var affPremierSelectCliquer = premierSelectCliquer ? premierSelectCliquer.name : 'aucun';
+
+  if (ulCliquer !== null && ulCliquer.id == 'menutabs'){
+    teste(event);
+  }else
   if (elementCliquer.value != 'rien'){
     var tabChoix = new Array();
     tabChoix = ["choix_classe", "choix_aid", "choix_groupe"];
@@ -40,7 +43,7 @@ function traiterEvenement(event){
 function ajaxAbsence(id, type, info, url){
 	elementHTML = $(id);
 	o_options = new Object();
-	o_options = {postBody: '_id='+info+'&type='+type, onComplete:afficherDiv(id)};
+	o_options = {postBody: '_id='+info+'&type='+type, encoding:'ISO-8859-1', onComplete:afficherDiv(id)};
 	var laRequete = new Ajax.Updater(elementHTML,url,o_options);
 }
 function gestionaffAbs(id, reglage, url){
@@ -62,7 +65,7 @@ function gestionaffAbs(id, reglage, url){
     var ordre = '0';
   }
 	o_options = new Object();
-	o_options = {postBody: '_id='+info+'&type='+reglage+'&ordre='+ordre, onComplete:afficherDiv(id)};
+	o_options = {postBody: '_id='+info+'&type='+reglage+'&ordre='+ordre, encoding:'ISO-8859-1', onComplete:afficherDiv(id)};
 	var laRequete = new Ajax.Updater(elementHTML,url,o_options);
 }
 function afficherDiv(id){Element.show(id);}
@@ -73,7 +76,7 @@ function utiliseAjaxAbs(id, reglage, url){
 	elementHTML = $(id);
 	var info = reglage;
 	o_options = new Object();
-	o_options = {postBody: '_id='+info+'&type='+reglage, onComplete:afficherDiv(id)};
+	o_options = {postBody: '_id='+info+'&type='+reglage, encoding:'ISO-8859-1', onComplete:afficherDiv(id)};
 	var laRequete = new Ajax.Updater(elementHTML,url,o_options);
 }
 function func_KeyDown(event, script, type){
@@ -100,4 +103,26 @@ function coche(id){
 function ouvrirResp(id, var2){
 	var win = new Window({className: "alphacube", title: "Tests sur la fiche responsables", top:170, left:100, width:700, height:500, url: "ajax_responsable.php?var="+id+"&var2="+var2, showEffectOptions: {duration:0.1}, opacity:0.98});
 	win.show();
+}/*
+Event.observe(window, 'load', function() {
+  Event.observe('menutabs', 'click', teste);
+});*/
+function teste(event){
+  var cliquera = Event.findElement(event,"a") ? Event.findElement(event,"a") : null;
+  var testurl = cliquera.href.split('?');
+  var les_a = $$('#menutabs a');
+  for (i=0; i<les_a.length; i++){
+    if (les_a[i].className == 'current'){
+      les_a[i].removeClassName('current');
+    }
+  }
+  cliquera.className = 'current';
+  ajaxUpdater('containDiv', cliquera.href, testurl[1], testurl[0]);
+  Event.stop(event);
+}
+function ajaxUpdater(id, type, info, url){
+	elementHTML = $(id);
+	o_options = new Object();
+	o_options = {postBody: '_id='+info+'&type='+type, encoding:'ISO-8859-1', onComplete:afficherDiv(id)};
+	var laRequete = new Ajax.Updater(elementHTML,url,o_options);
 }

@@ -113,8 +113,9 @@ $javascript_specifique = "mod_abs2/lib/absences_ajax";
 $style_specifique = "mod_abs2/lib/abs_style";
 $utilisation_win = 'oui';
 $titre_page = "Le suivi des saisies";
-require_once("../lib/header.inc");
-require("lib/abs_menu.php");
+header('Content-Type: text/html; charset=ISO-8859-1');
+//require_once("../lib/header.inc");
+//require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
 //aff_debug($liste_absents_brute[0]->getEleve()->getAbsenceSaisies());
 //debug_var();
@@ -253,4 +254,4 @@ if (isset($_SESSION["msg_fusions"])){
 
 <div id="aff_result"></div>
 
-<?php require_once("../lib/footer.inc.php"); ?>
+<?php //require_once("../lib/footer.inc.php"); ?>

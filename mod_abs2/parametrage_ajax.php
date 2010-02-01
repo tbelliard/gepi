@@ -176,6 +176,7 @@ try{
 }
 // On précise l'entête HTML pour que le navigateur ne se perde pas .
 header('Content-Type: text/html; charset:utf-8');
+//header('Content-Type: text/html; charset=ISO-8859-1');
 
 ?>
 <table id="presentations">
@@ -233,11 +234,3 @@ if ($ajouter == 'ok') {
 }
 
 ?>
-
-
-
-
-
-
-
-

@@ -23,8 +23,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-$utiliser_pdo = 'on';
-//error_reporting(0);
 
 // Initialisations files
 include("../lib/initialisationsPropel.inc.php");
@@ -132,7 +130,7 @@ try{
     if ($increment == $nbre_el){
 
       $_SESSION['msg_abs'] .= '<h3 class="ok">Saisies enregistr&eacute;es.</h3>';
-      header("Location: saisir_absences.php");
+      header("Location: index.php?mod=sai");
       die();
 
     }else{

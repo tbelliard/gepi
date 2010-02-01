@@ -118,15 +118,18 @@ try{
   // Cette fonction est présente dans /lib/erreurs.php
   affExceptions($e);
 }
-
-//**************** EN-TETE *****************
-$javascript_specifique = "mod_abs2/lib/absences_ajax";
-$style_specifique = "mod_abs2/lib/abs_style";
-$titre_page = "Saisir les absences";
-require_once("../lib/header.inc");
-$menu = 'saisir';
-require("lib/abs_menu.php");
-//**************** FIN EN-TETE *****************
+if (isset($ajax) AND $ajax !== true){
+  //**************** EN-TETE *****************
+  $javascript_specifique = "mod_abs2/lib/absences_ajax";
+  $style_specifique = "mod_abs2/lib/abs_style";
+  $titre_page = "Saisir les absences";
+  require_once("../lib/header.inc");
+  $menu = 'saisir';
+  require("lib/abs_menu.php");
+  //**************** FIN EN-TETE *****************
+}else{
+  header('Content-Type: text/html; charset=ISO-8859-1');
+}
 //debug_var();
 
 ?>
@@ -186,4 +189,4 @@ require("lib/abs_menu.php");
 </div>
 
 
-<?php require("../lib/footer.inc.php"); ?>
+<?php if (isset($ajax) AND $ajax !== true){require("../lib/footer.inc.php");} ?>

@@ -54,14 +54,14 @@ try{
   affExceptions($e);
 }
 //**************** EN-TETE *****************
-$titre_page = "Paramétrer le module absences";
-$javascript_specifique = "mod_abs2/lib/absences_ajax";
-$style_specifique = "mod_abs2/lib/abs_style";
-require_once("../lib/header.inc");
-$menu = 'parametrer';
-require("lib/abs_menu.php");
+//$titre_page = "Paramétrer le module absences";
+//$javascript_specifique = "mod_abs2/lib/absences_ajax";
+//$style_specifique = "mod_abs2/lib/abs_style";
+//require_once("../lib/header.inc");
+//$menu = 'parametrer';
+//require("lib/abs_menu.php");
 //**************** FIN EN-TETE *****************
-
+header('Content-Type: text/html; charset=ISO-8859-1');
 
 ?>
 <p class="abs_menu">
