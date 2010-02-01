@@ -299,6 +299,18 @@ if (isset($_POST['is_posted'])) {
 			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
 		}
 	}
+
+	if (isset($_POST['type_bulletin_par_defaut'])) {
+		if(($_POST['type_bulletin_par_defaut']=='html')||($_POST['type_bulletin_par_defaut']=='pdf')) {
+			if (!saveSetting("type_bulletin_par_defaut", $_POST['type_bulletin_par_defaut'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre type_bulletin_par_defaut !";
+			}
+		}
+		else {
+			$msg .= "Valeur erronée pour l'enregistrement du paramètre type_bulletin_par_defaut !";
+		}
+	}
+
 	/*
 	if (isset($_POST['mode_utf8_releves_pdf'])) {
 		if (!saveSetting("mode_utf8_releves_pdf", $_POST['mode_utf8_releves_pdf'])) {
@@ -784,6 +796,25 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 		onchange='changement()' />
 		</td>
 	</tr>
+
+	<tr>
+		<td style="font-variant: small-caps;" valign='top'>
+		Type de bulletins par défaut&nbsp;:
+		</td>
+		<td>
+		<input type="radio" id='type_bulletin_par_defaut_pdf' name="type_bulletin_par_defaut" value="pdf"
+		<?php
+			if(getSettingValue("type_bulletin_par_defaut")=='pdf') {echo " checked";}
+		?>
+		onchange='changement()' /><label for='type_bulletin_par_defaut_pdf'>&nbsp;PDF</label><br />
+		<input type="radio" id='type_bulletin_par_defaut_html' name="type_bulletin_par_defaut" value="html"
+		<?php
+			if(getSettingValue("type_bulletin_par_defaut")!='pdf') {echo " checked";}
+		?>
+		onchange='changement()' /><label for='type_bulletin_par_defaut_html'>&nbsp;HTML</label>
+		</td>
+	</tr>
+
 <?php
 /*
 	// Apparemment, ce n'est pas utile...

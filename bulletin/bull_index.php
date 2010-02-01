@@ -429,12 +429,18 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	//=======================================
 
+	// HTML ou PDF
+	$type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
+	if(($type_bulletin_par_defaut!='html')&&($type_bulletin_par_defaut!='pdf')) {$type_bulletin_par_defaut='html';}
+
 	// A remplacer par la suite par un choix:
 	//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
 	echo "<table border='0' summary='Choix du type de bulletin'>\n";
 	echo "<tr>\n";
 	echo "<td valign='top'>\n";
-	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg()' checked /> ";
+	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg()' ";
+	if($type_bulletin_par_defaut=='html') {echo "checked ";}
+	echo "/> ";
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<label for='mode_bulletin_html' style='cursor:pointer;'>Bulletin HTML</label>\n";
@@ -471,7 +477,9 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 			}
 		}
 		else {
-			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg()' /> ";
+			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg()' ";
+			if($type_bulletin_par_defaut=='pdf') {echo "checked ";}
+			echo "/> ";
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='mode_bulletin_pdf' style='cursor:pointer;'>Bulletin PDF</label>\n";
@@ -479,25 +487,33 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 			echo "<br />\n";
 			//echo "<span id='div_modele_bulletin_pdf'>\n";
 			echo "<div id='div_modele_bulletin_pdf'>\n";
-				echo "Choisir le modèle de bulletin<br />\n";
-				// sélection des modèles des bulletins PDF
-				//$sql='SELECT id_model_bulletin, nom_model_bulletin FROM modele_bulletin ORDER BY modele_bulletin.nom_model_bulletin ASC';
-				$sql="SELECT DISTINCT id_model_bulletin,valeur FROM modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY id_model_bulletin ASC";
-				//echo "$sql<br />";
-				$requete_modele = mysql_query($sql);
-				echo "<select tabindex=\"5\" name=\"type_bulletin\">";
+
 				$option_modele_bulletin=getSettingValue("option_modele_bulletin");
-				if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes
-					echo "<option value=\"-1\">Utiliser les modèles pré-sélectionnés par classe</option>\n";
-				}
+				if (($option_modele_bulletin==2)||($option_modele_bulletin==3)) { //Par défaut  le modèle défini pour les classes
+					echo "Choisir le modèle de bulletin<br />\n";
+					// sélection des modèles des bulletins PDF
+					//$sql='SELECT id_model_bulletin, nom_model_bulletin FROM modele_bulletin ORDER BY modele_bulletin.nom_model_bulletin ASC';
+					$sql="SELECT DISTINCT id_model_bulletin,valeur FROM modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY id_model_bulletin ASC";
+					//echo "$sql<br />";
+					$requete_modele = mysql_query($sql);
+					echo "<select tabindex=\"5\" name=\"type_bulletin\">";
+					$option_modele_bulletin=getSettingValue("option_modele_bulletin");
+					if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes
+						echo "<option value=\"-1\">Utiliser les modèles pré-sélectionnés par classe</option>\n";
+					}
+	
 					while($donner_modele = mysql_fetch_array($requete_modele)) {
 						echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
 						echo ">".ucfirst($donner_modele['valeur'])."</option>\n";
 					}
-				echo "</select>\n";
+					echo "</select>\n";
+					echo "<br />\n";
+				}
+				else {
+					echo "<input type='hidden' name='type_bulletin' value='-1' />\n";
+				}
 			//echo "</span>\n";
 
-			echo "<br />\n";
 			echo "<label for='use_cell_ajustee' style='cursor: pointer;'><input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' /> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
 
 			$titre_infobulle="Fonction cell_ajustee()\n";
@@ -1224,6 +1240,10 @@ else {
 			$type_bulletin=isset($_POST['type_bulletin']) ? $_POST['type_bulletin'] : 1;
 			// CONTROLER SI type_bulletin EST BIEN UN ENTIER éventuellement -1
 			if(isset($type_bulletin)) {
+
+				$option_modele_bulletin=getSettingValue("option_modele_bulletin");
+				if($option_modele_bulletin==1) {$type_bulletin=-1;}
+
 				//echo "\$type_bulletin=$type_bulletin<br />";
 				if ($type_bulletin == -1) {
 					// cas modèle par classe
@@ -1969,18 +1989,22 @@ else {
 						$tab_ele['etab_ville'] = @mysql_result($data_etab, 0, "ville");
 
 						if ($tab_ele['etab_niveau']!='') {
-						foreach ($type_etablissement as $type_etab => $nom_etablissement) {
-							if ($tab_ele['etab_niveau'] == $type_etab) {
-								$tab_ele['etab_niveau_nom']=$nom_etablissement;
+							foreach ($type_etablissement as $type_etab => $nom_etablissement) {
+								if ($tab_ele['etab_niveau'] == $type_etab) {
+									$tab_ele['etab_niveau_nom']=$nom_etablissement;
+								}
 							}
-						}
-						if ($tab_ele['etab_cp']==0) {
-							$tab_ele['etab_cp']='';
-						}
-						if ($tab_ele['etab_type']=='aucun')
-							$tab_ele['etab_type']='';
-						else
-							$tab_ele['etab_type']= $type_etablissement2[$tab_ele['etab_type']][$tab_ele['etab_niveau']];
+							if ($tab_ele['etab_cp']==0) {
+								$tab_ele['etab_cp']='';
+							}
+
+							if (($tab_ele['etab_type']=='aucun')||($tab_ele['etab_type']=='')||($tab_ele['etab_niveau']=='')) {
+								$tab_ele['etab_type']='';
+							}
+							else {
+								$tab_ele['etab_type']= $type_etablissement2[remplace_accents($tab_ele['etab_type'],'')][remplace_accents($tab_ele['etab_niveau'],'')];
+								//echo "\$type_etablissement2[".$tab_ele['etab_type']."][".$tab_ele['etab_niveau']."]=".$type_etablissement2[remplace_accents($tab_ele['etab_type'],'')][remplace_accents($tab_ele['etab_niveau'],'')]."<br />\n";
+							}
 						}
 					}
 
