@@ -28,9 +28,16 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	// au risque de perturber l'affichage de la page si Javascript est désactivé.
 
 	if(isset($tabdiv_infobulle)){
+
+		// Pour éviter des cas de doublons...
+		$temoin_infobulle=array();
+
 		if(count($tabdiv_infobulle)>0){
 			for($i=0;$i<count($tabdiv_infobulle);$i++){
-				echo $tabdiv_infobulle[$i]."\n";
+				if(!in_array($tabid_infobulle[$i],$temoin_infobulle)) {
+					echo $tabdiv_infobulle[$i]."\n";
+					$temoin_infobulle[]=$tabid_infobulle[$i];
+				}
 			}
 		}
 	}
