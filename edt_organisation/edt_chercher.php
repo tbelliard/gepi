@@ -57,6 +57,32 @@ if ($salle_libre == "ok") {
 	$auto_aff_1 = 1;
 }
 
+// On insère l'entête de Gepi
+require_once("../lib/header.inc");
+
+$ua = getenv("HTTP_USER_AGENT");
+if (strstr($ua, "MSIE 6.0")) {
+	echo "<div class=\"cadreInformation\">Votre navigateur (Internet Explorer 6) est obsolète et se comporte mal vis à vis de l'affichage des emplois du temps. Faites absolument une mise à jour vers les versions 7 ou 8 ou changez de navigateur (FireFox, Chrome, Opera, Safari)</div>";
+}
+
+
+// On ajoute le menu EdT
+require_once("./menu.inc.php");
+
+
+?>
+
+
+<br />
+<!-- la page du corps de l'EdT -->
+
+	<div id="lecorps">
+
+<?php
+    require_once("./menu.inc.new.php");
+
+
+
 if ($cherch_salle == "ok") {
 	if ($ch_heure != "rien") {
 		$auto_aff_21 = 1;
@@ -203,5 +229,7 @@ if ($auto_aff_2 === 1) {
 		}
 	echo "</fieldset>\n";
 }
-
+    echo '</div>';
+// inclusion du footer
+require("../lib/footer.inc.php");
 ?>

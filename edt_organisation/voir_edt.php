@@ -40,16 +40,27 @@ $period_id=isset($_GET['period_id']) ? $_GET['period_id'] : (isset($_POST['perio
 $bascule_edt=isset($_GET['bascule_edt']) ? $_GET['bascule_edt'] : (isset($_POST['bascule_edt']) ? $_POST['bascule_edt'] : NULL);
 //===========================
 
-if ($visioedt == 'prof1') $type_edt = $login_edt;
-elseif ($visioedt == 'classe1') $type_edt = $classe;
-elseif ($visioedt == 'salle1') $type_edt = $salle;
 
-// ========================= AFFICHAGE DES MESSAGES
+// =============================================================================
+//
+//                                  TRAITEMENT DES DONNEES
+//		
+// =============================================================================
+
+if ($visioedt == 'prof1') {
+    $type_edt = $login_edt;
+}
+elseif ($visioedt == 'classe1') {
+    $type_edt = $classe;
+}
+elseif ($visioedt == 'salle1') {
+    $type_edt = $salle;
+}
 
 if ($message != "") {
-    echo ("<div class=\"cadreInformation\">".$message."</div>");
     $_SESSION["message"] = "";
 }
+
 if ($bascule_edt != NULL) {
     $_SESSION['bascule_edt'] = $bascule_edt;
 }
@@ -57,7 +68,6 @@ if (!isset($_SESSION['bascule_edt'])) {
     $_SESSION['bascule_edt'] = 'periode';
 }
 if ($_SESSION['bascule_edt'] == 'periode') {
-    //=========================== GESTION DES PERIODES
     if (PeriodesExistent()) {
         if ($period_id != NULL) {
             $_SESSION['period_id'] = $period_id;
@@ -68,66 +78,20 @@ if ($_SESSION['bascule_edt'] == 'periode') {
         if (!PeriodExistsInDB($_SESSION['period_id'])) {
             $_SESSION['period_id'] = ReturnFirstIdPeriod();    
         }
-        AfficheBarCommutateurPeriodes($login_edt, $visioedt, $type_edt_2);
+        $DisplayPeriodBar = true;
     }
     else {
+        $DisplayPeriodBar = false;
         $_SESSION['period_id'] = 0;
     }
 }
-
-//=========================== AFFICHAGE DES MENUS DEROULANTS DE SELECTION
-
-$ua = getenv("HTTP_USER_AGENT");
-if (!strstr($ua, "MSIE 6.0")) {
-    echo ("<div class=\"fenetre\">\n");
-    echo("<div class=\"contenu\">
-		<div class=\"coingh\"></div>
-        <div class=\"coindh\"></div>
-        <div class=\"partiecentralehaut\"></div>
-        <div class=\"droite\"></div>
-        <div class=\"gauche\"></div>
-        <div class=\"coingb\"></div>
-		<div class=\"coindb\"></div>
-		<div class=\"partiecentralebas\"></div>\n");
-}        
-echo "<span class=\"legende\">".TITLE_VOIR_EDT."</span>\n";
-
-if (isset($visioedt) AND $visioedt == "prof1") {
-	require_once("./voir_edt_prof.php");
+else {
+    $DisplayPeriodBar = false;
 }
 
-elseif (isset($visioedt) AND $visioedt == "salle1") {
-	require_once("./voir_edt_salle.php");
-}
+// =================== Construire les emplois du temps
 
-elseif (isset($visioedt) AND $visioedt == "classe1") {
-	require_once("./voir_edt_classe.php");
-}
-
-if ((isset($visioedt)) AND isset($login_edt) AND $visioedt == "prof1") {
-	$aff_nom_edt = renvoie_nom_long(($login_edt), "prof");
-}
-elseif ((isset($visioedt)) AND isset($login_edt) AND $visioedt == "salle1") {
-	$aff_nom_edt = renvoie_nom_long(($login_edt), "salle");
-}
-elseif ((isset($visioedt)) AND isset($login_edt) AND $visioedt == "classe1") {
-	$aff_nom_edt = renvoie_nom_long(($login_edt), "classe");
-}
-
-$ua = getenv("HTTP_USER_AGENT");
-if (!strstr($ua, "MSIE 6.0")) {
-echo "</div>";
-echo "</div>";
-}
-// =============================================================================
-//
-//                Affichage des emplois du temps (version 2)
-//		
-//                  pour les edt élèves, voir les fichiers voir_edt_eleve.php et 
-//                  edt_eleve.php
-// =============================================================================
-
-if(isset($aff_nom_edt)){
+if(isset($login_edt)){
 
     $type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
     if ($type_edt == "prof")
@@ -135,18 +99,14 @@ if(isset($aff_nom_edt)){
         $tab_data = ConstruireEDTProf($type_edt, $login_edt, $_SESSION['period_id']);
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
-        AfficheImprimante(true);
-        //AfficheBascule(true, $login_edt, $visioedt, $type_edt_2);
-        AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $_SESSION['period_id']);
+        $DisplayEDT = true;
     }
     else if ($type_edt == "classe")
     {
         $tab_data = ConstruireEDTClasse($type_edt, $login_edt, $_SESSION['period_id']);
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
-        AfficheImprimante(true);
-        //AfficheBascule(true, $login_edt, $visioedt, $type_edt_2);
-        AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $_SESSION['period_id']);
+        $DisplayEDT = true;
 
     }
     else if ($type_edt == "salle")
@@ -154,11 +114,42 @@ if(isset($aff_nom_edt)){
         $tab_data = ConstruireEDTSalle($type_edt, $login_edt , $_SESSION['period_id']);
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
-        AfficheImprimante(true);
-        //AfficheBascule(true, $login_edt, $visioedt, $type_edt_2);
-        AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $_SESSION['period_id']);
+        $DisplayEDT = true;
 
+    }
+    else if ($type_edt == "eleve")
+    {
+        $tab_data = ConstruireEDTEleve($type_edt, $login_edt , $_SESSION['period_id']);
+        $entetes = ConstruireEnteteEDT();
+        $creneaux = ConstruireCreneauxEDT();
+        $DisplayEDT = true;
+
+    }
+    else {
+        $DisplayEDT = false;
     }
 
 }
+else {
+    $DisplayEDT = false;
+}
+// =================== Tester la présence de IE6
+
+$ua = getenv("HTTP_USER_AGENT");
+if (strstr($ua, "MSIE 6.0")) {
+	 $IE6 = true;
+}
+else {
+    $IE6 = false;
+}
+
+// =============================================================================
+//
+//                                  VUE
+//		
+// =============================================================================
+require_once("../lib/header.inc");
+require_once("./voir_edt_view.php");
+require_once("../lib/footer.inc.php");
+
 ?>

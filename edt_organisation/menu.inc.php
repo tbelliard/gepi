@@ -42,16 +42,7 @@ require_once('./fonctions_calendrier.php');
 // Pour éviter d'avoir un décalage dans les infobulles
 $pas_de_decalage_infobulle = "oui";
 
-// AJOUT: boireaus
-$voirgroup=isset($_GET['voirgroup']) ? $_GET['voirgroup'] : (isset($_POST['voirgroup']) ? $_POST['voirgroup'] : NULL);
-$visioedt=isset($_GET['visioedt']) ? $_GET['visioedt'] : (isset($_POST['visioedt']) ? $_POST['visioedt'] : NULL);
-$salleslibres=isset($_GET['salleslibres']) ? $_GET['salleslibres'] : (isset($_POST['salleslibres']) ? $_POST['salleslibres'] : NULL);
 
-	// Déterminer l'include dans le div id=lecorps
-if ($salleslibres == "ok") $page_inc_edt = 'edt_chercher.php';
-elseif ($visioedt == 'eleve1') $page_inc_edt = 'voir_edt_eleve.php';
-elseif (($visioedt == 'prof1') OR ($visioedt == 'classe1') OR ($visioedt == 'salle1')) $page_inc_edt = 'voir_edt.php';
-else $page_inc_edt = '';
 //===========================
 
 // Fonction qui gère le fonctionnement du menu

@@ -35,7 +35,6 @@ require_once("./fonctions_edt.php");
 require_once("./fonctions_edt_eleve.php");
 require_once("./fonctions_calendrier.php");
 
-//$type_edt_2 = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
 $type_edt_2 = "eleve";
 $period_id=isset($_GET['period_id']) ? $_GET['period_id'] : (isset($_POST['period_id']) ? $_POST['period_id'] : NULL);
 
@@ -123,6 +122,50 @@ if (strstr($ua, "MSIE 6.0")) {
 else {
 	$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 }
+    //=========================== GESTION DES PERIODES
+    
+    if (PeriodesExistent()) {
+        if ($period_id != NULL) {
+            $_SESSION['period_id'] = $period_id;
+        }
+        if (!isset($_SESSION['period_id'])) {
+            $_SESSION['period_id'] = ReturnIdPeriod(date("U"));
+        }
+        if (!PeriodExistsInDB($_SESSION['period_id'])) {
+            $_SESSION['period_id'] = ReturnFirstIdPeriod();    
+        }
+        $DisplayPeriodBar = true;
+    }
+    else {
+        $DisplayPeriodBar = false;
+        $_SESSION['period_id'] = 0;
+    }
+
+    //=========================== CONSTRUCTION DES EDT
+
+    if ($_SESSION['statut'] == "eleve")
+    {
+        $tab_data = ConstruireEDTEleve($_SESSION['statut'], $_SESSION['login'], $_SESSION['period_id'] );
+        $entetes = ConstruireEnteteEDT();
+        $creneaux = ConstruireCreneauxEDT();
+        $DisplayEDT = true;
+        $login_edt = $_SESSION['login'];
+    }
+    else if ($_SESSION['statut'] == "responsable")
+    {
+        $tab_data = ConstruireEDTEleve("eleve", $login_edt, $_SESSION['period_id'] );
+        $entetes = ConstruireEnteteEDT();
+        $creneaux = ConstruireCreneauxEDT();
+        $DisplayEDT = true;
+    }
+    else {
+        $DisplayEDT = false;
+    }
+// =============================================================================
+//
+//                                  VUE
+//		
+// =============================================================================
 
 // ============== Le header ==========
 require_once("../lib/header.inc");
@@ -139,52 +182,28 @@ require_once("../lib/header.inc");
     </p>
 
     <?php
-    //=========================== GESTION DES PERIODES
-    
-    if (PeriodesExistent()) {
-        if ($period_id != NULL) {
-            $_SESSION['period_id'] = $period_id;
-        }
-        if (!isset($_SESSION['period_id'])) {
-            $_SESSION['period_id'] = ReturnIdPeriod(date("U"));
-        }
-        if (!PeriodExistsInDB($_SESSION['period_id'])) {
-            $_SESSION['period_id'] = ReturnFirstIdPeriod();    
-        }
+
+
+
+// ========================= AFFICHAGE DE LA BAR DE COMMUTATION DES PERIODES
+
+    if ($DisplayPeriodBar) {
         AfficheBarCommutateurPeriodesEleve();
     }
-    else {
-        $_SESSION['period_id'] = 0;
-    }
 
-    ?>
+    AfficheImprimante(true); 
 
-
-
-
-	<?php AfficheImprimante(true); ?>
+?>
 </div>
     <?php
-    // =============================================================================
-    //
-    //                Affichage des emplois du temps (version 2)
-    //
-    // =============================================================================
-    if ($_SESSION['statut'] == "eleve")
-    {
-        $tab_data = ConstruireEDTEleve($_SESSION['statut'], $_SESSION['login'], $_SESSION['period_id'] );
-        $entetes = ConstruireEnteteEDT();
-        $creneaux = ConstruireCreneauxEDT();
-        AfficherEDT($tab_data, $entetes, $creneaux, $_SESSION['statut'], $_SESSION['login'], $_SESSION['period_id'] );
-    }
-    else if ($_SESSION['statut'] == "responsable")
-    {
-        $tab_data = ConstruireEDTEleve("eleve", $login_edt, $_SESSION['period_id'] );
-        $entetes = ConstruireEnteteEDT();
-        $creneaux = ConstruireCreneauxEDT();
-        AfficherEDT($tab_data, $entetes, $creneaux, "eleve", $login_edt, $_SESSION['period_id'] );
+
+
+// ========================= AFFICHAGE DES EMPLOIS DU TEMPS
+
+    if ($DisplayEDT) {
+        AfficherEDT($tab_data, $entetes, $creneaux, "eleve", $login_edt, $_SESSION['period_id']);
     }
 
-    ?>
+    require_once("../lib/footer.inc.php"); 
 
-<?php require_once("../lib/footer.inc.php"); ?>
+?>

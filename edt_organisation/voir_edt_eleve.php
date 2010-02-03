@@ -33,42 +33,7 @@ $login_edt = isset($_POST["login_edt"]) ? $_POST["login_edt"] : (isset($_GET["lo
 $type_edt_2 = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
 $period_id=isset($_GET['period_id']) ? $_GET['period_id'] : (isset($_POST['period_id']) ? $_POST['period_id'] : NULL);
 
-//=========================== GESTION DES PERIODES
 
-if (PeriodesExistent()) {
-    if ($period_id != NULL) {
-        $_SESSION['period_id'] = $period_id;
-    }
-    if (!isset($_SESSION['period_id'])) {
-        $_SESSION['period_id'] = ReturnIdPeriod(date("U"));
-    }
-    if (!PeriodExistsInDB($_SESSION['period_id'])) {
-        $_SESSION['period_id'] = ReturnFirstIdPeriod();    
-    }
-    AfficheBarCommutateurPeriodes($login_edt, $visioedt, $type_edt_2);
-}
-else {
-    $_SESSION['period_id'] = 0;
-}
-
-//=========================== AFFICHAGE DES MENUS DEROULANTS DE SELECTION
-
-$ua = getenv("HTTP_USER_AGENT");
-if (!strstr($ua, "MSIE 6.0")) {
-    echo ("<div class=\"fenetre\">\n");
-    echo("<div class=\"contenu\">
-		<div class=\"coingh\"></div>
-        <div class=\"coindh\"></div>
-        <div class=\"partiecentralehaut\"></div>
-        <div class=\"droite\"></div>
-        <div class=\"gauche\"></div>
-        <div class=\"coingb\"></div>
-		<div class=\"coindb\"></div>
-		<div class=\"partiecentralebas\"></div>\n");
-}     
-else {
-    echo "<div id=\"AlignLeft\">";
-}
 
 if ($_SESSION["statut"] != "eleve" AND $_SESSION["statut"] != "responsable") {
 		// On affiche un formulaire alphabétique
@@ -251,46 +216,9 @@ if($indice_eleve_select != count($tab_select)){
 	} //if (isset($alphabet_eleves) OR isset($choix_classe))
 } //if ($_SESSION["statut"] != "eleve" AND $_SESSION["statut"] != "responsable")
 
-$ua = getenv("HTTP_USER_AGENT");
-if (!strstr($ua, "MSIE 6.0")) {
-    echo "</div>";
-    echo "</div>";
-}
-else {
-    echo "</div>";
-}
 
-//===============================================================
-//=============== AFFICHAGE du tableau EdT ======================
-//===============================================================
 
-	echo "<br />\n";
 
-$req_type_login = (isset($_POST['login_edt']) ? $_POST['login_edt'] : NULL) OR (isset($_SESSION["login"]) ? $_SESSION["login"] : NULL);
 
-if ($_SESSION["statut"] == "eleve") {
-	$req_type_login = $_SESSION["login"];
-}
-else $req_type_login = $login_edt;
-
-    // =============================================================================
-    //
-    //                Affichage des emplois du temps (version 2)
-    //
-    // =============================================================================
-
-if (isset($login_edt)) {
-
-        $type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
-        if ($type_edt == "eleve")
-        {
-            $tab_data = ConstruireEDTEleve($type_edt, $login_edt, $_SESSION['period_id'] );
-            $entetes = ConstruireEnteteEDT();
-            $creneaux = ConstruireCreneauxEDT();
-            AfficheImprimante(true);
-            AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $_SESSION['period_id'] );
-        }
-
-} 
 
 ?>
