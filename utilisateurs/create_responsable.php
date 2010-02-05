@@ -141,7 +141,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					$nbre = mysql_num_rows($query_p);
 
 					if ($nbre >= 1 AND $nbre < 2) {
-						$reg_login = mysql_result($query_p, "login_u");
+						$reg_login = mysql_result($query_p, 0,"login_u");
 					}else{
 						// Il faudrait alors proposer une alternative à ce cas et permettre de chercher à la main le bon responsable dans la source
 						//$reg_login = "erreur_".$k; // en attendant une solution viable, on génère le login du responsable

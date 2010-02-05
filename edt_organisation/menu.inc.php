@@ -73,7 +73,7 @@ function statutAutreSetting(){
 	// On cherche quel est le droit dont dispose cet utilisateur 'autre'
 	if ($_SESSION["statut"] == 'autre') {
 		$query = mysql_query("SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$_SESSION["statut_special_id"]."' AND nom_fichier = '/tous_les_edt'");
-		$rep = mysql_result($query, "autorisation");
+		$rep = mysql_result($query, 0,"autorisation");
 
 		if ($rep["autorisation"] == 'V') {
 			return 'oui';

@@ -36,7 +36,7 @@ echo '
 		$indice_aid[$i] = mysql_result($query, $i, "id");
 		/*/ On récupère le nom précis de cette AID
 		$query2 = mysql_query("SELECT nom FROM aid WHERE id = '".$indice_aid[$i]."' ORDER BY nom");
-		$nom_aid = mysql_result($query2, "nom");
+		$nom_aid = mysql_result($query2, 0,"nom");
 		$query3 = mysql_query("SELECT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid[$i]."'");
 		$nbre_eleves = mysql_num_rows($query3);
 		 ('.$nom_aid.' avec '.$nbre_eleves.' élèves)*/

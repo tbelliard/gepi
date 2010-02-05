@@ -61,7 +61,7 @@ function verifChecked($id){
 		$query_ds = mysql_query($sql_ds) OR trigger_error('Erreur dans la fonction verifChecked ', E_USER_ERROR);
 		$count = mysql_num_rows($query_ds);
 		if ($count >= 1) {
-			$rep = mysql_result($query_ds, "autorisation");
+			$rep = mysql_result($query_ds, 0,"autorisation");
 		}else{
 			$rep = 'F';
 		}
@@ -103,7 +103,7 @@ if ($action == 'ajouter') {
 		$sql = "INSERT INTO droits_statut (id, nom_statut) VALUES ('', '".$insert_statut."')";
 		$enregistre = mysql_query($sql) OR trigger_error('Impossible d\'enregistrer ce nouveau statut', E_USER_WARNING);
 		$cherche_id = mysql_query("SELECT id FROM droits_statut WHERE nom_statut = '".$insert_statut."'");
-		$last_id = mysql_result($cherche_id, "id");
+		$last_id = mysql_result($cherche_id, 0,"id");
 
 		if ($enregistre) {
 

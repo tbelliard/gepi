@@ -2355,7 +2355,7 @@ function get_login_eleve($id_eleve){
 	$sql = "SELECT login FROM eleves WHERE id_eleve = '".$id_eleve."'";
 	$query = mysql_query($sql) OR trigger_error('Impossible de récupérer le login de cet élève.', E_USER_ERROR);
 	if ($query) {
-		$retour = mysql_result($query, "login");
+		$retour = mysql_result($query, 0,"login");
 	}else{
 		$retour = 'erreur';
 	}
@@ -2969,7 +2969,7 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 			// On récupère l'INE de cet élève
 			$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
 			$query = mysql_query($sql);
-			$_elenoet_ou_login = mysql_result($query, 'login');
+			$_elenoet_ou_login = mysql_result($query, 0,'login');
 		}
 
 		$photo="";

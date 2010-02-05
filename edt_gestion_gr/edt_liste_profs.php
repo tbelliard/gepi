@@ -93,13 +93,13 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 
 		// On vérifie si ce prof existe et si il n'est pas déjà membre de ce edt_gr
 		$verif_exist = mysql_query("SELECT etat FROM utilisateurs WHERE login = '".$choix_prof."'");
-		$test1 = mysql_result($verif_exist, "etat");
+		$test1 = mysql_result($verif_exist,0, "etat");
 
 		if ($test1) {
 
 			// On vérifie alors s'il n'est pas déjà membre de cet edt_gr
 			$query_v = mysql_query("SELECT id FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'");
-			$test2 = mysql_result($query_v, "id");
+			$test2 = mysql_result($query_v, 0,"id");
 
 			if ($test2 AND is_numeric($test2) AND $test2 >= 1) {
 

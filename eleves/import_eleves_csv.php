@@ -124,7 +124,7 @@ while ($i < $nb_classes) {
         	$uri = mysql_query("SELECT user_uri FROM rss_users WHERE user_login = '".$eleve_login."' LIMIT 1");
         	$nb_uri = mysql_num_rows($uri);
         	if ($nb_uri == 1) {
-        		$eleve_uri = mysql_result($uri, "user_uri");
+        		$eleve_uri = mysql_result($uri, 0,"user_uri");
         		$eleve_elenoet = 'class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&type=cdt&uri='.$eleve_uri.'&ele_l='.$eleve_login;
         	}
         }

@@ -125,7 +125,7 @@ if ($var2 == "changer_nom") {
 		$query_c = mysql_query("SELECT classe FROM j_eleves_classes jec, classes c
 										WHERE jec.login = '".$rep["login"]."'
 										AND jec.id_classe = c.id");
-		$classe = mysql_result($query_c, "classe");
+		$classe = mysql_result($query_c, 0,"classe");
 
 		$aff_modif .= $rep["nom"].'&nbsp;'.$rep["prenom"].' ('.$classe.').<br />';
 

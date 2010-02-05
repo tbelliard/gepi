@@ -2308,7 +2308,7 @@ if ($_SESSION["statut"] == 'autre') {
 		$query_f = mysql_query($sql_f) OR trigger_error('Impossible de trouver le droit : '.mysql_error(), E_USER_WARNING);
 		$nbre = mysql_num_rows($query_f);
 		if ($nbre >= 1) {
-			$rep_f = mysql_result($query_f, "autorisation");
+			$rep_f = mysql_result($query_f, 0, "autorisation");
 		}else{
 			$rep_f = '';
 		}

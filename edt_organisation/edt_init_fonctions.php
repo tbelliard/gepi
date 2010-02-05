@@ -35,7 +35,7 @@ function renvoiLoginProf($numero){
 
 		$test = mysql_num_rows($query);
 		if ($test >= 1) {
-			$retour = mysql_result($query, "nom_gepi");
+			$retour = mysql_result($query, 0,"nom_gepi");
 		}else{
 			$retour = 'erreur_prof';
 		}
@@ -55,7 +55,7 @@ function renvoiIdSalle($chiffre){
 	$cherche = substr($chiffre, 0, 10);
 	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$cherche."'");
 	if ($query) {
-		//$reponse = mysql_result($query, "id_salle");
+		//$reponse = mysql_result($query, 0,"id_salle");
 		$reponse = mysql_fetch_array($query);
 		if ($reponse["id_salle"] == '') {
 			$retour = "inc";
@@ -135,7 +135,7 @@ function renvoiIdCreneau($heure_brute, $jour){
 	if ($query) {
 		$nbre = mysql_num_rows($query);
 		if ($nbre >= 1) {
-			$retour = mysql_result($query, "id_definie_periode");
+			$retour = mysql_result($query, 0,"id_definie_periode");
 		}else{
 			$retour = '0';
 		}
@@ -330,7 +330,7 @@ function testerSalleCsv2($numero){
 	// On teste la table
 	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'")
 				OR trigger_error('Erreur dans la requête '.$query.' : '.mysql_error());
-	$rep = @mysql_result($query, "id_salle");
+	$rep = @mysql_result($query, 0,"id_salle");
 	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
 		// On renvoie "ok"
 		return "ok";
@@ -353,7 +353,7 @@ function salleifexists($numero){
 	$query = mysql_query($sql)
 				OR trigger_error('Impossible de vérifier l\'existence de cette salle : la requête '.$sql.' a échoué : '.mysql_error(), E_USER_WARNING);
 	// On force tout de même le résultat
-	$rep = @mysql_result($query, "id_salle");
+	$rep = @mysql_result($query, 0,"id_salle");
 	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
 		// On renvoie "oui"
 		return "oui";
@@ -631,7 +631,7 @@ if ($tab[4] != '') {
 	if ($nbre >= 1) {
 
 		// alors il existe déjà, on le met à jour et on s'en va
-		//$rep_id = mysql_result($query_verif, "id");
+		//$rep_id = mysql_result($query_verif, 0,"id");
 		$rep_id = mysql_fetch_array($query_verif);
 		$maj = mysql_query("UPDATE edt_gr_nom SET subdivision_type = 'autre', subdivision = 'plusieurs' WHERE id = '".$rep_id["id"]."'");
 
@@ -648,7 +648,7 @@ if ($tab[4] != '') {
 												AND nom_long = '".$nom_long."'
 												AND subdivision_type = '".$type_sub."'
 												AND subdivision = '".$subdivision."");
-		//$recup_id = mysql_result($query_id, "id");
+		//$recup_id = mysql_result($query_id, 0,"id");
 		$recup_id = mysql_fetch_array($query_id);
 		$create_prof = mysql_query("INSERT INTO edt_gr_prof (id, id_gr_nom, id_utilisateurs)
 																				VALUES('', '".$recup_id["id"]."', '".renvoiConcordances($tab[4], 4)."')");

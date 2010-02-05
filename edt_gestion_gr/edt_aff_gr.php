@@ -133,7 +133,7 @@ if ($action == "ajouter_gr") {
 			//$id_gr_nom = mysql_insert_id($query_e);
 			// Avec une connexion permanente à la base, impossible de récupérer l'id
 			$select_id = mysql_query("SELECT id FROM edt_gr_nom WHERE nom = '".$nom_gr."' LIMIT 1");
-			$id_gr_nom = mysql_result($select_id, "id");
+			$id_gr_nom = mysql_result($select_id, 0,"id");
 
 			if ($choix_prof != NULL AND $choix_prof != 'plusieurs' AND $prof != 'plusieurs') {
 				// On ajoute aussi une ligne pour le/les professeurs de ce edt_gr

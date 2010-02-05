@@ -398,8 +398,8 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 					$echo .= '<p class="enregistre_bon">Le retard de '.$noms["prenom"].' '.$noms["nom"].' est bien enregistré !</p>';
 				}else {
 					// On modifie l'absence pour un retard
-					// l'absence en question est mysql_result($cherche_ret, "id");
-					$id_abs = mysql_result($cherche_ret, "id");
+					// l'absence en question est mysql_result($cherche_ret, 0,"id");
+					$id_abs = mysql_result($cherche_ret, 0,"id");
 					$update = mysql_query("UPDATE absences_rb SET retard_absence = 'R'
 															WHERE id = '".$id_abs."'");
 					$echo .='<p class="enregistre_modifie">L\'absence de '.$noms["prenom"].' '.$noms["nom"].' a été modifiée en retard ! </p>';

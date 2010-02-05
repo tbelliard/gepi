@@ -124,7 +124,7 @@ require_once("../../lib/header.inc");
 
 			if ($test === 1) {
 				// GEPI n'a trouvé qu'une seule réponse, on peut donc l'effacer
-				$lettre_a_effacer = mysql_result($query_lettre, "id_lettre_suivi");
+				$lettre_a_effacer = mysql_result($query_lettre, 0,"id_lettre_suivi");
 				$delete = mysql_query("DELETE FROM lettres_suivis WHERE id_lettre_suivi = '" . $lettre_a_effacer . "'");
 			}elseif($test > 1){
 				$message_erreur_lettre_a_effacer = 'Il y a des lettres qui correspondent à ce retard mais aucune n\'a été détruite.';

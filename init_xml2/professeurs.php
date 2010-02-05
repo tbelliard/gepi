@@ -741,7 +741,7 @@ else {
 								$query_p = mysql_query($sql_p);
 								$nbre = mysql_num_rows($query_p);
 								if ($nbre >= 1 AND $nbre < 2) {
-									$temp1 = mysql_result($query_p, "login_u");
+									$temp1 = mysql_result($query_p, 0,"login_u");
 								}else{
 									// Il faudrait alors proposer une alternative à ce cas
 									$temp1 = "erreur_".$k;
