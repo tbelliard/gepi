@@ -2501,7 +2501,8 @@ require_once ("./lib/footer_template.inc.php");
 // $affiche_debug=debug_var2();
 
 
-include('./templates/origine/accueil_template.php');
+$nom_gabarit = './templates/'.$_SESSION['rep_gabarits'].'/accueil_template.php';
+include($nom_gabarit);
 
 // ------ on vide les tableaux -----
 unset($tbs_menu,$tbs_message_admin,$tbs_nom_connecte,$tbs_referencement,$tbs_probleme_dir,$tbs_interface_graphique,$tbs_message,$tbs_canal_rss);
