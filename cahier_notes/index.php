@@ -79,6 +79,8 @@ $titre_page = "Carnet de notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
+//debug_var();
+
 //-----------------------------------------------------------------------------------
 if (isset($_GET['id_groupe']) and isset($_GET['periode_num'])) {
 //if (isset($id_groupe) and isset($periode_num)) {
@@ -337,7 +339,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	}
 </script>\n";
 
-			echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
+			echo "<input type='hidden' name='periode_num' id='periode_num' value='$periode_num' />\n";
 			//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
 			echo "Période $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 			echo $chaine_options_classes;
@@ -358,7 +360,62 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
     //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'>" . $current_group["description"] . " : Choisir une autre période</a>|";
     //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> " . htmlentities($current_group["description"]) . " : Choisir une autre période</a> | \n";
-    echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> Choisir une autre période</a> | \n";
+    //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> Choisir une autre période</a> | \n";
+
+	// Recuperer la liste des cahiers de notes
+	$sql="SELECT * FROM cn_cahier_notes ccn where id_groupe='$id_groupe' ORDER BY periode;";
+	$res_cn=mysql_query($sql);
+	if(mysql_num_rows($res_cn)>0) {
+		echo "<script type='text/javascript'>
+var tab_per_cn=new Array();\n";
+
+
+		$chaine_options_periodes="";
+		while($lig_cn=mysql_fetch_object($res_cn)) {
+			$chaine_options_periodes.="<option value='$lig_cn->id_cahier_notes'";
+			if($lig_cn->periode==$periode_num) {$chaine_options_periodes.=" selected='true'";}
+			$chaine_options_periodes.=">$lig_cn->periode</option>\n";
+
+			//echo "var tab_per_cn[$lig_cn->id_cahier_notes]=$lig_cn->periode;\n";
+			echo "tab_per_cn[$lig_cn->id_cahier_notes]=$lig_cn->periode;\n";
+		}
+
+		$index_num_periode=$periode_num-1;
+
+		echo "
+	change='no';
+
+	function confirm_changement_periode(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			//alert(document.getElementById('id_racine').selectedIndex);
+			//alert(document.getElementById('id_racine').options[document.getElementById('id_racine').selectedIndex].value);
+			//alert(document.form1.elements['id_racine'].options[document.form1.elements['id_racine'].selectedIndex].value);
+			//i=document.getElementById('id_racine').options[document.getElementById('id_racine').selectedIndex].value;
+
+			document.getElementById('periode_num').value=tab_per_cn[document.getElementById('id_racine').options[document.getElementById('id_racine').selectedIndex].value];
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.getElementById('periode_num').value=tab_per_cn[document.getElementById('id_racine').options[document.getElementById('id_racine').selectedIndex].value];
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_racine').selectedIndex=$index_num_periode;
+			}
+		}
+	}
+</script>\n";
+	
+		//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo "Période <select name='id_racine' id='id_racine' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
+		echo $chaine_options_periodes;
+		echo "</select> | \n";
+	}
+
 
 	//==================================
 	// AJOUT: boireaus EXPORT...

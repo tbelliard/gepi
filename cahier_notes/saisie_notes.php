@@ -579,9 +579,46 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	// =================================
 }
 
+// Recuperer la liste des cahiers de notes
+$sql="SELECT * FROM cn_cahier_notes ccn where id_groupe='$id_groupe' ORDER BY periode;";
+$res_cn=mysql_query($sql);
+if(mysql_num_rows($res_cn)>0) {
+	$chaine_options_periodes="";
+	while($lig_cn=mysql_fetch_object($res_cn)) {
+		$chaine_options_periodes.="<option value='$lig_cn->id_cahier_notes'";
+		if($lig_cn->periode==$periode_num) {$chaine_options_periodes.=" selected='true'";}
+		$chaine_options_periodes.=">$lig_cn->periode</option>\n";
+	}
 
+	$index_num_periode=$periode_num-1;
 
+	echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
 
+	function confirm_changement_periode(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_conteneur').selectedIndex=$index_num_periode;
+			}
+		}
+	}
+</script>\n";
+
+	//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+	echo "Période <select name='id_conteneur' id='id_conteneur' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
+	echo $chaine_options_periodes;
+	echo "</select> | \n";
+}
 
 echo "<a href=\"index.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes évaluations </a>|";
 if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
