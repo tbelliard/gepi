@@ -526,7 +526,7 @@ echo "</td>\n";
 }
 // Fin deuxième ou troixième cellule de la première ligne du tableau
 echo "</td>\n";
-echo "</tr>\n</table>\n<hr />";
+echo "</tr>\n</table>\n<hr />\n";
 
 // Si le choix du groupe n'a pas été fait, on affiche un texte d'explication et de mise en garde
 if (($id_groupe == null)) {
@@ -787,7 +787,7 @@ while (true) {
 	}
 
 	//Modif  Eric visa des notices et interdiction de modifier suite à un visa des notices
-    $html_balise = '<div style="margin: 0px; float: right;">';
+    $html_balise = '<div style="margin: 0px; float: left;">';
 	//$html_balise.=" $not_dev->id_ct ";
     if ($not_dev->type == "c") {
 	    if (($not_dev->vise != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')){
@@ -859,7 +859,7 @@ include "../lib/transform.php";
   }
 echo "<b>Informations Générales</b>\n";
 if ($id_ctexte == $id_ct) echo "<b><font color=\"red\"> - en&nbsp;modification</font></b>";
-$html_balise = "<div style=\"margin: 0px; float: right;\"><a href='index.php?info=yes&amp;id_groupe=" . $current_group["id"] . "'><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a> <a href='index.php?info=yes&amp;id_ct_del=$id_ctexte&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=" . $current_group["id"] . "' onclick=\"return confirmlink(this,'suppression de la notice Informations générales ?','".$message_suppression."')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a></div>\n";
+$html_balise = "<div style=\"margin: 0px; float: left;\"><a href='index.php?info=yes&amp;id_groupe=" . $current_group["id"] . "'><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a> <a href='index.php?info=yes&amp;id_ct_del=$id_ctexte&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=" . $current_group["id"] . "' onclick=\"return confirmlink(this,'suppression de la notice Informations générales ?','".$message_suppression."')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a></div>\n";
 echo "<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"] ."; padding: 2px; margin: 2px;\" width=\"100%\" cellpadding=\"2\" summary=\"Tableau de...\">\n<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 0px; margin: 0px;\">\n<td>\n".$html_balise.$html."</td>\n</tr>\n</table>\n<br />";
 
 // Fin de la colonne de gauche
@@ -904,9 +904,23 @@ if (mysql_num_rows($appel_cahier_texte_liste) > 1) {
   }
 }
 
+// ======================= Correctif Pascal Fautrero : permet d'afficher la fenêtre de saisie dans une fenêtre flottante
 
+$reduce = isset($_POST["reduce"]) ? $_POST["reduce"] :(isset($_GET["reduce"]) ? $_GET["reduce"] :'off');
+if ($reduce == "off") {
+    echo "<div style=\"position:absolute;top:350px;left:30%;border:2px solid black;background-color:white;width:610px;height:20px;text-align:center;\">";
+    echo "<a href=\"./index.php?reduce=on\">cacher la fenêtre de saisie</a>";
+    //echo "<div>";
+}
+else {
+    echo "<div style=\"position:absolute;top:350px;left:30%;border:2px solid black;background-color:white;width:610px;height:20px;text-align:center;\">";
+    echo "<a href=\"./index.php?reduce=off\">montrer la fenêtre de saisie</a>";
+    echo "</div>";
+    echo "<div style=\"display:none;\">";
+}
+// ===============================
 
-echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; background: ".$color_fond_notices[$type_couleur].";\">\n";
+echo "<fieldset style=\"width:100%;border: 5px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; background: ".$color_fond_notices[$type_couleur].";\">\n";
 if (isset($edit_devoir)) {
     echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Travaux personnels";
     $test_appel_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today')");
@@ -958,7 +972,7 @@ else if (isset($edit_devoir)) {
 } ?>
 <table border="0" width="100%" summary="Tableau de saisie de notice">
 <tr>
-<td style="width:60%"><b><?php echo $temp; ?></b>&nbsp;
+<td style="width:100%"><b><?php echo $temp; ?></b>&nbsp;
 <input type="submit" value="Enregistrer la notice" style="font-variant: small-caps;" />
 <?php
 $i= mktime(0,0,0,$month,$day-1,$year);
@@ -1072,6 +1086,8 @@ while($nb_doc_choisi_compte<$nb_doc_choisi) { ?>
 </td></tr></table>
 </form></fieldset>
 
+
+
 <?php
 //
 // Suppression du cahier de textes jusqu'à une date choisie
@@ -1085,6 +1101,7 @@ if ($last_date != "-1") {
     $syear = strftime("%Y", $last_date);
 
 	echo "<br />";
+    echo "<div style=\"width:100%;\">";
     echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
     echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\">Suppression de notices</legend>";
     echo "<table border='0' width='100%' summary=\"Tableau de...\">\n";
@@ -1101,6 +1118,8 @@ if ($last_date != "-1") {
     echo "<input type='submit' value='Valider' onclick=\"return confirmlink(this,'Etes-vous sûr de vouloir supprimer les notices et les documents joints jusqu\'à la date selectionnée ?','Confirmation de suppression')\" />";
     echo "</form>";
     echo "</td></tr></table></fieldset>";
+    echo "</div>";
+    echo "</div>";
 }
 $_SESSION['cacher_header'] = "n";
 // Fin de la colonne de droite
