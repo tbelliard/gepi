@@ -360,12 +360,13 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
     //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'>" . $current_group["description"] . " : Choisir une autre période</a>|";
     //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> " . htmlentities($current_group["description"]) . " : Choisir une autre période</a> | \n";
-    //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> Choisir une autre période</a> | \n";
+    echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> Choisir une autre période</a> | \n";
 
 	// Recuperer la liste des cahiers de notes
 	$sql="SELECT * FROM cn_cahier_notes ccn where id_groupe='$id_groupe' ORDER BY periode;";
 	$res_cn=mysql_query($sql);
-	if(mysql_num_rows($res_cn)>0) {
+	if(mysql_num_rows($res_cn)>1) {
+		// On ne propose pas de champ SELECT pour un seul canier de notes
 		echo "<script type='text/javascript'>
 var tab_per_cn=new Array();\n";
 
@@ -411,7 +412,7 @@ var tab_per_cn=new Array();\n";
 </script>\n";
 	
 		//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
-		echo "Période <select name='id_racine' id='id_racine' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
+		echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période</span> <select name='id_racine' id='id_racine' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
 		echo $chaine_options_periodes;
 		echo "</select> | \n";
 	}

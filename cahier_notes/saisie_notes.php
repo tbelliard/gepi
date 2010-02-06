@@ -582,7 +582,8 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 // Recuperer la liste des cahiers de notes
 $sql="SELECT * FROM cn_cahier_notes ccn where id_groupe='$id_groupe' ORDER BY periode;";
 $res_cn=mysql_query($sql);
-if(mysql_num_rows($res_cn)>0) {
+if(mysql_num_rows($res_cn)>1) {
+	// On ne propose pas de champ SELECT pour un seul canier de notes
 	$chaine_options_periodes="";
 	while($lig_cn=mysql_fetch_object($res_cn)) {
 		$chaine_options_periodes.="<option value='$lig_cn->id_cahier_notes'";
@@ -615,7 +616,7 @@ if(mysql_num_rows($res_cn)>0) {
 </script>\n";
 
 	//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
-	echo "Période <select name='id_conteneur' id='id_conteneur' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
+	echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période </span><select name='id_conteneur' id='id_conteneur' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
 	echo $chaine_options_periodes;
 	echo "</select> | \n";
 }
