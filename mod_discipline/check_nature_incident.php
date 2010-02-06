@@ -71,7 +71,7 @@ if(isset($chaine_rech)) {
 		$alt=1;
 		while($lig=mysql_fetch_object($res)) {
 			$alt=$alt*(-1);
-			echo "<div class='lig$alt white_hover'><a href='#' onclick=\"document.getElementById('nature').value='".addslashes(ucfirst($lig->nature))."';return false;\">".ucfirst($lig->nature)."</a></div>";
+			echo "<div class='lig$alt white_hover'><a href='#' onclick=\"document.getElementById('nature').value='".addslashes(ucfirst($lig->nature))."';cacher_div('div_choix_nature2');document.getElementById('nature').focus();return false;\">".ucfirst($lig->nature)."</a></div>";
 		}
 	}
 	else {
