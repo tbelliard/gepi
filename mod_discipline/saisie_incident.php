@@ -1501,7 +1501,9 @@ elseif($step==2) {
 	//$nature="";
 
 	if($etat_incident!='clos') {
-		echo "<input type='text' name='nature' id='nature' size='30' value=\"".$nature."\" />\n";
+		echo "<input type='text' name='nature' id='nature' size='30' value=\"".$nature."\" ";
+		echo "onkeyup='check_incident()' ";
+		echo "/>\n";
 
 		$sql="SELECT DISTINCT nature FROM s_incidents WHERE nature!='' ORDER BY nature;";
 		$res_nat=mysql_query($sql);
@@ -1521,11 +1523,82 @@ elseif($step==2) {
 
 			$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature',"Nature de l'incident","",$texte,"",14,0,'y','y','n','n');
 
-
 			echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_choix_nature','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
 
 			$texte="Cliquez pour choisir une nature existante.<br />Ou si aucune nature n'est déjà définie, saisissez la nature d'incident de votre choix.";
 			$tabdiv_infobulle[]=creer_div_infobulle('div_explication_choix_nature',"Choix nature de l'incident","",$texte,"",18,0,'y','y','n','n');
+
+			//====================================================
+
+			/*
+			$titre="Nature de l'incident";
+			$texte="Blabla";
+			$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature2',"Nature de l'incident","",$texte,"",30,10,'y','y','y','n');
+			*/
+
+			$id_infobulle_nature2='div_choix_nature2';
+			$largeur_infobulle_nature2=35;
+			$hauteur_infobulle_nature2=10;
+		
+			// Conteneur:
+			echo "<div id='$id_infobulle_nature2' class='infobulle_corps' style='color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; width: ".$largeur_infobulle_nature2."em; height: ".$hauteur_infobulle_nature2."em; left: 1600px;'>\n";
+		
+				// Ligne d'entête/titre
+				echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; width: ".$largeur_infobulle_nature2."em;' onmousedown=\"dragStart(event, '$id_infobulle_nature2')\">\n";
+
+					echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>
+<a href='#' onClick=\"cacher_div('$id_infobulle_nature2');return false;\">
+<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />
+</a>
+</div>\n";
+					echo "<span style='padding-left: 1px; margin-bottom: 3px;'>Natures d'incidents semblables</span>\n";
+				echo "</div>\n";
+		
+				// Partie texte:
+				$hauteur_hors_titre=$hauteur_infobulle_nature2-1.5;
+				echo "<div id='".$id_infobulle_nature2."_texte' style='width: ".$largeur_infobulle_nature2."em; height: ".$hauteur_hors_titre."em; overflow: auto; padding-left: 1px;'>\n";
+				//$div.=$texte;
+				echo "</div>\n";
+			echo "</div>\n";
+			//=========================================
+
+			/*
+			echo " Bis: <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_choix_nature2','y',10,40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_choix_nature2')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
+			*/
+
+echo "<script type='text/javascript'>
+	function check_incident(event) {
+
+		saisie=document.getElementById('nature').value;
+
+		//var reg=new RegExp(\"[ ,;.-']+\", \"g\");
+		var reg=new RegExp(\"[ ,;]+\", \"g\");
+		var tab1=saisie.split(reg);
+		var j=0;
+		var tab2=new Array();
+		for (var i=0; i<tab1.length; i++) {
+			chaine_tmp=tab1[i];
+			//alert('chaine_tmp='+chaine_tmp+' et chaine_tmp.length='+chaine_tmp.length);
+			if(chaine_tmp.length>=4) {
+				tab2[j]=tab1[i];
+				j++;
+			}
+		}
+
+		if(tab2.length>0) {
+			chaine_rech='';
+			for (var i=0; i<tab2.length; i++) {
+				chaine_rech=chaine_rech+'_'+tab2[i];
+			}
+
+			//new Ajax.Updater($('div_choix_nature2'),'check_nature_incident.php?chaine_rech='+chaine_rech,{method: 'get'});
+			new Ajax.Updater($('div_choix_nature2_texte'),'check_nature_incident.php?chaine_rech='+chaine_rech,{method: 'get'});
+			afficher_div('div_choix_nature2','y',10,40); ;
+		}
+	}
+
+</script>\n";
+			//====================================================
 
 		}
 	}

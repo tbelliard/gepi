@@ -842,3 +842,4 @@ INSERT INTO droits SET id='/mod_apb/index.php',administrateur='F',professeur='F'
 INSERT INTO droits SET id='/mod_apb/export_xml.php',administrateur='F',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Export XML pour le système Admissions Post-Bac',statut='';
 INSERT INTO setting VALUES ('active_mod_apb', 'n');
 INSERT INTO droits VALUES ('/saisie/ajax_edit_limite.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Edition des bulletins simplifiés (documents de travail)', '');
+INSERT INTO droits VALUES ( '/mod_discipline/check_nature_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Recherche de natures d incident', '');
