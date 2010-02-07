@@ -3,10 +3,12 @@
 /**
  * Fichier voir_edt.php pour visionner les différents EdT (classes ou professeurs)
  *
- * @version $Id$
- *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
- *
+ * @version     $Id$
+ * @package		GEPI
+ * @subpackage	EmploisDuTemps
+ * @copyright	Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
+ * @license		GNU/GPL, see COPYING.txt
+ * 
  * This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
@@ -38,6 +40,8 @@ $message = isset($_SESSION["message"]) ? $_SESSION["message"] : "";
 $type_edt_2 = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
 $period_id=isset($_GET['period_id']) ? $_GET['period_id'] : (isset($_POST['period_id']) ? $_POST['period_id'] : NULL);
 $bascule_edt=isset($_GET['bascule_edt']) ? $_GET['bascule_edt'] : (isset($_POST['bascule_edt']) ? $_POST['bascule_edt'] : NULL);
+$week_min=isset($_GET['week_min']) ? $_GET['week_min'] : (isset($_POST['week_min']) ? $_POST['week_min'] : NULL);
+$week_selected=isset($_GET['week_selected']) ? $_GET['week_selected'] : (isset($_POST['week_selected']) ? $_POST['week_selected'] : NULL);
 //===========================
 
 
@@ -60,6 +64,7 @@ elseif ($visioedt == 'salle1') {
 if ($message != "") {
     $_SESSION["message"] = "";
 }
+// =================== Gérer la bascule entre emplois du temps périodes et emplois du temps semaines.
 
 if ($bascule_edt != NULL) {
     $_SESSION['bascule_edt'] = $bascule_edt;
@@ -79,14 +84,23 @@ if ($_SESSION['bascule_edt'] == 'periode') {
             $_SESSION['period_id'] = ReturnFirstIdPeriod();    
         }
         $DisplayPeriodBar = true;
+        $DisplayWeekBar = false;
     }
     else {
+        $DisplayWeekBar = false;
         $DisplayPeriodBar = false;
         $_SESSION['period_id'] = 0;
     }
 }
 else {
     $DisplayPeriodBar = false;
+    $DisplayWeekBar = true;
+    if ($week_selected != NULL) {
+        $_SESSION['week_selected'] = $week_selected;
+    }
+    if (!isset($_SESSION['week_selected'])) {
+        $_SESSION['week_selected'] = date("W");
+    }
 }
 
 // =================== Construire les emplois du temps

@@ -2210,3 +2210,30 @@ position: absolute; background-color: yellow; border: 1px solid silver;
     background-color:#FAFFBD;
 
 }
+
+.WeekCellYellow {
+    font-size:80%;
+    display:inline-block;
+    width:15px;
+    height:15px;
+    background-color:yellow;
+    border:1px solid black;
+    padding:2px;
+    text-align:center;
+    margin:1px;
+
+
+}
+.WeekCellWhite {
+    font-size:80%;
+    display:inline-block;
+    width:15px;
+    height:15px;
+    background-color:white;
+    border:1px solid black;
+    padding:2px;
+    text-align:center;
+    margin:1px;
+
+
+}

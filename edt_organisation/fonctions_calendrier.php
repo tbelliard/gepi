@@ -5,7 +5,7 @@
  *
  * Fichier de fonctions destinées au calendrier
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
  *
  * This file is part of GEPI.
  *
@@ -24,9 +24,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// ===============================================================================
+//
+//      Renvoie le numéro de la dernière semaine de l'année civile (52 ou 53)
+//
+// ===============================================================================
+
+function NumLastWeek() {
+/* On regarde si on est entre Aout ou décembre auquel cas on est en année scolaire AA - AA+1
+ou si on est avant auquel cas on est en année scolaire AA-1 - AA
+*/
+ if (date("m") >= 8) {
+     $derniere_semaine=date("W",mktime(0, 0, 0, 12, 28, date("Y")));
+ }else{
+     $derniere_semaine=date("W",mktime(0, 0, 0, 12, 28, (date("Y")-1)));
+ }
+ return $derniere_semaine;
+} 
+
+
 // ===================================================
 //
-//
+//      Affiche le nom de la période courante (si définie dans les edt)
 //
 // ===================================================
 function AffichePeriode($date_ts) {
@@ -40,11 +59,11 @@ function AffichePeriode($date_ts) {
 	}	
     
 }
-// ===================================================
+// ========================================================================
 //
+//      Affiche les dates du lundi et du samedi de la semaine courante
 //
-//
-// ===================================================
+// ========================================================================
 function AfficheDatesDebutFinSemaine() {
 
         $ts = time();
@@ -52,9 +71,6 @@ function AfficheDatesDebutFinSemaine() {
         $ts-=86400;
         }
         setlocale (LC_TIME, 'fr_FR','fra');
-	if (strftime("%d %b ", $ts) === false) {
-		echo "gloups";
-	}
         echo strftime("%d %b ", $ts);
         $ts+=86400*5;
         echo " - ";
@@ -62,62 +78,59 @@ function AfficheDatesDebutFinSemaine() {
 }
 
 
-// ===================================================
+// ========================================================================
 //
-//      Récupère les dates des lundis et vendredis de toutes les semaines de l'année scolaire courante
+//      Récupère les dates des lundis et samedis de toutes les semaines de l'année scolaire courante
 //      Usage : 
 //      $tab = RecupereLundisVendredis();
-//      echo $tab[$semaine]["lundis"];      $semaine compris dans l'intervalle [0;51]
-//      echo $tab[$semaine]["vendredis"];
+//      echo $tab[0]["lundis"];         // renvoie la date du lundi de la semaine 01     
+//      echo $tab[5]["vendredis"];      // renvoie la date du vendredi de la semaine 06 
 //
-// ===================================================
+// =========================================================================
 function RecupereLundisVendredis () {
 
-$tab_select_semaine = array();
-setlocale (LC_TIME, 'fr_FR','fra');
-
-if ((1<=date("n")) AND (date("n") <=8)) {
-	$annee = date("Y");
-}
-else {
-	$annee = date("Y")+1;
-}
-$ts = mktime(0,0,0,1,1,$annee);
-while (date("D", $ts) != "Mon") {
-	$ts-=86400;
-}
-$semaine = 1;
-$ts_ref = $ts;
-$tab_select_semaine[$semaine-1]["lundis"] = strftime("%d %b %Y", $ts);
-$tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*4);
-
-while ($semaine <=30) {
-	$ts+=86400;
-	$semaine++;
-	while (date("D", $ts) != "Mon") {
-		$ts+=86400;
-	}
+    $tab_select_semaine = array();
+    setlocale (LC_TIME, 'fr_FR','fra');
+    
+    if ((1<=date("n")) AND (date("n") <=8)) {
+	    $annee = date("Y");
+    }
+    else {
+	    $annee = date("Y")+1;
+    }
+    $ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+    while (date("D", $ts) != "Mon") {
+	    $ts-=86400;
+    }
+    $semaine = 1;
+    $ts_ref = $ts;
+    $tab_select_semaine[$semaine-1]["lundis"] = strftime("%d %b %Y", $ts);
+    $tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*5);
+    
+    while ($semaine <=30) {
+	    $ts+=86400*7;
+	    $semaine++;
+	    $tab_select_semaine[$semaine-1]["lundis"] = strftime("%d %b %Y", $ts);
+	    $tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*5);
+    }
+    $semaine = NumLastWeek();
+    $ts = $ts_ref;
+    $ts-=86400*7;
 	$tab_select_semaine[$semaine-1]["lundis"] = strftime("%d %b %Y", $ts);
-	$tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*4);
-}
-$semaine = 53;
-$ts = $ts_ref;
-while ($semaine >=33) {
-	$ts-=86400;
-	$semaine--;
-	while (date("D", $ts) != "Mon") {
-		$ts-=86400;
-	}
-	$tab_select_semaine[$semaine-1]["lundis"] = strftime("%d %b %Y", $ts);
-	$tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*4);
-}
-return $tab_select_semaine;
+	$tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*5);
+    while ($semaine >=33) {
+	    $ts-=86400*7;
+	    $semaine--;
+	    $tab_select_semaine[$semaine-1]["lundis"] = strftime("%d %b %Y", $ts);
+	    $tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*5);
+    }
+    return $tab_select_semaine;
 }
 
 
 // ===================================================
 //
-//
+//      Renvoie "true" si des périodes sont définies
 //
 // ===================================================
 function PeriodesExistent() {
@@ -132,7 +145,7 @@ function PeriodesExistent() {
 }
 // ===================================================
 //
-//
+//      Renvoie "true" si la période spécifiée existe
 //
 // ===================================================
 function PeriodExistsInDB($period) {
@@ -161,7 +174,7 @@ function ReturnFirstIdPeriod() {
 
 // ===================================================
 //
-//
+//      Renvoie l'id de la période courante
 //
 // ===================================================
 function ReturnIdPeriod($date_ts) {
@@ -179,7 +192,7 @@ function ReturnIdPeriod($date_ts) {
 
 // ===================================================
 //
-//
+//      Renvoie l'id de la période suivant celle passée en argument
 //
 // ===================================================
 function ReturnNextIdPeriod($current_id_period) {

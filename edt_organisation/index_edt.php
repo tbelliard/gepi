@@ -3,9 +3,12 @@
 /**
  * Fichier de gestion de l'emploi du temps dans Gepi version 1.5.x
  *
- * index_edt.php
- *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * @version     $Id$
+ * @package		GEPI
+ * @subpackage	EmploiDuTemps
+ * @copyright	Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
+ * @license		GNU/GPL, see COPYING.txt
+ * 
  *
  * This file is part of GEPI.
  *
@@ -39,6 +42,7 @@ require_once("./fonctions_edt_classe.php");     // --- edt classe
 require_once("./fonctions_edt_salle.php");      // --- edt salle
 require_once("./fonctions_edt_eleve.php");      // --- edt eleve
 require_once("./fonctions_calendrier.php");
+require_once("./fonctions_affichage.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -74,7 +78,6 @@ else {
 $visioedt=isset($_GET['visioedt']) ? $_GET['visioedt'] : (isset($_POST['visioedt']) ? $_POST['visioedt'] : NULL);
 $salleslibres=isset($_GET['salleslibres']) ? $_GET['salleslibres'] : (isset($_POST['salleslibres']) ? $_POST['salleslibres'] : NULL);
 
-echo "****";
 // Pour revenir proprement, on crée le $_SESSION["retour"]
 $_SESSION["retour"] = "index_edt";
 
