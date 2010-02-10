@@ -191,29 +191,36 @@ if ($action == 'modifier') {
 			$query_d = mysql_query($sql_d) OR trigger_error('Impossible de supprimer ce statut ds : '.mysql_error(), E_USER_NOTICE);
 
 		}else{
-			// On va vérifier les droits un par un
-			// ne = notes élèves ; bs = bulletins simplifiés ; va = voir absences ; sa = saisir absences
-			// cdt = cahier de textes ; ee = emploi du temps des élèves ; te = tous les emplois du temps
+                  // On va vérifier les droits un par un
+                  // ne = notes élèves ; bs = bulletins simplifiés ; va = voir absences ; sa = saisir absences
+                  // cdt = cahier de textes ; ee = emploi du temps des élèves ; te = tous les emplois du temps
 
-			for($m = 1 ; $m < $iter ; $m++){
+                  for($m = 1 ; $m < $iter ; $m++){
 
-				$nbre2 = count($autorise[$m]);
-				// On vérifie si le droit est coché ou non
-				if ($test[$a][$m] == 'on') {
-					$vf = 'V';
-				}else{
-					$vf = 'F';
-				}
-					// On n'oublie pas de mettre à jour tous les fichiers adéquats
-					for($i = 0 ; $i < $nbre2 ; $i++){
-						$sql_maj = "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
-						$query_maj = mysql_query($sql_maj) OR trigger_error("Mauvaise mise à jour  : ".mysql_error(), E_USER_WARNING);
+                    $nbre2 = count($autorise[$m]);
+                    // On vérifie si le droit est coché ou non
+                    if ($test[$a][$m] == 'on') {
+                      $vf = 'V';
+                    }else{
+                      $vf = 'F';
+                    }
+                    // On n'oublie pas de mettre à jour tous les fichiers adéquats
+                    for($i = 0 ; $i < $nbre2 ; $i++){
+                      //$sql_maj = "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
+                      //$query_maj = mysql_query($sql_maj) OR trigger_error("Mauvaise mise à jour  : ".mysql_error(), E_USER_WARNING);
+                      $query_select = mysql_query("SELECT id FROM droits_speciaux WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'");
+                      $result = mysql_fetch_array($query_select);
+                      if (!empty ($result)){
+                        $query_maj = mysql_query("UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'");
+                      }else{
+                        $query2_maj = mysql_query("INSERT INTO `droits_speciaux` VALUES ('','".$b."','".$autorise[$m][$i]."','".$vf."')");
+                      }
 
-						if (!$query_maj) {
-							$msg3 .= '<span class="red">Erreur</span>';
-						}
-					}
-			}
+                      if (!$query_maj) {
+			$msg3 .= '<span class="red">Erreur</span>';
+                      }
+                    }
+                  } // for($m = 1 ; $m < $iter ; $m++){
 		}
 	}
 //print_r($test);
