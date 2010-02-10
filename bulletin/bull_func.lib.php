@@ -1413,8 +1413,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		$x_telecom = $pdf->GetX();
 		$y_telecom = $pdf->GetY();
 
+		// Affichage du tel de l'établissement
 		if( $tab_modele_pdf["entente_tel"][$classe_id]==='1' ) {
-			$grandeur = ''; $text_tel = '';
+			$grandeur = ''; 
+			$text_tel = '';
 			if ( $tab_modele_pdf["tel_image"][$classe_id] != '' ) {
 				$a = $pdf->GetX();
 				$b = $pdf->GetY();
@@ -1425,11 +1427,19 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$grandeur = $pdf->GetStringWidth($text_tel);
 				$grandeur = $grandeur + 2;
 			}
-
+			else {
+				if ($tab_modele_pdf["tel_texte"][$classe_id]!= '') {
+					$text_tel = $tab_modele_pdf["tel_texte"][$classe_id];
+				}
+				$text_tel .= $gepiSchoolTel;
+				$grandeur = $pdf->GetStringWidth($text_tel);
+			}
+			/*
 			if ( $tab_modele_pdf["tel_texte"][$classe_id] != '' and $tab_modele_pdf["tel_image"][$classe_id] === '' ) {
 				$text_tel = $tab_modele_pdf["tel_texte"][$classe_id].''.$gepiSchoolTel;
 				$grandeur = $pdf->GetStringWidth($text_tel);
 			}
+			*/
 
 			$pdf->Cell($grandeur,5, $text_tel,0,$passealaligne,'');
 		}
@@ -1446,9 +1456,18 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$pdf->Image($ima, $a, $b, $valeurima[0], $valeurima[1]);
 				$text_fax = '      '.$gepiSchoolFax;
 			}
+			else {
+				if ( $tab_modele_pdf["fax_texte"][$classe_id] != '' ) {
+					$text_fax = $tab_modele_pdf["fax_texte"][$classe_id];
+				}
+				$text_fax .= $gepiSchoolFax;
+
+			}
+			/*
 			if ( $tab_modele_pdf["fax_texte"][$classe_id] != '' and $tab_modele_pdf["fax_image"][$classe_id] === '' ) {
 				$text_fax = $tab_modele_pdf["fax_texte"][$classe_id].''.$gepiSchoolFax;
 			}
+			*/
 			$pdf->Cell(90,5, $text_fax,0,$passealaligne,'');
 		}
 
@@ -1457,7 +1476,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$y_telecom = $y_telecom + 5;
 			$pdf->SetXY($x_telecom,$y_telecom);
 
-			$text_mel = $gepiSchoolEmail;
+			//$text_mel = $gepiSchoolEmail;
 			if ( $tab_modele_pdf["courrier_image"][$classe_id] != '' ) {
 				$a = $pdf->GetX();
 				$b = $pdf->GetY();
@@ -1466,9 +1485,17 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$pdf->Image($ima, $a, $b, $valeurima[0], $valeurima[1]);
 				$text_mel = '      '.$gepiSchoolEmail;
 			}
+			else {
+				if ( $tab_modele_pdf["courrier_texte"][$classe_id] != '' ) {
+					$text_mel = $tab_modele_pdf["courrier_texte"][$classe_id];
+				}
+				$text_mel .= $gepiSchoolEmail;
+			}
+			/*
 			if ( $tab_modele_pdf["courrier_texte"][$classe_id] != '' and $tab_modele_pdf["courrier_image"][$classe_id] === '' ) {
 				$text_mel = $tab_modele_pdf["courrier_texte"][$classe_id].' '.$gepiSchoolEmail;
 			}
+			*/
 			$pdf->Cell(90,5, $text_mel,0,2,'');
 		}
 
@@ -1732,6 +1759,11 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$info_naissance="Né";
 					if($tab_bull['eleve'][$i]['sexe']=="F") {$info_naissance.="e";}
 					$info_naissance.=" le ".$tab_bull['eleve'][$i]['naissance'];
+
+					if((getSettingValue('ele_lieu_naissance')=='y')&&($tab_modele_pdf["affiche_lieu_naissance"][$classe_id]==='1')) {
+						$info_naissance.=" à ".$tab_bull['eleve'][$i]['lieu_naissance'];
+					}
+
 					$pdf->Cell(90,5, traite_accents_utf8($info_naissance),0,2,'');
 				}
 			}
