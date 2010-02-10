@@ -171,7 +171,7 @@ if(!isset($tab_id_classe)) {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
-	($_SESSION['statut']=='administrateur')) {
+	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
 		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 	}
 	echo " | <a href='index.php'>Ancien dispositif</a>";
@@ -292,7 +292,7 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 	echo "<a href='bull_index.php'>Choisir d'autres classes</a>\n";
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
-	($_SESSION['statut']=='administrateur')) {
+	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
 		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 	}
 	echo "</p>\n";
@@ -402,7 +402,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."' onClick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
-	($_SESSION['statut']=='administrateur')) {
+	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
 		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 	}
 	echo "</p>\n";
@@ -1119,6 +1119,7 @@ else {
 
 			$tab_modele_pdf["affiche_doublement"][$tab_id_classe[$loop_classe]] = '1'; // affiche si l'élève à doubler
 			$tab_modele_pdf["affiche_date_naissance"][$tab_id_classe[$loop_classe]] = '1'; // affiche la date de naissance de l'élève
+			$tab_modele_pdf["affiche_lieu_naissance"][$tab_id_classe[$loop_classe]] = '0'; // affiche le lieu de naissance de l'élève
 			$tab_modele_pdf["affiche_dp"][$tab_id_classe[$loop_classe]] = '1'; // affiche l'état de demi pension ou extern
 			$tab_modele_pdf["affiche_nom_court"][$tab_id_classe[$loop_classe]] = '1'; // affiche le nom court de la classe
 			$tab_modele_pdf["affiche_effectif_classe"][$tab_id_classe[$loop_classe]] = '1'; // affiche l'effectif de la classe
@@ -1958,6 +1959,7 @@ else {
 					$tab_ele['prenom']=$lig_ele->prenom;
 					$tab_ele['sexe']=$lig_ele->sexe;
 					$tab_ele['naissance']=formate_date($lig_ele->naissance);
+					$tab_ele['lieu_naissance']=get_commune($lig_ele->lieu_naissance,2);
 					$tab_ele['elenoet']=$lig_ele->elenoet;
 					$tab_ele['ele_id']=$lig_ele->ele_id;
 					$tab_ele['no_gep']=$lig_ele->no_gep;
