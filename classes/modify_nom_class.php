@@ -337,11 +337,10 @@ if(isset($id_classe)) {
 
 echo "</p>\n";
 echo "</form>\n";
-?>
 
-<p><b>Remarque&nbsp;: </b>Connectez vous avec un compte ayant le statut "scolarité" pour éditer les bulletins et avoir accès à d'autres paramètres d'affichage.</p>
-
-<?php
+if(getSettingValue('GepiAdminImprBulSettings')!='yes') {
+	echo "<p><b>Remarque&nbsp;: </b>Connectez vous avec un compte ayant le statut \"scolarité\" pour éditer les bulletins et avoir accès à d'autres paramètres d'affichage.</p>\n";
+}
 
 if (isset($id_classe)) {
 
