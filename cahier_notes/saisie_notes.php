@@ -43,7 +43,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -390,6 +390,9 @@ $titre_page = "Saisie des notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
+
+unset($_SESSION['chemin_retour']);
+
 //=======================================================
 /*
 // MODIF: boireaus
@@ -463,7 +466,7 @@ while ($j < $nb_dev) {
 //echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"index.php\" method=\"get\">\n";
 echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"saisie_notes.php\" method=\"get\">\n";
 echo "<p class='bold'>\n";
-echo "<a href=\"../accueil.php\"  onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
+echo "<a href=\"../accueil.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
 echo "<a href='index.php'  onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes enseignements </a>|";
 
 
@@ -635,6 +638,9 @@ if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
 //echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num\" target=\"_blank\" onclick=\"return VerifChargement()\">Imprimer au format PDF</a>|";
 //echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" target=\"_blank\" onclick=\"return VerifChargement()\">Imprimer au format PDF</a>|";
 echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" onclick=\"return VerifChargement()\"> Imprimer au format PDF </a>|";
+
+//echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;id_conteneur=$id_conteneur\"> Signaler des erreurs d'affectation</a>";
+echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/saisie_notes.php?id_conteneur=$id_conteneur\"> Signaler des erreurs d'affectation</a>";
 echo "</p>\n";
 echo "</form>\n";
 

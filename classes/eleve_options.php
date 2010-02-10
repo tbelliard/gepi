@@ -112,6 +112,12 @@ if($_SESSION['statut']=="administrateur"){
 			}
 			$j++;
 		}
+
+		// On vide les signalements par un prof lors de l'enregistrement
+		$sql="DELETE FROM j_signalement WHERE nature='erreur_affect' AND login='".$login_eleve."';";
+		//echo "$sql<br />";
+		$del=mysql_query($sql);
+
 		//$affiche_message = 'yes';
 		if($msg=='') {$msg= "Les modifications ont été enregistrées !";}
 	}
@@ -312,12 +318,25 @@ if($_SESSION['statut']=="administrateur"){
 $call_group = mysql_query("SELECT DISTINCT g.id, g.name,g.description FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
 $nombre_ligne = mysql_num_rows($call_group);
 
+$tab_sig=array();
+$sql="SELECT * FROM j_signalement WHERE nature='erreur_affect' AND login='$login_eleve';";
+//echo "$sql<br />";
+$res_sig=mysql_query($sql);
+if(mysql_num_rows($res_sig)>0) {
+	while($lig_sig=mysql_fetch_object($res_sig)) {
+		$tab_sig[$lig_sig->periode][$lig_sig->id_groupe]=my_ereg_replace("_"," ",$lig_sig->valeur)." selon ".affiche_utilisateur($lig_sig->declarant,$id_classe);
+		//echo my_ereg_replace("_"," ",$lig_sig->valeur)." selon ".affiche_utilisateur($lig_sig->declarant,$id_classe)."<br />";
+		//echo "\$tab_sig[$lig_sig->periode][$lig_sig->id_groupe]=".$tab_sig[$lig_sig->periode][$lig_sig->id_groupe]."<br />";
+	}
+}
+
 //=========================
 // MODIF: boireaus
 //echo "<table border = '1' cellpadding='5' cellspacing='0'>\n<tr><td><b>Matière</b></td>";
 //echo "<table border = '1' cellpadding='5' cellspacing='0'>\n";
-echo "<table border = '1' cellpadding='5' cellspacing='0' class='boireaus'>\n";
-echo "<tr align='center'><th><b>Matière</b></th>\n";
+echo "<table border='1' cellpadding='5' cellspacing='0' class='boireaus'>\n";
+echo "<tr align='center'>\n";
+echo "<th><b>Matière</b></th>\n";
 //=========================
 $j = 1;
 $chaine_coche="";
@@ -475,6 +494,12 @@ while ($i < $nombre_ligne) {
 					//echo "$sql<br />";
 				}
 
+				//echo "A".$tab_sig[$j][$id_groupe]."<br />";
+				if((isset($tab_sig[$j]))&&(isset($tab_sig[$j][$id_groupe]))) {
+					$info_erreur=$tab_sig[$j][$id_groupe];
+					echo "<img id='img_erreur_affect_".$j."_".$i."' src='../images/icons/flag2.gif' width='17' height='18' title='".$info_erreur."' alt='".$info_erreur."' />";
+				}
+
 				echo "</td>\n";
 			}
 		}
@@ -515,6 +540,12 @@ while ($i < $nombre_ligne) {
 				echo "<img id='img_cn_non_vide_".$j."_".$i."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
 				//echo "$sql<br />";
 			}
+
+			if((isset($tab_sig[$j]))&&(isset($tab_sig[$j][$id_groupe]))) {
+				$info_erreur=$tab_sig[$j][$id_groupe];
+				echo "<img id='img_erreur_affect_".$j."_".$i."' src='../images/icons/flag2.gif' width='17' height='18' title='".$info_erreur."' alt='".$info_erreur."' />";
+			}
+
 			echo "</td>\n";
 
 			/*

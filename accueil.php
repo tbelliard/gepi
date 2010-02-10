@@ -351,6 +351,20 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 		$tbs_probleme_dir[]="PHP potentiellement mal configuré (register_globals=on)! Pour prévenir certaines failles de sécurité, vous *devez* configurer PHP avec le paramètre register_globals à off.";
 	}
 
+	$sql="SELECT DISTINCT id_groupe, declarant FROM j_signalement WHERE nature='erreur_affect';";
+	$res_sign=mysql_query($sql);
+	if(mysql_num_rows($res_sign)>0) {
+		$tbs_signalement="<p>Une ou des erreurs d'affectation d'élèves ont été signalées dans le ou les enseignements suivants&nbsp;:<br />\n";
+		while($lig_sign=mysql_fetch_object($res_sign)) {
+			$tmp_tab_champ=array('classes');
+			//$tab_group_sign[$lig_sign->id_groupe]=get_group($lig_sign->id_groupe,$tmp_tab_champ);
+			$current_group_sign=get_group($lig_sign->id_groupe,$tmp_tab_champ);
+
+			$tbs_signalement.="<a href='groupes/edit_eleves.php?id_groupe=".$lig_sign->id_groupe."&amp;id_classe=".$current_group_sign['classes']['list'][0]."'>".$current_group_sign['name']." (<i>".$current_group_sign['description']." ".$current_group_sign['classlist_string']."</i>)</a> signalé par ".affiche_utilisateur($lig_sign->declarant,$current_group_sign['classes']['list'][0])."<br />\n";
+		}
+		$tbs_signalement.="</p>\n";
+	}
+
 	//echo "</div>\n";
 }elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="scolarite")||($_SESSION['statut']=="cpe")||($_SESSION['statut']=="secours")){
 	if (!check_user_temp_directory()) {

@@ -146,6 +146,13 @@
 </div>
 <a name="contenu" class="invisible">Début de la page</a>	
 
+<!-- Signalements d'erreurs d'affectations -->
+<?php
+	if((isset($tbs_signalement))&&($tbs_signalement!="")) {
+		echo "<div class='infobulle_corps' style='text-align:center; margin: 3em; padding:0.5em; color:red; border: 1px dashed red;'>$tbs_signalement</div>\n";
+	}
+?>
+
 <!-- messagerie -->	
 		<?php	
 			if (count($tbs_message)) {

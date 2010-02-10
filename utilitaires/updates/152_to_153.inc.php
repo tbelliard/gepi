@@ -421,4 +421,26 @@ else {
 	}
 }
 
+//--------------------
+// Signalements
+
+$test = sql_query1("SHOW TABLES LIKE 'j_signalement'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'j_signalement'. ";
+	$sql="CREATE TABLE IF NOT EXISTS j_signalement (id_groupe int(11) NOT NULL default '0',
+			login varchar(50) NOT NULL default '',
+			periode int(11) NOT NULL default '0',
+			nature varchar(50) NOT NULL default '',
+			valeur varchar(50) NOT NULL default '',
+			declarant varchar(50) NOT NULL default '',
+			PRIMARY KEY (id_groupe,login,periode,nature), INDEX (login));";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur lors de la création de la table 'j_signalement': ".$result_inter."<br />";
+	}
+	else {
+		$result .= "<font color=\"green\">Ok !</font><br />";
+	}
+}
+
 ?>

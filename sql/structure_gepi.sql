@@ -307,3 +307,4 @@ DROP TABLE IF EXISTS message_login;
 CREATE TABLE message_login (id int(11) NOT NULL auto_increment,texte text NOT NULL,PRIMARY KEY  (id));
 DROP TABLE IF EXISTS pays;
 CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_pays VARCHAR( 255 ) NOT NULL, PRIMARY KEY ( code_pays ));
+CREATE TABLE IF NOT EXISTS j_signalement (id_groupe int(11) NOT NULL default '0',login varchar(50) NOT NULL default '',periode int(11) NOT NULL default '0',nature varchar(50) NOT NULL default '',valeur varchar(50) NOT NULL default '',declarant varchar(50) NOT NULL default '',PRIMARY KEY (id_groupe,login,periode,nature), INDEX (login));
