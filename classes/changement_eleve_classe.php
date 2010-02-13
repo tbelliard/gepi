@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -288,7 +288,7 @@ else {
 
 		echo "<form enctype='multipart/form-data' name='form_assoc_grp' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
-		echo "<table class='boireaus' border='1'>\n";
+		echo "<table class='boireaus' border='1' summary='Tableau des enseignements de la classe actuelle et de leurs correspondances dans la classe future'>\n";
 		echo "<tr>\n";
 		echo "<th width='50%'>Enseignements de $classe</th>\n";
 		echo "<th width='50%'>Enseignements de $classe_future</th>\n";
@@ -360,6 +360,39 @@ else {
 		//echo "<p align='center'><input type='submit' value='Valider' style='margin: 30px 0 60px 0;'/></p>\n";
 		echo "<p align='center'><input type='button' value='Valider' style='margin: 30px 0 60px 0;' onClick=\"verifie_form()\" /></p>\n";
 		echo "</form>\n";
+		echo "</div>\n";
+
+		// Recherche des inscriptions dans des AID pour afficher un avertissement
+		$sql="SELECT a.nom, ac.nom_complet, jae.* FROM j_aid_eleves jae, aid a, aid_config ac WHERE jae.login='$login_eleve' AND jae.id_aid=a.id AND jae.indice_aid=a.indice_aid AND ac.indice_aid=a.indice_aid ORDER BY ac.nom_complet, a.nom";
+		$res_aid=mysql_query($sql);
+		if(mysql_num_rows($res_aid)>0) {
+			echo "<p><b>".get_nom_prenom_eleve($login_eleve)."</b> est inscrit(e) dans un ou des <b>AID</b>.<br />\nIl faudra contrôler si les contraintes d'emploi du temps permettent de conserver ces inscriptions ou s'il convient d'effectuer des modifications.<br />\nVoici la liste&nbsp;:<br />\n";
+			while($lig_aid=mysql_fetch_object($res_aid)) {
+				echo "&nbsp;&nbsp;&nbsp;-&nbsp;$lig_aid->nom (<i>$lig_aid->nom_complet</i>)";
+
+				$sql="SELECT DISTINCT jec.login FROM j_eleves_classes jec, j_aid_eleves jae WHERE jec.login=jae.login AND jec.id_classe='$id_future_classe' AND jae.id_aid='$lig_aid->id_aid';";
+				$test=mysql_query($sql);
+				$nb_ele_fut_aid=mysql_num_rows($test);
+				if($nb_ele_fut_aid==1) {
+					$lig_ele_fut_aid=mysql_fetch_object($test);
+					echo "&nbsp;: ".$nb_ele_fut_aid." élève de la classe future est inscrit dans cet AID (<span style='font-size:small; font-style:italic;'>".get_nom_prenom_eleve($lig_ele_fut_aid->login)."</span>).";
+				}
+				elseif($nb_ele_fut_aid>1) {
+					echo "&nbsp;: ".$nb_ele_fut_aid." élèves de la classe future sont inscrits dans cet AID (<span style='font-size:small; font-style:italic;'>";
+					$cpt_ele_aid=0;
+					while($lig_ele_fut_aid=mysql_fetch_object($test)) {
+						if($cpt_ele_aid>0) {echo ", ";}
+						echo get_nom_prenom_eleve($lig_ele_fut_aid->login);
+						$cpt_ele_aid++;
+					}
+					echo "</span>)";
+				}
+
+				echo "<br />\n";
+			}
+			echo "</p>\n";
+			echo "<p><br /></p>\n";
+		}
 
 		echo "<script type='text/javascript'>
 	function verifie_form() {
@@ -385,8 +418,6 @@ else {
 		}
 	}
 </script>\n";
-
-		echo "</div>\n";
 
 
 		echo "<p><b>ATTENTION:</b></p>
