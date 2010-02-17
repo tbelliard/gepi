@@ -243,6 +243,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 	<tr>
 	<td style="width: 80%"><b><?php echo $titre; ?></b>&nbsp;
 		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer" style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
+		Ces notices ne sont visibles que de leur auteur.
 		<input type="hidden" name="date_ct" value="<?php echo $cahierTexteNoticePrivee->getDateCt(); ?>" />
 		<input type="hidden" id="id_ct" name="id_ct" value="<?php echo $cahierTexteNoticePrivee->getIdCt(); ?>" />
 		<input type="hidden" name="id_groupe" id="id_ct" value="<?php echo $groupe->getId(); ?>" /></td>

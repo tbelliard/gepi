@@ -55,7 +55,7 @@ function getWinListeNotices() {
 				title: 'Liste des Notices',
 				showEffect: Element.show,
 				hideEffect: Element.hide,
-				top:110,
+				top:160,
 				left:0,
 				width:300,
 				height:GetHeight() - 160}
@@ -79,7 +79,7 @@ function getWinEditionNotice() {
 				title: 'Edition de Notice',
 				showEffect: Element.show,
 				hideEffect: Element.hide,
-				top:110,
+				top:160,
 				left:304,
 				width:GetWidth()-310,
 				height:GetHeight() - 160}
@@ -102,7 +102,7 @@ function getWinDernieresNotices() {
 				title: 'Dernières Notices',
 				showEffect: Element.show,
 				hideEffect: Element.hide,
-				top:105,
+				top:155,
 				left:40,
 				width:GetWidth()-100,
 				height:GetHeight() - 170}

@@ -108,12 +108,12 @@ echo "<button style='width: 200px;' onclick=\"javascript:
 				\">Voir les dernières notices</button>\n";
 echo "<br />";
 echo "<button style='width: 200px;' onclick=\"javascript:
-						getWinDernieresNotices().setLocation(105, 40);
+						getWinDernieresNotices().setLocation(155, 40);
 						getWinDernieresNotices().hide();
 						getWinCalendar().setLocation(0, GetWidth() - 245);
-						getWinEditionNotice().setLocation(110, 334);
+						getWinEditionNotice().setLocation(160, 334);
 						getWinEditionNotice().setSize(GetWidth()-360, GetHeight() - 160);
-						getWinListeNotices().setLocation(110, 0);
+						getWinListeNotices().setLocation(160, 0);
 						getWinListeNotices().setSize(330, GetHeight() - 160)
 						return false;
 				\">Repositionner les fenetres</button>\n";

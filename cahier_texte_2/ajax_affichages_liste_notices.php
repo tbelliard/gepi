@@ -83,9 +83,11 @@ echo "<div id=\"div_chaine_liste_notices\" style=\"display:inline;\"><img id=\"c
 
 echo "<p style='font-size:9pt'>";
 if(getSettingValue('cahier_texte_acces_public')!='no'){
-	echo "<a href='../public/index.php?id_groupe=" . $current_group->getId() ."' target='_blank'>Visualiser l'accès public</a>\n<br>";
+	echo "<a href='../public/see_all.php?id_groupe=" . $current_group->getId() ."' target='_blank'>Visualiser l'accès public</a>\n<br>";
 } else {
-	echo "<a href='./see_all.php'>Visualiser les cahiers de textes (accès restreint)</a>\n<br>";
+	//$classes_du_groupe = $current_group->getClasses();
+	//echo "<a href='./see_all.php?year=". date("Y") ."&month=". date("m") ."&day=". date("d") ."&id_classe=" . $classes_du_groupe[0]->getId() ."&id_groupe=" . $current_group->getId() ."'>Visualiser les cahiers de textes</a>\n<br>";
+	echo "<a href='./see_all.php?id_groupe=" . $current_group->getId() ."'>Visualiser les cahiers de textes</a>\n<br>";
 }
 echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a><br/>";
 //echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $current_group->getDescriptionAvecClasses() . "</p><br/>\n";
