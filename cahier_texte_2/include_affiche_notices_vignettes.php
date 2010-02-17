@@ -2,13 +2,13 @@
 function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_fond_notices) {
 	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["t"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
 
-	echo("<strong>A faire pour le :</strong>\n");
+	echo("<strong>&nbsp;A faire pour le :</strong>\n");
 	echo("<b>" . strftime("%a %d %b %y", $devoir->getDateCt()) . "</b>\n");
 	echo("&nbsp;&nbsp;&nbsp;&nbsp;");
 
 	//vise
 	$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_devoir_".$devoir->getIdCt()."'></div>");
-	$html_balise .= '<div style="margin: 0px; float: right;">';
+	$html_balise .= '<div style="margin: 0px; float: left;">';
 	if (($devoir->getVise() != 'y') or (isset($visa_cdt_inter_modif_notices_visees) AND $visa_cdt_inter_modif_notices_visees == 'no')) {
 		$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								id_groupe = '".$devoir->getIdGroupe()."';
@@ -45,13 +45,13 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_notice, $color_fond_notices) {
 	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["p"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
 
-	echo("<strong>Notice priv&eacute;e</strong>\n");
+	echo("<strong>&nbsp;Notice priv&eacute;e</strong>\n");
 	echo("<b>" . strftime("%a %d %b %y", $notice_privee->getDateCt()) . "</b>\n");
 	echo("&nbsp;&nbsp;&nbsp;&nbsp;");
 
 	//vise
 	$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_notice_privee_".$notice_privee->getIdCt()."'></div>");
-	$html_balise .= '<div style="margin: 0px; float: right;">';
+	$html_balise .= '<div style="margin: 0px; float: left;">';
 		$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								id_groupe = '".$notice_privee->getIdGroupe()."';
 								getWinEditionNotice().setAjaxContent('ajax_edition_notice_privee.php?id_ct=".$notice_privee->getIdCt()."',{ onComplete: function() {	initWysiwyg();}});
@@ -79,10 +79,10 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 
 function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_notice, $color_fond_notices) {
 		echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["c"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
-		echo("<b>" . strftime("%a %d %b %y", $compte_rendu->getDateCt()) . "</b>\n");
+		echo("<b>&nbsp;" . strftime("%a %d %b %y", $compte_rendu->getDateCt()) . "</b>\n");
 
 		$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_compte_rendu_".$compte_rendu->getIdCt()."'></div>");
-		$html_balise .= '<div style="margin: 0px; float: right;">';
+		$html_balise .= '<div style="margin: 0px; float: left;">';
 		if (($compte_rendu->getVise() != 'y') or (isset($visa_cdt_inter_modif_notices_visees) AND $visa_cdt_inter_modif_notices_visees == 'no')) {
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								id_groupe = '".$compte_rendu->getIdGroupe()."';

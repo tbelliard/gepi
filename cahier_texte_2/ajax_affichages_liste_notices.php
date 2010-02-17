@@ -238,7 +238,7 @@ foreach ($ctCompteRenduInfoGenerales as $ctCompteRenduInfoGenerale) {
 	echo "<table style=\"border-style:solid; border-width:0px; background-color: ".$color_fond_notices["i"] ."; padding: 2px; margin: 0px;\" width=\"100%\" cellpadding=\"2\" summary=\"Tableau d'information generale...\">";
 	echo "<tr style=\"border-style:solid; border-width:1px; background-color: ".$couleur_cellule["i"]."; padding: 0px; margin: 0px;\">\n<td>\n";
 
-	echo("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_info_".$ctCompteRenduInfoGenerale->getIdCt()."'></div>");
+	echo("<div style='display: none; color: red; margin: 0px; float: left;' id='compte_rendu_en_cours_info_".$ctCompteRenduInfoGenerale->getIdCt()."'></div>");
 	echo("<div style=\"margin: 0px; float: right;\">");
 	echo("<a href=\"#\" onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$ctCompteRenduInfoGenerale->getIdCt()."&today=0&id_groupe=".$id_groupe."',
