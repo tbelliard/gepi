@@ -58,7 +58,7 @@ function getWinListeNotices() {
 				top:160,
 				left:0,
 				width:300,
-				height:GetHeight() - 160}
+				height:GetHeight() - 220}
 			);
 		$('win_liste_notices_content').setStyle({	
 			backgroundColor: '#d0d0d0',
@@ -82,7 +82,7 @@ function getWinEditionNotice() {
 				top:160,
 				left:304,
 				width:GetWidth()-310,
-				height:GetHeight() - 160}
+				height:GetHeight() - 220}
 			);
 		$('win_edition_notice_content').setStyle({	
 			backgroundColor: '#d0d0d0',
@@ -105,7 +105,7 @@ function getWinDernieresNotices() {
 				top:155,
 				left:40,
 				width:GetWidth()-100,
-				height:GetHeight() - 170}
+				height:GetHeight() - 230}
 			);
 		$('win_dernieres_notices_content').setStyle({	
 			backgroundColor: '#d0d0d0',
