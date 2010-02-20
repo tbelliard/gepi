@@ -67,6 +67,7 @@ $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mo
 $avec_n_anonymat=isset($_POST['avec_n_anonymat']) ? $_POST['avec_n_anonymat'] : (isset($_GET['avec_n_anonymat']) ? $_GET['avec_n_anonymat'] : 'n');
 $avec_correcteur=isset($_POST['avec_correcteur']) ? $_POST['avec_correcteur'] : (isset($_GET['avec_correcteur']) ? $_GET['avec_correcteur'] : 'n');
 $avec_salle=isset($_POST['avec_salle']) ? $_POST['avec_salle'] : (isset($_GET['avec_salle']) ? $_GET['avec_salle'] : 'n');
+$avec_sexe=isset($_POST['avec_sexe']) ? $_POST['avec_sexe'] : (isset($_GET['avec_sexe']) ? $_GET['avec_sexe'] : 'n');
 
 include('lib_eb.php');
 
@@ -464,6 +465,10 @@ if(isset($imprime)) {
 
 			//$pdf->SetFont($fonte,'B',10);
 			$csv.='Nom prénom;';
+			
+			if($avec_sexe=='y') {
+				$csv.='Sexe;';
+			}
 
 			$csv.='Note;';
 
@@ -527,7 +532,7 @@ if(isset($imprime)) {
 					}
 				}
 
-				$sql="SELECT DISTINCT e.nom, e.prenom, e.login, ec.n_anonymat, ec.note, ec.statut, ec.login_prof, es.salle FROM eb_copies ec, eb_salles es, eb_groupes eg, eleves e, j_eleves_groupes jeg WHERE e.login=ec.login_ele AND ec.id_salle=es.id AND ec.id_epreuve='$id_epreuve' AND es.id_epreuve='$id_epreuve' AND eg.id_epreuve='$id_epreuve' AND eg.id_groupe='$id_groupe[$i]' AND jeg.login=e.login AND jeg.id_groupe=eg.id_groupe ORDER BY e.nom,e.prenom;";
+				$sql="SELECT DISTINCT e.nom, e.prenom, e.sexe, e.login, ec.n_anonymat, ec.note, ec.statut, ec.login_prof, es.salle FROM eb_copies ec, eb_salles es, eb_groupes eg, eleves e, j_eleves_groupes jeg WHERE e.login=ec.login_ele AND ec.id_salle=es.id AND ec.id_epreuve='$id_epreuve' AND es.id_epreuve='$id_epreuve' AND eg.id_epreuve='$id_epreuve' AND eg.id_groupe='$id_groupe[$i]' AND jeg.login=e.login AND jeg.id_groupe=eg.id_groupe ORDER BY e.nom,e.prenom;";
 				//echo "$sql<br />";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
@@ -536,6 +541,7 @@ if(isset($imprime)) {
 
 					$tab_ele_login=array();
 					$tab_nom=array();
+					$tab_sexe=array();
 					$tab_n_anonymat=array();
 					$tab_note=array();
 					$tab_correcteur=array();
@@ -546,6 +552,7 @@ if(isset($imprime)) {
 					while($lig=mysql_fetch_object($res)) {
 						$tab_ele_login[$cpt]=$lig->login;
 						$tab_nom[$cpt]=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
+						$tab_sexe[$cpt]=$lig->sexe;
 						$tab_n_anonymat[$cpt]=$lig->n_anonymat;
 
 						$tab_salle[$cpt]=$lig->salle;
@@ -574,6 +581,11 @@ if(isset($imprime)) {
 						}
 
 						$csv.=$tab_nom[$j].";";
+						
+						if($avec_sexe=='y') {
+							$csv.=$tab_sexe[$j].';';
+						}
+						
 						$csv.=$tab_note[$j].";";
 
 						if($avec_correcteur=='y') {
@@ -644,7 +656,7 @@ require_once("../lib/header.inc");
 //echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 echo "<p class='bold'><a href='index.php?id_epreuve=$id_epreuve&amp;mode=modif_epreuve'>Retour</a>";
 echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=csv&amp;imprime=standard&amp;avec_n_anonymat=y&amp;avec_correcteur=y&amp;avec_salle=y'>Export CSV</a>";
-echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=csv&amp;imprime=etendu&amp;avec_n_anonymat=y&amp;avec_correcteur=y&amp;avec_salle=y'>Export CSV étendu</a>";
+echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=csv&amp;imprime=etendu&amp;avec_n_anonymat=y&amp;avec_correcteur=y&amp;avec_salle=y&amp;avec_sexe=y''>Export CSV étendu</a>";
 //echo "</p>\n";
 //echo "</div>\n";
 
@@ -725,6 +737,8 @@ if(!isset($imprime)) {
 	echo "<input type='checkbox' name='avec_n_anonymat' id='avec_n_anonymat' value='y' /><label for='avec_n_anonymat'>Numéro anonymat</label><br />\n";
 	echo "<input type='checkbox' name='avec_correcteur' id='avec_correcteur' value='y' /><label for='avec_correcteur'>Correcteur</label><br />\n";
 	echo "<input type='checkbox' name='avec_salle' id='avec_salle' value='y' /><label for='avec_salle'>Salle</label>\n";
+	//echo "<input type='checkbox' name='avec_sexe' id='avec_sexe' value='y' /><label for='avec_sexe'>Sexe</label>\n";
+	
 	echo "</blockquote>\n";
 
 	echo "<input type='hidden' name='mode' value='pdf' />\n";
