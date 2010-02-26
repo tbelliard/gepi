@@ -48,7 +48,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
 die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
@@ -96,6 +96,9 @@ function redimensionne_logo($photo, $L_max, $H_max)
     if (empty($_GET['a_imprimer']) AND empty($_POST['a_imprimer'])) {$a_imprimer="";}
     else { if (isset($_GET['a_imprimer'])) {$a_imprimer=$_GET['a_imprimer'];} if (isset($_POST['a_imprimer'])) {$a_imprimer=$_POST['a_imprimer'];} }
 
+$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
+if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
+
 define('FPDF_FONTPATH','../../fpdf/font/');
 require('../../fpdf/fpdf.php');
 $p = 1;
@@ -103,11 +106,11 @@ $p = 1;
 //requete dans la base de donnée
   //etablissement
                  $niveau_etab = "";
-                 $nom_etab = getSettingValue("gepiSchoolName");
-                 $adresse1_etab = getSettingValue("gepiSchoolAdress1");
-                 $adresse2_etab = getSettingValue("gepiSchoolAdress2");
-                 $cp_etab = getSettingValue("gepiSchoolZipCode");
-                 $ville_etab = getSettingValue("gepiSchoolCity");
+                 $nom_etab = traite_accents_utf8(getSettingValue("gepiSchoolName"));
+                 $adresse1_etab = traite_accents_utf8(getSettingValue("gepiSchoolAdress1"));
+                 $adresse2_etab = traite_accents_utf8(getSettingValue("gepiSchoolAdress2"));
+                 $cp_etab = traite_accents_utf8(getSettingValue("gepiSchoolZipCode"));
+                 $ville_etab = traite_accents_utf8(getSettingValue("gepiSchoolCity"));
                  $cedex_etab = "";
                  $telephone_etab = getSettingValue("gepiSchoolTel");
                  $fax_etab = getSettingValue("gepiSchoolFax");
@@ -240,15 +243,15 @@ $pdf->AddPage();
 $pdf->SetY(38);
 $pdf->SetFont('Arial','B',10);
 $int_etab = $niveau_etab.$nom_etab;
-$pdf->Cell(50, 4, $int_etab, 0, 1, 'C', '');
+$pdf->Cell(50, 4, traite_accents_utf8($int_etab), 0, 1, 'C', '');
 $pdf->SetFont('Arial','',10);
-$pdf->Cell(50, 4, $adresse1_etab, 0, 1, 'C', '');
+$pdf->Cell(50, 4, traite_accents_utf8($adresse1_etab), 0, 1, 'C', '');
 if($adresse2_etab!="")
 {
-  $pdf->Cell(50, 4, $adresse2_etab, 0, 1, 'C', '');
+  $pdf->Cell(50, 4, traite_accents_utf8($adresse2_etab), 0, 1, 'C', '');
 }
 $ville = $cp_etab." ".$ville_etab." ".$cedex_etab;
-$pdf->Cell(50, 4, $ville, 0, 1, 'C', '');
+$pdf->Cell(50, 4, traite_accents_utf8($ville), 0, 1, 'C', '');
 if($mel_etab!="")
 {
   $pdf->Cell(50, 4, $mel_etab, 0, 1, 'C', '');
@@ -279,11 +282,11 @@ if ($aujourdhui[1]==10) { $aujourdhui[1]="octobre"; }
 if ($aujourdhui[1]==11) { $aujourdhui[1]="novembre"; }
 if ($aujourdhui[1]==12) { $aujourdhui[1]="décembre"; }
 $aujourdhui = $ville_etab.', le '.$jour.' '.$aujourdhui[0].' '.$aujourdhui[1].' '.$aujourdhui[2];
-$pdf->Text(109, 15,$aujourdhui);
+$pdf->Text(109, 15,traite_accents_utf8($aujourdhui));
 $pdf->SetFont('Arial','',12);
 $ident_responsable = $civilite_responsable[$i]." ".ucfirst($prenom_responsable[$i])." ".strtoupper($nom_responsable[$i]);
-$pdf->Text(109, 40,$ident_responsable);
-$pdf->Text(109, 45,$adresse1_responsable[$i]);
+$pdf->Text(109, 40,traite_accents_utf8($ident_responsable));
+$pdf->Text(109, 45,traite_accents_utf8($adresse1_responsable[$i]));
 if($adresse2_responsable[$i] != "")
   {
     $pdf->Text(109, 50,'adresse2');
@@ -291,9 +294,9 @@ if($adresse2_responsable[$i] != "")
 $ident_ville = $cp_responsable[$i]." ".strtoupper($ville_responsable[$i]);
 if($adresse2_responsable[$i] != "")
   {
-    $pdf->Text(109, 55,$ident_ville);
+    $pdf->Text(109, 55,traite_accents_utf8($ident_ville));
   } else {
-            $pdf->Text(109, 50,$ident_ville);
+            $pdf->Text(109, 50,traite_accents_utf8($ident_ville));
          }
 
 if ($choix=="rappel")
@@ -311,8 +314,8 @@ $pdf->Rect(30, 67.5, 145, 10, 'D');
 $pdf->SetFont('Arial','',12);
 $pdf->Text(20, 90,'Madame, Monsieur,');
 $ident = "A notre connaissance, l'élève ".$nom_eleve[$i]." ".$prenom_eleve[$i]." de la classe de ".$division[$i].",";
-$pdf->Text(20, 100, $ident);
-$pdf->Text(20, 110,'n\'a pas assisté au(x) cours suivant(s)');
+$pdf->Text(20, 100, traite_accents_utf8($ident));
+$pdf->Text(20, 110,traite_accents_utf8('n\'a pas assisté au(x) cours suivant(s)'));
 
 //tableau
 $pdf->SetX(30);
@@ -329,9 +332,9 @@ while ( $data_1 = mysql_fetch_array($execution_1))
       //tableau des absences
             $pdf->SetFont('Arial','',9.5);
             $debut = date_frc($data_1['d_date_absence_eleve'])." à ".heure($data_1['d_heure_absence_eleve']);
-            $pdf->Cell(55, 10, $debut, 1, 0, '', '');
+            $pdf->Cell(55, 10, traite_accents_utf8($debut), 1, 0, '', '');
             $fin = date_frc($data_1['a_date_absence_eleve'])." à ".heure($data_1['a_heure_absence_eleve']);
-            $pdf->Cell(55, 10, $fin, 1, 0, '', '');
+            $pdf->Cell(55, 10, traite_accents_utf8($fin), 1, 0, '', '');
             if ($data_1['type_absence_eleve'] == 'A') {$pour = "Absence"; }
             if ($data_1['type_absence_eleve'] == 'R') {$pour = "Retard"; }
             if ($data_1['type_absence_eleve'] == 'D') {$pour = "Dispence"; }
@@ -342,13 +345,13 @@ while ( $data_1 = mysql_fetch_array($execution_1))
 
 $pdf->SetX(30);
 $pdf->SetY(210);
-$pdf->Write( 5, '         Je vous remercie de bien vouloir faire connaître le motif de son absence dans les meilleurs délais afin de régulariser sa situation. Si vous avez déjà fourni un justificatif, veuillez ne pas tenir compte de ce courrier.');
+$pdf->Write( 5, traite_accents_utf8('         Je vous remercie de bien vouloir faire connaître le motif de son absence dans les meilleurs délais afin de régulariser sa situation. Si vous avez déjà fourni un justificatif, veuillez ne pas tenir compte de ce courrier.'));
 $pdf->SetY(230);
 if(substr($civilite_cpe[$i],0,1) == "M" OR substr($civilite_cpe[$i],0,1) == "" ) { $nomine = 'Le Conseiller Principal d\'Education'; }
 if(substr($civilite_cpe[$i],0,2) == "Mm") { $nomine = 'La Conseillère Principale d\'Education'; }
 if(substr($civilite_cpe[$i],0,2) == "Ml") { $nomine = 'La Conseillère Principale d\'Education'; }
-$pdf->Cell(0, 5, $nomine, 0, 1, 'R', '');
-$pdf->Cell(0, 5, $civilite_cpe[$i]." ".substr($prenom_cpe[$i],0,1).". ".$nom_cpe[$i], 0, 1, 'R', '');
+$pdf->Cell(0, 5, traite_accents_utf8($nomine), 0, 1, 'R', '');
+$pdf->Cell(0, 5, traite_accents_utf8($civilite_cpe[$i]." ".substr($prenom_cpe[$i],0,1).". ".$nom_cpe[$i]), 0, 1, 'R', '');
 $pdf->SetY(250);
 $pdf->Cell(60, 5, 'DATE :', 0, 0, '', '');
 $pdf->Cell(50, 5, 'SIGNATURE DU RESPONSABLE :', 0, 1, '', '');
@@ -381,8 +384,8 @@ if($telephone_etab!="" AND $fax_etab!="" AND $mel_etab=="")
   $adresse2 = "Tel: ".$telephone_etab." - Fax: ".$fax_etab;
 }
 
-$pdf->Cell(0, 5, $adresse, 0, 1, 'C', '');
-$pdf->Cell(0, 5, $adresse2, 0, 1, 'C', '');
+$pdf->Cell(0, 5, traite_accents_utf8($adresse), 0, 1, 'C', '');
+$pdf->Cell(0, 5, traite_accents_utf8($adresse2), 0, 1, 'C', '');
 }
 
 // Et on affiche le pdf généré... (ou on le sauvegarde en local)

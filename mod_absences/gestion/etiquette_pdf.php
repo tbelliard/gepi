@@ -48,7 +48,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
 die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
@@ -182,6 +182,8 @@ $etiquette_agencement = '3';
 	 }
 }
 
+$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
+if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
 
 define('PARAGRAPH_STRING', '~~~');
 define('FPDF_FONTPATH','../../fpdf/font/');
@@ -281,7 +283,7 @@ if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 						  } else { $grandeur_texte='ok'; }
 		                		}
 						$grandeur_texte='test';
-						$pdf->Cell($largeur, $hauteur_select, $ligne[$cpt_eleve][$cpt_ligne_aff],$code_cadre,0,'L');
+						$pdf->Cell($largeur, $hauteur_select, traite_accents_utf8($ligne[$cpt_eleve][$cpt_ligne_aff]),$code_cadre,0,'L');
 
 					$cpt_ligne_aff = $cpt_ligne_aff + 1;
 					}

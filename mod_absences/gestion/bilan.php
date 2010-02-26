@@ -39,7 +39,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
 die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
@@ -88,6 +88,9 @@ $au			= isset($_GET['au']) ? $_GET['au'] : (isset($_POST['au']) ? $_POST['au'] :
 $a_imprimer	= isset($_GET['a_imprimer']) ? $_GET['a_imprimer'] : (isset($_POST['a_imprimer']) ? $_POST['a_imprimer'] : '');
 
 if ($au == "" OR $au == "JJ/MM/AAAA") { $au = $du; }
+
+$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
+if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
 
 define('FPDF_FONTPATH','../../fpdf/font/');
 require('../../fpdf/fpdf.php');
@@ -237,15 +240,15 @@ class bilan_PDF extends FPDF
  	 $this->SetXY($X_etab,$Y_etab);
  	 $this->SetFont($caractere_utilse,'',14);
 	  $gepiSchoolName = getSettingValue('gepiSchoolName');
-	 $this->Cell(90,7, $gepiSchoolName,0,2,'');
+	 $this->Cell(90,7, traite_accents_utf8($gepiSchoolName),0,2,'');
 	 $this->SetFont($caractere_utilse,'',10);
 	  $gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
-	 $this->Cell(90,5, $gepiSchoolAdress1,0,2,'');
+	 $this->Cell(90,5, traite_accents_utf8($gepiSchoolAdress1),0,2,'');
 	  $gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
-	 $this->Cell(90,5, $gepiSchoolAdress2,0,2,'');
+	 $this->Cell(90,5, traite_accents_utf8($gepiSchoolAdress2),0,2,'');
 	  $gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
 	  $gepiSchoolCity = getSettingValue('gepiSchoolCity');
-	 $this->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
+	 $this->Cell(90,5, traite_accents_utf8($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
 	  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 	  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
 	if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
@@ -306,8 +309,8 @@ class bilan_PDF extends FPDF
 	  $adresse2 = "Tél : ".$telephone_etab." - Fax : ".$fax_etab;
 	}
 
-	$this->Cell(0, 4.5, $adresse, 0, 1, 'C', '');
-	$this->Cell(0, 4.5, $adresse2, 0, 1, 'C', '');
+	$this->Cell(0, 4.5, traite_accents_utf8($adresse), 0, 1, 'C', '');
+	$this->Cell(0, 4.5, traite_accents_utf8($adresse2), 0, 1, 'C', '');
     }
 }
 
@@ -355,29 +358,29 @@ $pdf->AddPage();
 	if ($aujourdhui[1]==12) { $aujourdhui[1]="décembre"; }
 
 	$aujourdhui = $ville_etab.', le '.$jour.' '.$aujourdhui[0].' '.$aujourdhui[1].' '.$aujourdhui[2];
-	$pdf->Text(109, 15,$aujourdhui);
+	$pdf->Text(109, 15,traite_accents_utf8($aujourdhui));
 
 	$pdf->SetFont('Arial','',12);
 	$ident_responsable = $civilite_responsable[$i][0]." ".ucfirst($prenom_responsable[$i][0])." ".strtoupper($nom_responsable[$i][0]);
-	$pdf->Text(109, 40,trim($ident_responsable));
-	$pdf->Text(109, 45,$adresse1_responsable[$i][0]);
+	$pdf->Text(109, 40,traite_accents_utf8(trim($ident_responsable)));
+	$pdf->Text(109, 45,traite_accents_utf8($adresse1_responsable[$i][0]));
 	if($adresse2_responsable[$i][0] != "")
 	{
-		$pdf->Text(109, 50, $adresse2_responsable[$i][0]);
+		$pdf->Text(109, 50, traite_accents_utf8($adresse2_responsable[$i][0]));
 	}
 	$ident_ville = $cp_responsable[$i][0]." ".strtoupper($ville_responsable[$i][0]);
 	if($adresse2_responsable[$i][0] != "")
 	  {
-	    $pdf->Text(109, 55,$ident_ville);
+	    $pdf->Text(109, 55,traite_accents_utf8($ident_ville));
 	  } else {
-	            $pdf->Text(109, 50,$ident_ville);
+	            $pdf->Text(109, 50,traite_accents_utf8($ident_ville));
 	         }
 
 	$pdf->SetFont('Arial','',12);
 	$pdf->Text(20, 70,'Madame, Monsieur,');
 $ident = "Voici le suivi de l'élève ".$nom_eleve[$i]." ".$prenom_eleve[$i]." de la classe de ".$division[$i].",";
-$pdf->Text(20, 80, $ident);
-$pdf->Text(20, 85,'sur la période du '.date_frl(date_sql($du))." au ".date_frl(date_sql($au)).".");
+$pdf->Text(20, 80, traite_accents_utf8($ident));
+$pdf->Text(20, 85,traite_accents_utf8('sur la période du '.date_frl(date_sql($du))." au ".date_frl(date_sql($au))."."));
 //tableau
 $pdf->SetX(30);
 $pdf->SetY(90);
@@ -386,7 +389,7 @@ $pdf->SetY(90);
         $pdf->Cell(55, 5, 'Du', 1, 0, '', '');
         $pdf->Cell(55, 5, 'Au', 1, 0, '', '');
         $pdf->Cell(22, 5, 'Motif', 1, 0, 'C', '');
-        $pdf->Cell(54, 5, 'le motif spécifié', 1, 1, 'C', '');
+        $pdf->Cell(54, 5, traite_accents_utf8('le motif spécifié'), 1, 1, 'C', '');
 		$requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'A' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
 		$execution_1 = mysql_query($requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.mysql_error());
 		while ( $data_1 = mysql_fetch_array($execution_1))
@@ -395,9 +398,9 @@ $pdf->SetY(90);
       	//tableau des absences
             $pdf->SetFont('Arial','',9.5);
             $debut = date_frc($data_1['d_date_absence_eleve'])." à ".heure($data_1['d_heure_absence_eleve']);
-            $pdf->Cell(55, 5, $debut, 0, 0, '', '');
+            $pdf->Cell(55, 5, traite_accents_utf8($debut), 0, 0, '', '');
             $fin = date_frc($data_1['a_date_absence_eleve'])." à ".heure($data_1['a_heure_absence_eleve']);
-            $pdf->Cell(55, 5, $fin, 0, 0, '', '');
+            $pdf->Cell(55, 5, traite_accents_utf8($fin), 0, 0, '', '');
             if ($data_1['type_absence_eleve'] == 'A') {$pour = "Absence"; }
             if ($data_1['type_absence_eleve'] == 'R') {$pour = "Retard"; }
             if ($data_1['type_absence_eleve'] == 'D') {$pour = "Dispense"; }
@@ -415,13 +418,13 @@ $pdf->SetY(90);
 			}
 			$motif_texte[$motif_abrege] = tronquer_texte($motif_texte[$motif_abrege], '20');
 
-            $pdf->Cell(54, 5, $motif_texte[$motif_abrege], 0, 1, 'C', '');
+            $pdf->Cell(54, 5, traite_accents_utf8($motif_texte[$motif_abrege]), 0, 1, 'C', '');
       }
 
         $pdf->Cell(54, 5, '', 0, 1, 'C', '');
         $pdf->Cell(55, 5, 'Les Retards', 0, 1, '', '');
         $pdf->Cell(55, 5, 'Le', 1, 0, '', '');
-        $pdf->Cell(131, 5, 'le motif spécifié', 1, 1, 'C', '');
+        $pdf->Cell(131, 5, traite_accents_utf8('le motif spécifié'), 1, 1, 'C', '');
 		$requete_2 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'R' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
 		$execution_2 = mysql_query($requete_2) or die('Erreur SQL !'.$requete_2.'<br />'.mysql_error());
 		while ( $data_2 = mysql_fetch_array($execution_2))
@@ -429,7 +432,7 @@ $pdf->SetY(90);
        		//tableau des retards
             $pdf->SetFont('Arial','',9.5);
             $debut = date_frc($data_2['d_date_absence_eleve'])." à ".heure($data_2['d_heure_absence_eleve']);
-            $pdf->Cell(55, 5, $debut, 0, 0, '', '');
+            $pdf->Cell(55, 5, traite_accents_utf8($debut), 0, 0, '', '');
 
 			$motif_abrege = $data_2['motif_absence_eleve'];
 			$motif_texte['A'] = '';
@@ -443,7 +446,7 @@ $pdf->SetY(90);
 
 			$motif_texte[$motif_abrege] = tronquer_texte($motif_texte[$motif_abrege], '60');
 
-            $pdf->Cell(131, 5, $motif_texte[$motif_abrege], 0, 1, 'C', '');
+            $pdf->Cell(131, 5, traite_accents_utf8($motif_texte[$motif_abrege]), 0, 1, 'C', '');
         }
 
 
@@ -451,7 +454,7 @@ $pdf->SetY(90);
         $pdf->Cell(55, 5, 'Les Dispenses', 0, 1, '', '');
         $pdf->Cell(55, 5, 'Du', 1, 0, '', '');
         $pdf->Cell(55, 5, 'Au', 1, 0, '', '');
-        $pdf->Cell(76, 5, 'le motif spécifié', 1, 1, 'C', '');
+        $pdf->Cell(76, 5, traite_accents_utf8('le motif spécifié'), 1, 1, 'C', '');
 
 		$requete_3 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'D' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
 		$execution_3 = mysql_query($requete_3) or die('Erreur SQL !'.$requete_3.'<br />'.mysql_error());
@@ -460,10 +463,10 @@ $pdf->SetY(90);
       //tableau des absences
             $pdf->SetFont('Arial','',9.5);
             $debut = date_frc($data_3['d_date_absence_eleve']);
-            $pdf->Cell(55, 5, $debut, 0, 0, '', '');
+            $pdf->Cell(55, 5, traite_accents_utf8($debut), 0, 0, '', '');
             $fin = date_frc($data_3['a_date_absence_eleve']);
-            $pdf->Cell(55, 5, $fin, 0, 0, '', '');
-            $pdf->Cell(76, 5, $data_3['info_justify_absence_eleve'], 0, 1, 'C', '');
+            $pdf->Cell(55, 5, traite_accents_utf8($fin), 0, 0, '', '');
+            $pdf->Cell(76, 5, traite_accents_utf8($data_3['info_justify_absence_eleve']), 0, 1, 'C', '');
       }
 
 
@@ -472,8 +475,8 @@ $pdf->SetY(250);
 if(substr($civilite_cpe[$i],0,1) == "M" OR substr($civilite_cpe[$i],0,1) == "" ) { $nomine = 'Le conseiller Principal d\'Education'; }
 if(substr($civilite_cpe[$i],0,2) == "Mm") { $nomine = 'La conseillère Principale d\'Education'; }
 if(substr($civilite_cpe[$i],0,2) == "Ml") { $nomine = 'La conseillère Principale d\'Education'; }
-$pdf->Cell(0, 5, $nomine, 0, 1, 'R', '');
-$pdf->Cell(0, 5, $civilite_cpe[$i]." ".substr($prenom_cpe[$i],0,1).". ".$nom_cpe[$i], 0, 1, 'R', '');
+$pdf->Cell(0, 5, traite_accents_utf8($nomine), 0, 1, 'R', '');
+$pdf->Cell(0, 5, traite_accents_utf8($civilite_cpe[$i]." ".substr($prenom_cpe[$i],0,1).". ".$nom_cpe[$i]), 0, 1, 'R', '');
 }
 
 // Et on affiche le pdf généré... (ou on le sauvegarde en local)

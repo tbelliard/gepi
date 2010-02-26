@@ -41,7 +41,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../../logout.php?auto=1");
 	die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -74,6 +74,8 @@ else
 }
 //================================
 
+$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
+if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
 
 require('../../fpdf/fpdf.php');
 
@@ -609,7 +611,7 @@ while ($nb_page_traite < $nb_page_total)
 		$pdf->SetFont($caractere_utilse,'B',14);
 
 	}
-	$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
+	$pdf->Cell(90,7, traite_accents_utf8($gepiSchoolName),0,2,'');
 
 	$pdf->SetFont($caractere_utilse,'',10);
 	$gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
@@ -617,7 +619,7 @@ while ($nb_page_traite < $nb_page_total)
 	if ( $gepiSchoolAdress1 != '' )
 	{
 
-		$pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
+		$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress1),0,2,'');
 
 	}
 	$gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
@@ -625,13 +627,13 @@ while ($nb_page_traite < $nb_page_total)
 	if ( $gepiSchoolAdress2 != '' )
 	{
 
-		$pdf->Cell(90,5, $gepiSchoolAdress2,0,2,'');
+		$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress2),0,2,'');
 
 	}
 
 	$gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
 	$gepiSchoolCity = getSettingValue('gepiSchoolCity');
-	$pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
+	$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
 	$gepiSchoolTel = getSettingValue('gepiSchoolTel');
 	$gepiSchoolFax = getSettingValue('gepiSchoolFax');
 
@@ -748,10 +750,10 @@ while ($nb_page_traite < $nb_page_total)
 		$pdf->Cell(120, 8, 'du '.$date_choisie, 0, 1, 'C');
 
 		$pdf->SetX(85);
-		$pdf->Cell(120, 5, 'année', 0, 1, 'C');
+		$pdf->Cell(120, 5, traite_accents_utf8('année'), 0, 1, 'C');
 
 		$pdf->SetX(85);
-		$pdf->Cell(120, 5, $annee_scolaire, 0, 1, 'C');
+		$pdf->Cell(120, 5, traite_accents_utf8($annee_scolaire), 0, 1, 'C');
 
 
 /* ENTETE TITRE - FIN */
@@ -769,7 +771,7 @@ while ($nb_page_traite < $nb_page_total)
 	$pdf->Cell($lar_col_classe, $hau_entete, 'Classe', 1, 0, 'C');
 
 	// Cellule identité
-	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom Prénom', 1, 0, 'C');
+	$pdf->Cell($lar_col_eleve, $hau_entete, traite_accents_utf8('Nom Prénom'), 1, 0, 'C');
 
 	// Cellule créneaux
 	// un divisie l'espace réserver à la colonne des créneaux par le nombre de créneaux
@@ -822,7 +824,7 @@ while ($nb_page_traite < $nb_page_total)
 				// initialisation du point X et Y de la ligne du nom des classes
 				$pdf->SetXY($x_tab, $y_dernier);
 
-				$pdf->Cell($lar_total_tableau, $hau_donnee, $tab_donnee[$nb_ligne_passe]['classe'], 0, 1, '');
+				$pdf->Cell($lar_total_tableau, $hau_donnee, traite_accents_utf8($tab_donnee[$nb_ligne_passe]['classe']), 0, 1, '');
 				$classe_pass = $tab_donnee[$nb_ligne_passe]['classe'];
 
 				// variable qui contient le point Y suivant pour la ligne suivante
@@ -842,7 +844,7 @@ while ($nb_page_traite < $nb_page_total)
 				$pdf->Cell($lar_col_classe, $hau_donnee, '', 0, 0, '');
 
 				// colonne du nom et prénom de l'élève
-				$pdf->Cell($lar_col_eleve, $hau_donnee, $tab_donnee[$nb_ligne_passe]['ident_eleve'], 1, 0, '');
+				$pdf->Cell($lar_col_eleve, $hau_donnee, traite_accents_utf8($tab_donnee[$nb_ligne_passe]['ident_eleve']), 1, 0, '');
 
 				// variable qui contient le point Y suivant pour la ligne suivante
 				$y_dernier = $y_dernier + $hau_donnee;
