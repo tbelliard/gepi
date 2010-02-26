@@ -350,6 +350,8 @@ if ( $lettre_action === 'originaux' ) {
 	 }
 }
 
+$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
+if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
 
 define('PARAGRAPH_STRING', '~~~');
 define('FPDF_FONTPATH','../../fpdf/font/');
@@ -425,22 +427,22 @@ $type_lettre = $lettre_type_selectionne[$i];
 	 	 $pdf->SetXY($X_etab,$Y_etab);
 	 	 $pdf->SetFont($caractere_utilse,'',14);
 		  $gepiSchoolName = getSettingValue('gepiSchoolName');
-		 $pdf->Cell(90,7, $gepiSchoolName,0,2,'');
+		 $pdf->Cell(90,7, traite_accents_utf8($gepiSchoolName),0,2,'');
 		 $pdf->SetFont($caractere_utilse,'',10);
 	   	  $gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
-		 $pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
+		 $pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress1),0,2,'');
 		  $gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
-		 $pdf->Cell(90,5, $gepiSchoolAdress2,0,2,'');
+		 $pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress2),0,2,'');
 		  $gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
 		  $gepiSchoolCity = getSettingValue('gepiSchoolCity');
-		 $pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
+		 $pdf->Cell(90,5, traite_accents_utf8($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
 		  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 		  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
 		if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
 		if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
 		if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
 		if(isset($entete_communic) and $entete_communic!='') {
-		 $pdf->Cell(90,5, $entete_communic,0,2,'');
+		 $pdf->Cell(90,5, traite_accents_utf8($entete_communic),0,2,'');
 		}
 		if($entente_mel==='1') {
 		  $gepiSchoolEmail = getSettingValue('gepiSchoolEmail');
@@ -490,7 +492,7 @@ while($cpt_i_cadre<$i_cadre)
 
 	$text = str_replace($variable, $remplacer_par, $text);
 
-	$pdf->MultiCellTag($l_cadre[$type_lettre][$cpt_i_cadre], $h_cadre[$type_lettre][$cpt_i_cadre], $text, $encadre_cadre[$type_lettre][$cpt_i_cadre], "J", '');
+	$pdf->MultiCellTag($l_cadre[$type_lettre][$cpt_i_cadre], $h_cadre[$type_lettre][$cpt_i_cadre], traite_accents_utf8($text), $encadre_cadre[$type_lettre][$cpt_i_cadre], "J", '');
 	$cpt_i_cadre = $cpt_i_cadre + 1;
  }
 
