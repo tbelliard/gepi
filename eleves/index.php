@@ -45,7 +45,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //log_debug('Après $session_gepi->security_check()');
 
@@ -54,6 +54,10 @@ if (!checkAccess()) {
 	die();
 }
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
+
+if(isset($_SESSION['retour_apres_maj_sconet'])) {
+	unset($_SESSION['retour_apres_maj_sconet']);
+}
 
 //log_debug('Après checkAccess()');
 
@@ -68,7 +72,7 @@ if($_SESSION['statut']=="professeur") {
 		require ("../lib/footer.inc.php");
 		die();
 	}
-	else{
+	else {
 		// Le professeur est-il professeur principal dans une classe au moins.
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
@@ -842,22 +846,25 @@ if (!isset($quelles_classes)) {
 				echo "<td align='left'>\n";
 
 				while ($i < $nb) {
-				$id_classe = mysql_result($classes_list, $i, 'id');
-				$temp = "case_".$id_classe;
-				$classe = mysql_result($classes_list, $i, 'classe');
-
-				if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
-					echo "</td>\n";
-					//echo "<td style='padding: 0 10px 0 10px'>\n";
-					echo "<td align='left'>\n";
-				}
-
-				//echo "<span class = \"norme\"><input type='checkbox' name='$temp' value='yes' onclick=\"verif1()\" />";
-				//echo "Classe : $classe </span><br />\n";
-				echo "<label for='$temp' style='cursor: pointer;'>";
-				echo "<input type='checkbox' name='$temp' id='$temp' value='yes' onclick=\"verif1()\" />";
-				echo "Classe : $classe</label><br />\n";
-				$i++;
+					$id_classe = mysql_result($classes_list, $i, 'id');
+					$temp = "case_".$id_classe;
+					$classe = mysql_result($classes_list, $i, 'classe');
+	
+					if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+						echo "</td>\n";
+						//echo "<td style='padding: 0 10px 0 10px'>\n";
+						echo "<td align='left'>\n";
+					}
+	
+					//echo "<span class = \"norme\"><input type='checkbox' name='$temp' value='yes' onclick=\"verif1()\" />";
+					//echo "Classe : $classe </span><br />\n";
+					//echo "<label for='$temp' style='cursor: pointer;'>";
+					//echo "<input type='checkbox' name='$temp' id='$temp' value='yes' onclick=\"verif1()\" />";
+					echo "<label id='label_tab_id_classe_$i' for='tab_id_classe_$i' style='cursor: pointer;'>";
+					echo "<input type='checkbox' name='$temp' id='tab_id_classe_$i' value='yes' onclick=\"verif1()\" onchange='change_style_classe($i)' />";
+					echo "Classe : $classe</label><br />\n";
+	
+					$i++;
 				}
 				echo "</td>\n";
 				echo "</tr>\n";
@@ -868,6 +875,20 @@ if (!isset($quelles_classes)) {
 		}
 
 		echo "</table>\n";
+
+		echo "<script type='text/javascript'>
+	function change_style_classe(num) {
+		if(document.getElementById('tab_id_classe_'+num)) {
+			if(document.getElementById('tab_id_classe_'+num).checked) {
+				document.getElementById('label_tab_id_classe_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('label_tab_id_classe_'+num).style.fontWeight='normal';
+			}
+		}
+	}
+</script>\n";
+
 
 		echo "<input type='hidden' name='is_posted' value='2' />\n";
 
