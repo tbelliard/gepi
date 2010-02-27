@@ -630,6 +630,8 @@ $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/check_nature_incident
 
 $tab_req[] = "INSERT INTO droits SET id='/groupes/signalement_eleves.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Groupes: signalement des erreurs d affectation élève',statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/bulletin/envoi_mail.php', administrateur='F',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='V',autre='F',description='Envoi de mail via ajax',statut='';";
+
 //$tab_req[] = "";
 
 

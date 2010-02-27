@@ -505,6 +505,9 @@ if (!(isset($id_classe))) {
 			break;
 	}
 
+	// Tableau pour stocker les infos à envoyer aux profs à propos des notes/app non remplies
+	//$tab_alerte_prof=array();
+
 	// Affichage sur 3 colonnes
 	$nb_eleve_par_colonne=round($nb_eleves/2);
 
@@ -563,7 +566,9 @@ if (!(isset($id_classe))) {
 					//Vérification des appréciations :
 					//
 					$test_app = mysql_query("SELECT * FROM matieres_appreciations WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per')");
-					$app = @mysql_result($test_app, 0, 'appreciation');
+					//$app = @mysql_result($test_app, 0, 'appreciation');
+					$app="";
+					if(mysql_num_rows($test_app)>0) {$app=mysql_result($test_app, 0, 'appreciation');}
 					if ($app == '') {
 						$bulletin_rempli = 'no';
 						if ($affiche_nom != 0) {
@@ -590,6 +595,25 @@ if (!(isset($id_classe))) {
 							$email = retourne_email($login_prof);
 							$nom_prof = $current_group["profs"]["users"][$login_prof]["nom"];
 							$prenom_prof = $current_group["profs"]["users"][$login_prof]["prenom"];
+							$civilite_prof = $current_group["profs"]["users"][$login_prof]["civilite"];
+
+							if(!isset($tab_alerte_prof[$login_prof])) {
+								$tab_alerte_prof[$login_prof]=array();
+								$tab_alerte_prof[$login_prof]['civilite']=$civilite_prof;
+								$tab_alerte_prof[$login_prof]['nom']=$nom_prof;
+								$tab_alerte_prof[$login_prof]['prenom']=$prenom_prof;
+								$tab_alerte_prof[$login_prof]['email']=$email;
+							}
+
+							if(!isset($tab_alerte_prof[$login_prof]['groupe'][$group_id])) {
+								$tab_alerte_prof["$login_prof"]['groupe'][$group_id]['info']=$current_group["description"]." (".$current_group["classlist_string"].")";
+
+								//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']=".$tab_alerte_prof["$login_prof"]['groupe'][$group_id]['info']."<br />";
+							}
+
+							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]));
+							//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=".strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]))."<br />";
+
 							if($email!=""){
 								echo "<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
 							}
@@ -607,6 +631,7 @@ if (!(isset($id_classe))) {
 				}
 				$i++;
 			}
+
 			//
 			//Vérification des moyennes
 			//
@@ -623,7 +648,9 @@ if (!(isset($id_classe))) {
 					//Vérification des moyennes :
 					//
 					$test_notes = mysql_query("SELECT * FROM matieres_notes WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per')");
-					$note = @mysql_result($test_notes, 0, 'note');
+					//$note = @mysql_result($test_notes, 0, 'note');
+					$note="";
+					if(mysql_num_rows($test_notes)>0) {$note=mysql_result($test_notes, 0, 'note');}
 					if ($note == '') {
 						$bulletin_rempli = 'no';
 						if ($affiche_nom != 0) {
@@ -646,9 +673,11 @@ if (!(isset($id_classe))) {
 						$virgule = 1;
 						foreach ($current_group["profs"]["list"] as $login_prof) {
 							$email = retourne_email($login_prof);
+							$civilite_prof = $current_group["profs"]["users"][$login_prof]["civilite"];
 							$nom_prof = $current_group["profs"]["users"][$login_prof]["nom"];
 							$prenom_prof = $current_group["profs"]["users"][$login_prof]["prenom"];
 							//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
+
 							if($email!=""){
 								echo "<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
 							}
@@ -675,7 +704,9 @@ if (!(isset($id_classe))) {
 			//Vérification des avis des conseils de classe
 			//
 			$query_conseil = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login = '$id_eleve[$j]' and periode = '$per')");
-			$avis = @mysql_result($query_conseil, 0, 'avis');
+			//$avis = @mysql_result($query_conseil, 0, 'avis');
+			$avis="";
+			if(mysql_num_rows($query_conseil)>0) {$avis=mysql_result($query_conseil, 0, 'avis');}
 			if ($avis == '') {
 				$bulletin_rempli = 'no';
 				if ($affiche_nom != 0) {
@@ -918,24 +949,103 @@ if (!(isset($id_classe))) {
             }
 		}
 
-
-
-
-
-
-
 		$j++;
 		//Fin de la boucle élève
 
 		$cpt_i++;
 
-		flush();
+		//flush();
 
 	}
 
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
+
+	if(count($tab_alerte_prof)>0) {
+		$num=0;
+
+		//echo "<div style='border: 1px solid black'>";
+		echo "<p class='bold'>Récapitulatif&nbsp;:</p>\n";
+		echo "<table class='boireaus' summary=\"Courriels\">\n";
+		$alt=1;
+
+		//$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]
+		foreach($tab_alerte_prof as $login_prof => $tab_prof) {
+			$alt=$alt*(-1);
+
+			$info_prof=$tab_alerte_prof[$login_prof]['civilite']." ".casse_mot($tab_alerte_prof[$login_prof]['nom'],'maj')." ".casse_mot($tab_alerte_prof[$login_prof]['prenom'],'majf2');
+
+			$message="Bonjour(soir) ".$info_prof.",\n\nDes moyennes et/ou appréciations ne sont pas remplies:\n";
+			foreach($tab_prof['groupe'] as $group_id => $tab_group) {
+				if(isset($tab_group['app_manquante'])) {
+					$message.="Appréciation(s) manquante(s) en ".$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']." pour ";
+					//echo count($tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante']);
+					for($loop=0;$loop<count($tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante']);$loop++) {
+						if($loop>0) {$message.=", ";}
+						//$message.=$tab_group['app_manquante'][$loop];
+						$message.=$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][$loop];
+					}
+					$message.=".\n";
+				}
+
+				if(isset($tab_group['moy_manquante'])) {
+					$message.="Moyenne(s) manquante(s) en ".$tab_group['info']." pour ";
+					for($loop=0;$loop<count($tab_group['moy_manquante']);$loop++) {
+						if($loop>0) {$message.=", ";}
+						//$message.=$tab_group['moy_manquante'][$loop];
+						$message.=$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][$loop];
+					}
+					$message.=".\n";
+				}
+
+			}
+			$message.="\nJe vous serais reconnaissant(e) de bien vouloir les remplir rapidement.\n\nD'avance merci.\n-- \n".civ_nom_prenom($_SESSION['login']);
+
+			echo "<tr class='lig$alt'>\n";
+			echo "<td>\n";
+			if($tab_alerte_prof[$login_prof]['email']!="") {
+				$sujet_mail="[Gepi]: Appreciations et/ou moyennes manquantes";
+				echo "<a href='mailto:".$tab_alerte_prof[$login_prof]['email']."?subject=$sujet_mail&amp;body=".rawurlencode($message)."'>".$info_prof."</a>";
+				echo "<input type='hidden' name='sujet_$num' id='sujet_$num' value=\"$sujet_mail\" />\n";
+				echo "<input type='hidden' name='mail_$num' id='mail_$num' value=\"".$tab_alerte_prof[$login_prof]['email']."\" />\n";
+			}
+			else {
+				echo $info_prof;
+			}
+			//echo "<br />";
+			echo "</td>\n";
+			echo "<td rowspan='2'>\n";
+			echo "<textarea id='message_$num' cols='50' rows='5'>$message</textarea>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+
+			echo "<tr class='lig$alt'>\n";
+			echo "<td>\n";
+			echo "<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\">Envoyer</a></span>";
+			echo "</td>\n";
+			echo "</tr>\n";
+
+			//echo "<a href='#' onclick=\"envoi_mail($num);return false;\">Envoyer</a>";
+			//echo "<br />\n";
+			$num++;
+		}
+		echo "</table>\n";
+		//echo "</div>";
+	}
+
+	echo "<script type='text/javascript'>
+	// <![CDATA[
+	function envoi_mail(num) {
+		destinataire=document.getElementById('mail_'+num).value;
+		sujet_mail=document.getElementById('sujet_'+num).value;
+		message=document.getElementById('message_'+num).value;
+		new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+message,{method: 'get'});
+	}
+	//]]>
+</script>\n";
+
+
 
 	//if ($bulletin_rempli == 'yes') {
 	if (($bulletin_rempli == 'yes')&&($mode=='tout')) {
