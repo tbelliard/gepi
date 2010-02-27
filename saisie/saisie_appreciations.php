@@ -552,26 +552,42 @@ function focus_suivant(num){
 
 </script>\n";
 
-	// ====================== Modif pour la sauvegarde en ajax =================
-$restauration = isset($_GET["restauration"]) ? $_GET["restauration"] : NULL;
+// ====================== Modif pour la sauvegarde en ajax =================
+	$restauration = isset($_GET["restauration"]) ? $_GET["restauration"] : NULL;
+
+
+	if ($restauration == NULL) {
+		// On supprime les appreciation_tempo qui sont identiques aux appreciations enregistrées dans matieres_appreciations
+		$sql="SELECT mat.* FROM matieres_appreciations_tempo mat, matieres_appreciations ma WHERE
+			(mat.id_groupe='".$current_group["id"]."' AND mat.id_groupe=ma.id_groupe AND mat.periode=ma.periode AND mat.login=ma.login AND mat.appreciation=ma.appreciation);";
+		$res_app_identiques=mysql_query($sql);
+		if(mysql_num_rows($res_app_identiques)>0) {
+			while($lig_app_id=mysql_fetch_object($res_app_identiques)) {
+				$sql="DELETE FROM matieres_appreciations_tempo WHERE login='$lig_app_id->login' AND id_groupe='".$current_group["id"]."' AND periode='$lig_app_id->periode';";
+				//echo "$sql<br />";
+				$menage=mysql_query($sql);
+			}
+		}
+	}
+
 	// On teste s'il existe des données dans la table matieres_appreciations_tempo
 	$sql_test = mysql_query("SELECT login FROM matieres_appreciations_tempo WHERE id_groupe = '" . $current_group["id"] . "'");
 	$test = mysql_num_rows($sql_test);
-		if ($test !== 0 AND $restauration == NULL) {
-			// On envoie un message à l'utilisateur
-			echo "
-			<p class=\"red\">Certaines appréciations n'ont pas été enregistrées lors de votre dernière saisie.<br />
-				Elles sont indiquées ci-dessous en rouge. Voulez-vous les restaurer ?
-			</p>
-			<p class=\"red\">
-			<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=oui\">OUI</a>
-			(elles remplaceront alors la saisie précédente)
-			 -
-			<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=non\">NON</a>
-			(elles seront alors définitivement perdues)
-			</p>
-			";
-		}
+	if ($test !== 0 AND $restauration == NULL) {
+		// On envoie un message à l'utilisateur
+		echo "
+		<p class=\"red\">Certaines appréciations n'ont pas été enregistrées lors de votre dernière saisie.<br />
+			Elles sont indiquées ci-dessous en rouge. Voulez-vous les restaurer ?
+		</p>
+		<p class=\"red\">
+		<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=oui\">OUI</a>
+		(elles remplaceront alors la saisie précédente)
+			-
+		<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=non\">NON</a>
+		(elles seront alors définitivement perdues)
+		</p>
+		";
+	}
 
 	// Dans tous les cas, si $restauration n'est pas NULL, il faut vider la table tempo des appréciations de ce groupe
 
@@ -793,10 +809,10 @@ foreach ($liste_eleves as $eleve_login) {
 				$verif_t = mysql_num_rows($app_t_query);
 				if ($verif_t != 0) {
 					$eleve_app_t = "\n".'<p>Appréciation non enregistrée : <span style="color: red;">'.@mysql_result($app_t_query, 0, "appreciation").'</span></p>';
-				}else{
+				} else {
 					$eleve_app_t = '';
 				}
-			}else{
+			} else {
 				$eleve_app_t = '';
 			}
 
@@ -804,6 +820,7 @@ foreach ($liste_eleves as $eleve_login) {
 			if ($restauration == "oui") {
 				$app_query = mysql_query("SELECT * FROM matieres_appreciations_tempo WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
 				// Si la sauvegarde ne donne rien pour cet élève, on va quand même voir dans la table définitive
+				// (il se peut qu'il n'y ait pas d'enregistrement tempo pour cet élève)
 				$verif = mysql_num_rows($app_query);
 				if ($verif == 0){
 					$app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
@@ -926,7 +943,8 @@ foreach ($liste_eleves as $eleve_login) {
 					$tabdiv_infobulle[]=creer_div_infobulle('notes_'.$eleve_login.'_'.$k,$titre,"",$texte,"",30,0,'y','y','n','n');
 
 					$mess[$k].="<a name='".$eleve_login."_".$k."'></a>";
-					$mess[$k].="<a href='#".$eleve_login."_".$k."' onclick=\"afficher_div('notes_".$eleve_login."_".$k."','y',-100,20);return false;\">";
+					//$mess[$k].="<a href='#".$eleve_login."_".$k."' onclick=\"afficher_div('notes_".$eleve_login."_".$k."','y',-100,20);get_div_size('notes_".$eleve_login."_".$k."');return false;\">";
+					$mess[$k].="<a href='#".$eleve_login."_".$k."' onclick=\"afficher_div('notes_".$eleve_login."_".$k."','y',-100,-10);return false;\">";
 					$mess[$k].=$liste_notes;
 					$mess[$k].="</a>";
 				}
@@ -1187,6 +1205,15 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 
 
 echo "<script type='text/javascript'>
+	/*
+	function get_div_size(id_div) {
+		if(document.getElementById(id_div)) {
+			alert(document.getElementById(id_div).style.top);
+			alert(document.getElementById(id_div).style.height);
+		}
+	}
+	*/
+
 	// <![CDATA[
 	function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
 		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
