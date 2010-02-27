@@ -3048,7 +3048,9 @@ function calc_moy_debug($texte){
 	// Passer à 1 la variable pour générer un fichier de debug...
 	$debug=0;
 	if($debug==1){
-		$fich=fopen("/tmp/calc_moy_debug.txt","a+");
+		$tmp_dir=get_user_temp_directory();
+		if((!$tmp_dir)||(!file_exists("../temp/".$tmp_dir))) {$tmp_dir="/tmp";} else {$tmp_dir="../temp/".$tmp_dir;}
+		$fich=fopen($tmp_dir."/calc_moy_debug.txt","a+");
 		fwrite($fich,$texte);
 		fclose($fich);
 	}
@@ -4146,6 +4148,27 @@ function get_commune($code_commune_insee,$mode){
 			elseif($mode==2) {
 				$retour=$lig->commune." (".$lig->departement.")";
 			}
+		}
+	}
+	return $retour;
+}
+
+
+function civ_nom_prenom($login,$mode='prenom') {
+	$retour="";
+	$sql="SELECT nom,prenom,civilite FROM utilisateurs WHERE login='$login';";
+	$res_user=mysql_query($sql);
+	if (mysql_num_rows($res_user)>0) {
+		$lig_user=mysql_fetch_object($res_user);
+		if($lig_user->civilite!="") {
+			$retour.=$lig_user->civilite." ";
+		}
+		if($mode=='prenom') {
+			$retour.=strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom));
+		}
+		else {
+			// Initiale
+			$retour.=strtoupper($lig_user->nom)." ".strtoupper(substr($lig_user->prenom,0,1));
 		}
 	}
 	return $retour;
