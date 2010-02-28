@@ -678,6 +678,23 @@ if (!(isset($id_classe))) {
 							$prenom_prof = $current_group["profs"]["users"][$login_prof]["prenom"];
 							//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
 
+							if(!isset($tab_alerte_prof[$login_prof])) {
+								$tab_alerte_prof[$login_prof]=array();
+								$tab_alerte_prof[$login_prof]['civilite']=$civilite_prof;
+								$tab_alerte_prof[$login_prof]['nom']=$nom_prof;
+								$tab_alerte_prof[$login_prof]['prenom']=$prenom_prof;
+								$tab_alerte_prof[$login_prof]['email']=$email;
+							}
+
+							if(!isset($tab_alerte_prof[$login_prof]['groupe'][$group_id])) {
+								$tab_alerte_prof["$login_prof"]['groupe'][$group_id]['info']=$current_group["description"]." (".$current_group["classlist_string"].")";
+
+								//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']=".$tab_alerte_prof["$login_prof"]['groupe'][$group_id]['info']."<br />";
+							}
+
+							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][]=strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]));
+							//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][]=".strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]))."<br />";
+
 							if($email!=""){
 								echo "<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
 							}
@@ -1016,7 +1033,10 @@ if (!(isset($id_classe))) {
 			//echo "<br />";
 			echo "</td>\n";
 			echo "<td rowspan='2'>\n";
-			echo "<textarea id='message_$num' cols='50' rows='5'>$message</textarea>\n";
+			//echo "<textarea id='message_$num' cols='50' rows='5'>$message</textarea>\n";
+			echo "<textarea cols='50' rows='5'>$message</textarea>\n";
+			echo "<input type='hidden' name='message_$num' id='message_$num' value=\"".rawurlencode($message)."\" />\n";
+
 			echo "</td>\n";
 			echo "</tr>\n";
 
