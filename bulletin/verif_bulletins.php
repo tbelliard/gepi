@@ -1017,6 +1017,9 @@ if (!(isset($id_classe))) {
 				}
 
 			}
+
+			$message.="\nLorsqu'un élève n'a pas de note, veuillez saisir un tiret '-' pour signaler qu'il n'y a pas d'oubli de saisie de votre part.\nEn revanche, s'il s'agit d'une erreur d'affectation, vous disposez, en mode Visualisation d'un carnet de notes, d'un lien 'Signaler des erreurs d affectation' pour alerter l'administrateur Gepi sur un problème d'affectation d'élèves.\n";
+
 			$message.="\nJe vous serais reconnaissant(e) de bien vouloir les remplir rapidement.\n\nD'avance merci.\n-- \n".civ_nom_prenom($_SESSION['login']);
 
 			echo "<tr class='lig$alt'>\n";
