@@ -547,11 +547,12 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
 	function confirm_changement_classe(thechange, themessage)
 	{
+		//alert('thechange='+thechange+' '+document.getElementById('id_groupe').selectedIndex+' '+document.getElementById('id_groupe').options[document.getElementById('id_groupe').selectedIndex].value);
 		if (!(thechange)) thechange='no';
 		if (thechange != 'yes') {
 			document.form1.submit();
 		}
-		else{
+		else {
 			var is_confirmed = confirm(themessage);
 			if(is_confirmed){
 				document.form1.submit();
@@ -604,12 +605,14 @@ if(mysql_num_rows($res_cn)>1) {
 	{
 		if (!(thechange)) thechange='no';
 		if (thechange != 'yes') {
-			document.form1.submit();
+			document.getElementById('form1b_id_conteneur').value=document.getElementById('id_conteneur').options[document.getElementById('id_conteneur').selectedIndex].value;
+			document.form1b.submit();
 		}
 		else{
 			var is_confirmed = confirm(themessage);
 			if(is_confirmed){
-				document.form1.submit();
+				document.getElementById('form1b_id_conteneur').value=document.getElementById('id_conteneur').options[document.getElementById('id_conteneur').selectedIndex].value;
+				document.form1b.submit();
 			}
 			else{
 				document.getElementById('id_conteneur').selectedIndex=$index_num_periode;
@@ -619,9 +622,10 @@ if(mysql_num_rows($res_cn)>1) {
 </script>\n";
 
 	//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
-	echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période </span><select name='id_conteneur' id='id_conteneur' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
+	echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période </span><select name='tmp_id_conteneur' id='id_conteneur' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
 	echo $chaine_options_periodes;
 	echo "</select> | \n";
+
 }
 
 echo "<a href=\"index.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes évaluations </a>|";
@@ -681,8 +685,15 @@ if ($id_devoir == 0) {
 		echo " /></td><td></td></tr>\n";
 	}
 	echo "</table></fieldset>\n";
-	echo "<input type='hidden' name='id_conteneur' value=\"".$id_conteneur."\" />\n";
+	echo "<input type='hidden' name='id_conteneur' id='form1b_id_conteneur' value=\"".$id_conteneur."\" />\n";
 	echo "<input type='hidden' name='id_devoir' value=\"".$id_devoir."\" />\n";
+	echo "</form>\n";
+}
+else {
+	// Formulaire destiné à permettre via javascript de passer à une autre période... on accède alors au mode Visualisation parce que le $id_devoir n'existe pas dans une autre période.
+	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post name=\"form1b\">\n";
+	echo "<input type='hidden' name='id_conteneur' id='form1b_id_conteneur' value=\"".$id_conteneur."\" />\n";
+	//echo "<input type='hidden' name='id_devoir' value=\"".$id_devoir."\" />\n";
 	echo "</form>\n";
 }
 // Fin du premier formulaire
