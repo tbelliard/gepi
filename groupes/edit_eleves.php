@@ -704,6 +704,8 @@ if(count($total_eleves)>0) {
 						if((isset($tab_sig[$period["num_periode"]]))&&(isset($tab_sig[$period["num_periode"]][$e_login]))) {
 							$info_erreur=$tab_sig[$period["num_periode"]][$e_login];
 							echo "<img id='img_erreur_affect_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/flag2.gif' width='17' height='18' title='".$info_erreur."' alt='".$info_erreur."' />";
+
+							//$chaine_sig.=",'case_".$period["num_periode"]."_".$num_eleve."'";
 						}
 
 						//=========================
@@ -758,6 +760,10 @@ if(count($total_eleves)>0) {
 			echo "<th>";
 			if(count($total_eleves)>0) {
 				echo "<a href=\"javascript:DecocheColonne_si_bull_et_cn_vide(".$period["num_periode"].");changement();\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Décocher les élèves sans note/app sur les bulletin et carnet de notes' title='Décocher les élèves sans note/app sur les bulletin et carnet de notes' /></a>";
+
+				if((isset($tab_sig))&&(count($tab_sig)>0)) {
+					echo "<span id='prise_en_compte_signalement_".$period["num_periode"]."'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement(".$period["num_periode"].");changement();\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' title='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' /></a></span>";
+				}
 			}
 			echo "</th>\n";
 		}
@@ -837,8 +843,29 @@ if(count($total_eleves)>0) {
 			}
 		}
 	}
+";
 
-	</script>
+	if((isset($tab_sig))&&(count($tab_sig)>0)) {
+		echo "
+	function prise_en_compte_signalement(num_periode) {
+		for(j=0;j<$nb_eleves;j++) {
+			if(document.getElementById('img_erreur_affect_'+num_periode+'_'+j)) {
+				if(document.getElementById('case_'+num_periode+'_'+j)) {
+					if(document.getElementById('case_'+num_periode+'_'+j).checked) {
+						document.getElementById('case_'+num_periode+'_'+j).checked=false;
+					}
+					else {
+						document.getElementById('case_'+num_periode+'_'+j).checked=true;
+					}
+				}
+			}
+		}
+		document.getElementById('prise_en_compte_signalement_'+num_periode).style.display='none';
+	}
+";
+	}
+
+	echo "</script>
 	";
 
 	echo "<p><br /></p>\n";
