@@ -2509,7 +2509,13 @@ $tbs_microtime	="";
 $tbs_pmv="";
 require_once ("./lib/footer_template.inc.php");
 
-	
+/****************************************************************
+			On s'assure que le nom du gabarit est bien renseigné
+****************************************************************/
+if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
+	$_SESSION['rep_gabarits']="origine";
+}	
+
 //==================================
 // Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var2();
