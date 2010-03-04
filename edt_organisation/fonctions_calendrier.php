@@ -80,7 +80,7 @@ function AfficheDatesDebutFinSemaine() {
 
 // ========================================================================
 //
-//      Récupère les dates des lundis et samedis de toutes les semaines de l'année scolaire courante
+//      Récupère les dates des lundis et vendredis de toutes les semaines de l'année scolaire courante
 //      Usage : 
 //      $tab = RecupereLundisVendredis();
 //      echo $tab[0]["lundis"];         // renvoie la date du lundi de la semaine 01     
@@ -105,24 +105,24 @@ function RecupereLundisVendredis () {
     $semaine = 1;
     $ts_ref = $ts;
     $tab_select_semaine[$semaine-1]["lundis"] = strftime("%d %b %Y", $ts);
-    $tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*5);
+    $tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*4);
     
     while ($semaine <=30) {
 	    $ts+=86400*7;
 	    $semaine++;
 	    $tab_select_semaine[$semaine-1]["lundis"] = strftime("%d %b %Y", $ts);
-	    $tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*5);
+	    $tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*4);
     }
     $semaine = NumLastWeek();
     $ts = $ts_ref;
     $ts-=86400*7;
 	$tab_select_semaine[$semaine-1]["lundis"] = strftime("%d %b %Y", $ts);
-	$tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*5);
+	$tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*4);
     while ($semaine >=33) {
 	    $ts-=86400*7;
 	    $semaine--;
 	    $tab_select_semaine[$semaine-1]["lundis"] = strftime("%d %b %Y", $ts);
-	    $tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*5);
+	    $tab_select_semaine[$semaine-1]["vendredis"] = strftime("%d %b %Y", $ts+86400*4);
     }
     return $tab_select_semaine;
 }

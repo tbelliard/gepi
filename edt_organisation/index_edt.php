@@ -43,6 +43,7 @@ require_once("./fonctions_edt_salle.php");      // --- edt salle
 require_once("./fonctions_edt_eleve.php");      // --- edt eleve
 require_once("./fonctions_calendrier.php");
 require_once("./fonctions_affichage.php");
+require_once("./req_database.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {

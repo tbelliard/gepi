@@ -137,16 +137,7 @@ function DureeMax2Colonnes($jour_sem, $login_edt, $tab_id_creneaux, $elapse_time
             $k = $j;
             do
             {
-
-                $req_demicreneau = mysql_query("SELECT duree, id_groupe, heuredeb_dec, id_semaine FROM edt_cours WHERE 
-                                            jour_semaine = '".$jour_sem."' AND
-                                            login_prof = '".$login_edt."' AND
-                                            id_definie_periode = '".$tab_id_creneaux[$k]."' AND
-                                            id_semaine = '".$id_semaine1."' AND
-                                            (id_calendrier = '".$period."' OR id_calendrier = '0')
-                                            ") or die(mysql_error());
-
-
+                $req_demicreneau = LessonsFromDayTeacherSlotWeekPeriod($jour_sem, $login_edt, $tab_id_creneaux[$k], $id_semaine1, $period);
                 $rep_demicreneau = mysql_fetch_array($req_demicreneau);
                 if ((mysql_num_rows($req_demicreneau) == 0) || ($rep_demicreneau['id_semaine'] != $id_semaine1))
                 {
@@ -338,13 +329,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
             while (isset($tab_id_creneaux[$k]) AND (!$end_process) AND ($duree1<$duree_max)) {
                 //if ($id_semaine_previous == '0') {
                 if (isset($id_semaine)) {
-                    $req_demicreneau = mysql_query("SELECT id_cours, duree, id_groupe, heuredeb_dec, id_semaine FROM edt_cours WHERE 
-                                                jour_semaine = '".$jour_sem."' AND
-                                                login_prof = '".$login_edt."' AND
-                                                id_definie_periode = '".$tab_id_creneaux[$k]."' AND
-                                                id_semaine = '".$id_semaine."' AND
-                                                (id_calendrier = '".$period."' OR id_calendrier = '0')
-                                                ") or die(mysql_error());
+                    $req_demicreneau = LessonsFromDayTeacherSlotWeekPeriod($jour_sem, $login_edt, $tab_id_creneaux[$k], $id_semaine, $period);
                 }
                 else {
                     $req_demicreneau = mysql_query("SELECT id_cours, duree, id_groupe, heuredeb_dec, id_semaine FROM edt_cours WHERE 
@@ -494,12 +479,7 @@ if ($type_edt=="prof") {
     $j = 0;
     $elapse_time = 0;
     while (isset($tab_id_creneaux[$j])) {
-        $req_creneau = mysql_query("SELECT id_cours, duree, id_groupe, heuredeb_dec, id_semaine FROM edt_cours WHERE 
-                                    jour_semaine = '".$jour_sem_tab[$jour]."' AND
-                                    login_prof = '".$login_edt."' AND
-                                    id_definie_periode = '".$tab_id_creneaux[$j]."' AND
-                                    (id_calendrier = '".$period."' OR id_calendrier = '0')
-                                    ") or die(mysql_error());
+        $req_creneau = LessonsFromDayTeacherSlotPeriod($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux[$j], $period);
         $rep_creneau = mysql_fetch_array($req_creneau);
         $nb_rows = mysql_num_rows($req_creneau);
 

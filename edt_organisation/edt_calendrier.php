@@ -457,6 +457,31 @@ if (isset($new_periode) AND isset($nom_periode)) {
 $detail_jourdeb = explode("/", $jour_debut);
 $detail_jourfin = explode("/", $jour_fin);
 
+// ================== vérifier le format des dates saisies
+
+if (isset($detail_jourdeb[0]) AND isset($detail_jourdeb[1]) AND isset($detail_jourdeb[2])) {
+    if (isset($detail_jourfin[0]) AND isset($detail_jourfin[1]) AND isset($detail_jourfin[2])) {
+        if (is_numeric($detail_jourfin[0]) AND is_numeric($detail_jourfin[1]) AND is_numeric($detail_jourfin[2])) {
+            if (is_numeric($detail_jourdeb[0]) AND is_numeric($detail_jourdeb[1]) AND is_numeric($detail_jourdeb[2])) {
+                $formatdatevalid = true;
+            }
+            else {
+                $formatdatevalid = false;
+            }
+        }
+        else {
+            $formatdatevalid = false;
+        }
+    }
+    else {
+        $formatdatevalid = false;
+    }
+}
+else {
+    $formatdatevalid = false;
+}
+
+if ($formatdatevalid) {
 	$jourdebut = $detail_jourdeb[2]."-".$detail_jourdeb[1]."-".$detail_jourdeb[0];
 	$jourfin = $detail_jourfin[2]."-".$detail_jourfin[1]."-".$detail_jourfin[0];
 		// On insère les classes qui sont concernées (0 = toutes)
@@ -501,8 +526,12 @@ $detail_jourfin = explode("/", $jour_fin);
 
 	}else{
 
-		echo '<h3 class="red">Ce nom de période existe déjà</h3>';
+		echo "<div class=\"cadreInformation\">Ce nom de période existe déjà</div>";
 	}
+}
+else {
+    echo "<div class=\"cadreInformation\">L'une des dates n'a pas le format attendu.</div>";
+}
 }
 
 /* ============ On affiche alors toutes les périodes de la table ==============*/

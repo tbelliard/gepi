@@ -135,16 +135,7 @@ function DureeMax2ColonnesSalle($jour_sem, $id_salle, $tab_id_creneaux, $elapse_
             $k = $j;
             do
             {
-
-                $req_demicreneau = mysql_query("SELECT duree, id_groupe, heuredeb_dec, id_semaine FROM edt_cours WHERE 
-                                            jour_semaine = '".$jour_sem."' AND
-                                            id_salle = '".$id_salle."' AND
-                                            id_definie_periode = '".$tab_id_creneaux[$k]."' AND
-                                            id_semaine = '".$id_semaine1."' AND
-                                            (id_calendrier = '".$period."' OR id_calendrier = '0')
-                                            ") or die(mysql_error());
-
-
+                $req_demicreneau = LessonsFromDayClassroomSlotWeekPeriod($jour_sem, $id_salle, $tab_id_creneaux[$k], $id_semaine1, $period)
                 $rep_demicreneau = mysql_fetch_array($req_demicreneau);
                 if ((mysql_num_rows($req_demicreneau) == 0) || ($rep_demicreneau['id_semaine'] != $id_semaine1))
                 {

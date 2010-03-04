@@ -62,12 +62,7 @@ function RecupereEnseignementsIDEleve($creneau_courant, $jour_semaine, $login_el
         $calendrier = "1=1";
     }
     // =============== 1. récupérer les groupes et les AIDs du jour et du créneau selectionnés
-
-    $req_creneau = mysql_query("SELECT id_groupe, duree, heuredeb_dec, id_semaine, id_cours from edt_cours where
-                                jour_semaine = '".$jour_semaine."' AND
-                                id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
-                                $calendrier
-                                ")or die(mysql_error());
+    $req_creneau = LessonsFromDaySlotPeriod($jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier);
     $j = 0;$k = 0;
     while ($rep_creneau = mysql_fetch_array($req_creneau))
     {
@@ -222,11 +217,7 @@ function RecupCoursIdSemaineEleve($creneau_courant, $jour_semaine, $login_eleve,
     }
     // =============== 1. récupérer les groupes et les AIDs du jour et du créneau selectionnés
 
-    $req_creneau = mysql_query("SELECT id_groupe, duree, heuredeb_dec, id_semaine, id_cours from edt_cours where
-                                jour_semaine = '".$jour_semaine."' AND
-                                id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
-                                $calendrier
-                                ")or die(mysql_error());
+    $req_creneau = LessonsFromDaySlotPeriod($jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier);
     $j = 0;$k = 0;
     while ($rep_creneau = mysql_fetch_array($req_creneau))
     {
@@ -372,12 +363,7 @@ function RecupCoursNotIdSemaineEleve($creneau_courant, $jour_semaine, $login_ele
         $calendrier = "1=1";
     }
     // =============== 1. récupérer les groupes et les AIDs du jour et du créneau selectionnés
-
-    $req_creneau = mysql_query("SELECT id_groupe, duree, heuredeb_dec, id_semaine, id_cours from edt_cours where
-                                jour_semaine = '".$jour_semaine."' AND
-                                id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
-                                $calendrier
-                                ")or die(mysql_error());
+    $req_creneau = LessonsFromDaySlotPeriod($jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier);
     $j = 0;$k = 0;
     while ($rep_creneau = mysql_fetch_array($req_creneau))
     {
