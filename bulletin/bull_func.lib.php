@@ -4373,7 +4373,33 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					if($tab_modele_pdf["active_coef_moyenne"][$classe_id]==='1') {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
 						$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
-						$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], "",1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+
+						//$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], "",1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+
+						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+						$info_tot_et_coef=$tab_bull['tot_points_eleve1'][$i]."/".$tab_bull['total_coef_eleve1'][$i];
+						$val = $pdf->GetStringWidth($info_tot_et_coef);
+						$taille_texte = $tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
+						$grandeur_texte='test';
+						$hauteur_tmp=10;
+						while($grandeur_texte!='ok') {
+							if($taille_texte<$val)
+							{
+								$hauteur_tmp=$hauteur_tmp-0.3;
+								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_tmp);
+								$val = $pdf->GetStringWidth($info_tot_et_coef);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+	
+						$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $info_tot_et_coef,1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+	
+						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+
+
 						$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 					}
 	

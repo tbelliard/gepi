@@ -1761,6 +1761,8 @@ else {
 			// Tableaux d'indice $i (correspondant à l'élève)
 			$tab_bulletin[$id_classe][$periode_num]['tot_points_eleve']=$tot_points_eleve;
 			$tab_bulletin[$id_classe][$periode_num]['total_coef_eleve']=$total_coef_eleve;
+			$tab_bulletin[$id_classe][$periode_num]['tot_points_eleve1']=$tot_points_eleve1;
+			$tab_bulletin[$id_classe][$periode_num]['total_coef_eleve1']=$total_coef_eleve1;
 
 			// Variables récupérées de calcul_moy_gen.inc.php
 			// Tableau d'indice [$i] élève.. mais cette moyenne générale ne prend en compte que les options suivies par l'élève si bien que les moyennes générales de classe diffèrent selon les élèves

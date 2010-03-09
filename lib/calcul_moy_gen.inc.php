@@ -155,6 +155,7 @@ $tot_points_eleve = array();
 $moy_gen_classe1=array();
 $total_coef_classe1=array();
 $total_coef_eleve1=array();
+$tot_points_eleve1=array();
 $current_coef_eleve1=array();
 //===============
 
@@ -196,6 +197,7 @@ while ($i < $nombre_eleves) {
 	// Et boireaus d'après J.Etheve
 	$total_coef_classe1[$i] = 0;
 	$total_coef_eleve1[$i] = 0;
+	$tot_points_eleve1[$i] = 0;
 	$moy_gen_classe1[$i] = 0;
 	//===============
 	$moy_gen_classe[$i] = 0;
@@ -703,6 +705,7 @@ while ($i < $nombre_eleves) {
 			//===============
 			// Ajout J.Etheve
 			if ($total_coef_eleve1[$i] != 0) {
+				$tot_points_eleve1[$i]=$moy_gen_eleve1[$i];
 				$moy_gen_eleve1[$i] = $moy_gen_eleve1[$i]/$total_coef_eleve1[$i];
 			}
 			//===============
