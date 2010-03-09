@@ -1,4 +1,7 @@
 <?php
+/*
+$Id$
+*/
 
 // fonction qui recoit une date heure est recompose la date en français
 function date_fr_dh($var)
@@ -361,5 +364,11 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	$releve_affiche_formule=getSettingValue("releve_affiche_formule") ? getSettingValue("releve_affiche_formule") : "y";
 	$releve_formule_bas=getSettingValue("releve_formule_bas") ? getSettingValue("releve_formule_bas") : "";
 
+	$releve_affiche_tel=getSettingValue("releve_affiche_tel") ? getSettingValue("releve_affiche_tel") : "n";
+	$releve_affiche_fax=getSettingValue("releve_affiche_fax") ? getSettingValue("releve_affiche_fax") : "n";
+	$releve_affiche_mail=getSettingValue("releve_affiche_mail") ? getSettingValue("releve_affiche_mail") : "n";
+	$gepiSchoolFax=getSettingValue("gepiSchoolFax");
+	$gepiSchoolTel=getSettingValue("gepiSchoolTel");
+	$gepiSchoolEmail=getSettingValue('gepiSchoolEmail');
 
 ?>
