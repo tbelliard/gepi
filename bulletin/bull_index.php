@@ -160,9 +160,12 @@ if((!isset($_POST['mode_bulletin']))||($_POST['mode_bulletin']!='pdf')) {
 	//==============================
 }
 
-$tab_id_classe=isset($_POST['tab_id_classe']) ? $_POST['tab_id_classe'] : NULL;
-$tab_periode_num=isset($_POST['tab_periode_num']) ? $_POST['tab_periode_num'] : NULL;
-$choix_periode_num=isset($_POST['choix_periode_num']) ? $_POST['choix_periode_num'] : NULL;
+//$tab_id_classe=isset($_POST['tab_id_classe']) ? $_POST['tab_id_classe'] : NULL;
+//$tab_periode_num=isset($_POST['tab_periode_num']) ? $_POST['tab_periode_num'] : NULL;
+//$choix_periode_num=isset($_POST['choix_periode_num']) ? $_POST['choix_periode_num'] : NULL;
+$tab_id_classe=isset($_POST['tab_id_classe']) ? $_POST['tab_id_classe'] : (isset($_GET['tab_id_classe']) ? $_GET['tab_id_classe'] : NULL);
+$tab_periode_num=isset($_POST['tab_periode_num']) ? $_POST['tab_periode_num'] : (isset($_GET['tab_periode_num']) ? $_GET['tab_periode_num'] : NULL);
+$choix_periode_num=isset($_POST['choix_periode_num']) ? $_POST['choix_periode_num'] : (isset($_GET['choix_periode_num']) ? $_GET['choix_periode_num'] : NULL);
 
 //======================================================
 //==================CHOIX DES CLASSES===================
@@ -287,6 +290,8 @@ if(!isset($tab_id_classe)) {
 //elseif(!isset($tab_periode_num)) {
 //elseif(!isset($choix_periode_num)) {
 elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
+	//debug_var();
+
 	echo "<p class='bold'>";
 	//echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 	echo "<a href='bull_index.php'>Choisir d'autres classes</a>\n";
@@ -394,6 +399,8 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 //======================================================
 //==============CHOIX DE LA SELECTION D'ELEVES==========
 elseif(!isset($_POST['valide_select_eleves'])) {
+
+	//debug_var();
 
 	echo "<p class='bold'>";
 	echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";

@@ -346,6 +346,18 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
+	if (isset($_POST['avis_conseil_classe_a_la_mano'])) {
+		if (!saveSetting("avis_conseil_classe_a_la_mano", $_POST['avis_conseil_classe_a_la_mano'])) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre avis_conseil_classe_a_la_mano !";
+		}
+	}
+	else{
+		if (!saveSetting("avis_conseil_classe_a_la_mano", 'n')) {
+			$msg .= "Erreur lors de l'enregistrement du paramètre avis_conseil_classe_a_la_mano !";
+		}
+	}
+
+
 	//===============================================================
 }
 
@@ -965,6 +977,32 @@ responsables&nbsp;:<br />
 			echo "<input type='radio' name='acces_app_ele_resp' id='acces_app_ele_resp_periode_close' value='periode_close' onchange='changement()' ";
 			if($acces_app_ele_resp=='periode_close') {echo "checked ";}
 			echo "/><label for='acces_app_ele_resp_periode_close'> <input type='text' name='delais_apres_cloture' value='$delais_apres_cloture' size='1' onchange='changement()' /> jours après la clôture de la période</label>\n";
+			?>
+		</td>
+	</tr>
+
+
+
+	<tr>
+		<td style="font-variant: small-caps; vertical-align:top;">
+		<a name='avis_conseil_classe_a_la_mano'></a>
+		Les avis du conseil sont remplis&nbsp;:
+		</td>
+		<td valign='top'>
+
+			<?php
+			$avis_conseil_classe_a_la_mano=getSettingValue("avis_conseil_classe_a_la_mano");
+			if($avis_conseil_classe_a_la_mano=="") {$avis_conseil_classe_a_la_mano="n";}
+
+			echo "<input type='radio' name='avis_conseil_classe_a_la_mano' id='avis_conseil_classe_saisis' value='n'";
+			if($avis_conseil_classe_a_la_mano=='n') {echo " checked";}
+			echo " onchange='changement()' />\n";
+			echo "<label for='avis_conseil_classe_saisis' style='cursor: pointer'> avant l'impression des bulletins</label>\n";
+			echo "<br />\n";
+			echo "<input type='radio' name='avis_conseil_classe_a_la_mano' id='avis_conseil_classe_a_la_mano' value='y'";
+			if($avis_conseil_classe_a_la_mano=='y') {echo " checked";}
+			echo " onchange='changement()' />";
+			echo "<label for='avis_conseil_classe_a_la_mano' style='cursor: pointer'> à la main sur les bulletins imprimés</label>\n";
 			?>
 		</td>
 	</tr>
