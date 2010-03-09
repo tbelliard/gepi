@@ -439,17 +439,22 @@ while ($per < $max_periode) {
 		$nb_ligne = intval($nb/3)+1;
 		echo "<table width = 100% class='boireaus' border='1'>\n";
 
+		$alt=1;
 		$i ='0';
 		while ($i < $nb_ligne) {
-			echo "<tr>\n";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt white_hover'>\n";
 			$j = 0;
 			while ($j < 3) {
 				unset($nom_case);
 				$nom_classe = '';
-				if (isset($tab_id_classe[$i+$j*$nb_ligne])) $nom_case = "case_".$tab_id_classe[$i+$j*$nb_ligne];
-				if (isset($tab_nom_classe[$i+$j*$nb_ligne])) $nom_classe = $tab_nom_classe[$i+$j*$nb_ligne];
+				if (isset($tab_id_classe[$i+$j*$nb_ligne])) {$nom_case = "case_".$tab_id_classe[$i+$j*$nb_ligne];}
+				if (isset($tab_nom_classe[$i+$j*$nb_ligne])) {$nom_classe = $tab_nom_classe[$i+$j*$nb_ligne];}
+
 				echo "<td>\n";
-				if ($nom_classe != '') {echo "<input type=\"checkbox\" name=\"".$nom_case."\" id='case_".$per."_".$i."_".$j."' checked /><label for='case_".$per."_".$i."_".$j."' style='cursor:pointer;'>&nbsp;".$nom_classe."</label>\n";}
+				if ($nom_classe != '') {
+					echo "<input type=\"checkbox\" name=\"".$nom_case."\" id='case_".$per."_".$i."_".$j."' onchange=\"change_style_classe('".$per."_".$i."_".$j."')\" checked /><label id='label_case_".$per."_".$i."_".$j."' for='case_".$per."_".$i."_".$j."' style='cursor:pointer; font-weight:bold'>&nbsp;".$nom_classe."</label>\n";
+				}
 				echo "</td>\n";
 
 				$j++;
@@ -495,6 +500,7 @@ while ($per < $max_periode) {
 			for(k=0;k<$nb_ligne;k++){
 				if(document.getElementById('case_'+per+'_'+k+'_'+rang)){
 					document.getElementById('case_'+per+'_'+k+'_'+rang).checked=statut;
+					change_style_classe(per+'_'+k+'_'+rang);
 				}
 			}
 		}
@@ -502,6 +508,7 @@ while ($per < $max_periode) {
 			for(k=0;k<3;k++){
 				if(document.getElementById('case_'+per+'_'+rang+'_'+k)){
 					document.getElementById('case_'+per+'_'+rang+'_'+k).checked=statut;
+					change_style_classe(per+'_'+rang+'_'+k);
 				}
 			}
 		}
@@ -513,10 +520,24 @@ while ($per < $max_periode) {
 			for(k=0;k<=$nb_ligne;k++){
 				if(document.getElementById('case_'+per+'_'+k+'_'+kk)){
 					document.getElementById('case_'+per+'_'+k+'_'+kk).checked=statut;
+					change_style_classe(per+'_'+k+'_'+kk);
 				}
 			}
 		}
 	}
+
+	function change_style_classe(num) {
+		//alert(num);
+		if(document.getElementById('case_'+num)) {
+			if(document.getElementById('case_'+num).checked) {
+				document.getElementById('label_case_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('label_case_'+num).style.fontWeight='normal';
+			}
+		}
+	}
+
 </script>\n";
 
 
