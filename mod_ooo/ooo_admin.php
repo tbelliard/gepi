@@ -1,6 +1,6 @@
 <?php
 /*
- * @version: $Id: discipline_admin.php 2554 2008-10-12 14:49:29Z crob $
+ * @version: $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -74,12 +74,19 @@ $dossier_test = "./".$nom_dossier_modeles_ooo_mes_modeles."dossier_test";
 $resultat_mkdir = @mkdir($dossier_test);
 if (!($resultat_mkdir)) {
 	echo "<p style=\"color: red;\">ATTENTION : Les droits d'écriture sur le dossier /mod_ooo/$nom_dossier_modeles_ooo_mes_modeles sont incorrects. Gepi doit avoir les droits de création de dossiers et de fichiers dans ce dossier pour assurer le bon fonctionnement du module</p>";
+	//@rmdir($dossier_test);
+}
+else {
 	@rmdir($dossier_test);
 }
+
 $dossier_test = "./tmp/dossier_test";
 $resultat_mkdir = @mkdir($dossier_test);
 if (!($resultat_mkdir)) {
 	echo "<p style=\"color: red;\">ATTENTION : Les droits d'écriture sur le dossier /mod_ooo/tmp/ sont incorrects. Gepi doit avoir les droits de création de dossiers et de fichiers dans ce dossier pour assurer le bon fonctionnement du module</p>";
+	//@rmdir($dossier_test);
+}
+else {
 	@rmdir($dossier_test);
 }
 
