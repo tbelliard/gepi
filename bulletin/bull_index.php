@@ -1758,6 +1758,10 @@ else {
 			if(isset($current_eleve_rang)) {$tab_bulletin[$id_classe][$periode_num]['rang']=$current_eleve_rang;}
 			$tab_bulletin[$id_classe][$periode_num]['coef_eleve']=$current_coef_eleve;
 
+			// Tableaux d'indice $i (correspondant à l'élève)
+			$tab_bulletin[$id_classe][$periode_num]['tot_points_eleve']=$tot_points_eleve;
+			$tab_bulletin[$id_classe][$periode_num]['total_coef_eleve']=$total_coef_eleve;
+
 			// Variables récupérées de calcul_moy_gen.inc.php
 			// Tableau d'indice [$i] élève.. mais cette moyenne générale ne prend en compte que les options suivies par l'élève si bien que les moyennes générales de classe diffèrent selon les élèves
 			$tab_bulletin[$id_classe][$periode_num]['moy_gen_classe']=$moy_gen_classe;
@@ -1920,7 +1924,7 @@ else {
 			}
 
 
-			// L'ordre des matières est obtenu via calcul_moy_gen.inc.php dans lequel le $affiche_categorieq fixe l'ordre par catégories ou non.
+			// L'ordre des matières est obtenu via calcul_moy_gen.inc.php dans lequel le $affiche_categorie fixe l'ordre par catégories ou non.
 
 
 

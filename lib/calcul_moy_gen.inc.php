@@ -22,6 +22,10 @@ function calc_moy_debug($texte){
 	}
 }
 */
+
+// Ce parametre n'est pas pris en compte... si on l'augmente, des filtrages ont lieu plus loin hors de ce fichier
+$nb_chiffres_moy=1;
+
 //===============
 // Ajout J.Etheve
 $tab_login_indice = array();
@@ -145,6 +149,7 @@ $moy_cat_max = array();
 //$total_coef = array();
 $total_coef_classe = array();
 $total_coef_eleve = array();
+$tot_points_eleve = array();
 //===============
 // Ajout d'après J.Etheve
 $moy_gen_classe1=array();
@@ -184,6 +189,7 @@ while ($i < $nombre_eleves) {
 	//======================================
 
 	$moy_gen_eleve[$i] = 0;
+	$tot_points_eleve[$i] = 0;
 	//===============
 	// Ajout J.Etheve
 	$moy_gen_eleve1[$i] = 0;
@@ -288,7 +294,7 @@ while ($j < $nombre_groupes) {
 	}
 
 	// Moyenne de la classe dans la matière $current_matiere[$j]
-	$sql="SELECT round(avg(note),1) moyenne
+	$sql="SELECT round(avg(note),$nb_chiffres_moy) moyenne
 		FROM matieres_notes
 		WHERE (
 		statut ='' AND
@@ -687,6 +693,7 @@ while ($i < $nombre_eleves) {
 		$place_eleve_classe[$i] = "";
 		//$moy_gen_eleve[$i] = $moy_gen_eleve[$i]/$total_coef[$i];
 		if($temoin_au_moins_une_matiere_avec_note[$i]=="y") {
+			$tot_points_eleve[$i]=$moy_gen_eleve[$i];
 			$moy_gen_eleve[$i] = $moy_gen_eleve[$i]/$total_coef_eleve[$i];
 
 			if($current_eleve_login[$i]==$ele_login_debug) {
