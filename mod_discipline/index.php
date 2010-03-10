@@ -266,6 +266,14 @@ lieu VARCHAR( 255 ) NOT NULL
 );";
 $creation=mysql_query($sql);
 
+$sql="CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire));";
+$creation=mysql_query($sql);
+
+$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'message_id';"));
+if ($test1 == 0) {
+	$query = mysql_query("ALTER TABLE s_incidents ADD message_id VARCHAR(50) NOT NULL;");
+}
+
 // L'état effectué ou non d'une sanction est dans la table s_sanctions plutôt s_retenues ou s_travail parce qu'il est plus simple de taper sur s_sanctions plutôt que sur les deux tables s_retenues ou s_travail
 
 $phrase_commentaire="";
@@ -300,6 +308,12 @@ if($_SESSION['statut']=='administrateur') {
 	echo "<td width='30%'><a href='../mod_discipline/definir_autres_sanctions.php'>Définition des types de sanctions</a>";
 	echo "</td>\n";
 	echo "<td>Définir la liste des sanctions pouvant être prises comme suite à un incident.</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td width='30%'><a href='../mod_discipline/destinataires_alertes.php'>Définition des destinataires d'alertes</a>";
+	echo "</td>\n";
+	echo "<td>Permet de définir la liste des utilisateurs recevant un mail lors de la saisie/modification d'un incident.</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 }

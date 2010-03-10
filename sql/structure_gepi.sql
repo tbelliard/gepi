@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS `commentaires_types` (`id` INT( 11 ) NOT NULL AUTO_IN
 DROP TABLE IF EXISTS commentaires_types_profs;
 CREATE TABLE IF NOT EXISTS commentaires_types_profs (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,login VARCHAR( 255 ) NOT NULL ,app TEXT NOT NULL);
 DROP TABLE IF EXISTS s_incidents;
-CREATE TABLE IF NOT EXISTS s_incidents (id_incident INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,declarant VARCHAR( 50 ) NOT NULL ,date DATE NOT NULL ,heure VARCHAR( 20 ) NOT NULL ,id_lieu INT( 11 ) NOT NULL ,nature VARCHAR( 255 ) NOT NULL ,description TEXT NOT NULL,etat VARCHAR( 20 ) NOT NULL);
+CREATE TABLE IF NOT EXISTS s_incidents (id_incident INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,declarant VARCHAR( 50 ) NOT NULL ,date DATE NOT NULL ,heure VARCHAR( 20 ) NOT NULL ,id_lieu INT( 11 ) NOT NULL ,nature VARCHAR( 255 ) NOT NULL ,description TEXT NOT NULL,etat VARCHAR( 20 ) NOT NULL, message_id VARCHAR(50) NOT NULL DEFAULT '');
 DROP TABLE IF EXISTS s_qualites;
 CREATE TABLE IF NOT EXISTS s_qualites (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,qualite VARCHAR( 50 ) NOT NULL);
 DROP TABLE IF EXISTS s_types_sanctions;
@@ -307,4 +307,7 @@ DROP TABLE IF EXISTS message_login;
 CREATE TABLE message_login (id int(11) NOT NULL auto_increment,texte text NOT NULL,PRIMARY KEY  (id));
 DROP TABLE IF EXISTS pays;
 CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_pays VARCHAR( 255 ) NOT NULL, PRIMARY KEY ( code_pays ));
+DROP TABLE IF EXISTS j_signalement;
 CREATE TABLE IF NOT EXISTS j_signalement (id_groupe int(11) NOT NULL default '0',login varchar(50) NOT NULL default '',periode int(11) NOT NULL default '0',nature varchar(50) NOT NULL default '',valeur varchar(50) NOT NULL default '',declarant varchar(50) NOT NULL default '',PRIMARY KEY (id_groupe,login,periode,nature), INDEX (login));
+DROP TABLE IF EXISTS s_alerte_mail;
+CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire));

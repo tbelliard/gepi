@@ -380,12 +380,23 @@ if($etat_incident!='clos') {
 				$id_lieu="";
 			}
 
+			// ALTER TABLE s_incidents ADD message_id VARCHAR(50) NOT NULL;
+			//$message_id=strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+			// Pour ne pas spammer tant que la nature n'est pas saisie
+			if($nature!='') {
+				$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+			}
+			else {
+				$message_id="";
+			}
+
 			$sql="INSERT INTO s_incidents SET declarant='".$_SESSION['login']."',
 												date='$annee-$mois-$jour',
 												heure='$display_heure',
 												nature='".traitement_magic_quotes(corriger_caracteres($nature))."',
 												description='".$description."',
-												id_lieu='$id_lieu';";
+												id_lieu='$id_lieu',
+												message_id='$message_id';";
 			//echo "$sql<br />\n";
 			$res=mysql_query($sql);
 			if(!$res) {
@@ -395,8 +406,12 @@ if($etat_incident!='clos') {
 				$id_incident=mysql_insert_id();
 				$msg.="Enregistrement de l'incident n°".$id_incident." effectué.<br />\n";
 			}
+
+			$texte_mail="Saisie par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident) survenu le $jour/$mois/$annee à $display_heure:\n";
+			$texte_mail.="Nature: $nature\nDescription: $description\n";
 		}
 		else {
+
 			$temoin_modif="n";
 			$sql="UPDATE s_incidents SET ";
 			if(isset($display_date)) {
@@ -452,6 +467,23 @@ if($etat_incident!='clos') {
 				$temoin_modif="y";
 			}
 
+
+			/*
+			// Recuperation du message_id pour les fils de discussion dans les mails
+			$sql_mi="SELECT message_id FROM s_incidents WHERE id_incident='$id_incident';";
+			$res_mi=mysql_query($sql_mi);
+			$lig_mi=mysql_fetch_object($res_mi);
+			if($lig_mi->message_id=="") {
+				$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+				$temoin_modif="y";
+				$sql.=" message_id='$message_id', ";
+			}
+			else {
+				$references_mail=$lig_mi->message_id;
+			}
+			*/
+
+
 			// Pour faire sauter le ", " en fin de $sql:
 			$sql=substr($sql,0,strlen($sql)-2);
 
@@ -466,6 +498,14 @@ if($etat_incident!='clos') {
 				else {
 					$msg.="Mise à jour de l'incident n°".$id_incident." effectuée.<br />\n";
 				}
+			}
+
+			$texte_mail="Mise à jour par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident)";
+			if(isset($display_heure)) {
+				$texte_mail.=" survenu le $jour/$mois/$annee à/en $display_heure:\n";
+			}
+			if(isset($nature)) {
+				$texte_mail.="\nNature: $nature\nDescription: $description\n";
 			}
 		}
 
@@ -604,6 +644,93 @@ if($etat_incident!='clos') {
 				}
 				else {
 					$msg.="Clôture de l'incident n°$id_incident.<br />\n";
+				}
+			}
+
+			$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+			if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+				$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+			}
+
+			if($envoi_mail_actif=='y') {
+
+				$temoin_envoyer_mail="y";
+				//echo "nature=$nature<br />";
+				if((!isset($nature))||($nature=='')) {
+					$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident' AND (nature!='' OR description!='');";
+					//echo "$sql<br />";
+					$res_test=mysql_query($sql);
+					if(mysql_num_rows($res_test)==0) {
+						$temoin_envoyer_mail="n";
+					}
+				}
+
+				if($temoin_envoyer_mail=="y") {
+
+					// Recuperation du message_id pour les fils de discussion dans les mails
+					$sql_mi="SELECT message_id FROM s_incidents WHERE id_incident='$id_incident';";
+					$res_mi=mysql_query($sql_mi);
+					$lig_mi=mysql_fetch_object($res_mi);
+					if($lig_mi->message_id=="") {
+						$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+						$sql="UPDATE s_incidents SET message_id='$message_id' WHERE id_incident='$id_incident';";
+						$update=mysql_query($sql);
+					}
+					else {
+						$references_mail=$lig_mi->message_id;
+					}
+
+					$tab_alerte_classe=array();
+	
+					$sql="SELECT * FROM s_protagonistes WHERE id_incident='$id_incident' ORDER BY login;";
+					$res_prot=mysql_query($sql);
+					if(mysql_num_rows($res_prot)>0) {
+						$texte_mail.="\n";
+						$texte_mail.="Protagonistes de l'incident: \n";
+						while($lig_prot=mysql_fetch_object($res_prot)) {
+							$texte_mail.=get_nom_prenom_eleve($lig_prot->login)." ($lig_prot->qualite)\n";
+		
+							$sql="SELECT * FROM s_mesures sm, s_traitement_incident sti WHERE sti.id_incident='$id_incident' AND sti.login_ele='".$lig_prot->login."' AND sti.id_mesure=sm.id ORDER BY type, mesure;";
+							//echo "$sql<br />";
+							$res_mes=mysql_query($sql);
+							if(mysql_num_rows($res_mes)>0) {
+								while($lig_mes=mysql_fetch_object($res_mes)) {
+									$texte_mail.="   $lig_mes->mesure ($lig_mes->type)\n";
+								}
+								$texte_mail.="\n";
+							}
+	
+							// On va avoir des personnes alertees inutilement pour les élèves qui ont changé de classe.
+							// NON
+							$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='$lig_prot->login' ORDER BY periode DESC LIMIT 1;";
+							$res_clas_prot=mysql_query($sql);
+							if(mysql_num_rows($res_clas_prot)>0) {
+								$lig_clas_prot=mysql_fetch_object($res_clas_prot);
+								if(!in_array($lig_clas_prot->id_classe,$tab_alerte_classe)) {
+									$tab_alerte_classe[]=$lig_clas_prot->id_classe;
+								}
+							}
+						}
+					}
+	
+					if(count($tab_alerte_classe)>0) {
+						$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe);
+	
+						$texte_mail=$texte_mail."\n\n"."Message: $msg";
+						$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+						if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+	
+						$header_mail="";
+						if(isset($message_id)) {$header_mail.="Message-id: $message_id\r\n";}
+						if(isset($references_mail)) {$header_mail.="References: $references_mail\r\n";}
+	
+						// On envoie le mail
+						//$envoi = mail(getSettingValue("gepiAdminAdress"),
+						$envoi = mail($destinataires,
+							$gepiPrefixeSujetMail."GEPI : Incident num $id_incident",
+							$texte_mail,
+							"From: Mail automatique Gepi\r\n".$header_mail."X-Mailer: PHP/" . phpversion());
+					}
 				}
 			}
 		}

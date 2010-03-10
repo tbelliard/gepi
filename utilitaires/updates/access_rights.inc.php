@@ -632,6 +632,8 @@ $tab_req[] = "INSERT INTO droits SET id='/groupes/signalement_eleves.php',admini
 
 $tab_req[] = "INSERT INTO droits SET id='/bulletin/envoi_mail.php', administrateur='F',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='V',autre='F',description='Envoi de mail via ajax',statut='';";
 
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_discipline/destinataires_alertes.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Parametrage des destinataires de mail d alerte', '');";
+
 //$tab_req[] = "";
 
 

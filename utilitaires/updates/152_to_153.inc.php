@@ -443,4 +443,35 @@ if ($test == -1) {
 	}
 }
 
+
+// mod_discipline
+
+$test = sql_query1("SHOW TABLES LIKE 's_alerte_mail'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 's_alerte_mail'. ";
+	$sql="CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire));";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur lors de la création de la table 's_alerte_mail': ".$result_inter."<br />";
+	}
+	else {
+		$result .= "<font color=\"green\">Ok !</font><br />";
+	}
+}
+
+
+$result .= "&nbsp;->Ajout d'un champ message_id à la table 's_incidents'<br />";
+$test=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'message_id';"));
+if ($test>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE s_incidents ADD message_id VARCHAR(50) NOT NULL DEFAULT '';");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
 ?>
