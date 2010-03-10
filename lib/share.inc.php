@@ -4110,7 +4110,14 @@ function get_nom_prenom_eleve($login_ele) {
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		return "Elève inconnu";
+		$sql="SELECT 1=1 FROM utilisateurs WHERE login='$login_ele';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			return civ_nom_prenom($login)." (non-élève)";
+		}
+		else {
+			return "Elève inconnu";
+		}
 	}
 	else {
 		$lig=mysql_fetch_object($res);
