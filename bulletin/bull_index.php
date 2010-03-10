@@ -2158,7 +2158,10 @@ else {
 							*/
 							if (($periode_num >= $display_begin) and ($periode_num <= $display_end)) {
 								$indice_aid = @mysql_result($call_data_aid_b, $z, "indice_aid");
-								$aid_query = mysql_query("SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid')");
+								//$aid_query = mysql_query("SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid')");
+								$sql="SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid');";
+								//echo "$sql<br />";
+								$aid_query = mysql_query($sql);
 								$aid_id = @mysql_result($aid_query, 0, "id_aid");
 								if ($aid_id != '') {
 
@@ -2267,6 +2270,16 @@ else {
 										$tab_ele['aid_b'][$zz]['aid_note_min']=$aid_note_min;
 										$tab_ele['aid_b'][$zz]['place_eleve']=$place_eleve;
 									}
+
+									if ($type_note == 'no') {
+										$tab_ele['aid_b'][$zz]['aid_note']='-';
+										$tab_ele['aid_b'][$zz]['aid_statut']='';
+										$tab_ele['aid_b'][$zz]['aid_note_moyenne']='-';
+										$tab_ele['aid_b'][$zz]['aid_note_max']='-';
+										$tab_ele['aid_b'][$zz]['aid_note_min']='-';
+										//$tab_ele['aid_b'][$zz]['place_eleve']=$place_eleve;
+									}
+
 									$tab_ele['aid_b'][$zz]['aid_appreciation']=$current_eleve_aid_appreciation;
 
 									//echo "\$tab_ele['aid_b'][$z]['aid_appreciation']=".$tab_ele['aid_b'][$z]['aid_appreciation']."<br />";
@@ -2405,6 +2418,17 @@ else {
 										$tab_ele['aid_e'][$zz]['aid_note_min']=$aid_note_min;
 										$tab_ele['aid_e'][$zz]['place_eleve']=$place_eleve;
 									}
+
+
+									if ($type_note == 'no') {
+										$tab_ele['aid_e'][$zz]['aid_note']='-';
+										$tab_ele['aid_e'][$zz]['aid_statut']='';
+										$tab_ele['aid_e'][$zz]['aid_note_moyenne']='-';
+										$tab_ele['aid_e'][$zz]['aid_note_max']='-';
+										$tab_ele['aid_e'][$zz]['aid_note_min']='-';
+										//$tab_ele['aid_e'][$zz]['place_eleve']=$place_eleve;
+									}
+
 									$tab_ele['aid_e'][$zz]['aid_appreciation']=$current_eleve_aid_appreciation;
 
 									//echo "\$tab_ele['aid_e'][$z]['aid_appreciation']=".$tab_ele['aid_e'][$z]['aid_appreciation']."<br />";
