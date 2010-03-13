@@ -89,7 +89,8 @@ if(isset($imprime)) {
 		if($mode=='csv') {
 			$csv="";
 			for($i=0;$i<count($id_salle);$i++) {
-				$sql="SELECT e.nom, e.prenom, e.login, ec.n_anonymat FROM eb_copies ec, eleves e WHERE e.login=ec.login_ele AND ec.id_salle='$id_salle[$i]' AND ec.id_epreuve='$id_epreuve' ORDER BY e.nom,e.prenom;";
+				//$sql="SELECT e.nom, e.prenom, e.login, ec.n_anonymat FROM eb_copies ec, eleves e WHERE e.login=ec.login_ele AND ec.id_salle='$id_salle[$i]' AND ec.id_epreuve='$id_epreuve' ORDER BY e.nom,e.prenom;";
+				$sql="SELECT DISTINCT e.nom, e.prenom, e.login, e.naissance, c.classe, ec.n_anonymat FROM j_eleves_classes jec, eb_copies ec, eleves e, classes c WHERE e.login=ec.login_ele AND ec.id_salle='$id_salle[$i]' AND ec.id_epreuve='$id_epreuve' AND jec.id_classe=c.id AND jec.login=e.login ORDER BY e.nom, e.prenom;";
 				//echo "$sql<br />";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
@@ -97,24 +98,36 @@ if(isset($imprime)) {
 					$csv.="Epreuve:;$intitule_epreuve;\n";
 					$csv.="Date:;$date_epreuve;\n";
 					$csv.="Liste d'émargement;Salle $salle[$i];\n";
-					if($imprime!='avec_num_anonymat') {
-						$csv.="Nom prénom;Signature;\n";
+					
+					switch ($imprime) {
+						case "sans_num_anonymat":
+							$csv.="Nom prénom;Signature;\n";
+						break;
+						case "avec_num_anonymat":
+							$csv.="Nom prénom;Numéro anonymat;Signature\n";
+						break;
+						case "tout":
+							$csv.="Nom prénom;Classe;Date_naissance;Numéro anonymat;Signature\n";
+						break;
 					}
-					else {
-						$csv.="Nom prénom;Numéro anonymat;Signature\n";
-					}
+					
 					while($lig=mysql_fetch_object($res)) {
-						if($imprime!='avec_num_anonymat') {
-							// PROBLEME: ON PEUT AVOIR DES HOMONYMES DANS UNE MÊME SALLE...
-							$csv.=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').";;\n";
-						}
-						else {
-							$csv.=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').";$lig->n_anonymat;\n";
+						
+						switch ($imprime) {
+							case "sans_num_anonymat":
+								// PROBLEME: ON PEUT AVOIR DES HOMONYMES DANS UNE MÊME SALLE...
+								$csv.=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').";;\n";
+							break;
+							case "avec_num_anonymat":
+								$csv.=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').";$lig->n_anonymat;\n";
+							break;
+							case "tout":
+								$csv.=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').";$lig->classe;"."$lig->naissance;"."$lig->n_anonymat;\n";
+							break;
 						}
 					}
 				}
 			}
-
 			$nom_fic="emargement_epreuve_$id_epreuve.csv";
 	
 			$now = gmdate('D, d M Y H:i:s') . ' GMT';
@@ -503,6 +516,7 @@ if(!isset($imprime)) {
 	 	echo "<ul>\n";
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=csv'>Avec les colonnes 'NOM_PRENOM;SIGNATURE'</a></li>\n";
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=csv'>Avec les colonnes 'NOM_PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=tout&amp;mode=csv'>Avec les colonnes 'NOM_PRENOM;CLASSE;DATE_DE_NAISSANCE;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
 		echo "</ul>\n";
 	echo "</li>\n";
 	echo "<li><b>PDF</b>&nbsp;:\n";
