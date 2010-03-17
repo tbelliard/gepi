@@ -102,6 +102,13 @@ else {
         $_SESSION['week_selected'] = date("W");
     }
 }
+// =================== Forcer l'affichage d'un edt si l'utilisateur est un prof 
+if (!isset($login_edt)) {
+    if ($_SESSION['statut'] == "professeur") {
+        $login_edt = $_SESSION['login'];
+        $_GET["type_edt_2"] = "prof";
+    }
+}
 
 // =================== Construire les emplois du temps
 

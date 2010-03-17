@@ -351,6 +351,21 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
         $tab_data_jour['affiche_creneau'][$index_box] .= " début ";
     }
 
+    // ===================== Définir une couleur spécifique pour le créneau du repas
+    if (($type == "vide") AND ($couleur == "cadre")) {
+        $sql_request = "SELECT type_creneaux FROM absences_creneaux
+							        WHERE id_definie_periode  = '".$id_creneaux."'";
+        $req_type_creneaux = mysql_query($sql_request) or die(mysql_error());
+        if ($req_type_creneaux) {
+            if ($rep_type_creneau = mysql_fetch_array($req_type_creneaux)) {
+                if ($rep_type_creneau['type_creneaux'] == "repas") {
+                    $tab_data_jour['couleur'][$index_box] = "cadreRepas";
+                }
+
+            }
+        }
+
+    }
     $index_box++;
 }
 

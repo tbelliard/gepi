@@ -135,7 +135,7 @@ function DureeMax2ColonnesSalle($jour_sem, $id_salle, $tab_id_creneaux, $elapse_
             $k = $j;
             do
             {
-                $req_demicreneau = LessonsFromDayClassroomSlotWeekPeriod($jour_sem, $id_salle, $tab_id_creneaux[$k], $id_semaine1, $period)
+                $req_demicreneau = LessonsFromDayClassroomSlotWeekPeriod($jour_sem, $id_salle, $tab_id_creneaux[$k], $id_semaine1, $period);
                 $rep_demicreneau = mysql_fetch_array($req_demicreneau);
                 if ((mysql_num_rows($req_demicreneau) == 0) || ($rep_demicreneau['id_semaine'] != $id_semaine1))
                 {

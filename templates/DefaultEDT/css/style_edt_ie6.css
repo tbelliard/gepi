@@ -1604,7 +1604,15 @@ position: absolute; background-color: yellow; border: 1px solid silver;
      padding:0 0 0 0;
      height:100%;
 }
-
+.cadreRepas {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#999999;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
 .cadreCouleur {
      position:relative;
      border-left:1px solid #000000;

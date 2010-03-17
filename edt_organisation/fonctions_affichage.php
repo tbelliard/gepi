@@ -80,7 +80,7 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
                 
                 echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\">");
                 echo("<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n");
-                echo ("<div class=\"cadre\">\n");
+                echo ("<div class=\"".$tab_data[$jour]['couleur'][$index_box]."\">\n");
                 echo ("<div class=\"ButtonBar\">");
                 AfficheIconePlusNew($type_edt,$tab_data[$jour]['heuredeb_dec'][$index_box],$login_edt,$jour_sem,$tab_data[$jour]['id_creneau'][$index_box], $period);
                 echo ("</div>\n");
