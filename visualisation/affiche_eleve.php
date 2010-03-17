@@ -1985,7 +1985,6 @@ function eleve_suivant(){
 	echo "<td>\n";
 	//====================================================================
 
-
 	// Récupération des infos personnelles sur l'élève (nom, prénom, sexe, date de naissance et redoublant)
 	// Et calcul de l'age (si le serveur est à l'heure;o).
 	/*
@@ -3594,10 +3593,26 @@ function eleve_suivant(){
 
 			if($acces_bull_simp=="y") {
 				if($choix_periode=='toutes_periodes') {
-					echo "<p align='center'><a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" target=\"_blank\">Voir le bulletin simplifié</a></p>";
+					//echo "<p align='center'><a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" target=\"_blank\">Voir le bulletin simplifié</a></p>";
+
+					echo "<p align='center'>";
+					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');return false;\" target=\"_blank\">";
+					echo "Voir le bulletin simplifié";
+					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
+					echo "</a>";
+					echo "</p>\n";
+
 				}
 				else {
-					echo "<p align='center'><a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" target=\"_blank\">Voir le bulletin simplifié</a></p>";
+					//echo "<p align='center'><a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" target=\"_blank\">Voir le bulletin simplifié</a></p>";
+
+					echo "<p align='center'>";
+					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');return false;\" target=\"_blank\">";
+					echo "Voir le bulletin simplifié";
+					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
+					echo "</a>";
+					echo "</p>\n";
+
 				}
 			}
 
@@ -3784,6 +3799,33 @@ function complete_textarea_avis(num){
 }
 
 
+//===========================================================
+echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+
+	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
+		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+		echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
+		echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+		echo "</a>\n";
+		echo "</div>\n";
+
+		echo "<div id='titre_entete_bull_simp'></div>\n";
+	echo "</div>\n";
+	
+	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+	echo "</div>\n";
+
+echo "</div>\n";
+
+echo "<script type='text/javascript'>
+	// <![CDATA[
+	function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
+		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
+		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
+	}
+	//]]>
+</script>\n";
+//===========================================================
 
 require("../lib/footer.inc.php");
 ?>
