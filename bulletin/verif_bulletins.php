@@ -1073,8 +1073,9 @@ if (!(isset($id_classe))) {
 			echo "</td>\n";
 			echo "<td rowspan='2'>\n";
 			//echo "<textarea id='message_$num' cols='50' rows='5'>$message</textarea>\n";
-			echo "<textarea cols='50' rows='5'>$message</textarea>\n";
-			echo "<input type='hidden' name='message_$num' id='message_$num' value=\"".rawurlencode($message)."\" />\n";
+			echo "<textarea name='message_$num' id='message_$num' cols='50' rows='5'>$message</textarea>\n";
+			//echo "<input type='hidden' name='message_$num' id='message_$num' value=\"".rawurlencode($message)."\" />\n";
+			//echo "<input type='hidden' name='message_$num' id='message_$num' value=\"".rawurlencode(ereg_replace("\\\n",'_NEWLINE_',$message))."\" />\n";
 
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -1099,7 +1100,9 @@ if (!(isset($id_classe))) {
 		destinataire=document.getElementById('mail_'+num).value;
 		sujet_mail=document.getElementById('sujet_'+num).value;
 		message=document.getElementById('message_'+num).value;
-		new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+message,{method: 'get'});
+		//alert(message);
+		//new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+message,{method: 'get'});
+		new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message),{method: 'get'});
 	}
 	//]]>
 </script>\n";

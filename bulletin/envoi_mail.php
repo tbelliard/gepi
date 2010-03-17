@@ -34,7 +34,8 @@ $message_mail=isset($_GET["message"]) ? $_GET["message"] : NULL;
 
 // ========== Fin de l'initialisation de la page =============
 
-//$message_mail=my_ereg_replace("\\\\","\\",$message_mail);
+$message_mail=my_ereg_replace("\\\\n","\n",$message_mail);
+$message_mail=stripslashes($message_mail);
 /*
 $fich=fopen("/tmp/envoi_mail.txt","a+");
 fwrite($fich,"\$destinataire=$destinataire\n");
