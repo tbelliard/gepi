@@ -115,6 +115,8 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 	                id_calendrier = '$periode_calendrier'
 	                WHERE id_cours = '".$id_cours."'")
 	                or die('Erreur dans la mofication du cours : '.mysql_error().'');
+                    $_SESSION['edt_prof_enseignement'] = $enseignement;
+                    $_SESSION['edt_prof_salle'] = $login_salle;
 	        }
         }
     }
@@ -133,6 +135,8 @@ elseif (isset($modifier_cours) AND $modifier_cours == "non") {
 					 id_calendrier = '$periode_calendrier',
 					 login_prof = '".$identite."'")
 				OR DIE('Erreur dans la création du cours : '.mysql_error());
+                $_SESSION['edt_prof_enseignement'] = $enseignement;
+                $_SESSION['edt_prof_salle'] = $login_salle;
 			}
 		}
     }
@@ -205,51 +209,61 @@ if ($autorise == "oui") {
 	}else {
 		$affmessage = "";
 	}
-$affmessage = NULL;
+    $affmessage = NULL;
 	// On affiche les différents items du cours
-echo '
-	<fieldset>
-		<legend>'.LESSON_MODIFICATION.'</legend>
-		<form action="modifier_cours_popup.php" method="post">
+    echo '
+	    <fieldset>
+		    <legend>'.LESSON_MODIFICATION.'</legend>
+		    <form action="modifier_cours_popup.php" method="post">
 
 			<!-- <h2>'.$rep_prof["prenom"].' '.$rep_prof["nom"].' ('.$id_cours.') '.$affmessage.'</h2> -->
 
-	<table id="edt_modif" summary="Choisir les informations du cours">
-		<tr class="ligneimpaire">
-			<td>
-			<select name="enseignement">';
+	        <table id="edt_modif" summary="Choisir les informations du cours">
+		        <tr class="ligneimpaire">
+			        <td>
+			        <select name="enseignement">';
 
-		$tab_enseignements = get_groups_for_prof($identite);
-		// Si c'est un AID, on inscrit son nom
-		$explode = explode("|", $rep_cours["id_groupe"]);
-		if ($explode[0] == "AID") {
-			$nom_aid = mysql_fetch_array(mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$explode[1]."'"));
-		    $req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
-		    $rep_nom_complet = mysql_fetch_array($req_nom_complet);
-			$aff_intro = $rep_nom_complet["nom"]." : ".$nom_aid["nom"];
-		}else {
-			$aff_intro = CHOOSE_LESSON;
-		}
-echo '
-				<option value="'.$rep_cours["id_groupe"].'">'.$aff_intro.'</option>
-	';
+	$tab_enseignements = get_groups_for_prof($identite);
+	// Si c'est un AID, on inscrit son nom
+	$explode = explode("|", $rep_cours["id_groupe"]);
+	if ($explode[0] == "AID") {
+		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$explode[1]."'"));
+		$req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
+		$rep_nom_complet = mysql_fetch_array($req_nom_complet);
+		$aff_intro = $rep_nom_complet["nom"]." : ".$nom_aid["nom"];
+	}else {
+		$aff_intro = CHOOSE_LESSON;
+	}
 
-
+    echo '<option value="'.$rep_cours["id_groupe"].'">'.$aff_intro.'</option>';
+    $already_selected = false;
 	for($i=0; $i<count($tab_enseignements); $i++) {
+
 		if(isset($rep_cours["id_groupe"])){
 			if($rep_cours["id_groupe"] == $tab_enseignements[$i]["id"]){
 				$selected = " selected='selected'";
+                $already_selected = true;
 			}
 			else{
-				$selected = "";
+                $selected="";
 			}
 		}
 		else{
-			$selected = "";
+		    if(isset($_SESSION['edt_prof_enseignement'])){
+			    if($_SESSION['edt_prof_enseignement'] == $tab_enseignements[$i]["id"]){
+				    $selected = " selected='selected'";
+                    $already_selected = true;
+			    }
+			    else{
+                    $selected="";
+			    }
+		    }
+		    else{
+			    $selected="";
+		    }
 		}
-	echo '
-				<option value="'.$tab_enseignements[$i]["id"].'"'.$selected.'>'.$tab_enseignements[$i]["classlist_string"].' : '.$tab_enseignements[$i]["description"].'</option>
-		';
+
+	    echo '<option value="'.$tab_enseignements[$i]["id"].'"'.$selected.'>'.$tab_enseignements[$i]["classlist_string"].' : '.$tab_enseignements[$i]["description"].'</option>';
 	}
 
 	// On ajoute les AID s'il y en a
@@ -258,21 +272,28 @@ echo '
 		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
 		$req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
 		$rep_nom_complet = mysql_fetch_array($req_nom_complet);
-
+        $complete_aid = "AID|".$tab_aid[$i]["id_aid"];
+		if(isset($_SESSION['edt_prof_enseignement'])){
+			if(($_SESSION['edt_prof_enseignement'] == $complete_aid) AND (!$already_selected)){
+				$selected = " selected='selected'";
+			}
+			else{
+                $selected="";
+			}
+		}
+		else{
+			$selected="";
+		}
 		echo '
-				<option value="AID|'.$tab_aid[$i]["id_aid"].'">'.$rep_nom_complet["nom"].' : '.$nom_aid["nom"].'</option>
+				<option value="AID|'.$tab_aid[$i]["id_aid"].'"'.$selected.'>'.$rep_nom_complet["nom"].' : '.$nom_aid["nom"].'</option>
 		';
 	}
 
-echo '
+    echo '
 			</select>
-
-
-
 			</td>
 			<td>
-				<select name="ch_jour_semaine">
-	';
+				<select name="ch_jour_semaine">';
 
 	// Dans le cas de la création d'un cours, on propose le bon jour
 	if ($cours == "aucun" AND isset($horaire)) {
@@ -313,7 +334,7 @@ echo '
 		<option value="'.$tab_select_jour[$a]["jour_sem"].'"'.$selected.'>'.$tab_select_jour[$a]["jour_sem"].'</option>
 		';
 	}
-echo '
+    echo '
 				</select>
 			</td>
 			<td>
@@ -348,7 +369,7 @@ echo '
 		';
 
 	}
-echo '
+    echo '
 			</select>
 
 			</td>
@@ -372,33 +393,32 @@ echo '
 		}
 	}
 
-if (isset($rep_cours["heuredeb_dec"])) {
-		if ($rep_cours["heuredeb_dec"] === 0) {
-		$selected0 = " selected='selected'";
-		$selected5 = '';
-	}
-	else if ($rep_cours["heuredeb_dec"] == "0.5") {
-		$selected0 = '';
-		$selected5 = " selected='selected'";
-	}
-	else {
-		$selected0 = "";
-		$selected5 = "";
-	}
-}else {
-	$selected0 = "";
-	$selected5 = "";
-}
+    if (isset($rep_cours["heuredeb_dec"])) {
+		    if ($rep_cours["heuredeb_dec"] === 0) {
+		    $selected0 = " selected='selected'";
+		    $selected5 = '';
+	    }
+	    else if ($rep_cours["heuredeb_dec"] == "0.5") {
+		    $selected0 = '';
+		    $selected5 = " selected='selected'";
+	    }
+	    else {
+		    $selected0 = "";
+		    $selected5 = "";
+	    }
+    }else {
+	    $selected0 = "";
+	    $selected5 = "";
+    }
 
-echo '
+    echo '
 			<select name="heure_debut">
 				<option value="0"'.$selected0.'>'.LESSON_START_AT_THE_BEGINNING.'</option>
 				<option value="0.5"'.$selected5.'>'.LESSON_START_AT_THE_MIDDLE.'</option>
 			</select>
 
 			</td>
-			<td>
-	';
+			<td>';
 	// On détermine le selected de la duree
     $selected = array();
 	$selected[1] = $selected[2] = $selected[3] = $selected[4] = $selected[5] = $selected[6] = $selected[7] = $selected[8] = " ";
@@ -411,7 +431,7 @@ echo '
 		$selected[2] = " selected='selected'";
 	}
 
-echo '
+    echo '
 			<select name="duree">
 				<option value="1"'.$selected[1].'>'.HOUR1.'</option>
 				<option value="2"'.$selected[2].'>'.HOUR2.'</option>
@@ -456,7 +476,7 @@ echo '
 		';
 	}
 
-echo '
+    echo '
 			</select>
 
 			</td>
@@ -480,7 +500,17 @@ echo '
 			}
 		}
 		else{
-			$selected="";
+		    if(isset($_SESSION['edt_prof_salle'])){
+			    if($_SESSION['edt_prof_salle'] == $tab_select_salle[$c]["id_salle"]){
+				    $selected = " selected='selected'";
+			    }
+			    else{
+                    $selected="";
+			    }
+		    }
+		    else{
+			    $selected="";
+		    }
 		}
 			// On vérifie si le nom de l asalle existe vraiment
 			if ($tab_select_salle[$c]["nom_salle"] == "") {
@@ -489,7 +519,7 @@ echo '
 		echo "
 				<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</option>\n";
 	}
-echo '
+    echo '
 			</select>
 
 			</td>
@@ -579,8 +609,8 @@ echo '
 
 
 
-echo '
-	</fieldset>
+    echo '
+	    </fieldset>
 	';
 
 }// if $autorise...

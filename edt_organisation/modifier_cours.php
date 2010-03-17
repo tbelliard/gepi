@@ -104,6 +104,8 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 	                id_calendrier = '$periode_calendrier'
 	                WHERE id_cours = '".$id_cours."'")
 	                or die('Erreur dans la mofication du cours : '.mysql_error().'');
+                    $_SESSION['edt_prof_enseignement'] = $enseignement;
+                    $_SESSION['edt_prof_salle'] = $login_salle;
 	        }
         }
     }
@@ -122,6 +124,8 @@ elseif (isset($modifier_cours) AND $modifier_cours == "non") {
 					 id_calendrier = '$periode_calendrier',
 					 login_prof = '".$identite."'")
 				OR DIE('Erreur dans la création du cours : '.mysql_error());
+                $_SESSION['edt_prof_enseignement'] = $enseignement;
+                $_SESSION['edt_prof_salle'] = $login_salle;
 			}
 		}
     }
@@ -235,17 +239,31 @@ echo '
 	';
 
 
+    $already_selected = false;
 	for($i=0; $i<count($tab_enseignements); $i++) {
+
 		if(isset($rep_cours["id_groupe"])){
 			if($rep_cours["id_groupe"] == $tab_enseignements[$i]["id"]){
 				$selected = " selected='selected'";
+                $already_selected = true;
 			}
 			else{
-				$selected = "";
+                $selected="";
 			}
 		}
 		else{
-			$selected = "";
+		    if(isset($_SESSION['edt_prof_enseignement'])){
+			    if($_SESSION['edt_prof_enseignement'] == $tab_enseignements[$i]["id"]){
+				    $selected = " selected='selected'";
+                    $already_selected = true;
+			    }
+			    else{
+                    $selected="";
+			    }
+		    }
+		    else{
+			    $selected="";
+		    }
 		}
 	echo '
 				<option value="'.$tab_enseignements[$i]["id"].'"'.$selected.'>'.$tab_enseignements[$i]["classlist_string"].' : '.$tab_enseignements[$i]["description"].'</option>
@@ -258,9 +276,20 @@ echo '
 		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
 		$req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
 		$rep_nom_complet = mysql_fetch_array($req_nom_complet);
-
+        $complete_aid = "AID|".$tab_aid[$i]["id_aid"];
+		if(isset($_SESSION['edt_prof_enseignement'])){
+			if(($_SESSION['edt_prof_enseignement'] == $complete_aid) AND (!$already_selected)){
+				$selected = " selected='selected'";
+			}
+			else{
+                $selected="";
+			}
+		}
+		else{
+			$selected="";
+		}
 		echo '
-				<option value="AID|'.$tab_aid[$i]["id_aid"].'">'.$rep_nom_complet["nom"].' : '.$nom_aid["nom"].'</option>
+				<option value="AID|'.$tab_aid[$i]["id_aid"].'"'.$selected.'>'.$rep_nom_complet["nom"].' : '.$nom_aid["nom"].'</option>
 		';
 	}
 
