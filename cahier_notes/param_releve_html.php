@@ -517,6 +517,14 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 
 // Compteur pour alterner les couleurs de lignes
 $nb_ligne=1;
+
+
+$titre_infobulle="Paramètres communs HTML/PDF\n";
+$texte_infobulle="Ce paramètre est commun aux relevés HTML et PDF.\n";
+//$texte_infobulle.="\n";
+$tabdiv_infobulle[]=creer_div_infobulle('parametres_communs_html_et_pdf',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+
 ?>
 
 
@@ -739,6 +747,9 @@ $nb_ligne=1;
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Faire apparaitre le nom de l'établissement sur le relevé&nbsp;:<br />(<i>certains établissements ont le nom dans le Logo</i>)
+		<?php
+			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+		?>
         </td>
 	<?php
 		if(getSettingValue("releve_affich_nom_etab")){
@@ -766,6 +777,9 @@ $nb_ligne=1;
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Faire apparaitre l'adresse de l'établissement sur le relevé&nbsp;:<br />(<i>certains établissements ont l'adresse dans le Logo</i>)
+		<?php
+			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+		?>
         </td>
 	<?php
 		if(getSettingValue("releve_affich_adr_etab")){
@@ -972,6 +986,9 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Afficher le numéro de téléphone de l'établissement&nbsp;:
+		<?php
+			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+		?>
         </td>
         <td>
         <?php
@@ -989,6 +1006,9 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Afficher le numéro de fax de l'établissement&nbsp;:
+		<?php
+			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+		?>
         </td>
         <td>
         <?php
@@ -1006,6 +1026,9 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Afficher l'adresse email de l'établissement&nbsp;:
+		<?php
+			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+		?>
         </td>
         <td>
         <?php
