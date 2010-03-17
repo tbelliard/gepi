@@ -3070,8 +3070,14 @@ function eleve_suivant(){
 				$largeurGrad=50;
 				$largeurBandeDroite=80;
 				$largeur_utile=$largeur_graphe-$largeurGrad-$largeurBandeDroite;
+
 				$nbMat=count($matiere);
-				$largeurMat=round($largeur_utile/$nbMat);
+
+				// Pour éviter des pb de division par zero
+				$largeurMat=$largeur_utile;
+				if($nbMat>0) {
+					$largeurMat=round($largeur_utile/$nbMat);
+				}
 
 				echo "<map name='imagemap'>\n";
 				//for($i=0;$i<count($tab_imagemap);$i++){
