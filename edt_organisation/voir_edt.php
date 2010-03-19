@@ -44,7 +44,6 @@ $week_min=isset($_GET['week_min']) ? $_GET['week_min'] : (isset($_POST['week_min
 $week_selected=isset($_GET['week_selected']) ? $_GET['week_selected'] : (isset($_POST['week_selected']) ? $_POST['week_selected'] : NULL);
 //===========================
 
-
 // =============================================================================
 //
 //                                  TRAITEMENT DES DONNEES
@@ -117,14 +116,14 @@ if(isset($login_edt)){
     $type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
     if ($type_edt == "prof")
     {
-        $tab_data = ConstruireEDTProf($type_edt, $login_edt, $_SESSION['period_id']);
+        $tab_data = ConstruireEDTProf($login_edt, $_SESSION['period_id']);
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
         $DisplayEDT = true;
     }
     else if ($type_edt == "classe")
     {
-        $tab_data = ConstruireEDTClasse($type_edt, $login_edt, $_SESSION['period_id']);
+        $tab_data = ConstruireEDTClasse($login_edt, $_SESSION['period_id']);
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
         $DisplayEDT = true;
@@ -132,7 +131,7 @@ if(isset($login_edt)){
     }
     else if ($type_edt == "salle")
     {
-        $tab_data = ConstruireEDTSalle($type_edt, $login_edt , $_SESSION['period_id']);
+        $tab_data = ConstruireEDTSalle($login_edt , $_SESSION['period_id']);
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
         $DisplayEDT = true;
@@ -140,7 +139,7 @@ if(isset($login_edt)){
     }
     else if ($type_edt == "eleve")
     {
-        $tab_data = ConstruireEDTEleve($type_edt, $login_edt , $_SESSION['period_id']);
+        $tab_data = ConstruireEDTEleve($login_edt , $_SESSION['period_id']);
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
         $DisplayEDT = true;

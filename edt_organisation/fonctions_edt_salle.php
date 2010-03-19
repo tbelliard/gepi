@@ -451,9 +451,10 @@ function ConstruireColonneSalle($elapse_time, $req_creneau, $duree_max, $jour_se
 //          Si Nombre d'enregistrements (sur le créneau observé) >= 5 : situation non envisagée (pour l'emploi du temps d'un prof)
 //
 // =============================================================================
-function ConstruireEDTSalle($type_edt, $id_salle, $period) 
+function ConstruireEDTSalle($id_salle, $period) 
 {
     $table_data = array();
+    $type_edt = "salle";
 
 
 $req_jours = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(mysql_error());

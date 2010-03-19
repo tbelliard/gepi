@@ -1154,10 +1154,11 @@ function ConstruireColonneEleveTiers($elapse_time, &$tab_cours, $index_record, $
 //          Si Nombre d'enregistrements (sur le créneau observé) >= 5 : 11 cas (non traités au niveau de l'affichage)
 //
 // =============================================================================
-function ConstruireEDTEleve($type_edt, $login_eleve, $period) 
+function ConstruireEDTEleve($login_eleve, $period) 
 {
     $table_data = array();
     $tab_cours = array();
+    $type_edt = "eleve";
 
     $req_jours = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(mysql_error());
     $jour_sem_tab = array();

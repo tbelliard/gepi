@@ -447,10 +447,10 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
 //          Si Nombre d'enregistrements (sur le créneau observé) >= 5 : situation non envisagée (pour l'emploi du temps d'un prof)
 //
 // =============================================================================
-function ConstruireEDTProf($type_edt, $login_edt, $period) 
+function ConstruireEDTProf($login_edt, $period) 
 {
     $table_data = array();
-
+    $type_edt = "prof";
 
 $req_jours = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(mysql_error());
 $jour_sem_tab = array();
