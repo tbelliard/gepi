@@ -165,9 +165,20 @@ if ($windows == 'oui') {
 if(isset($javascript_specifique)) {
 	// Il faudrait filtrer le contenu de la variable...
 	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
-	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0) {
-		// Javascript spécifique à une page:
-		echo "<script type='text/javascript' src='$gepiPath/$javascript_specifique.js'></script>\n";
+
+	if(is_array($javascript_specifique)) {
+		foreach($javascript_specifique as $current_javascript_specifique) {
+			if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_javascript_specifique))==0) {
+				// Javascript spécifique à une page:
+				echo "<script type='text/javascript' src='$gepiPath/$current_javascript_specifique.js'></script>\n";
+			}
+		}
+	}
+	else {
+		if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0) {
+			// Javascript spécifique à une page:
+			echo "<script type='text/javascript' src='$gepiPath/$javascript_specifique.js'></script>\n";
+		}
 	}
 }
 // On affiche tout le temps brainjar sauf quand on dit à Gepi de ne pas le faire
@@ -218,9 +229,20 @@ if(isset($style_specifique)) {
 	// Il faudrait filtrer le contenu de la variable...
 	// ne doit contenir que certains types de caractères et se terminer par .css
 	// Non... on ajoute le ".css" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
-	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
-		// Styles spécifiques à une page:
-		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
+
+	if(is_array($style_specifique)) {
+		foreach($style_specifique as $current_style_specifique) {
+			if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
+				// Styles spécifiques à une page:
+				echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$current_style_specifique.css' />\n";
+			}
+		}
+	}
+	else {
+		if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
+			// Styles spécifiques à une page:
+			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
+		}
 	}
 }
 
