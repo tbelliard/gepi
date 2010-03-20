@@ -1048,14 +1048,18 @@ else {
 
 		// On prépare l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en tête des bulletins :
 		if (!isset($call_data_aid_b)){
-			$call_data_aid_b = mysql_query("SELECT * FROM aid_config WHERE (order_display1 ='b' and display_bulletin!='n') ORDER BY order_display2");
+			$sql="SELECT * FROM aid_config WHERE (order_display1 ='b' and display_bulletin!='n') ORDER BY order_display2;";
+			//echo "$sql<br />";
+			$call_data_aid_b = mysql_query($sql);
 			$nb_aid_b = mysql_num_rows($call_data_aid_b);
 			//echo "\$nb_aid_b=$nb_aid_b<br />";
 		}
 
 		// On prépare l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en fin des bulletins :
 		if (!isset($call_data_aid_e)){
-			$call_data_aid_e = mysql_query("SELECT * FROM aid_config WHERE (order_display1 ='e' and display_bulletin!='n') ORDER BY order_display2");
+			$sql="SELECT * FROM aid_config WHERE (order_display1 ='e' and display_bulletin!='n') ORDER BY order_display2;";
+			//echo "$sql<br />";
+			$call_data_aid_e = mysql_query($sql);
 			$nb_aid_e = mysql_num_rows($call_data_aid_e);
 			//echo "\$nb_aid_e=$nb_aid_e<br />";
 		}
@@ -2147,8 +2151,8 @@ else {
 						while ($z < $nb_aid_b) {
 							$display_begin = @mysql_result($call_data_aid_b, $z, "display_begin");
 							$display_end = @mysql_result($call_data_aid_b, $z, "display_end");
-							$type_note = @mysql_result($call_data_aid_b, 0, "type_note");
-							$note_max = @mysql_result($call_data_aid_b, 0, "note_max");
+							$type_note = @mysql_result($call_data_aid_b, $z, "type_note");
+							$note_max = @mysql_result($call_data_aid_b, $z, "note_max");
 							/*
 							echo "\$z=$z<br />";
 							echo "\$display_begin=$display_begin<br />";
@@ -2305,8 +2309,17 @@ else {
 						while ($z < $nb_aid_e) {
 							$display_begin = @mysql_result($call_data_aid_e, $z, "display_begin");
 							$display_end = @mysql_result($call_data_aid_e, $z, "display_end");
-							$type_note = @mysql_result($call_data_aid_e, 0, "type_note");
-							$note_max = @mysql_result($call_data_aid_e, 0, "note_max");
+							$type_note = @mysql_result($call_data_aid_e, $z, "type_note");
+							$note_max = @mysql_result($call_data_aid_e, $z, "note_max");
+
+							/*
+							echo "\$z=$z<br />";
+							echo "\$display_begin=$display_begin<br />";
+							echo "\$display_end=$display_end<br />";
+							echo "\$type_note=$type_note<br />";
+							echo "\$note_max=$note_max<br />";
+							*/
+
 							if (($periode_num >= $display_begin) and ($periode_num <= $display_end)) {
 								$indice_aid = @mysql_result($call_data_aid_e, $z, "indice_aid");
 								$aid_query = mysql_query("SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid')");
