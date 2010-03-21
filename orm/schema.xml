@@ -572,7 +572,7 @@
 	<table name="edt_calendrier" phpName="EdtCalendrierPeriode" description="Liste des periodes datees de l'annee courante(pour definir par exemple les trimestres)">
 		<column name="id_calendrier" required="true" primaryKey="true" type="INTEGER" size="11" description="cle primaire"/>
         <!-- le champ suivant est impossible a traiter automatiquement - aucune foreign-key associable -->
-		<column name="classe_concerne_calendrier" required="true" type="TEXT" description="id des classes (separes par des ;) concernees par cette periode"/>
+		<column name="classe_concerne_calendrier" required="true" type="LONGVARCHAR" description="id des classes (separes par des ;) concernees par cette periode"/>
 		<column name="nom_calendrier" required="true" type="VARCHAR" size="100" description="nom de la periode definie"/>
 		<column name="debut_calendrier_ts" required="true" type="VARCHAR" size="11" description="timestamp du debut de la periode"/>
 		<column name="fin_calendrier_ts" required="true" type="VARCHAR" size="11" description="timestamp de la fin de la periode"/>
@@ -581,7 +581,7 @@
 		<column name="jourfin_calendrier" required="true" type="DATE" size="11" description="date de la fin de la periode"/>
 		<column name="heurefin_calendrier" required="true" type="TIME" size="11" description="heure de la fin de la periode"/>
 		<column name="numero_periode" required="true" type="TINYINT" size="4" description="id de la periode de notes associee"/>
-        <foreign-key foreignTable="periodes" onDelete="SETNULL"><reference local="numero_periode" foreign="num_periode"/></foreign-key>
+        <!--foreign-key foreignTable="periodes" onDelete="SETNULL"><reference local="numero_periode" foreign="num_periode"/></foreign-key-->
 		<column name="etabferme_calendrier" required="true" type="TINYINT" size="4" description="egal a 1 si etablissement ouvert sur cette periode - 0 sinon"/>
 		<column name="etabvacances_calendrier" required="true" type="TINYINT" size="4" description="egal a 1 si la periode est definie sur les vacances - 0 sinon"/>
 	</table>
