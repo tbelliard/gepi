@@ -541,4 +541,76 @@
 		</foreign-key>
 	</table>
 
+<!-- Début des objets propel spécifiques au module EDT -->
+    <table name="edt_creneaux" phpName="EdtCreneau" description="Table contenant les creneaux de chaque journee (M1, M2...S1, S2...)">
+        <column name="id_definie_periode" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incremente"/>
+        <column name="nom_definie_periode" required="true" type="VARCHAR" size="50" description="Nom du creneau - typiquement, M1, M2, R (pour repas), P (pour récréation), S1, S2 etc"/>
+        <column name="heuredebut_definie_periode" required="true" type="TIME" description="Heure de debut du creneau"/>
+        <column name="heurefin_definie_periode" required="true" type="TIME" description="Heure de fin du creneau"/>
+        <column name="suivi_definie_periode" required="false" type="INTEGER" size="2" default="9" description="champ inutilise"/>
+        <column name="type_creneau" required="false" type="VARCHAR" size="15" default="cours" description="types possibles : cours, pause, repas, vie_scolaire"/>
+        <column name="jour_creneau" required="true" type="VARCHAR" size="20" default="NULL" description="Par defaut, aucun jour en particulier mais on peut imposer que des creneaux soient specifiques a un jour en particulier : 'lundi', 'mardi', 'mercredi'..."/>
+    </table>
+
+    <table name="horaires_etablissement" phpName="EdtHoraires" description="Table contenant les heures d'ouverture et de fermeture de l'etablissement par journee">
+        <column name="id_horaire_etablissement" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incremente"/>
+        <column name="date_horaire_etablissement" required="false" type="DATE" description="NULL (c'etait un 0 a l'origine...voir si pb) = horaires valables toute l'annee pour le jour specifie - date precise = horaires valables uniquement pour cette date"/>
+        <column name="jour_horaire_etablissement" required="true" type="VARCHAR" size="15" description="defini le jour de la semaine - typiquement, lundi, mardi, etc..."/>
+        <column name="ouverture_horaire_etablissement" required="true" type="TIME" description="Heure d'ouverture de l'etablissement"/>
+        <column name="fermeture_horaire_etablissement" required="true" type="TIME" default="9" description="Heure de fermeture de l'etablissement"/>
+        <column name="pause_horaire_etablissement" required="true" type="TIME" size="15" description="champ non utilise"/>
+        <column name="ouvert_horaire_etablissement" required="true" type="BOOLEAN" description="1 = etablissement ouvert - 0 = etablissement ferme"/>
+    </table>
+
+	<table name="edt_semaines" phpName="EdtSemaine" description="Liste des semaines de l'annee scolaire courante - 53 enregistrements obligatoires (pas 52!)">
+		<column name="id_edt_semaine" required="true" primaryKey="true" type="INTEGER" size="11" description="cle primaire"/>
+		<column name="num_edt_semaine" required="true" type="INTEGER" size="11" description="numero de la semaine dans l'annee civile"/>
+		<column name="type_edt_semaine" required="true" type="VARCHAR" size="10" description="typiquement, champ egal a 'A' ou 'B' pour l'alternance des semaines"/>
+		<column name="num_edt_semaine" required="true" type="INTEGER" size="11" description="numero de la semaine dans l'annee scolaire"/>
+	</table>
+
+	<table name="edt_calendrier" phpName="EdtCalendrierPeriode" description="Liste des periodes datees de l'annee courante(pour definir par exemple les trimestres)">
+		<column name="id_calendrier" required="true" primaryKey="true" type="INTEGER" size="11" description="cle primaire"/>
+        <!-- le champ suivant est impossible a traiter automatiquement - aucune foreign-key associable -->
+		<column name="classe_concerne_calendrier" required="true" type="TEXT" description="id des classes (separes par des ;) concernees par cette periode"/>
+		<column name="nom_calendrier" required="true" type="VARCHAR" size="100" description="nom de la periode definie"/>
+		<column name="debut_calendrier_ts" required="true" type="VARCHAR" size="11" description="timestamp du debut de la periode"/>
+		<column name="fin_calendrier_ts" required="true" type="VARCHAR" size="11" description="timestamp de la fin de la periode"/>
+		<column name="jourdebut_calendrier" required="true" type="DATE" size="11" description="date du debut de la periode"/>
+		<column name="heuredebut_calendrier" required="true" type="TIME" size="11" description="heure du debut de la periode"/>
+		<column name="jourfin_calendrier" required="true" type="DATE" size="11" description="date de la fin de la periode"/>
+		<column name="heurefin_calendrier" required="true" type="TIME" size="11" description="heure de la fin de la periode"/>
+		<column name="numero_periode" required="true" type="TINYINT" size="4" description="id de la periode de notes associee"/>
+        <foreign-key foreignTable="periodes" onDelete="SETNULL"><reference local="numero_periode" foreign="num_periode"/></foreign-key>
+		<column name="etabferme_calendrier" required="true" type="TINYINT" size="4" description="egal a 1 si etablissement ouvert sur cette periode - 0 sinon"/>
+		<column name="etabvacances_calendrier" required="true" type="TINYINT" size="4" description="egal a 1 si la periode est definie sur les vacances - 0 sinon"/>
+	</table>
+
+	<table name="edt_cours" phpName="EdtEmplacementCours" description="Liste de tous les creneaux de tous les emplois du temps">
+		<column name="id_cours" required="true" primaryKey="true" type="INTEGER" size="3" description="cle primaire"/>
+		<column name="id_groupe" required="false" type="INTEGER" size="10" description="id du groupe d'enseignement concerne - NULL sinon"/>
+        <foreign-key foreignTable="groupes" onDelete="CASCADE"><reference local="id_groupe" foreign="id"/></foreign-key>
+		<column name="id_aid" required="true" type="INTEGER" size="10" description="id de l'aid concerne - NULL sinon"/>
+        <foreign-key foreignTable="groupes" onDelete="CASCADE"><reference local="id_groupe" foreign="id"/></foreign-key>
+		<column name="id_salle" required="true" type="INTEGER" size="10" description="id de la salle concernee"/>
+        <foreign-key foreignTable="salle_cours" onDelete="SETNULL"><reference local="id_salle" foreign="id_salle"/></foreign-key>
+		<column name="jour_semaine" required="true" type="VARCHAR" size="10" description="jour de la semaine ou a lieu le cours : lundi, mardi etc..."/>
+		<column name="id_definie_periode" required="true" type="VARCHAR" size="3" description="id du creneau de la journee ou a lieu le cours - voir table edt_creneaux "/>
+        <foreign-key foreignTable="edt_creneaux" onDelete="CASCADE"><reference local="id_definie_periode" foreign="id_definie_periode"/></foreign-key>
+		<column name="duree" required="true" type="VARCHAR" size="10" description="duree du cours definie en demi-heures.1h de cours correspond a une duree=2"/>
+		<column name="heuredeb_dec" required="true" type="VARCHAR" size="3" description="0 si le cours commence au debut du creneau - 0.5 s'il commence au milieu"/>
+		<column name="id_semaine" required="true" type="VARCHAR" size="3" description="type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B"/>
+		<column name="id_calendrier" required="true" type="VARCHAR" size="3" description="NULL = le cours a lieu toute l'annee - sinon, id de la periode (EdtPeriodes) durant laquelle a lieu le cours"/>
+        <foreign-key foreignTable="edt_calendrier" onDelete="SETNULL"><reference local="id_calendrier" foreign="id_calendrier"/></foreign-key>
+		<column name="modif_edt" required="true" type="VARCHAR" size="3" description="champ inutilise"/>
+		<column name="login_prof" required="true" type="VARCHAR" size="50" description="login du prof qui dispense le cours"/>
+        <foreign-key foreignTable="utilisateurs" onDelete="CASCADE"><reference local="login_prof" foreign="login"/></foreign-key>
+	</table>
+
+	<table name="salle_cours" phpName="EdtSalle" description="Liste des salles de classe">
+		<column name="id_salle" required="true" primaryKey="true" type="INTEGER" size="3" description="cle primaire"/>
+		<column name="numero_salle" required="true" type="VARCHAR" size="10" description="numero de la salle defini par l'utilisateur"/>
+		<column name="nom_salle" required="true" type="VARCHAR" size="50" description="nom de la salle defini par l'utilisateur"/>
+	</table>
+
 </database>
