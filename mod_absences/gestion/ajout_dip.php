@@ -151,7 +151,7 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
                            }
 
                            // on vérifie que les périodes existe bien dans la base
-                              $sql = "SELECT * from ".$prefix_base."absences_creneaux";
+                              $sql = "SELECT * from ".$prefix_base."edt_creneaux";
                               $resultat = mysql_query($sql) or die('Erreur SQL !'.$sql.'<br />'.mysql_error());
                               while ($data_Per = mysql_fetch_array($resultat))
                                {

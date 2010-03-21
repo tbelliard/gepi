@@ -1227,7 +1227,7 @@ col2 varchar(100) NOT NULL default ''
 							"messages","id","`id` int(11) NOT NULL auto_increment",
 							"suivi_eleve_cpe","id_suivi_eleve_cpe","`id_suivi_eleve_cpe` int(11) NOT NULL auto_increment",
 							"absences_eleves","id_absence_eleve","`id_absence_eleve` int(11) NOT NULL auto_increment",
-							"absences_creneaux","id_definie_periode","`id_definie_periode` int(11) NOT NULL auto_increment",
+							"edt_creneaux","id_definie_periode","`id_definie_periode` int(11) NOT NULL auto_increment",
 							"absences_motifs","id_motif_absence","`id_motif_absence` int(11) NOT NULL auto_increment",
 							"groupes","id","`id` int(11) NOT NULL auto_increment",
 							"miseajour","id_miseajour","`id_miseajour` int(11) NOT NULL auto_increment",

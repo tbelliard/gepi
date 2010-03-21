@@ -343,7 +343,7 @@ Class Modele_Incidents extends Modele {
         return(mysql_fetch_row($this->res=mysql_query($this->sql)));
     }
    private function get_db_infos_crenaux(){
-      $this->sql="SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode;";
+      $this->sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
       $this->res=mysql_query($this->sql);
       while($this->row=mysql_fetch_object($this->res)) {
           $this->crenaux[$this->row->nom_definie_periode]=$this->row;

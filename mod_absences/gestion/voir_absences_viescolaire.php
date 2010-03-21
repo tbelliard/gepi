@@ -135,9 +135,9 @@ require_once("../../lib/header.inc");
 
 // Choix de la bonne table
 if (date("w") == getSettingValue("creneau_different")){
-	$table_ab = 'absences_creneaux_bis';
+	$table_ab = 'edt_creneaux_bis';
 }else{
-	$table_ab = 'absences_creneaux';
+	$table_ab = 'edt_creneaux';
 }
 
 
@@ -354,10 +354,10 @@ for($i = 0; $i < $nbre_rep; $i++) {
 <?php
 		// test sur le jour pour voir les créneaux
 	if (date("w") == getSettingValue("creneau_different")) {
-		$req_creneaux = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+		$req_creneaux = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	}
 	else {
-		$req_creneaux = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+		$req_creneaux = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	}
 	$nbre_creneaux = mysql_num_rows($req_creneaux);
 	$aff_creneaux_sans_select = NULL;

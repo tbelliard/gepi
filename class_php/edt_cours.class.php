@@ -124,7 +124,7 @@ class edt{
 
 	public function creneau($cren){
 		// On cherche le créneau de début du cours
-		$sql_c = "SELECT * FROM absences_creneaux WHERE type_creneau != 'pause' AND id_definie_periode = '".$cren."' LIMIT 1";
+		$sql_c = "SELECT * FROM edt_creneaux WHERE type_creneau != 'pause' AND id_definie_periode = '".$cren."' LIMIT 1";
 		$query_c = mysql_query($sql_c);
 		$verif = mysql_num_rows($query_c);
 
@@ -324,7 +324,7 @@ class edtAfficher{
 
 	public function liste_creneaux(){
 		// Renvoie la liste des créneaux d'une journée
-		$sql = "SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode FROM absences_creneaux
+		$sql = "SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode FROM edt_creneaux
 							WHERE type_creneaux != 'pause'
 							AND type_creneaux != 'repas'
 							ORDER BY heuredebut_definie_periode";

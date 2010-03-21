@@ -655,7 +655,7 @@ function periode_actuel($heure_choix)
       if($heure_choix=="") { $heure_choix = date('H:i:s'); }
       $num_periode="";
       //on liste dans un tableau les périodes existante
-      $requete_periode = ('SELECT * FROM absences_creneaux WHERE heuredebut_definie_periode <= "'.$heure_choix .'" AND heurefin_definie_periode >= "'.$heure_choix.'" ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
+      $requete_periode = ('SELECT * FROM edt_creneaux WHERE heuredebut_definie_periode <= "'.$heure_choix .'" AND heurefin_definie_periode >= "'.$heure_choix.'" ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
       $resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
       while($data_periode = mysql_fetch_array ($resultat_periode)) {
           $debut=$data_periode['heuredebut_definie_periode'];
@@ -669,7 +669,7 @@ function periode_actuel($heure_choix)
 function periode_heure($periode)
 {
       // on recherche les informations sur la périodes sélectionné
-      $requete_periode = ('SELECT * FROM absences_creneaux WHERE id_definie_periode = "'.$periode.'"');
+      $requete_periode = ('SELECT * FROM edt_creneaux WHERE id_definie_periode = "'.$periode.'"');
       $resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
       while($data_periode = mysql_fetch_array ($resultat_periode)) {
           $debut = $data_periode['heuredebut_definie_periode'];

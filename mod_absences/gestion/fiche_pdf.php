@@ -281,7 +281,7 @@ if ( $etiquette_action === 'originaux' ) {
 
 // REQUETE SQL SUR LES PERIODES (HORAIRE)
 	$i = '0';
-	$requete_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux WHERE suivi_definie_periode = "1" ORDER BY heuredebut_definie_periode ASC';
+	$requete_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux WHERE suivi_definie_periode = "1" ORDER BY heuredebut_definie_periode ASC';
         $execution_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
 	while ( $donnee_periode = mysql_fetch_array( $execution_periode ) ) {
 		$Horaire[$i] = heure_texte_court($donnee_periode['heuredebut_definie_periode']).' - '.heure_texte_court($donnee_periode['heurefin_definie_periode']);
@@ -1079,7 +1079,7 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 		$tab_jour['dimanche'] = '0';
 
 		// calcul du nombre de période à affiché dans la semaine
-		$maxHor = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux
+		$maxHor = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_creneaux
 							WHERE suivi_definie_periode = '1'"),0);
 
 		// si il est égale à 0 alors on l'initialise à 11

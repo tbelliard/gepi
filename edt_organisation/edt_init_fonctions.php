@@ -114,9 +114,9 @@ function nomTableCreneau($jour){
 	}
 	// Ensuite, en fonction du résultat, on teste et on renvoie la bonne table des créneaux
 	if ($numero_jour == getSettingValue("jour_different")) {
-		$retour = 'absences_creneaux_bis';
+		$retour = 'edt_creneaux_bis';
 	}else{
-		$retour = 'absences_creneaux';
+		$retour = 'edt_creneaux';
 	}
 
 	return $retour;
@@ -150,7 +150,7 @@ function renvoiIdCreneau($heure_brute, $jour){
 // durée d'un créneau dans Gepi
 function dureeCreneau(){
 	// On récupère les infos sur un créneau
-	$creneau = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux LIMIT 1"));
+	$creneau = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux LIMIT 1"));
 	$deb = $creneau["heuredebut_definie_periode"];
 	$fin = $creneau["heurefin_definie_periode"];
 	$nombre_mn_deb = (substr($deb, 0, -5) * 60) + (substr($deb, 3, -3));
@@ -387,7 +387,7 @@ function rechercheCreneauCsv2($creneau){
 			$heure = $test2[0];
 		}
 		$heure_reconstruite = $heure.':'.$test2[1].':'.'00';
-		$query = mysql_query("SELECT DISTINCT id_definie_periode FROM absences_creneaux
+		$query = mysql_query("SELECT DISTINCT id_definie_periode FROM edt_creneaux
 						WHERE heuredebut_definie_periode <= '".$heure_reconstruite."'
 						ORDER BY heuredebut_definie_periode ASC LIMIT 1");
 		if ($query) {
@@ -406,7 +406,7 @@ function rechercheCreneauCsv2($creneau){
 	if (isset($test1[1])) {
 		// ça veut dire que le créneau étudié est de la forme 8h00 - 9h35 : $test1[0] = 8h00 et $test1(1] = 9h00
 		// on recherche si le début est bon ou pas pour savoir si le cours commence au début du créneau ou pas
-		$heure_debut = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$id_creneau."'"));
+		$heure_debut = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$id_creneau."'"));
 		$test3 = explode(":", $heure_debut["heuredebut_definie_periode"]);
 		if (substr($test3[0], 0, -1) == "0") {
 			$heu = substr($test3[0], -1);

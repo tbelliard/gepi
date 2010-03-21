@@ -34,7 +34,7 @@ echo '
 		<option value="aucun">Liste des créneaux</option>
 ';
 // On appele la liste des créneaux
-$query = mysql_query("SELECT * FROM absences_creneaux WHERE type_creneaux != 'pause' AND type_creneaux != 'repas' ORDER BY heuredebut_definie_periode")
+$query = mysql_query("SELECT * FROM edt_creneaux WHERE type_creneaux != 'pause' AND type_creneaux != 'repas' ORDER BY heuredebut_definie_periode")
 			OR trigger_error('Erreur dans la recherche des créneaux : '.mysql_error());
 
 while($creneaux = mysql_fetch_array($query)){

@@ -701,7 +701,7 @@ function info_eleve($ele_login) {
 		while($rep = mysql_fetch_object($query)){
 
 			$jour = date("d/m", $rep->debut_ts);
-			$creneau = mysql_fetch_array(mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$rep->creneau_id."' LIMIT 1"));
+			$creneau = mysql_fetch_array(mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$rep->creneau_id."' LIMIT 1"));
 
 			$tab_ele['abs_quotidien'][$s]['retard_absence'] = $rep->retard_absence;
 			$tab_ele['abs_quotidien'][$s]['jour_semaine'] = $rep->jour_semaine . ' ' . $jour;

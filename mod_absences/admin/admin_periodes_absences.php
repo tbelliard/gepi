@@ -71,7 +71,7 @@ $jour_semaine = isset($_POST["jour_semaine"]) ? $_POST["jour_semaine"] : NULL;
 $demande_jour_semaine = isset($_POST["demande_jour_semaine"]) ? $_POST["demande_jour_semaine"] : NULL;
 
 // on prévoit de passer systématiquement vers les créneaux du jour différent si $cren est initialisé
-// Dans ce cas, on appelle absences_creneaux_bis
+// Dans ce cas, on appelle edt_creneaux_bis
 $cren = isset($_GET["cren"]) ? $_GET["cren"] : (isset($_POST["cren"]) ? $_POST["cren"] : NULL);
 if ($cren == "diff") {
 	$aff_creneau_diff = '&amp;cren=diff';
@@ -123,19 +123,19 @@ if ($action_sql == "ajouter" or $action_sql == "modifier") {
 				if($heurefin_definie_periode_ins != "00:00") {
 					if($heurefin_definie_periode_ins > $heuredebut_definie_periode_ins) {
 						if($action_sql == "ajouter") {
-							$test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux".$choix_table." WHERE nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins')"),0);
+							$test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins')"),0);
 						}
 						if($action_sql == "modifier") {
-							$test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux".$choix_table." WHERE id_definie_periode != '$id_definie_periode_ins' AND (nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins'))"),0);
+							$test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE id_definie_periode != '$id_definie_periode_ins' AND (nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins'))"),0);
 						}
                         if ($test == "0") {
                         	if($action_sql == "ajouter") {
                         		// Requete d'insertion MYSQL
-								$requete = "INSERT INTO ".$prefix_base."absences_creneaux".$choix_table." (nom_definie_periode,heuredebut_definie_periode,heurefin_definie_periode,suivi_definie_periode,type_creneaux) VALUES ('$nom_definie_periode_ins','$heuredebut_definie_periode_ins','$heurefin_definie_periode_ins', '$suivi_definie_periode_ins', '$type_creneaux_ins')";
+								$requete = "INSERT INTO ".$prefix_base."edt_creneaux".$choix_table." (nom_definie_periode,heuredebut_definie_periode,heurefin_definie_periode,suivi_definie_periode,type_creneaux) VALUES ('$nom_definie_periode_ins','$heuredebut_definie_periode_ins','$heurefin_definie_periode_ins', '$suivi_definie_periode_ins', '$type_creneaux_ins')";
 							}
 							if($action_sql == "modifier") {
 								// Requete de mise à jour MYSQL
-								$requete = "UPDATE ".$prefix_base."absences_creneaux".$choix_table." SET
+								$requete = "UPDATE ".$prefix_base."edt_creneaux".$choix_table." SET
 											nom_definie_periode = '$nom_definie_periode_ins',
 											heuredebut_definie_periode = '$heuredebut_definie_periode_ins',
 											heurefin_definie_periode = '$heurefin_definie_periode_ins',
@@ -207,13 +207,13 @@ if ($action_sql == "ajouter" or $action_sql == "modifier") {
 
 if ($action_sql == "supprimer") {
 	//Requete d'insertion MYSQL
-	$requete = "DELETE FROM ".$prefix_base."absences_creneaux".$choix_table." WHERE id_definie_periode ='$id_periode'";
+	$requete = "DELETE FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE id_definie_periode ='$id_periode'";
 	// Execution de cette requete
 	mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 }
 
 if ($action == "modifier") {
-	$requete_modif_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux'.$choix_table.' WHERE id_definie_periode="'.$id_periode.'"';
+	$requete_modif_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux'.$choix_table.' WHERE id_definie_periode="'.$id_periode.'"';
 	$resultat_modif_periode = mysql_query($requete_modif_periode) or die('Erreur SQL !'.$requete_modif_periode.'<br />'.mysql_error());
 	$data_modif_periode = mysql_fetch_array($resultat_modif_periode);
 }
@@ -308,7 +308,7 @@ if ($compter >= 1) {
 			<th class="tab_th" style="width: 25px;"></th>
 		</tr>
 <?php
-	$requete_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux'.$choix_table.' ORDER BY heuredebut_definie_periode, nom_definie_periode ASC';
+	$requete_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux'.$choix_table.' ORDER BY heuredebut_definie_periode, nom_definie_periode ASC';
 
     $execution_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
     $i=1;

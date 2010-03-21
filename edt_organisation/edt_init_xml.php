@@ -102,7 +102,7 @@ while ($row_horaires=mysql_fetch_row($result_horaires))
 }
 
 //construction du tableau des periodes
-$query_periodes="select * from absences_creneaux";
+$query_periodes="select * from edt_creneaux";
 $result_periodes=mysql_query($query_periodes) or die(mysql_error());
 unset($i);
 if ($result_periodes) {

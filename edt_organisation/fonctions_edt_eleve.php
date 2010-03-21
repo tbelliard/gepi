@@ -1167,7 +1167,7 @@ function ConstruireEDTEleve($login_eleve, $period)
         $tab_data['entete'][] = $data_sem_tab["jour_horaire_etablissement"];
     }
     $jour=0;
-    $req_id_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux
+    $req_id_creneaux = mysql_query("SELECT id_definie_periode FROM edt_creneaux
 							    WHERE type_creneaux != 'pause'") or die(mysql_error());
     $nbre_lignes = mysql_num_rows($req_id_creneaux);
     if ($nbre_lignes == 0) {

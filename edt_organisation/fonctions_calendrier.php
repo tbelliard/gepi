@@ -277,9 +277,9 @@ function retourneCreneau(){
 	$heure = date("H:i:s");
 	// On vérifie si on est dans un jour différent ou pas
 	if (date("w") == getSettingValue("creneau_different")) {
-		$table = 'absences_creneaux_bis';
+		$table = 'edt_creneaux_bis';
 	}else{
-		$table = 'absences_creneaux';
+		$table = 'edt_creneaux';
 	}
 	$query = mysql_query("SELECT id_definie_periode FROM ".$table." WHERE
 			heuredebut_definie_periode <= '".$heure."' AND
@@ -302,9 +302,9 @@ function heureDeb(){
 	$creneauId = retourneCreneau();
 	// On vérifie si il existe un jour différent et si c'est aujourd'hui
 	if (date("w") == getSettingValue("creneau_different")) {
-		$table = "absences_creneaux_bis";
+		$table = "edt_creneaux_bis";
 	}else {
-		$table = "absences_creneaux";
+		$table = "edt_creneaux";
 	}
 	// On récupère l'heure de début et celle de fin du créneau
 	$query = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM ".$table." WHERE id_definie_periode = '".$creneauId."'");

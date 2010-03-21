@@ -48,7 +48,7 @@ require('sanctions_func_lib.php');
 function choix_heure($champ_heure,$div_choix_heure) {
 	global $tabdiv_infobulle;
 
-	$sql="SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode;";
+	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
 	$res_abs_cren=mysql_query($sql);
 	if(mysql_num_rows($res_abs_cren)>0) {
 		echo " <a href='#' onclick=\"afficher_div('$div_choix_heure','y',10,-40); return false;\">Choix</a>";
@@ -1458,7 +1458,7 @@ elseif($step==2) {
 	$display_heure=strftime("%H").":".strftime("%M");
 
 	//$timestamp_heure=time();
-	$sql="SELECT nom_definie_periode FROM absences_creneaux WHERE CURTIME()>=heuredebut_definie_periode AND CURTIME()<heurefin_definie_periode;";
+	$sql="SELECT nom_definie_periode FROM edt_creneaux WHERE CURTIME()>=heuredebut_definie_periode AND CURTIME()<heurefin_definie_periode;";
 	$res_time=mysql_query($sql);
 	if(mysql_num_rows($res_time)>0) {
 		$lig_time=mysql_fetch_object($res_time);

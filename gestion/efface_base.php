@@ -98,8 +98,8 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 2)) {
    $liste_tables_del = array(
 "absences",
 //"absences_actions",
-//"absences_creneaux",
-"absences_creneaux_bis",
+//"edt_creneaux",
+"edt_creneaux_bis",
 "absences_eleves",
 "absences_gep",
 //"absences_motifs",

@@ -177,7 +177,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 			$travail = $lig_sanction->travail;
 			
 			//recherche de l'heure de début. C'est le crénaux qui est enregistré.
-			$sql_heure = "SELECT * FROM `absences_creneaux` WHERE `nom_definie_periode`='$lig_sanction->heure_debut'";
+			$sql_heure = "SELECT * FROM `edt_creneaux` WHERE `nom_definie_periode`='$lig_sanction->heure_debut'";
 			//echo $sql_heure;
 			$res_heure = mysql_query($sql_heure);
 			if(mysql_num_rows($res_heure)>0) {

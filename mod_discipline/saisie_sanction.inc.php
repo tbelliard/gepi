@@ -11,11 +11,11 @@ include("../lib/calendrier/calendrier.class.php");
 
 //Variable : $dernier  on afficher le dernier créneau si $dernier='o' (paramètre pour une exclusion)
 function choix_heure2($champ_heure,$selected,$dernier) {
-	$sql="SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode;";
+	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
 	$res_abs_cren=mysql_query($sql);
 	$num_row = mysql_num_rows($res_abs_cren); //le nombre de ligne de la requète
 	if($num_row==0) {
-		echo "La table absences_creneaux n'est pas renseignée!";
+		echo "La table edt_creneaux n'est pas renseignée!";
 	}
 	else {
         $cpt=1;	

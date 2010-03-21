@@ -120,7 +120,7 @@ echo '
 
 	// choix de l'horaire
 
-	$req_heure = mysql_query("SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode");
+	$req_heure = mysql_query("SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode");
 	$rep_heure = mysql_fetch_array($req_heure);
 
 echo '

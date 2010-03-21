@@ -174,7 +174,7 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont b
 			$verif_creneau = $verif_dec[0];
 		}
 	// On cherche l'id du créneau en question
-	$req_creneau = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE nom_definie_periode = '".$verif_creneau."'");
+	$req_creneau = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE nom_definie_periode = '".$verif_creneau."'");
 	$rep_creneau = mysql_fetch_array($req_creneau);
 			if ($rep_creneau == "") {
 				$probleme .= "<p>Le cr&eacute;neau n'a pas &eacute;t&eacute; trouv&eacute;.</p>\n";
@@ -333,7 +333,7 @@ if ($aff_infos != "oui") {
 		$aff_forme_classe = $forme_classe["classe"];
 		// La liste des créneaux
 				$aff_liste_creneaux = "";
-		$sql_creneaux = mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause'");
+		$sql_creneaux = mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause'");
 		$nbre_creneaux = mysql_num_rows($sql_creneaux);
 			for ($a=0; $a < $nbre_creneaux; $a++) {
 				$liste_creneaux[$a] = mysql_result($sql_creneaux, $a, "nom_definie_periode");

@@ -258,7 +258,7 @@ function ConstruireEnteteEDT()
 function ConstruireCreneauxEDT() 
 {
     $table_data = array();
-    $req_id_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux
+    $req_id_creneaux = mysql_query("SELECT id_definie_periode FROM edt_creneaux
 							    WHERE type_creneaux != 'pause'") or die(mysql_error());
     $nbre_lignes = mysql_num_rows($req_id_creneaux);
     if ($nbre_lignes == 0) {
@@ -353,7 +353,7 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
 
     // ===================== Définir une couleur spécifique pour le créneau du repas
     if (($type == "vide") AND ($couleur == "cadre")) {
-        $sql_request = "SELECT type_creneaux FROM absences_creneaux
+        $sql_request = "SELECT type_creneaux FROM edt_creneaux
 							        WHERE id_definie_periode  = '".$id_creneaux."'";
         $req_type_creneaux = mysql_query($sql_request) or die(mysql_error());
         if ($req_type_creneaux) {
@@ -665,7 +665,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 // Fonction qui renvoie le nombre de lignes du tableau EdT
 
 function nbre_lignes_tab_edt(){
-	$compter_lignes = mysql_query("SELECT nom_definie_periode FROM absences_creneaux");
+	$compter_lignes = mysql_query("SELECT nom_definie_periode FROM edt_creneaux");
 	$nbre_lignes = (mysql_num_rows($compter_lignes)) + 1;
 	return $nbre_lignes;
 }
@@ -685,7 +685,7 @@ function nbre_colonnes_tab_edt(){
 
 function retourne_creneaux(){
 
-	$req_nom_creneaux_r = mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+	$req_nom_creneaux_r = mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	if ($req_nom_creneaux_r) {
 		$rep_creneaux = array();
 		while($data_creneaux = mysql_fetch_array($req_nom_creneaux_r)) {
@@ -701,7 +701,7 @@ function retourne_creneaux(){
 
 function retourne_horaire(){
 
-	$req_nom_horaire = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+	$req_nom_horaire = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 
 	if ($req_nom_horaire) {
 		$num_nom_horaire = mysql_num_rows($req_nom_horaire);
@@ -726,7 +726,7 @@ function retourne_horaire(){
 
 function retourne_id_creneaux(){
 
-	$req_id_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux
+	$req_id_creneaux = mysql_query("SELECT id_definie_periode FROM edt_creneaux
 								WHERE type_creneaux != 'pause'
 								ORDER BY heuredebut_definie_periode");
 	// On compte alors le nombre de réponses et on renvoie en fonction de la réponse
@@ -762,7 +762,7 @@ function retourne_setting_edt($reglage_edt){
 
 function retourne_ens($jour_semaine, $id_creneaux){
 
-	$req_nom_creneaux = mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE id_definie_periode ='".$id_creneaux."'");
+	$req_nom_creneaux = mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode ='".$id_creneaux."'");
 	$rep_nom_creneaux = mysql_fetch_array($req_nom_creneaux);
 	// On récupère tous les enseignements de l'horaire
 	$req_ens = mysql_query("SELECT id_groupe FROM edt_cours WHERE id_definie_periode='".$id_creneaux."' && jour_semaine ='".$jour_semaine."'");
@@ -1237,7 +1237,7 @@ $debg = NULL;
 	$fonction_onclick = isset($fonction_onclick) ? $fonction_onclick : NULL;
 	if ($fonction_onclick == "y") {
 		// On a besoin du nom du créneau
-		$nom_creneau = mysql_fetch_array(mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$id_creneaux."' LIMIT 1"));
+		$nom_creneau = mysql_fetch_array(mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$id_creneaux."' LIMIT 1"));
 		$aff_click_sanctions = '<br /><img src="../images/edit16.png" title="Ajouter une sanction" alt="Ajouter une sanction" onclick="clic_edt(\''.$nom_creneau["nom_definie_periode"].'\', \''.$jour_semaine.'\');" />';
 	}else{
 
@@ -1413,7 +1413,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 
 	if ($fonction_onclick == "y") {
 		// On a besoin du nom du créneau
-		$nom_creneau = mysql_fetch_array(mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$id_creneaux."' LIMIT 1"));
+		$nom_creneau = mysql_fetch_array(mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$id_creneaux."' LIMIT 1"));
 		$aff_click_sanctions = '<br /><img src="../images/edit16.png" title="Ajouter une sanction" alt="Ajouter une sanction" onclick="clic_edt(\''.$nom_creneau["nom_definie_periode"].'\', \''.$jour_semaine.'\');" />';
 	}else{
 

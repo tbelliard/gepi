@@ -343,7 +343,7 @@ if ($autorise == "oui") {
 
 	// On propose aussi le choix de l'horaire
 
-	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	$rep_heure = mysql_num_rows($req_heure);
 
 	for($b = 0; $b < $rep_heure; $b++) {

@@ -44,7 +44,7 @@ if (!checkAccess()) {
 
 $liste_tables_del = array(
 //absences
-//absences_creneaux
+//edt_creneaux
 //absences_eleves
 //absences_gep
 //absences_motifs

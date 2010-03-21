@@ -34,7 +34,7 @@ require_once("choix_langue.php");
 //
 //              $login_prof = login_prof de la table 'edt_cours' 
 //              $jour = jour_horaire_etablissement de la table 'horaires_etablissement'               
-//              $creneau = id_definie_periode de la table 'absences_creneaux'
+//              $creneau = id_definie_periode de la table 'edt_creneaux'
 //
 // =============================================================================
 
@@ -90,7 +90,7 @@ if ($login_prof != "") {
                 while ($tab_enseignement['id_groupe'][$k] != "") {
                     $elapse_time_end = $elapse_time + $tab_enseignement['duree'][$k];
                     if ((($elapse_time<=$start_lesson) AND ($start_lesson<$elapse_time_end)) OR (($elapse_time>=$start_lesson) AND ($elapse_time<$end_lesson))){
-                        $req_nom_creneau = mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$tab_id_creneaux[$j]."' ");
+                        $req_nom_creneau = mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$tab_id_creneaux[$j]."' ");
 		                $rep_nom_creneau = mysql_fetch_array($req_nom_creneau);
                         if ($tab_enseignement['id_semaine'][$k] != "0") {
                             $creneaux_occupes .= "en ".$rep_nom_creneau['nom_definie_periode']." (Sem ".$tab_enseignement['id_semaine'][$k].") "." ";
@@ -124,7 +124,7 @@ return $prof_libre;
 //
 //              $salle = id_salle de la table 'salle_cours' 
 //              $jour = jour_horaire_etablissement de la table 'horaires_etablissement'               
-//              $creneau = id_definie_periode de la table 'absences_creneaux'
+//              $creneau = id_definie_periode de la table 'edt_creneaux'
 //
 // =============================================================================
 
@@ -171,7 +171,7 @@ if (($salle != "") AND ($salle != "rie")) {
                 if ((($elapse_time<=$start_lesson) AND ($start_lesson<$elapse_time_end)) OR (($elapse_time>=$start_lesson) AND ($elapse_time<$end_lesson))){
                     $req_nom_prof = mysql_query("SELECT nom FROM utilisateurs WHERE login = '".$tab_enseignement['login'][$k]."' ");
 		            $rep_nom_prof = mysql_fetch_array($req_nom_prof);
-                    $req_nom_creneau = mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$tab_id_creneaux[$j]."' ");
+                    $req_nom_creneau = mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$tab_id_creneaux[$j]."' ");
 		            $rep_nom_creneau = mysql_fetch_array($req_nom_creneau);
                     if ($tab_enseignement['id_semaine'][$k] != "0") {
                         $enseignants .= $rep_nom_prof['nom']." (Sem ".$tab_enseignement['id_semaine'][$k].") "."en ".$rep_nom_creneau['nom_definie_periode']." ";
@@ -596,8 +596,8 @@ function creneauPrecedent($creneau){
 // Fonction qui renvoie le nombre de créneaux précédents celui qui est appelé
 function nombreCreneauxPrecedent($creneau){
 	// On récupère l'heure du creneau appelé
-	$heure_creneau_appele = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$creneau."'"));
-	$requete = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE
+	$heure_creneau_appele = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$creneau."'"));
+	$requete = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE
 						heuredebut_definie_periode < '".$heure_creneau_appele["heuredebut_definie_periode"]."' AND
 						type_creneaux != 'pause'
 						ORDER BY heuredebut_definie_periode");
@@ -609,8 +609,8 @@ function nombreCreneauxPrecedent($creneau){
 // Fonction qui renvoie le nombre de créneaux qui suivent celui qui est appelé
 function nombreCreneauxApres($creneau){
 	// On récupère l'heure du creneau appelé
-	$heure_creneau_appele = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$creneau."'"));
-	$requete = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE heuredebut_definie_periode > '".$heure_creneau_appele["heuredebut_definie_periode"]."' AND type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+	$heure_creneau_appele = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$creneau."'"));
+	$requete = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE heuredebut_definie_periode > '".$heure_creneau_appele["heuredebut_definie_periode"]."' AND type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	$nbre = mysql_num_rows($requete);
 
 	return $nbre;
@@ -645,7 +645,7 @@ function retourneAid($id_groupe){
  * dure 2 "temps". Par exemple, pour un cours qui commence au début du 4ème créneau de la journée et
  * qui dure 2 heures, la fonction renvoie $retour["deb"] = 5 et $retour["fin"] = 8;
  * $jour = le jour de la semaine en toute lettre et en Français
- * $creneau = id du créneau (table absences_creneaux)
+ * $creneau = id du créneau (table edt_creneaux)
  * $heuredeb_dec vaut '0' si le cours commence au début d'un créneau et '0.5' si le cours commence au milieu du créneau
  * $duree = nombre de demi-cours (un cours d'un créneau et demi aura donc une durée de 3)
 */

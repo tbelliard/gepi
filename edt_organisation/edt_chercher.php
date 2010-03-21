@@ -122,7 +122,7 @@ echo '
 
 	// choix de l'horaire
 
-	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux ORDER BY heuredebut_definie_periode");
+	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux ORDER BY heuredebut_definie_periode");
 	$rep_heure = mysql_fetch_array($req_heure);
 
 echo '
@@ -212,7 +212,7 @@ echo "</form>\n</fieldset>\n";
 
 if ($auto_aff_2 === 1) {
 		// On reprend les infos sur les horaires demandés
-		$requete_creneaux = mysql_query("SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$ch_heure."'");
+		$requete_creneaux = mysql_query("SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$ch_heure."'");
 		$reponse_tab_creneaux = mysql_fetch_array($requete_creneaux);
 	echo"<fieldset>\n<legend>Résultats</legend>\n";
 	echo "Les salles libres le <font color=\"green\">".$ch_jour_semaine."</font> de <font color=\"green\">".$reponse_tab_creneaux["heuredebut_definie_periode"]." à ".$reponse_tab_creneaux["heurefin_definie_periode"]." ( ".$reponse_tab_creneaux["nom_definie_periode"]." )</font> sont :\n";

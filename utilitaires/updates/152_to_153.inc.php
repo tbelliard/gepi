@@ -348,7 +348,7 @@ else {
 //---------------
 // Ajouts d'index
 
-$result .= add_index('absences_creneaux','heures_debut_fin','heuredebut_definie_periode, heurefin_definie_periode');
+$result .= add_index('edt_creneaux','heures_debut_fin','heuredebut_definie_periode, heurefin_definie_periode');
 $result .= add_index('absences_rb','eleve_debut_fin_retard','eleve_id, debut_ts, fin_ts, retard_absence');
 $result .= add_index('classes','classe','classe');
 $result .= add_index('ct_entry','date_ct','date_ct');
@@ -473,5 +473,136 @@ else {
 			$result .= "<font color=\"red\">Erreur</font><br />";
 	}
 }
+
+
+// ============= Suppression de tables inutiles pour EDT2
+
+$sql = "SHOW TABLES LIKE 'edt_gr_nom'";
+$req_existence = mysql_query($sql);
+if (mysql_num_rows($req_existence) != 0) {
+    $sql = "DROP TABLE edt_gr_nom";
+    $req_deletion = mysql_query($sql);
+    if ($req_deletion) {
+        $result .= "<p style=\"color:green;\">Suppression de la table <strong>edt_gr_nom</strong> : ok</p>";
+    }
+    else {
+        $result .= "<p style=\"color:red;\">Suppression de la table <strong>edt_gr_nom</strong> : Erreur</p>";
+    }
+}
+else {
+    $result .= "<p style=\"color:blue;\">Suppression de la table <strong>edt_gr_nom</strong> : déjà réalisée.</p>";
+}
+
+$sql = "SHOW TABLES LIKE 'edt_gr_profs'";
+$req_existence = mysql_query($sql);
+if (mysql_num_rows($req_existence) != 0) {
+    $sql = "DROP TABLE edt_gr_profs";
+    $req_deletion = mysql_query($sql);
+    if ($req_deletion) {
+        $result .= "<p style=\"color:green;\">Suppression de la table <strong>edt_gr_profs</strong> : ok</p>";
+    }
+    else {
+        $result .= "<p style=\"color:red;\">Suppression de la table <strong>edt_gr_profs</strong> : Erreur</p>";
+    }
+}
+else {
+    $result .= "<p style=\"color:blue;\">Suppression de la table <strong>edt_gr_profs</strong> : déjà réalisée.</p>";
+}
+
+$sql = "SHOW TABLES LIKE 'edt_gr_classes'";
+$req_existence = mysql_query($sql);
+if (mysql_num_rows($req_existence) != 0) {
+    $sql = "DROP TABLE edt_gr_classes";
+    $req_deletion = mysql_query($sql);
+    if ($req_deletion) {
+        $result .= "<p style=\"color:green;\">Suppression de la table <strong>edt_gr_classes</strong> : ok</p>";
+    }
+    else {
+        $result .= "<p style=\"color:red;\">Suppression de la table <strong>edt_gr_classes</strong> : Erreur</p>";
+    }
+}
+else {
+    $result .= "<p style=\"color:blue;\">Suppression de la table <strong>edt_gr_classes</strong> : déjà réalisée.</p>";
+}
+
+$sql = "SHOW TABLES LIKE 'edt_gr_eleves'";
+$req_existence = mysql_query($sql);
+if (mysql_num_rows($req_existence) != 0) {
+    $sql = "DROP TABLE edt_gr_eleves";
+    $req_deletion = mysql_query($sql);
+    if ($req_deletion) {
+        $result .= "<p style=\"color:green;\">Suppression de la table <strong>edt_gr_eleves</strong> : ok</p>";
+    }
+    else {
+        $result .= "<p style=\"color:red;\">Suppression de la table <strong>edt_gr_eleves</strong> : Erreur</p>";
+    }
+}
+else {
+    $result .= "<p style=\"color:blue;\">Suppression de la table <strong>edt_gr_eleves</strong> : déjà réalisée.</p>";
+}
+
+// ============= Renommage d'une table pour EDT2
+
+$sql = "RENAME TABLE absences_creneaux TO edt_creneaux";
+$req_rename = mysql_query($sql);
+if ($req_rename){
+    $result .= "<p style=\"color:green;\">Renommage de la table <strong>absences_creneaux</strong> en <strong>edt_creneaux</strong> : ok.</p>";
+}
+else {
+    $result .= "<p style=\"color:blue;\">Renommage de la table <strong>absences_creneaux</strong> en <strong>edt_creneaux</strong> : déjà réalisé.</p>";
+}
+
+// ============= Renommage d'une table pour EDT2
+
+$sql = "RENAME TABLE absences_creneaux_bis TO edt_creneaux_bis";
+$req_rename = mysql_query($sql);
+if ($req_rename){
+    $result .= "<p style=\"color:green;\">Renommage de la table <strong>absences_creneaux_bis</strong> en <strong>edt_creneaux_bis</strong> : ok.</p>";
+}
+else {
+    $result .= "<p style=\"color:blue;\">Renommage de la table <strong>absences_creneaux_bis</strong> en <strong>edt_creneaux_bis</strong> : déjà réalisé.</p>";
+}
+
+// ============= Insertion d'un champ pour EDT2
+
+$sql = "SELECT jour_creneau FROM edt_creneaux LIMIT 1";
+$req_rank = mysql_query($sql);
+if (!$req_rank){
+    $sql_request = "ALTER TABLE edt_creneaux ADD jour_creneau VARCHAR(20)";
+    $req_add_rank = mysql_query($sql_request);
+    if ($req_add_rank) {
+        $result .= "<p style=\"color:green;\">Ajout du champ jour_creneau dans la table <strong>edt_creneaux</strong> : ok.</p>";
+    }
+    else {
+        $result .= "<p style=\"color:red;\">Ajout du champ jour_creneau à la table <strong>edt_creneaux</strong> : Erreur.</p>";
+    $result .=mysql_error();
+    }
+}
+else {
+    $result .= "<p style=\"color:blue;\">Ajout du champ jour_creneau à la table <strong>edt_creneaux</strong> : déjà réalisé.</p>";
+    $result .=mysql_error();
+}
+
+// ============= Insertion d'un champ pour EDT2
+
+$sql = "SELECT id_aid FROM edt_cours LIMIT 1";
+$req_rank = mysql_query($sql);
+if (!$req_rank){
+    $sql_request = "ALTER TABLE edt_cours ADD id_aid INTEGER(10)";
+    $req_add_rank = mysql_query($sql_request);
+    if ($req_add_rank) {
+        $result .= "<p style=\"color:green;\">Ajout du champ id_aid dans la table <strong>edt_cours</strong> : ok.</p>";
+    }
+    else {
+        $result .= "<p style=\"color:red;\">Ajout du champ id_aid à la table <strong>edt_cours</strong> : Erreur.</p>";
+    $result .=mysql_error();
+    }
+}
+else {
+    $result .= "<p style=\"color:blue;\">Ajout du champ id_aid à la table <strong>edt_cours</strong> : déjà réalisé.</p>";
+    $result .=mysql_error();
+}
+
+
 
 ?>

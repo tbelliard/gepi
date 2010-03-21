@@ -345,13 +345,13 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 		// en tenantcompte toujours du réglage sur les créneaux
 		if (getSettingValue("creneau_different") != 'n') {
 			if (date("w") == getSettingValue("creneau_different")) {
-				$req_creneau = mysql_query("SELECT id_definie_periode FROM absences_creneaux_bis WHERE heuredebut_definie_periode = '".$d_heure_absence_eleve."'");
+				$req_creneau = mysql_query("SELECT id_definie_periode FROM edt_creneaux_bis WHERE heuredebut_definie_periode = '".$d_heure_absence_eleve."'");
 			}
 			else {
-			$req_creneau = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE heuredebut_definie_periode = '".$d_heure_absence_eleve."'");
+			$req_creneau = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE heuredebut_definie_periode = '".$d_heure_absence_eleve."'");
 			}
 		}else {
-			$req_creneau = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE heuredebut_definie_periode = '".$d_heure_absence_eleve."'");
+			$req_creneau = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE heuredebut_definie_periode = '".$d_heure_absence_eleve."'");
 		}
 	$rep_creneau = mysql_fetch_array($req_creneau);
 
@@ -628,12 +628,12 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 // on vérifie que certains jours n'ont pas les mêmes créneaux
 	if (getSettingValue("creneau_different") != 'n') {
 		if (date("w") == getSettingValue("creneau_different")) {
-			$requete_pe = ('SELECT * FROM absences_creneaux_bis WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
+			$requete_pe = ('SELECT * FROM edt_creneaux_bis WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
 		} else {
-			$requete_pe = ('SELECT * FROM absences_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
+			$requete_pe = ('SELECT * FROM edt_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
 		}
 	}else {
-		$requete_pe = ('SELECT * FROM absences_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
+		$requete_pe = ('SELECT * FROM edt_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
 	}
 	// et on récupère les créneaux
 	$resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
@@ -671,12 +671,12 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	// on vérifie que certains jours n'ont pas les mêmes créneaux
 	if (getSettingValue("creneau_different") != 'n') {
 		if (date("w") == getSettingValue("creneau_different")) {
-			$requete_pe = ('SELECT * FROM absences_creneaux_bis WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
+			$requete_pe = ('SELECT * FROM edt_creneaux_bis WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
 		} else {
-			$requete_pe = ('SELECT * FROM absences_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
+			$requete_pe = ('SELECT * FROM edt_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
 		}
 	}else {
-		$requete_pe = ('SELECT * FROM absences_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
+		$requete_pe = ('SELECT * FROM edt_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
 	}
 
 	$resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
@@ -958,12 +958,12 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	// on compte les créneaux pour savoir combien de cellules il faut créer
 	if (getSettingValue("creneau_different") != 'n') {
 		if (date("w") == getSettingValue("creneau_different")) {
-			$sql = "SELECT nom_definie_periode FROM absences_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			$sql = "SELECT nom_definie_periode FROM edt_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
 		}else{
-			$sql = "SELECT nom_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
 		}
 	}else{
-		$sql = "SELECT nom_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+		$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
 	}
 	$req_noms = mysql_query($sql) OR DIE ('Pas de créneaux disponibles.');
 	$nbre_noms = mysql_num_rows($req_noms) OR die ('Impossible de compter les créneaux.');
@@ -992,12 +992,12 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	// On insère les noms des différents créneaux
 	if (getSettingValue("creneau_different") != 'n') {
 		if (date("w") == getSettingValue("creneau_different")) {
-			$sql = "SELECT nom_definie_periode FROM absences_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			$sql = "SELECT nom_definie_periode FROM edt_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
 		}else{
-			$sql = "SELECT nom_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
 		}
 	}else{
-		$sql = "SELECT nom_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+		$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
 	}
 	$req_noms = mysql_query($sql) OR DIE ('Pas de créneaux disponibles.');
 	$nbre_noms = mysql_num_rows($req_noms) OR DIE ('Impossible de compter les créneaux.');
@@ -1263,9 +1263,9 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 // ===================== On insère le suivi sur les différents créneaux ==================================
 // On construit le tableau html des créneaux avec les couleurs
 		if (date("w") == getSettingValue("creneau_different")) {
-			$req_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+			$req_creneaux = mysql_query("SELECT id_definie_periode FROM edt_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 		} else {
-			$req_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+			$req_creneaux = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 		}
 		$nbre_creneaux = mysql_num_rows($req_creneaux);
 

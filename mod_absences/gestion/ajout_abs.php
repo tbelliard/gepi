@@ -220,7 +220,7 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 			//mettre les heures par rapport à une période si période sélectionné
 			if ($dp_absence_eleve != "")
 			{
-				$requete_recherche_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux
+				$requete_recherche_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux
 														WHERE id_definie_periode="'.$dp_absence_eleve.'"';
 
                 $resultat_recherche_periode = mysql_query($requete_recherche_periode) or die('Erreur SQL !'.$requete_recherche_periode.'<br />'.mysql_error());
@@ -230,7 +230,7 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
                 {
 					$a_heure_absence_eleve_ins = $data_recherche_periode['heurefin_definie_periode'];
                 } else {
-					$requete_recherche_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux
+					$requete_recherche_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux
 														WHERE id_definie_periode="'.$ap_absence_eleve.'"';
 					$resultat_recherche_periode = mysql_query($requete_recherche_periode) or die('Erreur SQL !'.$requete_recherche_periode.'<br />'.mysql_error());
 					$data_recherche_periode = mysql_fetch_array($resultat_recherche_periode);
@@ -1063,7 +1063,7 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
 						en
                      	<select name="dp_absence_eleve[<?php echo $i; ?>]">
 		<?php
-				$requete_pe = ('SELECT * FROM '.$prefix_base.'absences_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
+				$requete_pe = ('SELECT * FROM '.$prefix_base.'edt_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
 				$resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
 		?>
 							<option value="">pas de s&eacute;lection</option>
@@ -1083,7 +1083,7 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
 						en
                     	<select name="ap_absence_eleve[<?php echo $i; ?>]">
         <?php
-            	$requete_pe = ('SELECT * FROM '.$prefix_base.'absences_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
+            	$requete_pe = ('SELECT * FROM '.$prefix_base.'edt_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
                 $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error()); ?>
 
 							<option value="">pas de s&eacute;lection</option><?php
@@ -1298,7 +1298,7 @@ if (isset($eleve_absent[1]) and !empty($eleve_absent[1]) or $mode === 'classe') 
               <select name="dp_absence_eleve[<?php echo $i; ?>]">
                 <option value="">pas de s&eacute;lection</option>
                    <?php
-                      $requete_pe = ('SELECT * FROM '.$prefix_base.'absences_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
+                      $requete_pe = ('SELECT * FROM '.$prefix_base.'edt_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
                       $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
                     while ( $data_pe = mysql_fetch_array ($resultat_pe)) { ?>
                               <option value="<?php echo $data_pe['id_definie_periode']; ?>" <?php if(isset($dp_absence_eleve_erreur[$i]) and $dp_absence_eleve_erreur[$i] == $data_pe['id_definie_periode']) { ?>selected<?php } else { } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heuredebut_definie_periode'])."-".heure_court($data_pe['heurefin_definie_periode']); ?></option><?php
@@ -1308,7 +1308,7 @@ if (isset($eleve_absent[1]) and !empty($eleve_absent[1]) or $mode === 'classe') 
               <select name="ap_absence_eleve[<?php echo $i; ?>]">
                 <option value="">pas de s&eacute;lection</option>
                     <?php
-                        $requete_pe = ('SELECT * FROM '.$prefix_base.'absences_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
+                        $requete_pe = ('SELECT * FROM '.$prefix_base.'edt_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
                         $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
                     while ( $data_pe = mysql_fetch_array ($resultat_pe)) { ?>
                                <option value="<?php echo $data_pe['id_definie_periode']; ?>" <?php if(isset($dp_absence_eleve_erreur[$i]) and $dp_absence_eleve_erreur[$i] == $data_pe['id_definie_periode']) { ?>selected<?php } else { } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heuredebut_definie_periode'])."-".heure_court($data_pe['heurefin_definie_periode']); ?></option><?php
