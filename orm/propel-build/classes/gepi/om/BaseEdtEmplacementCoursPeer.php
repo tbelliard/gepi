@@ -445,7 +445,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	}
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related GroupeRelatedByIdGroupe table
+	 * Returns the number of rows matching criteria, joining the related Groupe table
 	 *
 	 * @param      Criteria $c
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -453,7 +453,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinGroupeRelatedByIdGroupe(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinGroupe(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -494,7 +494,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related GroupeRelatedByIdGroupe table
+	 * Returns the number of rows matching criteria, joining the related AidDetails table
 	 *
 	 * @param      Criteria $c
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -502,7 +502,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinGroupeRelatedByIdGroupe(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinAidDetails(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -529,7 +529,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 			$con = Propel::getConnection(EdtEmplacementCoursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+		$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -747,7 +747,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinGroupeRelatedByIdGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$c = clone $c;
 
@@ -794,7 +794,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 				} // if obj2 already loaded
 
 				// Add the $obj1 (EdtEmplacementCours) to $obj2 (Groupe)
-				$obj2->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
+				$obj2->addEdtEmplacementCours($obj1);
 
 			} // if joined row was not null
 
@@ -806,7 +806,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 
 
 	/**
-	 * Selects a collection of EdtEmplacementCours objects pre-filled with their Groupe objects.
+	 * Selects a collection of EdtEmplacementCours objects pre-filled with their AidDetails objects.
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -814,7 +814,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinGroupeRelatedByIdGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAidDetails(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$c = clone $c;
 
@@ -825,9 +825,9 @@ abstract class BaseEdtEmplacementCoursPeer {
 
 		EdtEmplacementCoursPeer::addSelectColumns($c);
 		$startcol = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
-		GroupePeer::addSelectColumns($c);
+		AidDetailsPeer::addSelectColumns($c);
 
-		$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+		$c->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 		$stmt = BasePeer::doSelect($c, $con);
 		$results = array();
 
@@ -847,21 +847,21 @@ abstract class BaseEdtEmplacementCoursPeer {
 				EdtEmplacementCoursPeer::addInstanceToPool($obj1, $key1);
 			} // if $obj1 already loaded
 
-			$key2 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol);
+			$key2 = AidDetailsPeer::getPrimaryKeyHashFromRow($row, $startcol);
 			if ($key2 !== null) {
-				$obj2 = GroupePeer::getInstanceFromPool($key2);
+				$obj2 = AidDetailsPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = GroupePeer::getOMClass();
+					$omClass = AidDetailsPeer::getOMClass();
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
-					GroupePeer::addInstanceToPool($obj2, $key2);
+					AidDetailsPeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 already loaded
 
-				// Add the $obj1 (EdtEmplacementCours) to $obj2 (Groupe)
-				$obj2->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
+				// Add the $obj1 (EdtEmplacementCours) to $obj2 (AidDetails)
+				$obj2->addEdtEmplacementCours($obj1);
 
 			} // if joined row was not null
 
@@ -1177,7 +1177,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+		$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 		$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 		$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
 		$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
@@ -1218,8 +1218,8 @@ abstract class BaseEdtEmplacementCoursPeer {
 		GroupePeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		GroupePeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		AidDetailsPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
 
 		EdtSallePeer::addSelectColumns($c);
 		$startcol5 = $startcol4 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
@@ -1234,7 +1234,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		$startcol8 = $startcol7 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
 		$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+		$c->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 		$c->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 		$c->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
 		$c->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
@@ -1274,27 +1274,27 @@ abstract class BaseEdtEmplacementCoursPeer {
 				} // if obj2 loaded
 
 				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj2 (Groupe)
-				$obj2->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
+				$obj2->addEdtEmplacementCours($obj1);
 			} // if joined row not null
 
-			// Add objects for joined Groupe rows
+			// Add objects for joined AidDetails rows
 
-			$key3 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol3);
+			$key3 = AidDetailsPeer::getPrimaryKeyHashFromRow($row, $startcol3);
 			if ($key3 !== null) {
-				$obj3 = GroupePeer::getInstanceFromPool($key3);
+				$obj3 = AidDetailsPeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$omClass = GroupePeer::getOMClass();
+					$omClass = AidDetailsPeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
-					GroupePeer::addInstanceToPool($obj3, $key3);
+					AidDetailsPeer::addInstanceToPool($obj3, $key3);
 				} // if obj3 loaded
 
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (Groupe)
-				$obj3->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (AidDetails)
+				$obj3->addEdtEmplacementCours($obj1);
 			} // if joined row not null
 
 			// Add objects for joined EdtSalle rows
@@ -1385,7 +1385,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related GroupeRelatedByIdGroupe table
+	 * Returns the number of rows matching criteria, joining the related Groupe table
 	 *
 	 * @param      Criteria $c
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -1393,7 +1393,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAllExceptGroupeRelatedByIdGroupe(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinAllExceptGroupe(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -1420,6 +1420,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 			$con = Propel::getConnection(EdtEmplacementCoursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
+				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
@@ -1437,7 +1438,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related GroupeRelatedByIdGroupe table
+	 * Returns the number of rows matching criteria, joining the related AidDetails table
 	 *
 	 * @param      Criteria $c
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -1445,7 +1446,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAllExceptGroupeRelatedByIdGroupe(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinAllExceptAidDetails(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -1472,6 +1473,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 			$con = Propel::getConnection(EdtEmplacementCoursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
+				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
@@ -1525,7 +1527,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 	
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::LOGIN_PROF,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
@@ -1578,7 +1580,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 	
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::LOGIN_PROF,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
@@ -1631,7 +1633,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 	
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::LOGIN_PROF,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
@@ -1684,7 +1686,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 	
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
 				$criteria->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
@@ -1701,7 +1703,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 
 
 	/**
-	 * Selects a collection of EdtEmplacementCours objects pre-filled with all related objects except GroupeRelatedByIdGroupe.
+	 * Selects a collection of EdtEmplacementCours objects pre-filled with all related objects except Groupe.
 	 *
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
@@ -1710,7 +1712,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptGroupeRelatedByIdGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$c = clone $c;
 
@@ -1724,18 +1726,22 @@ abstract class BaseEdtEmplacementCoursPeer {
 		EdtEmplacementCoursPeer::addSelectColumns($c);
 		$startcol2 = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
 
+		AidDetailsPeer::addSelectColumns($c);
+		$startcol3 = $startcol2 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+
 		EdtSallePeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
 
 		EdtCreneauPeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
 
 		EdtCalendrierPeriodePeer::addSelectColumns($c);
-		$startcol5 = $startcol4 + (EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + (EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS);
 
 		UtilisateurProfessionnelPeer::addSelectColumns($c);
-		$startcol6 = $startcol5 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
+				$c->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
@@ -1759,87 +1765,108 @@ abstract class BaseEdtEmplacementCoursPeer {
 				EdtEmplacementCoursPeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
-				// Add objects for joined EdtSalle rows
+				// Add objects for joined AidDetails rows
 
-				$key2 = EdtSallePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				$key2 = AidDetailsPeer::getPrimaryKeyHashFromRow($row, $startcol2);
 				if ($key2 !== null) {
-					$obj2 = EdtSallePeer::getInstanceFromPool($key2);
+					$obj2 = AidDetailsPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = EdtSallePeer::getOMClass();
+						$omClass = AidDetailsPeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
-					EdtSallePeer::addInstanceToPool($obj2, $key2);
+					AidDetailsPeer::addInstanceToPool($obj2, $key2);
 				} // if $obj2 already loaded
 
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj2 (EdtSalle)
-				$obj2->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj2 (AidDetails)
+				$obj2->addEdtEmplacementCours($obj1);
 
 			} // if joined row is not null
 
-				// Add objects for joined EdtCreneau rows
+				// Add objects for joined EdtSalle rows
 
-				$key3 = EdtCreneauPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				$key3 = EdtSallePeer::getPrimaryKeyHashFromRow($row, $startcol3);
 				if ($key3 !== null) {
-					$obj3 = EdtCreneauPeer::getInstanceFromPool($key3);
+					$obj3 = EdtSallePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = EdtCreneauPeer::getOMClass();
+						$omClass = EdtSallePeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
-					EdtCreneauPeer::addInstanceToPool($obj3, $key3);
+					EdtSallePeer::addInstanceToPool($obj3, $key3);
 				} // if $obj3 already loaded
 
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (EdtCreneau)
-				$obj3->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (EdtSalle)
+				$obj3->addEdtEmplacementCours($obj1);
 
 			} // if joined row is not null
 
-				// Add objects for joined EdtCalendrierPeriode rows
+				// Add objects for joined EdtCreneau rows
 
-				$key4 = EdtCalendrierPeriodePeer::getPrimaryKeyHashFromRow($row, $startcol4);
+				$key4 = EdtCreneauPeer::getPrimaryKeyHashFromRow($row, $startcol4);
 				if ($key4 !== null) {
-					$obj4 = EdtCalendrierPeriodePeer::getInstanceFromPool($key4);
+					$obj4 = EdtCreneauPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$omClass = EdtCalendrierPeriodePeer::getOMClass();
+						$omClass = EdtCreneauPeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
-					EdtCalendrierPeriodePeer::addInstanceToPool($obj4, $key4);
+					EdtCreneauPeer::addInstanceToPool($obj4, $key4);
 				} // if $obj4 already loaded
 
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj4 (EdtCalendrierPeriode)
-				$obj4->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj4 (EdtCreneau)
+				$obj4->addEdtEmplacementCours($obj1);
 
 			} // if joined row is not null
 
-				// Add objects for joined UtilisateurProfessionnel rows
+				// Add objects for joined EdtCalendrierPeriode rows
 
-				$key5 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+				$key5 = EdtCalendrierPeriodePeer::getPrimaryKeyHashFromRow($row, $startcol5);
 				if ($key5 !== null) {
-					$obj5 = UtilisateurProfessionnelPeer::getInstanceFromPool($key5);
+					$obj5 = EdtCalendrierPeriodePeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+						$omClass = EdtCalendrierPeriodePeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
-					UtilisateurProfessionnelPeer::addInstanceToPool($obj5, $key5);
+					EdtCalendrierPeriodePeer::addInstanceToPool($obj5, $key5);
 				} // if $obj5 already loaded
 
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj5 (UtilisateurProfessionnel)
-				$obj5->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj5 (EdtCalendrierPeriode)
+				$obj5->addEdtEmplacementCours($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined UtilisateurProfessionnel rows
+
+				$key6 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+				if ($key6 !== null) {
+					$obj6 = UtilisateurProfessionnelPeer::getInstanceFromPool($key6);
+					if (!$obj6) {
+	
+						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj6 = new $cls();
+					$obj6->hydrate($row, $startcol6);
+					UtilisateurProfessionnelPeer::addInstanceToPool($obj6, $key6);
+				} // if $obj6 already loaded
+
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj6 (UtilisateurProfessionnel)
+				$obj6->addEdtEmplacementCours($obj1);
 
 			} // if joined row is not null
 
@@ -1851,7 +1878,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 
 
 	/**
-	 * Selects a collection of EdtEmplacementCours objects pre-filled with all related objects except GroupeRelatedByIdGroupe.
+	 * Selects a collection of EdtEmplacementCours objects pre-filled with all related objects except AidDetails.
 	 *
 	 * @param      Criteria  $c
 	 * @param      PropelPDO $con
@@ -1860,157 +1887,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptGroupeRelatedByIdGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$c = clone $c;
-
-		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
-		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
-		}
-
-		EdtEmplacementCoursPeer::addSelectColumns($c);
-		$startcol2 = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
-
-		EdtSallePeer::addSelectColumns($c);
-		$startcol3 = $startcol2 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
-
-		EdtCreneauPeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
-
-		EdtCalendrierPeriodePeer::addSelectColumns($c);
-		$startcol5 = $startcol4 + (EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS);
-
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
-		$startcol6 = $startcol5 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
-
-				$c->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
-				$c->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
-				$c->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
-				$c->addJoin(array(EdtEmplacementCoursPeer::LOGIN_PROF,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-
-		$stmt = BasePeer::doSelect($c, $con);
-		$results = array();
-
-		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = EdtEmplacementCoursPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = EdtEmplacementCoursPeer::getInstanceFromPool($key1))) {
-				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
-				// $obj1->hydrate($row, 0, true); // rehydrate
-			} else {
-				$omClass = EdtEmplacementCoursPeer::getOMClass();
-
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
-				$obj1 = new $cls();
-				$obj1->hydrate($row);
-				EdtEmplacementCoursPeer::addInstanceToPool($obj1, $key1);
-			} // if obj1 already loaded
-
-				// Add objects for joined EdtSalle rows
-
-				$key2 = EdtSallePeer::getPrimaryKeyHashFromRow($row, $startcol2);
-				if ($key2 !== null) {
-					$obj2 = EdtSallePeer::getInstanceFromPool($key2);
-					if (!$obj2) {
-	
-						$omClass = EdtSallePeer::getOMClass();
-
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol2);
-					EdtSallePeer::addInstanceToPool($obj2, $key2);
-				} // if $obj2 already loaded
-
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj2 (EdtSalle)
-				$obj2->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
-
-			} // if joined row is not null
-
-				// Add objects for joined EdtCreneau rows
-
-				$key3 = EdtCreneauPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-				if ($key3 !== null) {
-					$obj3 = EdtCreneauPeer::getInstanceFromPool($key3);
-					if (!$obj3) {
-	
-						$omClass = EdtCreneauPeer::getOMClass();
-
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
-					$obj3 = new $cls();
-					$obj3->hydrate($row, $startcol3);
-					EdtCreneauPeer::addInstanceToPool($obj3, $key3);
-				} // if $obj3 already loaded
-
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (EdtCreneau)
-				$obj3->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
-
-			} // if joined row is not null
-
-				// Add objects for joined EdtCalendrierPeriode rows
-
-				$key4 = EdtCalendrierPeriodePeer::getPrimaryKeyHashFromRow($row, $startcol4);
-				if ($key4 !== null) {
-					$obj4 = EdtCalendrierPeriodePeer::getInstanceFromPool($key4);
-					if (!$obj4) {
-	
-						$omClass = EdtCalendrierPeriodePeer::getOMClass();
-
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
-					$obj4 = new $cls();
-					$obj4->hydrate($row, $startcol4);
-					EdtCalendrierPeriodePeer::addInstanceToPool($obj4, $key4);
-				} // if $obj4 already loaded
-
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj4 (EdtCalendrierPeriode)
-				$obj4->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
-
-			} // if joined row is not null
-
-				// Add objects for joined UtilisateurProfessionnel rows
-
-				$key5 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-				if ($key5 !== null) {
-					$obj5 = UtilisateurProfessionnelPeer::getInstanceFromPool($key5);
-					if (!$obj5) {
-	
-						$omClass = UtilisateurProfessionnelPeer::getOMClass();
-
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
-					$obj5 = new $cls();
-					$obj5->hydrate($row, $startcol5);
-					UtilisateurProfessionnelPeer::addInstanceToPool($obj5, $key5);
-				} // if $obj5 already loaded
-
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj5 (UtilisateurProfessionnel)
-				$obj5->addEdtEmplacementCoursRelatedByIdGroupe($obj1);
-
-			} // if joined row is not null
-
-			$results[] = $obj1;
-		}
-		$stmt->closeCursor();
-		return $results;
-	}
-
-
-	/**
-	 * Selects a collection of EdtEmplacementCours objects pre-filled with all related objects except EdtSalle.
-	 *
-	 * @param      Criteria  $c
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of EdtEmplacementCours objects.
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function doSelectJoinAllExceptEdtSalle(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptAidDetails(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$c = clone $c;
 
@@ -2027,8 +1904,8 @@ abstract class BaseEdtEmplacementCoursPeer {
 		GroupePeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		GroupePeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		EdtSallePeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
 
 		EdtCreneauPeer::addSelectColumns($c);
 		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
@@ -2040,7 +1917,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		$startcol7 = $startcol6 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$c->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::LOGIN_PROF,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
@@ -2084,23 +1961,198 @@ abstract class BaseEdtEmplacementCoursPeer {
 
 			} // if joined row is not null
 
-				// Add objects for joined Groupe rows
+				// Add objects for joined EdtSalle rows
 
-				$key3 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				$key3 = EdtSallePeer::getPrimaryKeyHashFromRow($row, $startcol3);
 				if ($key3 !== null) {
-					$obj3 = GroupePeer::getInstanceFromPool($key3);
+					$obj3 = EdtSallePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = GroupePeer::getOMClass();
+						$omClass = EdtSallePeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
-					GroupePeer::addInstanceToPool($obj3, $key3);
+					EdtSallePeer::addInstanceToPool($obj3, $key3);
 				} // if $obj3 already loaded
 
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (Groupe)
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (EdtSalle)
+				$obj3->addEdtEmplacementCours($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined EdtCreneau rows
+
+				$key4 = EdtCreneauPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+				if ($key4 !== null) {
+					$obj4 = EdtCreneauPeer::getInstanceFromPool($key4);
+					if (!$obj4) {
+	
+						$omClass = EdtCreneauPeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj4 = new $cls();
+					$obj4->hydrate($row, $startcol4);
+					EdtCreneauPeer::addInstanceToPool($obj4, $key4);
+				} // if $obj4 already loaded
+
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj4 (EdtCreneau)
+				$obj4->addEdtEmplacementCours($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined EdtCalendrierPeriode rows
+
+				$key5 = EdtCalendrierPeriodePeer::getPrimaryKeyHashFromRow($row, $startcol5);
+				if ($key5 !== null) {
+					$obj5 = EdtCalendrierPeriodePeer::getInstanceFromPool($key5);
+					if (!$obj5) {
+	
+						$omClass = EdtCalendrierPeriodePeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj5 = new $cls();
+					$obj5->hydrate($row, $startcol5);
+					EdtCalendrierPeriodePeer::addInstanceToPool($obj5, $key5);
+				} // if $obj5 already loaded
+
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj5 (EdtCalendrierPeriode)
+				$obj5->addEdtEmplacementCours($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined UtilisateurProfessionnel rows
+
+				$key6 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+				if ($key6 !== null) {
+					$obj6 = UtilisateurProfessionnelPeer::getInstanceFromPool($key6);
+					if (!$obj6) {
+	
+						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj6 = new $cls();
+					$obj6->hydrate($row, $startcol6);
+					UtilisateurProfessionnelPeer::addInstanceToPool($obj6, $key6);
+				} // if $obj6 already loaded
+
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj6 (UtilisateurProfessionnel)
+				$obj6->addEdtEmplacementCours($obj1);
+
+			} // if joined row is not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of EdtEmplacementCours objects pre-filled with all related objects except EdtSalle.
+	 *
+	 * @param      Criteria  $c
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of EdtEmplacementCours objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptEdtSalle(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$c = clone $c;
+
+		// Set the correct dbName if it has not been overridden
+		// $c->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($c->getDbName() == Propel::getDefaultDB()) {
+			$c->setDbName(self::DATABASE_NAME);
+		}
+
+		EdtEmplacementCoursPeer::addSelectColumns($c);
+		$startcol2 = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		GroupePeer::addSelectColumns($c);
+		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		AidDetailsPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		EdtCreneauPeer::addSelectColumns($c);
+		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		EdtCalendrierPeriodePeer::addSelectColumns($c);
+		$startcol6 = $startcol5 + (EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		$startcol7 = $startcol6 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+
+				$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$c->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
+				$c->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
+				$c->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
+				$c->addJoin(array(EdtEmplacementCoursPeer::LOGIN_PROF,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+
+		$stmt = BasePeer::doSelect($c, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = EdtEmplacementCoursPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = EdtEmplacementCoursPeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$omClass = EdtEmplacementCoursPeer::getOMClass();
+
+				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				EdtEmplacementCoursPeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+				// Add objects for joined Groupe rows
+
+				$key2 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = GroupePeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$omClass = GroupePeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					GroupePeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
+
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj2 (Groupe)
+				$obj2->addEdtEmplacementCours($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined AidDetails rows
+
+				$key3 = AidDetailsPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				if ($key3 !== null) {
+					$obj3 = AidDetailsPeer::getInstanceFromPool($key3);
+					if (!$obj3) {
+	
+						$omClass = AidDetailsPeer::getOMClass();
+
+
+					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					AidDetailsPeer::addInstanceToPool($obj3, $key3);
+				} // if $obj3 already loaded
+
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (AidDetails)
 				$obj3->addEdtEmplacementCours($obj1);
 
 			} // if joined row is not null
@@ -2202,8 +2254,8 @@ abstract class BaseEdtEmplacementCoursPeer {
 		GroupePeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		GroupePeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		AidDetailsPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
 
 		EdtSallePeer::addSelectColumns($c);
 		$startcol5 = $startcol4 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
@@ -2215,7 +2267,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		$startcol7 = $startcol6 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$c->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::LOGIN_PROF,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
@@ -2259,23 +2311,23 @@ abstract class BaseEdtEmplacementCoursPeer {
 
 			} // if joined row is not null
 
-				// Add objects for joined Groupe rows
+				// Add objects for joined AidDetails rows
 
-				$key3 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				$key3 = AidDetailsPeer::getPrimaryKeyHashFromRow($row, $startcol3);
 				if ($key3 !== null) {
-					$obj3 = GroupePeer::getInstanceFromPool($key3);
+					$obj3 = AidDetailsPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = GroupePeer::getOMClass();
+						$omClass = AidDetailsPeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
-					GroupePeer::addInstanceToPool($obj3, $key3);
+					AidDetailsPeer::addInstanceToPool($obj3, $key3);
 				} // if $obj3 already loaded
 
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (Groupe)
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (AidDetails)
 				$obj3->addEdtEmplacementCours($obj1);
 
 			} // if joined row is not null
@@ -2377,8 +2429,8 @@ abstract class BaseEdtEmplacementCoursPeer {
 		GroupePeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		GroupePeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		AidDetailsPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
 
 		EdtSallePeer::addSelectColumns($c);
 		$startcol5 = $startcol4 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
@@ -2390,7 +2442,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		$startcol7 = $startcol6 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$c->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::LOGIN_PROF,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
@@ -2434,23 +2486,23 @@ abstract class BaseEdtEmplacementCoursPeer {
 
 			} // if joined row is not null
 
-				// Add objects for joined Groupe rows
+				// Add objects for joined AidDetails rows
 
-				$key3 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				$key3 = AidDetailsPeer::getPrimaryKeyHashFromRow($row, $startcol3);
 				if ($key3 !== null) {
-					$obj3 = GroupePeer::getInstanceFromPool($key3);
+					$obj3 = AidDetailsPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = GroupePeer::getOMClass();
+						$omClass = AidDetailsPeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
-					GroupePeer::addInstanceToPool($obj3, $key3);
+					AidDetailsPeer::addInstanceToPool($obj3, $key3);
 				} // if $obj3 already loaded
 
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (Groupe)
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (AidDetails)
 				$obj3->addEdtEmplacementCours($obj1);
 
 			} // if joined row is not null
@@ -2552,8 +2604,8 @@ abstract class BaseEdtEmplacementCoursPeer {
 		GroupePeer::addSelectColumns($c);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		GroupePeer::addSelectColumns($c);
-		$startcol4 = $startcol3 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		AidDetailsPeer::addSelectColumns($c);
+		$startcol4 = $startcol3 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
 
 		EdtSallePeer::addSelectColumns($c);
 		$startcol5 = $startcol4 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
@@ -2565,7 +2617,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		$startcol7 = $startcol6 + (EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS);
 
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$c->addJoin(array(EdtEmplacementCoursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+				$c->addJoin(array(EdtEmplacementCoursPeer::ID_AID,), array(AidDetailsPeer::ID,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_SALLE,), array(EdtSallePeer::ID_SALLE,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE,), array(EdtCreneauPeer::ID_DEFINIE_PERIODE,), $join_behavior);
 				$c->addJoin(array(EdtEmplacementCoursPeer::ID_CALENDRIER,), array(EdtCalendrierPeriodePeer::ID_CALENDRIER,), $join_behavior);
@@ -2609,23 +2661,23 @@ abstract class BaseEdtEmplacementCoursPeer {
 
 			} // if joined row is not null
 
-				// Add objects for joined Groupe rows
+				// Add objects for joined AidDetails rows
 
-				$key3 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				$key3 = AidDetailsPeer::getPrimaryKeyHashFromRow($row, $startcol3);
 				if ($key3 !== null) {
-					$obj3 = GroupePeer::getInstanceFromPool($key3);
+					$obj3 = AidDetailsPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = GroupePeer::getOMClass();
+						$omClass = AidDetailsPeer::getOMClass();
 
 
 					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
-					GroupePeer::addInstanceToPool($obj3, $key3);
+					AidDetailsPeer::addInstanceToPool($obj3, $key3);
 				} // if $obj3 already loaded
 
-				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (Groupe)
+				// Add the $obj1 (EdtEmplacementCours) to the collection in $obj3 (AidDetails)
 				$obj3->addEdtEmplacementCours($obj1);
 
 			} // if joined row is not null

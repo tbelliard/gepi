@@ -618,9 +618,6 @@ abstract class BaseGroupePeer {
 			// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 			EdtEmplacementCoursPeer::clearInstancePool();
 
-			// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			EdtEmplacementCoursPeer::clearInstancePool();
-
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -687,12 +684,6 @@ abstract class BaseGroupePeer {
 			
 			$c->add(JEleveGroupePeer::ID_GROUPE, $obj->getId());
 			$affectedRows += JEleveGroupePeer::doDelete($c, $con);
-
-			// delete related EdtEmplacementCours objects
-			$c = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
-			
-			$c->add(EdtEmplacementCoursPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += EdtEmplacementCoursPeer::doDelete($c, $con);
 
 			// delete related EdtEmplacementCours objects
 			$c = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);

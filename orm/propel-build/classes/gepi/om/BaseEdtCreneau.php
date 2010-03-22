@@ -1554,7 +1554,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in EdtCreneau.
 	 */
-	public function getEdtEmplacementCourssJoinGroupeRelatedByIdGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getEdtEmplacementCourssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
@@ -1571,7 +1571,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 
 				$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
 
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupeRelatedByIdGroupe($criteria, $con, $join_behavior);
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
@@ -1581,7 +1581,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 			$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
 
 			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupeRelatedByIdGroupe($criteria, $con, $join_behavior);
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
 			}
 		}
 		$this->lastEdtEmplacementCoursCriteria = $criteria;
@@ -1601,7 +1601,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in EdtCreneau.
 	 */
-	public function getEdtEmplacementCourssJoinGroupeRelatedByIdGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getEdtEmplacementCourssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
@@ -1618,7 +1618,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 
 				$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
 
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupeRelatedByIdGroupe($criteria, $con, $join_behavior);
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
@@ -1628,7 +1628,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 			$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
 
 			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupeRelatedByIdGroupe($criteria, $con, $join_behavior);
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
 			}
 		}
 		$this->lastEdtEmplacementCoursCriteria = $criteria;

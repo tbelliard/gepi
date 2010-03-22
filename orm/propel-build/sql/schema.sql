@@ -1254,10 +1254,10 @@ CREATE TABLE edt_cours
 		FOREIGN KEY (id_groupe)
 		REFERENCES groupes (id)
 		ON DELETE CASCADE,
-	INDEX edt_cours_FI_2 (id_groupe),
+	INDEX edt_cours_FI_2 (id_aid),
 	CONSTRAINT edt_cours_FK_2
-		FOREIGN KEY (id_groupe)
-		REFERENCES groupes (id)
+		FOREIGN KEY (id_aid)
+		REFERENCES aid (id)
 		ON DELETE CASCADE,
 	INDEX edt_cours_FI_3 (id_salle),
 	CONSTRAINT edt_cours_FK_3

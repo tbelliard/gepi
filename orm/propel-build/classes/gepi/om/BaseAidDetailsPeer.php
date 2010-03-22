@@ -938,6 +938,9 @@ abstract class BaseAidDetailsPeer {
 			// invalidate objects in JAidElevesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 			JAidElevesPeer::clearInstancePool();
 
+			// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			EdtEmplacementCoursPeer::clearInstancePool();
+
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -980,6 +983,12 @@ abstract class BaseAidDetailsPeer {
 			
 			$c->add(JAidElevesPeer::ID_AID, $obj->getId());
 			$affectedRows += JAidElevesPeer::doDelete($c, $con);
+
+			// delete related EdtEmplacementCours objects
+			$c = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
+			
+			$c->add(EdtEmplacementCoursPeer::ID_AID, $obj->getId());
+			$affectedRows += EdtEmplacementCoursPeer::doDelete($c, $con);
 		}
 		return $affectedRows;
 	}

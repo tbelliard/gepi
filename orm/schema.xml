@@ -593,7 +593,7 @@
 		<column name="id_groupe" required="false" type="INTEGER" size="10" description="id du groupe d'enseignement concerne - NULL sinon"/>
 		<foreign-key foreignTable="groupes" onDelete="CASCADE"><reference local="id_groupe" foreign="id"/></foreign-key>
 		<column name="id_aid" required="true" type="INTEGER" size="10" description="id de l'aid concerne - NULL sinon"/>
-		<foreign-key foreignTable="groupes" onDelete="CASCADE"><reference local="id_groupe" foreign="id"/></foreign-key>
+		<foreign-key foreignTable="aid" onDelete="CASCADE"><reference local="id_aid" foreign="id"/></foreign-key>
 		<column name="id_salle" required="true" type="INTEGER" size="10" description="id de la salle concernee"/>
 		<foreign-key foreignTable="salle_cours" onDelete="SETNULL"><reference local="id_salle" foreign="id_salle"/></foreign-key>
 		<column name="jour_semaine" required="true" type="VARCHAR" size="10" description="jour de la semaine ou a lieu le cours : lundi, mardi etc..."/>

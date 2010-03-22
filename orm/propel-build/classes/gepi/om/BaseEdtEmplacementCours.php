@@ -93,12 +93,12 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	/**
 	 * @var        Groupe
 	 */
-	protected $aGroupeRelatedByIdGroupe;
+	protected $aGroupe;
 
 	/**
-	 * @var        Groupe
+	 * @var        AidDetails
 	 */
-	protected $aGroupeRelatedByIdGroupe;
+	protected $aAidDetails;
 
 	/**
 	 * @var        EdtSalle
@@ -321,12 +321,8 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 			$this->modifiedColumns[] = EdtEmplacementCoursPeer::ID_GROUPE;
 		}
 
-		if ($this->aGroupeRelatedByIdGroupe !== null && $this->aGroupeRelatedByIdGroupe->getId() !== $v) {
-			$this->aGroupeRelatedByIdGroupe = null;
-		}
-
-		if ($this->aGroupeRelatedByIdGroupe !== null && $this->aGroupeRelatedByIdGroupe->getId() !== $v) {
-			$this->aGroupeRelatedByIdGroupe = null;
+		if ($this->aGroupe !== null && $this->aGroupe->getId() !== $v) {
+			$this->aGroupe = null;
 		}
 
 		return $this;
@@ -347,6 +343,10 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->id_aid !== $v) {
 			$this->id_aid = $v;
 			$this->modifiedColumns[] = EdtEmplacementCoursPeer::ID_AID;
+		}
+
+		if ($this->aAidDetails !== null && $this->aAidDetails->getId() !== $v) {
+			$this->aAidDetails = null;
 		}
 
 		return $this;
@@ -629,11 +629,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
-		if ($this->aGroupeRelatedByIdGroupe !== null && $this->id_groupe !== $this->aGroupeRelatedByIdGroupe->getId()) {
-			$this->aGroupeRelatedByIdGroupe = null;
+		if ($this->aGroupe !== null && $this->id_groupe !== $this->aGroupe->getId()) {
+			$this->aGroupe = null;
 		}
-		if ($this->aGroupeRelatedByIdGroupe !== null && $this->id_groupe !== $this->aGroupeRelatedByIdGroupe->getId()) {
-			$this->aGroupeRelatedByIdGroupe = null;
+		if ($this->aAidDetails !== null && $this->id_aid !== $this->aAidDetails->getId()) {
+			$this->aAidDetails = null;
 		}
 		if ($this->aEdtSalle !== null && $this->id_salle !== $this->aEdtSalle->getIdSalle()) {
 			$this->aEdtSalle = null;
@@ -686,8 +686,8 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 		if ($deep) {  // also de-associate any related objects?
 
-			$this->aGroupeRelatedByIdGroupe = null;
-			$this->aGroupeRelatedByIdGroupe = null;
+			$this->aGroupe = null;
+			$this->aAidDetails = null;
 			$this->aEdtSalle = null;
 			$this->aEdtCreneau = null;
 			$this->aEdtCalendrierPeriode = null;
@@ -785,18 +785,18 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aGroupeRelatedByIdGroupe !== null) {
-				if ($this->aGroupeRelatedByIdGroupe->isModified() || $this->aGroupeRelatedByIdGroupe->isNew()) {
-					$affectedRows += $this->aGroupeRelatedByIdGroupe->save($con);
+			if ($this->aGroupe !== null) {
+				if ($this->aGroupe->isModified() || $this->aGroupe->isNew()) {
+					$affectedRows += $this->aGroupe->save($con);
 				}
-				$this->setGroupeRelatedByIdGroupe($this->aGroupeRelatedByIdGroupe);
+				$this->setGroupe($this->aGroupe);
 			}
 
-			if ($this->aGroupeRelatedByIdGroupe !== null) {
-				if ($this->aGroupeRelatedByIdGroupe->isModified() || $this->aGroupeRelatedByIdGroupe->isNew()) {
-					$affectedRows += $this->aGroupeRelatedByIdGroupe->save($con);
+			if ($this->aAidDetails !== null) {
+				if ($this->aAidDetails->isModified() || $this->aAidDetails->isNew()) {
+					$affectedRows += $this->aAidDetails->save($con);
 				}
-				$this->setGroupeRelatedByIdGroupe($this->aGroupeRelatedByIdGroupe);
+				$this->setAidDetails($this->aAidDetails);
 			}
 
 			if ($this->aEdtSalle !== null) {
@@ -923,15 +923,15 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aGroupeRelatedByIdGroupe !== null) {
-				if (!$this->aGroupeRelatedByIdGroupe->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aGroupeRelatedByIdGroupe->getValidationFailures());
+			if ($this->aGroupe !== null) {
+				if (!$this->aGroupe->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aGroupe->getValidationFailures());
 				}
 			}
 
-			if ($this->aGroupeRelatedByIdGroupe !== null) {
-				if (!$this->aGroupeRelatedByIdGroupe->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aGroupeRelatedByIdGroupe->getValidationFailures());
+			if ($this->aAidDetails !== null) {
+				if (!$this->aAidDetails->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aAidDetails->getValidationFailures());
 				}
 			}
 
@@ -1343,7 +1343,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 * @return     EdtEmplacementCours The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setGroupeRelatedByIdGroupe(Groupe $v = null)
+	public function setGroupe(Groupe $v = null)
 	{
 		if ($v === null) {
 			$this->setIdGroupe(NULL);
@@ -1351,12 +1351,12 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 			$this->setIdGroupe($v->getId());
 		}
 
-		$this->aGroupeRelatedByIdGroupe = $v;
+		$this->aGroupe = $v;
 
 		// Add binding for other direction of this n:n relationship.
 		// If this object has already been added to the Groupe object, it will not be re-added.
 		if ($v !== null) {
-			$v->addEdtEmplacementCoursRelatedByIdGroupe($this);
+			$v->addEdtEmplacementCours($this);
 		}
 
 		return $this;
@@ -1370,42 +1370,42 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 * @return     Groupe The associated Groupe object.
 	 * @throws     PropelException
 	 */
-	public function getGroupeRelatedByIdGroupe(PropelPDO $con = null)
+	public function getGroupe(PropelPDO $con = null)
 	{
-		if ($this->aGroupeRelatedByIdGroupe === null && ($this->id_groupe !== null)) {
-			$this->aGroupeRelatedByIdGroupe = GroupePeer::retrieveByPK($this->id_groupe, $con);
+		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
+			$this->aGroupe = GroupePeer::retrieveByPK($this->id_groupe, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aGroupeRelatedByIdGroupe->addEdtEmplacementCourssRelatedByIdGroupe($this);
+			   $this->aGroupe->addEdtEmplacementCourss($this);
 			 */
 		}
-		return $this->aGroupeRelatedByIdGroupe;
+		return $this->aGroupe;
 	}
 
 	/**
-	 * Declares an association between this object and a Groupe object.
+	 * Declares an association between this object and a AidDetails object.
 	 *
-	 * @param      Groupe $v
+	 * @param      AidDetails $v
 	 * @return     EdtEmplacementCours The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setGroupeRelatedByIdGroupe(Groupe $v = null)
+	public function setAidDetails(AidDetails $v = null)
 	{
 		if ($v === null) {
-			$this->setIdGroupe(NULL);
+			$this->setIdAid(NULL);
 		} else {
-			$this->setIdGroupe($v->getId());
+			$this->setIdAid($v->getId());
 		}
 
-		$this->aGroupeRelatedByIdGroupe = $v;
+		$this->aAidDetails = $v;
 
 		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the Groupe object, it will not be re-added.
+		// If this object has already been added to the AidDetails object, it will not be re-added.
 		if ($v !== null) {
-			$v->addEdtEmplacementCoursRelatedByIdGroupe($this);
+			$v->addEdtEmplacementCours($this);
 		}
 
 		return $this;
@@ -1413,25 +1413,25 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 
 	/**
-	 * Get the associated Groupe object
+	 * Get the associated AidDetails object
 	 *
 	 * @param      PropelPDO Optional Connection object.
-	 * @return     Groupe The associated Groupe object.
+	 * @return     AidDetails The associated AidDetails object.
 	 * @throws     PropelException
 	 */
-	public function getGroupeRelatedByIdGroupe(PropelPDO $con = null)
+	public function getAidDetails(PropelPDO $con = null)
 	{
-		if ($this->aGroupeRelatedByIdGroupe === null && ($this->id_groupe !== null)) {
-			$this->aGroupeRelatedByIdGroupe = GroupePeer::retrieveByPK($this->id_groupe, $con);
+		if ($this->aAidDetails === null && ($this->id_aid !== null)) {
+			$this->aAidDetails = AidDetailsPeer::retrieveByPK($this->id_aid, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aGroupeRelatedByIdGroupe->addEdtEmplacementCourssRelatedByIdGroupe($this);
+			   $this->aAidDetails->addEdtEmplacementCourss($this);
 			 */
 		}
-		return $this->aGroupeRelatedByIdGroupe;
+		return $this->aAidDetails;
 	}
 
 	/**
@@ -1946,8 +1946,8 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		} // if ($deep)
 
 		$this->collAbsenceEleveSaisies = null;
-			$this->aGroupeRelatedByIdGroupe = null;
-			$this->aGroupeRelatedByIdGroupe = null;
+			$this->aGroupe = null;
+			$this->aAidDetails = null;
 			$this->aEdtSalle = null;
 			$this->aEdtCreneau = null;
 			$this->aEdtCalendrierPeriode = null;

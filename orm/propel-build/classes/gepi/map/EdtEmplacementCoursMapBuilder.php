@@ -66,9 +66,7 @@ class EdtEmplacementCoursMapBuilder implements MapBuilder {
 
 		$tMap->addForeignKey('ID_GROUPE', 'IdGroupe', 'INTEGER', 'groupes', 'ID', false, 10);
 
-		$tMap->addForeignKey('ID_GROUPE', 'IdGroupe', 'INTEGER', 'groupes', 'ID', false, 10);
-
-		$tMap->addColumn('ID_AID', 'IdAid', 'INTEGER', true, 10);
+		$tMap->addForeignKey('ID_AID', 'IdAid', 'INTEGER', 'aid', 'ID', true, 10);
 
 		$tMap->addForeignKey('ID_SALLE', 'IdSalle', 'INTEGER', 'salle_cours', 'ID_SALLE', true, 10);
 
