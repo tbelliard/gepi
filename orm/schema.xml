@@ -581,7 +581,7 @@
 		<column name="jourfin_calendrier" required="true" type="DATE" size="11" description="date de la fin de la periode"/>
 		<column name="heurefin_calendrier" required="true" type="TIME" size="11" description="heure de la fin de la periode"/>
 		<column name="numero_periode" required="true" type="TINYINT" size="4" description="id de la periode de notes associee"/>
-        <!--foreign-key foreignTable="periodes" onDelete="SETNULL"><reference local="numero_periode" foreign="num_periode"/></foreign-key-->
+		<!--foreign-key foreignTable="periodes" onDelete="SETNULL"><reference local="numero_periode" foreign="num_periode"/></foreign-key-->
 		<column name="etabferme_calendrier" required="true" type="TINYINT" size="4" description="egal a 1 si etablissement ouvert sur cette periode - 0 sinon"/>
 		<column name="etabvacances_calendrier" required="true" type="TINYINT" size="4" description="egal a 1 si la periode est definie sur les vacances - 0 sinon"/>
 	</table>
@@ -589,22 +589,22 @@
 	<table name="edt_cours" phpName="EdtEmplacementCours" description="Liste de tous les creneaux de tous les emplois du temps">
 		<column name="id_cours" required="true" primaryKey="true" type="INTEGER" size="3" description="cle primaire"/>
 		<column name="id_groupe" required="false" type="INTEGER" size="10" description="id du groupe d'enseignement concerne - NULL sinon"/>
-        <foreign-key foreignTable="groupes" onDelete="CASCADE"><reference local="id_groupe" foreign="id"/></foreign-key>
+		<foreign-key foreignTable="groupes" onDelete="CASCADE"><reference local="id_groupe" foreign="id"/></foreign-key>
 		<column name="id_aid" required="true" type="INTEGER" size="10" description="id de l'aid concerne - NULL sinon"/>
-        <foreign-key foreignTable="groupes" onDelete="CASCADE"><reference local="id_groupe" foreign="id"/></foreign-key>
+		<foreign-key foreignTable="groupes" onDelete="CASCADE"><reference local="id_groupe" foreign="id"/></foreign-key>
 		<column name="id_salle" required="true" type="INTEGER" size="10" description="id de la salle concernee"/>
-        <foreign-key foreignTable="salle_cours" onDelete="SETNULL"><reference local="id_salle" foreign="id_salle"/></foreign-key>
+		<foreign-key foreignTable="salle_cours" onDelete="SETNULL"><reference local="id_salle" foreign="id_salle"/></foreign-key>
 		<column name="jour_semaine" required="true" type="VARCHAR" size="10" description="jour de la semaine ou a lieu le cours : lundi, mardi etc..."/>
 		<column name="id_definie_periode" required="true" type="VARCHAR" size="3" description="id du creneau de la journee ou a lieu le cours - voir table edt_creneaux "/>
-        <foreign-key foreignTable="edt_creneaux" onDelete="CASCADE"><reference local="id_definie_periode" foreign="id_definie_periode"/></foreign-key>
+		<foreign-key foreignTable="edt_creneaux" onDelete="CASCADE"><reference local="id_definie_periode" foreign="id_definie_periode"/></foreign-key>
 		<column name="duree" required="true" type="VARCHAR" size="10" description="duree du cours definie en demi-heures.1h de cours correspond a une duree=2"/>
 		<column name="heuredeb_dec" required="true" type="VARCHAR" size="3" description="0 si le cours commence au debut du creneau - 0.5 s'il commence au milieu"/>
 		<column name="id_semaine" required="true" type="VARCHAR" size="3" description="type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B"/>
 		<column name="id_calendrier" required="true" type="VARCHAR" size="3" description="NULL = le cours a lieu toute l'annee - sinon, id de la periode (EdtPeriodes) durant laquelle a lieu le cours"/>
-        <foreign-key foreignTable="edt_calendrier" onDelete="SETNULL"><reference local="id_calendrier" foreign="id_calendrier"/></foreign-key>
+		<foreign-key foreignTable="edt_calendrier" onDelete="SETNULL"><reference local="id_calendrier" foreign="id_calendrier"/></foreign-key>
 		<column name="modif_edt" required="true" type="VARCHAR" size="3" description="champ inutilise"/>
 		<column name="login_prof" required="true" type="VARCHAR" size="50" description="login du prof qui dispense le cours"/>
-        <foreign-key foreignTable="utilisateurs" onDelete="CASCADE"><reference local="login_prof" foreign="login"/></foreign-key>
+		<foreign-key foreignTable="utilisateurs" onDelete="CASCADE"><reference local="login_prof" foreign="login"/></foreign-key>
 	</table>
 
 	<table name="salle_cours" phpName="EdtSalle" description="Liste des salles de classe">
