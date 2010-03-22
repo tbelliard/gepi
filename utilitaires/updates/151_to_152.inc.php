@@ -1031,18 +1031,25 @@ description_item VARCHAR( 255 ) NOT NULL
 	}
 
 	# Il semble que sur certaines bases le champ ait pu être manquant:
-	$result .= "&nbsp;->Ajout d'un champ 'type_creneaux' à la table 'absences_creneaux'<br />";
-	$test_type_creneaux=mysql_num_rows(mysql_query("SHOW COLUMNS FROM absences_creneaux LIKE 'type_creneaux';"));
-	if ($test_type_creneaux>0) {
-		$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
-	}
-	else {
-		$query = mysql_query("ALTER TABLE absences_creneaux ADD type_creneaux VARCHAR( 15 ) NOT NULL;");
-		if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
-		} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
-		}
+	$sql = "SHOW TABLES LIKE 'absences_creneaux'";
+	$req_existence = mysql_query($sql);
+	$result .= $req_existence;
+	if (mysql_num_rows($req_existence) != 0) {
+	    $result .= "&nbsp;->Ajout d'un champ 'type_creneaux' à la table 'absences_creneaux'<br />";
+	    $test_type_creneaux=mysql_num_rows(mysql_query("SHOW COLUMNS FROM absences_creneaux LIKE 'type_creneaux';"));
+	    if ($test_type_creneaux>0) {
+		    $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	    }
+	    else {
+		    $query = mysql_query("ALTER TABLE absences_creneaux ADD type_creneaux VARCHAR( 15 ) NOT NULL;");
+		    if ($query) {
+				    $result .= "<font color=\"green\">Ok !</font><br />";
+		    } else {
+				    $result .= "<font color=\"red\">Erreur</font><br />";
+		    }
+	    }
+	} else {
+	    $result .= "<p style=\"color:blue;\">La table 'absences_creneaux' n'existe plus</p>";
 	}
 
 ?>
