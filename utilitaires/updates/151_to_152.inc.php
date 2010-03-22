@@ -1031,13 +1031,13 @@ description_item VARCHAR( 255 ) NOT NULL
 	}
 
 	# Il semble que sur certaines bases le champ ait pu être manquant:
-	$result .= "&nbsp;->Ajout d'un champ 'type_creneaux' à la table 'edt_creneaux'<br />";
-	$test_type_creneaux=mysql_num_rows(mysql_query("SHOW COLUMNS FROM edt_creneaux LIKE 'type_creneaux';"));
+	$result .= "&nbsp;->Ajout d'un champ 'type_creneaux' à la table 'absences_creneaux'<br />";
+	$test_type_creneaux=mysql_num_rows(mysql_query("SHOW COLUMNS FROM absences_creneaux LIKE 'type_creneaux';"));
 	if ($test_type_creneaux>0) {
 		$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	}
 	else {
-		$query = mysql_query("ALTER TABLE edt_creneaux ADD type_creneaux VARCHAR( 15 ) NOT NULL;");
+		$query = mysql_query("ALTER TABLE absences_creneaux ADD type_creneaux VARCHAR( 15 ) NOT NULL;");
 		if ($query) {
 				$result .= "<font color=\"green\">Ok !</font><br />";
 		} else {

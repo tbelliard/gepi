@@ -1075,11 +1075,11 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			$result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
 		}
 
-		// Création de la table edt_creneaux_bis
-		$result .= "&nbsp;->Ajout de la table edt_creneaux_bis. <br />";
-		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_creneaux_bis'"));
+		// Création de la table absences_creneaux_bis
+		$result .= "&nbsp;->Ajout de la table absences_creneaux_bis. <br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'absences_creneaux_bis'"));
 		if ($test1 == 0) {
-			$sql = "CREATE TABLE `edt_creneaux_bis` (
+			$sql = "CREATE TABLE `absences_creneaux_bis` (
 `id_definie_periode` int(11) NOT NULL auto_increment,
 `nom_definie_periode` varchar(10) NOT NULL default '',
 `heuredebut_definie_periode` time NOT NULL default '00:00:00',

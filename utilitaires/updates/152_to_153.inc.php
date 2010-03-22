@@ -348,7 +348,6 @@ else {
 //---------------
 // Ajouts d'index
 
-$result .= add_index('edt_creneaux','heures_debut_fin','heuredebut_definie_periode, heurefin_definie_periode');
 $result .= add_index('absences_rb','eleve_debut_fin_retard','eleve_id, debut_ts, fin_ts, retard_absence');
 $result .= add_index('classes','classe','classe');
 $result .= add_index('ct_entry','date_ct','date_ct');
@@ -562,6 +561,7 @@ if ($req_rename){
 else {
     $result .= "<p style=\"color:blue;\">Renommage de la table <strong>absences_creneaux_bis</strong> en <strong>edt_creneaux_bis</strong> : déjà réalisé.</p>";
 }
+$result .= add_index('edt_creneaux','heures_debut_fin','heuredebut_definie_periode, heurefin_definie_periode');
 
 // ============= Insertion d'un champ pour EDT2
 
