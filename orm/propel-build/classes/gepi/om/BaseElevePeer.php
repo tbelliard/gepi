@@ -661,8 +661,8 @@ abstract class BaseElevePeer {
 			// invalidate objects in JAidElevesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 			JAidElevesPeer::clearInstancePool();
 
-			// invalidate objects in AbsenceSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceSaisiePeer::clearInstancePool();
+			// invalidate objects in AbsenceEleveSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			AbsenceEleveSaisiePeer::clearInstancePool();
 
 			$con->commit();
 			return $affectedRows;
@@ -743,11 +743,11 @@ abstract class BaseElevePeer {
 			$c->add(JAidElevesPeer::LOGIN, $obj->getLogin());
 			$affectedRows += JAidElevesPeer::doDelete($c, $con);
 
-			// delete related AbsenceSaisie objects
-			$c = new Criteria(AbsenceSaisiePeer::DATABASE_NAME);
+			// delete related AbsenceEleveSaisie objects
+			$c = new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME);
 			
-			$c->add(AbsenceSaisiePeer::ELEVE_ID, $obj->getIdEleve());
-			$affectedRows += AbsenceSaisiePeer::doDelete($c, $con);
+			$c->add(AbsenceEleveSaisiePeer::ELEVE_ID, $obj->getIdEleve());
+			$affectedRows += AbsenceEleveSaisiePeer::doDelete($c, $con);
 		}
 		return $affectedRows;
 	}

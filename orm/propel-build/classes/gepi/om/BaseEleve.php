@@ -169,14 +169,14 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 	private $lastJAidElevesCriteria = null;
 
 	/**
-	 * @var        array AbsenceSaisie[] Collection to store aggregation of AbsenceSaisie objects.
+	 * @var        array AbsenceEleveSaisie[] Collection to store aggregation of AbsenceEleveSaisie objects.
 	 */
-	protected $collAbsenceSaisies;
+	protected $collAbsenceEleveSaisies;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collAbsenceSaisies.
+	 * @var        Criteria The criteria used to select the current contents of collAbsenceEleveSaisies.
 	 */
-	private $lastAbsenceSaisieCriteria = null;
+	private $lastAbsenceEleveSaisieCriteria = null;
 
 	/**
 	 * @var        array CreditEcts[] Collection to store aggregation of CreditEcts objects.
@@ -817,8 +817,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 			$this->collJAidElevess = null;
 			$this->lastJAidElevesCriteria = null;
 
-			$this->collAbsenceSaisies = null;
-			$this->lastAbsenceSaisieCriteria = null;
+			$this->collAbsenceEleveSaisies = null;
+			$this->lastAbsenceEleveSaisieCriteria = null;
 
 			$this->collCreditEctss = null;
 			$this->lastCreditEctsCriteria = null;
@@ -998,8 +998,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 				}
 			}
 
-			if ($this->collAbsenceSaisies !== null) {
-				foreach ($this->collAbsenceSaisies as $referrerFK) {
+			if ($this->collAbsenceEleveSaisies !== null) {
+				foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1163,8 +1163,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 					}
 				}
 
-				if ($this->collAbsenceSaisies !== null) {
-					foreach ($this->collAbsenceSaisies as $referrerFK) {
+				if ($this->collAbsenceEleveSaisies !== null) {
+					foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1552,9 +1552,9 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 				}
 			}
 
-			foreach ($this->getAbsenceSaisies() as $relObj) {
+			foreach ($this->getAbsenceEleveSaisies() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addAbsenceSaisie($relObj->copy($deepCopy));
+					$copyObj->addAbsenceEleveSaisie($relObj->copy($deepCopy));
 				}
 			}
 
@@ -3168,47 +3168,47 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Clears out the collAbsenceSaisies collection (array).
+	 * Clears out the collAbsenceEleveSaisies collection (array).
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
 	 *
 	 * @return     void
-	 * @see        addAbsenceSaisies()
+	 * @see        addAbsenceEleveSaisies()
 	 */
-	public function clearAbsenceSaisies()
+	public function clearAbsenceEleveSaisies()
 	{
-		$this->collAbsenceSaisies = null; // important to set this to NULL since that means it is uninitialized
+		$this->collAbsenceEleveSaisies = null; // important to set this to NULL since that means it is uninitialized
 	}
 
 	/**
-	 * Initializes the collAbsenceSaisies collection (array).
+	 * Initializes the collAbsenceEleveSaisies collection (array).
 	 *
-	 * By default this just sets the collAbsenceSaisies collection to an empty array (like clearcollAbsenceSaisies());
+	 * By default this just sets the collAbsenceEleveSaisies collection to an empty array (like clearcollAbsenceEleveSaisies());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
 	 * @return     void
 	 */
-	public function initAbsenceSaisies()
+	public function initAbsenceEleveSaisies()
 	{
-		$this->collAbsenceSaisies = array();
+		$this->collAbsenceEleveSaisies = array();
 	}
 
 	/**
-	 * Gets an array of AbsenceSaisie objects which contain a foreign key that references this object.
+	 * Gets an array of AbsenceEleveSaisie objects which contain a foreign key that references this object.
 	 *
 	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
 	 * Otherwise if this Eleve has previously been saved, it will retrieve
-	 * related AbsenceSaisies from storage. If this Eleve is new, it will return
+	 * related AbsenceEleveSaisies from storage. If this Eleve is new, it will return
 	 * an empty collection or the current collection, the criteria is ignored on a new object.
 	 *
 	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array AbsenceSaisie[]
+	 * @return     array AbsenceEleveSaisie[]
 	 * @throws     PropelException
 	 */
-	public function getAbsenceSaisies($criteria = null, PropelPDO $con = null)
+	public function getAbsenceEleveSaisies($criteria = null, PropelPDO $con = null)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(ElevePeer::DATABASE_NAME);
@@ -3218,15 +3218,15 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collAbsenceSaisies === null) {
+		if ($this->collAbsenceEleveSaisies === null) {
 			if ($this->isNew()) {
-			   $this->collAbsenceSaisies = array();
+			   $this->collAbsenceEleveSaisies = array();
 			} else {
 
-				$criteria->add(AbsenceSaisiePeer::ELEVE_ID, $this->id_eleve);
+				$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $this->id_eleve);
 
-				AbsenceSaisiePeer::addSelectColumns($criteria);
-				$this->collAbsenceSaisies = AbsenceSaisiePeer::doSelect($criteria, $con);
+				AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelect($criteria, $con);
 			}
 		} else {
 			// criteria has no effect for a new object
@@ -3236,28 +3236,28 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 				// one, just return the collection.
 
 
-				$criteria->add(AbsenceSaisiePeer::ELEVE_ID, $this->id_eleve);
+				$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $this->id_eleve);
 
-				AbsenceSaisiePeer::addSelectColumns($criteria);
-				if (!isset($this->lastAbsenceSaisieCriteria) || !$this->lastAbsenceSaisieCriteria->equals($criteria)) {
-					$this->collAbsenceSaisies = AbsenceSaisiePeer::doSelect($criteria, $con);
+				AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+				if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
+					$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelect($criteria, $con);
 				}
 			}
 		}
-		$this->lastAbsenceSaisieCriteria = $criteria;
-		return $this->collAbsenceSaisies;
+		$this->lastAbsenceEleveSaisieCriteria = $criteria;
+		return $this->collAbsenceEleveSaisies;
 	}
 
 	/**
-	 * Returns the number of related AbsenceSaisie objects.
+	 * Returns the number of related AbsenceEleveSaisie objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
 	 * @param      PropelPDO $con
-	 * @return     int Count of related AbsenceSaisie objects.
+	 * @return     int Count of related AbsenceEleveSaisie objects.
 	 * @throws     PropelException
 	 */
-	public function countAbsenceSaisies(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	public function countAbsenceEleveSaisies(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(ElevePeer::DATABASE_NAME);
@@ -3271,14 +3271,14 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 
 		$count = null;
 
-		if ($this->collAbsenceSaisies === null) {
+		if ($this->collAbsenceEleveSaisies === null) {
 			if ($this->isNew()) {
 				$count = 0;
 			} else {
 
-				$criteria->add(AbsenceSaisiePeer::ELEVE_ID, $this->id_eleve);
+				$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $this->id_eleve);
 
-				$count = AbsenceSaisiePeer::doCount($criteria, $con);
+				$count = AbsenceEleveSaisiePeer::doCount($criteria, $con);
 			}
 		} else {
 			// criteria has no effect for a new object
@@ -3288,36 +3288,36 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 				// one, just return count of the collection.
 
 
-				$criteria->add(AbsenceSaisiePeer::ELEVE_ID, $this->id_eleve);
+				$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $this->id_eleve);
 
-				if (!isset($this->lastAbsenceSaisieCriteria) || !$this->lastAbsenceSaisieCriteria->equals($criteria)) {
-					$count = AbsenceSaisiePeer::doCount($criteria, $con);
+				if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
+					$count = AbsenceEleveSaisiePeer::doCount($criteria, $con);
 				} else {
-					$count = count($this->collAbsenceSaisies);
+					$count = count($this->collAbsenceEleveSaisies);
 				}
 			} else {
-				$count = count($this->collAbsenceSaisies);
+				$count = count($this->collAbsenceEleveSaisies);
 			}
 		}
-		$this->lastAbsenceSaisieCriteria = $criteria;
+		$this->lastAbsenceEleveSaisieCriteria = $criteria;
 		return $count;
 	}
 
 	/**
-	 * Method called to associate a AbsenceSaisie object to this object
-	 * through the AbsenceSaisie foreign key attribute.
+	 * Method called to associate a AbsenceEleveSaisie object to this object
+	 * through the AbsenceEleveSaisie foreign key attribute.
 	 *
-	 * @param      AbsenceSaisie $l AbsenceSaisie
+	 * @param      AbsenceEleveSaisie $l AbsenceEleveSaisie
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addAbsenceSaisie(AbsenceSaisie $l)
+	public function addAbsenceEleveSaisie(AbsenceEleveSaisie $l)
 	{
-		if ($this->collAbsenceSaisies === null) {
-			$this->initAbsenceSaisies();
+		if ($this->collAbsenceEleveSaisies === null) {
+			$this->initAbsenceEleveSaisies();
 		}
-		if (!in_array($l, $this->collAbsenceSaisies, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collAbsenceSaisies, $l);
+		if (!in_array($l, $this->collAbsenceEleveSaisies, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collAbsenceEleveSaisies, $l);
 			$l->setEleve($this);
 		}
 	}
@@ -3328,13 +3328,13 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this Eleve is new, it will return
 	 * an empty collection; or if this Eleve has previously
-	 * been saved, it will retrieve related AbsenceSaisies from storage.
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
 	 */
-	public function getAbsenceSaisiesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getAbsenceEleveSaisiesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(ElevePeer::DATABASE_NAME);
@@ -3344,29 +3344,123 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collAbsenceSaisies === null) {
+		if ($this->collAbsenceEleveSaisies === null) {
 			if ($this->isNew()) {
-				$this->collAbsenceSaisies = array();
+				$this->collAbsenceEleveSaisies = array();
 			} else {
 
-				$criteria->add(AbsenceSaisiePeer::ELEVE_ID, $this->id_eleve);
+				$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $this->id_eleve);
 
-				$this->collAbsenceSaisies = AbsenceSaisiePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
 			// called for.  If the criteria is the same as the last
 			// one, just return the collection.
 
-			$criteria->add(AbsenceSaisiePeer::ELEVE_ID, $this->id_eleve);
+			$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $this->id_eleve);
 
-			if (!isset($this->lastAbsenceSaisieCriteria) || !$this->lastAbsenceSaisieCriteria->equals($criteria)) {
-				$this->collAbsenceSaisies = AbsenceSaisiePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
 			}
 		}
-		$this->lastAbsenceSaisieCriteria = $criteria;
+		$this->lastAbsenceEleveSaisieCriteria = $criteria;
 
-		return $this->collAbsenceSaisies;
+		return $this->collAbsenceEleveSaisies;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Eleve is new, it will return
+	 * an empty collection; or if this Eleve has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Eleve.
+	 */
+	public function getAbsenceEleveSaisiesJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ElevePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collAbsenceEleveSaisies === null) {
+			if ($this->isNew()) {
+				$this->collAbsenceEleveSaisies = array();
+			} else {
+
+				$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $this->id_eleve);
+
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $this->id_eleve);
+
+			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastAbsenceEleveSaisieCriteria = $criteria;
+
+		return $this->collAbsenceEleveSaisies;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Eleve is new, it will return
+	 * an empty collection; or if this Eleve has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Eleve.
+	 */
+	public function getAbsenceEleveSaisiesJoinEdtEmplacementCours($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(ElevePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collAbsenceEleveSaisies === null) {
+			if ($this->isNew()) {
+				$this->collAbsenceEleveSaisies = array();
+			} else {
+
+				$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $this->id_eleve);
+
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtEmplacementCours($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $this->id_eleve);
+
+			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtEmplacementCours($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastAbsenceEleveSaisieCriteria = $criteria;
+
+		return $this->collAbsenceEleveSaisies;
 	}
 
 	/**
@@ -3931,8 +4025,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collAbsenceSaisies) {
-				foreach ((array) $this->collAbsenceSaisies as $o) {
+			if ($this->collAbsenceEleveSaisies) {
+				foreach ((array) $this->collAbsenceEleveSaisies as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
@@ -3961,7 +4055,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent {
 		$this->collResponsableInformations = null;
 		$this->collJEleveAncienEtablissements = null;
 		$this->collJAidElevess = null;
-		$this->collAbsenceSaisies = null;
+		$this->collAbsenceEleveSaisies = null;
 		$this->collCreditEctss = null;
 		$this->collCreditEctsGlobals = null;
 		$this->collArchiveEctss = null;

@@ -113,6 +113,26 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 	private $lastCreditEctsCriteria = null;
 
 	/**
+	 * @var        array EdtEmplacementCours[] Collection to store aggregation of EdtEmplacementCours objects.
+	 */
+	protected $collEdtEmplacementCourssRelatedByIdGroupe;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collEdtEmplacementCourssRelatedByIdGroupe.
+	 */
+	private $lastEdtEmplacementCoursRelatedByIdGroupeCriteria = null;
+
+	/**
+	 * @var        array EdtEmplacementCours[] Collection to store aggregation of EdtEmplacementCours objects.
+	 */
+	protected $collEdtEmplacementCourssRelatedByIdGroupe;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collEdtEmplacementCourssRelatedByIdGroupe.
+	 */
+	private $lastEdtEmplacementCoursRelatedByIdGroupeCriteria = null;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -399,6 +419,12 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 			$this->collCreditEctss = null;
 			$this->lastCreditEctsCriteria = null;
 
+			$this->collEdtEmplacementCourssRelatedByIdGroupe = null;
+			$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = null;
+
+			$this->collEdtEmplacementCourssRelatedByIdGroupe = null;
+			$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = null;
+
 		} // if (deep)
 	}
 
@@ -562,6 +588,22 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 				}
 			}
 
+			if ($this->collEdtEmplacementCourssRelatedByIdGroupe !== null) {
+				foreach ($this->collEdtEmplacementCourssRelatedByIdGroupe as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collEdtEmplacementCourssRelatedByIdGroupe !== null) {
+				foreach ($this->collEdtEmplacementCourssRelatedByIdGroupe as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			$this->alreadyInSave = false;
 
 		}
@@ -683,6 +725,22 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 
 				if ($this->collCreditEctss !== null) {
 					foreach ($this->collCreditEctss as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collEdtEmplacementCourssRelatedByIdGroupe !== null) {
+					foreach ($this->collEdtEmplacementCourssRelatedByIdGroupe as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collEdtEmplacementCourssRelatedByIdGroupe !== null) {
+					foreach ($this->collEdtEmplacementCourssRelatedByIdGroupe as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -950,6 +1008,18 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 			foreach ($this->getCreditEctss() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addCreditEcts($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getEdtEmplacementCourssRelatedByIdGroupe() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addEdtEmplacementCoursRelatedByIdGroupe($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getEdtEmplacementCourssRelatedByIdGroupe() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addEdtEmplacementCoursRelatedByIdGroupe($relObj->copy($deepCopy));
 				}
 			}
 
@@ -2603,6 +2673,692 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Clears out the collEdtEmplacementCourssRelatedByIdGroupe collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addEdtEmplacementCourssRelatedByIdGroupe()
+	 */
+	public function clearEdtEmplacementCourssRelatedByIdGroupe()
+	{
+		$this->collEdtEmplacementCourssRelatedByIdGroupe = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collEdtEmplacementCourssRelatedByIdGroupe collection (array).
+	 *
+	 * By default this just sets the collEdtEmplacementCourssRelatedByIdGroupe collection to an empty array (like clearcollEdtEmplacementCourssRelatedByIdGroupe());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initEdtEmplacementCourssRelatedByIdGroupe()
+	{
+		$this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+	}
+
+	/**
+	 * Gets an array of EdtEmplacementCours objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this Groupe has previously been saved, it will retrieve
+	 * related EdtEmplacementCourssRelatedByIdGroupe from storage. If this Groupe is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array EdtEmplacementCours[]
+	 * @throws     PropelException
+	 */
+	public function getEdtEmplacementCourssRelatedByIdGroupe($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+			   $this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				EdtEmplacementCoursPeer::addSelectColumns($criteria);
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				EdtEmplacementCoursPeer::addSelectColumns($criteria);
+				if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+					$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+		return $this->collEdtEmplacementCourssRelatedByIdGroupe;
+	}
+
+	/**
+	 * Returns the number of related EdtEmplacementCours objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related EdtEmplacementCours objects.
+	 * @throws     PropelException
+	 */
+	public function countEdtEmplacementCourssRelatedByIdGroupe(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+					$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collEdtEmplacementCourssRelatedByIdGroupe);
+				}
+			} else {
+				$count = count($this->collEdtEmplacementCourssRelatedByIdGroupe);
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a EdtEmplacementCours object to this object
+	 * through the EdtEmplacementCours foreign key attribute.
+	 *
+	 * @param      EdtEmplacementCours $l EdtEmplacementCours
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addEdtEmplacementCoursRelatedByIdGroupe(EdtEmplacementCours $l)
+	{
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			$this->initEdtEmplacementCourssRelatedByIdGroupe();
+		}
+		if (!in_array($l, $this->collEdtEmplacementCourssRelatedByIdGroupe, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collEdtEmplacementCourssRelatedByIdGroupe, $l);
+			$l->setGroupeRelatedByIdGroupe($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourssRelatedByIdGroupe from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getEdtEmplacementCourssRelatedByIdGroupeJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtSalle($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtSalle($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourssRelatedByIdGroupe;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourssRelatedByIdGroupe from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getEdtEmplacementCourssRelatedByIdGroupeJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourssRelatedByIdGroupe;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourssRelatedByIdGroupe from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getEdtEmplacementCourssRelatedByIdGroupeJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtCalendrierPeriode($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtCalendrierPeriode($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourssRelatedByIdGroupe;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourssRelatedByIdGroupe from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getEdtEmplacementCourssRelatedByIdGroupeJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourssRelatedByIdGroupe;
+	}
+
+	/**
+	 * Clears out the collEdtEmplacementCourssRelatedByIdGroupe collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addEdtEmplacementCourssRelatedByIdGroupe()
+	 */
+	public function clearEdtEmplacementCourssRelatedByIdGroupe()
+	{
+		$this->collEdtEmplacementCourssRelatedByIdGroupe = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collEdtEmplacementCourssRelatedByIdGroupe collection (array).
+	 *
+	 * By default this just sets the collEdtEmplacementCourssRelatedByIdGroupe collection to an empty array (like clearcollEdtEmplacementCourssRelatedByIdGroupe());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initEdtEmplacementCourssRelatedByIdGroupe()
+	{
+		$this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+	}
+
+	/**
+	 * Gets an array of EdtEmplacementCours objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this Groupe has previously been saved, it will retrieve
+	 * related EdtEmplacementCourssRelatedByIdGroupe from storage. If this Groupe is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array EdtEmplacementCours[]
+	 * @throws     PropelException
+	 */
+	public function getEdtEmplacementCourssRelatedByIdGroupe($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+			   $this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				EdtEmplacementCoursPeer::addSelectColumns($criteria);
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				EdtEmplacementCoursPeer::addSelectColumns($criteria);
+				if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+					$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+		return $this->collEdtEmplacementCourssRelatedByIdGroupe;
+	}
+
+	/**
+	 * Returns the number of related EdtEmplacementCours objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related EdtEmplacementCours objects.
+	 * @throws     PropelException
+	 */
+	public function countEdtEmplacementCourssRelatedByIdGroupe(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+					$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collEdtEmplacementCourssRelatedByIdGroupe);
+				}
+			} else {
+				$count = count($this->collEdtEmplacementCourssRelatedByIdGroupe);
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a EdtEmplacementCours object to this object
+	 * through the EdtEmplacementCours foreign key attribute.
+	 *
+	 * @param      EdtEmplacementCours $l EdtEmplacementCours
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addEdtEmplacementCoursRelatedByIdGroupe(EdtEmplacementCours $l)
+	{
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			$this->initEdtEmplacementCourssRelatedByIdGroupe();
+		}
+		if (!in_array($l, $this->collEdtEmplacementCourssRelatedByIdGroupe, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collEdtEmplacementCourssRelatedByIdGroupe, $l);
+			$l->setGroupeRelatedByIdGroupe($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourssRelatedByIdGroupe from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getEdtEmplacementCourssRelatedByIdGroupeJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtSalle($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtSalle($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourssRelatedByIdGroupe;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourssRelatedByIdGroupe from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getEdtEmplacementCourssRelatedByIdGroupeJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourssRelatedByIdGroupe;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourssRelatedByIdGroupe from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getEdtEmplacementCourssRelatedByIdGroupeJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtCalendrierPeriode($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinEdtCalendrierPeriode($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourssRelatedByIdGroupe;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourssRelatedByIdGroupe from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getEdtEmplacementCourssRelatedByIdGroupeJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourssRelatedByIdGroupe === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $this->id);
+
+			if (!isset($this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria) || !$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourssRelatedByIdGroupe = EdtEmplacementCoursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursRelatedByIdGroupeCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourssRelatedByIdGroupe;
+	}
+
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -2649,6 +3405,16 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collEdtEmplacementCourssRelatedByIdGroupe) {
+				foreach ((array) $this->collEdtEmplacementCourssRelatedByIdGroupe as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collEdtEmplacementCourssRelatedByIdGroupe) {
+				foreach ((array) $this->collEdtEmplacementCourssRelatedByIdGroupe as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		$this->collJGroupesProfesseurss = null;
@@ -2658,6 +3424,8 @@ abstract class BaseGroupe extends BaseObject  implements Persistent {
 		$this->collCahierTexteNoticePrivees = null;
 		$this->collJEleveGroupes = null;
 		$this->collCreditEctss = null;
+		$this->collEdtEmplacementCourssRelatedByIdGroupe = null;
+		$this->collEdtEmplacementCourssRelatedByIdGroupe = null;
 	}
 
 } // BaseGroupe

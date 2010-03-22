@@ -203,34 +203,34 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	private $lastJAidUtilisateursProfessionnelsCriteria = null;
 
 	/**
-	 * @var        array AbsenceSaisie[] Collection to store aggregation of AbsenceSaisie objects.
+	 * @var        array AbsenceEleveSaisie[] Collection to store aggregation of AbsenceEleveSaisie objects.
 	 */
-	protected $collAbsenceSaisies;
+	protected $collAbsenceEleveSaisies;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collAbsenceSaisies.
+	 * @var        Criteria The criteria used to select the current contents of collAbsenceEleveSaisies.
 	 */
-	private $lastAbsenceSaisieCriteria = null;
+	private $lastAbsenceEleveSaisieCriteria = null;
 
 	/**
-	 * @var        array AbsenceTraitement[] Collection to store aggregation of AbsenceTraitement objects.
+	 * @var        array AbsenceEleveTraitement[] Collection to store aggregation of AbsenceEleveTraitement objects.
 	 */
-	protected $collAbsenceTraitements;
+	protected $collAbsenceEleveTraitements;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collAbsenceTraitements.
+	 * @var        Criteria The criteria used to select the current contents of collAbsenceEleveTraitements.
 	 */
-	private $lastAbsenceTraitementCriteria = null;
+	private $lastAbsenceEleveTraitementCriteria = null;
 
 	/**
-	 * @var        array AbsenceEnvoi[] Collection to store aggregation of AbsenceEnvoi objects.
+	 * @var        array AbsenceEleveEnvoi[] Collection to store aggregation of AbsenceEleveEnvoi objects.
 	 */
-	protected $collAbsenceEnvois;
+	protected $collAbsenceEleveEnvois;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collAbsenceEnvois.
+	 * @var        Criteria The criteria used to select the current contents of collAbsenceEleveEnvois.
 	 */
-	private $lastAbsenceEnvoiCriteria = null;
+	private $lastAbsenceEleveEnvoiCriteria = null;
 
 	/**
 	 * @var        array PreferenceUtilisateurProfessionnel[] Collection to store aggregation of PreferenceUtilisateurProfessionnel objects.
@@ -241,6 +241,16 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * @var        Criteria The criteria used to select the current contents of collPreferenceUtilisateurProfessionnels.
 	 */
 	private $lastPreferenceUtilisateurProfessionnelCriteria = null;
+
+	/**
+	 * @var        array EdtEmplacementCours[] Collection to store aggregation of EdtEmplacementCours objects.
+	 */
+	protected $collEdtEmplacementCourss;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collEdtEmplacementCourss.
+	 */
+	private $lastEdtEmplacementCoursCriteria = null;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -1098,17 +1108,20 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->collJAidUtilisateursProfessionnelss = null;
 			$this->lastJAidUtilisateursProfessionnelsCriteria = null;
 
-			$this->collAbsenceSaisies = null;
-			$this->lastAbsenceSaisieCriteria = null;
+			$this->collAbsenceEleveSaisies = null;
+			$this->lastAbsenceEleveSaisieCriteria = null;
 
-			$this->collAbsenceTraitements = null;
-			$this->lastAbsenceTraitementCriteria = null;
+			$this->collAbsenceEleveTraitements = null;
+			$this->lastAbsenceEleveTraitementCriteria = null;
 
-			$this->collAbsenceEnvois = null;
-			$this->lastAbsenceEnvoiCriteria = null;
+			$this->collAbsenceEleveEnvois = null;
+			$this->lastAbsenceEleveEnvoiCriteria = null;
 
 			$this->collPreferenceUtilisateurProfessionnels = null;
 			$this->lastPreferenceUtilisateurProfessionnelCriteria = null;
+
+			$this->collEdtEmplacementCourss = null;
+			$this->lastEdtEmplacementCoursCriteria = null;
 
 		} // if (deep)
 	}
@@ -1268,24 +1281,24 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
-			if ($this->collAbsenceSaisies !== null) {
-				foreach ($this->collAbsenceSaisies as $referrerFK) {
+			if ($this->collAbsenceEleveSaisies !== null) {
+				foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
 				}
 			}
 
-			if ($this->collAbsenceTraitements !== null) {
-				foreach ($this->collAbsenceTraitements as $referrerFK) {
+			if ($this->collAbsenceEleveTraitements !== null) {
+				foreach ($this->collAbsenceEleveTraitements as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
 				}
 			}
 
-			if ($this->collAbsenceEnvois !== null) {
-				foreach ($this->collAbsenceEnvois as $referrerFK) {
+			if ($this->collAbsenceEleveEnvois !== null) {
+				foreach ($this->collAbsenceEleveEnvois as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1294,6 +1307,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 			if ($this->collPreferenceUtilisateurProfessionnels !== null) {
 				foreach ($this->collPreferenceUtilisateurProfessionnels as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collEdtEmplacementCourss !== null) {
+				foreach ($this->collEdtEmplacementCourss as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1427,24 +1448,24 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					}
 				}
 
-				if ($this->collAbsenceSaisies !== null) {
-					foreach ($this->collAbsenceSaisies as $referrerFK) {
+				if ($this->collAbsenceEleveSaisies !== null) {
+					foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
 					}
 				}
 
-				if ($this->collAbsenceTraitements !== null) {
-					foreach ($this->collAbsenceTraitements as $referrerFK) {
+				if ($this->collAbsenceEleveTraitements !== null) {
+					foreach ($this->collAbsenceEleveTraitements as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
 					}
 				}
 
-				if ($this->collAbsenceEnvois !== null) {
-					foreach ($this->collAbsenceEnvois as $referrerFK) {
+				if ($this->collAbsenceEleveEnvois !== null) {
+					foreach ($this->collAbsenceEleveEnvois as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1453,6 +1474,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 				if ($this->collPreferenceUtilisateurProfessionnels !== null) {
 					foreach ($this->collPreferenceUtilisateurProfessionnels as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collEdtEmplacementCourss !== null) {
+					foreach ($this->collEdtEmplacementCourss as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1879,27 +1908,33 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
-			foreach ($this->getAbsenceSaisies() as $relObj) {
+			foreach ($this->getAbsenceEleveSaisies() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addAbsenceSaisie($relObj->copy($deepCopy));
+					$copyObj->addAbsenceEleveSaisie($relObj->copy($deepCopy));
 				}
 			}
 
-			foreach ($this->getAbsenceTraitements() as $relObj) {
+			foreach ($this->getAbsenceEleveTraitements() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addAbsenceTraitement($relObj->copy($deepCopy));
+					$copyObj->addAbsenceEleveTraitement($relObj->copy($deepCopy));
 				}
 			}
 
-			foreach ($this->getAbsenceEnvois() as $relObj) {
+			foreach ($this->getAbsenceEleveEnvois() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addAbsenceEnvoi($relObj->copy($deepCopy));
+					$copyObj->addAbsenceEleveEnvoi($relObj->copy($deepCopy));
 				}
 			}
 
 			foreach ($this->getPreferenceUtilisateurProfessionnels() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addPreferenceUtilisateurProfessionnel($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getEdtEmplacementCourss() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addEdtEmplacementCours($relObj->copy($deepCopy));
 				}
 			}
 
@@ -3598,47 +3633,47 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
-	 * Clears out the collAbsenceSaisies collection (array).
+	 * Clears out the collAbsenceEleveSaisies collection (array).
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
 	 *
 	 * @return     void
-	 * @see        addAbsenceSaisies()
+	 * @see        addAbsenceEleveSaisies()
 	 */
-	public function clearAbsenceSaisies()
+	public function clearAbsenceEleveSaisies()
 	{
-		$this->collAbsenceSaisies = null; // important to set this to NULL since that means it is uninitialized
+		$this->collAbsenceEleveSaisies = null; // important to set this to NULL since that means it is uninitialized
 	}
 
 	/**
-	 * Initializes the collAbsenceSaisies collection (array).
+	 * Initializes the collAbsenceEleveSaisies collection (array).
 	 *
-	 * By default this just sets the collAbsenceSaisies collection to an empty array (like clearcollAbsenceSaisies());
+	 * By default this just sets the collAbsenceEleveSaisies collection to an empty array (like clearcollAbsenceEleveSaisies());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
 	 * @return     void
 	 */
-	public function initAbsenceSaisies()
+	public function initAbsenceEleveSaisies()
 	{
-		$this->collAbsenceSaisies = array();
+		$this->collAbsenceEleveSaisies = array();
 	}
 
 	/**
-	 * Gets an array of AbsenceSaisie objects which contain a foreign key that references this object.
+	 * Gets an array of AbsenceEleveSaisie objects which contain a foreign key that references this object.
 	 *
 	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
 	 * Otherwise if this UtilisateurProfessionnel has previously been saved, it will retrieve
-	 * related AbsenceSaisies from storage. If this UtilisateurProfessionnel is new, it will return
+	 * related AbsenceEleveSaisies from storage. If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection, the criteria is ignored on a new object.
 	 *
 	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array AbsenceSaisie[]
+	 * @return     array AbsenceEleveSaisie[]
 	 * @throws     PropelException
 	 */
-	public function getAbsenceSaisies($criteria = null, PropelPDO $con = null)
+	public function getAbsenceEleveSaisies($criteria = null, PropelPDO $con = null)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -3648,15 +3683,15 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collAbsenceSaisies === null) {
+		if ($this->collAbsenceEleveSaisies === null) {
 			if ($this->isNew()) {
-			   $this->collAbsenceSaisies = array();
+			   $this->collAbsenceEleveSaisies = array();
 			} else {
 
-				$criteria->add(AbsenceSaisiePeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $this->login);
 
-				AbsenceSaisiePeer::addSelectColumns($criteria);
-				$this->collAbsenceSaisies = AbsenceSaisiePeer::doSelect($criteria, $con);
+				AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelect($criteria, $con);
 			}
 		} else {
 			// criteria has no effect for a new object
@@ -3666,28 +3701,28 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				// one, just return the collection.
 
 
-				$criteria->add(AbsenceSaisiePeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $this->login);
 
-				AbsenceSaisiePeer::addSelectColumns($criteria);
-				if (!isset($this->lastAbsenceSaisieCriteria) || !$this->lastAbsenceSaisieCriteria->equals($criteria)) {
-					$this->collAbsenceSaisies = AbsenceSaisiePeer::doSelect($criteria, $con);
+				AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+				if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
+					$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelect($criteria, $con);
 				}
 			}
 		}
-		$this->lastAbsenceSaisieCriteria = $criteria;
-		return $this->collAbsenceSaisies;
+		$this->lastAbsenceEleveSaisieCriteria = $criteria;
+		return $this->collAbsenceEleveSaisies;
 	}
 
 	/**
-	 * Returns the number of related AbsenceSaisie objects.
+	 * Returns the number of related AbsenceEleveSaisie objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
 	 * @param      PropelPDO $con
-	 * @return     int Count of related AbsenceSaisie objects.
+	 * @return     int Count of related AbsenceEleveSaisie objects.
 	 * @throws     PropelException
 	 */
-	public function countAbsenceSaisies(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	public function countAbsenceEleveSaisies(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -3701,14 +3736,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 		$count = null;
 
-		if ($this->collAbsenceSaisies === null) {
+		if ($this->collAbsenceEleveSaisies === null) {
 			if ($this->isNew()) {
 				$count = 0;
 			} else {
 
-				$criteria->add(AbsenceSaisiePeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $this->login);
 
-				$count = AbsenceSaisiePeer::doCount($criteria, $con);
+				$count = AbsenceEleveSaisiePeer::doCount($criteria, $con);
 			}
 		} else {
 			// criteria has no effect for a new object
@@ -3718,36 +3753,36 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				// one, just return count of the collection.
 
 
-				$criteria->add(AbsenceSaisiePeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $this->login);
 
-				if (!isset($this->lastAbsenceSaisieCriteria) || !$this->lastAbsenceSaisieCriteria->equals($criteria)) {
-					$count = AbsenceSaisiePeer::doCount($criteria, $con);
+				if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
+					$count = AbsenceEleveSaisiePeer::doCount($criteria, $con);
 				} else {
-					$count = count($this->collAbsenceSaisies);
+					$count = count($this->collAbsenceEleveSaisies);
 				}
 			} else {
-				$count = count($this->collAbsenceSaisies);
+				$count = count($this->collAbsenceEleveSaisies);
 			}
 		}
-		$this->lastAbsenceSaisieCriteria = $criteria;
+		$this->lastAbsenceEleveSaisieCriteria = $criteria;
 		return $count;
 	}
 
 	/**
-	 * Method called to associate a AbsenceSaisie object to this object
-	 * through the AbsenceSaisie foreign key attribute.
+	 * Method called to associate a AbsenceEleveSaisie object to this object
+	 * through the AbsenceEleveSaisie foreign key attribute.
 	 *
-	 * @param      AbsenceSaisie $l AbsenceSaisie
+	 * @param      AbsenceEleveSaisie $l AbsenceEleveSaisie
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addAbsenceSaisie(AbsenceSaisie $l)
+	public function addAbsenceEleveSaisie(AbsenceEleveSaisie $l)
 	{
-		if ($this->collAbsenceSaisies === null) {
-			$this->initAbsenceSaisies();
+		if ($this->collAbsenceEleveSaisies === null) {
+			$this->initAbsenceEleveSaisies();
 		}
-		if (!in_array($l, $this->collAbsenceSaisies, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collAbsenceSaisies, $l);
+		if (!in_array($l, $this->collAbsenceEleveSaisies, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collAbsenceEleveSaisies, $l);
 			$l->setUtilisateurProfessionnel($this);
 		}
 	}
@@ -3758,13 +3793,13 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this UtilisateurProfessionnel is new, it will return
 	 * an empty collection; or if this UtilisateurProfessionnel has previously
-	 * been saved, it will retrieve related AbsenceSaisies from storage.
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
 	 */
-	public function getAbsenceSaisiesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getAbsenceEleveSaisiesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -3774,73 +3809,44 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collAbsenceSaisies === null) {
+		if ($this->collAbsenceEleveSaisies === null) {
 			if ($this->isNew()) {
-				$this->collAbsenceSaisies = array();
+				$this->collAbsenceEleveSaisies = array();
 			} else {
 
-				$criteria->add(AbsenceSaisiePeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $this->login);
 
-				$this->collAbsenceSaisies = AbsenceSaisiePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
 			// called for.  If the criteria is the same as the last
 			// one, just return the collection.
 
-			$criteria->add(AbsenceSaisiePeer::UTILISATEUR_ID, $this->login);
+			$criteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $this->login);
 
-			if (!isset($this->lastAbsenceSaisieCriteria) || !$this->lastAbsenceSaisieCriteria->equals($criteria)) {
-				$this->collAbsenceSaisies = AbsenceSaisiePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
+			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
 			}
 		}
-		$this->lastAbsenceSaisieCriteria = $criteria;
+		$this->lastAbsenceEleveSaisieCriteria = $criteria;
 
-		return $this->collAbsenceSaisies;
+		return $this->collAbsenceEleveSaisies;
 	}
 
-	/**
-	 * Clears out the collAbsenceTraitements collection (array).
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addAbsenceTraitements()
-	 */
-	public function clearAbsenceTraitements()
-	{
-		$this->collAbsenceTraitements = null; // important to set this to NULL since that means it is uninitialized
-	}
 
 	/**
-	 * Initializes the collAbsenceTraitements collection (array).
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
 	 *
-	 * By default this just sets the collAbsenceTraitements collection to an empty array (like clearcollAbsenceTraitements());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
 	 */
-	public function initAbsenceTraitements()
-	{
-		$this->collAbsenceTraitements = array();
-	}
-
-	/**
-	 * Gets an array of AbsenceTraitement objects which contain a foreign key that references this object.
-	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this UtilisateurProfessionnel has previously been saved, it will retrieve
-	 * related AbsenceTraitements from storage. If this UtilisateurProfessionnel is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
-	 *
-	 * @param      PropelPDO $con
-	 * @param      Criteria $criteria
-	 * @return     array AbsenceTraitement[]
-	 * @throws     PropelException
-	 */
-	public function getAbsenceTraitements($criteria = null, PropelPDO $con = null)
+	public function getAbsenceEleveSaisiesJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -3850,15 +3856,138 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collAbsenceTraitements === null) {
+		if ($this->collAbsenceEleveSaisies === null) {
 			if ($this->isNew()) {
-			   $this->collAbsenceTraitements = array();
+				$this->collAbsenceEleveSaisies = array();
 			} else {
 
-				$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $this->login);
 
-				AbsenceTraitementPeer::addSelectColumns($criteria);
-				$this->collAbsenceTraitements = AbsenceTraitementPeer::doSelect($criteria, $con);
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $this->login);
+
+			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastAbsenceEleveSaisieCriteria = $criteria;
+
+		return $this->collAbsenceEleveSaisies;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 */
+	public function getAbsenceEleveSaisiesJoinEdtEmplacementCours($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collAbsenceEleveSaisies === null) {
+			if ($this->isNew()) {
+				$this->collAbsenceEleveSaisies = array();
+			} else {
+
+				$criteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $this->login);
+
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtEmplacementCours($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $this->login);
+
+			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
+				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtEmplacementCours($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastAbsenceEleveSaisieCriteria = $criteria;
+
+		return $this->collAbsenceEleveSaisies;
+	}
+
+	/**
+	 * Clears out the collAbsenceEleveTraitements collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addAbsenceEleveTraitements()
+	 */
+	public function clearAbsenceEleveTraitements()
+	{
+		$this->collAbsenceEleveTraitements = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collAbsenceEleveTraitements collection (array).
+	 *
+	 * By default this just sets the collAbsenceEleveTraitements collection to an empty array (like clearcollAbsenceEleveTraitements());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initAbsenceEleveTraitements()
+	{
+		$this->collAbsenceEleveTraitements = array();
+	}
+
+	/**
+	 * Gets an array of AbsenceEleveTraitement objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel has previously been saved, it will retrieve
+	 * related AbsenceEleveTraitements from storage. If this UtilisateurProfessionnel is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array AbsenceEleveTraitement[]
+	 * @throws     PropelException
+	 */
+	public function getAbsenceEleveTraitements($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collAbsenceEleveTraitements === null) {
+			if ($this->isNew()) {
+			   $this->collAbsenceEleveTraitements = array();
+			} else {
+
+				$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
+
+				AbsenceEleveTraitementPeer::addSelectColumns($criteria);
+				$this->collAbsenceEleveTraitements = AbsenceEleveTraitementPeer::doSelect($criteria, $con);
 			}
 		} else {
 			// criteria has no effect for a new object
@@ -3868,28 +3997,28 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				// one, just return the collection.
 
 
-				$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
 
-				AbsenceTraitementPeer::addSelectColumns($criteria);
-				if (!isset($this->lastAbsenceTraitementCriteria) || !$this->lastAbsenceTraitementCriteria->equals($criteria)) {
-					$this->collAbsenceTraitements = AbsenceTraitementPeer::doSelect($criteria, $con);
+				AbsenceEleveTraitementPeer::addSelectColumns($criteria);
+				if (!isset($this->lastAbsenceEleveTraitementCriteria) || !$this->lastAbsenceEleveTraitementCriteria->equals($criteria)) {
+					$this->collAbsenceEleveTraitements = AbsenceEleveTraitementPeer::doSelect($criteria, $con);
 				}
 			}
 		}
-		$this->lastAbsenceTraitementCriteria = $criteria;
-		return $this->collAbsenceTraitements;
+		$this->lastAbsenceEleveTraitementCriteria = $criteria;
+		return $this->collAbsenceEleveTraitements;
 	}
 
 	/**
-	 * Returns the number of related AbsenceTraitement objects.
+	 * Returns the number of related AbsenceEleveTraitement objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
 	 * @param      PropelPDO $con
-	 * @return     int Count of related AbsenceTraitement objects.
+	 * @return     int Count of related AbsenceEleveTraitement objects.
 	 * @throws     PropelException
 	 */
-	public function countAbsenceTraitements(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	public function countAbsenceEleveTraitements(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -3903,14 +4032,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 		$count = null;
 
-		if ($this->collAbsenceTraitements === null) {
+		if ($this->collAbsenceEleveTraitements === null) {
 			if ($this->isNew()) {
 				$count = 0;
 			} else {
 
-				$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
 
-				$count = AbsenceTraitementPeer::doCount($criteria, $con);
+				$count = AbsenceEleveTraitementPeer::doCount($criteria, $con);
 			}
 		} else {
 			// criteria has no effect for a new object
@@ -3920,36 +4049,36 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				// one, just return count of the collection.
 
 
-				$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
 
-				if (!isset($this->lastAbsenceTraitementCriteria) || !$this->lastAbsenceTraitementCriteria->equals($criteria)) {
-					$count = AbsenceTraitementPeer::doCount($criteria, $con);
+				if (!isset($this->lastAbsenceEleveTraitementCriteria) || !$this->lastAbsenceEleveTraitementCriteria->equals($criteria)) {
+					$count = AbsenceEleveTraitementPeer::doCount($criteria, $con);
 				} else {
-					$count = count($this->collAbsenceTraitements);
+					$count = count($this->collAbsenceEleveTraitements);
 				}
 			} else {
-				$count = count($this->collAbsenceTraitements);
+				$count = count($this->collAbsenceEleveTraitements);
 			}
 		}
-		$this->lastAbsenceTraitementCriteria = $criteria;
+		$this->lastAbsenceEleveTraitementCriteria = $criteria;
 		return $count;
 	}
 
 	/**
-	 * Method called to associate a AbsenceTraitement object to this object
-	 * through the AbsenceTraitement foreign key attribute.
+	 * Method called to associate a AbsenceEleveTraitement object to this object
+	 * through the AbsenceEleveTraitement foreign key attribute.
 	 *
-	 * @param      AbsenceTraitement $l AbsenceTraitement
+	 * @param      AbsenceEleveTraitement $l AbsenceEleveTraitement
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addAbsenceTraitement(AbsenceTraitement $l)
+	public function addAbsenceEleveTraitement(AbsenceEleveTraitement $l)
 	{
-		if ($this->collAbsenceTraitements === null) {
-			$this->initAbsenceTraitements();
+		if ($this->collAbsenceEleveTraitements === null) {
+			$this->initAbsenceEleveTraitements();
 		}
-		if (!in_array($l, $this->collAbsenceTraitements, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collAbsenceTraitements, $l);
+		if (!in_array($l, $this->collAbsenceEleveTraitements, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collAbsenceEleveTraitements, $l);
 			$l->setUtilisateurProfessionnel($this);
 		}
 	}
@@ -3960,13 +4089,13 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this UtilisateurProfessionnel is new, it will return
 	 * an empty collection; or if this UtilisateurProfessionnel has previously
-	 * been saved, it will retrieve related AbsenceTraitements from storage.
+	 * been saved, it will retrieve related AbsenceEleveTraitements from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
 	 */
-	public function getAbsenceTraitementsJoinAbsenceType($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getAbsenceEleveTraitementsJoinAbsenceEleveType($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -3976,29 +4105,29 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collAbsenceTraitements === null) {
+		if ($this->collAbsenceEleveTraitements === null) {
 			if ($this->isNew()) {
-				$this->collAbsenceTraitements = array();
+				$this->collAbsenceEleveTraitements = array();
 			} else {
 
-				$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
 
-				$this->collAbsenceTraitements = AbsenceTraitementPeer::doSelectJoinAbsenceType($criteria, $con, $join_behavior);
+				$this->collAbsenceEleveTraitements = AbsenceEleveTraitementPeer::doSelectJoinAbsenceEleveType($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
 			// called for.  If the criteria is the same as the last
 			// one, just return the collection.
 
-			$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+			$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
 
-			if (!isset($this->lastAbsenceTraitementCriteria) || !$this->lastAbsenceTraitementCriteria->equals($criteria)) {
-				$this->collAbsenceTraitements = AbsenceTraitementPeer::doSelectJoinAbsenceType($criteria, $con, $join_behavior);
+			if (!isset($this->lastAbsenceEleveTraitementCriteria) || !$this->lastAbsenceEleveTraitementCriteria->equals($criteria)) {
+				$this->collAbsenceEleveTraitements = AbsenceEleveTraitementPeer::doSelectJoinAbsenceEleveType($criteria, $con, $join_behavior);
 			}
 		}
-		$this->lastAbsenceTraitementCriteria = $criteria;
+		$this->lastAbsenceEleveTraitementCriteria = $criteria;
 
-		return $this->collAbsenceTraitements;
+		return $this->collAbsenceEleveTraitements;
 	}
 
 
@@ -4007,13 +4136,13 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this UtilisateurProfessionnel is new, it will return
 	 * an empty collection; or if this UtilisateurProfessionnel has previously
-	 * been saved, it will retrieve related AbsenceTraitements from storage.
+	 * been saved, it will retrieve related AbsenceEleveTraitements from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
 	 */
-	public function getAbsenceTraitementsJoinAbsenceMotif($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getAbsenceEleveTraitementsJoinAbsenceEleveMotif($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -4023,29 +4152,29 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collAbsenceTraitements === null) {
+		if ($this->collAbsenceEleveTraitements === null) {
 			if ($this->isNew()) {
-				$this->collAbsenceTraitements = array();
+				$this->collAbsenceEleveTraitements = array();
 			} else {
 
-				$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
 
-				$this->collAbsenceTraitements = AbsenceTraitementPeer::doSelectJoinAbsenceMotif($criteria, $con, $join_behavior);
+				$this->collAbsenceEleveTraitements = AbsenceEleveTraitementPeer::doSelectJoinAbsenceEleveMotif($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
 			// called for.  If the criteria is the same as the last
 			// one, just return the collection.
 
-			$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+			$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
 
-			if (!isset($this->lastAbsenceTraitementCriteria) || !$this->lastAbsenceTraitementCriteria->equals($criteria)) {
-				$this->collAbsenceTraitements = AbsenceTraitementPeer::doSelectJoinAbsenceMotif($criteria, $con, $join_behavior);
+			if (!isset($this->lastAbsenceEleveTraitementCriteria) || !$this->lastAbsenceEleveTraitementCriteria->equals($criteria)) {
+				$this->collAbsenceEleveTraitements = AbsenceEleveTraitementPeer::doSelectJoinAbsenceEleveMotif($criteria, $con, $join_behavior);
 			}
 		}
-		$this->lastAbsenceTraitementCriteria = $criteria;
+		$this->lastAbsenceEleveTraitementCriteria = $criteria;
 
-		return $this->collAbsenceTraitements;
+		return $this->collAbsenceEleveTraitements;
 	}
 
 
@@ -4054,13 +4183,13 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this UtilisateurProfessionnel is new, it will return
 	 * an empty collection; or if this UtilisateurProfessionnel has previously
-	 * been saved, it will retrieve related AbsenceTraitements from storage.
+	 * been saved, it will retrieve related AbsenceEleveTraitements from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
 	 */
-	public function getAbsenceTraitementsJoinAbsenceJustification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getAbsenceEleveTraitementsJoinAbsenceEleveJustification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -4070,29 +4199,29 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collAbsenceTraitements === null) {
+		if ($this->collAbsenceEleveTraitements === null) {
 			if ($this->isNew()) {
-				$this->collAbsenceTraitements = array();
+				$this->collAbsenceEleveTraitements = array();
 			} else {
 
-				$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
 
-				$this->collAbsenceTraitements = AbsenceTraitementPeer::doSelectJoinAbsenceJustification($criteria, $con, $join_behavior);
+				$this->collAbsenceEleveTraitements = AbsenceEleveTraitementPeer::doSelectJoinAbsenceEleveJustification($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
 			// called for.  If the criteria is the same as the last
 			// one, just return the collection.
 
-			$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+			$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
 
-			if (!isset($this->lastAbsenceTraitementCriteria) || !$this->lastAbsenceTraitementCriteria->equals($criteria)) {
-				$this->collAbsenceTraitements = AbsenceTraitementPeer::doSelectJoinAbsenceJustification($criteria, $con, $join_behavior);
+			if (!isset($this->lastAbsenceEleveTraitementCriteria) || !$this->lastAbsenceEleveTraitementCriteria->equals($criteria)) {
+				$this->collAbsenceEleveTraitements = AbsenceEleveTraitementPeer::doSelectJoinAbsenceEleveJustification($criteria, $con, $join_behavior);
 			}
 		}
-		$this->lastAbsenceTraitementCriteria = $criteria;
+		$this->lastAbsenceEleveTraitementCriteria = $criteria;
 
-		return $this->collAbsenceTraitements;
+		return $this->collAbsenceEleveTraitements;
 	}
 
 
@@ -4101,13 +4230,13 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this UtilisateurProfessionnel is new, it will return
 	 * an empty collection; or if this UtilisateurProfessionnel has previously
-	 * been saved, it will retrieve related AbsenceTraitements from storage.
+	 * been saved, it will retrieve related AbsenceEleveTraitements from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
 	 */
-	public function getAbsenceTraitementsJoinAbsenceAction($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getAbsenceEleveTraitementsJoinAbsenceEleveAction($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -4117,73 +4246,73 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collAbsenceTraitements === null) {
+		if ($this->collAbsenceEleveTraitements === null) {
 			if ($this->isNew()) {
-				$this->collAbsenceTraitements = array();
+				$this->collAbsenceEleveTraitements = array();
 			} else {
 
-				$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
 
-				$this->collAbsenceTraitements = AbsenceTraitementPeer::doSelectJoinAbsenceAction($criteria, $con, $join_behavior);
+				$this->collAbsenceEleveTraitements = AbsenceEleveTraitementPeer::doSelectJoinAbsenceEleveAction($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
 			// called for.  If the criteria is the same as the last
 			// one, just return the collection.
 
-			$criteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $this->login);
+			$criteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $this->login);
 
-			if (!isset($this->lastAbsenceTraitementCriteria) || !$this->lastAbsenceTraitementCriteria->equals($criteria)) {
-				$this->collAbsenceTraitements = AbsenceTraitementPeer::doSelectJoinAbsenceAction($criteria, $con, $join_behavior);
+			if (!isset($this->lastAbsenceEleveTraitementCriteria) || !$this->lastAbsenceEleveTraitementCriteria->equals($criteria)) {
+				$this->collAbsenceEleveTraitements = AbsenceEleveTraitementPeer::doSelectJoinAbsenceEleveAction($criteria, $con, $join_behavior);
 			}
 		}
-		$this->lastAbsenceTraitementCriteria = $criteria;
+		$this->lastAbsenceEleveTraitementCriteria = $criteria;
 
-		return $this->collAbsenceTraitements;
+		return $this->collAbsenceEleveTraitements;
 	}
 
 	/**
-	 * Clears out the collAbsenceEnvois collection (array).
+	 * Clears out the collAbsenceEleveEnvois collection (array).
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
 	 *
 	 * @return     void
-	 * @see        addAbsenceEnvois()
+	 * @see        addAbsenceEleveEnvois()
 	 */
-	public function clearAbsenceEnvois()
+	public function clearAbsenceEleveEnvois()
 	{
-		$this->collAbsenceEnvois = null; // important to set this to NULL since that means it is uninitialized
+		$this->collAbsenceEleveEnvois = null; // important to set this to NULL since that means it is uninitialized
 	}
 
 	/**
-	 * Initializes the collAbsenceEnvois collection (array).
+	 * Initializes the collAbsenceEleveEnvois collection (array).
 	 *
-	 * By default this just sets the collAbsenceEnvois collection to an empty array (like clearcollAbsenceEnvois());
+	 * By default this just sets the collAbsenceEleveEnvois collection to an empty array (like clearcollAbsenceEleveEnvois());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
 	 * @return     void
 	 */
-	public function initAbsenceEnvois()
+	public function initAbsenceEleveEnvois()
 	{
-		$this->collAbsenceEnvois = array();
+		$this->collAbsenceEleveEnvois = array();
 	}
 
 	/**
-	 * Gets an array of AbsenceEnvoi objects which contain a foreign key that references this object.
+	 * Gets an array of AbsenceEleveEnvoi objects which contain a foreign key that references this object.
 	 *
 	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
 	 * Otherwise if this UtilisateurProfessionnel has previously been saved, it will retrieve
-	 * related AbsenceEnvois from storage. If this UtilisateurProfessionnel is new, it will return
+	 * related AbsenceEleveEnvois from storage. If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection, the criteria is ignored on a new object.
 	 *
 	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array AbsenceEnvoi[]
+	 * @return     array AbsenceEleveEnvoi[]
 	 * @throws     PropelException
 	 */
-	public function getAbsenceEnvois($criteria = null, PropelPDO $con = null)
+	public function getAbsenceEleveEnvois($criteria = null, PropelPDO $con = null)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -4193,15 +4322,15 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collAbsenceEnvois === null) {
+		if ($this->collAbsenceEleveEnvois === null) {
 			if ($this->isNew()) {
-			   $this->collAbsenceEnvois = array();
+			   $this->collAbsenceEleveEnvois = array();
 			} else {
 
-				$criteria->add(AbsenceEnvoiPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $this->login);
 
-				AbsenceEnvoiPeer::addSelectColumns($criteria);
-				$this->collAbsenceEnvois = AbsenceEnvoiPeer::doSelect($criteria, $con);
+				AbsenceEleveEnvoiPeer::addSelectColumns($criteria);
+				$this->collAbsenceEleveEnvois = AbsenceEleveEnvoiPeer::doSelect($criteria, $con);
 			}
 		} else {
 			// criteria has no effect for a new object
@@ -4211,28 +4340,28 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				// one, just return the collection.
 
 
-				$criteria->add(AbsenceEnvoiPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $this->login);
 
-				AbsenceEnvoiPeer::addSelectColumns($criteria);
-				if (!isset($this->lastAbsenceEnvoiCriteria) || !$this->lastAbsenceEnvoiCriteria->equals($criteria)) {
-					$this->collAbsenceEnvois = AbsenceEnvoiPeer::doSelect($criteria, $con);
+				AbsenceEleveEnvoiPeer::addSelectColumns($criteria);
+				if (!isset($this->lastAbsenceEleveEnvoiCriteria) || !$this->lastAbsenceEleveEnvoiCriteria->equals($criteria)) {
+					$this->collAbsenceEleveEnvois = AbsenceEleveEnvoiPeer::doSelect($criteria, $con);
 				}
 			}
 		}
-		$this->lastAbsenceEnvoiCriteria = $criteria;
-		return $this->collAbsenceEnvois;
+		$this->lastAbsenceEleveEnvoiCriteria = $criteria;
+		return $this->collAbsenceEleveEnvois;
 	}
 
 	/**
-	 * Returns the number of related AbsenceEnvoi objects.
+	 * Returns the number of related AbsenceEleveEnvoi objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
 	 * @param      PropelPDO $con
-	 * @return     int Count of related AbsenceEnvoi objects.
+	 * @return     int Count of related AbsenceEleveEnvoi objects.
 	 * @throws     PropelException
 	 */
-	public function countAbsenceEnvois(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	public function countAbsenceEleveEnvois(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -4246,14 +4375,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 		$count = null;
 
-		if ($this->collAbsenceEnvois === null) {
+		if ($this->collAbsenceEleveEnvois === null) {
 			if ($this->isNew()) {
 				$count = 0;
 			} else {
 
-				$criteria->add(AbsenceEnvoiPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $this->login);
 
-				$count = AbsenceEnvoiPeer::doCount($criteria, $con);
+				$count = AbsenceEleveEnvoiPeer::doCount($criteria, $con);
 			}
 		} else {
 			// criteria has no effect for a new object
@@ -4263,36 +4392,36 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				// one, just return count of the collection.
 
 
-				$criteria->add(AbsenceEnvoiPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $this->login);
 
-				if (!isset($this->lastAbsenceEnvoiCriteria) || !$this->lastAbsenceEnvoiCriteria->equals($criteria)) {
-					$count = AbsenceEnvoiPeer::doCount($criteria, $con);
+				if (!isset($this->lastAbsenceEleveEnvoiCriteria) || !$this->lastAbsenceEleveEnvoiCriteria->equals($criteria)) {
+					$count = AbsenceEleveEnvoiPeer::doCount($criteria, $con);
 				} else {
-					$count = count($this->collAbsenceEnvois);
+					$count = count($this->collAbsenceEleveEnvois);
 				}
 			} else {
-				$count = count($this->collAbsenceEnvois);
+				$count = count($this->collAbsenceEleveEnvois);
 			}
 		}
-		$this->lastAbsenceEnvoiCriteria = $criteria;
+		$this->lastAbsenceEleveEnvoiCriteria = $criteria;
 		return $count;
 	}
 
 	/**
-	 * Method called to associate a AbsenceEnvoi object to this object
-	 * through the AbsenceEnvoi foreign key attribute.
+	 * Method called to associate a AbsenceEleveEnvoi object to this object
+	 * through the AbsenceEleveEnvoi foreign key attribute.
 	 *
-	 * @param      AbsenceEnvoi $l AbsenceEnvoi
+	 * @param      AbsenceEleveEnvoi $l AbsenceEleveEnvoi
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addAbsenceEnvoi(AbsenceEnvoi $l)
+	public function addAbsenceEleveEnvoi(AbsenceEleveEnvoi $l)
 	{
-		if ($this->collAbsenceEnvois === null) {
-			$this->initAbsenceEnvois();
+		if ($this->collAbsenceEleveEnvois === null) {
+			$this->initAbsenceEleveEnvois();
 		}
-		if (!in_array($l, $this->collAbsenceEnvois, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collAbsenceEnvois, $l);
+		if (!in_array($l, $this->collAbsenceEleveEnvois, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collAbsenceEleveEnvois, $l);
 			$l->setUtilisateurProfessionnel($this);
 		}
 	}
@@ -4303,13 +4432,13 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this UtilisateurProfessionnel is new, it will return
 	 * an empty collection; or if this UtilisateurProfessionnel has previously
-	 * been saved, it will retrieve related AbsenceEnvois from storage.
+	 * been saved, it will retrieve related AbsenceEleveEnvois from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
 	 */
-	public function getAbsenceEnvoisJoinAbsenceTypeEnvoi($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getAbsenceEleveEnvoisJoinAbsenceEleveTypeEnvoi($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		if ($criteria === null) {
 			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -4319,29 +4448,29 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$criteria = clone $criteria;
 		}
 
-		if ($this->collAbsenceEnvois === null) {
+		if ($this->collAbsenceEleveEnvois === null) {
 			if ($this->isNew()) {
-				$this->collAbsenceEnvois = array();
+				$this->collAbsenceEleveEnvois = array();
 			} else {
 
-				$criteria->add(AbsenceEnvoiPeer::UTILISATEUR_ID, $this->login);
+				$criteria->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $this->login);
 
-				$this->collAbsenceEnvois = AbsenceEnvoiPeer::doSelectJoinAbsenceTypeEnvoi($criteria, $con, $join_behavior);
+				$this->collAbsenceEleveEnvois = AbsenceEleveEnvoiPeer::doSelectJoinAbsenceEleveTypeEnvoi($criteria, $con, $join_behavior);
 			}
 		} else {
 			// the following code is to determine if a new query is
 			// called for.  If the criteria is the same as the last
 			// one, just return the collection.
 
-			$criteria->add(AbsenceEnvoiPeer::UTILISATEUR_ID, $this->login);
+			$criteria->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $this->login);
 
-			if (!isset($this->lastAbsenceEnvoiCriteria) || !$this->lastAbsenceEnvoiCriteria->equals($criteria)) {
-				$this->collAbsenceEnvois = AbsenceEnvoiPeer::doSelectJoinAbsenceTypeEnvoi($criteria, $con, $join_behavior);
+			if (!isset($this->lastAbsenceEleveEnvoiCriteria) || !$this->lastAbsenceEleveEnvoiCriteria->equals($criteria)) {
+				$this->collAbsenceEleveEnvois = AbsenceEleveEnvoiPeer::doSelectJoinAbsenceEleveTypeEnvoi($criteria, $con, $join_behavior);
 			}
 		}
-		$this->lastAbsenceEnvoiCriteria = $criteria;
+		$this->lastAbsenceEleveEnvoiCriteria = $criteria;
 
-		return $this->collAbsenceEnvois;
+		return $this->collAbsenceEleveEnvois;
 	}
 
 	/**
@@ -4500,6 +4629,396 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Clears out the collEdtEmplacementCourss collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addEdtEmplacementCourss()
+	 */
+	public function clearEdtEmplacementCourss()
+	{
+		$this->collEdtEmplacementCourss = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collEdtEmplacementCourss collection (array).
+	 *
+	 * By default this just sets the collEdtEmplacementCourss collection to an empty array (like clearcollEdtEmplacementCourss());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initEdtEmplacementCourss()
+	{
+		$this->collEdtEmplacementCourss = array();
+	}
+
+	/**
+	 * Gets an array of EdtEmplacementCours objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel has previously been saved, it will retrieve
+	 * related EdtEmplacementCourss from storage. If this UtilisateurProfessionnel is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array EdtEmplacementCours[]
+	 * @throws     PropelException
+	 */
+	public function getEdtEmplacementCourss($criteria = null, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourss === null) {
+			if ($this->isNew()) {
+			   $this->collEdtEmplacementCourss = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+				EdtEmplacementCoursPeer::addSelectColumns($criteria);
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+				EdtEmplacementCoursPeer::addSelectColumns($criteria);
+				if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
+					$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastEdtEmplacementCoursCriteria = $criteria;
+		return $this->collEdtEmplacementCourss;
+	}
+
+	/**
+	 * Returns the number of related EdtEmplacementCours objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related EdtEmplacementCours objects.
+	 * @throws     PropelException
+	 */
+	public function countEdtEmplacementCourss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collEdtEmplacementCourss === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+				$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+				if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
+					$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collEdtEmplacementCourss);
+				}
+			} else {
+				$count = count($this->collEdtEmplacementCourss);
+			}
+		}
+		$this->lastEdtEmplacementCoursCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a EdtEmplacementCours object to this object
+	 * through the EdtEmplacementCours foreign key attribute.
+	 *
+	 * @param      EdtEmplacementCours $l EdtEmplacementCours
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addEdtEmplacementCours(EdtEmplacementCours $l)
+	{
+		if ($this->collEdtEmplacementCourss === null) {
+			$this->initEdtEmplacementCourss();
+		}
+		if (!in_array($l, $this->collEdtEmplacementCourss, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collEdtEmplacementCourss, $l);
+			$l->setUtilisateurProfessionnel($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 */
+	public function getEdtEmplacementCourssJoinGroupeRelatedByIdGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourss === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourss = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupeRelatedByIdGroupe($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupeRelatedByIdGroupe($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourss;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 */
+	public function getEdtEmplacementCourssJoinGroupeRelatedByIdGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourss === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourss = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupeRelatedByIdGroupe($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupeRelatedByIdGroupe($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourss;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 */
+	public function getEdtEmplacementCourssJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourss === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourss = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtSalle($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtSalle($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourss;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 */
+	public function getEdtEmplacementCourssJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourss === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourss = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourss;
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 */
+	public function getEdtEmplacementCourssJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		if ($criteria === null) {
+			$criteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collEdtEmplacementCourss === null) {
+			if ($this->isNew()) {
+				$this->collEdtEmplacementCourss = array();
+			} else {
+
+				$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCalendrierPeriode($criteria, $con, $join_behavior);
+			}
+		} else {
+			// the following code is to determine if a new query is
+			// called for.  If the criteria is the same as the last
+			// one, just return the collection.
+
+			$criteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $this->login);
+
+			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
+				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCalendrierPeriode($criteria, $con, $join_behavior);
+			}
+		}
+		$this->lastEdtEmplacementCoursCriteria = $criteria;
+
+		return $this->collEdtEmplacementCourss;
+	}
+
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -4546,23 +5065,28 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collAbsenceSaisies) {
-				foreach ((array) $this->collAbsenceSaisies as $o) {
+			if ($this->collAbsenceEleveSaisies) {
+				foreach ((array) $this->collAbsenceEleveSaisies as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collAbsenceTraitements) {
-				foreach ((array) $this->collAbsenceTraitements as $o) {
+			if ($this->collAbsenceEleveTraitements) {
+				foreach ((array) $this->collAbsenceEleveTraitements as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collAbsenceEnvois) {
-				foreach ((array) $this->collAbsenceEnvois as $o) {
+			if ($this->collAbsenceEleveEnvois) {
+				foreach ((array) $this->collAbsenceEleveEnvois as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collPreferenceUtilisateurProfessionnels) {
 				foreach ((array) $this->collPreferenceUtilisateurProfessionnels as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collEdtEmplacementCourss) {
+				foreach ((array) $this->collEdtEmplacementCourss as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
@@ -4575,10 +5099,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$this->collJEleveCpes = null;
 		$this->collJEleveProfesseurPrincipals = null;
 		$this->collJAidUtilisateursProfessionnelss = null;
-		$this->collAbsenceSaisies = null;
-		$this->collAbsenceTraitements = null;
-		$this->collAbsenceEnvois = null;
+		$this->collAbsenceEleveSaisies = null;
+		$this->collAbsenceEleveTraitements = null;
+		$this->collAbsenceEleveEnvois = null;
 		$this->collPreferenceUtilisateurProfessionnels = null;
+		$this->collEdtEmplacementCourss = null;
 	}
 
 } // BaseUtilisateurProfessionnel

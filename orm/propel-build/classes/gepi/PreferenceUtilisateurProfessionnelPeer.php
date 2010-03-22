@@ -4,7 +4,7 @@ require 'gepi/om/BasePreferenceUtilisateurProfessionnelPeer.php';
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'preference' table.
+ * Skeleton subclass for performing query and update operations on the 'preferences' table.
  *
  * Preference (cle - valeur) associes à un utilisateur professionnel
  *

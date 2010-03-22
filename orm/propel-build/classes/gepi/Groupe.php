@@ -6,7 +6,7 @@ require 'gepi/om/BaseGroupe.php';
 /**
  * Skeleton subclass for representing a row from the 'groupes' table.
  *
- * Groupe d'eleves permettant d'y affecter des matieres et des professeurs
+ * Groupe d'eleves permettant d'y affecter une matiere et un professeurs
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as

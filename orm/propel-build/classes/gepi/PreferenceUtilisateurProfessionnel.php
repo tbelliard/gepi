@@ -4,7 +4,7 @@ require 'gepi/om/BasePreferenceUtilisateurProfessionnel.php';
 
 
 /**
- * Skeleton subclass for representing a row from the 'preference' table.
+ * Skeleton subclass for representing a row from the 'preferences' table.
  *
  * Preference (cle - valeur) associes à un utilisateur professionnel
  *

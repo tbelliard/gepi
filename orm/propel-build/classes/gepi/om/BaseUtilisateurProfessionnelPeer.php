@@ -686,17 +686,20 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			// invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 			JAidUtilisateursProfessionnelsPeer::clearInstancePool();
 
-			// invalidate objects in AbsenceSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceSaisiePeer::clearInstancePool();
+			// invalidate objects in AbsenceEleveSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			AbsenceEleveSaisiePeer::clearInstancePool();
 
-			// invalidate objects in AbsenceTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceTraitementPeer::clearInstancePool();
+			// invalidate objects in AbsenceEleveTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			AbsenceEleveTraitementPeer::clearInstancePool();
 
-			// invalidate objects in AbsenceEnvoiPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceEnvoiPeer::clearInstancePool();
+			// invalidate objects in AbsenceEleveEnvoiPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			AbsenceEleveEnvoiPeer::clearInstancePool();
 
 			// invalidate objects in PreferenceUtilisateurProfessionnelPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 			PreferenceUtilisateurProfessionnelPeer::clearInstancePool();
+
+			// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+			EdtEmplacementCoursPeer::clearInstancePool();
 
 			$con->commit();
 			return $affectedRows;
@@ -752,6 +755,12 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			
 			$c->add(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $obj->getLogin());
 			$affectedRows += JAidUtilisateursProfessionnelsPeer::doDelete($c, $con);
+
+			// delete related EdtEmplacementCours objects
+			$c = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
+			
+			$c->add(EdtEmplacementCoursPeer::LOGIN_PROF, $obj->getLogin());
+			$affectedRows += EdtEmplacementCoursPeer::doDelete($c, $con);
 		}
 		return $affectedRows;
 	}
@@ -800,27 +809,27 @@ abstract class BaseUtilisateurProfessionnelPeer {
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
-			// set fkey col in related AbsenceSaisie rows to NULL
+			// set fkey col in related AbsenceEleveSaisie rows to NULL
 			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
 			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceSaisiePeer::UTILISATEUR_ID, $obj->getLogin());
-			$updateValues->add(AbsenceSaisiePeer::UTILISATEUR_ID, null);
+			$selectCriteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $obj->getLogin());
+			$updateValues->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, null);
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
-			// set fkey col in related AbsenceTraitement rows to NULL
+			// set fkey col in related AbsenceEleveTraitement rows to NULL
 			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
 			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceTraitementPeer::UTILISATEUR_ID, $obj->getLogin());
-			$updateValues->add(AbsenceTraitementPeer::UTILISATEUR_ID, null);
+			$selectCriteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $obj->getLogin());
+			$updateValues->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, null);
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
-			// set fkey col in related AbsenceEnvoi rows to NULL
+			// set fkey col in related AbsenceEleveEnvoi rows to NULL
 			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
 			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceEnvoiPeer::UTILISATEUR_ID, $obj->getLogin());
-			$updateValues->add(AbsenceEnvoiPeer::UTILISATEUR_ID, null);
+			$selectCriteria->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $obj->getLogin());
+			$updateValues->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, null);
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 

@@ -6,7 +6,7 @@ require 'gepi/om/BaseCreditEctsPeer.php';
 /**
  * Skeleton subclass for performing query and update operations on the 'ects_credits' table.
  *
- * Association élève/période/enseignement qui précise le nombre d'ECTS obtenus par l'élève
+ * Objet qui précise le nombre d'ECTS obtenus par l'eleve pour un enseignement et une periode donnée
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
