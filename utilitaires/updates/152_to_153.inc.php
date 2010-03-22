@@ -575,12 +575,11 @@ if (!$req_rank){
     }
     else {
         $result .= "<p style=\"color:red;\">Ajout du champ jour_creneau à la table <strong>edt_creneaux</strong> : Erreur.</p>";
-    $result .=mysql_error();
     }
 }
 else {
     $result .= "<p style=\"color:blue;\">Ajout du champ jour_creneau à la table <strong>edt_creneaux</strong> : déjà réalisé.</p>";
-    $result .=mysql_error();
+
 }
 
 // ============= Insertion d'un champ pour EDT2
@@ -595,12 +594,10 @@ if (!$req_rank){
     }
     else {
         $result .= "<p style=\"color:red;\">Ajout du champ id_aid à la table <strong>edt_cours</strong> : Erreur.</p>";
-    $result .=mysql_error();
     }
 }
 else {
     $result .= "<p style=\"color:blue;\">Ajout du champ id_aid à la table <strong>edt_cours</strong> : déjà réalisé.</p>";
-    $result .=mysql_error();
 }
 
 
