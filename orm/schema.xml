@@ -397,8 +397,10 @@
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire de l'utilisateur"/>
     <column name="debut_abs" required="false" type="TIME" description="Debut de l'absence en timestamp UNIX"/>
     <column name="fin_abs" required="false" type="TIME" description="Fin de l'absence en timestamp UNIX"/>
-    <column name="id_edt_creneaux" required="false" type="INTEGER" size="12" default="0" description="identifiant du creneaux de l'emploi du temps"/>
+    <column name="id_edt_creneau" required="false" type="INTEGER" size="12" default="0" description="identifiant du creneaux de l'emploi du temps"/>
+    <foreign-key foreignTable="edt_creneaux" onDelete="SETNULL"><reference local="id_edt_creneau" foreign="id_definie_periode"/></foreign-key>
     <column name="id_edt_emplacement_cours" required="false" type="INTEGER" size="12" default="0" description="identifiant du cours de l'emploi du temps"/>
+    <foreign-key foreignTable="edt_cours" onDelete="SETNULL"><reference local="id_edt_emplacement_cours" foreign="id_cours"/></foreign-key>
   </table>
 
   <table name="a_traitements" phpName="AbsenceEleveTraitement" description="Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies">
