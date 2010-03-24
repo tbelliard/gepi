@@ -56,6 +56,12 @@ $affiche_tout = isset($_POST["affiche_tout"]) ? $_POST["affiche_tout"] :(isset($
 //date présente
 $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
 
+//utile uniquement pour la completion
+//$devoir = new CahierTexteTravailAFaire();
+//$compte_rendu = new CahierTexteCompteRendu();
+//$notice_privee = new CahierTexteNoticePrivee();
+//$liste_comptes_rendus = new PropelObjectCollection();
+
 //récupération du groupe courant
 $utilisateur = $_SESSION['utilisateurProfessionnel'];
 if ($utilisateur == null) {
@@ -155,61 +161,57 @@ $criteria->add(CahierTexteCompteRenduPeer::DATE_CT, $debutCdt, ">=");
 $criteria->addDescendingOrderByColumn(CahierTexteCompteRenduPeer::DATE_CT);
 $criteria->addAscendingOrderByColumn(CahierTexteCompteRenduPeer::HEURE_ENTRY);
 $liste_comptes_rendus = $current_group->getCahierTexteCompteRendus($criteria);
-$compteur_nb_total_notices = $compteur_nb_total_notices + count($liste_comptes_rendus);
-if ($affiche_tout != "oui") {
-	//limit à 7 devoirs
-	$liste_comptes_rendus = array_slice($liste_comptes_rendus, 0 , 7);
-}
+$compteur_nb_total_notices = $compteur_nb_total_notices + $liste_comptes_rendus->count();
 
 //récupération de $liste_devoir : devoirs pour la matière en cours
 $criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
 $criteria->add(CahierTexteTravailAFairePeer::DATE_CT, $debutCdt, ">=");
 $criteria->addDescendingOrderByColumn(CahierTexteTravailAFairePeer::DATE_CT);
 $liste_devoir = $current_group->getCahierTexteTravailAFaires($criteria);
-$compteur_nb_total_notices = $compteur_nb_total_notices + count($liste_devoir);
-if ($affiche_tout != "oui") {
-	//limit à 7 devoirs
-	$liste_devoir = array_slice($liste_devoir, 0 , 7);
-}
+$compteur_nb_total_notices = $compteur_nb_total_notices + $liste_devoir->count();
 
 //récupération de $liste_notice_privee :
 $criteria = new Criteria();
 $criteria->add(CahierTexteNoticePriveePeer::DATE_CT, $debutCdt, ">=");
 $criteria->addDescendingOrderByColumn(CahierTexteNoticePriveePeer::DATE_CT);
 $liste_notice_privee = $current_group->getCahierTexteNoticePrivees($criteria);
-$compteur_nb_total_notices = $compteur_nb_total_notices + count($liste_notice_privee);
-if ($affiche_tout != "oui") {
-	//limit à 7 devoirs
-	$liste_notice_privee = array_slice($liste_notice_privee, 0 , 7);
-}
+$compteur_nb_total_notices = $compteur_nb_total_notices + $liste_notice_privee->count();
 
 // Boucle d'affichage des notices dans la colonne de gauche
 $compteur_notices_affiches = 0;
 $date_ct_old = -1;
 while (true) {
-	$devoir = isset($liste_devoir[0]) ? $liste_devoir[0] : NULL;
-	$compte_rendu = isset($liste_comptes_rendus[0]) ? $liste_comptes_rendus[0] : NULL;
-	$notice_privee = isset($liste_notice_privee[0]) ? $liste_notice_privee[0] : NULL;
+	$devoir = $liste_devoir->getCurrent();
+	$compte_rendu = $liste_comptes_rendus->getCurrent();
+	$notice_privee = $liste_notice_privee->getCurrent();
+	if ($affiche_tout != "oui") {
+	    if ($liste_devoir->getPosition() > 6) { $devoir = null; }
+	    if ($liste_comptes_rendus->getPosition() > 6) { $compte_rendu = null; }
+	    if ($liste_notice_privee->getPosition() > 6) { $notice_privee = null; }
+	}
 
+	
 	//si $devoir n'est pas nul et que la date du devoir est posterieure à celle du compte rendu
 	if ($compte_rendu != null && ($devoir == null || $compte_rendu->getDateCt() >= $devoir->getDateCt() ) && ($notice_privee == null || $compte_rendu->getDateCt() >= $notice_privee->getDateCt() )) {
 
 		//si $compte_rendu n'est pas nul et que la date du $compte_rendu est posterieure à celle du devoir
-		$liste_comptes_rendus = array_slice($liste_comptes_rendus, 1);
+		
 		$compteur_notices_affiches = $compteur_notices_affiches + 1;
-		 affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_notice, $color_fond_notices);
+		affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_notice, $color_fond_notices);
+		$liste_comptes_rendus->getNext();
 
 	} elseif ($notice_privee != null && ($compte_rendu == null || $notice_privee->getDateCt() >= $compte_rendu->getDateCt()) && ($devoir == null || $notice_privee->getDateCt() >= $devoir->getDateCt() )) {
 
-		$liste_notice_privee = array_slice($liste_notice_privee, 1);
 		$compteur_notices_affiches = $compteur_notices_affiches + 1;
 		affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_notice, $color_fond_notices);
+		$liste_notice_privee->getNext();
 
 	} elseif ($devoir != null && ($compte_rendu == null || $devoir->getDateCt() >= $compte_rendu->getDateCt()) && ($notice_privee == null || $devoir->getDateCt() >= $notice_privee->getDateCt() )) {
 
-		$liste_devoir = array_slice($liste_devoir, 1);
+
 		$compteur_notices_affiches = $compteur_notices_affiches + 1;
 		affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_fond_notices);
+		$liste_devoir->getNext();
 
 	} else {
 		//on a tout affiché

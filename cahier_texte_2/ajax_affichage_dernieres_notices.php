@@ -50,6 +50,10 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 	die("Le module n'est pas activé.");
 }
 
+//commente, uniquement utile pour la completion
+//$group = new Groupe();
+//$ctTravailAFaires = new PropelObjectCollection();
+
 $utilisateur = $_SESSION['utilisateurProfessionnel'];
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
@@ -95,8 +99,8 @@ foreach ($groups as $group) {
 	echo "<tr>";
 	//afichage du dernier compte rendu
 	echo "<td style=\"width:50%;\" valign=\"top\">";
-	if (isset($ctCompteRendus[0]) && $ctCompteRendus[0] != null) {
-		$compte_rendu = $ctCompteRendus[0];
+	if ($ctCompteRendus && !$ctCompteRendus->isEmpty()) {
+		$compte_rendu = $ctCompteRendus->getFirst();
 		affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_notice, $color_fond_notices);
 	}
 	echo "</td>";
@@ -108,8 +112,8 @@ foreach ($groups as $group) {
 	$criteria->setLimit(1);
 	$ctTravailAFaires = $group->getCahierTexteTravailAFaires($criteria);
 	echo "<td style=\"width:50%;\" valign=\"top\">";
-	if (!empty($ctTravailAFaires)) {
-		$devoir = $ctTravailAFaires[0];
+	if ($ctTravailAFaires && !$ctTravailAFaires->isEmpty()) {
+		$devoir = $ctTravailAFaires->getFirst();
 		//on affiche le devoir car il y en a un
 		affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_fond_notices);
 	}
@@ -119,8 +123,8 @@ foreach ($groups as $group) {
 	echo "<tr>";
 	//récupération et affichage du deuxieme compte rendu
 	echo "<td style=\"width:50%;\" valign=\"top\">";
-	if (isset($ctCompteRendus[1]) && $ctCompteRendus[0] != null) {
-		$compte_rendu = $ctCompteRendus[1];
+	if ($ctCompteRendus && $ctCompteRendus->count() > 1) {
+		$compte_rendu = $ctCompteRendus->getNext();
 		affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_notice, $color_fond_notices);
 	}
 	echo "</td>";
