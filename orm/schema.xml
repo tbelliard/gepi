@@ -29,7 +29,7 @@
 		<column name="recalcul_rang" type="VARCHAR" size="10" description="recalcul_rang" />
 	</table>
 
-	<table name="j_groupes_professeurs" description="Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilise directement dans le code.">
+	<table name="j_groupes_professeurs" description="Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilise directement dans le code." isCrossRef="true">
 		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe" />
 		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id"/>
@@ -205,7 +205,7 @@
 		<column name="rang" required="true" type="SMALLINT" size="6" default="0" description=""/>
 	</table>
 
-	<table name="j_eleves_cpe" phpName="JEleveCpe" description="Table de jointure entre les CPE et les eleves">
+	<table name="j_eleves_cpe" phpName="JEleveCpe" description="Table de jointure entre les CPE et les eleves" isCrossRef="true">
 		<column name="e_login" required="true" primaryKey="true" type="VARCHAR" size="50" default="" description="cle etrangere, login de l'eleve"/>
 		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="e_login" foreign="login"/></foreign-key>
 		<column name="cpe_login" required="true" primaryKey="true" type="VARCHAR" size="50" default="" description="cle etrangere, login du CPE (utilisateur professionnel)"/>
@@ -270,7 +270,7 @@
 		<column name="commune" required="true" type="VARCHAR" size="50" description="Commune de residence"/>
 	</table>
 
-  <table name="j_eleves_etablissements" phpName="JEleveAncienEtablissement" description="Table de jointure pour connaitre l'etablissement precedent de l'eleve">
+  <table name="j_eleves_etablissements" phpName="JEleveAncienEtablissement" description="Table de jointure pour connaitre l'etablissement precedent de l'eleve" isCrossRef="true">
     <column name="id_eleve" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, id_eleve de l'eleve"/>
     <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
     <column name="id_etablissement" required="true" primaryKey="true" type="VARCHAR" size="8" default="" description="cle etrangere, id de l'etablissement"/>
@@ -420,7 +420,7 @@
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
   </table>
 
-  <table name="j_traitements_saisies" phpName="JTraitementSaisieEleve" description="Table de jointure entre la saisie et le traitement des absences">
+  <table name="j_traitements_saisies" phpName="JTraitementSaisieEleve" description="Table de jointure entre la saisie et le traitement des absences" isCrossRef="true">
     <column name="a_saisie_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de l'absence saisie"/>
     <foreign-key foreignTable="a_saisies" onDelete="setnull"><reference local="a_saisie_id" foreign="id"/></foreign-key>
     <column name="a_traitement_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere du traitement de ces absences"/>
@@ -446,7 +446,7 @@
     <column name="contenu" required="true" type="CLOB" description="Contenu modele de l'envoi"/>
   </table>
 
-  <table name="j_traitements_envois" phpName="JTraitementEnvoiEleve" description="Table de jointure entre le traitement des absences et leur envoi">
+  <table name="j_traitements_envois" phpName="JTraitementEnvoiEleve" description="Table de jointure entre le traitement des absences et leur envoi" isCrossRef="true">
     <column name="a_envoi_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de l'envoi"/>
     <foreign-key foreignTable="a_envois" onDelete="setnull"><reference local="a_envoi_id" foreign="id"/></foreign-key>
     <column name="a_traitement_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere du traitement de ces absences"/>
