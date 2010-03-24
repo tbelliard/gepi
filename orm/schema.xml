@@ -31,11 +31,11 @@
 
 	<table name="j_groupes_professeurs" description="Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilise directement dans le code.">
 		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe" />
-		<foreign-key foreignTable="groupes" onDelete="CASCADE">
+		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id"/>
 		</foreign-key>
 		<column name="login" type="VARCHAR" size="50" required="true" primaryKey="true" description="Cle primaire de l'utilisateur" />
-		<foreign-key foreignTable="utilisateurs" onDelete="CASCADE">
+		<foreign-key foreignTable="utilisateurs" onDelete="cascade">
 			<reference local="login" foreign="login"/>
 		</foreign-key>
 	</table>
@@ -72,11 +72,11 @@
 
 	<table name="j_groupes_classes" description="Table permettant la jointure entre groupe d'eleves et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
 		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe"/>
-		<foreign-key foreignTable="groupes" onDelete="CASCADE">
+		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id"/>
 		</foreign-key>
 		<column name="id_classe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire de la classe" />
-		<foreign-key foreignTable="classes" onDelete="CASCADE">
+		<foreign-key foreignTable="classes" onDelete="cascade">
 			<reference local="id_classe" foreign="id"/>
 		</foreign-key>
 		<column name="priorite" type="SMALLINT" required="true"/>
@@ -98,15 +98,15 @@
 		<column name="vise" required="true" type="CHAR" default="n" description="vise" />
 		<column name="visa" required="true" type="CHAR" default="n" description="visa" />
 		<column name="id_groupe" required="true" type="INTEGER" description="Cle etrangere du groupe auquel appartient le compte rendu" />
-		<foreign-key foreignTable="groupes" onDelete="CASCADE">
+		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id" />
 		</foreign-key>
 		<column name="id_login" type="VARCHAR" size="32" description="Cle etrangere de l'utilisateur auquel appartient le compte rendu" />
-		<foreign-key foreignTable="utilisateurs" onDelete="SETNULL">
+		<foreign-key foreignTable="utilisateurs" onDelete="setnull">
 			<reference local="id_login" foreign="login" />
 		</foreign-key>
     <column name="id_sequence" type="INTEGER" size="5" default="0" description="Cle etrangere de la sequence auquel appartient le compte rendu" />
-		<foreign-key foreignTable="ct_sequences" onDelete="SETNULL">
+		<foreign-key foreignTable="ct_sequences" onDelete="setnull">
 			<reference local="id_sequence" foreign="id" />
 		</foreign-key>
 	</table>
@@ -114,7 +114,7 @@
 	<table name="ct_documents" phpName="CahierTexteCompteRenduFichierJoint" description="Document (fichier joint) appartenant a un compte rendu du cahier de texte">
 		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire du document" />
 		<column name="id_ct" default="0" required="true" type="INTEGER" description="Cle etrangere du compte rendu auquel appartient ce document" />
-		<foreign-key foreignTable="ct_entry" onDelete="CASCADE">
+		<foreign-key foreignTable="ct_entry" onDelete="cascade">
 			<reference local="id_ct" foreign="id_ct" />
 		</foreign-key>
 		<column name="titre" required="true" type="VARCHAR" size="255" description="Titre du document (fichier joint)" />
@@ -128,15 +128,15 @@
 		<column name="contenu" required="true" type="LONGVARCHAR" description="contenu redactionnel du travail a faire" />
 		<column name="vise" required="true" type="CHAR" default="n" description="vise" />
 		<column name="id_groupe" required="true" type="INTEGER" description="Cle etrangere du groupe auquel appartient ce travail a faire" />
-		<foreign-key foreignTable="groupes" onDelete="CASCADE">
+		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id" />
 		</foreign-key>
 		<column name="id_login" type="VARCHAR" size="32" description="Cle etrangere du l'utilisateur auquel appartient ce travail a faire" />
-		<foreign-key foreignTable="utilisateurs" onDelete="SETNULL">
+		<foreign-key foreignTable="utilisateurs" onDelete="setnull">
 			<reference local="id_login" foreign="login" />
 		</foreign-key>
     <column name="id_sequence" type="INTEGER" size="5" default="0" description="Cle etrangere de la sequence auquel appartient le devoir a faire" />
-		<foreign-key foreignTable="ct_sequences" onDelete="SETNULL">
+		<foreign-key foreignTable="ct_sequences" onDelete="setnull">
 			<reference local="id_sequence" foreign="id" />
 		</foreign-key>
 	</table>
@@ -144,7 +144,7 @@
 	<table name="ct_devoirs_documents" phpName="CahierTexteTravailAFaireFichierJoint" description="Document (fichier joint) appartenant a un travail Ã  faire du cahier de texte">
 		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire du document" />
 		<column name="id_ct_devoir" default="0" required="true" type="INTEGER" description="Cle etrangere du travail a faire auquel appartient ce document" />
-		<foreign-key foreignTable="ct_devoirs_entry" onDelete="CASCADE">
+		<foreign-key foreignTable="ct_devoirs_entry" onDelete="cascade">
 			<reference local="id_ct_devoir" foreign="id_ct" />
 		</foreign-key>
 		<column name="titre" required="true" type="VARCHAR" size="255" description="Titre du document (fichier joint)" />
@@ -158,15 +158,15 @@
 		<column name="date_ct" required="true" type="INTEGER" default="0" description="date du compte rendu" />
 		<column name="contenu" required="true" type="LONGVARCHAR" description="contenu redactionnel du compte rendu" />
 		<column name="id_groupe" required="true" type="INTEGER" description="Cle etrangere du groupe auquel appartient le compte rendu" />
-		<foreign-key foreignTable="groupes" onDelete="CASCADE">
+		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id" />
 		</foreign-key>
 		<column name="id_login" type="VARCHAR" size="32" description="Cle etrangere de l'utilisateur auquel appartient le compte rendu" />
-		<foreign-key foreignTable="utilisateurs" onDelete="SETNULL">
+		<foreign-key foreignTable="utilisateurs" onDelete="setnull">
 			<reference local="id_login" foreign="login" />
 		</foreign-key>
     <column name="id_sequence" type="INTEGER" size="5" default="0" description="Cle etrangere de la sequence auquel appartient la notice privee" />
-		<foreign-key foreignTable="ct_sequences" onDelete="SETNULL">
+		<foreign-key foreignTable="ct_sequences" onDelete="setnull">
 			<reference local="id_sequence" foreign="id" />
 		</foreign-key>
 	</table>
@@ -198,49 +198,49 @@
 
 	<table name="j_eleves_classes" phpName="JEleveClasse" description="Table de jointure entre les eleves et leur classe en fonction de la periode">
 		<column name="login" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, Login de l'eleve"/>
-		<foreign-key foreignTable="eleves" onDelete="CASCADE"><reference local="login" foreign="login"/></foreign-key>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
 		<column name="id_classe" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere, id de la classe"/>
-		<foreign-key foreignTable="classes" onDelete="CASCADE"><reference local="id_classe" foreign="id"/></foreign-key>
+		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
 		<column name="periode" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="Periode ou l'eleve est inscrit dans cette classe"/>
 		<column name="rang" required="true" type="SMALLINT" size="6" default="0" description=""/>
 	</table>
 
 	<table name="j_eleves_cpe" phpName="JEleveCpe" description="Table de jointure entre les CPE et les eleves">
 		<column name="e_login" required="true" primaryKey="true" type="VARCHAR" size="50" default="" description="cle etrangere, login de l'eleve"/>
-		<foreign-key foreignTable="eleves" onDelete="CASCADE"><reference local="e_login" foreign="login"/></foreign-key>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="e_login" foreign="login"/></foreign-key>
 		<column name="cpe_login" required="true" primaryKey="true" type="VARCHAR" size="50" default="" description="cle etrangere, login du CPE (utilisateur professionnel)"/>
-		<foreign-key foreignTable="utilisateurs" onDelete="CASCADE"><reference local="cpe_login" foreign="login"/></foreign-key>
+		<foreign-key foreignTable="utilisateurs" onDelete="cascade"><reference local="cpe_login" foreign="login"/></foreign-key>
 	</table>
 
 	<table name="j_eleves_groupes" phpName="JEleveGroupe" description="Table de jointure entre les eleves et leurs enseignements (groupes)">
 		<column name="login" required="true" primaryKey="true" type="VARCHAR" size="50" default="" description="cle etrangere, login de l'eleve"/>
-		<foreign-key foreignTable="eleves" onDelete="CASCADE"><reference local="login" foreign="login"/></foreign-key>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
 		<column name="id_groupe" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere, id du groupe"/>
-		<foreign-key foreignTable="groupes" onDelete="CASCADE"><reference local="id_groupe" foreign="id"/></foreign-key>
+		<foreign-key foreignTable="groupes" onDelete="cascade"><reference local="id_groupe" foreign="id"/></foreign-key>
 		<column name="periode" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="Periode ou l'eleve est inscrit dans cet enseignement (groupe)"/>
 	</table>
 
 	<table name="j_eleves_professeurs" phpName="JEleveProfesseurPrincipal" description="Table de jointure entre les professeurs principaux et les eleves">
 		<column name="login" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, login de l'eleve"/>
-		<foreign-key foreignTable="eleves" onDelete="CASCADE"><reference local="login" foreign="login"/></foreign-key>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
 		<column name="professeur" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, login du professeur (utilisateur professionnel)"/>
-		<foreign-key foreignTable="utilisateurs" onDelete="CASCADE"><reference local="professeur" foreign="login"/></foreign-key>
+		<foreign-key foreignTable="utilisateurs" onDelete="cascade"><reference local="professeur" foreign="login"/></foreign-key>
         <column name="id_classe" required="true" primaryKey="true" type="INTEGER" size="11" description="cle etrangere, id de la classe"/>
-		<foreign-key foreignTable="classes" onDelete="CASCADE"><reference local="id_classe" foreign="id"/></foreign-key>
+		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
 	</table>
 
 	<table name="j_eleves_regime" phpName="EleveRegimeDoublant" description="Mention du redoublement eventuel de l'eleve ainsi que son regime de presence (externe, demi-pensionnaire, ...)">
 		<column name="login" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, login de l'eleve"/>
-		<foreign-key foreignTable="eleves" onDelete="CASCADE"><reference local="login" foreign="login"/></foreign-key>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
 		<column name="doublant" required="true" type="CHAR" size="1" description="R pour les redoublants et - ou rien pour les autres"/>
 		<column name="regime" required="true" type="CHAR" size="5" description="Regime de l'eleve d/p ext. ... etc"/>
 	</table>
 
 	<table name="responsables2" phpName="ResponsableInformation" description="Table de jointure entre les eleves et leurs responsables legaux avec mention du niveau de ces responsables">
 		<column name="ele_id" primaryKey="true" required="true" type="VARCHAR" size="10" description="cle etrangere, ele_id de l'eleve"/>
-		<foreign-key foreignTable="eleves" onDelete="CASCADE"><reference local="ele_id" foreign="ele_id"/></foreign-key>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="ele_id" foreign="ele_id"/></foreign-key>
 		<column name="pers_id" required="true" type="VARCHAR" size="10" description="cle etrangere vers le responsable"/>
-		<foreign-key foreignTable="resp_pers" onDelete="CASCADE"><reference local="pers_id" foreign="pers_id"/></foreign-key>
+		<foreign-key foreignTable="resp_pers" onDelete="cascade"><reference local="pers_id" foreign="pers_id"/></foreign-key>
 		<column name="resp_legal" primaryKey="true" required="true" type="VARCHAR" size="1" description="Niveau de responsabilite du responsable legal"/>
 		<column name="pers_contact" required="true" type="VARCHAR" size="1" description=""/>
 	</table>
@@ -256,7 +256,7 @@
 		<column name="tel_prof" required="true" type="VARCHAR" size="255" description="Telephone professionnel du responsable lega"/>
 		<column name="mel" required="true" type="VARCHAR" size="100" description="Courriel du responsable legal"/>
 		<column name="adr_id" type="VARCHAR" size="10" description="cle etrangere vers l'adresse du responsable lega"/>
-		<foreign-key foreignTable="resp_adr" onDelete="SETNULL"><reference local="adr_id" foreign="adr_id"/></foreign-key>
+		<foreign-key foreignTable="resp_adr" onDelete="setnull"><reference local="adr_id" foreign="adr_id"/></foreign-key>
 	</table>
 
 	<table name="resp_adr" phpName="ResponsableEleveAdresse" description="Table de jointure entre les responsables legaux et leur adresse">
@@ -272,9 +272,9 @@
 
   <table name="j_eleves_etablissements" phpName="JEleveAncienEtablissement" description="Table de jointure pour connaitre l'etablissement precedent de l'eleve">
     <column name="id_eleve" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, id_eleve de l'eleve"/>
-    <foreign-key foreignTable="eleves" onDelete="CASCADE"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
     <column name="id_etablissement" required="true" primaryKey="true" type="VARCHAR" size="8" default="" description="cle etrangere, id de l'etablissement"/>
-    <foreign-key foreignTable="etablissements" onDelete="CASCADE"><reference local="id_etablissement" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="etablissements" onDelete="cascade"><reference local="id_etablissement" foreign="id"/></foreign-key>
   </table>
 
   <table name="etablissements" phpName="AncienEtablissement" description="Liste des etablissements precedents des eleves">
@@ -291,7 +291,7 @@
     <column name="nom" required="true" type="VARCHAR" size="100" default="" description="Nom de l'AID"/>
     <column name="numero" required="true" type="VARCHAR" size="8" default="0" description="Numero d'ordre d'affichage"/>
     <column name="indice_aid" required="true" type="INTEGER" size="11" default="0" description="Cle etrangere, vers la liste des categories d'AID (aid_config)"/>
-    <foreign-key foreignTable="aid_config" onDelete="CASCADE"><reference local="indice_aid" foreign="indice_aid"/></foreign-key>
+    <foreign-key foreignTable="aid_config" onDelete="cascade"><reference local="indice_aid" foreign="indice_aid"/></foreign-key>
     <column name="perso1" required="true" type="VARCHAR" size="255" description=""/>
     <column name="perso2" required="true" type="VARCHAR" size="255" description=""/>
     <column name="perso3" required="true" type="VARCHAR" size="255" description=""/>
@@ -334,20 +334,20 @@
 
   <table name="j_aid_utilisateurs" phpName="JAidUtilisateursProfessionnels" description="Table de liaison entre les AID et les utilisateurs professionnels">
     <column name="id_aid" required="true" primaryKey="true" type="VARCHAR" size="100" description="cle etrangere vers l'AID" />
-    <foreign-key foreignTable="aid" onDelete="CASCADE"><reference local="id_aid" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="aid" onDelete="cascade"><reference local="id_aid" foreign="id"/></foreign-key>
     <column name="id_utilisateur" required="true" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel" />
-    <foreign-key foreignTable="utilisateurs" onDelete="CASCADE"><reference local="id_utilisateur" foreign="login"/></foreign-key>
+    <foreign-key foreignTable="utilisateurs" onDelete="cascade"><reference local="id_utilisateur" foreign="login"/></foreign-key>
     <column name="indice_aid" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere vers la categorie d'AID" />
-    <foreign-key foreignTable="aid_config" onDelete="CASCADE"><reference local="indice_aid" foreign="indice_aid"/></foreign-key>
+    <foreign-key foreignTable="aid_config" onDelete="cascade"><reference local="indice_aid" foreign="indice_aid"/></foreign-key>
   </table>
 
   <table name="j_aid_eleves" phpName="JAidEleves" description="Table de liaison entre les AID et les eleves qui en sont membres">
     <column name="id_aid" required="true" type="VARCHAR" size="100" description="Clé etrangere vers l'AID" />
-    <foreign-key foreignTable="aid" onDelete="CASCADE"><reference local="id_aid" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="aid" onDelete="cascade"><reference local="id_aid" foreign="id"/></foreign-key>
     <column name="login" required="true" primaryKey="true" type="VARCHAR" size="60" description="Login de l'eleve qui est membre de cette AID" />
-    <foreign-key foreignTable="eleves" onDelete="CASCADE"><reference local="login" foreign="login"/></foreign-key>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
     <column name="indice_aid" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere vers la categorie d'AID" />
-    <foreign-key foreignTable="aid_config" onDelete="CASCADE"><reference local="indice_aid" foreign="indice_aid"/></foreign-key>
+    <foreign-key foreignTable="aid_config" onDelete="cascade"><reference local="indice_aid" foreign="indice_aid"/></foreign-key>
   </table>
 
   <table name="a_actions" phpName="AbsenceEleveAction" description="Liste des actions possibles sur une absence">
@@ -383,7 +383,7 @@
   <table name="a_types_statut" phpName="AbsenceEleveTypeStatut" description="Liste des statuts etant autorisé à saisir des types d'absences donnes">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="Cle primaire auto-incrementee"/>
     <column name="id_a_type" required="true" type="INTEGER" size="11" description="Cle etrangere de la table a_type"/>
-    <foreign-key foreignTable="a_types" onDelete="CASCADE"><reference local="id_a_type" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_types" onDelete="cascade"><reference local="id_a_type" foreign="id"/></foreign-key>
     <column name="statut" required="true" type="VARCHAR" size="20" description="Statut de l'utilisateur" />
   </table>
 
@@ -391,49 +391,49 @@
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
 	<!-- si un utilisateur est supprime, on ne supprime pas les absences saisies par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
     <column name="utilisateur_id" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel qui a saisi l'absence"/>
-    <foreign-key foreignTable="utilisateurs" onDelete="SETNULL"><reference local="utilisateur_id" foreign="login"/></foreign-key>
+    <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
     <column name="eleve_id" type="INTEGER" size="4" description="id_eleve de l'eleve objet de la saisie, egal à 'appel' si aucun eleve n'est saisi"/>
-    <foreign-key foreignTable="eleves" onDelete="CASCADE"><reference local="eleve_id" foreign="id_eleve"/></foreign-key>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="eleve_id" foreign="id_eleve"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire de l'utilisateur"/>
     <column name="debut_abs" required="false" type="TIME" description="Debut de l'absence en timestamp UNIX"/>
     <column name="fin_abs" required="false" type="TIME" description="Fin de l'absence en timestamp UNIX"/>
     <column name="id_edt_creneau" required="false" type="INTEGER" size="12" default="0" description="identifiant du creneaux de l'emploi du temps"/>
-    <foreign-key foreignTable="edt_creneaux" onDelete="SETNULL"><reference local="id_edt_creneau" foreign="id_definie_periode"/></foreign-key>
+    <foreign-key foreignTable="edt_creneaux" onDelete="setnull"><reference local="id_edt_creneau" foreign="id_definie_periode"/></foreign-key>
     <column name="id_edt_emplacement_cours" required="false" type="INTEGER" size="12" default="0" description="identifiant du cours de l'emploi du temps"/>
-    <foreign-key foreignTable="edt_cours" onDelete="SETNULL"><reference local="id_edt_emplacement_cours" foreign="id_cours"/></foreign-key>
+    <foreign-key foreignTable="edt_cours" onDelete="setnull"><reference local="id_edt_emplacement_cours" foreign="id_cours"/></foreign-key>
   </table>
 
   <table name="a_traitements" phpName="AbsenceEleveTraitement" description="Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incremente"/>
     <column name="utilisateur_id" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel qui a fait le traitement"/>
 	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
-    <foreign-key foreignTable="utilisateurs" onDelete="SETNULL"><reference local="utilisateur_id" foreign="login"/></foreign-key>
+    <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
     <column name="a_type_id" type="INTEGER" size="4" description="cle etrangere du type d'absence"/>
-    <foreign-key foreignTable="a_types" onDelete="SETNULL"><reference local="a_type_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_types" onDelete="setnull"><reference local="a_type_id" foreign="id"/></foreign-key>
     <column name="a_motif_id" type="INTEGER" size="4" description="cle etrangere du motif d'absence"/>
-    <foreign-key foreignTable="a_motifs" onDelete="SETNULL"><reference local="a_motif_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_motifs" onDelete="setnull"><reference local="a_motif_id" foreign="id"/></foreign-key>
     <column name="a_justification_id" type="INTEGER" size="4" description="cle etrangere de la justification de l'absence"/>
-    <foreign-key foreignTable="a_justifications" onDelete="SETNULL"><reference local="a_justification_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_justifications" onDelete="setnull"><reference local="a_justification_id" foreign="id"/></foreign-key>
     <column name="texte_justification" required="true" type="VARCHAR" size="250" description="Texte additionnel à ce traitement"/>
     <column name="a_action_id" type="INTEGER" size="4" description="cle etrangere de l'action sur ce traitement"/>
-    <foreign-key foreignTable="a_actions" onDelete="SETNULL"><reference local="a_action_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_actions" onDelete="setnull"><reference local="a_action_id" foreign="id"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
   </table>
 
   <table name="j_traitements_saisies" phpName="JTraitementSaisieEleve" description="Table de jointure entre la saisie et le traitement des absences">
     <column name="a_saisie_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de l'absence saisie"/>
-    <foreign-key foreignTable="a_saisies" onDelete="SETNULL"><reference local="a_saisie_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_saisies" onDelete="setnull"><reference local="a_saisie_id" foreign="id"/></foreign-key>
     <column name="a_traitement_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere du traitement de ces absences"/>
-    <foreign-key foreignTable="a_traitements" onDelete="SETNULL"><reference local="a_traitement_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_traitements" onDelete="setnull"><reference local="a_traitement_id" foreign="id"/></foreign-key>
   </table>
 
   <table name="a_envois" phpName="AbsenceEleveEnvoi" description="Chaque envoi est repertorie ici">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
 	<!-- si un utilisateur est supprime, on ne supprime pas les absences saisies par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
     <column name="utilisateur_id" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel qui a lance l'envoi"/>
-    <foreign-key foreignTable="utilisateurs" onDelete="SETNULL"><reference local="utilisateur_id" foreign="login"/></foreign-key>
+    <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
     <column name="id_type_envoi" required="true" type="INTEGER" size="4" description="id du type de l'envoi"/>
-    <foreign-key foreignTable="a_type_envois" onDelete="SETNULL"><reference local="id_type_envoi" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_type_envois" onDelete="setnull"><reference local="id_type_envoi" foreign="id"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
     <column name="statut_envoi" required="true" type="VARCHAR" size="20" default="0" description="Statut de cet envoi (envoye, en cours,...)"/>
     <column name="date_envoi" required="true" type="TIME" description="Date en timestamp UNIX de l'envoi"/>
@@ -448,9 +448,9 @@
 
   <table name="j_traitements_envois" phpName="JTraitementEnvoiEleve" description="Table de jointure entre le traitement des absences et leur envoi">
     <column name="a_envoi_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de l'envoi"/>
-    <foreign-key foreignTable="a_envois" onDelete="SETNULL"><reference local="a_envoi_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_envois" onDelete="setnull"><reference local="a_envoi_id" foreign="id"/></foreign-key>
     <column name="a_traitement_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere du traitement de ces absences"/>
-    <foreign-key foreignTable="a_traitements" onDelete="SETNULL"><reference local="a_traitement_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_traitements" onDelete="setnull"><reference local="a_traitement_id" foreign="id"/></foreign-key>
   </table>
 <!-- fin objets propel generes pour absence2-->
 
@@ -538,7 +538,7 @@
 		<column name="name" required="true" primaryKey="true" type="VARCHAR" size="50" description="Cle primaire du compte rendu" />
 		<column name="value" required="true" autoIncrement="true" type="LONGVARCHAR" description="valeur associe a la cle" />
 		<column name="login" primaryKey="true" type="VARCHAR" size="50" description="Cle etrangere de l'utilisateur auquel appartient le compte rendu" />
-		<foreign-key foreignTable="utilisateurs" onDelete="SETNULL">
+		<foreign-key foreignTable="utilisateurs" onDelete="setnull">
 			<reference local="login" foreign="login" />
 		</foreign-key>
 	</table>
@@ -551,7 +551,7 @@
         <column name="heurefin_definie_periode" required="true" type="TIME" description="Heure de fin du creneau"/>
         <column name="suivi_definie_periode" required="false" type="INTEGER" size="2" default="9" description="champ inutilise"/>
         <column name="type_creneau" required="false" type="VARCHAR" size="15" default="cours" description="types possibles : cours, pause, repas, vie_scolaire"/>
-        <column name="jour_creneau" required="true" type="VARCHAR" size="20" default="NULL" description="Par defaut, aucun jour en particulier mais on peut imposer que des creneaux soient specifiques a un jour en particulier : 'lundi', 'mardi', 'mercredi'..."/>
+        <column name="jour_creneau" required="false" type="VARCHAR" size="20" default="NULL" description="Par defaut, aucun jour en particulier mais on peut imposer que des creneaux soient specifiques a un jour en particulier : 'lundi', 'mardi', 'mercredi'..."/>
     </table>
 
     <table name="horaires_etablissement" phpName="EdtHoraires" description="Table contenant les heures d'ouverture et de fermeture de l'etablissement par journee">
@@ -559,16 +559,15 @@
         <column name="date_horaire_etablissement" required="false" type="DATE" description="NULL (c'etait un 0 a l'origine...voir si pb) = horaires valables toute l'annee pour le jour specifie - date precise = horaires valables uniquement pour cette date"/>
         <column name="jour_horaire_etablissement" required="true" type="VARCHAR" size="15" description="defini le jour de la semaine - typiquement, lundi, mardi, etc..."/>
         <column name="ouverture_horaire_etablissement" required="true" type="TIME" description="Heure d'ouverture de l'etablissement"/>
-        <column name="fermeture_horaire_etablissement" required="true" type="TIME" default="9" description="Heure de fermeture de l'etablissement"/>
-        <column name="pause_horaire_etablissement" required="true" type="TIME" size="15" description="champ non utilise"/>
+        <column name="fermeture_horaire_etablissement" required="true" type="TIME" description="Heure de fermeture de l'etablissement"/>
+        <column name="pause_horaire_etablissement" required="false" type="TIME" description="champ non utilise"/>
         <column name="ouvert_horaire_etablissement" required="true" type="BOOLEAN" description="1 = etablissement ouvert - 0 = etablissement ferme"/>
     </table>
 
 	<table name="edt_semaines" phpName="EdtSemaine" description="Liste des semaines de l'annee scolaire courante - 53 enregistrements obligatoires (pas 52!)">
 		<column name="id_edt_semaine" required="true" primaryKey="true" type="INTEGER" size="11" description="cle primaire"/>
 		<column name="num_edt_semaine" required="true" type="INTEGER" size="11" description="numero de la semaine dans l'annee civile"/>
-		<column name="type_edt_semaine" required="true" type="VARCHAR" size="10" description="typiquement, champ egal a 'A' ou 'B' pour l'alternance des semaines"/>
-		<column name="num_edt_semaine" required="true" type="INTEGER" size="11" description="numero de la semaine dans l'annee scolaire"/>
+		<column name="type_edt_semaine" required="false" type="VARCHAR" size="10" description="typiquement, champ egal a 'A' ou 'B' pour l'alternance des semaines"/>
 	</table>
 
 	<table name="edt_calendrier" phpName="EdtCalendrierPeriode" description="Liste des periodes datees de l'annee courante(pour definir par exemple les trimestres)">
@@ -576,14 +575,14 @@
         <!-- le champ suivant est impossible a traiter automatiquement - aucune foreign-key associable -->
 		<column name="classe_concerne_calendrier" required="true" type="LONGVARCHAR" description="id des classes (separes par des ;) concernees par cette periode"/>
 		<column name="nom_calendrier" required="true" type="VARCHAR" size="100" description="nom de la periode definie"/>
-		<column name="debut_calendrier_ts" required="true" type="VARCHAR" size="11" description="timestamp du debut de la periode"/>
-		<column name="fin_calendrier_ts" required="true" type="VARCHAR" size="11" description="timestamp de la fin de la periode"/>
+		<column name="debut_calendrier_ts" required="true" type="TIME" description="timestamp du debut de la periode"/>
+		<column name="fin_calendrier_ts" required="true" type="TIME" description="timestamp de la fin de la periode"/>
 		<column name="jourdebut_calendrier" required="true" type="DATE" size="11" description="date du debut de la periode"/>
 		<column name="heuredebut_calendrier" required="true" type="TIME" size="11" description="heure du debut de la periode"/>
 		<column name="jourfin_calendrier" required="true" type="DATE" size="11" description="date de la fin de la periode"/>
 		<column name="heurefin_calendrier" required="true" type="TIME" size="11" description="heure de la fin de la periode"/>
 		<column name="numero_periode" required="true" type="TINYINT" size="4" description="id de la periode de notes associee"/>
-		<!--foreign-key foreignTable="periodes" onDelete="SETNULL"><reference local="numero_periode" foreign="num_periode"/></foreign-key-->
+		<!--foreign-key foreignTable="periodes" onDelete="setnull"><reference local="numero_periode" foreign="num_periode"/></foreign-key-->
 		<column name="etabferme_calendrier" required="true" type="TINYINT" size="4" description="egal a 1 si etablissement ouvert sur cette periode - 0 sinon"/>
 		<column name="etabvacances_calendrier" required="true" type="TINYINT" size="4" description="egal a 1 si la periode est definie sur les vacances - 0 sinon"/>
 	</table>
@@ -591,28 +590,28 @@
 	<table name="edt_cours" phpName="EdtEmplacementCours" description="Liste de tous les creneaux de tous les emplois du temps">
 		<column name="id_cours" required="true" primaryKey="true" type="INTEGER" size="3" description="cle primaire"/>
 		<column name="id_groupe" required="false" type="INTEGER" size="10" description="id du groupe d'enseignement concerne - NULL sinon"/>
-		<foreign-key foreignTable="groupes" onDelete="CASCADE"><reference local="id_groupe" foreign="id"/></foreign-key>
-		<column name="id_aid" required="true" type="INTEGER" size="10" description="id de l'aid concerne - NULL sinon"/>
-		<foreign-key foreignTable="aid" onDelete="CASCADE"><reference local="id_aid" foreign="id"/></foreign-key>
-		<column name="id_salle" required="true" type="INTEGER" size="10" description="id de la salle concernee"/>
-		<foreign-key foreignTable="salle_cours" onDelete="SETNULL"><reference local="id_salle" foreign="id_salle"/></foreign-key>
+		<foreign-key foreignTable="groupes" onDelete="cascade"><reference local="id_groupe" foreign="id"/></foreign-key>
+		<column name="id_aid" required="false" type="INTEGER" size="10" description="id de l'aid concerne - NULL sinon"/>
+		<foreign-key foreignTable="aid" onDelete="cascade"><reference local="id_aid" foreign="id"/></foreign-key>
+		<column name="id_salle" required="false" type="INTEGER" size="10" description="id de la salle concernee"/>
+		<foreign-key foreignTable="salle_cours" onDelete="setnull"><reference local="id_salle" foreign="id_salle"/></foreign-key>
 		<column name="jour_semaine" required="true" type="VARCHAR" size="10" description="jour de la semaine ou a lieu le cours : lundi, mardi etc..."/>
 		<column name="id_definie_periode" required="true" type="VARCHAR" size="3" description="id du creneau de la journee ou a lieu le cours - voir table edt_creneaux "/>
-		<foreign-key foreignTable="edt_creneaux" onDelete="CASCADE"><reference local="id_definie_periode" foreign="id_definie_periode"/></foreign-key>
+		<foreign-key foreignTable="edt_creneaux" onDelete="cascade"><reference local="id_definie_periode" foreign="id_definie_periode"/></foreign-key>
 		<column name="duree" required="true" type="VARCHAR" size="10" description="duree du cours definie en demi-heures.1h de cours correspond a une duree=2"/>
 		<column name="heuredeb_dec" required="true" type="VARCHAR" size="3" description="0 si le cours commence au debut du creneau - 0.5 s'il commence au milieu"/>
-		<column name="id_semaine" required="true" type="VARCHAR" size="3" description="type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B"/>
-		<column name="id_calendrier" required="true" type="VARCHAR" size="3" description="NULL = le cours a lieu toute l'annee - sinon, id de la periode (EdtPeriodes) durant laquelle a lieu le cours"/>
-		<foreign-key foreignTable="edt_calendrier" onDelete="SETNULL"><reference local="id_calendrier" foreign="id_calendrier"/></foreign-key>
-		<column name="modif_edt" required="true" type="VARCHAR" size="3" description="champ inutilise"/>
-		<column name="login_prof" required="true" type="VARCHAR" size="50" description="login du prof qui dispense le cours"/>
-		<foreign-key foreignTable="utilisateurs" onDelete="CASCADE"><reference local="login_prof" foreign="login"/></foreign-key>
+		<column name="id_semaine" required="false" type="VARCHAR" size="3" description="type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B"/>
+		<column name="id_calendrier" required="false" type="VARCHAR" size="3" description="NULL = le cours a lieu toute l'annee - sinon, id de la periode (EdtPeriodes) durant laquelle a lieu le cours"/>
+		<foreign-key foreignTable="edt_calendrier" onDelete="setnull"><reference local="id_calendrier" foreign="id_calendrier"/></foreign-key>
+		<column name="modif_edt" required="false" type="VARCHAR" size="3" description="champ inutilise"/>
+		<column name="login_prof" required="false" type="VARCHAR" size="50" description="login du prof qui dispense le cours"/>
+		<foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="login_prof" foreign="login"/></foreign-key>
 	</table>
 
 	<table name="salle_cours" phpName="EdtSalle" description="Liste des salles de classe">
 		<column name="id_salle" required="true" primaryKey="true" type="INTEGER" size="3" description="cle primaire"/>
 		<column name="numero_salle" required="true" type="VARCHAR" size="10" description="numero de la salle defini par l'utilisateur"/>
-		<column name="nom_salle" required="true" type="VARCHAR" size="50" description="nom de la salle defini par l'utilisateur"/>
+		<column name="nom_salle" required="false" type="VARCHAR" size="50" description="nom de la salle defini par l'utilisateur"/>
 	</table>
 
 </database>
