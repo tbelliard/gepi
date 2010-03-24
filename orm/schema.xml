@@ -378,9 +378,10 @@
     <column name="responabilite_etablissement" required="false" type="BOOLEAN" description="L'eleve est encore sous la responsabilite de l'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l'eleve est encore sous la responsabilité de l'etablissement"/>
     <column name="type_saisie" required="true" type="VARCHAR" size="50" description="Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE"/>
     <column name="ordre" required="true" type="INTEGER" size="3" description="Ordre d'affichage du type dans la liste déroulante"/>
+    <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
   </table>
 
-  <table name="a_types_statut" phpName="AbsenceEleveTypeStatut" description="Liste des statuts etant autorisé à saisir des types d'absences donnes">
+  <table name="a_types_statut" phpName="AbsenceEleveTypeStatutAutorise" description="Liste des statuts etant autorises à saisir des types d'absences donnes">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="Cle primaire auto-incrementee"/>
     <column name="id_a_type" required="true" type="INTEGER" size="11" description="Cle etrangere de la table a_type"/>
     <foreign-key foreignTable="a_types" onDelete="cascade"><reference local="id_a_type" foreign="id"/></foreign-key>
@@ -401,6 +402,7 @@
     <foreign-key foreignTable="edt_creneaux" onDelete="setnull"><reference local="id_edt_creneau" foreign="id_definie_periode"/></foreign-key>
     <column name="id_edt_emplacement_cours" required="false" type="INTEGER" size="12" default="0" description="identifiant du cours de l'emploi du temps"/>
     <foreign-key foreignTable="edt_cours" onDelete="setnull"><reference local="id_edt_emplacement_cours" foreign="id_cours"/></foreign-key>
+    <behavior name="timestampable" />
   </table>
 
   <table name="a_traitements" phpName="AbsenceEleveTraitement" description="Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies">
@@ -418,6 +420,7 @@
     <column name="a_action_id" type="INTEGER" size="4" description="cle etrangere de l'action sur ce traitement"/>
     <foreign-key foreignTable="a_actions" onDelete="setnull"><reference local="a_action_id" foreign="id"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
+    <behavior name="timestampable" />
   </table>
 
   <table name="j_traitements_saisies" phpName="JTraitementSaisieEleve" description="Table de jointure entre la saisie et le traitement des absences" isCrossRef="true">
@@ -437,6 +440,7 @@
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
     <column name="statut_envoi" required="true" type="VARCHAR" size="20" default="0" description="Statut de cet envoi (envoye, en cours,...)"/>
     <column name="date_envoi" required="true" type="TIME" description="Date en timestamp UNIX de l'envoi"/>
+    <behavior name="timestampable" />
   </table>
 
   <table name="a_type_envois" phpName="AbsenceEleveTypeEnvoi" description="Chaque envoi dispose d'un type qui est stocke ici">
