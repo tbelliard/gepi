@@ -1,7 +1,5 @@
 <?php
 
-require 'gepi/om/BaseGroupe.php';
-
 
 /**
  * Skeleton subclass for representing a row from the 'groupes' table.
@@ -12,7 +10,7 @@ require 'gepi/om/BaseGroupe.php';
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
- * @package    gepi
+ * @package    propel.generator.gepi
  */
 class Groupe extends BaseGroupe {
 

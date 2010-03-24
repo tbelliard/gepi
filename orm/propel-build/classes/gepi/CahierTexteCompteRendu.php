@@ -1,7 +1,5 @@
 <?php
 
-require 'gepi/om/BaseCahierTexteCompteRendu.php';
-
 
 /**
  * Skeleton subclass for representing a row from the 'ct_entry' table.
@@ -12,10 +10,11 @@ require 'gepi/om/BaseCahierTexteCompteRendu.php';
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
- * @package    gepi
+ * @package    propel.generator.gepi
  */
 class CahierTexteCompteRendu extends BaseCahierTexteCompteRendu {
 
+	//optimisation de vitesse dans les cas ou les criteres sont null pour recuprer les fichiers joint
 	/**
 	 * @var        array CahierTexteCompteRenduFichierJoint[] Collection to store aggregation of CahierTexteCompteRenduFichierJoint objects.
 	 */

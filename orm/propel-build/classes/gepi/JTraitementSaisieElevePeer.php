@@ -1,7 +1,5 @@
 <?php
 
-require 'gepi/om/BaseJTraitementSaisieElevePeer.php';
-
 
 /**
  * Skeleton subclass for performing query and update operations on the 'j_traitements_saisies' table.
@@ -12,7 +10,7 @@ require 'gepi/om/BaseJTraitementSaisieElevePeer.php';
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
- * @package    gepi
+ * @package    propel.generator.gepi
  */
 class JTraitementSaisieElevePeer extends BaseJTraitementSaisieElevePeer {
 

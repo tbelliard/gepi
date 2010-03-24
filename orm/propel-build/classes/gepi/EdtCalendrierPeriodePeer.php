@@ -1,7 +1,5 @@
 <?php
 
-require 'gepi/om/BaseEdtCalendrierPeriodePeer.php';
-
 
 /**
  * Skeleton subclass for performing query and update operations on the 'edt_calendrier' table.
@@ -12,7 +10,7 @@ require 'gepi/om/BaseEdtCalendrierPeriodePeer.php';
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
- * @package    gepi
+ * @package    propel.generator.gepi
  */
 class EdtCalendrierPeriodePeer extends BaseEdtCalendrierPeriodePeer {
 

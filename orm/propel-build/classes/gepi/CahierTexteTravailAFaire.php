@@ -1,7 +1,5 @@
 <?php
 
-require 'gepi/om/BaseCahierTexteTravailAFaire.php';
-
 
 /**
  * Skeleton subclass for representing a row from the 'ct_devoirs_entry' table.
@@ -12,10 +10,11 @@ require 'gepi/om/BaseCahierTexteTravailAFaire.php';
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
- * @package    gepi
+ * @package    propel.generator.gepi
  */
 class CahierTexteTravailAFaire extends BaseCahierTexteTravailAFaire {
 
+	//optimisation de vitess pour recuperer les fichiers joints dans le cas ou le critere est null
 	/**
 	 * Initializes internal state of CahierTexteTravailAFaire object.
 	 * @see        parent::__construct()

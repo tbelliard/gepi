@@ -1,7 +1,5 @@
 <?php
 
-require 'gepi/om/BaseCahierTexteTravailAFairePeer.php';
-
 
 /**
  * Skeleton subclass for performing query and update operations on the 'ct_devoirs_entry' table.
@@ -12,7 +10,7 @@ require 'gepi/om/BaseCahierTexteTravailAFairePeer.php';
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
- * @package    gepi
+ * @package    propel.generator.gepi
  */
 class CahierTexteTravailAFairePeer extends BaseCahierTexteTravailAFairePeer {
 

@@ -1,7 +1,5 @@
 <?php
 
-require 'gepi/om/BasePlugInAutorisationPeer.php';
-
 
 /**
  * Skeleton subclass for performing query and update operations on the 'plugins_autorisations' table.
@@ -12,7 +10,7 @@ require 'gepi/om/BasePlugInAutorisationPeer.php';
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
- * @package    gepi
+ * @package    propel.generator.gepi
  */
 class PlugInAutorisationPeer extends BasePlugInAutorisationPeer {
 

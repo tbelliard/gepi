@@ -1,7 +1,5 @@
 <?php
 
-require 'gepi/om/BaseAbsenceEleveTypePeer.php';
-
 
 /**
  * Skeleton subclass for performing query and update operations on the 'a_types' table.
@@ -12,7 +10,7 @@ require 'gepi/om/BaseAbsenceEleveTypePeer.php';
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
- * @package    gepi
+ * @package    propel.generator.gepi
  */
 class AbsenceEleveTypePeer extends BaseAbsenceEleveTypePeer {
 

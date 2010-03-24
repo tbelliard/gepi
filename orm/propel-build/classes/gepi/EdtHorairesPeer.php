@@ -1,7 +1,5 @@
 <?php
 
-require 'gepi/om/BaseEdtHorairesPeer.php';
-
 
 /**
  * Skeleton subclass for performing query and update operations on the 'horaires_etablissement' table.
@@ -12,7 +10,7 @@ require 'gepi/om/BaseEdtHorairesPeer.php';
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
- * @package    gepi
+ * @package    propel.generator.gepi
  */
 class EdtHorairesPeer extends BaseEdtHorairesPeer {
 

@@ -1,7 +1,5 @@
 <?php
 
-require 'gepi/om/BaseJAidElevesPeer.php';
-
 
 /**
  * Skeleton subclass for performing query and update operations on the 'j_aid_eleves' table.
@@ -12,7 +10,7 @@ require 'gepi/om/BaseJAidElevesPeer.php';
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
- * @package    gepi
+ * @package    propel.generator.gepi
  */
 class JAidElevesPeer extends BaseJAidElevesPeer {
 

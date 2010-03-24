@@ -1,19 +1,16 @@
 <?php
 
-require 'gepi/om/BaseElevePeer.php';
-
 
 /**
  * Skeleton subclass for performing query and update operations on the 'eleves' table.
  *
  * Liste des eleves de l'etablissement
  *
- *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  *
- * @package    gepi
+ * @package    propel.generator.gepi
  */
 class ElevePeer extends BaseElevePeer {
 
