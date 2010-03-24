@@ -5,10 +5,15 @@
  *
  * Table de jointure pour connaitre l'etablissement precedent de l'eleve
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Persistent {
+abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'JEleveAncienEtablissementPeer';
 
 	/**
 	 * The Peer class.
@@ -56,16 +61,6 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Initializes internal state of BaseJEleveAncienEtablissement object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
 	 * Applies default values to this object.
 	 * This method should be called from the object's constructor (or
 	 * equivalent initialization method).
@@ -74,6 +69,16 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	public function applyDefaultValues()
 	{
 		$this->id_etablissement = '';
+	}
+
+	/**
+	 * Initializes internal state of BaseJEleveAncienEtablissement object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
 	}
 
 	/**
@@ -132,7 +137,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 			$v = (string) $v;
 		}
 
-		if ($this->id_etablissement !== $v || $v === '') {
+		if ($this->id_etablissement !== $v || $this->isNew()) {
 			$this->id_etablissement = $v;
 			$this->modifiedColumns[] = JEleveAncienEtablissementPeer::ID_ETABLISSEMENT;
 		}
@@ -154,11 +159,6 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT))) {
-				return false;
-			}
-
 			if ($this->id_etablissement !== '') {
 				return false;
 			}
@@ -195,7 +195,6 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 2; // 2 = JEleveAncienEtablissementPeer::NUM_COLUMNS - JEleveAncienEtablissementPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -290,9 +289,17 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 		
 		$con->beginTransaction();
 		try {
-			JEleveAncienEtablissementPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				JEleveAncienEtablissementQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -323,10 +330,27 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				JEleveAncienEtablissementPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			JEleveAncienEtablissementPeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -374,11 +398,9 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = JEleveAncienEtablissementPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
-
+					$criteria = $this->buildCriteria();
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
 					$this->setNew(false);
 				} else {
 					$affectedRows += JEleveAncienEtablissementPeer::doUpdate($this, $con);
@@ -527,18 +549,29 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
 		$keys = JEleveAncienEtablissementPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getIdEleve(),
 			$keys[1] => $this->getIdEtablissement(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aEleve) {
+				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aAncienEtablissement) {
+				$result['AncienEtablissement'] = $this->aAncienEtablissement->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -629,7 +662,6 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(JEleveAncienEtablissementPeer::DATABASE_NAME);
-
 		$criteria->add(JEleveAncienEtablissementPeer::ID_ELEVE, $this->id_eleve);
 		$criteria->add(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $this->id_etablissement);
 
@@ -644,11 +676,9 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	public function getPrimaryKey()
 	{
 		$pks = array();
-
 		$pks[0] = $this->getIdEleve();
-
 		$pks[1] = $this->getIdEtablissement();
-
+		
 		return $pks;
 	}
 
@@ -660,11 +690,17 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	 */
 	public function setPrimaryKey($keys)
 	{
-
 		$this->setIdEleve($keys[0]);
-
 		$this->setIdEtablissement($keys[1]);
+	}
 
+	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return (null === $this->getIdEleve()) && (null === $this->getIdEtablissement());
 	}
 
 	/**
@@ -679,14 +715,10 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setIdEleve($this->id_eleve);
-
 		$copyObj->setIdEtablissement($this->id_etablissement);
 
-
 		$copyObj->setNew(true);
-
 	}
 
 	/**
@@ -764,7 +796,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	public function getEleve(PropelPDO $con = null)
 	{
 		if ($this->aEleve === null && (($this->id_eleve !== "" && $this->id_eleve !== null))) {
-			$this->aEleve = ElevePeer::retrieveByPK($this->id_eleve, $con);
+			$this->aEleve = EleveQuery::create()->findPk($this->id_eleve);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -813,7 +845,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	public function getAncienEtablissement(PropelPDO $con = null)
 	{
 		if ($this->aAncienEtablissement === null && (($this->id_etablissement !== "" && $this->id_etablissement !== null))) {
-			$this->aAncienEtablissement = AncienEtablissementPeer::retrieveByPK($this->id_etablissement, $con);
+			$this->aAncienEtablissement = AncienEtablissementQuery::create()->findPk($this->id_etablissement);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -823,6 +855,18 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 			 */
 		}
 		return $this->aAncienEtablissement;
+	}
+
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id_eleve = null;
+		$this->id_etablissement = null;
+		$this->clearAllReferences();
+		$this->applyDefaultValues();
+		$this->setNew(true);
 	}
 
 	/**
@@ -839,8 +883,19 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 		if ($deep) {
 		} // if ($deep)
 
-			$this->aEleve = null;
-			$this->aAncienEtablissement = null;
+		$this->aEleve = null;
+		$this->aAncienEtablissement = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseJEleveAncienEtablissement

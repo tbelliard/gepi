@@ -5,10 +5,15 @@
  *
  * Liste des salles de classe
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseEdtSalle extends BaseObject  implements Persistent {
+abstract class BaseEdtSalle extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'EdtSallePeer';
 
 	/**
 	 * The Peer class.
@@ -42,11 +47,6 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	protected $collEdtEmplacementCourss;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collEdtEmplacementCourss.
-	 */
-	private $lastEdtEmplacementCoursCriteria = null;
-
-	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -59,26 +59,6 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Initializes internal state of BaseEdtSalle object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
-	 * Applies default values to this object.
-	 * This method should be called from the object's constructor (or
-	 * equivalent initialization method).
-	 * @see        __construct()
-	 */
-	public function applyDefaultValues()
-	{
-	}
 
 	/**
 	 * Get the [id_salle] column value.
@@ -180,11 +160,6 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array())) {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -218,7 +193,6 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 3; // 3 = EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -282,7 +256,6 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->collEdtEmplacementCourss = null;
-			$this->lastEdtEmplacementCoursCriteria = null;
 
 		} // if (deep)
 	}
@@ -308,9 +281,17 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 		
 		$con->beginTransaction();
 		try {
-			EdtSallePeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				EdtSalleQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -341,10 +322,27 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				EdtSallePeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			EdtSallePeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -373,14 +371,12 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = EdtSallePeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
-
+					$criteria = $this->buildCriteria();
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
 					$this->setNew(false);
 				} else {
-					$affectedRows += EdtSallePeer::doUpdate($this, $con);
+					$affectedRows = EdtSallePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -527,10 +523,12 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
@@ -635,7 +633,6 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(EdtSallePeer::DATABASE_NAME);
-
 		$criteria->add(EdtSallePeer::ID_SALLE, $this->id_salle);
 
 		return $criteria;
@@ -662,6 +659,15 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getIdSalle();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -673,13 +679,9 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setIdSalle($this->id_salle);
-
 		$copyObj->setNumeroSalle($this->numero_salle);
-
 		$copyObj->setNomSalle($this->nom_salle);
-
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -696,7 +698,6 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 
 
 		$copyObj->setNew(true);
-
 	}
 
 	/**
@@ -738,7 +739,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Clears out the collEdtEmplacementCourss collection (array).
+	 * Clears out the collEdtEmplacementCourss collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -752,7 +753,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collEdtEmplacementCourss collection (array).
+	 * Initializes the collEdtEmplacementCourss collection.
 	 *
 	 * By default this just sets the collEdtEmplacementCourss collection to an empty array (like clearcollEdtEmplacementCourss());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -762,59 +763,40 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	 */
 	public function initEdtEmplacementCourss()
 	{
-		$this->collEdtEmplacementCourss = array();
+		$this->collEdtEmplacementCourss = new PropelObjectCollection();
+		$this->collEdtEmplacementCourss->setModel('EdtEmplacementCours');
 	}
 
 	/**
 	 * Gets an array of EdtEmplacementCours objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this EdtSalle has previously been saved, it will retrieve
-	 * related EdtEmplacementCourss from storage. If this EdtSalle is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this EdtSalle is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array EdtEmplacementCours[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
 	 * @throws     PropelException
 	 */
 	public function getEdtEmplacementCourss($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtSallePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-			   $this->collEdtEmplacementCourss = array();
+		if(null === $this->collEdtEmplacementCourss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
+				// return empty collection
+				$this->initEdtEmplacementCourss();
 			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-				EdtEmplacementCoursPeer::addSelectColumns($criteria);
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-				EdtEmplacementCoursPeer::addSelectColumns($criteria);
-				if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-					$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelect($criteria, $con);
+				$collEdtEmplacementCourss = EdtEmplacementCoursQuery::create(null, $criteria)
+					->filterByEdtSalle($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collEdtEmplacementCourss;
 				}
+				$this->collEdtEmplacementCourss = $collEdtEmplacementCourss;
 			}
 		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
 		return $this->collEdtEmplacementCourss;
 	}
 
@@ -829,48 +811,21 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	 */
 	public function countEdtEmplacementCourss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtSallePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collEdtEmplacementCourss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
+				return 0;
 			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-				$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-				if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-					$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collEdtEmplacementCourss);
+				$query = EdtEmplacementCoursQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collEdtEmplacementCourss);
+				return $query
+					->filterByEdtSalle($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collEdtEmplacementCourss);
 		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -886,8 +841,8 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 		if ($this->collEdtEmplacementCourss === null) {
 			$this->initEdtEmplacementCourss();
 		}
-		if (!in_array($l, $this->collEdtEmplacementCourss, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collEdtEmplacementCourss, $l);
+		if (!$this->collEdtEmplacementCourss->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collEdtEmplacementCourss[]= $l;
 			$l->setEdtSalle($this);
 		}
 	}
@@ -906,37 +861,10 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	 */
 	public function getEdtEmplacementCourssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtSallePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.Groupe', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -953,37 +881,10 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	 */
 	public function getEdtEmplacementCourssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtSallePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.AidDetails', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -1000,37 +901,10 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	 */
 	public function getEdtEmplacementCourssJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtSallePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.EdtCreneau', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -1047,37 +921,10 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	 */
 	public function getEdtEmplacementCourssJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtSallePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.EdtCalendrierPeriode', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCalendrierPeriode($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCalendrierPeriode($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -1094,37 +941,22 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 	 */
 	public function getEdtEmplacementCourssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtSallePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.UtilisateurProfessionnel', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
+		return $this->getEdtEmplacementCourss($query, $con);
+	}
 
-				$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_SALLE, $this->id_salle);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id_salle = null;
+		$this->numero_salle = null;
+		$this->nom_salle = null;
+		$this->clearAllReferences();
+		$this->setNew(true);
 	}
 
 	/**
@@ -1147,6 +979,17 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent {
 		} // if ($deep)
 
 		$this->collEdtEmplacementCourss = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseEdtSalle

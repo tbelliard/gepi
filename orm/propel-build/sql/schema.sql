@@ -760,6 +760,7 @@ CREATE TABLE a_types
 	responabilite_etablissement TINYINT COMMENT 'L\'eleve est encore sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l\'eleve est encore sous la responsabilité de l\'etablissement',
 	type_saisie VARCHAR(50)  NOT NULL COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE',
 	ordre INTEGER(3)  NOT NULL COMMENT 'Ordre d\'affichage du type dans la liste déroulante',
+	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	PRIMARY KEY (id)
 )Type=MyISAM COMMENT='Liste des types d\'absences possibles dans l\'etablissement';
 
@@ -781,7 +782,7 @@ CREATE TABLE a_types_statut
 		FOREIGN KEY (id_a_type)
 		REFERENCES a_types (id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Liste des statuts etant autorisé à saisir des types d\'absences donnes';
+)Type=MyISAM COMMENT='Liste des statuts etant autorises à saisir des types d\'absences donnes';
 
 #-----------------------------------------------------------------------------
 #-- a_saisies
@@ -800,6 +801,8 @@ CREATE TABLE a_saisies
 	fin_abs TIME COMMENT 'Fin de l\'absence en timestamp UNIX',
 	id_edt_creneau INTEGER(12) default 0 COMMENT 'identifiant du creneaux de l\'emploi du temps',
 	id_edt_emplacement_cours INTEGER(12) default 0 COMMENT 'identifiant du cours de l\'emploi du temps',
+	created_at DATETIME,
+	updated_at DATETIME,
 	PRIMARY KEY (id),
 	INDEX a_saisies_FI_1 (utilisateur_id),
 	CONSTRAINT a_saisies_FK_1
@@ -840,6 +843,8 @@ CREATE TABLE a_traitements
 	texte_justification VARCHAR(250)  NOT NULL COMMENT 'Texte additionnel à ce traitement',
 	a_action_id INTEGER(4) COMMENT 'cle etrangere de l\'action sur ce traitement',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
+	created_at DATETIME,
+	updated_at DATETIME,
 	PRIMARY KEY (id),
 	INDEX a_traitements_FI_1 (utilisateur_id),
 	CONSTRAINT a_traitements_FK_1
@@ -906,6 +911,8 @@ CREATE TABLE a_envois
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	statut_envoi VARCHAR(20) default '0' NOT NULL COMMENT 'Statut de cet envoi (envoye, en cours,...)',
 	date_envoi TIME  NOT NULL COMMENT 'Date en timestamp UNIX de l\'envoi',
+	created_at DATETIME,
+	updated_at DATETIME,
 	PRIMARY KEY (id),
 	INDEX a_envois_FI_1 (utilisateur_id),
 	CONSTRAINT a_envois_FK_1
@@ -1164,7 +1171,7 @@ CREATE TABLE edt_creneaux
 	heurefin_definie_periode TIME  NOT NULL COMMENT 'Heure de fin du creneau',
 	suivi_definie_periode INTEGER(2) default 9 COMMENT 'champ inutilise',
 	type_creneau VARCHAR(15) default 'cours' COMMENT 'types possibles : cours, pause, repas, vie_scolaire',
-	jour_creneau VARCHAR(20) default 'NULL' NOT NULL COMMENT 'Par defaut, aucun jour en particulier mais on peut imposer que des creneaux soient specifiques a un jour en particulier : \'lundi\', \'mardi\', \'mercredi\'...',
+	jour_creneau VARCHAR(20) COMMENT 'Par defaut, aucun jour en particulier mais on peut imposer que des creneaux soient specifiques a un jour en particulier : \'lundi\', \'mardi\', \'mercredi\'...',
 	PRIMARY KEY (id_definie_periode)
 )Type=MyISAM COMMENT='Table contenant les creneaux de chaque journee (M1, M2...S1, S2...)';
 
@@ -1181,8 +1188,8 @@ CREATE TABLE horaires_etablissement
 	date_horaire_etablissement DATE COMMENT 'NULL (c\'etait un 0 a l\'origine...voir si pb) = horaires valables toute l\'annee pour le jour specifie - date precise = horaires valables uniquement pour cette date',
 	jour_horaire_etablissement VARCHAR(15)  NOT NULL COMMENT 'defini le jour de la semaine - typiquement, lundi, mardi, etc...',
 	ouverture_horaire_etablissement TIME  NOT NULL COMMENT 'Heure d\'ouverture de l\'etablissement',
-	fermeture_horaire_etablissement TIME default '9' NOT NULL COMMENT 'Heure de fermeture de l\'etablissement',
-	pause_horaire_etablissement TIME(15)  NOT NULL COMMENT 'champ non utilise',
+	fermeture_horaire_etablissement TIME  NOT NULL COMMENT 'Heure de fermeture de l\'etablissement',
+	pause_horaire_etablissement TIME COMMENT 'champ non utilise',
 	ouvert_horaire_etablissement TINYINT  NOT NULL COMMENT '1 = etablissement ouvert - 0 = etablissement ferme',
 	PRIMARY KEY (id_horaire_etablissement)
 )Type=MyISAM COMMENT='Table contenant les heures d\'ouverture et de fermeture de l\'etablissement par journee';
@@ -1198,8 +1205,7 @@ CREATE TABLE edt_semaines
 (
 	id_edt_semaine INTEGER(11)  NOT NULL COMMENT 'cle primaire',
 	num_edt_semaine INTEGER(11)  NOT NULL COMMENT 'numero de la semaine dans l\'annee civile',
-	type_edt_semaine VARCHAR(10)  NOT NULL COMMENT 'typiquement, champ egal a \'A\' ou \'B\' pour l\'alternance des semaines',
-	num_edt_semaine INTEGER(11)  NOT NULL COMMENT 'numero de la semaine dans l\'annee scolaire',
+	type_edt_semaine VARCHAR(10) COMMENT 'typiquement, champ egal a \'A\' ou \'B\' pour l\'alternance des semaines',
 	PRIMARY KEY (id_edt_semaine)
 )Type=MyISAM COMMENT='Liste des semaines de l\'annee scolaire courante - 53 enregistrements obligatoires (pas 52!)';
 
@@ -1215,8 +1221,8 @@ CREATE TABLE edt_calendrier
 	id_calendrier INTEGER(11)  NOT NULL COMMENT 'cle primaire',
 	classe_concerne_calendrier TEXT  NOT NULL COMMENT 'id des classes (separes par des ;) concernees par cette periode',
 	nom_calendrier VARCHAR(100)  NOT NULL COMMENT 'nom de la periode definie',
-	debut_calendrier_ts VARCHAR(11)  NOT NULL COMMENT 'timestamp du debut de la periode',
-	fin_calendrier_ts VARCHAR(11)  NOT NULL COMMENT 'timestamp de la fin de la periode',
+	debut_calendrier_ts TIME  NOT NULL COMMENT 'timestamp du debut de la periode',
+	fin_calendrier_ts TIME  NOT NULL COMMENT 'timestamp de la fin de la periode',
 	jourdebut_calendrier DATE(11)  NOT NULL COMMENT 'date du debut de la periode',
 	heuredebut_calendrier TIME(11)  NOT NULL COMMENT 'heure du debut de la periode',
 	jourfin_calendrier DATE(11)  NOT NULL COMMENT 'date de la fin de la periode',
@@ -1238,16 +1244,16 @@ CREATE TABLE edt_cours
 (
 	id_cours INTEGER(3)  NOT NULL COMMENT 'cle primaire',
 	id_groupe INTEGER(10) COMMENT 'id du groupe d\'enseignement concerne - NULL sinon',
-	id_aid INTEGER(10)  NOT NULL COMMENT 'id de l\'aid concerne - NULL sinon',
-	id_salle INTEGER(10)  NOT NULL COMMENT 'id de la salle concernee',
+	id_aid INTEGER(10) COMMENT 'id de l\'aid concerne - NULL sinon',
+	id_salle INTEGER(10) COMMENT 'id de la salle concernee',
 	jour_semaine VARCHAR(10)  NOT NULL COMMENT 'jour de la semaine ou a lieu le cours : lundi, mardi etc...',
 	id_definie_periode VARCHAR(3)  NOT NULL COMMENT 'id du creneau de la journee ou a lieu le cours - voir table edt_creneaux ',
 	duree VARCHAR(10)  NOT NULL COMMENT 'duree du cours definie en demi-heures.1h de cours correspond a une duree=2',
 	heuredeb_dec VARCHAR(3)  NOT NULL COMMENT '0 si le cours commence au debut du creneau - 0.5 s\'il commence au milieu',
-	id_semaine VARCHAR(3)  NOT NULL COMMENT 'type de semaine - typiquement, \'A\' ou \'B\' si on a une alternance semaine A, semaine B',
-	id_calendrier VARCHAR(3)  NOT NULL COMMENT 'NULL = le cours a lieu toute l\'annee - sinon, id de la periode (EdtPeriodes) durant laquelle a lieu le cours',
-	modif_edt VARCHAR(3)  NOT NULL COMMENT 'champ inutilise',
-	login_prof VARCHAR(50)  NOT NULL COMMENT 'login du prof qui dispense le cours',
+	id_semaine VARCHAR(3) COMMENT 'type de semaine - typiquement, \'A\' ou \'B\' si on a une alternance semaine A, semaine B',
+	id_calendrier VARCHAR(3) COMMENT 'NULL = le cours a lieu toute l\'annee - sinon, id de la periode (EdtPeriodes) durant laquelle a lieu le cours',
+	modif_edt VARCHAR(3) COMMENT 'champ inutilise',
+	login_prof VARCHAR(50) COMMENT 'login du prof qui dispense le cours',
 	PRIMARY KEY (id_cours),
 	INDEX edt_cours_FI_1 (id_groupe),
 	CONSTRAINT edt_cours_FK_1
@@ -1278,7 +1284,7 @@ CREATE TABLE edt_cours
 	CONSTRAINT edt_cours_FK_6
 		FOREIGN KEY (login_prof)
 		REFERENCES utilisateurs (login)
-		ON DELETE CASCADE
+		ON DELETE SET NULL
 )Type=MyISAM COMMENT='Liste de tous les creneaux de tous les emplois du temps';
 
 #-----------------------------------------------------------------------------
@@ -1292,7 +1298,7 @@ CREATE TABLE salle_cours
 (
 	id_salle INTEGER(3)  NOT NULL COMMENT 'cle primaire',
 	numero_salle VARCHAR(10)  NOT NULL COMMENT 'numero de la salle defini par l\'utilisateur',
-	nom_salle VARCHAR(50)  NOT NULL COMMENT 'nom de la salle defini par l\'utilisateur',
+	nom_salle VARCHAR(50) COMMENT 'nom de la salle defini par l\'utilisateur',
 	PRIMARY KEY (id_salle)
 )Type=MyISAM COMMENT='Liste des salles de classe';
 

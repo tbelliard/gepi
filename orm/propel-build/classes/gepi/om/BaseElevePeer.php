@@ -5,7 +5,7 @@
  *
  * Liste des eleves de l'etablissement
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseElevePeer {
 
@@ -15,9 +15,15 @@ abstract class BaseElevePeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'eleves';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'Eleve';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.Eleve';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'EleveTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 12;
 
@@ -68,11 +74,6 @@ abstract class BaseElevePeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -84,6 +85,7 @@ abstract class BaseElevePeer {
 		BasePeer::TYPE_PHPNAME => array ('NoGep', 'Login', 'Nom', 'Prenom', 'Sexe', 'Naissance', 'LieuNaissance', 'Elenoet', 'Ereno', 'EleId', 'Email', 'IdEleve', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep', 'login', 'nom', 'prenom', 'sexe', 'naissance', 'lieuNaissance', 'elenoet', 'ereno', 'eleId', 'email', 'idEleve', ),
 		BasePeer::TYPE_COLNAME => array (self::NO_GEP, self::LOGIN, self::NOM, self::PRENOM, self::SEXE, self::NAISSANCE, self::LIEU_NAISSANCE, self::ELENOET, self::ERENO, self::ELE_ID, self::EMAIL, self::ID_ELEVE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('NO_GEP', 'LOGIN', 'NOM', 'PRENOM', 'SEXE', 'NAISSANCE', 'LIEU_NAISSANCE', 'ELENOET', 'ERENO', 'ELE_ID', 'EMAIL', 'ID_ELEVE', ),
 		BasePeer::TYPE_FIELDNAME => array ('no_gep', 'login', 'nom', 'prenom', 'sexe', 'naissance', 'lieu_naissance', 'elenoet', 'ereno', 'ele_id', 'email', 'id_eleve', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
 	);
@@ -98,21 +100,11 @@ abstract class BaseElevePeer {
 		BasePeer::TYPE_PHPNAME => array ('NoGep' => 0, 'Login' => 1, 'Nom' => 2, 'Prenom' => 3, 'Sexe' => 4, 'Naissance' => 5, 'LieuNaissance' => 6, 'Elenoet' => 7, 'Ereno' => 8, 'EleId' => 9, 'Email' => 10, 'IdEleve' => 11, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'sexe' => 4, 'naissance' => 5, 'lieuNaissance' => 6, 'elenoet' => 7, 'ereno' => 8, 'eleId' => 9, 'email' => 10, 'idEleve' => 11, ),
 		BasePeer::TYPE_COLNAME => array (self::NO_GEP => 0, self::LOGIN => 1, self::NOM => 2, self::PRENOM => 3, self::SEXE => 4, self::NAISSANCE => 5, self::LIEU_NAISSANCE => 6, self::ELENOET => 7, self::ERENO => 8, self::ELE_ID => 9, self::EMAIL => 10, self::ID_ELEVE => 11, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('NO_GEP' => 0, 'LOGIN' => 1, 'NOM' => 2, 'PRENOM' => 3, 'SEXE' => 4, 'NAISSANCE' => 5, 'LIEU_NAISSANCE' => 6, 'ELENOET' => 7, 'ERENO' => 8, 'ELE_ID' => 9, 'EMAIL' => 10, 'ID_ELEVE' => 11, ),
 		BasePeer::TYPE_FIELDNAME => array ('no_gep' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'sexe' => 4, 'naissance' => 5, 'lieu_naissance' => 6, 'elenoet' => 7, 'ereno' => 8, 'ele_id' => 9, 'email' => 10, 'id_eleve' => 11, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new EleveMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -174,37 +166,40 @@ abstract class BaseElevePeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(ElevePeer::NO_GEP);
-
-		$criteria->addSelectColumn(ElevePeer::LOGIN);
-
-		$criteria->addSelectColumn(ElevePeer::NOM);
-
-		$criteria->addSelectColumn(ElevePeer::PRENOM);
-
-		$criteria->addSelectColumn(ElevePeer::SEXE);
-
-		$criteria->addSelectColumn(ElevePeer::NAISSANCE);
-
-		$criteria->addSelectColumn(ElevePeer::LIEU_NAISSANCE);
-
-		$criteria->addSelectColumn(ElevePeer::ELENOET);
-
-		$criteria->addSelectColumn(ElevePeer::ERENO);
-
-		$criteria->addSelectColumn(ElevePeer::ELE_ID);
-
-		$criteria->addSelectColumn(ElevePeer::EMAIL);
-
-		$criteria->addSelectColumn(ElevePeer::ID_ELEVE);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(ElevePeer::NO_GEP);
+			$criteria->addSelectColumn(ElevePeer::LOGIN);
+			$criteria->addSelectColumn(ElevePeer::NOM);
+			$criteria->addSelectColumn(ElevePeer::PRENOM);
+			$criteria->addSelectColumn(ElevePeer::SEXE);
+			$criteria->addSelectColumn(ElevePeer::NAISSANCE);
+			$criteria->addSelectColumn(ElevePeer::LIEU_NAISSANCE);
+			$criteria->addSelectColumn(ElevePeer::ELENOET);
+			$criteria->addSelectColumn(ElevePeer::ERENO);
+			$criteria->addSelectColumn(ElevePeer::ELE_ID);
+			$criteria->addSelectColumn(ElevePeer::EMAIL);
+			$criteria->addSelectColumn(ElevePeer::ID_ELEVE);
+		} else {
+			$criteria->addSelectColumn($alias . '.NO_GEP');
+			$criteria->addSelectColumn($alias . '.LOGIN');
+			$criteria->addSelectColumn($alias . '.NOM');
+			$criteria->addSelectColumn($alias . '.PRENOM');
+			$criteria->addSelectColumn($alias . '.SEXE');
+			$criteria->addSelectColumn($alias . '.NAISSANCE');
+			$criteria->addSelectColumn($alias . '.LIEU_NAISSANCE');
+			$criteria->addSelectColumn($alias . '.ELENOET');
+			$criteria->addSelectColumn($alias . '.ERENO');
+			$criteria->addSelectColumn($alias . '.ELE_ID');
+			$criteria->addSelectColumn($alias . '.EMAIL');
+			$criteria->addSelectColumn($alias . '.ID_ELEVE');
+		}
 	}
 
 	/**
@@ -392,6 +387,41 @@ abstract class BaseElevePeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to eleves
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in JEleveClassePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JEleveClassePeer::clearInstancePool();
+
+		// invalidate objects in JEleveCpePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JEleveCpePeer::clearInstancePool();
+
+		// invalidate objects in JEleveGroupePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JEleveGroupePeer::clearInstancePool();
+
+		// invalidate objects in JEleveProfesseurPrincipalPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JEleveProfesseurPrincipalPeer::clearInstancePool();
+
+		// invalidate objects in EleveRegimeDoublantPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		EleveRegimeDoublantPeer::clearInstancePool();
+
+		// invalidate objects in ResponsableInformationPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		ResponsableInformationPeer::clearInstancePool();
+
+		// invalidate objects in JEleveAncienEtablissementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JEleveAncienEtablissementPeer::clearInstancePool();
+
+		// invalidate objects in JAidElevesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JAidElevesPeer::clearInstancePool();
+
+		// invalidate objects in AbsenceEleveSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		AbsenceEleveSaisiePeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -411,6 +441,20 @@ abstract class BaseElevePeer {
 	}
 
 	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol + 11];
+	}
+	
+	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
 	 *
@@ -422,8 +466,7 @@ abstract class BaseElevePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = ElevePeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = ElevePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = ElevePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -433,7 +476,6 @@ abstract class BaseElevePeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -442,6 +484,31 @@ abstract class BaseElevePeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (Eleve object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = ElevePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = ElevePeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + ElevePeer::NUM_COLUMNS;
+		} else {
+			$cls = ElevePeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			ElevePeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -456,17 +523,31 @@ abstract class BaseElevePeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseElevePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseElevePeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new EleveTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return ElevePeer::CLASS_DEFAULT;
+		return $withPrefix ? ElevePeer::CLASS_DEFAULT : ElevePeer::OM_CLASS;
 	}
 
 	/**
@@ -533,7 +614,12 @@ abstract class BaseElevePeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(ElevePeer::ID_ELEVE);
-			$selectCriteria->add(ElevePeer::ID_ELEVE, $criteria->remove(ElevePeer::ID_ELEVE), $comparison);
+			$value = $criteria->remove(ElevePeer::ID_ELEVE);
+			if ($value) {
+				$selectCriteria->add(ElevePeer::ID_ELEVE, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(ElevePeer::TABLE_NAME);
+			}
 
 		} else { // $values is Eleve object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -563,6 +649,11 @@ abstract class BaseElevePeer {
 			$con->beginTransaction();
 			$affectedRows += ElevePeer::doOnDeleteCascade(new Criteria(ElevePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(ElevePeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			ElevePeer::clearInstancePool();
+			ElevePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -589,30 +680,14 @@ abstract class BaseElevePeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			ElevePeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof Eleve) {
-			// invalidate the cache for this single object
-			ElevePeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof Eleve) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(ElevePeer::ID_ELEVE, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				ElevePeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -626,44 +701,21 @@ abstract class BaseElevePeer {
 			$con->beginTransaction();
 			$affectedRows += ElevePeer::doOnDeleteCascade($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					ElevePeer::clearInstancePool();
-				} else { // it's a PK or object
-					ElevePeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				ElevePeer::clearInstancePool();
+			} elseif ($values instanceof Eleve) { // it's a model object
+				ElevePeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					ElevePeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in JEleveClassePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JEleveClassePeer::clearInstancePool();
-
-			// invalidate objects in JEleveCpePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JEleveCpePeer::clearInstancePool();
-
-			// invalidate objects in JEleveGroupePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JEleveGroupePeer::clearInstancePool();
-
-			// invalidate objects in JEleveProfesseurPrincipalPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JEleveProfesseurPrincipalPeer::clearInstancePool();
-
-			// invalidate objects in EleveRegimeDoublantPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			EleveRegimeDoublantPeer::clearInstancePool();
-
-			// invalidate objects in ResponsableInformationPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			ResponsableInformationPeer::clearInstancePool();
-
-			// invalidate objects in JEleveAncienEtablissementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JEleveAncienEtablissementPeer::clearInstancePool();
-
-			// invalidate objects in JAidElevesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JAidElevesPeer::clearInstancePool();
-
-			// invalidate objects in AbsenceEleveSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceEleveSaisiePeer::clearInstancePool();
-
+			ElevePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -696,58 +748,58 @@ abstract class BaseElevePeer {
 
 
 			// delete related JEleveClasse objects
-			$c = new Criteria(JEleveClassePeer::DATABASE_NAME);
+			$criteria = new Criteria(JEleveClassePeer::DATABASE_NAME);
 			
-			$c->add(JEleveClassePeer::LOGIN, $obj->getLogin());
-			$affectedRows += JEleveClassePeer::doDelete($c, $con);
+			$criteria->add(JEleveClassePeer::LOGIN, $obj->getLogin());
+			$affectedRows += JEleveClassePeer::doDelete($criteria, $con);
 
 			// delete related JEleveCpe objects
-			$c = new Criteria(JEleveCpePeer::DATABASE_NAME);
+			$criteria = new Criteria(JEleveCpePeer::DATABASE_NAME);
 			
-			$c->add(JEleveCpePeer::E_LOGIN, $obj->getLogin());
-			$affectedRows += JEleveCpePeer::doDelete($c, $con);
+			$criteria->add(JEleveCpePeer::E_LOGIN, $obj->getLogin());
+			$affectedRows += JEleveCpePeer::doDelete($criteria, $con);
 
 			// delete related JEleveGroupe objects
-			$c = new Criteria(JEleveGroupePeer::DATABASE_NAME);
+			$criteria = new Criteria(JEleveGroupePeer::DATABASE_NAME);
 			
-			$c->add(JEleveGroupePeer::LOGIN, $obj->getLogin());
-			$affectedRows += JEleveGroupePeer::doDelete($c, $con);
+			$criteria->add(JEleveGroupePeer::LOGIN, $obj->getLogin());
+			$affectedRows += JEleveGroupePeer::doDelete($criteria, $con);
 
 			// delete related JEleveProfesseurPrincipal objects
-			$c = new Criteria(JEleveProfesseurPrincipalPeer::DATABASE_NAME);
+			$criteria = new Criteria(JEleveProfesseurPrincipalPeer::DATABASE_NAME);
 			
-			$c->add(JEleveProfesseurPrincipalPeer::LOGIN, $obj->getLogin());
-			$affectedRows += JEleveProfesseurPrincipalPeer::doDelete($c, $con);
+			$criteria->add(JEleveProfesseurPrincipalPeer::LOGIN, $obj->getLogin());
+			$affectedRows += JEleveProfesseurPrincipalPeer::doDelete($criteria, $con);
 
 			// delete related EleveRegimeDoublant objects
-			$c = new Criteria(EleveRegimeDoublantPeer::DATABASE_NAME);
+			$criteria = new Criteria(EleveRegimeDoublantPeer::DATABASE_NAME);
 			
-			$c->add(EleveRegimeDoublantPeer::LOGIN, $obj->getLogin());
-			$affectedRows += EleveRegimeDoublantPeer::doDelete($c, $con);
+			$criteria->add(EleveRegimeDoublantPeer::LOGIN, $obj->getLogin());
+			$affectedRows += EleveRegimeDoublantPeer::doDelete($criteria, $con);
 
 			// delete related ResponsableInformation objects
-			$c = new Criteria(ResponsableInformationPeer::DATABASE_NAME);
+			$criteria = new Criteria(ResponsableInformationPeer::DATABASE_NAME);
 			
-			$c->add(ResponsableInformationPeer::ELE_ID, $obj->getEleId());
-			$affectedRows += ResponsableInformationPeer::doDelete($c, $con);
+			$criteria->add(ResponsableInformationPeer::ELE_ID, $obj->getEleId());
+			$affectedRows += ResponsableInformationPeer::doDelete($criteria, $con);
 
 			// delete related JEleveAncienEtablissement objects
-			$c = new Criteria(JEleveAncienEtablissementPeer::DATABASE_NAME);
+			$criteria = new Criteria(JEleveAncienEtablissementPeer::DATABASE_NAME);
 			
-			$c->add(JEleveAncienEtablissementPeer::ID_ELEVE, $obj->getIdEleve());
-			$affectedRows += JEleveAncienEtablissementPeer::doDelete($c, $con);
+			$criteria->add(JEleveAncienEtablissementPeer::ID_ELEVE, $obj->getIdEleve());
+			$affectedRows += JEleveAncienEtablissementPeer::doDelete($criteria, $con);
 
 			// delete related JAidEleves objects
-			$c = new Criteria(JAidElevesPeer::DATABASE_NAME);
+			$criteria = new Criteria(JAidElevesPeer::DATABASE_NAME);
 			
-			$c->add(JAidElevesPeer::LOGIN, $obj->getLogin());
-			$affectedRows += JAidElevesPeer::doDelete($c, $con);
+			$criteria->add(JAidElevesPeer::LOGIN, $obj->getLogin());
+			$affectedRows += JAidElevesPeer::doDelete($criteria, $con);
 
 			// delete related AbsenceEleveSaisie objects
-			$c = new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME);
+			$criteria = new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME);
 			
-			$c->add(AbsenceEleveSaisiePeer::ELEVE_ID, $obj->getIdEleve());
-			$affectedRows += AbsenceEleveSaisiePeer::doDelete($c, $con);
+			$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $obj->getIdEleve());
+			$affectedRows += AbsenceEleveSaisiePeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
@@ -842,14 +894,7 @@ abstract class BaseElevePeer {
 
 } // BaseElevePeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the ElevePeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the ElevePeer class:
-//
-// Propel::getDatabaseMap(ElevePeer::DATABASE_NAME)->addTableBuilder(ElevePeer::TABLE_NAME, ElevePeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseElevePeer::DATABASE_NAME)->addTableBuilder(BaseElevePeer::TABLE_NAME, BaseElevePeer::getMapBuilder());
+BaseElevePeer::buildTableMap();
 

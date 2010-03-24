@@ -5,10 +5,15 @@
  *
  * Liaison entre categories de matiere et classes
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Persistent {
+abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'JCategoriesMatieresClassesPeer';
 
 	/**
 	 * The Peer class.
@@ -68,16 +73,6 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Initializes internal state of BaseJCategoriesMatieresClasses object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
 	 * Applies default values to this object.
 	 * This method should be called from the object's constructor (or
 	 * equivalent initialization method).
@@ -86,6 +81,16 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	public function applyDefaultValues()
 	{
 		$this->affiche_moyenne = false;
+	}
+
+	/**
+	 * Initializes internal state of BaseJCategoriesMatieresClasses object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
 	}
 
 	/**
@@ -188,7 +193,7 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 			$v = (boolean) $v;
 		}
 
-		if ($this->affiche_moyenne !== $v || $v === false) {
+		if ($this->affiche_moyenne !== $v || $this->isNew()) {
 			$this->affiche_moyenne = $v;
 			$this->modifiedColumns[] = JCategoriesMatieresClassesPeer::AFFICHE_MOYENNE;
 		}
@@ -226,11 +231,6 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(JCategoriesMatieresClassesPeer::AFFICHE_MOYENNE))) {
-				return false;
-			}
-
 			if ($this->affiche_moyenne !== false) {
 				return false;
 			}
@@ -269,7 +269,6 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 4; // 4 = JCategoriesMatieresClassesPeer::NUM_COLUMNS - JCategoriesMatieresClassesPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -364,9 +363,17 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 		
 		$con->beginTransaction();
 		try {
-			JCategoriesMatieresClassesPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				JCategoriesMatieresClassesQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -397,10 +404,27 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				JCategoriesMatieresClassesPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			JCategoriesMatieresClassesPeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -448,11 +472,9 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = JCategoriesMatieresClassesPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
-
+					$criteria = $this->buildCriteria();
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
 					$this->setNew(false);
 				} else {
 					$affectedRows += JCategoriesMatieresClassesPeer::doUpdate($this, $con);
@@ -607,12 +629,15 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
 		$keys = JCategoriesMatieresClassesPeer::getFieldNames($keyType);
 		$result = array(
@@ -621,6 +646,14 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 			$keys[2] => $this->getAfficheMoyenne(),
 			$keys[3] => $this->getPriority(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aCategorieMatiere) {
+				$result['CategorieMatiere'] = $this->aCategorieMatiere->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aClasse) {
+				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -721,7 +754,6 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(JCategoriesMatieresClassesPeer::DATABASE_NAME);
-
 		$criteria->add(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $this->categorie_id);
 		$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->classe_id);
 
@@ -736,11 +768,9 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	public function getPrimaryKey()
 	{
 		$pks = array();
-
 		$pks[0] = $this->getCategorieId();
-
 		$pks[1] = $this->getClasseId();
-
+		
 		return $pks;
 	}
 
@@ -752,11 +782,17 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	 */
 	public function setPrimaryKey($keys)
 	{
-
 		$this->setCategorieId($keys[0]);
-
 		$this->setClasseId($keys[1]);
+	}
 
+	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return (null === $this->getCategorieId()) && (null === $this->getClasseId());
 	}
 
 	/**
@@ -771,18 +807,12 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setCategorieId($this->categorie_id);
-
 		$copyObj->setClasseId($this->classe_id);
-
 		$copyObj->setAfficheMoyenne($this->affiche_moyenne);
-
 		$copyObj->setPriority($this->priority);
 
-
 		$copyObj->setNew(true);
-
 	}
 
 	/**
@@ -860,7 +890,7 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	public function getCategorieMatiere(PropelPDO $con = null)
 	{
 		if ($this->aCategorieMatiere === null && ($this->categorie_id !== null)) {
-			$this->aCategorieMatiere = CategorieMatierePeer::retrieveByPK($this->categorie_id, $con);
+			$this->aCategorieMatiere = CategorieMatiereQuery::create()->findPk($this->categorie_id);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -909,7 +939,7 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	public function getClasse(PropelPDO $con = null)
 	{
 		if ($this->aClasse === null && ($this->classe_id !== null)) {
-			$this->aClasse = ClassePeer::retrieveByPK($this->classe_id, $con);
+			$this->aClasse = ClasseQuery::create()->findPk($this->classe_id);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -919,6 +949,20 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 			 */
 		}
 		return $this->aClasse;
+	}
+
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->categorie_id = null;
+		$this->classe_id = null;
+		$this->affiche_moyenne = null;
+		$this->priority = null;
+		$this->clearAllReferences();
+		$this->applyDefaultValues();
+		$this->setNew(true);
 	}
 
 	/**
@@ -935,8 +979,19 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 		if ($deep) {
 		} // if ($deep)
 
-			$this->aCategorieMatiere = null;
-			$this->aClasse = null;
+		$this->aCategorieMatiere = null;
+		$this->aClasse = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseJCategoriesMatieresClasses

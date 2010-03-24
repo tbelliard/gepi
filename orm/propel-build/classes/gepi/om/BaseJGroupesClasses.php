@@ -5,10 +5,15 @@
  *
  * Table permettant la jointure entre groupe d'eleves et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
+abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'JGroupesClassesPeer';
 
 	/**
 	 * The Peer class.
@@ -91,16 +96,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Initializes internal state of BaseJGroupesClasses object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
 	 * Applies default values to this object.
 	 * This method should be called from the object's constructor (or
 	 * equivalent initialization method).
@@ -109,6 +104,16 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 	public function applyDefaultValues()
 	{
 		$this->saisie_ects = false;
+	}
+
+	/**
+	 * Initializes internal state of BaseJGroupesClasses object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
 	}
 
 	/**
@@ -305,7 +310,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 			$v = (boolean) $v;
 		}
 
-		if ($this->saisie_ects !== $v || $v === false) {
+		if ($this->saisie_ects !== $v || $this->isNew()) {
 			$this->saisie_ects = $v;
 			$this->modifiedColumns[] = JGroupesClassesPeer::SAISIE_ECTS;
 		}
@@ -343,11 +348,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(JGroupesClassesPeer::SAISIE_ECTS))) {
-				return false;
-			}
-
 			if ($this->saisie_ects !== false) {
 				return false;
 			}
@@ -389,7 +389,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 7; // 7 = JGroupesClassesPeer::NUM_COLUMNS - JGroupesClassesPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -488,9 +487,17 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 		
 		$con->beginTransaction();
 		try {
-			JGroupesClassesPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				JGroupesClassesQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -521,10 +528,27 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				JGroupesClassesPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			JGroupesClassesPeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -579,11 +603,9 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = JGroupesClassesPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
-
+					$criteria = $this->buildCriteria();
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
 					$this->setNew(false);
 				} else {
 					$affectedRows += JGroupesClassesPeer::doUpdate($this, $con);
@@ -753,12 +775,15 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
 		$keys = JGroupesClassesPeer::getFieldNames($keyType);
 		$result = array(
@@ -770,6 +795,17 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 			$keys[5] => $this->getSaisieEcts(),
 			$keys[6] => $this->getValeurEcts(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aGroupe) {
+				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aClasse) {
+				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aCategorieMatiere) {
+				$result['CategorieMatiere'] = $this->aCategorieMatiere->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -885,7 +921,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(JGroupesClassesPeer::DATABASE_NAME);
-
 		$criteria->add(JGroupesClassesPeer::ID_GROUPE, $this->id_groupe);
 		$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id_classe);
 
@@ -900,11 +935,9 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 	public function getPrimaryKey()
 	{
 		$pks = array();
-
 		$pks[0] = $this->getIdGroupe();
-
 		$pks[1] = $this->getIdClasse();
-
+		
 		return $pks;
 	}
 
@@ -916,11 +949,17 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 	 */
 	public function setPrimaryKey($keys)
 	{
-
 		$this->setIdGroupe($keys[0]);
-
 		$this->setIdClasse($keys[1]);
+	}
 
+	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return (null === $this->getIdGroupe()) && (null === $this->getIdClasse());
 	}
 
 	/**
@@ -935,24 +974,15 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setIdGroupe($this->id_groupe);
-
 		$copyObj->setIdClasse($this->id_classe);
-
 		$copyObj->setPriorite($this->priorite);
-
 		$copyObj->setCoef($this->coef);
-
 		$copyObj->setCategorieId($this->categorie_id);
-
 		$copyObj->setSaisieEcts($this->saisie_ects);
-
 		$copyObj->setValeurEcts($this->valeur_ects);
 
-
 		$copyObj->setNew(true);
-
 	}
 
 	/**
@@ -1030,7 +1060,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 	public function getGroupe(PropelPDO $con = null)
 	{
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
-			$this->aGroupe = GroupePeer::retrieveByPK($this->id_groupe, $con);
+			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1079,7 +1109,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 	public function getClasse(PropelPDO $con = null)
 	{
 		if ($this->aClasse === null && ($this->id_classe !== null)) {
-			$this->aClasse = ClassePeer::retrieveByPK($this->id_classe, $con);
+			$this->aClasse = ClasseQuery::create()->findPk($this->id_classe);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1128,7 +1158,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 	public function getCategorieMatiere(PropelPDO $con = null)
 	{
 		if ($this->aCategorieMatiere === null && ($this->categorie_id !== null)) {
-			$this->aCategorieMatiere = CategorieMatierePeer::retrieveByPK($this->categorie_id, $con);
+			$this->aCategorieMatiere = CategorieMatiereQuery::create()->findPk($this->categorie_id);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1138,6 +1168,23 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 			 */
 		}
 		return $this->aCategorieMatiere;
+	}
+
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id_groupe = null;
+		$this->id_classe = null;
+		$this->priorite = null;
+		$this->coef = null;
+		$this->categorie_id = null;
+		$this->saisie_ects = null;
+		$this->valeur_ects = null;
+		$this->clearAllReferences();
+		$this->applyDefaultValues();
+		$this->setNew(true);
 	}
 
 	/**
@@ -1154,9 +1201,20 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent {
 		if ($deep) {
 		} // if ($deep)
 
-			$this->aGroupe = null;
-			$this->aClasse = null;
-			$this->aCategorieMatiere = null;
+		$this->aGroupe = null;
+		$this->aClasse = null;
+		$this->aCategorieMatiere = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseJGroupesClasses

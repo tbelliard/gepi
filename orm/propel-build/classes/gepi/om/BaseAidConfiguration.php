@@ -5,10 +5,15 @@
  *
  * Liste des categories d'AID (Activites inter-Disciplinaires)
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
+abstract class BaseAidConfiguration extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'AidConfigurationPeer';
 
 	/**
 	 * The Peer class.
@@ -129,29 +134,14 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	protected $collAidDetailss;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collAidDetailss.
-	 */
-	private $lastAidDetailsCriteria = null;
-
-	/**
 	 * @var        array JAidUtilisateursProfessionnels[] Collection to store aggregation of JAidUtilisateursProfessionnels objects.
 	 */
 	protected $collJAidUtilisateursProfessionnelss;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collJAidUtilisateursProfessionnelss.
-	 */
-	private $lastJAidUtilisateursProfessionnelsCriteria = null;
-
-	/**
 	 * @var        array JAidEleves[] Collection to store aggregation of JAidEleves objects.
 	 */
 	protected $collJAidElevess;
-
-	/**
-	 * @var        Criteria The criteria used to select the current contents of collJAidElevess.
-	 */
-	private $lastJAidElevesCriteria = null;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -166,16 +156,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Initializes internal state of BaseAidConfiguration object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
 
 	/**
 	 * Applies default values to this object.
@@ -200,6 +180,16 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 		$this->bull_simplifie = 'y';
 		$this->outils_complementaires = 'n';
 		$this->feuille_presence = 'n';
+	}
+
+	/**
+	 * Initializes internal state of BaseAidConfiguration object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
 	}
 
 	/**
@@ -364,7 +354,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->nom !== $v || $v === '') {
+		if ($this->nom !== $v || $this->isNew()) {
 			$this->nom = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::NOM;
 		}
@@ -384,7 +374,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->nom_complet !== $v || $v === '') {
+		if ($this->nom_complet !== $v || $this->isNew()) {
 			$this->nom_complet = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::NOM_COMPLET;
 		}
@@ -404,7 +394,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (int) $v;
 		}
 
-		if ($this->note_max !== $v || $v === 0) {
+		if ($this->note_max !== $v || $this->isNew()) {
 			$this->note_max = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::NOTE_MAX;
 		}
@@ -424,7 +414,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->order_display1 !== $v || $v === '0') {
+		if ($this->order_display1 !== $v || $this->isNew()) {
 			$this->order_display1 = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::ORDER_DISPLAY1;
 		}
@@ -444,7 +434,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (int) $v;
 		}
 
-		if ($this->order_display2 !== $v || $v === 0) {
+		if ($this->order_display2 !== $v || $this->isNew()) {
 			$this->order_display2 = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::ORDER_DISPLAY2;
 		}
@@ -464,7 +454,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->type_note !== $v || $v === '') {
+		if ($this->type_note !== $v || $this->isNew()) {
 			$this->type_note = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::TYPE_NOTE;
 		}
@@ -484,7 +474,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (int) $v;
 		}
 
-		if ($this->display_begin !== $v || $v === 0) {
+		if ($this->display_begin !== $v || $this->isNew()) {
 			$this->display_begin = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::DISPLAY_BEGIN;
 		}
@@ -504,7 +494,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (int) $v;
 		}
 
-		if ($this->display_end !== $v || $v === 0) {
+		if ($this->display_end !== $v || $this->isNew()) {
 			$this->display_end = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::DISPLAY_END;
 		}
@@ -524,7 +514,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->message !== $v || $v === '') {
+		if ($this->message !== $v || $this->isNew()) {
 			$this->message = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::MESSAGE;
 		}
@@ -544,7 +534,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->display_nom !== $v || $v === '') {
+		if ($this->display_nom !== $v || $this->isNew()) {
 			$this->display_nom = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::DISPLAY_NOM;
 		}
@@ -564,7 +554,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (int) $v;
 		}
 
-		if ($this->indice_aid !== $v || $v === 0) {
+		if ($this->indice_aid !== $v || $this->isNew()) {
 			$this->indice_aid = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::INDICE_AID;
 		}
@@ -584,7 +574,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->display_bulletin !== $v || $v === 'y') {
+		if ($this->display_bulletin !== $v || $this->isNew()) {
 			$this->display_bulletin = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::DISPLAY_BULLETIN;
 		}
@@ -604,7 +594,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->bull_simplifie !== $v || $v === 'y') {
+		if ($this->bull_simplifie !== $v || $this->isNew()) {
 			$this->bull_simplifie = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::BULL_SIMPLIFIE;
 		}
@@ -624,7 +614,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->outils_complementaires !== $v || $v === 'n') {
+		if ($this->outils_complementaires !== $v || $this->isNew()) {
 			$this->outils_complementaires = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::OUTILS_COMPLEMENTAIRES;
 		}
@@ -644,7 +634,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->feuille_presence !== $v || $v === 'n') {
+		if ($this->feuille_presence !== $v || $this->isNew()) {
 			$this->feuille_presence = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::FEUILLE_PRESENCE;
 		}
@@ -662,11 +652,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(AidConfigurationPeer::NOM,AidConfigurationPeer::NOM_COMPLET,AidConfigurationPeer::NOTE_MAX,AidConfigurationPeer::ORDER_DISPLAY1,AidConfigurationPeer::ORDER_DISPLAY2,AidConfigurationPeer::TYPE_NOTE,AidConfigurationPeer::DISPLAY_BEGIN,AidConfigurationPeer::DISPLAY_END,AidConfigurationPeer::MESSAGE,AidConfigurationPeer::DISPLAY_NOM,AidConfigurationPeer::INDICE_AID,AidConfigurationPeer::DISPLAY_BULLETIN,AidConfigurationPeer::BULL_SIMPLIFIE,AidConfigurationPeer::OUTILS_COMPLEMENTAIRES,AidConfigurationPeer::FEUILLE_PRESENCE))) {
-				return false;
-			}
-
 			if ($this->nom !== '') {
 				return false;
 			}
@@ -772,7 +757,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 15; // 15 = AidConfigurationPeer::NUM_COLUMNS - AidConfigurationPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -836,13 +820,10 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->collAidDetailss = null;
-			$this->lastAidDetailsCriteria = null;
 
 			$this->collJAidUtilisateursProfessionnelss = null;
-			$this->lastJAidUtilisateursProfessionnelsCriteria = null;
 
 			$this->collJAidElevess = null;
-			$this->lastJAidElevesCriteria = null;
 
 		} // if (deep)
 	}
@@ -868,9 +849,17 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 		
 		$con->beginTransaction();
 		try {
-			AidConfigurationPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				AidConfigurationQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -901,10 +890,27 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				AidConfigurationPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			AidConfigurationPeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -933,14 +939,12 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = AidConfigurationPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
-
+					$criteria = $this->buildCriteria();
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
 					$this->setNew(false);
 				} else {
-					$affectedRows += AidConfigurationPeer::doUpdate($this, $con);
+					$affectedRows = AidConfigurationPeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -1155,10 +1159,12 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
@@ -1335,7 +1341,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(AidConfigurationPeer::DATABASE_NAME);
-
 		$criteria->add(AidConfigurationPeer::INDICE_AID, $this->indice_aid);
 
 		return $criteria;
@@ -1362,6 +1367,15 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getIndiceAid();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -1373,37 +1387,21 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setNom($this->nom);
-
 		$copyObj->setNomComplet($this->nom_complet);
-
 		$copyObj->setNoteMax($this->note_max);
-
 		$copyObj->setOrderDisplay1($this->order_display1);
-
 		$copyObj->setOrderDisplay2($this->order_display2);
-
 		$copyObj->setTypeNote($this->type_note);
-
 		$copyObj->setDisplayBegin($this->display_begin);
-
 		$copyObj->setDisplayEnd($this->display_end);
-
 		$copyObj->setMessage($this->message);
-
 		$copyObj->setDisplayNom($this->display_nom);
-
 		$copyObj->setIndiceAid($this->indice_aid);
-
 		$copyObj->setDisplayBulletin($this->display_bulletin);
-
 		$copyObj->setBullSimplifie($this->bull_simplifie);
-
 		$copyObj->setOutilsComplementaires($this->outils_complementaires);
-
 		$copyObj->setFeuillePresence($this->feuille_presence);
-
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1432,7 +1430,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 
 
 		$copyObj->setNew(true);
-
 	}
 
 	/**
@@ -1474,7 +1471,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Clears out the collAidDetailss collection (array).
+	 * Clears out the collAidDetailss collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1488,7 +1485,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collAidDetailss collection (array).
+	 * Initializes the collAidDetailss collection.
 	 *
 	 * By default this just sets the collAidDetailss collection to an empty array (like clearcollAidDetailss());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1498,59 +1495,40 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function initAidDetailss()
 	{
-		$this->collAidDetailss = array();
+		$this->collAidDetailss = new PropelObjectCollection();
+		$this->collAidDetailss->setModel('AidDetails');
 	}
 
 	/**
 	 * Gets an array of AidDetails objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this AidConfiguration has previously been saved, it will retrieve
-	 * related AidDetailss from storage. If this AidConfiguration is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this AidConfiguration is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array AidDetails[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array AidDetails[] List of AidDetails objects
 	 * @throws     PropelException
 	 */
 	public function getAidDetailss($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AidConfigurationPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collAidDetailss === null) {
-			if ($this->isNew()) {
-			   $this->collAidDetailss = array();
+		if(null === $this->collAidDetailss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAidDetailss) {
+				// return empty collection
+				$this->initAidDetailss();
 			} else {
-
-				$criteria->add(AidDetailsPeer::INDICE_AID, $this->indice_aid);
-
-				AidDetailsPeer::addSelectColumns($criteria);
-				$this->collAidDetailss = AidDetailsPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(AidDetailsPeer::INDICE_AID, $this->indice_aid);
-
-				AidDetailsPeer::addSelectColumns($criteria);
-				if (!isset($this->lastAidDetailsCriteria) || !$this->lastAidDetailsCriteria->equals($criteria)) {
-					$this->collAidDetailss = AidDetailsPeer::doSelect($criteria, $con);
+				$collAidDetailss = AidDetailsQuery::create(null, $criteria)
+					->filterByAidConfiguration($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collAidDetailss;
 				}
+				$this->collAidDetailss = $collAidDetailss;
 			}
 		}
-		$this->lastAidDetailsCriteria = $criteria;
 		return $this->collAidDetailss;
 	}
 
@@ -1565,48 +1543,21 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function countAidDetailss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AidConfigurationPeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collAidDetailss === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collAidDetailss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAidDetailss) {
+				return 0;
 			} else {
-
-				$criteria->add(AidDetailsPeer::INDICE_AID, $this->indice_aid);
-
-				$count = AidDetailsPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(AidDetailsPeer::INDICE_AID, $this->indice_aid);
-
-				if (!isset($this->lastAidDetailsCriteria) || !$this->lastAidDetailsCriteria->equals($criteria)) {
-					$count = AidDetailsPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collAidDetailss);
+				$query = AidDetailsQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collAidDetailss);
+				return $query
+					->filterByAidConfiguration($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collAidDetailss);
 		}
-		$this->lastAidDetailsCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1622,14 +1573,14 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 		if ($this->collAidDetailss === null) {
 			$this->initAidDetailss();
 		}
-		if (!in_array($l, $this->collAidDetailss, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collAidDetailss, $l);
+		if (!$this->collAidDetailss->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collAidDetailss[]= $l;
 			$l->setAidConfiguration($this);
 		}
 	}
 
 	/**
-	 * Clears out the collJAidUtilisateursProfessionnelss collection (array).
+	 * Clears out the collJAidUtilisateursProfessionnelss collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1643,7 +1594,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collJAidUtilisateursProfessionnelss collection (array).
+	 * Initializes the collJAidUtilisateursProfessionnelss collection.
 	 *
 	 * By default this just sets the collJAidUtilisateursProfessionnelss collection to an empty array (like clearcollJAidUtilisateursProfessionnelss());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1653,59 +1604,40 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function initJAidUtilisateursProfessionnelss()
 	{
-		$this->collJAidUtilisateursProfessionnelss = array();
+		$this->collJAidUtilisateursProfessionnelss = new PropelObjectCollection();
+		$this->collJAidUtilisateursProfessionnelss->setModel('JAidUtilisateursProfessionnels');
 	}
 
 	/**
 	 * Gets an array of JAidUtilisateursProfessionnels objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this AidConfiguration has previously been saved, it will retrieve
-	 * related JAidUtilisateursProfessionnelss from storage. If this AidConfiguration is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this AidConfiguration is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array JAidUtilisateursProfessionnels[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array JAidUtilisateursProfessionnels[] List of JAidUtilisateursProfessionnels objects
 	 * @throws     PropelException
 	 */
 	public function getJAidUtilisateursProfessionnelss($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AidConfigurationPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collJAidUtilisateursProfessionnelss === null) {
-			if ($this->isNew()) {
-			   $this->collJAidUtilisateursProfessionnelss = array();
+		if(null === $this->collJAidUtilisateursProfessionnelss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJAidUtilisateursProfessionnelss) {
+				// return empty collection
+				$this->initJAidUtilisateursProfessionnelss();
 			} else {
-
-				$criteria->add(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $this->indice_aid);
-
-				JAidUtilisateursProfessionnelsPeer::addSelectColumns($criteria);
-				$this->collJAidUtilisateursProfessionnelss = JAidUtilisateursProfessionnelsPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $this->indice_aid);
-
-				JAidUtilisateursProfessionnelsPeer::addSelectColumns($criteria);
-				if (!isset($this->lastJAidUtilisateursProfessionnelsCriteria) || !$this->lastJAidUtilisateursProfessionnelsCriteria->equals($criteria)) {
-					$this->collJAidUtilisateursProfessionnelss = JAidUtilisateursProfessionnelsPeer::doSelect($criteria, $con);
+				$collJAidUtilisateursProfessionnelss = JAidUtilisateursProfessionnelsQuery::create(null, $criteria)
+					->filterByAidConfiguration($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJAidUtilisateursProfessionnelss;
 				}
+				$this->collJAidUtilisateursProfessionnelss = $collJAidUtilisateursProfessionnelss;
 			}
 		}
-		$this->lastJAidUtilisateursProfessionnelsCriteria = $criteria;
 		return $this->collJAidUtilisateursProfessionnelss;
 	}
 
@@ -1720,48 +1652,21 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function countJAidUtilisateursProfessionnelss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AidConfigurationPeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collJAidUtilisateursProfessionnelss === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collJAidUtilisateursProfessionnelss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJAidUtilisateursProfessionnelss) {
+				return 0;
 			} else {
-
-				$criteria->add(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $this->indice_aid);
-
-				$count = JAidUtilisateursProfessionnelsPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $this->indice_aid);
-
-				if (!isset($this->lastJAidUtilisateursProfessionnelsCriteria) || !$this->lastJAidUtilisateursProfessionnelsCriteria->equals($criteria)) {
-					$count = JAidUtilisateursProfessionnelsPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collJAidUtilisateursProfessionnelss);
+				$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collJAidUtilisateursProfessionnelss);
+				return $query
+					->filterByAidConfiguration($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collJAidUtilisateursProfessionnelss);
 		}
-		$this->lastJAidUtilisateursProfessionnelsCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1777,8 +1682,8 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 		if ($this->collJAidUtilisateursProfessionnelss === null) {
 			$this->initJAidUtilisateursProfessionnelss();
 		}
-		if (!in_array($l, $this->collJAidUtilisateursProfessionnelss, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collJAidUtilisateursProfessionnelss, $l);
+		if (!$this->collJAidUtilisateursProfessionnelss->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJAidUtilisateursProfessionnelss[]= $l;
 			$l->setAidConfiguration($this);
 		}
 	}
@@ -1797,37 +1702,10 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function getJAidUtilisateursProfessionnelssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AidConfigurationPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
+		$query->joinWith('JAidUtilisateursProfessionnels.AidDetails', $join_behavior);
 
-		if ($this->collJAidUtilisateursProfessionnelss === null) {
-			if ($this->isNew()) {
-				$this->collJAidUtilisateursProfessionnelss = array();
-			} else {
-
-				$criteria->add(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $this->indice_aid);
-
-				$this->collJAidUtilisateursProfessionnelss = JAidUtilisateursProfessionnelsPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $this->indice_aid);
-
-			if (!isset($this->lastJAidUtilisateursProfessionnelsCriteria) || !$this->lastJAidUtilisateursProfessionnelsCriteria->equals($criteria)) {
-				$this->collJAidUtilisateursProfessionnelss = JAidUtilisateursProfessionnelsPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastJAidUtilisateursProfessionnelsCriteria = $criteria;
-
-		return $this->collJAidUtilisateursProfessionnelss;
+		return $this->getJAidUtilisateursProfessionnelss($query, $con);
 	}
 
 
@@ -1844,41 +1722,14 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function getJAidUtilisateursProfessionnelssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AidConfigurationPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
+		$query->joinWith('JAidUtilisateursProfessionnels.UtilisateurProfessionnel', $join_behavior);
 
-		if ($this->collJAidUtilisateursProfessionnelss === null) {
-			if ($this->isNew()) {
-				$this->collJAidUtilisateursProfessionnelss = array();
-			} else {
-
-				$criteria->add(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $this->indice_aid);
-
-				$this->collJAidUtilisateursProfessionnelss = JAidUtilisateursProfessionnelsPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $this->indice_aid);
-
-			if (!isset($this->lastJAidUtilisateursProfessionnelsCriteria) || !$this->lastJAidUtilisateursProfessionnelsCriteria->equals($criteria)) {
-				$this->collJAidUtilisateursProfessionnelss = JAidUtilisateursProfessionnelsPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastJAidUtilisateursProfessionnelsCriteria = $criteria;
-
-		return $this->collJAidUtilisateursProfessionnelss;
+		return $this->getJAidUtilisateursProfessionnelss($query, $con);
 	}
 
 	/**
-	 * Clears out the collJAidElevess collection (array).
+	 * Clears out the collJAidElevess collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1892,7 +1743,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collJAidElevess collection (array).
+	 * Initializes the collJAidElevess collection.
 	 *
 	 * By default this just sets the collJAidElevess collection to an empty array (like clearcollJAidElevess());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1902,59 +1753,40 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function initJAidElevess()
 	{
-		$this->collJAidElevess = array();
+		$this->collJAidElevess = new PropelObjectCollection();
+		$this->collJAidElevess->setModel('JAidEleves');
 	}
 
 	/**
 	 * Gets an array of JAidEleves objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this AidConfiguration has previously been saved, it will retrieve
-	 * related JAidElevess from storage. If this AidConfiguration is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this AidConfiguration is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array JAidEleves[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array JAidEleves[] List of JAidEleves objects
 	 * @throws     PropelException
 	 */
 	public function getJAidElevess($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AidConfigurationPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collJAidElevess === null) {
-			if ($this->isNew()) {
-			   $this->collJAidElevess = array();
+		if(null === $this->collJAidElevess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJAidElevess) {
+				// return empty collection
+				$this->initJAidElevess();
 			} else {
-
-				$criteria->add(JAidElevesPeer::INDICE_AID, $this->indice_aid);
-
-				JAidElevesPeer::addSelectColumns($criteria);
-				$this->collJAidElevess = JAidElevesPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(JAidElevesPeer::INDICE_AID, $this->indice_aid);
-
-				JAidElevesPeer::addSelectColumns($criteria);
-				if (!isset($this->lastJAidElevesCriteria) || !$this->lastJAidElevesCriteria->equals($criteria)) {
-					$this->collJAidElevess = JAidElevesPeer::doSelect($criteria, $con);
+				$collJAidElevess = JAidElevesQuery::create(null, $criteria)
+					->filterByAidConfiguration($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJAidElevess;
 				}
+				$this->collJAidElevess = $collJAidElevess;
 			}
 		}
-		$this->lastJAidElevesCriteria = $criteria;
 		return $this->collJAidElevess;
 	}
 
@@ -1969,48 +1801,21 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function countJAidElevess(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AidConfigurationPeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collJAidElevess === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collJAidElevess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJAidElevess) {
+				return 0;
 			} else {
-
-				$criteria->add(JAidElevesPeer::INDICE_AID, $this->indice_aid);
-
-				$count = JAidElevesPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(JAidElevesPeer::INDICE_AID, $this->indice_aid);
-
-				if (!isset($this->lastJAidElevesCriteria) || !$this->lastJAidElevesCriteria->equals($criteria)) {
-					$count = JAidElevesPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collJAidElevess);
+				$query = JAidElevesQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collJAidElevess);
+				return $query
+					->filterByAidConfiguration($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collJAidElevess);
 		}
-		$this->lastJAidElevesCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -2026,8 +1831,8 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 		if ($this->collJAidElevess === null) {
 			$this->initJAidElevess();
 		}
-		if (!in_array($l, $this->collJAidElevess, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collJAidElevess, $l);
+		if (!$this->collJAidElevess->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJAidElevess[]= $l;
 			$l->setAidConfiguration($this);
 		}
 	}
@@ -2046,37 +1851,10 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function getJAidElevessJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AidConfigurationPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JAidElevesQuery::create(null, $criteria);
+		$query->joinWith('JAidEleves.AidDetails', $join_behavior);
 
-		if ($this->collJAidElevess === null) {
-			if ($this->isNew()) {
-				$this->collJAidElevess = array();
-			} else {
-
-				$criteria->add(JAidElevesPeer::INDICE_AID, $this->indice_aid);
-
-				$this->collJAidElevess = JAidElevesPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JAidElevesPeer::INDICE_AID, $this->indice_aid);
-
-			if (!isset($this->lastJAidElevesCriteria) || !$this->lastJAidElevesCriteria->equals($criteria)) {
-				$this->collJAidElevess = JAidElevesPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastJAidElevesCriteria = $criteria;
-
-		return $this->collJAidElevess;
+		return $this->getJAidElevess($query, $con);
 	}
 
 
@@ -2093,37 +1871,35 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 	 */
 	public function getJAidElevessJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AidConfigurationPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JAidElevesQuery::create(null, $criteria);
+		$query->joinWith('JAidEleves.Eleve', $join_behavior);
 
-		if ($this->collJAidElevess === null) {
-			if ($this->isNew()) {
-				$this->collJAidElevess = array();
-			} else {
+		return $this->getJAidElevess($query, $con);
+	}
 
-				$criteria->add(JAidElevesPeer::INDICE_AID, $this->indice_aid);
-
-				$this->collJAidElevess = JAidElevesPeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JAidElevesPeer::INDICE_AID, $this->indice_aid);
-
-			if (!isset($this->lastJAidElevesCriteria) || !$this->lastJAidElevesCriteria->equals($criteria)) {
-				$this->collJAidElevess = JAidElevesPeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastJAidElevesCriteria = $criteria;
-
-		return $this->collJAidElevess;
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->nom = null;
+		$this->nom_complet = null;
+		$this->note_max = null;
+		$this->order_display1 = null;
+		$this->order_display2 = null;
+		$this->type_note = null;
+		$this->display_begin = null;
+		$this->display_end = null;
+		$this->message = null;
+		$this->display_nom = null;
+		$this->indice_aid = null;
+		$this->display_bulletin = null;
+		$this->bull_simplifie = null;
+		$this->outils_complementaires = null;
+		$this->feuille_presence = null;
+		$this->clearAllReferences();
+		$this->applyDefaultValues();
+		$this->setNew(true);
 	}
 
 	/**
@@ -2158,6 +1934,17 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent {
 		$this->collAidDetailss = null;
 		$this->collJAidUtilisateursProfessionnelss = null;
 		$this->collJAidElevess = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseAidConfiguration

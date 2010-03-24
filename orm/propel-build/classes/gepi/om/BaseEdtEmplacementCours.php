@@ -5,10 +5,15 @@
  *
  * Liste de tous les creneaux de tous les emplois du temps
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent {
+abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'EdtEmplacementCoursPeer';
 
 	/**
 	 * The Peer class.
@@ -126,11 +131,6 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	protected $collAbsenceEleveSaisies;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collAbsenceEleveSaisies.
-	 */
-	private $lastAbsenceEleveSaisieCriteria = null;
-
-	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -143,26 +143,6 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Initializes internal state of BaseEdtEmplacementCours object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
-	 * Applies default values to this object.
-	 * This method should be called from the object's constructor (or
-	 * equivalent initialization method).
-	 * @see        __construct()
-	 */
-	public function applyDefaultValues()
-	{
-	}
 
 	/**
 	 * Get the [id_cours] column value.
@@ -558,11 +538,6 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array())) {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -605,7 +580,6 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 12; // 12 = EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -693,7 +667,6 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 			$this->aEdtCalendrierPeriode = null;
 			$this->aUtilisateurProfessionnel = null;
 			$this->collAbsenceEleveSaisies = null;
-			$this->lastAbsenceEleveSaisieCriteria = null;
 
 		} // if (deep)
 	}
@@ -719,9 +692,17 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		
 		$con->beginTransaction();
 		try {
-			EdtEmplacementCoursPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				EdtEmplacementCoursQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -752,10 +733,27 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				EdtEmplacementCoursPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			EdtEmplacementCoursPeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -831,11 +829,9 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = EdtEmplacementCoursPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
-
+					$criteria = $this->buildCriteria();
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
 					$this->setNew(false);
 				} else {
 					$affectedRows += EdtEmplacementCoursPeer::doUpdate($this, $con);
@@ -1054,12 +1050,15 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
 		$keys = EdtEmplacementCoursPeer::getFieldNames($keyType);
 		$result = array(
@@ -1076,6 +1075,26 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 			$keys[10] => $this->getModifEdt(),
 			$keys[11] => $this->getLoginProf(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aGroupe) {
+				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aAidDetails) {
+				$result['AidDetails'] = $this->aAidDetails->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aEdtSalle) {
+				$result['EdtSalle'] = $this->aEdtSalle->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aEdtCreneau) {
+				$result['EdtCreneau'] = $this->aEdtCreneau->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aEdtCalendrierPeriode) {
+				$result['EdtCalendrierPeriode'] = $this->aEdtCalendrierPeriode->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aUtilisateurProfessionnel) {
+				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -1216,7 +1235,6 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
-
 		$criteria->add(EdtEmplacementCoursPeer::ID_COURS, $this->id_cours);
 
 		return $criteria;
@@ -1243,6 +1261,15 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getIdCours();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -1254,31 +1281,18 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setIdCours($this->id_cours);
-
 		$copyObj->setIdGroupe($this->id_groupe);
-
 		$copyObj->setIdAid($this->id_aid);
-
 		$copyObj->setIdSalle($this->id_salle);
-
 		$copyObj->setJourSemaine($this->jour_semaine);
-
 		$copyObj->setIdDefiniePeriode($this->id_definie_periode);
-
 		$copyObj->setDuree($this->duree);
-
 		$copyObj->setHeuredebDec($this->heuredeb_dec);
-
 		$copyObj->setIdSemaine($this->id_semaine);
-
 		$copyObj->setIdCalendrier($this->id_calendrier);
-
 		$copyObj->setModifEdt($this->modif_edt);
-
 		$copyObj->setLoginProf($this->login_prof);
-
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1295,7 +1309,6 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 
 		$copyObj->setNew(true);
-
 	}
 
 	/**
@@ -1373,7 +1386,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getGroupe(PropelPDO $con = null)
 	{
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
-			$this->aGroupe = GroupePeer::retrieveByPK($this->id_groupe, $con);
+			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1422,7 +1435,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getAidDetails(PropelPDO $con = null)
 	{
 		if ($this->aAidDetails === null && ($this->id_aid !== null)) {
-			$this->aAidDetails = AidDetailsPeer::retrieveByPK($this->id_aid, $con);
+			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1471,7 +1484,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getEdtSalle(PropelPDO $con = null)
 	{
 		if ($this->aEdtSalle === null && ($this->id_salle !== null)) {
-			$this->aEdtSalle = EdtSallePeer::retrieveByPK($this->id_salle, $con);
+			$this->aEdtSalle = EdtSalleQuery::create()->findPk($this->id_salle);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1520,7 +1533,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getEdtCreneau(PropelPDO $con = null)
 	{
 		if ($this->aEdtCreneau === null && (($this->id_definie_periode !== "" && $this->id_definie_periode !== null))) {
-			$this->aEdtCreneau = EdtCreneauPeer::retrieveByPK($this->id_definie_periode, $con);
+			$this->aEdtCreneau = EdtCreneauQuery::create()->findPk($this->id_definie_periode);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1569,7 +1582,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getEdtCalendrierPeriode(PropelPDO $con = null)
 	{
 		if ($this->aEdtCalendrierPeriode === null && (($this->id_calendrier !== "" && $this->id_calendrier !== null))) {
-			$this->aEdtCalendrierPeriode = EdtCalendrierPeriodePeer::retrieveByPK($this->id_calendrier, $con);
+			$this->aEdtCalendrierPeriode = EdtCalendrierPeriodeQuery::create()->findPk($this->id_calendrier);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1618,7 +1631,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getUtilisateurProfessionnel(PropelPDO $con = null)
 	{
 		if ($this->aUtilisateurProfessionnel === null && (($this->login_prof !== "" && $this->login_prof !== null))) {
-			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelPeer::retrieveByPK($this->login_prof, $con);
+			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->login_prof);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1631,7 +1644,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Clears out the collAbsenceEleveSaisies collection (array).
+	 * Clears out the collAbsenceEleveSaisies collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1645,7 +1658,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Initializes the collAbsenceEleveSaisies collection (array).
+	 * Initializes the collAbsenceEleveSaisies collection.
 	 *
 	 * By default this just sets the collAbsenceEleveSaisies collection to an empty array (like clearcollAbsenceEleveSaisies());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1655,59 +1668,40 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function initAbsenceEleveSaisies()
 	{
-		$this->collAbsenceEleveSaisies = array();
+		$this->collAbsenceEleveSaisies = new PropelObjectCollection();
+		$this->collAbsenceEleveSaisies->setModel('AbsenceEleveSaisie');
 	}
 
 	/**
 	 * Gets an array of AbsenceEleveSaisie objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this EdtEmplacementCours has previously been saved, it will retrieve
-	 * related AbsenceEleveSaisies from storage. If this EdtEmplacementCours is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this EdtEmplacementCours is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array AbsenceEleveSaisie[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 * @throws     PropelException
 	 */
 	public function getAbsenceEleveSaisies($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collAbsenceEleveSaisies === null) {
-			if ($this->isNew()) {
-			   $this->collAbsenceEleveSaisies = array();
+		if(null === $this->collAbsenceEleveSaisies || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveSaisies) {
+				// return empty collection
+				$this->initAbsenceEleveSaisies();
 			} else {
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_cours);
-
-				AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_cours);
-
-				AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-				if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
-					$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelect($criteria, $con);
+				$collAbsenceEleveSaisies = AbsenceEleveSaisieQuery::create(null, $criteria)
+					->filterByEdtEmplacementCours($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collAbsenceEleveSaisies;
 				}
+				$this->collAbsenceEleveSaisies = $collAbsenceEleveSaisies;
 			}
 		}
-		$this->lastAbsenceEleveSaisieCriteria = $criteria;
 		return $this->collAbsenceEleveSaisies;
 	}
 
@@ -1722,48 +1716,21 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function countAbsenceEleveSaisies(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collAbsenceEleveSaisies === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collAbsenceEleveSaisies || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveSaisies) {
+				return 0;
 			} else {
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_cours);
-
-				$count = AbsenceEleveSaisiePeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_cours);
-
-				if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
-					$count = AbsenceEleveSaisiePeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collAbsenceEleveSaisies);
+				$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collAbsenceEleveSaisies);
+				return $query
+					->filterByEdtEmplacementCours($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collAbsenceEleveSaisies);
 		}
-		$this->lastAbsenceEleveSaisieCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1779,8 +1746,8 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->collAbsenceEleveSaisies === null) {
 			$this->initAbsenceEleveSaisies();
 		}
-		if (!in_array($l, $this->collAbsenceEleveSaisies, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collAbsenceEleveSaisies, $l);
+		if (!$this->collAbsenceEleveSaisies->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collAbsenceEleveSaisies[]= $l;
 			$l->setEdtEmplacementCours($this);
 		}
 	}
@@ -1799,37 +1766,10 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function getAbsenceEleveSaisiesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveSaisie.UtilisateurProfessionnel', $join_behavior);
 
-		if ($this->collAbsenceEleveSaisies === null) {
-			if ($this->isNew()) {
-				$this->collAbsenceEleveSaisies = array();
-			} else {
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_cours);
-
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_cours);
-
-			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastAbsenceEleveSaisieCriteria = $criteria;
-
-		return $this->collAbsenceEleveSaisies;
+		return $this->getAbsenceEleveSaisies($query, $con);
 	}
 
 
@@ -1846,37 +1786,10 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function getAbsenceEleveSaisiesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveSaisie.Eleve', $join_behavior);
 
-		if ($this->collAbsenceEleveSaisies === null) {
-			if ($this->isNew()) {
-				$this->collAbsenceEleveSaisies = array();
-			} else {
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_cours);
-
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_cours);
-
-			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastAbsenceEleveSaisieCriteria = $criteria;
-
-		return $this->collAbsenceEleveSaisies;
+		return $this->getAbsenceEleveSaisies($query, $con);
 	}
 
 
@@ -1893,37 +1806,31 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function getAbsenceEleveSaisiesJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveSaisie.EdtCreneau', $join_behavior);
 
-		if ($this->collAbsenceEleveSaisies === null) {
-			if ($this->isNew()) {
-				$this->collAbsenceEleveSaisies = array();
-			} else {
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
 
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_cours);
-
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_cours);
-
-			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastAbsenceEleveSaisieCriteria = $criteria;
-
-		return $this->collAbsenceEleveSaisies;
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id_cours = null;
+		$this->id_groupe = null;
+		$this->id_aid = null;
+		$this->id_salle = null;
+		$this->jour_semaine = null;
+		$this->id_definie_periode = null;
+		$this->duree = null;
+		$this->heuredeb_dec = null;
+		$this->id_semaine = null;
+		$this->id_calendrier = null;
+		$this->modif_edt = null;
+		$this->login_prof = null;
+		$this->clearAllReferences();
+		$this->setNew(true);
 	}
 
 	/**
@@ -1946,12 +1853,23 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		} // if ($deep)
 
 		$this->collAbsenceEleveSaisies = null;
-			$this->aGroupe = null;
-			$this->aAidDetails = null;
-			$this->aEdtSalle = null;
-			$this->aEdtCreneau = null;
-			$this->aEdtCalendrierPeriode = null;
-			$this->aUtilisateurProfessionnel = null;
+		$this->aGroupe = null;
+		$this->aAidDetails = null;
+		$this->aEdtSalle = null;
+		$this->aEdtCreneau = null;
+		$this->aEdtCalendrierPeriode = null;
+		$this->aUtilisateurProfessionnel = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseEdtEmplacementCours

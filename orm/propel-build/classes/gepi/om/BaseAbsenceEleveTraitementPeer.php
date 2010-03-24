@@ -5,7 +5,7 @@
  *
  * Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseAbsenceEleveTraitementPeer {
 
@@ -15,11 +15,17 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'a_traitements';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'AbsenceEleveTraitement';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.AbsenceEleveTraitement';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'AbsenceEleveTraitementTableMap';
+	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 8;
+	const NUM_COLUMNS = 10;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -48,6 +54,12 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/** the column name for the COMMENTAIRE field */
 	const COMMENTAIRE = 'a_traitements.COMMENTAIRE';
 
+	/** the column name for the CREATED_AT field */
+	const CREATED_AT = 'a_traitements.CREATED_AT';
+
+	/** the column name for the UPDATED_AT field */
+	const UPDATED_AT = 'a_traitements.UPDATED_AT';
+
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveTraitement objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -56,11 +68,6 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -69,11 +76,12 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'ATypeId', 'AMotifId', 'AJustificationId', 'TexteJustification', 'AActionId', 'Commentaire', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'aTypeId', 'aMotifId', 'aJustificationId', 'texteJustification', 'aActionId', 'commentaire', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::A_TYPE_ID, self::A_MOTIF_ID, self::A_JUSTIFICATION_ID, self::TEXTE_JUSTIFICATION, self::A_ACTION_ID, self::COMMENTAIRE, ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'a_type_id', 'a_motif_id', 'a_justification_id', 'texte_justification', 'a_action_id', 'commentaire', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'ATypeId', 'AMotifId', 'AJustificationId', 'TexteJustification', 'AActionId', 'Commentaire', 'CreatedAt', 'UpdatedAt', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'aTypeId', 'aMotifId', 'aJustificationId', 'texteJustification', 'aActionId', 'commentaire', 'createdAt', 'updatedAt', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::A_TYPE_ID, self::A_MOTIF_ID, self::A_JUSTIFICATION_ID, self::TEXTE_JUSTIFICATION, self::A_ACTION_ID, self::COMMENTAIRE, self::CREATED_AT, self::UPDATED_AT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'UTILISATEUR_ID', 'A_TYPE_ID', 'A_MOTIF_ID', 'A_JUSTIFICATION_ID', 'TEXTE_JUSTIFICATION', 'A_ACTION_ID', 'COMMENTAIRE', 'CREATED_AT', 'UPDATED_AT', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'a_type_id', 'a_motif_id', 'a_justification_id', 'texte_justification', 'a_action_id', 'commentaire', 'created_at', 'updated_at', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
 	);
 
 	/**
@@ -83,24 +91,14 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'ATypeId' => 2, 'AMotifId' => 3, 'AJustificationId' => 4, 'TexteJustification' => 5, 'AActionId' => 6, 'Commentaire' => 7, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'aTypeId' => 2, 'aMotifId' => 3, 'aJustificationId' => 4, 'texteJustification' => 5, 'aActionId' => 6, 'commentaire' => 7, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::A_TYPE_ID => 2, self::A_MOTIF_ID => 3, self::A_JUSTIFICATION_ID => 4, self::TEXTE_JUSTIFICATION => 5, self::A_ACTION_ID => 6, self::COMMENTAIRE => 7, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'a_type_id' => 2, 'a_motif_id' => 3, 'a_justification_id' => 4, 'texte_justification' => 5, 'a_action_id' => 6, 'commentaire' => 7, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'ATypeId' => 2, 'AMotifId' => 3, 'AJustificationId' => 4, 'TexteJustification' => 5, 'AActionId' => 6, 'Commentaire' => 7, 'CreatedAt' => 8, 'UpdatedAt' => 9, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'aTypeId' => 2, 'aMotifId' => 3, 'aJustificationId' => 4, 'texteJustification' => 5, 'aActionId' => 6, 'commentaire' => 7, 'createdAt' => 8, 'updatedAt' => 9, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::A_TYPE_ID => 2, self::A_MOTIF_ID => 3, self::A_JUSTIFICATION_ID => 4, self::TEXTE_JUSTIFICATION => 5, self::A_ACTION_ID => 6, self::COMMENTAIRE => 7, self::CREATED_AT => 8, self::UPDATED_AT => 9, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'UTILISATEUR_ID' => 1, 'A_TYPE_ID' => 2, 'A_MOTIF_ID' => 3, 'A_JUSTIFICATION_ID' => 4, 'TEXTE_JUSTIFICATION' => 5, 'A_ACTION_ID' => 6, 'COMMENTAIRE' => 7, 'CREATED_AT' => 8, 'UPDATED_AT' => 9, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'a_type_id' => 2, 'a_motif_id' => 3, 'a_justification_id' => 4, 'texte_justification' => 5, 'a_action_id' => 6, 'commentaire' => 7, 'created_at' => 8, 'updated_at' => 9, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new AbsenceEleveTraitementMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -162,29 +160,36 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(AbsenceEleveTraitementPeer::ID);
-
-		$criteria->addSelectColumn(AbsenceEleveTraitementPeer::UTILISATEUR_ID);
-
-		$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_TYPE_ID);
-
-		$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_MOTIF_ID);
-
-		$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID);
-
-		$criteria->addSelectColumn(AbsenceEleveTraitementPeer::TEXTE_JUSTIFICATION);
-
-		$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_ACTION_ID);
-
-		$criteria->addSelectColumn(AbsenceEleveTraitementPeer::COMMENTAIRE);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::ID);
+			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::UTILISATEUR_ID);
+			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_TYPE_ID);
+			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_MOTIF_ID);
+			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID);
+			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::TEXTE_JUSTIFICATION);
+			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_ACTION_ID);
+			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::COMMENTAIRE);
+			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::CREATED_AT);
+			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::UPDATED_AT);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.UTILISATEUR_ID');
+			$criteria->addSelectColumn($alias . '.A_TYPE_ID');
+			$criteria->addSelectColumn($alias . '.A_MOTIF_ID');
+			$criteria->addSelectColumn($alias . '.A_JUSTIFICATION_ID');
+			$criteria->addSelectColumn($alias . '.TEXTE_JUSTIFICATION');
+			$criteria->addSelectColumn($alias . '.A_ACTION_ID');
+			$criteria->addSelectColumn($alias . '.COMMENTAIRE');
+			$criteria->addSelectColumn($alias . '.CREATED_AT');
+			$criteria->addSelectColumn($alias . '.UPDATED_AT');
+		}
 	}
 
 	/**
@@ -372,6 +377,20 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to a_traitements
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in JTraitementSaisieElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JTraitementSaisieElevePeer::clearInstancePool();
+
+		// invalidate objects in JTraitementEnvoiElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JTraitementEnvoiElevePeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -384,12 +403,26 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -402,8 +435,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = AbsenceEleveTraitementPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = AbsenceEleveTraitementPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -413,7 +445,6 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -423,11 +454,36 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (AbsenceEleveTraitement object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = AbsenceEleveTraitementPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = AbsenceEleveTraitementPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + AbsenceEleveTraitementPeer::NUM_COLUMNS;
+		} else {
+			$cls = AbsenceEleveTraitementPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			AbsenceEleveTraitementPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -460,7 +516,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -476,7 +533,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related AbsenceEleveType table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -509,7 +566,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -525,7 +583,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related AbsenceEleveMotif table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -558,7 +616,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -574,7 +633,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related AbsenceEleveJustification table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -607,7 +666,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -623,7 +683,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related AbsenceEleveAction table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -656,7 +716,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -671,28 +732,29 @@ abstract class BaseAbsenceEleveTraitementPeer {
 
 	/**
 	 * Selects a collection of AbsenceEleveTraitement objects pre-filled with their UtilisateurProfessionnel objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveTraitement objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinUtilisateurProfessionnel(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveTraitementPeer::addSelectColumns($c);
+		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		$startcol = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -703,9 +765,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = AbsenceEleveTraitementPeer::getOMClass();
+				$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveTraitementPeer::addInstanceToPool($obj1, $key1);
@@ -716,9 +777,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = UtilisateurProfessionnelPeer::getOMClass();
+					$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -738,28 +798,29 @@ abstract class BaseAbsenceEleveTraitementPeer {
 
 	/**
 	 * Selects a collection of AbsenceEleveTraitement objects pre-filled with their AbsenceEleveType objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveTraitement objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAbsenceEleveType(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAbsenceEleveType(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveTraitementPeer::addSelectColumns($c);
+		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		$startcol = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
-		AbsenceEleveTypePeer::addSelectColumns($c);
+		AbsenceEleveTypePeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -770,9 +831,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = AbsenceEleveTraitementPeer::getOMClass();
+				$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveTraitementPeer::addInstanceToPool($obj1, $key1);
@@ -783,9 +843,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				$obj2 = AbsenceEleveTypePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = AbsenceEleveTypePeer::getOMClass();
+					$cls = AbsenceEleveTypePeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					AbsenceEleveTypePeer::addInstanceToPool($obj2, $key2);
@@ -805,28 +864,29 @@ abstract class BaseAbsenceEleveTraitementPeer {
 
 	/**
 	 * Selects a collection of AbsenceEleveTraitement objects pre-filled with their AbsenceEleveMotif objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveTraitement objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAbsenceEleveMotif(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAbsenceEleveMotif(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveTraitementPeer::addSelectColumns($c);
+		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		$startcol = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
-		AbsenceEleveMotifPeer::addSelectColumns($c);
+		AbsenceEleveMotifPeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -837,9 +897,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = AbsenceEleveTraitementPeer::getOMClass();
+				$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveTraitementPeer::addInstanceToPool($obj1, $key1);
@@ -850,9 +909,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				$obj2 = AbsenceEleveMotifPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = AbsenceEleveMotifPeer::getOMClass();
+					$cls = AbsenceEleveMotifPeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					AbsenceEleveMotifPeer::addInstanceToPool($obj2, $key2);
@@ -872,28 +930,29 @@ abstract class BaseAbsenceEleveTraitementPeer {
 
 	/**
 	 * Selects a collection of AbsenceEleveTraitement objects pre-filled with their AbsenceEleveJustification objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveTraitement objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAbsenceEleveJustification(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAbsenceEleveJustification(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveTraitementPeer::addSelectColumns($c);
+		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		$startcol = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
-		AbsenceEleveJustificationPeer::addSelectColumns($c);
+		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -904,9 +963,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = AbsenceEleveTraitementPeer::getOMClass();
+				$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveTraitementPeer::addInstanceToPool($obj1, $key1);
@@ -917,9 +975,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				$obj2 = AbsenceEleveJustificationPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = AbsenceEleveJustificationPeer::getOMClass();
+					$cls = AbsenceEleveJustificationPeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					AbsenceEleveJustificationPeer::addInstanceToPool($obj2, $key2);
@@ -939,28 +996,29 @@ abstract class BaseAbsenceEleveTraitementPeer {
 
 	/**
 	 * Selects a collection of AbsenceEleveTraitement objects pre-filled with their AbsenceEleveAction objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveTraitement objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAbsenceEleveAction(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAbsenceEleveAction(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveTraitementPeer::addSelectColumns($c);
+		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		$startcol = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
-		AbsenceEleveActionPeer::addSelectColumns($c);
+		AbsenceEleveActionPeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -971,9 +1029,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = AbsenceEleveTraitementPeer::getOMClass();
+				$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveTraitementPeer::addInstanceToPool($obj1, $key1);
@@ -984,9 +1041,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				$obj2 = AbsenceEleveActionPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = AbsenceEleveActionPeer::getOMClass();
+					$cls = AbsenceEleveActionPeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					AbsenceEleveActionPeer::addInstanceToPool($obj2, $key2);
@@ -1007,7 +1063,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -1040,11 +1096,16 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
-		$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
-		$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
-		$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1059,46 +1120,51 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Selects a collection of AbsenceEleveTraitement objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveTraitement objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveTraitementPeer::addSelectColumns($c);
+		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveTypePeer::addSelectColumns($c);
+		AbsenceEleveTypePeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveMotifPeer::addSelectColumns($c);
+		AbsenceEleveMotifPeer::addSelectColumns($criteria);
 		$startcol5 = $startcol4 + (AbsenceEleveMotifPeer::NUM_COLUMNS - AbsenceEleveMotifPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveJustificationPeer::addSelectColumns($c);
+		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
 		$startcol6 = $startcol5 + (AbsenceEleveJustificationPeer::NUM_COLUMNS - AbsenceEleveJustificationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveActionPeer::addSelectColumns($c);
+		AbsenceEleveActionPeer::addSelectColumns($criteria);
 		$startcol7 = $startcol6 + (AbsenceEleveActionPeer::NUM_COLUMNS - AbsenceEleveActionPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$c->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
-		$c->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
-		$c->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
-		$c->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1108,9 +1174,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = AbsenceEleveTraitementPeer::getOMClass();
+				$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveTraitementPeer::addInstanceToPool($obj1, $key1);
@@ -1123,10 +1188,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = UtilisateurProfessionnelPeer::getOMClass();
+					$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -1143,10 +1206,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				$obj3 = AbsenceEleveTypePeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$omClass = AbsenceEleveTypePeer::getOMClass();
+					$cls = AbsenceEleveTypePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					AbsenceEleveTypePeer::addInstanceToPool($obj3, $key3);
@@ -1163,10 +1224,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				$obj4 = AbsenceEleveMotifPeer::getInstanceFromPool($key4);
 				if (!$obj4) {
 
-					$omClass = AbsenceEleveMotifPeer::getOMClass();
+					$cls = AbsenceEleveMotifPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
 					AbsenceEleveMotifPeer::addInstanceToPool($obj4, $key4);
@@ -1183,10 +1242,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				$obj5 = AbsenceEleveJustificationPeer::getInstanceFromPool($key5);
 				if (!$obj5) {
 
-					$omClass = AbsenceEleveJustificationPeer::getOMClass();
+					$cls = AbsenceEleveJustificationPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
 					AbsenceEleveJustificationPeer::addInstanceToPool($obj5, $key5);
@@ -1203,10 +1260,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				$obj6 = AbsenceEleveActionPeer::getInstanceFromPool($key6);
 				if (!$obj6) {
 
-					$omClass = AbsenceEleveActionPeer::getOMClass();
+					$cls = AbsenceEleveActionPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj6 = new $cls();
 					$obj6->hydrate($row, $startcol6);
 					AbsenceEleveActionPeer::addInstanceToPool($obj6, $key6);
@@ -1226,7 +1281,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -1259,10 +1314,14 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1278,7 +1337,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related AbsenceEleveType table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -1311,10 +1370,14 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1330,7 +1393,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related AbsenceEleveMotif table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -1363,10 +1426,14 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1382,7 +1449,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related AbsenceEleveJustification table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -1415,10 +1482,14 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1434,7 +1505,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related AbsenceEleveAction table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -1467,10 +1538,14 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
-				$criteria->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1486,45 +1561,49 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Selects a collection of AbsenceEleveTraitement objects pre-filled with all related objects except UtilisateurProfessionnel.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveTraitement objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptUtilisateurProfessionnel(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveTraitementPeer::addSelectColumns($c);
+		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveTypePeer::addSelectColumns($c);
+		AbsenceEleveTypePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveMotifPeer::addSelectColumns($c);
+		AbsenceEleveMotifPeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (AbsenceEleveMotifPeer::NUM_COLUMNS - AbsenceEleveMotifPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveJustificationPeer::addSelectColumns($c);
+		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
 		$startcol5 = $startcol4 + (AbsenceEleveJustificationPeer::NUM_COLUMNS - AbsenceEleveJustificationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveActionPeer::addSelectColumns($c);
+		AbsenceEleveActionPeer::addSelectColumns($criteria);
 		$startcol6 = $startcol5 + (AbsenceEleveActionPeer::NUM_COLUMNS - AbsenceEleveActionPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1534,9 +1613,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = AbsenceEleveTraitementPeer::getOMClass();
+				$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveTraitementPeer::addInstanceToPool($obj1, $key1);
@@ -1549,10 +1627,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj2 = AbsenceEleveTypePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = AbsenceEleveTypePeer::getOMClass();
+						$cls = AbsenceEleveTypePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					AbsenceEleveTypePeer::addInstanceToPool($obj2, $key2);
@@ -1570,10 +1646,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj3 = AbsenceEleveMotifPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = AbsenceEleveMotifPeer::getOMClass();
+						$cls = AbsenceEleveMotifPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					AbsenceEleveMotifPeer::addInstanceToPool($obj3, $key3);
@@ -1591,10 +1665,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj4 = AbsenceEleveJustificationPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$omClass = AbsenceEleveJustificationPeer::getOMClass();
+						$cls = AbsenceEleveJustificationPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
 					AbsenceEleveJustificationPeer::addInstanceToPool($obj4, $key4);
@@ -1612,10 +1684,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj5 = AbsenceEleveActionPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$omClass = AbsenceEleveActionPeer::getOMClass();
+						$cls = AbsenceEleveActionPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
 					AbsenceEleveActionPeer::addInstanceToPool($obj5, $key5);
@@ -1636,45 +1706,49 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Selects a collection of AbsenceEleveTraitement objects pre-filled with all related objects except AbsenceEleveType.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveTraitement objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptAbsenceEleveType(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptAbsenceEleveType(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveTraitementPeer::addSelectColumns($c);
+		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveMotifPeer::addSelectColumns($c);
+		AbsenceEleveMotifPeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (AbsenceEleveMotifPeer::NUM_COLUMNS - AbsenceEleveMotifPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveJustificationPeer::addSelectColumns($c);
+		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
 		$startcol5 = $startcol4 + (AbsenceEleveJustificationPeer::NUM_COLUMNS - AbsenceEleveJustificationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveActionPeer::addSelectColumns($c);
+		AbsenceEleveActionPeer::addSelectColumns($criteria);
 		$startcol6 = $startcol5 + (AbsenceEleveActionPeer::NUM_COLUMNS - AbsenceEleveActionPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1684,9 +1758,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = AbsenceEleveTraitementPeer::getOMClass();
+				$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveTraitementPeer::addInstanceToPool($obj1, $key1);
@@ -1699,10 +1772,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -1720,10 +1791,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj3 = AbsenceEleveMotifPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = AbsenceEleveMotifPeer::getOMClass();
+						$cls = AbsenceEleveMotifPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					AbsenceEleveMotifPeer::addInstanceToPool($obj3, $key3);
@@ -1741,10 +1810,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj4 = AbsenceEleveJustificationPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$omClass = AbsenceEleveJustificationPeer::getOMClass();
+						$cls = AbsenceEleveJustificationPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
 					AbsenceEleveJustificationPeer::addInstanceToPool($obj4, $key4);
@@ -1762,10 +1829,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj5 = AbsenceEleveActionPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$omClass = AbsenceEleveActionPeer::getOMClass();
+						$cls = AbsenceEleveActionPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
 					AbsenceEleveActionPeer::addInstanceToPool($obj5, $key5);
@@ -1786,45 +1851,49 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Selects a collection of AbsenceEleveTraitement objects pre-filled with all related objects except AbsenceEleveMotif.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveTraitement objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptAbsenceEleveMotif(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptAbsenceEleveMotif(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveTraitementPeer::addSelectColumns($c);
+		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveTypePeer::addSelectColumns($c);
+		AbsenceEleveTypePeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveJustificationPeer::addSelectColumns($c);
+		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
 		$startcol5 = $startcol4 + (AbsenceEleveJustificationPeer::NUM_COLUMNS - AbsenceEleveJustificationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveActionPeer::addSelectColumns($c);
+		AbsenceEleveActionPeer::addSelectColumns($criteria);
 		$startcol6 = $startcol5 + (AbsenceEleveActionPeer::NUM_COLUMNS - AbsenceEleveActionPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1834,9 +1903,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = AbsenceEleveTraitementPeer::getOMClass();
+				$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveTraitementPeer::addInstanceToPool($obj1, $key1);
@@ -1849,10 +1917,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -1870,10 +1936,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj3 = AbsenceEleveTypePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = AbsenceEleveTypePeer::getOMClass();
+						$cls = AbsenceEleveTypePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					AbsenceEleveTypePeer::addInstanceToPool($obj3, $key3);
@@ -1891,10 +1955,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj4 = AbsenceEleveJustificationPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$omClass = AbsenceEleveJustificationPeer::getOMClass();
+						$cls = AbsenceEleveJustificationPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
 					AbsenceEleveJustificationPeer::addInstanceToPool($obj4, $key4);
@@ -1912,10 +1974,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj5 = AbsenceEleveActionPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$omClass = AbsenceEleveActionPeer::getOMClass();
+						$cls = AbsenceEleveActionPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
 					AbsenceEleveActionPeer::addInstanceToPool($obj5, $key5);
@@ -1936,45 +1996,49 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Selects a collection of AbsenceEleveTraitement objects pre-filled with all related objects except AbsenceEleveJustification.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveTraitement objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptAbsenceEleveJustification(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptAbsenceEleveJustification(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveTraitementPeer::addSelectColumns($c);
+		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveTypePeer::addSelectColumns($c);
+		AbsenceEleveTypePeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveMotifPeer::addSelectColumns($c);
+		AbsenceEleveMotifPeer::addSelectColumns($criteria);
 		$startcol5 = $startcol4 + (AbsenceEleveMotifPeer::NUM_COLUMNS - AbsenceEleveMotifPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveActionPeer::addSelectColumns($c);
+		AbsenceEleveActionPeer::addSelectColumns($criteria);
 		$startcol6 = $startcol5 + (AbsenceEleveActionPeer::NUM_COLUMNS - AbsenceEleveActionPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_ACTION_ID,), array(AbsenceEleveActionPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_ACTION_ID, AbsenceEleveActionPeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1984,9 +2048,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = AbsenceEleveTraitementPeer::getOMClass();
+				$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveTraitementPeer::addInstanceToPool($obj1, $key1);
@@ -1999,10 +2062,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -2020,10 +2081,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj3 = AbsenceEleveTypePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = AbsenceEleveTypePeer::getOMClass();
+						$cls = AbsenceEleveTypePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					AbsenceEleveTypePeer::addInstanceToPool($obj3, $key3);
@@ -2041,10 +2100,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj4 = AbsenceEleveMotifPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$omClass = AbsenceEleveMotifPeer::getOMClass();
+						$cls = AbsenceEleveMotifPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
 					AbsenceEleveMotifPeer::addInstanceToPool($obj4, $key4);
@@ -2062,10 +2119,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj5 = AbsenceEleveActionPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$omClass = AbsenceEleveActionPeer::getOMClass();
+						$cls = AbsenceEleveActionPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
 					AbsenceEleveActionPeer::addInstanceToPool($obj5, $key5);
@@ -2086,45 +2141,49 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/**
 	 * Selects a collection of AbsenceEleveTraitement objects pre-filled with all related objects except AbsenceEleveAction.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveTraitement objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptAbsenceEleveAction(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptAbsenceEleveAction(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveTraitementPeer::addSelectColumns($c);
+		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveTypePeer::addSelectColumns($c);
+		AbsenceEleveTypePeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveMotifPeer::addSelectColumns($c);
+		AbsenceEleveMotifPeer::addSelectColumns($criteria);
 		$startcol5 = $startcol4 + (AbsenceEleveMotifPeer::NUM_COLUMNS - AbsenceEleveMotifPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveJustificationPeer::addSelectColumns($c);
+		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
 		$startcol6 = $startcol5 + (AbsenceEleveJustificationPeer::NUM_COLUMNS - AbsenceEleveJustificationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(AbsenceEleveTraitementPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_TYPE_ID,), array(AbsenceEleveTypePeer::ID,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_MOTIF_ID,), array(AbsenceEleveMotifPeer::ID,), $join_behavior);
-				$c->addJoin(array(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID,), array(AbsenceEleveJustificationPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -2134,9 +2193,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = AbsenceEleveTraitementPeer::getOMClass();
+				$cls = AbsenceEleveTraitementPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveTraitementPeer::addInstanceToPool($obj1, $key1);
@@ -2149,10 +2207,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -2170,10 +2226,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj3 = AbsenceEleveTypePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = AbsenceEleveTypePeer::getOMClass();
+						$cls = AbsenceEleveTypePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					AbsenceEleveTypePeer::addInstanceToPool($obj3, $key3);
@@ -2191,10 +2245,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj4 = AbsenceEleveMotifPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$omClass = AbsenceEleveMotifPeer::getOMClass();
+						$cls = AbsenceEleveMotifPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
 					AbsenceEleveMotifPeer::addInstanceToPool($obj4, $key4);
@@ -2212,10 +2264,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 					$obj5 = AbsenceEleveJustificationPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$omClass = AbsenceEleveJustificationPeer::getOMClass();
+						$cls = AbsenceEleveJustificationPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
 					AbsenceEleveJustificationPeer::addInstanceToPool($obj5, $key5);
@@ -2245,17 +2295,31 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseAbsenceEleveTraitementPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseAbsenceEleveTraitementPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new AbsenceEleveTraitementTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return AbsenceEleveTraitementPeer::CLASS_DEFAULT;
+		return $withPrefix ? AbsenceEleveTraitementPeer::CLASS_DEFAULT : AbsenceEleveTraitementPeer::OM_CLASS;
 	}
 
 	/**
@@ -2322,7 +2386,12 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(AbsenceEleveTraitementPeer::ID);
-			$selectCriteria->add(AbsenceEleveTraitementPeer::ID, $criteria->remove(AbsenceEleveTraitementPeer::ID), $comparison);
+			$value = $criteria->remove(AbsenceEleveTraitementPeer::ID);
+			if ($value) {
+				$selectCriteria->add(AbsenceEleveTraitementPeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(AbsenceEleveTraitementPeer::TABLE_NAME);
+			}
 
 		} else { // $values is AbsenceEleveTraitement object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -2352,6 +2421,11 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con->beginTransaction();
 			AbsenceEleveTraitementPeer::doOnDeleteSetNull(new Criteria(AbsenceEleveTraitementPeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(AbsenceEleveTraitementPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			AbsenceEleveTraitementPeer::clearInstancePool();
+			AbsenceEleveTraitementPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -2378,30 +2452,14 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			AbsenceEleveTraitementPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof AbsenceEleveTraitement) {
-			// invalidate the cache for this single object
-			AbsenceEleveTraitementPeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof AbsenceEleveTraitement) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(AbsenceEleveTraitementPeer::ID, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				AbsenceEleveTraitementPeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -2415,23 +2473,21 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$con->beginTransaction();
 			AbsenceEleveTraitementPeer::doOnDeleteSetNull($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					AbsenceEleveTraitementPeer::clearInstancePool();
-				} else { // it's a PK or object
-					AbsenceEleveTraitementPeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				AbsenceEleveTraitementPeer::clearInstancePool();
+			} elseif ($values instanceof AbsenceEleveTraitement) { // it's a model object
+				AbsenceEleveTraitementPeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					AbsenceEleveTraitementPeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in JTraitementSaisieElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JTraitementSaisieElevePeer::clearInstancePool();
-
-			// invalidate objects in JTraitementEnvoiElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JTraitementEnvoiElevePeer::clearInstancePool();
-
+			AbsenceEleveTraitementPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -2569,14 +2625,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 
 } // BaseAbsenceEleveTraitementPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the AbsenceEleveTraitementPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the AbsenceEleveTraitementPeer class:
-//
-// Propel::getDatabaseMap(AbsenceEleveTraitementPeer::DATABASE_NAME)->addTableBuilder(AbsenceEleveTraitementPeer::TABLE_NAME, AbsenceEleveTraitementPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseAbsenceEleveTraitementPeer::DATABASE_NAME)->addTableBuilder(BaseAbsenceEleveTraitementPeer::TABLE_NAME, BaseAbsenceEleveTraitementPeer::getMapBuilder());
+BaseAbsenceEleveTraitementPeer::buildTableMap();
 

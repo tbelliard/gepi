@@ -5,7 +5,7 @@
  *
  * Groupe d'eleves permettant d'y affecter une matiere et un professeurs
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseGroupePeer {
 
@@ -15,9 +15,15 @@ abstract class BaseGroupePeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'groupes';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'Groupe';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.Groupe';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'GroupeTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 4;
 
@@ -44,11 +50,6 @@ abstract class BaseGroupePeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -60,6 +61,7 @@ abstract class BaseGroupePeer {
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Description', 'RecalculRang', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'description', 'recalculRang', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::DESCRIPTION, self::RECALCUL_RANG, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'DESCRIPTION', 'RECALCUL_RANG', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'description', 'recalcul_rang', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
@@ -74,21 +76,11 @@ abstract class BaseGroupePeer {
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Description' => 2, 'RecalculRang' => 3, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'description' => 2, 'recalculRang' => 3, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::DESCRIPTION => 2, self::RECALCUL_RANG => 3, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'DESCRIPTION' => 2, 'RECALCUL_RANG' => 3, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'description' => 2, 'recalcul_rang' => 3, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new GroupeMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -150,21 +142,24 @@ abstract class BaseGroupePeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(GroupePeer::ID);
-
-		$criteria->addSelectColumn(GroupePeer::NAME);
-
-		$criteria->addSelectColumn(GroupePeer::DESCRIPTION);
-
-		$criteria->addSelectColumn(GroupePeer::RECALCUL_RANG);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(GroupePeer::ID);
+			$criteria->addSelectColumn(GroupePeer::NAME);
+			$criteria->addSelectColumn(GroupePeer::DESCRIPTION);
+			$criteria->addSelectColumn(GroupePeer::RECALCUL_RANG);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.NAME');
+			$criteria->addSelectColumn($alias . '.DESCRIPTION');
+			$criteria->addSelectColumn($alias . '.RECALCUL_RANG');
+		}
 	}
 
 	/**
@@ -352,6 +347,35 @@ abstract class BaseGroupePeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to groupes
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in JGroupesProfesseursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JGroupesProfesseursPeer::clearInstancePool();
+
+		// invalidate objects in JGroupesClassesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JGroupesClassesPeer::clearInstancePool();
+
+		// invalidate objects in CahierTexteCompteRenduPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CahierTexteCompteRenduPeer::clearInstancePool();
+
+		// invalidate objects in CahierTexteTravailAFairePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CahierTexteTravailAFairePeer::clearInstancePool();
+
+		// invalidate objects in CahierTexteNoticePriveePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CahierTexteNoticePriveePeer::clearInstancePool();
+
+		// invalidate objects in JEleveGroupePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JEleveGroupePeer::clearInstancePool();
+
+		// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		EdtEmplacementCoursPeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -364,12 +388,26 @@ abstract class BaseGroupePeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -382,8 +420,7 @@ abstract class BaseGroupePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = GroupePeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = GroupePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = GroupePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -393,7 +430,6 @@ abstract class BaseGroupePeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -402,6 +438,31 @@ abstract class BaseGroupePeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (Groupe object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = GroupePeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + GroupePeer::NUM_COLUMNS;
+		} else {
+			$cls = GroupePeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			GroupePeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -416,17 +477,31 @@ abstract class BaseGroupePeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseGroupePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseGroupePeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new GroupeTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return GroupePeer::CLASS_DEFAULT;
+		return $withPrefix ? GroupePeer::CLASS_DEFAULT : GroupePeer::OM_CLASS;
 	}
 
 	/**
@@ -493,7 +568,12 @@ abstract class BaseGroupePeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(GroupePeer::ID);
-			$selectCriteria->add(GroupePeer::ID, $criteria->remove(GroupePeer::ID), $comparison);
+			$value = $criteria->remove(GroupePeer::ID);
+			if ($value) {
+				$selectCriteria->add(GroupePeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(GroupePeer::TABLE_NAME);
+			}
 
 		} else { // $values is Groupe object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -523,6 +603,11 @@ abstract class BaseGroupePeer {
 			$con->beginTransaction();
 			$affectedRows += GroupePeer::doOnDeleteCascade(new Criteria(GroupePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(GroupePeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			GroupePeer::clearInstancePool();
+			GroupePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -549,30 +634,14 @@ abstract class BaseGroupePeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			GroupePeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof Groupe) {
-			// invalidate the cache for this single object
-			GroupePeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof Groupe) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(GroupePeer::ID, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				GroupePeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -586,38 +655,21 @@ abstract class BaseGroupePeer {
 			$con->beginTransaction();
 			$affectedRows += GroupePeer::doOnDeleteCascade($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					GroupePeer::clearInstancePool();
-				} else { // it's a PK or object
-					GroupePeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				GroupePeer::clearInstancePool();
+			} elseif ($values instanceof Groupe) { // it's a model object
+				GroupePeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					GroupePeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in JGroupesProfesseursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JGroupesProfesseursPeer::clearInstancePool();
-
-			// invalidate objects in JGroupesClassesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JGroupesClassesPeer::clearInstancePool();
-
-			// invalidate objects in CahierTexteCompteRenduPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			CahierTexteCompteRenduPeer::clearInstancePool();
-
-			// invalidate objects in CahierTexteTravailAFairePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			CahierTexteTravailAFairePeer::clearInstancePool();
-
-			// invalidate objects in CahierTexteNoticePriveePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			CahierTexteNoticePriveePeer::clearInstancePool();
-
-			// invalidate objects in JEleveGroupePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JEleveGroupePeer::clearInstancePool();
-
-			// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			EdtEmplacementCoursPeer::clearInstancePool();
-
+			GroupePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -650,46 +702,46 @@ abstract class BaseGroupePeer {
 
 
 			// delete related JGroupesProfesseurs objects
-			$c = new Criteria(JGroupesProfesseursPeer::DATABASE_NAME);
+			$criteria = new Criteria(JGroupesProfesseursPeer::DATABASE_NAME);
 			
-			$c->add(JGroupesProfesseursPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += JGroupesProfesseursPeer::doDelete($c, $con);
+			$criteria->add(JGroupesProfesseursPeer::ID_GROUPE, $obj->getId());
+			$affectedRows += JGroupesProfesseursPeer::doDelete($criteria, $con);
 
 			// delete related JGroupesClasses objects
-			$c = new Criteria(JGroupesClassesPeer::DATABASE_NAME);
+			$criteria = new Criteria(JGroupesClassesPeer::DATABASE_NAME);
 			
-			$c->add(JGroupesClassesPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += JGroupesClassesPeer::doDelete($c, $con);
+			$criteria->add(JGroupesClassesPeer::ID_GROUPE, $obj->getId());
+			$affectedRows += JGroupesClassesPeer::doDelete($criteria, $con);
 
 			// delete related CahierTexteCompteRendu objects
-			$c = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
+			$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
 			
-			$c->add(CahierTexteCompteRenduPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += CahierTexteCompteRenduPeer::doDelete($c, $con);
+			$criteria->add(CahierTexteCompteRenduPeer::ID_GROUPE, $obj->getId());
+			$affectedRows += CahierTexteCompteRenduPeer::doDelete($criteria, $con);
 
 			// delete related CahierTexteTravailAFaire objects
-			$c = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
+			$criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
 			
-			$c->add(CahierTexteTravailAFairePeer::ID_GROUPE, $obj->getId());
-			$affectedRows += CahierTexteTravailAFairePeer::doDelete($c, $con);
+			$criteria->add(CahierTexteTravailAFairePeer::ID_GROUPE, $obj->getId());
+			$affectedRows += CahierTexteTravailAFairePeer::doDelete($criteria, $con);
 
 			// delete related CahierTexteNoticePrivee objects
-			$c = new Criteria(CahierTexteNoticePriveePeer::DATABASE_NAME);
+			$criteria = new Criteria(CahierTexteNoticePriveePeer::DATABASE_NAME);
 			
-			$c->add(CahierTexteNoticePriveePeer::ID_GROUPE, $obj->getId());
-			$affectedRows += CahierTexteNoticePriveePeer::doDelete($c, $con);
+			$criteria->add(CahierTexteNoticePriveePeer::ID_GROUPE, $obj->getId());
+			$affectedRows += CahierTexteNoticePriveePeer::doDelete($criteria, $con);
 
 			// delete related JEleveGroupe objects
-			$c = new Criteria(JEleveGroupePeer::DATABASE_NAME);
+			$criteria = new Criteria(JEleveGroupePeer::DATABASE_NAME);
 			
-			$c->add(JEleveGroupePeer::ID_GROUPE, $obj->getId());
-			$affectedRows += JEleveGroupePeer::doDelete($c, $con);
+			$criteria->add(JEleveGroupePeer::ID_GROUPE, $obj->getId());
+			$affectedRows += JEleveGroupePeer::doDelete($criteria, $con);
 
 			// delete related EdtEmplacementCours objects
-			$c = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
+			$criteria = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
 			
-			$c->add(EdtEmplacementCoursPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += EdtEmplacementCoursPeer::doDelete($c, $con);
+			$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $obj->getId());
+			$affectedRows += EdtEmplacementCoursPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
@@ -784,14 +836,7 @@ abstract class BaseGroupePeer {
 
 } // BaseGroupePeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the GroupePeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the GroupePeer class:
-//
-// Propel::getDatabaseMap(GroupePeer::DATABASE_NAME)->addTableBuilder(GroupePeer::TABLE_NAME, GroupePeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseGroupePeer::DATABASE_NAME)->addTableBuilder(BaseGroupePeer::TABLE_NAME, BaseGroupePeer::getMapBuilder());
+BaseGroupePeer::buildTableMap();
 

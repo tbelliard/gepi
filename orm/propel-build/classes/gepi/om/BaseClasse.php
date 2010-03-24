@@ -5,10 +5,15 @@
  *
  * Classe regroupant des eleves
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseClasse extends BaseObject  implements Persistent {
+abstract class BaseClasse extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'ClassePeer';
 
 	/**
 	 * The Peer class.
@@ -200,19 +205,9 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	protected $collJGroupesClassess;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collJGroupesClassess.
-	 */
-	private $lastJGroupesClassesCriteria = null;
-
-	/**
 	 * @var        array JEleveClasse[] Collection to store aggregation of JEleveClasse objects.
 	 */
 	protected $collJEleveClasses;
-
-	/**
-	 * @var        Criteria The criteria used to select the current contents of collJEleveClasses.
-	 */
-	private $lastJEleveClasseCriteria = null;
 
 	/**
 	 * @var        array JEleveProfesseurPrincipal[] Collection to store aggregation of JEleveProfesseurPrincipal objects.
@@ -220,19 +215,9 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	protected $collJEleveProfesseurPrincipals;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collJEleveProfesseurPrincipals.
-	 */
-	private $lastJEleveProfesseurPrincipalCriteria = null;
-
-	/**
 	 * @var        array JCategoriesMatieresClasses[] Collection to store aggregation of JCategoriesMatieresClasses objects.
 	 */
 	protected $collJCategoriesMatieresClassess;
-
-	/**
-	 * @var        Criteria The criteria used to select the current contents of collJCategoriesMatieresClassess.
-	 */
-	private $lastJCategoriesMatieresClassesCriteria = null;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -247,16 +232,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Initializes internal state of BaseClasse object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
 
 	/**
 	 * Applies default values to this object.
@@ -280,6 +255,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		$this->rn_sign_pp = 'n';
 		$this->rn_sign_resp = 'n';
 		$this->rn_sign_nblig = 3;
+	}
+
+	/**
+	 * Initializes internal state of BaseClasse object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
 	}
 
 	/**
@@ -684,7 +669,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->display_rang !== $v || $v === 'n') {
+		if ($this->display_rang !== $v || $this->isNew()) {
 			$this->display_rang = $v;
 			$this->modifiedColumns[] = ClassePeer::DISPLAY_RANG;
 		}
@@ -704,7 +689,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->display_address !== $v || $v === 'n') {
+		if ($this->display_address !== $v || $this->isNew()) {
 			$this->display_address = $v;
 			$this->modifiedColumns[] = ClassePeer::DISPLAY_ADDRESS;
 		}
@@ -724,7 +709,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->display_coef !== $v || $v === 'y') {
+		if ($this->display_coef !== $v || $this->isNew()) {
 			$this->display_coef = $v;
 			$this->modifiedColumns[] = ClassePeer::DISPLAY_COEF;
 		}
@@ -744,7 +729,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->display_mat_cat !== $v || $v === 'n') {
+		if ($this->display_mat_cat !== $v || $this->isNew()) {
 			$this->display_mat_cat = $v;
 			$this->modifiedColumns[] = ClassePeer::DISPLAY_MAT_CAT;
 		}
@@ -764,7 +749,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->display_nbdev !== $v || $v === 'n') {
+		if ($this->display_nbdev !== $v || $this->isNew()) {
 			$this->display_nbdev = $v;
 			$this->modifiedColumns[] = ClassePeer::DISPLAY_NBDEV;
 		}
@@ -784,7 +769,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->display_moy_gen !== $v || $v === 'y') {
+		if ($this->display_moy_gen !== $v || $this->isNew()) {
 			$this->display_moy_gen = $v;
 			$this->modifiedColumns[] = ClassePeer::DISPLAY_MOY_GEN;
 		}
@@ -824,7 +809,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->rn_nomdev !== $v || $v === 'n') {
+		if ($this->rn_nomdev !== $v || $this->isNew()) {
 			$this->rn_nomdev = $v;
 			$this->modifiedColumns[] = ClassePeer::RN_NOMDEV;
 		}
@@ -844,7 +829,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->rn_toutcoefdev !== $v || $v === 'n') {
+		if ($this->rn_toutcoefdev !== $v || $this->isNew()) {
 			$this->rn_toutcoefdev = $v;
 			$this->modifiedColumns[] = ClassePeer::RN_TOUTCOEFDEV;
 		}
@@ -864,7 +849,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->rn_coefdev_si_diff !== $v || $v === 'n') {
+		if ($this->rn_coefdev_si_diff !== $v || $this->isNew()) {
 			$this->rn_coefdev_si_diff = $v;
 			$this->modifiedColumns[] = ClassePeer::RN_COEFDEV_SI_DIFF;
 		}
@@ -884,7 +869,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->rn_datedev !== $v || $v === 'n') {
+		if ($this->rn_datedev !== $v || $this->isNew()) {
 			$this->rn_datedev = $v;
 			$this->modifiedColumns[] = ClassePeer::RN_DATEDEV;
 		}
@@ -904,7 +889,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->rn_sign_chefetab !== $v || $v === 'n') {
+		if ($this->rn_sign_chefetab !== $v || $this->isNew()) {
 			$this->rn_sign_chefetab = $v;
 			$this->modifiedColumns[] = ClassePeer::RN_SIGN_CHEFETAB;
 		}
@@ -924,7 +909,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->rn_sign_pp !== $v || $v === 'n') {
+		if ($this->rn_sign_pp !== $v || $this->isNew()) {
 			$this->rn_sign_pp = $v;
 			$this->modifiedColumns[] = ClassePeer::RN_SIGN_PP;
 		}
@@ -944,7 +929,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->rn_sign_resp !== $v || $v === 'n') {
+		if ($this->rn_sign_resp !== $v || $this->isNew()) {
 			$this->rn_sign_resp = $v;
 			$this->modifiedColumns[] = ClassePeer::RN_SIGN_RESP;
 		}
@@ -964,7 +949,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			$v = (int) $v;
 		}
 
-		if ($this->rn_sign_nblig !== $v || $v === 3) {
+		if ($this->rn_sign_nblig !== $v || $this->isNew()) {
 			$this->rn_sign_nblig = $v;
 			$this->modifiedColumns[] = ClassePeer::RN_SIGN_NBLIG;
 		}
@@ -1102,11 +1087,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(ClassePeer::DISPLAY_RANG,ClassePeer::DISPLAY_ADDRESS,ClassePeer::DISPLAY_COEF,ClassePeer::DISPLAY_MAT_CAT,ClassePeer::DISPLAY_NBDEV,ClassePeer::DISPLAY_MOY_GEN,ClassePeer::RN_NOMDEV,ClassePeer::RN_TOUTCOEFDEV,ClassePeer::RN_COEFDEV_SI_DIFF,ClassePeer::RN_DATEDEV,ClassePeer::RN_SIGN_CHEFETAB,ClassePeer::RN_SIGN_PP,ClassePeer::RN_SIGN_RESP,ClassePeer::RN_SIGN_NBLIG))) {
-				return false;
-			}
-
 			if ($this->display_rang !== 'n') {
 				return false;
 			}
@@ -1220,7 +1200,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 27; // 27 = ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -1284,16 +1263,12 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->collJGroupesClassess = null;
-			$this->lastJGroupesClassesCriteria = null;
 
 			$this->collJEleveClasses = null;
-			$this->lastJEleveClasseCriteria = null;
 
 			$this->collJEleveProfesseurPrincipals = null;
-			$this->lastJEleveProfesseurPrincipalCriteria = null;
 
 			$this->collJCategoriesMatieresClassess = null;
-			$this->lastJCategoriesMatieresClassesCriteria = null;
 
 		} // if (deep)
 	}
@@ -1319,9 +1294,17 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		
 		$con->beginTransaction();
 		try {
-			ClassePeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				ClasseQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -1352,10 +1335,27 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				ClassePeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			ClassePeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -1387,16 +1387,17 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = ClassePeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(ClassePeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.ClassePeer::ID.')');
+					}
 
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
 					$this->setId($pk);  //[IMV] update autoincrement primary key
-
 					$this->setNew(false);
 				} else {
-					$affectedRows += ClassePeer::doUpdate($this, $con);
+					$affectedRows = ClassePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -1663,10 +1664,12 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
@@ -1915,7 +1918,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-
 		$criteria->add(ClassePeer::ID, $this->id);
 
 		return $criteria;
@@ -1942,6 +1944,15 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getId();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -1953,59 +1964,32 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setClasse($this->classe);
-
 		$copyObj->setNomComplet($this->nom_complet);
-
 		$copyObj->setSuiviPar($this->suivi_par);
-
 		$copyObj->setFormule($this->formule);
-
 		$copyObj->setFormatNom($this->format_nom);
-
 		$copyObj->setDisplayRang($this->display_rang);
-
 		$copyObj->setDisplayAddress($this->display_address);
-
 		$copyObj->setDisplayCoef($this->display_coef);
-
 		$copyObj->setDisplayMatCat($this->display_mat_cat);
-
 		$copyObj->setDisplayNbdev($this->display_nbdev);
-
 		$copyObj->setDisplayMoyGen($this->display_moy_gen);
-
 		$copyObj->setModeleBulletinPdf($this->modele_bulletin_pdf);
-
 		$copyObj->setRnNomdev($this->rn_nomdev);
-
 		$copyObj->setRnToutcoefdev($this->rn_toutcoefdev);
-
 		$copyObj->setRnCoefdevSiDiff($this->rn_coefdev_si_diff);
-
 		$copyObj->setRnDatedev($this->rn_datedev);
-
 		$copyObj->setRnSignChefetab($this->rn_sign_chefetab);
-
 		$copyObj->setRnSignPp($this->rn_sign_pp);
-
 		$copyObj->setRnSignResp($this->rn_sign_resp);
-
 		$copyObj->setRnSignNblig($this->rn_sign_nblig);
-
 		$copyObj->setRnFormule($this->rn_formule);
-
 		$copyObj->setEctsTypeFormation($this->ects_type_formation);
-
 		$copyObj->setEctsParcours($this->ects_parcours);
-
 		$copyObj->setEctsCodeParcours($this->ects_code_parcours);
-
 		$copyObj->setEctsDomainesEtude($this->ects_domaines_etude);
-
 		$copyObj->setEctsFonctionSignataireAttestation($this->ects_fonction_signataire_attestation);
-
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -2040,9 +2024,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 
 
 		$copyObj->setNew(true);
-
 		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
-
 	}
 
 	/**
@@ -2084,7 +2066,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Clears out the collJGroupesClassess collection (array).
+	 * Clears out the collJGroupesClassess collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -2098,7 +2080,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collJGroupesClassess collection (array).
+	 * Initializes the collJGroupesClassess collection.
 	 *
 	 * By default this just sets the collJGroupesClassess collection to an empty array (like clearcollJGroupesClassess());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -2108,59 +2090,40 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function initJGroupesClassess()
 	{
-		$this->collJGroupesClassess = array();
+		$this->collJGroupesClassess = new PropelObjectCollection();
+		$this->collJGroupesClassess->setModel('JGroupesClasses');
 	}
 
 	/**
 	 * Gets an array of JGroupesClasses objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this Classe has previously been saved, it will retrieve
-	 * related JGroupesClassess from storage. If this Classe is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Classe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array JGroupesClasses[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array JGroupesClasses[] List of JGroupesClasses objects
 	 * @throws     PropelException
 	 */
 	public function getJGroupesClassess($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collJGroupesClassess === null) {
-			if ($this->isNew()) {
-			   $this->collJGroupesClassess = array();
+		if(null === $this->collJGroupesClassess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJGroupesClassess) {
+				// return empty collection
+				$this->initJGroupesClassess();
 			} else {
-
-				$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id);
-
-				JGroupesClassesPeer::addSelectColumns($criteria);
-				$this->collJGroupesClassess = JGroupesClassesPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id);
-
-				JGroupesClassesPeer::addSelectColumns($criteria);
-				if (!isset($this->lastJGroupesClassesCriteria) || !$this->lastJGroupesClassesCriteria->equals($criteria)) {
-					$this->collJGroupesClassess = JGroupesClassesPeer::doSelect($criteria, $con);
+				$collJGroupesClassess = JGroupesClassesQuery::create(null, $criteria)
+					->filterByClasse($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJGroupesClassess;
 				}
+				$this->collJGroupesClassess = $collJGroupesClassess;
 			}
 		}
-		$this->lastJGroupesClassesCriteria = $criteria;
 		return $this->collJGroupesClassess;
 	}
 
@@ -2175,48 +2138,21 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function countJGroupesClassess(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collJGroupesClassess === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collJGroupesClassess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJGroupesClassess) {
+				return 0;
 			} else {
-
-				$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id);
-
-				$count = JGroupesClassesPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id);
-
-				if (!isset($this->lastJGroupesClassesCriteria) || !$this->lastJGroupesClassesCriteria->equals($criteria)) {
-					$count = JGroupesClassesPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collJGroupesClassess);
+				$query = JGroupesClassesQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collJGroupesClassess);
+				return $query
+					->filterByClasse($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collJGroupesClassess);
 		}
-		$this->lastJGroupesClassesCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -2232,8 +2168,8 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		if ($this->collJGroupesClassess === null) {
 			$this->initJGroupesClassess();
 		}
-		if (!in_array($l, $this->collJGroupesClassess, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collJGroupesClassess, $l);
+		if (!$this->collJGroupesClassess->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJGroupesClassess[]= $l;
 			$l->setClasse($this);
 		}
 	}
@@ -2252,37 +2188,10 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function getJGroupesClassessJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JGroupesClassesQuery::create(null, $criteria);
+		$query->joinWith('JGroupesClasses.Groupe', $join_behavior);
 
-		if ($this->collJGroupesClassess === null) {
-			if ($this->isNew()) {
-				$this->collJGroupesClassess = array();
-			} else {
-
-				$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id);
-
-				$this->collJGroupesClassess = JGroupesClassesPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id);
-
-			if (!isset($this->lastJGroupesClassesCriteria) || !$this->lastJGroupesClassesCriteria->equals($criteria)) {
-				$this->collJGroupesClassess = JGroupesClassesPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastJGroupesClassesCriteria = $criteria;
-
-		return $this->collJGroupesClassess;
+		return $this->getJGroupesClassess($query, $con);
 	}
 
 
@@ -2299,41 +2208,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function getJGroupesClassessJoinCategorieMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JGroupesClassesQuery::create(null, $criteria);
+		$query->joinWith('JGroupesClasses.CategorieMatiere', $join_behavior);
 
-		if ($this->collJGroupesClassess === null) {
-			if ($this->isNew()) {
-				$this->collJGroupesClassess = array();
-			} else {
-
-				$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id);
-
-				$this->collJGroupesClassess = JGroupesClassesPeer::doSelectJoinCategorieMatiere($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id);
-
-			if (!isset($this->lastJGroupesClassesCriteria) || !$this->lastJGroupesClassesCriteria->equals($criteria)) {
-				$this->collJGroupesClassess = JGroupesClassesPeer::doSelectJoinCategorieMatiere($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastJGroupesClassesCriteria = $criteria;
-
-		return $this->collJGroupesClassess;
+		return $this->getJGroupesClassess($query, $con);
 	}
 
 	/**
-	 * Clears out the collJEleveClasses collection (array).
+	 * Clears out the collJEleveClasses collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -2347,7 +2229,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collJEleveClasses collection (array).
+	 * Initializes the collJEleveClasses collection.
 	 *
 	 * By default this just sets the collJEleveClasses collection to an empty array (like clearcollJEleveClasses());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -2357,59 +2239,40 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function initJEleveClasses()
 	{
-		$this->collJEleveClasses = array();
+		$this->collJEleveClasses = new PropelObjectCollection();
+		$this->collJEleveClasses->setModel('JEleveClasse');
 	}
 
 	/**
 	 * Gets an array of JEleveClasse objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this Classe has previously been saved, it will retrieve
-	 * related JEleveClasses from storage. If this Classe is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Classe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array JEleveClasse[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array JEleveClasse[] List of JEleveClasse objects
 	 * @throws     PropelException
 	 */
 	public function getJEleveClasses($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collJEleveClasses === null) {
-			if ($this->isNew()) {
-			   $this->collJEleveClasses = array();
+		if(null === $this->collJEleveClasses || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJEleveClasses) {
+				// return empty collection
+				$this->initJEleveClasses();
 			} else {
-
-				$criteria->add(JEleveClassePeer::ID_CLASSE, $this->id);
-
-				JEleveClassePeer::addSelectColumns($criteria);
-				$this->collJEleveClasses = JEleveClassePeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(JEleveClassePeer::ID_CLASSE, $this->id);
-
-				JEleveClassePeer::addSelectColumns($criteria);
-				if (!isset($this->lastJEleveClasseCriteria) || !$this->lastJEleveClasseCriteria->equals($criteria)) {
-					$this->collJEleveClasses = JEleveClassePeer::doSelect($criteria, $con);
+				$collJEleveClasses = JEleveClasseQuery::create(null, $criteria)
+					->filterByClasse($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJEleveClasses;
 				}
+				$this->collJEleveClasses = $collJEleveClasses;
 			}
 		}
-		$this->lastJEleveClasseCriteria = $criteria;
 		return $this->collJEleveClasses;
 	}
 
@@ -2424,48 +2287,21 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function countJEleveClasses(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collJEleveClasses === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collJEleveClasses || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJEleveClasses) {
+				return 0;
 			} else {
-
-				$criteria->add(JEleveClassePeer::ID_CLASSE, $this->id);
-
-				$count = JEleveClassePeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(JEleveClassePeer::ID_CLASSE, $this->id);
-
-				if (!isset($this->lastJEleveClasseCriteria) || !$this->lastJEleveClasseCriteria->equals($criteria)) {
-					$count = JEleveClassePeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collJEleveClasses);
+				$query = JEleveClasseQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collJEleveClasses);
+				return $query
+					->filterByClasse($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collJEleveClasses);
 		}
-		$this->lastJEleveClasseCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -2481,8 +2317,8 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		if ($this->collJEleveClasses === null) {
 			$this->initJEleveClasses();
 		}
-		if (!in_array($l, $this->collJEleveClasses, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collJEleveClasses, $l);
+		if (!$this->collJEleveClasses->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJEleveClasses[]= $l;
 			$l->setClasse($this);
 		}
 	}
@@ -2501,41 +2337,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function getJEleveClassesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JEleveClasseQuery::create(null, $criteria);
+		$query->joinWith('JEleveClasse.Eleve', $join_behavior);
 
-		if ($this->collJEleveClasses === null) {
-			if ($this->isNew()) {
-				$this->collJEleveClasses = array();
-			} else {
-
-				$criteria->add(JEleveClassePeer::ID_CLASSE, $this->id);
-
-				$this->collJEleveClasses = JEleveClassePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JEleveClassePeer::ID_CLASSE, $this->id);
-
-			if (!isset($this->lastJEleveClasseCriteria) || !$this->lastJEleveClasseCriteria->equals($criteria)) {
-				$this->collJEleveClasses = JEleveClassePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastJEleveClasseCriteria = $criteria;
-
-		return $this->collJEleveClasses;
+		return $this->getJEleveClasses($query, $con);
 	}
 
 	/**
-	 * Clears out the collJEleveProfesseurPrincipals collection (array).
+	 * Clears out the collJEleveProfesseurPrincipals collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -2549,7 +2358,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collJEleveProfesseurPrincipals collection (array).
+	 * Initializes the collJEleveProfesseurPrincipals collection.
 	 *
 	 * By default this just sets the collJEleveProfesseurPrincipals collection to an empty array (like clearcollJEleveProfesseurPrincipals());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -2559,59 +2368,40 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function initJEleveProfesseurPrincipals()
 	{
-		$this->collJEleveProfesseurPrincipals = array();
+		$this->collJEleveProfesseurPrincipals = new PropelObjectCollection();
+		$this->collJEleveProfesseurPrincipals->setModel('JEleveProfesseurPrincipal');
 	}
 
 	/**
 	 * Gets an array of JEleveProfesseurPrincipal objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this Classe has previously been saved, it will retrieve
-	 * related JEleveProfesseurPrincipals from storage. If this Classe is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Classe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array JEleveProfesseurPrincipal[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array JEleveProfesseurPrincipal[] List of JEleveProfesseurPrincipal objects
 	 * @throws     PropelException
 	 */
 	public function getJEleveProfesseurPrincipals($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collJEleveProfesseurPrincipals === null) {
-			if ($this->isNew()) {
-			   $this->collJEleveProfesseurPrincipals = array();
+		if(null === $this->collJEleveProfesseurPrincipals || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJEleveProfesseurPrincipals) {
+				// return empty collection
+				$this->initJEleveProfesseurPrincipals();
 			} else {
-
-				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
-
-				JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
-
-				JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-				if (!isset($this->lastJEleveProfesseurPrincipalCriteria) || !$this->lastJEleveProfesseurPrincipalCriteria->equals($criteria)) {
-					$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelect($criteria, $con);
+				$collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalQuery::create(null, $criteria)
+					->filterByClasse($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJEleveProfesseurPrincipals;
 				}
+				$this->collJEleveProfesseurPrincipals = $collJEleveProfesseurPrincipals;
 			}
 		}
-		$this->lastJEleveProfesseurPrincipalCriteria = $criteria;
 		return $this->collJEleveProfesseurPrincipals;
 	}
 
@@ -2626,48 +2416,21 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function countJEleveProfesseurPrincipals(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collJEleveProfesseurPrincipals === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collJEleveProfesseurPrincipals || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJEleveProfesseurPrincipals) {
+				return 0;
 			} else {
-
-				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
-
-				$count = JEleveProfesseurPrincipalPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
-
-				if (!isset($this->lastJEleveProfesseurPrincipalCriteria) || !$this->lastJEleveProfesseurPrincipalCriteria->equals($criteria)) {
-					$count = JEleveProfesseurPrincipalPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collJEleveProfesseurPrincipals);
+				$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collJEleveProfesseurPrincipals);
+				return $query
+					->filterByClasse($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collJEleveProfesseurPrincipals);
 		}
-		$this->lastJEleveProfesseurPrincipalCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -2683,8 +2446,8 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		if ($this->collJEleveProfesseurPrincipals === null) {
 			$this->initJEleveProfesseurPrincipals();
 		}
-		if (!in_array($l, $this->collJEleveProfesseurPrincipals, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collJEleveProfesseurPrincipals, $l);
+		if (!$this->collJEleveProfesseurPrincipals->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJEleveProfesseurPrincipals[]= $l;
 			$l->setClasse($this);
 		}
 	}
@@ -2703,37 +2466,10 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function getJEleveProfesseurPrincipalsJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
+		$query->joinWith('JEleveProfesseurPrincipal.Eleve', $join_behavior);
 
-		if ($this->collJEleveProfesseurPrincipals === null) {
-			if ($this->isNew()) {
-				$this->collJEleveProfesseurPrincipals = array();
-			} else {
-
-				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
-
-				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
-
-			if (!isset($this->lastJEleveProfesseurPrincipalCriteria) || !$this->lastJEleveProfesseurPrincipalCriteria->equals($criteria)) {
-				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastJEleveProfesseurPrincipalCriteria = $criteria;
-
-		return $this->collJEleveProfesseurPrincipals;
+		return $this->getJEleveProfesseurPrincipals($query, $con);
 	}
 
 
@@ -2750,41 +2486,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function getJEleveProfesseurPrincipalsJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
+		$query->joinWith('JEleveProfesseurPrincipal.UtilisateurProfessionnel', $join_behavior);
 
-		if ($this->collJEleveProfesseurPrincipals === null) {
-			if ($this->isNew()) {
-				$this->collJEleveProfesseurPrincipals = array();
-			} else {
-
-				$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
-
-				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $this->id);
-
-			if (!isset($this->lastJEleveProfesseurPrincipalCriteria) || !$this->lastJEleveProfesseurPrincipalCriteria->equals($criteria)) {
-				$this->collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastJEleveProfesseurPrincipalCriteria = $criteria;
-
-		return $this->collJEleveProfesseurPrincipals;
+		return $this->getJEleveProfesseurPrincipals($query, $con);
 	}
 
 	/**
-	 * Clears out the collJCategoriesMatieresClassess collection (array).
+	 * Clears out the collJCategoriesMatieresClassess collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -2798,7 +2507,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collJCategoriesMatieresClassess collection (array).
+	 * Initializes the collJCategoriesMatieresClassess collection.
 	 *
 	 * By default this just sets the collJCategoriesMatieresClassess collection to an empty array (like clearcollJCategoriesMatieresClassess());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -2808,59 +2517,40 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function initJCategoriesMatieresClassess()
 	{
-		$this->collJCategoriesMatieresClassess = array();
+		$this->collJCategoriesMatieresClassess = new PropelObjectCollection();
+		$this->collJCategoriesMatieresClassess->setModel('JCategoriesMatieresClasses');
 	}
 
 	/**
 	 * Gets an array of JCategoriesMatieresClasses objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this Classe has previously been saved, it will retrieve
-	 * related JCategoriesMatieresClassess from storage. If this Classe is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Classe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array JCategoriesMatieresClasses[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array JCategoriesMatieresClasses[] List of JCategoriesMatieresClasses objects
 	 * @throws     PropelException
 	 */
 	public function getJCategoriesMatieresClassess($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collJCategoriesMatieresClassess === null) {
-			if ($this->isNew()) {
-			   $this->collJCategoriesMatieresClassess = array();
+		if(null === $this->collJCategoriesMatieresClassess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJCategoriesMatieresClassess) {
+				// return empty collection
+				$this->initJCategoriesMatieresClassess();
 			} else {
-
-				$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
-
-				JCategoriesMatieresClassesPeer::addSelectColumns($criteria);
-				$this->collJCategoriesMatieresClassess = JCategoriesMatieresClassesPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
-
-				JCategoriesMatieresClassesPeer::addSelectColumns($criteria);
-				if (!isset($this->lastJCategoriesMatieresClassesCriteria) || !$this->lastJCategoriesMatieresClassesCriteria->equals($criteria)) {
-					$this->collJCategoriesMatieresClassess = JCategoriesMatieresClassesPeer::doSelect($criteria, $con);
+				$collJCategoriesMatieresClassess = JCategoriesMatieresClassesQuery::create(null, $criteria)
+					->filterByClasse($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJCategoriesMatieresClassess;
 				}
+				$this->collJCategoriesMatieresClassess = $collJCategoriesMatieresClassess;
 			}
 		}
-		$this->lastJCategoriesMatieresClassesCriteria = $criteria;
 		return $this->collJCategoriesMatieresClassess;
 	}
 
@@ -2875,48 +2565,21 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function countJCategoriesMatieresClassess(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collJCategoriesMatieresClassess === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collJCategoriesMatieresClassess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJCategoriesMatieresClassess) {
+				return 0;
 			} else {
-
-				$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
-
-				$count = JCategoriesMatieresClassesPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
-
-				if (!isset($this->lastJCategoriesMatieresClassesCriteria) || !$this->lastJCategoriesMatieresClassesCriteria->equals($criteria)) {
-					$count = JCategoriesMatieresClassesPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collJCategoriesMatieresClassess);
+				$query = JCategoriesMatieresClassesQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collJCategoriesMatieresClassess);
+				return $query
+					->filterByClasse($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collJCategoriesMatieresClassess);
 		}
-		$this->lastJCategoriesMatieresClassesCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -2932,8 +2595,8 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		if ($this->collJCategoriesMatieresClassess === null) {
 			$this->initJCategoriesMatieresClassess();
 		}
-		if (!in_array($l, $this->collJCategoriesMatieresClassess, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collJCategoriesMatieresClassess, $l);
+		if (!$this->collJCategoriesMatieresClassess->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJCategoriesMatieresClassess[]= $l;
 			$l->setClasse($this);
 		}
 	}
@@ -2952,37 +2615,47 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 	 */
 	public function getJCategoriesMatieresClassessJoinCategorieMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(ClassePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JCategoriesMatieresClassesQuery::create(null, $criteria);
+		$query->joinWith('JCategoriesMatieresClasses.CategorieMatiere', $join_behavior);
 
-		if ($this->collJCategoriesMatieresClassess === null) {
-			if ($this->isNew()) {
-				$this->collJCategoriesMatieresClassess = array();
-			} else {
+		return $this->getJCategoriesMatieresClassess($query, $con);
+	}
 
-				$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
-
-				$this->collJCategoriesMatieresClassess = JCategoriesMatieresClassesPeer::doSelectJoinCategorieMatiere($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $this->id);
-
-			if (!isset($this->lastJCategoriesMatieresClassesCriteria) || !$this->lastJCategoriesMatieresClassesCriteria->equals($criteria)) {
-				$this->collJCategoriesMatieresClassess = JCategoriesMatieresClassesPeer::doSelectJoinCategorieMatiere($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastJCategoriesMatieresClassesCriteria = $criteria;
-
-		return $this->collJCategoriesMatieresClassess;
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id = null;
+		$this->classe = null;
+		$this->nom_complet = null;
+		$this->suivi_par = null;
+		$this->formule = null;
+		$this->format_nom = null;
+		$this->display_rang = null;
+		$this->display_address = null;
+		$this->display_coef = null;
+		$this->display_mat_cat = null;
+		$this->display_nbdev = null;
+		$this->display_moy_gen = null;
+		$this->modele_bulletin_pdf = null;
+		$this->rn_nomdev = null;
+		$this->rn_toutcoefdev = null;
+		$this->rn_coefdev_si_diff = null;
+		$this->rn_datedev = null;
+		$this->rn_sign_chefetab = null;
+		$this->rn_sign_pp = null;
+		$this->rn_sign_resp = null;
+		$this->rn_sign_nblig = null;
+		$this->rn_formule = null;
+		$this->ects_type_formation = null;
+		$this->ects_parcours = null;
+		$this->ects_code_parcours = null;
+		$this->ects_domaines_etude = null;
+		$this->ects_fonction_signataire_attestation = null;
+		$this->clearAllReferences();
+		$this->applyDefaultValues();
+		$this->setNew(true);
 	}
 
 	/**
@@ -3023,6 +2696,17 @@ abstract class BaseClasse extends BaseObject  implements Persistent {
 		$this->collJEleveClasses = null;
 		$this->collJEleveProfesseurPrincipals = null;
 		$this->collJCategoriesMatieresClassess = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseClasse

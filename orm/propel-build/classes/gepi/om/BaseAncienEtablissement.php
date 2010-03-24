@@ -5,10 +5,15 @@
  *
  * Liste des etablissements precedents des eleves
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseAncienEtablissement extends BaseObject  implements Persistent {
+abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'AncienEtablissementPeer';
 
 	/**
 	 * The Peer class.
@@ -61,9 +66,9 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	protected $collJEleveAncienEtablissements;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collJEleveAncienEtablissements.
+	 * @var        array Eleve[] Collection to store aggregation of Eleve objects.
 	 */
-	private $lastJEleveAncienEtablissementCriteria = null;
+	protected $collEleves;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -80,16 +85,6 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Initializes internal state of BaseAncienEtablissement object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
 	 * Applies default values to this object.
 	 * This method should be called from the object's constructor (or
 	 * equivalent initialization method).
@@ -98,6 +93,16 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	public function applyDefaultValues()
 	{
 		$this->ville = '';
+	}
+
+	/**
+	 * Initializes internal state of BaseAncienEtablissement object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
 	}
 
 	/**
@@ -272,7 +277,7 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->ville !== $v || $v === '') {
+		if ($this->ville !== $v || $this->isNew()) {
 			$this->ville = $v;
 			$this->modifiedColumns[] = AncienEtablissementPeer::VILLE;
 		}
@@ -290,11 +295,6 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(AncienEtablissementPeer::VILLE))) {
-				return false;
-			}
-
 			if ($this->ville !== '') {
 				return false;
 			}
@@ -335,7 +335,6 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 6; // 6 = AncienEtablissementPeer::NUM_COLUMNS - AncienEtablissementPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -399,7 +398,6 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->collJEleveAncienEtablissements = null;
-			$this->lastJEleveAncienEtablissementCriteria = null;
 
 		} // if (deep)
 	}
@@ -425,9 +423,17 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 		
 		$con->beginTransaction();
 		try {
-			AncienEtablissementPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				AncienEtablissementQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -458,10 +464,27 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				AncienEtablissementPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			AncienEtablissementPeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -493,16 +516,17 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = AncienEtablissementPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(AncienEtablissementPeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.AncienEtablissementPeer::ID.')');
+					}
 
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
 					$this->setId($pk);  //[IMV] update autoincrement primary key
-
 					$this->setNew(false);
 				} else {
-					$affectedRows += AncienEtablissementPeer::doUpdate($this, $con);
+					$affectedRows = AncienEtablissementPeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -658,10 +682,12 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
@@ -784,7 +810,6 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(AncienEtablissementPeer::DATABASE_NAME);
-
 		$criteria->add(AncienEtablissementPeer::ID, $this->id);
 
 		return $criteria;
@@ -811,6 +836,15 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getId();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -822,17 +856,11 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setNom($this->nom);
-
 		$copyObj->setNiveau($this->niveau);
-
 		$copyObj->setType($this->type);
-
 		$copyObj->setCp($this->cp);
-
 		$copyObj->setVille($this->ville);
-
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -849,9 +877,7 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 
 
 		$copyObj->setNew(true);
-
 		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
-
 	}
 
 	/**
@@ -893,7 +919,7 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Clears out the collJEleveAncienEtablissements collection (array).
+	 * Clears out the collJEleveAncienEtablissements collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -907,7 +933,7 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Initializes the collJEleveAncienEtablissements collection (array).
+	 * Initializes the collJEleveAncienEtablissements collection.
 	 *
 	 * By default this just sets the collJEleveAncienEtablissements collection to an empty array (like clearcollJEleveAncienEtablissements());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -917,59 +943,40 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 */
 	public function initJEleveAncienEtablissements()
 	{
-		$this->collJEleveAncienEtablissements = array();
+		$this->collJEleveAncienEtablissements = new PropelObjectCollection();
+		$this->collJEleveAncienEtablissements->setModel('JEleveAncienEtablissement');
 	}
 
 	/**
 	 * Gets an array of JEleveAncienEtablissement objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this AncienEtablissement has previously been saved, it will retrieve
-	 * related JEleveAncienEtablissements from storage. If this AncienEtablissement is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this AncienEtablissement is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array JEleveAncienEtablissement[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array JEleveAncienEtablissement[] List of JEleveAncienEtablissement objects
 	 * @throws     PropelException
 	 */
 	public function getJEleveAncienEtablissements($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AncienEtablissementPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collJEleveAncienEtablissements === null) {
-			if ($this->isNew()) {
-			   $this->collJEleveAncienEtablissements = array();
+		if(null === $this->collJEleveAncienEtablissements || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJEleveAncienEtablissements) {
+				// return empty collection
+				$this->initJEleveAncienEtablissements();
 			} else {
-
-				$criteria->add(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $this->id);
-
-				JEleveAncienEtablissementPeer::addSelectColumns($criteria);
-				$this->collJEleveAncienEtablissements = JEleveAncienEtablissementPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $this->id);
-
-				JEleveAncienEtablissementPeer::addSelectColumns($criteria);
-				if (!isset($this->lastJEleveAncienEtablissementCriteria) || !$this->lastJEleveAncienEtablissementCriteria->equals($criteria)) {
-					$this->collJEleveAncienEtablissements = JEleveAncienEtablissementPeer::doSelect($criteria, $con);
+				$collJEleveAncienEtablissements = JEleveAncienEtablissementQuery::create(null, $criteria)
+					->filterByAncienEtablissement($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJEleveAncienEtablissements;
 				}
+				$this->collJEleveAncienEtablissements = $collJEleveAncienEtablissements;
 			}
 		}
-		$this->lastJEleveAncienEtablissementCriteria = $criteria;
 		return $this->collJEleveAncienEtablissements;
 	}
 
@@ -984,48 +991,21 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 */
 	public function countJEleveAncienEtablissements(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AncienEtablissementPeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collJEleveAncienEtablissements === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collJEleveAncienEtablissements || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJEleveAncienEtablissements) {
+				return 0;
 			} else {
-
-				$criteria->add(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $this->id);
-
-				$count = JEleveAncienEtablissementPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $this->id);
-
-				if (!isset($this->lastJEleveAncienEtablissementCriteria) || !$this->lastJEleveAncienEtablissementCriteria->equals($criteria)) {
-					$count = JEleveAncienEtablissementPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collJEleveAncienEtablissements);
+				$query = JEleveAncienEtablissementQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collJEleveAncienEtablissements);
+				return $query
+					->filterByAncienEtablissement($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collJEleveAncienEtablissements);
 		}
-		$this->lastJEleveAncienEtablissementCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1041,8 +1021,8 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 		if ($this->collJEleveAncienEtablissements === null) {
 			$this->initJEleveAncienEtablissements();
 		}
-		if (!in_array($l, $this->collJEleveAncienEtablissements, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collJEleveAncienEtablissements, $l);
+		if (!$this->collJEleveAncienEtablissements->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJEleveAncienEtablissements[]= $l;
 			$l->setAncienEtablissement($this);
 		}
 	}
@@ -1061,37 +1041,139 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 */
 	public function getJEleveAncienEtablissementsJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AncienEtablissementPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JEleveAncienEtablissementQuery::create(null, $criteria);
+		$query->joinWith('JEleveAncienEtablissement.Eleve', $join_behavior);
 
-		if ($this->collJEleveAncienEtablissements === null) {
-			if ($this->isNew()) {
-				$this->collJEleveAncienEtablissements = array();
+		return $this->getJEleveAncienEtablissements($query, $con);
+	}
+
+	/**
+	 * Clears out the collEleves collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addEleves()
+	 */
+	public function clearEleves()
+	{
+		$this->collEleves = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collEleves collection.
+	 *
+	 * By default this just sets the collEleves collection to an empty collection (like clearEleves());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initEleves()
+	{
+		$this->collEleves = new PropelObjectCollection();
+		$this->collEleves->setModel('Eleve');
+	}
+
+	/**
+	 * Gets a collection of Eleve objects related by a many-to-many relationship
+	 * to the current object by way of the j_eleves_etablissements cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this AncienEtablissement is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array Eleve[] List of Eleve objects
+	 */
+	public function getEleves($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collEleves || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEleves) {
+				// return empty collection
+				$this->initEleves();
 			} else {
+				$collEleves = EleveQuery::create(null, $criteria)
+					->filterByAncienEtablissement($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collEleves;
+				}
+				$this->collEleves = $collEleves;
+			}
+		}
+		return $this->collEleves;
+	}
 
-				$criteria->add(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $this->id);
-
-				$this->collJEleveAncienEtablissements = JEleveAncienEtablissementPeer::doSelectJoinEleve($criteria, $con, $join_behavior);
+	/**
+	 * Gets the number of Eleve objects related by a many-to-many relationship
+	 * to the current object by way of the j_eleves_etablissements cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related Eleve objects
+	 */
+	public function countEleves($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collEleves || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEleves) {
+				return 0;
+			} else {
+				$query = EleveQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByAncienEtablissement($this)
+					->count($con);
 			}
 		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $this->id);
-
-			if (!isset($this->lastJEleveAncienEtablissementCriteria) || !$this->lastJEleveAncienEtablissementCriteria->equals($criteria)) {
-				$this->collJEleveAncienEtablissements = JEleveAncienEtablissementPeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
+			return count($this->collEleves);
 		}
-		$this->lastJEleveAncienEtablissementCriteria = $criteria;
+	}
 
-		return $this->collJEleveAncienEtablissements;
+	/**
+	 * Associate a Eleve object to this object
+	 * through the j_eleves_etablissements cross reference table.
+	 *
+	 * @param      Eleve $eleve The JEleveAncienEtablissement object to relate
+	 * @return     void
+	 */
+	public function addEleve($eleve)
+	{
+		if ($this->collEleves === null) {
+			$this->initEleves();
+		}
+		if (!$this->collEleves->contains($eleve)) { // only add it if the **same** object is not already associated
+			$jEleveAncienEtablissement = new JEleveAncienEtablissement();
+			$jEleveAncienEtablissement->setEleve($eleve);
+			$this->addJEleveAncienEtablissement($jEleveAncienEtablissement);
+			
+			$this->collEleves[]= $eleve;
+		}
+	}
+
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id = null;
+		$this->nom = null;
+		$this->niveau = null;
+		$this->type = null;
+		$this->cp = null;
+		$this->ville = null;
+		$this->clearAllReferences();
+		$this->applyDefaultValues();
+		$this->setNew(true);
 	}
 
 	/**
@@ -1114,6 +1196,17 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 		} // if ($deep)
 
 		$this->collJEleveAncienEtablissements = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseAncienEtablissement

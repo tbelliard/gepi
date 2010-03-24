@@ -5,10 +5,15 @@
  *
  * Liste des semaines de l'annee scolaire courante - 53 enregistrements obligatoires (pas 52!)
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
+abstract class BaseEdtSemaine extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'EdtSemainePeer';
 
 	/**
 	 * The Peer class.
@@ -37,12 +42,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 	protected $type_edt_semaine;
 
 	/**
-	 * The value for the num_edt_semaine field.
-	 * @var        int
-	 */
-	protected $num_edt_semaine;
-
-	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -55,26 +54,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Initializes internal state of BaseEdtSemaine object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
-	 * Applies default values to this object.
-	 * This method should be called from the object's constructor (or
-	 * equivalent initialization method).
-	 * @see        __construct()
-	 */
-	public function applyDefaultValues()
-	{
-	}
 
 	/**
 	 * Get the [id_edt_semaine] column value.
@@ -104,16 +83,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 	public function getTypeEdtSemaine()
 	{
 		return $this->type_edt_semaine;
-	}
-
-	/**
-	 * Get the [num_edt_semaine] column value.
-	 * numero de la semaine dans l'annee scolaire
-	 * @return     int
-	 */
-	public function getNumEdtSemaine()
-	{
-		return $this->num_edt_semaine;
 	}
 
 	/**
@@ -177,26 +146,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 	} // setTypeEdtSemaine()
 
 	/**
-	 * Set the value of [num_edt_semaine] column.
-	 * numero de la semaine dans l'annee scolaire
-	 * @param      int $v new value
-	 * @return     EdtSemaine The current object (for fluent API support)
-	 */
-	public function setNumEdtSemaine($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->num_edt_semaine !== $v) {
-			$this->num_edt_semaine = $v;
-			$this->modifiedColumns[] = EdtSemainePeer::NUM_EDT_SEMAINE;
-		}
-
-		return $this;
-	} // setNumEdtSemaine()
-
-	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -206,11 +155,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array())) {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -236,7 +180,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 			$this->id_edt_semaine = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->num_edt_semaine = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
 			$this->type_edt_semaine = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-			$this->num_edt_semaine = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -245,8 +188,7 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 4; // 4 = EdtSemainePeer::NUM_COLUMNS - EdtSemainePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 3; // 3 = EdtSemainePeer::NUM_COLUMNS - EdtSemainePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating EdtSemaine object", $e);
@@ -332,9 +274,17 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 		
 		$con->beginTransaction();
 		try {
-			EdtSemainePeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				EdtSemaineQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -365,10 +315,27 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				EdtSemainePeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			EdtSemainePeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -397,14 +364,12 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = EdtSemainePeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
-
+					$criteria = $this->buildCriteria();
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
 					$this->setNew(false);
 				} else {
-					$affectedRows += EdtSemainePeer::doUpdate($this, $con);
+					$affectedRows = EdtSemainePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -523,9 +488,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 			case 2:
 				return $this->getTypeEdtSemaine();
 				break;
-			case 3:
-				return $this->getNumEdtSemaine();
-				break;
 			default:
 				return null;
 				break;
@@ -538,10 +500,12 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
@@ -550,7 +514,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 			$keys[0] => $this->getIdEdtSemaine(),
 			$keys[1] => $this->getNumEdtSemaine(),
 			$keys[2] => $this->getTypeEdtSemaine(),
-			$keys[3] => $this->getNumEdtSemaine(),
 		);
 		return $result;
 	}
@@ -591,9 +554,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 			case 2:
 				$this->setTypeEdtSemaine($value);
 				break;
-			case 3:
-				$this->setNumEdtSemaine($value);
-				break;
 		} // switch()
 	}
 
@@ -621,7 +581,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 		if (array_key_exists($keys[0], $arr)) $this->setIdEdtSemaine($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setNumEdtSemaine($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setTypeEdtSemaine($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setNumEdtSemaine($arr[$keys[3]]);
 	}
 
 	/**
@@ -636,7 +595,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 		if ($this->isColumnModified(EdtSemainePeer::ID_EDT_SEMAINE)) $criteria->add(EdtSemainePeer::ID_EDT_SEMAINE, $this->id_edt_semaine);
 		if ($this->isColumnModified(EdtSemainePeer::NUM_EDT_SEMAINE)) $criteria->add(EdtSemainePeer::NUM_EDT_SEMAINE, $this->num_edt_semaine);
 		if ($this->isColumnModified(EdtSemainePeer::TYPE_EDT_SEMAINE)) $criteria->add(EdtSemainePeer::TYPE_EDT_SEMAINE, $this->type_edt_semaine);
-		if ($this->isColumnModified(EdtSemainePeer::NUM_EDT_SEMAINE)) $criteria->add(EdtSemainePeer::NUM_EDT_SEMAINE, $this->num_edt_semaine);
 
 		return $criteria;
 	}
@@ -652,7 +610,6 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(EdtSemainePeer::DATABASE_NAME);
-
 		$criteria->add(EdtSemainePeer::ID_EDT_SEMAINE, $this->id_edt_semaine);
 
 		return $criteria;
@@ -679,6 +636,15 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getIdEdtSemaine();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -690,18 +656,11 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setIdEdtSemaine($this->id_edt_semaine);
-
 		$copyObj->setNumEdtSemaine($this->num_edt_semaine);
-
 		$copyObj->setTypeEdtSemaine($this->type_edt_semaine);
 
-		$copyObj->setNumEdtSemaine($this->num_edt_semaine);
-
-
 		$copyObj->setNew(true);
-
 	}
 
 	/**
@@ -743,6 +702,18 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id_edt_semaine = null;
+		$this->num_edt_semaine = null;
+		$this->type_edt_semaine = null;
+		$this->clearAllReferences();
+		$this->setNew(true);
+	}
+
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -756,6 +727,17 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent {
 		if ($deep) {
 		} // if ($deep)
 
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseEdtSemaine

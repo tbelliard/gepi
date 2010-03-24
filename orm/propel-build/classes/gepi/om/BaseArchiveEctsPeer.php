@@ -5,7 +5,7 @@
  *
  * Enregistrement d'archive pour les credits ECTS, dont le rapport n'est edite qu'au depart de l'eleve
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseArchiveEctsPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseArchiveEctsPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'archivage_ects';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'ArchiveEcts';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.ArchiveEcts';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'ArchiveEctsTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 11;
 
@@ -65,11 +71,6 @@ abstract class BaseArchiveEctsPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -81,6 +82,7 @@ abstract class BaseArchiveEctsPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Annee', 'Ine', 'Classe', 'NumPeriode', 'NomPeriode', 'Special', 'Matiere', 'Profs', 'Valeur', 'Mention', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'annee', 'ine', 'classe', 'numPeriode', 'nomPeriode', 'special', 'matiere', 'profs', 'valeur', 'mention', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::ANNEE, self::INE, self::CLASSE, self::NUM_PERIODE, self::NOM_PERIODE, self::SPECIAL, self::MATIERE, self::PROFS, self::VALEUR, self::MENTION, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'ANNEE', 'INE', 'CLASSE', 'NUM_PERIODE', 'NOM_PERIODE', 'SPECIAL', 'MATIERE', 'PROFS', 'VALEUR', 'MENTION', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'annee', 'ine', 'classe', 'num_periode', 'nom_periode', 'special', 'matiere', 'profs', 'valeur', 'mention', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
 	);
@@ -95,21 +97,11 @@ abstract class BaseArchiveEctsPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Annee' => 1, 'Ine' => 2, 'Classe' => 3, 'NumPeriode' => 4, 'NomPeriode' => 5, 'Special' => 6, 'Matiere' => 7, 'Profs' => 8, 'Valeur' => 9, 'Mention' => 10, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'annee' => 1, 'ine' => 2, 'classe' => 3, 'numPeriode' => 4, 'nomPeriode' => 5, 'special' => 6, 'matiere' => 7, 'profs' => 8, 'valeur' => 9, 'mention' => 10, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ANNEE => 1, self::INE => 2, self::CLASSE => 3, self::NUM_PERIODE => 4, self::NOM_PERIODE => 5, self::SPECIAL => 6, self::MATIERE => 7, self::PROFS => 8, self::VALEUR => 9, self::MENTION => 10, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'ANNEE' => 1, 'INE' => 2, 'CLASSE' => 3, 'NUM_PERIODE' => 4, 'NOM_PERIODE' => 5, 'SPECIAL' => 6, 'MATIERE' => 7, 'PROFS' => 8, 'VALEUR' => 9, 'MENTION' => 10, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'annee' => 1, 'ine' => 2, 'classe' => 3, 'num_periode' => 4, 'nom_periode' => 5, 'special' => 6, 'matiere' => 7, 'profs' => 8, 'valeur' => 9, 'mention' => 10, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new ArchiveEctsMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -171,35 +163,38 @@ abstract class BaseArchiveEctsPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(ArchiveEctsPeer::ID);
-
-		$criteria->addSelectColumn(ArchiveEctsPeer::ANNEE);
-
-		$criteria->addSelectColumn(ArchiveEctsPeer::INE);
-
-		$criteria->addSelectColumn(ArchiveEctsPeer::CLASSE);
-
-		$criteria->addSelectColumn(ArchiveEctsPeer::NUM_PERIODE);
-
-		$criteria->addSelectColumn(ArchiveEctsPeer::NOM_PERIODE);
-
-		$criteria->addSelectColumn(ArchiveEctsPeer::SPECIAL);
-
-		$criteria->addSelectColumn(ArchiveEctsPeer::MATIERE);
-
-		$criteria->addSelectColumn(ArchiveEctsPeer::PROFS);
-
-		$criteria->addSelectColumn(ArchiveEctsPeer::VALEUR);
-
-		$criteria->addSelectColumn(ArchiveEctsPeer::MENTION);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(ArchiveEctsPeer::ID);
+			$criteria->addSelectColumn(ArchiveEctsPeer::ANNEE);
+			$criteria->addSelectColumn(ArchiveEctsPeer::INE);
+			$criteria->addSelectColumn(ArchiveEctsPeer::CLASSE);
+			$criteria->addSelectColumn(ArchiveEctsPeer::NUM_PERIODE);
+			$criteria->addSelectColumn(ArchiveEctsPeer::NOM_PERIODE);
+			$criteria->addSelectColumn(ArchiveEctsPeer::SPECIAL);
+			$criteria->addSelectColumn(ArchiveEctsPeer::MATIERE);
+			$criteria->addSelectColumn(ArchiveEctsPeer::PROFS);
+			$criteria->addSelectColumn(ArchiveEctsPeer::VALEUR);
+			$criteria->addSelectColumn(ArchiveEctsPeer::MENTION);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.ANNEE');
+			$criteria->addSelectColumn($alias . '.INE');
+			$criteria->addSelectColumn($alias . '.CLASSE');
+			$criteria->addSelectColumn($alias . '.NUM_PERIODE');
+			$criteria->addSelectColumn($alias . '.NOM_PERIODE');
+			$criteria->addSelectColumn($alias . '.SPECIAL');
+			$criteria->addSelectColumn($alias . '.MATIERE');
+			$criteria->addSelectColumn($alias . '.PROFS');
+			$criteria->addSelectColumn($alias . '.VALEUR');
+			$criteria->addSelectColumn($alias . '.MENTION');
+		}
 	}
 
 	/**
@@ -387,6 +382,14 @@ abstract class BaseArchiveEctsPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to archivage_ects
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -399,12 +402,26 @@ abstract class BaseArchiveEctsPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null && $row[$startcol + 2] === null && $row[$startcol + 4] === null && $row[$startcol + 6] === null) {
+		if ($row[$startcol] === null && $row[$startcol + 2] === null && $row[$startcol + 4] === null && $row[$startcol + 6] === null) {
 			return null;
 		}
-		return serialize(array((string) $row[$startcol + 0], (string) $row[$startcol + 2], (string) $row[$startcol + 4], (string) $row[$startcol + 6]));
+		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 2], (string) $row[$startcol + 4], (string) $row[$startcol + 6]));
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return array((int) $row[$startcol], (string) $row[$startcol + 2], (int) $row[$startcol + 4], (string) $row[$startcol + 6]);
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -417,8 +434,7 @@ abstract class BaseArchiveEctsPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = ArchiveEctsPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = ArchiveEctsPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = ArchiveEctsPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -428,7 +444,6 @@ abstract class BaseArchiveEctsPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -438,11 +453,36 @@ abstract class BaseArchiveEctsPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (ArchiveEcts object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = ArchiveEctsPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = ArchiveEctsPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + ArchiveEctsPeer::NUM_COLUMNS;
+		} else {
+			$cls = ArchiveEctsPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			ArchiveEctsPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related Eleve table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -475,7 +515,8 @@ abstract class BaseArchiveEctsPeer {
 			$con = Propel::getConnection(ArchiveEctsPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(ArchiveEctsPeer::INE,), array(ElevePeer::NO_GEP,), $join_behavior);
+		$criteria->addJoin(ArchiveEctsPeer::INE, ElevePeer::NO_GEP, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -490,28 +531,29 @@ abstract class BaseArchiveEctsPeer {
 
 	/**
 	 * Selects a collection of ArchiveEcts objects pre-filled with their Eleve objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of ArchiveEcts objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinEleve(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinEleve(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		ArchiveEctsPeer::addSelectColumns($c);
+		ArchiveEctsPeer::addSelectColumns($criteria);
 		$startcol = (ArchiveEctsPeer::NUM_COLUMNS - ArchiveEctsPeer::NUM_LAZY_LOAD_COLUMNS);
-		ElevePeer::addSelectColumns($c);
+		ElevePeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(ArchiveEctsPeer::INE,), array(ElevePeer::NO_GEP,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(ArchiveEctsPeer::INE, ElevePeer::NO_GEP, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -522,9 +564,8 @@ abstract class BaseArchiveEctsPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = ArchiveEctsPeer::getOMClass();
+				$cls = ArchiveEctsPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				ArchiveEctsPeer::addInstanceToPool($obj1, $key1);
@@ -535,9 +576,8 @@ abstract class BaseArchiveEctsPeer {
 				$obj2 = ElevePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = ElevePeer::getOMClass();
+					$cls = ElevePeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					ElevePeer::addInstanceToPool($obj2, $key2);
@@ -558,7 +598,7 @@ abstract class BaseArchiveEctsPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -591,7 +631,8 @@ abstract class BaseArchiveEctsPeer {
 			$con = Propel::getConnection(ArchiveEctsPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(ArchiveEctsPeer::INE,), array(ElevePeer::NO_GEP,), $join_behavior);
+		$criteria->addJoin(ArchiveEctsPeer::INE, ElevePeer::NO_GEP, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -606,30 +647,31 @@ abstract class BaseArchiveEctsPeer {
 	/**
 	 * Selects a collection of ArchiveEcts objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of ArchiveEcts objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		ArchiveEctsPeer::addSelectColumns($c);
+		ArchiveEctsPeer::addSelectColumns($criteria);
 		$startcol2 = (ArchiveEctsPeer::NUM_COLUMNS - ArchiveEctsPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		ElevePeer::addSelectColumns($c);
+		ElevePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(ArchiveEctsPeer::INE,), array(ElevePeer::NO_GEP,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(ArchiveEctsPeer::INE, ElevePeer::NO_GEP, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -639,9 +681,8 @@ abstract class BaseArchiveEctsPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = ArchiveEctsPeer::getOMClass();
+				$cls = ArchiveEctsPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				ArchiveEctsPeer::addInstanceToPool($obj1, $key1);
@@ -654,10 +695,8 @@ abstract class BaseArchiveEctsPeer {
 				$obj2 = ElevePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = ElevePeer::getOMClass();
+					$cls = ElevePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					ElevePeer::addInstanceToPool($obj2, $key2);
@@ -686,17 +725,31 @@ abstract class BaseArchiveEctsPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseArchiveEctsPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseArchiveEctsPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new ArchiveEctsTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return ArchiveEctsPeer::CLASS_DEFAULT;
+		return $withPrefix ? ArchiveEctsPeer::CLASS_DEFAULT : ArchiveEctsPeer::OM_CLASS;
 	}
 
 	/**
@@ -763,16 +816,36 @@ abstract class BaseArchiveEctsPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(ArchiveEctsPeer::ID);
-			$selectCriteria->add(ArchiveEctsPeer::ID, $criteria->remove(ArchiveEctsPeer::ID), $comparison);
+			$value = $criteria->remove(ArchiveEctsPeer::ID);
+			if ($value) {
+				$selectCriteria->add(ArchiveEctsPeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(ArchiveEctsPeer::TABLE_NAME);
+			}
 
 			$comparison = $criteria->getComparison(ArchiveEctsPeer::INE);
-			$selectCriteria->add(ArchiveEctsPeer::INE, $criteria->remove(ArchiveEctsPeer::INE), $comparison);
+			$value = $criteria->remove(ArchiveEctsPeer::INE);
+			if ($value) {
+				$selectCriteria->add(ArchiveEctsPeer::INE, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(ArchiveEctsPeer::TABLE_NAME);
+			}
 
 			$comparison = $criteria->getComparison(ArchiveEctsPeer::NUM_PERIODE);
-			$selectCriteria->add(ArchiveEctsPeer::NUM_PERIODE, $criteria->remove(ArchiveEctsPeer::NUM_PERIODE), $comparison);
+			$value = $criteria->remove(ArchiveEctsPeer::NUM_PERIODE);
+			if ($value) {
+				$selectCriteria->add(ArchiveEctsPeer::NUM_PERIODE, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(ArchiveEctsPeer::TABLE_NAME);
+			}
 
 			$comparison = $criteria->getComparison(ArchiveEctsPeer::SPECIAL);
-			$selectCriteria->add(ArchiveEctsPeer::SPECIAL, $criteria->remove(ArchiveEctsPeer::SPECIAL), $comparison);
+			$value = $criteria->remove(ArchiveEctsPeer::SPECIAL);
+			if ($value) {
+				$selectCriteria->add(ArchiveEctsPeer::SPECIAL, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(ArchiveEctsPeer::TABLE_NAME);
+			}
 
 		} else { // $values is ArchiveEcts object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -801,6 +874,11 @@ abstract class BaseArchiveEctsPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += BasePeer::doDeleteAll(ArchiveEctsPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			ArchiveEctsPeer::clearInstancePool();
+			ArchiveEctsPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -831,36 +909,27 @@ abstract class BaseArchiveEctsPeer {
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
 			ArchiveEctsPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof ArchiveEcts) {
+		} elseif ($values instanceof ArchiveEcts) { // it's a model object
 			// invalidate the cache for this single object
 			ArchiveEctsPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			// primary key is composite; we therefore, expect
-			// the primary key passed to be an array of pkey
-			// values
+			// the primary key passed to be an array of pkey values
 			if (count($values) == count($values, COUNT_RECURSIVE)) {
 				// array is not multi-dimensional
 				$values = array($values);
 			}
-
 			foreach ($values as $value) {
-
 				$criterion = $criteria->getNewCriterion(ArchiveEctsPeer::ID, $value[0]);
 				$criterion->addAnd($criteria->getNewCriterion(ArchiveEctsPeer::INE, $value[1]));
 				$criterion->addAnd($criteria->getNewCriterion(ArchiveEctsPeer::NUM_PERIODE, $value[2]));
 				$criterion->addAnd($criteria->getNewCriterion(ArchiveEctsPeer::SPECIAL, $value[3]));
 				$criteria->addOr($criterion);
-
 				// we can invalidate the cache for this single PK
 				ArchiveEctsPeer::removeInstanceFromPool($value);
 			}
@@ -877,7 +946,7 @@ abstract class BaseArchiveEctsPeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
+			ArchiveEctsPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -926,10 +995,9 @@ abstract class BaseArchiveEctsPeer {
 	/**
 	 * Retrieve object using using composite pkey values.
 	 * @param      int $id
-	   @param      string $ine
-	   @param      int $num_periode
-	   @param      string $special
-	   
+	 * @param      string $ine
+	 * @param      int $num_periode
+	 * @param      string $special
 	 * @param      PropelPDO $con
 	 * @return     ArchiveEcts
 	 */
@@ -953,14 +1021,7 @@ abstract class BaseArchiveEctsPeer {
 	}
 } // BaseArchiveEctsPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the ArchiveEctsPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the ArchiveEctsPeer class:
-//
-// Propel::getDatabaseMap(ArchiveEctsPeer::DATABASE_NAME)->addTableBuilder(ArchiveEctsPeer::TABLE_NAME, ArchiveEctsPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseArchiveEctsPeer::DATABASE_NAME)->addTableBuilder(BaseArchiveEctsPeer::TABLE_NAME, BaseArchiveEctsPeer::getMapBuilder());
+BaseArchiveEctsPeer::buildTableMap();
 

@@ -5,7 +5,7 @@
  *
  * Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilise directement dans le code.
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseJGroupesProfesseursPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseJGroupesProfesseursPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'j_groupes_professeurs';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'JGroupesProfesseurs';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.JGroupesProfesseurs';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'JGroupesProfesseursTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 2;
 
@@ -38,11 +44,6 @@ abstract class BaseJGroupesProfesseursPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -54,6 +55,7 @@ abstract class BaseJGroupesProfesseursPeer {
 		BasePeer::TYPE_PHPNAME => array ('IdGroupe', 'Login', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idGroupe', 'login', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_GROUPE, self::LOGIN, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_GROUPE', 'LOGIN', ),
 		BasePeer::TYPE_FIELDNAME => array ('id_groupe', 'login', ),
 		BasePeer::TYPE_NUM => array (0, 1, )
 	);
@@ -68,21 +70,11 @@ abstract class BaseJGroupesProfesseursPeer {
 		BasePeer::TYPE_PHPNAME => array ('IdGroupe' => 0, 'Login' => 1, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idGroupe' => 0, 'login' => 1, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_GROUPE => 0, self::LOGIN => 1, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_GROUPE' => 0, 'LOGIN' => 1, ),
 		BasePeer::TYPE_FIELDNAME => array ('id_groupe' => 0, 'login' => 1, ),
 		BasePeer::TYPE_NUM => array (0, 1, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new JGroupesProfesseursMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -144,17 +136,20 @@ abstract class BaseJGroupesProfesseursPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(JGroupesProfesseursPeer::ID_GROUPE);
-
-		$criteria->addSelectColumn(JGroupesProfesseursPeer::LOGIN);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(JGroupesProfesseursPeer::ID_GROUPE);
+			$criteria->addSelectColumn(JGroupesProfesseursPeer::LOGIN);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID_GROUPE');
+			$criteria->addSelectColumn($alias . '.LOGIN');
+		}
 	}
 
 	/**
@@ -342,6 +337,14 @@ abstract class BaseJGroupesProfesseursPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to j_groupes_professeurs
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -354,12 +357,26 @@ abstract class BaseJGroupesProfesseursPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null && $row[$startcol + 1] === null) {
+		if ($row[$startcol] === null && $row[$startcol + 1] === null) {
 			return null;
 		}
-		return serialize(array((string) $row[$startcol + 0], (string) $row[$startcol + 1]));
+		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1]));
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return array((int) $row[$startcol], (string) $row[$startcol + 1]);
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -372,8 +389,7 @@ abstract class BaseJGroupesProfesseursPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = JGroupesProfesseursPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = JGroupesProfesseursPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = JGroupesProfesseursPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -383,7 +399,6 @@ abstract class BaseJGroupesProfesseursPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -393,11 +408,36 @@ abstract class BaseJGroupesProfesseursPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (JGroupesProfesseurs object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = JGroupesProfesseursPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = JGroupesProfesseursPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + JGroupesProfesseursPeer::NUM_COLUMNS;
+		} else {
+			$cls = JGroupesProfesseursPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			JGroupesProfesseursPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related Groupe table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -430,7 +470,8 @@ abstract class BaseJGroupesProfesseursPeer {
 			$con = Propel::getConnection(JGroupesProfesseursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(JGroupesProfesseursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+		$criteria->addJoin(JGroupesProfesseursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -446,7 +487,7 @@ abstract class BaseJGroupesProfesseursPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -479,7 +520,8 @@ abstract class BaseJGroupesProfesseursPeer {
 			$con = Propel::getConnection(JGroupesProfesseursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(JGroupesProfesseursPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -494,28 +536,29 @@ abstract class BaseJGroupesProfesseursPeer {
 
 	/**
 	 * Selects a collection of JGroupesProfesseurs objects pre-filled with their Groupe objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of JGroupesProfesseurs objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinGroupe(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JGroupesProfesseursPeer::addSelectColumns($c);
+		JGroupesProfesseursPeer::addSelectColumns($criteria);
 		$startcol = (JGroupesProfesseursPeer::NUM_COLUMNS - JGroupesProfesseursPeer::NUM_LAZY_LOAD_COLUMNS);
-		GroupePeer::addSelectColumns($c);
+		GroupePeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(JGroupesProfesseursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(JGroupesProfesseursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -526,9 +569,8 @@ abstract class BaseJGroupesProfesseursPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = JGroupesProfesseursPeer::getOMClass();
+				$cls = JGroupesProfesseursPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				JGroupesProfesseursPeer::addInstanceToPool($obj1, $key1);
@@ -539,9 +581,8 @@ abstract class BaseJGroupesProfesseursPeer {
 				$obj2 = GroupePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = GroupePeer::getOMClass();
+					$cls = GroupePeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					GroupePeer::addInstanceToPool($obj2, $key2);
@@ -561,28 +602,29 @@ abstract class BaseJGroupesProfesseursPeer {
 
 	/**
 	 * Selects a collection of JGroupesProfesseurs objects pre-filled with their UtilisateurProfessionnel objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of JGroupesProfesseurs objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinUtilisateurProfessionnel(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JGroupesProfesseursPeer::addSelectColumns($c);
+		JGroupesProfesseursPeer::addSelectColumns($criteria);
 		$startcol = (JGroupesProfesseursPeer::NUM_COLUMNS - JGroupesProfesseursPeer::NUM_LAZY_LOAD_COLUMNS);
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(JGroupesProfesseursPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -593,9 +635,8 @@ abstract class BaseJGroupesProfesseursPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = JGroupesProfesseursPeer::getOMClass();
+				$cls = JGroupesProfesseursPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				JGroupesProfesseursPeer::addInstanceToPool($obj1, $key1);
@@ -606,9 +647,8 @@ abstract class BaseJGroupesProfesseursPeer {
 				$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = UtilisateurProfessionnelPeer::getOMClass();
+					$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -629,7 +669,7 @@ abstract class BaseJGroupesProfesseursPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -662,8 +702,10 @@ abstract class BaseJGroupesProfesseursPeer {
 			$con = Propel::getConnection(JGroupesProfesseursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(JGroupesProfesseursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$criteria->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(JGroupesProfesseursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(JGroupesProfesseursPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -678,34 +720,36 @@ abstract class BaseJGroupesProfesseursPeer {
 	/**
 	 * Selects a collection of JGroupesProfesseurs objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of JGroupesProfesseurs objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JGroupesProfesseursPeer::addSelectColumns($c);
+		JGroupesProfesseursPeer::addSelectColumns($criteria);
 		$startcol2 = (JGroupesProfesseursPeer::NUM_COLUMNS - JGroupesProfesseursPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		GroupePeer::addSelectColumns($c);
+		GroupePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(JGroupesProfesseursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$c->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(JGroupesProfesseursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(JGroupesProfesseursPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -715,9 +759,8 @@ abstract class BaseJGroupesProfesseursPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = JGroupesProfesseursPeer::getOMClass();
+				$cls = JGroupesProfesseursPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				JGroupesProfesseursPeer::addInstanceToPool($obj1, $key1);
@@ -730,10 +773,8 @@ abstract class BaseJGroupesProfesseursPeer {
 				$obj2 = GroupePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = GroupePeer::getOMClass();
+					$cls = GroupePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					GroupePeer::addInstanceToPool($obj2, $key2);
@@ -750,10 +791,8 @@ abstract class BaseJGroupesProfesseursPeer {
 				$obj3 = UtilisateurProfessionnelPeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$omClass = UtilisateurProfessionnelPeer::getOMClass();
+					$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj3, $key3);
@@ -773,7 +812,7 @@ abstract class BaseJGroupesProfesseursPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related Groupe table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -806,7 +845,8 @@ abstract class BaseJGroupesProfesseursPeer {
 			$con = Propel::getConnection(JGroupesProfesseursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(JGroupesProfesseursPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -822,7 +862,7 @@ abstract class BaseJGroupesProfesseursPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -855,7 +895,8 @@ abstract class BaseJGroupesProfesseursPeer {
 			$con = Propel::getConnection(JGroupesProfesseursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(JGroupesProfesseursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+		$criteria->addJoin(JGroupesProfesseursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -871,33 +912,34 @@ abstract class BaseJGroupesProfesseursPeer {
 	/**
 	 * Selects a collection of JGroupesProfesseurs objects pre-filled with all related objects except Groupe.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of JGroupesProfesseurs objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptGroupe(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JGroupesProfesseursPeer::addSelectColumns($c);
+		JGroupesProfesseursPeer::addSelectColumns($criteria);
 		$startcol2 = (JGroupesProfesseursPeer::NUM_COLUMNS - JGroupesProfesseursPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(JGroupesProfesseursPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(JGroupesProfesseursPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -907,9 +949,8 @@ abstract class BaseJGroupesProfesseursPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = JGroupesProfesseursPeer::getOMClass();
+				$cls = JGroupesProfesseursPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				JGroupesProfesseursPeer::addInstanceToPool($obj1, $key1);
@@ -922,10 +963,8 @@ abstract class BaseJGroupesProfesseursPeer {
 					$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -946,33 +985,34 @@ abstract class BaseJGroupesProfesseursPeer {
 	/**
 	 * Selects a collection of JGroupesProfesseurs objects pre-filled with all related objects except UtilisateurProfessionnel.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of JGroupesProfesseurs objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptUtilisateurProfessionnel(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JGroupesProfesseursPeer::addSelectColumns($c);
+		JGroupesProfesseursPeer::addSelectColumns($criteria);
 		$startcol2 = (JGroupesProfesseursPeer::NUM_COLUMNS - JGroupesProfesseursPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		GroupePeer::addSelectColumns($c);
+		GroupePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(JGroupesProfesseursPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+		$criteria->addJoin(JGroupesProfesseursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -982,9 +1022,8 @@ abstract class BaseJGroupesProfesseursPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = JGroupesProfesseursPeer::getOMClass();
+				$cls = JGroupesProfesseursPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				JGroupesProfesseursPeer::addInstanceToPool($obj1, $key1);
@@ -997,10 +1036,8 @@ abstract class BaseJGroupesProfesseursPeer {
 					$obj2 = GroupePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = GroupePeer::getOMClass();
+						$cls = GroupePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					GroupePeer::addInstanceToPool($obj2, $key2);
@@ -1030,17 +1067,31 @@ abstract class BaseJGroupesProfesseursPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseJGroupesProfesseursPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseJGroupesProfesseursPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new JGroupesProfesseursTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return JGroupesProfesseursPeer::CLASS_DEFAULT;
+		return $withPrefix ? JGroupesProfesseursPeer::CLASS_DEFAULT : JGroupesProfesseursPeer::OM_CLASS;
 	}
 
 	/**
@@ -1103,10 +1154,20 @@ abstract class BaseJGroupesProfesseursPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(JGroupesProfesseursPeer::ID_GROUPE);
-			$selectCriteria->add(JGroupesProfesseursPeer::ID_GROUPE, $criteria->remove(JGroupesProfesseursPeer::ID_GROUPE), $comparison);
+			$value = $criteria->remove(JGroupesProfesseursPeer::ID_GROUPE);
+			if ($value) {
+				$selectCriteria->add(JGroupesProfesseursPeer::ID_GROUPE, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(JGroupesProfesseursPeer::TABLE_NAME);
+			}
 
 			$comparison = $criteria->getComparison(JGroupesProfesseursPeer::LOGIN);
-			$selectCriteria->add(JGroupesProfesseursPeer::LOGIN, $criteria->remove(JGroupesProfesseursPeer::LOGIN), $comparison);
+			$value = $criteria->remove(JGroupesProfesseursPeer::LOGIN);
+			if ($value) {
+				$selectCriteria->add(JGroupesProfesseursPeer::LOGIN, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(JGroupesProfesseursPeer::TABLE_NAME);
+			}
 
 		} else { // $values is JGroupesProfesseurs object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -1135,6 +1196,11 @@ abstract class BaseJGroupesProfesseursPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += BasePeer::doDeleteAll(JGroupesProfesseursPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			JGroupesProfesseursPeer::clearInstancePool();
+			JGroupesProfesseursPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1165,34 +1231,25 @@ abstract class BaseJGroupesProfesseursPeer {
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
 			JGroupesProfesseursPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof JGroupesProfesseurs) {
+		} elseif ($values instanceof JGroupesProfesseurs) { // it's a model object
 			// invalidate the cache for this single object
 			JGroupesProfesseursPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			// primary key is composite; we therefore, expect
-			// the primary key passed to be an array of pkey
-			// values
+			// the primary key passed to be an array of pkey values
 			if (count($values) == count($values, COUNT_RECURSIVE)) {
 				// array is not multi-dimensional
 				$values = array($values);
 			}
-
 			foreach ($values as $value) {
-
 				$criterion = $criteria->getNewCriterion(JGroupesProfesseursPeer::ID_GROUPE, $value[0]);
 				$criterion->addAnd($criteria->getNewCriterion(JGroupesProfesseursPeer::LOGIN, $value[1]));
 				$criteria->addOr($criterion);
-
 				// we can invalidate the cache for this single PK
 				JGroupesProfesseursPeer::removeInstanceFromPool($value);
 			}
@@ -1209,7 +1266,7 @@ abstract class BaseJGroupesProfesseursPeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
+			JGroupesProfesseursPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1258,8 +1315,7 @@ abstract class BaseJGroupesProfesseursPeer {
 	/**
 	 * Retrieve object using using composite pkey values.
 	 * @param      int $id_groupe
-	   @param      string $login
-	   
+	 * @param      string $login
 	 * @param      PropelPDO $con
 	 * @return     JGroupesProfesseurs
 	 */
@@ -1281,14 +1337,7 @@ abstract class BaseJGroupesProfesseursPeer {
 	}
 } // BaseJGroupesProfesseursPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the JGroupesProfesseursPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the JGroupesProfesseursPeer class:
-//
-// Propel::getDatabaseMap(JGroupesProfesseursPeer::DATABASE_NAME)->addTableBuilder(JGroupesProfesseursPeer::TABLE_NAME, JGroupesProfesseursPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseJGroupesProfesseursPeer::DATABASE_NAME)->addTableBuilder(BaseJGroupesProfesseursPeer::TABLE_NAME, BaseJGroupesProfesseursPeer::getMapBuilder());
+BaseJGroupesProfesseursPeer::buildTableMap();
 

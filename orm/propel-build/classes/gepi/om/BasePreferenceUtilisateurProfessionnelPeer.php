@@ -5,7 +5,7 @@
  *
  * Preference (cle - valeur) associes à un utilisateur professionnel
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BasePreferenceUtilisateurProfessionnelPeer {
 
@@ -15,9 +15,15 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'preferences';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'PreferenceUtilisateurProfessionnel';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.PreferenceUtilisateurProfessionnel';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'PreferenceUtilisateurProfessionnelTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 3;
 
@@ -41,11 +47,6 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -57,6 +58,7 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 		BasePeer::TYPE_PHPNAME => array ('Name', 'Value', 'Login', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('name', 'value', 'login', ),
 		BasePeer::TYPE_COLNAME => array (self::NAME, self::VALUE, self::LOGIN, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('NAME', 'VALUE', 'LOGIN', ),
 		BasePeer::TYPE_FIELDNAME => array ('name', 'value', 'login', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, )
 	);
@@ -71,21 +73,11 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 		BasePeer::TYPE_PHPNAME => array ('Name' => 0, 'Value' => 1, 'Login' => 2, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('name' => 0, 'value' => 1, 'login' => 2, ),
 		BasePeer::TYPE_COLNAME => array (self::NAME => 0, self::VALUE => 1, self::LOGIN => 2, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('NAME' => 0, 'VALUE' => 1, 'LOGIN' => 2, ),
 		BasePeer::TYPE_FIELDNAME => array ('name' => 0, 'value' => 1, 'login' => 2, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new PreferenceUtilisateurProfessionnelMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -147,19 +139,22 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(PreferenceUtilisateurProfessionnelPeer::NAME);
-
-		$criteria->addSelectColumn(PreferenceUtilisateurProfessionnelPeer::VALUE);
-
-		$criteria->addSelectColumn(PreferenceUtilisateurProfessionnelPeer::LOGIN);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(PreferenceUtilisateurProfessionnelPeer::NAME);
+			$criteria->addSelectColumn(PreferenceUtilisateurProfessionnelPeer::VALUE);
+			$criteria->addSelectColumn(PreferenceUtilisateurProfessionnelPeer::LOGIN);
+		} else {
+			$criteria->addSelectColumn($alias . '.NAME');
+			$criteria->addSelectColumn($alias . '.VALUE');
+			$criteria->addSelectColumn($alias . '.LOGIN');
+		}
 	}
 
 	/**
@@ -347,6 +342,14 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to preferences
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -359,12 +362,26 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null && $row[$startcol + 2] === null) {
+		if ($row[$startcol] === null && $row[$startcol + 2] === null) {
 			return null;
 		}
-		return serialize(array((string) $row[$startcol + 0], (string) $row[$startcol + 2]));
+		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 2]));
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return array((string) $row[$startcol], (string) $row[$startcol + 2]);
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -377,8 +394,7 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = PreferenceUtilisateurProfessionnelPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = PreferenceUtilisateurProfessionnelPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = PreferenceUtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -388,7 +404,6 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -398,11 +413,36 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (PreferenceUtilisateurProfessionnel object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = PreferenceUtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = PreferenceUtilisateurProfessionnelPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + PreferenceUtilisateurProfessionnelPeer::NUM_COLUMNS;
+		} else {
+			$cls = PreferenceUtilisateurProfessionnelPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			PreferenceUtilisateurProfessionnelPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -435,7 +475,8 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 			$con = Propel::getConnection(PreferenceUtilisateurProfessionnelPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(PreferenceUtilisateurProfessionnelPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(PreferenceUtilisateurProfessionnelPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -450,28 +491,29 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 
 	/**
 	 * Selects a collection of PreferenceUtilisateurProfessionnel objects pre-filled with their UtilisateurProfessionnel objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of PreferenceUtilisateurProfessionnel objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinUtilisateurProfessionnel(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		PreferenceUtilisateurProfessionnelPeer::addSelectColumns($c);
+		PreferenceUtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol = (PreferenceUtilisateurProfessionnelPeer::NUM_COLUMNS - PreferenceUtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(PreferenceUtilisateurProfessionnelPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(PreferenceUtilisateurProfessionnelPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -482,9 +524,8 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = PreferenceUtilisateurProfessionnelPeer::getOMClass();
+				$cls = PreferenceUtilisateurProfessionnelPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				PreferenceUtilisateurProfessionnelPeer::addInstanceToPool($obj1, $key1);
@@ -495,9 +536,8 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 				$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = UtilisateurProfessionnelPeer::getOMClass();
+					$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -518,7 +558,7 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -551,7 +591,8 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 			$con = Propel::getConnection(PreferenceUtilisateurProfessionnelPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(PreferenceUtilisateurProfessionnelPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(PreferenceUtilisateurProfessionnelPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -566,30 +607,31 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 	/**
 	 * Selects a collection of PreferenceUtilisateurProfessionnel objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of PreferenceUtilisateurProfessionnel objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		PreferenceUtilisateurProfessionnelPeer::addSelectColumns($c);
+		PreferenceUtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol2 = (PreferenceUtilisateurProfessionnelPeer::NUM_COLUMNS - PreferenceUtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(PreferenceUtilisateurProfessionnelPeer::LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(PreferenceUtilisateurProfessionnelPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -599,9 +641,8 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = PreferenceUtilisateurProfessionnelPeer::getOMClass();
+				$cls = PreferenceUtilisateurProfessionnelPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				PreferenceUtilisateurProfessionnelPeer::addInstanceToPool($obj1, $key1);
@@ -614,10 +655,8 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 				$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = UtilisateurProfessionnelPeer::getOMClass();
+					$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -646,17 +685,31 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BasePreferenceUtilisateurProfessionnelPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BasePreferenceUtilisateurProfessionnelPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new PreferenceUtilisateurProfessionnelTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return PreferenceUtilisateurProfessionnelPeer::CLASS_DEFAULT;
+		return $withPrefix ? PreferenceUtilisateurProfessionnelPeer::CLASS_DEFAULT : PreferenceUtilisateurProfessionnelPeer::OM_CLASS;
 	}
 
 	/**
@@ -719,10 +772,20 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(PreferenceUtilisateurProfessionnelPeer::NAME);
-			$selectCriteria->add(PreferenceUtilisateurProfessionnelPeer::NAME, $criteria->remove(PreferenceUtilisateurProfessionnelPeer::NAME), $comparison);
+			$value = $criteria->remove(PreferenceUtilisateurProfessionnelPeer::NAME);
+			if ($value) {
+				$selectCriteria->add(PreferenceUtilisateurProfessionnelPeer::NAME, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(PreferenceUtilisateurProfessionnelPeer::TABLE_NAME);
+			}
 
 			$comparison = $criteria->getComparison(PreferenceUtilisateurProfessionnelPeer::LOGIN);
-			$selectCriteria->add(PreferenceUtilisateurProfessionnelPeer::LOGIN, $criteria->remove(PreferenceUtilisateurProfessionnelPeer::LOGIN), $comparison);
+			$value = $criteria->remove(PreferenceUtilisateurProfessionnelPeer::LOGIN);
+			if ($value) {
+				$selectCriteria->add(PreferenceUtilisateurProfessionnelPeer::LOGIN, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(PreferenceUtilisateurProfessionnelPeer::TABLE_NAME);
+			}
 
 		} else { // $values is PreferenceUtilisateurProfessionnel object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -751,6 +814,11 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += BasePeer::doDeleteAll(PreferenceUtilisateurProfessionnelPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			PreferenceUtilisateurProfessionnelPeer::clearInstancePool();
+			PreferenceUtilisateurProfessionnelPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -781,34 +849,25 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
 			PreferenceUtilisateurProfessionnelPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof PreferenceUtilisateurProfessionnel) {
+		} elseif ($values instanceof PreferenceUtilisateurProfessionnel) { // it's a model object
 			// invalidate the cache for this single object
 			PreferenceUtilisateurProfessionnelPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			// primary key is composite; we therefore, expect
-			// the primary key passed to be an array of pkey
-			// values
+			// the primary key passed to be an array of pkey values
 			if (count($values) == count($values, COUNT_RECURSIVE)) {
 				// array is not multi-dimensional
 				$values = array($values);
 			}
-
 			foreach ($values as $value) {
-
 				$criterion = $criteria->getNewCriterion(PreferenceUtilisateurProfessionnelPeer::NAME, $value[0]);
 				$criterion->addAnd($criteria->getNewCriterion(PreferenceUtilisateurProfessionnelPeer::LOGIN, $value[1]));
 				$criteria->addOr($criterion);
-
 				// we can invalidate the cache for this single PK
 				PreferenceUtilisateurProfessionnelPeer::removeInstanceFromPool($value);
 			}
@@ -825,7 +884,7 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
+			PreferenceUtilisateurProfessionnelPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -874,8 +933,7 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 	/**
 	 * Retrieve object using using composite pkey values.
 	 * @param      string $name
-	   @param      string $login
-	   
+	 * @param      string $login
 	 * @param      PropelPDO $con
 	 * @return     PreferenceUtilisateurProfessionnel
 	 */
@@ -897,14 +955,7 @@ abstract class BasePreferenceUtilisateurProfessionnelPeer {
 	}
 } // BasePreferenceUtilisateurProfessionnelPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the PreferenceUtilisateurProfessionnelPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the PreferenceUtilisateurProfessionnelPeer class:
-//
-// Propel::getDatabaseMap(PreferenceUtilisateurProfessionnelPeer::DATABASE_NAME)->addTableBuilder(PreferenceUtilisateurProfessionnelPeer::TABLE_NAME, PreferenceUtilisateurProfessionnelPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BasePreferenceUtilisateurProfessionnelPeer::DATABASE_NAME)->addTableBuilder(BasePreferenceUtilisateurProfessionnelPeer::TABLE_NAME, BasePreferenceUtilisateurProfessionnelPeer::getMapBuilder());
+BasePreferenceUtilisateurProfessionnelPeer::buildTableMap();
 

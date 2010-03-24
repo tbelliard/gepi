@@ -5,7 +5,7 @@
  *
  * Liste des motifs possibles pour une absence
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseAbsenceEleveMotifPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseAbsenceEleveMotifPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'a_motifs';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'AbsenceEleveMotif';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.AbsenceEleveMotif';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'AbsenceEleveMotifTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 4;
 
@@ -44,11 +50,6 @@ abstract class BaseAbsenceEleveMotifPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -60,6 +61,7 @@ abstract class BaseAbsenceEleveMotifPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'Commentaire', 'Ordre', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'commentaire', 'ordre', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::COMMENTAIRE, self::ORDRE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'COMMENTAIRE', 'ORDRE', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'commentaire', 'ordre', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
@@ -74,21 +76,11 @@ abstract class BaseAbsenceEleveMotifPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'Commentaire' => 2, 'Ordre' => 3, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'ordre' => 3, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::COMMENTAIRE => 2, self::ORDRE => 3, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'COMMENTAIRE' => 2, 'ORDRE' => 3, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'ordre' => 3, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new AbsenceEleveMotifMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -150,21 +142,24 @@ abstract class BaseAbsenceEleveMotifPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(AbsenceEleveMotifPeer::ID);
-
-		$criteria->addSelectColumn(AbsenceEleveMotifPeer::NOM);
-
-		$criteria->addSelectColumn(AbsenceEleveMotifPeer::COMMENTAIRE);
-
-		$criteria->addSelectColumn(AbsenceEleveMotifPeer::ORDRE);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(AbsenceEleveMotifPeer::ID);
+			$criteria->addSelectColumn(AbsenceEleveMotifPeer::NOM);
+			$criteria->addSelectColumn(AbsenceEleveMotifPeer::COMMENTAIRE);
+			$criteria->addSelectColumn(AbsenceEleveMotifPeer::ORDRE);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.NOM');
+			$criteria->addSelectColumn($alias . '.COMMENTAIRE');
+			$criteria->addSelectColumn($alias . '.ORDRE');
+		}
 	}
 
 	/**
@@ -352,6 +347,17 @@ abstract class BaseAbsenceEleveMotifPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to a_motifs
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in AbsenceEleveTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		AbsenceEleveTraitementPeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -364,12 +370,26 @@ abstract class BaseAbsenceEleveMotifPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -382,8 +402,7 @@ abstract class BaseAbsenceEleveMotifPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = AbsenceEleveMotifPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = AbsenceEleveMotifPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = AbsenceEleveMotifPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -393,7 +412,6 @@ abstract class BaseAbsenceEleveMotifPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -402,6 +420,31 @@ abstract class BaseAbsenceEleveMotifPeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (AbsenceEleveMotif object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = AbsenceEleveMotifPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = AbsenceEleveMotifPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + AbsenceEleveMotifPeer::NUM_COLUMNS;
+		} else {
+			$cls = AbsenceEleveMotifPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			AbsenceEleveMotifPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -416,17 +459,31 @@ abstract class BaseAbsenceEleveMotifPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseAbsenceEleveMotifPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseAbsenceEleveMotifPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new AbsenceEleveMotifTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return AbsenceEleveMotifPeer::CLASS_DEFAULT;
+		return $withPrefix ? AbsenceEleveMotifPeer::CLASS_DEFAULT : AbsenceEleveMotifPeer::OM_CLASS;
 	}
 
 	/**
@@ -493,7 +550,12 @@ abstract class BaseAbsenceEleveMotifPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(AbsenceEleveMotifPeer::ID);
-			$selectCriteria->add(AbsenceEleveMotifPeer::ID, $criteria->remove(AbsenceEleveMotifPeer::ID), $comparison);
+			$value = $criteria->remove(AbsenceEleveMotifPeer::ID);
+			if ($value) {
+				$selectCriteria->add(AbsenceEleveMotifPeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(AbsenceEleveMotifPeer::TABLE_NAME);
+			}
 
 		} else { // $values is AbsenceEleveMotif object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -523,6 +585,11 @@ abstract class BaseAbsenceEleveMotifPeer {
 			$con->beginTransaction();
 			AbsenceEleveMotifPeer::doOnDeleteSetNull(new Criteria(AbsenceEleveMotifPeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(AbsenceEleveMotifPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			AbsenceEleveMotifPeer::clearInstancePool();
+			AbsenceEleveMotifPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -549,30 +616,14 @@ abstract class BaseAbsenceEleveMotifPeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			AbsenceEleveMotifPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof AbsenceEleveMotif) {
-			// invalidate the cache for this single object
-			AbsenceEleveMotifPeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof AbsenceEleveMotif) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(AbsenceEleveMotifPeer::ID, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				AbsenceEleveMotifPeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -586,20 +637,21 @@ abstract class BaseAbsenceEleveMotifPeer {
 			$con->beginTransaction();
 			AbsenceEleveMotifPeer::doOnDeleteSetNull($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					AbsenceEleveMotifPeer::clearInstancePool();
-				} else { // it's a PK or object
-					AbsenceEleveMotifPeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				AbsenceEleveMotifPeer::clearInstancePool();
+			} elseif ($values instanceof AbsenceEleveMotif) { // it's a model object
+				AbsenceEleveMotifPeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					AbsenceEleveMotifPeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in AbsenceEleveTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceEleveTraitementPeer::clearInstancePool();
-
+			AbsenceEleveMotifPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -729,14 +781,7 @@ abstract class BaseAbsenceEleveMotifPeer {
 
 } // BaseAbsenceEleveMotifPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the AbsenceEleveMotifPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the AbsenceEleveMotifPeer class:
-//
-// Propel::getDatabaseMap(AbsenceEleveMotifPeer::DATABASE_NAME)->addTableBuilder(AbsenceEleveMotifPeer::TABLE_NAME, AbsenceEleveMotifPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseAbsenceEleveMotifPeer::DATABASE_NAME)->addTableBuilder(BaseAbsenceEleveMotifPeer::TABLE_NAME, BaseAbsenceEleveMotifPeer::getMapBuilder());
+BaseAbsenceEleveMotifPeer::buildTableMap();
 

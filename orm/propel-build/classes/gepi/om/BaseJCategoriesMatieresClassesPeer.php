@@ -5,7 +5,7 @@
  *
  * Liaison entre categories de matiere et classes
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseJCategoriesMatieresClassesPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'j_matieres_categories_classes';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'JCategoriesMatieresClasses';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.JCategoriesMatieresClasses';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'JCategoriesMatieresClassesTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 4;
 
@@ -44,11 +50,6 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -60,6 +61,7 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 		BasePeer::TYPE_PHPNAME => array ('CategorieId', 'ClasseId', 'AfficheMoyenne', 'Priority', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('categorieId', 'classeId', 'afficheMoyenne', 'priority', ),
 		BasePeer::TYPE_COLNAME => array (self::CATEGORIE_ID, self::CLASSE_ID, self::AFFICHE_MOYENNE, self::PRIORITY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('CATEGORIE_ID', 'CLASSE_ID', 'AFFICHE_MOYENNE', 'PRIORITY', ),
 		BasePeer::TYPE_FIELDNAME => array ('categorie_id', 'classe_id', 'affiche_moyenne', 'priority', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
@@ -74,21 +76,11 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 		BasePeer::TYPE_PHPNAME => array ('CategorieId' => 0, 'ClasseId' => 1, 'AfficheMoyenne' => 2, 'Priority' => 3, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('categorieId' => 0, 'classeId' => 1, 'afficheMoyenne' => 2, 'priority' => 3, ),
 		BasePeer::TYPE_COLNAME => array (self::CATEGORIE_ID => 0, self::CLASSE_ID => 1, self::AFFICHE_MOYENNE => 2, self::PRIORITY => 3, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('CATEGORIE_ID' => 0, 'CLASSE_ID' => 1, 'AFFICHE_MOYENNE' => 2, 'PRIORITY' => 3, ),
 		BasePeer::TYPE_FIELDNAME => array ('categorie_id' => 0, 'classe_id' => 1, 'affiche_moyenne' => 2, 'priority' => 3, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new JCategoriesMatieresClassesMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -150,21 +142,24 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(JCategoriesMatieresClassesPeer::CATEGORIE_ID);
-
-		$criteria->addSelectColumn(JCategoriesMatieresClassesPeer::CLASSE_ID);
-
-		$criteria->addSelectColumn(JCategoriesMatieresClassesPeer::AFFICHE_MOYENNE);
-
-		$criteria->addSelectColumn(JCategoriesMatieresClassesPeer::PRIORITY);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(JCategoriesMatieresClassesPeer::CATEGORIE_ID);
+			$criteria->addSelectColumn(JCategoriesMatieresClassesPeer::CLASSE_ID);
+			$criteria->addSelectColumn(JCategoriesMatieresClassesPeer::AFFICHE_MOYENNE);
+			$criteria->addSelectColumn(JCategoriesMatieresClassesPeer::PRIORITY);
+		} else {
+			$criteria->addSelectColumn($alias . '.CATEGORIE_ID');
+			$criteria->addSelectColumn($alias . '.CLASSE_ID');
+			$criteria->addSelectColumn($alias . '.AFFICHE_MOYENNE');
+			$criteria->addSelectColumn($alias . '.PRIORITY');
+		}
 	}
 
 	/**
@@ -352,6 +347,14 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to j_matieres_categories_classes
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -364,12 +367,26 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null && $row[$startcol + 1] === null) {
+		if ($row[$startcol] === null && $row[$startcol + 1] === null) {
 			return null;
 		}
-		return serialize(array((string) $row[$startcol + 0], (string) $row[$startcol + 1]));
+		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1]));
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return array((int) $row[$startcol], (int) $row[$startcol + 1]);
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -382,8 +399,7 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = JCategoriesMatieresClassesPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = JCategoriesMatieresClassesPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = JCategoriesMatieresClassesPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -393,7 +409,6 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -403,11 +418,36 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (JCategoriesMatieresClasses object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = JCategoriesMatieresClassesPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = JCategoriesMatieresClassesPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + JCategoriesMatieresClassesPeer::NUM_COLUMNS;
+		} else {
+			$cls = JCategoriesMatieresClassesPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			JCategoriesMatieresClassesPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related CategorieMatiere table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -440,7 +480,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 			$con = Propel::getConnection(JCategoriesMatieresClassesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(JCategoriesMatieresClassesPeer::CATEGORIE_ID,), array(CategorieMatierePeer::ID,), $join_behavior);
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -456,7 +497,7 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related Classe table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -489,7 +530,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 			$con = Propel::getConnection(JCategoriesMatieresClassesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(JCategoriesMatieresClassesPeer::CLASSE_ID,), array(ClassePeer::ID,), $join_behavior);
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CLASSE_ID, ClassePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -504,28 +546,29 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 
 	/**
 	 * Selects a collection of JCategoriesMatieresClasses objects pre-filled with their CategorieMatiere objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of JCategoriesMatieresClasses objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinCategorieMatiere(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinCategorieMatiere(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JCategoriesMatieresClassesPeer::addSelectColumns($c);
+		JCategoriesMatieresClassesPeer::addSelectColumns($criteria);
 		$startcol = (JCategoriesMatieresClassesPeer::NUM_COLUMNS - JCategoriesMatieresClassesPeer::NUM_LAZY_LOAD_COLUMNS);
-		CategorieMatierePeer::addSelectColumns($c);
+		CategorieMatierePeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(JCategoriesMatieresClassesPeer::CATEGORIE_ID,), array(CategorieMatierePeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -536,9 +579,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = JCategoriesMatieresClassesPeer::getOMClass();
+				$cls = JCategoriesMatieresClassesPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				JCategoriesMatieresClassesPeer::addInstanceToPool($obj1, $key1);
@@ -549,9 +591,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 				$obj2 = CategorieMatierePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = CategorieMatierePeer::getOMClass();
+					$cls = CategorieMatierePeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					CategorieMatierePeer::addInstanceToPool($obj2, $key2);
@@ -571,28 +612,29 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 
 	/**
 	 * Selects a collection of JCategoriesMatieresClasses objects pre-filled with their Classe objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of JCategoriesMatieresClasses objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinClasse(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinClasse(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JCategoriesMatieresClassesPeer::addSelectColumns($c);
+		JCategoriesMatieresClassesPeer::addSelectColumns($criteria);
 		$startcol = (JCategoriesMatieresClassesPeer::NUM_COLUMNS - JCategoriesMatieresClassesPeer::NUM_LAZY_LOAD_COLUMNS);
-		ClassePeer::addSelectColumns($c);
+		ClassePeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(JCategoriesMatieresClassesPeer::CLASSE_ID,), array(ClassePeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CLASSE_ID, ClassePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -603,9 +645,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = JCategoriesMatieresClassesPeer::getOMClass();
+				$cls = JCategoriesMatieresClassesPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				JCategoriesMatieresClassesPeer::addInstanceToPool($obj1, $key1);
@@ -616,9 +657,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 				$obj2 = ClassePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = ClassePeer::getOMClass();
+					$cls = ClassePeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					ClassePeer::addInstanceToPool($obj2, $key2);
@@ -639,7 +679,7 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -672,8 +712,10 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 			$con = Propel::getConnection(JCategoriesMatieresClassesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(JCategoriesMatieresClassesPeer::CATEGORIE_ID,), array(CategorieMatierePeer::ID,), $join_behavior);
-		$criteria->addJoin(array(JCategoriesMatieresClassesPeer::CLASSE_ID,), array(ClassePeer::ID,), $join_behavior);
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
+
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CLASSE_ID, ClassePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -688,34 +730,36 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	/**
 	 * Selects a collection of JCategoriesMatieresClasses objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of JCategoriesMatieresClasses objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JCategoriesMatieresClassesPeer::addSelectColumns($c);
+		JCategoriesMatieresClassesPeer::addSelectColumns($criteria);
 		$startcol2 = (JCategoriesMatieresClassesPeer::NUM_COLUMNS - JCategoriesMatieresClassesPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		CategorieMatierePeer::addSelectColumns($c);
+		CategorieMatierePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (CategorieMatierePeer::NUM_COLUMNS - CategorieMatierePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		ClassePeer::addSelectColumns($c);
+		ClassePeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(JCategoriesMatieresClassesPeer::CATEGORIE_ID,), array(CategorieMatierePeer::ID,), $join_behavior);
-		$c->addJoin(array(JCategoriesMatieresClassesPeer::CLASSE_ID,), array(ClassePeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
+
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CLASSE_ID, ClassePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -725,9 +769,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = JCategoriesMatieresClassesPeer::getOMClass();
+				$cls = JCategoriesMatieresClassesPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				JCategoriesMatieresClassesPeer::addInstanceToPool($obj1, $key1);
@@ -740,10 +783,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 				$obj2 = CategorieMatierePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = CategorieMatierePeer::getOMClass();
+					$cls = CategorieMatierePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					CategorieMatierePeer::addInstanceToPool($obj2, $key2);
@@ -760,10 +801,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 				$obj3 = ClassePeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$omClass = ClassePeer::getOMClass();
+					$cls = ClassePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					ClassePeer::addInstanceToPool($obj3, $key3);
@@ -783,7 +822,7 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related CategorieMatiere table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -816,7 +855,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 			$con = Propel::getConnection(JCategoriesMatieresClassesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(JCategoriesMatieresClassesPeer::CLASSE_ID,), array(ClassePeer::ID,), $join_behavior);
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CLASSE_ID, ClassePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -832,7 +872,7 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related Classe table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -865,7 +905,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 			$con = Propel::getConnection(JCategoriesMatieresClassesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(JCategoriesMatieresClassesPeer::CATEGORIE_ID,), array(CategorieMatierePeer::ID,), $join_behavior);
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -881,33 +922,34 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	/**
 	 * Selects a collection of JCategoriesMatieresClasses objects pre-filled with all related objects except CategorieMatiere.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of JCategoriesMatieresClasses objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptCategorieMatiere(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptCategorieMatiere(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JCategoriesMatieresClassesPeer::addSelectColumns($c);
+		JCategoriesMatieresClassesPeer::addSelectColumns($criteria);
 		$startcol2 = (JCategoriesMatieresClassesPeer::NUM_COLUMNS - JCategoriesMatieresClassesPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		ClassePeer::addSelectColumns($c);
+		ClassePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(JCategoriesMatieresClassesPeer::CLASSE_ID,), array(ClassePeer::ID,), $join_behavior);
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CLASSE_ID, ClassePeer::ID, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -917,9 +959,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = JCategoriesMatieresClassesPeer::getOMClass();
+				$cls = JCategoriesMatieresClassesPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				JCategoriesMatieresClassesPeer::addInstanceToPool($obj1, $key1);
@@ -932,10 +973,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 					$obj2 = ClassePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = ClassePeer::getOMClass();
+						$cls = ClassePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					ClassePeer::addInstanceToPool($obj2, $key2);
@@ -956,33 +995,34 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	/**
 	 * Selects a collection of JCategoriesMatieresClasses objects pre-filled with all related objects except Classe.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of JCategoriesMatieresClasses objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptClasse(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptClasse(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JCategoriesMatieresClassesPeer::addSelectColumns($c);
+		JCategoriesMatieresClassesPeer::addSelectColumns($criteria);
 		$startcol2 = (JCategoriesMatieresClassesPeer::NUM_COLUMNS - JCategoriesMatieresClassesPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		CategorieMatierePeer::addSelectColumns($c);
+		CategorieMatierePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (CategorieMatierePeer::NUM_COLUMNS - CategorieMatierePeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(JCategoriesMatieresClassesPeer::CATEGORIE_ID,), array(CategorieMatierePeer::ID,), $join_behavior);
+		$criteria->addJoin(JCategoriesMatieresClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -992,9 +1032,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = JCategoriesMatieresClassesPeer::getOMClass();
+				$cls = JCategoriesMatieresClassesPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				JCategoriesMatieresClassesPeer::addInstanceToPool($obj1, $key1);
@@ -1007,10 +1046,8 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 					$obj2 = CategorieMatierePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = CategorieMatierePeer::getOMClass();
+						$cls = CategorieMatierePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					CategorieMatierePeer::addInstanceToPool($obj2, $key2);
@@ -1040,17 +1077,31 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseJCategoriesMatieresClassesPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseJCategoriesMatieresClassesPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new JCategoriesMatieresClassesTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return JCategoriesMatieresClassesPeer::CLASS_DEFAULT;
+		return $withPrefix ? JCategoriesMatieresClassesPeer::CLASS_DEFAULT : JCategoriesMatieresClassesPeer::OM_CLASS;
 	}
 
 	/**
@@ -1113,10 +1164,20 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(JCategoriesMatieresClassesPeer::CATEGORIE_ID);
-			$selectCriteria->add(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $criteria->remove(JCategoriesMatieresClassesPeer::CATEGORIE_ID), $comparison);
+			$value = $criteria->remove(JCategoriesMatieresClassesPeer::CATEGORIE_ID);
+			if ($value) {
+				$selectCriteria->add(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(JCategoriesMatieresClassesPeer::TABLE_NAME);
+			}
 
 			$comparison = $criteria->getComparison(JCategoriesMatieresClassesPeer::CLASSE_ID);
-			$selectCriteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $criteria->remove(JCategoriesMatieresClassesPeer::CLASSE_ID), $comparison);
+			$value = $criteria->remove(JCategoriesMatieresClassesPeer::CLASSE_ID);
+			if ($value) {
+				$selectCriteria->add(JCategoriesMatieresClassesPeer::CLASSE_ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(JCategoriesMatieresClassesPeer::TABLE_NAME);
+			}
 
 		} else { // $values is JCategoriesMatieresClasses object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -1145,6 +1206,11 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += BasePeer::doDeleteAll(JCategoriesMatieresClassesPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			JCategoriesMatieresClassesPeer::clearInstancePool();
+			JCategoriesMatieresClassesPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1175,34 +1241,25 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
 			JCategoriesMatieresClassesPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof JCategoriesMatieresClasses) {
+		} elseif ($values instanceof JCategoriesMatieresClasses) { // it's a model object
 			// invalidate the cache for this single object
 			JCategoriesMatieresClassesPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			// primary key is composite; we therefore, expect
-			// the primary key passed to be an array of pkey
-			// values
+			// the primary key passed to be an array of pkey values
 			if (count($values) == count($values, COUNT_RECURSIVE)) {
 				// array is not multi-dimensional
 				$values = array($values);
 			}
-
 			foreach ($values as $value) {
-
 				$criterion = $criteria->getNewCriterion(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $value[0]);
 				$criterion->addAnd($criteria->getNewCriterion(JCategoriesMatieresClassesPeer::CLASSE_ID, $value[1]));
 				$criteria->addOr($criterion);
-
 				// we can invalidate the cache for this single PK
 				JCategoriesMatieresClassesPeer::removeInstanceFromPool($value);
 			}
@@ -1219,7 +1276,7 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
+			JCategoriesMatieresClassesPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1268,8 +1325,7 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	/**
 	 * Retrieve object using using composite pkey values.
 	 * @param      int $categorie_id
-	   @param      int $classe_id
-	   
+	 * @param      int $classe_id
 	 * @param      PropelPDO $con
 	 * @return     JCategoriesMatieresClasses
 	 */
@@ -1291,14 +1347,7 @@ abstract class BaseJCategoriesMatieresClassesPeer {
 	}
 } // BaseJCategoriesMatieresClassesPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the JCategoriesMatieresClassesPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the JCategoriesMatieresClassesPeer class:
-//
-// Propel::getDatabaseMap(JCategoriesMatieresClassesPeer::DATABASE_NAME)->addTableBuilder(JCategoriesMatieresClassesPeer::TABLE_NAME, JCategoriesMatieresClassesPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseJCategoriesMatieresClassesPeer::DATABASE_NAME)->addTableBuilder(BaseJCategoriesMatieresClassesPeer::TABLE_NAME, BaseJCategoriesMatieresClassesPeer::getMapBuilder());
+BaseJCategoriesMatieresClassesPeer::buildTableMap();
 

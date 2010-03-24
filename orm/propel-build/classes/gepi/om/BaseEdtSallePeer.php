@@ -5,7 +5,7 @@
  *
  * Liste des salles de classe
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseEdtSallePeer {
 
@@ -15,9 +15,15 @@ abstract class BaseEdtSallePeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'salle_cours';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'EdtSalle';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.EdtSalle';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'EdtSalleTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 3;
 
@@ -41,11 +47,6 @@ abstract class BaseEdtSallePeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -57,6 +58,7 @@ abstract class BaseEdtSallePeer {
 		BasePeer::TYPE_PHPNAME => array ('IdSalle', 'NumeroSalle', 'NomSalle', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idSalle', 'numeroSalle', 'nomSalle', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_SALLE, self::NUMERO_SALLE, self::NOM_SALLE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_SALLE', 'NUMERO_SALLE', 'NOM_SALLE', ),
 		BasePeer::TYPE_FIELDNAME => array ('id_salle', 'numero_salle', 'nom_salle', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, )
 	);
@@ -71,21 +73,11 @@ abstract class BaseEdtSallePeer {
 		BasePeer::TYPE_PHPNAME => array ('IdSalle' => 0, 'NumeroSalle' => 1, 'NomSalle' => 2, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idSalle' => 0, 'numeroSalle' => 1, 'nomSalle' => 2, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_SALLE => 0, self::NUMERO_SALLE => 1, self::NOM_SALLE => 2, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_SALLE' => 0, 'NUMERO_SALLE' => 1, 'NOM_SALLE' => 2, ),
 		BasePeer::TYPE_FIELDNAME => array ('id_salle' => 0, 'numero_salle' => 1, 'nom_salle' => 2, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new EdtSalleMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -147,19 +139,22 @@ abstract class BaseEdtSallePeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(EdtSallePeer::ID_SALLE);
-
-		$criteria->addSelectColumn(EdtSallePeer::NUMERO_SALLE);
-
-		$criteria->addSelectColumn(EdtSallePeer::NOM_SALLE);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(EdtSallePeer::ID_SALLE);
+			$criteria->addSelectColumn(EdtSallePeer::NUMERO_SALLE);
+			$criteria->addSelectColumn(EdtSallePeer::NOM_SALLE);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID_SALLE');
+			$criteria->addSelectColumn($alias . '.NUMERO_SALLE');
+			$criteria->addSelectColumn($alias . '.NOM_SALLE');
+		}
 	}
 
 	/**
@@ -347,6 +342,17 @@ abstract class BaseEdtSallePeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to salle_cours
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		EdtEmplacementCoursPeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -359,12 +365,26 @@ abstract class BaseEdtSallePeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -377,8 +397,7 @@ abstract class BaseEdtSallePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = EdtSallePeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = EdtSallePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = EdtSallePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -388,7 +407,6 @@ abstract class BaseEdtSallePeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -397,6 +415,31 @@ abstract class BaseEdtSallePeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (EdtSalle object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = EdtSallePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = EdtSallePeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + EdtSallePeer::NUM_COLUMNS;
+		} else {
+			$cls = EdtSallePeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			EdtSallePeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -411,17 +454,31 @@ abstract class BaseEdtSallePeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseEdtSallePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseEdtSallePeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new EdtSalleTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return EdtSallePeer::CLASS_DEFAULT;
+		return $withPrefix ? EdtSallePeer::CLASS_DEFAULT : EdtSallePeer::OM_CLASS;
 	}
 
 	/**
@@ -484,7 +541,12 @@ abstract class BaseEdtSallePeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(EdtSallePeer::ID_SALLE);
-			$selectCriteria->add(EdtSallePeer::ID_SALLE, $criteria->remove(EdtSallePeer::ID_SALLE), $comparison);
+			$value = $criteria->remove(EdtSallePeer::ID_SALLE);
+			if ($value) {
+				$selectCriteria->add(EdtSallePeer::ID_SALLE, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(EdtSallePeer::TABLE_NAME);
+			}
 
 		} else { // $values is EdtSalle object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -514,6 +576,11 @@ abstract class BaseEdtSallePeer {
 			$con->beginTransaction();
 			EdtSallePeer::doOnDeleteSetNull(new Criteria(EdtSallePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(EdtSallePeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			EdtSallePeer::clearInstancePool();
+			EdtSallePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -540,30 +607,14 @@ abstract class BaseEdtSallePeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			EdtSallePeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof EdtSalle) {
-			// invalidate the cache for this single object
-			EdtSallePeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof EdtSalle) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(EdtSallePeer::ID_SALLE, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				EdtSallePeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -577,20 +628,21 @@ abstract class BaseEdtSallePeer {
 			$con->beginTransaction();
 			EdtSallePeer::doOnDeleteSetNull($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					EdtSallePeer::clearInstancePool();
-				} else { // it's a PK or object
-					EdtSallePeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				EdtSallePeer::clearInstancePool();
+			} elseif ($values instanceof EdtSalle) { // it's a model object
+				EdtSallePeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					EdtSallePeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			EdtEmplacementCoursPeer::clearInstancePool();
-
+			EdtSallePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -720,14 +772,7 @@ abstract class BaseEdtSallePeer {
 
 } // BaseEdtSallePeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the EdtSallePeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the EdtSallePeer class:
-//
-// Propel::getDatabaseMap(EdtSallePeer::DATABASE_NAME)->addTableBuilder(EdtSallePeer::TABLE_NAME, EdtSallePeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseEdtSallePeer::DATABASE_NAME)->addTableBuilder(BaseEdtSallePeer::TABLE_NAME, BaseEdtSallePeer::getMapBuilder());
+BaseEdtSallePeer::buildTableMap();
 

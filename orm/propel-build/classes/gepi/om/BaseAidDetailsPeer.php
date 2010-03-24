@@ -5,7 +5,7 @@
  *
  * Liste des AID (Activites Inter-Disciplinaires)
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseAidDetailsPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseAidDetailsPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'aid';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'AidDetails';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.AidDetails';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'AidDetailsTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 24;
 
@@ -104,11 +110,6 @@ abstract class BaseAidDetailsPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -120,6 +121,7 @@ abstract class BaseAidDetailsPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'Numero', 'IndiceAid', 'Perso1', 'Perso2', 'Perso3', 'Productions', 'Resume', 'Famille', 'MotsCles', 'Adresse1', 'Adresse2', 'PublicDestinataire', 'Contacts', 'Divers', 'Matiere1', 'Matiere2', 'ElevePeutModifier', 'ProfPeutModifier', 'CpePeutModifier', 'FichePublique', 'AfficheAdresse1', 'EnConstruction', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'numero', 'indiceAid', 'perso1', 'perso2', 'perso3', 'productions', 'resume', 'famille', 'motsCles', 'adresse1', 'adresse2', 'publicDestinataire', 'contacts', 'divers', 'matiere1', 'matiere2', 'elevePeutModifier', 'profPeutModifier', 'cpePeutModifier', 'fichePublique', 'afficheAdresse1', 'enConstruction', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::NUMERO, self::INDICE_AID, self::PERSO1, self::PERSO2, self::PERSO3, self::PRODUCTIONS, self::RESUME, self::FAMILLE, self::MOTS_CLES, self::ADRESSE1, self::ADRESSE2, self::PUBLIC_DESTINATAIRE, self::CONTACTS, self::DIVERS, self::MATIERE1, self::MATIERE2, self::ELEVE_PEUT_MODIFIER, self::PROF_PEUT_MODIFIER, self::CPE_PEUT_MODIFIER, self::FICHE_PUBLIQUE, self::AFFICHE_ADRESSE1, self::EN_CONSTRUCTION, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'NUMERO', 'INDICE_AID', 'PERSO1', 'PERSO2', 'PERSO3', 'PRODUCTIONS', 'RESUME', 'FAMILLE', 'MOTS_CLES', 'ADRESSE1', 'ADRESSE2', 'PUBLIC_DESTINATAIRE', 'CONTACTS', 'DIVERS', 'MATIERE1', 'MATIERE2', 'ELEVE_PEUT_MODIFIER', 'PROF_PEUT_MODIFIER', 'CPE_PEUT_MODIFIER', 'FICHE_PUBLIQUE', 'AFFICHE_ADRESSE1', 'EN_CONSTRUCTION', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'numero', 'indice_aid', 'perso1', 'perso2', 'perso3', 'productions', 'resume', 'famille', 'mots_cles', 'adresse1', 'adresse2', 'public_destinataire', 'contacts', 'divers', 'matiere1', 'matiere2', 'eleve_peut_modifier', 'prof_peut_modifier', 'cpe_peut_modifier', 'fiche_publique', 'affiche_adresse1', 'en_construction', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, )
 	);
@@ -134,21 +136,11 @@ abstract class BaseAidDetailsPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'Numero' => 2, 'IndiceAid' => 3, 'Perso1' => 4, 'Perso2' => 5, 'Perso3' => 6, 'Productions' => 7, 'Resume' => 8, 'Famille' => 9, 'MotsCles' => 10, 'Adresse1' => 11, 'Adresse2' => 12, 'PublicDestinataire' => 13, 'Contacts' => 14, 'Divers' => 15, 'Matiere1' => 16, 'Matiere2' => 17, 'ElevePeutModifier' => 18, 'ProfPeutModifier' => 19, 'CpePeutModifier' => 20, 'FichePublique' => 21, 'AfficheAdresse1' => 22, 'EnConstruction' => 23, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'numero' => 2, 'indiceAid' => 3, 'perso1' => 4, 'perso2' => 5, 'perso3' => 6, 'productions' => 7, 'resume' => 8, 'famille' => 9, 'motsCles' => 10, 'adresse1' => 11, 'adresse2' => 12, 'publicDestinataire' => 13, 'contacts' => 14, 'divers' => 15, 'matiere1' => 16, 'matiere2' => 17, 'elevePeutModifier' => 18, 'profPeutModifier' => 19, 'cpePeutModifier' => 20, 'fichePublique' => 21, 'afficheAdresse1' => 22, 'enConstruction' => 23, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::NUMERO => 2, self::INDICE_AID => 3, self::PERSO1 => 4, self::PERSO2 => 5, self::PERSO3 => 6, self::PRODUCTIONS => 7, self::RESUME => 8, self::FAMILLE => 9, self::MOTS_CLES => 10, self::ADRESSE1 => 11, self::ADRESSE2 => 12, self::PUBLIC_DESTINATAIRE => 13, self::CONTACTS => 14, self::DIVERS => 15, self::MATIERE1 => 16, self::MATIERE2 => 17, self::ELEVE_PEUT_MODIFIER => 18, self::PROF_PEUT_MODIFIER => 19, self::CPE_PEUT_MODIFIER => 20, self::FICHE_PUBLIQUE => 21, self::AFFICHE_ADRESSE1 => 22, self::EN_CONSTRUCTION => 23, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'NUMERO' => 2, 'INDICE_AID' => 3, 'PERSO1' => 4, 'PERSO2' => 5, 'PERSO3' => 6, 'PRODUCTIONS' => 7, 'RESUME' => 8, 'FAMILLE' => 9, 'MOTS_CLES' => 10, 'ADRESSE1' => 11, 'ADRESSE2' => 12, 'PUBLIC_DESTINATAIRE' => 13, 'CONTACTS' => 14, 'DIVERS' => 15, 'MATIERE1' => 16, 'MATIERE2' => 17, 'ELEVE_PEUT_MODIFIER' => 18, 'PROF_PEUT_MODIFIER' => 19, 'CPE_PEUT_MODIFIER' => 20, 'FICHE_PUBLIQUE' => 21, 'AFFICHE_ADRESSE1' => 22, 'EN_CONSTRUCTION' => 23, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'numero' => 2, 'indice_aid' => 3, 'perso1' => 4, 'perso2' => 5, 'perso3' => 6, 'productions' => 7, 'resume' => 8, 'famille' => 9, 'mots_cles' => 10, 'adresse1' => 11, 'adresse2' => 12, 'public_destinataire' => 13, 'contacts' => 14, 'divers' => 15, 'matiere1' => 16, 'matiere2' => 17, 'eleve_peut_modifier' => 18, 'prof_peut_modifier' => 19, 'cpe_peut_modifier' => 20, 'fiche_publique' => 21, 'affiche_adresse1' => 22, 'en_construction' => 23, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new AidDetailsMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -210,61 +202,64 @@ abstract class BaseAidDetailsPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(AidDetailsPeer::ID);
-
-		$criteria->addSelectColumn(AidDetailsPeer::NOM);
-
-		$criteria->addSelectColumn(AidDetailsPeer::NUMERO);
-
-		$criteria->addSelectColumn(AidDetailsPeer::INDICE_AID);
-
-		$criteria->addSelectColumn(AidDetailsPeer::PERSO1);
-
-		$criteria->addSelectColumn(AidDetailsPeer::PERSO2);
-
-		$criteria->addSelectColumn(AidDetailsPeer::PERSO3);
-
-		$criteria->addSelectColumn(AidDetailsPeer::PRODUCTIONS);
-
-		$criteria->addSelectColumn(AidDetailsPeer::RESUME);
-
-		$criteria->addSelectColumn(AidDetailsPeer::FAMILLE);
-
-		$criteria->addSelectColumn(AidDetailsPeer::MOTS_CLES);
-
-		$criteria->addSelectColumn(AidDetailsPeer::ADRESSE1);
-
-		$criteria->addSelectColumn(AidDetailsPeer::ADRESSE2);
-
-		$criteria->addSelectColumn(AidDetailsPeer::PUBLIC_DESTINATAIRE);
-
-		$criteria->addSelectColumn(AidDetailsPeer::CONTACTS);
-
-		$criteria->addSelectColumn(AidDetailsPeer::DIVERS);
-
-		$criteria->addSelectColumn(AidDetailsPeer::MATIERE1);
-
-		$criteria->addSelectColumn(AidDetailsPeer::MATIERE2);
-
-		$criteria->addSelectColumn(AidDetailsPeer::ELEVE_PEUT_MODIFIER);
-
-		$criteria->addSelectColumn(AidDetailsPeer::PROF_PEUT_MODIFIER);
-
-		$criteria->addSelectColumn(AidDetailsPeer::CPE_PEUT_MODIFIER);
-
-		$criteria->addSelectColumn(AidDetailsPeer::FICHE_PUBLIQUE);
-
-		$criteria->addSelectColumn(AidDetailsPeer::AFFICHE_ADRESSE1);
-
-		$criteria->addSelectColumn(AidDetailsPeer::EN_CONSTRUCTION);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(AidDetailsPeer::ID);
+			$criteria->addSelectColumn(AidDetailsPeer::NOM);
+			$criteria->addSelectColumn(AidDetailsPeer::NUMERO);
+			$criteria->addSelectColumn(AidDetailsPeer::INDICE_AID);
+			$criteria->addSelectColumn(AidDetailsPeer::PERSO1);
+			$criteria->addSelectColumn(AidDetailsPeer::PERSO2);
+			$criteria->addSelectColumn(AidDetailsPeer::PERSO3);
+			$criteria->addSelectColumn(AidDetailsPeer::PRODUCTIONS);
+			$criteria->addSelectColumn(AidDetailsPeer::RESUME);
+			$criteria->addSelectColumn(AidDetailsPeer::FAMILLE);
+			$criteria->addSelectColumn(AidDetailsPeer::MOTS_CLES);
+			$criteria->addSelectColumn(AidDetailsPeer::ADRESSE1);
+			$criteria->addSelectColumn(AidDetailsPeer::ADRESSE2);
+			$criteria->addSelectColumn(AidDetailsPeer::PUBLIC_DESTINATAIRE);
+			$criteria->addSelectColumn(AidDetailsPeer::CONTACTS);
+			$criteria->addSelectColumn(AidDetailsPeer::DIVERS);
+			$criteria->addSelectColumn(AidDetailsPeer::MATIERE1);
+			$criteria->addSelectColumn(AidDetailsPeer::MATIERE2);
+			$criteria->addSelectColumn(AidDetailsPeer::ELEVE_PEUT_MODIFIER);
+			$criteria->addSelectColumn(AidDetailsPeer::PROF_PEUT_MODIFIER);
+			$criteria->addSelectColumn(AidDetailsPeer::CPE_PEUT_MODIFIER);
+			$criteria->addSelectColumn(AidDetailsPeer::FICHE_PUBLIQUE);
+			$criteria->addSelectColumn(AidDetailsPeer::AFFICHE_ADRESSE1);
+			$criteria->addSelectColumn(AidDetailsPeer::EN_CONSTRUCTION);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.NOM');
+			$criteria->addSelectColumn($alias . '.NUMERO');
+			$criteria->addSelectColumn($alias . '.INDICE_AID');
+			$criteria->addSelectColumn($alias . '.PERSO1');
+			$criteria->addSelectColumn($alias . '.PERSO2');
+			$criteria->addSelectColumn($alias . '.PERSO3');
+			$criteria->addSelectColumn($alias . '.PRODUCTIONS');
+			$criteria->addSelectColumn($alias . '.RESUME');
+			$criteria->addSelectColumn($alias . '.FAMILLE');
+			$criteria->addSelectColumn($alias . '.MOTS_CLES');
+			$criteria->addSelectColumn($alias . '.ADRESSE1');
+			$criteria->addSelectColumn($alias . '.ADRESSE2');
+			$criteria->addSelectColumn($alias . '.PUBLIC_DESTINATAIRE');
+			$criteria->addSelectColumn($alias . '.CONTACTS');
+			$criteria->addSelectColumn($alias . '.DIVERS');
+			$criteria->addSelectColumn($alias . '.MATIERE1');
+			$criteria->addSelectColumn($alias . '.MATIERE2');
+			$criteria->addSelectColumn($alias . '.ELEVE_PEUT_MODIFIER');
+			$criteria->addSelectColumn($alias . '.PROF_PEUT_MODIFIER');
+			$criteria->addSelectColumn($alias . '.CPE_PEUT_MODIFIER');
+			$criteria->addSelectColumn($alias . '.FICHE_PUBLIQUE');
+			$criteria->addSelectColumn($alias . '.AFFICHE_ADRESSE1');
+			$criteria->addSelectColumn($alias . '.EN_CONSTRUCTION');
+		}
 	}
 
 	/**
@@ -452,6 +447,23 @@ abstract class BaseAidDetailsPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to aid
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JAidUtilisateursProfessionnelsPeer::clearInstancePool();
+
+		// invalidate objects in JAidElevesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JAidElevesPeer::clearInstancePool();
+
+		// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		EdtEmplacementCoursPeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -464,12 +476,26 @@ abstract class BaseAidDetailsPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (string) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -482,8 +508,7 @@ abstract class BaseAidDetailsPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = AidDetailsPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = AidDetailsPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = AidDetailsPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -493,7 +518,6 @@ abstract class BaseAidDetailsPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -503,11 +527,36 @@ abstract class BaseAidDetailsPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (AidDetails object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = AidDetailsPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = AidDetailsPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + AidDetailsPeer::NUM_COLUMNS;
+		} else {
+			$cls = AidDetailsPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			AidDetailsPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related AidConfiguration table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -540,7 +589,8 @@ abstract class BaseAidDetailsPeer {
 			$con = Propel::getConnection(AidDetailsPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(AidDetailsPeer::INDICE_AID,), array(AidConfigurationPeer::INDICE_AID,), $join_behavior);
+		$criteria->addJoin(AidDetailsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -555,28 +605,29 @@ abstract class BaseAidDetailsPeer {
 
 	/**
 	 * Selects a collection of AidDetails objects pre-filled with their AidConfiguration objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AidDetails objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAidConfiguration(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAidConfiguration(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AidDetailsPeer::addSelectColumns($c);
+		AidDetailsPeer::addSelectColumns($criteria);
 		$startcol = (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
-		AidConfigurationPeer::addSelectColumns($c);
+		AidConfigurationPeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(AidDetailsPeer::INDICE_AID,), array(AidConfigurationPeer::INDICE_AID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AidDetailsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -587,9 +638,8 @@ abstract class BaseAidDetailsPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = AidDetailsPeer::getOMClass();
+				$cls = AidDetailsPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AidDetailsPeer::addInstanceToPool($obj1, $key1);
@@ -600,9 +650,8 @@ abstract class BaseAidDetailsPeer {
 				$obj2 = AidConfigurationPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = AidConfigurationPeer::getOMClass();
+					$cls = AidConfigurationPeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					AidConfigurationPeer::addInstanceToPool($obj2, $key2);
@@ -623,7 +672,7 @@ abstract class BaseAidDetailsPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -656,7 +705,8 @@ abstract class BaseAidDetailsPeer {
 			$con = Propel::getConnection(AidDetailsPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(AidDetailsPeer::INDICE_AID,), array(AidConfigurationPeer::INDICE_AID,), $join_behavior);
+		$criteria->addJoin(AidDetailsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -671,30 +721,31 @@ abstract class BaseAidDetailsPeer {
 	/**
 	 * Selects a collection of AidDetails objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AidDetails objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AidDetailsPeer::addSelectColumns($c);
+		AidDetailsPeer::addSelectColumns($criteria);
 		$startcol2 = (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AidConfigurationPeer::addSelectColumns($c);
+		AidConfigurationPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (AidConfigurationPeer::NUM_COLUMNS - AidConfigurationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(AidDetailsPeer::INDICE_AID,), array(AidConfigurationPeer::INDICE_AID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AidDetailsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -704,9 +755,8 @@ abstract class BaseAidDetailsPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = AidDetailsPeer::getOMClass();
+				$cls = AidDetailsPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AidDetailsPeer::addInstanceToPool($obj1, $key1);
@@ -719,10 +769,8 @@ abstract class BaseAidDetailsPeer {
 				$obj2 = AidConfigurationPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = AidConfigurationPeer::getOMClass();
+					$cls = AidConfigurationPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					AidConfigurationPeer::addInstanceToPool($obj2, $key2);
@@ -751,17 +799,31 @@ abstract class BaseAidDetailsPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseAidDetailsPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseAidDetailsPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new AidDetailsTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return AidDetailsPeer::CLASS_DEFAULT;
+		return $withPrefix ? AidDetailsPeer::CLASS_DEFAULT : AidDetailsPeer::OM_CLASS;
 	}
 
 	/**
@@ -828,7 +890,12 @@ abstract class BaseAidDetailsPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(AidDetailsPeer::ID);
-			$selectCriteria->add(AidDetailsPeer::ID, $criteria->remove(AidDetailsPeer::ID), $comparison);
+			$value = $criteria->remove(AidDetailsPeer::ID);
+			if ($value) {
+				$selectCriteria->add(AidDetailsPeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(AidDetailsPeer::TABLE_NAME);
+			}
 
 		} else { // $values is AidDetails object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -858,6 +925,11 @@ abstract class BaseAidDetailsPeer {
 			$con->beginTransaction();
 			$affectedRows += AidDetailsPeer::doOnDeleteCascade(new Criteria(AidDetailsPeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(AidDetailsPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			AidDetailsPeer::clearInstancePool();
+			AidDetailsPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -884,30 +956,14 @@ abstract class BaseAidDetailsPeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			AidDetailsPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof AidDetails) {
-			// invalidate the cache for this single object
-			AidDetailsPeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof AidDetails) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(AidDetailsPeer::ID, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				AidDetailsPeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -921,26 +977,21 @@ abstract class BaseAidDetailsPeer {
 			$con->beginTransaction();
 			$affectedRows += AidDetailsPeer::doOnDeleteCascade($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					AidDetailsPeer::clearInstancePool();
-				} else { // it's a PK or object
-					AidDetailsPeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				AidDetailsPeer::clearInstancePool();
+			} elseif ($values instanceof AidDetails) { // it's a model object
+				AidDetailsPeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					AidDetailsPeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JAidUtilisateursProfessionnelsPeer::clearInstancePool();
-
-			// invalidate objects in JAidElevesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JAidElevesPeer::clearInstancePool();
-
-			// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			EdtEmplacementCoursPeer::clearInstancePool();
-
+			AidDetailsPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -973,22 +1024,22 @@ abstract class BaseAidDetailsPeer {
 
 
 			// delete related JAidUtilisateursProfessionnels objects
-			$c = new Criteria(JAidUtilisateursProfessionnelsPeer::DATABASE_NAME);
+			$criteria = new Criteria(JAidUtilisateursProfessionnelsPeer::DATABASE_NAME);
 			
-			$c->add(JAidUtilisateursProfessionnelsPeer::ID_AID, $obj->getId());
-			$affectedRows += JAidUtilisateursProfessionnelsPeer::doDelete($c, $con);
+			$criteria->add(JAidUtilisateursProfessionnelsPeer::ID_AID, $obj->getId());
+			$affectedRows += JAidUtilisateursProfessionnelsPeer::doDelete($criteria, $con);
 
 			// delete related JAidEleves objects
-			$c = new Criteria(JAidElevesPeer::DATABASE_NAME);
+			$criteria = new Criteria(JAidElevesPeer::DATABASE_NAME);
 			
-			$c->add(JAidElevesPeer::ID_AID, $obj->getId());
-			$affectedRows += JAidElevesPeer::doDelete($c, $con);
+			$criteria->add(JAidElevesPeer::ID_AID, $obj->getId());
+			$affectedRows += JAidElevesPeer::doDelete($criteria, $con);
 
 			// delete related EdtEmplacementCours objects
-			$c = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
+			$criteria = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
 			
-			$c->add(EdtEmplacementCoursPeer::ID_AID, $obj->getId());
-			$affectedRows += EdtEmplacementCoursPeer::doDelete($c, $con);
+			$criteria->add(EdtEmplacementCoursPeer::ID_AID, $obj->getId());
+			$affectedRows += EdtEmplacementCoursPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
@@ -1083,14 +1134,7 @@ abstract class BaseAidDetailsPeer {
 
 } // BaseAidDetailsPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the AidDetailsPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the AidDetailsPeer class:
-//
-// Propel::getDatabaseMap(AidDetailsPeer::DATABASE_NAME)->addTableBuilder(AidDetailsPeer::TABLE_NAME, AidDetailsPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseAidDetailsPeer::DATABASE_NAME)->addTableBuilder(BaseAidDetailsPeer::TABLE_NAME, BaseAidDetailsPeer::getMapBuilder());
+BaseAidDetailsPeer::buildTableMap();
 

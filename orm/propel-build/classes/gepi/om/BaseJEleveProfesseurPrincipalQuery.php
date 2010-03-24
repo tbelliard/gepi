@@ -1,0 +1,450 @@
+<?php
+
+
+/**
+ * Base class that represents a query for the 'j_eleves_professeurs' table.
+ *
+ * Table de jointure entre les professeurs principaux et les eleves
+ *
+ * @method     JEleveProfesseurPrincipalQuery orderByLogin($order = Criteria::ASC) Order by the login column
+ * @method     JEleveProfesseurPrincipalQuery orderByProfesseur($order = Criteria::ASC) Order by the professeur column
+ * @method     JEleveProfesseurPrincipalQuery orderByIdClasse($order = Criteria::ASC) Order by the id_classe column
+ *
+ * @method     JEleveProfesseurPrincipalQuery groupByLogin() Group by the login column
+ * @method     JEleveProfesseurPrincipalQuery groupByProfesseur() Group by the professeur column
+ * @method     JEleveProfesseurPrincipalQuery groupByIdClasse() Group by the id_classe column
+ *
+ * @method     JEleveProfesseurPrincipalQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     JEleveProfesseurPrincipalQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     JEleveProfesseurPrincipalQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ *
+ * @method     JEleveProfesseurPrincipalQuery leftJoinEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the Eleve relation
+ * @method     JEleveProfesseurPrincipalQuery rightJoinEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Eleve relation
+ * @method     JEleveProfesseurPrincipalQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
+ *
+ * @method     JEleveProfesseurPrincipalQuery leftJoinUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JEleveProfesseurPrincipalQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JEleveProfesseurPrincipalQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
+ *
+ * @method     JEleveProfesseurPrincipalQuery leftJoinClasse($relationAlias = '') Adds a LEFT JOIN clause to the query using the Classe relation
+ * @method     JEleveProfesseurPrincipalQuery rightJoinClasse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Classe relation
+ * @method     JEleveProfesseurPrincipalQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
+ *
+ * @method     JEleveProfesseurPrincipal findOne(PropelPDO $con = null) Return the first JEleveProfesseurPrincipal matching the query
+ * @method     JEleveProfesseurPrincipal findOneByLogin(string $login) Return the first JEleveProfesseurPrincipal filtered by the login column
+ * @method     JEleveProfesseurPrincipal findOneByProfesseur(string $professeur) Return the first JEleveProfesseurPrincipal filtered by the professeur column
+ * @method     JEleveProfesseurPrincipal findOneByIdClasse(int $id_classe) Return the first JEleveProfesseurPrincipal filtered by the id_classe column
+ *
+ * @method     array findByLogin(string $login) Return JEleveProfesseurPrincipal objects filtered by the login column
+ * @method     array findByProfesseur(string $professeur) Return JEleveProfesseurPrincipal objects filtered by the professeur column
+ * @method     array findByIdClasse(int $id_classe) Return JEleveProfesseurPrincipal objects filtered by the id_classe column
+ *
+ * @package    propel.generator.gepi.om
+ */
+abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
+{
+
+	/**
+	 * Initializes internal state of BaseJEleveProfesseurPrincipalQuery object.
+	 *
+	 * @param     string $dbName The dabase name
+	 * @param     string $modelName The phpName of a model, e.g. 'Book'
+	 * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
+	 */
+	public function __construct($dbName = 'gepi', $modelName = 'JEleveProfesseurPrincipal', $modelAlias = null)
+	{
+		parent::__construct($dbName, $modelName, $modelAlias);
+	}
+
+	/**
+	 * Returns a new JEleveProfesseurPrincipalQuery object.
+	 *
+	 * @param     string $modelAlias The alias of a model in the query
+	 * @param     Criteria $criteria Optional Criteria to build the query from
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery
+	 */
+	public static function create($modelAlias = null, $criteria = null)
+	{
+		if ($criteria instanceof JEleveProfesseurPrincipalQuery) {
+			return $criteria;
+		}
+		$query = new JEleveProfesseurPrincipalQuery();
+		if (null !== $modelAlias) {
+			$query->setModelAlias($modelAlias);
+		}
+		if ($criteria instanceof Criteria) {
+			$query->mergeWith($criteria);
+		}
+		return $query;
+	}
+
+	/**
+	 * Find object by primary key
+	 * <code>
+	 * $obj = $c->findPk(array(34, 634), $con);
+	 * </code>
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con an optional connection object
+	 *
+	 * @return    mixed the result, formatted by the current formatter
+	 */
+	public function findPk($key, $con = null)
+	{
+		if ((null !== ($obj = JEleveProfesseurPrincipalPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1], (string) $key[2]))))) && $this->getFormatter()->isObjectFormatter()) {
+			// the object is alredy in the instance pool
+			return $obj;
+		} else {
+			// the object has not been requested yet, or the formatter is not an object formatter
+			return $this
+				->filterByPrimaryKey($key)
+				->findOne($con);
+		}
+	}
+
+	/**
+	 * Find objects by primary key
+	 * <code>
+	 * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
+	 * </code>
+	 * @param     array $keys Primary keys to use for the query
+	 * @param     PropelPDO $con an optional connection object
+	 *
+	 * @return    the list of results, formatted by the current formatter
+	 */
+	public function findPks($keys, $con = null)
+	{	
+		return $this
+			->filterByPrimaryKeys($keys)
+			->find($con);
+	}
+
+	/**
+	 * Filter the query by primary key
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function filterByPrimaryKey($key)
+	{
+		$this->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $key[0], Criteria::EQUAL);
+		$this->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $key[1], Criteria::EQUAL);
+		$this->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $key[2], Criteria::EQUAL);
+		
+		return $this;
+	}
+
+	/**
+	 * Filter the query by a list of primary keys
+	 *
+	 * @param     array $keys The list of primary key to use for the query
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function filterByPrimaryKeys($keys)
+	{
+		foreach ($keys as $key) {
+			$cton0 = $this->getNewCriterion(JEleveProfesseurPrincipalPeer::LOGIN, $key[0], Criteria::EQUAL);
+			$cton1 = $this->getNewCriterion(JEleveProfesseurPrincipalPeer::PROFESSEUR, $key[1], Criteria::EQUAL);
+			$cton0->addAnd($cton1);
+			$cton2 = $this->getNewCriterion(JEleveProfesseurPrincipalPeer::ID_CLASSE, $key[2], Criteria::EQUAL);
+			$cton0->addAnd($cton2);
+			$this->addOr($cton0);
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Filter the query on the login column
+	 * 
+	 * @param     string $login The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function filterByLogin($login = null, $comparison = Criteria::EQUAL)
+	{
+		if (is_array($login)) {
+			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $login, Criteria::IN);
+		} elseif(preg_match('/[\%\*]/', $login)) {
+			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, str_replace('*', '%', $login), Criteria::LIKE);
+		} else {
+			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $login, $comparison);
+		}
+	}
+
+	/**
+	 * Filter the query on the professeur column
+	 * 
+	 * @param     string $professeur The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function filterByProfesseur($professeur = null, $comparison = Criteria::EQUAL)
+	{
+		if (is_array($professeur)) {
+			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $professeur, Criteria::IN);
+		} elseif(preg_match('/[\%\*]/', $professeur)) {
+			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, str_replace('*', '%', $professeur), Criteria::LIKE);
+		} else {
+			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $professeur, $comparison);
+		}
+	}
+
+	/**
+	 * Filter the query on the id_classe column
+	 * 
+	 * @param     int|array $idClasse The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function filterByIdClasse($idClasse = null, $comparison = Criteria::EQUAL)
+	{
+		if (is_array($idClasse)) {
+			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $idClasse, Criteria::IN);
+		} else {
+			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $idClasse, $comparison);
+		}
+	}
+
+	/**
+	 * Filter the query by a related Eleve object
+	 *
+	 * @param     Eleve $eleve  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $eleve->getLogin(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the Eleve relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function joinEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('Eleve');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'Eleve');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the Eleve relation Eleve object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    EleveQuery A secondary query class using the current class as primary query
+	 */
+	public function useEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinEleve($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'Eleve', 'EleveQuery');
+	}
+
+	/**
+	 * Filter the query by a related UtilisateurProfessionnel object
+	 *
+	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $utilisateurProfessionnel->getLogin(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the UtilisateurProfessionnel relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function joinUtilisateurProfessionnel($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'UtilisateurProfessionnel');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the UtilisateurProfessionnel relation UtilisateurProfessionnel object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
+	 */
+	public function useUtilisateurProfessionnelQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinUtilisateurProfessionnel($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'UtilisateurProfessionnel', 'UtilisateurProfessionnelQuery');
+	}
+
+	/**
+	 * Filter the query by a related Classe object
+	 *
+	 * @param     Classe $classe  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function filterByClasse($classe, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $classe->getId(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the Classe relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function joinClasse($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('Classe');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'Classe');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the Classe relation Classe object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    ClasseQuery A secondary query class using the current class as primary query
+	 */
+	public function useClasseQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinClasse($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'Classe', 'ClasseQuery');
+	}
+
+	/**
+	 * Exclude object from result
+	 *
+	 * @param     JEleveProfesseurPrincipal $jEleveProfesseurPrincipal Object to remove from the list of results
+	 *
+	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
+	 */
+	public function prune($jEleveProfesseurPrincipal = null)
+	{
+		if ($jEleveProfesseurPrincipal) {
+			$this->addCond('pruneCond0', $this->getAliasedColName(JEleveProfesseurPrincipalPeer::LOGIN), $jEleveProfesseurPrincipal->getLogin(), Criteria::NOT_EQUAL);
+			$this->addCond('pruneCond1', $this->getAliasedColName(JEleveProfesseurPrincipalPeer::PROFESSEUR), $jEleveProfesseurPrincipal->getProfesseur(), Criteria::NOT_EQUAL);
+			$this->addCond('pruneCond2', $this->getAliasedColName(JEleveProfesseurPrincipalPeer::ID_CLASSE), $jEleveProfesseurPrincipal->getIdClasse(), Criteria::NOT_EQUAL);
+			$this->combine(array('pruneCond0', 'pruneCond1', 'pruneCond2'), Criteria::LOGICAL_OR);
+	  }
+	  
+		return $this;
+	}
+
+	/**
+	 * Code to execute before every SELECT statement
+	 * 
+	 * @param     PropelPDO $con The connection object used by the query
+	 */
+	protected function basePreSelect(PropelPDO $con)
+	{
+		return $this->preSelect($con);
+	}
+
+	/**
+	 * Code to execute before every DELETE statement
+	 * 
+	 * @param     PropelPDO $con The connection object used by the query
+	 */
+	protected function basePreDelete(PropelPDO $con)
+	{
+		return $this->preDelete($con);
+	}
+
+	/**
+	 * Code to execute before every UPDATE statement
+	 * 
+	 * @param     array $values The associatiove array of columns and values for the update
+	 * @param     PropelPDO $con The connection object used by the query
+	 */
+	protected function basePreUpdate(&$values, PropelPDO $con)
+	{
+		return $this->preUpdate($values, $con);
+	}
+
+} // BaseJEleveProfesseurPrincipalQuery

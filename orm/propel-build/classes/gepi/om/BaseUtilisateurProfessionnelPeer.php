@@ -5,7 +5,7 @@
  *
  * Utilisateur de gepi
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseUtilisateurProfessionnelPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'utilisateurs';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'UtilisateurProfessionnel';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.UtilisateurProfessionnel';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'UtilisateurProfessionnelTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 18;
 
@@ -86,11 +92,6 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -102,6 +103,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 		BasePeer::TYPE_PHPNAME => array ('Login', 'Nom', 'Prenom', 'Civilite', 'Password', 'Email', 'ShowEmail', 'Statut', 'Etat', 'ChangeMdp', 'DateVerrouillage', 'PasswordTicket', 'TicketExpiration', 'NiveauAlerte', 'ObservationSecurite', 'TempDir', 'Numind', 'AuthMode', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('login', 'nom', 'prenom', 'civilite', 'password', 'email', 'showEmail', 'statut', 'etat', 'changeMdp', 'dateVerrouillage', 'passwordTicket', 'ticketExpiration', 'niveauAlerte', 'observationSecurite', 'tempDir', 'numind', 'authMode', ),
 		BasePeer::TYPE_COLNAME => array (self::LOGIN, self::NOM, self::PRENOM, self::CIVILITE, self::PASSWORD, self::EMAIL, self::SHOW_EMAIL, self::STATUT, self::ETAT, self::CHANGE_MDP, self::DATE_VERROUILLAGE, self::PASSWORD_TICKET, self::TICKET_EXPIRATION, self::NIVEAU_ALERTE, self::OBSERVATION_SECURITE, self::TEMP_DIR, self::NUMIND, self::AUTH_MODE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('LOGIN', 'NOM', 'PRENOM', 'CIVILITE', 'PASSWORD', 'EMAIL', 'SHOW_EMAIL', 'STATUT', 'ETAT', 'CHANGE_MDP', 'DATE_VERROUILLAGE', 'PASSWORD_TICKET', 'TICKET_EXPIRATION', 'NIVEAU_ALERTE', 'OBSERVATION_SECURITE', 'TEMP_DIR', 'NUMIND', 'AUTH_MODE', ),
 		BasePeer::TYPE_FIELDNAME => array ('login', 'nom', 'prenom', 'civilite', 'password', 'email', 'show_email', 'statut', 'etat', 'change_mdp', 'date_verrouillage', 'password_ticket', 'ticket_expiration', 'niveau_alerte', 'observation_securite', 'temp_dir', 'numind', 'auth_mode', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
 	);
@@ -116,21 +118,11 @@ abstract class BaseUtilisateurProfessionnelPeer {
 		BasePeer::TYPE_PHPNAME => array ('Login' => 0, 'Nom' => 1, 'Prenom' => 2, 'Civilite' => 3, 'Password' => 4, 'Email' => 5, 'ShowEmail' => 6, 'Statut' => 7, 'Etat' => 8, 'ChangeMdp' => 9, 'DateVerrouillage' => 10, 'PasswordTicket' => 11, 'TicketExpiration' => 12, 'NiveauAlerte' => 13, 'ObservationSecurite' => 14, 'TempDir' => 15, 'Numind' => 16, 'AuthMode' => 17, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('login' => 0, 'nom' => 1, 'prenom' => 2, 'civilite' => 3, 'password' => 4, 'email' => 5, 'showEmail' => 6, 'statut' => 7, 'etat' => 8, 'changeMdp' => 9, 'dateVerrouillage' => 10, 'passwordTicket' => 11, 'ticketExpiration' => 12, 'niveauAlerte' => 13, 'observationSecurite' => 14, 'tempDir' => 15, 'numind' => 16, 'authMode' => 17, ),
 		BasePeer::TYPE_COLNAME => array (self::LOGIN => 0, self::NOM => 1, self::PRENOM => 2, self::CIVILITE => 3, self::PASSWORD => 4, self::EMAIL => 5, self::SHOW_EMAIL => 6, self::STATUT => 7, self::ETAT => 8, self::CHANGE_MDP => 9, self::DATE_VERROUILLAGE => 10, self::PASSWORD_TICKET => 11, self::TICKET_EXPIRATION => 12, self::NIVEAU_ALERTE => 13, self::OBSERVATION_SECURITE => 14, self::TEMP_DIR => 15, self::NUMIND => 16, self::AUTH_MODE => 17, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('LOGIN' => 0, 'NOM' => 1, 'PRENOM' => 2, 'CIVILITE' => 3, 'PASSWORD' => 4, 'EMAIL' => 5, 'SHOW_EMAIL' => 6, 'STATUT' => 7, 'ETAT' => 8, 'CHANGE_MDP' => 9, 'DATE_VERROUILLAGE' => 10, 'PASSWORD_TICKET' => 11, 'TICKET_EXPIRATION' => 12, 'NIVEAU_ALERTE' => 13, 'OBSERVATION_SECURITE' => 14, 'TEMP_DIR' => 15, 'NUMIND' => 16, 'AUTH_MODE' => 17, ),
 		BasePeer::TYPE_FIELDNAME => array ('login' => 0, 'nom' => 1, 'prenom' => 2, 'civilite' => 3, 'password' => 4, 'email' => 5, 'show_email' => 6, 'statut' => 7, 'etat' => 8, 'change_mdp' => 9, 'date_verrouillage' => 10, 'password_ticket' => 11, 'ticket_expiration' => 12, 'niveau_alerte' => 13, 'observation_securite' => 14, 'temp_dir' => 15, 'numind' => 16, 'auth_mode' => 17, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new UtilisateurProfessionnelMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -192,49 +184,52 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::LOGIN);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::NOM);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::PRENOM);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::CIVILITE);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::PASSWORD);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::EMAIL);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::SHOW_EMAIL);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::STATUT);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::ETAT);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::CHANGE_MDP);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::DATE_VERROUILLAGE);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::PASSWORD_TICKET);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::TICKET_EXPIRATION);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::NIVEAU_ALERTE);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::OBSERVATION_SECURITE);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::TEMP_DIR);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::NUMIND);
-
-		$criteria->addSelectColumn(UtilisateurProfessionnelPeer::AUTH_MODE);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::LOGIN);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::NOM);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::PRENOM);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::CIVILITE);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::PASSWORD);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::EMAIL);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::SHOW_EMAIL);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::STATUT);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::ETAT);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::CHANGE_MDP);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::DATE_VERROUILLAGE);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::PASSWORD_TICKET);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::TICKET_EXPIRATION);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::NIVEAU_ALERTE);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::OBSERVATION_SECURITE);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::TEMP_DIR);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::NUMIND);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::AUTH_MODE);
+		} else {
+			$criteria->addSelectColumn($alias . '.LOGIN');
+			$criteria->addSelectColumn($alias . '.NOM');
+			$criteria->addSelectColumn($alias . '.PRENOM');
+			$criteria->addSelectColumn($alias . '.CIVILITE');
+			$criteria->addSelectColumn($alias . '.PASSWORD');
+			$criteria->addSelectColumn($alias . '.EMAIL');
+			$criteria->addSelectColumn($alias . '.SHOW_EMAIL');
+			$criteria->addSelectColumn($alias . '.STATUT');
+			$criteria->addSelectColumn($alias . '.ETAT');
+			$criteria->addSelectColumn($alias . '.CHANGE_MDP');
+			$criteria->addSelectColumn($alias . '.DATE_VERROUILLAGE');
+			$criteria->addSelectColumn($alias . '.PASSWORD_TICKET');
+			$criteria->addSelectColumn($alias . '.TICKET_EXPIRATION');
+			$criteria->addSelectColumn($alias . '.NIVEAU_ALERTE');
+			$criteria->addSelectColumn($alias . '.OBSERVATION_SECURITE');
+			$criteria->addSelectColumn($alias . '.TEMP_DIR');
+			$criteria->addSelectColumn($alias . '.NUMIND');
+			$criteria->addSelectColumn($alias . '.AUTH_MODE');
+		}
 	}
 
 	/**
@@ -422,6 +417,50 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to utilisateurs
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in JGroupesProfesseursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JGroupesProfesseursPeer::clearInstancePool();
+
+		// invalidate objects in CahierTexteCompteRenduPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CahierTexteCompteRenduPeer::clearInstancePool();
+
+		// invalidate objects in CahierTexteTravailAFairePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CahierTexteTravailAFairePeer::clearInstancePool();
+
+		// invalidate objects in CahierTexteNoticePriveePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CahierTexteNoticePriveePeer::clearInstancePool();
+
+		// invalidate objects in JEleveCpePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JEleveCpePeer::clearInstancePool();
+
+		// invalidate objects in JEleveProfesseurPrincipalPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JEleveProfesseurPrincipalPeer::clearInstancePool();
+
+		// invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JAidUtilisateursProfessionnelsPeer::clearInstancePool();
+
+		// invalidate objects in AbsenceEleveSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		AbsenceEleveSaisiePeer::clearInstancePool();
+
+		// invalidate objects in AbsenceEleveTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		AbsenceEleveTraitementPeer::clearInstancePool();
+
+		// invalidate objects in AbsenceEleveEnvoiPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		AbsenceEleveEnvoiPeer::clearInstancePool();
+
+		// invalidate objects in PreferenceUtilisateurProfessionnelPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		PreferenceUtilisateurProfessionnelPeer::clearInstancePool();
+
+		// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		EdtEmplacementCoursPeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -434,12 +473,26 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (string) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -452,8 +505,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = UtilisateurProfessionnelPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -463,7 +515,6 @@ abstract class BaseUtilisateurProfessionnelPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -472,6 +523,31 @@ abstract class BaseUtilisateurProfessionnelPeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (UtilisateurProfessionnel object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = UtilisateurProfessionnelPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + UtilisateurProfessionnelPeer::NUM_COLUMNS;
+		} else {
+			$cls = UtilisateurProfessionnelPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			UtilisateurProfessionnelPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -486,17 +562,31 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseUtilisateurProfessionnelPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseUtilisateurProfessionnelPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new UtilisateurProfessionnelTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return UtilisateurProfessionnelPeer::CLASS_DEFAULT;
+		return $withPrefix ? UtilisateurProfessionnelPeer::CLASS_DEFAULT : UtilisateurProfessionnelPeer::OM_CLASS;
 	}
 
 	/**
@@ -559,7 +649,12 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(UtilisateurProfessionnelPeer::LOGIN);
-			$selectCriteria->add(UtilisateurProfessionnelPeer::LOGIN, $criteria->remove(UtilisateurProfessionnelPeer::LOGIN), $comparison);
+			$value = $criteria->remove(UtilisateurProfessionnelPeer::LOGIN);
+			if ($value) {
+				$selectCriteria->add(UtilisateurProfessionnelPeer::LOGIN, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(UtilisateurProfessionnelPeer::TABLE_NAME);
+			}
 
 		} else { // $values is UtilisateurProfessionnel object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -590,6 +685,11 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$affectedRows += UtilisateurProfessionnelPeer::doOnDeleteCascade(new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME), $con);
 			UtilisateurProfessionnelPeer::doOnDeleteSetNull(new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(UtilisateurProfessionnelPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			UtilisateurProfessionnelPeer::clearInstancePool();
+			UtilisateurProfessionnelPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -616,30 +716,14 @@ abstract class BaseUtilisateurProfessionnelPeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			UtilisateurProfessionnelPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof UtilisateurProfessionnel) {
-			// invalidate the cache for this single object
-			UtilisateurProfessionnelPeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof UtilisateurProfessionnel) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(UtilisateurProfessionnelPeer::LOGIN, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				UtilisateurProfessionnelPeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -654,53 +738,21 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$affectedRows += UtilisateurProfessionnelPeer::doOnDeleteCascade($criteria, $con);
 			UtilisateurProfessionnelPeer::doOnDeleteSetNull($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					UtilisateurProfessionnelPeer::clearInstancePool();
-				} else { // it's a PK or object
-					UtilisateurProfessionnelPeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				UtilisateurProfessionnelPeer::clearInstancePool();
+			} elseif ($values instanceof UtilisateurProfessionnel) { // it's a model object
+				UtilisateurProfessionnelPeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					UtilisateurProfessionnelPeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in JGroupesProfesseursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JGroupesProfesseursPeer::clearInstancePool();
-
-			// invalidate objects in CahierTexteCompteRenduPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			CahierTexteCompteRenduPeer::clearInstancePool();
-
-			// invalidate objects in CahierTexteTravailAFairePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			CahierTexteTravailAFairePeer::clearInstancePool();
-
-			// invalidate objects in CahierTexteNoticePriveePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			CahierTexteNoticePriveePeer::clearInstancePool();
-
-			// invalidate objects in JEleveCpePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JEleveCpePeer::clearInstancePool();
-
-			// invalidate objects in JEleveProfesseurPrincipalPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JEleveProfesseurPrincipalPeer::clearInstancePool();
-
-			// invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JAidUtilisateursProfessionnelsPeer::clearInstancePool();
-
-			// invalidate objects in AbsenceEleveSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceEleveSaisiePeer::clearInstancePool();
-
-			// invalidate objects in AbsenceEleveTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceEleveTraitementPeer::clearInstancePool();
-
-			// invalidate objects in AbsenceEleveEnvoiPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceEleveEnvoiPeer::clearInstancePool();
-
-			// invalidate objects in PreferenceUtilisateurProfessionnelPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			PreferenceUtilisateurProfessionnelPeer::clearInstancePool();
-
-			// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			EdtEmplacementCoursPeer::clearInstancePool();
-
+			UtilisateurProfessionnelPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -733,34 +785,28 @@ abstract class BaseUtilisateurProfessionnelPeer {
 
 
 			// delete related JGroupesProfesseurs objects
-			$c = new Criteria(JGroupesProfesseursPeer::DATABASE_NAME);
+			$criteria = new Criteria(JGroupesProfesseursPeer::DATABASE_NAME);
 			
-			$c->add(JGroupesProfesseursPeer::LOGIN, $obj->getLogin());
-			$affectedRows += JGroupesProfesseursPeer::doDelete($c, $con);
+			$criteria->add(JGroupesProfesseursPeer::LOGIN, $obj->getLogin());
+			$affectedRows += JGroupesProfesseursPeer::doDelete($criteria, $con);
 
 			// delete related JEleveCpe objects
-			$c = new Criteria(JEleveCpePeer::DATABASE_NAME);
+			$criteria = new Criteria(JEleveCpePeer::DATABASE_NAME);
 			
-			$c->add(JEleveCpePeer::CPE_LOGIN, $obj->getLogin());
-			$affectedRows += JEleveCpePeer::doDelete($c, $con);
+			$criteria->add(JEleveCpePeer::CPE_LOGIN, $obj->getLogin());
+			$affectedRows += JEleveCpePeer::doDelete($criteria, $con);
 
 			// delete related JEleveProfesseurPrincipal objects
-			$c = new Criteria(JEleveProfesseurPrincipalPeer::DATABASE_NAME);
+			$criteria = new Criteria(JEleveProfesseurPrincipalPeer::DATABASE_NAME);
 			
-			$c->add(JEleveProfesseurPrincipalPeer::PROFESSEUR, $obj->getLogin());
-			$affectedRows += JEleveProfesseurPrincipalPeer::doDelete($c, $con);
+			$criteria->add(JEleveProfesseurPrincipalPeer::PROFESSEUR, $obj->getLogin());
+			$affectedRows += JEleveProfesseurPrincipalPeer::doDelete($criteria, $con);
 
 			// delete related JAidUtilisateursProfessionnels objects
-			$c = new Criteria(JAidUtilisateursProfessionnelsPeer::DATABASE_NAME);
+			$criteria = new Criteria(JAidUtilisateursProfessionnelsPeer::DATABASE_NAME);
 			
-			$c->add(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $obj->getLogin());
-			$affectedRows += JAidUtilisateursProfessionnelsPeer::doDelete($c, $con);
-
-			// delete related EdtEmplacementCours objects
-			$c = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
-			
-			$c->add(EdtEmplacementCoursPeer::LOGIN_PROF, $obj->getLogin());
-			$affectedRows += EdtEmplacementCoursPeer::doDelete($c, $con);
+			$criteria->add(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $obj->getLogin());
+			$affectedRows += JAidUtilisateursProfessionnelsPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
@@ -838,6 +884,14 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
 			$selectCriteria->add(PreferenceUtilisateurProfessionnelPeer::LOGIN, $obj->getLogin());
 			$updateValues->add(PreferenceUtilisateurProfessionnelPeer::LOGIN, null);
+
+					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+			// set fkey col in related EdtEmplacementCours rows to NULL
+			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
+			$selectCriteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $obj->getLogin());
+			$updateValues->add(EdtEmplacementCoursPeer::LOGIN_PROF, null);
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
@@ -934,14 +988,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 
 } // BaseUtilisateurProfessionnelPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the UtilisateurProfessionnelPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the UtilisateurProfessionnelPeer class:
-//
-// Propel::getDatabaseMap(UtilisateurProfessionnelPeer::DATABASE_NAME)->addTableBuilder(UtilisateurProfessionnelPeer::TABLE_NAME, UtilisateurProfessionnelPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseUtilisateurProfessionnelPeer::DATABASE_NAME)->addTableBuilder(BaseUtilisateurProfessionnelPeer::TABLE_NAME, BaseUtilisateurProfessionnelPeer::getMapBuilder());
+BaseUtilisateurProfessionnelPeer::buildTableMap();
 

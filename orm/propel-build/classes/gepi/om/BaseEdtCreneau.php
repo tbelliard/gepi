@@ -5,10 +5,15 @@
  *
  * Table contenant les creneaux de chaque journee (M1, M2...S1, S2...)
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
+abstract class BaseEdtCreneau extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'EdtCreneauPeer';
 
 	/**
 	 * The Peer class.
@@ -58,7 +63,6 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 
 	/**
 	 * The value for the jour_creneau field.
-	 * Note: this column has a database default value of: 'NULL'
 	 * @var        string
 	 */
 	protected $jour_creneau;
@@ -69,19 +73,9 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	protected $collAbsenceEleveSaisies;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collAbsenceEleveSaisies.
-	 */
-	private $lastAbsenceEleveSaisieCriteria = null;
-
-	/**
 	 * @var        array EdtEmplacementCours[] Collection to store aggregation of EdtEmplacementCours objects.
 	 */
 	protected $collEdtEmplacementCourss;
-
-	/**
-	 * @var        Criteria The criteria used to select the current contents of collEdtEmplacementCourss.
-	 */
-	private $lastEdtEmplacementCoursCriteria = null;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -98,16 +92,6 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Initializes internal state of BaseEdtCreneau object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
 	 * Applies default values to this object.
 	 * This method should be called from the object's constructor (or
 	 * equivalent initialization method).
@@ -117,7 +101,16 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	{
 		$this->suivi_definie_periode = 9;
 		$this->type_creneau = 'cours';
-		$this->jour_creneau = 'NULL';
+	}
+
+	/**
+	 * Initializes internal state of BaseEdtCreneau object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
 	}
 
 	/**
@@ -386,7 +379,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 			$v = (int) $v;
 		}
 
-		if ($this->suivi_definie_periode !== $v || $v === 9) {
+		if ($this->suivi_definie_periode !== $v || $this->isNew()) {
 			$this->suivi_definie_periode = $v;
 			$this->modifiedColumns[] = EdtCreneauPeer::SUIVI_DEFINIE_PERIODE;
 		}
@@ -406,7 +399,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->type_creneau !== $v || $v === 'cours') {
+		if ($this->type_creneau !== $v || $this->isNew()) {
 			$this->type_creneau = $v;
 			$this->modifiedColumns[] = EdtCreneauPeer::TYPE_CRENEAU;
 		}
@@ -426,7 +419,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 			$v = (string) $v;
 		}
 
-		if ($this->jour_creneau !== $v || $v === 'NULL') {
+		if ($this->jour_creneau !== $v) {
 			$this->jour_creneau = $v;
 			$this->modifiedColumns[] = EdtCreneauPeer::JOUR_CRENEAU;
 		}
@@ -444,20 +437,11 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE,EdtCreneauPeer::TYPE_CRENEAU,EdtCreneauPeer::JOUR_CRENEAU))) {
-				return false;
-			}
-
 			if ($this->suivi_definie_periode !== 9) {
 				return false;
 			}
 
 			if ($this->type_creneau !== 'cours') {
-				return false;
-			}
-
-			if ($this->jour_creneau !== 'NULL') {
 				return false;
 			}
 
@@ -498,7 +482,6 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 7; // 7 = EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -562,10 +545,8 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->collAbsenceEleveSaisies = null;
-			$this->lastAbsenceEleveSaisieCriteria = null;
 
 			$this->collEdtEmplacementCourss = null;
-			$this->lastEdtEmplacementCoursCriteria = null;
 
 		} // if (deep)
 	}
@@ -591,9 +572,17 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 		
 		$con->beginTransaction();
 		try {
-			EdtCreneauPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				EdtCreneauQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -624,10 +613,27 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				EdtCreneauPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			EdtCreneauPeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -659,16 +665,17 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = EdtCreneauPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(EdtCreneauPeer::ID_DEFINIE_PERIODE) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.EdtCreneauPeer::ID_DEFINIE_PERIODE.')');
+					}
 
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
 					$this->setIdDefiniePeriode($pk);  //[IMV] update autoincrement primary key
-
 					$this->setNew(false);
 				} else {
-					$affectedRows += EdtCreneauPeer::doUpdate($this, $con);
+					$affectedRows = EdtCreneauPeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -843,10 +850,12 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
@@ -975,7 +984,6 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-
 		$criteria->add(EdtCreneauPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
 
 		return $criteria;
@@ -1002,6 +1010,15 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getIdDefiniePeriode();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -1013,19 +1030,12 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setNomDefiniePeriode($this->nom_definie_periode);
-
 		$copyObj->setHeuredebutDefiniePeriode($this->heuredebut_definie_periode);
-
 		$copyObj->setHeurefinDefiniePeriode($this->heurefin_definie_periode);
-
 		$copyObj->setSuiviDefiniePeriode($this->suivi_definie_periode);
-
 		$copyObj->setTypeCreneau($this->type_creneau);
-
 		$copyObj->setJourCreneau($this->jour_creneau);
-
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1048,9 +1058,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 
 
 		$copyObj->setNew(true);
-
 		$copyObj->setIdDefiniePeriode(NULL); // this is a auto-increment column, so set to default value
-
 	}
 
 	/**
@@ -1092,7 +1100,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Clears out the collAbsenceEleveSaisies collection (array).
+	 * Clears out the collAbsenceEleveSaisies collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1106,7 +1114,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collAbsenceEleveSaisies collection (array).
+	 * Initializes the collAbsenceEleveSaisies collection.
 	 *
 	 * By default this just sets the collAbsenceEleveSaisies collection to an empty array (like clearcollAbsenceEleveSaisies());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1116,59 +1124,40 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function initAbsenceEleveSaisies()
 	{
-		$this->collAbsenceEleveSaisies = array();
+		$this->collAbsenceEleveSaisies = new PropelObjectCollection();
+		$this->collAbsenceEleveSaisies->setModel('AbsenceEleveSaisie');
 	}
 
 	/**
 	 * Gets an array of AbsenceEleveSaisie objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this EdtCreneau has previously been saved, it will retrieve
-	 * related AbsenceEleveSaisies from storage. If this EdtCreneau is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this EdtCreneau is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array AbsenceEleveSaisie[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 * @throws     PropelException
 	 */
 	public function getAbsenceEleveSaisies($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collAbsenceEleveSaisies === null) {
-			if ($this->isNew()) {
-			   $this->collAbsenceEleveSaisies = array();
+		if(null === $this->collAbsenceEleveSaisies || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveSaisies) {
+				// return empty collection
+				$this->initAbsenceEleveSaisies();
 			} else {
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_definie_periode);
-
-				AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_definie_periode);
-
-				AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-				if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
-					$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelect($criteria, $con);
+				$collAbsenceEleveSaisies = AbsenceEleveSaisieQuery::create(null, $criteria)
+					->filterByEdtCreneau($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collAbsenceEleveSaisies;
 				}
+				$this->collAbsenceEleveSaisies = $collAbsenceEleveSaisies;
 			}
 		}
-		$this->lastAbsenceEleveSaisieCriteria = $criteria;
 		return $this->collAbsenceEleveSaisies;
 	}
 
@@ -1183,48 +1172,21 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function countAbsenceEleveSaisies(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collAbsenceEleveSaisies === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collAbsenceEleveSaisies || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveSaisies) {
+				return 0;
 			} else {
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_definie_periode);
-
-				$count = AbsenceEleveSaisiePeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_definie_periode);
-
-				if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
-					$count = AbsenceEleveSaisiePeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collAbsenceEleveSaisies);
+				$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collAbsenceEleveSaisies);
+				return $query
+					->filterByEdtCreneau($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collAbsenceEleveSaisies);
 		}
-		$this->lastAbsenceEleveSaisieCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1240,8 +1202,8 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 		if ($this->collAbsenceEleveSaisies === null) {
 			$this->initAbsenceEleveSaisies();
 		}
-		if (!in_array($l, $this->collAbsenceEleveSaisies, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collAbsenceEleveSaisies, $l);
+		if (!$this->collAbsenceEleveSaisies->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collAbsenceEleveSaisies[]= $l;
 			$l->setEdtCreneau($this);
 		}
 	}
@@ -1260,37 +1222,10 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function getAbsenceEleveSaisiesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveSaisie.UtilisateurProfessionnel', $join_behavior);
 
-		if ($this->collAbsenceEleveSaisies === null) {
-			if ($this->isNew()) {
-				$this->collAbsenceEleveSaisies = array();
-			} else {
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_definie_periode);
-
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_definie_periode);
-
-			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastAbsenceEleveSaisieCriteria = $criteria;
-
-		return $this->collAbsenceEleveSaisies;
+		return $this->getAbsenceEleveSaisies($query, $con);
 	}
 
 
@@ -1307,37 +1242,10 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function getAbsenceEleveSaisiesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveSaisie.Eleve', $join_behavior);
 
-		if ($this->collAbsenceEleveSaisies === null) {
-			if ($this->isNew()) {
-				$this->collAbsenceEleveSaisies = array();
-			} else {
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_definie_periode);
-
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_definie_periode);
-
-			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEleve($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastAbsenceEleveSaisieCriteria = $criteria;
-
-		return $this->collAbsenceEleveSaisies;
+		return $this->getAbsenceEleveSaisies($query, $con);
 	}
 
 
@@ -1354,41 +1262,14 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function getAbsenceEleveSaisiesJoinEdtEmplacementCours($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveSaisie.EdtEmplacementCours', $join_behavior);
 
-		if ($this->collAbsenceEleveSaisies === null) {
-			if ($this->isNew()) {
-				$this->collAbsenceEleveSaisies = array();
-			} else {
-
-				$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_definie_periode);
-
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtEmplacementCours($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_definie_periode);
-
-			if (!isset($this->lastAbsenceEleveSaisieCriteria) || !$this->lastAbsenceEleveSaisieCriteria->equals($criteria)) {
-				$this->collAbsenceEleveSaisies = AbsenceEleveSaisiePeer::doSelectJoinEdtEmplacementCours($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastAbsenceEleveSaisieCriteria = $criteria;
-
-		return $this->collAbsenceEleveSaisies;
+		return $this->getAbsenceEleveSaisies($query, $con);
 	}
 
 	/**
-	 * Clears out the collEdtEmplacementCourss collection (array).
+	 * Clears out the collEdtEmplacementCourss collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1402,7 +1283,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collEdtEmplacementCourss collection (array).
+	 * Initializes the collEdtEmplacementCourss collection.
 	 *
 	 * By default this just sets the collEdtEmplacementCourss collection to an empty array (like clearcollEdtEmplacementCourss());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1412,59 +1293,40 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function initEdtEmplacementCourss()
 	{
-		$this->collEdtEmplacementCourss = array();
+		$this->collEdtEmplacementCourss = new PropelObjectCollection();
+		$this->collEdtEmplacementCourss->setModel('EdtEmplacementCours');
 	}
 
 	/**
 	 * Gets an array of EdtEmplacementCours objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this EdtCreneau has previously been saved, it will retrieve
-	 * related EdtEmplacementCourss from storage. If this EdtCreneau is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this EdtCreneau is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array EdtEmplacementCours[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
 	 * @throws     PropelException
 	 */
 	public function getEdtEmplacementCourss($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-			   $this->collEdtEmplacementCourss = array();
+		if(null === $this->collEdtEmplacementCourss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
+				// return empty collection
+				$this->initEdtEmplacementCourss();
 			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-				EdtEmplacementCoursPeer::addSelectColumns($criteria);
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-				EdtEmplacementCoursPeer::addSelectColumns($criteria);
-				if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-					$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelect($criteria, $con);
+				$collEdtEmplacementCourss = EdtEmplacementCoursQuery::create(null, $criteria)
+					->filterByEdtCreneau($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collEdtEmplacementCourss;
 				}
+				$this->collEdtEmplacementCourss = $collEdtEmplacementCourss;
 			}
 		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
 		return $this->collEdtEmplacementCourss;
 	}
 
@@ -1479,48 +1341,21 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function countEdtEmplacementCourss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collEdtEmplacementCourss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
+				return 0;
 			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-				$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-				if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-					$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collEdtEmplacementCourss);
+				$query = EdtEmplacementCoursQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collEdtEmplacementCourss);
+				return $query
+					->filterByEdtCreneau($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collEdtEmplacementCourss);
 		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1536,8 +1371,8 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 		if ($this->collEdtEmplacementCourss === null) {
 			$this->initEdtEmplacementCourss();
 		}
-		if (!in_array($l, $this->collEdtEmplacementCourss, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collEdtEmplacementCourss, $l);
+		if (!$this->collEdtEmplacementCourss->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collEdtEmplacementCourss[]= $l;
 			$l->setEdtCreneau($this);
 		}
 	}
@@ -1556,37 +1391,10 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function getEdtEmplacementCourssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.Groupe', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -1603,37 +1411,10 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function getEdtEmplacementCourssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.AidDetails', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -1650,37 +1431,10 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function getEdtEmplacementCourssJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.EdtSalle', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtSalle($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtSalle($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -1697,37 +1451,10 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function getEdtEmplacementCourssJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.EdtCalendrierPeriode', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCalendrierPeriode($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCalendrierPeriode($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -1744,37 +1471,27 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 	 */
 	public function getEdtEmplacementCourssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCreneauPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.UtilisateurProfessionnel', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
+		return $this->getEdtEmplacementCourss($query, $con);
+	}
 
-				$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $this->id_definie_periode);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id_definie_periode = null;
+		$this->nom_definie_periode = null;
+		$this->heuredebut_definie_periode = null;
+		$this->heurefin_definie_periode = null;
+		$this->suivi_definie_periode = null;
+		$this->type_creneau = null;
+		$this->jour_creneau = null;
+		$this->clearAllReferences();
+		$this->applyDefaultValues();
+		$this->setNew(true);
 	}
 
 	/**
@@ -1803,6 +1520,17 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent {
 
 		$this->collAbsenceEleveSaisies = null;
 		$this->collEdtEmplacementCourss = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseEdtCreneau

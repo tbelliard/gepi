@@ -5,7 +5,7 @@
  *
  * Table de jointure entre les eleves et leurs responsables legaux avec mention du niveau de ces responsables
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseResponsableInformationPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseResponsableInformationPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'responsables2';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'ResponsableInformation';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.ResponsableInformation';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'ResponsableInformationTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 4;
 
@@ -44,11 +50,6 @@ abstract class BaseResponsableInformationPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -60,6 +61,7 @@ abstract class BaseResponsableInformationPeer {
 		BasePeer::TYPE_PHPNAME => array ('EleId', 'PersId', 'RespLegal', 'PersContact', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('eleId', 'persId', 'respLegal', 'persContact', ),
 		BasePeer::TYPE_COLNAME => array (self::ELE_ID, self::PERS_ID, self::RESP_LEGAL, self::PERS_CONTACT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ELE_ID', 'PERS_ID', 'RESP_LEGAL', 'PERS_CONTACT', ),
 		BasePeer::TYPE_FIELDNAME => array ('ele_id', 'pers_id', 'resp_legal', 'pers_contact', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
@@ -74,21 +76,11 @@ abstract class BaseResponsableInformationPeer {
 		BasePeer::TYPE_PHPNAME => array ('EleId' => 0, 'PersId' => 1, 'RespLegal' => 2, 'PersContact' => 3, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('eleId' => 0, 'persId' => 1, 'respLegal' => 2, 'persContact' => 3, ),
 		BasePeer::TYPE_COLNAME => array (self::ELE_ID => 0, self::PERS_ID => 1, self::RESP_LEGAL => 2, self::PERS_CONTACT => 3, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ELE_ID' => 0, 'PERS_ID' => 1, 'RESP_LEGAL' => 2, 'PERS_CONTACT' => 3, ),
 		BasePeer::TYPE_FIELDNAME => array ('ele_id' => 0, 'pers_id' => 1, 'resp_legal' => 2, 'pers_contact' => 3, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new ResponsableInformationMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -150,21 +142,24 @@ abstract class BaseResponsableInformationPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(ResponsableInformationPeer::ELE_ID);
-
-		$criteria->addSelectColumn(ResponsableInformationPeer::PERS_ID);
-
-		$criteria->addSelectColumn(ResponsableInformationPeer::RESP_LEGAL);
-
-		$criteria->addSelectColumn(ResponsableInformationPeer::PERS_CONTACT);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(ResponsableInformationPeer::ELE_ID);
+			$criteria->addSelectColumn(ResponsableInformationPeer::PERS_ID);
+			$criteria->addSelectColumn(ResponsableInformationPeer::RESP_LEGAL);
+			$criteria->addSelectColumn(ResponsableInformationPeer::PERS_CONTACT);
+		} else {
+			$criteria->addSelectColumn($alias . '.ELE_ID');
+			$criteria->addSelectColumn($alias . '.PERS_ID');
+			$criteria->addSelectColumn($alias . '.RESP_LEGAL');
+			$criteria->addSelectColumn($alias . '.PERS_CONTACT');
+		}
 	}
 
 	/**
@@ -352,6 +347,14 @@ abstract class BaseResponsableInformationPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to responsables2
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -364,12 +367,26 @@ abstract class BaseResponsableInformationPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null && $row[$startcol + 2] === null) {
+		if ($row[$startcol] === null && $row[$startcol + 2] === null) {
 			return null;
 		}
-		return serialize(array((string) $row[$startcol + 0], (string) $row[$startcol + 2]));
+		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 2]));
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return array((string) $row[$startcol], (string) $row[$startcol + 2]);
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -382,8 +399,7 @@ abstract class BaseResponsableInformationPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = ResponsableInformationPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = ResponsableInformationPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = ResponsableInformationPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -393,7 +409,6 @@ abstract class BaseResponsableInformationPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -403,11 +418,36 @@ abstract class BaseResponsableInformationPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (ResponsableInformation object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = ResponsableInformationPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = ResponsableInformationPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + ResponsableInformationPeer::NUM_COLUMNS;
+		} else {
+			$cls = ResponsableInformationPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			ResponsableInformationPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related Eleve table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -440,7 +480,8 @@ abstract class BaseResponsableInformationPeer {
 			$con = Propel::getConnection(ResponsableInformationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(ResponsableInformationPeer::ELE_ID,), array(ElevePeer::ELE_ID,), $join_behavior);
+		$criteria->addJoin(ResponsableInformationPeer::ELE_ID, ElevePeer::ELE_ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -456,7 +497,7 @@ abstract class BaseResponsableInformationPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related ResponsableEleve table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -489,7 +530,8 @@ abstract class BaseResponsableInformationPeer {
 			$con = Propel::getConnection(ResponsableInformationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(ResponsableInformationPeer::PERS_ID,), array(ResponsableElevePeer::PERS_ID,), $join_behavior);
+		$criteria->addJoin(ResponsableInformationPeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -504,28 +546,29 @@ abstract class BaseResponsableInformationPeer {
 
 	/**
 	 * Selects a collection of ResponsableInformation objects pre-filled with their Eleve objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of ResponsableInformation objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinEleve(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinEleve(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		ResponsableInformationPeer::addSelectColumns($c);
+		ResponsableInformationPeer::addSelectColumns($criteria);
 		$startcol = (ResponsableInformationPeer::NUM_COLUMNS - ResponsableInformationPeer::NUM_LAZY_LOAD_COLUMNS);
-		ElevePeer::addSelectColumns($c);
+		ElevePeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(ResponsableInformationPeer::ELE_ID,), array(ElevePeer::ELE_ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(ResponsableInformationPeer::ELE_ID, ElevePeer::ELE_ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -536,9 +579,8 @@ abstract class BaseResponsableInformationPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = ResponsableInformationPeer::getOMClass();
+				$cls = ResponsableInformationPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				ResponsableInformationPeer::addInstanceToPool($obj1, $key1);
@@ -549,9 +591,8 @@ abstract class BaseResponsableInformationPeer {
 				$obj2 = ElevePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = ElevePeer::getOMClass();
+					$cls = ElevePeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					ElevePeer::addInstanceToPool($obj2, $key2);
@@ -571,28 +612,29 @@ abstract class BaseResponsableInformationPeer {
 
 	/**
 	 * Selects a collection of ResponsableInformation objects pre-filled with their ResponsableEleve objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of ResponsableInformation objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinResponsableEleve(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinResponsableEleve(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		ResponsableInformationPeer::addSelectColumns($c);
+		ResponsableInformationPeer::addSelectColumns($criteria);
 		$startcol = (ResponsableInformationPeer::NUM_COLUMNS - ResponsableInformationPeer::NUM_LAZY_LOAD_COLUMNS);
-		ResponsableElevePeer::addSelectColumns($c);
+		ResponsableElevePeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(ResponsableInformationPeer::PERS_ID,), array(ResponsableElevePeer::PERS_ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(ResponsableInformationPeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -603,9 +645,8 @@ abstract class BaseResponsableInformationPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = ResponsableInformationPeer::getOMClass();
+				$cls = ResponsableInformationPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				ResponsableInformationPeer::addInstanceToPool($obj1, $key1);
@@ -616,9 +657,8 @@ abstract class BaseResponsableInformationPeer {
 				$obj2 = ResponsableElevePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = ResponsableElevePeer::getOMClass();
+					$cls = ResponsableElevePeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					ResponsableElevePeer::addInstanceToPool($obj2, $key2);
@@ -639,7 +679,7 @@ abstract class BaseResponsableInformationPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -672,8 +712,10 @@ abstract class BaseResponsableInformationPeer {
 			$con = Propel::getConnection(ResponsableInformationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(ResponsableInformationPeer::ELE_ID,), array(ElevePeer::ELE_ID,), $join_behavior);
-		$criteria->addJoin(array(ResponsableInformationPeer::PERS_ID,), array(ResponsableElevePeer::PERS_ID,), $join_behavior);
+		$criteria->addJoin(ResponsableInformationPeer::ELE_ID, ElevePeer::ELE_ID, $join_behavior);
+
+		$criteria->addJoin(ResponsableInformationPeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -688,34 +730,36 @@ abstract class BaseResponsableInformationPeer {
 	/**
 	 * Selects a collection of ResponsableInformation objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of ResponsableInformation objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		ResponsableInformationPeer::addSelectColumns($c);
+		ResponsableInformationPeer::addSelectColumns($criteria);
 		$startcol2 = (ResponsableInformationPeer::NUM_COLUMNS - ResponsableInformationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		ElevePeer::addSelectColumns($c);
+		ElevePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		ResponsableElevePeer::addSelectColumns($c);
+		ResponsableElevePeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (ResponsableElevePeer::NUM_COLUMNS - ResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(ResponsableInformationPeer::ELE_ID,), array(ElevePeer::ELE_ID,), $join_behavior);
-		$c->addJoin(array(ResponsableInformationPeer::PERS_ID,), array(ResponsableElevePeer::PERS_ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(ResponsableInformationPeer::ELE_ID, ElevePeer::ELE_ID, $join_behavior);
+
+		$criteria->addJoin(ResponsableInformationPeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -725,9 +769,8 @@ abstract class BaseResponsableInformationPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = ResponsableInformationPeer::getOMClass();
+				$cls = ResponsableInformationPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				ResponsableInformationPeer::addInstanceToPool($obj1, $key1);
@@ -740,10 +783,8 @@ abstract class BaseResponsableInformationPeer {
 				$obj2 = ElevePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = ElevePeer::getOMClass();
+					$cls = ElevePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					ElevePeer::addInstanceToPool($obj2, $key2);
@@ -760,10 +801,8 @@ abstract class BaseResponsableInformationPeer {
 				$obj3 = ResponsableElevePeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$omClass = ResponsableElevePeer::getOMClass();
+					$cls = ResponsableElevePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					ResponsableElevePeer::addInstanceToPool($obj3, $key3);
@@ -783,7 +822,7 @@ abstract class BaseResponsableInformationPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related Eleve table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -816,7 +855,8 @@ abstract class BaseResponsableInformationPeer {
 			$con = Propel::getConnection(ResponsableInformationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(ResponsableInformationPeer::PERS_ID,), array(ResponsableElevePeer::PERS_ID,), $join_behavior);
+		$criteria->addJoin(ResponsableInformationPeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -832,7 +872,7 @@ abstract class BaseResponsableInformationPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related ResponsableEleve table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -865,7 +905,8 @@ abstract class BaseResponsableInformationPeer {
 			$con = Propel::getConnection(ResponsableInformationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(ResponsableInformationPeer::ELE_ID,), array(ElevePeer::ELE_ID,), $join_behavior);
+		$criteria->addJoin(ResponsableInformationPeer::ELE_ID, ElevePeer::ELE_ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -881,33 +922,34 @@ abstract class BaseResponsableInformationPeer {
 	/**
 	 * Selects a collection of ResponsableInformation objects pre-filled with all related objects except Eleve.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of ResponsableInformation objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptEleve(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptEleve(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		ResponsableInformationPeer::addSelectColumns($c);
+		ResponsableInformationPeer::addSelectColumns($criteria);
 		$startcol2 = (ResponsableInformationPeer::NUM_COLUMNS - ResponsableInformationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		ResponsableElevePeer::addSelectColumns($c);
+		ResponsableElevePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (ResponsableElevePeer::NUM_COLUMNS - ResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(ResponsableInformationPeer::PERS_ID,), array(ResponsableElevePeer::PERS_ID,), $join_behavior);
+		$criteria->addJoin(ResponsableInformationPeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -917,9 +959,8 @@ abstract class BaseResponsableInformationPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = ResponsableInformationPeer::getOMClass();
+				$cls = ResponsableInformationPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				ResponsableInformationPeer::addInstanceToPool($obj1, $key1);
@@ -932,10 +973,8 @@ abstract class BaseResponsableInformationPeer {
 					$obj2 = ResponsableElevePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = ResponsableElevePeer::getOMClass();
+						$cls = ResponsableElevePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					ResponsableElevePeer::addInstanceToPool($obj2, $key2);
@@ -956,33 +995,34 @@ abstract class BaseResponsableInformationPeer {
 	/**
 	 * Selects a collection of ResponsableInformation objects pre-filled with all related objects except ResponsableEleve.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of ResponsableInformation objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptResponsableEleve(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptResponsableEleve(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		ResponsableInformationPeer::addSelectColumns($c);
+		ResponsableInformationPeer::addSelectColumns($criteria);
 		$startcol2 = (ResponsableInformationPeer::NUM_COLUMNS - ResponsableInformationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		ElevePeer::addSelectColumns($c);
+		ElevePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(ResponsableInformationPeer::ELE_ID,), array(ElevePeer::ELE_ID,), $join_behavior);
+		$criteria->addJoin(ResponsableInformationPeer::ELE_ID, ElevePeer::ELE_ID, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -992,9 +1032,8 @@ abstract class BaseResponsableInformationPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = ResponsableInformationPeer::getOMClass();
+				$cls = ResponsableInformationPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				ResponsableInformationPeer::addInstanceToPool($obj1, $key1);
@@ -1007,10 +1046,8 @@ abstract class BaseResponsableInformationPeer {
 					$obj2 = ElevePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = ElevePeer::getOMClass();
+						$cls = ElevePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					ElevePeer::addInstanceToPool($obj2, $key2);
@@ -1040,17 +1077,31 @@ abstract class BaseResponsableInformationPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseResponsableInformationPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseResponsableInformationPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new ResponsableInformationTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return ResponsableInformationPeer::CLASS_DEFAULT;
+		return $withPrefix ? ResponsableInformationPeer::CLASS_DEFAULT : ResponsableInformationPeer::OM_CLASS;
 	}
 
 	/**
@@ -1113,10 +1164,20 @@ abstract class BaseResponsableInformationPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(ResponsableInformationPeer::ELE_ID);
-			$selectCriteria->add(ResponsableInformationPeer::ELE_ID, $criteria->remove(ResponsableInformationPeer::ELE_ID), $comparison);
+			$value = $criteria->remove(ResponsableInformationPeer::ELE_ID);
+			if ($value) {
+				$selectCriteria->add(ResponsableInformationPeer::ELE_ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(ResponsableInformationPeer::TABLE_NAME);
+			}
 
 			$comparison = $criteria->getComparison(ResponsableInformationPeer::RESP_LEGAL);
-			$selectCriteria->add(ResponsableInformationPeer::RESP_LEGAL, $criteria->remove(ResponsableInformationPeer::RESP_LEGAL), $comparison);
+			$value = $criteria->remove(ResponsableInformationPeer::RESP_LEGAL);
+			if ($value) {
+				$selectCriteria->add(ResponsableInformationPeer::RESP_LEGAL, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(ResponsableInformationPeer::TABLE_NAME);
+			}
 
 		} else { // $values is ResponsableInformation object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -1145,6 +1206,11 @@ abstract class BaseResponsableInformationPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += BasePeer::doDeleteAll(ResponsableInformationPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			ResponsableInformationPeer::clearInstancePool();
+			ResponsableInformationPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1175,34 +1241,25 @@ abstract class BaseResponsableInformationPeer {
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
 			ResponsableInformationPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof ResponsableInformation) {
+		} elseif ($values instanceof ResponsableInformation) { // it's a model object
 			// invalidate the cache for this single object
 			ResponsableInformationPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			// primary key is composite; we therefore, expect
-			// the primary key passed to be an array of pkey
-			// values
+			// the primary key passed to be an array of pkey values
 			if (count($values) == count($values, COUNT_RECURSIVE)) {
 				// array is not multi-dimensional
 				$values = array($values);
 			}
-
 			foreach ($values as $value) {
-
 				$criterion = $criteria->getNewCriterion(ResponsableInformationPeer::ELE_ID, $value[0]);
 				$criterion->addAnd($criteria->getNewCriterion(ResponsableInformationPeer::RESP_LEGAL, $value[1]));
 				$criteria->addOr($criterion);
-
 				// we can invalidate the cache for this single PK
 				ResponsableInformationPeer::removeInstanceFromPool($value);
 			}
@@ -1219,7 +1276,7 @@ abstract class BaseResponsableInformationPeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
+			ResponsableInformationPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1268,8 +1325,7 @@ abstract class BaseResponsableInformationPeer {
 	/**
 	 * Retrieve object using using composite pkey values.
 	 * @param      string $ele_id
-	   @param      string $resp_legal
-	   
+	 * @param      string $resp_legal
 	 * @param      PropelPDO $con
 	 * @return     ResponsableInformation
 	 */
@@ -1291,14 +1347,7 @@ abstract class BaseResponsableInformationPeer {
 	}
 } // BaseResponsableInformationPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the ResponsableInformationPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the ResponsableInformationPeer class:
-//
-// Propel::getDatabaseMap(ResponsableInformationPeer::DATABASE_NAME)->addTableBuilder(ResponsableInformationPeer::TABLE_NAME, ResponsableInformationPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseResponsableInformationPeer::DATABASE_NAME)->addTableBuilder(BaseResponsableInformationPeer::TABLE_NAME, BaseResponsableInformationPeer::getMapBuilder());
+BaseResponsableInformationPeer::buildTableMap();
 

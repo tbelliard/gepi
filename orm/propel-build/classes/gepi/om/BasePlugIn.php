@@ -5,10 +5,15 @@
  *
  * Liste des plugins installes sur ce Gepi
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BasePlugIn extends BaseObject  implements Persistent {
+abstract class BasePlugIn extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'PlugInPeer';
 
 	/**
 	 * The Peer class.
@@ -54,19 +59,9 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	protected $collPlugInAutorisations;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collPlugInAutorisations.
-	 */
-	private $lastPlugInAutorisationCriteria = null;
-
-	/**
 	 * @var        array PlugInMiseEnOeuvreMenu[] Collection to store aggregation of PlugInMiseEnOeuvreMenu objects.
 	 */
 	protected $collPlugInMiseEnOeuvreMenus;
-
-	/**
-	 * @var        Criteria The criteria used to select the current contents of collPlugInMiseEnOeuvreMenus.
-	 */
-	private $lastPlugInMiseEnOeuvreMenuCriteria = null;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -81,26 +76,6 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Initializes internal state of BasePlugIn object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
-	 * Applies default values to this object.
-	 * This method should be called from the object's constructor (or
-	 * equivalent initialization method).
-	 * @see        __construct()
-	 */
-	public function applyDefaultValues()
-	{
-	}
 
 	/**
 	 * Get the [id] column value.
@@ -262,11 +237,6 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array())) {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -302,7 +272,6 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 5; // 5 = PlugInPeer::NUM_COLUMNS - PlugInPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -366,10 +335,8 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->collPlugInAutorisations = null;
-			$this->lastPlugInAutorisationCriteria = null;
 
 			$this->collPlugInMiseEnOeuvreMenus = null;
-			$this->lastPlugInMiseEnOeuvreMenuCriteria = null;
 
 		} // if (deep)
 	}
@@ -395,9 +362,17 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 		
 		$con->beginTransaction();
 		try {
-			PlugInPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				PlugInQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -428,10 +403,27 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				PlugInPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			PlugInPeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -463,16 +455,17 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = PlugInPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(PlugInPeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.PlugInPeer::ID.')');
+					}
 
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
 					$this->setId($pk);  //[IMV] update autoincrement primary key
-
 					$this->setNew(false);
 				} else {
-					$affectedRows += PlugInPeer::doUpdate($this, $con);
+					$affectedRows = PlugInPeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -641,10 +634,12 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
@@ -761,7 +756,6 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(PlugInPeer::DATABASE_NAME);
-
 		$criteria->add(PlugInPeer::ID, $this->id);
 
 		return $criteria;
@@ -788,6 +782,15 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getId();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -799,15 +802,10 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setNom($this->nom);
-
 		$copyObj->setRepertoire($this->repertoire);
-
 		$copyObj->setDescription($this->description);
-
 		$copyObj->setOuvert($this->ouvert);
-
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -830,9 +828,7 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 
 
 		$copyObj->setNew(true);
-
 		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
-
 	}
 
 	/**
@@ -874,7 +870,7 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Clears out the collPlugInAutorisations collection (array).
+	 * Clears out the collPlugInAutorisations collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -888,7 +884,7 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collPlugInAutorisations collection (array).
+	 * Initializes the collPlugInAutorisations collection.
 	 *
 	 * By default this just sets the collPlugInAutorisations collection to an empty array (like clearcollPlugInAutorisations());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -898,59 +894,40 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	 */
 	public function initPlugInAutorisations()
 	{
-		$this->collPlugInAutorisations = array();
+		$this->collPlugInAutorisations = new PropelObjectCollection();
+		$this->collPlugInAutorisations->setModel('PlugInAutorisation');
 	}
 
 	/**
 	 * Gets an array of PlugInAutorisation objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this PlugIn has previously been saved, it will retrieve
-	 * related PlugInAutorisations from storage. If this PlugIn is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this PlugIn is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array PlugInAutorisation[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array PlugInAutorisation[] List of PlugInAutorisation objects
 	 * @throws     PropelException
 	 */
 	public function getPlugInAutorisations($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(PlugInPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collPlugInAutorisations === null) {
-			if ($this->isNew()) {
-			   $this->collPlugInAutorisations = array();
+		if(null === $this->collPlugInAutorisations || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPlugInAutorisations) {
+				// return empty collection
+				$this->initPlugInAutorisations();
 			} else {
-
-				$criteria->add(PlugInAutorisationPeer::PLUGIN_ID, $this->id);
-
-				PlugInAutorisationPeer::addSelectColumns($criteria);
-				$this->collPlugInAutorisations = PlugInAutorisationPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(PlugInAutorisationPeer::PLUGIN_ID, $this->id);
-
-				PlugInAutorisationPeer::addSelectColumns($criteria);
-				if (!isset($this->lastPlugInAutorisationCriteria) || !$this->lastPlugInAutorisationCriteria->equals($criteria)) {
-					$this->collPlugInAutorisations = PlugInAutorisationPeer::doSelect($criteria, $con);
+				$collPlugInAutorisations = PlugInAutorisationQuery::create(null, $criteria)
+					->filterByPlugIn($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collPlugInAutorisations;
 				}
+				$this->collPlugInAutorisations = $collPlugInAutorisations;
 			}
 		}
-		$this->lastPlugInAutorisationCriteria = $criteria;
 		return $this->collPlugInAutorisations;
 	}
 
@@ -965,48 +942,21 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	 */
 	public function countPlugInAutorisations(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(PlugInPeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collPlugInAutorisations === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collPlugInAutorisations || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPlugInAutorisations) {
+				return 0;
 			} else {
-
-				$criteria->add(PlugInAutorisationPeer::PLUGIN_ID, $this->id);
-
-				$count = PlugInAutorisationPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(PlugInAutorisationPeer::PLUGIN_ID, $this->id);
-
-				if (!isset($this->lastPlugInAutorisationCriteria) || !$this->lastPlugInAutorisationCriteria->equals($criteria)) {
-					$count = PlugInAutorisationPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collPlugInAutorisations);
+				$query = PlugInAutorisationQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collPlugInAutorisations);
+				return $query
+					->filterByPlugIn($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collPlugInAutorisations);
 		}
-		$this->lastPlugInAutorisationCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1022,14 +972,14 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 		if ($this->collPlugInAutorisations === null) {
 			$this->initPlugInAutorisations();
 		}
-		if (!in_array($l, $this->collPlugInAutorisations, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collPlugInAutorisations, $l);
+		if (!$this->collPlugInAutorisations->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collPlugInAutorisations[]= $l;
 			$l->setPlugIn($this);
 		}
 	}
 
 	/**
-	 * Clears out the collPlugInMiseEnOeuvreMenus collection (array).
+	 * Clears out the collPlugInMiseEnOeuvreMenus collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1043,7 +993,7 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	}
 
 	/**
-	 * Initializes the collPlugInMiseEnOeuvreMenus collection (array).
+	 * Initializes the collPlugInMiseEnOeuvreMenus collection.
 	 *
 	 * By default this just sets the collPlugInMiseEnOeuvreMenus collection to an empty array (like clearcollPlugInMiseEnOeuvreMenus());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1053,59 +1003,40 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	 */
 	public function initPlugInMiseEnOeuvreMenus()
 	{
-		$this->collPlugInMiseEnOeuvreMenus = array();
+		$this->collPlugInMiseEnOeuvreMenus = new PropelObjectCollection();
+		$this->collPlugInMiseEnOeuvreMenus->setModel('PlugInMiseEnOeuvreMenu');
 	}
 
 	/**
 	 * Gets an array of PlugInMiseEnOeuvreMenu objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this PlugIn has previously been saved, it will retrieve
-	 * related PlugInMiseEnOeuvreMenus from storage. If this PlugIn is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this PlugIn is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array PlugInMiseEnOeuvreMenu[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array PlugInMiseEnOeuvreMenu[] List of PlugInMiseEnOeuvreMenu objects
 	 * @throws     PropelException
 	 */
 	public function getPlugInMiseEnOeuvreMenus($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(PlugInPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collPlugInMiseEnOeuvreMenus === null) {
-			if ($this->isNew()) {
-			   $this->collPlugInMiseEnOeuvreMenus = array();
+		if(null === $this->collPlugInMiseEnOeuvreMenus || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPlugInMiseEnOeuvreMenus) {
+				// return empty collection
+				$this->initPlugInMiseEnOeuvreMenus();
 			} else {
-
-				$criteria->add(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $this->id);
-
-				PlugInMiseEnOeuvreMenuPeer::addSelectColumns($criteria);
-				$this->collPlugInMiseEnOeuvreMenus = PlugInMiseEnOeuvreMenuPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $this->id);
-
-				PlugInMiseEnOeuvreMenuPeer::addSelectColumns($criteria);
-				if (!isset($this->lastPlugInMiseEnOeuvreMenuCriteria) || !$this->lastPlugInMiseEnOeuvreMenuCriteria->equals($criteria)) {
-					$this->collPlugInMiseEnOeuvreMenus = PlugInMiseEnOeuvreMenuPeer::doSelect($criteria, $con);
+				$collPlugInMiseEnOeuvreMenus = PlugInMiseEnOeuvreMenuQuery::create(null, $criteria)
+					->filterByPlugIn($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collPlugInMiseEnOeuvreMenus;
 				}
+				$this->collPlugInMiseEnOeuvreMenus = $collPlugInMiseEnOeuvreMenus;
 			}
 		}
-		$this->lastPlugInMiseEnOeuvreMenuCriteria = $criteria;
 		return $this->collPlugInMiseEnOeuvreMenus;
 	}
 
@@ -1120,48 +1051,21 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 	 */
 	public function countPlugInMiseEnOeuvreMenus(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(PlugInPeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collPlugInMiseEnOeuvreMenus === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collPlugInMiseEnOeuvreMenus || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPlugInMiseEnOeuvreMenus) {
+				return 0;
 			} else {
-
-				$criteria->add(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $this->id);
-
-				$count = PlugInMiseEnOeuvreMenuPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $this->id);
-
-				if (!isset($this->lastPlugInMiseEnOeuvreMenuCriteria) || !$this->lastPlugInMiseEnOeuvreMenuCriteria->equals($criteria)) {
-					$count = PlugInMiseEnOeuvreMenuPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collPlugInMiseEnOeuvreMenus);
+				$query = PlugInMiseEnOeuvreMenuQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collPlugInMiseEnOeuvreMenus);
+				return $query
+					->filterByPlugIn($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collPlugInMiseEnOeuvreMenus);
 		}
-		$this->lastPlugInMiseEnOeuvreMenuCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1177,10 +1081,24 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 		if ($this->collPlugInMiseEnOeuvreMenus === null) {
 			$this->initPlugInMiseEnOeuvreMenus();
 		}
-		if (!in_array($l, $this->collPlugInMiseEnOeuvreMenus, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collPlugInMiseEnOeuvreMenus, $l);
+		if (!$this->collPlugInMiseEnOeuvreMenus->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collPlugInMiseEnOeuvreMenus[]= $l;
 			$l->setPlugIn($this);
 		}
+	}
+
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id = null;
+		$this->nom = null;
+		$this->repertoire = null;
+		$this->description = null;
+		$this->ouvert = null;
+		$this->clearAllReferences();
+		$this->setNew(true);
 	}
 
 	/**
@@ -1209,6 +1127,17 @@ abstract class BasePlugIn extends BaseObject  implements Persistent {
 
 		$this->collPlugInAutorisations = null;
 		$this->collPlugInMiseEnOeuvreMenus = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BasePlugIn

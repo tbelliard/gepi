@@ -5,10 +5,15 @@
  *
  * Table de jointure entre le traitement des absences et leur envoi
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persistent {
+abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'JTraitementEnvoiElevePeer';
 
 	/**
 	 * The Peer class.
@@ -53,26 +58,6 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Initializes internal state of BaseJTraitementEnvoiEleve object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
-	 * Applies default values to this object.
-	 * This method should be called from the object's constructor (or
-	 * equivalent initialization method).
-	 * @see        __construct()
-	 */
-	public function applyDefaultValues()
-	{
-	}
 
 	/**
 	 * Get the [a_envoi_id] column value.
@@ -152,11 +137,6 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array())) {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -189,7 +169,6 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 2; // 2 = JTraitementEnvoiElevePeer::NUM_COLUMNS - JTraitementEnvoiElevePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -284,9 +263,17 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 		
 		$con->beginTransaction();
 		try {
-			JTraitementEnvoiElevePeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				JTraitementEnvoiEleveQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -317,10 +304,27 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				JTraitementEnvoiElevePeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			JTraitementEnvoiElevePeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -368,11 +372,9 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = JTraitementEnvoiElevePeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
-
+					$criteria = $this->buildCriteria();
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
 					$this->setNew(false);
 				} else {
 					$affectedRows += JTraitementEnvoiElevePeer::doUpdate($this, $con);
@@ -521,18 +523,29 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
 		$keys = JTraitementEnvoiElevePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getAEnvoiId(),
 			$keys[1] => $this->getATraitementId(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aAbsenceEleveEnvoi) {
+				$result['AbsenceEleveEnvoi'] = $this->aAbsenceEleveEnvoi->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aAbsenceEleveTraitement) {
+				$result['AbsenceEleveTraitement'] = $this->aAbsenceEleveTraitement->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -623,7 +636,6 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(JTraitementEnvoiElevePeer::DATABASE_NAME);
-
 		$criteria->add(JTraitementEnvoiElevePeer::A_ENVOI_ID, $this->a_envoi_id);
 		$criteria->add(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, $this->a_traitement_id);
 
@@ -638,11 +650,9 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	public function getPrimaryKey()
 	{
 		$pks = array();
-
 		$pks[0] = $this->getAEnvoiId();
-
 		$pks[1] = $this->getATraitementId();
-
+		
 		return $pks;
 	}
 
@@ -654,11 +664,17 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function setPrimaryKey($keys)
 	{
-
 		$this->setAEnvoiId($keys[0]);
-
 		$this->setATraitementId($keys[1]);
+	}
 
+	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return (null === $this->getAEnvoiId()) && (null === $this->getATraitementId());
 	}
 
 	/**
@@ -673,14 +689,10 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setAEnvoiId($this->a_envoi_id);
-
 		$copyObj->setATraitementId($this->a_traitement_id);
 
-
 		$copyObj->setNew(true);
-
 	}
 
 	/**
@@ -758,7 +770,7 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	public function getAbsenceEleveEnvoi(PropelPDO $con = null)
 	{
 		if ($this->aAbsenceEleveEnvoi === null && ($this->a_envoi_id !== null)) {
-			$this->aAbsenceEleveEnvoi = AbsenceEleveEnvoiPeer::retrieveByPK($this->a_envoi_id, $con);
+			$this->aAbsenceEleveEnvoi = AbsenceEleveEnvoiQuery::create()->findPk($this->a_envoi_id);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -807,7 +819,7 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	public function getAbsenceEleveTraitement(PropelPDO $con = null)
 	{
 		if ($this->aAbsenceEleveTraitement === null && ($this->a_traitement_id !== null)) {
-			$this->aAbsenceEleveTraitement = AbsenceEleveTraitementPeer::retrieveByPK($this->a_traitement_id, $con);
+			$this->aAbsenceEleveTraitement = AbsenceEleveTraitementQuery::create()->findPk($this->a_traitement_id);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -817,6 +829,17 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 			 */
 		}
 		return $this->aAbsenceEleveTraitement;
+	}
+
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->a_envoi_id = null;
+		$this->a_traitement_id = null;
+		$this->clearAllReferences();
+		$this->setNew(true);
 	}
 
 	/**
@@ -833,8 +856,19 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 		if ($deep) {
 		} // if ($deep)
 
-			$this->aAbsenceEleveEnvoi = null;
-			$this->aAbsenceEleveTraitement = null;
+		$this->aAbsenceEleveEnvoi = null;
+		$this->aAbsenceEleveTraitement = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseJTraitementEnvoiEleve

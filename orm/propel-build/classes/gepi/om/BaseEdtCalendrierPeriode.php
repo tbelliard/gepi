@@ -5,10 +5,15 @@
  *
  * Liste des periodes datees de l'annee courante(pour definir par exemple les trimestres)
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persistent {
+abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'EdtCalendrierPeriodePeer';
 
 	/**
 	 * The Peer class.
@@ -96,11 +101,6 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	protected $collEdtEmplacementCourss;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collEdtEmplacementCourss.
-	 */
-	private $lastEdtEmplacementCoursCriteria = null;
-
-	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -113,26 +113,6 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Initializes internal state of BaseEdtCalendrierPeriode object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
-	 * Applies default values to this object.
-	 * This method should be called from the object's constructor (or
-	 * equivalent initialization method).
-	 * @see        __construct()
-	 */
-	public function applyDefaultValues()
-	{
-	}
 
 	/**
 	 * Get the [id_calendrier] column value.
@@ -165,23 +145,69 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	}
 
 	/**
-	 * Get the [debut_calendrier_ts] column value.
+	 * Get the [optionally formatted] temporal [debut_calendrier_ts] column value.
 	 * timestamp du debut de la periode
-	 * @return     string
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 */
-	public function getDebutCalendrierTs()
+	public function getDebutCalendrierTs($format = '%X')
 	{
-		return $this->debut_calendrier_ts;
+		if ($this->debut_calendrier_ts === null) {
+			return null;
+		}
+
+
+
+		try {
+			$dt = new DateTime($this->debut_calendrier_ts);
+		} catch (Exception $x) {
+			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->debut_calendrier_ts, true), $x);
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
 	}
 
 	/**
-	 * Get the [fin_calendrier_ts] column value.
+	 * Get the [optionally formatted] temporal [fin_calendrier_ts] column value.
 	 * timestamp de la fin de la periode
-	 * @return     string
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 */
-	public function getFinCalendrierTs()
+	public function getFinCalendrierTs($format = '%X')
 	{
-		return $this->fin_calendrier_ts;
+		if ($this->fin_calendrier_ts === null) {
+			return null;
+		}
+
+
+
+		try {
+			$dt = new DateTime($this->fin_calendrier_ts);
+		} catch (Exception $x) {
+			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->fin_calendrier_ts, true), $x);
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
 	}
 
 	/**
@@ -417,41 +443,99 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	} // setNomCalendrier()
 
 	/**
-	 * Set the value of [debut_calendrier_ts] column.
+	 * Sets the value of [debut_calendrier_ts] column to a normalized version of the date/time value specified.
 	 * timestamp du debut de la periode
-	 * @param      string $v new value
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
 	 * @return     EdtCalendrierPeriode The current object (for fluent API support)
 	 */
 	public function setDebutCalendrierTs($v)
 	{
-		if ($v !== null) {
-			$v = (string) $v;
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
 		}
 
-		if ($this->debut_calendrier_ts !== $v) {
-			$this->debut_calendrier_ts = $v;
-			$this->modifiedColumns[] = EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS;
-		}
+		if ( $this->debut_calendrier_ts !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->debut_calendrier_ts !== null && $tmpDt = new DateTime($this->debut_calendrier_ts)) ? $tmpDt->format('H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->debut_calendrier_ts = ($dt ? $dt->format('H:i:s') : null);
+				$this->modifiedColumns[] = EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS;
+			}
+		} // if either are not null
 
 		return $this;
 	} // setDebutCalendrierTs()
 
 	/**
-	 * Set the value of [fin_calendrier_ts] column.
+	 * Sets the value of [fin_calendrier_ts] column to a normalized version of the date/time value specified.
 	 * timestamp de la fin de la periode
-	 * @param      string $v new value
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
 	 * @return     EdtCalendrierPeriode The current object (for fluent API support)
 	 */
 	public function setFinCalendrierTs($v)
 	{
-		if ($v !== null) {
-			$v = (string) $v;
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
 		}
 
-		if ($this->fin_calendrier_ts !== $v) {
-			$this->fin_calendrier_ts = $v;
-			$this->modifiedColumns[] = EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS;
-		}
+		if ( $this->fin_calendrier_ts !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->fin_calendrier_ts !== null && $tmpDt = new DateTime($this->fin_calendrier_ts)) ? $tmpDt->format('H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->fin_calendrier_ts = ($dt ? $dt->format('H:i:s') : null);
+				$this->modifiedColumns[] = EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS;
+			}
+		} // if either are not null
 
 		return $this;
 	} // setFinCalendrierTs()
@@ -722,11 +806,6 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array())) {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -769,7 +848,6 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 12; // 12 = EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -833,7 +911,6 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->collEdtEmplacementCourss = null;
-			$this->lastEdtEmplacementCoursCriteria = null;
 
 		} // if (deep)
 	}
@@ -859,9 +936,17 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		
 		$con->beginTransaction();
 		try {
-			EdtCalendrierPeriodePeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				EdtCalendrierPeriodeQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -892,10 +977,27 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				EdtCalendrierPeriodePeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			EdtCalendrierPeriodePeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -924,14 +1026,12 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = EdtCalendrierPeriodePeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
-
+					$criteria = $this->buildCriteria();
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
 					$this->setNew(false);
 				} else {
-					$affectedRows += EdtCalendrierPeriodePeer::doUpdate($this, $con);
+					$affectedRows = EdtCalendrierPeriodePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -1105,10 +1205,12 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
@@ -1267,7 +1369,6 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(EdtCalendrierPeriodePeer::DATABASE_NAME);
-
 		$criteria->add(EdtCalendrierPeriodePeer::ID_CALENDRIER, $this->id_calendrier);
 
 		return $criteria;
@@ -1294,6 +1395,15 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getIdCalendrier();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -1305,31 +1415,18 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setIdCalendrier($this->id_calendrier);
-
 		$copyObj->setClasseConcerneCalendrier($this->classe_concerne_calendrier);
-
 		$copyObj->setNomCalendrier($this->nom_calendrier);
-
 		$copyObj->setDebutCalendrierTs($this->debut_calendrier_ts);
-
 		$copyObj->setFinCalendrierTs($this->fin_calendrier_ts);
-
 		$copyObj->setJourdebutCalendrier($this->jourdebut_calendrier);
-
 		$copyObj->setHeuredebutCalendrier($this->heuredebut_calendrier);
-
 		$copyObj->setJourfinCalendrier($this->jourfin_calendrier);
-
 		$copyObj->setHeurefinCalendrier($this->heurefin_calendrier);
-
 		$copyObj->setNumeroPeriode($this->numero_periode);
-
 		$copyObj->setEtabfermeCalendrier($this->etabferme_calendrier);
-
 		$copyObj->setEtabvacancesCalendrier($this->etabvacances_calendrier);
-
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1346,7 +1443,6 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 
 
 		$copyObj->setNew(true);
-
 	}
 
 	/**
@@ -1388,7 +1484,7 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	}
 
 	/**
-	 * Clears out the collEdtEmplacementCourss collection (array).
+	 * Clears out the collEdtEmplacementCourss collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1402,7 +1498,7 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	}
 
 	/**
-	 * Initializes the collEdtEmplacementCourss collection (array).
+	 * Initializes the collEdtEmplacementCourss collection.
 	 *
 	 * By default this just sets the collEdtEmplacementCourss collection to an empty array (like clearcollEdtEmplacementCourss());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1412,59 +1508,40 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 */
 	public function initEdtEmplacementCourss()
 	{
-		$this->collEdtEmplacementCourss = array();
+		$this->collEdtEmplacementCourss = new PropelObjectCollection();
+		$this->collEdtEmplacementCourss->setModel('EdtEmplacementCours');
 	}
 
 	/**
 	 * Gets an array of EdtEmplacementCours objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this EdtCalendrierPeriode has previously been saved, it will retrieve
-	 * related EdtEmplacementCourss from storage. If this EdtCalendrierPeriode is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this EdtCalendrierPeriode is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array EdtEmplacementCours[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
 	 * @throws     PropelException
 	 */
 	public function getEdtEmplacementCourss($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCalendrierPeriodePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-			   $this->collEdtEmplacementCourss = array();
+		if(null === $this->collEdtEmplacementCourss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
+				// return empty collection
+				$this->initEdtEmplacementCourss();
 			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-				EdtEmplacementCoursPeer::addSelectColumns($criteria);
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-				EdtEmplacementCoursPeer::addSelectColumns($criteria);
-				if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-					$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelect($criteria, $con);
+				$collEdtEmplacementCourss = EdtEmplacementCoursQuery::create(null, $criteria)
+					->filterByEdtCalendrierPeriode($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collEdtEmplacementCourss;
 				}
+				$this->collEdtEmplacementCourss = $collEdtEmplacementCourss;
 			}
 		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
 		return $this->collEdtEmplacementCourss;
 	}
 
@@ -1479,48 +1556,21 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 */
 	public function countEdtEmplacementCourss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCalendrierPeriodePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collEdtEmplacementCourss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
+				return 0;
 			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-				$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-				if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-					$count = EdtEmplacementCoursPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collEdtEmplacementCourss);
+				$query = EdtEmplacementCoursQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collEdtEmplacementCourss);
+				return $query
+					->filterByEdtCalendrierPeriode($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collEdtEmplacementCourss);
 		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1536,8 +1586,8 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		if ($this->collEdtEmplacementCourss === null) {
 			$this->initEdtEmplacementCourss();
 		}
-		if (!in_array($l, $this->collEdtEmplacementCourss, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collEdtEmplacementCourss, $l);
+		if (!$this->collEdtEmplacementCourss->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collEdtEmplacementCourss[]= $l;
 			$l->setEdtCalendrierPeriode($this);
 		}
 	}
@@ -1556,37 +1606,10 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 */
 	public function getEdtEmplacementCourssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCalendrierPeriodePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.Groupe', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -1603,37 +1626,10 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 */
 	public function getEdtEmplacementCourssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCalendrierPeriodePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.AidDetails', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinAidDetails($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -1650,37 +1646,10 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 */
 	public function getEdtEmplacementCourssJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCalendrierPeriodePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.EdtSalle', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtSalle($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtSalle($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -1697,37 +1666,10 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 */
 	public function getEdtEmplacementCourssJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCalendrierPeriodePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.EdtCreneau', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
-
-				$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinEdtCreneau($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+		return $this->getEdtEmplacementCourss($query, $con);
 	}
 
 
@@ -1744,37 +1686,31 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 */
 	public function getEdtEmplacementCourssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(EdtCalendrierPeriodePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours.UtilisateurProfessionnel', $join_behavior);
 
-		if ($this->collEdtEmplacementCourss === null) {
-			if ($this->isNew()) {
-				$this->collEdtEmplacementCourss = array();
-			} else {
+		return $this->getEdtEmplacementCourss($query, $con);
+	}
 
-				$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $this->id_calendrier);
-
-			if (!isset($this->lastEdtEmplacementCoursCriteria) || !$this->lastEdtEmplacementCoursCriteria->equals($criteria)) {
-				$this->collEdtEmplacementCourss = EdtEmplacementCoursPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastEdtEmplacementCoursCriteria = $criteria;
-
-		return $this->collEdtEmplacementCourss;
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id_calendrier = null;
+		$this->classe_concerne_calendrier = null;
+		$this->nom_calendrier = null;
+		$this->debut_calendrier_ts = null;
+		$this->fin_calendrier_ts = null;
+		$this->jourdebut_calendrier = null;
+		$this->heuredebut_calendrier = null;
+		$this->jourfin_calendrier = null;
+		$this->heurefin_calendrier = null;
+		$this->numero_periode = null;
+		$this->etabferme_calendrier = null;
+		$this->etabvacances_calendrier = null;
+		$this->clearAllReferences();
+		$this->setNew(true);
 	}
 
 	/**
@@ -1797,6 +1733,17 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		} // if ($deep)
 
 		$this->collEdtEmplacementCourss = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseEdtCalendrierPeriode

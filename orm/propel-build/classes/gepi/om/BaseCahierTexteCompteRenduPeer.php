@@ -5,7 +5,7 @@
  *
  * Compte rendu du cahier de texte
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseCahierTexteCompteRenduPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'ct_entry';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'CahierTexteCompteRendu';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.CahierTexteCompteRendu';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'CahierTexteCompteRenduTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 9;
 
@@ -59,11 +65,6 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -75,6 +76,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		BasePeer::TYPE_PHPNAME => array ('IdCt', 'HeureEntry', 'DateCt', 'Contenu', 'Vise', 'Visa', 'IdGroupe', 'IdLogin', 'IdSequence', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt', 'heureEntry', 'dateCt', 'contenu', 'vise', 'visa', 'idGroupe', 'idLogin', 'idSequence', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_CT, self::HEURE_ENTRY, self::DATE_CT, self::CONTENU, self::VISE, self::VISA, self::ID_GROUPE, self::ID_LOGIN, self::ID_SEQUENCE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_CT', 'HEURE_ENTRY', 'DATE_CT', 'CONTENU', 'VISE', 'VISA', 'ID_GROUPE', 'ID_LOGIN', 'ID_SEQUENCE', ),
 		BasePeer::TYPE_FIELDNAME => array ('id_ct', 'heure_entry', 'date_ct', 'contenu', 'vise', 'visa', 'id_groupe', 'id_login', 'id_sequence', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, )
 	);
@@ -89,21 +91,11 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		BasePeer::TYPE_PHPNAME => array ('IdCt' => 0, 'HeureEntry' => 1, 'DateCt' => 2, 'Contenu' => 3, 'Vise' => 4, 'Visa' => 5, 'IdGroupe' => 6, 'IdLogin' => 7, 'IdSequence' => 8, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt' => 0, 'heureEntry' => 1, 'dateCt' => 2, 'contenu' => 3, 'vise' => 4, 'visa' => 5, 'idGroupe' => 6, 'idLogin' => 7, 'idSequence' => 8, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_CT => 0, self::HEURE_ENTRY => 1, self::DATE_CT => 2, self::CONTENU => 3, self::VISE => 4, self::VISA => 5, self::ID_GROUPE => 6, self::ID_LOGIN => 7, self::ID_SEQUENCE => 8, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_CT' => 0, 'HEURE_ENTRY' => 1, 'DATE_CT' => 2, 'CONTENU' => 3, 'VISE' => 4, 'VISA' => 5, 'ID_GROUPE' => 6, 'ID_LOGIN' => 7, 'ID_SEQUENCE' => 8, ),
 		BasePeer::TYPE_FIELDNAME => array ('id_ct' => 0, 'heure_entry' => 1, 'date_ct' => 2, 'contenu' => 3, 'vise' => 4, 'visa' => 5, 'id_groupe' => 6, 'id_login' => 7, 'id_sequence' => 8, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new CahierTexteCompteRenduMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -165,31 +157,34 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::ID_CT);
-
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::HEURE_ENTRY);
-
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::DATE_CT);
-
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::CONTENU);
-
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::VISE);
-
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::VISA);
-
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::ID_GROUPE);
-
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::ID_LOGIN);
-
-		$criteria->addSelectColumn(CahierTexteCompteRenduPeer::ID_SEQUENCE);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(CahierTexteCompteRenduPeer::ID_CT);
+			$criteria->addSelectColumn(CahierTexteCompteRenduPeer::HEURE_ENTRY);
+			$criteria->addSelectColumn(CahierTexteCompteRenduPeer::DATE_CT);
+			$criteria->addSelectColumn(CahierTexteCompteRenduPeer::CONTENU);
+			$criteria->addSelectColumn(CahierTexteCompteRenduPeer::VISE);
+			$criteria->addSelectColumn(CahierTexteCompteRenduPeer::VISA);
+			$criteria->addSelectColumn(CahierTexteCompteRenduPeer::ID_GROUPE);
+			$criteria->addSelectColumn(CahierTexteCompteRenduPeer::ID_LOGIN);
+			$criteria->addSelectColumn(CahierTexteCompteRenduPeer::ID_SEQUENCE);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID_CT');
+			$criteria->addSelectColumn($alias . '.HEURE_ENTRY');
+			$criteria->addSelectColumn($alias . '.DATE_CT');
+			$criteria->addSelectColumn($alias . '.CONTENU');
+			$criteria->addSelectColumn($alias . '.VISE');
+			$criteria->addSelectColumn($alias . '.VISA');
+			$criteria->addSelectColumn($alias . '.ID_GROUPE');
+			$criteria->addSelectColumn($alias . '.ID_LOGIN');
+			$criteria->addSelectColumn($alias . '.ID_SEQUENCE');
+		}
 	}
 
 	/**
@@ -377,6 +372,17 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to ct_entry
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in CahierTexteCompteRenduFichierJointPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CahierTexteCompteRenduFichierJointPeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -389,12 +395,26 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -407,8 +427,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = CahierTexteCompteRenduPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = CahierTexteCompteRenduPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -418,7 +437,6 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -428,11 +446,36 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (CahierTexteCompteRendu object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = CahierTexteCompteRenduPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + CahierTexteCompteRenduPeer::NUM_COLUMNS;
+		} else {
+			$cls = CahierTexteCompteRenduPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			CahierTexteCompteRenduPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related Groupe table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -465,7 +508,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -481,7 +525,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -514,7 +558,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -530,7 +575,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related CahierTexteSequence table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -563,7 +608,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_SEQUENCE, CahierTexteSequencePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -578,28 +624,29 @@ abstract class BaseCahierTexteCompteRenduPeer {
 
 	/**
 	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with their Groupe objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of CahierTexteCompteRendu objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinGroupe(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
+		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
 		$startcol = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
-		GroupePeer::addSelectColumns($c);
+		GroupePeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -610,9 +657,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
+				$cls = CahierTexteCompteRenduPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
@@ -623,9 +669,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				$obj2 = GroupePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = GroupePeer::getOMClass();
+					$cls = GroupePeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					GroupePeer::addInstanceToPool($obj2, $key2);
@@ -645,28 +690,29 @@ abstract class BaseCahierTexteCompteRenduPeer {
 
 	/**
 	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with their UtilisateurProfessionnel objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of CahierTexteCompteRendu objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinUtilisateurProfessionnel(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
+		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
 		$startcol = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -677,9 +723,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
+				$cls = CahierTexteCompteRenduPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
@@ -690,9 +735,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = UtilisateurProfessionnelPeer::getOMClass();
+					$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -712,28 +756,29 @@ abstract class BaseCahierTexteCompteRenduPeer {
 
 	/**
 	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with their CahierTexteSequence objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of CahierTexteCompteRendu objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinCahierTexteSequence(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinCahierTexteSequence(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
+		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
 		$startcol = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
-		CahierTexteSequencePeer::addSelectColumns($c);
+		CahierTexteSequencePeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(CahierTexteCompteRenduPeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_SEQUENCE, CahierTexteSequencePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -744,9 +789,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
+				$cls = CahierTexteCompteRenduPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
@@ -757,9 +801,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				$obj2 = CahierTexteSequencePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = CahierTexteSequencePeer::getOMClass();
+					$cls = CahierTexteSequencePeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					CahierTexteSequencePeer::addInstanceToPool($obj2, $key2);
@@ -780,7 +823,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -813,9 +856,12 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_SEQUENCE, CahierTexteSequencePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -830,38 +876,41 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/**
 	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of CahierTexteCompteRendu objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
+		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
 		$startcol2 = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		GroupePeer::addSelectColumns($c);
+		GroupePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		CahierTexteSequencePeer::addSelectColumns($c);
+		CahierTexteSequencePeer::addSelectColumns($criteria);
 		$startcol5 = $startcol4 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-		$c->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$c->addJoin(array(CahierTexteCompteRenduPeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_SEQUENCE, CahierTexteSequencePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -871,9 +920,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
+				$cls = CahierTexteCompteRenduPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
@@ -886,10 +934,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				$obj2 = GroupePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = GroupePeer::getOMClass();
+					$cls = GroupePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					GroupePeer::addInstanceToPool($obj2, $key2);
@@ -906,10 +952,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				$obj3 = UtilisateurProfessionnelPeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$omClass = UtilisateurProfessionnelPeer::getOMClass();
+					$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj3, $key3);
@@ -926,10 +970,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				$obj4 = CahierTexteSequencePeer::getInstanceFromPool($key4);
 				if (!$obj4) {
 
-					$omClass = CahierTexteSequencePeer::getOMClass();
+					$cls = CahierTexteSequencePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
 					CahierTexteSequencePeer::addInstanceToPool($obj4, $key4);
@@ -949,7 +991,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related Groupe table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -982,8 +1024,10 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-				$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_SEQUENCE, CahierTexteSequencePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -999,7 +1043,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -1032,8 +1076,10 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_SEQUENCE, CahierTexteSequencePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1049,7 +1095,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related CahierTexteSequence table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -1082,8 +1128,10 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$criteria->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1099,37 +1147,39 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/**
 	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with all related objects except Groupe.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of CahierTexteCompteRendu objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptGroupe(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptGroupe(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
+		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
 		$startcol2 = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		CahierTexteSequencePeer::addSelectColumns($c);
+		CahierTexteSequencePeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-				$c->addJoin(array(CahierTexteCompteRenduPeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_SEQUENCE, CahierTexteSequencePeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1139,9 +1189,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
+				$cls = CahierTexteCompteRenduPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
@@ -1154,10 +1203,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 					$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -1175,10 +1222,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 					$obj3 = CahierTexteSequencePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = CahierTexteSequencePeer::getOMClass();
+						$cls = CahierTexteSequencePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					CahierTexteSequencePeer::addInstanceToPool($obj3, $key3);
@@ -1199,37 +1244,39 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/**
 	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with all related objects except UtilisateurProfessionnel.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of CahierTexteCompteRendu objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptUtilisateurProfessionnel(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
+		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
 		$startcol2 = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		GroupePeer::addSelectColumns($c);
+		GroupePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		CahierTexteSequencePeer::addSelectColumns($c);
+		CahierTexteSequencePeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$c->addJoin(array(CahierTexteCompteRenduPeer::ID_SEQUENCE,), array(CahierTexteSequencePeer::ID,), $join_behavior);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_SEQUENCE, CahierTexteSequencePeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1239,9 +1286,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
+				$cls = CahierTexteCompteRenduPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
@@ -1254,10 +1300,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 					$obj2 = GroupePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = GroupePeer::getOMClass();
+						$cls = GroupePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					GroupePeer::addInstanceToPool($obj2, $key2);
@@ -1275,10 +1319,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 					$obj3 = CahierTexteSequencePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = CahierTexteSequencePeer::getOMClass();
+						$cls = CahierTexteSequencePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					CahierTexteSequencePeer::addInstanceToPool($obj3, $key3);
@@ -1299,37 +1341,39 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/**
 	 * Selects a collection of CahierTexteCompteRendu objects pre-filled with all related objects except CahierTexteSequence.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of CahierTexteCompteRendu objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptCahierTexteSequence(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptCahierTexteSequence(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteCompteRenduPeer::addSelectColumns($c);
+		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
 		$startcol2 = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		GroupePeer::addSelectColumns($c);
+		GroupePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(CahierTexteCompteRenduPeer::ID_GROUPE,), array(GroupePeer::ID,), $join_behavior);
-				$c->addJoin(array(CahierTexteCompteRenduPeer::ID_LOGIN,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1339,9 +1383,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = CahierTexteCompteRenduPeer::getOMClass();
+				$cls = CahierTexteCompteRenduPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				CahierTexteCompteRenduPeer::addInstanceToPool($obj1, $key1);
@@ -1354,10 +1397,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 					$obj2 = GroupePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = GroupePeer::getOMClass();
+						$cls = GroupePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					GroupePeer::addInstanceToPool($obj2, $key2);
@@ -1375,10 +1416,8 @@ abstract class BaseCahierTexteCompteRenduPeer {
 					$obj3 = UtilisateurProfessionnelPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj3, $key3);
@@ -1408,17 +1447,31 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseCahierTexteCompteRenduPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseCahierTexteCompteRenduPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new CahierTexteCompteRenduTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return CahierTexteCompteRenduPeer::CLASS_DEFAULT;
+		return $withPrefix ? CahierTexteCompteRenduPeer::CLASS_DEFAULT : CahierTexteCompteRenduPeer::OM_CLASS;
 	}
 
 	/**
@@ -1485,7 +1538,12 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(CahierTexteCompteRenduPeer::ID_CT);
-			$selectCriteria->add(CahierTexteCompteRenduPeer::ID_CT, $criteria->remove(CahierTexteCompteRenduPeer::ID_CT), $comparison);
+			$value = $criteria->remove(CahierTexteCompteRenduPeer::ID_CT);
+			if ($value) {
+				$selectCriteria->add(CahierTexteCompteRenduPeer::ID_CT, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(CahierTexteCompteRenduPeer::TABLE_NAME);
+			}
 
 		} else { // $values is CahierTexteCompteRendu object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -1515,6 +1573,11 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$con->beginTransaction();
 			$affectedRows += CahierTexteCompteRenduPeer::doOnDeleteCascade(new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(CahierTexteCompteRenduPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			CahierTexteCompteRenduPeer::clearInstancePool();
+			CahierTexteCompteRenduPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1541,30 +1604,14 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			CahierTexteCompteRenduPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof CahierTexteCompteRendu) {
-			// invalidate the cache for this single object
-			CahierTexteCompteRenduPeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof CahierTexteCompteRendu) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(CahierTexteCompteRenduPeer::ID_CT, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				CahierTexteCompteRenduPeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -1578,20 +1625,21 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$con->beginTransaction();
 			$affectedRows += CahierTexteCompteRenduPeer::doOnDeleteCascade($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					CahierTexteCompteRenduPeer::clearInstancePool();
-				} else { // it's a PK or object
-					CahierTexteCompteRenduPeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				CahierTexteCompteRenduPeer::clearInstancePool();
+			} elseif ($values instanceof CahierTexteCompteRendu) { // it's a model object
+				CahierTexteCompteRenduPeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					CahierTexteCompteRenduPeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in CahierTexteCompteRenduFichierJointPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			CahierTexteCompteRenduFichierJointPeer::clearInstancePool();
-
+			CahierTexteCompteRenduPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1624,10 +1672,10 @@ abstract class BaseCahierTexteCompteRenduPeer {
 
 
 			// delete related CahierTexteCompteRenduFichierJoint objects
-			$c = new Criteria(CahierTexteCompteRenduFichierJointPeer::DATABASE_NAME);
+			$criteria = new Criteria(CahierTexteCompteRenduFichierJointPeer::DATABASE_NAME);
 			
-			$c->add(CahierTexteCompteRenduFichierJointPeer::ID_CT, $obj->getIdCt());
-			$affectedRows += CahierTexteCompteRenduFichierJointPeer::doDelete($c, $con);
+			$criteria->add(CahierTexteCompteRenduFichierJointPeer::ID_CT, $obj->getIdCt());
+			$affectedRows += CahierTexteCompteRenduFichierJointPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
@@ -1722,14 +1770,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 
 } // BaseCahierTexteCompteRenduPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the CahierTexteCompteRenduPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the CahierTexteCompteRenduPeer class:
-//
-// Propel::getDatabaseMap(CahierTexteCompteRenduPeer::DATABASE_NAME)->addTableBuilder(CahierTexteCompteRenduPeer::TABLE_NAME, CahierTexteCompteRenduPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseCahierTexteCompteRenduPeer::DATABASE_NAME)->addTableBuilder(BaseCahierTexteCompteRenduPeer::TABLE_NAME, BaseCahierTexteCompteRenduPeer::getMapBuilder());
+BaseCahierTexteCompteRenduPeer::buildTableMap();
 

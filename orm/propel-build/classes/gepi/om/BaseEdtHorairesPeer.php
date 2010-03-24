@@ -5,7 +5,7 @@
  *
  * Table contenant les heures d'ouverture et de fermeture de l'etablissement par journee
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseEdtHorairesPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseEdtHorairesPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'horaires_etablissement';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'EdtHoraires';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.EdtHoraires';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'EdtHorairesTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 7;
 
@@ -53,11 +59,6 @@ abstract class BaseEdtHorairesPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -69,6 +70,7 @@ abstract class BaseEdtHorairesPeer {
 		BasePeer::TYPE_PHPNAME => array ('IdHoraireEtablissement', 'DateHoraireEtablissement', 'JourHoraireEtablissement', 'OuvertureHoraireEtablissement', 'FermetureHoraireEtablissement', 'PauseHoraireEtablissement', 'OuvertHoraireEtablissement', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idHoraireEtablissement', 'dateHoraireEtablissement', 'jourHoraireEtablissement', 'ouvertureHoraireEtablissement', 'fermetureHoraireEtablissement', 'pauseHoraireEtablissement', 'ouvertHoraireEtablissement', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_HORAIRE_ETABLISSEMENT, self::DATE_HORAIRE_ETABLISSEMENT, self::JOUR_HORAIRE_ETABLISSEMENT, self::OUVERTURE_HORAIRE_ETABLISSEMENT, self::FERMETURE_HORAIRE_ETABLISSEMENT, self::PAUSE_HORAIRE_ETABLISSEMENT, self::OUVERT_HORAIRE_ETABLISSEMENT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_HORAIRE_ETABLISSEMENT', 'DATE_HORAIRE_ETABLISSEMENT', 'JOUR_HORAIRE_ETABLISSEMENT', 'OUVERTURE_HORAIRE_ETABLISSEMENT', 'FERMETURE_HORAIRE_ETABLISSEMENT', 'PAUSE_HORAIRE_ETABLISSEMENT', 'OUVERT_HORAIRE_ETABLISSEMENT', ),
 		BasePeer::TYPE_FIELDNAME => array ('id_horaire_etablissement', 'date_horaire_etablissement', 'jour_horaire_etablissement', 'ouverture_horaire_etablissement', 'fermeture_horaire_etablissement', 'pause_horaire_etablissement', 'ouvert_horaire_etablissement', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
@@ -83,21 +85,11 @@ abstract class BaseEdtHorairesPeer {
 		BasePeer::TYPE_PHPNAME => array ('IdHoraireEtablissement' => 0, 'DateHoraireEtablissement' => 1, 'JourHoraireEtablissement' => 2, 'OuvertureHoraireEtablissement' => 3, 'FermetureHoraireEtablissement' => 4, 'PauseHoraireEtablissement' => 5, 'OuvertHoraireEtablissement' => 6, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idHoraireEtablissement' => 0, 'dateHoraireEtablissement' => 1, 'jourHoraireEtablissement' => 2, 'ouvertureHoraireEtablissement' => 3, 'fermetureHoraireEtablissement' => 4, 'pauseHoraireEtablissement' => 5, 'ouvertHoraireEtablissement' => 6, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_HORAIRE_ETABLISSEMENT => 0, self::DATE_HORAIRE_ETABLISSEMENT => 1, self::JOUR_HORAIRE_ETABLISSEMENT => 2, self::OUVERTURE_HORAIRE_ETABLISSEMENT => 3, self::FERMETURE_HORAIRE_ETABLISSEMENT => 4, self::PAUSE_HORAIRE_ETABLISSEMENT => 5, self::OUVERT_HORAIRE_ETABLISSEMENT => 6, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_HORAIRE_ETABLISSEMENT' => 0, 'DATE_HORAIRE_ETABLISSEMENT' => 1, 'JOUR_HORAIRE_ETABLISSEMENT' => 2, 'OUVERTURE_HORAIRE_ETABLISSEMENT' => 3, 'FERMETURE_HORAIRE_ETABLISSEMENT' => 4, 'PAUSE_HORAIRE_ETABLISSEMENT' => 5, 'OUVERT_HORAIRE_ETABLISSEMENT' => 6, ),
 		BasePeer::TYPE_FIELDNAME => array ('id_horaire_etablissement' => 0, 'date_horaire_etablissement' => 1, 'jour_horaire_etablissement' => 2, 'ouverture_horaire_etablissement' => 3, 'fermeture_horaire_etablissement' => 4, 'pause_horaire_etablissement' => 5, 'ouvert_horaire_etablissement' => 6, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new EdtHorairesMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -159,27 +151,30 @@ abstract class BaseEdtHorairesPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(EdtHorairesPeer::ID_HORAIRE_ETABLISSEMENT);
-
-		$criteria->addSelectColumn(EdtHorairesPeer::DATE_HORAIRE_ETABLISSEMENT);
-
-		$criteria->addSelectColumn(EdtHorairesPeer::JOUR_HORAIRE_ETABLISSEMENT);
-
-		$criteria->addSelectColumn(EdtHorairesPeer::OUVERTURE_HORAIRE_ETABLISSEMENT);
-
-		$criteria->addSelectColumn(EdtHorairesPeer::FERMETURE_HORAIRE_ETABLISSEMENT);
-
-		$criteria->addSelectColumn(EdtHorairesPeer::PAUSE_HORAIRE_ETABLISSEMENT);
-
-		$criteria->addSelectColumn(EdtHorairesPeer::OUVERT_HORAIRE_ETABLISSEMENT);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(EdtHorairesPeer::ID_HORAIRE_ETABLISSEMENT);
+			$criteria->addSelectColumn(EdtHorairesPeer::DATE_HORAIRE_ETABLISSEMENT);
+			$criteria->addSelectColumn(EdtHorairesPeer::JOUR_HORAIRE_ETABLISSEMENT);
+			$criteria->addSelectColumn(EdtHorairesPeer::OUVERTURE_HORAIRE_ETABLISSEMENT);
+			$criteria->addSelectColumn(EdtHorairesPeer::FERMETURE_HORAIRE_ETABLISSEMENT);
+			$criteria->addSelectColumn(EdtHorairesPeer::PAUSE_HORAIRE_ETABLISSEMENT);
+			$criteria->addSelectColumn(EdtHorairesPeer::OUVERT_HORAIRE_ETABLISSEMENT);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID_HORAIRE_ETABLISSEMENT');
+			$criteria->addSelectColumn($alias . '.DATE_HORAIRE_ETABLISSEMENT');
+			$criteria->addSelectColumn($alias . '.JOUR_HORAIRE_ETABLISSEMENT');
+			$criteria->addSelectColumn($alias . '.OUVERTURE_HORAIRE_ETABLISSEMENT');
+			$criteria->addSelectColumn($alias . '.FERMETURE_HORAIRE_ETABLISSEMENT');
+			$criteria->addSelectColumn($alias . '.PAUSE_HORAIRE_ETABLISSEMENT');
+			$criteria->addSelectColumn($alias . '.OUVERT_HORAIRE_ETABLISSEMENT');
+		}
 	}
 
 	/**
@@ -367,6 +362,14 @@ abstract class BaseEdtHorairesPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to horaires_etablissement
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -379,12 +382,26 @@ abstract class BaseEdtHorairesPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -397,8 +414,7 @@ abstract class BaseEdtHorairesPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = EdtHorairesPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = EdtHorairesPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = EdtHorairesPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -408,7 +424,6 @@ abstract class BaseEdtHorairesPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -417,6 +432,31 @@ abstract class BaseEdtHorairesPeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (EdtHoraires object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = EdtHorairesPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = EdtHorairesPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + EdtHorairesPeer::NUM_COLUMNS;
+		} else {
+			$cls = EdtHorairesPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			EdtHorairesPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -431,17 +471,31 @@ abstract class BaseEdtHorairesPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseEdtHorairesPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseEdtHorairesPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new EdtHorairesTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return EdtHorairesPeer::CLASS_DEFAULT;
+		return $withPrefix ? EdtHorairesPeer::CLASS_DEFAULT : EdtHorairesPeer::OM_CLASS;
 	}
 
 	/**
@@ -508,7 +562,12 @@ abstract class BaseEdtHorairesPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(EdtHorairesPeer::ID_HORAIRE_ETABLISSEMENT);
-			$selectCriteria->add(EdtHorairesPeer::ID_HORAIRE_ETABLISSEMENT, $criteria->remove(EdtHorairesPeer::ID_HORAIRE_ETABLISSEMENT), $comparison);
+			$value = $criteria->remove(EdtHorairesPeer::ID_HORAIRE_ETABLISSEMENT);
+			if ($value) {
+				$selectCriteria->add(EdtHorairesPeer::ID_HORAIRE_ETABLISSEMENT, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(EdtHorairesPeer::TABLE_NAME);
+			}
 
 		} else { // $values is EdtHoraires object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -537,6 +596,11 @@ abstract class BaseEdtHorairesPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += BasePeer::doDeleteAll(EdtHorairesPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			EdtHorairesPeer::clearInstancePool();
+			EdtHorairesPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -567,24 +631,18 @@ abstract class BaseEdtHorairesPeer {
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
 			EdtHorairesPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof EdtHoraires) {
+		} elseif ($values instanceof EdtHoraires) { // it's a model object
 			// invalidate the cache for this single object
 			EdtHorairesPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(EdtHorairesPeer::ID_HORAIRE_ETABLISSEMENT, (array) $values, Criteria::IN);
-
+			// invalidate the cache for this object(s)
 			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
 				EdtHorairesPeer::removeInstanceFromPool($singleval);
 			}
 		}
@@ -600,7 +658,7 @@ abstract class BaseEdtHorairesPeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
+			EdtHorairesPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -699,14 +757,7 @@ abstract class BaseEdtHorairesPeer {
 
 } // BaseEdtHorairesPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the EdtHorairesPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the EdtHorairesPeer class:
-//
-// Propel::getDatabaseMap(EdtHorairesPeer::DATABASE_NAME)->addTableBuilder(EdtHorairesPeer::TABLE_NAME, EdtHorairesPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseEdtHorairesPeer::DATABASE_NAME)->addTableBuilder(BaseEdtHorairesPeer::TABLE_NAME, BaseEdtHorairesPeer::getMapBuilder());
+BaseEdtHorairesPeer::buildTableMap();
 

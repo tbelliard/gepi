@@ -5,10 +5,15 @@
  *
  * Compte rendu du cahier de texte
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persistent {
+abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'CahierTexteCompteRenduPeer';
 
 	/**
 	 * The Peer class.
@@ -98,11 +103,6 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	protected $collCahierTexteCompteRenduFichierJoints;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collCahierTexteCompteRenduFichierJoints.
-	 */
-	private $lastCahierTexteCompteRenduFichierJointCriteria = null;
-
-	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -117,16 +117,6 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Initializes internal state of BaseCahierTexteCompteRendu object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
 	 * Applies default values to this object.
 	 * This method should be called from the object's constructor (or
 	 * equivalent initialization method).
@@ -139,6 +129,16 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		$this->vise = 'n';
 		$this->visa = 'n';
 		$this->id_sequence = 0;
+	}
+
+	/**
+	 * Initializes internal state of BaseCahierTexteCompteRendu object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
 	}
 
 	/**
@@ -336,7 +336,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			$v = (int) $v;
 		}
 
-		if ($this->date_ct !== $v || $v === 0) {
+		if ($this->date_ct !== $v || $this->isNew()) {
 			$this->date_ct = $v;
 			$this->modifiedColumns[] = CahierTexteCompteRenduPeer::DATE_CT;
 		}
@@ -376,7 +376,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			$v = (string) $v;
 		}
 
-		if ($this->vise !== $v || $v === 'n') {
+		if ($this->vise !== $v || $this->isNew()) {
 			$this->vise = $v;
 			$this->modifiedColumns[] = CahierTexteCompteRenduPeer::VISE;
 		}
@@ -396,7 +396,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			$v = (string) $v;
 		}
 
-		if ($this->visa !== $v || $v === 'n') {
+		if ($this->visa !== $v || $this->isNew()) {
 			$this->visa = $v;
 			$this->modifiedColumns[] = CahierTexteCompteRenduPeer::VISA;
 		}
@@ -464,7 +464,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			$v = (int) $v;
 		}
 
-		if ($this->id_sequence !== $v || $v === 0) {
+		if ($this->id_sequence !== $v || $this->isNew()) {
 			$this->id_sequence = $v;
 			$this->modifiedColumns[] = CahierTexteCompteRenduPeer::ID_SEQUENCE;
 		}
@@ -486,11 +486,6 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(CahierTexteCompteRenduPeer::HEURE_ENTRY,CahierTexteCompteRenduPeer::DATE_CT,CahierTexteCompteRenduPeer::VISE,CahierTexteCompteRenduPeer::VISA,CahierTexteCompteRenduPeer::ID_SEQUENCE))) {
-				return false;
-			}
-
 			if ($this->heure_entry !== '00:00:00') {
 				return false;
 			}
@@ -550,7 +545,6 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 9; // 9 = CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -626,7 +620,6 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			$this->aUtilisateurProfessionnel = null;
 			$this->aCahierTexteSequence = null;
 			$this->collCahierTexteCompteRenduFichierJoints = null;
-			$this->lastCahierTexteCompteRenduFichierJointCriteria = null;
 
 		} // if (deep)
 	}
@@ -652,9 +645,17 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		
 		$con->beginTransaction();
 		try {
-			CahierTexteCompteRenduPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				CahierTexteCompteRenduQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -685,10 +686,27 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				CahierTexteCompteRenduPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			CahierTexteCompteRenduPeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -746,13 +764,14 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = CahierTexteCompteRenduPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(CahierTexteCompteRenduPeer::ID_CT) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.CahierTexteCompteRenduPeer::ID_CT.')');
+					}
 
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
 					$this->setIdCt($pk);  //[IMV] update autoincrement primary key
-
 					$this->setNew(false);
 				} else {
 					$affectedRows += CahierTexteCompteRenduPeer::doUpdate($this, $con);
@@ -944,12 +963,15 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
 		$keys = CahierTexteCompteRenduPeer::getFieldNames($keyType);
 		$result = array(
@@ -963,6 +985,17 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 			$keys[7] => $this->getIdLogin(),
 			$keys[8] => $this->getIdSequence(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aGroupe) {
+				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aUtilisateurProfessionnel) {
+				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aCahierTexteSequence) {
+				$result['CahierTexteSequence'] = $this->aCahierTexteSequence->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -1088,7 +1121,6 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
-
 		$criteria->add(CahierTexteCompteRenduPeer::ID_CT, $this->id_ct);
 
 		return $criteria;
@@ -1115,6 +1147,15 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getIdCt();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -1126,23 +1167,14 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setHeureEntry($this->heure_entry);
-
 		$copyObj->setDateCt($this->date_ct);
-
 		$copyObj->setContenu($this->contenu);
-
 		$copyObj->setVise($this->vise);
-
 		$copyObj->setVisa($this->visa);
-
 		$copyObj->setIdGroupe($this->id_groupe);
-
 		$copyObj->setIdLogin($this->id_login);
-
 		$copyObj->setIdSequence($this->id_sequence);
-
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1159,9 +1191,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 
 
 		$copyObj->setNew(true);
-
 		$copyObj->setIdCt(NULL); // this is a auto-increment column, so set to default value
-
 	}
 
 	/**
@@ -1239,7 +1269,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	public function getGroupe(PropelPDO $con = null)
 	{
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
-			$this->aGroupe = GroupePeer::retrieveByPK($this->id_groupe, $con);
+			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1288,7 +1318,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	public function getUtilisateurProfessionnel(PropelPDO $con = null)
 	{
 		if ($this->aUtilisateurProfessionnel === null && (($this->id_login !== "" && $this->id_login !== null))) {
-			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelPeer::retrieveByPK($this->id_login, $con);
+			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->id_login);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1337,7 +1367,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	public function getCahierTexteSequence(PropelPDO $con = null)
 	{
 		if ($this->aCahierTexteSequence === null && ($this->id_sequence !== null)) {
-			$this->aCahierTexteSequence = CahierTexteSequencePeer::retrieveByPK($this->id_sequence, $con);
+			$this->aCahierTexteSequence = CahierTexteSequenceQuery::create()->findPk($this->id_sequence);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1350,7 +1380,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	}
 
 	/**
-	 * Clears out the collCahierTexteCompteRenduFichierJoints collection (array).
+	 * Clears out the collCahierTexteCompteRenduFichierJoints collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1364,7 +1394,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	}
 
 	/**
-	 * Initializes the collCahierTexteCompteRenduFichierJoints collection (array).
+	 * Initializes the collCahierTexteCompteRenduFichierJoints collection.
 	 *
 	 * By default this just sets the collCahierTexteCompteRenduFichierJoints collection to an empty array (like clearcollCahierTexteCompteRenduFichierJoints());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1374,59 +1404,40 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	 */
 	public function initCahierTexteCompteRenduFichierJoints()
 	{
-		$this->collCahierTexteCompteRenduFichierJoints = array();
+		$this->collCahierTexteCompteRenduFichierJoints = new PropelObjectCollection();
+		$this->collCahierTexteCompteRenduFichierJoints->setModel('CahierTexteCompteRenduFichierJoint');
 	}
 
 	/**
 	 * Gets an array of CahierTexteCompteRenduFichierJoint objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this CahierTexteCompteRendu has previously been saved, it will retrieve
-	 * related CahierTexteCompteRenduFichierJoints from storage. If this CahierTexteCompteRendu is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this CahierTexteCompteRendu is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array CahierTexteCompteRenduFichierJoint[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array CahierTexteCompteRenduFichierJoint[] List of CahierTexteCompteRenduFichierJoint objects
 	 * @throws     PropelException
 	 */
 	public function getCahierTexteCompteRenduFichierJoints($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collCahierTexteCompteRenduFichierJoints === null) {
-			if ($this->isNew()) {
-			   $this->collCahierTexteCompteRenduFichierJoints = array();
+		if(null === $this->collCahierTexteCompteRenduFichierJoints || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteCompteRenduFichierJoints) {
+				// return empty collection
+				$this->initCahierTexteCompteRenduFichierJoints();
 			} else {
-
-				$criteria->add(CahierTexteCompteRenduFichierJointPeer::ID_CT, $this->id_ct);
-
-				CahierTexteCompteRenduFichierJointPeer::addSelectColumns($criteria);
-				$this->collCahierTexteCompteRenduFichierJoints = CahierTexteCompteRenduFichierJointPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(CahierTexteCompteRenduFichierJointPeer::ID_CT, $this->id_ct);
-
-				CahierTexteCompteRenduFichierJointPeer::addSelectColumns($criteria);
-				if (!isset($this->lastCahierTexteCompteRenduFichierJointCriteria) || !$this->lastCahierTexteCompteRenduFichierJointCriteria->equals($criteria)) {
-					$this->collCahierTexteCompteRenduFichierJoints = CahierTexteCompteRenduFichierJointPeer::doSelect($criteria, $con);
+				$collCahierTexteCompteRenduFichierJoints = CahierTexteCompteRenduFichierJointQuery::create(null, $criteria)
+					->filterByCahierTexteCompteRendu($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collCahierTexteCompteRenduFichierJoints;
 				}
+				$this->collCahierTexteCompteRenduFichierJoints = $collCahierTexteCompteRenduFichierJoints;
 			}
 		}
-		$this->lastCahierTexteCompteRenduFichierJointCriteria = $criteria;
 		return $this->collCahierTexteCompteRenduFichierJoints;
 	}
 
@@ -1441,48 +1452,21 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	 */
 	public function countCahierTexteCompteRenduFichierJoints(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collCahierTexteCompteRenduFichierJoints === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collCahierTexteCompteRenduFichierJoints || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteCompteRenduFichierJoints) {
+				return 0;
 			} else {
-
-				$criteria->add(CahierTexteCompteRenduFichierJointPeer::ID_CT, $this->id_ct);
-
-				$count = CahierTexteCompteRenduFichierJointPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(CahierTexteCompteRenduFichierJointPeer::ID_CT, $this->id_ct);
-
-				if (!isset($this->lastCahierTexteCompteRenduFichierJointCriteria) || !$this->lastCahierTexteCompteRenduFichierJointCriteria->equals($criteria)) {
-					$count = CahierTexteCompteRenduFichierJointPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collCahierTexteCompteRenduFichierJoints);
+				$query = CahierTexteCompteRenduFichierJointQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collCahierTexteCompteRenduFichierJoints);
+				return $query
+					->filterByCahierTexteCompteRendu($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collCahierTexteCompteRenduFichierJoints);
 		}
-		$this->lastCahierTexteCompteRenduFichierJointCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1498,10 +1482,29 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		if ($this->collCahierTexteCompteRenduFichierJoints === null) {
 			$this->initCahierTexteCompteRenduFichierJoints();
 		}
-		if (!in_array($l, $this->collCahierTexteCompteRenduFichierJoints, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collCahierTexteCompteRenduFichierJoints, $l);
+		if (!$this->collCahierTexteCompteRenduFichierJoints->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collCahierTexteCompteRenduFichierJoints[]= $l;
 			$l->setCahierTexteCompteRendu($this);
 		}
+	}
+
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id_ct = null;
+		$this->heure_entry = null;
+		$this->date_ct = null;
+		$this->contenu = null;
+		$this->vise = null;
+		$this->visa = null;
+		$this->id_groupe = null;
+		$this->id_login = null;
+		$this->id_sequence = null;
+		$this->clearAllReferences();
+		$this->applyDefaultValues();
+		$this->setNew(true);
 	}
 
 	/**
@@ -1524,9 +1527,20 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		} // if ($deep)
 
 		$this->collCahierTexteCompteRenduFichierJoints = null;
-			$this->aGroupe = null;
-			$this->aUtilisateurProfessionnel = null;
-			$this->aCahierTexteSequence = null;
+		$this->aGroupe = null;
+		$this->aUtilisateurProfessionnel = null;
+		$this->aCahierTexteSequence = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseCahierTexteCompteRendu

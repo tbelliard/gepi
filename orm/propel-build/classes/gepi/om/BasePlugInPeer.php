@@ -5,7 +5,7 @@
  *
  * Liste des plugins installes sur ce Gepi
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BasePlugInPeer {
 
@@ -15,9 +15,15 @@ abstract class BasePlugInPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'plugins';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'PlugIn';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.PlugIn';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'PlugInTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 5;
 
@@ -47,11 +53,6 @@ abstract class BasePlugInPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -63,6 +64,7 @@ abstract class BasePlugInPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'Repertoire', 'Description', 'Ouvert', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'repertoire', 'description', 'ouvert', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::REPERTOIRE, self::DESCRIPTION, self::OUVERT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'REPERTOIRE', 'DESCRIPTION', 'OUVERT', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'repertoire', 'description', 'ouvert', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
 	);
@@ -77,21 +79,11 @@ abstract class BasePlugInPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'Repertoire' => 2, 'Description' => 3, 'Ouvert' => 4, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'repertoire' => 2, 'description' => 3, 'ouvert' => 4, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::REPERTOIRE => 2, self::DESCRIPTION => 3, self::OUVERT => 4, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'REPERTOIRE' => 2, 'DESCRIPTION' => 3, 'OUVERT' => 4, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'repertoire' => 2, 'description' => 3, 'ouvert' => 4, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new PlugInMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -153,23 +145,26 @@ abstract class BasePlugInPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(PlugInPeer::ID);
-
-		$criteria->addSelectColumn(PlugInPeer::NOM);
-
-		$criteria->addSelectColumn(PlugInPeer::REPERTOIRE);
-
-		$criteria->addSelectColumn(PlugInPeer::DESCRIPTION);
-
-		$criteria->addSelectColumn(PlugInPeer::OUVERT);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(PlugInPeer::ID);
+			$criteria->addSelectColumn(PlugInPeer::NOM);
+			$criteria->addSelectColumn(PlugInPeer::REPERTOIRE);
+			$criteria->addSelectColumn(PlugInPeer::DESCRIPTION);
+			$criteria->addSelectColumn(PlugInPeer::OUVERT);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.NOM');
+			$criteria->addSelectColumn($alias . '.REPERTOIRE');
+			$criteria->addSelectColumn($alias . '.DESCRIPTION');
+			$criteria->addSelectColumn($alias . '.OUVERT');
+		}
 	}
 
 	/**
@@ -357,6 +352,14 @@ abstract class BasePlugInPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to plugins
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -369,12 +372,26 @@ abstract class BasePlugInPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -387,8 +404,7 @@ abstract class BasePlugInPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = PlugInPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = PlugInPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = PlugInPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -398,7 +414,6 @@ abstract class BasePlugInPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -407,6 +422,31 @@ abstract class BasePlugInPeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (PlugIn object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = PlugInPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = PlugInPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + PlugInPeer::NUM_COLUMNS;
+		} else {
+			$cls = PlugInPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			PlugInPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -421,17 +461,31 @@ abstract class BasePlugInPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BasePlugInPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BasePlugInPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new PlugInTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return PlugInPeer::CLASS_DEFAULT;
+		return $withPrefix ? PlugInPeer::CLASS_DEFAULT : PlugInPeer::OM_CLASS;
 	}
 
 	/**
@@ -498,7 +552,12 @@ abstract class BasePlugInPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(PlugInPeer::ID);
-			$selectCriteria->add(PlugInPeer::ID, $criteria->remove(PlugInPeer::ID), $comparison);
+			$value = $criteria->remove(PlugInPeer::ID);
+			if ($value) {
+				$selectCriteria->add(PlugInPeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(PlugInPeer::TABLE_NAME);
+			}
 
 		} else { // $values is PlugIn object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -527,6 +586,11 @@ abstract class BasePlugInPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += BasePeer::doDeleteAll(PlugInPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			PlugInPeer::clearInstancePool();
+			PlugInPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -557,24 +621,18 @@ abstract class BasePlugInPeer {
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
 			PlugInPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof PlugIn) {
+		} elseif ($values instanceof PlugIn) { // it's a model object
 			// invalidate the cache for this single object
 			PlugInPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(PlugInPeer::ID, (array) $values, Criteria::IN);
-
+			// invalidate the cache for this object(s)
 			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
 				PlugInPeer::removeInstanceFromPool($singleval);
 			}
 		}
@@ -590,7 +648,7 @@ abstract class BasePlugInPeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
+			PlugInPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -689,14 +747,7 @@ abstract class BasePlugInPeer {
 
 } // BasePlugInPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the PlugInPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the PlugInPeer class:
-//
-// Propel::getDatabaseMap(PlugInPeer::DATABASE_NAME)->addTableBuilder(PlugInPeer::TABLE_NAME, PlugInPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BasePlugInPeer::DATABASE_NAME)->addTableBuilder(BasePlugInPeer::TABLE_NAME, BasePlugInPeer::getMapBuilder());
+BasePlugInPeer::buildTableMap();
 

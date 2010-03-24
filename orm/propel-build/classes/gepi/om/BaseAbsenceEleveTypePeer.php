@@ -5,7 +5,7 @@
  *
  * Liste des types d'absences possibles dans l'etablissement
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseAbsenceEleveTypePeer {
 
@@ -15,11 +15,17 @@ abstract class BaseAbsenceEleveTypePeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'a_types';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'AbsenceEleveType';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.AbsenceEleveType';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'AbsenceEleveTypeTableMap';
+	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 6;
+	const NUM_COLUMNS = 7;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -42,6 +48,9 @@ abstract class BaseAbsenceEleveTypePeer {
 	/** the column name for the ORDRE field */
 	const ORDRE = 'a_types.ORDRE';
 
+	/** the column name for the COMMENTAIRE field */
+	const COMMENTAIRE = 'a_types.COMMENTAIRE';
+
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveType objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -50,11 +59,6 @@ abstract class BaseAbsenceEleveTypePeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -63,11 +67,12 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'JustificationExigible', 'ResponabiliteEtablissement', 'TypeSaisie', 'Ordre', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'justificationExigible', 'responabiliteEtablissement', 'typeSaisie', 'ordre', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::JUSTIFICATION_EXIGIBLE, self::RESPONABILITE_ETABLISSEMENT, self::TYPE_SAISIE, self::ORDRE, ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'justification_exigible', 'responabilite_etablissement', 'type_saisie', 'ordre', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'JustificationExigible', 'ResponabiliteEtablissement', 'TypeSaisie', 'Ordre', 'Commentaire', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'justificationExigible', 'responabiliteEtablissement', 'typeSaisie', 'ordre', 'commentaire', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::JUSTIFICATION_EXIGIBLE, self::RESPONABILITE_ETABLISSEMENT, self::TYPE_SAISIE, self::ORDRE, self::COMMENTAIRE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'JUSTIFICATION_EXIGIBLE', 'RESPONABILITE_ETABLISSEMENT', 'TYPE_SAISIE', 'ORDRE', 'COMMENTAIRE', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'justification_exigible', 'responabilite_etablissement', 'type_saisie', 'ordre', 'commentaire', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
 	/**
@@ -77,24 +82,14 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'JustificationExigible' => 2, 'ResponabiliteEtablissement' => 3, 'TypeSaisie' => 4, 'Ordre' => 5, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'justificationExigible' => 2, 'responabiliteEtablissement' => 3, 'typeSaisie' => 4, 'ordre' => 5, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::JUSTIFICATION_EXIGIBLE => 2, self::RESPONABILITE_ETABLISSEMENT => 3, self::TYPE_SAISIE => 4, self::ORDRE => 5, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'justification_exigible' => 2, 'responabilite_etablissement' => 3, 'type_saisie' => 4, 'ordre' => 5, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'JustificationExigible' => 2, 'ResponabiliteEtablissement' => 3, 'TypeSaisie' => 4, 'Ordre' => 5, 'Commentaire' => 6, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'justificationExigible' => 2, 'responabiliteEtablissement' => 3, 'typeSaisie' => 4, 'ordre' => 5, 'commentaire' => 6, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::JUSTIFICATION_EXIGIBLE => 2, self::RESPONABILITE_ETABLISSEMENT => 3, self::TYPE_SAISIE => 4, self::ORDRE => 5, self::COMMENTAIRE => 6, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'JUSTIFICATION_EXIGIBLE' => 2, 'RESPONABILITE_ETABLISSEMENT' => 3, 'TYPE_SAISIE' => 4, 'ORDRE' => 5, 'COMMENTAIRE' => 6, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'justification_exigible' => 2, 'responabilite_etablissement' => 3, 'type_saisie' => 4, 'ordre' => 5, 'commentaire' => 6, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new AbsenceEleveTypeMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -156,25 +151,30 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(AbsenceEleveTypePeer::ID);
-
-		$criteria->addSelectColumn(AbsenceEleveTypePeer::NOM);
-
-		$criteria->addSelectColumn(AbsenceEleveTypePeer::JUSTIFICATION_EXIGIBLE);
-
-		$criteria->addSelectColumn(AbsenceEleveTypePeer::RESPONABILITE_ETABLISSEMENT);
-
-		$criteria->addSelectColumn(AbsenceEleveTypePeer::TYPE_SAISIE);
-
-		$criteria->addSelectColumn(AbsenceEleveTypePeer::ORDRE);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(AbsenceEleveTypePeer::ID);
+			$criteria->addSelectColumn(AbsenceEleveTypePeer::NOM);
+			$criteria->addSelectColumn(AbsenceEleveTypePeer::JUSTIFICATION_EXIGIBLE);
+			$criteria->addSelectColumn(AbsenceEleveTypePeer::RESPONABILITE_ETABLISSEMENT);
+			$criteria->addSelectColumn(AbsenceEleveTypePeer::TYPE_SAISIE);
+			$criteria->addSelectColumn(AbsenceEleveTypePeer::ORDRE);
+			$criteria->addSelectColumn(AbsenceEleveTypePeer::COMMENTAIRE);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.NOM');
+			$criteria->addSelectColumn($alias . '.JUSTIFICATION_EXIGIBLE');
+			$criteria->addSelectColumn($alias . '.RESPONABILITE_ETABLISSEMENT');
+			$criteria->addSelectColumn($alias . '.TYPE_SAISIE');
+			$criteria->addSelectColumn($alias . '.ORDRE');
+			$criteria->addSelectColumn($alias . '.COMMENTAIRE');
+		}
 	}
 
 	/**
@@ -362,6 +362,20 @@ abstract class BaseAbsenceEleveTypePeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to a_types
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in AbsenceEleveTypeStatutAutorisePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		AbsenceEleveTypeStatutAutorisePeer::clearInstancePool();
+
+		// invalidate objects in AbsenceEleveTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		AbsenceEleveTraitementPeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -374,12 +388,26 @@ abstract class BaseAbsenceEleveTypePeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -392,8 +420,7 @@ abstract class BaseAbsenceEleveTypePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = AbsenceEleveTypePeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = AbsenceEleveTypePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = AbsenceEleveTypePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -403,7 +430,6 @@ abstract class BaseAbsenceEleveTypePeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -412,6 +438,31 @@ abstract class BaseAbsenceEleveTypePeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (AbsenceEleveType object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = AbsenceEleveTypePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = AbsenceEleveTypePeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + AbsenceEleveTypePeer::NUM_COLUMNS;
+		} else {
+			$cls = AbsenceEleveTypePeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			AbsenceEleveTypePeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -426,17 +477,31 @@ abstract class BaseAbsenceEleveTypePeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseAbsenceEleveTypePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseAbsenceEleveTypePeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new AbsenceEleveTypeTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return AbsenceEleveTypePeer::CLASS_DEFAULT;
+		return $withPrefix ? AbsenceEleveTypePeer::CLASS_DEFAULT : AbsenceEleveTypePeer::OM_CLASS;
 	}
 
 	/**
@@ -503,7 +568,12 @@ abstract class BaseAbsenceEleveTypePeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(AbsenceEleveTypePeer::ID);
-			$selectCriteria->add(AbsenceEleveTypePeer::ID, $criteria->remove(AbsenceEleveTypePeer::ID), $comparison);
+			$value = $criteria->remove(AbsenceEleveTypePeer::ID);
+			if ($value) {
+				$selectCriteria->add(AbsenceEleveTypePeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(AbsenceEleveTypePeer::TABLE_NAME);
+			}
 
 		} else { // $values is AbsenceEleveType object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -534,6 +604,11 @@ abstract class BaseAbsenceEleveTypePeer {
 			$affectedRows += AbsenceEleveTypePeer::doOnDeleteCascade(new Criteria(AbsenceEleveTypePeer::DATABASE_NAME), $con);
 			AbsenceEleveTypePeer::doOnDeleteSetNull(new Criteria(AbsenceEleveTypePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(AbsenceEleveTypePeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			AbsenceEleveTypePeer::clearInstancePool();
+			AbsenceEleveTypePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -560,30 +635,14 @@ abstract class BaseAbsenceEleveTypePeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			AbsenceEleveTypePeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof AbsenceEleveType) {
-			// invalidate the cache for this single object
-			AbsenceEleveTypePeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof AbsenceEleveType) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(AbsenceEleveTypePeer::ID, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				AbsenceEleveTypePeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -598,23 +657,21 @@ abstract class BaseAbsenceEleveTypePeer {
 			$affectedRows += AbsenceEleveTypePeer::doOnDeleteCascade($criteria, $con);
 			AbsenceEleveTypePeer::doOnDeleteSetNull($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					AbsenceEleveTypePeer::clearInstancePool();
-				} else { // it's a PK or object
-					AbsenceEleveTypePeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				AbsenceEleveTypePeer::clearInstancePool();
+			} elseif ($values instanceof AbsenceEleveType) { // it's a model object
+				AbsenceEleveTypePeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					AbsenceEleveTypePeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in AbsenceEleveTypeStatutPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceEleveTypeStatutPeer::clearInstancePool();
-
-			// invalidate objects in AbsenceEleveTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			AbsenceEleveTraitementPeer::clearInstancePool();
-
+			AbsenceEleveTypePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -646,11 +703,11 @@ abstract class BaseAbsenceEleveTypePeer {
 		foreach ($objects as $obj) {
 
 
-			// delete related AbsenceEleveTypeStatut objects
-			$c = new Criteria(AbsenceEleveTypeStatutPeer::DATABASE_NAME);
+			// delete related AbsenceEleveTypeStatutAutorise objects
+			$criteria = new Criteria(AbsenceEleveTypeStatutAutorisePeer::DATABASE_NAME);
 			
-			$c->add(AbsenceEleveTypeStatutPeer::ID_A_TYPE, $obj->getId());
-			$affectedRows += AbsenceEleveTypeStatutPeer::doDelete($c, $con);
+			$criteria->add(AbsenceEleveTypeStatutAutorisePeer::ID_A_TYPE, $obj->getId());
+			$affectedRows += AbsenceEleveTypeStatutAutorisePeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
@@ -776,14 +833,7 @@ abstract class BaseAbsenceEleveTypePeer {
 
 } // BaseAbsenceEleveTypePeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the AbsenceEleveTypePeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the AbsenceEleveTypePeer class:
-//
-// Propel::getDatabaseMap(AbsenceEleveTypePeer::DATABASE_NAME)->addTableBuilder(AbsenceEleveTypePeer::TABLE_NAME, AbsenceEleveTypePeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseAbsenceEleveTypePeer::DATABASE_NAME)->addTableBuilder(BaseAbsenceEleveTypePeer::TABLE_NAME, BaseAbsenceEleveTypePeer::getMapBuilder());
+BaseAbsenceEleveTypePeer::buildTableMap();
 

@@ -5,7 +5,7 @@
  *
  * Objet qui précise la mention globale obtenue pour un eleve
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseCreditEctsGlobalPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseCreditEctsGlobalPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'ects_global_credits';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'CreditEctsGlobal';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.CreditEctsGlobal';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'CreditEctsGlobalTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 3;
 
@@ -41,11 +47,6 @@ abstract class BaseCreditEctsGlobalPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -57,6 +58,7 @@ abstract class BaseCreditEctsGlobalPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id', 'IdEleve', 'Mention', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'idEleve', 'mention', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::ID_ELEVE, self::MENTION, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'ID_ELEVE', 'MENTION', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'id_eleve', 'mention', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, )
 	);
@@ -71,21 +73,11 @@ abstract class BaseCreditEctsGlobalPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'IdEleve' => 1, 'Mention' => 2, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'idEleve' => 1, 'mention' => 2, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ID_ELEVE => 1, self::MENTION => 2, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'ID_ELEVE' => 1, 'MENTION' => 2, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'id_eleve' => 1, 'mention' => 2, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new CreditEctsGlobalMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -147,19 +139,22 @@ abstract class BaseCreditEctsGlobalPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(CreditEctsGlobalPeer::ID);
-
-		$criteria->addSelectColumn(CreditEctsGlobalPeer::ID_ELEVE);
-
-		$criteria->addSelectColumn(CreditEctsGlobalPeer::MENTION);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(CreditEctsGlobalPeer::ID);
+			$criteria->addSelectColumn(CreditEctsGlobalPeer::ID_ELEVE);
+			$criteria->addSelectColumn(CreditEctsGlobalPeer::MENTION);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.ID_ELEVE');
+			$criteria->addSelectColumn($alias . '.MENTION');
+		}
 	}
 
 	/**
@@ -347,6 +342,14 @@ abstract class BaseCreditEctsGlobalPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to ects_global_credits
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -359,12 +362,26 @@ abstract class BaseCreditEctsGlobalPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null && $row[$startcol + 1] === null) {
+		if ($row[$startcol] === null && $row[$startcol + 1] === null) {
 			return null;
 		}
-		return serialize(array((string) $row[$startcol + 0], (string) $row[$startcol + 1]));
+		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1]));
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return array((int) $row[$startcol], (int) $row[$startcol + 1]);
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -377,8 +394,7 @@ abstract class BaseCreditEctsGlobalPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = CreditEctsGlobalPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = CreditEctsGlobalPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = CreditEctsGlobalPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -388,7 +404,6 @@ abstract class BaseCreditEctsGlobalPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -398,11 +413,36 @@ abstract class BaseCreditEctsGlobalPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (CreditEctsGlobal object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = CreditEctsGlobalPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = CreditEctsGlobalPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + CreditEctsGlobalPeer::NUM_COLUMNS;
+		} else {
+			$cls = CreditEctsGlobalPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			CreditEctsGlobalPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related Eleve table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -435,7 +475,8 @@ abstract class BaseCreditEctsGlobalPeer {
 			$con = Propel::getConnection(CreditEctsGlobalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(CreditEctsGlobalPeer::ID_ELEVE,), array(ElevePeer::ID_ELEVE,), $join_behavior);
+		$criteria->addJoin(CreditEctsGlobalPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -450,28 +491,29 @@ abstract class BaseCreditEctsGlobalPeer {
 
 	/**
 	 * Selects a collection of CreditEctsGlobal objects pre-filled with their Eleve objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of CreditEctsGlobal objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinEleve(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinEleve(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		CreditEctsGlobalPeer::addSelectColumns($c);
+		CreditEctsGlobalPeer::addSelectColumns($criteria);
 		$startcol = (CreditEctsGlobalPeer::NUM_COLUMNS - CreditEctsGlobalPeer::NUM_LAZY_LOAD_COLUMNS);
-		ElevePeer::addSelectColumns($c);
+		ElevePeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(CreditEctsGlobalPeer::ID_ELEVE,), array(ElevePeer::ID_ELEVE,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(CreditEctsGlobalPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -482,9 +524,8 @@ abstract class BaseCreditEctsGlobalPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = CreditEctsGlobalPeer::getOMClass();
+				$cls = CreditEctsGlobalPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				CreditEctsGlobalPeer::addInstanceToPool($obj1, $key1);
@@ -495,9 +536,8 @@ abstract class BaseCreditEctsGlobalPeer {
 				$obj2 = ElevePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = ElevePeer::getOMClass();
+					$cls = ElevePeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					ElevePeer::addInstanceToPool($obj2, $key2);
@@ -518,7 +558,7 @@ abstract class BaseCreditEctsGlobalPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -551,7 +591,8 @@ abstract class BaseCreditEctsGlobalPeer {
 			$con = Propel::getConnection(CreditEctsGlobalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(CreditEctsGlobalPeer::ID_ELEVE,), array(ElevePeer::ID_ELEVE,), $join_behavior);
+		$criteria->addJoin(CreditEctsGlobalPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -566,30 +607,31 @@ abstract class BaseCreditEctsGlobalPeer {
 	/**
 	 * Selects a collection of CreditEctsGlobal objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of CreditEctsGlobal objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		CreditEctsGlobalPeer::addSelectColumns($c);
+		CreditEctsGlobalPeer::addSelectColumns($criteria);
 		$startcol2 = (CreditEctsGlobalPeer::NUM_COLUMNS - CreditEctsGlobalPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		ElevePeer::addSelectColumns($c);
+		ElevePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(CreditEctsGlobalPeer::ID_ELEVE,), array(ElevePeer::ID_ELEVE,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(CreditEctsGlobalPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -599,9 +641,8 @@ abstract class BaseCreditEctsGlobalPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = CreditEctsGlobalPeer::getOMClass();
+				$cls = CreditEctsGlobalPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				CreditEctsGlobalPeer::addInstanceToPool($obj1, $key1);
@@ -614,10 +655,8 @@ abstract class BaseCreditEctsGlobalPeer {
 				$obj2 = ElevePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = ElevePeer::getOMClass();
+					$cls = ElevePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					ElevePeer::addInstanceToPool($obj2, $key2);
@@ -646,17 +685,31 @@ abstract class BaseCreditEctsGlobalPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseCreditEctsGlobalPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseCreditEctsGlobalPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new CreditEctsGlobalTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return CreditEctsGlobalPeer::CLASS_DEFAULT;
+		return $withPrefix ? CreditEctsGlobalPeer::CLASS_DEFAULT : CreditEctsGlobalPeer::OM_CLASS;
 	}
 
 	/**
@@ -723,10 +776,20 @@ abstract class BaseCreditEctsGlobalPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(CreditEctsGlobalPeer::ID);
-			$selectCriteria->add(CreditEctsGlobalPeer::ID, $criteria->remove(CreditEctsGlobalPeer::ID), $comparison);
+			$value = $criteria->remove(CreditEctsGlobalPeer::ID);
+			if ($value) {
+				$selectCriteria->add(CreditEctsGlobalPeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(CreditEctsGlobalPeer::TABLE_NAME);
+			}
 
 			$comparison = $criteria->getComparison(CreditEctsGlobalPeer::ID_ELEVE);
-			$selectCriteria->add(CreditEctsGlobalPeer::ID_ELEVE, $criteria->remove(CreditEctsGlobalPeer::ID_ELEVE), $comparison);
+			$value = $criteria->remove(CreditEctsGlobalPeer::ID_ELEVE);
+			if ($value) {
+				$selectCriteria->add(CreditEctsGlobalPeer::ID_ELEVE, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(CreditEctsGlobalPeer::TABLE_NAME);
+			}
 
 		} else { // $values is CreditEctsGlobal object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -755,6 +818,11 @@ abstract class BaseCreditEctsGlobalPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += BasePeer::doDeleteAll(CreditEctsGlobalPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			CreditEctsGlobalPeer::clearInstancePool();
+			CreditEctsGlobalPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -785,34 +853,25 @@ abstract class BaseCreditEctsGlobalPeer {
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
 			CreditEctsGlobalPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof CreditEctsGlobal) {
+		} elseif ($values instanceof CreditEctsGlobal) { // it's a model object
 			// invalidate the cache for this single object
 			CreditEctsGlobalPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			// primary key is composite; we therefore, expect
-			// the primary key passed to be an array of pkey
-			// values
+			// the primary key passed to be an array of pkey values
 			if (count($values) == count($values, COUNT_RECURSIVE)) {
 				// array is not multi-dimensional
 				$values = array($values);
 			}
-
 			foreach ($values as $value) {
-
 				$criterion = $criteria->getNewCriterion(CreditEctsGlobalPeer::ID, $value[0]);
 				$criterion->addAnd($criteria->getNewCriterion(CreditEctsGlobalPeer::ID_ELEVE, $value[1]));
 				$criteria->addOr($criterion);
-
 				// we can invalidate the cache for this single PK
 				CreditEctsGlobalPeer::removeInstanceFromPool($value);
 			}
@@ -829,7 +888,7 @@ abstract class BaseCreditEctsGlobalPeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
+			CreditEctsGlobalPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -878,8 +937,7 @@ abstract class BaseCreditEctsGlobalPeer {
 	/**
 	 * Retrieve object using using composite pkey values.
 	 * @param      int $id
-	   @param      int $id_eleve
-	   
+	 * @param      int $id_eleve
 	 * @param      PropelPDO $con
 	 * @return     CreditEctsGlobal
 	 */
@@ -901,14 +959,7 @@ abstract class BaseCreditEctsGlobalPeer {
 	}
 } // BaseCreditEctsGlobalPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the CreditEctsGlobalPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the CreditEctsGlobalPeer class:
-//
-// Propel::getDatabaseMap(CreditEctsGlobalPeer::DATABASE_NAME)->addTableBuilder(CreditEctsGlobalPeer::TABLE_NAME, CreditEctsGlobalPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseCreditEctsGlobalPeer::DATABASE_NAME)->addTableBuilder(BaseCreditEctsGlobalPeer::TABLE_NAME, BaseCreditEctsGlobalPeer::getMapBuilder());
+BaseCreditEctsGlobalPeer::buildTableMap();
 

@@ -5,7 +5,7 @@
  *
  * Document (fichier joint) appartenant a un travail Ã  faire du cahier de texte
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'ct_devoirs_documents';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'CahierTexteTravailAFaireFichierJoint';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.CahierTexteTravailAFaireFichierJoint';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'CahierTexteTravailAFaireFichierJointTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 5;
 
@@ -47,11 +53,6 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -63,6 +64,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id', 'IdCtDevoir', 'Titre', 'Taille', 'Emplacement', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'idCtDevoir', 'titre', 'taille', 'emplacement', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::ID_CT_DEVOIR, self::TITRE, self::TAILLE, self::EMPLACEMENT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'ID_CT_DEVOIR', 'TITRE', 'TAILLE', 'EMPLACEMENT', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'id_ct_devoir', 'titre', 'taille', 'emplacement', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
 	);
@@ -77,21 +79,11 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'IdCtDevoir' => 1, 'Titre' => 2, 'Taille' => 3, 'Emplacement' => 4, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'idCtDevoir' => 1, 'titre' => 2, 'taille' => 3, 'emplacement' => 4, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ID_CT_DEVOIR => 1, self::TITRE => 2, self::TAILLE => 3, self::EMPLACEMENT => 4, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'ID_CT_DEVOIR' => 1, 'TITRE' => 2, 'TAILLE' => 3, 'EMPLACEMENT' => 4, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'id_ct_devoir' => 1, 'titre' => 2, 'taille' => 3, 'emplacement' => 4, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new CahierTexteTravailAFaireFichierJointMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -153,23 +145,26 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::ID);
-
-		$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR);
-
-		$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::TITRE);
-
-		$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::TAILLE);
-
-		$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::EMPLACEMENT);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::ID);
+			$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR);
+			$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::TITRE);
+			$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::TAILLE);
+			$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::EMPLACEMENT);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.ID_CT_DEVOIR');
+			$criteria->addSelectColumn($alias . '.TITRE');
+			$criteria->addSelectColumn($alias . '.TAILLE');
+			$criteria->addSelectColumn($alias . '.EMPLACEMENT');
+		}
 	}
 
 	/**
@@ -357,6 +352,14 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to ct_devoirs_documents
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -369,12 +372,26 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -387,8 +404,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = CahierTexteTravailAFaireFichierJointPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = CahierTexteTravailAFaireFichierJointPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = CahierTexteTravailAFaireFichierJointPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -398,7 +414,6 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -408,11 +423,36 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (CahierTexteTravailAFaireFichierJoint object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = CahierTexteTravailAFaireFichierJointPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = CahierTexteTravailAFaireFichierJointPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + CahierTexteTravailAFaireFichierJointPeer::NUM_COLUMNS;
+		} else {
+			$cls = CahierTexteTravailAFaireFichierJointPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			CahierTexteTravailAFaireFichierJointPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related CahierTexteTravailAFaire table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -445,7 +485,8 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 			$con = Propel::getConnection(CahierTexteTravailAFaireFichierJointPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR,), array(CahierTexteTravailAFairePeer::ID_CT,), $join_behavior);
+		$criteria->addJoin(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, CahierTexteTravailAFairePeer::ID_CT, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -460,28 +501,29 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 
 	/**
 	 * Selects a collection of CahierTexteTravailAFaireFichierJoint objects pre-filled with their CahierTexteTravailAFaire objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of CahierTexteTravailAFaireFichierJoint objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinCahierTexteTravailAFaire(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinCahierTexteTravailAFaire(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteTravailAFaireFichierJointPeer::addSelectColumns($c);
+		CahierTexteTravailAFaireFichierJointPeer::addSelectColumns($criteria);
 		$startcol = (CahierTexteTravailAFaireFichierJointPeer::NUM_COLUMNS - CahierTexteTravailAFaireFichierJointPeer::NUM_LAZY_LOAD_COLUMNS);
-		CahierTexteTravailAFairePeer::addSelectColumns($c);
+		CahierTexteTravailAFairePeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR,), array(CahierTexteTravailAFairePeer::ID_CT,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, CahierTexteTravailAFairePeer::ID_CT, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -492,9 +534,8 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = CahierTexteTravailAFaireFichierJointPeer::getOMClass();
+				$cls = CahierTexteTravailAFaireFichierJointPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				CahierTexteTravailAFaireFichierJointPeer::addInstanceToPool($obj1, $key1);
@@ -505,9 +546,8 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 				$obj2 = CahierTexteTravailAFairePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = CahierTexteTravailAFairePeer::getOMClass();
+					$cls = CahierTexteTravailAFairePeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					CahierTexteTravailAFairePeer::addInstanceToPool($obj2, $key2);
@@ -528,7 +568,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -561,7 +601,8 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 			$con = Propel::getConnection(CahierTexteTravailAFaireFichierJointPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR,), array(CahierTexteTravailAFairePeer::ID_CT,), $join_behavior);
+		$criteria->addJoin(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, CahierTexteTravailAFairePeer::ID_CT, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -576,30 +617,31 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	/**
 	 * Selects a collection of CahierTexteTravailAFaireFichierJoint objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of CahierTexteTravailAFaireFichierJoint objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		CahierTexteTravailAFaireFichierJointPeer::addSelectColumns($c);
+		CahierTexteTravailAFaireFichierJointPeer::addSelectColumns($criteria);
 		$startcol2 = (CahierTexteTravailAFaireFichierJointPeer::NUM_COLUMNS - CahierTexteTravailAFaireFichierJointPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		CahierTexteTravailAFairePeer::addSelectColumns($c);
+		CahierTexteTravailAFairePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (CahierTexteTravailAFairePeer::NUM_COLUMNS - CahierTexteTravailAFairePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR,), array(CahierTexteTravailAFairePeer::ID_CT,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, CahierTexteTravailAFairePeer::ID_CT, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -609,9 +651,8 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = CahierTexteTravailAFaireFichierJointPeer::getOMClass();
+				$cls = CahierTexteTravailAFaireFichierJointPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				CahierTexteTravailAFaireFichierJointPeer::addInstanceToPool($obj1, $key1);
@@ -624,10 +665,8 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 				$obj2 = CahierTexteTravailAFairePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = CahierTexteTravailAFairePeer::getOMClass();
+					$cls = CahierTexteTravailAFairePeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					CahierTexteTravailAFairePeer::addInstanceToPool($obj2, $key2);
@@ -656,17 +695,31 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseCahierTexteTravailAFaireFichierJointPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseCahierTexteTravailAFaireFichierJointPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new CahierTexteTravailAFaireFichierJointTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return CahierTexteTravailAFaireFichierJointPeer::CLASS_DEFAULT;
+		return $withPrefix ? CahierTexteTravailAFaireFichierJointPeer::CLASS_DEFAULT : CahierTexteTravailAFaireFichierJointPeer::OM_CLASS;
 	}
 
 	/**
@@ -733,7 +786,12 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(CahierTexteTravailAFaireFichierJointPeer::ID);
-			$selectCriteria->add(CahierTexteTravailAFaireFichierJointPeer::ID, $criteria->remove(CahierTexteTravailAFaireFichierJointPeer::ID), $comparison);
+			$value = $criteria->remove(CahierTexteTravailAFaireFichierJointPeer::ID);
+			if ($value) {
+				$selectCriteria->add(CahierTexteTravailAFaireFichierJointPeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(CahierTexteTravailAFaireFichierJointPeer::TABLE_NAME);
+			}
 
 		} else { // $values is CahierTexteTravailAFaireFichierJoint object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -762,6 +820,11 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += BasePeer::doDeleteAll(CahierTexteTravailAFaireFichierJointPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			CahierTexteTravailAFaireFichierJointPeer::clearInstancePool();
+			CahierTexteTravailAFaireFichierJointPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -792,24 +855,18 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
 			CahierTexteTravailAFaireFichierJointPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof CahierTexteTravailAFaireFichierJoint) {
+		} elseif ($values instanceof CahierTexteTravailAFaireFichierJoint) { // it's a model object
 			// invalidate the cache for this single object
 			CahierTexteTravailAFaireFichierJointPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(CahierTexteTravailAFaireFichierJointPeer::ID, (array) $values, Criteria::IN);
-
+			// invalidate the cache for this object(s)
 			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
 				CahierTexteTravailAFaireFichierJointPeer::removeInstanceFromPool($singleval);
 			}
 		}
@@ -825,7 +882,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
+			CahierTexteTravailAFaireFichierJointPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -924,14 +981,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 
 } // BaseCahierTexteTravailAFaireFichierJointPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the CahierTexteTravailAFaireFichierJointPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the CahierTexteTravailAFaireFichierJointPeer class:
-//
-// Propel::getDatabaseMap(CahierTexteTravailAFaireFichierJointPeer::DATABASE_NAME)->addTableBuilder(CahierTexteTravailAFaireFichierJointPeer::TABLE_NAME, CahierTexteTravailAFaireFichierJointPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseCahierTexteTravailAFaireFichierJointPeer::DATABASE_NAME)->addTableBuilder(BaseCahierTexteTravailAFaireFichierJointPeer::TABLE_NAME, BaseCahierTexteTravailAFaireFichierJointPeer::getMapBuilder());
+BaseCahierTexteTravailAFaireFichierJointPeer::buildTableMap();
 

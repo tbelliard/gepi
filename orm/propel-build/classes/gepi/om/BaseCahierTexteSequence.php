@@ -5,10 +5,15 @@
  *
  * Sequence de plusieurs compte-rendus
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent {
+abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'CahierTexteSequencePeer';
 
 	/**
 	 * The Peer class.
@@ -42,29 +47,14 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	protected $collCahierTexteCompteRendus;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collCahierTexteCompteRendus.
-	 */
-	private $lastCahierTexteCompteRenduCriteria = null;
-
-	/**
 	 * @var        array CahierTexteTravailAFaire[] Collection to store aggregation of CahierTexteTravailAFaire objects.
 	 */
 	protected $collCahierTexteTravailAFaires;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collCahierTexteTravailAFaires.
-	 */
-	private $lastCahierTexteTravailAFaireCriteria = null;
-
-	/**
 	 * @var        array CahierTexteNoticePrivee[] Collection to store aggregation of CahierTexteNoticePrivee objects.
 	 */
 	protected $collCahierTexteNoticePrivees;
-
-	/**
-	 * @var        Criteria The criteria used to select the current contents of collCahierTexteNoticePrivees.
-	 */
-	private $lastCahierTexteNoticePriveeCriteria = null;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -79,26 +69,6 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Initializes internal state of BaseCahierTexteSequence object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
-	 * Applies default values to this object.
-	 * This method should be called from the object's constructor (or
-	 * equivalent initialization method).
-	 * @see        __construct()
-	 */
-	public function applyDefaultValues()
-	{
-	}
 
 	/**
 	 * Get the [id] column value.
@@ -200,11 +170,6 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array())) {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -238,7 +203,6 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 3; // 3 = CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -302,13 +266,10 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 		if ($deep) {  // also de-associate any related objects?
 
 			$this->collCahierTexteCompteRendus = null;
-			$this->lastCahierTexteCompteRenduCriteria = null;
 
 			$this->collCahierTexteTravailAFaires = null;
-			$this->lastCahierTexteTravailAFaireCriteria = null;
 
 			$this->collCahierTexteNoticePrivees = null;
-			$this->lastCahierTexteNoticePriveeCriteria = null;
 
 		} // if (deep)
 	}
@@ -334,9 +295,17 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 		
 		$con->beginTransaction();
 		try {
-			CahierTexteSequencePeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				CahierTexteSequenceQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -367,10 +336,27 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				CahierTexteSequencePeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			CahierTexteSequencePeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -402,16 +388,17 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = CahierTexteSequencePeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(CahierTexteSequencePeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.CahierTexteSequencePeer::ID.')');
+					}
 
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
 					$this->setId($pk);  //[IMV] update autoincrement primary key
-
 					$this->setNew(false);
 				} else {
-					$affectedRows += CahierTexteSequencePeer::doUpdate($this, $con);
+					$affectedRows = CahierTexteSequencePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -590,10 +577,12 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
@@ -698,7 +687,6 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-
 		$criteria->add(CahierTexteSequencePeer::ID, $this->id);
 
 		return $criteria;
@@ -725,6 +713,15 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getId();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -736,11 +733,8 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setTitre($this->titre);
-
 		$copyObj->setDescription($this->description);
-
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -769,9 +763,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 
 
 		$copyObj->setNew(true);
-
 		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
-
 	}
 
 	/**
@@ -813,7 +805,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Clears out the collCahierTexteCompteRendus collection (array).
+	 * Clears out the collCahierTexteCompteRendus collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -827,7 +819,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Initializes the collCahierTexteCompteRendus collection (array).
+	 * Initializes the collCahierTexteCompteRendus collection.
 	 *
 	 * By default this just sets the collCahierTexteCompteRendus collection to an empty array (like clearcollCahierTexteCompteRendus());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -837,59 +829,40 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function initCahierTexteCompteRendus()
 	{
-		$this->collCahierTexteCompteRendus = array();
+		$this->collCahierTexteCompteRendus = new PropelObjectCollection();
+		$this->collCahierTexteCompteRendus->setModel('CahierTexteCompteRendu');
 	}
 
 	/**
 	 * Gets an array of CahierTexteCompteRendu objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this CahierTexteSequence has previously been saved, it will retrieve
-	 * related CahierTexteCompteRendus from storage. If this CahierTexteSequence is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this CahierTexteSequence is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array CahierTexteCompteRendu[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array CahierTexteCompteRendu[] List of CahierTexteCompteRendu objects
 	 * @throws     PropelException
 	 */
 	public function getCahierTexteCompteRendus($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collCahierTexteCompteRendus === null) {
-			if ($this->isNew()) {
-			   $this->collCahierTexteCompteRendus = array();
+		if(null === $this->collCahierTexteCompteRendus || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteCompteRendus) {
+				// return empty collection
+				$this->initCahierTexteCompteRendus();
 			} else {
-
-				$criteria->add(CahierTexteCompteRenduPeer::ID_SEQUENCE, $this->id);
-
-				CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-				$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(CahierTexteCompteRenduPeer::ID_SEQUENCE, $this->id);
-
-				CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-				if (!isset($this->lastCahierTexteCompteRenduCriteria) || !$this->lastCahierTexteCompteRenduCriteria->equals($criteria)) {
-					$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelect($criteria, $con);
+				$collCahierTexteCompteRendus = CahierTexteCompteRenduQuery::create(null, $criteria)
+					->filterByCahierTexteSequence($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collCahierTexteCompteRendus;
 				}
+				$this->collCahierTexteCompteRendus = $collCahierTexteCompteRendus;
 			}
 		}
-		$this->lastCahierTexteCompteRenduCriteria = $criteria;
 		return $this->collCahierTexteCompteRendus;
 	}
 
@@ -904,48 +877,21 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function countCahierTexteCompteRendus(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collCahierTexteCompteRendus === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collCahierTexteCompteRendus || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteCompteRendus) {
+				return 0;
 			} else {
-
-				$criteria->add(CahierTexteCompteRenduPeer::ID_SEQUENCE, $this->id);
-
-				$count = CahierTexteCompteRenduPeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(CahierTexteCompteRenduPeer::ID_SEQUENCE, $this->id);
-
-				if (!isset($this->lastCahierTexteCompteRenduCriteria) || !$this->lastCahierTexteCompteRenduCriteria->equals($criteria)) {
-					$count = CahierTexteCompteRenduPeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collCahierTexteCompteRendus);
+				$query = CahierTexteCompteRenduQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collCahierTexteCompteRendus);
+				return $query
+					->filterByCahierTexteSequence($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collCahierTexteCompteRendus);
 		}
-		$this->lastCahierTexteCompteRenduCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -961,8 +907,8 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 		if ($this->collCahierTexteCompteRendus === null) {
 			$this->initCahierTexteCompteRendus();
 		}
-		if (!in_array($l, $this->collCahierTexteCompteRendus, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collCahierTexteCompteRendus, $l);
+		if (!$this->collCahierTexteCompteRendus->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collCahierTexteCompteRendus[]= $l;
 			$l->setCahierTexteSequence($this);
 		}
 	}
@@ -981,37 +927,10 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function getCahierTexteCompteRendusJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = CahierTexteCompteRenduQuery::create(null, $criteria);
+		$query->joinWith('CahierTexteCompteRendu.Groupe', $join_behavior);
 
-		if ($this->collCahierTexteCompteRendus === null) {
-			if ($this->isNew()) {
-				$this->collCahierTexteCompteRendus = array();
-			} else {
-
-				$criteria->add(CahierTexteCompteRenduPeer::ID_SEQUENCE, $this->id);
-
-				$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(CahierTexteCompteRenduPeer::ID_SEQUENCE, $this->id);
-
-			if (!isset($this->lastCahierTexteCompteRenduCriteria) || !$this->lastCahierTexteCompteRenduCriteria->equals($criteria)) {
-				$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastCahierTexteCompteRenduCriteria = $criteria;
-
-		return $this->collCahierTexteCompteRendus;
+		return $this->getCahierTexteCompteRendus($query, $con);
 	}
 
 
@@ -1028,41 +947,14 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function getCahierTexteCompteRendusJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = CahierTexteCompteRenduQuery::create(null, $criteria);
+		$query->joinWith('CahierTexteCompteRendu.UtilisateurProfessionnel', $join_behavior);
 
-		if ($this->collCahierTexteCompteRendus === null) {
-			if ($this->isNew()) {
-				$this->collCahierTexteCompteRendus = array();
-			} else {
-
-				$criteria->add(CahierTexteCompteRenduPeer::ID_SEQUENCE, $this->id);
-
-				$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(CahierTexteCompteRenduPeer::ID_SEQUENCE, $this->id);
-
-			if (!isset($this->lastCahierTexteCompteRenduCriteria) || !$this->lastCahierTexteCompteRenduCriteria->equals($criteria)) {
-				$this->collCahierTexteCompteRendus = CahierTexteCompteRenduPeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastCahierTexteCompteRenduCriteria = $criteria;
-
-		return $this->collCahierTexteCompteRendus;
+		return $this->getCahierTexteCompteRendus($query, $con);
 	}
 
 	/**
-	 * Clears out the collCahierTexteTravailAFaires collection (array).
+	 * Clears out the collCahierTexteTravailAFaires collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1076,7 +968,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Initializes the collCahierTexteTravailAFaires collection (array).
+	 * Initializes the collCahierTexteTravailAFaires collection.
 	 *
 	 * By default this just sets the collCahierTexteTravailAFaires collection to an empty array (like clearcollCahierTexteTravailAFaires());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1086,59 +978,40 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function initCahierTexteTravailAFaires()
 	{
-		$this->collCahierTexteTravailAFaires = array();
+		$this->collCahierTexteTravailAFaires = new PropelObjectCollection();
+		$this->collCahierTexteTravailAFaires->setModel('CahierTexteTravailAFaire');
 	}
 
 	/**
 	 * Gets an array of CahierTexteTravailAFaire objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this CahierTexteSequence has previously been saved, it will retrieve
-	 * related CahierTexteTravailAFaires from storage. If this CahierTexteSequence is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this CahierTexteSequence is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array CahierTexteTravailAFaire[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array CahierTexteTravailAFaire[] List of CahierTexteTravailAFaire objects
 	 * @throws     PropelException
 	 */
 	public function getCahierTexteTravailAFaires($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collCahierTexteTravailAFaires === null) {
-			if ($this->isNew()) {
-			   $this->collCahierTexteTravailAFaires = array();
+		if(null === $this->collCahierTexteTravailAFaires || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteTravailAFaires) {
+				// return empty collection
+				$this->initCahierTexteTravailAFaires();
 			} else {
-
-				$criteria->add(CahierTexteTravailAFairePeer::ID_SEQUENCE, $this->id);
-
-				CahierTexteTravailAFairePeer::addSelectColumns($criteria);
-				$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(CahierTexteTravailAFairePeer::ID_SEQUENCE, $this->id);
-
-				CahierTexteTravailAFairePeer::addSelectColumns($criteria);
-				if (!isset($this->lastCahierTexteTravailAFaireCriteria) || !$this->lastCahierTexteTravailAFaireCriteria->equals($criteria)) {
-					$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelect($criteria, $con);
+				$collCahierTexteTravailAFaires = CahierTexteTravailAFaireQuery::create(null, $criteria)
+					->filterByCahierTexteSequence($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collCahierTexteTravailAFaires;
 				}
+				$this->collCahierTexteTravailAFaires = $collCahierTexteTravailAFaires;
 			}
 		}
-		$this->lastCahierTexteTravailAFaireCriteria = $criteria;
 		return $this->collCahierTexteTravailAFaires;
 	}
 
@@ -1153,48 +1026,21 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function countCahierTexteTravailAFaires(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collCahierTexteTravailAFaires === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collCahierTexteTravailAFaires || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteTravailAFaires) {
+				return 0;
 			} else {
-
-				$criteria->add(CahierTexteTravailAFairePeer::ID_SEQUENCE, $this->id);
-
-				$count = CahierTexteTravailAFairePeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(CahierTexteTravailAFairePeer::ID_SEQUENCE, $this->id);
-
-				if (!isset($this->lastCahierTexteTravailAFaireCriteria) || !$this->lastCahierTexteTravailAFaireCriteria->equals($criteria)) {
-					$count = CahierTexteTravailAFairePeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collCahierTexteTravailAFaires);
+				$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collCahierTexteTravailAFaires);
+				return $query
+					->filterByCahierTexteSequence($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collCahierTexteTravailAFaires);
 		}
-		$this->lastCahierTexteTravailAFaireCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1210,8 +1056,8 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 		if ($this->collCahierTexteTravailAFaires === null) {
 			$this->initCahierTexteTravailAFaires();
 		}
-		if (!in_array($l, $this->collCahierTexteTravailAFaires, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collCahierTexteTravailAFaires, $l);
+		if (!$this->collCahierTexteTravailAFaires->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collCahierTexteTravailAFaires[]= $l;
 			$l->setCahierTexteSequence($this);
 		}
 	}
@@ -1230,37 +1076,10 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function getCahierTexteTravailAFairesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
+		$query->joinWith('CahierTexteTravailAFaire.Groupe', $join_behavior);
 
-		if ($this->collCahierTexteTravailAFaires === null) {
-			if ($this->isNew()) {
-				$this->collCahierTexteTravailAFaires = array();
-			} else {
-
-				$criteria->add(CahierTexteTravailAFairePeer::ID_SEQUENCE, $this->id);
-
-				$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(CahierTexteTravailAFairePeer::ID_SEQUENCE, $this->id);
-
-			if (!isset($this->lastCahierTexteTravailAFaireCriteria) || !$this->lastCahierTexteTravailAFaireCriteria->equals($criteria)) {
-				$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastCahierTexteTravailAFaireCriteria = $criteria;
-
-		return $this->collCahierTexteTravailAFaires;
+		return $this->getCahierTexteTravailAFaires($query, $con);
 	}
 
 
@@ -1277,41 +1096,14 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function getCahierTexteTravailAFairesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
+		$query->joinWith('CahierTexteTravailAFaire.UtilisateurProfessionnel', $join_behavior);
 
-		if ($this->collCahierTexteTravailAFaires === null) {
-			if ($this->isNew()) {
-				$this->collCahierTexteTravailAFaires = array();
-			} else {
-
-				$criteria->add(CahierTexteTravailAFairePeer::ID_SEQUENCE, $this->id);
-
-				$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(CahierTexteTravailAFairePeer::ID_SEQUENCE, $this->id);
-
-			if (!isset($this->lastCahierTexteTravailAFaireCriteria) || !$this->lastCahierTexteTravailAFaireCriteria->equals($criteria)) {
-				$this->collCahierTexteTravailAFaires = CahierTexteTravailAFairePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastCahierTexteTravailAFaireCriteria = $criteria;
-
-		return $this->collCahierTexteTravailAFaires;
+		return $this->getCahierTexteTravailAFaires($query, $con);
 	}
 
 	/**
-	 * Clears out the collCahierTexteNoticePrivees collection (array).
+	 * Clears out the collCahierTexteNoticePrivees collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1325,7 +1117,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Initializes the collCahierTexteNoticePrivees collection (array).
+	 * Initializes the collCahierTexteNoticePrivees collection.
 	 *
 	 * By default this just sets the collCahierTexteNoticePrivees collection to an empty array (like clearcollCahierTexteNoticePrivees());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1335,59 +1127,40 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function initCahierTexteNoticePrivees()
 	{
-		$this->collCahierTexteNoticePrivees = array();
+		$this->collCahierTexteNoticePrivees = new PropelObjectCollection();
+		$this->collCahierTexteNoticePrivees->setModel('CahierTexteNoticePrivee');
 	}
 
 	/**
 	 * Gets an array of CahierTexteNoticePrivee objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this CahierTexteSequence has previously been saved, it will retrieve
-	 * related CahierTexteNoticePrivees from storage. If this CahierTexteSequence is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this CahierTexteSequence is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array CahierTexteNoticePrivee[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array CahierTexteNoticePrivee[] List of CahierTexteNoticePrivee objects
 	 * @throws     PropelException
 	 */
 	public function getCahierTexteNoticePrivees($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collCahierTexteNoticePrivees === null) {
-			if ($this->isNew()) {
-			   $this->collCahierTexteNoticePrivees = array();
+		if(null === $this->collCahierTexteNoticePrivees || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteNoticePrivees) {
+				// return empty collection
+				$this->initCahierTexteNoticePrivees();
 			} else {
-
-				$criteria->add(CahierTexteNoticePriveePeer::ID_SEQUENCE, $this->id);
-
-				CahierTexteNoticePriveePeer::addSelectColumns($criteria);
-				$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(CahierTexteNoticePriveePeer::ID_SEQUENCE, $this->id);
-
-				CahierTexteNoticePriveePeer::addSelectColumns($criteria);
-				if (!isset($this->lastCahierTexteNoticePriveeCriteria) || !$this->lastCahierTexteNoticePriveeCriteria->equals($criteria)) {
-					$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelect($criteria, $con);
+				$collCahierTexteNoticePrivees = CahierTexteNoticePriveeQuery::create(null, $criteria)
+					->filterByCahierTexteSequence($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collCahierTexteNoticePrivees;
 				}
+				$this->collCahierTexteNoticePrivees = $collCahierTexteNoticePrivees;
 			}
 		}
-		$this->lastCahierTexteNoticePriveeCriteria = $criteria;
 		return $this->collCahierTexteNoticePrivees;
 	}
 
@@ -1402,48 +1175,21 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function countCahierTexteNoticePrivees(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collCahierTexteNoticePrivees === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collCahierTexteNoticePrivees || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteNoticePrivees) {
+				return 0;
 			} else {
-
-				$criteria->add(CahierTexteNoticePriveePeer::ID_SEQUENCE, $this->id);
-
-				$count = CahierTexteNoticePriveePeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(CahierTexteNoticePriveePeer::ID_SEQUENCE, $this->id);
-
-				if (!isset($this->lastCahierTexteNoticePriveeCriteria) || !$this->lastCahierTexteNoticePriveeCriteria->equals($criteria)) {
-					$count = CahierTexteNoticePriveePeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collCahierTexteNoticePrivees);
+				$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collCahierTexteNoticePrivees);
+				return $query
+					->filterByCahierTexteSequence($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collCahierTexteNoticePrivees);
 		}
-		$this->lastCahierTexteNoticePriveeCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1459,8 +1205,8 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 		if ($this->collCahierTexteNoticePrivees === null) {
 			$this->initCahierTexteNoticePrivees();
 		}
-		if (!in_array($l, $this->collCahierTexteNoticePrivees, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collCahierTexteNoticePrivees, $l);
+		if (!$this->collCahierTexteNoticePrivees->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collCahierTexteNoticePrivees[]= $l;
 			$l->setCahierTexteSequence($this);
 		}
 	}
@@ -1479,37 +1225,10 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function getCahierTexteNoticePriveesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
+		$query->joinWith('CahierTexteNoticePrivee.Groupe', $join_behavior);
 
-		if ($this->collCahierTexteNoticePrivees === null) {
-			if ($this->isNew()) {
-				$this->collCahierTexteNoticePrivees = array();
-			} else {
-
-				$criteria->add(CahierTexteNoticePriveePeer::ID_SEQUENCE, $this->id);
-
-				$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(CahierTexteNoticePriveePeer::ID_SEQUENCE, $this->id);
-
-			if (!isset($this->lastCahierTexteNoticePriveeCriteria) || !$this->lastCahierTexteNoticePriveeCriteria->equals($criteria)) {
-				$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelectJoinGroupe($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastCahierTexteNoticePriveeCriteria = $criteria;
-
-		return $this->collCahierTexteNoticePrivees;
+		return $this->getCahierTexteNoticePrivees($query, $con);
 	}
 
 
@@ -1526,37 +1245,22 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 */
 	public function getCahierTexteNoticePriveesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(CahierTexteSequencePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
+		$query->joinWith('CahierTexteNoticePrivee.UtilisateurProfessionnel', $join_behavior);
 
-		if ($this->collCahierTexteNoticePrivees === null) {
-			if ($this->isNew()) {
-				$this->collCahierTexteNoticePrivees = array();
-			} else {
+		return $this->getCahierTexteNoticePrivees($query, $con);
+	}
 
-				$criteria->add(CahierTexteNoticePriveePeer::ID_SEQUENCE, $this->id);
-
-				$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(CahierTexteNoticePriveePeer::ID_SEQUENCE, $this->id);
-
-			if (!isset($this->lastCahierTexteNoticePriveeCriteria) || !$this->lastCahierTexteNoticePriveeCriteria->equals($criteria)) {
-				$this->collCahierTexteNoticePrivees = CahierTexteNoticePriveePeer::doSelectJoinUtilisateurProfessionnel($criteria, $con, $join_behavior);
-			}
-		}
-		$this->lastCahierTexteNoticePriveeCriteria = $criteria;
-
-		return $this->collCahierTexteNoticePrivees;
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id = null;
+		$this->titre = null;
+		$this->description = null;
+		$this->clearAllReferences();
+		$this->setNew(true);
 	}
 
 	/**
@@ -1591,6 +1295,17 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 		$this->collCahierTexteCompteRendus = null;
 		$this->collCahierTexteTravailAFaires = null;
 		$this->collCahierTexteNoticePrivees = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseCahierTexteSequence

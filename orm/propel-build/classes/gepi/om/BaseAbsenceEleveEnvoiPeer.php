@@ -5,7 +5,7 @@
  *
  * Chaque envoi est repertorie ici
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseAbsenceEleveEnvoiPeer {
 
@@ -15,11 +15,17 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'a_envois';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'AbsenceEleveEnvoi';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.AbsenceEleveEnvoi';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'AbsenceEleveEnvoiTableMap';
+	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 6;
+	const NUM_COLUMNS = 8;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -42,6 +48,12 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	/** the column name for the DATE_ENVOI field */
 	const DATE_ENVOI = 'a_envois.DATE_ENVOI';
 
+	/** the column name for the CREATED_AT field */
+	const CREATED_AT = 'a_envois.CREATED_AT';
+
+	/** the column name for the UPDATED_AT field */
+	const UPDATED_AT = 'a_envois.UPDATED_AT';
+
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveEnvoi objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -50,11 +62,6 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -63,11 +70,12 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'IdTypeEnvoi', 'Commentaire', 'StatutEnvoi', 'DateEnvoi', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'idTypeEnvoi', 'commentaire', 'statutEnvoi', 'dateEnvoi', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::ID_TYPE_ENVOI, self::COMMENTAIRE, self::STATUT_ENVOI, self::DATE_ENVOI, ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'id_type_envoi', 'commentaire', 'statut_envoi', 'date_envoi', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'IdTypeEnvoi', 'Commentaire', 'StatutEnvoi', 'DateEnvoi', 'CreatedAt', 'UpdatedAt', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'idTypeEnvoi', 'commentaire', 'statutEnvoi', 'dateEnvoi', 'createdAt', 'updatedAt', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::ID_TYPE_ENVOI, self::COMMENTAIRE, self::STATUT_ENVOI, self::DATE_ENVOI, self::CREATED_AT, self::UPDATED_AT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'UTILISATEUR_ID', 'ID_TYPE_ENVOI', 'COMMENTAIRE', 'STATUT_ENVOI', 'DATE_ENVOI', 'CREATED_AT', 'UPDATED_AT', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'id_type_envoi', 'commentaire', 'statut_envoi', 'date_envoi', 'created_at', 'updated_at', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
 	);
 
 	/**
@@ -77,24 +85,14 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'IdTypeEnvoi' => 2, 'Commentaire' => 3, 'StatutEnvoi' => 4, 'DateEnvoi' => 5, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'idTypeEnvoi' => 2, 'commentaire' => 3, 'statutEnvoi' => 4, 'dateEnvoi' => 5, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::ID_TYPE_ENVOI => 2, self::COMMENTAIRE => 3, self::STATUT_ENVOI => 4, self::DATE_ENVOI => 5, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'id_type_envoi' => 2, 'commentaire' => 3, 'statut_envoi' => 4, 'date_envoi' => 5, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'IdTypeEnvoi' => 2, 'Commentaire' => 3, 'StatutEnvoi' => 4, 'DateEnvoi' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'idTypeEnvoi' => 2, 'commentaire' => 3, 'statutEnvoi' => 4, 'dateEnvoi' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::ID_TYPE_ENVOI => 2, self::COMMENTAIRE => 3, self::STATUT_ENVOI => 4, self::DATE_ENVOI => 5, self::CREATED_AT => 6, self::UPDATED_AT => 7, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'UTILISATEUR_ID' => 1, 'ID_TYPE_ENVOI' => 2, 'COMMENTAIRE' => 3, 'STATUT_ENVOI' => 4, 'DATE_ENVOI' => 5, 'CREATED_AT' => 6, 'UPDATED_AT' => 7, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'id_type_envoi' => 2, 'commentaire' => 3, 'statut_envoi' => 4, 'date_envoi' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new AbsenceEleveEnvoiMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -156,25 +154,32 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::ID);
-
-		$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::UTILISATEUR_ID);
-
-		$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI);
-
-		$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::COMMENTAIRE);
-
-		$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::STATUT_ENVOI);
-
-		$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::DATE_ENVOI);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::ID);
+			$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::UTILISATEUR_ID);
+			$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI);
+			$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::COMMENTAIRE);
+			$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::STATUT_ENVOI);
+			$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::DATE_ENVOI);
+			$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::CREATED_AT);
+			$criteria->addSelectColumn(AbsenceEleveEnvoiPeer::UPDATED_AT);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.UTILISATEUR_ID');
+			$criteria->addSelectColumn($alias . '.ID_TYPE_ENVOI');
+			$criteria->addSelectColumn($alias . '.COMMENTAIRE');
+			$criteria->addSelectColumn($alias . '.STATUT_ENVOI');
+			$criteria->addSelectColumn($alias . '.DATE_ENVOI');
+			$criteria->addSelectColumn($alias . '.CREATED_AT');
+			$criteria->addSelectColumn($alias . '.UPDATED_AT');
+		}
 	}
 
 	/**
@@ -362,6 +367,17 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to a_envois
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in JTraitementEnvoiElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JTraitementEnvoiElevePeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -374,12 +390,26 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -392,8 +422,7 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = AbsenceEleveEnvoiPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = AbsenceEleveEnvoiPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = AbsenceEleveEnvoiPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -403,7 +432,6 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -413,11 +441,36 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (AbsenceEleveEnvoi object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = AbsenceEleveEnvoiPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = AbsenceEleveEnvoiPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + AbsenceEleveEnvoiPeer::NUM_COLUMNS;
+		} else {
+			$cls = AbsenceEleveEnvoiPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			AbsenceEleveEnvoiPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -450,7 +503,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 			$con = Propel::getConnection(AbsenceEleveEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(AbsenceEleveEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -466,7 +520,7 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related AbsenceEleveTypeEnvoi table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -499,7 +553,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 			$con = Propel::getConnection(AbsenceEleveEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceEleveTypeEnvoiPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, AbsenceEleveTypeEnvoiPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -514,28 +569,29 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 
 	/**
 	 * Selects a collection of AbsenceEleveEnvoi objects pre-filled with their UtilisateurProfessionnel objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveEnvoi objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinUtilisateurProfessionnel(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveEnvoiPeer::addSelectColumns($c);
+		AbsenceEleveEnvoiPeer::addSelectColumns($criteria);
 		$startcol = (AbsenceEleveEnvoiPeer::NUM_COLUMNS - AbsenceEleveEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(AbsenceEleveEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -546,9 +602,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = AbsenceEleveEnvoiPeer::getOMClass();
+				$cls = AbsenceEleveEnvoiPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveEnvoiPeer::addInstanceToPool($obj1, $key1);
@@ -559,9 +614,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 				$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = UtilisateurProfessionnelPeer::getOMClass();
+					$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -581,28 +635,29 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 
 	/**
 	 * Selects a collection of AbsenceEleveEnvoi objects pre-filled with their AbsenceEleveTypeEnvoi objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveEnvoi objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAbsenceEleveTypeEnvoi(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAbsenceEleveTypeEnvoi(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveEnvoiPeer::addSelectColumns($c);
+		AbsenceEleveEnvoiPeer::addSelectColumns($criteria);
 		$startcol = (AbsenceEleveEnvoiPeer::NUM_COLUMNS - AbsenceEleveEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
-		AbsenceEleveTypeEnvoiPeer::addSelectColumns($c);
+		AbsenceEleveTypeEnvoiPeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceEleveTypeEnvoiPeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, AbsenceEleveTypeEnvoiPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -613,9 +668,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = AbsenceEleveEnvoiPeer::getOMClass();
+				$cls = AbsenceEleveEnvoiPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveEnvoiPeer::addInstanceToPool($obj1, $key1);
@@ -626,9 +680,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 				$obj2 = AbsenceEleveTypeEnvoiPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = AbsenceEleveTypeEnvoiPeer::getOMClass();
+					$cls = AbsenceEleveTypeEnvoiPeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					AbsenceEleveTypeEnvoiPeer::addInstanceToPool($obj2, $key2);
@@ -649,7 +702,7 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -682,8 +735,10 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 			$con = Propel::getConnection(AbsenceEleveEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(AbsenceEleveEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$criteria->addJoin(array(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceEleveTypeEnvoiPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, AbsenceEleveTypeEnvoiPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -698,34 +753,36 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	/**
 	 * Selects a collection of AbsenceEleveEnvoi objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveEnvoi objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveEnvoiPeer::addSelectColumns($c);
+		AbsenceEleveEnvoiPeer::addSelectColumns($criteria);
 		$startcol2 = (AbsenceEleveEnvoiPeer::NUM_COLUMNS - AbsenceEleveEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveTypeEnvoiPeer::addSelectColumns($c);
+		AbsenceEleveTypeEnvoiPeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (AbsenceEleveTypeEnvoiPeer::NUM_COLUMNS - AbsenceEleveTypeEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(AbsenceEleveEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
-		$c->addJoin(array(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceEleveTypeEnvoiPeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, AbsenceEleveTypeEnvoiPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -735,9 +792,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = AbsenceEleveEnvoiPeer::getOMClass();
+				$cls = AbsenceEleveEnvoiPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveEnvoiPeer::addInstanceToPool($obj1, $key1);
@@ -750,10 +806,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 				$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = UtilisateurProfessionnelPeer::getOMClass();
+					$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -770,10 +824,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 				$obj3 = AbsenceEleveTypeEnvoiPeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$omClass = AbsenceEleveTypeEnvoiPeer::getOMClass();
+					$cls = AbsenceEleveTypeEnvoiPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
 					AbsenceEleveTypeEnvoiPeer::addInstanceToPool($obj3, $key3);
@@ -793,7 +845,7 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related UtilisateurProfessionnel table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -826,7 +878,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 			$con = Propel::getConnection(AbsenceEleveEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceEleveTypeEnvoiPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, AbsenceEleveTypeEnvoiPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -842,7 +895,7 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining the related AbsenceEleveTypeEnvoi table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -875,7 +928,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 			$con = Propel::getConnection(AbsenceEleveEnvoiPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-				$criteria->addJoin(array(AbsenceEleveEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -891,33 +945,34 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	/**
 	 * Selects a collection of AbsenceEleveEnvoi objects pre-filled with all related objects except UtilisateurProfessionnel.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveEnvoi objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptUtilisateurProfessionnel(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptUtilisateurProfessionnel(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveEnvoiPeer::addSelectColumns($c);
+		AbsenceEleveEnvoiPeer::addSelectColumns($criteria);
 		$startcol2 = (AbsenceEleveEnvoiPeer::NUM_COLUMNS - AbsenceEleveEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveTypeEnvoiPeer::addSelectColumns($c);
+		AbsenceEleveTypeEnvoiPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (AbsenceEleveTypeEnvoiPeer::NUM_COLUMNS - AbsenceEleveTypeEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI,), array(AbsenceEleveTypeEnvoiPeer::ID,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, AbsenceEleveTypeEnvoiPeer::ID, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -927,9 +982,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = AbsenceEleveEnvoiPeer::getOMClass();
+				$cls = AbsenceEleveEnvoiPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveEnvoiPeer::addInstanceToPool($obj1, $key1);
@@ -942,10 +996,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 					$obj2 = AbsenceEleveTypeEnvoiPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = AbsenceEleveTypeEnvoiPeer::getOMClass();
+						$cls = AbsenceEleveTypeEnvoiPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					AbsenceEleveTypeEnvoiPeer::addInstanceToPool($obj2, $key2);
@@ -966,33 +1018,34 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	/**
 	 * Selects a collection of AbsenceEleveEnvoi objects pre-filled with all related objects except AbsenceEleveTypeEnvoi.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of AbsenceEleveEnvoi objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptAbsenceEleveTypeEnvoi(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptAbsenceEleveTypeEnvoi(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		// $c->getDbName() will return the same object if not set to another value
+		// $criteria->getDbName() will return the same object if not set to another value
 		// so == check is okay and faster
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		AbsenceEleveEnvoiPeer::addSelectColumns($c);
+		AbsenceEleveEnvoiPeer::addSelectColumns($criteria);
 		$startcol2 = (AbsenceEleveEnvoiPeer::NUM_COLUMNS - AbsenceEleveEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		UtilisateurProfessionnelPeer::addSelectColumns($c);
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-				$c->addJoin(array(AbsenceEleveEnvoiPeer::UTILISATEUR_ID,), array(UtilisateurProfessionnelPeer::LOGIN,), $join_behavior);
+		$criteria->addJoin(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
-		$stmt = BasePeer::doSelect($c, $con);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1002,9 +1055,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = AbsenceEleveEnvoiPeer::getOMClass();
+				$cls = AbsenceEleveEnvoiPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				AbsenceEleveEnvoiPeer::addInstanceToPool($obj1, $key1);
@@ -1017,10 +1069,8 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 					$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$omClass = UtilisateurProfessionnelPeer::getOMClass();
+						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
@@ -1050,17 +1100,31 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseAbsenceEleveEnvoiPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseAbsenceEleveEnvoiPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new AbsenceEleveEnvoiTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return AbsenceEleveEnvoiPeer::CLASS_DEFAULT;
+		return $withPrefix ? AbsenceEleveEnvoiPeer::CLASS_DEFAULT : AbsenceEleveEnvoiPeer::OM_CLASS;
 	}
 
 	/**
@@ -1127,7 +1191,12 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(AbsenceEleveEnvoiPeer::ID);
-			$selectCriteria->add(AbsenceEleveEnvoiPeer::ID, $criteria->remove(AbsenceEleveEnvoiPeer::ID), $comparison);
+			$value = $criteria->remove(AbsenceEleveEnvoiPeer::ID);
+			if ($value) {
+				$selectCriteria->add(AbsenceEleveEnvoiPeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(AbsenceEleveEnvoiPeer::TABLE_NAME);
+			}
 
 		} else { // $values is AbsenceEleveEnvoi object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -1157,6 +1226,11 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 			$con->beginTransaction();
 			AbsenceEleveEnvoiPeer::doOnDeleteSetNull(new Criteria(AbsenceEleveEnvoiPeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(AbsenceEleveEnvoiPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			AbsenceEleveEnvoiPeer::clearInstancePool();
+			AbsenceEleveEnvoiPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1183,30 +1257,14 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			AbsenceEleveEnvoiPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof AbsenceEleveEnvoi) {
-			// invalidate the cache for this single object
-			AbsenceEleveEnvoiPeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof AbsenceEleveEnvoi) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(AbsenceEleveEnvoiPeer::ID, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				AbsenceEleveEnvoiPeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -1220,20 +1278,21 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 			$con->beginTransaction();
 			AbsenceEleveEnvoiPeer::doOnDeleteSetNull($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					AbsenceEleveEnvoiPeer::clearInstancePool();
-				} else { // it's a PK or object
-					AbsenceEleveEnvoiPeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				AbsenceEleveEnvoiPeer::clearInstancePool();
+			} elseif ($values instanceof AbsenceEleveEnvoi) { // it's a model object
+				AbsenceEleveEnvoiPeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					AbsenceEleveEnvoiPeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in JTraitementEnvoiElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JTraitementEnvoiElevePeer::clearInstancePool();
-
+			AbsenceEleveEnvoiPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1363,14 +1422,7 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 
 } // BaseAbsenceEleveEnvoiPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the AbsenceEleveEnvoiPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the AbsenceEleveEnvoiPeer class:
-//
-// Propel::getDatabaseMap(AbsenceEleveEnvoiPeer::DATABASE_NAME)->addTableBuilder(AbsenceEleveEnvoiPeer::TABLE_NAME, AbsenceEleveEnvoiPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseAbsenceEleveEnvoiPeer::DATABASE_NAME)->addTableBuilder(BaseAbsenceEleveEnvoiPeer::TABLE_NAME, BaseAbsenceEleveEnvoiPeer::getMapBuilder());
+BaseAbsenceEleveEnvoiPeer::buildTableMap();
 

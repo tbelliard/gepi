@@ -5,10 +5,15 @@
  *
  * Mention du redoublement eventuel de l'eleve ainsi que son regime de presence (externe, demi-pensionnaire, ...)
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent {
+abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'EleveRegimeDoublantPeer';
 
 	/**
 	 * The Peer class.
@@ -54,26 +59,6 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Initializes internal state of BaseEleveRegimeDoublant object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
-	 * Applies default values to this object.
-	 * This method should be called from the object's constructor (or
-	 * equivalent initialization method).
-	 * @see        __construct()
-	 */
-	public function applyDefaultValues()
-	{
-	}
 
 	/**
 	 * Get the [login] column value.
@@ -179,11 +164,6 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array())) {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -217,7 +197,6 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 3; // 3 = EleveRegimeDoublantPeer::NUM_COLUMNS - EleveRegimeDoublantPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -308,9 +287,17 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 		
 		$con->beginTransaction();
 		try {
-			EleveRegimeDoublantPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				EleveRegimeDoublantQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -341,10 +328,27 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				EleveRegimeDoublantPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			EleveRegimeDoublantPeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -385,11 +389,9 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = EleveRegimeDoublantPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
-
+					$criteria = $this->buildCriteria();
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
 					$this->setNew(false);
 				} else {
 					$affectedRows += EleveRegimeDoublantPeer::doUpdate($this, $con);
@@ -535,12 +537,15 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
 		$keys = EleveRegimeDoublantPeer::getFieldNames($keyType);
 		$result = array(
@@ -548,6 +553,11 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 			$keys[1] => $this->getDoublant(),
 			$keys[2] => $this->getRegime(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aEleve) {
+				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -643,7 +653,6 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(EleveRegimeDoublantPeer::DATABASE_NAME);
-
 		$criteria->add(EleveRegimeDoublantPeer::LOGIN, $this->login);
 
 		return $criteria;
@@ -670,6 +679,15 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getLogin();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -681,16 +699,11 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setLogin($this->login);
-
 		$copyObj->setDoublant($this->doublant);
-
 		$copyObj->setRegime($this->regime);
 
-
 		$copyObj->setNew(true);
-
 	}
 
 	/**
@@ -767,11 +780,25 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	public function getEleve(PropelPDO $con = null)
 	{
 		if ($this->aEleve === null && (($this->login !== "" && $this->login !== null))) {
-			$this->aEleve = ElevePeer::retrieveByPK($this->login, $con);
+			$this->aEleve = EleveQuery::create()
+				->filterByEleveRegimeDoublant($this) // here
+				->findOne($con);
 			// Because this foreign key represents a one-to-one relationship, we will create a bi-directional association.
 			$this->aEleve->setEleveRegimeDoublant($this);
 		}
 		return $this->aEleve;
+	}
+
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->login = null;
+		$this->doublant = null;
+		$this->regime = null;
+		$this->clearAllReferences();
+		$this->setNew(true);
 	}
 
 	/**
@@ -788,7 +815,18 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 		if ($deep) {
 		} // if ($deep)
 
-			$this->aEleve = null;
+		$this->aEleve = null;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseEleveRegimeDoublant

@@ -5,7 +5,7 @@
  *
  * Table de jointure entre les responsables legaux et leur adresse
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseResponsableEleveAdressePeer {
 
@@ -15,9 +15,15 @@ abstract class BaseResponsableEleveAdressePeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'resp_adr';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'ResponsableEleveAdresse';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.ResponsableEleveAdresse';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'ResponsableEleveAdresseTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 8;
 
@@ -56,11 +62,6 @@ abstract class BaseResponsableEleveAdressePeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -72,6 +73,7 @@ abstract class BaseResponsableEleveAdressePeer {
 		BasePeer::TYPE_PHPNAME => array ('AdrId', 'Adr1', 'Adr2', 'Adr3', 'Adr4', 'Cp', 'Pays', 'Commune', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('adrId', 'adr1', 'adr2', 'adr3', 'adr4', 'cp', 'pays', 'commune', ),
 		BasePeer::TYPE_COLNAME => array (self::ADR_ID, self::ADR1, self::ADR2, self::ADR3, self::ADR4, self::CP, self::PAYS, self::COMMUNE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ADR_ID', 'ADR1', 'ADR2', 'ADR3', 'ADR4', 'CP', 'PAYS', 'COMMUNE', ),
 		BasePeer::TYPE_FIELDNAME => array ('adr_id', 'adr1', 'adr2', 'adr3', 'adr4', 'cp', 'pays', 'commune', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
 	);
@@ -86,21 +88,11 @@ abstract class BaseResponsableEleveAdressePeer {
 		BasePeer::TYPE_PHPNAME => array ('AdrId' => 0, 'Adr1' => 1, 'Adr2' => 2, 'Adr3' => 3, 'Adr4' => 4, 'Cp' => 5, 'Pays' => 6, 'Commune' => 7, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('adrId' => 0, 'adr1' => 1, 'adr2' => 2, 'adr3' => 3, 'adr4' => 4, 'cp' => 5, 'pays' => 6, 'commune' => 7, ),
 		BasePeer::TYPE_COLNAME => array (self::ADR_ID => 0, self::ADR1 => 1, self::ADR2 => 2, self::ADR3 => 3, self::ADR4 => 4, self::CP => 5, self::PAYS => 6, self::COMMUNE => 7, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ADR_ID' => 0, 'ADR1' => 1, 'ADR2' => 2, 'ADR3' => 3, 'ADR4' => 4, 'CP' => 5, 'PAYS' => 6, 'COMMUNE' => 7, ),
 		BasePeer::TYPE_FIELDNAME => array ('adr_id' => 0, 'adr1' => 1, 'adr2' => 2, 'adr3' => 3, 'adr4' => 4, 'cp' => 5, 'pays' => 6, 'commune' => 7, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new ResponsableEleveAdresseMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -162,29 +154,32 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR_ID);
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR1);
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR2);
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR3);
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR4);
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::CP);
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::PAYS);
-
-		$criteria->addSelectColumn(ResponsableEleveAdressePeer::COMMUNE);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR_ID);
+			$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR1);
+			$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR2);
+			$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR3);
+			$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR4);
+			$criteria->addSelectColumn(ResponsableEleveAdressePeer::CP);
+			$criteria->addSelectColumn(ResponsableEleveAdressePeer::PAYS);
+			$criteria->addSelectColumn(ResponsableEleveAdressePeer::COMMUNE);
+		} else {
+			$criteria->addSelectColumn($alias . '.ADR_ID');
+			$criteria->addSelectColumn($alias . '.ADR1');
+			$criteria->addSelectColumn($alias . '.ADR2');
+			$criteria->addSelectColumn($alias . '.ADR3');
+			$criteria->addSelectColumn($alias . '.ADR4');
+			$criteria->addSelectColumn($alias . '.CP');
+			$criteria->addSelectColumn($alias . '.PAYS');
+			$criteria->addSelectColumn($alias . '.COMMUNE');
+		}
 	}
 
 	/**
@@ -372,6 +367,17 @@ abstract class BaseResponsableEleveAdressePeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to resp_adr
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in ResponsableElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		ResponsableElevePeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -384,12 +390,26 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (string) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -402,8 +422,7 @@ abstract class BaseResponsableEleveAdressePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = ResponsableEleveAdressePeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = ResponsableEleveAdressePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = ResponsableEleveAdressePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -413,7 +432,6 @@ abstract class BaseResponsableEleveAdressePeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -422,6 +440,31 @@ abstract class BaseResponsableEleveAdressePeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (ResponsableEleveAdresse object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = ResponsableEleveAdressePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = ResponsableEleveAdressePeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + ResponsableEleveAdressePeer::NUM_COLUMNS;
+		} else {
+			$cls = ResponsableEleveAdressePeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			ResponsableEleveAdressePeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -436,17 +479,31 @@ abstract class BaseResponsableEleveAdressePeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseResponsableEleveAdressePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseResponsableEleveAdressePeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new ResponsableEleveAdresseTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return ResponsableEleveAdressePeer::CLASS_DEFAULT;
+		return $withPrefix ? ResponsableEleveAdressePeer::CLASS_DEFAULT : ResponsableEleveAdressePeer::OM_CLASS;
 	}
 
 	/**
@@ -509,7 +566,12 @@ abstract class BaseResponsableEleveAdressePeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(ResponsableEleveAdressePeer::ADR_ID);
-			$selectCriteria->add(ResponsableEleveAdressePeer::ADR_ID, $criteria->remove(ResponsableEleveAdressePeer::ADR_ID), $comparison);
+			$value = $criteria->remove(ResponsableEleveAdressePeer::ADR_ID);
+			if ($value) {
+				$selectCriteria->add(ResponsableEleveAdressePeer::ADR_ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(ResponsableEleveAdressePeer::TABLE_NAME);
+			}
 
 		} else { // $values is ResponsableEleveAdresse object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -539,6 +601,11 @@ abstract class BaseResponsableEleveAdressePeer {
 			$con->beginTransaction();
 			ResponsableEleveAdressePeer::doOnDeleteSetNull(new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(ResponsableEleveAdressePeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			ResponsableEleveAdressePeer::clearInstancePool();
+			ResponsableEleveAdressePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -565,30 +632,14 @@ abstract class BaseResponsableEleveAdressePeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			ResponsableEleveAdressePeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof ResponsableEleveAdresse) {
-			// invalidate the cache for this single object
-			ResponsableEleveAdressePeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof ResponsableEleveAdresse) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(ResponsableEleveAdressePeer::ADR_ID, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				ResponsableEleveAdressePeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -602,20 +653,21 @@ abstract class BaseResponsableEleveAdressePeer {
 			$con->beginTransaction();
 			ResponsableEleveAdressePeer::doOnDeleteSetNull($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					ResponsableEleveAdressePeer::clearInstancePool();
-				} else { // it's a PK or object
-					ResponsableEleveAdressePeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				ResponsableEleveAdressePeer::clearInstancePool();
+			} elseif ($values instanceof ResponsableEleveAdresse) { // it's a model object
+				ResponsableEleveAdressePeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					ResponsableEleveAdressePeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in ResponsableElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			ResponsableElevePeer::clearInstancePool();
-
+			ResponsableEleveAdressePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -745,14 +797,7 @@ abstract class BaseResponsableEleveAdressePeer {
 
 } // BaseResponsableEleveAdressePeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the ResponsableEleveAdressePeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the ResponsableEleveAdressePeer class:
-//
-// Propel::getDatabaseMap(ResponsableEleveAdressePeer::DATABASE_NAME)->addTableBuilder(ResponsableEleveAdressePeer::TABLE_NAME, ResponsableEleveAdressePeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseResponsableEleveAdressePeer::DATABASE_NAME)->addTableBuilder(BaseResponsableEleveAdressePeer::TABLE_NAME, BaseResponsableEleveAdressePeer::getMapBuilder());
+BaseResponsableEleveAdressePeer::buildTableMap();
 

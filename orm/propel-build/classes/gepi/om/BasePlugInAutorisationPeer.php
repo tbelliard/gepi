@@ -5,7 +5,7 @@
  *
  * Liste des autorisations pour chaque statut
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BasePlugInAutorisationPeer {
 
@@ -15,9 +15,15 @@ abstract class BasePlugInAutorisationPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'plugins_autorisations';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'PlugInAutorisation';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.PlugInAutorisation';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'PlugInAutorisationTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 5;
 
@@ -47,11 +53,6 @@ abstract class BasePlugInAutorisationPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -63,6 +64,7 @@ abstract class BasePlugInAutorisationPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id', 'PluginId', 'Fichier', 'UserStatut', 'Auth', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'pluginId', 'fichier', 'userStatut', 'auth', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::PLUGIN_ID, self::FICHIER, self::USER_STATUT, self::AUTH, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'PLUGIN_ID', 'FICHIER', 'USER_STATUT', 'AUTH', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'plugin_id', 'fichier', 'user_statut', 'auth', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
 	);
@@ -77,21 +79,11 @@ abstract class BasePlugInAutorisationPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'PluginId' => 1, 'Fichier' => 2, 'UserStatut' => 3, 'Auth' => 4, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'pluginId' => 1, 'fichier' => 2, 'userStatut' => 3, 'auth' => 4, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::PLUGIN_ID => 1, self::FICHIER => 2, self::USER_STATUT => 3, self::AUTH => 4, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'PLUGIN_ID' => 1, 'FICHIER' => 2, 'USER_STATUT' => 3, 'AUTH' => 4, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'plugin_id' => 1, 'fichier' => 2, 'user_statut' => 3, 'auth' => 4, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new PlugInAutorisationMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -153,23 +145,26 @@ abstract class BasePlugInAutorisationPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(PlugInAutorisationPeer::ID);
-
-		$criteria->addSelectColumn(PlugInAutorisationPeer::PLUGIN_ID);
-
-		$criteria->addSelectColumn(PlugInAutorisationPeer::FICHIER);
-
-		$criteria->addSelectColumn(PlugInAutorisationPeer::USER_STATUT);
-
-		$criteria->addSelectColumn(PlugInAutorisationPeer::AUTH);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(PlugInAutorisationPeer::ID);
+			$criteria->addSelectColumn(PlugInAutorisationPeer::PLUGIN_ID);
+			$criteria->addSelectColumn(PlugInAutorisationPeer::FICHIER);
+			$criteria->addSelectColumn(PlugInAutorisationPeer::USER_STATUT);
+			$criteria->addSelectColumn(PlugInAutorisationPeer::AUTH);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.PLUGIN_ID');
+			$criteria->addSelectColumn($alias . '.FICHIER');
+			$criteria->addSelectColumn($alias . '.USER_STATUT');
+			$criteria->addSelectColumn($alias . '.AUTH');
+		}
 	}
 
 	/**
@@ -357,6 +352,14 @@ abstract class BasePlugInAutorisationPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to plugins_autorisations
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -369,12 +372,26 @@ abstract class BasePlugInAutorisationPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -387,8 +404,7 @@ abstract class BasePlugInAutorisationPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = PlugInAutorisationPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = PlugInAutorisationPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = PlugInAutorisationPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -398,7 +414,6 @@ abstract class BasePlugInAutorisationPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -408,11 +423,36 @@ abstract class BasePlugInAutorisationPeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (PlugInAutorisation object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = PlugInAutorisationPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = PlugInAutorisationPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + PlugInAutorisationPeer::NUM_COLUMNS;
+		} else {
+			$cls = PlugInAutorisationPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			PlugInAutorisationPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
+	}
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related PlugIn table
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -445,7 +485,8 @@ abstract class BasePlugInAutorisationPeer {
 			$con = Propel::getConnection(PlugInAutorisationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(PlugInAutorisationPeer::PLUGIN_ID,), array(PlugInPeer::ID,), $join_behavior);
+		$criteria->addJoin(PlugInAutorisationPeer::PLUGIN_ID, PlugInPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -460,28 +501,29 @@ abstract class BasePlugInAutorisationPeer {
 
 	/**
 	 * Selects a collection of PlugInAutorisation objects pre-filled with their PlugIn objects.
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of PlugInAutorisation objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinPlugIn(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinPlugIn(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		PlugInAutorisationPeer::addSelectColumns($c);
+		PlugInAutorisationPeer::addSelectColumns($criteria);
 		$startcol = (PlugInAutorisationPeer::NUM_COLUMNS - PlugInAutorisationPeer::NUM_LAZY_LOAD_COLUMNS);
-		PlugInPeer::addSelectColumns($c);
+		PlugInPeer::addSelectColumns($criteria);
 
-		$c->addJoin(array(PlugInAutorisationPeer::PLUGIN_ID,), array(PlugInPeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(PlugInAutorisationPeer::PLUGIN_ID, PlugInPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -492,9 +534,8 @@ abstract class BasePlugInAutorisationPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$omClass = PlugInAutorisationPeer::getOMClass();
+				$cls = PlugInAutorisationPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				PlugInAutorisationPeer::addInstanceToPool($obj1, $key1);
@@ -505,9 +546,8 @@ abstract class BasePlugInAutorisationPeer {
 				$obj2 = PlugInPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = PlugInPeer::getOMClass();
+					$cls = PlugInPeer::getOMClass(false);
 
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
 					PlugInPeer::addInstanceToPool($obj2, $key2);
@@ -528,7 +568,7 @@ abstract class BasePlugInAutorisationPeer {
 	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
-	 * @param      Criteria $c
+	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -561,7 +601,8 @@ abstract class BasePlugInAutorisationPeer {
 			$con = Propel::getConnection(PlugInAutorisationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(array(PlugInAutorisationPeer::PLUGIN_ID,), array(PlugInPeer::ID,), $join_behavior);
+		$criteria->addJoin(PlugInAutorisationPeer::PLUGIN_ID, PlugInPeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -576,30 +617,31 @@ abstract class BasePlugInAutorisationPeer {
 	/**
 	 * Selects a collection of PlugInAutorisation objects pre-filled with all related objects.
 	 *
-	 * @param      Criteria  $c
+	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     array Array of PlugInAutorisation objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAll(Criteria $c, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$c = clone $c;
+		$criteria = clone $criteria;
 
 		// Set the correct dbName if it has not been overridden
-		if ($c->getDbName() == Propel::getDefaultDB()) {
-			$c->setDbName(self::DATABASE_NAME);
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		PlugInAutorisationPeer::addSelectColumns($c);
+		PlugInAutorisationPeer::addSelectColumns($criteria);
 		$startcol2 = (PlugInAutorisationPeer::NUM_COLUMNS - PlugInAutorisationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		PlugInPeer::addSelectColumns($c);
+		PlugInPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (PlugInPeer::NUM_COLUMNS - PlugInPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$c->addJoin(array(PlugInAutorisationPeer::PLUGIN_ID,), array(PlugInPeer::ID,), $join_behavior);
-		$stmt = BasePeer::doSelect($c, $con);
+		$criteria->addJoin(PlugInAutorisationPeer::PLUGIN_ID, PlugInPeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -609,9 +651,8 @@ abstract class BasePlugInAutorisationPeer {
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$omClass = PlugInAutorisationPeer::getOMClass();
+				$cls = PlugInAutorisationPeer::getOMClass(false);
 
-				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
 				PlugInAutorisationPeer::addInstanceToPool($obj1, $key1);
@@ -624,10 +665,8 @@ abstract class BasePlugInAutorisationPeer {
 				$obj2 = PlugInPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$omClass = PlugInPeer::getOMClass();
+					$cls = PlugInPeer::getOMClass(false);
 
-
-					$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
 					PlugInPeer::addInstanceToPool($obj2, $key2);
@@ -656,17 +695,31 @@ abstract class BasePlugInAutorisationPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BasePlugInAutorisationPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BasePlugInAutorisationPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new PlugInAutorisationTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return PlugInAutorisationPeer::CLASS_DEFAULT;
+		return $withPrefix ? PlugInAutorisationPeer::CLASS_DEFAULT : PlugInAutorisationPeer::OM_CLASS;
 	}
 
 	/**
@@ -733,7 +786,12 @@ abstract class BasePlugInAutorisationPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(PlugInAutorisationPeer::ID);
-			$selectCriteria->add(PlugInAutorisationPeer::ID, $criteria->remove(PlugInAutorisationPeer::ID), $comparison);
+			$value = $criteria->remove(PlugInAutorisationPeer::ID);
+			if ($value) {
+				$selectCriteria->add(PlugInAutorisationPeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(PlugInAutorisationPeer::TABLE_NAME);
+			}
 
 		} else { // $values is PlugInAutorisation object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -762,6 +820,11 @@ abstract class BasePlugInAutorisationPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += BasePeer::doDeleteAll(PlugInAutorisationPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			PlugInAutorisationPeer::clearInstancePool();
+			PlugInAutorisationPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -792,24 +855,18 @@ abstract class BasePlugInAutorisationPeer {
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
 			PlugInAutorisationPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof PlugInAutorisation) {
+		} elseif ($values instanceof PlugInAutorisation) { // it's a model object
 			// invalidate the cache for this single object
 			PlugInAutorisationPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(PlugInAutorisationPeer::ID, (array) $values, Criteria::IN);
-
+			// invalidate the cache for this object(s)
 			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
 				PlugInAutorisationPeer::removeInstanceFromPool($singleval);
 			}
 		}
@@ -825,7 +882,7 @@ abstract class BasePlugInAutorisationPeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
+			PlugInAutorisationPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -924,14 +981,7 @@ abstract class BasePlugInAutorisationPeer {
 
 } // BasePlugInAutorisationPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the PlugInAutorisationPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the PlugInAutorisationPeer class:
-//
-// Propel::getDatabaseMap(PlugInAutorisationPeer::DATABASE_NAME)->addTableBuilder(PlugInAutorisationPeer::TABLE_NAME, PlugInAutorisationPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BasePlugInAutorisationPeer::DATABASE_NAME)->addTableBuilder(BasePlugInAutorisationPeer::TABLE_NAME, BasePlugInAutorisationPeer::getMapBuilder());
+BasePlugInAutorisationPeer::buildTableMap();
 

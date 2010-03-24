@@ -5,10 +5,15 @@
  *
  * Chaque saisie d'absence doit faire l'objet d'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisé dans debut_abs. Un cours de l'emploi du temps, le jours du cours etant precisé dans debut_abs.
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent {
+abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'AbsenceEleveSaisiePeer';
 
 	/**
 	 * The Peer class.
@@ -69,6 +74,18 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	protected $id_edt_emplacement_cours;
 
 	/**
+	 * The value for the created_at field.
+	 * @var        string
+	 */
+	protected $created_at;
+
+	/**
+	 * The value for the updated_at field.
+	 * @var        string
+	 */
+	protected $updated_at;
+
+	/**
 	 * @var        UtilisateurProfessionnel
 	 */
 	protected $aUtilisateurProfessionnel;
@@ -94,9 +111,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	protected $collJTraitementSaisieEleves;
 
 	/**
-	 * @var        Criteria The criteria used to select the current contents of collJTraitementSaisieEleves.
+	 * @var        array AbsenceEleveTraitement[] Collection to store aggregation of AbsenceEleveTraitement objects.
 	 */
-	private $lastJTraitementSaisieEleveCriteria = null;
+	protected $collAbsenceEleveTraitements;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -113,16 +130,6 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Initializes internal state of BaseAbsenceEleveSaisie object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
 	 * Applies default values to this object.
 	 * This method should be called from the object's constructor (or
 	 * equivalent initialization method).
@@ -132,6 +139,16 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	{
 		$this->id_edt_creneau = 0;
 		$this->id_edt_emplacement_cours = 0;
+	}
+
+	/**
+	 * Initializes internal state of BaseAbsenceEleveSaisie object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
 	}
 
 	/**
@@ -258,6 +275,82 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	public function getIdEdtEmplacementCours()
 	{
 		return $this->id_edt_emplacement_cours;
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [created_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getCreatedAt($format = 'Y-m-d H:i:s')
+	{
+		if ($this->created_at === null) {
+			return null;
+		}
+
+
+		if ($this->created_at === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->created_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [updated_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getUpdatedAt($format = 'Y-m-d H:i:s')
+	{
+		if ($this->updated_at === null) {
+			return null;
+		}
+
+
+		if ($this->updated_at === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->updated_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
 	}
 
 	/**
@@ -458,7 +551,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 			$v = (int) $v;
 		}
 
-		if ($this->id_edt_creneau !== $v || $v === 0) {
+		if ($this->id_edt_creneau !== $v || $this->isNew()) {
 			$this->id_edt_creneau = $v;
 			$this->modifiedColumns[] = AbsenceEleveSaisiePeer::ID_EDT_CRENEAU;
 		}
@@ -482,7 +575,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 			$v = (int) $v;
 		}
 
-		if ($this->id_edt_emplacement_cours !== $v || $v === 0) {
+		if ($this->id_edt_emplacement_cours !== $v || $this->isNew()) {
 			$this->id_edt_emplacement_cours = $v;
 			$this->modifiedColumns[] = AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS;
 		}
@@ -495,6 +588,104 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	} // setIdEdtEmplacementCours()
 
 	/**
+	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function setCreatedAt($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->created_at !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->created_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::CREATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setCreatedAt()
+
+	/**
+	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function setUpdatedAt($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->updated_at !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->updated_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::UPDATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setUpdatedAt()
+
+	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -504,11 +695,6 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU,AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS))) {
-				return false;
-			}
-
 			if ($this->id_edt_creneau !== 0) {
 				return false;
 			}
@@ -547,6 +733,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 			$this->fin_abs = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
 			$this->id_edt_creneau = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
 			$this->id_edt_emplacement_cours = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+			$this->created_at = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
+			$this->updated_at = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -555,8 +743,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 8; // 8 = AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 10; // 10 = AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveSaisie object", $e);
@@ -635,7 +822,6 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 			$this->aEdtCreneau = null;
 			$this->aEdtEmplacementCours = null;
 			$this->collJTraitementSaisieEleves = null;
-			$this->lastJTraitementSaisieEleveCriteria = null;
 
 		} // if (deep)
 	}
@@ -661,9 +847,17 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 		
 		$con->beginTransaction();
 		try {
-			AbsenceEleveSaisiePeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				AbsenceEleveSaisieQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -694,10 +888,35 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			// timestampable behavior
+			if (!$this->isColumnModified(AbsenceEleveSaisiePeer::UPDATED_AT)) {
+				$this->setUpdatedAt(time());
+			}
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+				// timestampable behavior
+				if (!$this->isColumnModified(AbsenceEleveSaisiePeer::CREATED_AT)) {
+					$this->setCreatedAt(time());
+				}
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				AbsenceEleveSaisiePeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			AbsenceEleveSaisiePeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -762,13 +981,14 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = AbsenceEleveSaisiePeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(AbsenceEleveSaisiePeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.AbsenceEleveSaisiePeer::ID.')');
+					}
 
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
 					$this->setId($pk);  //[IMV] update autoincrement primary key
-
 					$this->setNew(false);
 				} else {
 					$affectedRows += AbsenceEleveSaisiePeer::doUpdate($this, $con);
@@ -951,6 +1171,12 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 			case 7:
 				return $this->getIdEdtEmplacementCours();
 				break;
+			case 8:
+				return $this->getCreatedAt();
+				break;
+			case 9:
+				return $this->getUpdatedAt();
+				break;
 			default:
 				return null;
 				break;
@@ -963,12 +1189,15 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
 		$keys = AbsenceEleveSaisiePeer::getFieldNames($keyType);
 		$result = array(
@@ -980,7 +1209,23 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 			$keys[5] => $this->getFinAbs(),
 			$keys[6] => $this->getIdEdtCreneau(),
 			$keys[7] => $this->getIdEdtEmplacementCours(),
+			$keys[8] => $this->getCreatedAt(),
+			$keys[9] => $this->getUpdatedAt(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aUtilisateurProfessionnel) {
+				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aEleve) {
+				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aEdtCreneau) {
+				$result['EdtCreneau'] = $this->aEdtCreneau->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aEdtEmplacementCours) {
+				$result['EdtEmplacementCours'] = $this->aEdtEmplacementCours->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -1035,6 +1280,12 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 			case 7:
 				$this->setIdEdtEmplacementCours($value);
 				break;
+			case 8:
+				$this->setCreatedAt($value);
+				break;
+			case 9:
+				$this->setUpdatedAt($value);
+				break;
 		} // switch()
 	}
 
@@ -1067,6 +1318,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 		if (array_key_exists($keys[5], $arr)) $this->setFinAbs($arr[$keys[5]]);
 		if (array_key_exists($keys[6], $arr)) $this->setIdEdtCreneau($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setIdEdtEmplacementCours($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setCreatedAt($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setUpdatedAt($arr[$keys[9]]);
 	}
 
 	/**
@@ -1086,6 +1339,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::FIN_ABS)) $criteria->add(AbsenceEleveSaisiePeer::FIN_ABS, $this->fin_abs);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU)) $criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_edt_creneau);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS)) $criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_edt_emplacement_cours);
+		if ($this->isColumnModified(AbsenceEleveSaisiePeer::CREATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::CREATED_AT, $this->created_at);
+		if ($this->isColumnModified(AbsenceEleveSaisiePeer::UPDATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::UPDATED_AT, $this->updated_at);
 
 		return $criteria;
 	}
@@ -1101,7 +1356,6 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME);
-
 		$criteria->add(AbsenceEleveSaisiePeer::ID, $this->id);
 
 		return $criteria;
@@ -1128,6 +1382,15 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getId();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -1139,21 +1402,15 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setUtilisateurId($this->utilisateur_id);
-
 		$copyObj->setEleveId($this->eleve_id);
-
 		$copyObj->setCommentaire($this->commentaire);
-
 		$copyObj->setDebutAbs($this->debut_abs);
-
 		$copyObj->setFinAbs($this->fin_abs);
-
 		$copyObj->setIdEdtCreneau($this->id_edt_creneau);
-
 		$copyObj->setIdEdtEmplacementCours($this->id_edt_emplacement_cours);
-
+		$copyObj->setCreatedAt($this->created_at);
+		$copyObj->setUpdatedAt($this->updated_at);
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1170,9 +1427,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 
 
 		$copyObj->setNew(true);
-
 		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
-
 	}
 
 	/**
@@ -1250,7 +1505,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	public function getUtilisateurProfessionnel(PropelPDO $con = null)
 	{
 		if ($this->aUtilisateurProfessionnel === null && (($this->utilisateur_id !== "" && $this->utilisateur_id !== null))) {
-			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelPeer::retrieveByPK($this->utilisateur_id, $con);
+			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->utilisateur_id);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1299,7 +1554,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	public function getEleve(PropelPDO $con = null)
 	{
 		if ($this->aEleve === null && ($this->eleve_id !== null)) {
-			$this->aEleve = ElevePeer::retrieveByPK($this->eleve_id, $con);
+			$this->aEleve = EleveQuery::create()->findPk($this->eleve_id);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1348,7 +1603,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	public function getEdtCreneau(PropelPDO $con = null)
 	{
 		if ($this->aEdtCreneau === null && ($this->id_edt_creneau !== null)) {
-			$this->aEdtCreneau = EdtCreneauPeer::retrieveByPK($this->id_edt_creneau, $con);
+			$this->aEdtCreneau = EdtCreneauQuery::create()->findPk($this->id_edt_creneau);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1397,7 +1652,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	public function getEdtEmplacementCours(PropelPDO $con = null)
 	{
 		if ($this->aEdtEmplacementCours === null && ($this->id_edt_emplacement_cours !== null)) {
-			$this->aEdtEmplacementCours = EdtEmplacementCoursPeer::retrieveByPK($this->id_edt_emplacement_cours, $con);
+			$this->aEdtEmplacementCours = EdtEmplacementCoursQuery::create()->findPk($this->id_edt_emplacement_cours);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1410,7 +1665,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	}
 
 	/**
-	 * Clears out the collJTraitementSaisieEleves collection (array).
+	 * Clears out the collJTraitementSaisieEleves collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
@@ -1424,7 +1679,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	}
 
 	/**
-	 * Initializes the collJTraitementSaisieEleves collection (array).
+	 * Initializes the collJTraitementSaisieEleves collection.
 	 *
 	 * By default this just sets the collJTraitementSaisieEleves collection to an empty array (like clearcollJTraitementSaisieEleves());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
@@ -1434,59 +1689,40 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	 */
 	public function initJTraitementSaisieEleves()
 	{
-		$this->collJTraitementSaisieEleves = array();
+		$this->collJTraitementSaisieEleves = new PropelObjectCollection();
+		$this->collJTraitementSaisieEleves->setModel('JTraitementSaisieEleve');
 	}
 
 	/**
 	 * Gets an array of JTraitementSaisieEleve objects which contain a foreign key that references this object.
 	 *
-	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
-	 * Otherwise if this AbsenceEleveSaisie has previously been saved, it will retrieve
-	 * related JTraitementSaisieEleves from storage. If this AbsenceEleveSaisie is new, it will return
-	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this AbsenceEleveSaisie is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      PropelPDO $con
 	 * @param      Criteria $criteria
-	 * @return     array JTraitementSaisieEleve[]
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array JTraitementSaisieEleve[] List of JTraitementSaisieEleve objects
 	 * @throws     PropelException
 	 */
 	public function getJTraitementSaisieEleves($criteria = null, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
-
-		if ($this->collJTraitementSaisieEleves === null) {
-			if ($this->isNew()) {
-			   $this->collJTraitementSaisieEleves = array();
+		if(null === $this->collJTraitementSaisieEleves || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJTraitementSaisieEleves) {
+				// return empty collection
+				$this->initJTraitementSaisieEleves();
 			} else {
-
-				$criteria->add(JTraitementSaisieElevePeer::A_SAISIE_ID, $this->id);
-
-				JTraitementSaisieElevePeer::addSelectColumns($criteria);
-				$this->collJTraitementSaisieEleves = JTraitementSaisieElevePeer::doSelect($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return the collection.
-
-
-				$criteria->add(JTraitementSaisieElevePeer::A_SAISIE_ID, $this->id);
-
-				JTraitementSaisieElevePeer::addSelectColumns($criteria);
-				if (!isset($this->lastJTraitementSaisieEleveCriteria) || !$this->lastJTraitementSaisieEleveCriteria->equals($criteria)) {
-					$this->collJTraitementSaisieEleves = JTraitementSaisieElevePeer::doSelect($criteria, $con);
+				$collJTraitementSaisieEleves = JTraitementSaisieEleveQuery::create(null, $criteria)
+					->filterByAbsenceEleveSaisie($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJTraitementSaisieEleves;
 				}
+				$this->collJTraitementSaisieEleves = $collJTraitementSaisieEleves;
 			}
 		}
-		$this->lastJTraitementSaisieEleveCriteria = $criteria;
 		return $this->collJTraitementSaisieEleves;
 	}
 
@@ -1501,48 +1737,21 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	 */
 	public function countJTraitementSaisieEleves(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME);
-		} else {
-			$criteria = clone $criteria;
-		}
-
-		if ($distinct) {
-			$criteria->setDistinct();
-		}
-
-		$count = null;
-
-		if ($this->collJTraitementSaisieEleves === null) {
-			if ($this->isNew()) {
-				$count = 0;
+		if(null === $this->collJTraitementSaisieEleves || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJTraitementSaisieEleves) {
+				return 0;
 			} else {
-
-				$criteria->add(JTraitementSaisieElevePeer::A_SAISIE_ID, $this->id);
-
-				$count = JTraitementSaisieElevePeer::doCount($criteria, $con);
-			}
-		} else {
-			// criteria has no effect for a new object
-			if (!$this->isNew()) {
-				// the following code is to determine if a new query is
-				// called for.  If the criteria is the same as the last
-				// one, just return count of the collection.
-
-
-				$criteria->add(JTraitementSaisieElevePeer::A_SAISIE_ID, $this->id);
-
-				if (!isset($this->lastJTraitementSaisieEleveCriteria) || !$this->lastJTraitementSaisieEleveCriteria->equals($criteria)) {
-					$count = JTraitementSaisieElevePeer::doCount($criteria, $con);
-				} else {
-					$count = count($this->collJTraitementSaisieEleves);
+				$query = JTraitementSaisieEleveQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
 				}
-			} else {
-				$count = count($this->collJTraitementSaisieEleves);
+				return $query
+					->filterByAbsenceEleveSaisie($this)
+					->count($con);
 			}
+		} else {
+			return count($this->collJTraitementSaisieEleves);
 		}
-		$this->lastJTraitementSaisieEleveCriteria = $criteria;
-		return $count;
 	}
 
 	/**
@@ -1558,8 +1767,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 		if ($this->collJTraitementSaisieEleves === null) {
 			$this->initJTraitementSaisieEleves();
 		}
-		if (!in_array($l, $this->collJTraitementSaisieEleves, true)) { // only add it if the **same** object is not already associated
-			array_push($this->collJTraitementSaisieEleves, $l);
+		if (!$this->collJTraitementSaisieEleves->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJTraitementSaisieEleves[]= $l;
 			$l->setAbsenceEleveSaisie($this);
 		}
 	}
@@ -1578,37 +1787,143 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 	 */
 	public function getJTraitementSaisieElevesJoinAbsenceEleveTraitement($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		if ($criteria === null) {
-			$criteria = new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME);
-		}
-		elseif ($criteria instanceof Criteria)
-		{
-			$criteria = clone $criteria;
-		}
+		$query = JTraitementSaisieEleveQuery::create(null, $criteria);
+		$query->joinWith('JTraitementSaisieEleve.AbsenceEleveTraitement', $join_behavior);
 
-		if ($this->collJTraitementSaisieEleves === null) {
-			if ($this->isNew()) {
-				$this->collJTraitementSaisieEleves = array();
+		return $this->getJTraitementSaisieEleves($query, $con);
+	}
+
+	/**
+	 * Clears out the collAbsenceEleveTraitements collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addAbsenceEleveTraitements()
+	 */
+	public function clearAbsenceEleveTraitements()
+	{
+		$this->collAbsenceEleveTraitements = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collAbsenceEleveTraitements collection.
+	 *
+	 * By default this just sets the collAbsenceEleveTraitements collection to an empty collection (like clearAbsenceEleveTraitements());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initAbsenceEleveTraitements()
+	{
+		$this->collAbsenceEleveTraitements = new PropelObjectCollection();
+		$this->collAbsenceEleveTraitements->setModel('AbsenceEleveTraitement');
+	}
+
+	/**
+	 * Gets a collection of AbsenceEleveTraitement objects related by a many-to-many relationship
+	 * to the current object by way of the j_traitements_saisies cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this AbsenceEleveSaisie is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
+	 */
+	public function getAbsenceEleveTraitements($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceEleveTraitements || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveTraitements) {
+				// return empty collection
+				$this->initAbsenceEleveTraitements();
 			} else {
+				$collAbsenceEleveTraitements = AbsenceEleveTraitementQuery::create(null, $criteria)
+					->filterByAbsenceEleveSaisie($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collAbsenceEleveTraitements;
+				}
+				$this->collAbsenceEleveTraitements = $collAbsenceEleveTraitements;
+			}
+		}
+		return $this->collAbsenceEleveTraitements;
+	}
 
-				$criteria->add(JTraitementSaisieElevePeer::A_SAISIE_ID, $this->id);
-
-				$this->collJTraitementSaisieEleves = JTraitementSaisieElevePeer::doSelectJoinAbsenceEleveTraitement($criteria, $con, $join_behavior);
+	/**
+	 * Gets the number of AbsenceEleveTraitement objects related by a many-to-many relationship
+	 * to the current object by way of the j_traitements_saisies cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related AbsenceEleveTraitement objects
+	 */
+	public function countAbsenceEleveTraitements($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceEleveTraitements || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveTraitements) {
+				return 0;
+			} else {
+				$query = AbsenceEleveTraitementQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByAbsenceEleveSaisie($this)
+					->count($con);
 			}
 		} else {
-			// the following code is to determine if a new query is
-			// called for.  If the criteria is the same as the last
-			// one, just return the collection.
-
-			$criteria->add(JTraitementSaisieElevePeer::A_SAISIE_ID, $this->id);
-
-			if (!isset($this->lastJTraitementSaisieEleveCriteria) || !$this->lastJTraitementSaisieEleveCriteria->equals($criteria)) {
-				$this->collJTraitementSaisieEleves = JTraitementSaisieElevePeer::doSelectJoinAbsenceEleveTraitement($criteria, $con, $join_behavior);
-			}
+			return count($this->collAbsenceEleveTraitements);
 		}
-		$this->lastJTraitementSaisieEleveCriteria = $criteria;
+	}
 
-		return $this->collJTraitementSaisieEleves;
+	/**
+	 * Associate a AbsenceEleveTraitement object to this object
+	 * through the j_traitements_saisies cross reference table.
+	 *
+	 * @param      AbsenceEleveTraitement $absenceEleveTraitement The JTraitementSaisieEleve object to relate
+	 * @return     void
+	 */
+	public function addAbsenceEleveTraitement($absenceEleveTraitement)
+	{
+		if ($this->collAbsenceEleveTraitements === null) {
+			$this->initAbsenceEleveTraitements();
+		}
+		if (!$this->collAbsenceEleveTraitements->contains($absenceEleveTraitement)) { // only add it if the **same** object is not already associated
+			$jTraitementSaisieEleve = new JTraitementSaisieEleve();
+			$jTraitementSaisieEleve->setAbsenceEleveTraitement($absenceEleveTraitement);
+			$this->addJTraitementSaisieEleve($jTraitementSaisieEleve);
+			
+			$this->collAbsenceEleveTraitements[]= $absenceEleveTraitement;
+		}
+	}
+
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id = null;
+		$this->utilisateur_id = null;
+		$this->eleve_id = null;
+		$this->commentaire = null;
+		$this->debut_abs = null;
+		$this->fin_abs = null;
+		$this->id_edt_creneau = null;
+		$this->id_edt_emplacement_cours = null;
+		$this->created_at = null;
+		$this->updated_at = null;
+		$this->clearAllReferences();
+		$this->applyDefaultValues();
+		$this->setNew(true);
 	}
 
 	/**
@@ -1631,10 +1946,34 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent 
 		} // if ($deep)
 
 		$this->collJTraitementSaisieEleves = null;
-			$this->aUtilisateurProfessionnel = null;
-			$this->aEleve = null;
-			$this->aEdtCreneau = null;
-			$this->aEdtEmplacementCours = null;
+		$this->aUtilisateurProfessionnel = null;
+		$this->aEleve = null;
+		$this->aEdtCreneau = null;
+		$this->aEdtEmplacementCours = null;
+	}
+
+	// timestampable behavior
+	
+	/**
+	 * Mark the current object so that the update date doesn't get updated during next save
+	 *
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function keepUpdateDateUnchanged()
+	{
+		$this->modifiedColumns[] = AbsenceEleveSaisiePeer::UPDATED_AT;
+		return $this;
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseAbsenceEleveSaisie

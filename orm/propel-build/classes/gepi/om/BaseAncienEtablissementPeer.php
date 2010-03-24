@@ -5,7 +5,7 @@
  *
  * Liste des etablissements precedents des eleves
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseAncienEtablissementPeer {
 
@@ -15,9 +15,15 @@ abstract class BaseAncienEtablissementPeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'etablissements';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'AncienEtablissement';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.AncienEtablissement';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'AncienEtablissementTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 6;
 
@@ -50,11 +56,6 @@ abstract class BaseAncienEtablissementPeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -66,6 +67,7 @@ abstract class BaseAncienEtablissementPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'Niveau', 'Type', 'Cp', 'Ville', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'niveau', 'type', 'cp', 'ville', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::NIVEAU, self::TYPE, self::CP, self::VILLE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'NIVEAU', 'TYPE', 'CP', 'VILLE', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'niveau', 'type', 'cp', 'ville', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
@@ -80,21 +82,11 @@ abstract class BaseAncienEtablissementPeer {
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'Niveau' => 2, 'Type' => 3, 'Cp' => 4, 'Ville' => 5, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'niveau' => 2, 'type' => 3, 'cp' => 4, 'ville' => 5, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::NIVEAU => 2, self::TYPE => 3, self::CP => 4, self::VILLE => 5, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'NIVEAU' => 2, 'TYPE' => 3, 'CP' => 4, 'VILLE' => 5, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'niveau' => 2, 'type' => 3, 'cp' => 4, 'ville' => 5, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new AncienEtablissementMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -156,25 +148,28 @@ abstract class BaseAncienEtablissementPeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(AncienEtablissementPeer::ID);
-
-		$criteria->addSelectColumn(AncienEtablissementPeer::NOM);
-
-		$criteria->addSelectColumn(AncienEtablissementPeer::NIVEAU);
-
-		$criteria->addSelectColumn(AncienEtablissementPeer::TYPE);
-
-		$criteria->addSelectColumn(AncienEtablissementPeer::CP);
-
-		$criteria->addSelectColumn(AncienEtablissementPeer::VILLE);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(AncienEtablissementPeer::ID);
+			$criteria->addSelectColumn(AncienEtablissementPeer::NOM);
+			$criteria->addSelectColumn(AncienEtablissementPeer::NIVEAU);
+			$criteria->addSelectColumn(AncienEtablissementPeer::TYPE);
+			$criteria->addSelectColumn(AncienEtablissementPeer::CP);
+			$criteria->addSelectColumn(AncienEtablissementPeer::VILLE);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.NOM');
+			$criteria->addSelectColumn($alias . '.NIVEAU');
+			$criteria->addSelectColumn($alias . '.TYPE');
+			$criteria->addSelectColumn($alias . '.CP');
+			$criteria->addSelectColumn($alias . '.VILLE');
+		}
 	}
 
 	/**
@@ -362,6 +357,17 @@ abstract class BaseAncienEtablissementPeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to etablissements
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in JEleveAncienEtablissementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JEleveAncienEtablissementPeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -374,12 +380,26 @@ abstract class BaseAncienEtablissementPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -392,8 +412,7 @@ abstract class BaseAncienEtablissementPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = AncienEtablissementPeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = AncienEtablissementPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = AncienEtablissementPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -403,7 +422,6 @@ abstract class BaseAncienEtablissementPeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -412,6 +430,31 @@ abstract class BaseAncienEtablissementPeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (AncienEtablissement object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = AncienEtablissementPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = AncienEtablissementPeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + AncienEtablissementPeer::NUM_COLUMNS;
+		} else {
+			$cls = AncienEtablissementPeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			AncienEtablissementPeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -426,17 +469,31 @@ abstract class BaseAncienEtablissementPeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseAncienEtablissementPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseAncienEtablissementPeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new AncienEtablissementTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return AncienEtablissementPeer::CLASS_DEFAULT;
+		return $withPrefix ? AncienEtablissementPeer::CLASS_DEFAULT : AncienEtablissementPeer::OM_CLASS;
 	}
 
 	/**
@@ -503,7 +560,12 @@ abstract class BaseAncienEtablissementPeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(AncienEtablissementPeer::ID);
-			$selectCriteria->add(AncienEtablissementPeer::ID, $criteria->remove(AncienEtablissementPeer::ID), $comparison);
+			$value = $criteria->remove(AncienEtablissementPeer::ID);
+			if ($value) {
+				$selectCriteria->add(AncienEtablissementPeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(AncienEtablissementPeer::TABLE_NAME);
+			}
 
 		} else { // $values is AncienEtablissement object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -533,6 +595,11 @@ abstract class BaseAncienEtablissementPeer {
 			$con->beginTransaction();
 			$affectedRows += AncienEtablissementPeer::doOnDeleteCascade(new Criteria(AncienEtablissementPeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(AncienEtablissementPeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			AncienEtablissementPeer::clearInstancePool();
+			AncienEtablissementPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -559,30 +626,14 @@ abstract class BaseAncienEtablissementPeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			AncienEtablissementPeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof AncienEtablissement) {
-			// invalidate the cache for this single object
-			AncienEtablissementPeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof AncienEtablissement) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(AncienEtablissementPeer::ID, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				AncienEtablissementPeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -596,20 +647,21 @@ abstract class BaseAncienEtablissementPeer {
 			$con->beginTransaction();
 			$affectedRows += AncienEtablissementPeer::doOnDeleteCascade($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					AncienEtablissementPeer::clearInstancePool();
-				} else { // it's a PK or object
-					AncienEtablissementPeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				AncienEtablissementPeer::clearInstancePool();
+			} elseif ($values instanceof AncienEtablissement) { // it's a model object
+				AncienEtablissementPeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					AncienEtablissementPeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in JEleveAncienEtablissementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JEleveAncienEtablissementPeer::clearInstancePool();
-
+			AncienEtablissementPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -642,10 +694,10 @@ abstract class BaseAncienEtablissementPeer {
 
 
 			// delete related JEleveAncienEtablissement objects
-			$c = new Criteria(JEleveAncienEtablissementPeer::DATABASE_NAME);
+			$criteria = new Criteria(JEleveAncienEtablissementPeer::DATABASE_NAME);
 			
-			$c->add(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $obj->getId());
-			$affectedRows += JEleveAncienEtablissementPeer::doDelete($c, $con);
+			$criteria->add(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $obj->getId());
+			$affectedRows += JEleveAncienEtablissementPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
@@ -740,14 +792,7 @@ abstract class BaseAncienEtablissementPeer {
 
 } // BaseAncienEtablissementPeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the AncienEtablissementPeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the AncienEtablissementPeer class:
-//
-// Propel::getDatabaseMap(AncienEtablissementPeer::DATABASE_NAME)->addTableBuilder(AncienEtablissementPeer::TABLE_NAME, AncienEtablissementPeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseAncienEtablissementPeer::DATABASE_NAME)->addTableBuilder(BaseAncienEtablissementPeer::TABLE_NAME, BaseAncienEtablissementPeer::getMapBuilder());
+BaseAncienEtablissementPeer::buildTableMap();
 

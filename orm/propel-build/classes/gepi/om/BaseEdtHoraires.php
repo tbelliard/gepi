@@ -5,10 +5,15 @@
  *
  * Table contenant les heures d'ouverture et de fermeture de l'etablissement par journee
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
-abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
+abstract class BaseEdtHoraires extends BaseObject  implements Persistent
+{
 
+	/**
+	 * Peer class name
+	 */
+  const PEER = 'EdtHorairesPeer';
 
 	/**
 	 * The Peer class.
@@ -44,7 +49,6 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 
 	/**
 	 * The value for the fermeture_horaire_etablissement field.
-	 * Note: this column has a database default value of: '-99999:-99999:-99999'
 	 * @var        string
 	 */
 	protected $fermeture_horaire_etablissement;
@@ -74,27 +78,6 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Initializes internal state of BaseEdtHoraires object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
-
-	/**
-	 * Applies default values to this object.
-	 * This method should be called from the object's constructor (or
-	 * equivalent initialization method).
-	 * @see        __construct()
-	 */
-	public function applyDefaultValues()
-	{
-		$this->fermeture_horaire_etablissement = '-99999:-99999:-99999';
-	}
 
 	/**
 	 * Get the [id_horaire_etablissement] column value.
@@ -440,7 +423,6 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
 
 			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					|| ($dt->format('H:i:s') === '-99999:-99999:-99999') // or the entered value matches the default
 					)
 			{
 				$this->fermeture_horaire_etablissement = ($dt ? $dt->format('H:i:s') : null);
@@ -530,15 +512,6 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			// First, ensure that we don't have any columns that have been modified which aren't default columns.
-			if (array_diff($this->modifiedColumns, array(EdtHorairesPeer::FERMETURE_HORAIRE_ETABLISSEMENT))) {
-				return false;
-			}
-
-			if ($this->fermeture_horaire_etablissement !== '-99999:-99999:-99999') {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -576,7 +549,6 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 				$this->ensureConsistency();
 			}
 
-			// FIXME - using NUM_COLUMNS may be clearer.
 			return $startcol + 7; // 7 = EdtHorairesPeer::NUM_COLUMNS - EdtHorairesPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
@@ -663,9 +635,17 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 		
 		$con->beginTransaction();
 		try {
-			EdtHorairesPeer::doDelete($this, $con);
-			$this->setDeleted(true);
-			$con->commit();
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				EdtHorairesQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
@@ -696,10 +676,27 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 		}
 		
 		$con->beginTransaction();
+		$isInsert = $this->isNew();
 		try {
-			$affectedRows = $this->doSave($con);
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				EdtHorairesPeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
 			$con->commit();
-			EdtHorairesPeer::addInstanceToPool($this);
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
@@ -731,16 +728,17 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$pk = EdtHorairesPeer::doInsert($this, $con);
-					$affectedRows += 1; // we are assuming that there is only 1 row per doInsert() which
-										 // should always be true here (even though technically
-										 // BasePeer::doInsert() can insert multiple rows).
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(EdtHorairesPeer::ID_HORAIRE_ETABLISSEMENT) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.EdtHorairesPeer::ID_HORAIRE_ETABLISSEMENT.')');
+					}
 
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
 					$this->setIdHoraireEtablissement($pk);  //[IMV] update autoincrement primary key
-
 					$this->setNew(false);
 				} else {
-					$affectedRows += EdtHorairesPeer::doUpdate($this, $con);
+					$affectedRows = EdtHorairesPeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -883,10 +881,12 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 	 * You can specify the key type of the array by passing one of the class
 	 * type constants.
 	 *
-	 * @param      string $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-	 *                        BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
-	 * @param      boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.  Defaults to TRUE.
-	 * @return     an associative array containing the field names (as keys) and field values
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
@@ -1015,7 +1015,6 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(EdtHorairesPeer::DATABASE_NAME);
-
 		$criteria->add(EdtHorairesPeer::ID_HORAIRE_ETABLISSEMENT, $this->id_horaire_etablissement);
 
 		return $criteria;
@@ -1042,6 +1041,15 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getIdHoraireEtablissement();
+	}
+
+	/**
 	 * Sets contents of passed object to values from current object.
 	 *
 	 * If desired, this method can also make copies of all associated (fkey referrers)
@@ -1053,24 +1061,15 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-
 		$copyObj->setDateHoraireEtablissement($this->date_horaire_etablissement);
-
 		$copyObj->setJourHoraireEtablissement($this->jour_horaire_etablissement);
-
 		$copyObj->setOuvertureHoraireEtablissement($this->ouverture_horaire_etablissement);
-
 		$copyObj->setFermetureHoraireEtablissement($this->fermeture_horaire_etablissement);
-
 		$copyObj->setPauseHoraireEtablissement($this->pause_horaire_etablissement);
-
 		$copyObj->setOuvertHoraireEtablissement($this->ouvert_horaire_etablissement);
 
-
 		$copyObj->setNew(true);
-
 		$copyObj->setIdHoraireEtablissement(NULL); // this is a auto-increment column, so set to default value
-
 	}
 
 	/**
@@ -1112,6 +1111,22 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 	}
 
 	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id_horaire_etablissement = null;
+		$this->date_horaire_etablissement = null;
+		$this->jour_horaire_etablissement = null;
+		$this->ouverture_horaire_etablissement = null;
+		$this->fermeture_horaire_etablissement = null;
+		$this->pause_horaire_etablissement = null;
+		$this->ouvert_horaire_etablissement = null;
+		$this->clearAllReferences();
+		$this->setNew(true);
+	}
+
+	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -1125,6 +1140,17 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent {
 		if ($deep) {
 		} // if ($deep)
 
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
+			return $this->getVirtualColumn($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
 } // BaseEdtHoraires

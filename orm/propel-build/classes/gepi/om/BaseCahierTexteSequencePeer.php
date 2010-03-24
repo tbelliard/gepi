@@ -5,7 +5,7 @@
  *
  * Sequence de plusieurs compte-rendus
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseCahierTexteSequencePeer {
 
@@ -15,9 +15,15 @@ abstract class BaseCahierTexteSequencePeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'ct_sequences';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'CahierTexteSequence';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.CahierTexteSequence';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'CahierTexteSequenceTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 3;
 
@@ -41,11 +47,6 @@ abstract class BaseCahierTexteSequencePeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -57,6 +58,7 @@ abstract class BaseCahierTexteSequencePeer {
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Titre', 'Description', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'titre', 'description', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::TITRE, self::DESCRIPTION, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'TITRE', 'DESCRIPTION', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'titre', 'description', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, )
 	);
@@ -71,21 +73,11 @@ abstract class BaseCahierTexteSequencePeer {
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Titre' => 1, 'Description' => 2, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'titre' => 1, 'description' => 2, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::TITRE => 1, self::DESCRIPTION => 2, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'TITRE' => 1, 'DESCRIPTION' => 2, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'titre' => 1, 'description' => 2, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new CahierTexteSequenceMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -147,19 +139,22 @@ abstract class BaseCahierTexteSequencePeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(CahierTexteSequencePeer::ID);
-
-		$criteria->addSelectColumn(CahierTexteSequencePeer::TITRE);
-
-		$criteria->addSelectColumn(CahierTexteSequencePeer::DESCRIPTION);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(CahierTexteSequencePeer::ID);
+			$criteria->addSelectColumn(CahierTexteSequencePeer::TITRE);
+			$criteria->addSelectColumn(CahierTexteSequencePeer::DESCRIPTION);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.TITRE');
+			$criteria->addSelectColumn($alias . '.DESCRIPTION');
+		}
 	}
 
 	/**
@@ -347,6 +342,23 @@ abstract class BaseCahierTexteSequencePeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to ct_sequences
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in CahierTexteCompteRenduPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CahierTexteCompteRenduPeer::clearInstancePool();
+
+		// invalidate objects in CahierTexteTravailAFairePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CahierTexteTravailAFairePeer::clearInstancePool();
+
+		// invalidate objects in CahierTexteNoticePriveePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CahierTexteNoticePriveePeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -359,12 +371,26 @@ abstract class BaseCahierTexteSequencePeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -377,8 +403,7 @@ abstract class BaseCahierTexteSequencePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = CahierTexteSequencePeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = CahierTexteSequencePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = CahierTexteSequencePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -388,7 +413,6 @@ abstract class BaseCahierTexteSequencePeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -397,6 +421,31 @@ abstract class BaseCahierTexteSequencePeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (CahierTexteSequence object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = CahierTexteSequencePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = CahierTexteSequencePeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + CahierTexteSequencePeer::NUM_COLUMNS;
+		} else {
+			$cls = CahierTexteSequencePeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			CahierTexteSequencePeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -411,17 +460,31 @@ abstract class BaseCahierTexteSequencePeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseCahierTexteSequencePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseCahierTexteSequencePeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new CahierTexteSequenceTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return CahierTexteSequencePeer::CLASS_DEFAULT;
+		return $withPrefix ? CahierTexteSequencePeer::CLASS_DEFAULT : CahierTexteSequencePeer::OM_CLASS;
 	}
 
 	/**
@@ -488,7 +551,12 @@ abstract class BaseCahierTexteSequencePeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(CahierTexteSequencePeer::ID);
-			$selectCriteria->add(CahierTexteSequencePeer::ID, $criteria->remove(CahierTexteSequencePeer::ID), $comparison);
+			$value = $criteria->remove(CahierTexteSequencePeer::ID);
+			if ($value) {
+				$selectCriteria->add(CahierTexteSequencePeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(CahierTexteSequencePeer::TABLE_NAME);
+			}
 
 		} else { // $values is CahierTexteSequence object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -518,6 +586,11 @@ abstract class BaseCahierTexteSequencePeer {
 			$con->beginTransaction();
 			CahierTexteSequencePeer::doOnDeleteSetNull(new Criteria(CahierTexteSequencePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(CahierTexteSequencePeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			CahierTexteSequencePeer::clearInstancePool();
+			CahierTexteSequencePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -544,30 +617,14 @@ abstract class BaseCahierTexteSequencePeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			CahierTexteSequencePeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof CahierTexteSequence) {
-			// invalidate the cache for this single object
-			CahierTexteSequencePeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof CahierTexteSequence) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(CahierTexteSequencePeer::ID, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				CahierTexteSequencePeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -581,26 +638,21 @@ abstract class BaseCahierTexteSequencePeer {
 			$con->beginTransaction();
 			CahierTexteSequencePeer::doOnDeleteSetNull($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					CahierTexteSequencePeer::clearInstancePool();
-				} else { // it's a PK or object
-					CahierTexteSequencePeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				CahierTexteSequencePeer::clearInstancePool();
+			} elseif ($values instanceof CahierTexteSequence) { // it's a model object
+				CahierTexteSequencePeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					CahierTexteSequencePeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in CahierTexteCompteRenduPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			CahierTexteCompteRenduPeer::clearInstancePool();
-
-			// invalidate objects in CahierTexteTravailAFairePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			CahierTexteTravailAFairePeer::clearInstancePool();
-
-			// invalidate objects in CahierTexteNoticePriveePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			CahierTexteNoticePriveePeer::clearInstancePool();
-
+			CahierTexteSequencePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -746,14 +798,7 @@ abstract class BaseCahierTexteSequencePeer {
 
 } // BaseCahierTexteSequencePeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the CahierTexteSequencePeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the CahierTexteSequencePeer class:
-//
-// Propel::getDatabaseMap(CahierTexteSequencePeer::DATABASE_NAME)->addTableBuilder(CahierTexteSequencePeer::TABLE_NAME, CahierTexteSequencePeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseCahierTexteSequencePeer::DATABASE_NAME)->addTableBuilder(BaseCahierTexteSequencePeer::TABLE_NAME, BaseCahierTexteSequencePeer::getMapBuilder());
+BaseCahierTexteSequencePeer::buildTableMap();
 

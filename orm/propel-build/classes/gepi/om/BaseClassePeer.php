@@ -5,7 +5,7 @@
  *
  * Classe regroupant des eleves
  *
- * @package    gepi.om
+ * @package    propel.generator.gepi.om
  */
 abstract class BaseClassePeer {
 
@@ -15,9 +15,15 @@ abstract class BaseClassePeer {
 	/** the table name for this class */
 	const TABLE_NAME = 'classes';
 
+	/** the related Propel class for this table */
+	const OM_CLASS = 'Classe';
+
 	/** A class that can be returned by this peer. */
 	const CLASS_DEFAULT = 'gepi.Classe';
 
+	/** the related TableMap class for this table */
+	const TM_CLASS = 'ClasseTableMap';
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 27;
 
@@ -113,11 +119,6 @@ abstract class BaseClassePeer {
 	 */
 	public static $instances = array();
 
-	/**
-	 * The MapBuilder instance for this peer.
-	 * @var        MapBuilder
-	 */
-	private static $mapBuilder = null;
 
 	/**
 	 * holds an array of fieldnames
@@ -129,6 +130,7 @@ abstract class BaseClassePeer {
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Classe', 'NomComplet', 'SuiviPar', 'Formule', 'FormatNom', 'DisplayRang', 'DisplayAddress', 'DisplayCoef', 'DisplayMatCat', 'DisplayNbdev', 'DisplayMoyGen', 'ModeleBulletinPdf', 'RnNomdev', 'RnToutcoefdev', 'RnCoefdevSiDiff', 'RnDatedev', 'RnSignChefetab', 'RnSignPp', 'RnSignResp', 'RnSignNblig', 'RnFormule', 'EctsTypeFormation', 'EctsParcours', 'EctsCodeParcours', 'EctsDomainesEtude', 'EctsFonctionSignataireAttestation', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'classe', 'nomComplet', 'suiviPar', 'formule', 'formatNom', 'displayRang', 'displayAddress', 'displayCoef', 'displayMatCat', 'displayNbdev', 'displayMoyGen', 'modeleBulletinPdf', 'rnNomdev', 'rnToutcoefdev', 'rnCoefdevSiDiff', 'rnDatedev', 'rnSignChefetab', 'rnSignPp', 'rnSignResp', 'rnSignNblig', 'rnFormule', 'ectsTypeFormation', 'ectsParcours', 'ectsCodeParcours', 'ectsDomainesEtude', 'ectsFonctionSignataireAttestation', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::CLASSE, self::NOM_COMPLET, self::SUIVI_PAR, self::FORMULE, self::FORMAT_NOM, self::DISPLAY_RANG, self::DISPLAY_ADDRESS, self::DISPLAY_COEF, self::DISPLAY_MAT_CAT, self::DISPLAY_NBDEV, self::DISPLAY_MOY_GEN, self::MODELE_BULLETIN_PDF, self::RN_NOMDEV, self::RN_TOUTCOEFDEV, self::RN_COEFDEV_SI_DIFF, self::RN_DATEDEV, self::RN_SIGN_CHEFETAB, self::RN_SIGN_PP, self::RN_SIGN_RESP, self::RN_SIGN_NBLIG, self::RN_FORMULE, self::ECTS_TYPE_FORMATION, self::ECTS_PARCOURS, self::ECTS_CODE_PARCOURS, self::ECTS_DOMAINES_ETUDE, self::ECTS_FONCTION_SIGNATAIRE_ATTESTATION, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'CLASSE', 'NOM_COMPLET', 'SUIVI_PAR', 'FORMULE', 'FORMAT_NOM', 'DISPLAY_RANG', 'DISPLAY_ADDRESS', 'DISPLAY_COEF', 'DISPLAY_MAT_CAT', 'DISPLAY_NBDEV', 'DISPLAY_MOY_GEN', 'MODELE_BULLETIN_PDF', 'RN_NOMDEV', 'RN_TOUTCOEFDEV', 'RN_COEFDEV_SI_DIFF', 'RN_DATEDEV', 'RN_SIGN_CHEFETAB', 'RN_SIGN_PP', 'RN_SIGN_RESP', 'RN_SIGN_NBLIG', 'RN_FORMULE', 'ECTS_TYPE_FORMATION', 'ECTS_PARCOURS', 'ECTS_CODE_PARCOURS', 'ECTS_DOMAINES_ETUDE', 'ECTS_FONCTION_SIGNATAIRE_ATTESTATION', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'classe', 'nom_complet', 'suivi_par', 'formule', 'format_nom', 'display_rang', 'display_address', 'display_coef', 'display_mat_cat', 'display_nbdev', 'display_moy_gen', 'modele_bulletin_pdf', 'rn_nomdev', 'rn_toutcoefdev', 'rn_coefdev_si_diff', 'rn_datedev', 'rn_sign_chefetab', 'rn_sign_pp', 'rn_sign_resp', 'rn_sign_nblig', 'rn_formule', 'ects_type_formation', 'ects_parcours', 'ects_code_parcours', 'ects_domaines_etude', 'ects_fonction_signataire_attestation', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, )
 	);
@@ -143,21 +145,11 @@ abstract class BaseClassePeer {
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Classe' => 1, 'NomComplet' => 2, 'SuiviPar' => 3, 'Formule' => 4, 'FormatNom' => 5, 'DisplayRang' => 6, 'DisplayAddress' => 7, 'DisplayCoef' => 8, 'DisplayMatCat' => 9, 'DisplayNbdev' => 10, 'DisplayMoyGen' => 11, 'ModeleBulletinPdf' => 12, 'RnNomdev' => 13, 'RnToutcoefdev' => 14, 'RnCoefdevSiDiff' => 15, 'RnDatedev' => 16, 'RnSignChefetab' => 17, 'RnSignPp' => 18, 'RnSignResp' => 19, 'RnSignNblig' => 20, 'RnFormule' => 21, 'EctsTypeFormation' => 22, 'EctsParcours' => 23, 'EctsCodeParcours' => 24, 'EctsDomainesEtude' => 25, 'EctsFonctionSignataireAttestation' => 26, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'classe' => 1, 'nomComplet' => 2, 'suiviPar' => 3, 'formule' => 4, 'formatNom' => 5, 'displayRang' => 6, 'displayAddress' => 7, 'displayCoef' => 8, 'displayMatCat' => 9, 'displayNbdev' => 10, 'displayMoyGen' => 11, 'modeleBulletinPdf' => 12, 'rnNomdev' => 13, 'rnToutcoefdev' => 14, 'rnCoefdevSiDiff' => 15, 'rnDatedev' => 16, 'rnSignChefetab' => 17, 'rnSignPp' => 18, 'rnSignResp' => 19, 'rnSignNblig' => 20, 'rnFormule' => 21, 'ectsTypeFormation' => 22, 'ectsParcours' => 23, 'ectsCodeParcours' => 24, 'ectsDomainesEtude' => 25, 'ectsFonctionSignataireAttestation' => 26, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::CLASSE => 1, self::NOM_COMPLET => 2, self::SUIVI_PAR => 3, self::FORMULE => 4, self::FORMAT_NOM => 5, self::DISPLAY_RANG => 6, self::DISPLAY_ADDRESS => 7, self::DISPLAY_COEF => 8, self::DISPLAY_MAT_CAT => 9, self::DISPLAY_NBDEV => 10, self::DISPLAY_MOY_GEN => 11, self::MODELE_BULLETIN_PDF => 12, self::RN_NOMDEV => 13, self::RN_TOUTCOEFDEV => 14, self::RN_COEFDEV_SI_DIFF => 15, self::RN_DATEDEV => 16, self::RN_SIGN_CHEFETAB => 17, self::RN_SIGN_PP => 18, self::RN_SIGN_RESP => 19, self::RN_SIGN_NBLIG => 20, self::RN_FORMULE => 21, self::ECTS_TYPE_FORMATION => 22, self::ECTS_PARCOURS => 23, self::ECTS_CODE_PARCOURS => 24, self::ECTS_DOMAINES_ETUDE => 25, self::ECTS_FONCTION_SIGNATAIRE_ATTESTATION => 26, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'CLASSE' => 1, 'NOM_COMPLET' => 2, 'SUIVI_PAR' => 3, 'FORMULE' => 4, 'FORMAT_NOM' => 5, 'DISPLAY_RANG' => 6, 'DISPLAY_ADDRESS' => 7, 'DISPLAY_COEF' => 8, 'DISPLAY_MAT_CAT' => 9, 'DISPLAY_NBDEV' => 10, 'DISPLAY_MOY_GEN' => 11, 'MODELE_BULLETIN_PDF' => 12, 'RN_NOMDEV' => 13, 'RN_TOUTCOEFDEV' => 14, 'RN_COEFDEV_SI_DIFF' => 15, 'RN_DATEDEV' => 16, 'RN_SIGN_CHEFETAB' => 17, 'RN_SIGN_PP' => 18, 'RN_SIGN_RESP' => 19, 'RN_SIGN_NBLIG' => 20, 'RN_FORMULE' => 21, 'ECTS_TYPE_FORMATION' => 22, 'ECTS_PARCOURS' => 23, 'ECTS_CODE_PARCOURS' => 24, 'ECTS_DOMAINES_ETUDE' => 25, 'ECTS_FONCTION_SIGNATAIRE_ATTESTATION' => 26, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'classe' => 1, 'nom_complet' => 2, 'suivi_par' => 3, 'formule' => 4, 'format_nom' => 5, 'display_rang' => 6, 'display_address' => 7, 'display_coef' => 8, 'display_mat_cat' => 9, 'display_nbdev' => 10, 'display_moy_gen' => 11, 'modele_bulletin_pdf' => 12, 'rn_nomdev' => 13, 'rn_toutcoefdev' => 14, 'rn_coefdev_si_diff' => 15, 'rn_datedev' => 16, 'rn_sign_chefetab' => 17, 'rn_sign_pp' => 18, 'rn_sign_resp' => 19, 'rn_sign_nblig' => 20, 'rn_formule' => 21, 'ects_type_formation' => 22, 'ects_parcours' => 23, 'ects_code_parcours' => 24, 'ects_domaines_etude' => 25, 'ects_fonction_signataire_attestation' => 26, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, )
 	);
 
-	/**
-	 * Get a (singleton) instance of the MapBuilder for this peer class.
-	 * @return     MapBuilder The map builder for this peer
-	 */
-	public static function getMapBuilder()
-	{
-		if (self::$mapBuilder === null) {
-			self::$mapBuilder = new ClasseMapBuilder();
-		}
-		return self::$mapBuilder;
-	}
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -219,67 +211,70 @@ abstract class BaseClassePeer {
 	 * XML schema will not be added to the select list and only loaded
 	 * on demand.
 	 *
-	 * @param      criteria object containing the columns to add.
+	 * @param      Criteria $criteria object containing the columns to add.
+	 * @param      string   $alias    optional table alias
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function addSelectColumns(Criteria $criteria)
+	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
-
-		$criteria->addSelectColumn(ClassePeer::ID);
-
-		$criteria->addSelectColumn(ClassePeer::CLASSE);
-
-		$criteria->addSelectColumn(ClassePeer::NOM_COMPLET);
-
-		$criteria->addSelectColumn(ClassePeer::SUIVI_PAR);
-
-		$criteria->addSelectColumn(ClassePeer::FORMULE);
-
-		$criteria->addSelectColumn(ClassePeer::FORMAT_NOM);
-
-		$criteria->addSelectColumn(ClassePeer::DISPLAY_RANG);
-
-		$criteria->addSelectColumn(ClassePeer::DISPLAY_ADDRESS);
-
-		$criteria->addSelectColumn(ClassePeer::DISPLAY_COEF);
-
-		$criteria->addSelectColumn(ClassePeer::DISPLAY_MAT_CAT);
-
-		$criteria->addSelectColumn(ClassePeer::DISPLAY_NBDEV);
-
-		$criteria->addSelectColumn(ClassePeer::DISPLAY_MOY_GEN);
-
-		$criteria->addSelectColumn(ClassePeer::MODELE_BULLETIN_PDF);
-
-		$criteria->addSelectColumn(ClassePeer::RN_NOMDEV);
-
-		$criteria->addSelectColumn(ClassePeer::RN_TOUTCOEFDEV);
-
-		$criteria->addSelectColumn(ClassePeer::RN_COEFDEV_SI_DIFF);
-
-		$criteria->addSelectColumn(ClassePeer::RN_DATEDEV);
-
-		$criteria->addSelectColumn(ClassePeer::RN_SIGN_CHEFETAB);
-
-		$criteria->addSelectColumn(ClassePeer::RN_SIGN_PP);
-
-		$criteria->addSelectColumn(ClassePeer::RN_SIGN_RESP);
-
-		$criteria->addSelectColumn(ClassePeer::RN_SIGN_NBLIG);
-
-		$criteria->addSelectColumn(ClassePeer::RN_FORMULE);
-
-		$criteria->addSelectColumn(ClassePeer::ECTS_TYPE_FORMATION);
-
-		$criteria->addSelectColumn(ClassePeer::ECTS_PARCOURS);
-
-		$criteria->addSelectColumn(ClassePeer::ECTS_CODE_PARCOURS);
-
-		$criteria->addSelectColumn(ClassePeer::ECTS_DOMAINES_ETUDE);
-
-		$criteria->addSelectColumn(ClassePeer::ECTS_FONCTION_SIGNATAIRE_ATTESTATION);
-
+		if (null === $alias) {
+			$criteria->addSelectColumn(ClassePeer::ID);
+			$criteria->addSelectColumn(ClassePeer::CLASSE);
+			$criteria->addSelectColumn(ClassePeer::NOM_COMPLET);
+			$criteria->addSelectColumn(ClassePeer::SUIVI_PAR);
+			$criteria->addSelectColumn(ClassePeer::FORMULE);
+			$criteria->addSelectColumn(ClassePeer::FORMAT_NOM);
+			$criteria->addSelectColumn(ClassePeer::DISPLAY_RANG);
+			$criteria->addSelectColumn(ClassePeer::DISPLAY_ADDRESS);
+			$criteria->addSelectColumn(ClassePeer::DISPLAY_COEF);
+			$criteria->addSelectColumn(ClassePeer::DISPLAY_MAT_CAT);
+			$criteria->addSelectColumn(ClassePeer::DISPLAY_NBDEV);
+			$criteria->addSelectColumn(ClassePeer::DISPLAY_MOY_GEN);
+			$criteria->addSelectColumn(ClassePeer::MODELE_BULLETIN_PDF);
+			$criteria->addSelectColumn(ClassePeer::RN_NOMDEV);
+			$criteria->addSelectColumn(ClassePeer::RN_TOUTCOEFDEV);
+			$criteria->addSelectColumn(ClassePeer::RN_COEFDEV_SI_DIFF);
+			$criteria->addSelectColumn(ClassePeer::RN_DATEDEV);
+			$criteria->addSelectColumn(ClassePeer::RN_SIGN_CHEFETAB);
+			$criteria->addSelectColumn(ClassePeer::RN_SIGN_PP);
+			$criteria->addSelectColumn(ClassePeer::RN_SIGN_RESP);
+			$criteria->addSelectColumn(ClassePeer::RN_SIGN_NBLIG);
+			$criteria->addSelectColumn(ClassePeer::RN_FORMULE);
+			$criteria->addSelectColumn(ClassePeer::ECTS_TYPE_FORMATION);
+			$criteria->addSelectColumn(ClassePeer::ECTS_PARCOURS);
+			$criteria->addSelectColumn(ClassePeer::ECTS_CODE_PARCOURS);
+			$criteria->addSelectColumn(ClassePeer::ECTS_DOMAINES_ETUDE);
+			$criteria->addSelectColumn(ClassePeer::ECTS_FONCTION_SIGNATAIRE_ATTESTATION);
+		} else {
+			$criteria->addSelectColumn($alias . '.ID');
+			$criteria->addSelectColumn($alias . '.CLASSE');
+			$criteria->addSelectColumn($alias . '.NOM_COMPLET');
+			$criteria->addSelectColumn($alias . '.SUIVI_PAR');
+			$criteria->addSelectColumn($alias . '.FORMULE');
+			$criteria->addSelectColumn($alias . '.FORMAT_NOM');
+			$criteria->addSelectColumn($alias . '.DISPLAY_RANG');
+			$criteria->addSelectColumn($alias . '.DISPLAY_ADDRESS');
+			$criteria->addSelectColumn($alias . '.DISPLAY_COEF');
+			$criteria->addSelectColumn($alias . '.DISPLAY_MAT_CAT');
+			$criteria->addSelectColumn($alias . '.DISPLAY_NBDEV');
+			$criteria->addSelectColumn($alias . '.DISPLAY_MOY_GEN');
+			$criteria->addSelectColumn($alias . '.MODELE_BULLETIN_PDF');
+			$criteria->addSelectColumn($alias . '.RN_NOMDEV');
+			$criteria->addSelectColumn($alias . '.RN_TOUTCOEFDEV');
+			$criteria->addSelectColumn($alias . '.RN_COEFDEV_SI_DIFF');
+			$criteria->addSelectColumn($alias . '.RN_DATEDEV');
+			$criteria->addSelectColumn($alias . '.RN_SIGN_CHEFETAB');
+			$criteria->addSelectColumn($alias . '.RN_SIGN_PP');
+			$criteria->addSelectColumn($alias . '.RN_SIGN_RESP');
+			$criteria->addSelectColumn($alias . '.RN_SIGN_NBLIG');
+			$criteria->addSelectColumn($alias . '.RN_FORMULE');
+			$criteria->addSelectColumn($alias . '.ECTS_TYPE_FORMATION');
+			$criteria->addSelectColumn($alias . '.ECTS_PARCOURS');
+			$criteria->addSelectColumn($alias . '.ECTS_CODE_PARCOURS');
+			$criteria->addSelectColumn($alias . '.ECTS_DOMAINES_ETUDE');
+			$criteria->addSelectColumn($alias . '.ECTS_FONCTION_SIGNATAIRE_ATTESTATION');
+		}
 	}
 
 	/**
@@ -467,6 +462,23 @@ abstract class BaseClassePeer {
 	}
 	
 	/**
+	 * Method to invalidate the instance pool of all tables related to classes
+	 * by a foreign key with ON DELETE CASCADE
+	 */
+	public static function clearRelatedInstancePool()
+	{
+		// invalidate objects in JGroupesClassesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JGroupesClassesPeer::clearInstancePool();
+
+		// invalidate objects in JEleveClassePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JEleveClassePeer::clearInstancePool();
+
+		// invalidate objects in JEleveProfesseurPrincipalPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JEleveProfesseurPrincipalPeer::clearInstancePool();
+
+	}
+
+	/**
 	 * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
 	 *
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -479,12 +491,26 @@ abstract class BaseClassePeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return (string) $row[$startcol + 0];
+		return (string) $row[$startcol];
 	}
 
+	/**
+	 * Retrieves the primary key from the DB resultset row 
+	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+	 * a multi-column primary key, an array of the primary key columns will be returned.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @return     mixed The primary key of the row
+	 */
+	public static function getPrimaryKeyFromRow($row, $startcol = 0)
+	{
+		return (int) $row[$startcol];
+	}
+	
 	/**
 	 * The returned array will contain objects of the default type or
 	 * objects that inherit from the default.
@@ -497,8 +523,7 @@ abstract class BaseClassePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = ClassePeer::getOMClass();
-		$cls = substr('.'.$cls, strrpos('.'.$cls, '.') + 1);
+		$cls = ClassePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = ClassePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -508,7 +533,6 @@ abstract class BaseClassePeer {
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
-		
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
@@ -517,6 +541,31 @@ abstract class BaseClassePeer {
 		}
 		$stmt->closeCursor();
 		return $results;
+	}
+	/**
+	 * Populates an object of the default type or an object that inherit from the default.
+	 *
+	 * @param      array $row PropelPDO resultset row.
+	 * @param      int $startcol The 0-based offset for reading from the resultset row.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 * @return     array (Classe object, last column rank)
+	 */
+	public static function populateObject($row, $startcol = 0)
+	{
+		$key = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = ClassePeer::getInstanceFromPool($key))) {
+			// We no longer rehydrate the object, since this can cause data loss.
+			// See http://propel.phpdb.org/trac/ticket/509
+			// $obj->hydrate($row, $startcol, true); // rehydrate
+			$col = $startcol + ClassePeer::NUM_COLUMNS;
+		} else {
+			$cls = ClassePeer::OM_CLASS;
+			$obj = new $cls();
+			$col = $obj->hydrate($row, $startcol);
+			ClassePeer::addInstanceToPool($obj, $key);
+		}
+		return array($obj, $col);
 	}
 	/**
 	 * Returns the TableMap related to this peer.
@@ -531,17 +580,31 @@ abstract class BaseClassePeer {
 	}
 
 	/**
+	 * Add a TableMap instance to the database for this peer class.
+	 */
+	public static function buildTableMap()
+	{
+	  $dbMap = Propel::getDatabaseMap(BaseClassePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseClassePeer::TABLE_NAME))
+	  {
+	    $dbMap->addTableObject(new ClasseTableMap());
+	  }
+	}
+
+	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * This uses a dot-path notation which is tranalted into a path
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
 	 * relative to a location on the PHP include_path.
 	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
 	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return ClassePeer::CLASS_DEFAULT;
+		return $withPrefix ? ClassePeer::CLASS_DEFAULT : ClassePeer::OM_CLASS;
 	}
 
 	/**
@@ -608,7 +671,12 @@ abstract class BaseClassePeer {
 			$criteria = clone $values; // rename for clarity
 
 			$comparison = $criteria->getComparison(ClassePeer::ID);
-			$selectCriteria->add(ClassePeer::ID, $criteria->remove(ClassePeer::ID), $comparison);
+			$value = $criteria->remove(ClassePeer::ID);
+			if ($value) {
+				$selectCriteria->add(ClassePeer::ID, $value, $comparison);
+			} else {
+				$selectCriteria->setPrimaryTableName(ClassePeer::TABLE_NAME);
+			}
 
 		} else { // $values is Classe object
 			$criteria = $values->buildCriteria(); // gets full criteria
@@ -638,6 +706,11 @@ abstract class BaseClassePeer {
 			$con->beginTransaction();
 			$affectedRows += ClassePeer::doOnDeleteCascade(new Criteria(ClassePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(ClassePeer::TABLE_NAME, $con);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			ClassePeer::clearInstancePool();
+			ClassePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -664,30 +737,14 @@ abstract class BaseClassePeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			ClassePeer::clearInstancePool();
-
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof Classe) {
-			// invalidate the cache for this single object
-			ClassePeer::removeInstanceFromPool($values);
+		} elseif ($values instanceof Classe) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
-		} else {
-			// it must be the primary key
-
-
-
+		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(ClassePeer::ID, (array) $values, Criteria::IN);
-
-			foreach ((array) $values as $singleval) {
-				// we can invalidate the cache for this single object
-				ClassePeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -701,26 +758,21 @@ abstract class BaseClassePeer {
 			$con->beginTransaction();
 			$affectedRows += ClassePeer::doOnDeleteCascade($criteria, $con);
 			
-				// Because this db requires some delete cascade/set null emulation, we have to
-				// clear the cached instance *after* the emulation has happened (since
-				// instances get re-added by the select statement contained therein).
-				if ($values instanceof Criteria) {
-					ClassePeer::clearInstancePool();
-				} else { // it's a PK or object
-					ClassePeer::removeInstanceFromPool($values);
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				ClassePeer::clearInstancePool();
+			} elseif ($values instanceof Classe) { // it's a model object
+				ClassePeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					ClassePeer::removeInstanceFromPool($singleval);
 				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-
-			// invalidate objects in JGroupesClassesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JGroupesClassesPeer::clearInstancePool();
-
-			// invalidate objects in JEleveClassePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JEleveClassePeer::clearInstancePool();
-
-			// invalidate objects in JEleveProfesseurPrincipalPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-			JEleveProfesseurPrincipalPeer::clearInstancePool();
-
+			ClassePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -753,22 +805,22 @@ abstract class BaseClassePeer {
 
 
 			// delete related JGroupesClasses objects
-			$c = new Criteria(JGroupesClassesPeer::DATABASE_NAME);
+			$criteria = new Criteria(JGroupesClassesPeer::DATABASE_NAME);
 			
-			$c->add(JGroupesClassesPeer::ID_CLASSE, $obj->getId());
-			$affectedRows += JGroupesClassesPeer::doDelete($c, $con);
+			$criteria->add(JGroupesClassesPeer::ID_CLASSE, $obj->getId());
+			$affectedRows += JGroupesClassesPeer::doDelete($criteria, $con);
 
 			// delete related JEleveClasse objects
-			$c = new Criteria(JEleveClassePeer::DATABASE_NAME);
+			$criteria = new Criteria(JEleveClassePeer::DATABASE_NAME);
 			
-			$c->add(JEleveClassePeer::ID_CLASSE, $obj->getId());
-			$affectedRows += JEleveClassePeer::doDelete($c, $con);
+			$criteria->add(JEleveClassePeer::ID_CLASSE, $obj->getId());
+			$affectedRows += JEleveClassePeer::doDelete($criteria, $con);
 
 			// delete related JEleveProfesseurPrincipal objects
-			$c = new Criteria(JEleveProfesseurPrincipalPeer::DATABASE_NAME);
+			$criteria = new Criteria(JEleveProfesseurPrincipalPeer::DATABASE_NAME);
 			
-			$c->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $obj->getId());
-			$affectedRows += JEleveProfesseurPrincipalPeer::doDelete($c, $con);
+			$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $obj->getId());
+			$affectedRows += JEleveProfesseurPrincipalPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
@@ -863,14 +915,7 @@ abstract class BaseClassePeer {
 
 } // BaseClassePeer
 
-// This is the static code needed to register the MapBuilder for this table with the main Propel class.
+// This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-// NOTE: This static code cannot call methods on the ClassePeer class, because it is not defined yet.
-// If you need to use overridden methods, you can add this code to the bottom of the ClassePeer class:
-//
-// Propel::getDatabaseMap(ClassePeer::DATABASE_NAME)->addTableBuilder(ClassePeer::TABLE_NAME, ClassePeer::getMapBuilder());
-//
-// Doing so will effectively overwrite the registration below.
-
-Propel::getDatabaseMap(BaseClassePeer::DATABASE_NAME)->addTableBuilder(BaseClassePeer::TABLE_NAME, BaseClassePeer::getMapBuilder());
+BaseClassePeer::buildTableMap();
 
