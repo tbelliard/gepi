@@ -1,22 +1,11 @@
 <?php
-/*
- *  $Id: PropelPager.php 563 2007-02-01 09:45:55Z heltem $
+
+/**
+ * This file is part of the Propel package.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information please see
- * <http://propel.phpdb.org>.
+ * @license    MIT License
  */
 
 /**
@@ -96,11 +85,13 @@
  *
  *
  * @author     Rob Halff <info@rhalff.com>
- * @version    $Revision: 563 $
+ * @author	   Niklas Närhinen <niklas@narhinen.net>
+ * @version    $Revision$
  * @copyright  Copyright (c) 2004 Rob Halff: LGPL - See LICENCE
- * @package    propel.util
+ * @package    propel.runtime.util
  */
-class PropelPager {
+class PropelPager implements Countable, Iterator
+{
 
 	private $recordCount;
 	private $pages;
@@ -111,6 +102,9 @@ class PropelPager {
 	private $countCriteria;
 	private $page;
 	private $rs = null;
+	
+	//Iterator vars
+	private $currentKey = 0;
 
 	/** @var        int Start row (offset) */
 	protected $start = 0;
@@ -538,6 +532,66 @@ class PropelPager {
 	public function setMax($v)
 	{
 		$this->max = $v;
+	}
+	
+	/**
+	 * Returns the count of the current page's records
+	 * @return 	int
+	 */
+	public function count()
+	{
+		return count($this->getResult());
+	}
+	
+	/**
+	 * Returns the current element of the iterator
+	 * @return mixed
+	 */
+	public function current()
+	{
+		if (!isset($this->rs)) {
+			$this->doRs();
+		}
+		return $this->rs[$this->currentKey];
+	}
+	
+	/**
+	 * Returns the current key of the iterator
+	 * @return int
+	 */
+	public function key()
+	{
+		return $this->currentKey;
+	}
+	
+	/**
+	 * Advances the iterator to the next element
+	 * @return void
+	 */
+	public function next()
+	{
+		$this->currentKey++;
+	}
+	
+	/**
+	 * Resets the iterator to the first element
+	 * @return void
+	 */
+	public function rewind()
+	{
+		$this->currentKey = 0;
+	}
+	
+	/**
+	 * Checks if the current key exists in the container
+	 * @return boolean
+	 */
+	public function valid()
+	{
+		if (!isset($this->rs)) {
+			$this->doRs();
+		}
+		return in_array($this->currentKey, array_keys($this->rs));
 	}
 
 }

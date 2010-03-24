@@ -1,22 +1,11 @@
 <?php
-/*
- *  $Id: DBAdapter.php 1011 2008-03-20 11:36:27Z hans $
+
+/**
+ * This file is part of the Propel package.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information please see
- * <http://propel.phpdb.org>.
+ * @license    MIT License
  */
 
 /**
@@ -24,7 +13,7 @@
  *
  * <p>Support for new databases is added by subclassing
  * <code>DBAdapter</code> and implementing its abstract interface, and by
- * registering the new database adapter and corresponding Creole
+ * registering the new database adapter and corresponding Propel
  * driver in the private adapters map (array) in this class.</p>
  *
  * <p>The Propel database adapters exist to present a uniform
@@ -38,35 +27,38 @@
  * @author     Jon S. Stevens <jon@latchkey.com> (Torque)
  * @author     Brett McLaughlin <bmclaugh@algx.net> (Torque)
  * @author     Daniel Rall <dlr@finemaltcoding.com> (Torque)
- * @version    $Revision: 1011 $
- * @package    propel.adapter
+ * @version    $Revision$
+ * @package    propel.runtime.adapter
  */
-abstract class DBAdapter {
+abstract class DBAdapter
+{
 
 	const ID_METHOD_NONE = 0;
 	const ID_METHOD_AUTOINCREMENT = 1;
 	const ID_METHOD_SEQUENCE = 2;
 
 	/**
-	 * Creole driver to Propel adapter map.
+	 * Propel driver to Propel adapter map.
 	 * @var        array
 	 */
 	private static $adapters = array(
-		'mysql' => 'DBMySQL',
+		'mysql'  => 'DBMySQL',
 		'mysqli' => 'DBMySQLi',
-		'mssql' => 'DBMSSQL',
+		'mssql'  => 'DBMSSQL',
+		'dblib'  => 'DBMSSQL',
 		'sybase' => 'DBSybase',
 		'oracle' => 'DBOracle',
-		'pgsql' => 'DBPostgres',
+		'oci'    => 'DBOracle',
+		'pgsql'  => 'DBPostgres',
 		'sqlite' => 'DBSQLite',
-		'' => 'DBNone',
+		''       => 'DBNone',
 	);
 
 	/**
 	 * Creates a new instance of the database adapter associated
-	 * with the specified Creole driver.
+	 * with the specified Propel driver.
 	 *
-	 * @param      string $driver The name of the Propel/Creole driver to
+	 * @param      string $driver The name of the Propel driver to
 	 * create a new adapter instance for or a shorter form adapter key.
 	 * @return     DBAdapter An instance of a Propel database adapter.
 	 * @throws     PropelException if the adapter could not be instantiated.
@@ -294,7 +286,7 @@ abstract class DBAdapter {
 	 * Modifies the passed-in SQL to add LIMIT and/or OFFSET.
 	 */
 	public abstract function applyLimit(&$sql, $offset, $limit);
-	
+
 	/**
 	 * Gets the SQL string that this adapter uses for getting a random number.
 	 *

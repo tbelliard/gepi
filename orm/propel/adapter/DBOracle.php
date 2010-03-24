@@ -1,23 +1,11 @@
 <?php
 
-/*
- *  $Id: DBOracle.php 718 2007-10-26 01:31:34Z heltem $
+/**
+ * This file is part of the Propel package.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information please see
- * <http://propel.phpdb.org>.
+ * @license    MIT License
  */
 
 /**
@@ -29,11 +17,32 @@
  * @author     Brett McLaughlin <bmclaugh@algx.net> (Torque)
  * @author     Bill Schneider <bschneider@vecna.com> (Torque)
  * @author     Daniel Rall <dlr@finemaltcoding.com> (Torque)
- * @version    $Revision: 718 $
- * @package    propel.adapter
+ * @version    $Revision$
+ * @package    propel.runtime.adapter
  */
-class DBOracle extends DBAdapter {
-
+class DBOracle extends DBAdapter
+{
+	/**
+	 * This method is called after a connection was created to run necessary
+	 * post-initialization queries or code.
+	 * Removes the charset query and adds the date queries
+	 *
+	 * @param      PDO   A PDO connection instance.
+	 * @see        parent::initConnection()
+	 */
+	public function initConnection(PDO $con, array $settings)
+	{
+		if (isset($settings['queries']) && is_array($settings['queries'])) {
+			foreach ($settings['queries'] as $queries) {
+				foreach ((array)$queries as $query) {
+					$con->exec($query);
+				}
+			}
+		}
+		$con->exec("ALTER SESSION SET NLS_DATE_FORMAT='YYYY-MM-DD'");
+		$con->exec("ALTER SESSION SET NLS_TIMESTAMP_FORMAT='YYYY-MM-DD HH24:MI:SS'");
+	}
+	
 	/**
 	 * This method is used to ignore case.
 	 *
@@ -99,21 +108,21 @@ class DBOracle extends DBAdapter {
 	{
 		 $sql =
 			'SELECT B.* FROM (  '
-			.  'SELECT A.*, rownum AS PROPEL$ROWNUM FROM (  '
+			.  'SELECT A.*, rownum AS PROPEL_ROWNUM FROM (  '
 			. $sql
 			. '  ) A '
 			.  ' ) B WHERE ';
 
 		if ( $offset > 0 ) {
-			$sql				.= ' B.PROPEL$ROWNUM > ' . $offset;
+			$sql				.= ' B.PROPEL_ROWNUM > ' . $offset;
 
 			if ( $limit > 0 )
 			{
-				$sql			.= ' AND B.PROPEL$ROWNUM <= '
+				$sql			.= ' AND B.PROPEL_ROWNUM <= '
 									. ( $offset + $limit );
 			}
 		} else {
-			$sql				.= ' B.PROPEL$ROWNUM <= ' . $limit;
+			$sql				.= ' B.PROPEL_ROWNUM <= ' . $limit;
 		}
 	}
 

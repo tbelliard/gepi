@@ -1,31 +1,19 @@
 <?php
 
-/*
- *  $Id: NestedSetRecursiveIterator.php 875 2007-12-19 11:10:15Z heltem $
+/**
+ * This file is part of the Propel package.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information please see
- * <http://propel.phpdb.org>.
+ * @license    MIT License
  */
 
 /**
  * Pre-order node iterator for Node objects.
  *
  * @author     Heltem <heltem@o2php.com>
- * @version    $Revision: 875 $
- * @package    propel.om
+ * @version    $Revision$
+ * @package    propel.runtime.om
  */
 class NestedSetRecursiveIterator implements RecursiveIterator
 {
@@ -33,34 +21,41 @@ class NestedSetRecursiveIterator implements RecursiveIterator
 
 	protected $curNode = null;
 
-	public function __construct($node) {
+	public function __construct($node)
+	{
 		$this->topNode = $node;
 		$this->curNode = $node;
 	}
 
-	public function rewind() {
+	public function rewind()
+	{
 		$this->curNode = $this->topNode;
 	}
 
-	public function valid() {
+	public function valid()
+	{
 		return ($this->curNode !== null);
 	}
 
-	public function current() {
+	public function current()
+	{
 		return $this->curNode;
 	}
 
-	public function key() {
+	public function key()
+	{
+		$method = method_exists($this->curNode, 'getPath') ? 'getPath' : 'getAncestors';
 		$key = array();
-		foreach ($this->curNode->getPath() as $node) {
+		foreach ($this->curNode->$method() as $node) {
 			$key[] = $node->getPrimaryKey();
 		}
 		return implode('.', $key);
 	}
 
-	public function next() {
+	public function next()
+	{
 		$nextNode = null;
-
+		$method = method_exists($this->curNode, 'retrieveNextSibling') ? 'retrieveNextSibling' : 'getNextSibling';
 		if ($this->valid()) {
 			while (null === $nextNode) {
 				if (null === $this->curNode) {
@@ -68,7 +63,7 @@ class NestedSetRecursiveIterator implements RecursiveIterator
 				}
 
 				if ($this->curNode->hasNextSibling()) {
-					$nextNode = $this->curNode->retrieveNextSibling();
+					$nextNode = $this->curNode->$method();
 				} else {
 					break;
 				}
@@ -78,11 +73,14 @@ class NestedSetRecursiveIterator implements RecursiveIterator
 		return $this->curNode;
 	}
 
-	public function hasChildren() {
+	public function hasChildren()
+	{
 		return $this->curNode->hasChildren();
 	}
 
-	public function getChildren() {
-		return new NestedSetRecursiveIterator($this->curNode->retrieveFirstChild());
+	public function getChildren()
+	{
+		$method = method_exists($this->curNode, 'retrieveFirstChild') ? 'retrieveFirstChild' : 'getFirstChild';
+		return new NestedSetRecursiveIterator($this->curNode->$method());
 	}
 }
