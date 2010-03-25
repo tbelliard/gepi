@@ -40,7 +40,9 @@ class Eleve extends BaseEleve {
 		$criteria = new Criteria();
 		$criteria->add(JEleveClassePeer::PERIODE,$periode);
 		foreach($this->getJEleveClassesJoinClasse($criteria) as $ref) {
+		    if ($ref->getClasse() != NULL) {
 			$classes[] = $ref->getClasse();
+		    }
 		}
 		return $classes;
 	}
@@ -67,7 +69,9 @@ class Eleve extends BaseEleve {
 		$c = new Criteria();
 		$c->add(JEleveGroupePeer::PERIODE,$periode);
 		foreach($this->getJEleveGroupesJoinGroupe($c) as $ref) {
-			$groupes[] = $ref->getGroupe();
+			if ($ref->getGroupe() != NULL) {
+			    $groupes[] = $ref->getGroupe();
+			}
 		}
 		return $groupes;
 	}
