@@ -108,6 +108,24 @@ class PropelObjectCollection extends PropelCollection
 	}
 	
 	/**
+	 * Get an array representation of the collection at the old proepl 1.3 format
+	 * It's an arry of propel objetcs
+	 *
+	 * @return    array
+	 */
+	public function toOldFormatArray()
+	{
+		$ret = array();
+		$i = 0;
+		foreach ($this as $element) {
+			$ret[$i] = $element;
+			$i++;
+		}
+
+		return $ret;
+	}
+
+	/**
 	 * Makes an additional query to populate the objects related to the collection objects
 	 * by a certain relation
 	 *
