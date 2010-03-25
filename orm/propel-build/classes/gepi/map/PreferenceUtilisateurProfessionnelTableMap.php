@@ -47,7 +47,7 @@ class PreferenceUtilisateurProfessionnelTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'SET NULL', null);
+    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // PreferenceUtilisateurProfessionnelTableMap

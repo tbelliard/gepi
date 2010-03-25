@@ -357,6 +357,12 @@ abstract class BasePlugInPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
+		// invalidate objects in PlugInAutorisationPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		PlugInAutorisationPeer::clearInstancePool();
+
+		// invalidate objects in PlugInMiseEnOeuvreMenuPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		PlugInMiseEnOeuvreMenuPeer::clearInstancePool();
+
 	}
 
 	/**
@@ -585,6 +591,7 @@ abstract class BasePlugInPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
+			$affectedRows += PlugInPeer::doOnDeleteCascade(new Criteria(PlugInPeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(PlugInPeer::TABLE_NAME, $con);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -617,24 +624,14 @@ abstract class BasePlugInPeer {
 		}
 
 		if ($values instanceof Criteria) {
-			// invalidate the cache for all objects of this type, since we have no
-			// way of knowing (without running a query) what objects should be invalidated
-			// from the cache based on this Criteria.
-			PlugInPeer::clearInstancePool();
 			// rename for clarity
 			$criteria = clone $values;
 		} elseif ($values instanceof PlugIn) { // it's a model object
-			// invalidate the cache for this single object
-			PlugInPeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
 		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
 			$criteria->add(PlugInPeer::ID, (array) $values, Criteria::IN);
-			// invalidate the cache for this object(s)
-			foreach ((array) $values as $singleval) {
-				PlugInPeer::removeInstanceFromPool($singleval);
-			}
 		}
 
 		// Set the correct dbName
@@ -646,6 +643,20 @@ abstract class BasePlugInPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
+			$affectedRows += PlugInPeer::doOnDeleteCascade($criteria, $con);
+			
+			// Because this db requires some delete cascade/set null emulation, we have to
+			// clear the cached instance *after* the emulation has happened (since
+			// instances get re-added by the select statement contained therein).
+			if ($values instanceof Criteria) {
+				PlugInPeer::clearInstancePool();
+			} elseif ($values instanceof PlugIn) { // it's a model object
+				PlugInPeer::removeInstanceFromPool($values);
+			} else { // it's a primary key, or an array of pks
+				foreach ((array) $values as $singleval) {
+					PlugInPeer::removeInstanceFromPool($singleval);
+				}
+			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
 			PlugInPeer::clearRelatedInstancePool();
@@ -655,6 +666,44 @@ abstract class BasePlugInPeer {
 			$con->rollBack();
 			throw $e;
 		}
+	}
+
+	/**
+	 * This is a method for emulating ON DELETE CASCADE for DBs that don't support this
+	 * feature (like MySQL or SQLite).
+	 *
+	 * This method is not very speedy because it must perform a query first to get
+	 * the implicated records and then perform the deletes by calling those Peer classes.
+	 *
+	 * This method should be used within a transaction if possible.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     int The number of affected rows (if supported by underlying database driver).
+	 */
+	protected static function doOnDeleteCascade(Criteria $criteria, PropelPDO $con)
+	{
+		// initialize var to track total num of affected rows
+		$affectedRows = 0;
+
+		// first find the objects that are implicated by the $criteria
+		$objects = PlugInPeer::doSelect($criteria, $con);
+		foreach ($objects as $obj) {
+
+
+			// delete related PlugInAutorisation objects
+			$criteria = new Criteria(PlugInAutorisationPeer::DATABASE_NAME);
+			
+			$criteria->add(PlugInAutorisationPeer::PLUGIN_ID, $obj->getId());
+			$affectedRows += PlugInAutorisationPeer::doDelete($criteria, $con);
+
+			// delete related PlugInMiseEnOeuvreMenu objects
+			$criteria = new Criteria(PlugInMiseEnOeuvreMenuPeer::DATABASE_NAME);
+			
+			$criteria->add(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $obj->getId());
+			$affectedRows += PlugInMiseEnOeuvreMenuPeer::doDelete($criteria, $con);
+		}
+		return $affectedRows;
 	}
 
 	/**

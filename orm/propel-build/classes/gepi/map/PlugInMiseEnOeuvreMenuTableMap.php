@@ -50,7 +50,7 @@ class PlugInMiseEnOeuvreMenuTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('PlugIn', 'PlugIn', RelationMap::MANY_TO_ONE, array('plugin_id' => 'id', ), null, null);
+    $this->addRelation('PlugIn', 'PlugIn', RelationMap::MANY_TO_ONE, array('plugin_id' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // PlugInMiseEnOeuvreMenuTableMap

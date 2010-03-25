@@ -1112,6 +1112,7 @@ CREATE TABLE plugins_autorisations
 	CONSTRAINT plugins_autorisations_FK_1
 		FOREIGN KEY (plugin_id)
 		REFERENCES plugins (id)
+		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Liste des autorisations pour chaque statut';
 
 #-----------------------------------------------------------------------------
@@ -1134,6 +1135,7 @@ CREATE TABLE plugins_menus
 	CONSTRAINT plugins_menus_FK_1
 		FOREIGN KEY (plugin_id)
 		REFERENCES plugins (id)
+		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Items pour construire le menu de ce plug-in';
 
 #-----------------------------------------------------------------------------
@@ -1153,7 +1155,7 @@ CREATE TABLE preferences
 	CONSTRAINT preferences_FK_1
 		FOREIGN KEY (login)
 		REFERENCES utilisateurs (login)
-		ON DELETE SET NULL
+		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Preference (cle - valeur) associes à un utilisateur professionnel';
 
 #-----------------------------------------------------------------------------

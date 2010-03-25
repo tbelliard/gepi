@@ -49,8 +49,8 @@ class PlugInTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('PlugInAutorisation', 'PlugInAutorisation', RelationMap::ONE_TO_MANY, array('id' => 'plugin_id', ), null, null);
-    $this->addRelation('PlugInMiseEnOeuvreMenu', 'PlugInMiseEnOeuvreMenu', RelationMap::ONE_TO_MANY, array('id' => 'plugin_id', ), null, null);
+    $this->addRelation('PlugInAutorisation', 'PlugInAutorisation', RelationMap::ONE_TO_MANY, array('id' => 'plugin_id', ), 'CASCADE', null);
+    $this->addRelation('PlugInMiseEnOeuvreMenu', 'PlugInMiseEnOeuvreMenu', RelationMap::ONE_TO_MANY, array('id' => 'plugin_id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // PlugInTableMap

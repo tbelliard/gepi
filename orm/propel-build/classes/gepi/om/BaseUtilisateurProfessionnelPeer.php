@@ -807,6 +807,12 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			
 			$criteria->add(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $obj->getLogin());
 			$affectedRows += JAidUtilisateursProfessionnelsPeer::doDelete($criteria, $con);
+
+			// delete related PreferenceUtilisateurProfessionnel objects
+			$criteria = new Criteria(PreferenceUtilisateurProfessionnelPeer::DATABASE_NAME);
+			
+			$criteria->add(PreferenceUtilisateurProfessionnelPeer::LOGIN, $obj->getLogin());
+			$affectedRows += PreferenceUtilisateurProfessionnelPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
@@ -876,14 +882,6 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
 			$selectCriteria->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $obj->getLogin());
 			$updateValues->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, null);
-
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
-
-			// set fkey col in related PreferenceUtilisateurProfessionnel rows to NULL
-			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(PreferenceUtilisateurProfessionnelPeer::LOGIN, $obj->getLogin());
-			$updateValues->add(PreferenceUtilisateurProfessionnelPeer::LOGIN, null);
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
