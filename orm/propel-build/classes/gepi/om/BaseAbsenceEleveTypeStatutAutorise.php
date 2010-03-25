@@ -3,7 +3,7 @@
 /**
  * Base class that represents a row from the 'a_types_statut' table.
  *
- * Liste des statuts etant autorises à saisir des types d'absences donnes
+ * Liste des statuts autorises à saisir des types d'absences
  *
  * @package    propel.generator.gepi.om
  */
@@ -289,9 +289,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorise extends BaseObject  implements
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				AbsenceEleveTypeStatutAutoriseQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				AbsenceEleveTypeStatutAutorisePeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

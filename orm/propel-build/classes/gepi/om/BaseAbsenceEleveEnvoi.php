@@ -691,9 +691,7 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				AbsenceEleveEnvoiQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				AbsenceEleveEnvoiPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

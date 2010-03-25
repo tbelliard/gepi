@@ -694,9 +694,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				EdtEmplacementCoursQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				EdtEmplacementCoursPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

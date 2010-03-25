@@ -363,9 +363,7 @@ abstract class BasePlugInAutorisation extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				PlugInAutorisationQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				PlugInAutorisationPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

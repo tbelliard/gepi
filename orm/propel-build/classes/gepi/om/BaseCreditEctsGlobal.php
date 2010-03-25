@@ -289,9 +289,7 @@ abstract class BaseCreditEctsGlobal extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				CreditEctsGlobalQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				CreditEctsGlobalPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

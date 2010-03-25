@@ -11,16 +11,16 @@
  * @method     AbsenceEleveTypeQuery orderByJustificationExigible($order = Criteria::ASC) Order by the justification_exigible column
  * @method     AbsenceEleveTypeQuery orderByResponabiliteEtablissement($order = Criteria::ASC) Order by the responabilite_etablissement column
  * @method     AbsenceEleveTypeQuery orderByTypeSaisie($order = Criteria::ASC) Order by the type_saisie column
- * @method     AbsenceEleveTypeQuery orderByOrdre($order = Criteria::ASC) Order by the ordre column
  * @method     AbsenceEleveTypeQuery orderByCommentaire($order = Criteria::ASC) Order by the commentaire column
+ * @method     AbsenceEleveTypeQuery orderBySortableRank($order = Criteria::ASC) Order by the sortable_rank column
  *
  * @method     AbsenceEleveTypeQuery groupById() Group by the id column
  * @method     AbsenceEleveTypeQuery groupByNom() Group by the nom column
  * @method     AbsenceEleveTypeQuery groupByJustificationExigible() Group by the justification_exigible column
  * @method     AbsenceEleveTypeQuery groupByResponabiliteEtablissement() Group by the responabilite_etablissement column
  * @method     AbsenceEleveTypeQuery groupByTypeSaisie() Group by the type_saisie column
- * @method     AbsenceEleveTypeQuery groupByOrdre() Group by the ordre column
  * @method     AbsenceEleveTypeQuery groupByCommentaire() Group by the commentaire column
+ * @method     AbsenceEleveTypeQuery groupBySortableRank() Group by the sortable_rank column
  *
  * @method     AbsenceEleveTypeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     AbsenceEleveTypeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -40,16 +40,16 @@
  * @method     AbsenceEleveType findOneByJustificationExigible(boolean $justification_exigible) Return the first AbsenceEleveType filtered by the justification_exigible column
  * @method     AbsenceEleveType findOneByResponabiliteEtablissement(boolean $responabilite_etablissement) Return the first AbsenceEleveType filtered by the responabilite_etablissement column
  * @method     AbsenceEleveType findOneByTypeSaisie(string $type_saisie) Return the first AbsenceEleveType filtered by the type_saisie column
- * @method     AbsenceEleveType findOneByOrdre(int $ordre) Return the first AbsenceEleveType filtered by the ordre column
  * @method     AbsenceEleveType findOneByCommentaire(string $commentaire) Return the first AbsenceEleveType filtered by the commentaire column
+ * @method     AbsenceEleveType findOneBySortableRank(int $sortable_rank) Return the first AbsenceEleveType filtered by the sortable_rank column
  *
  * @method     array findById(int $id) Return AbsenceEleveType objects filtered by the id column
  * @method     array findByNom(string $nom) Return AbsenceEleveType objects filtered by the nom column
  * @method     array findByJustificationExigible(boolean $justification_exigible) Return AbsenceEleveType objects filtered by the justification_exigible column
  * @method     array findByResponabiliteEtablissement(boolean $responabilite_etablissement) Return AbsenceEleveType objects filtered by the responabilite_etablissement column
  * @method     array findByTypeSaisie(string $type_saisie) Return AbsenceEleveType objects filtered by the type_saisie column
- * @method     array findByOrdre(int $ordre) Return AbsenceEleveType objects filtered by the ordre column
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveType objects filtered by the commentaire column
+ * @method     array findBySortableRank(int $sortable_rank) Return AbsenceEleveType objects filtered by the sortable_rank column
  *
  * @package    propel.generator.gepi.om
  */
@@ -249,34 +249,6 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the ordre column
-	 * 
-	 * @param     int|array $ordre The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
-	 */
-	public function filterByOrdre($ordre = null, $comparison = Criteria::EQUAL)
-	{
-		if (is_array($ordre)) {
-			if (array_values($ordre) === $ordre) {
-				return $this->addUsingAlias(AbsenceEleveTypePeer::ORDRE, $ordre, Criteria::IN);
-			} else {
-				if (isset($ordre['min'])) {
-					$this->addUsingAlias(AbsenceEleveTypePeer::ORDRE, $ordre['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($ordre['max'])) {
-					$this->addUsingAlias(AbsenceEleveTypePeer::ORDRE, $ordre['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
-			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::ORDRE, $ordre, $comparison);
-		}
-	}
-
-	/**
 	 * Filter the query on the commentaire column
 	 * 
 	 * @param     string $commentaire The value to use as filter.
@@ -293,6 +265,34 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 			return $this->addUsingAlias(AbsenceEleveTypePeer::COMMENTAIRE, str_replace('*', '%', $commentaire), Criteria::LIKE);
 		} else {
 			return $this->addUsingAlias(AbsenceEleveTypePeer::COMMENTAIRE, $commentaire, $comparison);
+		}
+	}
+
+	/**
+	 * Filter the query on the sortable_rank column
+	 * 
+	 * @param     int|array $sortableRank The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
+	 */
+	public function filterBySortableRank($sortableRank = null, $comparison = Criteria::EQUAL)
+	{
+		if (is_array($sortableRank)) {
+			if (array_values($sortableRank) === $sortableRank) {
+				return $this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank, Criteria::IN);
+			} else {
+				if (isset($sortableRank['min'])) {
+					$this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank['min'], Criteria::GREATER_EQUAL);
+				}
+				if (isset($sortableRank['max'])) {
+					$this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank['max'], Criteria::LESS_EQUAL);
+				}
+				return $this;	
+			}
+		} else {
+			return $this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank, $comparison);
 		}
 	}
 
@@ -463,6 +463,128 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	protected function basePreUpdate(&$values, PropelPDO $con)
 	{
 		return $this->preUpdate($values, $con);
+	}
+
+	// sortable behavior
+	
+	/**
+	 * Filter the query based on a rank in the list
+	 *
+	 * @param     integer   $rank rank
+	 *
+	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
+	 */
+	public function filterByRank($rank)
+	{
+		return $this
+			->addUsingAlias(AbsenceEleveTypePeer::RANK_COL, $rank, Criteria::EQUAL);
+	}
+	
+	/**
+	 * Order the query based on the rank in the list.
+	 * Using the default $order, returns the item with the lowest rank first
+	 *
+	 * @param     string $order either Criteria::ASC (default) or Criteria::DESC
+	 *
+	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
+	 */
+	public function orderByRank($order = Criteria::ASC)
+	{
+		$order = strtoupper($order);
+		switch ($order) {
+			case Criteria::ASC:
+				return $this->addAscendingOrderByColumn($this->getAliasedColName(AbsenceEleveTypePeer::RANK_COL));
+				break;
+			case Criteria::DESC:
+				return $this->addDescendingOrderByColumn($this->getAliasedColName(AbsenceEleveTypePeer::RANK_COL));
+				break;
+			default:
+				throw new PropelException('AbsenceEleveTypeQuery::orderBy() only accepts "asc" or "desc" as argument');
+		}
+	}
+	
+	/**
+	 * Get an item from the list based on its rank
+	 *
+	 * @param     integer   $rank rank
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveType
+	 */
+	public function findOneByRank($rank, PropelPDO $con = null)
+	{
+		return $this
+			->filterByRank($rank)
+			->findOne($con);
+	}
+	
+	/**
+	 * Returns the list of objects
+	 *
+	 * @param      PropelPDO $con	Connection to use.
+	 *
+	 * @return     mixed the list of results, formatted by the current formatter
+	 */
+	public function findList($con = null)
+	{
+		return $this
+			->orderByRank()
+			->find($con);
+	}
+	
+	/**
+	 * Get the highest rank
+	 * 
+	 * @param     PropelPDO optional connection
+	 *
+	 * @return    integer highest position
+	 */
+	public function getMaxRank(PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
+		}
+		// shift the objects with a position lower than the one of object
+		$this->addSelectColumn('MAX(' . AbsenceEleveTypePeer::RANK_COL . ')');
+		$stmt = $this->getSelectStatement($con);
+		
+		return $stmt->fetchColumn();
+	}
+	
+	/**
+	 * Reorder a set of sortable objects based on a list of id/position
+	 * Beware that there is no check made on the positions passed
+	 * So incoherent positions will result in an incoherent list
+	 *
+	 * @param     array     $order id => rank pairs
+	 * @param     PropelPDO $con   optional connection
+	 *
+	 * @return    boolean true if the reordering took place, false if a database problem prevented it
+	 */
+	public function reorder(array $order, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
+		}
+		
+		$con->beginTransaction();
+		try {
+			$ids = array_keys($order);
+			$objects = $this->findPks($ids, $con);
+			foreach ($objects as $object) {
+				$pk = $object->getPrimaryKey();
+				if ($object->getSortableRank() != $order[$pk]) {
+					$object->setSortableRank($order[$pk]);
+					$object->save($con);
+				}
+			}
+			$con->commit();
+	
+			return true;
+		} catch (PropelException $e) {
+			$con->rollback();
+			throw $e;
+		}
 	}
 
 } // BaseAbsenceEleveTypeQuery

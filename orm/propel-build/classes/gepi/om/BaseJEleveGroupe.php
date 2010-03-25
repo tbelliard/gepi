@@ -340,9 +340,7 @@ abstract class BaseJEleveGroupe extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JEleveGroupeQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				JEleveGroupePeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

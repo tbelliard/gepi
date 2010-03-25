@@ -554,9 +554,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				CahierTexteNoticePriveeQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				CahierTexteNoticePriveePeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

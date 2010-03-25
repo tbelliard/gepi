@@ -8,13 +8,13 @@
  *
  * @method     AbsenceEleveTypeEnvoiQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     AbsenceEleveTypeEnvoiQuery orderByNom($order = Criteria::ASC) Order by the nom column
- * @method     AbsenceEleveTypeEnvoiQuery orderByOrdreAffichage($order = Criteria::ASC) Order by the ordre_affichage column
  * @method     AbsenceEleveTypeEnvoiQuery orderByContenu($order = Criteria::ASC) Order by the contenu column
+ * @method     AbsenceEleveTypeEnvoiQuery orderBySortableRank($order = Criteria::ASC) Order by the sortable_rank column
  *
  * @method     AbsenceEleveTypeEnvoiQuery groupById() Group by the id column
  * @method     AbsenceEleveTypeEnvoiQuery groupByNom() Group by the nom column
- * @method     AbsenceEleveTypeEnvoiQuery groupByOrdreAffichage() Group by the ordre_affichage column
  * @method     AbsenceEleveTypeEnvoiQuery groupByContenu() Group by the contenu column
+ * @method     AbsenceEleveTypeEnvoiQuery groupBySortableRank() Group by the sortable_rank column
  *
  * @method     AbsenceEleveTypeEnvoiQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     AbsenceEleveTypeEnvoiQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -27,13 +27,13 @@
  * @method     AbsenceEleveTypeEnvoi findOne(PropelPDO $con = null) Return the first AbsenceEleveTypeEnvoi matching the query
  * @method     AbsenceEleveTypeEnvoi findOneById(int $id) Return the first AbsenceEleveTypeEnvoi filtered by the id column
  * @method     AbsenceEleveTypeEnvoi findOneByNom(string $nom) Return the first AbsenceEleveTypeEnvoi filtered by the nom column
- * @method     AbsenceEleveTypeEnvoi findOneByOrdreAffichage(int $ordre_affichage) Return the first AbsenceEleveTypeEnvoi filtered by the ordre_affichage column
  * @method     AbsenceEleveTypeEnvoi findOneByContenu(string $contenu) Return the first AbsenceEleveTypeEnvoi filtered by the contenu column
+ * @method     AbsenceEleveTypeEnvoi findOneBySortableRank(int $sortable_rank) Return the first AbsenceEleveTypeEnvoi filtered by the sortable_rank column
  *
  * @method     array findById(int $id) Return AbsenceEleveTypeEnvoi objects filtered by the id column
  * @method     array findByNom(string $nom) Return AbsenceEleveTypeEnvoi objects filtered by the nom column
- * @method     array findByOrdreAffichage(int $ordre_affichage) Return AbsenceEleveTypeEnvoi objects filtered by the ordre_affichage column
  * @method     array findByContenu(string $contenu) Return AbsenceEleveTypeEnvoi objects filtered by the contenu column
+ * @method     array findBySortableRank(int $sortable_rank) Return AbsenceEleveTypeEnvoi objects filtered by the sortable_rank column
  *
  * @package    propel.generator.gepi.om
  */
@@ -179,34 +179,6 @@ abstract class BaseAbsenceEleveTypeEnvoiQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the ordre_affichage column
-	 * 
-	 * @param     int|array $ordreAffichage The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    AbsenceEleveTypeEnvoiQuery The current query, for fluid interface
-	 */
-	public function filterByOrdreAffichage($ordreAffichage = null, $comparison = Criteria::EQUAL)
-	{
-		if (is_array($ordreAffichage)) {
-			if (array_values($ordreAffichage) === $ordreAffichage) {
-				return $this->addUsingAlias(AbsenceEleveTypeEnvoiPeer::ORDRE_AFFICHAGE, $ordreAffichage, Criteria::IN);
-			} else {
-				if (isset($ordreAffichage['min'])) {
-					$this->addUsingAlias(AbsenceEleveTypeEnvoiPeer::ORDRE_AFFICHAGE, $ordreAffichage['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($ordreAffichage['max'])) {
-					$this->addUsingAlias(AbsenceEleveTypeEnvoiPeer::ORDRE_AFFICHAGE, $ordreAffichage['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
-			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveTypeEnvoiPeer::ORDRE_AFFICHAGE, $ordreAffichage, $comparison);
-		}
-	}
-
-	/**
 	 * Filter the query on the contenu column
 	 * 
 	 * @param     string $contenu The value to use as filter.
@@ -223,6 +195,34 @@ abstract class BaseAbsenceEleveTypeEnvoiQuery extends ModelCriteria
 			return $this->addUsingAlias(AbsenceEleveTypeEnvoiPeer::CONTENU, str_replace('*', '%', $contenu), Criteria::LIKE);
 		} else {
 			return $this->addUsingAlias(AbsenceEleveTypeEnvoiPeer::CONTENU, $contenu, $comparison);
+		}
+	}
+
+	/**
+	 * Filter the query on the sortable_rank column
+	 * 
+	 * @param     int|array $sortableRank The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveTypeEnvoiQuery The current query, for fluid interface
+	 */
+	public function filterBySortableRank($sortableRank = null, $comparison = Criteria::EQUAL)
+	{
+		if (is_array($sortableRank)) {
+			if (array_values($sortableRank) === $sortableRank) {
+				return $this->addUsingAlias(AbsenceEleveTypeEnvoiPeer::SORTABLE_RANK, $sortableRank, Criteria::IN);
+			} else {
+				if (isset($sortableRank['min'])) {
+					$this->addUsingAlias(AbsenceEleveTypeEnvoiPeer::SORTABLE_RANK, $sortableRank['min'], Criteria::GREATER_EQUAL);
+				}
+				if (isset($sortableRank['max'])) {
+					$this->addUsingAlias(AbsenceEleveTypeEnvoiPeer::SORTABLE_RANK, $sortableRank['max'], Criteria::LESS_EQUAL);
+				}
+				return $this;	
+			}
+		} else {
+			return $this->addUsingAlias(AbsenceEleveTypeEnvoiPeer::SORTABLE_RANK, $sortableRank, $comparison);
 		}
 	}
 
@@ -332,6 +332,128 @@ abstract class BaseAbsenceEleveTypeEnvoiQuery extends ModelCriteria
 	protected function basePreUpdate(&$values, PropelPDO $con)
 	{
 		return $this->preUpdate($values, $con);
+	}
+
+	// sortable behavior
+	
+	/**
+	 * Filter the query based on a rank in the list
+	 *
+	 * @param     integer   $rank rank
+	 *
+	 * @return    AbsenceEleveTypeEnvoiQuery The current query, for fluid interface
+	 */
+	public function filterByRank($rank)
+	{
+		return $this
+			->addUsingAlias(AbsenceEleveTypeEnvoiPeer::RANK_COL, $rank, Criteria::EQUAL);
+	}
+	
+	/**
+	 * Order the query based on the rank in the list.
+	 * Using the default $order, returns the item with the lowest rank first
+	 *
+	 * @param     string $order either Criteria::ASC (default) or Criteria::DESC
+	 *
+	 * @return    AbsenceEleveTypeEnvoiQuery The current query, for fluid interface
+	 */
+	public function orderByRank($order = Criteria::ASC)
+	{
+		$order = strtoupper($order);
+		switch ($order) {
+			case Criteria::ASC:
+				return $this->addAscendingOrderByColumn($this->getAliasedColName(AbsenceEleveTypeEnvoiPeer::RANK_COL));
+				break;
+			case Criteria::DESC:
+				return $this->addDescendingOrderByColumn($this->getAliasedColName(AbsenceEleveTypeEnvoiPeer::RANK_COL));
+				break;
+			default:
+				throw new PropelException('AbsenceEleveTypeEnvoiQuery::orderBy() only accepts "asc" or "desc" as argument');
+		}
+	}
+	
+	/**
+	 * Get an item from the list based on its rank
+	 *
+	 * @param     integer   $rank rank
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveTypeEnvoi
+	 */
+	public function findOneByRank($rank, PropelPDO $con = null)
+	{
+		return $this
+			->filterByRank($rank)
+			->findOne($con);
+	}
+	
+	/**
+	 * Returns the list of objects
+	 *
+	 * @param      PropelPDO $con	Connection to use.
+	 *
+	 * @return     mixed the list of results, formatted by the current formatter
+	 */
+	public function findList($con = null)
+	{
+		return $this
+			->orderByRank()
+			->find($con);
+	}
+	
+	/**
+	 * Get the highest rank
+	 * 
+	 * @param     PropelPDO optional connection
+	 *
+	 * @return    integer highest position
+	 */
+	public function getMaxRank(PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypeEnvoiPeer::DATABASE_NAME);
+		}
+		// shift the objects with a position lower than the one of object
+		$this->addSelectColumn('MAX(' . AbsenceEleveTypeEnvoiPeer::RANK_COL . ')');
+		$stmt = $this->getSelectStatement($con);
+		
+		return $stmt->fetchColumn();
+	}
+	
+	/**
+	 * Reorder a set of sortable objects based on a list of id/position
+	 * Beware that there is no check made on the positions passed
+	 * So incoherent positions will result in an incoherent list
+	 *
+	 * @param     array     $order id => rank pairs
+	 * @param     PropelPDO $con   optional connection
+	 *
+	 * @return    boolean true if the reordering took place, false if a database problem prevented it
+	 */
+	public function reorder(array $order, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypeEnvoiPeer::DATABASE_NAME);
+		}
+		
+		$con->beginTransaction();
+		try {
+			$ids = array_keys($order);
+			$objects = $this->findPks($ids, $con);
+			foreach ($objects as $object) {
+				$pk = $object->getPrimaryKey();
+				if ($object->getSortableRank() != $order[$pk]) {
+					$object->setSortableRank($order[$pk]);
+					$object->save($con);
+				}
+			}
+			$con->commit();
+	
+			return true;
+		} catch (PropelException $e) {
+			$con->rollback();
+			throw $e;
+		}
 	}
 
 } // BaseAbsenceEleveTypeEnvoiQuery

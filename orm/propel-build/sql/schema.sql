@@ -709,7 +709,7 @@ CREATE TABLE a_actions
 	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incrementee',
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom de l\'action',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
-	ordre INTEGER(3)  NOT NULL COMMENT 'Ordre d\'affichage de l\'action dans la liste déroulante',
+	sortable_rank INTEGER,
 	PRIMARY KEY (id)
 )Type=MyISAM COMMENT='Liste des actions possibles sur une absence';
 
@@ -725,7 +725,7 @@ CREATE TABLE a_motifs
 	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incrementee',
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom du motif',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
-	ordre INTEGER(3)  NOT NULL COMMENT 'Ordre d\'affichage du motif dans la liste déroulante',
+	sortable_rank INTEGER,
 	PRIMARY KEY (id)
 )Type=MyISAM COMMENT='Liste des motifs possibles pour une absence';
 
@@ -741,7 +741,7 @@ CREATE TABLE a_justifications
 	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incrementee',
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom de la justification',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
-	ordre INTEGER(3)  NOT NULL COMMENT 'Ordre d\'affichage de la justification dans la liste déroulante',
+	sortable_rank INTEGER,
 	PRIMARY KEY (id)
 )Type=MyISAM COMMENT='Liste des justifications possibles pour une absence';
 
@@ -759,8 +759,8 @@ CREATE TABLE a_types
 	justification_exigible TINYINT COMMENT 'Ce type d\'absence doit entrainer une justification de la part de la famille',
 	responabilite_etablissement TINYINT COMMENT 'L\'eleve est encore sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l\'eleve est encore sous la responsabilité de l\'etablissement',
 	type_saisie VARCHAR(50)  NOT NULL COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE',
-	ordre INTEGER(3)  NOT NULL COMMENT 'Ordre d\'affichage du type dans la liste déroulante',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
+	sortable_rank INTEGER,
 	PRIMARY KEY (id)
 )Type=MyISAM COMMENT='Liste des types d\'absences possibles dans l\'etablissement';
 
@@ -782,7 +782,7 @@ CREATE TABLE a_types_statut
 		FOREIGN KEY (id_a_type)
 		REFERENCES a_types (id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Liste des statuts etant autorises à saisir des types d\'absences donnes';
+)Type=MyISAM COMMENT='Liste des statuts autorises à saisir des types d\'absences';
 
 #-----------------------------------------------------------------------------
 #-- a_saisies
@@ -937,8 +937,8 @@ CREATE TABLE a_type_envois
 (
 	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
 	nom VARCHAR(100)  NOT NULL COMMENT 'nom du type de l\'envoi',
-	ordre_affichage INTEGER(4)  NOT NULL COMMENT 'ordre d\'affichage du type de l\'envoi',
 	contenu LONGTEXT  NOT NULL COMMENT 'Contenu modele de l\'envoi',
+	sortable_rank INTEGER,
 	PRIMARY KEY (id)
 )Type=MyISAM COMMENT='Chaque envoi dispose d\'un type qui est stocke ici';
 

@@ -637,9 +637,7 @@ abstract class BaseEdtHoraires extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				EdtHorairesQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				EdtHorairesPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

@@ -365,9 +365,7 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JCategoriesMatieresClassesQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				JCategoriesMatieresClassesPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

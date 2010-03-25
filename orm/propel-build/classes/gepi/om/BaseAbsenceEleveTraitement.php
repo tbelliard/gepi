@@ -738,9 +738,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				AbsenceEleveTraitementQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				AbsenceEleveTraitementPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

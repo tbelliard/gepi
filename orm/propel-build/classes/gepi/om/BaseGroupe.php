@@ -374,9 +374,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				GroupeQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				GroupePeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

@@ -3,7 +3,7 @@
 /**
  * Base static class for performing query and update operations on the 'a_types_statut' table.
  *
- * Liste des statuts etant autorises à saisir des types d'absences donnes
+ * Liste des statuts autorises à saisir des types d'absences
  *
  * @package    propel.generator.gepi.om
  */

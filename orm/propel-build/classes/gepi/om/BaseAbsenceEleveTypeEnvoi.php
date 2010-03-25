@@ -36,16 +36,16 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 	protected $nom;
 
 	/**
-	 * The value for the ordre_affichage field.
-	 * @var        int
-	 */
-	protected $ordre_affichage;
-
-	/**
 	 * The value for the contenu field.
 	 * @var        string
 	 */
 	protected $contenu;
+
+	/**
+	 * The value for the sortable_rank field.
+	 * @var        int
+	 */
+	protected $sortable_rank;
 
 	/**
 	 * @var        array AbsenceEleveEnvoi[] Collection to store aggregation of AbsenceEleveEnvoi objects.
@@ -65,6 +65,14 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	// sortable behavior
+	
+	/**
+	 * Queries to be executed in the save transaction
+	 * @var        array
+	 */
+	protected $sortableQueries = array();
 
 	/**
 	 * Get the [id] column value.
@@ -87,16 +95,6 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 	}
 
 	/**
-	 * Get the [ordre_affichage] column value.
-	 * ordre d'affichage du type de l'envoi
-	 * @return     int
-	 */
-	public function getOrdreAffichage()
-	{
-		return $this->ordre_affichage;
-	}
-
-	/**
 	 * Get the [contenu] column value.
 	 * Contenu modele de l'envoi
 	 * @return     string
@@ -104,6 +102,16 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 	public function getContenu()
 	{
 		return $this->contenu;
+	}
+
+	/**
+	 * Get the [sortable_rank] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getSortableRank()
+	{
+		return $this->sortable_rank;
 	}
 
 	/**
@@ -147,26 +155,6 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 	} // setNom()
 
 	/**
-	 * Set the value of [ordre_affichage] column.
-	 * ordre d'affichage du type de l'envoi
-	 * @param      int $v new value
-	 * @return     AbsenceEleveTypeEnvoi The current object (for fluent API support)
-	 */
-	public function setOrdreAffichage($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->ordre_affichage !== $v) {
-			$this->ordre_affichage = $v;
-			$this->modifiedColumns[] = AbsenceEleveTypeEnvoiPeer::ORDRE_AFFICHAGE;
-		}
-
-		return $this;
-	} // setOrdreAffichage()
-
-	/**
 	 * Set the value of [contenu] column.
 	 * Contenu modele de l'envoi
 	 * @param      string $v new value
@@ -185,6 +173,26 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 
 		return $this;
 	} // setContenu()
+
+	/**
+	 * Set the value of [sortable_rank] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     AbsenceEleveTypeEnvoi The current object (for fluent API support)
+	 */
+	public function setSortableRank($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->sortable_rank !== $v) {
+			$this->sortable_rank = $v;
+			$this->modifiedColumns[] = AbsenceEleveTypeEnvoiPeer::SORTABLE_RANK;
+		}
+
+		return $this;
+	} // setSortableRank()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -220,8 +228,8 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 
 			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->nom = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-			$this->ordre_affichage = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-			$this->contenu = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->contenu = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->sortable_rank = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -319,10 +327,13 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
+			// sortable behavior
+			
+			AbsenceEleveTypeEnvoiPeer::shiftRank(-1, $this->getSortableRank() + 1, null, $con);
+			AbsenceEleveTypeEnvoiPeer::clearInstancePool();
+
 			if ($ret) {
-				AbsenceEleveTypeEnvoiQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				AbsenceEleveTypeEnvoiPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
@@ -362,8 +373,15 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 		$isInsert = $this->isNew();
 		try {
 			$ret = $this->preSave($con);
+			// sortable behavior
+			$this->processSortableQueries($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// sortable behavior
+				if (!$this->isColumnModified(AbsenceEleveTypeEnvoiPeer::RANK_COL)) {
+					$this->setSortableRank(AbsenceEleveTypeEnvoiQuery::create()->getMaxRank($con) + 1);
+				}
+
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 			}
@@ -554,10 +572,10 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 				return $this->getNom();
 				break;
 			case 2:
-				return $this->getOrdreAffichage();
+				return $this->getContenu();
 				break;
 			case 3:
-				return $this->getContenu();
+				return $this->getSortableRank();
 				break;
 			default:
 				return null;
@@ -584,8 +602,8 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 		$result = array(
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getNom(),
-			$keys[2] => $this->getOrdreAffichage(),
-			$keys[3] => $this->getContenu(),
+			$keys[2] => $this->getContenu(),
+			$keys[3] => $this->getSortableRank(),
 		);
 		return $result;
 	}
@@ -624,10 +642,10 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 				$this->setNom($value);
 				break;
 			case 2:
-				$this->setOrdreAffichage($value);
+				$this->setContenu($value);
 				break;
 			case 3:
-				$this->setContenu($value);
+				$this->setSortableRank($value);
 				break;
 		} // switch()
 	}
@@ -655,8 +673,8 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setNom($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setOrdreAffichage($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setContenu($arr[$keys[3]]);
+		if (array_key_exists($keys[2], $arr)) $this->setContenu($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setSortableRank($arr[$keys[3]]);
 	}
 
 	/**
@@ -670,8 +688,8 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 
 		if ($this->isColumnModified(AbsenceEleveTypeEnvoiPeer::ID)) $criteria->add(AbsenceEleveTypeEnvoiPeer::ID, $this->id);
 		if ($this->isColumnModified(AbsenceEleveTypeEnvoiPeer::NOM)) $criteria->add(AbsenceEleveTypeEnvoiPeer::NOM, $this->nom);
-		if ($this->isColumnModified(AbsenceEleveTypeEnvoiPeer::ORDRE_AFFICHAGE)) $criteria->add(AbsenceEleveTypeEnvoiPeer::ORDRE_AFFICHAGE, $this->ordre_affichage);
 		if ($this->isColumnModified(AbsenceEleveTypeEnvoiPeer::CONTENU)) $criteria->add(AbsenceEleveTypeEnvoiPeer::CONTENU, $this->contenu);
+		if ($this->isColumnModified(AbsenceEleveTypeEnvoiPeer::SORTABLE_RANK)) $criteria->add(AbsenceEleveTypeEnvoiPeer::SORTABLE_RANK, $this->sortable_rank);
 
 		return $criteria;
 	}
@@ -734,8 +752,8 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 	public function copyInto($copyObj, $deepCopy = false)
 	{
 		$copyObj->setNom($this->nom);
-		$copyObj->setOrdreAffichage($this->ordre_affichage);
 		$copyObj->setContenu($this->contenu);
+		$copyObj->setSortableRank($this->sortable_rank);
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -929,8 +947,8 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 	{
 		$this->id = null;
 		$this->nom = null;
-		$this->ordre_affichage = null;
 		$this->contenu = null;
+		$this->sortable_rank = null;
 		$this->clearAllReferences();
 		$this->setNew(true);
 	}
@@ -955,6 +973,341 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 		} // if ($deep)
 
 		$this->collAbsenceEleveEnvois = null;
+	}
+
+	// sortable behavior
+	
+	/**
+	 * Wrap the getter for rank value
+	 *
+	 * @return    int
+	 */
+	public function getRank()
+	{
+		return $this->sortable_rank;
+	}
+	
+	/**
+	 * Wrap the setter for rank value
+	 *
+	 * @param     int
+	 * @return    AbsenceEleveTypeEnvoi
+	 */
+	public function setRank($v)
+	{
+		return $this->setSortableRank($v);
+	}
+	
+	/**
+	 * Check if the object is first in the list, i.e. if it has 1 for rank
+	 *
+	 * @return    boolean
+	 */
+	public function isFirst()
+	{
+		return $this->getSortableRank() == 1;
+	}
+	
+	/**
+	 * Check if the object is last in the list, i.e. if its rank is the highest rank
+	 *
+	 * @param     PropelPDO  $con      optional connection
+	 *
+	 * @return    boolean
+	 */
+	public function isLast(PropelPDO $con = null)
+	{
+		return $this->getSortableRank() == AbsenceEleveTypeEnvoiQuery::create()->getMaxRank($con);
+	}
+	
+	/**
+	 * Get the next item in the list, i.e. the one for which rank is immediately higher
+	 *
+	 * @param     PropelPDO  $con      optional connection
+	 *
+	 * @return    AbsenceEleveTypeEnvoi
+	 */
+	public function getNext(PropelPDO $con = null)
+	{
+		return AbsenceEleveTypeEnvoiQuery::create()->findOneByRank($this->getSortableRank() + 1, $con);
+	}
+	
+	/**
+	 * Get the previous item in the list, i.e. the one for which rank is immediately lower
+	 *
+	 * @param     PropelPDO  $con      optional connection
+	 *
+	 * @return    AbsenceEleveTypeEnvoi
+	 */
+	public function getPrevious(PropelPDO $con = null)
+	{
+		return AbsenceEleveTypeEnvoiQuery::create()->findOneByRank($this->getSortableRank() - 1, $con);
+	}
+	
+	/**
+	 * Insert at specified rank
+	 * The modifications are not persisted until the object is saved.
+	 *
+	 * @param     integer    $rank rank value
+	 * @param     PropelPDO  $con      optional connection
+	 *
+	 * @return    AbsenceEleveTypeEnvoi the current object
+	 *
+	 * @throws    PropelException
+	 */
+	public function insertAtRank($rank, PropelPDO $con = null)
+	{
+		$maxRank = AbsenceEleveTypeEnvoiQuery::create()->getMaxRank($con);
+		if ($rank < 1 || $rank > $maxRank + 1) {
+			throw new PropelException('Invalid rank ' . $rank);
+		}
+		// move the object in the list, at the given rank
+		$this->setSortableRank($rank);
+		if ($rank != $maxRank + 1) {
+			// Keep the list modification query for the save() transaction
+			$this->sortableQueries []= array(
+				'callable'  => array('AbsenceEleveTypeEnvoiPeer', 'shiftRank'),
+				'arguments' => array(1, $rank, null, )
+			);
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Insert in the last rank
+	 * The modifications are not persisted until the object is saved.
+	 *
+	 * @param PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveTypeEnvoi the current object
+	 *
+	 * @throws    PropelException
+	 */
+	public function insertAtBottom(PropelPDO $con = null)
+	{
+		$this->setSortableRank(AbsenceEleveTypeEnvoiQuery::create()->getMaxRank($con) + 1);
+		
+		return $this;
+	}
+	
+	/**
+	 * Insert in the first rank
+	 * The modifications are not persisted until the object is saved.
+	 *
+	 * @return    AbsenceEleveTypeEnvoi the current object
+	 */
+	public function insertAtTop()
+	{
+		return $this->insertAtRank(1);
+	}
+	
+	/**
+	 * Move the object to a new rank, and shifts the rank
+	 * Of the objects inbetween the old and new rank accordingly
+	 *
+	 * @param     integer   $newRank rank value
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveTypeEnvoi the current object
+	 *
+	 * @throws    PropelException
+	 */
+	public function moveToRank($newRank, PropelPDO $con = null)
+	{
+		if ($this->isNew()) {
+			throw new PropelException('New objects cannot be moved. Please use insertAtRank() instead');
+		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypeEnvoiPeer::DATABASE_NAME);
+		}
+		if ($newRank < 1 || $newRank > AbsenceEleveTypeEnvoiQuery::create()->getMaxRank($con)) {
+			throw new PropelException('Invalid rank ' . $newRank);
+		}
+	
+		$oldRank = $this->getSortableRank();
+		if ($oldRank == $newRank) {
+			return $this;
+		}
+		
+		$con->beginTransaction();
+		try {
+			// shift the objects between the old and the new rank
+			$delta = ($oldRank < $newRank) ? -1 : 1;
+			AbsenceEleveTypeEnvoiPeer::shiftRank($delta, min($oldRank, $newRank), max($oldRank, $newRank), $con);
+				
+			// move the object to its new rank
+			$this->setSortableRank($newRank);
+			$this->save($con);
+			
+			$con->commit();
+			return $this;
+		} catch (Exception $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Exchange the rank of the object with the one passed as argument, and saves both objects
+	 *
+	 * @param     AbsenceEleveTypeEnvoi $object
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveTypeEnvoi the current object
+	 *
+	 * @throws Exception if the database cannot execute the two updates
+	 */
+	public function swapWith($object, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypeEnvoiPeer::DATABASE_NAME);
+		}
+		$con->beginTransaction();
+		try {
+			$oldRank = $this->getSortableRank();
+			$newRank = $object->getSortableRank();
+			$this->setSortableRank($newRank);
+			$this->save($con);
+			$object->setSortableRank($oldRank);
+			$object->save($con);
+			$con->commit();
+			
+			return $this;
+		} catch (Exception $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Move the object higher in the list, i.e. exchanges its rank with the one of the previous object
+	 *
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveTypeEnvoi the current object
+	 */
+	public function moveUp(PropelPDO $con = null)
+	{
+		if ($this->isFirst()) {
+			return $this;
+		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypeEnvoiPeer::DATABASE_NAME);
+		}
+		$con->beginTransaction();
+		try {
+			$prev = $this->getPrevious($con);
+			$this->swapWith($prev, $con);
+			$con->commit();
+			
+			return $this;
+		} catch (Exception $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Move the object higher in the list, i.e. exchanges its rank with the one of the next object
+	 *
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveTypeEnvoi the current object
+	 */
+	public function moveDown(PropelPDO $con = null)
+	{
+		if ($this->isLast($con)) {
+			return $this;
+		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypeEnvoiPeer::DATABASE_NAME);
+		}
+		$con->beginTransaction();
+		try {
+			$next = $this->getNext($con);
+			$this->swapWith($next, $con);
+			$con->commit();
+			
+			return $this;
+		} catch (Exception $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Move the object to the top of the list
+	 *
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveTypeEnvoi the current object
+	 */
+	public function moveToTop(PropelPDO $con = null)
+	{
+		if ($this->isFirst()) {
+			return $this;
+		}
+		return $this->moveToRank(1, $con);
+	}
+	
+	/**
+	 * Move the object to the bottom of the list
+	 *
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return integer the old object's rank
+	 */
+	public function moveToBottom(PropelPDO $con = null)
+	{
+		if ($this->isLast($con)) {
+			return false;
+		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypeEnvoiPeer::DATABASE_NAME);
+		}
+		$con->beginTransaction();
+		try {
+			$bottom = AbsenceEleveTypeEnvoiQuery::create()->getMaxRank($con);
+			$res = $this->moveToRank($bottom, $con);
+			$con->commit();
+			
+			return $res;
+		} catch (Exception $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Removes the current object from the list.
+	 * The modifications are not persisted until the object is saved.
+	 *
+	 * @return    AbsenceEleveTypeEnvoi the current object
+	 */
+	public function removeFromList()
+	{
+		// Keep the list modification query for the save() transaction
+		$this->sortableQueries []= array(
+			'callable'  => array('AbsenceEleveTypeEnvoiPeer', 'shiftRank'),
+			'arguments' => array(-1, $this->getSortableRank() + 1, null)
+		);
+		// remove the object from the list
+		$this->setSortableRank(null);
+		
+		return $this;
+	}
+	
+	/**
+	 * Execute queries that were saved to be run inside the save transaction
+	 */
+	protected function processSortableQueries($con)
+	{
+		foreach ($this->sortableQueries as $query) {
+			$query['arguments'][]= $con;
+			call_user_func_array($query['callable'], $query['arguments']);
+		}
+		$this->sortableQueries = array();
 	}
 
 	/**

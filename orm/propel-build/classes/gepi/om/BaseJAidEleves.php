@@ -341,9 +341,7 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JAidElevesQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				JAidElevesPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

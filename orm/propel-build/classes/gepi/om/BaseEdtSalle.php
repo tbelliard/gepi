@@ -283,9 +283,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				EdtSalleQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				EdtSallePeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

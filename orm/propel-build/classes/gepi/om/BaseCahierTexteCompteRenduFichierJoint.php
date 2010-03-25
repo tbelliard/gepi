@@ -395,9 +395,7 @@ abstract class BaseCahierTexteCompteRenduFichierJoint extends BaseObject  implem
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				CahierTexteCompteRenduFichierJointQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				CahierTexteCompteRenduFichierJointPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

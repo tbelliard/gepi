@@ -400,9 +400,7 @@ abstract class BasePlugInMiseEnOeuvreMenu extends BaseObject  implements Persist
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				PlugInMiseEnOeuvreMenuQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				PlugInMiseEnOeuvreMenuPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

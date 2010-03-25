@@ -327,9 +327,7 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				CategorieMatiereQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				CategorieMatierePeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

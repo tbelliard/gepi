@@ -395,9 +395,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJoint extends BaseObject  impl
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				CahierTexteTravailAFaireFichierJointQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				CahierTexteTravailAFaireFichierJointPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

@@ -291,9 +291,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JEleveAncienEtablissementQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				JEleveAncienEtablissementPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

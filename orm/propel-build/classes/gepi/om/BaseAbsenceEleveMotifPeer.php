@@ -39,8 +39,8 @@ abstract class BaseAbsenceEleveMotifPeer {
 	/** the column name for the COMMENTAIRE field */
 	const COMMENTAIRE = 'a_motifs.COMMENTAIRE';
 
-	/** the column name for the ORDRE field */
-	const ORDRE = 'a_motifs.ORDRE';
+	/** the column name for the SORTABLE_RANK field */
+	const SORTABLE_RANK = 'a_motifs.SORTABLE_RANK';
 
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveMotif objects.
@@ -51,6 +51,13 @@ abstract class BaseAbsenceEleveMotifPeer {
 	public static $instances = array();
 
 
+	// sortable behavior
+	
+	/**
+	 * rank column
+	 */
+	const RANK_COL = 'a_motifs.SORTABLE_RANK';
+
 	/**
 	 * holds an array of fieldnames
 	 *
@@ -58,11 +65,11 @@ abstract class BaseAbsenceEleveMotifPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'Commentaire', 'Ordre', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'commentaire', 'ordre', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::COMMENTAIRE, self::ORDRE, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'COMMENTAIRE', 'ORDRE', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'commentaire', 'ordre', ),
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'Commentaire', 'SortableRank', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'commentaire', 'sortableRank', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::COMMENTAIRE, self::SORTABLE_RANK, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'COMMENTAIRE', 'SORTABLE_RANK', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'commentaire', 'sortable_rank', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
@@ -73,11 +80,11 @@ abstract class BaseAbsenceEleveMotifPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'Commentaire' => 2, 'Ordre' => 3, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'ordre' => 3, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::COMMENTAIRE => 2, self::ORDRE => 3, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'COMMENTAIRE' => 2, 'ORDRE' => 3, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'ordre' => 3, ),
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'Commentaire' => 2, 'SortableRank' => 3, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'sortableRank' => 3, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::COMMENTAIRE => 2, self::SORTABLE_RANK => 3, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'COMMENTAIRE' => 2, 'SORTABLE_RANK' => 3, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'sortable_rank' => 3, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
@@ -153,12 +160,12 @@ abstract class BaseAbsenceEleveMotifPeer {
 			$criteria->addSelectColumn(AbsenceEleveMotifPeer::ID);
 			$criteria->addSelectColumn(AbsenceEleveMotifPeer::NOM);
 			$criteria->addSelectColumn(AbsenceEleveMotifPeer::COMMENTAIRE);
-			$criteria->addSelectColumn(AbsenceEleveMotifPeer::ORDRE);
+			$criteria->addSelectColumn(AbsenceEleveMotifPeer::SORTABLE_RANK);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
 			$criteria->addSelectColumn($alias . '.NOM');
 			$criteria->addSelectColumn($alias . '.COMMENTAIRE');
-			$criteria->addSelectColumn($alias . '.ORDRE');
+			$criteria->addSelectColumn($alias . '.SORTABLE_RANK');
 		}
 	}
 
@@ -777,6 +784,145 @@ abstract class BaseAbsenceEleveMotifPeer {
 			$objs = AbsenceEleveMotifPeer::doSelect($criteria, $con);
 		}
 		return $objs;
+	}
+
+	// sortable behavior
+	
+	/**
+	 * Get the highest rank
+	 * 
+	 * @param     PropelPDO optional connection
+	 *
+	 * @return    integer highest position
+	 */
+	public static function getMaxRank(PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveMotifPeer::DATABASE_NAME);
+		}
+		// shift the objects with a position lower than the one of object
+		$c = new Criteria();
+		$c->addSelectColumn('MAX(' . AbsenceEleveMotifPeer::RANK_COL . ')');
+		$stmt = AbsenceEleveMotifPeer::doSelectStmt($c, $con);
+		
+		return $stmt->fetchColumn();
+	}
+	
+	/**
+	 * Get an item from the list based on its rank
+	 *
+	 * @param     integer   $rank rank
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return AbsenceEleveMotif
+	 */
+	public static function retrieveByRank($rank, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveMotifPeer::DATABASE_NAME);
+		}
+	
+		$c = new Criteria;
+		$c->add(AbsenceEleveMotifPeer::RANK_COL, $rank);
+		
+		return AbsenceEleveMotifPeer::doSelectOne($c, $con);
+	}
+	
+	/**
+	 * Reorder a set of sortable objects based on a list of id/position
+	 * Beware that there is no check made on the positions passed
+	 * So incoherent positions will result in an incoherent list
+	 *
+	 * @param     array     $order id => rank pairs
+	 * @param     PropelPDO $con   optional connection
+	 *
+	 * @return    boolean true if the reordering took place, false if a database problem prevented it
+	 */
+	public static function reorder(array $order, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveMotifPeer::DATABASE_NAME);
+		}
+		
+		$con->beginTransaction();
+		try {
+			$ids = array_keys($order);
+			$objects = AbsenceEleveMotifPeer::retrieveByPKs($ids);
+			foreach ($objects as $object) {
+				$pk = $object->getPrimaryKey();
+				if ($object->getSortableRank() != $order[$pk]) {
+					$object->setSortableRank($order[$pk]);
+					$object->save($con);
+				}
+			}
+			$con->commit();
+	
+			return true;
+		} catch (PropelException $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Return an array of sortable objects ordered by position
+	 *
+	 * @param     Criteria  $criteria  optional criteria object
+	 * @param     string    $order     sorting order, to be chosen between Criteria::ASC (default) and Criteria::DESC
+	 * @param     PropelPDO $con       optional connection
+	 *
+	 * @return    array list of sortable objects
+	 */
+	public static function doSelectOrderByRank(Criteria $criteria = null, $order = Criteria::ASC, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveMotifPeer::DATABASE_NAME);
+		}
+	
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		} elseif ($criteria instanceof Criteria) {
+			$criteria = clone $criteria;
+		}
+	
+		$criteria->clearOrderByColumns();
+	
+		if ($order == Criteria::ASC) {
+			$criteria->addAscendingOrderByColumn(AbsenceEleveMotifPeer::RANK_COL);
+		} else {
+			$criteria->addDescendingOrderByColumn(AbsenceEleveMotifPeer::RANK_COL);
+		}
+	
+		return AbsenceEleveMotifPeer::doSelect($criteria, $con);
+	}
+	
+	/**
+	 * Adds $delta to all Rank values that are >= $first and <= $last.
+	 * '$delta' can also be negative.
+	 *
+	 * @param      int $delta Value to be shifted by, can be negative
+	 * @param      int $first First node to be shifted
+	 * @param      int $last  Last node to be shifted
+	 * @param      PropelPDO $con Connection to use.
+	 */
+	public static function shiftRank($delta, $first, $last = null, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveMotifPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+		}
+	
+		$whereCriteria = new Criteria(AbsenceEleveMotifPeer::DATABASE_NAME);
+		$criterion = $whereCriteria->getNewCriterion(AbsenceEleveMotifPeer::RANK_COL, $first, Criteria::GREATER_EQUAL);
+		if (null !== $last) {
+			$criterion->addAnd($whereCriteria->getNewCriterion(AbsenceEleveMotifPeer::RANK_COL, $last, Criteria::LESS_EQUAL));
+		}
+		$whereCriteria->add($criterion);
+	
+		$valuesCriteria = new Criteria(AbsenceEleveMotifPeer::DATABASE_NAME);
+		$valuesCriteria->add(AbsenceEleveMotifPeer::RANK_COL, array('raw' => AbsenceEleveMotifPeer::RANK_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
+	
+		BasePeer::doUpdate($whereCriteria, $valuesCriteria, $con);
+		AbsenceEleveMotifPeer::clearInstancePool();
 	}
 
 } // BaseAbsenceEleveMotifPeer

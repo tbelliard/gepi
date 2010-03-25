@@ -574,9 +574,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				EdtCreneauQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				EdtCreneauPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

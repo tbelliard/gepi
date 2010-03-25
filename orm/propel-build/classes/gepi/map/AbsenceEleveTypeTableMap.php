@@ -41,8 +41,8 @@ class AbsenceEleveTypeTableMap extends TableMap {
 		$this->addColumn('JUSTIFICATION_EXIGIBLE', 'JustificationExigible', 'BOOLEAN', false, null, null);
 		$this->addColumn('RESPONABILITE_ETABLISSEMENT', 'ResponabiliteEtablissement', 'BOOLEAN', false, null, null);
 		$this->addColumn('TYPE_SAISIE', 'TypeSaisie', 'VARCHAR', true, 50, null);
-		$this->addColumn('ORDRE', 'Ordre', 'INTEGER', true, 3, null);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
+		$this->addColumn('SORTABLE_RANK', 'SortableRank', 'INTEGER', false, null, null);
 		// validators
 	} // initialize()
 
@@ -54,5 +54,18 @@ class AbsenceEleveTypeTableMap extends TableMap {
     $this->addRelation('AbsenceEleveTypeStatutAutorise', 'AbsenceEleveTypeStatutAutorise', RelationMap::ONE_TO_MANY, array('id' => 'id_a_type', ), 'CASCADE', null);
     $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('id' => 'a_type_id', ), 'SET NULL', null);
 	} // buildRelations()
+
+	/**
+	 * 
+	 * Gets the list of behaviors registered for this table
+	 * 
+	 * @return array Associative array (name => parameters) of behaviors
+	 */
+	public function getBehaviors()
+	{
+		return array(
+			'sortable' => array('rank_column' => 'sortable_rank', 'use_scope' => 'false', 'scope_column' => 'sortable_scope', ),
+		);
+	} // getBehaviors()
 
 } // AbsenceEleveTypeTableMap

@@ -265,9 +265,7 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JTraitementEnvoiEleveQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				JTraitementEnvoiElevePeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

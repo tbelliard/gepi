@@ -555,9 +555,7 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				ResponsableEleveQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				ResponsableElevePeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

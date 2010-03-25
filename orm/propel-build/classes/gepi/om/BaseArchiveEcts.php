@@ -585,9 +585,7 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				ArchiveEctsQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				ArchiveEctsPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

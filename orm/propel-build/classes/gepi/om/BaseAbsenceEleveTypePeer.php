@@ -45,11 +45,11 @@ abstract class BaseAbsenceEleveTypePeer {
 	/** the column name for the TYPE_SAISIE field */
 	const TYPE_SAISIE = 'a_types.TYPE_SAISIE';
 
-	/** the column name for the ORDRE field */
-	const ORDRE = 'a_types.ORDRE';
-
 	/** the column name for the COMMENTAIRE field */
 	const COMMENTAIRE = 'a_types.COMMENTAIRE';
+
+	/** the column name for the SORTABLE_RANK field */
+	const SORTABLE_RANK = 'a_types.SORTABLE_RANK';
 
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveType objects.
@@ -60,6 +60,13 @@ abstract class BaseAbsenceEleveTypePeer {
 	public static $instances = array();
 
 
+	// sortable behavior
+	
+	/**
+	 * rank column
+	 */
+	const RANK_COL = 'a_types.SORTABLE_RANK';
+
 	/**
 	 * holds an array of fieldnames
 	 *
@@ -67,11 +74,11 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'JustificationExigible', 'ResponabiliteEtablissement', 'TypeSaisie', 'Ordre', 'Commentaire', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'justificationExigible', 'responabiliteEtablissement', 'typeSaisie', 'ordre', 'commentaire', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::JUSTIFICATION_EXIGIBLE, self::RESPONABILITE_ETABLISSEMENT, self::TYPE_SAISIE, self::ORDRE, self::COMMENTAIRE, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'JUSTIFICATION_EXIGIBLE', 'RESPONABILITE_ETABLISSEMENT', 'TYPE_SAISIE', 'ORDRE', 'COMMENTAIRE', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'justification_exigible', 'responabilite_etablissement', 'type_saisie', 'ordre', 'commentaire', ),
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'JustificationExigible', 'ResponabiliteEtablissement', 'TypeSaisie', 'Commentaire', 'SortableRank', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'justificationExigible', 'responabiliteEtablissement', 'typeSaisie', 'commentaire', 'sortableRank', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::JUSTIFICATION_EXIGIBLE, self::RESPONABILITE_ETABLISSEMENT, self::TYPE_SAISIE, self::COMMENTAIRE, self::SORTABLE_RANK, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'JUSTIFICATION_EXIGIBLE', 'RESPONABILITE_ETABLISSEMENT', 'TYPE_SAISIE', 'COMMENTAIRE', 'SORTABLE_RANK', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'justification_exigible', 'responabilite_etablissement', 'type_saisie', 'commentaire', 'sortable_rank', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
@@ -82,11 +89,11 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'JustificationExigible' => 2, 'ResponabiliteEtablissement' => 3, 'TypeSaisie' => 4, 'Ordre' => 5, 'Commentaire' => 6, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'justificationExigible' => 2, 'responabiliteEtablissement' => 3, 'typeSaisie' => 4, 'ordre' => 5, 'commentaire' => 6, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::JUSTIFICATION_EXIGIBLE => 2, self::RESPONABILITE_ETABLISSEMENT => 3, self::TYPE_SAISIE => 4, self::ORDRE => 5, self::COMMENTAIRE => 6, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'JUSTIFICATION_EXIGIBLE' => 2, 'RESPONABILITE_ETABLISSEMENT' => 3, 'TYPE_SAISIE' => 4, 'ORDRE' => 5, 'COMMENTAIRE' => 6, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'justification_exigible' => 2, 'responabilite_etablissement' => 3, 'type_saisie' => 4, 'ordre' => 5, 'commentaire' => 6, ),
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'JustificationExigible' => 2, 'ResponabiliteEtablissement' => 3, 'TypeSaisie' => 4, 'Commentaire' => 5, 'SortableRank' => 6, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'justificationExigible' => 2, 'responabiliteEtablissement' => 3, 'typeSaisie' => 4, 'commentaire' => 5, 'sortableRank' => 6, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::JUSTIFICATION_EXIGIBLE => 2, self::RESPONABILITE_ETABLISSEMENT => 3, self::TYPE_SAISIE => 4, self::COMMENTAIRE => 5, self::SORTABLE_RANK => 6, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'JUSTIFICATION_EXIGIBLE' => 2, 'RESPONABILITE_ETABLISSEMENT' => 3, 'TYPE_SAISIE' => 4, 'COMMENTAIRE' => 5, 'SORTABLE_RANK' => 6, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'justification_exigible' => 2, 'responabilite_etablissement' => 3, 'type_saisie' => 4, 'commentaire' => 5, 'sortable_rank' => 6, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
@@ -164,16 +171,16 @@ abstract class BaseAbsenceEleveTypePeer {
 			$criteria->addSelectColumn(AbsenceEleveTypePeer::JUSTIFICATION_EXIGIBLE);
 			$criteria->addSelectColumn(AbsenceEleveTypePeer::RESPONABILITE_ETABLISSEMENT);
 			$criteria->addSelectColumn(AbsenceEleveTypePeer::TYPE_SAISIE);
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::ORDRE);
 			$criteria->addSelectColumn(AbsenceEleveTypePeer::COMMENTAIRE);
+			$criteria->addSelectColumn(AbsenceEleveTypePeer::SORTABLE_RANK);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
 			$criteria->addSelectColumn($alias . '.NOM');
 			$criteria->addSelectColumn($alias . '.JUSTIFICATION_EXIGIBLE');
 			$criteria->addSelectColumn($alias . '.RESPONABILITE_ETABLISSEMENT');
 			$criteria->addSelectColumn($alias . '.TYPE_SAISIE');
-			$criteria->addSelectColumn($alias . '.ORDRE');
 			$criteria->addSelectColumn($alias . '.COMMENTAIRE');
+			$criteria->addSelectColumn($alias . '.SORTABLE_RANK');
 		}
 	}
 
@@ -829,6 +836,145 @@ abstract class BaseAbsenceEleveTypePeer {
 			$objs = AbsenceEleveTypePeer::doSelect($criteria, $con);
 		}
 		return $objs;
+	}
+
+	// sortable behavior
+	
+	/**
+	 * Get the highest rank
+	 * 
+	 * @param     PropelPDO optional connection
+	 *
+	 * @return    integer highest position
+	 */
+	public static function getMaxRank(PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
+		}
+		// shift the objects with a position lower than the one of object
+		$c = new Criteria();
+		$c->addSelectColumn('MAX(' . AbsenceEleveTypePeer::RANK_COL . ')');
+		$stmt = AbsenceEleveTypePeer::doSelectStmt($c, $con);
+		
+		return $stmt->fetchColumn();
+	}
+	
+	/**
+	 * Get an item from the list based on its rank
+	 *
+	 * @param     integer   $rank rank
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return AbsenceEleveType
+	 */
+	public static function retrieveByRank($rank, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
+		}
+	
+		$c = new Criteria;
+		$c->add(AbsenceEleveTypePeer::RANK_COL, $rank);
+		
+		return AbsenceEleveTypePeer::doSelectOne($c, $con);
+	}
+	
+	/**
+	 * Reorder a set of sortable objects based on a list of id/position
+	 * Beware that there is no check made on the positions passed
+	 * So incoherent positions will result in an incoherent list
+	 *
+	 * @param     array     $order id => rank pairs
+	 * @param     PropelPDO $con   optional connection
+	 *
+	 * @return    boolean true if the reordering took place, false if a database problem prevented it
+	 */
+	public static function reorder(array $order, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
+		}
+		
+		$con->beginTransaction();
+		try {
+			$ids = array_keys($order);
+			$objects = AbsenceEleveTypePeer::retrieveByPKs($ids);
+			foreach ($objects as $object) {
+				$pk = $object->getPrimaryKey();
+				if ($object->getSortableRank() != $order[$pk]) {
+					$object->setSortableRank($order[$pk]);
+					$object->save($con);
+				}
+			}
+			$con->commit();
+	
+			return true;
+		} catch (PropelException $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Return an array of sortable objects ordered by position
+	 *
+	 * @param     Criteria  $criteria  optional criteria object
+	 * @param     string    $order     sorting order, to be chosen between Criteria::ASC (default) and Criteria::DESC
+	 * @param     PropelPDO $con       optional connection
+	 *
+	 * @return    array list of sortable objects
+	 */
+	public static function doSelectOrderByRank(Criteria $criteria = null, $order = Criteria::ASC, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
+		}
+	
+		if ($criteria === null) {
+			$criteria = new Criteria();
+		} elseif ($criteria instanceof Criteria) {
+			$criteria = clone $criteria;
+		}
+	
+		$criteria->clearOrderByColumns();
+	
+		if ($order == Criteria::ASC) {
+			$criteria->addAscendingOrderByColumn(AbsenceEleveTypePeer::RANK_COL);
+		} else {
+			$criteria->addDescendingOrderByColumn(AbsenceEleveTypePeer::RANK_COL);
+		}
+	
+		return AbsenceEleveTypePeer::doSelect($criteria, $con);
+	}
+	
+	/**
+	 * Adds $delta to all Rank values that are >= $first and <= $last.
+	 * '$delta' can also be negative.
+	 *
+	 * @param      int $delta Value to be shifted by, can be negative
+	 * @param      int $first First node to be shifted
+	 * @param      int $last  Last node to be shifted
+	 * @param      PropelPDO $con Connection to use.
+	 */
+	public static function shiftRank($delta, $first, $last = null, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+		}
+	
+		$whereCriteria = new Criteria(AbsenceEleveTypePeer::DATABASE_NAME);
+		$criterion = $whereCriteria->getNewCriterion(AbsenceEleveTypePeer::RANK_COL, $first, Criteria::GREATER_EQUAL);
+		if (null !== $last) {
+			$criterion->addAnd($whereCriteria->getNewCriterion(AbsenceEleveTypePeer::RANK_COL, $last, Criteria::LESS_EQUAL));
+		}
+		$whereCriteria->add($criterion);
+	
+		$valuesCriteria = new Criteria(AbsenceEleveTypePeer::DATABASE_NAME);
+		$valuesCriteria->add(AbsenceEleveTypePeer::RANK_COL, array('raw' => AbsenceEleveTypePeer::RANK_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
+	
+		BasePeer::doUpdate($whereCriteria, $valuesCriteria, $con);
+		AbsenceEleveTypePeer::clearInstancePool();
 	}
 
 } // BaseAbsenceEleveTypePeer

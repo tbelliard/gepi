@@ -364,9 +364,7 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				PlugInQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				PlugInPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

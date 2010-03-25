@@ -647,9 +647,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				CahierTexteCompteRenduQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				CahierTexteCompteRenduPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

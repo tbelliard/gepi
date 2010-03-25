@@ -42,7 +42,7 @@ Propel::setLogger($logger);
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 
-require_once("../../lib/header.inc");
+//require_once("../../lib/header.inc");
 //**************** FIN EN-TETE *************
 purgeDonneesTest($logger);
 
@@ -56,7 +56,7 @@ echo ($logger->getDisplay());
 if ($newUtilisateurProfessionnel == null) {
 	echo('test creation utilisateur professionnel a <font color="red">echoue</font> <br><br/>.');
 } else {
-	echo('test creation utilisateur professionnel a reussi <br><br/>');
+	echo('test creation utilisateur professionnel a reussi avec comme retour l\'id : ' . $newUtilisateurProfessionnel->getLogin() . '<br/><br/>');
 }
 
 //Creation d'un eleve
@@ -67,7 +67,7 @@ echo ($logger->getDisplay());
 if ($newEleve == null) {
 	echo('test creation eleve a <font color="red">echoue</font> <br><br/>');
 } else {
-	echo('test creation eleve a reussi <br><br/>');
+	echo('test creation eleve a reussi avec comme retour l\'id : ' . $eleve->getIdEleve() . '<br/><br/>');
 }
 
 //Creation d'un groupe
@@ -80,7 +80,7 @@ echo ($logger->getDisplay());
 if ($newGroupe == null) {
 	echo('test creation groupe a <font color="red">echoue</font> <br><br/>');
 } else {
-	echo('test creation groupe a reussi <br><br/>');
+	echo('test creation groupe a reussi avec comme retour l\'id : ' . $groupe->getId() . '<br/><br/>');
 }
 
 //Creation d'une classe
@@ -93,7 +93,7 @@ echo ($logger->getDisplay());
 if ($newClasse == null) {
 	echo('test creation classe a <font color="red">echoue</font> <br><br/>');
 } else {
-	echo('test creation classe a reussi <br><br/>');
+	echo('test creation classe a reussi avec comme retour l\'id : ' . $classe->getId() . '<br/><br/>');
 }
 
 
@@ -116,15 +116,17 @@ $newEleve2 = $groupe->getEleves(1);
 $newEleve3 = $newEleve2[0];
 echo ($logger->getDisplay());
 if ($newEleve3 == null) {
-	echo('test ajout de eleve au groupe a <font color="red">echoue</font> <br><br/>');
+	echo('test ajout de eleve au groupe a <font color="red">echoue</font> au premier test<br><br/>');
 } else {
 	$newGroupe2 = $newEleve3->getGroupes(1);
+	echo ($logger->getDisplay());
+	echo ($newGroupe2[0]->getId());
 	if ($newGroupe2[0] != null && $newGroupe2[0]->getId() == $groupe->getId()) {
 		echo ($logger->getDisplay());
 		echo('test ajout de eleve au groupe a reussi <br><br/>');
 	} else {
 		echo ($logger->getDisplay());
-		echo('test ajout de eleve au groupe a echoue <br><br/>');
+		echo('test ajout de eleve au groupe a <font color="red">echoue</font> <br><br/>');
 	}
 }
 
@@ -152,7 +154,7 @@ $respInformation = UnitTestResponsableEleve::getResponsableInformation();
 $respPers = UnitTestResponsableEleve::getResponsableEleve();
 //$respPers = new ResponsableEleve();
 $respAdr = UnitTestResponsableEleve::getResponsableEleveAdresse();
-echo ("</br> Eleve Id : ".$eleve->getIdEleve());
+
 $respInformation->setEleve($eleve);
 $respInformation->setResponsableEleve($respPers);
 $respPers->setResponsableEleveAdresse($respAdr);

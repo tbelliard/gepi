@@ -341,9 +341,7 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JAidUtilisateursProfessionnelsQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				JAidUtilisateursProfessionnelsPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

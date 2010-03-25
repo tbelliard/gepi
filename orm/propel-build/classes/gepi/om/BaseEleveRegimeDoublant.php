@@ -289,9 +289,7 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				EleveRegimeDoublantQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				EleveRegimeDoublantPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

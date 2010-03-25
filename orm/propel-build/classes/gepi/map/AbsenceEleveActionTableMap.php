@@ -39,7 +39,7 @@ class AbsenceEleveActionTableMap extends TableMap {
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
 		$this->addColumn('NOM', 'Nom', 'VARCHAR', true, 250, null);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
-		$this->addColumn('ORDRE', 'Ordre', 'INTEGER', true, 3, null);
+		$this->addColumn('SORTABLE_RANK', 'SortableRank', 'INTEGER', false, null, null);
 		// validators
 	} // initialize()
 
@@ -50,5 +50,18 @@ class AbsenceEleveActionTableMap extends TableMap {
 	{
     $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('id' => 'a_action_id', ), 'SET NULL', null);
 	} // buildRelations()
+
+	/**
+	 * 
+	 * Gets the list of behaviors registered for this table
+	 * 
+	 * @return array Associative array (name => parameters) of behaviors
+	 */
+	public function getBehaviors()
+	{
+		return array(
+			'sortable' => array('rank_column' => 'sortable_rank', 'use_scope' => 'false', 'scope_column' => 'sortable_scope', ),
+		);
+	} // getBehaviors()
 
 } // AbsenceEleveActionTableMap

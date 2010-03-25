@@ -42,10 +42,10 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	protected $commentaire;
 
 	/**
-	 * The value for the ordre field.
+	 * The value for the sortable_rank field.
 	 * @var        int
 	 */
-	protected $ordre;
+	protected $sortable_rank;
 
 	/**
 	 * @var        array AbsenceEleveTraitement[] Collection to store aggregation of AbsenceEleveTraitement objects.
@@ -65,6 +65,14 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	// sortable behavior
+	
+	/**
+	 * Queries to be executed in the save transaction
+	 * @var        array
+	 */
+	protected $sortableQueries = array();
 
 	/**
 	 * Get the [id] column value.
@@ -97,13 +105,13 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [ordre] column value.
-	 * Ordre d'affichage du motif dans la liste déroulante
+	 * Get the [sortable_rank] column value.
+	 * 
 	 * @return     int
 	 */
-	public function getOrdre()
+	public function getSortableRank()
 	{
-		return $this->ordre;
+		return $this->sortable_rank;
 	}
 
 	/**
@@ -167,24 +175,24 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	} // setCommentaire()
 
 	/**
-	 * Set the value of [ordre] column.
-	 * Ordre d'affichage du motif dans la liste déroulante
+	 * Set the value of [sortable_rank] column.
+	 * 
 	 * @param      int $v new value
 	 * @return     AbsenceEleveMotif The current object (for fluent API support)
 	 */
-	public function setOrdre($v)
+	public function setSortableRank($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->ordre !== $v) {
-			$this->ordre = $v;
-			$this->modifiedColumns[] = AbsenceEleveMotifPeer::ORDRE;
+		if ($this->sortable_rank !== $v) {
+			$this->sortable_rank = $v;
+			$this->modifiedColumns[] = AbsenceEleveMotifPeer::SORTABLE_RANK;
 		}
 
 		return $this;
-	} // setOrdre()
+	} // setSortableRank()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -221,7 +229,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->nom = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->commentaire = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-			$this->ordre = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+			$this->sortable_rank = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -319,10 +327,13 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
+			// sortable behavior
+			
+			AbsenceEleveMotifPeer::shiftRank(-1, $this->getSortableRank() + 1, null, $con);
+			AbsenceEleveMotifPeer::clearInstancePool();
+
 			if ($ret) {
-				AbsenceEleveMotifQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				AbsenceEleveMotifPeer::doDelete($this, $con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
@@ -362,8 +373,15 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 		$isInsert = $this->isNew();
 		try {
 			$ret = $this->preSave($con);
+			// sortable behavior
+			$this->processSortableQueries($con);
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// sortable behavior
+				if (!$this->isColumnModified(AbsenceEleveMotifPeer::RANK_COL)) {
+					$this->setSortableRank(AbsenceEleveMotifQuery::create()->getMaxRank($con) + 1);
+				}
+
 			} else {
 				$ret = $ret && $this->preUpdate($con);
 			}
@@ -557,7 +575,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 				return $this->getCommentaire();
 				break;
 			case 3:
-				return $this->getOrdre();
+				return $this->getSortableRank();
 				break;
 			default:
 				return null;
@@ -585,7 +603,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getNom(),
 			$keys[2] => $this->getCommentaire(),
-			$keys[3] => $this->getOrdre(),
+			$keys[3] => $this->getSortableRank(),
 		);
 		return $result;
 	}
@@ -627,7 +645,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 				$this->setCommentaire($value);
 				break;
 			case 3:
-				$this->setOrdre($value);
+				$this->setSortableRank($value);
 				break;
 		} // switch()
 	}
@@ -656,7 +674,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setNom($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setCommentaire($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setOrdre($arr[$keys[3]]);
+		if (array_key_exists($keys[3], $arr)) $this->setSortableRank($arr[$keys[3]]);
 	}
 
 	/**
@@ -671,7 +689,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 		if ($this->isColumnModified(AbsenceEleveMotifPeer::ID)) $criteria->add(AbsenceEleveMotifPeer::ID, $this->id);
 		if ($this->isColumnModified(AbsenceEleveMotifPeer::NOM)) $criteria->add(AbsenceEleveMotifPeer::NOM, $this->nom);
 		if ($this->isColumnModified(AbsenceEleveMotifPeer::COMMENTAIRE)) $criteria->add(AbsenceEleveMotifPeer::COMMENTAIRE, $this->commentaire);
-		if ($this->isColumnModified(AbsenceEleveMotifPeer::ORDRE)) $criteria->add(AbsenceEleveMotifPeer::ORDRE, $this->ordre);
+		if ($this->isColumnModified(AbsenceEleveMotifPeer::SORTABLE_RANK)) $criteria->add(AbsenceEleveMotifPeer::SORTABLE_RANK, $this->sortable_rank);
 
 		return $criteria;
 	}
@@ -735,7 +753,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	{
 		$copyObj->setNom($this->nom);
 		$copyObj->setCommentaire($this->commentaire);
-		$copyObj->setOrdre($this->ordre);
+		$copyObj->setSortableRank($this->sortable_rank);
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -990,7 +1008,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 		$this->id = null;
 		$this->nom = null;
 		$this->commentaire = null;
-		$this->ordre = null;
+		$this->sortable_rank = null;
 		$this->clearAllReferences();
 		$this->setNew(true);
 	}
@@ -1015,6 +1033,341 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 		} // if ($deep)
 
 		$this->collAbsenceEleveTraitements = null;
+	}
+
+	// sortable behavior
+	
+	/**
+	 * Wrap the getter for rank value
+	 *
+	 * @return    int
+	 */
+	public function getRank()
+	{
+		return $this->sortable_rank;
+	}
+	
+	/**
+	 * Wrap the setter for rank value
+	 *
+	 * @param     int
+	 * @return    AbsenceEleveMotif
+	 */
+	public function setRank($v)
+	{
+		return $this->setSortableRank($v);
+	}
+	
+	/**
+	 * Check if the object is first in the list, i.e. if it has 1 for rank
+	 *
+	 * @return    boolean
+	 */
+	public function isFirst()
+	{
+		return $this->getSortableRank() == 1;
+	}
+	
+	/**
+	 * Check if the object is last in the list, i.e. if its rank is the highest rank
+	 *
+	 * @param     PropelPDO  $con      optional connection
+	 *
+	 * @return    boolean
+	 */
+	public function isLast(PropelPDO $con = null)
+	{
+		return $this->getSortableRank() == AbsenceEleveMotifQuery::create()->getMaxRank($con);
+	}
+	
+	/**
+	 * Get the next item in the list, i.e. the one for which rank is immediately higher
+	 *
+	 * @param     PropelPDO  $con      optional connection
+	 *
+	 * @return    AbsenceEleveMotif
+	 */
+	public function getNext(PropelPDO $con = null)
+	{
+		return AbsenceEleveMotifQuery::create()->findOneByRank($this->getSortableRank() + 1, $con);
+	}
+	
+	/**
+	 * Get the previous item in the list, i.e. the one for which rank is immediately lower
+	 *
+	 * @param     PropelPDO  $con      optional connection
+	 *
+	 * @return    AbsenceEleveMotif
+	 */
+	public function getPrevious(PropelPDO $con = null)
+	{
+		return AbsenceEleveMotifQuery::create()->findOneByRank($this->getSortableRank() - 1, $con);
+	}
+	
+	/**
+	 * Insert at specified rank
+	 * The modifications are not persisted until the object is saved.
+	 *
+	 * @param     integer    $rank rank value
+	 * @param     PropelPDO  $con      optional connection
+	 *
+	 * @return    AbsenceEleveMotif the current object
+	 *
+	 * @throws    PropelException
+	 */
+	public function insertAtRank($rank, PropelPDO $con = null)
+	{
+		$maxRank = AbsenceEleveMotifQuery::create()->getMaxRank($con);
+		if ($rank < 1 || $rank > $maxRank + 1) {
+			throw new PropelException('Invalid rank ' . $rank);
+		}
+		// move the object in the list, at the given rank
+		$this->setSortableRank($rank);
+		if ($rank != $maxRank + 1) {
+			// Keep the list modification query for the save() transaction
+			$this->sortableQueries []= array(
+				'callable'  => array('AbsenceEleveMotifPeer', 'shiftRank'),
+				'arguments' => array(1, $rank, null, )
+			);
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Insert in the last rank
+	 * The modifications are not persisted until the object is saved.
+	 *
+	 * @param PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveMotif the current object
+	 *
+	 * @throws    PropelException
+	 */
+	public function insertAtBottom(PropelPDO $con = null)
+	{
+		$this->setSortableRank(AbsenceEleveMotifQuery::create()->getMaxRank($con) + 1);
+		
+		return $this;
+	}
+	
+	/**
+	 * Insert in the first rank
+	 * The modifications are not persisted until the object is saved.
+	 *
+	 * @return    AbsenceEleveMotif the current object
+	 */
+	public function insertAtTop()
+	{
+		return $this->insertAtRank(1);
+	}
+	
+	/**
+	 * Move the object to a new rank, and shifts the rank
+	 * Of the objects inbetween the old and new rank accordingly
+	 *
+	 * @param     integer   $newRank rank value
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveMotif the current object
+	 *
+	 * @throws    PropelException
+	 */
+	public function moveToRank($newRank, PropelPDO $con = null)
+	{
+		if ($this->isNew()) {
+			throw new PropelException('New objects cannot be moved. Please use insertAtRank() instead');
+		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveMotifPeer::DATABASE_NAME);
+		}
+		if ($newRank < 1 || $newRank > AbsenceEleveMotifQuery::create()->getMaxRank($con)) {
+			throw new PropelException('Invalid rank ' . $newRank);
+		}
+	
+		$oldRank = $this->getSortableRank();
+		if ($oldRank == $newRank) {
+			return $this;
+		}
+		
+		$con->beginTransaction();
+		try {
+			// shift the objects between the old and the new rank
+			$delta = ($oldRank < $newRank) ? -1 : 1;
+			AbsenceEleveMotifPeer::shiftRank($delta, min($oldRank, $newRank), max($oldRank, $newRank), $con);
+				
+			// move the object to its new rank
+			$this->setSortableRank($newRank);
+			$this->save($con);
+			
+			$con->commit();
+			return $this;
+		} catch (Exception $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Exchange the rank of the object with the one passed as argument, and saves both objects
+	 *
+	 * @param     AbsenceEleveMotif $object
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveMotif the current object
+	 *
+	 * @throws Exception if the database cannot execute the two updates
+	 */
+	public function swapWith($object, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveMotifPeer::DATABASE_NAME);
+		}
+		$con->beginTransaction();
+		try {
+			$oldRank = $this->getSortableRank();
+			$newRank = $object->getSortableRank();
+			$this->setSortableRank($newRank);
+			$this->save($con);
+			$object->setSortableRank($oldRank);
+			$object->save($con);
+			$con->commit();
+			
+			return $this;
+		} catch (Exception $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Move the object higher in the list, i.e. exchanges its rank with the one of the previous object
+	 *
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveMotif the current object
+	 */
+	public function moveUp(PropelPDO $con = null)
+	{
+		if ($this->isFirst()) {
+			return $this;
+		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveMotifPeer::DATABASE_NAME);
+		}
+		$con->beginTransaction();
+		try {
+			$prev = $this->getPrevious($con);
+			$this->swapWith($prev, $con);
+			$con->commit();
+			
+			return $this;
+		} catch (Exception $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Move the object higher in the list, i.e. exchanges its rank with the one of the next object
+	 *
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveMotif the current object
+	 */
+	public function moveDown(PropelPDO $con = null)
+	{
+		if ($this->isLast($con)) {
+			return $this;
+		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveMotifPeer::DATABASE_NAME);
+		}
+		$con->beginTransaction();
+		try {
+			$next = $this->getNext($con);
+			$this->swapWith($next, $con);
+			$con->commit();
+			
+			return $this;
+		} catch (Exception $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Move the object to the top of the list
+	 *
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return    AbsenceEleveMotif the current object
+	 */
+	public function moveToTop(PropelPDO $con = null)
+	{
+		if ($this->isFirst()) {
+			return $this;
+		}
+		return $this->moveToRank(1, $con);
+	}
+	
+	/**
+	 * Move the object to the bottom of the list
+	 *
+	 * @param     PropelPDO $con optional connection
+	 *
+	 * @return integer the old object's rank
+	 */
+	public function moveToBottom(PropelPDO $con = null)
+	{
+		if ($this->isLast($con)) {
+			return false;
+		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveMotifPeer::DATABASE_NAME);
+		}
+		$con->beginTransaction();
+		try {
+			$bottom = AbsenceEleveMotifQuery::create()->getMaxRank($con);
+			$res = $this->moveToRank($bottom, $con);
+			$con->commit();
+			
+			return $res;
+		} catch (Exception $e) {
+			$con->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Removes the current object from the list.
+	 * The modifications are not persisted until the object is saved.
+	 *
+	 * @return    AbsenceEleveMotif the current object
+	 */
+	public function removeFromList()
+	{
+		// Keep the list modification query for the save() transaction
+		$this->sortableQueries []= array(
+			'callable'  => array('AbsenceEleveMotifPeer', 'shiftRank'),
+			'arguments' => array(-1, $this->getSortableRank() + 1, null)
+		);
+		// remove the object from the list
+		$this->setSortableRank(null);
+		
+		return $this;
+	}
+	
+	/**
+	 * Execute queries that were saved to be run inside the save transaction
+	 */
+	protected function processSortableQueries($con)
+	{
+		foreach ($this->sortableQueries as $query) {
+			$query['arguments'][]= $con;
+			call_user_func_array($query['callable'], $query['arguments']);
+		}
+		$this->sortableQueries = array();
 	}
 
 	/**

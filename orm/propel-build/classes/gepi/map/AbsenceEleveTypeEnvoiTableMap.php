@@ -38,8 +38,8 @@ class AbsenceEleveTypeEnvoiTableMap extends TableMap {
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
 		$this->addColumn('NOM', 'Nom', 'VARCHAR', true, 100, null);
-		$this->addColumn('ORDRE_AFFICHAGE', 'OrdreAffichage', 'INTEGER', true, 4, null);
 		$this->addColumn('CONTENU', 'Contenu', 'CLOB', true, null, null);
+		$this->addColumn('SORTABLE_RANK', 'SortableRank', 'INTEGER', false, null, null);
 		// validators
 	} // initialize()
 
@@ -50,5 +50,18 @@ class AbsenceEleveTypeEnvoiTableMap extends TableMap {
 	{
     $this->addRelation('AbsenceEleveEnvoi', 'AbsenceEleveEnvoi', RelationMap::ONE_TO_MANY, array('id' => 'id_type_envoi', ), 'SET NULL', null);
 	} // buildRelations()
+
+	/**
+	 * 
+	 * Gets the list of behaviors registered for this table
+	 * 
+	 * @return array Associative array (name => parameters) of behaviors
+	 */
+	public function getBehaviors()
+	{
+		return array(
+			'sortable' => array('rank_column' => 'sortable_rank', 'use_scope' => 'false', 'scope_column' => 'sortable_scope', ),
+		);
+	} // getBehaviors()
 
 } // AbsenceEleveTypeEnvoiTableMap
