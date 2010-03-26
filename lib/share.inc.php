@@ -4106,7 +4106,7 @@ function calcule_moy_mediane_quartiles($tab) {
 }
 
 
-function get_nom_prenom_eleve($login_ele) {
+function get_nom_prenom_eleve($login_ele,$mode='simple') {
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -4121,7 +4121,16 @@ function get_nom_prenom_eleve($login_ele) {
 	}
 	else {
 		$lig=mysql_fetch_object($res);
-		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
+
+		$ajout="";
+		if($mode=='avec_classe') {
+			$tmp_tab_clas=get_class_from_ele_login($login_ele);
+			if($tmp_tab_clas['liste']!='') {
+				$ajout=" (".$tmp_tab_clas['liste'].")";
+			}
+		}
+
+		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').$ajout;
 	}
 }
 
