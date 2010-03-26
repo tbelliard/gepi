@@ -50,8 +50,8 @@ class CreditEctsTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('id_eleve' => 'id_eleve', ), null, null);
-    $this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), null, null);
+    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
+    $this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // CreditEctsTableMap

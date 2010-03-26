@@ -419,6 +419,15 @@ abstract class BaseElevePeer {
 		// invalidate objects in AbsenceEleveSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		AbsenceEleveSaisiePeer::clearInstancePool();
 
+		// invalidate objects in CreditEctsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CreditEctsPeer::clearInstancePool();
+
+		// invalidate objects in CreditEctsGlobalPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CreditEctsGlobalPeer::clearInstancePool();
+
+		// invalidate objects in ArchiveEctsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		ArchiveEctsPeer::clearInstancePool();
+
 	}
 
 	/**
@@ -800,6 +809,24 @@ abstract class BaseElevePeer {
 			
 			$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $obj->getIdEleve());
 			$affectedRows += AbsenceEleveSaisiePeer::doDelete($criteria, $con);
+
+			// delete related CreditEcts objects
+			$criteria = new Criteria(CreditEctsPeer::DATABASE_NAME);
+			
+			$criteria->add(CreditEctsPeer::ID_ELEVE, $obj->getIdEleve());
+			$affectedRows += CreditEctsPeer::doDelete($criteria, $con);
+
+			// delete related CreditEctsGlobal objects
+			$criteria = new Criteria(CreditEctsGlobalPeer::DATABASE_NAME);
+			
+			$criteria->add(CreditEctsGlobalPeer::ID_ELEVE, $obj->getIdEleve());
+			$affectedRows += CreditEctsGlobalPeer::doDelete($criteria, $con);
+
+			// delete related ArchiveEcts objects
+			$criteria = new Criteria(ArchiveEctsPeer::DATABASE_NAME);
+			
+			$criteria->add(ArchiveEctsPeer::INE, $obj->getNoGep());
+			$affectedRows += ArchiveEctsPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}

@@ -984,11 +984,13 @@ CREATE TABLE ects_credits
 	INDEX ects_credits_FI_1 (id_eleve),
 	CONSTRAINT ects_credits_FK_1
 		FOREIGN KEY (id_eleve)
-		REFERENCES eleves (id_eleve),
+		REFERENCES eleves (id_eleve)
+		ON DELETE CASCADE,
 	INDEX ects_credits_FI_2 (id_groupe),
 	CONSTRAINT ects_credits_FK_2
 		FOREIGN KEY (id_groupe)
 		REFERENCES groupes (id)
+		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Objet qui précise le nombre d\'ECTS obtenus par l\'eleve pour un enseignement et une periode donnée';
 
 #-----------------------------------------------------------------------------
@@ -1008,6 +1010,7 @@ CREATE TABLE ects_global_credits
 	CONSTRAINT ects_global_credits_FK_1
 		FOREIGN KEY (id_eleve)
 		REFERENCES eleves (id_eleve)
+		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Objet qui précise la mention globale obtenue pour un eleve';
 
 #-----------------------------------------------------------------------------
@@ -1035,6 +1038,7 @@ CREATE TABLE archivage_ects
 	CONSTRAINT archivage_ects_FK_1
 		FOREIGN KEY (ine)
 		REFERENCES eleves (no_gep)
+		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Enregistrement d\'archive pour les credits ECTS, dont le rapport n\'est edite qu\'au depart de l\'eleve';
 
 #-----------------------------------------------------------------------------
@@ -1069,11 +1073,13 @@ CREATE TABLE j_matieres_categories_classes
 	PRIMARY KEY (categorie_id,classe_id),
 	CONSTRAINT j_matieres_categories_classes_FK_1
 		FOREIGN KEY (categorie_id)
-		REFERENCES matieres_categories (id),
+		REFERENCES matieres_categories (id)
+		ON DELETE CASCADE,
 	INDEX j_matieres_categories_classes_FI_2 (classe_id),
 	CONSTRAINT j_matieres_categories_classes_FK_2
 		FOREIGN KEY (classe_id)
 		REFERENCES classes (id)
+		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Liaison entre categories de matiere et classes';
 
 #-----------------------------------------------------------------------------

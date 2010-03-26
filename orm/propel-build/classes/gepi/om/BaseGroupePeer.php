@@ -370,6 +370,9 @@ abstract class BaseGroupePeer {
 		// invalidate objects in JEleveGroupePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		JEleveGroupePeer::clearInstancePool();
 
+		// invalidate objects in CreditEctsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		CreditEctsPeer::clearInstancePool();
+
 		// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		EdtEmplacementCoursPeer::clearInstancePool();
 
@@ -736,6 +739,12 @@ abstract class BaseGroupePeer {
 			
 			$criteria->add(JEleveGroupePeer::ID_GROUPE, $obj->getId());
 			$affectedRows += JEleveGroupePeer::doDelete($criteria, $con);
+
+			// delete related CreditEcts objects
+			$criteria = new Criteria(CreditEctsPeer::DATABASE_NAME);
+			
+			$criteria->add(CreditEctsPeer::ID_GROUPE, $obj->getId());
+			$affectedRows += CreditEctsPeer::doDelete($criteria, $con);
 
 			// delete related EdtEmplacementCours objects
 			$criteria = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);

@@ -15,17 +15,6 @@
 class Eleve extends BaseEleve {
 
 	/**
-	 * Initializes internal state of Eleve object.
-	 * @see        parent::__construct()
-	 */
-	public function __construct()
-	{
-		// Make sure that parent constructor is always invoked, since that
-		// is where any default values for this object are set.
-		parent::__construct();
-	}
-
-	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un eleves.
 	 * Manually added for N:M relationship
@@ -36,12 +25,12 @@ class Eleve extends BaseEleve {
 	 */
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	public function getClasses($periode) {
-		$classes = array();
+		$classes = new PropelObjectCollection();
 		$criteria = new Criteria();
 		$criteria->add(JEleveClassePeer::PERIODE,$periode);
 		foreach($this->getJEleveClassesJoinClasse($criteria) as $ref) {
 		    if ($ref->getClasse() != NULL) {
-			$classes[] = $ref->getClasse();
+			$classes->append($ref->getClasse());
 		    }
 		}
 		return $classes;
@@ -65,12 +54,12 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function getGroupes($periode) {
-		$groupes = array();
+		$groupes = new PropelObjectCollection();
 		$c = new Criteria();
 		$c->add(JEleveGroupePeer::PERIODE,$periode);
 		foreach($this->getJEleveGroupesJoinGroupe($c) as $ref) {
 			if ($ref->getGroupe() != NULL) {
-			    $groupes[] = $ref->getGroupe();
+			    $groupes->append($ref->getGroupe());
 			}
 		}
 		return $groupes;

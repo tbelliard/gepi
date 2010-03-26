@@ -65,11 +65,11 @@ class EleveTableMap extends TableMap {
     $this->addRelation('JEleveAncienEtablissement', 'JEleveAncienEtablissement', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
     $this->addRelation('JAidEleves', 'JAidEleves', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
     $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id_eleve' => 'eleve_id', ), 'CASCADE', null);
-    $this->addRelation('CreditEcts', 'CreditEcts', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), null, null);
-    $this->addRelation('CreditEctsGlobal', 'CreditEctsGlobal', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), null, null);
-    $this->addRelation('ArchiveEcts', 'ArchiveEcts', RelationMap::ONE_TO_MANY, array('no_gep' => 'ine', ), null, null);
-    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), null, null);
-    $this->addRelation('AncienEtablissement', 'AncienEtablissement', RelationMap::MANY_TO_MANY, array(), null, null);
+    $this->addRelation('CreditEcts', 'CreditEcts', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
+    $this->addRelation('CreditEctsGlobal', 'CreditEctsGlobal', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
+    $this->addRelation('ArchiveEcts', 'ArchiveEcts', RelationMap::ONE_TO_MANY, array('no_gep' => 'ine', ), 'CASCADE', null);
+    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+    $this->addRelation('AncienEtablissement', 'AncienEtablissement', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
 } // EleveTableMap

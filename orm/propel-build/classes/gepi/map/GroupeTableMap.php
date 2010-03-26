@@ -54,7 +54,7 @@ class GroupeTableMap extends TableMap {
     $this->addRelation('CahierTexteTravailAFaire', 'CahierTexteTravailAFaire', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
     $this->addRelation('CahierTexteNoticePrivee', 'CahierTexteNoticePrivee', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
     $this->addRelation('JEleveGroupe', 'JEleveGroupe', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
-    $this->addRelation('CreditEcts', 'CreditEcts', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), null, null);
+    $this->addRelation('CreditEcts', 'CreditEcts', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
     $this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
     $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()

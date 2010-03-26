@@ -145,9 +145,10 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			return $this
+			$stmt = $this
 				->filterByPrimaryKey($key)
-				->findOne($con);
+				->getSelectStatement($con);
+			return $this->getFormatter()->formatOne($stmt);
 		}
 	}
 

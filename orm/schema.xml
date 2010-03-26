@@ -462,10 +462,10 @@
   <table name="ects_credits" phpName="CreditEcts" description="Objet qui précise le nombre d'ECTS obtenus par l'eleve pour un enseignement et une periode donnée">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
     <column name="id_eleve" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de l'eleve"/>
-    <foreign-key foreignTable="eleves"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
     <column name="num_periode" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de la periode"/>
     <column name="id_groupe" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant du groupe"/>
-    <foreign-key foreignTable="groupes"><reference local="id_groupe" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="groupes" onDelete="cascade"><reference local="id_groupe" foreign="id"/></foreign-key>
     <column name="valeur" type="DECIMAL" required="true" description="Nombre de crédits obtenus par l'eleve"/>
     <column name="mention" type="VARCHAR" required="true" size="255" description="Mention obtenue"/>
   </table>
@@ -473,7 +473,7 @@
   <table name="ects_global_credits" phpName="CreditEctsGlobal" description="Objet qui précise la mention globale obtenue pour un eleve">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
     <column name="id_eleve" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de l'eleve"/>
-    <foreign-key foreignTable="eleves"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
     <column name="mention" type="VARCHAR" required="true" size="255" description="Mention obtenue"/>
   </table>
 
@@ -481,7 +481,7 @@
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
     <column name="annee" required="true" type="VARCHAR" size="255" description="Annee scolaire"/>
     <column name="ine" required="true" primaryKey="true" type="VARCHAR" size="255" description="Identifiant de l'eleve"/>
-    <foreign-key foreignTable="eleves"><reference local="ine" foreign="no_gep"/></foreign-key>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="ine" foreign="no_gep"/></foreign-key>
     <column name="classe" required="true" type="VARCHAR" size="255" description="Classe de l'eleve"/>
     <column name="num_periode" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de la periode"/>
     <column name="nom_periode" required="true" type="VARCHAR" size="255" description="Nom complet de la periode"/>
@@ -502,9 +502,9 @@
 
   <table name="j_matieres_categories_classes" phpName="JCategoriesMatieresClasses" description="Liaison entre categories de matiere et classes">
     <column name="categorie_id" required="true" primaryKey="true" type="INTEGER" size="11" description=""/>
-    <foreign-key foreignTable="matieres_categories"><reference local="categorie_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="matieres_categories" onDelete="cascade"><reference local="categorie_id" foreign="id"/></foreign-key>
     <column name="classe_id" required="true" primaryKey="true" type="INTEGER" size="11" description=""/>
-    <foreign-key foreignTable="classes"><reference local="classe_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="classes" onDelete="cascade"><reference local="classe_id" foreign="id"/></foreign-key>
     <column name="affiche_moyenne" type="BOOLEAN" required="false" default="0" description="Nom complet"/>
     <column name="priority" required="true" type="INTEGER" size="6" description="Priorite d'affichage"/>
   </table>

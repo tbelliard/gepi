@@ -55,7 +55,7 @@ class ArchiveEctsTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('ine' => 'no_gep', ), null, null);
+    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('ine' => 'no_gep', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // ArchiveEctsTableMap
