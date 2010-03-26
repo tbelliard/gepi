@@ -20,17 +20,6 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	protected $collGroupes;
 
 	/**
-	 * Initializes internal state of UtilisateurProfessionnel object.
-	 * @see        parent::__construct()
-	 */
-	public function __construct()
-	{
-		// Make sure that parent constructor is always invoked, since that
-		// is where any default values for this object are set.
-		parent::__construct();
-	}
-
-	/**
 	 * 
 	 * Renvoi sous forme d'un tableau la liste des groupes d'un utilisateur professeur. Le tableau est ordonné par le noms du groupes puis les classes du groupes.
 	 * Manually added for N:M relationship
@@ -43,13 +32,15 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		if ($this->collGroupes != null) {
 			return $this->collGroupes;
 		} else {
-			$groupes = array();
-			foreach($this->getJGroupesProfesseurssJoinGroupe($con) as $ref) {
-				$groupes[] = $ref->getGroupe();
+		    $groupes = new PropelObjectCollection();
+		    foreach($this->getJGroupesProfesseurssJoinGroupe($con) as $ref) {
+			if ($ref != NULL) {
+			    $groupes->append($ref->getGroupe());
 			}
-			require_once("helpers/GroupeHelper.php");
-			$this->collGroupes = GroupeHelper::orderByGroupNameWithClasses($groupes);
-			return $this->collGroupes;
+		    }
+		    require_once("helpers/GroupeHelper.php");
+		    $this->collGroupes = GroupeHelper::orderByGroupNameWithClasses($groupes);
+		    return $this->collGroupes;
 		}
 	}
 
@@ -91,9 +82,11 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * @return     array Eleves[]
 	 */
 	public function getEleveProfesseurPrincipals($con = null) {
-		$eleves = array();
+		$eleves = new PropelObjectCollection();
 		foreach($this->getJEleveProfesseurPrincipalsJoinEleve() as $ref) {
-			$eleves[] = $ref->getEleve();
+		    if ($ref != null) {
+			$eleves->append($ref->getEleve());
+		    }
 		}
 		return $eleves;
 	}
@@ -120,38 +113,23 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des eleves d'un utilisateur cpe
-	 * Manually added for N:M relationship
-	 * It seems that the groupes are passed by values and not by references.
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
 	 * @return     array Eleves[]
 	 */
 	public function getEleveCpes($con = null) {
-		$eleves = array();
-		foreach($this->getJEleveCpes() as $ref) {
-			$eleves[] = $ref->getEleve();
-		}
-		return $eleves;
+		return $this->getEleves();
 	}
 
 	/**
 	 *
-	 * Ajoute un eleve a un prof principal
-	 * Manually added for N:M relationship
-	 * It seems that the groupes are passed by values and not by references.
+	 * Ajoute un eleve a un cpe
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
 	 * @return     array Eleves[]
 	 */
 	public function addEleveCpe(Eleve $eleve) {
-		if ($eleve->getIdEleve() == null) {
-			throw new PropelException("Eleve id ne doit pas etre null");
-		}
-		$jEleveCpe = new JEleveCpe();
-		$jEleveCpe->setEleve($eleve);
-		$jEleveCpe->setUtilisateurProfessionnel($this);
-		$this->addJEleveCpe($jEleveCpe);
-		$jEleveCpe->save();
+		$this->addEleve($eleve);
 	}
 
 	/**
@@ -166,10 +144,10 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	    $criteria = new Criteria();
 	    $criteria->add(PreferenceUtilisateurProfessionnelPeer::NAME, $name);
 	    $prefs = $this->getPreferenceUtilisateurProfessionnels($criteria);
-	    if (count($prefs) == 0) {
+	    if ($prefs->isEmpty()) {
 		return null;
 	    } else {
-		return $prefs[0]->getValue();
+		return $prefs->getFirst();
 	    }
 	}
 
@@ -185,7 +163,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	    $criteria = new Criteria();
 	    $criteria->add(PreferenceUtilisateurProfessionnelPeer::NAME, $name);
 	    $prefs = $this->getPreferenceUtilisateurProfessionnels($criteria);
-	    if (count($prefs) == 0) {
+	    if ($pref->isEmty()) {
 		//Creation d'une nouvelle entree dans les preferences
 		$nouvellePref = new PreferenceUtilisateurProfessionnel();
 		$nouvellePref->setName($name);
@@ -194,13 +172,12 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		$nouvellePref->save();
 		$this->addPreferenceUtilisateurProfessionnel($nouvellePref);
 		$this->save();
-	    } else if (count($prefs) == 1) {
-		$prefs[0]->setValue($value);
-		$prefs[0]->save();
+	    } else if ($prefs->count() == 1) {
+		$prefs->getFirst()->setValue($value);
+		$prefs->getFirst()->save();
 	    } else {
 		//there's an error
 		throw new PropelException("Il existe deja plusieurs preferences avec ce nom !");
 	    }
 	}
-
 }

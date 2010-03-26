@@ -119,7 +119,7 @@ if (isset($nom_plugin)){
   switch ($action) {
     case "desinstaller":
       $xml = simplexml_load_file($pluginAmodifier->getNom() . "/plugin.xml");
-      $desinstall = PlugInPeer::deletePluginComplet($pluginAmodifier);
+      $pluginAmodifier->delete();
       $traitement_requetes = new traiterRequetes($xml->desinstallation->requetes);
       break;
     case "ouvrir":

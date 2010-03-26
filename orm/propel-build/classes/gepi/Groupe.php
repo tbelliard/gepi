@@ -27,17 +27,6 @@ class Groupe extends BaseGroupe {
 	protected $nameAvecClasses;
 
 	/**
-	 * Initializes internal state of Groupe object.
-	 * @see        parent::__construct()
-	 */
-	public function __construct()
-	{
-		// Make sure that parent constructor is always invoked, since that
-		// is where any default values for this object are set.
-		parent::__construct();
-	}
-
-	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un groupe.
 	 * Manually added for N:M relationship
@@ -47,9 +36,11 @@ class Groupe extends BaseGroupe {
 	 *
 	 */
 	public function getClasses($con = null) {
-		$classes = array();
+		$classes = new PropelObjectCollection();
 		foreach($this->getJGroupesClassessJoinClasse($con) as $ref) {
-			$classes[] = $ref->getClasse();
+		    if ($ref != null) {
+			$classes->append($ref->getClasse());
+		    }
 		}
 		return $classes;
 	}
@@ -160,11 +151,13 @@ class Groupe extends BaseGroupe {
 	 *
 	 */
 	public function getEleves($periode) {
-		$eleves = array();
+		$eleves = new PropelObjectCollection();
 		$criteria = new Criteria();
 		$criteria->add(JEleveGroupePeer::PERIODE,$periode);
 		foreach($this->getJEleveGroupesJoinEleve($criteria) as $ref) {
-			$eleves[] = $ref->getEleve();
+		    if ($ref != null) {
+			$eleves->append($ref->getEleve());
+		    }
 		}
 		return $eleves;
 	}
@@ -179,11 +172,13 @@ class Groupe extends BaseGroupe {
 	 *
 	 */
 	public function getProfesseurs() {
-		$profs = array();
+		$profs = new PropelObjectCollection();
 		$criteria = new Criteria();
 		$criteria->add(JGroupesProfesseursPeer::ID_GROUPE,$this->getId());
 		foreach($this->getJGroupesProfesseurssJoinUtilisateurProfessionnel($criteria) as $ref) {
-			$profs[] = $ref->getUtilisateurProfessionnel();
+		    if ($ref != null) {
+			$profs->append($ref->getUtilisateurProfessionnel());
+		    }
 		}
 		return $profs;
 	}
@@ -202,14 +197,22 @@ class Groupe extends BaseGroupe {
 		$criteria = new Criteria();
 		$criteria->add(JGroupesClassesPeer::ID_CLASSE,$id_classe);
 		$g = $this->getJGroupesClassess($criteria);
-        return !empty($g) > 0 ? $g[0]->getValeurEcts() : '';
+		if ($g->isEmpty()) {
+		    return null;
+		} else {
+		    return $g->getFirst()->getValeurEcts();
+		}
 	}
 
     public function allowsEctsCredits($id_classe) {
-        $c = new Criteria();
-        $c->add(JGroupesClassesPeer::ID_CLASSE,$id_classe);
+		$c = new Criteria();
+		$c->add(JGroupesClassesPeer::ID_CLASSE,$id_classe);
 		$g = $this->getJGroupesClassess($c);
-        return !empty($g) > 0 ? $g[0]->getSaisieEcts() : false;
+		if ($g->isEmpty()) {
+		    return false;
+		} else {
+		    return $g->getFirst()->getSaisieEcts();
+		}
     }
 
 	public function getCategorieMatiere($id_classe) {
@@ -217,7 +220,11 @@ class Groupe extends BaseGroupe {
 		$criteria = new Criteria();
 		$criteria->add(JGroupesClassesPeer::ID_CLASSE,$id_classe);
 		$g = $this->getJGroupesClassess($criteria);
-        return !empty($g) ? $g[0]->getCategorieMatiere() : false;
+		if ($g->isEmpty()) {
+		    return false;
+		} else {
+		    return $g->getFirst()->getCategorieMatiere();
+		}
 	}
 
 	/**

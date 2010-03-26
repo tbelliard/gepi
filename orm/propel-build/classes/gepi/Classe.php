@@ -15,26 +15,17 @@
 class Classe extends BaseClasse {
 
 	/**
-	 * Initializes internal state of Classe object.
-	 * @see        parent::__construct()
-	 */
-	public function __construct()
-	{
-		// Make sure that parent constructor is always invoked, since that
-		// is where any default values for this object are set.
-		parent::__construct();
-	}
-
-	/**
 	 * Renvoi sous forme d'un tableau la liste des groupes d'une classe.
 	 * Manually added for N:M relationship
 	 *
 	 * @return     array Classes[]
 	 */
 	public function getGroupes() {
-		$groupes = array();
+		$groupes = new PropelObjectCollection();
 		foreach($this->getJGroupesClassessJoinGroupe() as $ref) {
-			$groupes[] = $ref->getGroupe();
+		    if ($ref->getGroupe() != null) {
+			$groupes->append($ref->getGroupe());
+		    }
 		}
 		return $groupes;
 	}
@@ -48,19 +39,25 @@ class Classe extends BaseClasse {
 	 *
 	 */
 	public function getEleves($periode) {
+		$eleves = new PropelObjectCollection();
 		$criteria = new Criteria();
 		$criteria->add(JEleveClassePeer::PERIODE,$periode);
 		foreach($this->getJEleveClassesJoinEleve($criteria) as $ref) {
-			$eleves[] = $ref->getEleve();
+		    if ($ref->getEleve() != null) {
+			$eleves->append($ref->getEleve());
+		    }
 		}
 		return $eleves;
 	}
 
 	public function getElevesByProfesseurPrincipal($login_prof) {
+		$eleves = new PropelObjectCollection();
 		$criteria = new Criteria();
 		$criteria->add(JEleveProfesseurPrincipalPeer::PROFESSEUR,$login_prof);
 		foreach($this->getJEleveProfesseurPrincipalsJoinEleve($criteria) as $ref) {
-			$eleves[] = $ref->getEleve();
+		    if ($ref->getEleve() != null) {
+			$eleves->append($ref->getEleve());
+		    }
 		}
 		return $eleves;
 	}

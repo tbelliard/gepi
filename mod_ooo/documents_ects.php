@@ -98,9 +98,9 @@ if ($id_classe == 'all') {
     for($i=0;$i<$nb_classes;$i++) {
         $Classe = ClassePeer::retrieveByPK(mysql_result($call_classes, $i, 'id'));
         if ($_SESSION['statut'] == 'scolarite' OR $_SESSION['statut'] == 'secours') {
-            $Eleves = array_merge($Eleves,$Classe->getEleves('1'));
+            $Eleves = array_merge($Eleves,$Classe->getEleves('1')->toOldFormatArray());
         } else {
-            $Eleves = array_merge($Eleves,$Classe->getElevesByProfesseurPrincipal($_SESSION['login']));
+            $Eleves = array_merge($Eleves,$Classe->getElevesByProfesseurPrincipal($_SESSION['login'])->toOldFormatArray());
         }
     }
 } else {
@@ -110,9 +110,9 @@ if ($id_classe == 'all') {
     } else {
         $Classe = ClassePeer::retrieveByPK($id_classe);
         if ($_SESSION['statut'] == 'scolarite' OR $_SESSION['statut'] == 'secours') {
-            $Eleves = $Classe->getEleves('1');
+            $Eleves = $Classe->getEleves('1')->toOldFormatArray();
         } else {
-            $Eleves = $Classe->getElevesByProfesseurPrincipal($_SESSION['login']);
+            $Eleves = $Classe->getElevesByProfesseurPrincipal($_SESSION['login'])->toOldFormatArray();
         }
     }
 }

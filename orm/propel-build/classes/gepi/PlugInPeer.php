@@ -20,10 +20,10 @@ class PlugInPeer extends BasePlugInPeer {
       $c->add(PlugInPeer::NOM, $nom, Criteria::EQUAL);
       $retour = PlugInPeer::doSelect($c);
 
-      if (empty ($retour)){
+      if ($retour->isEmpty()){
         return NULL;
       }else{
-        return $retour[0];
+        return $retour->getFirst();
       }
 
     }else{

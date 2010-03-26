@@ -41,7 +41,11 @@ class Eleve extends BaseEleve {
 		$c = new Criteria();
 		$c->add(JEleveClassePeer::PERIODE,$periode);
 		$jec = $this->getJEleveClasses($c);
-        return $jec[0]->getClasse();
+		if ($jec->isEmpty()) {
+		    return null;
+		} else {
+		    return $jec->getFirst()->getClasse();
+		}
 	}
 
 	/**
@@ -154,9 +158,13 @@ class Eleve extends BaseEleve {
 	public function getEctsCredit($periode,$id_groupe) {
 		$criteria = new Criteria();
 		$criteria->add(CreditEctsPeer::NUM_PERIODE,$periode);
-        $criteria->add(CreditEctsPeer::ID_GROUPE,$id_groupe);
-        $v = $this->getCreditEctss($criteria);
-        return !empty($v) > 0 ? $v[0] : null;
+		$criteria->add(CreditEctsPeer::ID_GROUPE,$id_groupe);
+		$v = $this->getCreditEctss($criteria);
+		if ($v->isEmpty()) {
+		    return null;
+		} else {
+		    return $v->getFirst();
+		}
 	}
 
 	public function deleteEctsCredit($periode,$id_groupe) {
@@ -184,12 +192,20 @@ class Eleve extends BaseEleve {
         $criteria->add(ArchiveEctsPeer::ANNEE,$annee);
         $criteria->add(ArchiveEctsPeer::MATIERE,$matiere);
         $v = $this->getArchiveEctss($criteria);
-        return !empty($v) ? $v[0] : null;
+		if ($v->isEmpty()) {
+		    return null;
+		} else {
+		    return $v->getFirst();
+		}
 	}
 
 	public function getCreditEctsGlobal() {
         $v = $this->getCreditEctsGlobals();
-        return !empty($v) > 0 ? $v[0] : null;
+		if ($v->isEmpty()) {
+		    return null;
+		} else {
+		    return $v->getFirst();
+		}
 	}
 
     public function getEctsAnneesPrecedentes() {

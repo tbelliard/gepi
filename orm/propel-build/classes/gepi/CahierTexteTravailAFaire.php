@@ -15,16 +15,6 @@
 class CahierTexteTravailAFaire extends BaseCahierTexteTravailAFaire {
 
 	//optimisation de vitess pour recuperer les fichiers joints dans le cas ou le critere est null
-	/**
-	 * Initializes internal state of CahierTexteTravailAFaire object.
-	 * @see        parent::__construct()
-	 */
-	public function __construct()
-	{
-		// Make sure that parent constructor is always invoked, since that
-		// is where any default values for this object are set.
-		parent::__construct();
-	}
 
 	/**
 	 * @var        array CahierTexteTravailAFaireFichierJoint[] Collection to store aggregation of CahierTexteTravailAFaireFichierJoint objects.
