@@ -289,7 +289,9 @@ abstract class BaseAbsenceEleveTypeStatutAutorise extends BaseObject  implements
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				AbsenceEleveTypeStatutAutorisePeer::doDelete($this, $con);
+				AbsenceEleveTypeStatutAutoriseQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

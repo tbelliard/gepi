@@ -508,7 +508,9 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				CahierTexteTravailAFairePeer::doDelete($this, $con);
+				CahierTexteTravailAFaireQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

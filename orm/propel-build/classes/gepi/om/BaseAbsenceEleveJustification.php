@@ -333,7 +333,9 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 			AbsenceEleveJustificationPeer::clearInstancePool();
 
 			if ($ret) {
-				AbsenceEleveJustificationPeer::doDelete($this, $con);
+				AbsenceEleveJustificationQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

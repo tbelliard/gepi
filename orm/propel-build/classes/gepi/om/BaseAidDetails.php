@@ -1161,7 +1161,9 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				AidDetailsPeer::doDelete($this, $con);
+				AidDetailsQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

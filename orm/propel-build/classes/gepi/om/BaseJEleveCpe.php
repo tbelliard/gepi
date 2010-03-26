@@ -297,7 +297,9 @@ abstract class BaseJEleveCpe extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JEleveCpePeer::doDelete($this, $con);
+				JEleveCpeQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

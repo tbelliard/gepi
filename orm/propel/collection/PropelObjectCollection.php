@@ -108,6 +108,28 @@ class PropelObjectCollection extends PropelCollection
 	}
 	
 	/**
+	 * Get an associative array representation of the collection
+	 * The first parameter specifies the column to be used for the key,
+	 * And the seconf for the value.
+	 * <code>
+	 * $res = $coll->toKeyValue('Id', 'Name');
+	 * </code>
+	 *
+	 * @return    array
+	 */
+	public function toKeyValue($keyColumn, $valueColumn)
+	{
+		$ret = array();
+		$keyGetterMethod = 'get' . $keyColumn;
+		$valueGetterMethod = 'get' . $valueColumn;
+		foreach ($this as $obj) {
+			$ret[$obj->$keyGetterMethod()] = $obj->$valueGetterMethod();
+		}
+		
+		return $ret;
+	}
+	
+	/**
 	 * Get an array representation of the collection at the old proepl 1.3 format
 	 * It's an arry of propel objetcs
 	 *

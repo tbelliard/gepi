@@ -265,7 +265,9 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JGroupesProfesseursPeer::doDelete($this, $con);
+				JGroupesProfesseursQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

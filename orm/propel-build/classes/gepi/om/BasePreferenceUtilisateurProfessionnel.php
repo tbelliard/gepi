@@ -289,7 +289,9 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				PreferenceUtilisateurProfessionnelPeer::doDelete($this, $con);
+				PreferenceUtilisateurProfessionnelQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

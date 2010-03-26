@@ -265,7 +265,9 @@ abstract class BaseJTraitementSaisieEleve extends BaseObject  implements Persist
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JTraitementSaisieElevePeer::doDelete($this, $con);
+				JTraitementSaisieEleveQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

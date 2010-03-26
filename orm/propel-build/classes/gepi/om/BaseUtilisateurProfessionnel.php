@@ -1086,7 +1086,9 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				UtilisateurProfessionnelPeer::doDelete($this, $con);
+				UtilisateurProfessionnelQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

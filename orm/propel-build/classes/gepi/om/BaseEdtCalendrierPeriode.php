@@ -938,7 +938,9 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				EdtCalendrierPeriodePeer::doDelete($this, $con);
+				EdtCalendrierPeriodeQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

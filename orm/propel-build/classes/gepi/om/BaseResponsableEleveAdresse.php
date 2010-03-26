@@ -468,7 +468,9 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				ResponsableEleveAdressePeer::doDelete($this, $con);
+				ResponsableEleveAdresseQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

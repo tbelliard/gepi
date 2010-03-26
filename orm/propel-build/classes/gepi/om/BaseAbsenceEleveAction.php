@@ -333,7 +333,9 @@ abstract class BaseAbsenceEleveAction extends BaseObject  implements Persistent
 			AbsenceEleveActionPeer::clearInstancePool();
 
 			if ($ret) {
-				AbsenceEleveActionPeer::doDelete($this, $con);
+				AbsenceEleveActionQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

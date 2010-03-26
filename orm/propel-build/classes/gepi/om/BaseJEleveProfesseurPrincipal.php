@@ -315,7 +315,9 @@ abstract class BaseJEleveProfesseurPrincipal extends BaseObject  implements Pers
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JEleveProfesseurPrincipalPeer::doDelete($this, $con);
+				JEleveProfesseurPrincipalQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

@@ -333,7 +333,9 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 			AbsenceEleveTypeEnvoiPeer::clearInstancePool();
 
 			if ($ret) {
-				AbsenceEleveTypeEnvoiPeer::doDelete($this, $con);
+				AbsenceEleveTypeEnvoiQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

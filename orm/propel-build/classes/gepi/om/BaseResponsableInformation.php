@@ -339,7 +339,9 @@ abstract class BaseResponsableInformation extends BaseObject  implements Persist
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				ResponsableInformationPeer::doDelete($this, $con);
+				ResponsableInformationQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

@@ -333,7 +333,9 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 			AbsenceEleveMotifPeer::clearInstancePool();
 
 			if ($ret) {
-				AbsenceEleveMotifPeer::doDelete($this, $con);
+				AbsenceEleveMotifQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);

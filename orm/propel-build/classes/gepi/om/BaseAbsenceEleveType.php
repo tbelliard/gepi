@@ -451,7 +451,9 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 			AbsenceEleveTypePeer::clearInstancePool();
 
 			if ($ret) {
-				AbsenceEleveTypePeer::doDelete($this, $con);
+				AbsenceEleveTypeQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
