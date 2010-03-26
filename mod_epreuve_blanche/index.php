@@ -128,6 +128,9 @@ $create_table=mysql_query($sql);
 $id_epreuve=isset($_POST['id_epreuve']) ? $_POST['id_epreuve'] : (isset($_GET['id_epreuve']) ? $_GET['id_epreuve'] : NULL);
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
+$id_epreuve_modele=isset($_POST['id_epreuve_modele']) ? $_POST['id_epreuve_modele'] : (isset($_GET['id_epreuve_modele']) ? $_GET['id_epreuve_modele'] : NULL);
+
+
 //$modif_epreuve=isset($_POST['modif_epreuve']) ? $_POST['modif_epreuve'] : (isset($_GET['modif_epreuve']) ? $_GET['modif_epreuve'] : NULL);
 
 if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
@@ -149,7 +152,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				}
 				*/
 				if(isset($_POST['modif_epreuve'])) {unset($_POST['modif_epreuve']);}
-				if((isset($mode))&&($mode!='clore')&&($mode!='declore')&&($mode!='modif_epreuve')) {$mode=NULL;}
+				//if((isset($mode))&&($mode!='clore')&&($mode!='declore')&&($mode!='modif_epreuve')) {$mode=NULL;}
+				if((isset($mode))&&($mode!='clore')&&($mode!='declore')&&($mode!='modif_epreuve')&&($mode!='copier_choix')) {$mode=NULL;}
 			}
 		}
 	}
@@ -386,13 +390,39 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				$msg=mysql_num_rows($test)." notes ont déjà été saisies pour des copies associées au groupe.";
 			}
 			else {
-				$sql="DELETE FROM eb_copies ec, eb_groupes eg WHERE ec.id_epreuve='$id_epreuve' AND eg.id_epreuve='$id_epreuve' AND eg.id_groupe='$id_groupe';";
-				$suppr=mysql_query($sql);
-				if(!$suppr) {
+				//$sql="DELETE FROM eb_copies ec, eb_groupes eg WHERE ec.id_epreuve='$id_epreuve' AND eg.id_epreuve=ec.id_epreuve AND eg.id_groupe='$id_groupe';";
+
+				//$sql="SELECT ec.id FROM eb_copies ec, j_eleves_groupes jeg, eb_groupes WHERE ec.login_ele=jeg.login AND jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND ec.id_epreuve='$id_epreuve' AND eg.id_epreuve=ec.id_epreuve;";
+
+				$nb_err_suppr=0;
+				$sql="SELECT ec.login_ele FROM eb_copies ec, j_eleves_groupes jeg, eb_groupes eg WHERE ec.login_ele=jeg.login AND jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND ec.id_epreuve='$id_epreuve' AND eg.id_epreuve=ec.id_epreuve;";
+				//echo "<p>$sql<br />";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					while($lig=mysql_fetch_object($res)) {
+						// Pour ne pas supprimer un élève passé d'un groupe à un autre lors d'un changement de classe
+						$sql="SELECT DISTINCT eg.id_groupe FROM eb_groupes eg, j_eleves_groupes jeg WHERE jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND jeg.login='$lig->login_ele';";
+						//echo "$sql<br />";
+						$test=mysql_query($sql);
+						//echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />";
+						if(mysql_num_rows($test)==1) {
+							$sql="DELETE FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
+							//echo "$sql<br />";
+							$suppr=mysql_query($sql);
+							if(!$suppr) {$nb_err_suppr++;}
+						}
+					}
+				}
+
+				//echo "$sql<br />";
+				//$suppr=mysql_query($sql);
+				//if(!$suppr) {
+				if($nb_err_suppr>0) {
 					$msg="ERREUR lors de la suppression des copies associées au groupe n°$id_groupe.";
 				}
 				else {
 					$sql="DELETE FROM eb_groupes WHERE id_epreuve='$id_epreuve' AND id_groupe='$id_groupe';";
+					//echo "$sql<br />";
 					$suppr=mysql_query($sql);
 					if(!$suppr) {
 						$msg="ERREUR lors de la suppression du groupe n°$id_groupe.";
@@ -484,6 +514,180 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$mode='modif_epreuve';
 		}
 	}
+	elseif((isset($id_epreuve))&&($mode=='copier_choix')&&(isset($_POST['copier_les_parametres']))) {
+
+/*
+    $_POST['id_groupe']=	Array (*)
+    $_POST[id_groupe]['0']=	923
+    $_POST[id_groupe]['1']=	934
+    $_POST[id_groupe]['2']=	943
+    $_POST[id_groupe]['3']=	952
+    $_POST['id_salle']=	Array (*)
+    $_POST[id_salle]['0']=	1
+    $_POST[id_salle]['1']=	2
+    $_POST[id_salle]['2']=	3
+    $_POST[id_salle]['3']=	4
+    $_POST['copie_affect_ele_salle']=	Array (*)
+    $_POST[copie_affect_ele_salle]['0']=	1
+    $_POST[copie_affect_ele_salle]['1']=	2
+    $_POST[copie_affect_ele_salle]['2']=	3
+    $_POST[copie_affect_ele_salle]['3']=	4
+    $_POST['login_prof']=	Array (*)
+    $_POST[login_prof]['0']=	BEAUNOIS
+    $_POST[login_prof]['1']=	BOIREAUS
+    $_POST['copie_affect_copie_prof']=	Array (*)
+    $_POST[copie_affect_copie_prof]['0']=	BEAUNOIS
+    $_POST[copie_affect_copie_prof]['1']=	BOIREAUS
+    $_POST['id_epreuve']=	2
+    $_POST['mode']=	copier_choix
+    $_POST['copier_les_parametres']=	Copier les paramètres sélectionnés
+
+    Nombre de valeurs en POST: 19
+
+*/
+		if(!isset($msg)) {$msg="";}
+
+		$id_epreuve_modele=isset($_POST['id_epreuve_modele']) ? $_POST['id_epreuve_modele'] : NULL;
+
+		$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : NULL;
+		$id_salle=isset($_POST['id_salle']) ? $_POST['id_salle'] : NULL;
+		$copie_affect_ele_salle=isset($_POST['copie_affect_ele_salle']) ? $_POST['copie_affect_ele_salle'] : NULL;
+		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : NULL;
+		$copie_affect_copie_prof=isset($_POST['copie_affect_copie_prof']) ? $_POST['copie_affect_copie_prof'] : NULL;
+
+		if(isset($id_groupe)) {
+
+			//$sql="DELETE FROM eb_groupes WHERE id_epreuve='$id_epreuve';";
+			//$del=mysql_query($sql);
+
+			for($loop=0;$loop<count($id_groupe);$loop++) {
+				$sql="SELECT 1=1 FROM eb_groupes WHERE id_groupe='$id_groupe[$loop]' AND  id_epreuve='$id_epreuve';";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)==0) {
+					$sql="INSERT INTO eb_groupes SET id_groupe='$id_groupe[$loop]', id_epreuve='$id_epreuve', transfert='n';";
+					$insert=mysql_query($sql);
+				}
+			}
+		}
+
+		// A REVOIR UN JOUR: La gestion des salles est mal foutue.
+		// Il faudrait avoir une table eb_salles ne dépendant pas de id_epreuve
+		if(isset($id_salle)) {
+			$sql="DELETE FROM eb_salles WHERE id_epreuve='$id_epreuve';";
+			$del=mysql_query($sql);
+
+			$sql="UPDATE eb_copies SET id_salle='' WHERE id_epreuve='$id_epreuve';";
+			$del=mysql_query($sql);
+
+			$tab_corresp_id_salle=array();
+
+			for($loop=0;$loop<count($id_salle);$loop++) {
+				$sql="SELECT * FROM eb_salles WHERE id='$id_salle[$loop]' AND id_epreuve='$id_epreuve_modele';";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					$lig=mysql_fetch_object($res);
+
+					$sql="INSERT INTO eb_salles SET salle='$lig->salle', id_epreuve='$id_epreuve';";
+					//echo "$sql<br />";
+					$insert=mysql_query($sql);
+					$tmp_id_salle=mysql_insert_id();
+					$tab_salle[$tmp_id_salle]=$lig->salle;
+					$tab_corresp_id_salle[$id_salle[$loop]]=$tmp_id_salle;
+
+					//echo "\$tab_salle[$tmp_id_salle]=".$tab_salle[$tmp_id_salle]."<br />";
+					//echo "\$tab_corresp_id_salle[$id_salle[$loop]]=\$tab_corresp_id_salle[$id_salle[$loop]]=".$tab_corresp_id_salle[$id_salle[$loop]]."<br />";
+				}
+			}
+
+			if(isset($copie_affect_ele_salle)) {
+				for($loop=0;$loop<count($copie_affect_ele_salle);$loop++) {
+					if(!in_array($copie_affect_ele_salle[$loop],$id_salle)) {
+						$msg.="Il n'est pas possible de copier les affectations élèves/salles si la salle n'est pas copiée.<br />";
+					}
+					else {
+						$sql="SELECT ec.login_ele FROM eb_copies ec WHERE ec.id_epreuve='$id_epreuve_modele' AND ec.id_salle='$copie_affect_ele_salle[$loop]';";
+						//echo "$sql<br />";
+						$res=mysql_query($sql);
+						if(mysql_num_rows($res)>0) {
+							while($lig=mysql_fetch_object($res)) {
+
+								$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
+								//echo "$sql<br />";
+								$test=mysql_query($sql);
+								if(mysql_num_rows($test)>0) {
+									$sql="UPDATE eb_copies SET id_salle='".$tab_corresp_id_salle[$copie_affect_ele_salle[$loop]]."' WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
+									//echo "$sql<br />";
+									$update=mysql_query($sql);
+									if(!$update) {
+										$msg.="Erreur lors de l'affectation de $lig->login_ele dans ".$tab_salle[$tab_corresp_id_salle[$copie_affect_ele_salle[$loop]]]."<br />";
+									}
+								}
+								else {
+									$sql="INSERT INTO eb_copies SET id_salle='".$tab_corresp_id_salle[$copie_affect_ele_salle[$loop]]."', id_epreuve='$id_epreuve', login_ele='".$lig->login_ele."', statut='v';";
+									//echo "$sql<br />";
+									$insert=mysql_query($sql);
+									if(!$insert) {
+										$msg.="Erreur lors de l'affectation de $lig->login_ele dans ".$tab_salle[$tab_corresp_id_salle[$copie_affect_ele_salle[$loop]]]."<br />";
+									}
+								}
+
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Si on n'a pas copié les groupes, on ne doit pas pouvoir copier les affectations... sauf si ce sont des profs qui ont les mêmes élèves dans plusieurs groupes.
+		if(isset($login_prof)) {
+			$sql="DELETE FROM eb_profs WHERE id_epreuve='$id_epreuve';";
+			$del=mysql_query($sql);
+
+			$sql="UPDATE eb_copies SET login_prof='' WHERE id_epreuve='$id_epreuve';";
+			$del=mysql_query($sql);
+
+			for($loop=0;$loop<count($login_prof);$loop++) {
+				$sql="INSERT INTO eb_profs SET login_prof='$login_prof[$loop]', id_epreuve='$id_epreuve';";
+				$insert=mysql_query($sql);
+			}
+
+			if(isset($copie_affect_copie_prof)) {
+				for($loop=0;$loop<count($copie_affect_copie_prof);$loop++) {
+					if(!in_array($copie_affect_copie_prof[$loop],$login_prof)) {
+						$msg.="Il n'est pas possible de copier les affectations copies_élèves/correcteurs si le correcteur n'est pas copié.<br />";
+					}
+					else {
+						$sql="SELECT ec.login_ele FROM eb_copies ec WHERE ec.id_epreuve='$id_epreuve_modele' AND ec.login_prof='$copie_affect_copie_prof[$loop]';";
+						$res=mysql_query($sql);
+						if(mysql_num_rows($res)>0) {
+							while($lig=mysql_fetch_object($res)) {
+
+								$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
+								$test=mysql_query($sql);
+								if(mysql_num_rows($test)>0) {
+									$sql="UPDATE eb_copies SET login_prof='".$copie_affect_copie_prof[$loop]."' WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
+									$update=mysql_query($sql);
+									if(!$update) {
+										$msg.="Erreur lors de l'affectation de la copie $lig->login_ele au correcteur ".$copie_affect_copie_prof[$loop]."<br />";
+									}
+								}
+								else {
+									$sql="INSERT INTO eb_copies SET login_prof='".$copie_affect_copie_prof[$loop]."', id_epreuve='$id_epreuve', login_ele='".$lig->login_ele."';";
+									$insert=mysql_query($sql);
+									if(!$insert) {
+										$msg.="Erreur lors de l'affectation de la copie $lig->login_ele au correcteur ".$copie_affect_copie_prof[$loop]."<br />";
+									}
+								}
+
+							}
+						}
+					}
+				}
+			}
+		}
+
+		$mode="modif_epreuve";
+	}
 
 
 	if($temoin_erreur_n_anonymat=='y') {
@@ -515,6 +719,8 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
+
+//echo "mode=$mode<br />";
 
 //echo "<div class='noprint'>\n";
 //echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
@@ -664,6 +870,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	// Modification/compléments sur une épreuve
 	elseif($mode=='modif_epreuve') {
 		echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu épreuves blanches</a>\n";
+
+		if(isset($id_epreuve)) {
+		// VERIFIER: Il faut avoir saisi un intitulé,...
+			$sql="SELECT 1=1 FROM eb_epreuves;";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)>0) {
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix'";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo ">Copier des paramétrages depuis une autre épreuve blanche</a>\n";
+			}
+		}
 
 		$aff=isset($_POST['aff']) ? $_POST['aff'] : (isset($_GET['aff']) ? $_GET['aff'] : NULL);
 		if(!isset($aff)) {
@@ -938,7 +1155,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					//echo "<b>".$current_group['classlist_string']."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)";
 					echo "<b>".$classlist_string."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)";
 					if($etat!='clos') {
-						echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;id_groupe=$lig->id&amp;mode=suppr_groupe' onclick=\"return confirm('Etes vous sûr de vouloir supprimer le groupe de l épreuve?')\">Supprimer</a>\n";
+						echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=$lig->id&amp;mode=suppr_groupe' onclick=\"return confirm('Etes vous sûr de vouloir supprimer le groupe de l épreuve?')\">Supprimer</a>\n";
 					}
 					echo "<br />\n";
 					// Afficher les élèves inscrits/non inscrits en infobulle
@@ -1406,6 +1623,246 @@ function checkbox_change(cpt) {
 
 		}
 	}
+
+
+	//===========================================================================
+	// Copie de paramétrages
+	elseif($mode=='copier_choix') {
+		echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu épreuves blanches</a>\n";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve'>Epreuve blanche n°$id_epreuve</a>\n";
+
+// Classes
+// Salles
+	// Affectation des élèves dans les salles
+// Matières
+	// Profs
+// Affectation des copies aux profs
+// Ou rotation de l'affectation des copies aux profs
+/*
+eb_copies
+eb_epreuves
+eb_groupes
+eb_profs
+eb_salles
+*/
+
+		$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			echo "</p>\n";
+
+			echo "<p style='color:red'>L'épreuve n°$id_epreuve n'existe pas.</p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+		else {
+			$lig=mysql_fetch_object($res);
+			$intitule_epreuve=$lig->intitule;
+			$description_epreuve=$lig->description;
+			$date_epreuve=$lig->date;
+		}
+
+		if(!isset($id_epreuve_modele)) {
+			echo "</p>\n";
+
+			echo "<p>Choix d'un modèle pour l'épreuve n°$id_epreuve</p>\n";
+
+			echo "<p class='bold'>Liste des autres épreuves&nbsp;:</p>\n";
+			$sql="SELECT * FROM eb_epreuves WHERE id!='$id_epreuve';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)==0) {
+				echo "<p style='color:red'>Aucune autre épreuve n'a été trouvée.</p>\n";
+			}
+			else {
+				echo "<ul>\n";
+				while($lig=mysql_fetch_object($res)) {
+					echo "<li><p><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix&amp;id_epreuve_modele=$lig->id'>Epreuve n°$lig->id</a>&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p></li>\n";
+				}
+				echo "</ul>\n";
+			}
+		}
+		else {
+			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=copier_choix&amp;id_epreuve=$id_epreuve'>Choix de l'épreuve modèle</a>\n";
+			echo "</p>\n";
+
+			echo "<h3>Copie de paramètres pour l'épreuve n°$id_epreuve: $intitule_epreuve (".formate_date($date_epreuve).")</h3>\n";
+
+			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve_modele';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)==0) {
+				echo "<p style='color:red'>L'épreuve n°$id_epreuve_modele n'a pas été trouvée.</p>\n";
+			}
+			else {
+				$lig=mysql_fetch_object($res);
+
+
+				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_copie_param_modele'>\n";
+
+				//echo "<p>Modèle&nbsp;: Epreuve n°$lig->id&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p>";
+				//echo "<div style='width:11em; font-weight:bold; display:inline; border:1px solid black;'>Modèle&nbsp;:</div><div style='display:block; border:1px solid black; width:30em'>Epreuve n°$lig->id&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</div>";
+				echo "<p><b>Modèle&nbsp;:</b> Epreuve n°$lig->id&nbsp;:</p>\n";
+				echo "<p style='margin-left: 3em;'>$lig->intitule<br />".nl2br($lig->description)."</p>";
+
+				// Liste des groupes
+				$sql="SELECT * FROM eb_groupes eg WHERE id_epreuve='$id_epreuve_modele';";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)==0) {
+					echo "<p>L'épreuve n°$id_epreuve_modele n'est associée à aucun groupe/enseignement.</p>\n";
+				}
+				else {
+					echo "<p>Liste des enseignements de l'épreuve modèle&nbsp;:</p>\n";
+					echo "<p style='margin-left: 3em;'>";
+					while($lig=mysql_fetch_object($res)) {
+						$tmp_grp=get_group($lig->id_groupe);
+						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_".$lig->id_groupe."' value='$lig->id_groupe' checked /><label for='id_groupe_".$lig->id_groupe."'> ".$tmp_grp['name']." (<i>".$tmp_grp['classlist_string']."</i>)</label>\n";
+					}
+					echo "</p>\n";
+				}
+
+				// Liste des salles
+				$sql="SELECT * FROM eb_salles es WHERE id_epreuve='$id_epreuve_modele' ORDER BY salle;";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)==0) {
+					echo "<p>L'épreuve n°$id_epreuve_modele n'est associée à aucune salle.</p>\n";
+				}
+				else {
+					echo "<p>Liste des salles&nbsp;:</p>\n";
+					echo "<p style='margin-left: 3em;'>";
+					while($lig=mysql_fetch_object($res)) {
+						echo "<input type='checkbox' name='id_salle[]' id='id_salle_".$lig->id."' value='$lig->id' checked /><label for='id_salle_".$lig->id."'> ".$lig->salle."</label>\n";
+						$tab_salle[$lig->id]=$lig->salle;
+					}
+					echo "</p>\n";
+
+					// Liste des associations élèves/salles
+					$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve_modele' ORDER BY id_salle;";
+					$res_ele_salle=mysql_query($sql);
+					if(mysql_num_rows($res_ele_salle)==0) {
+						echo "<p>Aucun élève n'est affecté dans une salle pour l'épreuve n°$id_epreuve_modele.</p>\n";
+					}
+					else {
+						$current_id_salle="";
+						$cpt=0;
+						while($lig=mysql_fetch_object($res_ele_salle)) {
+
+							if($lig->id_salle!=$current_id_salle) {
+								//if($current_id_salle!="";) {echo "</table>\n";}
+								if($current_id_salle!="") {
+									echo "</span>\n";
+									echo "</span>\n";
+									echo "</p>\n";
+								}
+
+								$current_id_salle=$lig->id_salle;
+								echo "<p style='margin-left: 6em;'>";
+								echo "<span class='conteneur_infobulle_css'>\n";
+								echo "<input type='checkbox' name='copie_affect_ele_salle[]' id='copie_affect_ele_salle_".$lig->id_salle."' value='".$lig->id_salle."' checked  />";
+								echo "<label for='copie_affect_ele_salle_".$lig->id_salle."'>Copier les affectations d'élèves en ".$tab_salle[$lig->id_salle]."</label>";
+								//echo "<table class='boireaus' summary=\"Liste des élèves affectés en Salle $tab_salle[$lig->id]\">\n";
+								echo "<br />\n";
+								echo "<span class='infobulle_css'>\n";
+								$cpt=0;
+							}
+
+							//echo "<input type='checkbox' name='' value='' />";
+							if($cpt>0) {
+								echo ", ";
+								if($cpt%5==0) {echo "<br />";}
+							}
+							echo get_nom_prenom_eleve($lig->login_ele,'avec_classe');
+							$cpt++;
+						}
+						//echo "</table>\n";
+						echo "</span>\n";
+						echo "</span>\n";
+						echo "</p>\n";
+
+					}
+				}
+
+				// Liste des correcteurs
+				$sql="SELECT * FROM eb_profs ep WHERE id_epreuve='$id_epreuve_modele' ORDER BY login_prof;";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)==0) {
+					echo "<p>L'épreuve n°$id_epreuve_modele n'est associée à aucun correcteur.</p>\n";
+				}
+				else {
+					echo "<p>Liste des correcteurs&nbsp;:</p>\n";
+					echo "<p style='margin-left: 3em;'>";
+					while($lig=mysql_fetch_object($res)) {
+						$tab_prof[$lig->login_prof]=civ_nom_prenom($lig->login_prof);
+
+						echo "<input type='checkbox' name='login_prof[]' id='login_prof_".$lig->login_prof."' value='$lig->login_prof' checked /><label for='login_prof_".$lig->login_prof."'> ".$tab_prof[$lig->login_prof]."</label>\n";
+					}
+					echo "</p>\n";
+
+					// Liste des associations professeur/copies
+					$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve_modele' AND login_prof!='' ORDER BY login_prof;";
+					//echo "$sql<br />";
+					$res_ele_prof=mysql_query($sql);
+					if(mysql_num_rows($res_ele_prof)==0) {
+						echo "<p>Aucun copie élève n'est affectée à un correcteur pour l'épreuve n°$id_epreuve_modele.</p>\n";
+					}
+					else {
+						$current_login_prof="";
+						$cpt=0;
+						while($lig=mysql_fetch_object($res_ele_prof)) {
+
+							if($lig->login_prof!=$current_login_prof) {
+								if($current_login_prof!="") {
+									echo "</span>\n";
+									echo "</span>\n";
+									echo "</p>\n";
+								}
+								$current_login_prof=$lig->login_prof;
+
+								echo "<p style='margin-left: 6em;'>";
+								echo "<span class='conteneur_infobulle_css'>\n";
+								echo "<input type='checkbox' name='copie_affect_copie_prof[]' id='copie_affect_copie_prof_".$lig->login_prof."' value='".$lig->login_prof."' checked  />";
+								echo "<label for='copie_affect_copie_prof_".$lig->login_prof."'>Copier les affectations copie d'élèves au correcteur ".$tab_prof[$lig->login_prof]."</label>";
+								//echo "<table class='boireaus' summary=\"Liste des élèves affectés en Salle $tab_salle[$lig->id]\">\n";
+								echo "<br />\n";
+								echo "<span class='infobulle_css'>\n";
+								$cpt=0;
+							}
+
+							//echo "<input type='checkbox' name='' value='' />";
+							if($cpt>0) {
+								echo ", ";
+								if($cpt%5==0) {echo "<br />";}
+							}
+							echo get_nom_prenom_eleve($lig->login_ele,'avec_classe');
+							$cpt++;
+						}
+						//echo "</table>\n";
+						echo "</span>\n";
+						echo "</span>\n";
+						echo "</p>\n";
+
+					}
+				}
+
+				echo "<input type='hidden' name='id_epreuve' value='$id_epreuve' />\n";
+				echo "<input type='hidden' name='id_epreuve_modele' value='$id_epreuve_modele' />\n";
+				echo "<input type='hidden' name='mode' value='copier_choix' />\n";
+				echo "<input type='submit' name='copier_les_parametres' value='Copier les paramètres sélectionnés' />\n";
+				echo "</form>\n";
+
+				// Espace pour que les infobulles CSS puissent s'afficher.
+				echo "<div style='height:10em;'>&nbsp;</div>";
+
+
+
+			}
+		}
+
+
+	}
+
+
+
+
+
 }
 //=============================================================================
 elseif($_SESSION['statut']=='professeur') {
