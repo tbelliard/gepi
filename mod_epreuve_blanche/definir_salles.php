@@ -85,7 +85,9 @@ if(isset($definition_salles)) {
 			$salle=isset($_POST['salle']) ? $_POST['salle'] : (isset($_GET['salle']) ? $_GET['salle'] : array());
 			$id_salle=isset($_POST['id_salle']) ? $_POST['id_salle'] : (isset($_GET['id_salle']) ? $_GET['id_salle'] : array());
 			$suppr_salle=isset($_POST['suppr_salle']) ? $_POST['suppr_salle'] : (isset($_GET['suppr_salle']) ? $_GET['suppr_salle'] : array());
-		
+
+			$id_salle_existante=isset($_POST['id_salle_existante']) ? $_POST['id_salle_existante'] : NULL;
+
 			$msg="";
 		
 			// Modification des salles inscrites
@@ -130,14 +132,16 @@ if(isset($definition_salles)) {
 					}
 				}
 			}
-		
+
 			// Ajout de salles
+			$tab_salles=array();
+			$tab_id_salles=array();
 			//echo "\$salles=$salles<br />";
 			if((isset($salles))&&($salles!="")) {
 				$tab=explode(",",$salles);
 			
-				$tab_salles=array();
-				$tab_id_salles=array();
+				//$tab_salles=array();
+				//$tab_id_salles=array();
 				$sql="SELECT * FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
@@ -166,6 +170,24 @@ if(isset($definition_salles)) {
 						//else {$msg.="Salle '$tab[$i]' ajoutée.<br />";}
 						if(!$insert) {$msg.="Erreur lors de l'ajout de la salle '$salle'<br />";}
 						else {$msg.="Salle '$salle' ajoutée.<br />";}
+					}
+				}
+			}
+
+			if(isset($id_salle_existante)) {
+				for($i=0;$i<count($id_salle_existante);$i++) {
+					$sql="SELECT salle FROM eb_salles WHERE id='$id_salle_existante[$i]';";
+					$res=mysql_query($sql);
+					if(mysql_num_rows($res)>0) {
+						// La salle existe
+
+						$lig=mysql_fetch_object($res);
+						if((!in_array($lig->salle,$salle))&&(!in_array($lig->salle,$tab_salles))) {
+							$sql="INSERT INTO eb_salles SET salle='".$lig->salle."', id_epreuve='$id_epreuve';";
+							$insert=mysql_query($sql);
+							if(!$insert) {$msg.="Erreur lors de l'ajout de la salle '$lig->salle'<br />";}
+							else {$msg.="Salle '$lig->salle' ajoutée.<br />";}
+						}
 					}
 				}
 			}
@@ -258,15 +280,121 @@ if(!isset($mode)) {
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 	}
 
+	$menu_a_droite="";
+
 	$salles="";
 	$sql="SELECT * FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
 	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$nb_salles_epreuve_courante=mysql_num_rows($res);
+	$tab_salles=array();
+	$tab_id_salles=array();
+	if($nb_salles_epreuve_courante>0) {
+		// Parcours des salles déjà définies pour cette épreuve:
+		while($lig=mysql_fetch_object($res)) {
+			$tab_salles[]=$lig->salle;
+			$tab_id_salles[]=$lig->id;
+		}
+		//$nb_salles_epreuve_courante=count($tab_salles);
+
+		/*
 		echo "<div style='float:right; width:18em; text-align:center; border: 1px solid black;'>\n";
 		echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=affect_eleves&amp;id_epreuve=$id_epreuve'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 		echo ">Affecter les élèves dans les salles</a>.</p>";
 		echo "</div>\n";
+		*/
+		$menu_a_droite.="<div style='float:right; width:18em;'>\n";
+
+		$menu_a_droite.="<div style='text-align:center; border: 1px solid black;'>\n";
+		$menu_a_droite.="<p><a href='".$_SERVER['PHP_SELF']."?mode=affect_eleves&amp;id_epreuve=$id_epreuve'";
+		$menu_a_droite.=" onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		$menu_a_droite.=">Affecter les élèves dans les salles</a>.</p>";
+		$menu_a_droite.="</div>\n";
+
+	}
+
+	// Choisir des salles parmi les salles auparavant définies... et qui ne sont pas déjà choisies
+	$sql="SELECT * FROM eb_salles ORDER BY salle;";
+	//echo "$sql<br />";
+	$res2=mysql_query($sql);
+	if(mysql_num_rows($res2)>0) {
+		$chaine_salles_existantes="";
+		$tab_salles_existantes=array();
+		while($lig2=mysql_fetch_object($res2)) {
+			if(!in_array($lig2->salle,$tab_salles_existantes)) {
+				if(!in_array($lig2->salle,$tab_salles)) {
+					$chaine_salles_existantes.="<input type='checkbox' name='id_salle_existante[]' id='id_salle_existante_$lig2->id' value='$lig2->id' /><label for='id_salle_existante_$lig2->id'> $lig2->salle</label><br />\n";
+				}
+				$tab_salles_existantes[]=$lig2->salle;
+			}
+		}
+
+		if($chaine_salles_existantes!='') {
+			/*
+			echo "<div style='width:15em; float:right; border:1px solid black;'>\n";
+			echo "<p>Sélectionner des salles parmi les salles définies antérieurement pour d'autres épreuves.<br />\n";
+			echo $chaine_salles_existantes;
+			echo "</p>\n";
+			echo "</div>\n";
+			*/
+
+			if($menu_a_droite=='') {
+				$menu_a_droite.="<div style='float:right; width:18em;'>\n";
+			}
+
+			$menu_a_droite.="<div style='border:1px solid black;margin-top:5px;'>\n";
+			$menu_a_droite.="<p>Sélectionner des salles parmi les salles définies antérieurement pour d'autres épreuves.<br />\n";
+			$menu_a_droite.=$chaine_salles_existantes;
+			$menu_a_droite.="</p>\n";
+			$menu_a_droite.="</div>\n";
+		}
+	}
+
+	if($menu_a_droite!='') {
+		$menu_a_droite.="</div>\n";
+	}
+
+	echo $menu_a_droite;
+
+/*
+		// Parcours des salles déjà définies pour cette épreuve:
+		$tab_salles=array();
+		$tab_id_salles=array();
+		while($lig=mysql_fetch_object($res)) {
+			$tab_salles[]=$lig->salle;
+			$tab_id_salles[]=$lig->id;
+		}
+		$nb_salles_epreuve_courante=count($tab_salles);
+
+
+
+		// Choisir des salles parmi les salles auparavant définies... et qui ne sont pas déjà choisies
+		$sql="SELECT * FROM eb_salles ORDER BY salle;";
+		echo "$sql<br />";
+		$res2=mysql_query($sql);
+		if(mysql_num_rows($res2)>0) {
+			$chaine_salles_existantes="";
+			$tab_salles_existantes=array();
+			while($lig2=mysql_fetch_object($res2)) {
+				if(!in_array($lig2->salle,$tab_salles_existantes)) {
+					if(!in_array($lig2->salle,$tab_salles)) {
+						$chaine_salles_existantes.="<input type='checkbox' name='id_salle_existante[]' id='id_salle_existante_$lig2->id' value='$lig2->id' /><label for='id_salle_existante_$lig2->id'> $lig2->salle</label><br />\n";
+					}
+					$tab_salles_existantes[]=$lig2->salle;
+				}
+			}
+
+			if($chaine_salles_existantes!='') {
+				echo "<div style='width:15em; float:right;'>\n";
+				echo "<p>Sélectionner des salles parmi les salles définies antérieurement pour d'autres épreuves.<br />\n";
+				echo $chaine_salles_existantes;
+				echo "</p>\n";
+				echo "</div>\n";
+			}
+		}
+*/
+
+	if($nb_salles_epreuve_courante>0) {
 
 		echo "<p><b>Liste des salles déjà définies&nbsp;:</b>\n";
 		//echo "<br />\n";
@@ -283,16 +411,20 @@ if(!isset($mode)) {
 		echo "</tr>\n";
 		$cpt=0;
 		$eff_aff=0;
-		while($lig=mysql_fetch_object($res)) {
+		//while($lig=mysql_fetch_object($res)) {
+		for($loop=0;$loop<$nb_salles_epreuve_courante;$loop++) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 
 			echo "<td>\n";
 			if($salles!="") {$salles.=",";}
-			$salles.=$lig->salle;
+			//$salles.=$lig->salle;
+			$salles.=$tab_salles[$loop];
 			if($etat!='clos') {
-				echo "<input type='hidden' name='id_salle[]' value='$lig->id' />\n";
-				echo "<input type='text' name='salle[]' value='$lig->salle' onchange='changement();' /><br />\n";
+				//echo "<input type='hidden' name='id_salle[]' value='$lig->id' />\n";
+				//echo "<input type='text' name='salle[]' value='$lig->salle' onchange='changement();' /><br />\n";
+				echo "<input type='hidden' name='id_salle[]' value='$tab_id_salles[$loop]' />\n";
+				echo "<input type='text' name='salle[]' value='$tab_salles[$loop]' onchange='changement();' /><br />\n";
 			}
 			else {
 				echo $lig->salle;
@@ -301,7 +433,8 @@ if(!isset($mode)) {
 			echo "</td>\n";
 
 			echo "<td>\n";
-			$sql="SELECT 1=1 FROM eb_copies WHERE id_salle='$lig->id' AND id_epreuve='$id_epreuve';";
+			//$sql="SELECT 1=1 FROM eb_copies WHERE id_salle='$lig->id' AND id_epreuve='$id_epreuve';";
+			$sql="SELECT 1=1 FROM eb_copies WHERE id_salle='$tab_id_salles[$loop]' AND id_epreuve='$id_epreuve';";
 			$res_eff=mysql_query($sql);
 			$eff[$cpt]=mysql_num_rows($res_eff);
 			echo $eff[$cpt];
@@ -310,7 +443,8 @@ if(!isset($mode)) {
 
 			if($etat!='clos') {
 				echo "<td>\n";
-				echo "<input type='checkbox' name='suppr_salle[]' value='$lig->id' onchange='changement();' />\n";
+				//echo "<input type='checkbox' name='suppr_salle[]' value='$lig->id' onchange='changement();' />\n";
+				echo "<input type='checkbox' name='suppr_salle[]' value='$tab_id_salles[$loop]' onchange='changement();' />\n";
 				echo "</td>\n";
 			}
 
