@@ -721,3 +721,54 @@ img.link {
 	/*background-color: #EAEAEA;*/
 	background-color: #DFDFDF;
 }
+
+/*=====================================================*/
+/* Infobulles sans javascript */
+
+span.conteneur_infobulle_css {
+  position:relative;
+}
+span.conteneur_infobulle_css:hover {
+   background: none; 
+   z-index: 500; 
+}
+span.conteneur_infobulle_css span.infobulle_css {display: none;}
+span.conteneur_infobulle_css:hover span.infobulle_css {
+   display: inline; 
+   position: absolute;
+   white-space: nowrap;
+   text-decoration: none;
+   font-weight:normal;
+   /*width:150px;*/
+   top: 3em; 
+   left: 50px;
+   background: #DFDFDF;
+   padding: 3px;
+   border: 1px solid #4a4a59;
+   border-top: 4px solid #4a4a59;
+}
+
+span.conteneur_infobulle_css {
+  position:relative;
+}
+span.conteneur_infobulle_css:hover {
+   background: none; 
+   z-index: 500; 
+}
+span.conteneur_infobulle_css div.infobulle_css {display: none;}
+span.conteneur_infobulle_css:hover div.infobulle_css {
+   display: inline; 
+   position: absolute;
+   white-space: nowrap;
+   text-decoration: none;
+   /*font-size:10px;*/
+   font-weight:normal;
+   /*width:150px;*/
+   top: 3em; 
+   left: 50px;
+   background: #DFDFDF;
+   padding: 3px;
+   border: 1px solid #4a4a59;
+   border-top: 4px solid #4a4a59;
+}
+/*=====================================================*/

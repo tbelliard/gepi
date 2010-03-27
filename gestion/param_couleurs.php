@@ -403,6 +403,42 @@ fieldset#login_box div#header {
 .infobulle_corps {
 	background-color: #$couleur_infobulle_fond_corps;
 }
+
+
+/*=====================================================*/
+/* Utilisation des couleurs d'info bulles pour les onglets d'absences*/
+div.css-panes {
+	background-color: #$couleur_infobulle_fond_corps;
+}
+
+ul.css-tabs a.current {
+	background-color: #$couleur_infobulle_fond_corps;
+	border-bottom:2px solid #$couleur_infobulle_fond_corps;
+}
+
+ul.css-tabs a {
+	background-color:#$couleur_infobulle_fond_corps;
+}
+/*
+ul.css-tabs a:hover {
+	background-color: #$couleur_infobulle_fond_corps;
+}
+*/
+ul.css-tabs {
+	background-color:#$couleur_infobulle_fond_corps;
+}
+/*=====================================================*/
+span.conteneur_infobulle_css:hover span.infobulle_css {
+   background: #$couleur_infobulle_fond_corps;
+   border: 1px solid #$couleur_infobulle_fond_corps;
+   border-top: 4px solid #$couleur_infobulle_fond_corps;
+}
+span.conteneur_infobulle_css:hover div.infobulle_css {
+   background: #$couleur_infobulle_fond_corps;
+   border: 1px solid #$couleur_infobulle_fond_corps;
+   border-top: 4px solid #$couleur_infobulle_fond_corps;
+}
+/*=====================================================*/
 ");
 				fclose($fich);
 			}
