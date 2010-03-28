@@ -38,9 +38,9 @@ class PeriodesTableMap extends TableMap {
 		// columns
 		$this->addPrimaryKey('NOM_PERIODE', 'NomPeriode', 'VARCHAR', true, 10, null);
 		$this->addPrimaryKey('NUM_PERIODE', 'NumPeriode', 'INTEGER', true, 10, null);
-		$this->addColumn('VERROUILLER', 'Verrouiller', 'VARCHAR', true, 1, 'O');
+		$this->addColumn('VEROUILLER', 'Verouiller', 'VARCHAR', true, 1, 'O');
 		$this->addForeignPrimaryKey('ID_CLASSE', 'IdClasse', 'INTEGER' , 'classes', 'ID', true, 10, null);
-		$this->addColumn('DATE_VEROUILLAGE', 'DateVerouillage', 'TIME', false, null, null);
+		$this->addColumn('DATE_VERROUILLAGE', 'DateVerrouillage', 'TIME', false, null, null);
 		// validators
 	} // initialize()
 

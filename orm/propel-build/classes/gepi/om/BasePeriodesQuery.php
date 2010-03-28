@@ -8,15 +8,15 @@
  *
  * @method     PeriodesQuery orderByNomPeriode($order = Criteria::ASC) Order by the nom_periode column
  * @method     PeriodesQuery orderByNumPeriode($order = Criteria::ASC) Order by the num_periode column
- * @method     PeriodesQuery orderByVerrouiller($order = Criteria::ASC) Order by the verrouiller column
+ * @method     PeriodesQuery orderByVerouiller($order = Criteria::ASC) Order by the verouiller column
  * @method     PeriodesQuery orderByIdClasse($order = Criteria::ASC) Order by the id_classe column
- * @method     PeriodesQuery orderByDateVerouillage($order = Criteria::ASC) Order by the date_verouillage column
+ * @method     PeriodesQuery orderByDateVerrouillage($order = Criteria::ASC) Order by the date_verrouillage column
  *
  * @method     PeriodesQuery groupByNomPeriode() Group by the nom_periode column
  * @method     PeriodesQuery groupByNumPeriode() Group by the num_periode column
- * @method     PeriodesQuery groupByVerrouiller() Group by the verrouiller column
+ * @method     PeriodesQuery groupByVerouiller() Group by the verouiller column
  * @method     PeriodesQuery groupByIdClasse() Group by the id_classe column
- * @method     PeriodesQuery groupByDateVerouillage() Group by the date_verouillage column
+ * @method     PeriodesQuery groupByDateVerrouillage() Group by the date_verrouillage column
  *
  * @method     PeriodesQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     PeriodesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -29,15 +29,15 @@
  * @method     Periodes findOne(PropelPDO $con = null) Return the first Periodes matching the query
  * @method     Periodes findOneByNomPeriode(string $nom_periode) Return the first Periodes filtered by the nom_periode column
  * @method     Periodes findOneByNumPeriode(int $num_periode) Return the first Periodes filtered by the num_periode column
- * @method     Periodes findOneByVerrouiller(string $verrouiller) Return the first Periodes filtered by the verrouiller column
+ * @method     Periodes findOneByVerouiller(string $verouiller) Return the first Periodes filtered by the verouiller column
  * @method     Periodes findOneByIdClasse(int $id_classe) Return the first Periodes filtered by the id_classe column
- * @method     Periodes findOneByDateVerouillage(string $date_verouillage) Return the first Periodes filtered by the date_verouillage column
+ * @method     Periodes findOneByDateVerrouillage(string $date_verrouillage) Return the first Periodes filtered by the date_verrouillage column
  *
  * @method     array findByNomPeriode(string $nom_periode) Return Periodes objects filtered by the nom_periode column
  * @method     array findByNumPeriode(int $num_periode) Return Periodes objects filtered by the num_periode column
- * @method     array findByVerrouiller(string $verrouiller) Return Periodes objects filtered by the verrouiller column
+ * @method     array findByVerouiller(string $verouiller) Return Periodes objects filtered by the verouiller column
  * @method     array findByIdClasse(int $id_classe) Return Periodes objects filtered by the id_classe column
- * @method     array findByDateVerouillage(string $date_verouillage) Return Periodes objects filtered by the date_verouillage column
+ * @method     array findByDateVerrouillage(string $date_verrouillage) Return Periodes objects filtered by the date_verrouillage column
  *
  * @package    propel.generator.gepi.om
  */
@@ -196,22 +196,22 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the verrouiller column
+	 * Filter the query on the verouiller column
 	 * 
-	 * @param     string $verrouiller The value to use as filter.
+	 * @param     string $verouiller The value to use as filter.
 	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PeriodesQuery The current query, for fluid interface
 	 */
-	public function filterByVerrouiller($verrouiller = null, $comparison = Criteria::EQUAL)
+	public function filterByVerouiller($verouiller = null, $comparison = Criteria::EQUAL)
 	{
-		if (is_array($verrouiller)) {
-			return $this->addUsingAlias(PeriodesPeer::VERROUILLER, $verrouiller, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $verrouiller)) {
-			return $this->addUsingAlias(PeriodesPeer::VERROUILLER, str_replace('*', '%', $verrouiller), Criteria::LIKE);
+		if (is_array($verouiller)) {
+			return $this->addUsingAlias(PeriodesPeer::VEROUILLER, $verouiller, Criteria::IN);
+		} elseif(preg_match('/[\%\*]/', $verouiller)) {
+			return $this->addUsingAlias(PeriodesPeer::VEROUILLER, str_replace('*', '%', $verouiller), Criteria::LIKE);
 		} else {
-			return $this->addUsingAlias(PeriodesPeer::VERROUILLER, $verrouiller, $comparison);
+			return $this->addUsingAlias(PeriodesPeer::VEROUILLER, $verouiller, $comparison);
 		}
 	}
 
@@ -234,30 +234,30 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the date_verouillage column
+	 * Filter the query on the date_verrouillage column
 	 * 
-	 * @param     string|array $dateVerouillage The value to use as filter.
+	 * @param     string|array $dateVerrouillage The value to use as filter.
 	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PeriodesQuery The current query, for fluid interface
 	 */
-	public function filterByDateVerouillage($dateVerouillage = null, $comparison = Criteria::EQUAL)
+	public function filterByDateVerrouillage($dateVerrouillage = null, $comparison = Criteria::EQUAL)
 	{
-		if (is_array($dateVerouillage)) {
-			if (array_values($dateVerouillage) === $dateVerouillage) {
-				return $this->addUsingAlias(PeriodesPeer::DATE_VEROUILLAGE, $dateVerouillage, Criteria::IN);
+		if (is_array($dateVerrouillage)) {
+			if (array_values($dateVerrouillage) === $dateVerrouillage) {
+				return $this->addUsingAlias(PeriodesPeer::DATE_VERROUILLAGE, $dateVerrouillage, Criteria::IN);
 			} else {
-				if (isset($dateVerouillage['min'])) {
-					$this->addUsingAlias(PeriodesPeer::DATE_VEROUILLAGE, $dateVerouillage['min'], Criteria::GREATER_EQUAL);
+				if (isset($dateVerrouillage['min'])) {
+					$this->addUsingAlias(PeriodesPeer::DATE_VERROUILLAGE, $dateVerrouillage['min'], Criteria::GREATER_EQUAL);
 				}
-				if (isset($dateVerouillage['max'])) {
-					$this->addUsingAlias(PeriodesPeer::DATE_VEROUILLAGE, $dateVerouillage['max'], Criteria::LESS_EQUAL);
+				if (isset($dateVerrouillage['max'])) {
+					$this->addUsingAlias(PeriodesPeer::DATE_VERROUILLAGE, $dateVerrouillage['max'], Criteria::LESS_EQUAL);
 				}
 				return $this;	
 			}
 		} else {
-			return $this->addUsingAlias(PeriodesPeer::DATE_VEROUILLAGE, $dateVerouillage, $comparison);
+			return $this->addUsingAlias(PeriodesPeer::DATE_VERROUILLAGE, $dateVerrouillage, $comparison);
 		}
 	}
 

@@ -96,6 +96,30 @@ if ($newClasse == null) {
 	echo('test creation classe a reussi avec comme retour l\'id : ' . $classe->getId() . '<br/><br/>');
 }
 
+//ajout d'une periode ouverte et d'un periode fermée à une classe
+$periode_fermee = new Periodes();
+$periode_fermee->setNumPeriode(1);
+$periode_fermee->setVerouiller('O');
+$periode_fermee->setNomPeriode('1 Unit test');
+$newClasse->addPeriodes($periode_fermee);
+$periode_fermee->save();
+echo ($logger->getDisplay());
+$periode_ouverte = new Periodes();
+$periode_ouverte->setNumPeriode(2);
+$periode_ouverte->setVerouiller('N');
+$periode_ouverte->setNomPeriode('2 Unit test');
+$newClasse->addPeriodes($periode_ouverte);
+$periode_ouverte->save();
+echo ($logger->getDisplay());
+
+$periode_ouverte = $newClasse->getPeriodeNoteOuverteActuelle();
+echo ($logger->getDisplay());
+if ($periode_ouverte == null || $periode_ouverte->getNumPeriode() != 2) {
+	echo('test ajout periode a <font color="red">echoue</font> <br><br/>');
+} else {
+	echo('test ajout periode a reussi<br/><br/>');
+}
+
 
 //ajout de eleve au professeur en tant que cpe
 //$utilisateurProfessionnel = new UtilisateurProfessionnel();

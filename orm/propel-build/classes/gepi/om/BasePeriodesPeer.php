@@ -36,14 +36,14 @@ abstract class BasePeriodesPeer {
 	/** the column name for the NUM_PERIODE field */
 	const NUM_PERIODE = 'periodes.NUM_PERIODE';
 
-	/** the column name for the VERROUILLER field */
-	const VERROUILLER = 'periodes.VERROUILLER';
+	/** the column name for the VEROUILLER field */
+	const VEROUILLER = 'periodes.VEROUILLER';
 
 	/** the column name for the ID_CLASSE field */
 	const ID_CLASSE = 'periodes.ID_CLASSE';
 
-	/** the column name for the DATE_VEROUILLAGE field */
-	const DATE_VEROUILLAGE = 'periodes.DATE_VEROUILLAGE';
+	/** the column name for the DATE_VERROUILLAGE field */
+	const DATE_VERROUILLAGE = 'periodes.DATE_VERROUILLAGE';
 
 	/**
 	 * An identiy map to hold any loaded instances of Periodes objects.
@@ -61,11 +61,11 @@ abstract class BasePeriodesPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('NomPeriode', 'NumPeriode', 'Verrouiller', 'IdClasse', 'DateVerouillage', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('nomPeriode', 'numPeriode', 'verrouiller', 'idClasse', 'dateVerouillage', ),
-		BasePeer::TYPE_COLNAME => array (self::NOM_PERIODE, self::NUM_PERIODE, self::VERROUILLER, self::ID_CLASSE, self::DATE_VEROUILLAGE, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('NOM_PERIODE', 'NUM_PERIODE', 'VERROUILLER', 'ID_CLASSE', 'DATE_VEROUILLAGE', ),
-		BasePeer::TYPE_FIELDNAME => array ('nom_periode', 'num_periode', 'verrouiller', 'id_classe', 'date_verouillage', ),
+		BasePeer::TYPE_PHPNAME => array ('NomPeriode', 'NumPeriode', 'Verouiller', 'IdClasse', 'DateVerrouillage', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('nomPeriode', 'numPeriode', 'verouiller', 'idClasse', 'dateVerrouillage', ),
+		BasePeer::TYPE_COLNAME => array (self::NOM_PERIODE, self::NUM_PERIODE, self::VEROUILLER, self::ID_CLASSE, self::DATE_VERROUILLAGE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('NOM_PERIODE', 'NUM_PERIODE', 'VEROUILLER', 'ID_CLASSE', 'DATE_VERROUILLAGE', ),
+		BasePeer::TYPE_FIELDNAME => array ('nom_periode', 'num_periode', 'verouiller', 'id_classe', 'date_verrouillage', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
 	);
 
@@ -76,11 +76,11 @@ abstract class BasePeriodesPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('NomPeriode' => 0, 'NumPeriode' => 1, 'Verrouiller' => 2, 'IdClasse' => 3, 'DateVerouillage' => 4, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('nomPeriode' => 0, 'numPeriode' => 1, 'verrouiller' => 2, 'idClasse' => 3, 'dateVerouillage' => 4, ),
-		BasePeer::TYPE_COLNAME => array (self::NOM_PERIODE => 0, self::NUM_PERIODE => 1, self::VERROUILLER => 2, self::ID_CLASSE => 3, self::DATE_VEROUILLAGE => 4, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('NOM_PERIODE' => 0, 'NUM_PERIODE' => 1, 'VERROUILLER' => 2, 'ID_CLASSE' => 3, 'DATE_VEROUILLAGE' => 4, ),
-		BasePeer::TYPE_FIELDNAME => array ('nom_periode' => 0, 'num_periode' => 1, 'verrouiller' => 2, 'id_classe' => 3, 'date_verouillage' => 4, ),
+		BasePeer::TYPE_PHPNAME => array ('NomPeriode' => 0, 'NumPeriode' => 1, 'Verouiller' => 2, 'IdClasse' => 3, 'DateVerrouillage' => 4, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('nomPeriode' => 0, 'numPeriode' => 1, 'verouiller' => 2, 'idClasse' => 3, 'dateVerrouillage' => 4, ),
+		BasePeer::TYPE_COLNAME => array (self::NOM_PERIODE => 0, self::NUM_PERIODE => 1, self::VEROUILLER => 2, self::ID_CLASSE => 3, self::DATE_VERROUILLAGE => 4, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('NOM_PERIODE' => 0, 'NUM_PERIODE' => 1, 'VEROUILLER' => 2, 'ID_CLASSE' => 3, 'DATE_VERROUILLAGE' => 4, ),
+		BasePeer::TYPE_FIELDNAME => array ('nom_periode' => 0, 'num_periode' => 1, 'verouiller' => 2, 'id_classe' => 3, 'date_verrouillage' => 4, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
 	);
 
@@ -155,15 +155,15 @@ abstract class BasePeriodesPeer {
 		if (null === $alias) {
 			$criteria->addSelectColumn(PeriodesPeer::NOM_PERIODE);
 			$criteria->addSelectColumn(PeriodesPeer::NUM_PERIODE);
-			$criteria->addSelectColumn(PeriodesPeer::VERROUILLER);
+			$criteria->addSelectColumn(PeriodesPeer::VEROUILLER);
 			$criteria->addSelectColumn(PeriodesPeer::ID_CLASSE);
-			$criteria->addSelectColumn(PeriodesPeer::DATE_VEROUILLAGE);
+			$criteria->addSelectColumn(PeriodesPeer::DATE_VERROUILLAGE);
 		} else {
 			$criteria->addSelectColumn($alias . '.NOM_PERIODE');
 			$criteria->addSelectColumn($alias . '.NUM_PERIODE');
-			$criteria->addSelectColumn($alias . '.VERROUILLER');
+			$criteria->addSelectColumn($alias . '.VEROUILLER');
 			$criteria->addSelectColumn($alias . '.ID_CLASSE');
-			$criteria->addSelectColumn($alias . '.DATE_VEROUILLAGE');
+			$criteria->addSelectColumn($alias . '.DATE_VERROUILLAGE');
 		}
 	}
 

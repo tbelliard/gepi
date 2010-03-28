@@ -73,10 +73,10 @@
 	<table name="periodes" description="Table regroupant les periodes de notes pour les classes">
 		<column name="nom_periode" type="VARCHAR" size="10" required="false" primaryKey="true" description="Nom de la periode de note" />
 		<column name="num_periode" type="INTEGER" size="10" required="true" primaryKey="true" description="identifiant numerique de la periode (1, 2 ou3)" />
-		<column name="verrouiller" type="VARCHAR" size="1" required="true" default="O" description="Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)" />
+		<column name="verouiller" type="VARCHAR" size="1" required="true" default="O" description="Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)" />
 		<column name="id_classe" type="INTEGER" size="10" required="true" primaryKey="true" description="identifiant numerique de la classe." />
 		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
-		<column name="date_verouillage" type="TIME" required="false" description="date de verouillage de la periode" />
+		<column name="date_verrouillage" type="TIME" required="false" description="date de verrouillage de la periode" />
 	</table>
 
 	<table name="j_groupes_classes" description="Table permettant la jointure entre groupe d'eleves et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">

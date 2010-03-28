@@ -82,13 +82,35 @@ class Classe extends BaseClasse {
 	}
 
  	/**
-	 * Retourne la periode de note actuelle pour une classe donnée.
+	 * Retourne la periode de note actuelle pour une classe donnee.
 	 *
 	 * @return     Periode $periode la periode actuellement totalement ouverte
 	 */
-	public static function getPeriodeNoteOuverteActuelle() {
-		throw new PropelException("Pas encore implemente");
-		return new Periode();
+	public function getPeriodeNoteOuverteActuelle() {
+		$criteria = new Criteria();
+		$criteria->add(PeriodesPeer::VEROUILLER,'N');
+		$periodes = $this->getPeriodess($criteria);
+		if ($periodes->isEmpty()) {
+		    $criteria = new Criteria();
+		    $criteria->add(PeriodesPeer::VEROUILLER,'P');
+		    $periodes = $this->getPeriodess($criteria);
+		}
+		if ($periodes->count() == 1) {
+		    return $periodes->getFirst();
+		} else {
+		    $calendrier_periode = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle();
+		    if ($calendrier_periode != null || $calendrier_periode->getNumeroPeriode() != null || $calendrier_periode->getNumeroPeriode() != 0) {
+			$criteria = new Criteria();
+			$criteria->add(PeriodesPeer::NUM_PERIODE,$calendrier_periode->getNumeroPeriode());
+			$periodes = $this->getPeriodess($criteria);
+		    }
+		    if ($periodes->isEmpty()) {
+			return null;
+		    } else {
+			return $periodes->getFirst();
+		    }
+		}
+		return null;
 	}
 
 	/**

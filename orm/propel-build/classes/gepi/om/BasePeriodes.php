@@ -36,11 +36,11 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	protected $num_periode;
 
 	/**
-	 * The value for the verrouiller field.
+	 * The value for the verouiller field.
 	 * Note: this column has a database default value of: 'O'
 	 * @var        string
 	 */
-	protected $verrouiller;
+	protected $verouiller;
 
 	/**
 	 * The value for the id_classe field.
@@ -49,10 +49,10 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	protected $id_classe;
 
 	/**
-	 * The value for the date_verouillage field.
+	 * The value for the date_verrouillage field.
 	 * @var        string
 	 */
-	protected $date_verouillage;
+	protected $date_verrouillage;
 
 	/**
 	 * @var        Classe
@@ -81,7 +81,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 */
 	public function applyDefaultValues()
 	{
-		$this->verrouiller = 'O';
+		$this->verouiller = 'O';
 	}
 
 	/**
@@ -115,13 +115,13 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [verrouiller] column value.
+	 * Get the [verouiller] column value.
 	 * Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)
 	 * @return     string
 	 */
-	public function getVerrouiller()
+	public function getVerouiller()
 	{
-		return $this->verrouiller;
+		return $this->verouiller;
 	}
 
 	/**
@@ -135,26 +135,26 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [optionally formatted] temporal [date_verouillage] column value.
-	 * date de verouillage de la periode
+	 * Get the [optionally formatted] temporal [date_verrouillage] column value.
+	 * date de verrouillage de la periode
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
 	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
 	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 */
-	public function getDateVerouillage($format = '%X')
+	public function getDateVerrouillage($format = '%X')
 	{
-		if ($this->date_verouillage === null) {
+		if ($this->date_verrouillage === null) {
 			return null;
 		}
 
 
 
 		try {
-			$dt = new DateTime($this->date_verouillage);
+			$dt = new DateTime($this->date_verrouillage);
 		} catch (Exception $x) {
-			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_verouillage, true), $x);
+			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_verrouillage, true), $x);
 		}
 
 		if ($format === null) {
@@ -208,24 +208,24 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	} // setNumPeriode()
 
 	/**
-	 * Set the value of [verrouiller] column.
+	 * Set the value of [verouiller] column.
 	 * Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)
 	 * @param      string $v new value
 	 * @return     Periodes The current object (for fluent API support)
 	 */
-	public function setVerrouiller($v)
+	public function setVerouiller($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->verrouiller !== $v || $this->isNew()) {
-			$this->verrouiller = $v;
-			$this->modifiedColumns[] = PeriodesPeer::VERROUILLER;
+		if ($this->verouiller !== $v || $this->isNew()) {
+			$this->verouiller = $v;
+			$this->modifiedColumns[] = PeriodesPeer::VEROUILLER;
 		}
 
 		return $this;
-	} // setVerrouiller()
+	} // setVerouiller()
 
 	/**
 	 * Set the value of [id_classe] column.
@@ -252,13 +252,13 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	} // setIdClasse()
 
 	/**
-	 * Sets the value of [date_verouillage] column to a normalized version of the date/time value specified.
-	 * date de verouillage de la periode
+	 * Sets the value of [date_verrouillage] column to a normalized version of the date/time value specified.
+	 * date de verrouillage de la periode
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
 	 *						be treated as NULL for temporal objects.
 	 * @return     Periodes The current object (for fluent API support)
 	 */
-	public function setDateVerouillage($v)
+	public function setDateVerrouillage($v)
 	{
 		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
 		// -- which is unexpected, to say the least.
@@ -283,22 +283,22 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 			}
 		}
 
-		if ( $this->date_verouillage !== null || $dt !== null ) {
+		if ( $this->date_verrouillage !== null || $dt !== null ) {
 			// (nested ifs are a little easier to read in this case)
 
-			$currNorm = ($this->date_verouillage !== null && $tmpDt = new DateTime($this->date_verouillage)) ? $tmpDt->format('H:i:s') : null;
+			$currNorm = ($this->date_verrouillage !== null && $tmpDt = new DateTime($this->date_verrouillage)) ? $tmpDt->format('H:i:s') : null;
 			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
 
 			if ( ($currNorm !== $newNorm) // normalized values don't match 
 					)
 			{
-				$this->date_verouillage = ($dt ? $dt->format('H:i:s') : null);
-				$this->modifiedColumns[] = PeriodesPeer::DATE_VEROUILLAGE;
+				$this->date_verrouillage = ($dt ? $dt->format('H:i:s') : null);
+				$this->modifiedColumns[] = PeriodesPeer::DATE_VERROUILLAGE;
 			}
 		} // if either are not null
 
 		return $this;
-	} // setDateVerouillage()
+	} // setDateVerrouillage()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -310,7 +310,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			if ($this->verrouiller !== 'O') {
+			if ($this->verouiller !== 'O') {
 				return false;
 			}
 
@@ -338,9 +338,9 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 
 			$this->nom_periode = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
 			$this->num_periode = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
-			$this->verrouiller = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->verouiller = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
 			$this->id_classe = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
-			$this->date_verouillage = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->date_verrouillage = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -675,13 +675,13 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 				return $this->getNumPeriode();
 				break;
 			case 2:
-				return $this->getVerrouiller();
+				return $this->getVerouiller();
 				break;
 			case 3:
 				return $this->getIdClasse();
 				break;
 			case 4:
-				return $this->getDateVerouillage();
+				return $this->getDateVerrouillage();
 				break;
 			default:
 				return null;
@@ -709,9 +709,9 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 		$result = array(
 			$keys[0] => $this->getNomPeriode(),
 			$keys[1] => $this->getNumPeriode(),
-			$keys[2] => $this->getVerrouiller(),
+			$keys[2] => $this->getVerouiller(),
 			$keys[3] => $this->getIdClasse(),
-			$keys[4] => $this->getDateVerouillage(),
+			$keys[4] => $this->getDateVerrouillage(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aClasse) {
@@ -755,13 +755,13 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 				$this->setNumPeriode($value);
 				break;
 			case 2:
-				$this->setVerrouiller($value);
+				$this->setVerouiller($value);
 				break;
 			case 3:
 				$this->setIdClasse($value);
 				break;
 			case 4:
-				$this->setDateVerouillage($value);
+				$this->setDateVerrouillage($value);
 				break;
 		} // switch()
 	}
@@ -789,9 +789,9 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 
 		if (array_key_exists($keys[0], $arr)) $this->setNomPeriode($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setNumPeriode($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setVerrouiller($arr[$keys[2]]);
+		if (array_key_exists($keys[2], $arr)) $this->setVerouiller($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setIdClasse($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setDateVerouillage($arr[$keys[4]]);
+		if (array_key_exists($keys[4], $arr)) $this->setDateVerrouillage($arr[$keys[4]]);
 	}
 
 	/**
@@ -805,9 +805,9 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 
 		if ($this->isColumnModified(PeriodesPeer::NOM_PERIODE)) $criteria->add(PeriodesPeer::NOM_PERIODE, $this->nom_periode);
 		if ($this->isColumnModified(PeriodesPeer::NUM_PERIODE)) $criteria->add(PeriodesPeer::NUM_PERIODE, $this->num_periode);
-		if ($this->isColumnModified(PeriodesPeer::VERROUILLER)) $criteria->add(PeriodesPeer::VERROUILLER, $this->verrouiller);
+		if ($this->isColumnModified(PeriodesPeer::VEROUILLER)) $criteria->add(PeriodesPeer::VEROUILLER, $this->verouiller);
 		if ($this->isColumnModified(PeriodesPeer::ID_CLASSE)) $criteria->add(PeriodesPeer::ID_CLASSE, $this->id_classe);
-		if ($this->isColumnModified(PeriodesPeer::DATE_VEROUILLAGE)) $criteria->add(PeriodesPeer::DATE_VEROUILLAGE, $this->date_verouillage);
+		if ($this->isColumnModified(PeriodesPeer::DATE_VERROUILLAGE)) $criteria->add(PeriodesPeer::DATE_VERROUILLAGE, $this->date_verrouillage);
 
 		return $criteria;
 	}
@@ -881,9 +881,9 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	{
 		$copyObj->setNomPeriode($this->nom_periode);
 		$copyObj->setNumPeriode($this->num_periode);
-		$copyObj->setVerrouiller($this->verrouiller);
+		$copyObj->setVerouiller($this->verouiller);
 		$copyObj->setIdClasse($this->id_classe);
-		$copyObj->setDateVerouillage($this->date_verouillage);
+		$copyObj->setDateVerrouillage($this->date_verrouillage);
 
 		$copyObj->setNew(true);
 	}
@@ -982,9 +982,9 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	{
 		$this->nom_periode = null;
 		$this->num_periode = null;
-		$this->verrouiller = null;
+		$this->verouiller = null;
 		$this->id_classe = null;
-		$this->date_verouillage = null;
+		$this->date_verrouillage = null;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
 		$this->setNew(true);
