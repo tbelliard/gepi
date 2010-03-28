@@ -430,13 +430,13 @@ ul.css-tabs {
 /*=====================================================*/
 span.conteneur_infobulle_css:hover span.infobulle_css {
    background: #$couleur_infobulle_fond_corps;
-   border: 1px solid #$couleur_infobulle_fond_corps;
-   border-top: 4px solid #$couleur_infobulle_fond_corps;
+   border: 1px solid #$couleur_infobulle_fond_entete;
+   border-top: 4px solid #$couleur_infobulle_fond_entete;
 }
 span.conteneur_infobulle_css:hover div.infobulle_css {
    background: #$couleur_infobulle_fond_corps;
-   border: 1px solid #$couleur_infobulle_fond_corps;
-   border-top: 4px solid #$couleur_infobulle_fond_corps;
+   border: 1px solid #$couleur_infobulle_fond_entete;
+   border-top: 4px solid #$couleur_infobulle_fond_entete;
 }
 /*=====================================================*/
 ");

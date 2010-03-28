@@ -740,8 +740,8 @@ span.conteneur_infobulle_css:hover span.infobulle_css {
    text-decoration: none;
    font-weight:normal;
    /*width:150px;*/
-   top: 2em; 
-   left: 50px;
+   top: 1em;
+   left: 0.5em;
    background: #DFDFDF;
    padding: 3px;
    border: 1px solid #4a4a59;
@@ -765,8 +765,8 @@ span.conteneur_infobulle_css:hover div.infobulle_css {
    /*font-size:10px;*/
    font-weight:normal;
    /*width:150px;*/
-   top: 2em; 
-   left: 50px;
+   top: 1em;
+   left: 0.5em;
    background: #DFDFDF;
    padding: 3px;
    border: 1px solid #4a4a59;
