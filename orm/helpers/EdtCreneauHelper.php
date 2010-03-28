@@ -9,7 +9,7 @@
  *
  * @author joss
  */
-class CreneauHelper {
+class EdtCreneauHelper {
 
  /**
    * Affiche l'heure d'un creneau sous la forme hh:mm

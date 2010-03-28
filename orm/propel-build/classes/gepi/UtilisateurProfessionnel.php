@@ -183,14 +183,25 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	/**
 	 *
-	 * Retourne l'emplacement de cours de l'heure temps reel. rtourne null si pas pas de cours actuel
-	 * Ajout manuel
+	 * Retourne l'emplacement de cours de l'heure temps reel. retourne null si pas pas de cours actuel
 	 *
-	 * @param
-	 * @return
+	 * @return EdtEmplacementCours l'emplacement de cours actuell ou null si pas de cours
 	 */
-	public function getEmplacementCoursActuel(){
-	    return null;
+	public function getEdtEmplacementCoursActuel(){
+	    throw new PropelException("Pas encore implemente");
+	    return new EdtEmplacementCours();
+	}
+
+	/**
+	 *
+	 * Retourne les emplacements de cours pour une classe donnee
+	 *
+	 * @param  String $classe_id l'id de la classe
+	 * @return PropelObjectCollection EdtEmplacementCours les emplacements de cours
+	 */
+	public function getEdtEmplacementCoursJoinClasse($classe_id){
+	    throw new PropelException("Pas encore implemente");
+	    return new PropelObjectCollection();
 	}
 
 }

@@ -84,9 +84,19 @@ class Classe extends BaseClasse {
 	 * @return     Periode $periode la periode actuellement totalement ouverte
 	 */
 	public static function getPeriodeNoteOuverteActuelle() {
-		//not implemented yet
 		throw new PropelException("Pas encore implemente");
 		return new Periode();
+	}
+
+ 	/**
+	 * Retourne la periode de note actuelle pour une classe donnée.
+	 *
+	 * @param  String $classe_id l'id de la classe
+	 * @return PropelObjectCollection une collection d'emplacements de cours
+	 */
+	public static function getEdtEmplacementCoursJoinProfesseur($login) {
+		throw new PropelException("Pas encore implemente");
+		return new PropelObjectCollection();
 	}
 
 } // Classe

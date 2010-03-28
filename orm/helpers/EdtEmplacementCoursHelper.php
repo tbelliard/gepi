@@ -15,7 +15,7 @@ class EdtEmplacementCoursHelper {
 	 * @return     int un entier, qui sera inférieur, égal ou supérieur à zéro suivant que le premier argument est considéré comme plus petit, égal ou plus grand que le second argument.
 	 */
 	function compareEdtEmplacementCours($a, $b) {
-		//not implemented yet
+		throw new PropelException("Pas encore implemente");
 		return 0;
 	}
 
@@ -23,8 +23,8 @@ class EdtEmplacementCoursHelper {
 	 *
 	 * Classe un tableau de groupe par ordre alphabétique de leur nom (avec les noms de classes d'eleves associée)
 	 *
-	 * @param      PropelObjectCollection $edtEmplacementCours La collection d'emplacementours
-	 * @return     PropelObjectCollection $edtEmplacementCours Un collection d'e groupe ordonnés'emplacementours
+	 * @param      PropelObjectCollection $edtEmplacementCours La collection d'emplacement de cours
+	 * @return     PropelObjectCollection $edtEmplacementCours Un collection ordonnés d'emplacement de cours
 	 * @throws     PropelException - si les types d'entrées ne sont pas bon.
 	 */
 	public static function orderChronologically(PropelObjectCollection $edtEmplacementCours) {
