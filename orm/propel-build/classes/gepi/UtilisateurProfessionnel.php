@@ -180,4 +180,17 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		throw new PropelException("Il existe deja plusieurs preferences avec ce nom !");
 	    }
 	}
+
+	/**
+	 *
+	 * Retourne l'emplacement de cours de l'heure temps reel. rtourne null si pas pas de cours actuel
+	 * Ajout manuel
+	 *
+	 * @param
+	 * @return
+	 */
+	public function getEmplacementCoursActuel(){
+	    return null;
+	}
+
 }
