@@ -31,15 +31,16 @@ class Classe extends BaseClasse {
 
 	/**
 	 *
-	 * Renvoi sous forme d'une collection la liste des eles d'une classe.
+	 * Renvoi sous forme d'une collection la liste des eleves d'une classe. 
+	 * Si la periode de note est null, cela renvoi les eleves de la priode actuelle, ou tous les eleves si il n'y a aucune periode actuelle
 	 *
 	 * @return     PropelObjectCollection Eleves[]
 	 *
 	 */
-	public function getEleves($periode) {
+	public function getEleves($num_periode_notes = null) {
 		$eleves = new PropelObjectCollection();
 		$criteria = new Criteria();
-		$criteria->add(JEleveClassePeer::PERIODE,$periode);
+		$criteria->add(JEleveClassePeer::PERIODE,$num_periode_notes);
 		foreach($this->getJEleveClassesJoinEleve($criteria) as $ref) {
 		    if ($ref->getEleve() != null) {
 			$eleves->append($ref->getEleve());
@@ -62,19 +63,30 @@ class Classe extends BaseClasse {
 
 	/**
 	 *
-	 * Ajoute un eleve a une classe
+	 * Ajoute un eleve a une classe. Si la periode de note est nulle, cela ajoute l'eleve la periode actuelle
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
 	 */
-	public function addEleve(Eleve $eleve, $periode) {
+	public function addEleve(Eleve $eleve, $num_periode_notes = null) {
 		if ($eleve->getIdEleve() == null) {
 			throw new PropelException("Eleve id ne doit pas etre null");
 		}
 		$jEleveClasse = new JEleveClasse();
 		$jEleveClasse->setEleve($eleve);
-		$jEleveClasse->setPeriode($periode);
+		$jEleveClasse->setPeriode($num_periode_notes);
 		$this->addJEleveClasse($jEleveClasse);
 		$jEleveClasse->save();
+	}
+
+ 	/**
+	 * Retourne la periode de note actuelle pour une classe donnée.
+	 *
+	 * @return     Periode $periode la periode actuellement totalement ouverte
+	 */
+	public static function getPeriodeNoteOuverteActuelle() {
+		//not implemented yet
+		throw new PropelException("Pas encore implemente");
+		return new Periode();
 	}
 
 } // Classe

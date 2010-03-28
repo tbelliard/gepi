@@ -14,4 +14,15 @@
  */
 class EdtCalendrierPeriodePeer extends BaseEdtCalendrierPeriodePeer {
 
+ 	/**
+	 * Retrourne la periode actuelle, ou null si aucun periode n'est trouvé pour le jours actuel
+	 *
+	 * @return     int un entier, qui sera inférieur, égal ou supérieur à zéro suivant que le premier argument est considéré comme plus petit, égal ou plus grand que le second argument.
+	 */
+	function retrieveEdtCalendrierPeriodeActuelle() {
+		throw new PropelException("Pas encore implemente");
+		return new EdtCalendrierPeriode();
+	}
+
+
 } // EdtCalendrierPeriodePeer
