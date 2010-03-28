@@ -26,7 +26,7 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
    */
     public static function getAllEdtCreneauxOrderByTime(){
 	    $criteria = new Criteria();
-	    $criteria->addAscendingOrderByColumn(CreneauPeer::DEBUT_CRENEAU);
+	    $criteria->addAscendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE);
 	    return self::doSelect($criteria);
     }
 
