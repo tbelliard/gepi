@@ -71,6 +71,9 @@ class Classe extends BaseClasse {
 		if ($eleve->getIdEleve() == null) {
 			throw new PropelException("Eleve id ne doit pas etre null");
 		}
+		if ($num_periode_notes == null) {
+			$num_periode_notes = getPeriodeNoteOuverteActuelle();
+		}
 		$jEleveClasse = new JEleveClasse();
 		$jEleveClasse->setEleve($eleve);
 		$jEleveClasse->setPeriode($num_periode_notes);
