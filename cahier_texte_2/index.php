@@ -53,6 +53,12 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 $utilisateur = UtilisateurProfessionnelPeer::retrieveByPK( $_SESSION['login']);
 $_SESSION['utilisateurProfessionnel'] = $utilisateur;
 
+$edtEmplacementCourss = $utilisateur->getEdtEmplacementCourss();
+$cours = new EdtEmplacementCours();
+//$cours->get
+$cours = $edtEmplacementCourss->getFirst();
+
+
 // On met le header en petit par défaut
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
@@ -130,7 +136,7 @@ echo "</td>";
 // Récupération de toutes les infos sur le groupe
 echo "<td valign='center'>";
 $groups = $utilisateur->getGroupes();
-if (empty($groups)) {
+if ($groups->isEmpty()) {
     echo "<br /><br />";
     echo "<b>Aucun cahier de textes n'est disponible.</b>";
     echo "<br /><br />";
