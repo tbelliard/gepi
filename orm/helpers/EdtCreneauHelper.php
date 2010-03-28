@@ -57,7 +57,7 @@ class CreneauHelper {
     $_background = isset($options["background"]) ? $options["background"] : 'silver';
 
     $criteria = new Criteria();
-    $tab_creneaux = CreneauPeer::getAllCreneauxOrderByTime();
+    $tab_creneaux = EdtCreneauPeer::getAllCreneauxOrderByTime();
 
     $aff_creneaux = '<table><tr>';
     foreach ($tab_creneaux as $creneaux){
