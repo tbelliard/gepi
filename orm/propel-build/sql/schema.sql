@@ -112,6 +112,28 @@ CREATE TABLE classes
 )Type=MyISAM COMMENT='Classe regroupant des eleves';
 
 #-----------------------------------------------------------------------------
+#-- periodes
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS periodes;
+
+
+CREATE TABLE periodes
+(
+	nom_periode VARCHAR(10)  NOT NULL COMMENT 'Nom de la periode de note',
+	num_periode INTEGER(10)  NOT NULL COMMENT 'identifiant numerique de la periode (1, 2 ou3)',
+	verrouiller VARCHAR(1) default 'O' NOT NULL COMMENT 'Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)',
+	id_classe INTEGER(10)  NOT NULL COMMENT 'identifiant numerique de la classe.',
+	date_verouillage TIME COMMENT 'date de verouillage de la periode',
+	PRIMARY KEY (nom_periode,num_periode,id_classe),
+	INDEX periodes_FI_1 (id_classe),
+	CONSTRAINT periodes_FK_1
+		FOREIGN KEY (id_classe)
+		REFERENCES classes (id)
+		ON DELETE CASCADE
+)Type=MyISAM COMMENT='Table regroupant les periodes de notes pour les classes';
+
+#-----------------------------------------------------------------------------
 #-- j_groupes_classes
 #-----------------------------------------------------------------------------
 
@@ -757,8 +779,8 @@ CREATE TABLE a_types
 	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire auto-incrementee',
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom du type d\'absence',
 	justification_exigible TINYINT COMMENT 'Ce type d\'absence doit entrainer une justification de la part de la famille',
-	responabilite_etablissement TINYINT COMMENT 'L\'eleve est encore sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l\'eleve est encore sous la responsabilité de l\'etablissement',
-	type_saisie VARCHAR(50)  NOT NULL COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE',
+	responsabilite_etablissement TINYINT COMMENT 'L\'eleve est encore sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l\'eleve est encore sous la responsabilité de l\'etablissement',
+	type_saisie VARCHAR(50)  NOT NULL COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
 	PRIMARY KEY (id)
@@ -1178,7 +1200,7 @@ CREATE TABLE edt_creneaux
 	heuredebut_definie_periode TIME  NOT NULL COMMENT 'Heure de debut du creneau',
 	heurefin_definie_periode TIME  NOT NULL COMMENT 'Heure de fin du creneau',
 	suivi_definie_periode INTEGER(2) default 9 COMMENT 'champ inutilise',
-	type_creneau VARCHAR(15) default 'cours' COMMENT 'types possibles : cours, pause, repas, vie_scolaire',
+	type_creneaux VARCHAR(15) default 'cours' COMMENT 'types possibles : cours, pause, repas, vie_scolaire',
 	jour_creneau VARCHAR(20) COMMENT 'Par defaut, aucun jour en particulier mais on peut imposer que des creneaux soient specifiques a un jour en particulier : \'lundi\', \'mardi\', \'mercredi\'...',
 	PRIMARY KEY (id_definie_periode)
 )Type=MyISAM COMMENT='Table contenant les creneaux de chaque journee (M1, M2...S1, S2...)';
@@ -1251,9 +1273,9 @@ DROP TABLE IF EXISTS edt_cours;
 CREATE TABLE edt_cours
 (
 	id_cours INTEGER(3)  NOT NULL COMMENT 'cle primaire',
-	id_groupe INTEGER(10) COMMENT 'id du groupe d\'enseignement concerne - NULL sinon',
-	id_aid INTEGER(10) COMMENT 'id de l\'aid concerne - NULL sinon',
-	id_salle INTEGER(10) COMMENT 'id de la salle concernee',
+	id_groupe CHAR(10) COMMENT 'id du groupe d\'enseignement concerne - \'\' sinon',
+	id_aid CHAR(10) COMMENT 'id de l\'aid concerne - \'\' sinon',
+	id_salle CHAR(10) COMMENT 'id de la salle concernee',
 	jour_semaine VARCHAR(10)  NOT NULL COMMENT 'jour de la semaine ou a lieu le cours : lundi, mardi etc...',
 	id_definie_periode VARCHAR(3)  NOT NULL COMMENT 'id du creneau de la journee ou a lieu le cours - voir table edt_creneaux ',
 	duree VARCHAR(10)  NOT NULL COMMENT 'duree du cours definie en demi-heures.1h de cours correspond a une duree=2',
