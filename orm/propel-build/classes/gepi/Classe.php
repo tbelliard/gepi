@@ -15,10 +15,9 @@
 class Classe extends BaseClasse {
 
 	/**
-	 * Renvoi sous forme d'un tableau la liste des groupes d'une classe.
-	 * Manually added for N:M relationship
+	 * Renvoi sous forme d'une collection la liste des groupes d'une classe.
 	 *
-	 * @return     array Classes[]
+	 * @return     PropelObjectCollection Classes[]
 	 */
 	public function getGroupes() {
 		$groupes = new PropelObjectCollection();
@@ -32,10 +31,9 @@ class Classe extends BaseClasse {
 
 	/**
 	 *
-	 * Renvoi sous forme d'un tableau la liste des eles d'une classe.
-	 * Manually added for N:M relationship
+	 * Renvoi sous forme d'une collection la liste des eles d'une classe.
 	 *
-	 * @return     array Eleves[]
+	 * @return     PropelObjectCollection Eleves[]
 	 *
 	 */
 	public function getEleves($periode) {
@@ -65,11 +63,8 @@ class Classe extends BaseClasse {
 	/**
 	 *
 	 * Ajoute un eleve a une classe
-	 * Manually added for N:M relationship
-	 * It seems that the groupes are passed by values and not by references.
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     array Eleves[]
 	 */
 	public function addEleve(Eleve $eleve, $periode) {
 		if ($eleve->getIdEleve() == null) {

@@ -20,7 +20,7 @@ class Eleve extends BaseEleve {
 	 * Manually added for N:M relationship
 	 *
 	 * @periode integer numero de la periode
-	 * @return     array Classes[]
+	 * @return     PropelObjectCollection Classes[]
 	 *
 	 */
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
@@ -54,7 +54,7 @@ class Eleve extends BaseEleve {
 	 * Manually added for N:M relationship
 	 *
 	 * @periode integer numero de la periode
-	 * @return     array Groupes[]
+	 * @return     PropelObjectCollection Groupes[]
 	 *
 	 */
 	public function getGroupes($periode) {
@@ -100,7 +100,7 @@ class Eleve extends BaseEleve {
 	 * Manually added for N:M relationship
 	 *
 	 * @periode integer numero de la periode
-	 * @return     array Groupes[]
+	 * @return     PropelObjectCollection Groupes[]
 	 *
 	 */
 	public function getEctsGroupes($periode) {
