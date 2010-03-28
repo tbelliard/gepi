@@ -20,12 +20,11 @@ if (!$_SESSION["login"]) {
 		$cours_actu = retourneCours($_SESSION["login"]);
 		// Qui correspond à cet id_groupe :
 		if ($cours_actu != "non") {
-			$queryG = mysql_query("SELECT id_groupe FROM edt_cours WHERE id_cours = '".$cours_actu."'");
+			$queryG = mysql_query("SELECT id_groupe, id_aid FROM edt_cours WHERE id_cours = '".$cours_actu."'");
 			$groupe_actu = mysql_fetch_array($queryG);
 			// Il faudrait vérifier si ce n'est pas une AID
-			$test = explode("|", $groupe_actu["id_groupe"]);
-			if ($test[0] == "AID") {
-				$groupe_abs = '?groupe='.$groupe_actu["id_groupe"].'&amp;menuBar=ok';
+			if ($groupe_actu["id_aid"] != NULL) {
+				$groupe_abs = '?groupe=AID|'.$groupe_actu["id_aid"].'&amp;menuBar=ok';
 				$groupe_text = '';
 			}else{
 				$groupe_text = '?id_groupe='.$groupe_actu["id_groupe"].'&amp;year='.date("Y").'&amp;month='.date("n").'&amp;day='.date("d").'&amp;edit_devoir=';
@@ -50,11 +49,6 @@ if (!$_SESSION["login"]) {
 		$barre_note = '<li><a href="'.$gepiPath.'/cahier_notes/index.php">Notes</a></li>
 		<li><a href="'.$gepiPath.'/saisie/index.php">Bulletins</a></li>';
 	}else{$barre_note = '';}
-
-	// Module emploi du temps
-	if (getSettingValue("autorise_edt_tous") == "y") {
-		$barre_edt = '<li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
-	}else{$barre_edt = '';}
 
 	// Module emploi du temps
 	if (getSettingValue("autorise_edt_tous") == "y") {

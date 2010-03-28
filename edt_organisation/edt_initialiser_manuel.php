@@ -33,6 +33,7 @@ if (!checkAccess()) {
 $initialiser = isset($_POST["initialiser"]) ? $_POST["initialiser"] : NULL;
 $choix_prof = isset($_POST["prof"]) ? $_POST["prof"] : NULL;
 $enseignement = isset($_POST["enseignement"]) ? $_POST["enseignement"] : NULL;
+$id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] : "";
 $ch_heure = isset($_POST["ch_heure"]) ? $_POST["ch_heure"] : NULL;
 $ch_jour_semaine = isset($_POST["ch_jour_semaine"]) ? $_POST["ch_jour_semaine"] : NULL;
 $duree = isset($_POST["duree"]) ? $_POST["duree"] : NULL;
@@ -342,11 +343,11 @@ if (isset($choix_prof)) {
 
 			$nbre_verif_s = mysql_num_rows($verif_salle);
 			if ($nbre_verif_s != 0) {
-				$req_present_s = mysql_query("SELECT id_groupe FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."'");
+				$req_present_s = mysql_query("SELECT id_groupe id_aid, FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."'");
 				$rep_present_s = mysql_fetch_array($req_present_s);
 				// On vérifie si ce n'est pas une AID
-				if (retourneAid($rep_present_s["id_groupe"]) != "non") {
-					$aid = retourneAid($rep_present_s["id_groupe"]);
+				if ($rep_present_s['id_aid'] != "") {
+					$aid = $rep_present_s['id_aid'];
 					echo "<p class=\"refus\">Cette salle est déjà occupée par un groupe AID( ".$aid." ).</p>";
 				}else{
 					$tab_present_s = get_group($rep_present_s["id_groupe"]);
@@ -369,8 +370,8 @@ if (isset($choix_prof)) {
 			$nbre_verif_prof = mysql_num_rows($verif_prof);
 			if ($nbre_verif_prof != 0) {
 				// On vérifie si ce n'est pas une AID
-				if (retourneAid($rep_verif_prof["id_groupe"]) != "non") {
-					$aid = retourneAid($rep_verif_prof["id_groupe"]);
+				if ($verif_prof['id_aid'] != "") {
+					$aid = $verif_prof['id_aid'];
 					echo "<p class=\"refus\">Ce professeur a déjà cours avec un groupe AID ( ".$aid." ).</p>";
 				}else{
 					$tab_present_p = get_group($rep_verif_prof["id_groupe"]);
@@ -386,16 +387,16 @@ if (isset($choix_prof)) {
 
 				// et on affiche les infos sur le cours enregistré
 					$contenu = "";
-				if (retourneAid($enseignement) != "non") {
+				if ($id_aid != "") {
 					// c'est une AID et donc on récupère les infos de cette AID
-					$query1 = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".retourneAid($enseignement)."'");
+					$query1 = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$id_aid."'");
 					$rep_aid = mysql_fetch_array($query1);
 					$tab_infos["classlist_string"] = $rep_aid["nom"];
 					// puis le nom de l'AID
 					$rep_nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$rep_aid["indice_aid"]."'"));
 					$tab_infos["description"] = $rep_nom_aid["nom"];
 					// $contenu est la liste des élèves
-					$query = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".retourneAid($enseignement)."'");
+					$query = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."'");
 					$nbre = mysql_num_rows($query);
 					for($a = 0; $a < $nbre; $a++){
 						$nom[$a] = mysql_result($query, $a, "login");

@@ -91,7 +91,12 @@ $horaire = isset($_GET["horaire"]) ? $_GET["horaire"] : (isset($_POST["horaire"]
 $cours = isset($_GET["cours"]) ? $_GET["cours"] : (isset($_POST["cours"]) ? $_POST["cours"] : NULL);
 $period_id=isset($_GET['period_id']) ? $_GET['period_id'] : (isset($_POST['period_id']) ? $_POST['period_id'] : NULL);
 $message = "";
-
+$id_aid = "";
+$analyse = explode("|", $enseignement);
+if ($analyse[0] == "AID") {
+    $id_aid = $analyse[1];
+    $enseignement = "";
+}
 // Dans le cas d'un professeur, on s'assure qu'il s'agit bien de son edt
 if (($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof") == 'y')){
 
@@ -104,8 +109,9 @@ if (($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof
 if (isset($modifier_cours) AND $modifier_cours == "ok") {
 	if (ProfDisponible($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, $id_cours, $message, $periode_calendrier)) {
         if (SalleDisponible($login_salle, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, $id_cours, $message, $periode_calendrier)) {
-            if (GroupeDisponible($enseignement, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, $id_cours, $message, $periode_calendrier)) {
+            if (GroupeDisponible($enseignement, $id_aid, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, $id_cours, $message, $periode_calendrier)) {
 	            $req_modif = mysql_query("UPDATE edt_cours SET id_groupe = '$enseignement',
+                    id_aid = '$id_aid',
 	                id_salle = '$login_salle',
 	                jour_semaine = '$ch_jour_semaine',
 	                id_definie_periode = '$ch_heure',
@@ -124,8 +130,9 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 elseif (isset($modifier_cours) AND $modifier_cours == "non") {
 	if (ProfDisponible($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, -1, $message, $periode_calendrier)) {
 		if (SalleDisponible($login_salle, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, -1, $message, $periode_calendrier)) {
-            if (GroupeDisponible($enseignement, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, -1, $message, $periode_calendrier)) {
+            if (GroupeDisponible($enseignement, $id_aid, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine, -1, $message, $periode_calendrier)) {
 				$nouveau_cours = mysql_query("INSERT INTO edt_cours SET id_groupe = '$enseignement',
+                     id_aid = '$id_aid',
 					 id_salle = '$login_salle',
 					 jour_semaine = '$ch_jour_semaine',
 					 id_definie_periode = '$ch_heure',
@@ -195,6 +202,7 @@ if ($autorise == "oui") {
 		$rep_cours["jour_semaine"] = NULL;
 		$rep_cours["id_definie_periode"] = NULL;
 		$rep_cours["id_groupe"] = NULL;
+		$rep_cours["id_aid"] = NULL;
 		$rep_cours["id_semaine"] = NULL;
 		$rep_cours["id_salle"] = NULL;
 		$rep_cours["id_calendrier"] = NULL;
@@ -225,9 +233,8 @@ if ($autorise == "oui") {
 
 	$tab_enseignements = get_groups_for_prof($identite);
 	// Si c'est un AID, on inscrit son nom
-	$explode = explode("|", $rep_cours["id_groupe"]);
-	if ($explode[0] == "AID") {
-		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$explode[1]."'"));
+	if ($rep_cours["id_aid"] != NULL) {
+		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$rep_cours["id_aid"]."'"));
 		$req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
 		$rep_nom_complet = mysql_fetch_array($req_nom_complet);
 		$aff_intro = $rep_nom_complet["nom"]." : ".$nom_aid["nom"];
@@ -272,7 +279,7 @@ if ($autorise == "oui") {
 		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
 		$req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
 		$rep_nom_complet = mysql_fetch_array($req_nom_complet);
-        $complete_aid = "AID|".$tab_aid[$i]["id_aid"];
+        $complete_aid = $tab_aid[$i]["id_aid"];
 		if(isset($_SESSION['edt_prof_enseignement'])){
 			if(($_SESSION['edt_prof_enseignement'] == $complete_aid) AND (!$already_selected)){
 				$selected = " selected='selected'";
@@ -459,7 +466,7 @@ if ($autorise == "oui") {
 		';
 		// on récupère les types de semaines
 
-	$req_semaines = mysql_query('SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 5');
+	$req_semaines = mysql_query("SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines WHERE type_edt_semaine != '' LIMIT 5 ");
 	$nbre_semaines = mysql_num_rows($req_semaines);
 
 	for ($s=0; $s<$nbre_semaines; $s++) {
@@ -588,7 +595,7 @@ if ($autorise == "oui") {
 		<input type="hidden" name="id_cours" value="'.$id_cours.'" />
 		<input type="hidden" name="type_edt" value="'.$type_edt.'" />
 		<input type="hidden" name="identite" value="'.$identite.'" />
-		<input type="hidden" name="aid" value="'.$rep_cours["id_groupe"].'" />
+		<input type="hidden" name="id_aid" value="'.$rep_cours["id_aid"].'" />
 	';
 	// Cas où il s'agit de la création d'un cours
 	if ($cours == "aucun" OR $modifier_cours == "non") {

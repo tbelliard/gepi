@@ -82,28 +82,28 @@ if (isset($supprimer)) {
     }
     else if ($supprimer== "suppression_groupes") {
 	    $req_groupes = mysql_query("SELECT DISTINCT id_groupe FROM edt_cours WHERE
-					id_groupe NOT IN (SELECT id FROM groupes)
+					id_groupe NOT IN (SELECT id FROM groupes) AND
+                    id_groupe != ''
                     ");
         if (mysql_num_rows($req_groupes) != 0) {
-
 	        while ($rep_groupes = mysql_fetch_array($req_groupes)) {
-                $analyse = explode("|", $rep_groupes['id_groupe']);
-                if ($analyse[0] == 'AID') {
-	                $req_aid = mysql_query("SELECT id FROM aid WHERE id = '".$analyse[1]."' ");
-                    if (mysql_num_rows($req_aid) == 0) {
-                        $req_suppression_groupe = mysql_query("DELETE FROM edt_cours WHERE
-                                    id_groupe = '".$rep_groupes['id_groupe']."'
-                                    ");
-                    }
-	            }
-                else {
-                    $req_suppression_groupe = mysql_query("DELETE FROM edt_cours WHERE
-                                id_groupe = '".$rep_groupes['id_groupe']."'
-                                ");
-                }
+                $req_suppression_groupe = mysql_query("DELETE FROM edt_cours WHERE
+                            id_groupe = '".$rep_groupes['id_groupe']."'
+                            ");
 	        }
-
         }
+	    $req_groupes = mysql_query("SELECT DISTINCT id_aid FROM edt_cours WHERE
+					id_aid NOT IN (SELECT id FROM aid) AND
+                    id_aid != ''
+                    ");
+        if (mysql_num_rows($req_groupes) != 0) {
+	        while ($rep_groupes = mysql_fetch_array($req_groupes)) {
+                $req_suppression_groupe = mysql_query("DELETE FROM edt_cours WHERE
+                            id_aid = '".$rep_groupes['id_aid']."'
+                            ");
+	        }
+        }
+
     }
 
 }
@@ -189,36 +189,18 @@ if (!strstr($ua, "MSIE 6.0")) {
 }        
 
 	$req_groupes = mysql_query("SELECT DISTINCT id_groupe FROM edt_cours WHERE
-					id_groupe NOT IN (SELECT id FROM groupes)
+					id_groupe NOT IN (SELECT id FROM groupes) AND
+                    id_groupe != ''
                     ");
     if (mysql_num_rows($req_groupes) != 0) {
-	    $nbre_unknown_group = 0;
-	    while ($rep_groupes = mysql_fetch_array($req_groupes)) {
-            $analyse = explode("|", $rep_groupes['id_groupe']);
-            if ($analyse[0] == 'AID') {
-	            $req_aid = mysql_query("SELECT id FROM aid WHERE id = '".$analyse[1]."' ");
-                if (mysql_num_rows($req_aid) == 0) {
-                    $nbre_unknown_group++;
-                }
-	        }
-            else {
-                $nbre_unknown_group++;
-            }
-	    }
-    
-	    if ($nbre_unknown_group) {
-	    
-        	    echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 2</strong></p>';
-	            echo "<p style=\"text-align:center;\">".$nbre_unknown_group." enseignement(s) inscrit(s) dans les emplois du temps n'existe(nt) plus dans GEPI</p>";
-        	    echo '<p style="text-align:center;padding:8px;">
-	                   <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_groupes">Lancer la procédure de nettoyage</a>
-        	        </p>';
-	    }
-	    else {
-        	    echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 2</strong></p>';
-	            echo '<p style="text-align:center;">Il y a concordance parfaite entre enseignements enregistrés sur GEPI et ceux enregistrés dans les emplois du temps</p>';
-    
-	    }
+        echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 2</strong></p>';
+	    echo "<p style=\"text-align:center;\">".mysql_num_rows($req_groupes)." enseignement(s) inscrit(s) dans les emplois du temps n'existe(nt) plus dans GEPI</p>";
+        //while ($rep = mysql_fetch_array($req_groupes)) {
+        //    echo "<p style=\"text-align:center;\">".$rep['id_groupe']."<p>";
+        //}
+        echo '<p style="text-align:center;padding:8px;">
+	           <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_groupes">Lancer la procédure de nettoyage</a>
+            </p>';
     }
     else {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 2</strong></p>';
@@ -230,6 +212,43 @@ if (!strstr($ua, "MSIE 6.0")) {
 echo "</div>";
 echo "</div>";
 }
+
+$ua = getenv("HTTP_USER_AGENT");
+if (!strstr($ua, "MSIE 6.0")) {
+    echo ("<div class=\"fenetre\">\n");
+    echo("<div class=\"contenu\">
+		<div class=\"coingh\"></div>
+        <div class=\"coindh\"></div>
+        <div class=\"partiecentralehaut\"></div>
+        <div class=\"droite\"></div>
+        <div class=\"gauche\"></div>
+        <div class=\"coingb\"></div>
+		<div class=\"coindb\"></div>
+		<div class=\"partiecentralebas\"></div>\n");
+}        
+
+	$req_groupes = mysql_query("SELECT DISTINCT id_aid FROM edt_cours WHERE
+					id_aid NOT IN (SELECT id FROM aid) AND
+                    id_aid != '' 
+                    ");
+    if (mysql_num_rows($req_groupes) != 0) {
+        echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 3</strong></p>';
+	    echo "<p style=\"text-align:center;\">".mysql_num_rows($req_groupes)." aid(s) inscrit(s) dans les emplois du temps n'existe(nt) plus dans GEPI</p>";
+        echo '<p style="text-align:center;padding:8px;">
+	           <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_groupes">Lancer la procédure de nettoyage</a>
+            </p>';
+    }
+    else {
+        echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 3</strong></p>';
+        echo '<p style="text-align:center;">Il y a concordance parfaite entre aids enregistrés sur GEPI et ceux enregistrés dans les emplois du temps</p>';
+
+    }
+$ua = getenv("HTTP_USER_AGENT");
+if (!strstr($ua, "MSIE 6.0")) {
+echo "</div>";
+echo "</div>";
+}
+
 
 ?>
 <?php

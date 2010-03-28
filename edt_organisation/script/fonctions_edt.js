@@ -1,5 +1,6 @@
 // javascript pour les menus deroulants
 window.onload = montre;
+var xmlhttp;
 function montre(id) {
 var d = document.getElementById(id);
 	for (var i = 1; i<=5; i++) {
@@ -7,10 +8,75 @@ var d = document.getElementById(id);
 	}
 if (d) {d.style.display='block';}
 }
-//Utilisation de Prototype et de méthode toogle de Element qui permet de changer le display d'un id
+//Utilisation de Prototype et de méthode toggle de Element qui permet de changer le display d'un id
 function changerDisplayDiv(nomDiv) {
 	Element.toggle(nomDiv);
 }
+// ===================================================
+//
+//      Utiliser AJAX pour éviter des requêtes inutiles
+//      sur l'affichage des EDTs 
+//      utilisé dans vie_scolaire_absences.php
+//
+// ===================================================
+function AfficheEdtClasseDuJour(nomClasse, nomDiv, niveau_arbo) {
+    if (document.getElementById(nomDiv).style.display == 'none') {
+        xmlhttp=GetXmlHttpObject();
+        if (xmlhttp==null)
+          {
+          alert ("Browser does not support HTTP Request");
+          return;
+          }
+        if (niveau_arbo == 0) {
+            var url="./edt_organisation/helpers/";
+        }
+        else if (niveau_arbo == 1) {
+            var url="../edt_organisation/helpers/";
+        }
+        else if (niveau_arbo == 2) {
+            var url="../../edt_organisation/helpers/";
+        }
+        else if (niveau_arbo == 3) {
+            var url="../../../edt_organisation/helpers/";
+        }
+        url=url+"construire_edt_classe_jour.php";
+        url=url+"?classe="+nomClasse;
+        url=url+"&sid="+Math.random();
+        xmlhttp.divname = nomDiv;
+        xmlhttp.onreadystatechange=stateChanged;
+        xmlhttp.open("GET",url,true);
+        xmlhttp.send(null);
+    }
+	Element.toggle(nomDiv);
+}
+
+
+function stateChanged()
+{
+if (xmlhttp.readyState==4)
+{
+document.getElementById(xmlhttp.divname).innerHTML=xmlhttp.responseText;
+}
+}
+
+function GetXmlHttpObject()
+{
+if (window.XMLHttpRequest)
+  {
+  // code for IE7+, Firefox, Chrome, Opera, Safari
+  return new XMLHttpRequest();
+  }
+if (window.ActiveXObject)
+  {
+  // code for IE6, IE5
+  return new ActiveXObject("Microsoft.XMLHTTP");
+  }
+return null;
+}
+
+
+
+
 // Fonction qui permet de cocher / décocher tous les checkbox de l'élément dont le name = nouvelle_periode
 // pour le calendrier (création et modification des périodes pédagogiques)
 function CocheCase(boul) {

@@ -554,7 +554,7 @@
         <column name="heuredebut_definie_periode" required="true" type="TIME" description="Heure de debut du creneau"/>
         <column name="heurefin_definie_periode" required="true" type="TIME" description="Heure de fin du creneau"/>
         <column name="suivi_definie_periode" required="false" type="INTEGER" size="2" default="9" description="champ inutilise"/>
-        <column name="type_creneau" required="false" type="VARCHAR" size="15" default="cours" description="types possibles : cours, pause, repas, vie_scolaire"/>
+        <column name="type_creneaux" required="false" type="VARCHAR" size="15" default="cours" description="types possibles : cours, pause, repas, vie_scolaire"/>
         <column name="jour_creneau" required="false" type="VARCHAR" size="20" default="NULL" description="Par defaut, aucun jour en particulier mais on peut imposer que des creneaux soient specifiques a un jour en particulier : 'lundi', 'mardi', 'mercredi'..."/>
     </table>
 
@@ -593,11 +593,11 @@
 
 	<table name="edt_cours" phpName="EdtEmplacementCours" description="Liste de tous les creneaux de tous les emplois du temps">
 		<column name="id_cours" required="true" primaryKey="true" type="INTEGER" size="3" description="cle primaire"/>
-		<column name="id_groupe" required="false" type="INTEGER" size="10" description="id du groupe d'enseignement concerne - NULL sinon"/>
+		<column name="id_groupe" required="false" type="CHAR" size="10" description="id du groupe d'enseignement concerne - '' sinon"/>
 		<foreign-key foreignTable="groupes" onDelete="cascade"><reference local="id_groupe" foreign="id"/></foreign-key>
-		<column name="id_aid" required="false" type="INTEGER" size="10" description="id de l'aid concerne - NULL sinon"/>
+		<column name="id_aid" required="false" type="CHAR" size="10" description="id de l'aid concerne - '' sinon"/>
 		<foreign-key foreignTable="aid" onDelete="cascade"><reference local="id_aid" foreign="id"/></foreign-key>
-		<column name="id_salle" required="false" type="INTEGER" size="10" description="id de la salle concernee"/>
+		<column name="id_salle" required="false" type="CHAR" size="10" description="id de la salle concernee"/>
 		<foreign-key foreignTable="salle_cours" onDelete="setnull"><reference local="id_salle" foreign="id_salle"/></foreign-key>
 		<column name="jour_semaine" required="true" type="VARCHAR" size="10" description="jour de la semaine ou a lieu le cours : lundi, mardi etc..."/>
 		<column name="id_definie_periode" required="true" type="VARCHAR" size="3" description="id du creneau de la journee ou a lieu le cours - voir table edt_creneaux "/>

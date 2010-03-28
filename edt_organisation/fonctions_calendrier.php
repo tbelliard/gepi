@@ -349,7 +349,8 @@ function retourneCours($prof){
 		$query_aid = mysql_query("SELECT id_cours FROM edt_cours WHERE
 			jour_semaine = '".retourneJour('')."' AND
 			id_definie_periode = '".retourneCreneau()."' AND
-			id_groupe LIKE 'AID|%' AND
+			id_aid != NULL AND
+            id_aid != '' AND
 			login_prof = '".$prof."' AND
 			heuredeb_dec = '0' AND
 			(id_semaine = '".typeSemaineActu()."' OR id_semaine = '0')

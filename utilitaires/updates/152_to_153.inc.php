@@ -587,7 +587,7 @@ else {
 $sql = "SELECT id_aid FROM edt_cours LIMIT 1";
 $req_rank = mysql_query($sql);
 if (!$req_rank){
-    $sql_request = "ALTER TABLE edt_cours ADD id_aid INTEGER(10)";
+    $sql_request = "ALTER TABLE edt_cours ADD id_aid CHAR(10) DEFAULT '' ";
     $req_add_rank = mysql_query($sql_request);
     if ($req_add_rank) {
         $result .= "<p style=\"color:green;\">Ajout du champ id_aid dans la table <strong>edt_cours</strong> : ok.</p>";
@@ -600,6 +600,88 @@ else {
     $result .= "<p style=\"color:blue;\">Ajout du champ id_aid à la table <strong>edt_cours</strong> : déjà réalisé.</p>";
 }
 
+// ============== vérification du TYPE du champ id_aid et si c'est un INT, le changer en CHAR
+
+// procédure utile pour ceux qui ont utilisé trunk en production
+// alors que le champ id_aid (dans sa première version) était défini à tort comme un INT
+
+$sql = "SELECT * FROM edt_cours LIMIT 1";
+$req = mysql_query($sql);
+$modif = false;
+if ($req) {
+    $i = 0;
+    while ($i < mysql_num_fields($req)) {
+        $meta = mysql_fetch_field($req,$i);
+        //echo "<p>".$meta->type."</p>";
+        if ($meta->name == "id_aid") {
+            if ($meta->type == "int") {
+                $modif = true;
+            }
+        }
+        $i++;
+    }
+}
+if ($modif == true) {
+    $sql = "ALTER TABLE edt_cours MODIFY id_aid CHAR(10)";
+    $req = mysql_query($sql);
+    if ($req) {
+        $result .= "<p style=\"color:green;\">Changement du type du champ id_aid dans la table <strong>edt_cours</strong> : ok.</p>";
+    }
+
+    // ============== Faire la mise à niveau du champ id_aid s'il a changé de type
+    $sql = "SELECT id_cours, id_groupe, id_aid FROM edt_cours";
+    $req = mysql_query($sql);
+    if ($req) {
+        while ($rep = mysql_fetch_array($req)) {
+            if (($rep['id_groupe'] != "") AND ($rep['id_aid'] == "0")) {
+                $sql = "UPDATE edt_cours SET id_aid = '' WHERE id_cours = '".$rep['id_cours']."' ";
+                mysql_query($sql);
+            }
+        }
+    }
+
+}
 
 
+// ============= Mise à niveau de la table edt_cours
+$nb_changes = 0;
+$sql = "SELECT id_groupe, id_cours FROM edt_cours";
+$req_group = mysql_query($sql);
+if ($req_group) {
+    while ($rep_group = mysql_fetch_array($req_group)) {
+        $analyse = explode("|", $rep_group['id_groupe']);
+        if ($analyse[0] == "AID") {
+            $sql = "UPDATE edt_cours SET id_aid = '".$analyse[1]."', id_groupe = '' WHERE id_cours = '".$rep_group['id_cours']."' ";
+            $req = mysql_query($sql);
+            $nb_changes++;
+        }
+    }
+}
+if ($nb_changes != 0) {
+    $result .= "<p style=\"color:green;\">".$nb_changes." champs dans la table edt_cours ont été mis à niveau.</p>";
+}
+else {
+    $result .= "<p style=\"color:blue;\">La table edt_cours est à niveau.</p>";
+}
+
+
+// ============= Mise à jour de la table edt_semaines
+$changes = false;
+$sql = "SELECT id_edt_semaine FROM edt_semaines";
+$req = mysql_query($sql);
+if ($req) {
+    if (mysql_num_rows($req) == 52) {
+        $sql = "INSERT INTO edt_semaines SET id_edt_semaine = '53', num_edt_semaine = '53', type_edt_semaine = '', num_semaines_etab = '0' ";
+        $req_insert = mysql_query($sql);
+        if ($req_insert) {
+            $changes = true;
+        }
+    }
+}
+if ($changes) {
+    $result .= "<p style=\"color:green;\">Ajout d'un 53eme enregistrement dans la table edt_semaine : ok.</p>";
+}
+else {
+    $result .= "<p style=\"color:blue;\">La table edt_semaines contient bien 53 enregistrements.</p>";
+}
 ?>

@@ -204,17 +204,15 @@ return $salle_libre;
 //
 // =============================================================================
 
-function GroupeDisponible($groupe, $jour, $creneau, $duree, $heuredeb_dec, $type_semaine, $id_cours, &$InformationMessage, $period){
+function GroupeDisponible($groupe, $id_aid, $jour, $creneau, $duree, $heuredeb_dec, $type_semaine, $id_cours, &$InformationMessage, $period){
 
 $groupe_libre = true;
 $enseignants = "";
 $tab_enseignement = array();
 $tab_id_creneaux = retourne_id_creneaux();
-if ($groupe != "") {
+if (($groupe != "") OR ($id_aid != "")) {
 
-    $analyse = explode("|", $groupe);
-    if ($analyse[0] == "AID") {
-        $groupe = $analyse[1];
+    if ($id_aid != "") {
         $groupe_type = "AID";
     }
     else {
@@ -247,12 +245,12 @@ if ($groupe != "") {
 		    $current_heure = "0.5";
 	    }
 
-        $nb_rows = RecupCoursElevesCommuns($j, $jour, $groupe, $groupe_type, $current_heure, $type_semaine, $id_cours ,$tab_enseignement, $period);
+        $nb_rows = RecupCoursElevesCommuns($j, $jour, $groupe, $id_aid, $groupe_type, $current_heure, $type_semaine, $id_cours ,$tab_enseignement, $period);
 
 	    if ($nb_rows >=1) {
             $k = 0;
            
-            while ($tab_enseignement['id_groupe'][$k] != "") {
+            while (($tab_enseignement['id_groupe'][$k] != "") OR ($tab_enseignement['id_aid'][$k] != "")) {
                 $elapse_time_end = $elapse_time + $tab_enseignement['duree'][$k];
                 if ((($elapse_time<=$start_lesson) AND ($start_lesson<$elapse_time_end)) OR (($elapse_time>=$start_lesson) AND ($elapse_time<$end_lesson))){
                     if ($tab_enseignement['aid'][$k] == 0) {
@@ -263,7 +261,7 @@ if ($groupe != "") {
                         }
                         else {
                             $req_nombre_eleves = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE login IN 
-							    (SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_groupe'][$k]."') AND
+							    (SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_aid'][$k]."') AND
 							    id_aid = '".$groupe."'  ");
 
                         }
@@ -276,7 +274,7 @@ if ($groupe != "") {
                         }
                         else {
                             $req_nombre_eleves = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE login IN 
-							    (SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_groupe'][$k]."') AND
+							    (SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_aid'][$k]."') AND
 							    id_aid = '".$groupe."'  ");
 
                         }
@@ -321,7 +319,7 @@ return $groupe_libre;
 //
 // =============================================================================
 
-function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $groupe_type, $current_heure, $type_semaine, $id_cours, &$tab_enseignement, $period)
+function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $groupe_type, $current_heure, $type_semaine, $id_cours, &$tab_enseignement, $period)
 {
     $tab_id_creneaux = retourne_id_creneaux();
     $k = 0;
@@ -394,6 +392,7 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $groupe_type,
         $tab_enseignement['duree'][$k] = $rep_creneau['duree'];
         $tab_enseignement['login'][$k] = $rep_creneau['login_prof'];
         $tab_enseignement['id_groupe'][$k] = $rep_creneau['id_groupe'];
+        $tab_enseignement['id_aid'][$k] = "";
         $tab_enseignement['aid'][$k] = 0;
         $k++;
     }
@@ -406,8 +405,8 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $groupe_type,
                                 ") or die(mysql_error());
     while ($rep_creneau_aid = mysql_fetch_array($req_creneau_aid)) {
         if ($type_semaine == "0") {
-            $req_creneau_aid_2 = mysql_query("SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
-                                    id_groupe = 'AID|".$rep_creneau_aid['id_aid']."' AND
+            $req_creneau_aid_2 = mysql_query("SELECT duree , login_prof , id_groupe , id_aid FROM edt_cours WHERE 
+                                    id_aid = '".$rep_creneau_aid['id_aid']."' AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
                                     heuredeb_dec = '".$current_heure."' AND
@@ -416,8 +415,8 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $groupe_type,
                                      ");
         }
         else {
-            $req_creneau_aid_2 = mysql_query("SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
-                                    id_groupe = 'AID|".$rep_creneau_aid['id_aid']."' AND
+            $req_creneau_aid_2 = mysql_query("SELECT duree , login_prof , id_groupe , id_aid FROM edt_cours WHERE 
+                                    id_aid = '".$rep_creneau_aid['id_aid']."' AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
                                     heuredeb_dec = '".$current_heure."' AND
@@ -429,10 +428,10 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $groupe_type,
         if (mysql_num_rows($req_creneau_aid_2) != 0) {
 
             $rep_creneau_aid_2 = mysql_fetch_array($req_creneau_aid_2);
-            $analyse = explode("|", $rep_creneau_aid_2['id_groupe']);
             $tab_enseignement['duree'][$k] = $rep_creneau_aid_2['duree'];
             $tab_enseignement['login'][$k] = $rep_creneau_aid_2['login_prof'];
-            $tab_enseignement['id_groupe'][$k] = $analyse[1];
+            $tab_enseignement['id_aid'][$k] = $rep_creneau_aid_2['id_aid'];
+            $tab_enseignement['id_groupe'][$k] = "";
             $tab_enseignement['aid'][$k] = 1;
             $k++;
         }
@@ -460,7 +459,7 @@ function RecupCoursSallesCommunes($creneau_courant, $jour, $salle, $current_heur
     }
     // --------- Rechercher les groupes d'enseignement qui ont la salle en commun avec le groupe visé
     if ($type_semaine == "0") {
-            $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_semaine FROM edt_cours WHERE 
+            $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
                                     id_salle = '".$salle."'  AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
@@ -472,7 +471,7 @@ function RecupCoursSallesCommunes($creneau_courant, $jour, $salle, $current_heur
     }
     else {
 
-            $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_semaine FROM edt_cours WHERE 
+            $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
                                     id_salle = '".$salle."'  AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
@@ -487,13 +486,14 @@ function RecupCoursSallesCommunes($creneau_courant, $jour, $salle, $current_heur
         $tab_enseignement['duree'][$k] = $rep_creneau['duree'];
         $tab_enseignement['login'][$k] = $rep_creneau['login_prof'];
         $tab_enseignement['id_semaine'][$k] = $rep_creneau['id_semaine'];
-        $analyse = explode("|", $rep_creneau['id_groupe']);
-        if ($analyse[0] == "AID") {
-            $tab_enseignement['id_groupe'][$k] = $analyse[1];
+        if ($rep_creneau['id_aid'] != "") {
+            $tab_enseignement['id_groupe'][$k] = "";
+            $tab_enseignement['id_aid'][$k] = $rep_creneau['id_aid'];
             $tab_enseignement['aid'][$k] = 1;
         }
         else {
-            $tab_enseignement['id_groupe'][$k] = $analyse[0];
+            $tab_enseignement['id_groupe'][$k] = $rep_creneau['id_groupe'];
+            $tab_enseignement['id_aid'][$k] = "";
             $tab_enseignement['aid'][$k] = 0;
         }
 
@@ -524,7 +524,7 @@ function RecupCoursProf($creneau_courant, $jour, $login_prof, $current_heure, $t
     }
 
     if ($type_semaine == "0") {
-        $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_semaine FROM edt_cours WHERE 
+        $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
                                 login_prof = '".$login_prof."'  AND
                                 jour_semaine = '".$jour."' AND
                                 id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
@@ -534,7 +534,7 @@ function RecupCoursProf($creneau_courant, $jour, $login_prof, $current_heure, $t
                                 ") or die(mysql_error());
     }
     else {
-        $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_semaine FROM edt_cours WHERE 
+        $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
                                 login_prof = '".$login_prof."'  AND
                                 jour_semaine = '".$jour."' AND
                                 id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
@@ -548,13 +548,14 @@ function RecupCoursProf($creneau_courant, $jour, $login_prof, $current_heure, $t
         $tab_enseignement['duree'][$k] = $rep_creneau['duree'];
         $tab_enseignement['login'][$k] = $rep_creneau['login_prof'];
         $tab_enseignement['id_semaine'][$k] = $rep_creneau['id_semaine'];
-        $analyse = explode("|", $rep_creneau['id_groupe']);
-        if ($analyse[0] == "AID") {
-            $tab_enseignement['id_groupe'][$k] = $analyse[1];
+        if ($rep_creneau['id_aid'] != NULL) {
+            $tab_enseignement['id_groupe'][$k] = "";
+            $tab_enseignement['id_aid'][$k] = $rep_creneau['id_aid'];
             $tab_enseignement['aid'][$k] = 1;
         }
         else {
-            $tab_enseignement['id_groupe'][$k] = $analyse[0];
+            $tab_enseignement['id_groupe'][$k] = $rep_creneau['id_groupe'];
+            $tab_enseignement['id_aid'][$k] = "";
             $tab_enseignement['aid'][$k] = 0;
         }
 
@@ -628,17 +629,6 @@ function inverseHeuredeb_dec($heuredeb_dec){
 
 	return $retour;
 } // inverseHeuredeb_dec()
-
-// Fonction qui vérifie si l'id_groupe de l'Edt n'est pas une AID
-function retourneAid($id_groupe){
-	// On explode pour voir
-	$explode = explode("|", $id_groupe);
-	if ($explode[0] == "AID") {
-		return $explode[1];
-	}else{
-		return "non";
-	}
-}
 
 /*
  * Fonction qui renvoie le début et la fin d'un cours en prenant en compte l'idée que chaque créneau

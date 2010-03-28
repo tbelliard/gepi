@@ -29,7 +29,6 @@ require_once("../../lib/initialisations.inc.php");
 //mes fonctions
 include("../lib/functions.php");
 include("../../edt_organisation/fonctions_calendrier.php");
-
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -65,26 +64,28 @@ $heure_mysql = date("H:i:s");
 	}else{
 		require_once("../../class_php/edt_cours.class.php");
 	}
+// =============================================================
+//
+//      Ancienne fonction (désactivée car remplacée par AJAX)
+//
+// =============================================================
 
 function afficherCoursClasse($d, $c){
 	// On teste php pour voir si c'est en php5 ou pas
-	global $version;
-
-	if ($version != 5) {
-		return '';
-	}
-
-	$rep = '';
-	$cours = new edtAfficher();
-	$cours->sem = 0;
-	$cours->hauteur_creneau = 70;
-	$cours->type_edt = 'classe';
-	$jour = $cours->aujourdhui();
-		$rep .= $cours->entete_creneaux('noms');
-		$rep .= $cours->afficher_cours_jour($jour, $d);
-	return $rep;
+	//global $version;
+	//if ($version != 5) {
+	//	return '';
+	//}
+	//$rep = '';
+	//$cours = new edtAfficher();
+	//$cours->sem = 0;
+	//$cours->hauteur_creneau = 70;
+	//$cours->type_edt = 'classe';
+	//$jour = $cours->aujourdhui();
+	//$rep .= $cours->entete_creneaux('noms');
+	//$rep .= $cours->afficher_cours_jour($jour, $d);
+	return '<p>construction</p>';
 }
-
 
 $style_specifique = "edt_organisation/style_edt";
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
@@ -424,7 +425,7 @@ for($a = 0; $a < $nbre_classe; $a++){
 	echo '
 	<tr>
 		<td>
-			<h4 style="color: red;"><a href="#" onclick="changerDisplayDiv(\''.$num_id.'\'); return false;">'.$aff_classe[$a].'</a></h4>
+			<h4 style="color: red;"><a href="#" onclick="AfficheEdtClasseDuJour(\''.$aff_classe[$a].'\',\''.$num_id.'\', '.$niveau_arbo.'); return false;">'.$aff_classe[$a].'</a></h4>
 			<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white; -moz-border-radius: 10px; padding: 10px;">
 			'.afficherCoursClasse($aff_classe[$a], $choix_creneau).'</div>
 		</td>
@@ -440,8 +441,8 @@ for($a = 0; $a < $nbre_classe; $a++){
 		$num_id = 'id'.remplace_accents($aff_classe[$a], 'all');
 		echo '
 			<td>
-				<h4 style="color: red;"><a href="#" onclick="changerDisplayDiv(\''.$num_id.'\'); return false;">'.$aff_classe[$a].'</a></h4>
-				<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white;">
+				<h4 style="color: red;"><a href="#" onclick="AfficheEdtClasseDuJour(\''.$aff_classe[$a].'\',\''.$num_id.'\','.$niveau_arbo.'); return false;">'.$aff_classe[$a].'</a></h4>
+				<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white; -moz-border-radius: 10px; padding: 10px;">
 				'.afficherCoursClasse($aff_classe[$a], $choix_creneau).'</div>
 			</td>
 			<td style="width: 250px;">'.$td_classe1[$a].$td_classe[$a].'</td>
