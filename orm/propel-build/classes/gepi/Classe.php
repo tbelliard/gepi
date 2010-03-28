@@ -88,11 +88,23 @@ class Classe extends BaseClasse {
 		return new Periode();
 	}
 
+	/**
+	 *
+	 * Retourne les emplacements de cours pour un professeur donnee pour la periode du calendrier actuelle
+	 *
+	 * @param  String $login le login du professeur
+	 * @return PropelObjectCollection EdtEmplacementCours les emplacements de cours ordonnée chronologiquement
+	 */
+	public function getEdtEmplacementCoursPeriodeCalendrierActuelleJoinProfesseur($login){
+	    throw new PropelException("Pas encore implemente");
+	    return new PropelObjectCollection();
+	}
+
  	/**
 	 * Retourne la periode de note actuelle pour une classe donnée.
 	 *
 	 * @param  String $classe_id l'id de la classe
-	 * @return PropelObjectCollection une collection d'emplacements de cours
+	 * @return PropelObjectCollection une collection d'emplacements de cours ordonnée chronologiquement
 	 */
 	public static function getEdtEmplacementCoursJoinProfesseur($login) {
 		throw new PropelException("Pas encore implemente");

@@ -30,4 +30,28 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
 	    return self::doSelect($criteria);
     }
 
+	/**
+	 *
+	 * Renvoi le creneau actuel
+	 *
+	 * @return     EdtCreneau EdtCreneau
+	 *
+	 */
+	public function getEdtCreneauActuel() {
+		throw new PropelException("Pas encore implemente");
+		return new EdtCreneau();
+	}
+
+	/**
+	 *
+	 * Renvoi le premier creneau de la semaine
+	 *
+	 * @return     EdtCreneau EdtCreneau
+	 *
+	 */
+	public function getFirstEdtCreneau() {
+		throw new PropelException("Pas encore implemente");
+		return new EdtCreneau();
+	}
+
 } // EdtCreneauPeer

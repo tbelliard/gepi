@@ -185,7 +185,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 *
 	 * Retourne l'emplacement de cours de l'heure temps reel. retourne null si pas pas de cours actuel
 	 *
-	 * @return EdtEmplacementCours l'emplacement de cours actuell ou null si pas de cours
+	 * @return EdtEmplacementCours l'emplacement de cours actuel ou null si pas de cours actuellement
 	 */
 	public function getEdtEmplacementCoursActuel(){
 	    throw new PropelException("Pas encore implemente");
@@ -194,14 +194,36 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	/**
 	 *
+	 * Retourne les emplacement de cours pour la periode du calendrier actuelle
+	 *
+	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
+	 */
+	public function getEdtEmplacementCoursPeriodeCalendrierActuelle(){
+	    throw new PropelException("Pas encore implemente");
+	    return new PropelObjectCollection();
+	}
+
+	/**
+	 *
+	 * Retourne les emplacements de cours pour une classe donnee pour la periode du calendrier actuelle
+	 *
+	 * @param  String $classe_id l'id de la classe
+	 * @return PropelObjectCollection EdtEmplacementCours les emplacements de cours ordonnée chronologiquement
+	 */
+	public function getEdtEmplacementCoursPeriodeCalendrierActuelleJoinClasse($classe_id){
+	    throw new PropelException("Pas encore implemente");
+	    return new PropelObjectCollection();
+	}
+
+	/**
+	 *
 	 * Retourne les emplacements de cours pour une classe donnee
 	 *
 	 * @param  String $classe_id l'id de la classe
-	 * @return PropelObjectCollection EdtEmplacementCours les emplacements de cours
+	 * @return PropelObjectCollection EdtEmplacementCours les emplacements de cours ordonnée chronologiquement
 	 */
 	public function getEdtEmplacementCoursJoinClasse($classe_id){
 	    throw new PropelException("Pas encore implemente");
 	    return new PropelObjectCollection();
 	}
-
 }

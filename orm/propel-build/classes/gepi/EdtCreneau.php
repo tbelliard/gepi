@@ -21,8 +21,8 @@ class EdtCreneau extends BaseEdtCreneau {
 	 * @return     EdtCreneau EdtCreneau
 	 *
 	 */
-	public function getNextCreneau($type_creneau = null) {
-		//not implemented yet
+	public function getNextEdtCreneau($type_creneau = null) {
+		throw new PropelException("Pas encore implemente");
 		return new EdtCreneau();
 	}
 
@@ -30,11 +30,11 @@ class EdtCreneau extends BaseEdtCreneau {
 	 *
 	 * Renvoi le creneau precedent du type donné
 	 *
-	 * @return     PropelObjectCollection Eleves[]
+	 * @return     EdtCreneau EdtCreneau
 	 *
 	 */
-	public function getPrevCreneau($type_creneau = null) {
-		//not implemented yet
+	public function getPrevEdtCreneau($type_creneau = null) {
+		throw new PropelException("Pas encore implemente");
 		return new EdtCreneau();
 	}
 
@@ -46,7 +46,7 @@ class EdtCreneau extends BaseEdtCreneau {
 	 *
 	 */
 	public function getEdtEmplacementCours($utilisateur_professionnel_id) {
-		//not implemented yet
+		throw new PropelException("Pas encore implemente");
 		return new PropelObjectCollection();
 	}
 
