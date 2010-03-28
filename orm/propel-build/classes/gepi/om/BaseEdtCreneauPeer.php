@@ -45,8 +45,8 @@ abstract class BaseEdtCreneauPeer {
 	/** the column name for the SUIVI_DEFINIE_PERIODE field */
 	const SUIVI_DEFINIE_PERIODE = 'edt_creneaux.SUIVI_DEFINIE_PERIODE';
 
-	/** the column name for the TYPE_CRENEAU field */
-	const TYPE_CRENEAU = 'edt_creneaux.TYPE_CRENEAU';
+	/** the column name for the TYPE_CRENEAUX field */
+	const TYPE_CRENEAUX = 'edt_creneaux.TYPE_CRENEAUX';
 
 	/** the column name for the JOUR_CRENEAU field */
 	const JOUR_CRENEAU = 'edt_creneaux.JOUR_CRENEAU';
@@ -67,11 +67,11 @@ abstract class BaseEdtCreneauPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('IdDefiniePeriode', 'NomDefiniePeriode', 'HeuredebutDefiniePeriode', 'HeurefinDefiniePeriode', 'SuiviDefiniePeriode', 'TypeCreneau', 'JourCreneau', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idDefiniePeriode', 'nomDefiniePeriode', 'heuredebutDefiniePeriode', 'heurefinDefiniePeriode', 'suiviDefiniePeriode', 'typeCreneau', 'jourCreneau', ),
-		BasePeer::TYPE_COLNAME => array (self::ID_DEFINIE_PERIODE, self::NOM_DEFINIE_PERIODE, self::HEUREDEBUT_DEFINIE_PERIODE, self::HEUREFIN_DEFINIE_PERIODE, self::SUIVI_DEFINIE_PERIODE, self::TYPE_CRENEAU, self::JOUR_CRENEAU, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID_DEFINIE_PERIODE', 'NOM_DEFINIE_PERIODE', 'HEUREDEBUT_DEFINIE_PERIODE', 'HEUREFIN_DEFINIE_PERIODE', 'SUIVI_DEFINIE_PERIODE', 'TYPE_CRENEAU', 'JOUR_CRENEAU', ),
-		BasePeer::TYPE_FIELDNAME => array ('id_definie_periode', 'nom_definie_periode', 'heuredebut_definie_periode', 'heurefin_definie_periode', 'suivi_definie_periode', 'type_creneau', 'jour_creneau', ),
+		BasePeer::TYPE_PHPNAME => array ('IdDefiniePeriode', 'NomDefiniePeriode', 'HeuredebutDefiniePeriode', 'HeurefinDefiniePeriode', 'SuiviDefiniePeriode', 'TypeCreneaux', 'JourCreneau', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idDefiniePeriode', 'nomDefiniePeriode', 'heuredebutDefiniePeriode', 'heurefinDefiniePeriode', 'suiviDefiniePeriode', 'typeCreneaux', 'jourCreneau', ),
+		BasePeer::TYPE_COLNAME => array (self::ID_DEFINIE_PERIODE, self::NOM_DEFINIE_PERIODE, self::HEUREDEBUT_DEFINIE_PERIODE, self::HEUREFIN_DEFINIE_PERIODE, self::SUIVI_DEFINIE_PERIODE, self::TYPE_CRENEAUX, self::JOUR_CRENEAU, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_DEFINIE_PERIODE', 'NOM_DEFINIE_PERIODE', 'HEUREDEBUT_DEFINIE_PERIODE', 'HEUREFIN_DEFINIE_PERIODE', 'SUIVI_DEFINIE_PERIODE', 'TYPE_CRENEAUX', 'JOUR_CRENEAU', ),
+		BasePeer::TYPE_FIELDNAME => array ('id_definie_periode', 'nom_definie_periode', 'heuredebut_definie_periode', 'heurefin_definie_periode', 'suivi_definie_periode', 'type_creneaux', 'jour_creneau', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
@@ -82,11 +82,11 @@ abstract class BaseEdtCreneauPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('IdDefiniePeriode' => 0, 'NomDefiniePeriode' => 1, 'HeuredebutDefiniePeriode' => 2, 'HeurefinDefiniePeriode' => 3, 'SuiviDefiniePeriode' => 4, 'TypeCreneau' => 5, 'JourCreneau' => 6, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idDefiniePeriode' => 0, 'nomDefiniePeriode' => 1, 'heuredebutDefiniePeriode' => 2, 'heurefinDefiniePeriode' => 3, 'suiviDefiniePeriode' => 4, 'typeCreneau' => 5, 'jourCreneau' => 6, ),
-		BasePeer::TYPE_COLNAME => array (self::ID_DEFINIE_PERIODE => 0, self::NOM_DEFINIE_PERIODE => 1, self::HEUREDEBUT_DEFINIE_PERIODE => 2, self::HEUREFIN_DEFINIE_PERIODE => 3, self::SUIVI_DEFINIE_PERIODE => 4, self::TYPE_CRENEAU => 5, self::JOUR_CRENEAU => 6, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID_DEFINIE_PERIODE' => 0, 'NOM_DEFINIE_PERIODE' => 1, 'HEUREDEBUT_DEFINIE_PERIODE' => 2, 'HEUREFIN_DEFINIE_PERIODE' => 3, 'SUIVI_DEFINIE_PERIODE' => 4, 'TYPE_CRENEAU' => 5, 'JOUR_CRENEAU' => 6, ),
-		BasePeer::TYPE_FIELDNAME => array ('id_definie_periode' => 0, 'nom_definie_periode' => 1, 'heuredebut_definie_periode' => 2, 'heurefin_definie_periode' => 3, 'suivi_definie_periode' => 4, 'type_creneau' => 5, 'jour_creneau' => 6, ),
+		BasePeer::TYPE_PHPNAME => array ('IdDefiniePeriode' => 0, 'NomDefiniePeriode' => 1, 'HeuredebutDefiniePeriode' => 2, 'HeurefinDefiniePeriode' => 3, 'SuiviDefiniePeriode' => 4, 'TypeCreneaux' => 5, 'JourCreneau' => 6, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idDefiniePeriode' => 0, 'nomDefiniePeriode' => 1, 'heuredebutDefiniePeriode' => 2, 'heurefinDefiniePeriode' => 3, 'suiviDefiniePeriode' => 4, 'typeCreneaux' => 5, 'jourCreneau' => 6, ),
+		BasePeer::TYPE_COLNAME => array (self::ID_DEFINIE_PERIODE => 0, self::NOM_DEFINIE_PERIODE => 1, self::HEUREDEBUT_DEFINIE_PERIODE => 2, self::HEUREFIN_DEFINIE_PERIODE => 3, self::SUIVI_DEFINIE_PERIODE => 4, self::TYPE_CRENEAUX => 5, self::JOUR_CRENEAU => 6, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_DEFINIE_PERIODE' => 0, 'NOM_DEFINIE_PERIODE' => 1, 'HEUREDEBUT_DEFINIE_PERIODE' => 2, 'HEUREFIN_DEFINIE_PERIODE' => 3, 'SUIVI_DEFINIE_PERIODE' => 4, 'TYPE_CRENEAUX' => 5, 'JOUR_CRENEAU' => 6, ),
+		BasePeer::TYPE_FIELDNAME => array ('id_definie_periode' => 0, 'nom_definie_periode' => 1, 'heuredebut_definie_periode' => 2, 'heurefin_definie_periode' => 3, 'suivi_definie_periode' => 4, 'type_creneaux' => 5, 'jour_creneau' => 6, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
@@ -164,7 +164,7 @@ abstract class BaseEdtCreneauPeer {
 			$criteria->addSelectColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE);
 			$criteria->addSelectColumn(EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE);
 			$criteria->addSelectColumn(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE);
-			$criteria->addSelectColumn(EdtCreneauPeer::TYPE_CRENEAU);
+			$criteria->addSelectColumn(EdtCreneauPeer::TYPE_CRENEAUX);
 			$criteria->addSelectColumn(EdtCreneauPeer::JOUR_CRENEAU);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID_DEFINIE_PERIODE');
@@ -172,7 +172,7 @@ abstract class BaseEdtCreneauPeer {
 			$criteria->addSelectColumn($alias . '.HEUREDEBUT_DEFINIE_PERIODE');
 			$criteria->addSelectColumn($alias . '.HEUREFIN_DEFINIE_PERIODE');
 			$criteria->addSelectColumn($alias . '.SUIVI_DEFINIE_PERIODE');
-			$criteria->addSelectColumn($alias . '.TYPE_CRENEAU');
+			$criteria->addSelectColumn($alias . '.TYPE_CRENEAUX');
 			$criteria->addSelectColumn($alias . '.JOUR_CRENEAU');
 		}
 	}

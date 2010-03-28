@@ -1480,7 +1480,7 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 	public function getJTraitementEnvoiElevesJoinAbsenceEleveTraitement($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JTraitementEnvoiEleveQuery::create(null, $criteria);
-		$query->joinWith('JTraitementEnvoiEleve.AbsenceEleveTraitement', $join_behavior);
+		$query->joinWith('AbsenceEleveTraitement', $join_behavior);
 
 		return $this->getJTraitementEnvoiEleves($query, $con);
 	}

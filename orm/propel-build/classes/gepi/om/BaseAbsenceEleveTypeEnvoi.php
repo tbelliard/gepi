@@ -937,7 +937,7 @@ abstract class BaseAbsenceEleveTypeEnvoi extends BaseObject  implements Persiste
 	public function getAbsenceEleveEnvoisJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveEnvoiQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveEnvoi.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getAbsenceEleveEnvois($query, $con);
 	}

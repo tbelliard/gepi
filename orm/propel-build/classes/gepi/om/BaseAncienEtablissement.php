@@ -1042,7 +1042,7 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	public function getJEleveAncienEtablissementsJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveAncienEtablissementQuery::create(null, $criteria);
-		$query->joinWith('JEleveAncienEtablissement.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getJEleveAncienEtablissements($query, $con);
 	}

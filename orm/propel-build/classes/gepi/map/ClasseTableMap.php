@@ -71,6 +71,7 @@ class ClasseTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
+    $this->addRelation('Periodes', 'Periodes', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
     $this->addRelation('JGroupesClasses', 'JGroupesClasses', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
     $this->addRelation('JEleveClasse', 'JEleveClasse', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
     $this->addRelation('JEleveProfesseurPrincipal', 'JEleveProfesseurPrincipal', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);

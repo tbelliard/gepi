@@ -1,50 +1,63 @@
 <?php
 
 /**
- * Base class that represents a row from the 'salle_cours' table.
+ * Base class that represents a row from the 'periodes' table.
  *
- * Liste des salles de classe
+ * Table regroupant les periodes de notes pour les classes
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseEdtSalle extends BaseObject  implements Persistent
+abstract class BasePeriodes extends BaseObject  implements Persistent
 {
 
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'EdtSallePeer';
+  const PEER = 'PeriodesPeer';
 
 	/**
 	 * The Peer class.
 	 * Instance provides a convenient way of calling static methods on a class
 	 * that calling code may not be able to identify.
-	 * @var        EdtSallePeer
+	 * @var        PeriodesPeer
 	 */
 	protected static $peer;
 
 	/**
-	 * The value for the id_salle field.
+	 * The value for the nom_periode field.
+	 * @var        string
+	 */
+	protected $nom_periode;
+
+	/**
+	 * The value for the num_periode field.
 	 * @var        int
 	 */
-	protected $id_salle;
+	protected $num_periode;
 
 	/**
-	 * The value for the numero_salle field.
+	 * The value for the verrouiller field.
+	 * Note: this column has a database default value of: 'O'
 	 * @var        string
 	 */
-	protected $numero_salle;
+	protected $verrouiller;
 
 	/**
-	 * The value for the nom_salle field.
+	 * The value for the id_classe field.
+	 * @var        int
+	 */
+	protected $id_classe;
+
+	/**
+	 * The value for the date_verouillage field.
 	 * @var        string
 	 */
-	protected $nom_salle;
+	protected $date_verouillage;
 
 	/**
-	 * @var        array EdtEmplacementCours[] Collection to store aggregation of EdtEmplacementCours objects.
+	 * @var        Classe
 	 */
-	protected $collEdtEmplacementCourss;
+	protected $aClasse;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -61,94 +74,231 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Get the [id_salle] column value.
-	 * cle primaire
+	 * Applies default values to this object.
+	 * This method should be called from the object's constructor (or
+	 * equivalent initialization method).
+	 * @see        __construct()
+	 */
+	public function applyDefaultValues()
+	{
+		$this->verrouiller = 'O';
+	}
+
+	/**
+	 * Initializes internal state of BasePeriodes object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
+	}
+
+	/**
+	 * Get the [nom_periode] column value.
+	 * Nom de la periode de note
+	 * @return     string
+	 */
+	public function getNomPeriode()
+	{
+		return $this->nom_periode;
+	}
+
+	/**
+	 * Get the [num_periode] column value.
+	 * identifiant numerique de la periode (1, 2 ou3)
 	 * @return     int
 	 */
-	public function getIdSalle()
+	public function getNumPeriode()
 	{
-		return $this->id_salle;
+		return $this->num_periode;
 	}
 
 	/**
-	 * Get the [numero_salle] column value.
-	 * numero de la salle defini par l'utilisateur
+	 * Get the [verrouiller] column value.
+	 * Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)
 	 * @return     string
 	 */
-	public function getNumeroSalle()
+	public function getVerrouiller()
 	{
-		return $this->numero_salle;
+		return $this->verrouiller;
 	}
 
 	/**
-	 * Get the [nom_salle] column value.
-	 * nom de la salle defini par l'utilisateur
-	 * @return     string
+	 * Get the [id_classe] column value.
+	 * identifiant numerique de la classe.
+	 * @return     int
 	 */
-	public function getNomSalle()
+	public function getIdClasse()
 	{
-		return $this->nom_salle;
+		return $this->id_classe;
 	}
 
 	/**
-	 * Set the value of [id_salle] column.
-	 * cle primaire
+	 * Get the [optionally formatted] temporal [date_verouillage] column value.
+	 * date de verouillage de la periode
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getDateVerouillage($format = '%X')
+	{
+		if ($this->date_verouillage === null) {
+			return null;
+		}
+
+
+
+		try {
+			$dt = new DateTime($this->date_verouillage);
+		} catch (Exception $x) {
+			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_verouillage, true), $x);
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
+	}
+
+	/**
+	 * Set the value of [nom_periode] column.
+	 * Nom de la periode de note
+	 * @param      string $v new value
+	 * @return     Periodes The current object (for fluent API support)
+	 */
+	public function setNomPeriode($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->nom_periode !== $v) {
+			$this->nom_periode = $v;
+			$this->modifiedColumns[] = PeriodesPeer::NOM_PERIODE;
+		}
+
+		return $this;
+	} // setNomPeriode()
+
+	/**
+	 * Set the value of [num_periode] column.
+	 * identifiant numerique de la periode (1, 2 ou3)
 	 * @param      int $v new value
-	 * @return     EdtSalle The current object (for fluent API support)
+	 * @return     Periodes The current object (for fluent API support)
 	 */
-	public function setIdSalle($v)
+	public function setNumPeriode($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->id_salle !== $v) {
-			$this->id_salle = $v;
-			$this->modifiedColumns[] = EdtSallePeer::ID_SALLE;
+		if ($this->num_periode !== $v) {
+			$this->num_periode = $v;
+			$this->modifiedColumns[] = PeriodesPeer::NUM_PERIODE;
 		}
 
 		return $this;
-	} // setIdSalle()
+	} // setNumPeriode()
 
 	/**
-	 * Set the value of [numero_salle] column.
-	 * numero de la salle defini par l'utilisateur
+	 * Set the value of [verrouiller] column.
+	 * Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)
 	 * @param      string $v new value
-	 * @return     EdtSalle The current object (for fluent API support)
+	 * @return     Periodes The current object (for fluent API support)
 	 */
-	public function setNumeroSalle($v)
+	public function setVerrouiller($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->numero_salle !== $v) {
-			$this->numero_salle = $v;
-			$this->modifiedColumns[] = EdtSallePeer::NUMERO_SALLE;
+		if ($this->verrouiller !== $v || $this->isNew()) {
+			$this->verrouiller = $v;
+			$this->modifiedColumns[] = PeriodesPeer::VERROUILLER;
 		}
 
 		return $this;
-	} // setNumeroSalle()
+	} // setVerrouiller()
 
 	/**
-	 * Set the value of [nom_salle] column.
-	 * nom de la salle defini par l'utilisateur
-	 * @param      string $v new value
-	 * @return     EdtSalle The current object (for fluent API support)
+	 * Set the value of [id_classe] column.
+	 * identifiant numerique de la classe.
+	 * @param      int $v new value
+	 * @return     Periodes The current object (for fluent API support)
 	 */
-	public function setNomSalle($v)
+	public function setIdClasse($v)
 	{
 		if ($v !== null) {
-			$v = (string) $v;
+			$v = (int) $v;
 		}
 
-		if ($this->nom_salle !== $v) {
-			$this->nom_salle = $v;
-			$this->modifiedColumns[] = EdtSallePeer::NOM_SALLE;
+		if ($this->id_classe !== $v) {
+			$this->id_classe = $v;
+			$this->modifiedColumns[] = PeriodesPeer::ID_CLASSE;
+		}
+
+		if ($this->aClasse !== null && $this->aClasse->getId() !== $v) {
+			$this->aClasse = null;
 		}
 
 		return $this;
-	} // setNomSalle()
+	} // setIdClasse()
+
+	/**
+	 * Sets the value of [date_verouillage] column to a normalized version of the date/time value specified.
+	 * date de verouillage de la periode
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     Periodes The current object (for fluent API support)
+	 */
+	public function setDateVerouillage($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->date_verouillage !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->date_verouillage !== null && $tmpDt = new DateTime($this->date_verouillage)) ? $tmpDt->format('H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->date_verouillage = ($dt ? $dt->format('H:i:s') : null);
+				$this->modifiedColumns[] = PeriodesPeer::DATE_VEROUILLAGE;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setDateVerouillage()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -160,6 +310,10 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->verrouiller !== 'O') {
+				return false;
+			}
+
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -182,9 +336,11 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	{
 		try {
 
-			$this->id_salle = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->numero_salle = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-			$this->nom_salle = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->nom_periode = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
+			$this->num_periode = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+			$this->verrouiller = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->id_classe = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+			$this->date_verouillage = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -193,10 +349,10 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 3; // 3 = EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 5; // 5 = PeriodesPeer::NUM_COLUMNS - PeriodesPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
-			throw new PropelException("Error populating EdtSalle object", $e);
+			throw new PropelException("Error populating Periodes object", $e);
 		}
 	}
 
@@ -216,6 +372,9 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
+		if ($this->aClasse !== null && $this->id_classe !== $this->aClasse->getId()) {
+			$this->aClasse = null;
+		}
 	} // ensureConsistency
 
 	/**
@@ -239,13 +398,13 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(EdtSallePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		// We don't need to alter the object instance pool; we're just modifying this instance
 		// already in the pool.
 
-		$stmt = EdtSallePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$stmt = PeriodesPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
 		$row = $stmt->fetch(PDO::FETCH_NUM);
 		$stmt->closeCursor();
 		if (!$row) {
@@ -255,8 +414,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 
 		if ($deep) {  // also de-associate any related objects?
 
-			$this->collEdtEmplacementCourss = null;
-
+			$this->aClasse = null;
 		} // if (deep)
 	}
 
@@ -276,14 +434,14 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(EdtSallePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				EdtSalleQuery::create()
+				PeriodesQuery::create()
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
@@ -318,7 +476,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(EdtSallePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
@@ -338,7 +496,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 					$this->postUpdate($con);
 				}
 				$this->postSave($con);
-				EdtSallePeer::addInstanceToPool($this);
+				PeriodesPeer::addInstanceToPool($this);
 			} else {
 				$affectedRows = 0;
 			}
@@ -367,27 +525,31 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
+			// We call the save method on the following object(s) if they
+			// were passed to this object by their coresponding set
+			// method.  This object relates to these object(s) by a
+			// foreign key reference.
+
+			if ($this->aClasse !== null) {
+				if ($this->aClasse->isModified() || $this->aClasse->isNew()) {
+					$affectedRows += $this->aClasse->save($con);
+				}
+				$this->setClasse($this->aClasse);
+			}
+
 
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
 					$criteria = $this->buildCriteria();
 					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
+					$affectedRows += 1;
 					$this->setNew(false);
 				} else {
-					$affectedRows = EdtSallePeer::doUpdate($this, $con);
+					$affectedRows += PeriodesPeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
-			}
-
-			if ($this->collEdtEmplacementCourss !== null) {
-				foreach ($this->collEdtEmplacementCourss as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
 			}
 
 			$this->alreadyInSave = false;
@@ -456,18 +618,22 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 			$failureMap = array();
 
 
-			if (($retval = EdtSallePeer::doValidate($this, $columns)) !== true) {
-				$failureMap = array_merge($failureMap, $retval);
+			// We call the validate method on the following object(s) if they
+			// were passed to this object by their coresponding set
+			// method.  This object relates to these object(s) by a
+			// foreign key reference.
+
+			if ($this->aClasse !== null) {
+				if (!$this->aClasse->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aClasse->getValidationFailures());
+				}
 			}
 
 
-				if ($this->collEdtEmplacementCourss !== null) {
-					foreach ($this->collEdtEmplacementCourss as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
+			if (($retval = PeriodesPeer::doValidate($this, $columns)) !== true) {
+				$failureMap = array_merge($failureMap, $retval);
+			}
+
 
 
 			$this->alreadyInValidation = false;
@@ -487,7 +653,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = EdtSallePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = PeriodesPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		$field = $this->getByPosition($pos);
 		return $field;
 	}
@@ -503,13 +669,19 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	{
 		switch($pos) {
 			case 0:
-				return $this->getIdSalle();
+				return $this->getNomPeriode();
 				break;
 			case 1:
-				return $this->getNumeroSalle();
+				return $this->getNumPeriode();
 				break;
 			case 2:
-				return $this->getNomSalle();
+				return $this->getVerrouiller();
+				break;
+			case 3:
+				return $this->getIdClasse();
+				break;
+			case 4:
+				return $this->getDateVerouillage();
 				break;
 			default:
 				return null;
@@ -527,17 +699,25 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
-		$keys = EdtSallePeer::getFieldNames($keyType);
+		$keys = PeriodesPeer::getFieldNames($keyType);
 		$result = array(
-			$keys[0] => $this->getIdSalle(),
-			$keys[1] => $this->getNumeroSalle(),
-			$keys[2] => $this->getNomSalle(),
+			$keys[0] => $this->getNomPeriode(),
+			$keys[1] => $this->getNumPeriode(),
+			$keys[2] => $this->getVerrouiller(),
+			$keys[3] => $this->getIdClasse(),
+			$keys[4] => $this->getDateVerouillage(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aClasse) {
+				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -553,7 +733,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = EdtSallePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = PeriodesPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		return $this->setByPosition($pos, $value);
 	}
 
@@ -569,13 +749,19 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	{
 		switch($pos) {
 			case 0:
-				$this->setIdSalle($value);
+				$this->setNomPeriode($value);
 				break;
 			case 1:
-				$this->setNumeroSalle($value);
+				$this->setNumPeriode($value);
 				break;
 			case 2:
-				$this->setNomSalle($value);
+				$this->setVerrouiller($value);
+				break;
+			case 3:
+				$this->setIdClasse($value);
+				break;
+			case 4:
+				$this->setDateVerouillage($value);
 				break;
 		} // switch()
 	}
@@ -599,11 +785,13 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 */
 	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
 	{
-		$keys = EdtSallePeer::getFieldNames($keyType);
+		$keys = PeriodesPeer::getFieldNames($keyType);
 
-		if (array_key_exists($keys[0], $arr)) $this->setIdSalle($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setNumeroSalle($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setNomSalle($arr[$keys[2]]);
+		if (array_key_exists($keys[0], $arr)) $this->setNomPeriode($arr[$keys[0]]);
+		if (array_key_exists($keys[1], $arr)) $this->setNumPeriode($arr[$keys[1]]);
+		if (array_key_exists($keys[2], $arr)) $this->setVerrouiller($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setIdClasse($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setDateVerouillage($arr[$keys[4]]);
 	}
 
 	/**
@@ -613,11 +801,13 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 */
 	public function buildCriteria()
 	{
-		$criteria = new Criteria(EdtSallePeer::DATABASE_NAME);
+		$criteria = new Criteria(PeriodesPeer::DATABASE_NAME);
 
-		if ($this->isColumnModified(EdtSallePeer::ID_SALLE)) $criteria->add(EdtSallePeer::ID_SALLE, $this->id_salle);
-		if ($this->isColumnModified(EdtSallePeer::NUMERO_SALLE)) $criteria->add(EdtSallePeer::NUMERO_SALLE, $this->numero_salle);
-		if ($this->isColumnModified(EdtSallePeer::NOM_SALLE)) $criteria->add(EdtSallePeer::NOM_SALLE, $this->nom_salle);
+		if ($this->isColumnModified(PeriodesPeer::NOM_PERIODE)) $criteria->add(PeriodesPeer::NOM_PERIODE, $this->nom_periode);
+		if ($this->isColumnModified(PeriodesPeer::NUM_PERIODE)) $criteria->add(PeriodesPeer::NUM_PERIODE, $this->num_periode);
+		if ($this->isColumnModified(PeriodesPeer::VERROUILLER)) $criteria->add(PeriodesPeer::VERROUILLER, $this->verrouiller);
+		if ($this->isColumnModified(PeriodesPeer::ID_CLASSE)) $criteria->add(PeriodesPeer::ID_CLASSE, $this->id_classe);
+		if ($this->isColumnModified(PeriodesPeer::DATE_VEROUILLAGE)) $criteria->add(PeriodesPeer::DATE_VEROUILLAGE, $this->date_verouillage);
 
 		return $criteria;
 	}
@@ -632,30 +822,40 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 */
 	public function buildPkeyCriteria()
 	{
-		$criteria = new Criteria(EdtSallePeer::DATABASE_NAME);
-		$criteria->add(EdtSallePeer::ID_SALLE, $this->id_salle);
+		$criteria = new Criteria(PeriodesPeer::DATABASE_NAME);
+		$criteria->add(PeriodesPeer::NOM_PERIODE, $this->nom_periode);
+		$criteria->add(PeriodesPeer::NUM_PERIODE, $this->num_periode);
+		$criteria->add(PeriodesPeer::ID_CLASSE, $this->id_classe);
 
 		return $criteria;
 	}
 
 	/**
-	 * Returns the primary key for this object (row).
-	 * @return     int
+	 * Returns the composite primary key for this object.
+	 * The array elements will be in same order as specified in XML.
+	 * @return     array
 	 */
 	public function getPrimaryKey()
 	{
-		return $this->getIdSalle();
+		$pks = array();
+		$pks[0] = $this->getNomPeriode();
+		$pks[1] = $this->getNumPeriode();
+		$pks[2] = $this->getIdClasse();
+		
+		return $pks;
 	}
 
 	/**
-	 * Generic method to set the primary key (id_salle column).
+	 * Set the [composite] primary key.
 	 *
-	 * @param      int $key Primary key.
+	 * @param      array $keys The elements of the composite key (order must match the order in XML file).
 	 * @return     void
 	 */
-	public function setPrimaryKey($key)
+	public function setPrimaryKey($keys)
 	{
-		$this->setIdSalle($key);
+		$this->setNomPeriode($keys[0]);
+		$this->setNumPeriode($keys[1]);
+		$this->setIdClasse($keys[2]);
 	}
 
 	/**
@@ -664,7 +864,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return null === $this->getIdSalle();
+		return (null === $this->getNomPeriode()) && (null === $this->getNumPeriode()) && (null === $this->getIdClasse());
 	}
 
 	/**
@@ -673,29 +873,17 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 * If desired, this method can also make copies of all associated (fkey referrers)
 	 * objects.
 	 *
-	 * @param      object $copyObj An object of EdtSalle (or compatible) type.
+	 * @param      object $copyObj An object of Periodes (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
 	 * @throws     PropelException
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-		$copyObj->setIdSalle($this->id_salle);
-		$copyObj->setNumeroSalle($this->numero_salle);
-		$copyObj->setNomSalle($this->nom_salle);
-
-		if ($deepCopy) {
-			// important: temporarily setNew(false) because this affects the behavior of
-			// the getter/setter methods for fkey referrer objects.
-			$copyObj->setNew(false);
-
-			foreach ($this->getEdtEmplacementCourss() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addEdtEmplacementCours($relObj->copy($deepCopy));
-				}
-			}
-
-		} // if ($deepCopy)
-
+		$copyObj->setNomPeriode($this->nom_periode);
+		$copyObj->setNumPeriode($this->num_periode);
+		$copyObj->setVerrouiller($this->verrouiller);
+		$copyObj->setIdClasse($this->id_classe);
+		$copyObj->setDateVerouillage($this->date_verouillage);
 
 		$copyObj->setNew(true);
 	}
@@ -709,7 +897,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 * objects.
 	 *
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-	 * @return     EdtSalle Clone of current object.
+	 * @return     Periodes Clone of current object.
 	 * @throws     PropelException
 	 */
 	public function copy($deepCopy = false)
@@ -728,223 +916,63 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 * same instance for all member of this class. The method could therefore
 	 * be static, but this would prevent one from overriding the behavior.
 	 *
-	 * @return     EdtSallePeer
+	 * @return     PeriodesPeer
 	 */
 	public function getPeer()
 	{
 		if (self::$peer === null) {
-			self::$peer = new EdtSallePeer();
+			self::$peer = new PeriodesPeer();
 		}
 		return self::$peer;
 	}
 
 	/**
-	 * Clears out the collEdtEmplacementCourss collection
+	 * Declares an association between this object and a Classe object.
 	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addEdtEmplacementCourss()
-	 */
-	public function clearEdtEmplacementCourss()
-	{
-		$this->collEdtEmplacementCourss = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collEdtEmplacementCourss collection.
-	 *
-	 * By default this just sets the collEdtEmplacementCourss collection to an empty array (like clearcollEdtEmplacementCourss());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initEdtEmplacementCourss()
-	{
-		$this->collEdtEmplacementCourss = new PropelObjectCollection();
-		$this->collEdtEmplacementCourss->setModel('EdtEmplacementCours');
-	}
-
-	/**
-	 * Gets an array of EdtEmplacementCours objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this EdtSalle is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
-	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
+	 * @param      Classe $v
+	 * @return     Periodes The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function getEdtEmplacementCourss($criteria = null, PropelPDO $con = null)
+	public function setClasse(Classe $v = null)
 	{
-		if(null === $this->collEdtEmplacementCourss || null !== $criteria) {
-			if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
-				// return empty collection
-				$this->initEdtEmplacementCourss();
-			} else {
-				$collEdtEmplacementCourss = EdtEmplacementCoursQuery::create(null, $criteria)
-					->filterByEdtSalle($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collEdtEmplacementCourss;
-				}
-				$this->collEdtEmplacementCourss = $collEdtEmplacementCourss;
-			}
-		}
-		return $this->collEdtEmplacementCourss;
-	}
-
-	/**
-	 * Returns the number of related EdtEmplacementCours objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related EdtEmplacementCours objects.
-	 * @throws     PropelException
-	 */
-	public function countEdtEmplacementCourss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collEdtEmplacementCourss || null !== $criteria) {
-			if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
-				return 0;
-			} else {
-				$query = EdtEmplacementCoursQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByEdtSalle($this)
-					->count($con);
-			}
+		if ($v === null) {
+			$this->setIdClasse(NULL);
 		} else {
-			return count($this->collEdtEmplacementCourss);
+			$this->setIdClasse($v->getId());
 		}
+
+		$this->aClasse = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the Classe object, it will not be re-added.
+		if ($v !== null) {
+			$v->addPeriodes($this);
+		}
+
+		return $this;
 	}
 
+
 	/**
-	 * Method called to associate a EdtEmplacementCours object to this object
-	 * through the EdtEmplacementCours foreign key attribute.
+	 * Get the associated Classe object
 	 *
-	 * @param      EdtEmplacementCours $l EdtEmplacementCours
-	 * @return     void
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     Classe The associated Classe object.
 	 * @throws     PropelException
 	 */
-	public function addEdtEmplacementCours(EdtEmplacementCours $l)
+	public function getClasse(PropelPDO $con = null)
 	{
-		if ($this->collEdtEmplacementCourss === null) {
-			$this->initEdtEmplacementCourss();
+		if ($this->aClasse === null && ($this->id_classe !== null)) {
+			$this->aClasse = ClasseQuery::create()->findPk($this->id_classe);
+			/* The following can be used additionally to
+			   guarantee the related object contains a reference
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aClasse->addPeriodess($this);
+			 */
 		}
-		if (!$this->collEdtEmplacementCourss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collEdtEmplacementCourss[]= $l;
-			$l->setEdtSalle($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this EdtSalle is new, it will return
-	 * an empty collection; or if this EdtSalle has previously
-	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in EdtSalle.
-	 */
-	public function getEdtEmplacementCourssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('Groupe', $join_behavior);
-
-		return $this->getEdtEmplacementCourss($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this EdtSalle is new, it will return
-	 * an empty collection; or if this EdtSalle has previously
-	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in EdtSalle.
-	 */
-	public function getEdtEmplacementCourssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('AidDetails', $join_behavior);
-
-		return $this->getEdtEmplacementCourss($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this EdtSalle is new, it will return
-	 * an empty collection; or if this EdtSalle has previously
-	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in EdtSalle.
-	 */
-	public function getEdtEmplacementCourssJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtCreneau', $join_behavior);
-
-		return $this->getEdtEmplacementCourss($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this EdtSalle is new, it will return
-	 * an empty collection; or if this EdtSalle has previously
-	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in EdtSalle.
-	 */
-	public function getEdtEmplacementCourssJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtCalendrierPeriode', $join_behavior);
-
-		return $this->getEdtEmplacementCourss($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this EdtSalle is new, it will return
-	 * an empty collection; or if this EdtSalle has previously
-	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in EdtSalle.
-	 */
-	public function getEdtEmplacementCourssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
-
-		return $this->getEdtEmplacementCourss($query, $con);
+		return $this->aClasse;
 	}
 
 	/**
@@ -952,10 +980,13 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 */
 	public function clear()
 	{
-		$this->id_salle = null;
-		$this->numero_salle = null;
-		$this->nom_salle = null;
+		$this->nom_periode = null;
+		$this->num_periode = null;
+		$this->verrouiller = null;
+		$this->id_classe = null;
+		$this->date_verouillage = null;
 		$this->clearAllReferences();
+		$this->applyDefaultValues();
 		$this->setNew(true);
 	}
 
@@ -971,14 +1002,9 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
-			if ($this->collEdtEmplacementCourss) {
-				foreach ((array) $this->collEdtEmplacementCourss as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
 		} // if ($deep)
 
-		$this->collEdtEmplacementCourss = null;
+		$this->aClasse = null;
 	}
 
 	/**
@@ -992,4 +1018,4 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
-} // BaseEdtSalle
+} // BasePeriodes

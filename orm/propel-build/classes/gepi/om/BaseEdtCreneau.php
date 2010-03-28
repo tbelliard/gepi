@@ -55,11 +55,11 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	protected $suivi_definie_periode;
 
 	/**
-	 * The value for the type_creneau field.
+	 * The value for the type_creneaux field.
 	 * Note: this column has a database default value of: 'cours'
 	 * @var        string
 	 */
-	protected $type_creneau;
+	protected $type_creneaux;
 
 	/**
 	 * The value for the jour_creneau field.
@@ -100,7 +100,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	public function applyDefaultValues()
 	{
 		$this->suivi_definie_periode = 9;
-		$this->type_creneau = 'cours';
+		$this->type_creneaux = 'cours';
 	}
 
 	/**
@@ -210,13 +210,13 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [type_creneau] column value.
+	 * Get the [type_creneaux] column value.
 	 * types possibles : cours, pause, repas, vie_scolaire
 	 * @return     string
 	 */
-	public function getTypeCreneau()
+	public function getTypeCreneaux()
 	{
-		return $this->type_creneau;
+		return $this->type_creneaux;
 	}
 
 	/**
@@ -388,24 +388,24 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	} // setSuiviDefiniePeriode()
 
 	/**
-	 * Set the value of [type_creneau] column.
+	 * Set the value of [type_creneaux] column.
 	 * types possibles : cours, pause, repas, vie_scolaire
 	 * @param      string $v new value
 	 * @return     EdtCreneau The current object (for fluent API support)
 	 */
-	public function setTypeCreneau($v)
+	public function setTypeCreneaux($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->type_creneau !== $v || $this->isNew()) {
-			$this->type_creneau = $v;
-			$this->modifiedColumns[] = EdtCreneauPeer::TYPE_CRENEAU;
+		if ($this->type_creneaux !== $v || $this->isNew()) {
+			$this->type_creneaux = $v;
+			$this->modifiedColumns[] = EdtCreneauPeer::TYPE_CRENEAUX;
 		}
 
 		return $this;
-	} // setTypeCreneau()
+	} // setTypeCreneaux()
 
 	/**
 	 * Set the value of [jour_creneau] column.
@@ -441,7 +441,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 				return false;
 			}
 
-			if ($this->type_creneau !== 'cours') {
+			if ($this->type_creneaux !== 'cours') {
 				return false;
 			}
 
@@ -472,7 +472,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 			$this->heuredebut_definie_periode = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
 			$this->heurefin_definie_periode = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
 			$this->suivi_definie_periode = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-			$this->type_creneau = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->type_creneaux = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
 			$this->jour_creneau = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
 			$this->resetModified();
 
@@ -833,7 +833,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 				return $this->getSuiviDefiniePeriode();
 				break;
 			case 5:
-				return $this->getTypeCreneau();
+				return $this->getTypeCreneaux();
 				break;
 			case 6:
 				return $this->getJourCreneau();
@@ -866,7 +866,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 			$keys[2] => $this->getHeuredebutDefiniePeriode(),
 			$keys[3] => $this->getHeurefinDefiniePeriode(),
 			$keys[4] => $this->getSuiviDefiniePeriode(),
-			$keys[5] => $this->getTypeCreneau(),
+			$keys[5] => $this->getTypeCreneaux(),
 			$keys[6] => $this->getJourCreneau(),
 		);
 		return $result;
@@ -915,7 +915,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 				$this->setSuiviDefiniePeriode($value);
 				break;
 			case 5:
-				$this->setTypeCreneau($value);
+				$this->setTypeCreneaux($value);
 				break;
 			case 6:
 				$this->setJourCreneau($value);
@@ -949,7 +949,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 		if (array_key_exists($keys[2], $arr)) $this->setHeuredebutDefiniePeriode($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setHeurefinDefiniePeriode($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setSuiviDefiniePeriode($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setTypeCreneau($arr[$keys[5]]);
+		if (array_key_exists($keys[5], $arr)) $this->setTypeCreneaux($arr[$keys[5]]);
 		if (array_key_exists($keys[6], $arr)) $this->setJourCreneau($arr[$keys[6]]);
 	}
 
@@ -967,7 +967,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 		if ($this->isColumnModified(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)) $criteria->add(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE, $this->heuredebut_definie_periode);
 		if ($this->isColumnModified(EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE)) $criteria->add(EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE, $this->heurefin_definie_periode);
 		if ($this->isColumnModified(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE)) $criteria->add(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE, $this->suivi_definie_periode);
-		if ($this->isColumnModified(EdtCreneauPeer::TYPE_CRENEAU)) $criteria->add(EdtCreneauPeer::TYPE_CRENEAU, $this->type_creneau);
+		if ($this->isColumnModified(EdtCreneauPeer::TYPE_CRENEAUX)) $criteria->add(EdtCreneauPeer::TYPE_CRENEAUX, $this->type_creneaux);
 		if ($this->isColumnModified(EdtCreneauPeer::JOUR_CRENEAU)) $criteria->add(EdtCreneauPeer::JOUR_CRENEAU, $this->jour_creneau);
 
 		return $criteria;
@@ -1034,7 +1034,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 		$copyObj->setHeuredebutDefiniePeriode($this->heuredebut_definie_periode);
 		$copyObj->setHeurefinDefiniePeriode($this->heurefin_definie_periode);
 		$copyObj->setSuiviDefiniePeriode($this->suivi_definie_periode);
-		$copyObj->setTypeCreneau($this->type_creneau);
+		$copyObj->setTypeCreneaux($this->type_creneaux);
 		$copyObj->setJourCreneau($this->jour_creneau);
 
 		if ($deepCopy) {
@@ -1223,7 +1223,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	public function getAbsenceEleveSaisiesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
@@ -1243,7 +1243,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	public function getAbsenceEleveSaisiesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
@@ -1263,7 +1263,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	public function getAbsenceEleveSaisiesJoinEdtEmplacementCours($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.EdtEmplacementCours', $join_behavior);
+		$query->joinWith('EdtEmplacementCours', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
@@ -1392,7 +1392,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -1412,7 +1412,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.AidDetails', $join_behavior);
+		$query->joinWith('AidDetails', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -1432,7 +1432,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.EdtSalle', $join_behavior);
+		$query->joinWith('EdtSalle', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -1452,7 +1452,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.EdtCalendrierPeriode', $join_behavior);
+		$query->joinWith('EdtCalendrierPeriode', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -1472,7 +1472,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -1487,7 +1487,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 		$this->heuredebut_definie_periode = null;
 		$this->heurefin_definie_periode = null;
 		$this->suivi_definie_periode = null;
-		$this->type_creneau = null;
+		$this->type_creneaux = null;
 		$this->jour_creneau = null;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();

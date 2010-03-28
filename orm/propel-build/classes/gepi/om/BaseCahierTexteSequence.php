@@ -928,7 +928,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	public function getCahierTexteCompteRendusJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteCompteRenduQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteCompteRendu.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getCahierTexteCompteRendus($query, $con);
 	}
@@ -948,7 +948,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	public function getCahierTexteCompteRendusJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteCompteRenduQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteCompteRendu.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getCahierTexteCompteRendus($query, $con);
 	}
@@ -1077,7 +1077,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	public function getCahierTexteTravailAFairesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteTravailAFaire.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getCahierTexteTravailAFaires($query, $con);
 	}
@@ -1097,7 +1097,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	public function getCahierTexteTravailAFairesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteTravailAFaire.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getCahierTexteTravailAFaires($query, $con);
 	}
@@ -1226,7 +1226,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	public function getCahierTexteNoticePriveesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteNoticePrivee.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getCahierTexteNoticePrivees($query, $con);
 	}
@@ -1246,7 +1246,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	public function getCahierTexteNoticePriveesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteNoticePrivee.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getCahierTexteNoticePrivees($query, $con);
 	}

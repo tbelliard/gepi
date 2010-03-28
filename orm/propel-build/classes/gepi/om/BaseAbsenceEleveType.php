@@ -42,10 +42,10 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	protected $justification_exigible;
 
 	/**
-	 * The value for the responabilite_etablissement field.
+	 * The value for the responsabilite_etablissement field.
 	 * @var        boolean
 	 */
-	protected $responabilite_etablissement;
+	protected $responsabilite_etablissement;
 
 	/**
 	 * The value for the type_saisie field.
@@ -128,18 +128,18 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [responabilite_etablissement] column value.
+	 * Get the [responsabilite_etablissement] column value.
 	 * L'eleve est encore sous la responsabilite de l'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l'eleve est encore sous la responsabilité de l'etablissement
 	 * @return     boolean
 	 */
-	public function getResponabiliteEtablissement()
+	public function getResponsabiliteEtablissement()
 	{
-		return $this->responabilite_etablissement;
+		return $this->responsabilite_etablissement;
 	}
 
 	/**
 	 * Get the [type_saisie] column value.
-	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE
+	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE
 	 * @return     string
 	 */
 	public function getTypeSaisie()
@@ -228,28 +228,28 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	} // setJustificationExigible()
 
 	/**
-	 * Set the value of [responabilite_etablissement] column.
+	 * Set the value of [responsabilite_etablissement] column.
 	 * L'eleve est encore sous la responsabilite de l'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l'eleve est encore sous la responsabilité de l'etablissement
 	 * @param      boolean $v new value
 	 * @return     AbsenceEleveType The current object (for fluent API support)
 	 */
-	public function setResponabiliteEtablissement($v)
+	public function setResponsabiliteEtablissement($v)
 	{
 		if ($v !== null) {
 			$v = (boolean) $v;
 		}
 
-		if ($this->responabilite_etablissement !== $v) {
-			$this->responabilite_etablissement = $v;
-			$this->modifiedColumns[] = AbsenceEleveTypePeer::RESPONABILITE_ETABLISSEMENT;
+		if ($this->responsabilite_etablissement !== $v) {
+			$this->responsabilite_etablissement = $v;
+			$this->modifiedColumns[] = AbsenceEleveTypePeer::RESPONSABILITE_ETABLISSEMENT;
 		}
 
 		return $this;
-	} // setResponabiliteEtablissement()
+	} // setResponsabiliteEtablissement()
 
 	/**
 	 * Set the value of [type_saisie] column.
-	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE
+	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE
 	 * @param      string $v new value
 	 * @return     AbsenceEleveType The current object (for fluent API support)
 	 */
@@ -342,7 +342,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->nom = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->justification_exigible = ($row[$startcol + 2] !== null) ? (boolean) $row[$startcol + 2] : null;
-			$this->responabilite_etablissement = ($row[$startcol + 3] !== null) ? (boolean) $row[$startcol + 3] : null;
+			$this->responsabilite_etablissement = ($row[$startcol + 3] !== null) ? (boolean) $row[$startcol + 3] : null;
 			$this->type_saisie = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
 			$this->commentaire = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
 			$this->sortable_rank = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
@@ -711,7 +711,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 				return $this->getJustificationExigible();
 				break;
 			case 3:
-				return $this->getResponabiliteEtablissement();
+				return $this->getResponsabiliteEtablissement();
 				break;
 			case 4:
 				return $this->getTypeSaisie();
@@ -748,7 +748,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getNom(),
 			$keys[2] => $this->getJustificationExigible(),
-			$keys[3] => $this->getResponabiliteEtablissement(),
+			$keys[3] => $this->getResponsabiliteEtablissement(),
 			$keys[4] => $this->getTypeSaisie(),
 			$keys[5] => $this->getCommentaire(),
 			$keys[6] => $this->getSortableRank(),
@@ -793,7 +793,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 				$this->setJustificationExigible($value);
 				break;
 			case 3:
-				$this->setResponabiliteEtablissement($value);
+				$this->setResponsabiliteEtablissement($value);
 				break;
 			case 4:
 				$this->setTypeSaisie($value);
@@ -831,7 +831,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setNom($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setJustificationExigible($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setResponabiliteEtablissement($arr[$keys[3]]);
+		if (array_key_exists($keys[3], $arr)) $this->setResponsabiliteEtablissement($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setTypeSaisie($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setCommentaire($arr[$keys[5]]);
 		if (array_key_exists($keys[6], $arr)) $this->setSortableRank($arr[$keys[6]]);
@@ -849,7 +849,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		if ($this->isColumnModified(AbsenceEleveTypePeer::ID)) $criteria->add(AbsenceEleveTypePeer::ID, $this->id);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::NOM)) $criteria->add(AbsenceEleveTypePeer::NOM, $this->nom);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::JUSTIFICATION_EXIGIBLE)) $criteria->add(AbsenceEleveTypePeer::JUSTIFICATION_EXIGIBLE, $this->justification_exigible);
-		if ($this->isColumnModified(AbsenceEleveTypePeer::RESPONABILITE_ETABLISSEMENT)) $criteria->add(AbsenceEleveTypePeer::RESPONABILITE_ETABLISSEMENT, $this->responabilite_etablissement);
+		if ($this->isColumnModified(AbsenceEleveTypePeer::RESPONSABILITE_ETABLISSEMENT)) $criteria->add(AbsenceEleveTypePeer::RESPONSABILITE_ETABLISSEMENT, $this->responsabilite_etablissement);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::TYPE_SAISIE)) $criteria->add(AbsenceEleveTypePeer::TYPE_SAISIE, $this->type_saisie);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::COMMENTAIRE)) $criteria->add(AbsenceEleveTypePeer::COMMENTAIRE, $this->commentaire);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::SORTABLE_RANK)) $criteria->add(AbsenceEleveTypePeer::SORTABLE_RANK, $this->sortable_rank);
@@ -916,7 +916,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	{
 		$copyObj->setNom($this->nom);
 		$copyObj->setJustificationExigible($this->justification_exigible);
-		$copyObj->setResponabiliteEtablissement($this->responabilite_etablissement);
+		$copyObj->setResponsabiliteEtablissement($this->responsabilite_etablissement);
 		$copyObj->setTypeSaisie($this->type_saisie);
 		$copyObj->setCommentaire($this->commentaire);
 		$copyObj->setSortableRank($this->sortable_rank);
@@ -1216,7 +1216,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	public function getAbsenceEleveTraitementsJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -1236,7 +1236,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveMotif($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveMotif', $join_behavior);
+		$query->joinWith('AbsenceEleveMotif', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -1256,7 +1256,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveJustification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveJustification', $join_behavior);
+		$query->joinWith('AbsenceEleveJustification', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -1276,7 +1276,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveAction($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveAction', $join_behavior);
+		$query->joinWith('AbsenceEleveAction', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -1289,7 +1289,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		$this->id = null;
 		$this->nom = null;
 		$this->justification_exigible = null;
-		$this->responabilite_etablissement = null;
+		$this->responsabilite_etablissement = null;
 		$this->type_saisie = null;
 		$this->commentaire = null;
 		$this->sortable_rank = null;

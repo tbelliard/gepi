@@ -1125,7 +1125,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getJGroupesProfesseurssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JGroupesProfesseursQuery::create(null, $criteria);
-		$query->joinWith('JGroupesProfesseurs.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getJGroupesProfesseurss($query, $con);
 	}
@@ -1254,7 +1254,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getJGroupesClassessJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JGroupesClassesQuery::create(null, $criteria);
-		$query->joinWith('JGroupesClasses.Classe', $join_behavior);
+		$query->joinWith('Classe', $join_behavior);
 
 		return $this->getJGroupesClassess($query, $con);
 	}
@@ -1274,7 +1274,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getJGroupesClassessJoinCategorieMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JGroupesClassesQuery::create(null, $criteria);
-		$query->joinWith('JGroupesClasses.CategorieMatiere', $join_behavior);
+		$query->joinWith('CategorieMatiere', $join_behavior);
 
 		return $this->getJGroupesClassess($query, $con);
 	}
@@ -1403,7 +1403,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getCahierTexteCompteRendusJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteCompteRenduQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteCompteRendu.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getCahierTexteCompteRendus($query, $con);
 	}
@@ -1423,7 +1423,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getCahierTexteCompteRendusJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteCompteRenduQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteCompteRendu.CahierTexteSequence', $join_behavior);
+		$query->joinWith('CahierTexteSequence', $join_behavior);
 
 		return $this->getCahierTexteCompteRendus($query, $con);
 	}
@@ -1552,7 +1552,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getCahierTexteTravailAFairesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteTravailAFaire.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getCahierTexteTravailAFaires($query, $con);
 	}
@@ -1572,7 +1572,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getCahierTexteTravailAFairesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteTravailAFaire.CahierTexteSequence', $join_behavior);
+		$query->joinWith('CahierTexteSequence', $join_behavior);
 
 		return $this->getCahierTexteTravailAFaires($query, $con);
 	}
@@ -1701,7 +1701,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getCahierTexteNoticePriveesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteNoticePrivee.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getCahierTexteNoticePrivees($query, $con);
 	}
@@ -1721,7 +1721,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getCahierTexteNoticePriveesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteNoticePrivee.CahierTexteSequence', $join_behavior);
+		$query->joinWith('CahierTexteSequence', $join_behavior);
 
 		return $this->getCahierTexteNoticePrivees($query, $con);
 	}
@@ -1850,7 +1850,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getJEleveGroupesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveGroupeQuery::create(null, $criteria);
-		$query->joinWith('JEleveGroupe.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getJEleveGroupes($query, $con);
 	}
@@ -1979,7 +1979,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getCreditEctssJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CreditEctsQuery::create(null, $criteria);
-		$query->joinWith('CreditEcts.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getCreditEctss($query, $con);
 	}
@@ -2108,7 +2108,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.AidDetails', $join_behavior);
+		$query->joinWith('AidDetails', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -2128,7 +2128,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.EdtSalle', $join_behavior);
+		$query->joinWith('EdtSalle', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -2148,7 +2148,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.EdtCreneau', $join_behavior);
+		$query->joinWith('EdtCreneau', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -2168,7 +2168,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.EdtCalendrierPeriode', $join_behavior);
+		$query->joinWith('EdtCalendrierPeriode', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -2188,7 +2188,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}

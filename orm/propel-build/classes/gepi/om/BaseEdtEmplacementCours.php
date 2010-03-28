@@ -31,19 +31,19 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * The value for the id_groupe field.
-	 * @var        int
+	 * @var        string
 	 */
 	protected $id_groupe;
 
 	/**
 	 * The value for the id_aid field.
-	 * @var        int
+	 * @var        string
 	 */
 	protected $id_aid;
 
 	/**
 	 * The value for the id_salle field.
-	 * @var        int
+	 * @var        string
 	 */
 	protected $id_salle;
 
@@ -156,8 +156,8 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [id_groupe] column value.
-	 * id du groupe d'enseignement concerne - NULL sinon
-	 * @return     int
+	 * id du groupe d'enseignement concerne - '' sinon
+	 * @return     string
 	 */
 	public function getIdGroupe()
 	{
@@ -166,8 +166,8 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [id_aid] column value.
-	 * id de l'aid concerne - NULL sinon
-	 * @return     int
+	 * id de l'aid concerne - '' sinon
+	 * @return     string
 	 */
 	public function getIdAid()
 	{
@@ -177,7 +177,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	/**
 	 * Get the [id_salle] column value.
 	 * id de la salle concernee
-	 * @return     int
+	 * @return     string
 	 */
 	public function getIdSalle()
 	{
@@ -286,14 +286,14 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [id_groupe] column.
-	 * id du groupe d'enseignement concerne - NULL sinon
-	 * @param      int $v new value
+	 * id du groupe d'enseignement concerne - '' sinon
+	 * @param      string $v new value
 	 * @return     EdtEmplacementCours The current object (for fluent API support)
 	 */
 	public function setIdGroupe($v)
 	{
 		if ($v !== null) {
-			$v = (int) $v;
+			$v = (string) $v;
 		}
 
 		if ($this->id_groupe !== $v) {
@@ -310,14 +310,14 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [id_aid] column.
-	 * id de l'aid concerne - NULL sinon
-	 * @param      int $v new value
+	 * id de l'aid concerne - '' sinon
+	 * @param      string $v new value
 	 * @return     EdtEmplacementCours The current object (for fluent API support)
 	 */
 	public function setIdAid($v)
 	{
 		if ($v !== null) {
-			$v = (int) $v;
+			$v = (string) $v;
 		}
 
 		if ($this->id_aid !== $v) {
@@ -335,13 +335,13 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	/**
 	 * Set the value of [id_salle] column.
 	 * id de la salle concernee
-	 * @param      int $v new value
+	 * @param      string $v new value
 	 * @return     EdtEmplacementCours The current object (for fluent API support)
 	 */
 	public function setIdSalle($v)
 	{
 		if ($v !== null) {
-			$v = (int) $v;
+			$v = (string) $v;
 		}
 
 		if ($this->id_salle !== $v) {
@@ -561,9 +561,9 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		try {
 
 			$this->id_cours = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->id_groupe = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
-			$this->id_aid = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-			$this->id_salle = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+			$this->id_groupe = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+			$this->id_aid = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->id_salle = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
 			$this->jour_semaine = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
 			$this->id_definie_periode = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
 			$this->duree = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
@@ -1385,7 +1385,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function getGroupe(PropelPDO $con = null)
 	{
-		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
+		if ($this->aGroupe === null && (($this->id_groupe !== "" && $this->id_groupe !== null))) {
 			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
@@ -1434,7 +1434,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function getAidDetails(PropelPDO $con = null)
 	{
-		if ($this->aAidDetails === null && ($this->id_aid !== null)) {
+		if ($this->aAidDetails === null && (($this->id_aid !== "" && $this->id_aid !== null))) {
 			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
@@ -1483,7 +1483,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function getEdtSalle(PropelPDO $con = null)
 	{
-		if ($this->aEdtSalle === null && ($this->id_salle !== null)) {
+		if ($this->aEdtSalle === null && (($this->id_salle !== "" && $this->id_salle !== null))) {
 			$this->aEdtSalle = EdtSalleQuery::create()->findPk($this->id_salle);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
@@ -1767,7 +1767,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getAbsenceEleveSaisiesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
@@ -1787,7 +1787,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getAbsenceEleveSaisiesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
@@ -1807,7 +1807,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getAbsenceEleveSaisiesJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.EdtCreneau', $join_behavior);
+		$query->joinWith('EdtCreneau', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}

@@ -1764,7 +1764,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function getJTraitementSaisieElevesJoinAbsenceEleveSaisie($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JTraitementSaisieEleveQuery::create(null, $criteria);
-		$query->joinWith('JTraitementSaisieEleve.AbsenceEleveSaisie', $join_behavior);
+		$query->joinWith('AbsenceEleveSaisie', $join_behavior);
 
 		return $this->getJTraitementSaisieEleves($query, $con);
 	}
@@ -1893,7 +1893,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function getJTraitementEnvoiElevesJoinAbsenceEleveEnvoi($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JTraitementEnvoiEleveQuery::create(null, $criteria);
-		$query->joinWith('JTraitementEnvoiEleve.AbsenceEleveEnvoi', $join_behavior);
+		$query->joinWith('AbsenceEleveEnvoi', $join_behavior);
 
 		return $this->getJTraitementEnvoiEleves($query, $con);
 	}

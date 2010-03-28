@@ -1283,7 +1283,7 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	public function getResponsableInformationsJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = ResponsableInformationQuery::create(null, $criteria);
-		$query->joinWith('ResponsableInformation.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getResponsableInformations($query, $con);
 	}

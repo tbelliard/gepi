@@ -39,8 +39,8 @@ abstract class BaseAbsenceEleveTypePeer {
 	/** the column name for the JUSTIFICATION_EXIGIBLE field */
 	const JUSTIFICATION_EXIGIBLE = 'a_types.JUSTIFICATION_EXIGIBLE';
 
-	/** the column name for the RESPONABILITE_ETABLISSEMENT field */
-	const RESPONABILITE_ETABLISSEMENT = 'a_types.RESPONABILITE_ETABLISSEMENT';
+	/** the column name for the RESPONSABILITE_ETABLISSEMENT field */
+	const RESPONSABILITE_ETABLISSEMENT = 'a_types.RESPONSABILITE_ETABLISSEMENT';
 
 	/** the column name for the TYPE_SAISIE field */
 	const TYPE_SAISIE = 'a_types.TYPE_SAISIE';
@@ -74,11 +74,11 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'JustificationExigible', 'ResponabiliteEtablissement', 'TypeSaisie', 'Commentaire', 'SortableRank', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'justificationExigible', 'responabiliteEtablissement', 'typeSaisie', 'commentaire', 'sortableRank', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::JUSTIFICATION_EXIGIBLE, self::RESPONABILITE_ETABLISSEMENT, self::TYPE_SAISIE, self::COMMENTAIRE, self::SORTABLE_RANK, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'JUSTIFICATION_EXIGIBLE', 'RESPONABILITE_ETABLISSEMENT', 'TYPE_SAISIE', 'COMMENTAIRE', 'SORTABLE_RANK', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'justification_exigible', 'responabilite_etablissement', 'type_saisie', 'commentaire', 'sortable_rank', ),
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'JustificationExigible', 'ResponsabiliteEtablissement', 'TypeSaisie', 'Commentaire', 'SortableRank', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'justificationExigible', 'responsabiliteEtablissement', 'typeSaisie', 'commentaire', 'sortableRank', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::JUSTIFICATION_EXIGIBLE, self::RESPONSABILITE_ETABLISSEMENT, self::TYPE_SAISIE, self::COMMENTAIRE, self::SORTABLE_RANK, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'JUSTIFICATION_EXIGIBLE', 'RESPONSABILITE_ETABLISSEMENT', 'TYPE_SAISIE', 'COMMENTAIRE', 'SORTABLE_RANK', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'justification_exigible', 'responsabilite_etablissement', 'type_saisie', 'commentaire', 'sortable_rank', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
@@ -89,11 +89,11 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'JustificationExigible' => 2, 'ResponabiliteEtablissement' => 3, 'TypeSaisie' => 4, 'Commentaire' => 5, 'SortableRank' => 6, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'justificationExigible' => 2, 'responabiliteEtablissement' => 3, 'typeSaisie' => 4, 'commentaire' => 5, 'sortableRank' => 6, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::JUSTIFICATION_EXIGIBLE => 2, self::RESPONABILITE_ETABLISSEMENT => 3, self::TYPE_SAISIE => 4, self::COMMENTAIRE => 5, self::SORTABLE_RANK => 6, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'JUSTIFICATION_EXIGIBLE' => 2, 'RESPONABILITE_ETABLISSEMENT' => 3, 'TYPE_SAISIE' => 4, 'COMMENTAIRE' => 5, 'SORTABLE_RANK' => 6, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'justification_exigible' => 2, 'responabilite_etablissement' => 3, 'type_saisie' => 4, 'commentaire' => 5, 'sortable_rank' => 6, ),
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'JustificationExigible' => 2, 'ResponsabiliteEtablissement' => 3, 'TypeSaisie' => 4, 'Commentaire' => 5, 'SortableRank' => 6, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'justificationExigible' => 2, 'responsabiliteEtablissement' => 3, 'typeSaisie' => 4, 'commentaire' => 5, 'sortableRank' => 6, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::JUSTIFICATION_EXIGIBLE => 2, self::RESPONSABILITE_ETABLISSEMENT => 3, self::TYPE_SAISIE => 4, self::COMMENTAIRE => 5, self::SORTABLE_RANK => 6, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'JUSTIFICATION_EXIGIBLE' => 2, 'RESPONSABILITE_ETABLISSEMENT' => 3, 'TYPE_SAISIE' => 4, 'COMMENTAIRE' => 5, 'SORTABLE_RANK' => 6, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'justification_exigible' => 2, 'responsabilite_etablissement' => 3, 'type_saisie' => 4, 'commentaire' => 5, 'sortable_rank' => 6, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
@@ -169,7 +169,7 @@ abstract class BaseAbsenceEleveTypePeer {
 			$criteria->addSelectColumn(AbsenceEleveTypePeer::ID);
 			$criteria->addSelectColumn(AbsenceEleveTypePeer::NOM);
 			$criteria->addSelectColumn(AbsenceEleveTypePeer::JUSTIFICATION_EXIGIBLE);
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::RESPONABILITE_ETABLISSEMENT);
+			$criteria->addSelectColumn(AbsenceEleveTypePeer::RESPONSABILITE_ETABLISSEMENT);
 			$criteria->addSelectColumn(AbsenceEleveTypePeer::TYPE_SAISIE);
 			$criteria->addSelectColumn(AbsenceEleveTypePeer::COMMENTAIRE);
 			$criteria->addSelectColumn(AbsenceEleveTypePeer::SORTABLE_RANK);
@@ -177,7 +177,7 @@ abstract class BaseAbsenceEleveTypePeer {
 			$criteria->addSelectColumn($alias . '.ID');
 			$criteria->addSelectColumn($alias . '.NOM');
 			$criteria->addSelectColumn($alias . '.JUSTIFICATION_EXIGIBLE');
-			$criteria->addSelectColumn($alias . '.RESPONABILITE_ETABLISSEMENT');
+			$criteria->addSelectColumn($alias . '.RESPONSABILITE_ETABLISSEMENT');
 			$criteria->addSelectColumn($alias . '.TYPE_SAISIE');
 			$criteria->addSelectColumn($alias . '.COMMENTAIRE');
 			$criteria->addSelectColumn($alias . '.SORTABLE_RANK');

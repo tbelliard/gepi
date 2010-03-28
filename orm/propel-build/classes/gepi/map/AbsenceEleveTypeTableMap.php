@@ -39,7 +39,7 @@ class AbsenceEleveTypeTableMap extends TableMap {
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
 		$this->addColumn('NOM', 'Nom', 'VARCHAR', true, 250, null);
 		$this->addColumn('JUSTIFICATION_EXIGIBLE', 'JustificationExigible', 'BOOLEAN', false, null, null);
-		$this->addColumn('RESPONABILITE_ETABLISSEMENT', 'ResponabiliteEtablissement', 'BOOLEAN', false, null, null);
+		$this->addColumn('RESPONSABILITE_ETABLISSEMENT', 'ResponsabiliteEtablissement', 'BOOLEAN', false, null, null);
 		$this->addColumn('TYPE_SAISIE', 'TypeSaisie', 'VARCHAR', true, 50, null);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('SORTABLE_RANK', 'SortableRank', 'INTEGER', false, null, null);

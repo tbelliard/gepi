@@ -2081,7 +2081,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	public function getJAidUtilisateursProfessionnelssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
-		$query->joinWith('JAidUtilisateursProfessionnels.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getJAidUtilisateursProfessionnelss($query, $con);
 	}
@@ -2101,7 +2101,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	public function getJAidUtilisateursProfessionnelssJoinAidConfiguration($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
-		$query->joinWith('JAidUtilisateursProfessionnels.AidConfiguration', $join_behavior);
+		$query->joinWith('AidConfiguration', $join_behavior);
 
 		return $this->getJAidUtilisateursProfessionnelss($query, $con);
 	}
@@ -2230,7 +2230,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	public function getJAidElevessJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidElevesQuery::create(null, $criteria);
-		$query->joinWith('JAidEleves.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getJAidElevess($query, $con);
 	}
@@ -2250,7 +2250,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	public function getJAidElevessJoinAidConfiguration($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidElevesQuery::create(null, $criteria);
-		$query->joinWith('JAidEleves.AidConfiguration', $join_behavior);
+		$query->joinWith('AidConfiguration', $join_behavior);
 
 		return $this->getJAidElevess($query, $con);
 	}
@@ -2379,7 +2379,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -2399,7 +2399,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.EdtSalle', $join_behavior);
+		$query->joinWith('EdtSalle', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -2419,7 +2419,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.EdtCreneau', $join_behavior);
+		$query->joinWith('EdtCreneau', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -2439,7 +2439,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.EdtCalendrierPeriode', $join_behavior);
+		$query->joinWith('EdtCalendrierPeriode', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -2459,7 +2459,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	public function getEdtEmplacementCourssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}

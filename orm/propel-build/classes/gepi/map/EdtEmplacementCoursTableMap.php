@@ -37,9 +37,9 @@ class EdtEmplacementCoursTableMap extends TableMap {
 		$this->setUseIdGenerator(false);
 		// columns
 		$this->addPrimaryKey('ID_COURS', 'IdCours', 'INTEGER', true, 3, null);
-		$this->addForeignKey('ID_GROUPE', 'IdGroupe', 'INTEGER', 'groupes', 'ID', false, 10, null);
-		$this->addForeignKey('ID_AID', 'IdAid', 'INTEGER', 'aid', 'ID', false, 10, null);
-		$this->addForeignKey('ID_SALLE', 'IdSalle', 'INTEGER', 'salle_cours', 'ID_SALLE', false, 10, null);
+		$this->addForeignKey('ID_GROUPE', 'IdGroupe', 'CHAR', 'groupes', 'ID', false, 10, null);
+		$this->addForeignKey('ID_AID', 'IdAid', 'CHAR', 'aid', 'ID', false, 10, null);
+		$this->addForeignKey('ID_SALLE', 'IdSalle', 'CHAR', 'salle_cours', 'ID_SALLE', false, 10, null);
 		$this->addColumn('JOUR_SEMAINE', 'JourSemaine', 'VARCHAR', true, 10, null);
 		$this->addForeignKey('ID_DEFINIE_PERIODE', 'IdDefiniePeriode', 'VARCHAR', 'edt_creneaux', 'ID_DEFINIE_PERIODE', true, 3, null);
 		$this->addColumn('DUREE', 'Duree', 'VARCHAR', true, 10, null);

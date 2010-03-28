@@ -66,9 +66,9 @@
  *
  * @method     EdtEmplacementCours findOne(PropelPDO $con = null) Return the first EdtEmplacementCours matching the query
  * @method     EdtEmplacementCours findOneByIdCours(int $id_cours) Return the first EdtEmplacementCours filtered by the id_cours column
- * @method     EdtEmplacementCours findOneByIdGroupe(int $id_groupe) Return the first EdtEmplacementCours filtered by the id_groupe column
- * @method     EdtEmplacementCours findOneByIdAid(int $id_aid) Return the first EdtEmplacementCours filtered by the id_aid column
- * @method     EdtEmplacementCours findOneByIdSalle(int $id_salle) Return the first EdtEmplacementCours filtered by the id_salle column
+ * @method     EdtEmplacementCours findOneByIdGroupe(string $id_groupe) Return the first EdtEmplacementCours filtered by the id_groupe column
+ * @method     EdtEmplacementCours findOneByIdAid(string $id_aid) Return the first EdtEmplacementCours filtered by the id_aid column
+ * @method     EdtEmplacementCours findOneByIdSalle(string $id_salle) Return the first EdtEmplacementCours filtered by the id_salle column
  * @method     EdtEmplacementCours findOneByJourSemaine(string $jour_semaine) Return the first EdtEmplacementCours filtered by the jour_semaine column
  * @method     EdtEmplacementCours findOneByIdDefiniePeriode(string $id_definie_periode) Return the first EdtEmplacementCours filtered by the id_definie_periode column
  * @method     EdtEmplacementCours findOneByDuree(string $duree) Return the first EdtEmplacementCours filtered by the duree column
@@ -79,9 +79,9 @@
  * @method     EdtEmplacementCours findOneByLoginProf(string $login_prof) Return the first EdtEmplacementCours filtered by the login_prof column
  *
  * @method     array findByIdCours(int $id_cours) Return EdtEmplacementCours objects filtered by the id_cours column
- * @method     array findByIdGroupe(int $id_groupe) Return EdtEmplacementCours objects filtered by the id_groupe column
- * @method     array findByIdAid(int $id_aid) Return EdtEmplacementCours objects filtered by the id_aid column
- * @method     array findByIdSalle(int $id_salle) Return EdtEmplacementCours objects filtered by the id_salle column
+ * @method     array findByIdGroupe(string $id_groupe) Return EdtEmplacementCours objects filtered by the id_groupe column
+ * @method     array findByIdAid(string $id_aid) Return EdtEmplacementCours objects filtered by the id_aid column
+ * @method     array findByIdSalle(string $id_salle) Return EdtEmplacementCours objects filtered by the id_salle column
  * @method     array findByJourSemaine(string $jour_semaine) Return EdtEmplacementCours objects filtered by the jour_semaine column
  * @method     array findByIdDefiniePeriode(string $id_definie_periode) Return EdtEmplacementCours objects filtered by the id_definie_periode column
  * @method     array findByDuree(string $duree) Return EdtEmplacementCours objects filtered by the duree column
@@ -140,7 +140,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
-	 * @return    mixed the result, formatted by the current formatter
+	 * @return    EdtEmplacementCours|array|mixed the result, formatted by the current formatter
 	 */
 	public function findPk($key, $con = null)
 	{
@@ -164,7 +164,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 * @param     array $keys Primary keys to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
-	 * @return    the list of results, formatted by the current formatter
+	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
 	{	
@@ -218,8 +218,8 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_groupe column
 	 * 
-	 * @param     int|array $idGroupe The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $idGroupe The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -227,17 +227,9 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	public function filterByIdGroupe($idGroupe = null, $comparison = Criteria::EQUAL)
 	{
 		if (is_array($idGroupe)) {
-			if (array_values($idGroupe) === $idGroupe) {
-				return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $idGroupe, Criteria::IN);
-			} else {
-				if (isset($idGroupe['min'])) {
-					$this->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $idGroupe['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idGroupe['max'])) {
-					$this->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $idGroupe['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
-			}
+			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $idGroupe, Criteria::IN);
+		} elseif(preg_match('/[\%\*]/', $idGroupe)) {
+			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, str_replace('*', '%', $idGroupe), Criteria::LIKE);
 		} else {
 			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $idGroupe, $comparison);
 		}
@@ -246,8 +238,8 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_aid column
 	 * 
-	 * @param     int|array $idAid The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $idAid The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -255,17 +247,9 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	public function filterByIdAid($idAid = null, $comparison = Criteria::EQUAL)
 	{
 		if (is_array($idAid)) {
-			if (array_values($idAid) === $idAid) {
-				return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $idAid, Criteria::IN);
-			} else {
-				if (isset($idAid['min'])) {
-					$this->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $idAid['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idAid['max'])) {
-					$this->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $idAid['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
-			}
+			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $idAid, Criteria::IN);
+		} elseif(preg_match('/[\%\*]/', $idAid)) {
+			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, str_replace('*', '%', $idAid), Criteria::LIKE);
 		} else {
 			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $idAid, $comparison);
 		}
@@ -274,8 +258,8 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_salle column
 	 * 
-	 * @param     int|array $idSalle The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $idSalle The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -283,17 +267,9 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	public function filterByIdSalle($idSalle = null, $comparison = Criteria::EQUAL)
 	{
 		if (is_array($idSalle)) {
-			if (array_values($idSalle) === $idSalle) {
-				return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $idSalle, Criteria::IN);
-			} else {
-				if (isset($idSalle['min'])) {
-					$this->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $idSalle['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idSalle['max'])) {
-					$this->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $idSalle['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
-			}
+			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $idSalle, Criteria::IN);
+		} elseif(preg_match('/[\%\*]/', $idSalle)) {
+			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, str_replace('*', '%', $idSalle), Criteria::LIKE);
 		} else {
 			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $idSalle, $comparison);
 		}

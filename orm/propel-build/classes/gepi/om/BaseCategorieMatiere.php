@@ -946,7 +946,7 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	public function getJGroupesClassessJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JGroupesClassesQuery::create(null, $criteria);
-		$query->joinWith('JGroupesClasses.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getJGroupesClassess($query, $con);
 	}
@@ -966,7 +966,7 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	public function getJGroupesClassessJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JGroupesClassesQuery::create(null, $criteria);
-		$query->joinWith('JGroupesClasses.Classe', $join_behavior);
+		$query->joinWith('Classe', $join_behavior);
 
 		return $this->getJGroupesClassess($query, $con);
 	}
@@ -1095,7 +1095,7 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	public function getJCategoriesMatieresClassessJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JCategoriesMatieresClassesQuery::create(null, $criteria);
-		$query->joinWith('JCategoriesMatieresClasses.Classe', $join_behavior);
+		$query->joinWith('Classe', $join_behavior);
 
 		return $this->getJCategoriesMatieresClassess($query, $con);
 	}

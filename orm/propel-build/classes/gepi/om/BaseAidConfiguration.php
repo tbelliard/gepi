@@ -1703,7 +1703,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	public function getJAidUtilisateursProfessionnelssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
-		$query->joinWith('JAidUtilisateursProfessionnels.AidDetails', $join_behavior);
+		$query->joinWith('AidDetails', $join_behavior);
 
 		return $this->getJAidUtilisateursProfessionnelss($query, $con);
 	}
@@ -1723,7 +1723,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	public function getJAidUtilisateursProfessionnelssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
-		$query->joinWith('JAidUtilisateursProfessionnels.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getJAidUtilisateursProfessionnelss($query, $con);
 	}
@@ -1852,7 +1852,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	public function getJAidElevessJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidElevesQuery::create(null, $criteria);
-		$query->joinWith('JAidEleves.AidDetails', $join_behavior);
+		$query->joinWith('AidDetails', $join_behavior);
 
 		return $this->getJAidElevess($query, $con);
 	}
@@ -1872,7 +1872,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	public function getJAidElevessJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidElevesQuery::create(null, $criteria);
-		$query->joinWith('JAidEleves.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getJAidElevess($query, $con);
 	}

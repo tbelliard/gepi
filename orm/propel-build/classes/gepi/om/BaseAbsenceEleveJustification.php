@@ -937,7 +937,7 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 	public function getAbsenceEleveTraitementsJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -957,7 +957,7 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveType($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveType', $join_behavior);
+		$query->joinWith('AbsenceEleveType', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -977,7 +977,7 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveMotif($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveMotif', $join_behavior);
+		$query->joinWith('AbsenceEleveMotif', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -997,7 +997,7 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveAction($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveAction', $join_behavior);
+		$query->joinWith('AbsenceEleveAction', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}

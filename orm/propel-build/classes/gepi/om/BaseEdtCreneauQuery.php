@@ -11,7 +11,7 @@
  * @method     EdtCreneauQuery orderByHeuredebutDefiniePeriode($order = Criteria::ASC) Order by the heuredebut_definie_periode column
  * @method     EdtCreneauQuery orderByHeurefinDefiniePeriode($order = Criteria::ASC) Order by the heurefin_definie_periode column
  * @method     EdtCreneauQuery orderBySuiviDefiniePeriode($order = Criteria::ASC) Order by the suivi_definie_periode column
- * @method     EdtCreneauQuery orderByTypeCreneau($order = Criteria::ASC) Order by the type_creneau column
+ * @method     EdtCreneauQuery orderByTypeCreneaux($order = Criteria::ASC) Order by the type_creneaux column
  * @method     EdtCreneauQuery orderByJourCreneau($order = Criteria::ASC) Order by the jour_creneau column
  *
  * @method     EdtCreneauQuery groupByIdDefiniePeriode() Group by the id_definie_periode column
@@ -19,7 +19,7 @@
  * @method     EdtCreneauQuery groupByHeuredebutDefiniePeriode() Group by the heuredebut_definie_periode column
  * @method     EdtCreneauQuery groupByHeurefinDefiniePeriode() Group by the heurefin_definie_periode column
  * @method     EdtCreneauQuery groupBySuiviDefiniePeriode() Group by the suivi_definie_periode column
- * @method     EdtCreneauQuery groupByTypeCreneau() Group by the type_creneau column
+ * @method     EdtCreneauQuery groupByTypeCreneaux() Group by the type_creneaux column
  * @method     EdtCreneauQuery groupByJourCreneau() Group by the jour_creneau column
  *
  * @method     EdtCreneauQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -40,7 +40,7 @@
  * @method     EdtCreneau findOneByHeuredebutDefiniePeriode(string $heuredebut_definie_periode) Return the first EdtCreneau filtered by the heuredebut_definie_periode column
  * @method     EdtCreneau findOneByHeurefinDefiniePeriode(string $heurefin_definie_periode) Return the first EdtCreneau filtered by the heurefin_definie_periode column
  * @method     EdtCreneau findOneBySuiviDefiniePeriode(int $suivi_definie_periode) Return the first EdtCreneau filtered by the suivi_definie_periode column
- * @method     EdtCreneau findOneByTypeCreneau(string $type_creneau) Return the first EdtCreneau filtered by the type_creneau column
+ * @method     EdtCreneau findOneByTypeCreneaux(string $type_creneaux) Return the first EdtCreneau filtered by the type_creneaux column
  * @method     EdtCreneau findOneByJourCreneau(string $jour_creneau) Return the first EdtCreneau filtered by the jour_creneau column
  *
  * @method     array findByIdDefiniePeriode(int $id_definie_periode) Return EdtCreneau objects filtered by the id_definie_periode column
@@ -48,7 +48,7 @@
  * @method     array findByHeuredebutDefiniePeriode(string $heuredebut_definie_periode) Return EdtCreneau objects filtered by the heuredebut_definie_periode column
  * @method     array findByHeurefinDefiniePeriode(string $heurefin_definie_periode) Return EdtCreneau objects filtered by the heurefin_definie_periode column
  * @method     array findBySuiviDefiniePeriode(int $suivi_definie_periode) Return EdtCreneau objects filtered by the suivi_definie_periode column
- * @method     array findByTypeCreneau(string $type_creneau) Return EdtCreneau objects filtered by the type_creneau column
+ * @method     array findByTypeCreneaux(string $type_creneaux) Return EdtCreneau objects filtered by the type_creneaux column
  * @method     array findByJourCreneau(string $jour_creneau) Return EdtCreneau objects filtered by the jour_creneau column
  *
  * @package    propel.generator.gepi.om
@@ -100,7 +100,7 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
-	 * @return    mixed the result, formatted by the current formatter
+	 * @return    EdtCreneau|array|mixed the result, formatted by the current formatter
 	 */
 	public function findPk($key, $con = null)
 	{
@@ -124,7 +124,7 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 * @param     array $keys Primary keys to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
-	 * @return    the list of results, formatted by the current formatter
+	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
 	{	
@@ -280,22 +280,22 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the type_creneau column
+	 * Filter the query on the type_creneaux column
 	 * 
-	 * @param     string $typeCreneau The value to use as filter.
+	 * @param     string $typeCreneaux The value to use as filter.
 	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
 	 */
-	public function filterByTypeCreneau($typeCreneau = null, $comparison = Criteria::EQUAL)
+	public function filterByTypeCreneaux($typeCreneaux = null, $comparison = Criteria::EQUAL)
 	{
-		if (is_array($typeCreneau)) {
-			return $this->addUsingAlias(EdtCreneauPeer::TYPE_CRENEAU, $typeCreneau, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $typeCreneau)) {
-			return $this->addUsingAlias(EdtCreneauPeer::TYPE_CRENEAU, str_replace('*', '%', $typeCreneau), Criteria::LIKE);
+		if (is_array($typeCreneaux)) {
+			return $this->addUsingAlias(EdtCreneauPeer::TYPE_CRENEAUX, $typeCreneaux, Criteria::IN);
+		} elseif(preg_match('/[\%\*]/', $typeCreneaux)) {
+			return $this->addUsingAlias(EdtCreneauPeer::TYPE_CRENEAUX, str_replace('*', '%', $typeCreneaux), Criteria::LIKE);
 		} else {
-			return $this->addUsingAlias(EdtCreneauPeer::TYPE_CRENEAU, $typeCreneau, $comparison);
+			return $this->addUsingAlias(EdtCreneauPeer::TYPE_CRENEAUX, $typeCreneaux, $comparison);
 		}
 	}
 

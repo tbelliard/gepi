@@ -66,6 +66,10 @@
  * @method     ClasseQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ClasseQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ClasseQuery leftJoinPeriodes($relationAlias = '') Adds a LEFT JOIN clause to the query using the Periodes relation
+ * @method     ClasseQuery rightJoinPeriodes($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Periodes relation
+ * @method     ClasseQuery innerJoinPeriodes($relationAlias = '') Adds a INNER JOIN clause to the query using the Periodes relation
+ *
  * @method     ClasseQuery leftJoinJGroupesClasses($relationAlias = '') Adds a LEFT JOIN clause to the query using the JGroupesClasses relation
  * @method     ClasseQuery rightJoinJGroupesClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesClasses relation
  * @method     ClasseQuery innerJoinJGroupesClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JGroupesClasses relation
@@ -188,7 +192,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
-	 * @return    mixed the result, formatted by the current formatter
+	 * @return    Classe|array|mixed the result, formatted by the current formatter
 	 */
 	public function findPk($key, $con = null)
 	{
@@ -212,7 +216,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 * @param     array $keys Primary keys to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
-	 * @return    the list of results, formatted by the current formatter
+	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
 	{	
@@ -789,6 +793,67 @@ abstract class BaseClasseQuery extends ModelCriteria
 		} else {
 			return $this->addUsingAlias(ClassePeer::ECTS_FONCTION_SIGNATAIRE_ATTESTATION, $ectsFonctionSignataireAttestation, $comparison);
 		}
+	}
+
+	/**
+	 * Filter the query by a related Periodes object
+	 *
+	 * @param     Periodes $periodes  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    ClasseQuery The current query, for fluid interface
+	 */
+	public function filterByPeriodes($periodes, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->addUsingAlias(ClassePeer::ID, $periodes->getIdClasse(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the Periodes relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    ClasseQuery The current query, for fluid interface
+	 */
+	public function joinPeriodes($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('Periodes');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'Periodes');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the Periodes relation Periodes object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    PeriodesQuery A secondary query class using the current class as primary query
+	 */
+	public function usePeriodesQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinPeriodes($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'Periodes', 'PeriodesQuery');
 	}
 
 	/**

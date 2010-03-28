@@ -937,7 +937,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	public function getAbsenceEleveTraitementsJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -957,7 +957,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveType($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveType', $join_behavior);
+		$query->joinWith('AbsenceEleveType', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -977,7 +977,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveJustification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveJustification', $join_behavior);
+		$query->joinWith('AbsenceEleveJustification', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -997,7 +997,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveAction($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveAction', $join_behavior);
+		$query->joinWith('AbsenceEleveAction', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}

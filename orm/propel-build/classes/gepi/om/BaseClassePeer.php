@@ -467,6 +467,9 @@ abstract class BaseClassePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
+		// invalidate objects in PeriodesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		PeriodesPeer::clearInstancePool();
+
 		// invalidate objects in JGroupesClassesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		JGroupesClassesPeer::clearInstancePool();
 
@@ -806,6 +809,12 @@ abstract class BaseClassePeer {
 		$objects = ClassePeer::doSelect($criteria, $con);
 		foreach ($objects as $obj) {
 
+
+			// delete related Periodes objects
+			$criteria = new Criteria(PeriodesPeer::DATABASE_NAME);
+			
+			$criteria->add(PeriodesPeer::ID_CLASSE, $obj->getId());
+			$affectedRows += PeriodesPeer::doDelete($criteria, $con);
 
 			// delete related JGroupesClasses objects
 			$criteria = new Criteria(JGroupesClassesPeer::DATABASE_NAME);

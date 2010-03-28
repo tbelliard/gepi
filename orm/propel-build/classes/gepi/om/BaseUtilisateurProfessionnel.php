@@ -2057,7 +2057,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getJGroupesProfesseurssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JGroupesProfesseursQuery::create(null, $criteria);
-		$query->joinWith('JGroupesProfesseurs.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getJGroupesProfesseurss($query, $con);
 	}
@@ -2186,7 +2186,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getCahierTexteCompteRendusJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteCompteRenduQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteCompteRendu.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getCahierTexteCompteRendus($query, $con);
 	}
@@ -2206,7 +2206,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getCahierTexteCompteRendusJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteCompteRenduQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteCompteRendu.CahierTexteSequence', $join_behavior);
+		$query->joinWith('CahierTexteSequence', $join_behavior);
 
 		return $this->getCahierTexteCompteRendus($query, $con);
 	}
@@ -2335,7 +2335,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getCahierTexteTravailAFairesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteTravailAFaire.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getCahierTexteTravailAFaires($query, $con);
 	}
@@ -2355,7 +2355,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getCahierTexteTravailAFairesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteTravailAFaire.CahierTexteSequence', $join_behavior);
+		$query->joinWith('CahierTexteSequence', $join_behavior);
 
 		return $this->getCahierTexteTravailAFaires($query, $con);
 	}
@@ -2484,7 +2484,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getCahierTexteNoticePriveesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteNoticePrivee.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getCahierTexteNoticePrivees($query, $con);
 	}
@@ -2504,7 +2504,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getCahierTexteNoticePriveesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
-		$query->joinWith('CahierTexteNoticePrivee.CahierTexteSequence', $join_behavior);
+		$query->joinWith('CahierTexteSequence', $join_behavior);
 
 		return $this->getCahierTexteNoticePrivees($query, $con);
 	}
@@ -2633,7 +2633,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getJEleveCpesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveCpeQuery::create(null, $criteria);
-		$query->joinWith('JEleveCpe.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getJEleveCpes($query, $con);
 	}
@@ -2762,7 +2762,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getJEleveProfesseurPrincipalsJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
-		$query->joinWith('JEleveProfesseurPrincipal.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getJEleveProfesseurPrincipals($query, $con);
 	}
@@ -2782,7 +2782,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getJEleveProfesseurPrincipalsJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
-		$query->joinWith('JEleveProfesseurPrincipal.Classe', $join_behavior);
+		$query->joinWith('Classe', $join_behavior);
 
 		return $this->getJEleveProfesseurPrincipals($query, $con);
 	}
@@ -2911,7 +2911,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getJAidUtilisateursProfessionnelssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
-		$query->joinWith('JAidUtilisateursProfessionnels.AidDetails', $join_behavior);
+		$query->joinWith('AidDetails', $join_behavior);
 
 		return $this->getJAidUtilisateursProfessionnelss($query, $con);
 	}
@@ -2931,7 +2931,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getJAidUtilisateursProfessionnelssJoinAidConfiguration($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
-		$query->joinWith('JAidUtilisateursProfessionnels.AidConfiguration', $join_behavior);
+		$query->joinWith('AidConfiguration', $join_behavior);
 
 		return $this->getJAidUtilisateursProfessionnelss($query, $con);
 	}
@@ -3060,7 +3060,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getAbsenceEleveSaisiesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
@@ -3080,7 +3080,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getAbsenceEleveSaisiesJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.EdtCreneau', $join_behavior);
+		$query->joinWith('EdtCreneau', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
@@ -3100,7 +3100,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getAbsenceEleveSaisiesJoinEdtEmplacementCours($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.EdtEmplacementCours', $join_behavior);
+		$query->joinWith('EdtEmplacementCours', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
@@ -3229,7 +3229,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveType($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveType', $join_behavior);
+		$query->joinWith('AbsenceEleveType', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -3249,7 +3249,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveMotif($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveMotif', $join_behavior);
+		$query->joinWith('AbsenceEleveMotif', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -3269,7 +3269,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveJustification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveJustification', $join_behavior);
+		$query->joinWith('AbsenceEleveJustification', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -3289,7 +3289,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveAction($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTraitement.AbsenceEleveAction', $join_behavior);
+		$query->joinWith('AbsenceEleveAction', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}
@@ -3418,7 +3418,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getAbsenceEleveEnvoisJoinAbsenceEleveTypeEnvoi($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveEnvoiQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveEnvoi.AbsenceEleveTypeEnvoi', $join_behavior);
+		$query->joinWith('AbsenceEleveTypeEnvoi', $join_behavior);
 
 		return $this->getAbsenceEleveEnvois($query, $con);
 	}
@@ -3656,7 +3656,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getEdtEmplacementCourssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -3676,7 +3676,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getEdtEmplacementCourssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.AidDetails', $join_behavior);
+		$query->joinWith('AidDetails', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -3696,7 +3696,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getEdtEmplacementCourssJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.EdtSalle', $join_behavior);
+		$query->joinWith('EdtSalle', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -3716,7 +3716,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getEdtEmplacementCourssJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.EdtCreneau', $join_behavior);
+		$query->joinWith('EdtCreneau', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}
@@ -3736,7 +3736,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getEdtEmplacementCourssJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = EdtEmplacementCoursQuery::create(null, $criteria);
-		$query->joinWith('EdtEmplacementCours.EdtCalendrierPeriode', $join_behavior);
+		$query->joinWith('EdtCalendrierPeriode', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
 	}

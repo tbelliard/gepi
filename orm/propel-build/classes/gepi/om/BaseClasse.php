@@ -200,6 +200,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	protected $ects_fonction_signataire_attestation;
 
 	/**
+	 * @var        array Periodes[] Collection to store aggregation of Periodes objects.
+	 */
+	protected $collPeriodess;
+
+	/**
 	 * @var        array JGroupesClasses[] Collection to store aggregation of JGroupesClasses objects.
 	 */
 	protected $collJGroupesClassess;
@@ -1262,6 +1267,8 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 
 		if ($deep) {  // also de-associate any related objects?
 
+			$this->collPeriodess = null;
+
 			$this->collJGroupesClassess = null;
 
 			$this->collJEleveClasses = null;
@@ -1403,6 +1410,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
+			if ($this->collPeriodess !== null) {
+				foreach ($this->collPeriodess as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			if ($this->collJGroupesClassess !== null) {
 				foreach ($this->collJGroupesClassess as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1505,6 +1520,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
+
+				if ($this->collPeriodess !== null) {
+					foreach ($this->collPeriodess as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
 
 				if ($this->collJGroupesClassess !== null) {
 					foreach ($this->collJGroupesClassess as $referrerFK) {
@@ -1996,6 +2019,12 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
 
+			foreach ($this->getPeriodess() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addPeriodes($relObj->copy($deepCopy));
+				}
+			}
+
 			foreach ($this->getJGroupesClassess() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addJGroupesClasses($relObj->copy($deepCopy));
@@ -2063,6 +2092,115 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			self::$peer = new ClassePeer();
 		}
 		return self::$peer;
+	}
+
+	/**
+	 * Clears out the collPeriodess collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addPeriodess()
+	 */
+	public function clearPeriodess()
+	{
+		$this->collPeriodess = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collPeriodess collection.
+	 *
+	 * By default this just sets the collPeriodess collection to an empty array (like clearcollPeriodess());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initPeriodess()
+	{
+		$this->collPeriodess = new PropelObjectCollection();
+		$this->collPeriodess->setModel('Periodes');
+	}
+
+	/**
+	 * Gets an array of Periodes objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Classe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array Periodes[] List of Periodes objects
+	 * @throws     PropelException
+	 */
+	public function getPeriodess($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collPeriodess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPeriodess) {
+				// return empty collection
+				$this->initPeriodess();
+			} else {
+				$collPeriodess = PeriodesQuery::create(null, $criteria)
+					->filterByClasse($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collPeriodess;
+				}
+				$this->collPeriodess = $collPeriodess;
+			}
+		}
+		return $this->collPeriodess;
+	}
+
+	/**
+	 * Returns the number of related Periodes objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Periodes objects.
+	 * @throws     PropelException
+	 */
+	public function countPeriodess(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collPeriodess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPeriodess) {
+				return 0;
+			} else {
+				$query = PeriodesQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByClasse($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collPeriodess);
+		}
+	}
+
+	/**
+	 * Method called to associate a Periodes object to this object
+	 * through the Periodes foreign key attribute.
+	 *
+	 * @param      Periodes $l Periodes
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addPeriodes(Periodes $l)
+	{
+		if ($this->collPeriodess === null) {
+			$this->initPeriodess();
+		}
+		if (!$this->collPeriodess->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collPeriodess[]= $l;
+			$l->setClasse($this);
+		}
 	}
 
 	/**
@@ -2189,7 +2327,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	public function getJGroupesClassessJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JGroupesClassesQuery::create(null, $criteria);
-		$query->joinWith('JGroupesClasses.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getJGroupesClassess($query, $con);
 	}
@@ -2209,7 +2347,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	public function getJGroupesClassessJoinCategorieMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JGroupesClassesQuery::create(null, $criteria);
-		$query->joinWith('JGroupesClasses.CategorieMatiere', $join_behavior);
+		$query->joinWith('CategorieMatiere', $join_behavior);
 
 		return $this->getJGroupesClassess($query, $con);
 	}
@@ -2338,7 +2476,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	public function getJEleveClassesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveClasseQuery::create(null, $criteria);
-		$query->joinWith('JEleveClasse.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getJEleveClasses($query, $con);
 	}
@@ -2467,7 +2605,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	public function getJEleveProfesseurPrincipalsJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
-		$query->joinWith('JEleveProfesseurPrincipal.Eleve', $join_behavior);
+		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getJEleveProfesseurPrincipals($query, $con);
 	}
@@ -2487,7 +2625,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	public function getJEleveProfesseurPrincipalsJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
-		$query->joinWith('JEleveProfesseurPrincipal.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getJEleveProfesseurPrincipals($query, $con);
 	}
@@ -2616,7 +2754,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	public function getJCategoriesMatieresClassessJoinCategorieMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JCategoriesMatieresClassesQuery::create(null, $criteria);
-		$query->joinWith('JCategoriesMatieresClasses.CategorieMatiere', $join_behavior);
+		$query->joinWith('CategorieMatiere', $join_behavior);
 
 		return $this->getJCategoriesMatieresClassess($query, $con);
 	}
@@ -2670,6 +2808,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
+			if ($this->collPeriodess) {
+				foreach ((array) $this->collPeriodess as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collJGroupesClassess) {
 				foreach ((array) $this->collJGroupesClassess as $o) {
 					$o->clearAllReferences($deep);
@@ -2692,6 +2835,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			}
 		} // if ($deep)
 
+		$this->collPeriodess = null;
 		$this->collJGroupesClassess = null;
 		$this->collJEleveClasses = null;
 		$this->collJEleveProfesseurPrincipals = null;

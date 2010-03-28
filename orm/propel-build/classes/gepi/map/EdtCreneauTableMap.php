@@ -41,7 +41,7 @@ class EdtCreneauTableMap extends TableMap {
 		$this->addColumn('HEUREDEBUT_DEFINIE_PERIODE', 'HeuredebutDefiniePeriode', 'TIME', true, null, null);
 		$this->addColumn('HEUREFIN_DEFINIE_PERIODE', 'HeurefinDefiniePeriode', 'TIME', true, null, null);
 		$this->addColumn('SUIVI_DEFINIE_PERIODE', 'SuiviDefiniePeriode', 'INTEGER', false, 2, 9);
-		$this->addColumn('TYPE_CRENEAU', 'TypeCreneau', 'VARCHAR', false, 15, 'cours');
+		$this->addColumn('TYPE_CRENEAUX', 'TypeCreneaux', 'VARCHAR', false, 15, 'cours');
 		$this->addColumn('JOUR_CRENEAU', 'JourCreneau', 'VARCHAR', false, 20, null);
 		// validators
 	} // initialize()

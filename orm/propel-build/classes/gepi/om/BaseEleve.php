@@ -1712,7 +1712,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getJEleveClassesJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveClasseQuery::create(null, $criteria);
-		$query->joinWith('JEleveClasse.Classe', $join_behavior);
+		$query->joinWith('Classe', $join_behavior);
 
 		return $this->getJEleveClasses($query, $con);
 	}
@@ -1841,7 +1841,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getJEleveCpesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveCpeQuery::create(null, $criteria);
-		$query->joinWith('JEleveCpe.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getJEleveCpes($query, $con);
 	}
@@ -1970,7 +1970,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getJEleveGroupesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveGroupeQuery::create(null, $criteria);
-		$query->joinWith('JEleveGroupe.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getJEleveGroupes($query, $con);
 	}
@@ -2099,7 +2099,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getJEleveProfesseurPrincipalsJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
-		$query->joinWith('JEleveProfesseurPrincipal.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getJEleveProfesseurPrincipals($query, $con);
 	}
@@ -2119,7 +2119,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getJEleveProfesseurPrincipalsJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
-		$query->joinWith('JEleveProfesseurPrincipal.Classe', $join_behavior);
+		$query->joinWith('Classe', $join_behavior);
 
 		return $this->getJEleveProfesseurPrincipals($query, $con);
 	}
@@ -2284,7 +2284,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getResponsableInformationsJoinResponsableEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = ResponsableInformationQuery::create(null, $criteria);
-		$query->joinWith('ResponsableInformation.ResponsableEleve', $join_behavior);
+		$query->joinWith('ResponsableEleve', $join_behavior);
 
 		return $this->getResponsableInformations($query, $con);
 	}
@@ -2413,7 +2413,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getJEleveAncienEtablissementsJoinAncienEtablissement($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JEleveAncienEtablissementQuery::create(null, $criteria);
-		$query->joinWith('JEleveAncienEtablissement.AncienEtablissement', $join_behavior);
+		$query->joinWith('AncienEtablissement', $join_behavior);
 
 		return $this->getJEleveAncienEtablissements($query, $con);
 	}
@@ -2542,7 +2542,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getJAidElevessJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidElevesQuery::create(null, $criteria);
-		$query->joinWith('JAidEleves.AidDetails', $join_behavior);
+		$query->joinWith('AidDetails', $join_behavior);
 
 		return $this->getJAidElevess($query, $con);
 	}
@@ -2562,7 +2562,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getJAidElevessJoinAidConfiguration($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = JAidElevesQuery::create(null, $criteria);
-		$query->joinWith('JAidEleves.AidConfiguration', $join_behavior);
+		$query->joinWith('AidConfiguration', $join_behavior);
 
 		return $this->getJAidElevess($query, $con);
 	}
@@ -2691,7 +2691,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getAbsenceEleveSaisiesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.UtilisateurProfessionnel', $join_behavior);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
@@ -2711,7 +2711,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getAbsenceEleveSaisiesJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.EdtCreneau', $join_behavior);
+		$query->joinWith('EdtCreneau', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
@@ -2731,7 +2731,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getAbsenceEleveSaisiesJoinEdtEmplacementCours($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveSaisie.EdtEmplacementCours', $join_behavior);
+		$query->joinWith('EdtEmplacementCours', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
@@ -2860,7 +2860,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getCreditEctssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = CreditEctsQuery::create(null, $criteria);
-		$query->joinWith('CreditEcts.Groupe', $join_behavior);
+		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getCreditEctss($query, $con);
 	}

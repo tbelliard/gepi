@@ -78,12 +78,12 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	/**
 	 * Find object by primary key
 	 * <code>
-	 * $obj = $c->findPk(array(34, 634), $con);
+	 * $obj = $c->findPk(array(12, 34, 56), $con);
 	 * </code>
-	 * @param     mixed $key Primary key to use for the query
+	 * @param     array[$login, $id_groupe, $periode] $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
-	 * @return    mixed the result, formatted by the current formatter
+	 * @return    JEleveGroupe|array|mixed the result, formatted by the current formatter
 	 */
 	public function findPk($key, $con = null)
 	{
@@ -107,7 +107,7 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 * @param     array $keys Primary keys to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
-	 * @return    the list of results, formatted by the current formatter
+	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
 	{	
