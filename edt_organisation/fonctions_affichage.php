@@ -368,7 +368,7 @@ function EdtDuJourVertical($tab_data, $jour)
 
     $result .= "<div style=\"".$colonne."\">\n";
     $jour_sem = $entetes['entete'][$jour];
-    $result .= "<h2 style=\"".$entete."\"><div style=\"".$cadre."\"><strong>".$jour_sem."</strong></div></h2>\n";
+    $result .= "<div style=\"".$entete."\"><div style=\"".$cadre."\">".$jour_sem."</div></div>\n";
     $index_box = 0;
     while (isset($tab_data[$jour]['type'][$index_box]))
     {
