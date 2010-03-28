@@ -1262,7 +1262,6 @@ function ConstruireEDTClasseDuJour($id_classe, $period, $jour)
     $tab_cours = array();
     $type_edt = "classe";
     $entetes = ConstruireEnteteEDT();
-    //$jour = date("N")-1;
     while (!isset($entetes['entete'][$jour])) {
         $jour--;
     }

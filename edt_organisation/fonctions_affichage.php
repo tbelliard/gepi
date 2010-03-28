@@ -45,7 +45,7 @@ function DefinirStyleCSS($largeur, $hdemicreneau, &$fenetre, &$contenu, &$tablea
                 width:150px;
                 float:left;";
     $contenu = "position:relative;
-	            font-size: 0.8em;
+	            font-size: 1em;
 	            padding:0px 0 0 0px;
 	            margin:0px 0px 0px 0px;";
 
@@ -53,7 +53,7 @@ function DefinirStyleCSS($largeur, $hdemicreneau, &$fenetre, &$contenu, &$tablea
                 position:relative;
 	            margin: 0px auto;
 	            font-family: Verdana,Arial,Helvetica,sans-serif;
-	            font-size: 0.6em;
+	            font-size: 1em;
 	            color: black;
 	            text-align: left;";
     $entete = " float:left;
@@ -110,7 +110,7 @@ function DefinirStyleCSS($largeur, $hdemicreneau, &$fenetre, &$contenu, &$tablea
                         margin: 0px 0px 02px 0px;
                         width:100%;
 	                    height : ".$hdemicreneau."px;
-	                    font-size: 100%;
+	                    font-size: 1em;
                         background-color:orange;
                         border-top : 1px solid #000000;
 	                    border-right : 1px solid #0;";
@@ -122,7 +122,7 @@ function DefinirStyleCSS($largeur, $hdemicreneau, &$fenetre, &$contenu, &$tablea
                 width:100%;
 	            height : ".$hdemicreneau."px;
 	            font-family: Verdana,Arial,Helvetica,sans-serif;
-	            font-size: 50%;
+	            font-size: 80%;
 	            color: black;
 	            text-align: center;
 	            background-color: #cccccc ;";
@@ -174,7 +174,7 @@ function DefinirStyleCSS($largeur, $hdemicreneau, &$fenetre, &$contenu, &$tablea
                         width:100%;
 	                    height : ".$hcreneau."px;
 	                    font-family: Verdana,Arial,Helvetica,sans-serif;
-	                    font-size: 80%;
+	                    font-size: 100%;
 	                    color: black;
 	                    text-align: center;
 	                    //background-image : url(../images/horaires.png);

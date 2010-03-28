@@ -19,7 +19,32 @@ function changerDisplayDiv(nomDiv) {
 //      utilisé dans vie_scolaire_absences.php
 //
 // ===================================================
-function AfficheEdtClasseDuJour(nomClasse, nomDiv, niveau_arbo) {
+
+function stateChanged(divname)
+{
+if (xmlhttp.readyState==4)
+{
+document.getElementById(divname).innerHTML=xmlhttp.responseText;
+}
+}
+
+function GetXmlHttpObject()
+{
+if (window.XMLHttpRequest)
+  {
+  // code for IE7+, Firefox, Chrome, Opera, Safari
+  return new XMLHttpRequest();
+  }
+if (window.ActiveXObject)
+  {
+  // code for IE6, IE5
+  return new ActiveXObject("Microsoft.XMLHTTP");
+  }
+return null;
+}
+
+function AfficheEdtClasseDuJour(idClasse, nomDiv, niveau_arbo) {
+
     if (document.getElementById(nomDiv).style.display == 'none') {
         xmlhttp=GetXmlHttpObject();
         if (xmlhttp==null)
@@ -40,10 +65,11 @@ function AfficheEdtClasseDuJour(nomClasse, nomDiv, niveau_arbo) {
             var url="../../../edt_organisation/helpers/";
         }
         url=url+"construire_edt_classe_jour.php";
-        url=url+"?classe="+nomClasse;
+        url=url+"?classe="+idClasse;
         url=url+"&sid="+Math.random();
-        xmlhttp.divname = nomDiv;
-        xmlhttp.onreadystatechange=stateChanged;
+        xmlhttp.onreadystatechange= function () {
+                                        stateChanged(nomDiv);
+                                    }
         xmlhttp.open("GET",url,true);
         xmlhttp.send(null);
     }
@@ -51,28 +77,7 @@ function AfficheEdtClasseDuJour(nomClasse, nomDiv, niveau_arbo) {
 }
 
 
-function stateChanged()
-{
-if (xmlhttp.readyState==4)
-{
-document.getElementById(xmlhttp.divname).innerHTML=xmlhttp.responseText;
-}
-}
 
-function GetXmlHttpObject()
-{
-if (window.XMLHttpRequest)
-  {
-  // code for IE7+, Firefox, Chrome, Opera, Safari
-  return new XMLHttpRequest();
-  }
-if (window.ActiveXObject)
-  {
-  // code for IE6, IE5
-  return new ActiveXObject("Microsoft.XMLHTTP");
-  }
-return null;
-}
 
 
 

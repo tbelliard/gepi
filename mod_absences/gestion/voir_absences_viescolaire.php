@@ -87,6 +87,20 @@ function afficherCoursClasse($d, $c){
 	return '<p>construction</p>';
 }
 
+
+function IdClasse($nom_classe) {
+    $result = 0;
+    $sql = "SELECT id FROM classes WHERE classe = '".$nom_classe."' ";
+    $req = mysql_query($sql);
+    if ($req) {
+        if ($rep = mysql_fetch_array($req)) {
+            $result = $rep['id'];
+        }
+    }
+    return $result;
+}
+
+
 $style_specifique = "edt_organisation/style_edt";
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 //**************** EN-TETE *****************
@@ -422,10 +436,11 @@ for($a = 0; $a < $nbre_classe; $a++){
 	$calc = $nbre_classe / 2;
 	$modulo = $nbre_classe % 2;
 	$num_id = 'id'.remplace_accents($aff_classe[$a], 'all');
+    $id_classe = IdClasse($aff_classe[$a]);
 	echo '
 	<tr>
 		<td>
-			<h4 style="color: red;"><a href="#" onclick="AfficheEdtClasseDuJour(\''.$aff_classe[$a].'\',\''.$num_id.'\', '.$niveau_arbo.'); return false;">'.$aff_classe[$a].'</a></h4>
+			<h4 style="color: red;"><a href="#" onclick="AfficheEdtClasseDuJour(\''.$id_classe.'\',\''.$num_id.'\', '.$niveau_arbo.'); return false;">'.$aff_classe[$a].'</a></h4>
 			<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white; -moz-border-radius: 10px; padding: 10px;">
 			'.afficherCoursClasse($aff_classe[$a], $choix_creneau).'</div>
 		</td>
@@ -439,9 +454,10 @@ for($a = 0; $a < $nbre_classe; $a++){
 	}else{
 		$a++; // on passe à la colonne suivante
 		$num_id = 'id'.remplace_accents($aff_classe[$a], 'all');
+        $id_classe = IdClasse($aff_classe[$a]);
 		echo '
 			<td>
-				<h4 style="color: red;"><a href="#" onclick="AfficheEdtClasseDuJour(\''.$aff_classe[$a].'\',\''.$num_id.'\','.$niveau_arbo.'); return false;">'.$aff_classe[$a].'</a></h4>
+				<h4 style="color: red;"><a href="#" onclick="AfficheEdtClasseDuJour(\''.$id_classe.'\',\''.$num_id.'\','.$niveau_arbo.'); return false;">'.$aff_classe[$a].'</a></h4>
 				<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white; -moz-border-radius: 10px; padding: 10px;">
 				'.afficherCoursClasse($aff_classe[$a], $choix_creneau).'</div>
 			</td>

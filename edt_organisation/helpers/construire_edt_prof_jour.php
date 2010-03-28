@@ -25,7 +25,6 @@
 // ================================================
 //
 //          Fichier utilisé avec AJAX 
-//          pour le fichier voir_absences_viescolaire.php
 //
 // ================================================
 
@@ -43,7 +42,7 @@ include("../../edt_organisation/fonctions_edt_eleve.php");      // --- edt eleve
 include("../../edt_organisation/fonctions_affichage.php");
 include("../../edt_organisation/req_database.php");
 
-$idClasse = isset($_GET["classe"]) ? $_GET["classe"] : NULL;
+$loginProf = isset($_GET["login"]) ? $_GET["login"] : NULL;
 $jour = date("N")-1;
 
 // Resume session
@@ -56,7 +55,7 @@ if ($resultat_session == 'c') {
 	die();
 };
 
-$tab_data = ConstruireEDTClasseDuJour($idClasse, 0, $jour);
+$tab_data = ConstruireEDTProfDuJour($loginprof, 0, $jour);
 echo EdtDuJourVertical($tab_data, $jour);
 
 ?>
