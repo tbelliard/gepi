@@ -402,7 +402,7 @@
 	<!-- si un utilisateur est supprime, on ne supprime pas les absences saisies par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
     <column name="utilisateur_id" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel qui a saisi l'absence"/>
     <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
-    <column name="eleve_id" type="INTEGER" size="4" description="id_eleve de l'eleve objet de la saisie, egal à 'appel' si aucun eleve n'est saisi"/>
+    <column name="eleve_id" type="INTEGER" size="11" default="-1" description="id_eleve de l'eleve objet de la saisie, egal à -1 si aucun eleve n'est saisi"/>
     <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="eleve_id" foreign="id_eleve"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire de l'utilisateur"/>
     <column name="debut_abs" required="false" type="TIME" description="Debut de l'absence en timestamp UNIX"/>
