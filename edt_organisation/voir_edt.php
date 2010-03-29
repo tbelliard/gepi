@@ -105,7 +105,10 @@ else {
 if (!isset($login_edt)) {
     if ($_SESSION['statut'] == "professeur") {
         $login_edt = $_SESSION['login'];
+        $_GET["login_edt"] = $login_edt;
         $_GET["type_edt_2"] = "prof";
+        $type_edt_2 = "prof";
+        $visioedt = "prof1";
     }
 }
 

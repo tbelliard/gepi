@@ -97,6 +97,7 @@ if (isset($visioedt)) {
         echo "</div>";
     }
 }
+
 // ========================= AFFICHAGE DES EMPLOIS DU TEMPS
 
 if ($DisplayEDT) {
