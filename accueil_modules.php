@@ -100,10 +100,10 @@ $chemin = array(
 "/cahier_texte_admin/index.php",
 "/cahier_notes_admin/index.php");
 
-if ($force_abs) {
-	$chemin[] = "/mod_absences/admin/index.php";
-	$key_setting[]='active_module_absence%';
-}
+$chemin[] = "/mod_absences/admin/index.php";
+$key_setting[]='active_module_absence%';
+$chemin[] = "/mod_abs2/admin/index.php";
+$key_setting[]='active_module_absence%';
 $chemin[] = "/edt_organisation/edt.php";
 $key_setting[]='autorise_edt%';
 
@@ -124,7 +124,8 @@ $key_setting[]='rss_cdt_eleve';
 $titre = array(
 "Cahier de textes",
 "Carnets de notes");
-if ($force_abs) {$titre[] = "Absences";}
+$titre[] = "Absences";
+$titre[] = "Absences 2";
 $titre[] = "Emploi du temps";
 if ($force_msj) {$titre[] = "Mise à jour automatisée";}
 $titre[] = "Trombinoscope";
@@ -135,7 +136,8 @@ $titre[] = "<img src=\"images/icons/rss.png\" alt='rss' />&nbsp;-&nbsp;Flux rss"
 $expli = array(
 "Pour gérer les cahiers de texte, (configuration générale, ...)",
 "Pour gérer les carnets de notes (configuration générale, ...)");
-if ($force_abs) {$expli[] = "Pour gérer le module absences";}
+$expli[] = "Pour gérer le module absences";
+$expli[] = "Pour gérer le module absences 2 (en cours de developpement)";
 $expli[] = "Pour gérer l'ouverture de l'emploi du temps de Gepi.";
 if ($force_msj) {$expli[] = "Pour gérer le module de mise à jour de GEPI";}
 $expli[] = "Pour gérer le module trombinoscope";

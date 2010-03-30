@@ -1,0 +1,123 @@
+h2. La structure de la base
+
+h3. Modélisation
+
+ Si des codeurs préfèrent modéliser (UML ?) avant de concevoir la base, n'hésitez pas à faire des propositions ??
+
+h3. Proposition de structure
+
+_ ébauche à continuer et à finir en fonction des échanges _
+ -> table a_saisies :  _PRIMARY KEY  (@id@)_
+
+
+|@id@|int(11)|NOT NULL|auto_increment|-||
+|@utilisateur_id@|varchar(100)|NOT NULL|-|Utilisateurs::login||
+|@eleve_id@|int(4)|NOT NULL||-|eleves::id_eleve|
+|@created_on@|int(13)|NOT NULL|default '0'|timestamp UNIX||
+|@updated_on@|int(13)|NOT NULL|default '0'|timestamp UNIX||
+|@debut_abs@|int(12)|NOT NULL|default '0'|timestamp UNIX||
+|@fin_abs@|int(12)|NOT NULL|default '0'|timestamp UNIX||
+
+
+
+ -> table a_traitements : _PRIMARY KEY_ (@id@)
+
+
+|@id@|int(11)|NOT NULL|auto_increment|-|
+|@utilisateur_id@|int(13)|NOT NULL|-|utilisateurs::login|
+|@created_on@|int(13)|NOT NULL|default '0'|timestamp UNIX|
+|@updated_on@|int(13)|NOT NULL|default '0'|timestamp UNIX|
+|@a_type_id@|int(4)|NOT NULL|-|a_types::id|
+|@a_motif_id@|int(4)|NOT NULL|default '0'|a_motifs_id|
+|@a_justification_id@|int(4)|NOT NULL|default '0'|a_justications::id|
+|@texte_justification@|varchar(250)|NOT NULL|-|-|
+|@a_action_id@|int(4)|NOT NULL|default '0'|a_actions::id|
+
+
+
+ -> table a_justifications : _PRIMARY KEY_ (@id@)
+
+
+||@id@||int(11)||NOT NULL||auto_increment||-||
+||@nom@||varchar(100)||NOT NULL||-||-||
+||@ordre@||int(3)||NOT NULL||-||-||
+
+
+
+ -> table a_motifs : _PRIMARY KEY_ (@id@)
+
+
+||@id@||int(11)||NOT NULL||auto_increment||-||
+||@nom@||varchar(100)||NOT NULL||-||-||
+||@ordre@||int(3)||NOT NULL||-||-||
+
+
+
+ -> table a_types : _PRIMARY KEY_ (@id@)
+
+
+||@id@||int(11)||NOT NULL||auto_increment||-||
+||@nom@||varchar(100)||NOT NULL||-||-||
+||@ordre@||int(3)||NOT NULL||-||-||
+
+
+
+ -> table a_actions : _PRIMARY KEY_ (@id@)
+
+
+||@id@||int(11)||NOT NULL||auto_increment||-||
+||@nom@||varchar(100)||NOT NULL||-||-||
+||@ordre@||int(3)||NOT NULL||-||-||
+
+
+
+ -> table a_creneaux : _PRIMARY KEY_ (@id@)
+
+
+||@id@||int(11)||NOT NULL||auto_increment||pk||
+||@nom@||varchar(100)||NOT NULL||-||-||
+||@debut@||int(12)||NOT NULL||-||en nombre de secondes par rapport à 00:00:00||
+||@fin@||int(12)||NOT NULL||-||en nombre de secondes par rapport à 00:00:00||
+||@type@||varchar(100)||NOT NULL||-||'cours', 'pause', 'repas'||
+||@jour@||varchar(100)||NOT NULL||default '9'||-||
+
+
+
+ -> table j_traitement_saisies
+
+||@a_traitement_id@||int(11)||NOT NULL||-||a_traitements::id||
+||@a_saisie_id@||int(11)||NOT NULL||-||a_saisies::id||
+
+
+ -> table a_courriers
+
+||@id@||int(11)||NOT NULL||-||pk||
+||@type@||char(1)||NOT NULL||-||p/m/s||
+||@contenu@||longtext||NOT NULL||-||-||
+||@signature@||varchar(255)||NOT NULL||-||-||
+||@a_gabarit_id@||int(11)||NOT NULL||-||a_courrier_gabarit::id||
+
+
+ -> table a_courrier_gabarits
+
+||@id@||int(11)||NOT NULL||-||pk||
+||@entete@||varchar(255)||NOT NULL||-||-||
+||@adresse@||varchar(255)||NOT NULL||-||-||
+||@contenu@||varchar(255)||NOT NULL||-||-||
+||@signature@||varchar(255)||NOT NULL||-||-||
+||@pied@||varchar(255)||NOT NULL||-||-||
+
+
+ -> table j_courrier_traitements
+
+||@a_courrier_id@||int(11)||NOT NULL||-||a_courriers::id||
+||@a_traitement_id@||int(11)||NOT NULL||-||a_traitements::id||
+
+
+
+
+
+
+
+
+... @ suivre ...

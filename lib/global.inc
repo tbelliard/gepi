@@ -141,14 +141,6 @@ $gepiBetaVersion = "";
 $gepiSvnRev="4148";
 
 
-// Forcer l'utilisation du module de gestion des absences au quoditien
-//
-// Ce paramètre sert à forcer l'utilisation du module de gestion des
-// absences au quotidien, qui n'est pas encore considéré comme stable
-// mais reste présent dans l'archive
-// Note : ce module devrait être stabilisé pour la prochaine version de Gepi
-$force_abs = true; // bool "true|false"
-
 // Forcer l'utilisation du module de gestion des mise à jour de GEPI
 //
 // Ce paramètre sert à forcer l'utilisation du module de gestion des
