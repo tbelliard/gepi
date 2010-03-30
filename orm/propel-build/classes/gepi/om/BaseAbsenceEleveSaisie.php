@@ -37,6 +37,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 
 	/**
 	 * The value for the eleve_id field.
+	 * Note: this column has a database default value of: -1
 	 * @var        int
 	 */
 	protected $eleve_id;
@@ -137,6 +138,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 */
 	public function applyDefaultValues()
 	{
+		$this->eleve_id = -1;
 		$this->id_edt_creneau = 0;
 		$this->id_edt_emplacement_cours = 0;
 	}
@@ -173,7 +175,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [eleve_id] column value.
-	 * id_eleve de l'eleve objet de la saisie, egal à 'appel' si aucun eleve n'est saisi
+	 * id_eleve de l'eleve objet de la saisie, egal à -1 si aucun eleve n'est saisi
 	 * @return     int
 	 */
 	public function getEleveId()
@@ -399,7 +401,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [eleve_id] column.
-	 * id_eleve de l'eleve objet de la saisie, egal à 'appel' si aucun eleve n'est saisi
+	 * id_eleve de l'eleve objet de la saisie, egal à -1 si aucun eleve n'est saisi
 	 * @param      int $v new value
 	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
 	 */
@@ -409,7 +411,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$v = (int) $v;
 		}
 
-		if ($this->eleve_id !== $v) {
+		if ($this->eleve_id !== $v || $this->isNew()) {
 			$this->eleve_id = $v;
 			$this->modifiedColumns[] = AbsenceEleveSaisiePeer::ELEVE_ID;
 		}
@@ -695,6 +697,10 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->eleve_id !== -1) {
+				return false;
+			}
+
 			if ($this->id_edt_creneau !== 0) {
 				return false;
 			}
@@ -1527,7 +1533,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function setEleve(Eleve $v = null)
 	{
 		if ($v === null) {
-			$this->setEleveId(NULL);
+			$this->setEleveId(-1);
 		} else {
 			$this->setEleveId($v->getIdEleve());
 		}

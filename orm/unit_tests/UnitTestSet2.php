@@ -70,11 +70,20 @@ if ($newEleve == null) {
 
 //creation d'une saisie d'absence
 $absenceSaisie = UnitTestAbsenceSaise::getAbsenceSaisie();
-$newEleve->addAbsenceEleveSaisie($absenceSaisie);
+//$newEleve->addAbsenceEleveSaisie($absenceSaisie);
 $newUtilisateurProfessionnel->addAbsenceEleveSaisie($absenceSaisie);
 $absenceSaisie->save();
 echo ($logger->getDisplay());
 echo('saisie absence cree<br/><br/>');
+//$absenceSaisie = new AbsenceEleveSaisie();
+$eleve_saisie = $absenceSaisie->getEleve();
+if ($eleve_saisie == null) {
+	echo('test creation de saisie sans eleve a reussie <br><br/>');
+} else {
+	echo('test creation de saisie sans eleve a <font color="red">echoue</font> <br><br/>');
+}
+$absenceSaisie->setEleve($newEleve);
+$absenceSaisie->save();
 
 //creation d'un traitement d'absence
 $absenceTraitement = UnitTestAbsenceSaise::getAbsenceTraitement();

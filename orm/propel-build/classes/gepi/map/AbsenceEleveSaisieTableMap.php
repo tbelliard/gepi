@@ -38,7 +38,7 @@ class AbsenceEleveSaisieTableMap extends TableMap {
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
 		$this->addForeignKey('UTILISATEUR_ID', 'UtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, null);
-		$this->addForeignKey('ELEVE_ID', 'EleveId', 'INTEGER', 'eleves', 'ID_ELEVE', false, 4, null);
+		$this->addForeignKey('ELEVE_ID', 'EleveId', 'INTEGER', 'eleves', 'ID_ELEVE', false, 11, -1);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('DEBUT_ABS', 'DebutAbs', 'TIME', false, null, null);
 		$this->addColumn('FIN_ABS', 'FinAbs', 'TIME', false, null, null);

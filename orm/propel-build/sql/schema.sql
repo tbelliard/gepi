@@ -122,9 +122,9 @@ CREATE TABLE periodes
 (
 	nom_periode VARCHAR(10)  NOT NULL COMMENT 'Nom de la periode de note',
 	num_periode INTEGER(10)  NOT NULL COMMENT 'identifiant numerique de la periode (1, 2 ou3)',
-	verrouiller VARCHAR(1) default 'O' NOT NULL COMMENT 'Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)',
+	verouiller VARCHAR(1) default 'O' NOT NULL COMMENT 'Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)',
 	id_classe INTEGER(10)  NOT NULL COMMENT 'identifiant numerique de la classe.',
-	date_verouillage TIME COMMENT 'date de verouillage de la periode',
+	date_verrouillage TIME COMMENT 'date de verrouillage de la periode',
 	PRIMARY KEY (nom_periode,num_periode,id_classe),
 	INDEX periodes_FI_1 (id_classe),
 	CONSTRAINT periodes_FK_1
@@ -817,7 +817,7 @@ CREATE TABLE a_saisies
 (
 	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
 	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a saisi l\'absence',
-	eleve_id INTEGER(4) COMMENT 'id_eleve de l\'eleve objet de la saisie, egal à \'appel\' si aucun eleve n\'est saisi',
+	eleve_id INTEGER(11) default -1 COMMENT 'id_eleve de l\'eleve objet de la saisie, egal à -1 si aucun eleve n\'est saisi',
 	commentaire TEXT COMMENT 'commentaire de l\'utilisateur',
 	debut_abs TIME COMMENT 'Debut de l\'absence en timestamp UNIX',
 	fin_abs TIME COMMENT 'Fin de l\'absence en timestamp UNIX',
