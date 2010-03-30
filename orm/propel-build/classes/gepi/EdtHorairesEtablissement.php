@@ -2,7 +2,7 @@
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'horaires_etablissement' table.
+ * Skeleton subclass for representing a row from the 'horaires_etablissement' table.
  *
  * Table contenant les heures d'ouverture et de fermeture de l'etablissement par journee
  *
@@ -12,6 +12,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtHorairesPeer extends BaseEdtHorairesPeer {
+class EdtHorairesEtablissement extends BaseEdtHorairesEtablissement {
 
-} // EdtHorairesPeer
+} // EdtHorairesEtablissement

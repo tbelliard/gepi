@@ -74,10 +74,11 @@ if ($test == -1) {
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom du type d\'absence',
 	justification_exigible TINYINT COMMENT 'Ce type d\'absence doit entrainer une justification de la part de la famille',
 	responsabilite_etablissement TINYINT,
-	type_saisie VARCHAR(50)  NOT NULL COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE',
+	type_saisie VARCHAR(50) COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
-	PRIMARY KEY (id))Type=MyISAM;";
+	PRIMARY KEY (id)
+	)Type=MyISAM;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'a_types': ".$result_inter."<br />";

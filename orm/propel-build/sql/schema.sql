@@ -780,7 +780,7 @@ CREATE TABLE a_types
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom du type d\'absence',
 	justification_exigible TINYINT COMMENT 'Ce type d\'absence doit entrainer une justification de la part de la famille',
 	responsabilite_etablissement TINYINT COMMENT 'L\'eleve est encore sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l\'eleve est encore sous la responsabilité de l\'etablissement',
-	type_saisie VARCHAR(50)  NOT NULL COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE',
+	type_saisie VARCHAR(50) COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
 	PRIMARY KEY (id)
@@ -1249,7 +1249,7 @@ CREATE TABLE edt_semaines
 	num_edt_semaine INTEGER(11)  NOT NULL COMMENT 'numero de la semaine dans l\'annee civile',
 	type_edt_semaine VARCHAR(10) COMMENT 'typiquement, champ egal a \'A\' ou \'B\' pour l\'alternance des semaines',
 	PRIMARY KEY (id_edt_semaine)
-)Type=MyISAM COMMENT='Liste des semaines de l\'annee scolaire courante - 53 enregistrements obligatoires (pas 52!)';
+)Type=MyISAM COMMENT='Liste des semaines de l\'annee scolaire courante - 53 enregistrements obligatoires (pas 52!), pour lesquel on assign eun type (A ou B par xexemple)';
 
 #-----------------------------------------------------------------------------
 #-- edt_calendrier
