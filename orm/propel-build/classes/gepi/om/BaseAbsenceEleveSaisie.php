@@ -62,17 +62,31 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 
 	/**
 	 * The value for the id_edt_creneau field.
-	 * Note: this column has a database default value of: 0
+	 * Note: this column has a database default value of: -1
 	 * @var        int
 	 */
 	protected $id_edt_creneau;
 
 	/**
 	 * The value for the id_edt_emplacement_cours field.
-	 * Note: this column has a database default value of: 0
+	 * Note: this column has a database default value of: -1
 	 * @var        int
 	 */
 	protected $id_edt_emplacement_cours;
+
+	/**
+	 * The value for the id_groupe field.
+	 * Note: this column has a database default value of: -1
+	 * @var        int
+	 */
+	protected $id_groupe;
+
+	/**
+	 * The value for the id_classe field.
+	 * Note: this column has a database default value of: -1
+	 * @var        int
+	 */
+	protected $id_classe;
 
 	/**
 	 * The value for the created_at field.
@@ -107,6 +121,16 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	protected $aEdtEmplacementCours;
 
 	/**
+	 * @var        Groupe
+	 */
+	protected $aGroupe;
+
+	/**
+	 * @var        Classe
+	 */
+	protected $aClasse;
+
+	/**
 	 * @var        array JTraitementSaisieEleve[] Collection to store aggregation of JTraitementSaisieEleve objects.
 	 */
 	protected $collJTraitementSaisieEleves;
@@ -139,8 +163,10 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function applyDefaultValues()
 	{
 		$this->eleve_id = -1;
-		$this->id_edt_creneau = 0;
-		$this->id_edt_emplacement_cours = 0;
+		$this->id_edt_creneau = -1;
+		$this->id_edt_emplacement_cours = -1;
+		$this->id_groupe = -1;
+		$this->id_classe = -1;
 	}
 
 	/**
@@ -277,6 +303,26 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function getIdEdtEmplacementCours()
 	{
 		return $this->id_edt_emplacement_cours;
+	}
+
+	/**
+	 * Get the [id_groupe] column value.
+	 * identifiant du groupe pour lequel la saisie a ete effectuee
+	 * @return     int
+	 */
+	public function getIdGroupe()
+	{
+		return $this->id_groupe;
+	}
+
+	/**
+	 * Get the [id_classe] column value.
+	 * identifiant de la classe pour lequel la saisie a ete effectuee
+	 * @return     int
+	 */
+	public function getIdClasse()
+	{
+		return $this->id_classe;
 	}
 
 	/**
@@ -590,6 +636,54 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	} // setIdEdtEmplacementCours()
 
 	/**
+	 * Set the value of [id_groupe] column.
+	 * identifiant du groupe pour lequel la saisie a ete effectuee
+	 * @param      int $v new value
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function setIdGroupe($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->id_groupe !== $v || $this->isNew()) {
+			$this->id_groupe = $v;
+			$this->modifiedColumns[] = AbsenceEleveSaisiePeer::ID_GROUPE;
+		}
+
+		if ($this->aGroupe !== null && $this->aGroupe->getId() !== $v) {
+			$this->aGroupe = null;
+		}
+
+		return $this;
+	} // setIdGroupe()
+
+	/**
+	 * Set the value of [id_classe] column.
+	 * identifiant de la classe pour lequel la saisie a ete effectuee
+	 * @param      int $v new value
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function setIdClasse($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->id_classe !== $v || $this->isNew()) {
+			$this->id_classe = $v;
+			$this->modifiedColumns[] = AbsenceEleveSaisiePeer::ID_CLASSE;
+		}
+
+		if ($this->aClasse !== null && $this->aClasse->getId() !== $v) {
+			$this->aClasse = null;
+		}
+
+		return $this;
+	} // setIdClasse()
+
+	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
@@ -701,11 +795,19 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				return false;
 			}
 
-			if ($this->id_edt_creneau !== 0) {
+			if ($this->id_edt_creneau !== -1) {
 				return false;
 			}
 
-			if ($this->id_edt_emplacement_cours !== 0) {
+			if ($this->id_edt_emplacement_cours !== -1) {
+				return false;
+			}
+
+			if ($this->id_groupe !== -1) {
+				return false;
+			}
+
+			if ($this->id_classe !== -1) {
 				return false;
 			}
 
@@ -739,8 +841,10 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$this->fin_abs = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
 			$this->id_edt_creneau = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
 			$this->id_edt_emplacement_cours = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
-			$this->created_at = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
-			$this->updated_at = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+			$this->id_groupe = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+			$this->id_classe = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+			$this->created_at = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
+			$this->updated_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -749,7 +853,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 10; // 10 = AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 12; // 12 = AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveSaisie object", $e);
@@ -783,6 +887,12 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		}
 		if ($this->aEdtEmplacementCours !== null && $this->id_edt_emplacement_cours !== $this->aEdtEmplacementCours->getIdCours()) {
 			$this->aEdtEmplacementCours = null;
+		}
+		if ($this->aGroupe !== null && $this->id_groupe !== $this->aGroupe->getId()) {
+			$this->aGroupe = null;
+		}
+		if ($this->aClasse !== null && $this->id_classe !== $this->aClasse->getId()) {
+			$this->aClasse = null;
 		}
 	} // ensureConsistency
 
@@ -827,6 +937,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$this->aEleve = null;
 			$this->aEdtCreneau = null;
 			$this->aEdtEmplacementCours = null;
+			$this->aGroupe = null;
+			$this->aClasse = null;
 			$this->collJTraitementSaisieEleves = null;
 
 		} // if (deep)
@@ -980,6 +1092,20 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->setEdtEmplacementCours($this->aEdtEmplacementCours);
 			}
 
+			if ($this->aGroupe !== null) {
+				if ($this->aGroupe->isModified() || $this->aGroupe->isNew()) {
+					$affectedRows += $this->aGroupe->save($con);
+				}
+				$this->setGroupe($this->aGroupe);
+			}
+
+			if ($this->aClasse !== null) {
+				if ($this->aClasse->isModified() || $this->aClasse->isNew()) {
+					$affectedRows += $this->aClasse->save($con);
+				}
+				$this->setClasse($this->aClasse);
+			}
+
 			if ($this->isNew() ) {
 				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::ID;
 			}
@@ -1106,6 +1232,18 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->aGroupe !== null) {
+				if (!$this->aGroupe->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aGroupe->getValidationFailures());
+				}
+			}
+
+			if ($this->aClasse !== null) {
+				if (!$this->aClasse->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aClasse->getValidationFailures());
+				}
+			}
+
 
 			if (($retval = AbsenceEleveSaisiePeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
@@ -1178,9 +1316,15 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				return $this->getIdEdtEmplacementCours();
 				break;
 			case 8:
-				return $this->getCreatedAt();
+				return $this->getIdGroupe();
 				break;
 			case 9:
+				return $this->getIdClasse();
+				break;
+			case 10:
+				return $this->getCreatedAt();
+				break;
+			case 11:
 				return $this->getUpdatedAt();
 				break;
 			default:
@@ -1215,8 +1359,10 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$keys[5] => $this->getFinAbs(),
 			$keys[6] => $this->getIdEdtCreneau(),
 			$keys[7] => $this->getIdEdtEmplacementCours(),
-			$keys[8] => $this->getCreatedAt(),
-			$keys[9] => $this->getUpdatedAt(),
+			$keys[8] => $this->getIdGroupe(),
+			$keys[9] => $this->getIdClasse(),
+			$keys[10] => $this->getCreatedAt(),
+			$keys[11] => $this->getUpdatedAt(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
@@ -1230,6 +1376,12 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			}
 			if (null !== $this->aEdtEmplacementCours) {
 				$result['EdtEmplacementCours'] = $this->aEdtEmplacementCours->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aGroupe) {
+				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aClasse) {
+				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns, true);
 			}
 		}
 		return $result;
@@ -1287,9 +1439,15 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->setIdEdtEmplacementCours($value);
 				break;
 			case 8:
-				$this->setCreatedAt($value);
+				$this->setIdGroupe($value);
 				break;
 			case 9:
+				$this->setIdClasse($value);
+				break;
+			case 10:
+				$this->setCreatedAt($value);
+				break;
+			case 11:
 				$this->setUpdatedAt($value);
 				break;
 		} // switch()
@@ -1324,8 +1482,10 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if (array_key_exists($keys[5], $arr)) $this->setFinAbs($arr[$keys[5]]);
 		if (array_key_exists($keys[6], $arr)) $this->setIdEdtCreneau($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setIdEdtEmplacementCours($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setCreatedAt($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setUpdatedAt($arr[$keys[9]]);
+		if (array_key_exists($keys[8], $arr)) $this->setIdGroupe($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setIdClasse($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setCreatedAt($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setUpdatedAt($arr[$keys[11]]);
 	}
 
 	/**
@@ -1345,6 +1505,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::FIN_ABS)) $criteria->add(AbsenceEleveSaisiePeer::FIN_ABS, $this->fin_abs);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU)) $criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $this->id_edt_creneau);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS)) $criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_edt_emplacement_cours);
+		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_GROUPE)) $criteria->add(AbsenceEleveSaisiePeer::ID_GROUPE, $this->id_groupe);
+		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_CLASSE)) $criteria->add(AbsenceEleveSaisiePeer::ID_CLASSE, $this->id_classe);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::CREATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::UPDATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::UPDATED_AT, $this->updated_at);
 
@@ -1415,6 +1577,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$copyObj->setFinAbs($this->fin_abs);
 		$copyObj->setIdEdtCreneau($this->id_edt_creneau);
 		$copyObj->setIdEdtEmplacementCours($this->id_edt_emplacement_cours);
+		$copyObj->setIdGroupe($this->id_groupe);
+		$copyObj->setIdClasse($this->id_classe);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
 
@@ -1582,7 +1746,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function setEdtCreneau(EdtCreneau $v = null)
 	{
 		if ($v === null) {
-			$this->setIdEdtCreneau(0);
+			$this->setIdEdtCreneau(-1);
 		} else {
 			$this->setIdEdtCreneau($v->getIdDefiniePeriode());
 		}
@@ -1631,7 +1795,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function setEdtEmplacementCours(EdtEmplacementCours $v = null)
 	{
 		if ($v === null) {
-			$this->setIdEdtEmplacementCours(0);
+			$this->setIdEdtEmplacementCours(-1);
 		} else {
 			$this->setIdEdtEmplacementCours($v->getIdCours());
 		}
@@ -1668,6 +1832,104 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			 */
 		}
 		return $this->aEdtEmplacementCours;
+	}
+
+	/**
+	 * Declares an association between this object and a Groupe object.
+	 *
+	 * @param      Groupe $v
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setGroupe(Groupe $v = null)
+	{
+		if ($v === null) {
+			$this->setIdGroupe(-1);
+		} else {
+			$this->setIdGroupe($v->getId());
+		}
+
+		$this->aGroupe = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the Groupe object, it will not be re-added.
+		if ($v !== null) {
+			$v->addAbsenceEleveSaisie($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated Groupe object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     Groupe The associated Groupe object.
+	 * @throws     PropelException
+	 */
+	public function getGroupe(PropelPDO $con = null)
+	{
+		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
+			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe);
+			/* The following can be used additionally to
+			   guarantee the related object contains a reference
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aGroupe->addAbsenceEleveSaisies($this);
+			 */
+		}
+		return $this->aGroupe;
+	}
+
+	/**
+	 * Declares an association between this object and a Classe object.
+	 *
+	 * @param      Classe $v
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setClasse(Classe $v = null)
+	{
+		if ($v === null) {
+			$this->setIdClasse(-1);
+		} else {
+			$this->setIdClasse($v->getId());
+		}
+
+		$this->aClasse = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the Classe object, it will not be re-added.
+		if ($v !== null) {
+			$v->addAbsenceEleveSaisie($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated Classe object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     Classe The associated Classe object.
+	 * @throws     PropelException
+	 */
+	public function getClasse(PropelPDO $con = null)
+	{
+		if ($this->aClasse === null && ($this->id_classe !== null)) {
+			$this->aClasse = ClasseQuery::create()->findPk($this->id_classe);
+			/* The following can be used additionally to
+			   guarantee the related object contains a reference
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aClasse->addAbsenceEleveSaisies($this);
+			 */
+		}
+		return $this->aClasse;
 	}
 
 	/**
@@ -1925,6 +2187,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->fin_abs = null;
 		$this->id_edt_creneau = null;
 		$this->id_edt_emplacement_cours = null;
+		$this->id_groupe = null;
+		$this->id_classe = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->clearAllReferences();
@@ -1956,6 +2220,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->aEleve = null;
 		$this->aEdtCreneau = null;
 		$this->aEdtEmplacementCours = null;
+		$this->aGroupe = null;
+		$this->aClasse = null;
 	}
 
 	// timestampable behavior

@@ -407,26 +407,30 @@
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire de l'utilisateur"/>
     <column name="debut_abs" required="false" type="TIME" description="Debut de l'absence en timestamp UNIX"/>
     <column name="fin_abs" required="false" type="TIME" description="Fin de l'absence en timestamp UNIX"/>
-    <column name="id_edt_creneau" required="false" type="INTEGER" size="12" default="0" description="identifiant du creneaux de l'emploi du temps"/>
+    <column name="id_edt_creneau" required="false" type="INTEGER" size="12" default="-1" description="identifiant du creneaux de l'emploi du temps"/>
     <foreign-key foreignTable="edt_creneaux" onDelete="setnull"><reference local="id_edt_creneau" foreign="id_definie_periode"/></foreign-key>
-    <column name="id_edt_emplacement_cours" required="false" type="INTEGER" size="12" default="0" description="identifiant du cours de l'emploi du temps"/>
+    <column name="id_edt_emplacement_cours" required="false" type="INTEGER" size="12" default="-1" description="identifiant du cours de l'emploi du temps"/>
     <foreign-key foreignTable="edt_cours" onDelete="setnull"><reference local="id_edt_emplacement_cours" foreign="id_cours"/></foreign-key>
+    <column name="id_groupe" required="false" type="INTEGER" default="-1" description="identifiant du groupe pour lequel la saisie a ete effectuee"/>
+    <foreign-key foreignTable="groupes" onDelete="setnull"><reference local="id_groupe" foreign="id"/></foreign-key>
+    <column name="id_classe" required="false" type="INTEGER" default="-1" description="identifiant de la classe pour lequel la saisie a ete effectuee"/>
+    <foreign-key foreignTable="classes" onDelete="setnull"><reference local="id_classe" foreign="id"/></foreign-key>
     <behavior name="timestampable" />
   </table>
 
   <table name="a_traitements" phpName="AbsenceEleveTraitement" description="Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incremente"/>
-    <column name="utilisateur_id" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel qui a fait le traitement"/>
+    <column name="utilisateur_id" type="VARCHAR" size="100" default="-1" description="Login de l'utilisateur professionnel qui a fait le traitement"/>
 	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
     <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
-    <column name="a_type_id" type="INTEGER" size="4" description="cle etrangere du type d'absence"/>
+    <column name="a_type_id" type="INTEGER" default="-1" size="4" description="cle etrangere du type d'absence"/>
     <foreign-key foreignTable="a_types" onDelete="setnull"><reference local="a_type_id" foreign="id"/></foreign-key>
-    <column name="a_motif_id" type="INTEGER" size="4" description="cle etrangere du motif d'absence"/>
+    <column name="a_motif_id" type="INTEGER" default="-1" size="4" description="cle etrangere du motif d'absence"/>
     <foreign-key foreignTable="a_motifs" onDelete="setnull"><reference local="a_motif_id" foreign="id"/></foreign-key>
-    <column name="a_justification_id" type="INTEGER" size="4" description="cle etrangere de la justification de l'absence"/>
+    <column name="a_justification_id" type="INTEGER" default="-1" size="4" description="cle etrangere de la justification de l'absence"/>
     <foreign-key foreignTable="a_justifications" onDelete="setnull"><reference local="a_justification_id" foreign="id"/></foreign-key>
-    <column name="texte_justification" required="true" type="VARCHAR" size="250" description="Texte additionnel à ce traitement"/>
-    <column name="a_action_id" type="INTEGER" size="4" description="cle etrangere de l'action sur ce traitement"/>
+    <column name="texte_justification" required="false" type="VARCHAR" size="250" description="Texte additionnel à ce traitement"/>
+    <column name="a_action_id" type="INTEGER" size="4" default="-1" description="cle etrangere de l'action sur ce traitement"/>
     <foreign-key foreignTable="a_actions" onDelete="setnull"><reference local="a_action_id" foreign="id"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
     <behavior name="timestampable" />
@@ -434,21 +438,21 @@
 
   <table name="j_traitements_saisies" phpName="JTraitementSaisieEleve" description="Table de jointure entre la saisie et le traitement des absences" isCrossRef="true">
     <column name="a_saisie_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de l'absence saisie"/>
-    <foreign-key foreignTable="a_saisies" onDelete="setnull"><reference local="a_saisie_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_saisies" onDelete="cascade"><reference local="a_saisie_id" foreign="id"/></foreign-key>
     <column name="a_traitement_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere du traitement de ces absences"/>
-    <foreign-key foreignTable="a_traitements" onDelete="setnull"><reference local="a_traitement_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_traitements" onDelete="cascade"><reference local="a_traitement_id" foreign="id"/></foreign-key>
   </table>
 
   <table name="a_envois" phpName="AbsenceEleveEnvoi" description="Chaque envoi est repertorie ici">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
 	<!-- si un utilisateur est supprime, on ne supprime pas les absences saisies par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
-    <column name="utilisateur_id" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel qui a lance l'envoi"/>
+    <column name="utilisateur_id" type="VARCHAR" default="-1" size="100" description="Login de l'utilisateur professionnel qui a lance l'envoi"/>
     <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
-    <column name="id_type_envoi" required="true" type="INTEGER" size="4" description="id du type de l'envoi"/>
+    <column name="id_type_envoi" required="true" type="INTEGER" default="-1" size="4" description="id du type de l'envoi"/>
     <foreign-key foreignTable="a_type_envois" onDelete="setnull"><reference local="id_type_envoi" foreign="id"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
-    <column name="statut_envoi" required="true" type="VARCHAR" size="20" default="0" description="Statut de cet envoi (envoye, en cours,...)"/>
-    <column name="date_envoi" required="true" type="TIME" description="Date en timestamp UNIX de l'envoi"/>
+    <column name="statut_envoi" required="false" type="VARCHAR" size="20" default="0" description="Statut de cet envoi (envoye, en cours,...)"/>
+    <column name="date_envoi" required="false" type="TIME" description="Date en timestamp UNIX de l'envoi"/>
     <behavior name="timestampable" />
   </table>
 
@@ -461,9 +465,9 @@
 
   <table name="j_traitements_envois" phpName="JTraitementEnvoiEleve" description="Table de jointure entre le traitement des absences et leur envoi" isCrossRef="true">
     <column name="a_envoi_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de l'envoi"/>
-    <foreign-key foreignTable="a_envois" onDelete="setnull"><reference local="a_envoi_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_envois" onDelete="cascade"><reference local="a_envoi_id" foreign="id"/></foreign-key>
     <column name="a_traitement_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere du traitement de ces absences"/>
-    <foreign-key foreignTable="a_traitements" onDelete="setnull"><reference local="a_traitement_id" foreign="id"/></foreign-key>
+    <foreign-key foreignTable="a_traitements" onDelete="cascade"><reference local="a_traitement_id" foreign="id"/></foreign-key>
   </table>
 <!-- fin objets propel generes pour absence2-->
 

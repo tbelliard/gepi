@@ -14,6 +14,8 @@
  * @method     AbsenceEleveSaisieQuery orderByFinAbs($order = Criteria::ASC) Order by the fin_abs column
  * @method     AbsenceEleveSaisieQuery orderByIdEdtCreneau($order = Criteria::ASC) Order by the id_edt_creneau column
  * @method     AbsenceEleveSaisieQuery orderByIdEdtEmplacementCours($order = Criteria::ASC) Order by the id_edt_emplacement_cours column
+ * @method     AbsenceEleveSaisieQuery orderByIdGroupe($order = Criteria::ASC) Order by the id_groupe column
+ * @method     AbsenceEleveSaisieQuery orderByIdClasse($order = Criteria::ASC) Order by the id_classe column
  * @method     AbsenceEleveSaisieQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     AbsenceEleveSaisieQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -25,6 +27,8 @@
  * @method     AbsenceEleveSaisieQuery groupByFinAbs() Group by the fin_abs column
  * @method     AbsenceEleveSaisieQuery groupByIdEdtCreneau() Group by the id_edt_creneau column
  * @method     AbsenceEleveSaisieQuery groupByIdEdtEmplacementCours() Group by the id_edt_emplacement_cours column
+ * @method     AbsenceEleveSaisieQuery groupByIdGroupe() Group by the id_groupe column
+ * @method     AbsenceEleveSaisieQuery groupByIdClasse() Group by the id_classe column
  * @method     AbsenceEleveSaisieQuery groupByCreatedAt() Group by the created_at column
  * @method     AbsenceEleveSaisieQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -48,6 +52,14 @@
  * @method     AbsenceEleveSaisieQuery rightJoinEdtEmplacementCours($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
  * @method     AbsenceEleveSaisieQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
+ * @method     AbsenceEleveSaisieQuery leftJoinGroupe($relationAlias = '') Adds a LEFT JOIN clause to the query using the Groupe relation
+ * @method     AbsenceEleveSaisieQuery rightJoinGroupe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Groupe relation
+ * @method     AbsenceEleveSaisieQuery innerJoinGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the Groupe relation
+ *
+ * @method     AbsenceEleveSaisieQuery leftJoinClasse($relationAlias = '') Adds a LEFT JOIN clause to the query using the Classe relation
+ * @method     AbsenceEleveSaisieQuery rightJoinClasse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Classe relation
+ * @method     AbsenceEleveSaisieQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
+ *
  * @method     AbsenceEleveSaisieQuery leftJoinJTraitementSaisieEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the JTraitementSaisieEleve relation
  * @method     AbsenceEleveSaisieQuery rightJoinJTraitementSaisieEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JTraitementSaisieEleve relation
  * @method     AbsenceEleveSaisieQuery innerJoinJTraitementSaisieEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the JTraitementSaisieEleve relation
@@ -61,6 +73,8 @@
  * @method     AbsenceEleveSaisie findOneByFinAbs(string $fin_abs) Return the first AbsenceEleveSaisie filtered by the fin_abs column
  * @method     AbsenceEleveSaisie findOneByIdEdtCreneau(int $id_edt_creneau) Return the first AbsenceEleveSaisie filtered by the id_edt_creneau column
  * @method     AbsenceEleveSaisie findOneByIdEdtEmplacementCours(int $id_edt_emplacement_cours) Return the first AbsenceEleveSaisie filtered by the id_edt_emplacement_cours column
+ * @method     AbsenceEleveSaisie findOneByIdGroupe(int $id_groupe) Return the first AbsenceEleveSaisie filtered by the id_groupe column
+ * @method     AbsenceEleveSaisie findOneByIdClasse(int $id_classe) Return the first AbsenceEleveSaisie filtered by the id_classe column
  * @method     AbsenceEleveSaisie findOneByCreatedAt(string $created_at) Return the first AbsenceEleveSaisie filtered by the created_at column
  * @method     AbsenceEleveSaisie findOneByUpdatedAt(string $updated_at) Return the first AbsenceEleveSaisie filtered by the updated_at column
  *
@@ -72,6 +86,8 @@
  * @method     array findByFinAbs(string $fin_abs) Return AbsenceEleveSaisie objects filtered by the fin_abs column
  * @method     array findByIdEdtCreneau(int $id_edt_creneau) Return AbsenceEleveSaisie objects filtered by the id_edt_creneau column
  * @method     array findByIdEdtEmplacementCours(int $id_edt_emplacement_cours) Return AbsenceEleveSaisie objects filtered by the id_edt_emplacement_cours column
+ * @method     array findByIdGroupe(int $id_groupe) Return AbsenceEleveSaisie objects filtered by the id_groupe column
+ * @method     array findByIdClasse(int $id_classe) Return AbsenceEleveSaisie objects filtered by the id_classe column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveSaisie objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return AbsenceEleveSaisie objects filtered by the updated_at column
  *
@@ -380,6 +396,62 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query on the id_groupe column
+	 * 
+	 * @param     int|array $idGroupe The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function filterByIdGroupe($idGroupe = null, $comparison = Criteria::EQUAL)
+	{
+		if (is_array($idGroupe)) {
+			if (array_values($idGroupe) === $idGroupe) {
+				return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $idGroupe, Criteria::IN);
+			} else {
+				if (isset($idGroupe['min'])) {
+					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $idGroupe['min'], Criteria::GREATER_EQUAL);
+				}
+				if (isset($idGroupe['max'])) {
+					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $idGroupe['max'], Criteria::LESS_EQUAL);
+				}
+				return $this;	
+			}
+		} else {
+			return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $idGroupe, $comparison);
+		}
+	}
+
+	/**
+	 * Filter the query on the id_classe column
+	 * 
+	 * @param     int|array $idClasse The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function filterByIdClasse($idClasse = null, $comparison = Criteria::EQUAL)
+	{
+		if (is_array($idClasse)) {
+			if (array_values($idClasse) === $idClasse) {
+				return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $idClasse, Criteria::IN);
+			} else {
+				if (isset($idClasse['min'])) {
+					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $idClasse['min'], Criteria::GREATER_EQUAL);
+				}
+				if (isset($idClasse['max'])) {
+					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $idClasse['max'], Criteria::LESS_EQUAL);
+				}
+				return $this;	
+			}
+		} else {
+			return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $idClasse, $comparison);
+		}
+	}
+
+	/**
 	 * Filter the query on the created_at column
 	 * 
 	 * @param     string|array $createdAt The value to use as filter.
@@ -677,6 +749,128 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		return $this
 			->joinEdtEmplacementCours($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'EdtEmplacementCours', 'EdtEmplacementCoursQuery');
+	}
+
+	/**
+	 * Filter the query by a related Groupe object
+	 *
+	 * @param     Groupe $groupe  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function filterByGroupe($groupe, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $groupe->getId(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the Groupe relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function joinGroupe($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('Groupe');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'Groupe');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the Groupe relation Groupe object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    GroupeQuery A secondary query class using the current class as primary query
+	 */
+	public function useGroupeQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinGroupe($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'Groupe', 'GroupeQuery');
+	}
+
+	/**
+	 * Filter the query by a related Classe object
+	 *
+	 * @param     Classe $classe  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function filterByClasse($classe, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $classe->getId(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the Classe relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function joinClasse($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('Classe');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'Classe');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the Classe relation Classe object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    ClasseQuery A secondary query class using the current class as primary query
+	 */
+	public function useClasseQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinClasse($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'Classe', 'ClasseQuery');
 	}
 
 	/**

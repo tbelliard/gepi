@@ -46,8 +46,8 @@ class JTraitementEnvoiEleveTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('AbsenceEleveEnvoi', 'AbsenceEleveEnvoi', RelationMap::MANY_TO_ONE, array('a_envoi_id' => 'id', ), 'SET NULL', null);
-    $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_ONE, array('a_traitement_id' => 'id', ), 'SET NULL', null);
+    $this->addRelation('AbsenceEleveEnvoi', 'AbsenceEleveEnvoi', RelationMap::MANY_TO_ONE, array('a_envoi_id' => 'id', ), 'CASCADE', null);
+    $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_ONE, array('a_traitement_id' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JTraitementEnvoiEleveTableMap

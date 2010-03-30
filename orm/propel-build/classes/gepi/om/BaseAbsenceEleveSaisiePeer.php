@@ -25,7 +25,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	const TM_CLASS = 'AbsenceEleveSaisieTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 10;
+	const NUM_COLUMNS = 12;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -54,6 +54,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	/** the column name for the ID_EDT_EMPLACEMENT_COURS field */
 	const ID_EDT_EMPLACEMENT_COURS = 'a_saisies.ID_EDT_EMPLACEMENT_COURS';
 
+	/** the column name for the ID_GROUPE field */
+	const ID_GROUPE = 'a_saisies.ID_GROUPE';
+
+	/** the column name for the ID_CLASSE field */
+	const ID_CLASSE = 'a_saisies.ID_CLASSE';
+
 	/** the column name for the CREATED_AT field */
 	const CREATED_AT = 'a_saisies.CREATED_AT';
 
@@ -76,12 +82,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'EleveId', 'Commentaire', 'DebutAbs', 'FinAbs', 'IdEdtCreneau', 'IdEdtEmplacementCours', 'CreatedAt', 'UpdatedAt', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'eleveId', 'commentaire', 'debutAbs', 'finAbs', 'idEdtCreneau', 'idEdtEmplacementCours', 'createdAt', 'updatedAt', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::ELEVE_ID, self::COMMENTAIRE, self::DEBUT_ABS, self::FIN_ABS, self::ID_EDT_CRENEAU, self::ID_EDT_EMPLACEMENT_COURS, self::CREATED_AT, self::UPDATED_AT, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'UTILISATEUR_ID', 'ELEVE_ID', 'COMMENTAIRE', 'DEBUT_ABS', 'FIN_ABS', 'ID_EDT_CRENEAU', 'ID_EDT_EMPLACEMENT_COURS', 'CREATED_AT', 'UPDATED_AT', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'eleve_id', 'commentaire', 'debut_abs', 'fin_abs', 'id_edt_creneau', 'id_edt_emplacement_cours', 'created_at', 'updated_at', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'EleveId', 'Commentaire', 'DebutAbs', 'FinAbs', 'IdEdtCreneau', 'IdEdtEmplacementCours', 'IdGroupe', 'IdClasse', 'CreatedAt', 'UpdatedAt', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'eleveId', 'commentaire', 'debutAbs', 'finAbs', 'idEdtCreneau', 'idEdtEmplacementCours', 'idGroupe', 'idClasse', 'createdAt', 'updatedAt', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::ELEVE_ID, self::COMMENTAIRE, self::DEBUT_ABS, self::FIN_ABS, self::ID_EDT_CRENEAU, self::ID_EDT_EMPLACEMENT_COURS, self::ID_GROUPE, self::ID_CLASSE, self::CREATED_AT, self::UPDATED_AT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'UTILISATEUR_ID', 'ELEVE_ID', 'COMMENTAIRE', 'DEBUT_ABS', 'FIN_ABS', 'ID_EDT_CRENEAU', 'ID_EDT_EMPLACEMENT_COURS', 'ID_GROUPE', 'ID_CLASSE', 'CREATED_AT', 'UPDATED_AT', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'eleve_id', 'commentaire', 'debut_abs', 'fin_abs', 'id_edt_creneau', 'id_edt_emplacement_cours', 'id_groupe', 'id_classe', 'created_at', 'updated_at', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
 	);
 
 	/**
@@ -91,12 +97,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'EleveId' => 2, 'Commentaire' => 3, 'DebutAbs' => 4, 'FinAbs' => 5, 'IdEdtCreneau' => 6, 'IdEdtEmplacementCours' => 7, 'CreatedAt' => 8, 'UpdatedAt' => 9, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'eleveId' => 2, 'commentaire' => 3, 'debutAbs' => 4, 'finAbs' => 5, 'idEdtCreneau' => 6, 'idEdtEmplacementCours' => 7, 'createdAt' => 8, 'updatedAt' => 9, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::ELEVE_ID => 2, self::COMMENTAIRE => 3, self::DEBUT_ABS => 4, self::FIN_ABS => 5, self::ID_EDT_CRENEAU => 6, self::ID_EDT_EMPLACEMENT_COURS => 7, self::CREATED_AT => 8, self::UPDATED_AT => 9, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'UTILISATEUR_ID' => 1, 'ELEVE_ID' => 2, 'COMMENTAIRE' => 3, 'DEBUT_ABS' => 4, 'FIN_ABS' => 5, 'ID_EDT_CRENEAU' => 6, 'ID_EDT_EMPLACEMENT_COURS' => 7, 'CREATED_AT' => 8, 'UPDATED_AT' => 9, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'eleve_id' => 2, 'commentaire' => 3, 'debut_abs' => 4, 'fin_abs' => 5, 'id_edt_creneau' => 6, 'id_edt_emplacement_cours' => 7, 'created_at' => 8, 'updated_at' => 9, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'EleveId' => 2, 'Commentaire' => 3, 'DebutAbs' => 4, 'FinAbs' => 5, 'IdEdtCreneau' => 6, 'IdEdtEmplacementCours' => 7, 'IdGroupe' => 8, 'IdClasse' => 9, 'CreatedAt' => 10, 'UpdatedAt' => 11, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'eleveId' => 2, 'commentaire' => 3, 'debutAbs' => 4, 'finAbs' => 5, 'idEdtCreneau' => 6, 'idEdtEmplacementCours' => 7, 'idGroupe' => 8, 'idClasse' => 9, 'createdAt' => 10, 'updatedAt' => 11, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::ELEVE_ID => 2, self::COMMENTAIRE => 3, self::DEBUT_ABS => 4, self::FIN_ABS => 5, self::ID_EDT_CRENEAU => 6, self::ID_EDT_EMPLACEMENT_COURS => 7, self::ID_GROUPE => 8, self::ID_CLASSE => 9, self::CREATED_AT => 10, self::UPDATED_AT => 11, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'UTILISATEUR_ID' => 1, 'ELEVE_ID' => 2, 'COMMENTAIRE' => 3, 'DEBUT_ABS' => 4, 'FIN_ABS' => 5, 'ID_EDT_CRENEAU' => 6, 'ID_EDT_EMPLACEMENT_COURS' => 7, 'ID_GROUPE' => 8, 'ID_CLASSE' => 9, 'CREATED_AT' => 10, 'UPDATED_AT' => 11, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'eleve_id' => 2, 'commentaire' => 3, 'debut_abs' => 4, 'fin_abs' => 5, 'id_edt_creneau' => 6, 'id_edt_emplacement_cours' => 7, 'id_groupe' => 8, 'id_classe' => 9, 'created_at' => 10, 'updated_at' => 11, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
 	);
 
 	/**
@@ -176,6 +182,8 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::FIN_ABS);
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU);
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS);
+			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::ID_GROUPE);
+			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::ID_CLASSE);
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::CREATED_AT);
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::UPDATED_AT);
 		} else {
@@ -187,6 +195,8 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			$criteria->addSelectColumn($alias . '.FIN_ABS');
 			$criteria->addSelectColumn($alias . '.ID_EDT_CRENEAU');
 			$criteria->addSelectColumn($alias . '.ID_EDT_EMPLACEMENT_COURS');
+			$criteria->addSelectColumn($alias . '.ID_GROUPE');
+			$criteria->addSelectColumn($alias . '.ID_CLASSE');
 			$criteria->addSelectColumn($alias . '.CREATED_AT');
 			$criteria->addSelectColumn($alias . '.UPDATED_AT');
 		}
@@ -678,6 +688,106 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 
 	/**
+	 * Returns the number of rows matching criteria, joining the related Groupe table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinGroupe(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveSaisiePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related Classe table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinClasse(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveSaisiePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
 	 * Selects a collection of AbsenceEleveSaisie objects pre-filled with their UtilisateurProfessionnel objects.
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
@@ -942,6 +1052,138 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 
 	/**
+	 * Selects a collection of AbsenceEleveSaisie objects pre-filled with their Groupe objects.
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of AbsenceEleveSaisie objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinGroupe(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+		$startcol = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		GroupePeer::addSelectColumns($criteria);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = AbsenceEleveSaisiePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = AbsenceEleveSaisiePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+
+				$cls = AbsenceEleveSaisiePeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				AbsenceEleveSaisiePeer::addInstanceToPool($obj1, $key1);
+			} // if $obj1 already loaded
+
+			$key2 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol);
+			if ($key2 !== null) {
+				$obj2 = GroupePeer::getInstanceFromPool($key2);
+				if (!$obj2) {
+
+					$cls = GroupePeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol);
+					GroupePeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to $obj2 (Groupe)
+				$obj2->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row was not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of AbsenceEleveSaisie objects pre-filled with their Classe objects.
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of AbsenceEleveSaisie objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinClasse(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+		$startcol = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		ClassePeer::addSelectColumns($criteria);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = AbsenceEleveSaisiePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = AbsenceEleveSaisiePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+
+				$cls = AbsenceEleveSaisiePeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				AbsenceEleveSaisiePeer::addInstanceToPool($obj1, $key1);
+			} // if $obj1 already loaded
+
+			$key2 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol);
+			if ($key2 !== null) {
+				$obj2 = ClassePeer::getInstanceFromPool($key2);
+				if (!$obj2) {
+
+					$cls = ClassePeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol);
+					ClassePeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to $obj2 (Classe)
+				$obj2->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row was not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
 	 * @param      Criteria $criteria
@@ -984,6 +1226,10 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -1030,6 +1276,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
 		$startcol6 = $startcol5 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
 
+		GroupePeer::addSelectColumns($criteria);
+		$startcol7 = $startcol6 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		ClassePeer::addSelectColumns($criteria);
+		$startcol8 = $startcol7 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
@@ -1037,6 +1289,10 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -1127,6 +1383,42 @@ abstract class BaseAbsenceEleveSaisiePeer {
 				$obj5->addAbsenceEleveSaisie($obj1);
 			} // if joined row not null
 
+			// Add objects for joined Groupe rows
+
+			$key6 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol6);
+			if ($key6 !== null) {
+				$obj6 = GroupePeer::getInstanceFromPool($key6);
+				if (!$obj6) {
+
+					$cls = GroupePeer::getOMClass(false);
+
+					$obj6 = new $cls();
+					$obj6->hydrate($row, $startcol6);
+					GroupePeer::addInstanceToPool($obj6, $key6);
+				} // if obj6 loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj6 (Groupe)
+				$obj6->addAbsenceEleveSaisie($obj1);
+			} // if joined row not null
+
+			// Add objects for joined Classe rows
+
+			$key7 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol7);
+			if ($key7 !== null) {
+				$obj7 = ClassePeer::getInstanceFromPool($key7);
+				if (!$obj7) {
+
+					$cls = ClassePeer::getOMClass(false);
+
+					$obj7 = new $cls();
+					$obj7->hydrate($row, $startcol7);
+					ClassePeer::addInstanceToPool($obj7, $key7);
+				} // if obj7 loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj7 (Classe)
+				$obj7->addAbsenceEleveSaisie($obj1);
+			} // if joined row not null
+
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -1175,6 +1467,10 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -1230,6 +1526,10 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
 
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1283,6 +1583,10 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -1338,6 +1642,126 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
 
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related Groupe table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptGroupe(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
+		
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveSaisiePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related Classe table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptClasse(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
+		
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveSaisiePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1383,11 +1807,21 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
 		$startcol5 = $startcol4 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
 
+		GroupePeer::addSelectColumns($criteria);
+		$startcol6 = $startcol5 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		ClassePeer::addSelectColumns($criteria);
+		$startcol7 = $startcol6 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1464,6 +1898,44 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 			} // if joined row is not null
 
+				// Add objects for joined Groupe rows
+
+				$key5 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol5);
+				if ($key5 !== null) {
+					$obj5 = GroupePeer::getInstanceFromPool($key5);
+					if (!$obj5) {
+	
+						$cls = GroupePeer::getOMClass(false);
+
+					$obj5 = new $cls();
+					$obj5->hydrate($row, $startcol5);
+					GroupePeer::addInstanceToPool($obj5, $key5);
+				} // if $obj5 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj5 (Groupe)
+				$obj5->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined Classe rows
+
+				$key6 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol6);
+				if ($key6 !== null) {
+					$obj6 = ClassePeer::getInstanceFromPool($key6);
+					if (!$obj6) {
+	
+						$cls = ClassePeer::getOMClass(false);
+
+					$obj6 = new $cls();
+					$obj6->hydrate($row, $startcol6);
+					ClassePeer::addInstanceToPool($obj6, $key6);
+				} // if $obj6 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj6 (Classe)
+				$obj6->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -1504,11 +1976,21 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
 		$startcol5 = $startcol4 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
 
+		GroupePeer::addSelectColumns($criteria);
+		$startcol6 = $startcol5 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		ClassePeer::addSelectColumns($criteria);
+		$startcol7 = $startcol6 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1585,6 +2067,44 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 			} // if joined row is not null
 
+				// Add objects for joined Groupe rows
+
+				$key5 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol5);
+				if ($key5 !== null) {
+					$obj5 = GroupePeer::getInstanceFromPool($key5);
+					if (!$obj5) {
+	
+						$cls = GroupePeer::getOMClass(false);
+
+					$obj5 = new $cls();
+					$obj5->hydrate($row, $startcol5);
+					GroupePeer::addInstanceToPool($obj5, $key5);
+				} // if $obj5 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj5 (Groupe)
+				$obj5->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined Classe rows
+
+				$key6 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol6);
+				if ($key6 !== null) {
+					$obj6 = ClassePeer::getInstanceFromPool($key6);
+					if (!$obj6) {
+	
+						$cls = ClassePeer::getOMClass(false);
+
+					$obj6 = new $cls();
+					$obj6->hydrate($row, $startcol6);
+					ClassePeer::addInstanceToPool($obj6, $key6);
+				} // if $obj6 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj6 (Classe)
+				$obj6->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -1625,11 +2145,21 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
 		$startcol5 = $startcol4 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
 
+		GroupePeer::addSelectColumns($criteria);
+		$startcol6 = $startcol5 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		ClassePeer::addSelectColumns($criteria);
+		$startcol7 = $startcol6 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1706,6 +2236,44 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 			} // if joined row is not null
 
+				// Add objects for joined Groupe rows
+
+				$key5 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol5);
+				if ($key5 !== null) {
+					$obj5 = GroupePeer::getInstanceFromPool($key5);
+					if (!$obj5) {
+	
+						$cls = GroupePeer::getOMClass(false);
+
+					$obj5 = new $cls();
+					$obj5->hydrate($row, $startcol5);
+					GroupePeer::addInstanceToPool($obj5, $key5);
+				} // if $obj5 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj5 (Groupe)
+				$obj5->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined Classe rows
+
+				$key6 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol6);
+				if ($key6 !== null) {
+					$obj6 = ClassePeer::getInstanceFromPool($key6);
+					if (!$obj6) {
+	
+						$cls = ClassePeer::getOMClass(false);
+
+					$obj6 = new $cls();
+					$obj6->hydrate($row, $startcol6);
+					ClassePeer::addInstanceToPool($obj6, $key6);
+				} // if $obj6 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj6 (Classe)
+				$obj6->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -1746,11 +2314,21 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		EdtCreneauPeer::addSelectColumns($criteria);
 		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
 
+		GroupePeer::addSelectColumns($criteria);
+		$startcol6 = $startcol5 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		ClassePeer::addSelectColumns($criteria);
+		$startcol7 = $startcol6 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1824,6 +2402,382 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj4 (EdtCreneau)
 				$obj4->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined Groupe rows
+
+				$key5 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol5);
+				if ($key5 !== null) {
+					$obj5 = GroupePeer::getInstanceFromPool($key5);
+					if (!$obj5) {
+	
+						$cls = GroupePeer::getOMClass(false);
+
+					$obj5 = new $cls();
+					$obj5->hydrate($row, $startcol5);
+					GroupePeer::addInstanceToPool($obj5, $key5);
+				} // if $obj5 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj5 (Groupe)
+				$obj5->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined Classe rows
+
+				$key6 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol6);
+				if ($key6 !== null) {
+					$obj6 = ClassePeer::getInstanceFromPool($key6);
+					if (!$obj6) {
+	
+						$cls = ClassePeer::getOMClass(false);
+
+					$obj6 = new $cls();
+					$obj6->hydrate($row, $startcol6);
+					ClassePeer::addInstanceToPool($obj6, $key6);
+				} // if $obj6 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj6 (Classe)
+				$obj6->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of AbsenceEleveSaisie objects pre-filled with all related objects except Groupe.
+	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of AbsenceEleveSaisie objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptGroupe(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		// $criteria->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		ElevePeer::addSelectColumns($criteria);
+		$startcol4 = $startcol3 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		EdtCreneauPeer::addSelectColumns($criteria);
+		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		EdtEmplacementCoursPeer::addSelectColumns($criteria);
+		$startcol6 = $startcol5 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		ClassePeer::addSelectColumns($criteria);
+		$startcol7 = $startcol6 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = AbsenceEleveSaisiePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = AbsenceEleveSaisiePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = AbsenceEleveSaisiePeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				AbsenceEleveSaisiePeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+				// Add objects for joined UtilisateurProfessionnel rows
+
+				$key2 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj2 (UtilisateurProfessionnel)
+				$obj2->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined Eleve rows
+
+				$key3 = ElevePeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				if ($key3 !== null) {
+					$obj3 = ElevePeer::getInstanceFromPool($key3);
+					if (!$obj3) {
+	
+						$cls = ElevePeer::getOMClass(false);
+
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					ElevePeer::addInstanceToPool($obj3, $key3);
+				} // if $obj3 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj3 (Eleve)
+				$obj3->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined EdtCreneau rows
+
+				$key4 = EdtCreneauPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+				if ($key4 !== null) {
+					$obj4 = EdtCreneauPeer::getInstanceFromPool($key4);
+					if (!$obj4) {
+	
+						$cls = EdtCreneauPeer::getOMClass(false);
+
+					$obj4 = new $cls();
+					$obj4->hydrate($row, $startcol4);
+					EdtCreneauPeer::addInstanceToPool($obj4, $key4);
+				} // if $obj4 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj4 (EdtCreneau)
+				$obj4->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined EdtEmplacementCours rows
+
+				$key5 = EdtEmplacementCoursPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+				if ($key5 !== null) {
+					$obj5 = EdtEmplacementCoursPeer::getInstanceFromPool($key5);
+					if (!$obj5) {
+	
+						$cls = EdtEmplacementCoursPeer::getOMClass(false);
+
+					$obj5 = new $cls();
+					$obj5->hydrate($row, $startcol5);
+					EdtEmplacementCoursPeer::addInstanceToPool($obj5, $key5);
+				} // if $obj5 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj5 (EdtEmplacementCours)
+				$obj5->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined Classe rows
+
+				$key6 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol6);
+				if ($key6 !== null) {
+					$obj6 = ClassePeer::getInstanceFromPool($key6);
+					if (!$obj6) {
+	
+						$cls = ClassePeer::getOMClass(false);
+
+					$obj6 = new $cls();
+					$obj6->hydrate($row, $startcol6);
+					ClassePeer::addInstanceToPool($obj6, $key6);
+				} // if $obj6 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj6 (Classe)
+				$obj6->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Selects a collection of AbsenceEleveSaisie objects pre-filled with all related objects except Classe.
+	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of AbsenceEleveSaisie objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptClasse(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		// $criteria->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
+		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		ElevePeer::addSelectColumns($criteria);
+		$startcol4 = $startcol3 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		EdtCreneauPeer::addSelectColumns($criteria);
+		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		EdtEmplacementCoursPeer::addSelectColumns($criteria);
+		$startcol6 = $startcol5 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+
+		GroupePeer::addSelectColumns($criteria);
+		$startcol7 = $startcol6 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
+
+		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = AbsenceEleveSaisiePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = AbsenceEleveSaisiePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = AbsenceEleveSaisiePeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				AbsenceEleveSaisiePeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+				// Add objects for joined UtilisateurProfessionnel rows
+
+				$key2 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = UtilisateurProfessionnelPeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					UtilisateurProfessionnelPeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj2 (UtilisateurProfessionnel)
+				$obj2->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined Eleve rows
+
+				$key3 = ElevePeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				if ($key3 !== null) {
+					$obj3 = ElevePeer::getInstanceFromPool($key3);
+					if (!$obj3) {
+	
+						$cls = ElevePeer::getOMClass(false);
+
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					ElevePeer::addInstanceToPool($obj3, $key3);
+				} // if $obj3 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj3 (Eleve)
+				$obj3->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined EdtCreneau rows
+
+				$key4 = EdtCreneauPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+				if ($key4 !== null) {
+					$obj4 = EdtCreneauPeer::getInstanceFromPool($key4);
+					if (!$obj4) {
+	
+						$cls = EdtCreneauPeer::getOMClass(false);
+
+					$obj4 = new $cls();
+					$obj4->hydrate($row, $startcol4);
+					EdtCreneauPeer::addInstanceToPool($obj4, $key4);
+				} // if $obj4 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj4 (EdtCreneau)
+				$obj4->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined EdtEmplacementCours rows
+
+				$key5 = EdtEmplacementCoursPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+				if ($key5 !== null) {
+					$obj5 = EdtEmplacementCoursPeer::getInstanceFromPool($key5);
+					if (!$obj5) {
+	
+						$cls = EdtEmplacementCoursPeer::getOMClass(false);
+
+					$obj5 = new $cls();
+					$obj5->hydrate($row, $startcol5);
+					EdtEmplacementCoursPeer::addInstanceToPool($obj5, $key5);
+				} // if $obj5 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj5 (EdtEmplacementCours)
+				$obj5->addAbsenceEleveSaisie($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined Groupe rows
+
+				$key6 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol6);
+				if ($key6 !== null) {
+					$obj6 = GroupePeer::getInstanceFromPool($key6);
+					if (!$obj6) {
+	
+						$cls = GroupePeer::getOMClass(false);
+
+					$obj6 = new $cls();
+					$obj6->hydrate($row, $startcol6);
+					GroupePeer::addInstanceToPool($obj6, $key6);
+				} // if $obj6 already loaded
+
+				// Add the $obj1 (AbsenceEleveSaisie) to the collection in $obj6 (Groupe)
+				$obj6->addAbsenceEleveSaisie($obj1);
 
 			} // if joined row is not null
 
@@ -1970,7 +2924,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			AbsenceEleveSaisiePeer::doOnDeleteSetNull(new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME), $con);
+			$affectedRows += AbsenceEleveSaisiePeer::doOnDeleteCascade(new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(AbsenceEleveSaisiePeer::TABLE_NAME, $con);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -2022,7 +2976,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			AbsenceEleveSaisiePeer::doOnDeleteSetNull($criteria, $con);
+			$affectedRows += AbsenceEleveSaisiePeer::doOnDeleteCascade($criteria, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -2048,7 +3002,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	}
 
 	/**
-	 * This is a method for emulating ON DELETE SET NULL DBs that don't support this
+	 * This is a method for emulating ON DELETE CASCADE for DBs that don't support this
 	 * feature (like MySQL or SQLite).
 	 *
 	 * This method is not very speedy because it must perform a query first to get
@@ -2058,24 +3012,25 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 *
 	 * @param      Criteria $criteria
 	 * @param      PropelPDO $con
-	 * @return     void
+	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	protected static function doOnDeleteSetNull(Criteria $criteria, PropelPDO $con)
+	protected static function doOnDeleteCascade(Criteria $criteria, PropelPDO $con)
 	{
+		// initialize var to track total num of affected rows
+		$affectedRows = 0;
 
 		// first find the objects that are implicated by the $criteria
 		$objects = AbsenceEleveSaisiePeer::doSelect($criteria, $con);
 		foreach ($objects as $obj) {
 
-			// set fkey col in related JTraitementSaisieEleve rows to NULL
-			$selectCriteria = new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME);
-			$updateValues = new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME);
-			$selectCriteria->add(JTraitementSaisieElevePeer::A_SAISIE_ID, $obj->getId());
-			$updateValues->add(JTraitementSaisieElevePeer::A_SAISIE_ID, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
-
+			// delete related JTraitementSaisieEleve objects
+			$criteria = new Criteria(JTraitementSaisieElevePeer::DATABASE_NAME);
+			
+			$criteria->add(JTraitementSaisieElevePeer::A_SAISIE_ID, $obj->getId());
+			$affectedRows += JTraitementSaisieElevePeer::doDelete($criteria, $con);
 		}
+		return $affectedRows;
 	}
 
 	/**

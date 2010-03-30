@@ -2736,6 +2736,46 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
 
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Eleve is new, it will return
+	 * an empty collection; or if this Eleve has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Eleve.
+	 */
+	public function getAbsenceEleveSaisiesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('Groupe', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Eleve is new, it will return
+	 * an empty collection; or if this Eleve has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Eleve.
+	 */
+	public function getAbsenceEleveSaisiesJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('Classe', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
 	/**
 	 * Clears out the collCreditEctss collection
 	 *

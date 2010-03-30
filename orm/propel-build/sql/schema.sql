@@ -821,8 +821,10 @@ CREATE TABLE a_saisies
 	commentaire TEXT COMMENT 'commentaire de l\'utilisateur',
 	debut_abs TIME COMMENT 'Debut de l\'absence en timestamp UNIX',
 	fin_abs TIME COMMENT 'Fin de l\'absence en timestamp UNIX',
-	id_edt_creneau INTEGER(12) default 0 COMMENT 'identifiant du creneaux de l\'emploi du temps',
-	id_edt_emplacement_cours INTEGER(12) default 0 COMMENT 'identifiant du cours de l\'emploi du temps',
+	id_edt_creneau INTEGER(12) default -1 COMMENT 'identifiant du creneaux de l\'emploi du temps',
+	id_edt_emplacement_cours INTEGER(12) default -1 COMMENT 'identifiant du cours de l\'emploi du temps',
+	id_groupe INTEGER default -1 COMMENT 'identifiant du groupe pour lequel la saisie a ete effectuee',
+	id_classe INTEGER default -1 COMMENT 'identifiant de la classe pour lequel la saisie a ete effectuee',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (id),
@@ -845,6 +847,16 @@ CREATE TABLE a_saisies
 	CONSTRAINT a_saisies_FK_4
 		FOREIGN KEY (id_edt_emplacement_cours)
 		REFERENCES edt_cours (id_cours)
+		ON DELETE SET NULL,
+	INDEX a_saisies_FI_5 (id_groupe),
+	CONSTRAINT a_saisies_FK_5
+		FOREIGN KEY (id_groupe)
+		REFERENCES groupes (id)
+		ON DELETE SET NULL,
+	INDEX a_saisies_FI_6 (id_classe),
+	CONSTRAINT a_saisies_FK_6
+		FOREIGN KEY (id_classe)
+		REFERENCES classes (id)
 		ON DELETE SET NULL
 )Type=MyISAM COMMENT='Chaque saisie d\'absence doit faire l\'objet d\'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisé dans debut_abs. Un cours de l\'emploi du temps, le jours du cours etant precisé dans debut_abs.';
 
@@ -858,12 +870,12 @@ DROP TABLE IF EXISTS a_traitements;
 CREATE TABLE a_traitements
 (
 	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incremente',
-	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a fait le traitement',
-	a_type_id INTEGER(4) COMMENT 'cle etrangere du type d\'absence',
-	a_motif_id INTEGER(4) COMMENT 'cle etrangere du motif d\'absence',
-	a_justification_id INTEGER(4) COMMENT 'cle etrangere de la justification de l\'absence',
-	texte_justification VARCHAR(250)  NOT NULL COMMENT 'Texte additionnel à ce traitement',
-	a_action_id INTEGER(4) COMMENT 'cle etrangere de l\'action sur ce traitement',
+	utilisateur_id VARCHAR(100) default '-1' COMMENT 'Login de l\'utilisateur professionnel qui a fait le traitement',
+	a_type_id INTEGER(4) default -1 COMMENT 'cle etrangere du type d\'absence',
+	a_motif_id INTEGER(4) default -1 COMMENT 'cle etrangere du motif d\'absence',
+	a_justification_id INTEGER(4) default -1 COMMENT 'cle etrangere de la justification de l\'absence',
+	texte_justification VARCHAR(250) COMMENT 'Texte additionnel à ce traitement',
+	a_action_id INTEGER(4) default -1 COMMENT 'cle etrangere de l\'action sur ce traitement',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	created_at DATETIME,
 	updated_at DATETIME,
@@ -910,12 +922,12 @@ CREATE TABLE j_traitements_saisies
 	CONSTRAINT j_traitements_saisies_FK_1
 		FOREIGN KEY (a_saisie_id)
 		REFERENCES a_saisies (id)
-		ON DELETE SET NULL,
+		ON DELETE CASCADE,
 	INDEX j_traitements_saisies_FI_2 (a_traitement_id),
 	CONSTRAINT j_traitements_saisies_FK_2
 		FOREIGN KEY (a_traitement_id)
 		REFERENCES a_traitements (id)
-		ON DELETE SET NULL
+		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Table de jointure entre la saisie et le traitement des absences';
 
 #-----------------------------------------------------------------------------
@@ -928,11 +940,11 @@ DROP TABLE IF EXISTS a_envois;
 CREATE TABLE a_envois
 (
 	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
-	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a lance l\'envoi',
-	id_type_envoi INTEGER(4)  NOT NULL COMMENT 'id du type de l\'envoi',
+	utilisateur_id VARCHAR(100) default '-1' COMMENT 'Login de l\'utilisateur professionnel qui a lance l\'envoi',
+	id_type_envoi INTEGER(4) default -1 NOT NULL COMMENT 'id du type de l\'envoi',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
-	statut_envoi VARCHAR(20) default '0' NOT NULL COMMENT 'Statut de cet envoi (envoye, en cours,...)',
-	date_envoi TIME  NOT NULL COMMENT 'Date en timestamp UNIX de l\'envoi',
+	statut_envoi VARCHAR(20) default '0' COMMENT 'Statut de cet envoi (envoye, en cours,...)',
+	date_envoi TIME COMMENT 'Date en timestamp UNIX de l\'envoi',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (id),
@@ -979,12 +991,12 @@ CREATE TABLE j_traitements_envois
 	CONSTRAINT j_traitements_envois_FK_1
 		FOREIGN KEY (a_envoi_id)
 		REFERENCES a_envois (id)
-		ON DELETE SET NULL,
+		ON DELETE CASCADE,
 	INDEX j_traitements_envois_FI_2 (a_traitement_id),
 	CONSTRAINT j_traitements_envois_FK_2
 		FOREIGN KEY (a_traitement_id)
 		REFERENCES a_traitements (id)
-		ON DELETE SET NULL
+		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Table de jointure entre le traitement des absences et leur envoi';
 
 #-----------------------------------------------------------------------------

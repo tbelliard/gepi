@@ -37,11 +37,11 @@ class AbsenceEleveEnvoiTableMap extends TableMap {
 		$this->setUseIdGenerator(true);
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
-		$this->addForeignKey('UTILISATEUR_ID', 'UtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, null);
-		$this->addForeignKey('ID_TYPE_ENVOI', 'IdTypeEnvoi', 'INTEGER', 'a_type_envois', 'ID', true, 4, null);
+		$this->addForeignKey('UTILISATEUR_ID', 'UtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, '-1');
+		$this->addForeignKey('ID_TYPE_ENVOI', 'IdTypeEnvoi', 'INTEGER', 'a_type_envois', 'ID', true, 4, -1);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
-		$this->addColumn('STATUT_ENVOI', 'StatutEnvoi', 'VARCHAR', true, 20, '0');
-		$this->addColumn('DATE_ENVOI', 'DateEnvoi', 'TIME', true, null, null);
+		$this->addColumn('STATUT_ENVOI', 'StatutEnvoi', 'VARCHAR', false, 20, '0');
+		$this->addColumn('DATE_ENVOI', 'DateEnvoi', 'TIME', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		// validators
@@ -54,8 +54,8 @@ class AbsenceEleveEnvoiTableMap extends TableMap {
 	{
     $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('utilisateur_id' => 'login', ), 'SET NULL', null);
     $this->addRelation('AbsenceEleveTypeEnvoi', 'AbsenceEleveTypeEnvoi', RelationMap::MANY_TO_ONE, array('id_type_envoi' => 'id', ), 'SET NULL', null);
-    $this->addRelation('JTraitementEnvoiEleve', 'JTraitementEnvoiEleve', RelationMap::ONE_TO_MANY, array('id' => 'a_envoi_id', ), 'SET NULL', null);
-    $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
+    $this->addRelation('JTraitementEnvoiEleve', 'JTraitementEnvoiEleve', RelationMap::ONE_TO_MANY, array('id' => 'a_envoi_id', ), 'CASCADE', null);
+    $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
 	/**

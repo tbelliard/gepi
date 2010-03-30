@@ -31,24 +31,28 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 
 	/**
 	 * The value for the utilisateur_id field.
+	 * Note: this column has a database default value of: '-1'
 	 * @var        string
 	 */
 	protected $utilisateur_id;
 
 	/**
 	 * The value for the a_type_id field.
+	 * Note: this column has a database default value of: -1
 	 * @var        int
 	 */
 	protected $a_type_id;
 
 	/**
 	 * The value for the a_motif_id field.
+	 * Note: this column has a database default value of: -1
 	 * @var        int
 	 */
 	protected $a_motif_id;
 
 	/**
 	 * The value for the a_justification_id field.
+	 * Note: this column has a database default value of: -1
 	 * @var        int
 	 */
 	protected $a_justification_id;
@@ -61,6 +65,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 
 	/**
 	 * The value for the a_action_id field.
+	 * Note: this column has a database default value of: -1
 	 * @var        int
 	 */
 	protected $a_action_id;
@@ -141,6 +146,31 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * Applies default values to this object.
+	 * This method should be called from the object's constructor (or
+	 * equivalent initialization method).
+	 * @see        __construct()
+	 */
+	public function applyDefaultValues()
+	{
+		$this->utilisateur_id = '-1';
+		$this->a_type_id = -1;
+		$this->a_motif_id = -1;
+		$this->a_justification_id = -1;
+		$this->a_action_id = -1;
+	}
+
+	/**
+	 * Initializes internal state of BaseAbsenceEleveTraitement object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
+	}
 
 	/**
 	 * Get the [id] column value.
@@ -330,7 +360,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$v = (string) $v;
 		}
 
-		if ($this->utilisateur_id !== $v) {
+		if ($this->utilisateur_id !== $v || $this->isNew()) {
 			$this->utilisateur_id = $v;
 			$this->modifiedColumns[] = AbsenceEleveTraitementPeer::UTILISATEUR_ID;
 		}
@@ -354,7 +384,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$v = (int) $v;
 		}
 
-		if ($this->a_type_id !== $v) {
+		if ($this->a_type_id !== $v || $this->isNew()) {
 			$this->a_type_id = $v;
 			$this->modifiedColumns[] = AbsenceEleveTraitementPeer::A_TYPE_ID;
 		}
@@ -378,7 +408,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$v = (int) $v;
 		}
 
-		if ($this->a_motif_id !== $v) {
+		if ($this->a_motif_id !== $v || $this->isNew()) {
 			$this->a_motif_id = $v;
 			$this->modifiedColumns[] = AbsenceEleveTraitementPeer::A_MOTIF_ID;
 		}
@@ -402,7 +432,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$v = (int) $v;
 		}
 
-		if ($this->a_justification_id !== $v) {
+		if ($this->a_justification_id !== $v || $this->isNew()) {
 			$this->a_justification_id = $v;
 			$this->modifiedColumns[] = AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID;
 		}
@@ -446,7 +476,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$v = (int) $v;
 		}
 
-		if ($this->a_action_id !== $v) {
+		if ($this->a_action_id !== $v || $this->isNew()) {
 			$this->a_action_id = $v;
 			$this->modifiedColumns[] = AbsenceEleveTraitementPeer::A_ACTION_ID;
 		}
@@ -586,6 +616,26 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->utilisateur_id !== '-1') {
+				return false;
+			}
+
+			if ($this->a_type_id !== -1) {
+				return false;
+			}
+
+			if ($this->a_motif_id !== -1) {
+				return false;
+			}
+
+			if ($this->a_justification_id !== -1) {
+				return false;
+			}
+
+			if ($this->a_action_id !== -1) {
+				return false;
+			}
+
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -1405,7 +1455,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function setUtilisateurProfessionnel(UtilisateurProfessionnel $v = null)
 	{
 		if ($v === null) {
-			$this->setUtilisateurId(NULL);
+			$this->setUtilisateurId('-1');
 		} else {
 			$this->setUtilisateurId($v->getLogin());
 		}
@@ -1454,7 +1504,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function setAbsenceEleveType(AbsenceEleveType $v = null)
 	{
 		if ($v === null) {
-			$this->setATypeId(NULL);
+			$this->setATypeId(-1);
 		} else {
 			$this->setATypeId($v->getId());
 		}
@@ -1503,7 +1553,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function setAbsenceEleveMotif(AbsenceEleveMotif $v = null)
 	{
 		if ($v === null) {
-			$this->setAMotifId(NULL);
+			$this->setAMotifId(-1);
 		} else {
 			$this->setAMotifId($v->getId());
 		}
@@ -1552,7 +1602,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function setAbsenceEleveJustification(AbsenceEleveJustification $v = null)
 	{
 		if ($v === null) {
-			$this->setAJustificationId(NULL);
+			$this->setAJustificationId(-1);
 		} else {
 			$this->setAJustificationId($v->getId());
 		}
@@ -1601,7 +1651,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function setAbsenceEleveAction(AbsenceEleveAction $v = null)
 	{
 		if ($v === null) {
-			$this->setAActionId(NULL);
+			$this->setAActionId(-1);
 		} else {
 			$this->setAActionId($v->getId());
 		}
@@ -2140,6 +2190,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->clearAllReferences();
+		$this->applyDefaultValues();
 		$this->setNew(true);
 	}
 

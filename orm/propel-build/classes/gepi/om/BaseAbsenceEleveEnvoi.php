@@ -31,12 +31,14 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 
 	/**
 	 * The value for the utilisateur_id field.
+	 * Note: this column has a database default value of: '-1'
 	 * @var        string
 	 */
 	protected $utilisateur_id;
 
 	/**
 	 * The value for the id_type_envoi field.
+	 * Note: this column has a database default value of: -1
 	 * @var        int
 	 */
 	protected $id_type_envoi;
@@ -114,6 +116,8 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 	 */
 	public function applyDefaultValues()
 	{
+		$this->utilisateur_id = '-1';
+		$this->id_type_envoi = -1;
 		$this->statut_envoi = '0';
 	}
 
@@ -318,7 +322,7 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->utilisateur_id !== $v) {
+		if ($this->utilisateur_id !== $v || $this->isNew()) {
 			$this->utilisateur_id = $v;
 			$this->modifiedColumns[] = AbsenceEleveEnvoiPeer::UTILISATEUR_ID;
 		}
@@ -342,7 +346,7 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 			$v = (int) $v;
 		}
 
-		if ($this->id_type_envoi !== $v) {
+		if ($this->id_type_envoi !== $v || $this->isNew()) {
 			$this->id_type_envoi = $v;
 			$this->modifiedColumns[] = AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI;
 		}
@@ -551,6 +555,14 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->utilisateur_id !== '-1') {
+				return false;
+			}
+
+			if ($this->id_type_envoi !== -1) {
+				return false;
+			}
+
 			if ($this->statut_envoi !== '0') {
 				return false;
 			}
@@ -1268,7 +1280,7 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 	public function setUtilisateurProfessionnel(UtilisateurProfessionnel $v = null)
 	{
 		if ($v === null) {
-			$this->setUtilisateurId(NULL);
+			$this->setUtilisateurId('-1');
 		} else {
 			$this->setUtilisateurId($v->getLogin());
 		}
@@ -1317,7 +1329,7 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 	public function setAbsenceEleveTypeEnvoi(AbsenceEleveTypeEnvoi $v = null)
 	{
 		if ($v === null) {
-			$this->setIdTypeEnvoi(NULL);
+			$this->setIdTypeEnvoi(-1);
 		} else {
 			$this->setIdTypeEnvoi($v->getId());
 		}

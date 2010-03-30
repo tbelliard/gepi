@@ -75,6 +75,7 @@ class ClasseTableMap extends TableMap {
     $this->addRelation('JGroupesClasses', 'JGroupesClasses', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
     $this->addRelation('JEleveClasse', 'JEleveClasse', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
     $this->addRelation('JEleveProfesseurPrincipal', 'JEleveProfesseurPrincipal', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
+    $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'SET NULL', null);
     $this->addRelation('JCategoriesMatieresClasses', 'JCategoriesMatieresClasses', RelationMap::ONE_TO_MANY, array('id' => 'classe_id', ), 'CASCADE', null);
 	} // buildRelations()
 

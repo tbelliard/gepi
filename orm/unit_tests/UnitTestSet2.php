@@ -97,18 +97,36 @@ $absenceSaisies = $newUtilisateurProfessionnel->getAbsenceEleveSaisies();
 $absenceSaisie = $absenceSaisies[0];
 if ($absenceSaisie == null) {
 	echo ($logger->getDisplay());
-	echo('test recuperation absence saisie eleve a <font color="red">echoue</font> <br><br/>');
+	echo('test recuperation absence saisie eleve a partir d\'un professeur a <font color="red">echoue</font> <br><br/>');
 } else {
 	$absenceTraitements = $absenceSaisie->getAbsenceEleveTraitements();
 	$absenceTraitement = $absenceTraitements[0];
 	if ($absenceTraitement == null) {
 		echo ($logger->getDisplay());
-		echo('test recuperation absence traitement a <font color="red">echoue</font> <br><br/>');
+		echo('test recuperation absence traitement a partir d\'un professeur a <font color="red">echoue</font> <br><br/>');
 	} else {
 		echo ($logger->getDisplay());
-		echo('test recuperation absence saisie et absence traitement a reussi <br><br/>');
+		echo('test recuperation absence saisie et absence traitement a partir d\'un professeur a reussi <br><br/>');
 	}
 }
+
+$absenceSaisies = $newEleve->getAbsenceEleveSaisies();
+$absenceSaisie = $absenceSaisies[0];
+if ($absenceSaisie == null) {
+	echo ($logger->getDisplay());
+	echo('test recuperation absence saisie eleve a partir d\'un eleve a <font color="red">echoue</font> <br><br/>');
+} else {
+	$absenceTraitements = $absenceSaisie->getAbsenceEleveTraitements();
+	$absenceTraitement = $absenceTraitements[0];
+	if ($absenceTraitement == null) {
+		echo ($logger->getDisplay());
+		echo('test recuperation absence traitement a partir d\'un eleve a <font color="red">echoue</font> <br><br/>');
+	} else {
+		echo ($logger->getDisplay());
+		echo('test recuperation absence saisie et absence traitement a partir d\'un eleve a reussi <br><br/>');
+	}
+}
+
 
 purgeDonneesTest($logger);
 Propel::setLogger(null);

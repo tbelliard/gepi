@@ -479,6 +479,9 @@ abstract class BaseClassePeer {
 		// invalidate objects in JEleveProfesseurPrincipalPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		JEleveProfesseurPrincipalPeer::clearInstancePool();
 
+		// invalidate objects in AbsenceEleveSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		AbsenceEleveSaisiePeer::clearInstancePool();
+
 		// invalidate objects in JCategoriesMatieresClassesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		JCategoriesMatieresClassesPeer::clearInstancePool();
 
@@ -711,6 +714,7 @@ abstract class BaseClassePeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += ClassePeer::doOnDeleteCascade(new Criteria(ClassePeer::DATABASE_NAME), $con);
+			ClassePeer::doOnDeleteSetNull(new Criteria(ClassePeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(ClassePeer::TABLE_NAME, $con);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -763,6 +767,7 @@ abstract class BaseClassePeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += ClassePeer::doOnDeleteCascade($criteria, $con);
+			ClassePeer::doOnDeleteSetNull($criteria, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -841,6 +846,37 @@ abstract class BaseClassePeer {
 			$affectedRows += JCategoriesMatieresClassesPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
+	}
+
+	/**
+	 * This is a method for emulating ON DELETE SET NULL DBs that don't support this
+	 * feature (like MySQL or SQLite).
+	 *
+	 * This method is not very speedy because it must perform a query first to get
+	 * the implicated records and then perform the deletes by calling those Peer classes.
+	 *
+	 * This method should be used within a transaction if possible.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     void
+	 */
+	protected static function doOnDeleteSetNull(Criteria $criteria, PropelPDO $con)
+	{
+
+		// first find the objects that are implicated by the $criteria
+		$objects = ClassePeer::doSelect($criteria, $con);
+		foreach ($objects as $obj) {
+
+			// set fkey col in related AbsenceEleveSaisie rows to NULL
+			$selectCriteria = new Criteria(ClassePeer::DATABASE_NAME);
+			$updateValues = new Criteria(ClassePeer::DATABASE_NAME);
+			$selectCriteria->add(AbsenceEleveSaisiePeer::ID_CLASSE, $obj->getId());
+			$updateValues->add(AbsenceEleveSaisiePeer::ID_CLASSE, null);
+
+					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+		}
 	}
 
 	/**

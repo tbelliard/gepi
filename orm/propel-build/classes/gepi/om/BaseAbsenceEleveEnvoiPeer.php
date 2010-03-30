@@ -1224,7 +1224,7 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			AbsenceEleveEnvoiPeer::doOnDeleteSetNull(new Criteria(AbsenceEleveEnvoiPeer::DATABASE_NAME), $con);
+			$affectedRows += AbsenceEleveEnvoiPeer::doOnDeleteCascade(new Criteria(AbsenceEleveEnvoiPeer::DATABASE_NAME), $con);
 			$affectedRows += BasePeer::doDeleteAll(AbsenceEleveEnvoiPeer::TABLE_NAME, $con);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -1276,7 +1276,7 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			AbsenceEleveEnvoiPeer::doOnDeleteSetNull($criteria, $con);
+			$affectedRows += AbsenceEleveEnvoiPeer::doOnDeleteCascade($criteria, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -1302,7 +1302,7 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	}
 
 	/**
-	 * This is a method for emulating ON DELETE SET NULL DBs that don't support this
+	 * This is a method for emulating ON DELETE CASCADE for DBs that don't support this
 	 * feature (like MySQL or SQLite).
 	 *
 	 * This method is not very speedy because it must perform a query first to get
@@ -1312,24 +1312,25 @@ abstract class BaseAbsenceEleveEnvoiPeer {
 	 *
 	 * @param      Criteria $criteria
 	 * @param      PropelPDO $con
-	 * @return     void
+	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	protected static function doOnDeleteSetNull(Criteria $criteria, PropelPDO $con)
+	protected static function doOnDeleteCascade(Criteria $criteria, PropelPDO $con)
 	{
+		// initialize var to track total num of affected rows
+		$affectedRows = 0;
 
 		// first find the objects that are implicated by the $criteria
 		$objects = AbsenceEleveEnvoiPeer::doSelect($criteria, $con);
 		foreach ($objects as $obj) {
 
-			// set fkey col in related JTraitementEnvoiEleve rows to NULL
-			$selectCriteria = new Criteria(AbsenceEleveEnvoiPeer::DATABASE_NAME);
-			$updateValues = new Criteria(AbsenceEleveEnvoiPeer::DATABASE_NAME);
-			$selectCriteria->add(JTraitementEnvoiElevePeer::A_ENVOI_ID, $obj->getId());
-			$updateValues->add(JTraitementEnvoiElevePeer::A_ENVOI_ID, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
-
+			// delete related JTraitementEnvoiEleve objects
+			$criteria = new Criteria(JTraitementEnvoiElevePeer::DATABASE_NAME);
+			
+			$criteria->add(JTraitementEnvoiElevePeer::A_ENVOI_ID, $obj->getId());
+			$affectedRows += JTraitementEnvoiElevePeer::doDelete($criteria, $con);
 		}
+		return $affectedRows;
 	}
 
 	/**
