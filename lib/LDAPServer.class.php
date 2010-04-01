@@ -25,18 +25,18 @@ class LDAPServer {
 	# volée de comptes utilisateurs depuis le LDAP, ou bien lors
 	# de la synchronisation dans le sens Gepi -> LDAP (accès en
 	# écriture.
-	private $champ_login = "uid";
-	private $champ_prenom = "";
-	private $champ_nom = "sn";
-	private $champ_nom_complet = "cn";
-	private $champ_email = "mail";
-	private $champ_statut = "";
-	private $champ_civilite = "";
-	private $champ_rne = "";
+	public $champ_login = "uid";
+	public $champ_prenom = "";
+	public $champ_nom = "sn";
+	public $champ_nom_complet = "cn";
+	public $champ_email = "mail";
+	public $champ_statut = "";
+	public $champ_civilite = "";
+	public $champ_rne = "";
 
-	private $code_civilite_madame = "Mme";
-	private $code_civilite_monsieur = "M.";
-	private $code_civilite_mademoiselle = "Mlle";
+	public $code_civilite_madame = "Mme";
+	public $code_civilite_monsieur = "M.";
+	public $code_civilite_mademoiselle = "Mlle";
 
 	# Les attributs ci-dessous permettent de déterminer quel
 	# statut donner à des utilisateurs importés à la volée
