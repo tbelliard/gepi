@@ -74,8 +74,8 @@ if ($action == 'supprimer') {
 	if ($motif == null) {
 	    $motif = new AbsenceEleveMotif();
 	}
-	$motif->setNom($nom_motif);
-	$motif->setCommentaire($com_motif);
+	$motif->setNom(unslashes($nom_motif));
+	$motif->setCommentaire(unslashes($com_motif));
 	$motif->save();
     }
 }
@@ -92,25 +92,63 @@ echo "</p>";
 
 <div style="text-align:center">
     <h2>Définition des motifs d'absence</h2>
+<?php if ($action == "ajouter" OR $action == "modifier") { ?>
+<div style="text-align:center">
+    <?php
+    	if($action=="ajouter") { 
+	    echo "<h2>Ajout d'un motif</h2>";
+	} elseif ($action=="modifier") {
+	    echo "<h2>Modifier un motif</h2>";
+	}
+	?>
+
+    <form action="admin_motifs_absences.php" method="post" name="form2" id="form2">
+     <fieldset>
+      <table cellpadding="2" cellspacing="2" class="menu">
+        <tr>
+          <td>Nom (obligatoire)</td>
+          <td colspan="2">Commentaire (facultatif)</td>
+        </tr>
+        <tr>
+          <td>
+           <?php
+           $motif = AbsenceEleveMotifQuery::create()->findPk($id_motif);
+	   if ($motif != null) { ?>
+	      <input name="id_motif" type="hidden" id="id_motif" value="<?php echo $id_motif ?>" />
+	   <?php } ?>
+	      <input name="nom_motif" type="text" id="nom_motif" size="15" maxlength="15" value="<?php  if ($motif != null) {echo $motif->getNom();} ?>"/>
+           </td>
+           <td colspan="2">
+	       <input name="com_motif" type="text" id="com_motif" size="40" value="<?php  if ($motif != null) {echo $motif->getCommentaire();} ?>"/>
+           </td>
+        </tr>
+      </table>
+     </fieldset>
+     <input type="submit" name="Submit" value="Enregistrer" />
+    </form>
+<br/><br/>
+<?php /* fin du div de centrage du tableau pour ie5 */ ?>
+</div>
+<?php }  ?>
+
 	<a href="admin_motifs_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un motif</a>
 	<br/><br/>
 	<a href="admin_motifs_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les motifs par defaut</a>
 	<br/><br/>
-    <table cellpadding="0" cellspacing="1" class="tab_table">
+    <table cellpadding="0" cellspacing="1" class="menu">
       <tr>
-        <td class="tab_th">Nom</td>
-        <td class="tab_th">Commentaire</td>
-        <td class="tab_th" style="width: 25px;"></td>
-        <td class="tab_th" style="width: 25px;"></td>
+        <td>Nom</td>
+        <td>Commentaire</td>
+        <td style="width: 25px;"></td>
+        <td style="width: 25px;"></td>
       </tr>
     <?php
     $motif_collection = new PropelCollection();
     $motif_collection = AbsenceEleveMotifQuery::create()->findList();
     $motif = new AbsenceEleveMotif();
     $i = '1';
-    foreach ($motif_collection as $motif) {
-       if ($i === '1') { $couleur_cellule = 'couleur_ligne_1'; $i = '2'; } else { $couleur_cellule = 'couleur_ligne_2'; $i = '1'; } ?>
-        <tr class="<?php echo $couleur_cellule; ?>">
+    foreach ($motif_collection as $motif) { ?>
+        <tr>
 	  <td><?php echo $motif->getNom(); ?></td>
 	  <td><?php echo $motif->getCommentaire(); ?></td>
           <td><a href="admin_motifs_absences.php?action=modifier&amp;id_motif=<?php echo $motif->getId(); ?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
@@ -123,45 +161,4 @@ echo "</p>";
     <br/><br/>
 </div>
 
-<?php if ($action == "ajouter" OR $action == "modifier") { ?>
-<div style="text-align:center">
-    <?php
-    	if($action=="ajouter") { 
-	    echo "<h2>Ajout d'un motif</h2>";
-	} elseif ($action=="modifier") {
-	    echo "<h2>Modifier un motif</h2>";
-	}
-	?>
-
-    <form action="admin_motifs_absences.php" method="post" name="form2" id="form2">
-     <fieldset class="fieldset_efface">
-      <table cellpadding="2" cellspacing="2" class="tab_table">
-        <tr>
-          <td class="tab_th">Nom (obligatoire)</td>
-          <td colspan="2" class="tab_th">Commentaire (facultatif)</td>
-        </tr>
-        <tr class="couleur_ligne_1">
-          <td>
-           <?php
-           $motif = AbsenceEleveMotifQuery::create()->findPk($id_motif);
-	   if ($motif != null) { ?>
-	      <input name="id_motif" type="hidden" id="id_motif" value="<?php echo $id_motif ?>" />
-	   <?php } ?>
-	      <input name="nom_motif" type="text" id="nom_motif" size="15" maxlength="15" value="<?php  if ($motif != null) {echo $motif->getNom();} ?>" class="input_sans_bord" />
-           </td>
-           <td colspan="2">
-	       <input name="com_motif" type="text" id="com_motif" size="40" value="<?php  if ($motif != null) {echo $motif->getCommentaire();} ?>" class="input_sans_bord" />
-           </td>
-        </tr>
-      </table>
-     </fieldset>
-     <input type="submit" name="Submit" value="Enregistrer" />
-    </form>
-<?php /* fin du div de centrage du tableau pour ie5 */ ?>
-</div>
-<?php
-} 
-
-require("../../lib/footer.inc.php");
-
-?>
+<?php require("../../lib/footer.inc.php");?>
