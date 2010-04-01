@@ -163,7 +163,8 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 <blockquote>
 	<a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a><br />
 	<a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
-	<a href="admin_actions_absences.php?action=visualiser">Définir les actions sur le suivi des élèves</a>
+	<a href="admin_actions_absences.php?action=visualiser">Définir les actions de traitement des absences</a><br />
+	<a href="admin_justifications_absences.php?action=visualiser">Définir les justifications</a>
 </blockquote>
 <?PHP
 require("../../lib/footer.inc.php");

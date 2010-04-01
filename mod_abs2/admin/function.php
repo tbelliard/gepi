@@ -23,6 +23,53 @@ function ajoutMotifsParDefaut() {
     }
 }
 
+function ajoutJustificationsParDefaut() {
+    $justifications = new AbsenceEleveJustification();
+    $justifications->setNom("Certificat medical");
+    $justifications->setCommentaire("Une justification etablie par une autorité medicale");
+    if (AbsenceEleveJustificationQuery::create()->filterByNom($justifications->getNom())->find()->isEmpty()) {
+	$justifications->save();
+    }
+
+    $justifications = new AbsenceEleveJustification();
+    $justifications->setNom("Courrier familial");
+    $justifications->setCommentaire("Justification par courrier de la famille");
+    if (AbsenceEleveJustificationQuery::create()->filterByNom($justifications->getNom())->find()->isEmpty()) {
+	$justifications->save();
+    }
+
+    $justifications = new AbsenceEleveJustification();
+    $justifications->setNom("Justificatif d'une administration publique");
+    $justifications->setCommentaire("Justification emise par une administration publique");
+    if (AbsenceEleveJustificationQuery::create()->filterByNom($justifications->getNom())->find()->isEmpty()) {
+	$justifications->save();
+    }
+}
+
+function ajoutActionsParDefaut() {
+    $action = new AbsenceEleveAction();
+    $action->setNom("Appel telephonique");
+    $action->setCommentaire("Une communication telephonique a été effectuée avec la famille.");
+    if (AbsenceEleveActionQuery::create()->filterByNom($action->getNom())->find()->isEmpty()) {
+	$action->save();
+    }
+
+    $action = new AbsenceEleveAction();
+    $action->setNom("Rencontre avec la famille");
+    $action->setCommentaire("Une rencontre à ete effectuée avec la famille.");
+    if (AbsenceEleveActionQuery::create()->filterByNom($action->getNom())->find()->isEmpty()) {
+	$action->save();
+    }
+
+    $action = new AbsenceEleveAction();
+    $action->setNom("Notification à la famille");
+    $action->setCommentaire("La famille a été notifée.");
+    if (AbsenceEleveActionQuery::create()->filterByNom($action->getNom())->find()->isEmpty()) {
+	$action->save();
+    }
+
+}
+
 function ajoutTypesParDefaut() {
 
     $type = new AbsenceEleveType();
