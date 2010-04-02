@@ -25,22 +25,36 @@
 // ================================================
 //
 //          Fichier utilisé avec AJAX 
+//          pour le fichier voir_absences_viescolaire.php
 //
 // ================================================
 
+if (!isset($niveau_arbo)) {
+	$niveau_arbo = 2;
+}
+if ($niveau_arbo == 0) {
+	$CurrentPath = "./";
+}
+else {
+	$CurrentPath = "";
+	$countdown = $niveau_arbo;
+	while ($countdown > 0) {
+		$CurrentPath .= "../";
+		$countdown--;
+	}
+}
 
-$niveau_arbo = 2;
 // Initialisations files
-require_once("../../lib/initialisations.inc.php");
+require_once($CurrentPath."lib/initialisations.inc.php");
 //mes fonctions
-include("../../edt_organisation/fonctions_calendrier.php");
-include("../../edt_organisation/fonctions_edt.php");            // --- fonctions de base communes à tous les emplois du temps
-include("../../edt_organisation/fonctions_edt_prof.php");       // --- edt prof
-include("../../edt_organisation/fonctions_edt_classe.php");     // --- edt classe
-include("../../edt_organisation/fonctions_edt_salle.php");      // --- edt salle
-include("../../edt_organisation/fonctions_edt_eleve.php");      // --- edt eleve
-include("../../edt_organisation/fonctions_affichage.php");
-include("../../edt_organisation/req_database.php");
+include($CurrentPath."edt_organisation/fonctions_calendrier.php");
+include($CurrentPath."edt_organisation/fonctions_edt.php");            // --- fonctions de base communes à tous les emplois du temps
+include($CurrentPath."edt_organisation/fonctions_edt_prof.php");       // --- edt prof
+include($CurrentPath."edt_organisation/fonctions_edt_classe.php");     // --- edt classe
+include($CurrentPath."edt_organisation/fonctions_edt_salle.php");      // --- edt salle
+include($CurrentPath."edt_organisation/fonctions_edt_eleve.php");      // --- edt eleve
+include($CurrentPath."edt_organisation/fonctions_affichage.php");
+include($CurrentPath."edt_organisation/req_database.php");
 
 $logineleve = isset($_GET["login"]) ? $_GET["login"] : NULL;
 $jour = date("N")-1;
@@ -54,8 +68,20 @@ if ($resultat_session == 'c') {
     header("Location: ../../logout.php?auto=1");
 	die();
 };
+// =====================================
+//
+//	Construction de l'emploi du temps
+//
+// =====================================
+	$tab_data = ConstruireEDTEleveDuJour($logineleve, 0, $jour);
+	
+	$flags = NO_INFOBULLE + HORIZONTAL;		// pour toutes les valeurs possibles, voir /edt_organisation/fonctions_affichage.php
+// =====================================
+//
+//	Affichage de l'emploi du temps
+//
+// =====================================
 
-$tab_data = ConstruireEDTEleveDuJour($logineleve, 0, $jour);
-echo EdtDuJourVertical($tab_data, $jour);
+	echo EdtDuJour($tab_data, $jour, $flags);
 
 ?>

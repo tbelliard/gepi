@@ -590,7 +590,8 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 	if ($rep_sem["id_semaine"] == "0") {
 		$aff_sem = '';
 	}else {
-		$aff_sem = '<span style="font-color:#663333;"> - Sem.'.$rep_sem["id_semaine"].'</span>';
+		//$aff_sem = '<span style="font-color:#663333;"> - Sem.'.$rep_sem["id_semaine"].'</span>';
+		$aff_sem = '- Sem.'.$rep_sem["id_semaine"];
 	}
 
 	// On récupère le nom complet de la salle en question

@@ -39,336 +39,56 @@
 // void     function AfficheModifierIcone($type_edt,$login_edt,$id_cours, $period)
 // void     function AfficheEffacerIcone($type_edt,$login_edt,$id_cours, $period)
 
-function DefinirStyleCSS($largeur, $hdemicreneau, &$fenetre, &$contenu, &$tableau, &$entete, &$cadre, &$colonne, &$nb_creneaux, &$cellule, &$demicellule, &$tierscellule, &$creneaux, &$entete_creneaux, &$cadreRepas, &$cadreCouleur, &$horaires) {
-
-    $fenetre = "margin: 0px 0px 0px 0px;
-                width:150px;
-                float:left;";
-    $contenu = "position:relative;
-	            font-size: 1em;
-	            padding:0px 0 0 0px;
-	            margin:0px 0px 0px 0px;";
-
-    $tableau = "padding: 00px 00px 00px 00px;
-                position:relative;
-	            margin: 0px auto;
-	            font-family: Verdana,Arial,Helvetica,sans-serif;
-	            font-size: 1em;
-	            color: black;
-	            text-align: left;";
-    $entete = " float:left;
-	            padding: 00px 00px 00px 00px;
-                margin: 0px 0px 00px 0px;
-                width:100%;
-	            height : ".$hdemicreneau."px;
-	            font-family: Verdana,Arial,Helvetica,sans-serif;
-	            font-size: 100%;
-	            color: brown;
-	            text-align: center;
-	            border-right: 1px solid #004A7A;
-	            border-bottom: 1px solid #004A7A;
-	            background-color: orange ; ";
-    $cadre = "  position:relative;
-                border-left:1px solid #000000;
-                border-top:1px solid #000000;
-                padding:0 0 0 0;
-                height:100%;";
-
-    if (($nb_creneaux == 0) OR ($nb_creneaux == 1)) {
-        $height = "94px";
-    }
-    else {
-        $height = $nb_creneaux*2*$hdemicreneau + $hdemicreneau+4;
-        $height = $height."px";
-    }
-    $colonne = "float:left;
-	            padding: 00px 00px 00px 00px;
-	            margin: 02px 02px 02px 02px;
-                width: ".$largeur.";
-	            height : ".$height.";
-	            font-family: Verdana,Arial,Helvetica,sans-serif;
-	            font-size: 100%;
-	            color: black;
-	            text-align: center;
-	            border-right: 1px solid #004A7A;
-	            border-bottom: 1px solid #004A7A;";
-
-    $creneaux = "   float:left;
-	                padding: 00px 00px 00px 00px;
-	                margin: 02px 02px 02px 02px;
-                    max-width:50px;
-                    width:20%;
-	                height : ".$height.";
-	                font-family: Verdana,Arial,Helvetica,sans-serif;
-	                font-size: 80%;
-	                color: black;
-	                text-align: center;
-	                border-right: 1px solid #004A7A;
-	                border-bottom: 1px solid #004A7A;";
-    $entete_creneaux = "float:left;
-	                    padding: 00px 00px 00px 00px;
-                        margin: 0px 0px 02px 0px;
-                        width:100%;
-	                    height : ".$hdemicreneau."px;
-	                    font-size: 1em;
-                        background-color:orange;
-                        border-top : 1px solid #000000;
-	                    border-right : 1px solid #0;";
-                
-
-    $cellule = "float:left;
-	            margin: 00px 0px 00px 00px;
-                border:0px solid #000000; 
-                width:100%;
-	            height : ".$hdemicreneau."px;
-	            font-family: Verdana,Arial,Helvetica,sans-serif;
-	            font-size: 80%;
-	            color: black;
-	            text-align: center;
-	            background-color: #cccccc ;";
-
-    $demicellule = "float:left;
-	                margin: 00px 0px 00px 00px;
-                    border:0px solid #000000; 
-                    width:50%;
-	                height : ".$hdemicreneau."px;
-	                font-family: Verdana,Arial,Helvetica,sans-serif;
-	                font-size: 72%;
-	                color: black;
-	                text-align: center;
-	                background-color: #cccccc ;
-                    overflow:hidden;";
-
-    $tierscellule = "   float:left;
-	                    margin: 00px 0px 00px 00px;
-                        border:0px solid #000000; 
-                        width:33%;
-	                    height : ".$hdemicreneau."px;
-	                    font-family: Verdana,Arial,Helvetica,sans-serif;
-	                    font-size: 72%;
-	                    color: black;
-	                    text-align: center;
-	                    background-color: #cccccc ;
-                        overflow:hidden;";
-
-    $cadreRepas = "     position:relative;
-                        border-left:1px solid #000000;
-                        border-top:1px solid #000000;
-                        background-color:#999999;
-                        padding:0 0 0 0;
-                        height:100%;
-                        overflow:hidden;";
-    $cadreCouleur = "   position:relative;
-                        border-left:1px solid #000000;
-                        border-top:1px solid #000000;
-                        background-color:white;
-                        padding:0 0 0 0;
-                        height:100%;
-                        overflow:hidden; ";
-
-    $hcreneau = $hdemicreneau * 2;
-
-    $horaires = "       float:left;
-	                    margin: 0px 0px 0px 00px;
-                        border:0px solid #000000; 
-                        width:100%;
-	                    height : ".$hcreneau."px;
-	                    font-family: Verdana,Arial,Helvetica,sans-serif;
-	                    font-size: 100%;
-	                    color: black;
-	                    text-align: center;
-	                    //background-image : url(../images/horaires.png);
-	                    background-position: top left ;
-	                    background-repeat: no-repeat;
-	                    background-color: #fffbc7 ; ";
-                    
-}
-
-function DefinirStyleCSSIE6($largeur, $hdemicreneau, &$fenetre, &$contenu, &$tableau, &$entete, &$cadre, &$colonne, &$nb_creneaux, &$cellule, &$demicellule, &$tierscellule, &$creneaux, &$entete_creneaux, &$cadreRepas, &$cadreCouleur, &$horaires) {
-
-    $fenetre = "margin: 0px 0px 0px 0px;
-	            width : 98%;
-                position:absolute;";
-
-    $contenu = "float:left;
-                position:relative;
-	            width: 100%;
-	            font-size: 1em;
-	            padding:0px 0 0 0px;
-	            margin:0px 0 0 0px;";
-
-    $tableau = "float:left;
-                position:relative;
-	            padding: 30px 20px 20px 30px;
-	            margin: 0px 0px 0px 0px;
-	            width : 98%;
-	            font-family: Verdana,Arial,Helvetica,sans-serif;
-	            font-size: 0.8em;
-	            color: black;
-	            text-align: left;";
-
-    $entete = " float:left;
-	            padding: 00px 00px 00px 00px;
-                margin: 0px 0px 02px 0px;
-                width:100%; 
-	            height : ".$hdemicreneau."px;
-	            font-family: Verdana,Arial,Helvetica,sans-serif;
-	            font-size: 100%;
-	            color: brown;
-	            text-align: center;
-	            border-right: 1px solid #004A7A;
-	            border-bottom: 1px solid #004A7A;
-	            background-color: orange ; ";
-
-    $cadre = "  position:relative;
-                border-left:1px solid #000000;
-                border-top:1px solid #000000;
-                padding:0 0 0 0;
-                height:100%;";
-
-    if (($nb_creneaux == 0) OR ($nb_creneaux == 1)) {
-        $height = "94px";
-    }
-    else {
-        $height = $nb_creneaux*2*$hdemicreneau + $hdemicreneau+4;
-        $height = $height."px";
-    }
-    $colonne = "float:left;
-	            padding: 00px 00px 00px 00px;
-	            margin: 02px 02px 02px 02px;
-                width: ".$largeur.";
-	            height : ".$height.";
-	            font-family: Verdana,Arial,Helvetica,sans-serif;
-	            font-size: 100%;
-	            color: black;
-	            text-align: center;
-	            border-right: 1px solid #004A7A;
-	            border-bottom: 1px solid #004A7A;";
-
-    $creneaux = "   float:left;
-	                padding: 00px 00px 00px 00px;
-	                margin: 02px 02px 02px 02px;
-                    max-width:50px;
-                    width:20%;
-	                height : ".$height.";
-	                font-family: Verdana,Arial,Helvetica,sans-serif;
-	                font-size: 80%;
-	                color: black;
-	                text-align: center;
-	                border-right: 1px solid #004A7A;
-	                border-bottom: 1px solid #004A7A;";
-    $entete_creneaux = "float:left;
-	                    padding: 00px 00px 00px 00px;
-                        margin: 0px 0px 02px 0px;
-                        width:100%;
-	                    height : ".$hdemicreneau."px;
-	                    font-size: 1em;
-                        background-color:orange;
-                        border-top : 1px solid #000000;
-	                    border-right : 1px solid #0;";
-                
-
-    $cellule = "float:left;
-	            margin: 00px 0px 00px 00px;
-                border:0px solid #000000; 
-                width:100%;
-	            height : ".$hdemicreneau."px;
-	            font-family: Verdana,Arial,Helvetica,sans-serif;
-	            font-size: 80%;
-	            color: black;
-	            text-align: center;
-	            background-color: #cccccc ;";
-
-    $demicellule = "float:left;
-	                margin: 00px 0px 00px 00px;
-                    border:0px solid #000000; 
-                    width:50%;
-	                height : ".$hdemicreneau."px;
-	                font-family: Verdana,Arial,Helvetica,sans-serif;
-	                font-size: 72%;
-	                color: black;
-	                text-align: center;
-	                background-color: #cccccc ;
-                    overflow:hidden;";
-
-    $tierscellule = "   float:left;
-	                    margin: 00px 0px 00px 00px;
-                        border:0px solid #000000; 
-                        width:33%;
-	                    height : ".$hdemicreneau."px;
-	                    font-family: Verdana,Arial,Helvetica,sans-serif;
-	                    font-size: 72%;
-	                    color: black;
-	                    text-align: center;
-	                    background-color: #cccccc ;
-                        overflow:hidden;";
-
-    $cadreRepas = "     position:relative;
-                        border-left:1px solid #000000;
-                        border-top:1px solid #000000;
-                        background-color:#999999;
-                        padding:0 0 0 0;
-                        height:100%;
-                        overflow:hidden;";
-    $cadreCouleur = "   position:relative;
-                        border-left:1px solid #000000;
-                        border-top:1px solid #000000;
-                        background-color:white;
-                        padding:0 0 0 0;
-                        height:100%;
-                        overflow:hidden; ";
-
-    $hcreneau = $hdemicreneau * 2;
-
-    $horaires = "       float:left;
-	                    margin: 0px 0px 0px 00px;
-                        border:0px solid #000000; 
-                        width:100%;
-	                    height : ".$hcreneau."px;
-	                    font-family: Verdana,Arial,Helvetica,sans-serif;
-	                    font-size: 100%;
-	                    color: black;
-	                    text-align: center;
-	                    //background-image : url(../images/horaires.png);
-	                    background-position: top left ;
-	                    background-repeat: no-repeat;
-	                    background-color: #fffbc7 ; ";
-                    
-}
+define('INFOBULLE', 1);
+define('HORIZONTAL', 2);
+define('NO_INFOBULLE', 0);
+define('VERTICAL', 0);
 
 // =============================================================================
 //
 //                  Permet d'afficher l'edt du jour
 //
 // =============================================================================
-function EdtDuJourVertical($tab_data, $jour) 
+function EdtDuJour($tab_data, $jour, $param) 
+{
+	$result = "";
+	if ($param & HORIZONTAL) {
+		$result = EdtDuJourHorizontal($tab_data, $jour, $param);
+	}
+	else {
+		$result = EdtDuJourVertical($tab_data, $jour, $param);
+	}
+	return $result;
+}
+// =============================================================================
+//
+//                  Permet d'afficher l'edt du jour verticalement
+//
+// =============================================================================
+function EdtDuJourVertical($tab_data, $jour, $param) 
 {
     $result = "";
     $entetes = ConstruireEnteteEDT();
     $creneaux = ConstruireCreneauxEDT();
     $hauteur_demicreneaux = 20;
-    $largeur = "70%";
-   
-    $ua = getenv("HTTP_USER_AGENT");
-    if (strstr($ua, "MSIE 6.0")) {
-	    DefinirStyleCSSIE6($largeur, $hauteur_demicreneaux, $fenetre, $contenu, $tableau, $entete, $cadre, $colonne, $creneaux['nb_creneaux'], $cellule, $demicellule, $tierscellule, $creneaux_style, $entete_creneaux, $cadreRepas, $cadreCouleur, $horaires);
+	$hauteur_creneaux = $hauteur_demicreneaux * 2;
+	$nb_creneaux = $creneaux['nb_creneaux'];
+    if (($nb_creneaux == 0) OR ($nb_creneaux == 1)) {
+        $height = "94px";
     }
     else {
-        DefinirStyleCSS($largeur, $hauteur_demicreneaux, $fenetre, $contenu, $tableau, $entete, $cadre, $colonne, $creneaux['nb_creneaux'], $cellule, $demicellule, $tierscellule, $creneaux_style, $entete_creneaux, $cadreRepas, $cadreCouleur, $horaires);
-    }
-
+        $height = $nb_creneaux*2*$hauteur_demicreneaux + $hauteur_demicreneaux+1;
+        $height = $height."px;";
+    }   
     while (!isset($entetes['entete'][$jour])) {
         $jour--;
     }
     $jour_sem = $entetes['entete'][$jour];
 
-    $result .= "<div style=\"".$fenetre."\">\n";
-    $result .= "<div style=\"".$contenu."\">";
-    $result .= " <div style=\"".$tableau."\">\n";
-
-    $result .= "<div style=\"".$colonne."\">\n";
+    $result .= " <div class=\"fond\">\n";
+    $result .= "<div class=\"colonne\" style=\"height : ".$height."\">\n";
     $jour_sem = $entetes['entete'][$jour];
-    $result .= "<div style=\"".$entete."\"><div style=\"".$cadre."\">".$jour_sem."</div></div>\n";
+    $result .= "<div class=\"entete\" style=\"height : ".$hauteur_demicreneaux."px;\"><div class=\"cadre\">".$jour_sem."</div></div>\n";
     $index_box = 0;
     while (isset($tab_data[$jour]['type'][$index_box]))
     {
@@ -376,21 +96,21 @@ function EdtDuJourVertical($tab_data, $jour)
             $hauteur = $tab_data[$jour]['duree_valeur'][$index_box] * $hauteur_demicreneaux * 2;
             $hauteur = $hauteur."px;";
             if (strpos($tab_data[$jour]['duree'][$index_box], "demi") !== FALSE) {
-                $result .= "<div style=\"".$demicellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"demicellule\" style=\"height : ".$hauteur.";\">";
             }
             elseif (strpos($tab_data[$jour]['duree'][$index_box], "tiers") !== FALSE) {
-                $result .= "<div style=\"".$tierscellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"tierscellule\" style=\"height : ".$hauteur.";\">";
             }
             else {
-                $result .= "<div style=\"".$cellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"cellule\" style=\"height : ".$hauteur.";\">";
             }
             $result .= "<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n";
             
             if (strpos($tab_data[$jour]['couleur'][$index_box], "Repas") !== FALSE) {
-                $result .= "<div style=\"".$cadreRepas."\">\n";
+                $result .= "<div class=\"cadreRepas\">\n";
             }
             else {
-                $result .= "<div style=\"".$cadre."\">\n";
+                $result .= "<div class=\"cadre\">\n";
             }
 
             $result .= "</div></div>\n";  
@@ -401,13 +121,13 @@ function EdtDuJourVertical($tab_data, $jour)
             $hauteur = $tab_data[$jour]['duree_valeur'][$index_box] * $hauteur_demicreneaux * 2;
             $hauteur = $hauteur."px;";
             if (strpos($tab_data[$jour]['duree'][$index_box], "demi") !== FALSE) {
-                $result .= "<div style=\"".$demicellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"demicellule\" style=\"height : ".$hauteur.";\">";
             }
             elseif (strpos($tab_data[$jour]['duree'][$index_box], "tiers") !== FALSE) {
-                $result .= "<div style=\"".$tierscellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"tierscellule\" style=\"height : ".$hauteur.";\">";
             }
             else {
-                $result .= "<div style=\"".$cellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"cellule\" style = \"height : ".$hauteur.";\">";
             }
             $result .= "<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n";
             $result .= "<div class=\"cadreRouge\">\n";
@@ -420,13 +140,13 @@ function EdtDuJourVertical($tab_data, $jour)
             $hauteur = $tab_data[$jour]['duree_valeur'][$index_box] * $hauteur_demicreneaux * 2;
             $hauteur = $hauteur."px;";
             if (strpos($tab_data[$jour]['duree'][$index_box], "demi") !== FALSE) {
-                $result .= "<div style=\"".$demicellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"demicellule\" style =\"height : ".$hauteur.";\">";
             }
             elseif (strpos($tab_data[$jour]['duree'][$index_box], "tiers") !== FALSE) {
-                $result .= "<div style=\"".$tierscellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"tierscellule\" style = \"height : ".$hauteur.";\">";
             }
             else {
-                $result .= "<div style=\"".$cellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"cellule\" style=\"height : ".$hauteur.";\">";
             }
     
         }
@@ -435,23 +155,33 @@ function EdtDuJourVertical($tab_data, $jour)
             $hauteur = $tab_data[$jour]['duree_valeur'][$index_box] * $hauteur_demicreneaux * 2;
             $hauteur = $hauteur."px;";
             if (strpos($tab_data[$jour]['duree'][$index_box], "demi") !== FALSE) {
-                $result .= "<div style=\"".$demicellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"demicellule\" style=\"height : ".$hauteur.";\">";
             }
             elseif (strpos($tab_data[$jour]['duree'][$index_box], "tiers") !== FALSE) {
-                $result .= "<div style=\"".$tierscellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"tierscellule\" style=\"height : ".$hauteur.";\">";
             }
             else {
-                $result .= "<div style=\"".$cellule."height : ".$hauteur."\">";
+                $result .= "<div class=\"cellule\" style=\"height : ".$hauteur.";\">";
             }
             $result .= "<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n";
             if (strpos($tab_data[$jour]['couleur'][$index_box], "Couleur") !== FALSE) {
-                $result .= "<div style=\"".$cadreCouleur."\">\n";
+                $result .= "<div class=\"cadreCouleur\">\n";
             }
             else {
-                $result .= "<div style=\"".$cadre."\">\n";
+                $result .= "<div class=\"cadre\">\n";
             }
-            $result .= $tab_data[$jour]['contenu'][$index_box];
-            $result .= "</div></div>\n";   
+			if ($param & INFOBULLE) {
+				$lesson_content_1 = str_replace("<br />", " - ", $tab_data[$jour]['contenu'][$index_box]);
+				$lesson_content_2 = str_replace("<i>", " ", $lesson_content_1);
+				$lesson_content = str_replace("</i>", " ", $lesson_content_2);
+				$result .="<div class=\"ButtonBar\"><div class=\"image\"><a href=\"#\"><img src=\"../../templates/DefaultEDT/images/info.png\" title=\"".$lesson_content."\"  /></a></div></div>";
+				$result .= "</div></div>\n";  			
+
+			}
+			else {			
+				$result .= $tab_data[$jour]['contenu'][$index_box]; 
+				$result .= "</div></div>\n";				
+			} 
 
         }
         else if ($tab_data[$jour]['type'][$index_box] == "fin_conteneur")
@@ -473,22 +203,200 @@ function EdtDuJourVertical($tab_data, $jour)
 
 // ===== affichage de la colonne créneaux
 
-    $result .= "<div style=\"".$creneaux_style."\">\n";
-    $result .= "<div style=\"".$entete_creneaux."\"></div>\n";
+    $result .= "<div class=\"colonne_creneaux\">\n";
+    $result .= "<div class=\"entete_creneaux\" style=\"height : ".$hauteur_demicreneaux."px;\"></div>\n";
 
     for ($i = 0; $i < $creneaux['nb_creneaux']; $i++)
     {
         $hauteur = 2 * $hauteur_demicreneaux;
         $hauteur = $hauteur."px;";
-        $result .= "<div style=\"".$cellule."height : ".$hauteur."\">";
-        $result .= "<div style=\"".$horaires."\"><div style=\"".$cadre."\">".$creneaux['creneaux'][$i]."</div></div>\n";
+        $result .= "<div class=\"cellule\" style=\"height : ".$hauteur.";\">";
+        $result .= "<div class=\"cellule_creneaux\"><div class=\"cadre\">".$creneaux['creneaux'][$i]."</div></div>\n";
         $result .= "</div>";
     }
 
-    $result .= "</div></div><div class=\"spacer\"></div></div></div>";
+    $result .= "</div></div><div class=\"spacer\"></div>";
     return $result;
 }
 
+// =============================================================================
+//
+//                  Permet d'afficher l'edt du jour horizontalement
+//
+// =============================================================================
+function EdtDuJourHorizontal($tab_data, $jour, $param) 
+{
+    $result = "";
+    $entetes = ConstruireEnteteEDT();
+    $creneaux = ConstruireCreneauxEDT();
+    $hauteur_demicreneaux = 40;
+	$hauteur_creneaux = $hauteur_demicreneaux * 2;
+	$nb_creneaux = $creneaux['nb_creneaux'];
+    if (($nb_creneaux == 0) OR ($nb_creneaux == 1)) {
+        $width = "94px";
+    }
+    else {
+        $width = $nb_creneaux*2*$hauteur_demicreneaux + $hauteur_creneaux+4;
+        $width = $width."px;";
+    }   
+    while (!isset($entetes['entete'][$jour])) {
+        $jour--;
+    }
+    $jour_sem = $entetes['entete'][$jour];
+
+    $result .= " <div class=\"fond\">\n";
+    $result .= "<div class=\"ligne\" style=\"width : ".$width."\">\n";
+    $jour_sem = $entetes['entete'][$jour];
+    $result .= "<div class=\"entete_h\" style=\"width : ".$hauteur_creneaux."px;\"><div class=\"cadre\">".$jour_sem."</div></div>\n";
+    $index_box = 0;
+	$AlreadyInContainer = false;
+    while (isset($tab_data[$jour]['type'][$index_box]))
+    {
+        if ($tab_data[$jour]['type'][$index_box] == "vide") {
+            $hauteur = $tab_data[$jour]['duree_valeur'][$index_box] * $hauteur_demicreneaux * 2;
+            $hauteur = $hauteur."px;";
+            if (strpos($tab_data[$jour]['duree'][$index_box], "demi") !== FALSE) {
+                $result .= "<div class=\"demicellule_h\" style=\"width : ".$hauteur.";\">";
+            }
+            elseif (strpos($tab_data[$jour]['duree'][$index_box], "tiers") !== FALSE) {
+                $result .= "<div class=\"tierscellule_h\" style=\"width : ".$hauteur.";\">";
+            }
+            else {
+                $result .= "<div class=\"cellule_h\" style=\"width : ".$hauteur.";\">";
+            }
+            $result .= "<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n";
+            
+            if (strpos($tab_data[$jour]['couleur'][$index_box], "Repas") !== FALSE) {
+                $result .= "<div class=\"cadreRepas\">\n";
+            }
+            else {
+                $result .= "<div class=\"cadre\">\n";
+            }
+
+            $result .= "</div></div>\n";  
+
+        }
+        else if ($tab_data[$jour]['type'][$index_box] == "erreur")
+        {
+            $hauteur = $tab_data[$jour]['duree_valeur'][$index_box] * $hauteur_demicreneaux * 2;
+            $hauteur = $hauteur."px;";
+            if (strpos($tab_data[$jour]['duree'][$index_box], "demi") !== FALSE) {
+                $result .= "<div class=\"demicellule_h\" style=\"width : ".$hauteur.";\">";
+            }
+            elseif (strpos($tab_data[$jour]['duree'][$index_box], "tiers") !== FALSE) {
+                $result .= "<div class=\"tierscellule_h\" style=\"width : ".$hauteur.";\">";
+            }
+            else {
+                $result .= "<div class=\"cellule_h\" style = \"width : ".$hauteur.";\">";
+            }
+            $result .= "<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n";
+            $result .= "<div class=\"cadreRouge\">\n";
+            $result .= $tab_data[$jour]['contenu'][$index_box];
+            $result .= "</div></div>\n";  
+
+        }
+        else if ($tab_data[$jour]['type'][$index_box] == "conteneur")
+        {
+            $hauteur = $tab_data[$jour]['duree_valeur'][$index_box] * $hauteur_demicreneaux * 2;
+            $hauteur = $hauteur."px;";
+			if (!$AlreadyInContainer) {
+				$result .= "<div class=\"cellule_h\" style=\"width : ".$hauteur.";\">";
+			}
+            if (strpos($tab_data[$jour]['duree'][$index_box], "demi") !== FALSE) {
+                $result .= "<div class=\"demicellule_h\" style =\"width : ".$hauteur.";display:block;\">";
+				if (!$AlreadyInContainer) {
+					$CountBeforeOutOfContainer = 2;
+				}
+				$AlreadyInContainer = true;
+            }
+            elseif (strpos($tab_data[$jour]['duree'][$index_box], "tiers") !== FALSE) {
+                $result .= "<div class=\"tierscellule_h\" style = \"width : ".$hauteur.";display:block;\">";
+				if (!$AlreadyInContainer) {
+					$CountBeforeOutOfContainer = 3;
+				}
+				$AlreadyInContainer = true;				
+            }
+            else {
+                $result .= "<div class=\"cellule_h\" style=\"width : ".$hauteur.";\">";
+				if (!$AlreadyInContainer) {
+					$CountBeforeOutOfContainer = 1;
+				}
+				$AlreadyInContainer = true;				
+            }
+    
+        }
+        else if ($tab_data[$jour]['type'][$index_box] == "cours")
+        {
+            $hauteur = $tab_data[$jour]['duree_valeur'][$index_box] * $hauteur_demicreneaux * 2;
+            $hauteur = $hauteur."px;";
+            if (strpos($tab_data[$jour]['duree'][$index_box], "demi") !== FALSE) {
+                $result .= "<div class=\"demicellule_h\" style=\"width : ".$hauteur.";\">";
+            }
+            elseif (strpos($tab_data[$jour]['duree'][$index_box], "tiers") !== FALSE) {
+                $result .= "<div class=\"tierscellule_h\" style=\"width : ".$hauteur.";\">";
+            }
+            else {
+                $result .= "<div class=\"cellule_h\" style=\"width : ".$hauteur.";\">";
+            }
+            $result .= "<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n";
+            if (strpos($tab_data[$jour]['couleur'][$index_box], "Couleur") !== FALSE) {
+                $result .= "<div class=\"cadreCouleur\">\n";
+            }
+            else {
+                $result .= "<div class=\"cadre\">\n";
+            }
+			if ($param & INFOBULLE) {
+				$lesson_content_1 = str_replace("<br />", " - ", $tab_data[$jour]['contenu'][$index_box]);
+				$lesson_content_2 = str_replace("<i>", " ", $lesson_content_1);
+				$lesson_content = str_replace("</i>", " ", $lesson_content_2);
+				$result .="<div class=\"ButtonBar\"><div class=\"image\"><a href=\"#\"><img src=\"../../templates/DefaultEDT/images/info.png\" title=\"".$lesson_content."\"  /></a></div></div>";
+				$result .= "</div></div>\n";  			
+
+			}
+			else {			
+				$result .= $tab_data[$jour]['contenu'][$index_box]; 
+				$result .= "</div></div>\n";				
+			}
+
+        }
+        else if ($tab_data[$jour]['type'][$index_box] == "fin_conteneur")
+        {
+            $result .= "</div>\n";
+			$CountBeforeOutOfContainer--;
+			if ($CountBeforeOutOfContainer == 0) {
+				$result .= "</div>\n";
+				$AlreadyInContainer = false;
+			}
+        }
+        else 
+        {
+            // ========= type de box non implémentée
+
+        }
+
+
+        $index_box++;
+    }
+
+    $result .= "</div><div style=\"clear:both\"\n";
+
+// ===== affichage de la colonne créneaux
+
+    $result .= "<div class=\"ligne_creneaux\" style=\"width : ".$width."\">\n";
+    $result .= "<div class=\"entete_creneaux_h\" style=\"width : ".$hauteur_creneaux."px;\"><div class=\"cadre\" style=\"width : ".$hauteur_creneaux."px;\"></div></div>\n";
+
+    for ($i = 0; $i < $creneaux['nb_creneaux']; $i++)
+    {
+        $hauteur = 2 * $hauteur_demicreneaux;
+        $hauteur = $hauteur."px;";
+        $result .= "<div class=\"cellule_h\" style=\"width : ".$hauteur.";\">";
+        $result .= "<div class=\"cellule_creneaux\"><div class=\"cadre\">".$creneaux['creneaux'][$i]."</div></div>\n";
+        $result .= "</div>";
+    }
+
+    $result .= "</div></div><div style=\"clear:both\"></div>";
+    return $result;
+}
 // =============================================================================
 //
 //                  Permet d'afficher un emploi du temps 

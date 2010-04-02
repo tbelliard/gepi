@@ -101,7 +101,8 @@ function IdClasse($nom_classe) {
 }
 
 
-$style_specifique = "edt_organisation/style_edt";
+$style_specifique[0] = "edt_organisation/style_edt";
+$style_specifique[1] = "templates/DefaultEDT/css/small_edt";
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 //**************** EN-TETE *****************
 $titre_page = "Les absents du jour.";
