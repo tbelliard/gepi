@@ -122,7 +122,9 @@ while ($i < $nombre_lignes){
     echo "<td>$current_nom</td>\n";
     echo "<td>$current_niveau_nom</td>\n";
     echo "<td>$current_type</td>\n";
-    echo "<td>$current_cp</td>\n";
+    echo "<td>";
+	if($current_cp!='999') {echo sprintf("%05d",$current_cp);} else {echo $current_cp;}
+	echo "</td>\n";
     echo "<td>$current_ville</td>\n";
     echo "<td><a href='../lib/confirm_query.php?liste_cible=$current_id&amp;action=del_etab'>Supprimer</a></td></tr>\n";
 	$i++;
