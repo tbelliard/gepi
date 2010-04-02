@@ -56,7 +56,16 @@ if((!isset($id_classe))||(!isset($id_classe))) {
 	$msg="Il faut choisir une classe et une période.";
 	header("Location:index.php?msg=$msg");
 }
-elseif($ver_periode[$periode_num]=='O') {
+
+$acces="n";
+if($ver_periode[$periode_num]=="N") {
+	$acces="y";
+}
+elseif(($ver_periode[$periode_num]=="P")&&($_SESSION['statut']=='secours')) {
+	$acces="y";
+}
+
+if($acces=="n") {
 	$msg="La période $periode_num est close pour cette classe.";
 	header("Location:index.php?id_classe=$id_classe&msg=$msg");
 }

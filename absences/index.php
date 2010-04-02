@@ -124,16 +124,16 @@ if (!isset($id_classe)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<th>".ucfirst($nom_periode[$i])."</th>\n";
-		//if ($ver_periode[$i] == "N") {
-		if ($ver_periode[$i] != "O") {
+		if(($ver_periode[$i] == "N")||
+		 (($ver_periode[$i]!="O")&&($_SESSION['statut']=='secours'))) {
 			echo "<td><a href='saisie_absences.php?id_classe=$id_classe&amp;periode_num=$i'><img src='../images/edit16.png' width='16' height='16' alt='Saisir' title='Saisir' /></a></td>\n";
 		} else {
 			echo "<td style='color:red;'><img src='../images/disabled.png' width='20' height='20' alt='".$gepiClosedPeriodLabel."' title='".$gepiClosedPeriodLabel."' /></td>\n";
 		}
 		echo "<td><a href='consulter_absences.php?id_classe=$id_classe&amp;periode_num=$i'><img src='../images/icons/chercher.png' width='16' height='16' alt='Consulter' title='Consulter' /></a></td>\n";
 
-		//if ($ver_periode[$i] == "N") {
-		if ($ver_periode[$i] != "O") {
+		if(($ver_periode[$i] == "N")||
+		 (($ver_periode[$i]!="O")&&($_SESSION['statut']=='secours'))) {
 			echo "<td style='width:5em;'><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$i'>de GEP</a></td>\n";
 		} else {
 			echo "<td style='color:red;' colspan='$colspan'><img src='../images/disabled.png' width='20' height='20' alt='".$gepiClosedPeriodLabel."' title='".$gepiClosedPeriodLabel."' /></td>\n";
@@ -141,8 +141,8 @@ if (!isset($id_classe)) {
 
 	    // si le module de gestion des absences de gepi est activé alors on propose l'importation des absences de ce module
 	    if ( getSettingValue("active_module_absence") === 'y' ) {
-			//if ($ver_periode[$i] == "N") {
-			if ($ver_periode[$i] != "O") {
+			if(($ver_periode[$i] == "N")||
+			(($ver_periode[$i]!="O")&&($_SESSION['statut']=='secours'))) {
 				echo "<td style='width:5em;'><a href='import_absences_gepi.php?id_classe=$id_classe&amp;periode_num=$i'>de GEPI</a></td>\n";
 			}
 			/*
@@ -152,8 +152,8 @@ if (!isset($id_classe)) {
 			*/
 	    }
 
-		//if ($ver_periode[$i] == "N") {
-		if ($ver_periode[$i] != "O") {
+		if(($ver_periode[$i] == "N")||
+		 (($ver_periode[$i]!="O")&&($_SESSION['statut']=='secours'))) {
 			echo "<td style='width:5em;'><a href='import_absences_sconet.php?id_classe=$id_classe&amp;num_periode=$i'>de Sconet</a></td>\n";
 		}
 		/*
