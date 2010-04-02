@@ -37,7 +37,7 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
 	 * @return     EdtCreneau EdtCreneau
 	 *
 	 */
-	public function getEdtCreneauActuel() {
+	public static function getEdtCreneauActuel() {
 		throw new PropelException("Pas encore implemente");
 		return new EdtCreneau();
 	}
@@ -49,7 +49,7 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
 	 * @return     EdtCreneau EdtCreneau
 	 *
 	 */
-	public function getFirstEdtCreneau() {
+	public static function getFirstEdtCreneau() {
 		throw new PropelException("Pas encore implemente");
 		return new EdtCreneau();
 	}
