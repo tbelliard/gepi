@@ -58,6 +58,22 @@ include($CurrentPath."edt_organisation/req_database.php");
 
 $idClasse = isset($_GET["classe"]) ? $_GET["classe"] : NULL;
 $jour = date("N")-1;
+// =====================================
+//
+//	Récupérer le nom de la classe
+//
+// =====================================
+function NomClasse($idClasse) {
+    $result = "";
+    $sql = "SELECT classe FROM classes WHERE id = '".$idClasse."' ";
+    $req = mysql_query($sql);
+    if ($req) {
+        if ($rep = mysql_fetch_array($req)) {
+            $result = $rep['classe'];
+        }
+    }
+    return $result;
+}
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -74,8 +90,8 @@ if ($resultat_session == 'c') {
 //
 // =====================================
 	$tab_data = ConstruireEDTClasseDuJour($idClasse, 0, $jour);
-	
-	$flags = INFOBULLE + HORIZONTAL;		// pour toutes les valeurs possibles, voir /edt_organisation/fonctions_affichage.php
+	$flags = INFOBULLE + HORIZONTAL + CRENEAUX_VISIBLES;		// pour toutes les valeurs possibles, voir /edt_organisation/fonctions_affichage.php
+	$tab_data['entete_creneaux'] = NomClasse($idClasse);
 // =====================================
 //
 //	Affichage de l'emploi du temps

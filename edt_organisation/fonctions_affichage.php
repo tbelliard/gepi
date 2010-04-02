@@ -39,24 +39,39 @@
 // void     function AfficheModifierIcone($type_edt,$login_edt,$id_cours, $period)
 // void     function AfficheEffacerIcone($type_edt,$login_edt,$id_cours, $period)
 
-define('INFOBULLE', 1);
-define('HORIZONTAL', 2);
-define('NO_INFOBULLE', 0);
-define('VERTICAL', 0);
+// =============================================================================
+//
+//                  Constantes utilisées par les edt
+//
+// =============================================================================
+	// Affiche le contenu des créneaux directement
+	define('NO_INFOBULLE', 0);
+	// Affiche le contenu des créneaux dans l'infobulle d'une image
+	define('INFOBULLE', 1);
+	
+	// Affiche l'edt verticalement
+	define('VERTICAL', 0);	
+	// Affiche l'edt horizontalement
+	define('HORIZONTAL', 2);
+
+	// Affiche les intitulés des créneaux (M1, M2...)
+	define('CRENEAUX_VISIBLES', 0);
+	// Masque les intitulés des créneaux
+	define('CRENEAUX_INVISIBLES', 4);
 
 // =============================================================================
 //
 //                  Permet d'afficher l'edt du jour
 //
 // =============================================================================
-function EdtDuJour($tab_data, $jour, $param) 
+function EdtDuJour($tab_data, $jour, $flags) 
 {
 	$result = "";
-	if ($param & HORIZONTAL) {
-		$result = EdtDuJourHorizontal($tab_data, $jour, $param);
+	if ($flags & HORIZONTAL) {
+		$result = EdtDuJourHorizontal($tab_data, $jour, $flags);
 	}
 	else {
-		$result = EdtDuJourVertical($tab_data, $jour, $param);
+		$result = EdtDuJourVertical($tab_data, $jour, $flags);
 	}
 	return $result;
 }
@@ -65,7 +80,7 @@ function EdtDuJour($tab_data, $jour, $param)
 //                  Permet d'afficher l'edt du jour verticalement
 //
 // =============================================================================
-function EdtDuJourVertical($tab_data, $jour, $param) 
+function EdtDuJourVertical($tab_data, $jour, $flags) 
 {
     $result = "";
     $entetes = ConstruireEnteteEDT();
@@ -174,7 +189,7 @@ function EdtDuJourVertical($tab_data, $jour, $param)
 				$lesson_content_1 = str_replace("<br />", " - ", $tab_data[$jour]['contenu'][$index_box]);
 				$lesson_content_2 = str_replace("<i>", " ", $lesson_content_1);
 				$lesson_content = str_replace("</i>", " ", $lesson_content_2);
-				$result .="<div class=\"ButtonBar\"><div class=\"image\"><a href=\"#\"><img src=\"../../templates/DefaultEDT/images/info.png\" title=\"".$lesson_content."\"  /></a></div></div>";
+				$result .="<div class=\"ButtonBar\"><div class=\"image\"><img src=\"../../templates/DefaultEDT/images/info.png\" title=\"".$lesson_content."\"  /></div></div>";
 				$result .= "</div></div>\n";  			
 
 			}
@@ -200,22 +215,29 @@ function EdtDuJourVertical($tab_data, $jour, $param)
 
     $result .= "</div>\n";
 
+	if ($flags & CRENEAUX_INVISIBLES) {
+		$result .= '</div>';
+	}
+	else {
+		// ===== affichage de la colonne créneaux
 
-// ===== affichage de la colonne créneaux
+		$result .= "<div class=\"colonne_creneaux\">\n";
+		$result .= "<div class=\"entete_creneaux\" style=\"height : ".$hauteur_demicreneaux."px;\">";
+		if (isset($tab_data['entete_creneaux'])) {
+			$result .= $tab_data['entete_creneaux'];
+		}
+		$result .= "</div>\n";
 
-    $result .= "<div class=\"colonne_creneaux\">\n";
-    $result .= "<div class=\"entete_creneaux\" style=\"height : ".$hauteur_demicreneaux."px;\"></div>\n";
-
-    for ($i = 0; $i < $creneaux['nb_creneaux']; $i++)
-    {
-        $hauteur = 2 * $hauteur_demicreneaux;
-        $hauteur = $hauteur."px;";
-        $result .= "<div class=\"cellule\" style=\"height : ".$hauteur.";\">";
-        $result .= "<div class=\"cellule_creneaux\"><div class=\"cadre\">".$creneaux['creneaux'][$i]."</div></div>\n";
-        $result .= "</div>";
-    }
-
-    $result .= "</div></div><div class=\"spacer\"></div>";
+		for ($i = 0; $i < $creneaux['nb_creneaux']; $i++)
+		{
+			$hauteur = 2 * $hauteur_demicreneaux;
+			$hauteur = $hauteur."px;";
+			$result .= "<div class=\"cellule\" style=\"height : ".$hauteur.";\">";
+			$result .= "<div class=\"cellule_creneaux\"><div class=\"cadre\">".$creneaux['creneaux'][$i]."</div></div>\n";
+			$result .= "</div>";
+		}
+	}
+		$result .= "</div></div><div class=\"spacer\"></div>";
     return $result;
 }
 
@@ -224,12 +246,12 @@ function EdtDuJourVertical($tab_data, $jour, $param)
 //                  Permet d'afficher l'edt du jour horizontalement
 //
 // =============================================================================
-function EdtDuJourHorizontal($tab_data, $jour, $param) 
+function EdtDuJourHorizontal($tab_data, $jour, $flags) 
 {
     $result = "";
     $entetes = ConstruireEnteteEDT();
     $creneaux = ConstruireCreneauxEDT();
-    $hauteur_demicreneaux = 40;
+    $hauteur_demicreneaux = 30;
 	$hauteur_creneaux = $hauteur_demicreneaux * 2;
 	$nb_creneaux = $creneaux['nb_creneaux'];
     if (($nb_creneaux == 0) OR ($nb_creneaux == 1)) {
@@ -244,7 +266,7 @@ function EdtDuJourHorizontal($tab_data, $jour, $param)
     }
     $jour_sem = $entetes['entete'][$jour];
 
-    $result .= " <div class=\"fond\">\n";
+    $result .= " <div class=\"fond_h\">\n";
     $result .= "<div class=\"ligne\" style=\"width : ".$width."\">\n";
     $jour_sem = $entetes['entete'][$jour];
     $result .= "<div class=\"entete_h\" style=\"width : ".$hauteur_creneaux."px;\"><div class=\"cadre\">".$jour_sem."</div></div>\n";
@@ -345,11 +367,11 @@ function EdtDuJourHorizontal($tab_data, $jour, $param)
             else {
                 $result .= "<div class=\"cadre\">\n";
             }
-			if ($param & INFOBULLE) {
+			if ($flags & INFOBULLE) {
 				$lesson_content_1 = str_replace("<br />", " - ", $tab_data[$jour]['contenu'][$index_box]);
 				$lesson_content_2 = str_replace("<i>", " ", $lesson_content_1);
 				$lesson_content = str_replace("</i>", " ", $lesson_content_2);
-				$result .="<div class=\"ButtonBar\"><div class=\"image\"><a href=\"#\"><img src=\"../../templates/DefaultEDT/images/info.png\" title=\"".$lesson_content."\"  /></a></div></div>";
+				$result .="<div class=\"ButtonBar\"><div class=\"image\"><img src=\"../../templates/DefaultEDT/images/info.png\" title=\"".$lesson_content."\"  /></div></div>";
 				$result .= "</div></div>\n";  			
 
 			}
@@ -380,21 +402,30 @@ function EdtDuJourHorizontal($tab_data, $jour, $param)
 
     $result .= "</div><div style=\"clear:both\"\n";
 
-// ===== affichage de la colonne créneaux
+	if ($flags & CRENEAUX_INVISIBLES) {
+		$result .= '</div>';
+	
+	}
+	else {
+		// ===== affichage de la colonne créneaux
 
-    $result .= "<div class=\"ligne_creneaux\" style=\"width : ".$width."\">\n";
-    $result .= "<div class=\"entete_creneaux_h\" style=\"width : ".$hauteur_creneaux."px;\"><div class=\"cadre\" style=\"width : ".$hauteur_creneaux."px;\"></div></div>\n";
+		$result .= "<div class=\"ligne_creneaux\" style=\"width : ".$width."\">\n";
+		$result .= "<div class=\"entete_creneaux_h\" style=\"width : ".$hauteur_creneaux."px;\"><div class=\"cadre\" style=\"width : ".$hauteur_creneaux."px;\">";
+		if (isset($tab_data['entete_creneaux'])) {
+			$result .= $tab_data['entete_creneaux'];
+		}
+		$result .= "</div></div>\n";
+		for ($i = 0; $i < $creneaux['nb_creneaux']; $i++)
+		{
+			$hauteur = 2 * $hauteur_demicreneaux;
+			$hauteur = $hauteur."px;";
+			$result .= "<div class=\"cellule_h\" style=\"width : ".$hauteur.";\">";
+			$result .= "<div class=\"cellule_creneaux\"><div class=\"cadre\">".$creneaux['creneaux'][$i]."</div></div>\n";
+			$result .= "</div>";
+		}
 
-    for ($i = 0; $i < $creneaux['nb_creneaux']; $i++)
-    {
-        $hauteur = 2 * $hauteur_demicreneaux;
-        $hauteur = $hauteur."px;";
-        $result .= "<div class=\"cellule_h\" style=\"width : ".$hauteur.";\">";
-        $result .= "<div class=\"cellule_creneaux\"><div class=\"cadre\">".$creneaux['creneaux'][$i]."</div></div>\n";
-        $result .= "</div>";
-    }
-
-    $result .= "</div></div><div style=\"clear:both\"></div>";
+		$result .= "</div></div><div style=\"clear:both\"></div>";
+	}
     return $result;
 }
 // =============================================================================

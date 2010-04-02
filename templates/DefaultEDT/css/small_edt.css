@@ -10,7 +10,15 @@
 	text-align: left;
     width:190px;    /* largeur fixe pour compatibilité avec IE6 */
 }
-
+.fond_h{
+    float:left; 
+	position:relative;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 1em;
+	color: black;
+	text-align: left;
+    width:100%;    /* largeur fixe pour compatibilité avec IE6 */
+}
 .ligne {
 	float:left;
 	padding: 00px 00px 00px 00px;
