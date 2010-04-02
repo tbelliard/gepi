@@ -51,6 +51,16 @@ if (!checkAccess()) {
 
 include "../lib/periodes.inc.php";
 
+// Vérifications
+if((!isset($id_classe))||(!isset($id_classe))) {
+	$msg="Il faut choisir une classe et une période.";
+	header("Location:index.php?msg=$msg");
+}
+elseif($ver_periode[$periode_num]=='O') {
+	$msg="La période $periode_num est close pour cette classe.";
+	header("Location:index.php?id_classe=$id_classe&msg=$msg");
+}
+
 if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 	if ($_SESSION['statut'] == "cpe") {
 		$quels_eleves = mysql_query("SELECT e.login FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num')");
