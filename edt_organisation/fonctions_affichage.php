@@ -127,7 +127,9 @@ function EdtDuJourVertical($tab_data, $jour, $flags)
             else {
                 $result .= "<div class=\"cadre\">\n";
             }
-
+            if (isset($tab_data[$jour]['extras'][$index_box])) {
+                $result .= "Hello".$tab_data[$jour]['extras'][$index_box];
+            }
             $result .= "</div></div>\n";  
 
         }
@@ -185,18 +187,21 @@ function EdtDuJourVertical($tab_data, $jour, $flags)
             else {
                 $result .= "<div class=\"cadre\">\n";
             }
-			if ($param & INFOBULLE) {
-				$lesson_content_1 = str_replace("<br />", " - ", $tab_data[$jour]['contenu'][$index_box]);
-				$lesson_content_2 = str_replace("<i>", " ", $lesson_content_1);
-				$lesson_content = str_replace("</i>", " ", $lesson_content_2);
-				$result .="<div class=\"ButtonBar\"><div class=\"image\"><img src=\"../../templates/DefaultEDT/images/info.png\" title=\"".$lesson_content."\"  /></div></div>";
-				$result .= "</div></div>\n";  			
+            if (isset($tab_data[$jour]['extras'][$index_box])) {
+                $result .= $tab_data[$jour]['extras'][$index_box];
+            }
+            if ($flags & INFOBULLE) {
+                    $lesson_content_1 = str_replace("<br />", " - ", $tab_data[$jour]['contenu'][$index_box]);
+                    $lesson_content_2 = str_replace("<i>", " ", $lesson_content_1);
+                    $lesson_content = str_replace("</i>", " ", $lesson_content_2);
+                    $result .="<div class=\"ButtonBar\"><div class=\"image\"><img src=\"../../templates/DefaultEDT/images/info.png\" title=\"".$lesson_content."\"  /></div></div>";
+                    $result .= "</div></div>\n";
 
-			}
-			else {			
-				$result .= $tab_data[$jour]['contenu'][$index_box]; 
-				$result .= "</div></div>\n";				
-			} 
+            }
+            else {
+                    $result .= $tab_data[$jour]['contenu'][$index_box];
+                    $result .= "</div></div>\n";
+            }
 
         }
         else if ($tab_data[$jour]['type'][$index_box] == "fin_conteneur")
@@ -294,7 +299,9 @@ function EdtDuJourHorizontal($tab_data, $jour, $flags)
             else {
                 $result .= "<div class=\"cadre\">\n";
             }
-
+            if (isset($tab_data[$jour]['extras'][$index_box])) {
+                $result .= "Hello".$tab_data[$jour]['extras'][$index_box];
+            }
             $result .= "</div></div>\n";  
 
         }
@@ -367,18 +374,21 @@ function EdtDuJourHorizontal($tab_data, $jour, $flags)
             else {
                 $result .= "<div class=\"cadre\">\n";
             }
-			if ($flags & INFOBULLE) {
-				$lesson_content_1 = str_replace("<br />", " - ", $tab_data[$jour]['contenu'][$index_box]);
-				$lesson_content_2 = str_replace("<i>", " ", $lesson_content_1);
-				$lesson_content = str_replace("</i>", " ", $lesson_content_2);
-				$result .="<div class=\"ButtonBar\"><div class=\"image\"><img src=\"../../templates/DefaultEDT/images/info.png\" title=\"".$lesson_content."\"  /></div></div>";
-				$result .= "</div></div>\n";  			
+            if (isset($tab_data[$jour]['extras'][$index_box])) {
+                $result .= "Hello".$tab_data[$jour]['extras'][$index_box];
+            }
+            if ($flags & INFOBULLE) {
+                    $lesson_content_1 = str_replace("<br />", " - ", $tab_data[$jour]['contenu'][$index_box]);
+                    $lesson_content_2 = str_replace("<i>", " ", $lesson_content_1);
+                    $lesson_content = str_replace("</i>", " ", $lesson_content_2);
+                    $result .="<div class=\"ButtonBar\"><div class=\"image\"><img src=\"../../templates/DefaultEDT/images/info.png\" title=\"".$lesson_content."\"  /></div></div>";
+                    $result .= "</div></div>\n";
 
-			}
-			else {			
-				$result .= $tab_data[$jour]['contenu'][$index_box]; 
-				$result .= "</div></div>\n";				
-			}
+            }
+            else {
+                    $result .= $tab_data[$jour]['contenu'][$index_box];
+                    $result .= "</div></div>\n";
+            }
 
         }
         else if ($tab_data[$jour]['type'][$index_box] == "fin_conteneur")

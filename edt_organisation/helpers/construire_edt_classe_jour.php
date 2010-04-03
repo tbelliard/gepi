@@ -92,6 +92,7 @@ if ($resultat_session == 'c') {
 	$tab_data = ConstruireEDTClasseDuJour($idClasse, 0, $jour);
 	$flags = INFOBULLE + HORIZONTAL + CRENEAUX_VISIBLES;		// pour toutes les valeurs possibles, voir /edt_organisation/fonctions_affichage.php
 	$tab_data['entete_creneaux'] = NomClasse($idClasse);
+        //$tab_data[4]['extras'][0] = "Hello";  // Ajoute "Hello" Au premier emplacement(cours ou vide) pour vendredi
 // =====================================
 //
 //	Affichage de l'emploi du temps
