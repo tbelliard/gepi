@@ -1109,14 +1109,30 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<table border='0' summary='Paramètres'>\n";
-			echo "<tr valign='top'><td><label for='affiche_mgen' style='cursor: pointer;'>Afficher la moyenne générale:</label></td><td><input type='checkbox' name='affiche_mgen' id='affiche_mgen' value='oui'$checked /></td></tr>\n";
+			//echo "<tr valign='top'><td><label for='affiche_mgen' style='cursor: pointer;'>Afficher la moyenne générale:</label></td><td><input type='checkbox' name='affiche_mgen' id='affiche_mgen' value='oui'$checked /></td></tr>\n";
+			echo "<tr valign='top'><td>Afficher la moyenne générale:</td><td>";
+			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<input type='radio' name='affiche_mgen' id='affiche_mgen_oui' value='oui'$checked /><label for='affiche_mgen_oui' style='cursor: pointer;'> Oui </label>/";
+			if($affiche_mgen!='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<label for='affiche_mgen_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_mgen' id='affiche_mgen_non' value='non'$checked /></td></tr>\n";
 
+			//if($affiche_minmax=='oui') {$checked=" checked='yes'";} else {$checked="";}
+			//echo "<tr valign='top'><td><label for='affiche_minmax' style='cursor: pointer;'>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</label></td><td><input type='checkbox' name='affiche_minmax' id='affiche_minmax' value='oui'$checked /></td></tr>\n";
+			echo "<tr valign='top'><td>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</td><td>";
 			if($affiche_minmax=='oui') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<tr valign='top'><td><label for='affiche_minmax' style='cursor: pointer;'>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</label></td><td><input type='checkbox' name='affiche_minmax' id='affiche_minmax' value='oui'$checked /></td></tr>\n";
+			echo "<input type='radio' name='affiche_minmax' id='affiche_minmax_oui' value='oui'$checked /><label for='affiche_minmax_oui' style='cursor: pointer;'> Oui </label>/\n";
+			if($affiche_minmax!='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<label for='affiche_minmax_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_minmax' id='affiche_minmax_non' value='non'$checked /></label>";
+			echo "</td></tr>\n";
 
 			//$affiche_moy_annuelle
+			//if($affiche_moy_annuelle=='oui') {$checked=" checked='yes'";} else {$checked="";}
+			//echo "<tr valign='top'><td><label for='affiche_moy_annuelle' style='cursor: pointer;'>Afficher les moyennes annuelles:<br />(<i>en mode 'Toutes_les_periodes' uniquement</i>)</label></td><td><input type='checkbox' name='affiche_moy_annuelle' id='affiche_moy_annuelle' value='oui'$checked /></td></tr>\n";
+			echo "<tr valign='top'><td>Afficher les moyennes annuelles:<br />(<i>en mode 'Toutes_les_periodes' uniquement</i>)</td><td>";
 			if($affiche_moy_annuelle=='oui') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<tr valign='top'><td><label for='affiche_moy_annuelle' style='cursor: pointer;'>Afficher les moyennes annuelles:<br />(<i>en mode 'Toutes_les_periodes' uniquement</i>)</label></td><td><input type='checkbox' name='affiche_moy_annuelle' id='affiche_moy_annuelle' value='oui'$checked /></td></tr>\n";
+			echo "<input type='radio' name='affiche_moy_annuelle' id='affiche_moy_annuelle_oui' value='oui'$checked /><label for='affiche_moy_annuelle_oui' style='cursor: pointer;'> Oui </label>/\n";
+			if($affiche_moy_annuelle!='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<label for='affiche_moy_annuelle_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_moy_annuelle' id='affiche_moy_annuelle_non' value='non'$checked /></td></tr>\n";
 
 			echo "</table>\n";
 			echo "</blockquote>\n";
@@ -1160,12 +1176,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			// - modèle de couleurs
 
 			//if($temoin_imageps=='oui'){$checked=" checked='yes'";}else{$checked="";}
-			if($temoin_image_escalier=='oui') {$checked=" checked='yes'";} else {$checked="";}
+			//if($temoin_image_escalier=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			//echo "Utiliser ImagePs: <input type='checkbox' name='temoin_imageps' value='oui'$checked /><br />\n";
-			echo "<tr><td><label for='temoin_image_escalier' style='cursor: pointer;'>Afficher les noms longs de matières:<br />(<i>en légende sous le graphe</i>)</label></td><td><input type='checkbox' name='temoin_image_escalier' id='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
+			//echo "<tr><td><label for='temoin_image_escalier' style='cursor: pointer;'>Afficher les noms longs de matières:<br />(<i>en légende sous le graphe</i>)</label></td><td><input type='checkbox' name='temoin_image_escalier' id='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
+			echo "<tr><td>Afficher les noms longs de matières:<br />(<i>en légende sous le graphe</i>)</td><td>";
+			if($temoin_image_escalier=='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<input type='radio' name='temoin_image_escalier' id='temoin_image_escalier_oui' value='oui'$checked /><label for='temoin_image_escalier_oui' style='cursor: pointer;'> Oui </label>/";
+			if($temoin_image_escalier!='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<label for='temoin_image_escalier_non' style='cursor: pointer;'> Non </label><input type='radio' name='temoin_image_escalier' id='temoin_image_escalier_non' value='oui'$checked />";
+			echo "</td></tr>\n";
 
 			//echo "<tr><td>Tronquer le nom court<br />de matière à <a href='javascript:alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
-			echo "<tr><td><label for='tronquer_nom_court' style='cursor: pointer;'>Tronquer le nom court de la matière à <a href='#' onclick='alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:<br />(<i>pour éviter des collisions de légendes en haut du graphe</i>)</label></td><td><select name='tronquer_nom_court' id='tronquer_nom_court'>\n";
+			echo "<tr><td><label for='tronquer_nom_court' style='cursor: pointer;'>Tronquer le nom court de la matière à <a href='#' onclick='alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\");return false;'>X</a> caractères:<br />(<i>pour éviter des collisions de légendes en haut du graphe</i>)</label></td><td><select name='tronquer_nom_court' id='tronquer_nom_court'>\n";
 			for($i=0;$i<=10;$i++){
 				if($tronquer_nom_court==$i) {$selected=" selected='yes'";} else {$selected="";}
 				echo "<option value='$i'$selected>$i</option>\n";
