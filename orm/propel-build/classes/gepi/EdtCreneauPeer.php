@@ -37,9 +37,33 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
 	 * @return     EdtCreneau EdtCreneau
 	 *
 	 */
-	public static function getEdtCreneauActuel() {
-		throw new PropelException("Pas encore implemente");
-		return new EdtCreneau();
+	public static function getEdtCreneauActuel($v = 'now') {
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		//$dt = new DateTime();
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		return EdtCreneauQuery::create()->filterByHeuredebutDefiniePeriode($dt->format("H:i:s"), Criteria::LESS_EQUAL)
+		    ->filterByHeurefinDefiniePeriode($dt->format("H:i:s"), Criteria::GREATER_THAN)->findOne();
 	}
 
 	/**
