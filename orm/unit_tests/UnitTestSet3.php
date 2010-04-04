@@ -30,7 +30,8 @@ include("../../lib/initialisationsPropel.inc.php");
 require_once("../../lib/initialisations.inc.php");
 include('UnitTestUtilisateurProfessionnel.php');
 include('UnitTestEleve.php');
-include('UnitTestAbsenceSaisie.php');
+include('UnitTestGroupe.php');
+include('UnitTestClasse.php');
 include("../propel/logger/STACKLogger.php");
 $logger = new STACKLogger();
 Propel::setLogger($logger);
@@ -46,7 +47,8 @@ purgeDonneesTest($logger);
 
 //recuperation d'un creneau
 $time = mktime(0, 0, 0);
-$creneau = EdtCreneauPeer::getEdtCreneauActuel($time);
+$creneau = EdtCreneauPeer::retrieveEdtCreneauActuel($time);
+echo ($logger->getDisplay());
 if ($creneau != null) {
 	echo('test recuperation d\'un creneau à minuit a <font color="red">echoue</font> <br><br/> : ');
 	echo('creneau retourné : '.$creneau->getNomDefiniePeriode());
@@ -56,27 +58,176 @@ if ($creneau != null) {
 }
 
 $time = mktime(8, 40, 0);
-$creneau = EdtCreneauPeer::getEdtCreneauActuel($time);
+$creneau = EdtCreneauPeer::retrieveEdtCreneauActuel($time);
+echo ($logger->getDisplay());
 if ($creneau == null) {
 	echo('test recuperation d\'un creneau à 8h40 a <font color="red">echoue</font> : ');
 	echo('pas de retour <br><br/>');
 } else {
-	echo('test recuperation d\'un creneau à 8h40 a reussi.<br><br/>');
+	echo('test recuperation d\'un creneau à 8h40 a reussi : '.$creneau->getNomDefiniePeriode().'<br><br/>');
 }
 
-$creneau = EdtCreneauPeer::getEdtCreneauActuel('8:40');
+$creneau = EdtCreneauPeer::retrieveEdtCreneauActuel('8:40');
+echo ($logger->getDisplay());
 if ($creneau == null) {
 	echo('test recuperation d\'un creneau à 8h40 a <font color="red">echoue</font> : ');
 	echo('pas de retour <br><br/>');
 } else {
-	echo('test recuperation d\'un creneau à 8h40 a reussi.<br><br/>');
+	echo('test recuperation d\'un creneau à 8h40 a reussi : '.$creneau->getNomDefiniePeriode().'<br><br/>');
 }
+
+
+//Creation d'un utilisateur
+$utilisateurProfessionnel = new UtilisateurProfessionnel();
+$utilisateurProfessionnel = UnitTestUtilisateurProfessionnel::getUtilisateurProfessionnel();
+$utilisateurProfessionnel->save();
+$newUtilisateurProfessionnel = UtilisateurProfessionnelPeer::retrieveByPK($utilisateurProfessionnel->getLogin());
+$logger->getDisplay();
+if ($newUtilisateurProfessionnel == null) {
+	echo('test creation utilisateur professionnel a <font color="red">echoue</font> <br><br/>.');
+} else {
+	echo('test creation utilisateur professionnel a reussi avec comme retour l\'id : ' . $newUtilisateurProfessionnel->getLogin() . '<br/><br/>');
+}
+
+//Creation d'un groupe
+$groupe = new Groupe();
+$groupe->getName();
+$groupe = UnitTestGroupe::getGroupe();
+$groupe->save();
+$newGroupe = GroupePeer::retrieveByPK($groupe->getId());
+$logger->getDisplay();
+if ($newGroupe == null) {
+	echo('test creation groupe a <font color="red">echoue</font> <br><br/>');
+} else {
+	echo('test creation groupe a reussi avec comme retour l\'id : ' . $groupe->getId() . '<br/><br/>');
+}
+
+//ajout du groupe au professeur
+$newUtilisateurProfessionnel->addGroupe($groupe);
+$newUtilisateurProfessionnel->save();
+$newGroupes = $newUtilisateurProfessionnel->getGroupes();
+echo ($logger->getDisplay());
+if ($newGroupes->count() != 1) {
+	echo('test ajout groupe au professeur a <font color="red">echoue</font> <br><br/>');
+} else {
+	echo('test ajout groupe au professeur a reussi<br/><br/>');
+}
+
+$edtCours = new EdtEmplacementCours();
+$edtCours->setGroupe($groupe);
+$edtCours->setUtilisateurProfessionnel($newUtilisateurProfessionnel);
+$edtCours->setEdtCreneau($creneau);
+$edtCours->setJourSemaine('lundi');
+$edtCours->setTypeSemaine('');
+$edtCours->save();
+echo ($logger->getDisplay());
+echo('emplacement de cours ajouté.<br>');
+echo('Debut du cours : '.$edtCours->getHeureDebut().'<br>');
+echo('Fin du cours : '.$edtCours->getHeureFin().'<br><br/>');
+
+$colEdtCours = $newUtilisateurProfessionnel->getEdtEmplacementCourss();
+echo ($logger->getDisplay());
+if ($colEdtCours->count() != 1) {
+	echo('test recuperation emplacement de cours du professeur a <font color="red">echoue</font> <br><br/>');
+} else {
+	echo('test recuperation emplacement de cours du professeur a reussi<br/><br/>');
+}
+
+$colEdtCours = $newUtilisateurProfessionnel->getEdtEmplacementCoursPeriodeCalendrierActuelle();
+echo ($logger->getDisplay());
+if ($colEdtCours->count() != 1) {
+	echo('test recuperation emplacement de cours du professeur a <font color="red">echoue</font> <br><br/>');
+} else {
+	echo('test recuperation emplacement de cours du professeur a reussi<br/><br/>');
+}
+
+$edtCours2 = new EdtEmplacementCours();
+$edtCours2->setGroupe($groupe);
+$edtCours2->setUtilisateurProfessionnel($newUtilisateurProfessionnel);
+$edtCours2->setEdtCreneau($creneau->getNextEdtCreneau());//on prend le creneau precent pour ce cours
+$edtCours2->setJourSemaine('lundi');
+$edtCours2->setTypeSemaine('');
+$edtCours2->setDuree(5);
+//$edtCours2->setTypeSemaine('');
+$edtCours2->save();
+echo ($logger->getDisplay());
+echo('emplacement de cours ajouté.<br>');
+echo('Debut du cours : '.$edtCours2->getHeureDebut().'<br>');
+echo('Fin du cours : '.$edtCours2->getHeureFin().'<br><br/>');
+$colEdtCours = $newUtilisateurProfessionnel->getEdtEmplacementCourss();
+echo ($logger->getDisplay());
+if ($colEdtCours->count() != 2) {
+	echo('test recuperation emplacement de cours du professeur a <font color="red">echoue</font> <br><br/>');
+} else {
+	echo('test recuperation emplacement de cours du professeur a reussi<br/><br/>');
+}
+
+$colEdtCours = $newUtilisateurProfessionnel->getEdtEmplacementCoursPeriodeCalendrierActuelle();
+echo ($logger->getDisplay());
+if ($colEdtCours->count() != 2) {
+	echo('test recuperation emplacement de cours du professeur a <font color="red">echoue</font> <br><br/>');
+} else {
+    if ($colEdtCours->getFirst()->getIdDefiniePeriode() == $edtCours2->getIdDefiniePeriode()) {
+	    echo('test recuperation emplacement de cours ordonné chronologiquement a <font color="red">echoue</font> <br><br/>');
+    } else {
+	    echo('test recuperation emplacement de cours du professeur a reussi<br/><br/>');
+    }
+}
+
+//on prend une date le lundi matin à 8h40
+$now = date('Y-m-d H:i',strtotime("next Monday 8:40"));
+$edtCoursTest = $newUtilisateurProfessionnel->getEdtEmplacementCoursActuel($now);
+echo ($logger->getDisplay());
+if ($edtCoursTest != null && $edtCoursTest->getIdDefiniePeriode() == $edtCours->getIdDefiniePeriode()) {
+    echo('test recuperation emplacement de cours du professeur a reussi<br/><br/>');
+} else {
+    echo('test recuperation emplacement de cours actuel a <font color="red">echoue</font> <br><br/>');
+}
+
+//on prend une date le lundi matin à 9h40
+$now = date('Y-m-d H:i',strtotime("next Monday 9:40"));
+$edtCoursTest = $newUtilisateurProfessionnel->getEdtEmplacementCoursActuel($now);
+echo ($logger->getDisplay());
+if ($edtCoursTest != null && $edtCoursTest->getIdDefiniePeriode() == $edtCours2->getIdDefiniePeriode()) {
+    echo('test recuperation emplacement de cours du professeur a reussi<br/><br/>');
+} else {
+    echo('test recuperation emplacement de cours actuel a <font color="red">echoue</font> <br><br/>');
+}
+
+
 
 purgeDonneesTest($logger);
 Propel::setLogger(null);
 
 function purgeDonneesTest($logger) {
 	echo "Purge des données<br/><br/>";
+	//purge de l'utilisateur
+	echo "<br/>Purge de l'utilisateur : <br/>";
+	$utilisateurProfessionnel = UtilisateurProfessionnelPeer::retrieveByPK(UnitTestUtilisateurProfessionnel::getUtilisateurProfessionnel()->getLogin());
+	if ($utilisateurProfessionnel != null)	{
+		$utilisateurProfessionnel->delete();
+	}
+	$logger->getDisplay();
+
+	//purge du groupe
+	echo "<br/>Purge du groupe : <br/>";
+	$criteria = new Criteria();
+	$criteria->add(GroupePeer::NAME, UnitTestGroupe::getGroupe()->getName());
+	$groupe = GroupePeer::doSelectOne($criteria);
+	if ($groupe != null) {
+		$groupe->delete();
+	}
+	$logger->getDisplay();
+
+	//purge de la classe
+	echo "<br/>Purge de la classe :<br/>";
+	$criteria = new Criteria();
+	$criteria->add(ClassePeer::CLASSE, UnitTestClasse::getClasse()->getClasse());
+	$classe = ClassePeer::doSelectOne($criteria);
+	if ($classe != null) {
+		$classe->delete();
+	}
+	$logger->getDisplay();
 
 	echo "<br/>Fin Purge des données<br/><br/>";
 }

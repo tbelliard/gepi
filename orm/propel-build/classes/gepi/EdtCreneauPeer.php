@@ -24,7 +24,7 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
    *
    * @return PropelObjectCollection EdtCreneau
    */
-    public static function getAllEdtCreneauxOrderByTime(){
+    public static function retrieveAllEdtCreneauxOrderByTime(){
 	    $criteria = new Criteria();
 	    $criteria->addAscendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE);
 	    return self::doSelect($criteria);
@@ -37,7 +37,7 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
 	 * @return     EdtCreneau EdtCreneau
 	 *
 	 */
-	public static function getEdtCreneauActuel($v = 'now') {
+	public static function retrieveEdtCreneauActuel($v = 'now') {
 		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
 		// -- which is unexpected, to say the least.
 		//$dt = new DateTime();
@@ -74,6 +74,18 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
 	 *
 	 */
 	public static function getFirstEdtCreneau() {
+		throw new PropelException("Pas encore implemente");
+		return new EdtCreneau();
+	}
+
+	/**
+	 *
+	 * Renvoi le dernier creneau de la semaine
+	 *
+	 * @return     EdtCreneau EdtCreneau
+	 *
+	 */
+	public static function retrieveLastEdtCreneau() {
 		throw new PropelException("Pas encore implemente");
 		return new EdtCreneau();
 	}

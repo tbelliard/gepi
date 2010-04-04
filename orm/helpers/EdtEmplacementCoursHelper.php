@@ -14,9 +14,32 @@ class EdtEmplacementCoursHelper {
 	 * @param      EdtEmplacementCours $groupeB Le deuxieme EdtEmplacementCours a comparer
 	 * @return     int un entier, qui sera inférieur, égal ou supérieur à zéro suivant que le premier argument est considéré comme plus petit, égal ou plus grand que le second argument.
 	 */
-	function compareEdtEmplacementCours($a, $b) {
-		throw new PropelException("Pas encore implemente");
-		return 0;
+	public static function compareEdtEmplacementCours($a, $b) {
+		if ($a ==null || $b == null){
+		    throw new PropelException("Objet null pour la comparaison.");
+		}
+		
+		// On traduit le nom du jour
+		$semaine_declaration["dimanche"] = 1;
+		$semaine_declaration["lundi"] = 2;
+		$semaine_declaration["mardi"] = 3;
+		$semaine_declaration["mercredi"] = 4;
+		$semaine_declaration["jeudi"] = 5;
+		$semaine_declaration["vendredi"] = 6;
+		$semaine_declaration["samedi"] = 7;
+
+		if ($semaine_declaration[$a->getJourSemaine()] != $semaine_declaration[$b->getJourSemaine()]) {
+		    $result = ($semaine_declaration[$a->getJourSemaine()] - $semaine_declaration[$b->getJourSemaine()]);
+		} elseif ($a->getEdtCreneau()->getIdDefiniePeriode() != $b->getEdtCreneau()->getIdDefiniePeriode())  {
+		    $start = strtotime($a->getEdtCreneau()->getHeuredebutDefiniePeriode());
+		    $end = strtotime($b->getEdtCreneau()->getHeuredebutDefiniePeriode());
+		    $result = ($start-$end);
+		} elseif ($a->getHeuredebDec() != $b->getHeuredebDec())  {
+		    $result = ($a->getHeuredebDec() - $b->getHeuredebDec());
+		} else  {
+		    $result = ($a->getDuree() - $b->getDuree());
+		}
+		return $result;
 	}
 
  	/**

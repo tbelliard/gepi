@@ -61,18 +61,21 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * The value for the duree field.
+	 * Note: this column has a database default value of: '2'
 	 * @var        string
 	 */
 	protected $duree;
 
 	/**
 	 * The value for the heuredeb_dec field.
+	 * Note: this column has a database default value of: '0'
 	 * @var        string
 	 */
 	protected $heuredeb_dec;
 
 	/**
 	 * The value for the id_semaine field.
+	 * Note: this column has a database default value of: ''
 	 * @var        string
 	 */
 	protected $id_semaine;
@@ -145,6 +148,29 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
+	 * Applies default values to this object.
+	 * This method should be called from the object's constructor (or
+	 * equivalent initialization method).
+	 * @see        __construct()
+	 */
+	public function applyDefaultValues()
+	{
+		$this->duree = '2';
+		$this->heuredeb_dec = '0';
+		$this->id_semaine = '';
+	}
+
+	/**
+	 * Initializes internal state of BaseEdtEmplacementCours object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
+	}
+
+	/**
 	 * Get the [id_cours] column value.
 	 * cle primaire
 	 * @return     int
@@ -206,7 +232,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [duree] column value.
-	 * duree du cours definie en demi-heures.1h de cours correspond a une duree=2
+	 * duree du cours definie en demi-creneaux.1h de cours correspond a une duree=2. Les creneaux de pause ne sont pas comptabilisé
 	 * @return     string
 	 */
 	public function getDuree()
@@ -226,17 +252,17 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [id_semaine] column value.
-	 * type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B
+	 * type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B. egal à 0 ou NULL si 
 	 * @return     string
 	 */
-	public function getIdSemaine()
+	public function getTypeSemaine()
 	{
 		return $this->id_semaine;
 	}
 
 	/**
 	 * Get the [id_calendrier] column value.
-	 * NULL = le cours a lieu toute l'annee - sinon, id de la periode (EdtPeriodes) durant laquelle a lieu le cours
+	 * NULL = le cours a lieu toute l'annee - sinon, id de la periode (EdtCalendrierPeriode) durant laquelle a lieu le cours
 	 * @return     string
 	 */
 	public function getIdCalendrier()
@@ -402,7 +428,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [duree] column.
-	 * duree du cours definie en demi-heures.1h de cours correspond a une duree=2
+	 * duree du cours definie en demi-creneaux.1h de cours correspond a une duree=2. Les creneaux de pause ne sont pas comptabilisé
 	 * @param      string $v new value
 	 * @return     EdtEmplacementCours The current object (for fluent API support)
 	 */
@@ -412,7 +438,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->duree !== $v) {
+		if ($this->duree !== $v || $this->isNew()) {
 			$this->duree = $v;
 			$this->modifiedColumns[] = EdtEmplacementCoursPeer::DUREE;
 		}
@@ -432,7 +458,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->heuredeb_dec !== $v) {
+		if ($this->heuredeb_dec !== $v || $this->isNew()) {
 			$this->heuredeb_dec = $v;
 			$this->modifiedColumns[] = EdtEmplacementCoursPeer::HEUREDEB_DEC;
 		}
@@ -442,27 +468,27 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [id_semaine] column.
-	 * type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B
+	 * type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B. egal à 0 ou NULL si 
 	 * @param      string $v new value
 	 * @return     EdtEmplacementCours The current object (for fluent API support)
 	 */
-	public function setIdSemaine($v)
+	public function setTypeSemaine($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->id_semaine !== $v) {
+		if ($this->id_semaine !== $v || $this->isNew()) {
 			$this->id_semaine = $v;
 			$this->modifiedColumns[] = EdtEmplacementCoursPeer::ID_SEMAINE;
 		}
 
 		return $this;
-	} // setIdSemaine()
+	} // setTypeSemaine()
 
 	/**
 	 * Set the value of [id_calendrier] column.
-	 * NULL = le cours a lieu toute l'annee - sinon, id de la periode (EdtPeriodes) durant laquelle a lieu le cours
+	 * NULL = le cours a lieu toute l'annee - sinon, id de la periode (EdtCalendrierPeriode) durant laquelle a lieu le cours
 	 * @param      string $v new value
 	 * @return     EdtEmplacementCours The current object (for fluent API support)
 	 */
@@ -538,6 +564,18 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->duree !== '2') {
+				return false;
+			}
+
+			if ($this->heuredeb_dec !== '0') {
+				return false;
+			}
+
+			if ($this->id_semaine !== '') {
+				return false;
+			}
+
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -1027,7 +1065,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 				return $this->getHeuredebDec();
 				break;
 			case 8:
-				return $this->getIdSemaine();
+				return $this->getTypeSemaine();
 				break;
 			case 9:
 				return $this->getIdCalendrier();
@@ -1070,7 +1108,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 			$keys[5] => $this->getIdDefiniePeriode(),
 			$keys[6] => $this->getDuree(),
 			$keys[7] => $this->getHeuredebDec(),
-			$keys[8] => $this->getIdSemaine(),
+			$keys[8] => $this->getTypeSemaine(),
 			$keys[9] => $this->getIdCalendrier(),
 			$keys[10] => $this->getModifEdt(),
 			$keys[11] => $this->getLoginProf(),
@@ -1150,7 +1188,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 				$this->setHeuredebDec($value);
 				break;
 			case 8:
-				$this->setIdSemaine($value);
+				$this->setTypeSemaine($value);
 				break;
 			case 9:
 				$this->setIdCalendrier($value);
@@ -1193,7 +1231,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if (array_key_exists($keys[5], $arr)) $this->setIdDefiniePeriode($arr[$keys[5]]);
 		if (array_key_exists($keys[6], $arr)) $this->setDuree($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setHeuredebDec($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setIdSemaine($arr[$keys[8]]);
+		if (array_key_exists($keys[8], $arr)) $this->setTypeSemaine($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setIdCalendrier($arr[$keys[9]]);
 		if (array_key_exists($keys[10], $arr)) $this->setModifEdt($arr[$keys[10]]);
 		if (array_key_exists($keys[11], $arr)) $this->setLoginProf($arr[$keys[11]]);
@@ -1289,7 +1327,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		$copyObj->setIdDefiniePeriode($this->id_definie_periode);
 		$copyObj->setDuree($this->duree);
 		$copyObj->setHeuredebDec($this->heuredeb_dec);
-		$copyObj->setIdSemaine($this->id_semaine);
+		$copyObj->setTypeSemaine($this->id_semaine);
 		$copyObj->setIdCalendrier($this->id_calendrier);
 		$copyObj->setModifEdt($this->modif_edt);
 		$copyObj->setLoginProf($this->login_prof);
@@ -1870,6 +1908,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		$this->modif_edt = null;
 		$this->login_prof = null;
 		$this->clearAllReferences();
+		$this->applyDefaultValues();
 		$this->setNew(true);
 	}
 

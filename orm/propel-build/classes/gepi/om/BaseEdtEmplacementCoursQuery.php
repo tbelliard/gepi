@@ -14,7 +14,7 @@
  * @method     EdtEmplacementCoursQuery orderByIdDefiniePeriode($order = Criteria::ASC) Order by the id_definie_periode column
  * @method     EdtEmplacementCoursQuery orderByDuree($order = Criteria::ASC) Order by the duree column
  * @method     EdtEmplacementCoursQuery orderByHeuredebDec($order = Criteria::ASC) Order by the heuredeb_dec column
- * @method     EdtEmplacementCoursQuery orderByIdSemaine($order = Criteria::ASC) Order by the id_semaine column
+ * @method     EdtEmplacementCoursQuery orderByTypeSemaine($order = Criteria::ASC) Order by the id_semaine column
  * @method     EdtEmplacementCoursQuery orderByIdCalendrier($order = Criteria::ASC) Order by the id_calendrier column
  * @method     EdtEmplacementCoursQuery orderByModifEdt($order = Criteria::ASC) Order by the modif_edt column
  * @method     EdtEmplacementCoursQuery orderByLoginProf($order = Criteria::ASC) Order by the login_prof column
@@ -27,7 +27,7 @@
  * @method     EdtEmplacementCoursQuery groupByIdDefiniePeriode() Group by the id_definie_periode column
  * @method     EdtEmplacementCoursQuery groupByDuree() Group by the duree column
  * @method     EdtEmplacementCoursQuery groupByHeuredebDec() Group by the heuredeb_dec column
- * @method     EdtEmplacementCoursQuery groupByIdSemaine() Group by the id_semaine column
+ * @method     EdtEmplacementCoursQuery groupByTypeSemaine() Group by the id_semaine column
  * @method     EdtEmplacementCoursQuery groupByIdCalendrier() Group by the id_calendrier column
  * @method     EdtEmplacementCoursQuery groupByModifEdt() Group by the modif_edt column
  * @method     EdtEmplacementCoursQuery groupByLoginProf() Group by the login_prof column
@@ -73,7 +73,7 @@
  * @method     EdtEmplacementCours findOneByIdDefiniePeriode(string $id_definie_periode) Return the first EdtEmplacementCours filtered by the id_definie_periode column
  * @method     EdtEmplacementCours findOneByDuree(string $duree) Return the first EdtEmplacementCours filtered by the duree column
  * @method     EdtEmplacementCours findOneByHeuredebDec(string $heuredeb_dec) Return the first EdtEmplacementCours filtered by the heuredeb_dec column
- * @method     EdtEmplacementCours findOneByIdSemaine(string $id_semaine) Return the first EdtEmplacementCours filtered by the id_semaine column
+ * @method     EdtEmplacementCours findOneByTypeSemaine(string $id_semaine) Return the first EdtEmplacementCours filtered by the id_semaine column
  * @method     EdtEmplacementCours findOneByIdCalendrier(string $id_calendrier) Return the first EdtEmplacementCours filtered by the id_calendrier column
  * @method     EdtEmplacementCours findOneByModifEdt(string $modif_edt) Return the first EdtEmplacementCours filtered by the modif_edt column
  * @method     EdtEmplacementCours findOneByLoginProf(string $login_prof) Return the first EdtEmplacementCours filtered by the login_prof column
@@ -86,7 +86,7 @@
  * @method     array findByIdDefiniePeriode(string $id_definie_periode) Return EdtEmplacementCours objects filtered by the id_definie_periode column
  * @method     array findByDuree(string $duree) Return EdtEmplacementCours objects filtered by the duree column
  * @method     array findByHeuredebDec(string $heuredeb_dec) Return EdtEmplacementCours objects filtered by the heuredeb_dec column
- * @method     array findByIdSemaine(string $id_semaine) Return EdtEmplacementCours objects filtered by the id_semaine column
+ * @method     array findByTypeSemaine(string $id_semaine) Return EdtEmplacementCours objects filtered by the id_semaine column
  * @method     array findByIdCalendrier(string $id_calendrier) Return EdtEmplacementCours objects filtered by the id_calendrier column
  * @method     array findByModifEdt(string $modif_edt) Return EdtEmplacementCours objects filtered by the modif_edt column
  * @method     array findByLoginProf(string $login_prof) Return EdtEmplacementCours objects filtered by the login_prof column
@@ -358,20 +358,20 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_semaine column
 	 * 
-	 * @param     string $idSemaine The value to use as filter.
+	 * @param     string $typeSemaine The value to use as filter.
 	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByIdSemaine($idSemaine = null, $comparison = Criteria::EQUAL)
+	public function filterByTypeSemaine($typeSemaine = null, $comparison = Criteria::EQUAL)
 	{
-		if (is_array($idSemaine)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SEMAINE, $idSemaine, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $idSemaine)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SEMAINE, str_replace('*', '%', $idSemaine), Criteria::LIKE);
+		if (is_array($typeSemaine)) {
+			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SEMAINE, $typeSemaine, Criteria::IN);
+		} elseif(preg_match('/[\%\*]/', $typeSemaine)) {
+			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SEMAINE, str_replace('*', '%', $typeSemaine), Criteria::LIKE);
 		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SEMAINE, $idSemaine, $comparison);
+			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SEMAINE, $typeSemaine, $comparison);
 		}
 	}
 

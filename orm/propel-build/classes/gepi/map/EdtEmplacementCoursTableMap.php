@@ -42,9 +42,9 @@ class EdtEmplacementCoursTableMap extends TableMap {
 		$this->addForeignKey('ID_SALLE', 'IdSalle', 'CHAR', 'salle_cours', 'ID_SALLE', false, 10, null);
 		$this->addColumn('JOUR_SEMAINE', 'JourSemaine', 'VARCHAR', true, 10, null);
 		$this->addForeignKey('ID_DEFINIE_PERIODE', 'IdDefiniePeriode', 'VARCHAR', 'edt_creneaux', 'ID_DEFINIE_PERIODE', true, 3, null);
-		$this->addColumn('DUREE', 'Duree', 'VARCHAR', true, 10, null);
-		$this->addColumn('HEUREDEB_DEC', 'HeuredebDec', 'VARCHAR', true, 3, null);
-		$this->addColumn('ID_SEMAINE', 'IdSemaine', 'VARCHAR', false, 3, null);
+		$this->addColumn('DUREE', 'Duree', 'VARCHAR', true, 10, '2');
+		$this->addColumn('HEUREDEB_DEC', 'HeuredebDec', 'VARCHAR', true, 3, '0');
+		$this->addColumn('ID_SEMAINE', 'TypeSemaine', 'VARCHAR', false, 3, '');
 		$this->addForeignKey('ID_CALENDRIER', 'IdCalendrier', 'VARCHAR', 'edt_calendrier', 'ID_CALENDRIER', false, 3, null);
 		$this->addColumn('MODIF_EDT', 'ModifEdt', 'VARCHAR', false, 3, null);
 		$this->addForeignKey('LOGIN_PROF', 'LoginProf', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 50, null);

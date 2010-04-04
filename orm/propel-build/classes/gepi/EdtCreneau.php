@@ -22,8 +22,14 @@ class EdtCreneau extends BaseEdtCreneau {
 	 *
 	 */
 	public function getNextEdtCreneau($type_creneau = null) {
-		throw new PropelException("Pas encore implemente");
-		return new EdtCreneau();
+	    if ($type_creneau == null) {
+		return EdtCreneauQuery::create()->filterByHeuredebutDefiniePeriode($this->getHeuredebutDefiniePeriode(), Criteria::GREATER_THAN)
+		    ->addAscendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)->findOne();
+	    } else {
+		return EdtCreneauQuery::create()->filterByHeuredebutDefiniePeriode($this->getHeuredebutDefiniePeriode(), Criteria::GREATER_THAN)
+		    ->filterByTypeCreneaux($type_creneau)
+		    ->addAscendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)->findOne();
+	    }
 	}
 
 	/**
@@ -34,8 +40,14 @@ class EdtCreneau extends BaseEdtCreneau {
 	 *
 	 */
 	public function getPrevEdtCreneau($type_creneau = null) {
-		throw new PropelException("Pas encore implemente");
-		return new EdtCreneau();
+	    if ($type_creneau == null) {
+		return EdtCreneauQuery::create()->filterByHeuredebutDefiniePeriode($this->getHeuredebutDefiniePeriode(), Criteria::LESS_THAN)
+		    ->addDescendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)->findOne();
+	    } else {
+		return EdtCreneauQuery::create()->filterByHeuredebutDefiniePeriode($this->getHeuredebutDefiniePeriode(), Criteria::LESS_THAN)
+		    ->filterByTypeCreneaux($type_creneau)
+		    ->addDescendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)->findOne();
+	    }
 	}
 
 	/**

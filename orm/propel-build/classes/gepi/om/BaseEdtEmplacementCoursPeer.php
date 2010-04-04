@@ -82,8 +82,8 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('IdCours', 'IdGroupe', 'IdAid', 'IdSalle', 'JourSemaine', 'IdDefiniePeriode', 'Duree', 'HeuredebDec', 'IdSemaine', 'IdCalendrier', 'ModifEdt', 'LoginProf', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idCours', 'idGroupe', 'idAid', 'idSalle', 'jourSemaine', 'idDefiniePeriode', 'duree', 'heuredebDec', 'idSemaine', 'idCalendrier', 'modifEdt', 'loginProf', ),
+		BasePeer::TYPE_PHPNAME => array ('IdCours', 'IdGroupe', 'IdAid', 'IdSalle', 'JourSemaine', 'IdDefiniePeriode', 'Duree', 'HeuredebDec', 'TypeSemaine', 'IdCalendrier', 'ModifEdt', 'LoginProf', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idCours', 'idGroupe', 'idAid', 'idSalle', 'jourSemaine', 'idDefiniePeriode', 'duree', 'heuredebDec', 'typeSemaine', 'idCalendrier', 'modifEdt', 'loginProf', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_COURS, self::ID_GROUPE, self::ID_AID, self::ID_SALLE, self::JOUR_SEMAINE, self::ID_DEFINIE_PERIODE, self::DUREE, self::HEUREDEB_DEC, self::ID_SEMAINE, self::ID_CALENDRIER, self::MODIF_EDT, self::LOGIN_PROF, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ID_COURS', 'ID_GROUPE', 'ID_AID', 'ID_SALLE', 'JOUR_SEMAINE', 'ID_DEFINIE_PERIODE', 'DUREE', 'HEUREDEB_DEC', 'ID_SEMAINE', 'ID_CALENDRIER', 'MODIF_EDT', 'LOGIN_PROF', ),
 		BasePeer::TYPE_FIELDNAME => array ('id_cours', 'id_groupe', 'id_aid', 'id_salle', 'jour_semaine', 'id_definie_periode', 'duree', 'heuredeb_dec', 'id_semaine', 'id_calendrier', 'modif_edt', 'login_prof', ),
@@ -97,8 +97,8 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('IdCours' => 0, 'IdGroupe' => 1, 'IdAid' => 2, 'IdSalle' => 3, 'JourSemaine' => 4, 'IdDefiniePeriode' => 5, 'Duree' => 6, 'HeuredebDec' => 7, 'IdSemaine' => 8, 'IdCalendrier' => 9, 'ModifEdt' => 10, 'LoginProf' => 11, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idCours' => 0, 'idGroupe' => 1, 'idAid' => 2, 'idSalle' => 3, 'jourSemaine' => 4, 'idDefiniePeriode' => 5, 'duree' => 6, 'heuredebDec' => 7, 'idSemaine' => 8, 'idCalendrier' => 9, 'modifEdt' => 10, 'loginProf' => 11, ),
+		BasePeer::TYPE_PHPNAME => array ('IdCours' => 0, 'IdGroupe' => 1, 'IdAid' => 2, 'IdSalle' => 3, 'JourSemaine' => 4, 'IdDefiniePeriode' => 5, 'Duree' => 6, 'HeuredebDec' => 7, 'TypeSemaine' => 8, 'IdCalendrier' => 9, 'ModifEdt' => 10, 'LoginProf' => 11, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idCours' => 0, 'idGroupe' => 1, 'idAid' => 2, 'idSalle' => 3, 'jourSemaine' => 4, 'idDefiniePeriode' => 5, 'duree' => 6, 'heuredebDec' => 7, 'typeSemaine' => 8, 'idCalendrier' => 9, 'modifEdt' => 10, 'loginProf' => 11, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_COURS => 0, self::ID_GROUPE => 1, self::ID_AID => 2, self::ID_SALLE => 3, self::JOUR_SEMAINE => 4, self::ID_DEFINIE_PERIODE => 5, self::DUREE => 6, self::HEUREDEB_DEC => 7, self::ID_SEMAINE => 8, self::ID_CALENDRIER => 9, self::MODIF_EDT => 10, self::LOGIN_PROF => 11, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ID_COURS' => 0, 'ID_GROUPE' => 1, 'ID_AID' => 2, 'ID_SALLE' => 3, 'JOUR_SEMAINE' => 4, 'ID_DEFINIE_PERIODE' => 5, 'DUREE' => 6, 'HEUREDEB_DEC' => 7, 'ID_SEMAINE' => 8, 'ID_CALENDRIER' => 9, 'MODIF_EDT' => 10, 'LOGIN_PROF' => 11, ),
 		BasePeer::TYPE_FIELDNAME => array ('id_cours' => 0, 'id_groupe' => 1, 'id_aid' => 2, 'id_salle' => 3, 'jour_semaine' => 4, 'id_definie_periode' => 5, 'duree' => 6, 'heuredeb_dec' => 7, 'id_semaine' => 8, 'id_calendrier' => 9, 'modif_edt' => 10, 'login_prof' => 11, ),
