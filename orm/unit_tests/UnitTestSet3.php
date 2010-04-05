@@ -195,6 +195,74 @@ if ($edtCoursTest != null && $edtCoursTest->getIdDefiniePeriode() == $edtCours2-
 }
 
 
+//Creation d'un eleve
+$eleve = UnitTestEleve::getEleve();
+$eleve->save();
+$newEleve = ElevePeer::retrieveByPK($eleve->getIdEleve());
+echo ($logger->getDisplay());
+if ($newEleve == null) {
+	echo('test creation eleve a <font color="red">echoue</font> <br><br/>');
+} else {
+	echo('test creation eleve a reussi avec comme retour l\'id : ' . $eleve->getIdEleve() . '<br/><br/>');
+}
+
+//Creation d'une classe
+$classe = new Classe();
+$classe->getClasse();
+$classe = UnitTestClasse::getClasse();
+$classe->save();
+$newClasse = ClassePeer::retrieveByPK($classe->getId());
+echo ($logger->getDisplay());
+if ($newClasse == null) {
+	echo('test creation classe a <font color="red">echoue</font> <br><br/>');
+} else {
+	echo('test creation classe a reussi avec comme retour l\'id : ' . $classe->getId() . '<br/><br/>');
+}
+$classe->addEleve($eleve, 1);
+$classe->addEleve($eleve, 2);
+echo ($logger->getDisplay());
+
+//ajout d'une periode ouverte et d'un periode fermée à une classe
+$periode_fermee = new PeriodeNote();
+$periode_fermee->setNumPeriode(1);
+$periode_fermee->setVerouiller('O');
+$periode_fermee->setNomPeriode('1 Unit test');
+$classe->addPeriodeNote($periode_fermee);
+$periode_fermee->save();
+echo ($logger->getDisplay());
+$periode_ouverte = new PeriodeNote();
+$periode_ouverte->setNumPeriode(2);
+$periode_ouverte->setVerouiller('N');
+$periode_ouverte->setNomPeriode('2 Unit test');
+$classe->addPeriodeNote($periode_ouverte);
+$periode_ouverte->save();
+echo ($logger->getDisplay());
+
+$groupe->addEleve($eleve, 1);
+$groupe->save();
+echo ($logger->getDisplay());
+
+echo("<br/>");
+$edtEmplacementCol = $eleve->getEdtEmplacementCoursPeriodeCalendrierActuelle();
+echo ($logger->getDisplay());
+if ($edtEmplacementCol->isEmpty()) {
+    echo('test recuperation emplacement de cours d\'un eleve a reussi<br/><br/>');
+} else {
+    echo('test recuperation emplacement de cours d\'un eleve  a <font color="red">echoue</font> <br><br/>');
+}
+
+$groupe->addEleve($eleve, 2);
+$groupe->save();
+echo ($logger->getDisplay());
+
+echo("<br/>");
+$edtEmplacementCol = $eleve->getEdtEmplacementCoursPeriodeCalendrierActuelle();
+echo ($logger->getDisplay());
+if ($edtEmplacementCol->count() == 2) {
+    echo('test recuperation emplacement de cours d\'un eleve a reussi<br/><br/>');
+} else {
+    echo('test recuperation emplacement de cours d\'un eleve  a <font color="red">echoue</font> <br><br/>');
+}
 
 purgeDonneesTest($logger);
 Propel::setLogger(null);
@@ -229,7 +297,17 @@ function purgeDonneesTest($logger) {
 	}
 	$logger->getDisplay();
 
-	echo "<br/>Fin Purge des données<br/><br/>";
+	//purge de l'eleve
+	echo "<br/>Purge de l'eleve<br/>";
+	$criteria = new Criteria();
+	$criteria->add(ElevePeer::LOGIN, UnitTestEleve::getEleve()->getLogin());
+	$eleve = ElevePeer::doSelectOne($criteria);
+	if ($eleve != null) {
+		$eleve->delete();
+	}
+	echo ($logger->getDisplay());
+
+echo "<br/>Fin Purge des données<br/><br/>";
 }
 
 ?>

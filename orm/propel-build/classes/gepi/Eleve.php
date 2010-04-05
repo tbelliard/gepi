@@ -19,15 +19,17 @@ class Eleve extends BaseEleve {
 	 * Renvoi sous forme d'un tableau la liste des classes d'un eleves.
 	 * Manually added for N:M relationship
 	 *
-	 * @periode integer numero de la periode
+	 * @periode integer numero de la periode ou objet periodeNote
 	 * @return     PropelObjectCollection Classes[]
 	 *
 	 */
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	public function getClasses($periode) {
+		require_once("helpers/PeriodeNoteHelper.php");
+		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
 		$classes = new PropelObjectCollection();
 		$criteria = new Criteria();
-		$criteria->add(JEleveClassePeer::PERIODE,$periode);
+		$criteria->add(JEleveClassePeer::PERIODE,$periode_num);
 		foreach($this->getJEleveClassesJoinClasse($criteria) as $ref) {
 		    if ($ref->getClasse() != NULL) {
 			$classes->append($ref->getClasse());
@@ -38,8 +40,10 @@ class Eleve extends BaseEleve {
 
     // La méthode ci-dessous, au singulier, corrige le problème ci-dessus.
 	public function getClasse($periode) {
+		require_once("helpers/PeriodeNoteHelper.php");
+		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
 		$c = new Criteria();
-		$c->add(JEleveClassePeer::PERIODE,$periode);
+		$c->add(JEleveClassePeer::PERIODE,$periode_num);
 		$jec = $this->getJEleveClassesJoinClasse($c);
 		if ($jec->isEmpty()) {
 		    return null;
@@ -58,11 +62,11 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function getGroupes($periode) {
+		require_once("helpers/PeriodeNoteHelper.php");
+		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
 		$groupes = new PropelObjectCollection();
 		$c = new Criteria();
-		if ($periode != null) {
-		    $c->add(JEleveGroupePeer::PERIODE,$periode);
-		}
+		$c->add(JEleveGroupePeer::PERIODE,$periode_num);
 		foreach($this->getJEleveGroupesJoinGroupe($c) as $ref) {
 			if ($ref->getGroupe() != NULL) {
 			    $groupes->append($ref->getGroupe());
@@ -257,13 +261,13 @@ class Eleve extends BaseEleve {
 
 	/**
 	 *
-	 * Retourne l'emplacement de cours de l'heure temps reel. retourne null si pas pas de cours actuel
+	 * Retourne l'emplacement de cours pour la periode de note donnée.
 	 *
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
 	 *						be treated as NULL for temporal objects.
 	 * @return EdtEmplacementCours l'emplacement de cours actuel ou null si pas de cours actuellement
 	 */
-	public function getEdtEmplacementCoursActuel($v = 'now'){
+	public function getEdtEmplacementCours($periode){
 
 	    $edtCoursCol = $this->getEdtEmplacementCoursPeriodeCalendrierActuelle($v);
 
@@ -279,17 +283,22 @@ class Eleve extends BaseEleve {
 	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
 	 */
 	public function getEdtEmplacementCoursPeriodeCalendrierActuelle($v = 'now'){
-	    $query = EdtEmplacementCoursQuery::create()->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, 0)
+	    $groupe = new Groupe();
+	    $colGroupeId = $this->getGroupes($this->getPeriodeNoteOuverte($v))->getPrimaryKeys();
+
+	    $query = EdtEmplacementCoursQuery::create()->filterByIdGroupe($colGroupeId)
+		    ->filterByIdCalendrier(0)
 		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
-	    $periodeCalendrier = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
-	    if ($periodeCalendrier != null) {
-		   $query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $periodeCalendrier->getIdCalendrier());
-	    }
-	    //$periode = $this->getJE
 
-	    foreach ($this->getGroupes() as $groupe ) {
-
+	    if ($v instanceof EdtCalendrierPeriode) {
+		$query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $v->getIdCalendrier());
+	    } else {
+		$periodeCalendrier = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
+		if ($periodeCalendrier != null) {
+		       $query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $periodeCalendrier->getIdCalendrier());
+		}
 	    }
+
 	    $edtCoursCol = $query->find();
 	    require_once("helpers/EdtEmplacementCoursHelper.php");
 	    EdtEmplacementCoursHelper::orderChronologically($edtCoursCol);
@@ -301,18 +310,19 @@ class Eleve extends BaseEleve {
 	 *
 	 * Retourne une periode de note pour laquelle l'eleve est affectée à une classe dont la periode est ouverte
 	 *
-	 * @return Periode objet periode ou null si pas de periode ouverte
+	 * @return PeriodeNote objet periode ou null si pas de periode ouverte
 	 */
-	public function getPeriodeActuelle($v = 'now') {
-		$classe = new JEleveClasses();
+	public function getPeriodeNoteOuverte($v = 'now') {
+		$jclasse = new JEleveClasse();
 		foreach ($this->getJEleveClassesJoinClasse() as $jclasse) {
-		    $periode = new Periode();
-		    $periode = $jclasse->getClasse()->getPeriodeNoteOuverteActuelle();
-		    if ($periode != null) {
-
+		    $periode = new PeriodeNote();
+		    $periode = $jclasse->getClasse()->getPeriodeNoteOuverte($v);
+		    if ($periode != null && $periode->getNumPeriode() == $jclasse->getPeriode()) {
+			//on a une periode ouverte et l'eleve est inscrit dans cete classe pour cette periode, on va considerer que c'est la periode actuelle
+			return $periode;
 		    }
 		}
-
+		return null;
 	}
 
 } // Eleve

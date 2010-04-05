@@ -112,7 +112,7 @@ $newClasse->addPeriodeNote($periode_ouverte);
 $periode_ouverte->save();
 echo ($logger->getDisplay());
 
-$periode_ouverte = $newClasse->getPeriodeNoteOuverteActuelle();
+$periode_ouverte = $newClasse->getPeriodeNoteOuverte();
 echo ($logger->getDisplay());
 if ($periode_ouverte == null || $periode_ouverte->getNumPeriode() != 2) {
 	echo('test ajout periode a <font color="red">echoue</font> <br><br/>');
@@ -134,7 +134,7 @@ if ($newEleve1 == null || $newEleve11->getIdEleve() != $eleve->getIdEleve()) {
 	echo('test ajout de eleve au professeur en tant que cpe a reussi <br><br/>');
 }
 
-//ajout de eleve au groupe periode 1
+//ajout de eleve au groupe periode 1 et 2
 $groupe->addEleve($eleve, 1);
 $newEleve2 = $groupe->getEleves(1);
 $newEleve3 = $newEleve2[0];
@@ -155,20 +155,33 @@ if ($newEleve3 == null) {
 }
 
 //ajout de eleve a la classe groupe periode 2
-$classe->addEleve($eleve, 1);
-$newEleve2 = $classe->getEleves(1);
+$classe->addEleve($eleve, 2);
+$newEleve2 = $classe->getEleves(2);
 $newEleve3 = $newEleve2[0];
 echo ($logger->getDisplay());
 if ($newEleve3 == null) {
 	echo('test ajout de eleve a la classe a <font color="red">echoue</font> <br><br/>');
 } else {
-	$newClasse2 = $newEleve3->getClasses(1);
+	$newClasse2 = $newEleve3->getClasses(2);
 	if ($newClasse2[0] != null && $newClasse2[0]->getId() == $classe->getId()) {
 		echo ($logger->getDisplay());
 		echo('test ajout de eleve a la classe a reussi <br><br/>');
 	} else {
 		echo ($logger->getDisplay());
 		echo('test ajout de eleve a la classe a <font color="red">echoue</font> <br><br/>');
+	}
+}
+
+$periodeNoteOuverte = $newEleve3->getPeriodeNoteOuverte();
+if ($periodeNoteOuverte == null) {
+	echo('test recuperation de periode actuelle a partir d\'un eleve a <font color="red">echoue</font> <br><br/>');
+} else {
+	if ($periodeNoteOuverte->getNumPeriode() == 2) {
+		echo ($logger->getDisplay());
+		echo('test recuperation de periode actuelle a partir d\'un eleve a reussi <br><br/>');
+	} else {
+		echo ($logger->getDisplay());
+		echo('test recuperation de periode actuelle a partir d\'un eleve a <font color="red">echoue</font> <br><br/>');
 	}
 }
 
@@ -205,12 +218,6 @@ if ($respInfos[0] == null) {
 	}
 }
 
-//echo ($logger->getDisplay());
-//if ($newClasse == null) {
-//	echo('test creation classe a <font color="red">echoue</font> <br><br/>');
-//} else {
-//	echo('test creation classe a reussi <br><br/>');
-//}
 echo ($logger->getDisplay());
 
 purgeDonneesTest($logger);

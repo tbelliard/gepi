@@ -202,15 +202,23 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * Retourne tous les emplacements de cours pour la periode précisée du calendrier.
 	 * On recupere aussi les emplacements dont la periode n'est pas definie ou vaut 0.
 	 *
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  EdtCalendrierPeriode est aussi accepté
+	 * 
 	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
 	 */
 	public function getEdtEmplacementCoursPeriodeCalendrierActuelle($v = 'now'){
 	    $query = EdtEmplacementCoursQuery::create()->filterByLoginProf($this->getLogin())->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, 0)
 		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
-	    $periodeCalendrier = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
-	    if ($periodeCalendrier != null) {
-		   $query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $periodeCalendrier->getIdCalendrier());
+
+	    if ($v instanceof EdtCalendrierPeriode) {
+		$query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $v->getIdCalendrier());
+	    } else {
+		$periodeCalendrier = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
+		if ($periodeCalendrier != null) {
+		       $query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $periodeCalendrier->getIdCalendrier());
+		}
 	    }
+
 	    $edtCoursCol = $query->find();
 	    require_once("helpers/EdtEmplacementCoursHelper.php");
 	    EdtEmplacementCoursHelper::orderChronologically($edtCoursCol);
@@ -219,27 +227,4 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	}
 
 
-	/**
-	 *
-	 * Retourne les emplacements de cours pour un groupe donnee pour la periode du calendrier actuelle
-	 *
-	 * @param  String $groupe_id l'id de la classe
-	 * @return PropelObjectCollection EdtEmplacementCours les emplacements de cours ordonnée chronologiquement
-	 */
-	public function getEdtEmplacementCoursPeriodeCalendrierActuelleJoinGroupe($groupe_id){
-	    throw new PropelException("Pas encore implemente");
-	    return new PropelObjectCollection();
-	}
-
-	/**
-	 *
-	 * Retourne les emplacements de cours pour un groupe donnee
-	 *
-	 * @param  String $groupe_id l'id de la classe
-	 * @return PropelObjectCollection EdtEmplacementCours les emplacements de cours ordonnée chronologiquement
-	 */
-	public function getEdtEmplacementCoursJoinGroupe($groupe_id){
-	    throw new PropelException("Pas encore implemente");
-	    return new PropelObjectCollection();
-	}
 }

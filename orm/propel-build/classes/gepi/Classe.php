@@ -84,9 +84,9 @@ class Classe extends BaseClasse {
  	/**
 	 * Retourne la periode de note actuelle pour une classe donnee.
 	 *
-	 * @return     Periode $periode la periode actuellement totalement ouverte
+	 * @return     Periode $periode la periode actuellement ouverte
 	 */
-	public function getPeriodeNoteOuverteActuelle() {
+	public function getPeriodeNoteOuverte($v = 'now') {
 		$criteria = new Criteria();
 		$criteria->add(PeriodeNotePeer::VEROUILLER,'N');
 		$periodes = $this->getPeriodeNotes($criteria);
@@ -98,7 +98,7 @@ class Classe extends BaseClasse {
 		if ($periodes->count() == 1) {
 		    return $periodes->getFirst();
 		} else {
-		    $calendrier_periode = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle();
+		    $calendrier_periode = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
 		    if ($calendrier_periode != null || $calendrier_periode->getNumeroPeriode() != null || $calendrier_periode->getNumeroPeriode() != 0) {
 			$criteria = new Criteria();
 			$criteria->add(PeriodeNotePeer::NUM_PERIODE,$calendrier_periode->getNumeroPeriode());
@@ -112,28 +112,4 @@ class Classe extends BaseClasse {
 		}
 		return null;
 	}
-
-	/**
-	 *
-	 * Retourne les emplacements de cours pour un professeur donnee pour la periode du calendrier actuelle
-	 *
-	 * @param  String $login le login du professeur
-	 * @return PropelObjectCollection EdtEmplacementCours les emplacements de cours ordonnée chronologiquement
-	 */
-	public function getEdtEmplacementCoursPeriodeCalendrierActuelleJoinProfesseur($login){
-	    throw new PropelException("Pas encore implemente");
-	    return new PropelObjectCollection();
-	}
-
- 	/**
-	 * Retourne la periode de note actuelle pour une classe donnée.
-	 *
-	 * @param  String $classe_id l'id de la classe
-	 * @return PropelObjectCollection une collection d'emplacements de cours ordonnée chronologiquement
-	 */
-	public static function getEdtEmplacementCoursJoinProfesseur($login) {
-		throw new PropelException("Pas encore implemente");
-		return new PropelObjectCollection();
-	}
-
 } // Classe

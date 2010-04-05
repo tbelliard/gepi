@@ -15,7 +15,7 @@ class GroupeHelper {
 	 * @param      array $groupeB Le deuxieme groupe a comparer
 	 * @return     int un entier, qui sera inférieur, égal ou supérieur à zéro suivant que le premier argument est considéré comme plus petit, égal ou plus grand que le second argument.
 	 */
-	function compareGroupe($a, $b) {
+	public static function compareGroupe($a, $b) {
 		//echo($a->getDescriptionAvecClasses());
 		return strcmp($a->getNameAvecClasses(), $b->getNameAvecClasses());
 	}
