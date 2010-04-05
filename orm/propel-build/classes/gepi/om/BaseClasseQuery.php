@@ -66,9 +66,9 @@
  * @method     ClasseQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ClasseQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ClasseQuery leftJoinPeriodes($relationAlias = '') Adds a LEFT JOIN clause to the query using the Periodes relation
- * @method     ClasseQuery rightJoinPeriodes($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Periodes relation
- * @method     ClasseQuery innerJoinPeriodes($relationAlias = '') Adds a INNER JOIN clause to the query using the Periodes relation
+ * @method     ClasseQuery leftJoinPeriodeNote($relationAlias = '') Adds a LEFT JOIN clause to the query using the PeriodeNote relation
+ * @method     ClasseQuery rightJoinPeriodeNote($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PeriodeNote relation
+ * @method     ClasseQuery innerJoinPeriodeNote($relationAlias = '') Adds a INNER JOIN clause to the query using the PeriodeNote relation
  *
  * @method     ClasseQuery leftJoinJGroupesClasses($relationAlias = '') Adds a LEFT JOIN clause to the query using the JGroupesClasses relation
  * @method     ClasseQuery rightJoinJGroupesClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesClasses relation
@@ -800,31 +800,31 @@ abstract class BaseClasseQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query by a related Periodes object
+	 * Filter the query by a related PeriodeNote object
 	 *
-	 * @param     Periodes $periodes  the related object to use as filter
+	 * @param     PeriodeNote $periodeNote  the related object to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByPeriodes($periodes, $comparison = Criteria::EQUAL)
+	public function filterByPeriodeNote($periodeNote, $comparison = Criteria::EQUAL)
 	{
 		return $this
-			->addUsingAlias(ClassePeer::ID, $periodes->getIdClasse(), $comparison);
+			->addUsingAlias(ClassePeer::ID, $periodeNote->getIdClasse(), $comparison);
 	}
 
 	/**
-	 * Adds a JOIN clause to the query using the Periodes relation
+	 * Adds a JOIN clause to the query using the PeriodeNote relation
 	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function joinPeriodes($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinPeriodeNote($relationAlias = '', $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('Periodes');
+		$relationMap = $tableMap->getRelation('PeriodeNote');
 		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
@@ -836,14 +836,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
 			$this->addJoinObject($join, $relationAlias);
 		} else {
-			$this->addJoinObject($join, 'Periodes');
+			$this->addJoinObject($join, 'PeriodeNote');
 		}
 		
 		return $this;
 	}
 
 	/**
-	 * Use the Periodes relation Periodes object
+	 * Use the PeriodeNote relation PeriodeNote object
 	 *
 	 * @see       useQuery()
 	 * 
@@ -851,13 +851,13 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
-	 * @return    PeriodesQuery A secondary query class using the current class as primary query
+	 * @return    PeriodeNoteQuery A secondary query class using the current class as primary query
 	 */
-	public function usePeriodesQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function usePeriodeNoteQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
-			->joinPeriodes($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'Periodes', 'PeriodesQuery');
+			->joinPeriodeNote($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'PeriodeNote', 'PeriodeNoteQuery');
 	}
 
 	/**

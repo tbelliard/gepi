@@ -70,7 +70,7 @@
         <column name="ects_fonction_signataire_attestation" type="VARCHAR" size="255" />
 	</table>
 
-	<table name="periodes" description="Table regroupant les periodes de notes pour les classes">
+	<table name="periodes" phpName="PeriodeNote" description="Table regroupant les periodes de notes pour les classes">
 		<column name="nom_periode" type="VARCHAR" size="10" required="false" primaryKey="true" description="Nom de la periode de note" />
 		<column name="num_periode" type="INTEGER" size="10" required="true" primaryKey="true" description="identifiant numerique de la periode (1, 2 ou3)" />
 		<column name="verouiller" type="VARCHAR" size="1" required="true" default="O" description="Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)" />

@@ -6,70 +6,70 @@
  *
  * Table regroupant les periodes de notes pour les classes
  *
- * @method     PeriodesQuery orderByNomPeriode($order = Criteria::ASC) Order by the nom_periode column
- * @method     PeriodesQuery orderByNumPeriode($order = Criteria::ASC) Order by the num_periode column
- * @method     PeriodesQuery orderByVerouiller($order = Criteria::ASC) Order by the verouiller column
- * @method     PeriodesQuery orderByIdClasse($order = Criteria::ASC) Order by the id_classe column
- * @method     PeriodesQuery orderByDateVerrouillage($order = Criteria::ASC) Order by the date_verrouillage column
+ * @method     PeriodeNoteQuery orderByNomPeriode($order = Criteria::ASC) Order by the nom_periode column
+ * @method     PeriodeNoteQuery orderByNumPeriode($order = Criteria::ASC) Order by the num_periode column
+ * @method     PeriodeNoteQuery orderByVerouiller($order = Criteria::ASC) Order by the verouiller column
+ * @method     PeriodeNoteQuery orderByIdClasse($order = Criteria::ASC) Order by the id_classe column
+ * @method     PeriodeNoteQuery orderByDateVerrouillage($order = Criteria::ASC) Order by the date_verrouillage column
  *
- * @method     PeriodesQuery groupByNomPeriode() Group by the nom_periode column
- * @method     PeriodesQuery groupByNumPeriode() Group by the num_periode column
- * @method     PeriodesQuery groupByVerouiller() Group by the verouiller column
- * @method     PeriodesQuery groupByIdClasse() Group by the id_classe column
- * @method     PeriodesQuery groupByDateVerrouillage() Group by the date_verrouillage column
+ * @method     PeriodeNoteQuery groupByNomPeriode() Group by the nom_periode column
+ * @method     PeriodeNoteQuery groupByNumPeriode() Group by the num_periode column
+ * @method     PeriodeNoteQuery groupByVerouiller() Group by the verouiller column
+ * @method     PeriodeNoteQuery groupByIdClasse() Group by the id_classe column
+ * @method     PeriodeNoteQuery groupByDateVerrouillage() Group by the date_verrouillage column
  *
- * @method     PeriodesQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     PeriodesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     PeriodesQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     PeriodeNoteQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     PeriodeNoteQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     PeriodeNoteQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     PeriodesQuery leftJoinClasse($relationAlias = '') Adds a LEFT JOIN clause to the query using the Classe relation
- * @method     PeriodesQuery rightJoinClasse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Classe relation
- * @method     PeriodesQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
+ * @method     PeriodeNoteQuery leftJoinClasse($relationAlias = '') Adds a LEFT JOIN clause to the query using the Classe relation
+ * @method     PeriodeNoteQuery rightJoinClasse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Classe relation
+ * @method     PeriodeNoteQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
  *
- * @method     Periodes findOne(PropelPDO $con = null) Return the first Periodes matching the query
- * @method     Periodes findOneByNomPeriode(string $nom_periode) Return the first Periodes filtered by the nom_periode column
- * @method     Periodes findOneByNumPeriode(int $num_periode) Return the first Periodes filtered by the num_periode column
- * @method     Periodes findOneByVerouiller(string $verouiller) Return the first Periodes filtered by the verouiller column
- * @method     Periodes findOneByIdClasse(int $id_classe) Return the first Periodes filtered by the id_classe column
- * @method     Periodes findOneByDateVerrouillage(string $date_verrouillage) Return the first Periodes filtered by the date_verrouillage column
+ * @method     PeriodeNote findOne(PropelPDO $con = null) Return the first PeriodeNote matching the query
+ * @method     PeriodeNote findOneByNomPeriode(string $nom_periode) Return the first PeriodeNote filtered by the nom_periode column
+ * @method     PeriodeNote findOneByNumPeriode(int $num_periode) Return the first PeriodeNote filtered by the num_periode column
+ * @method     PeriodeNote findOneByVerouiller(string $verouiller) Return the first PeriodeNote filtered by the verouiller column
+ * @method     PeriodeNote findOneByIdClasse(int $id_classe) Return the first PeriodeNote filtered by the id_classe column
+ * @method     PeriodeNote findOneByDateVerrouillage(string $date_verrouillage) Return the first PeriodeNote filtered by the date_verrouillage column
  *
- * @method     array findByNomPeriode(string $nom_periode) Return Periodes objects filtered by the nom_periode column
- * @method     array findByNumPeriode(int $num_periode) Return Periodes objects filtered by the num_periode column
- * @method     array findByVerouiller(string $verouiller) Return Periodes objects filtered by the verouiller column
- * @method     array findByIdClasse(int $id_classe) Return Periodes objects filtered by the id_classe column
- * @method     array findByDateVerrouillage(string $date_verrouillage) Return Periodes objects filtered by the date_verrouillage column
+ * @method     array findByNomPeriode(string $nom_periode) Return PeriodeNote objects filtered by the nom_periode column
+ * @method     array findByNumPeriode(int $num_periode) Return PeriodeNote objects filtered by the num_periode column
+ * @method     array findByVerouiller(string $verouiller) Return PeriodeNote objects filtered by the verouiller column
+ * @method     array findByIdClasse(int $id_classe) Return PeriodeNote objects filtered by the id_classe column
+ * @method     array findByDateVerrouillage(string $date_verrouillage) Return PeriodeNote objects filtered by the date_verrouillage column
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BasePeriodesQuery extends ModelCriteria
+abstract class BasePeriodeNoteQuery extends ModelCriteria
 {
 
 	/**
-	 * Initializes internal state of BasePeriodesQuery object.
+	 * Initializes internal state of BasePeriodeNoteQuery object.
 	 *
 	 * @param     string $dbName The dabase name
 	 * @param     string $modelName The phpName of a model, e.g. 'Book'
 	 * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
 	 */
-	public function __construct($dbName = 'gepi', $modelName = 'Periodes', $modelAlias = null)
+	public function __construct($dbName = 'gepi', $modelName = 'PeriodeNote', $modelAlias = null)
 	{
 		parent::__construct($dbName, $modelName, $modelAlias);
 	}
 
 	/**
-	 * Returns a new PeriodesQuery object.
+	 * Returns a new PeriodeNoteQuery object.
 	 *
 	 * @param     string $modelAlias The alias of a model in the query
 	 * @param     Criteria $criteria Optional Criteria to build the query from
 	 *
-	 * @return    PeriodesQuery
+	 * @return    PeriodeNoteQuery
 	 */
 	public static function create($modelAlias = null, $criteria = null)
 	{
-		if ($criteria instanceof PeriodesQuery) {
+		if ($criteria instanceof PeriodeNoteQuery) {
 			return $criteria;
 		}
-		$query = new PeriodesQuery();
+		$query = new PeriodeNoteQuery();
 		if (null !== $modelAlias) {
 			$query->setModelAlias($modelAlias);
 		}
@@ -87,11 +87,11 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	 * @param     array[$nom_periode, $num_periode, $id_classe] $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
-	 * @return    Periodes|array|mixed the result, formatted by the current formatter
+	 * @return    PeriodeNote|array|mixed the result, formatted by the current formatter
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = PeriodesPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1], (string) $key[2]))))) && $this->getFormatter()->isObjectFormatter()) {
+		if ((null !== ($obj = PeriodeNotePeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1], (string) $key[2]))))) && $this->getFormatter()->isObjectFormatter()) {
 			// the object is alredy in the instance pool
 			return $obj;
 		} else {
@@ -125,13 +125,13 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	 *
 	 * @param     mixed $key Primary key to use for the query
 	 *
-	 * @return    PeriodesQuery The current query, for fluid interface
+	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
 	public function filterByPrimaryKey($key)
 	{
-		$this->addUsingAlias(PeriodesPeer::NOM_PERIODE, $key[0], Criteria::EQUAL);
-		$this->addUsingAlias(PeriodesPeer::NUM_PERIODE, $key[1], Criteria::EQUAL);
-		$this->addUsingAlias(PeriodesPeer::ID_CLASSE, $key[2], Criteria::EQUAL);
+		$this->addUsingAlias(PeriodeNotePeer::NOM_PERIODE, $key[0], Criteria::EQUAL);
+		$this->addUsingAlias(PeriodeNotePeer::NUM_PERIODE, $key[1], Criteria::EQUAL);
+		$this->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $key[2], Criteria::EQUAL);
 		
 		return $this;
 	}
@@ -141,15 +141,15 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	 *
 	 * @param     array $keys The list of primary key to use for the query
 	 *
-	 * @return    PeriodesQuery The current query, for fluid interface
+	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
 		foreach ($keys as $key) {
-			$cton0 = $this->getNewCriterion(PeriodesPeer::NOM_PERIODE, $key[0], Criteria::EQUAL);
-			$cton1 = $this->getNewCriterion(PeriodesPeer::NUM_PERIODE, $key[1], Criteria::EQUAL);
+			$cton0 = $this->getNewCriterion(PeriodeNotePeer::NOM_PERIODE, $key[0], Criteria::EQUAL);
+			$cton1 = $this->getNewCriterion(PeriodeNotePeer::NUM_PERIODE, $key[1], Criteria::EQUAL);
 			$cton0->addAnd($cton1);
-			$cton2 = $this->getNewCriterion(PeriodesPeer::ID_CLASSE, $key[2], Criteria::EQUAL);
+			$cton2 = $this->getNewCriterion(PeriodeNotePeer::ID_CLASSE, $key[2], Criteria::EQUAL);
 			$cton0->addAnd($cton2);
 			$this->addOr($cton0);
 		}
@@ -164,16 +164,16 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    PeriodesQuery The current query, for fluid interface
+	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
 	public function filterByNomPeriode($nomPeriode = null, $comparison = Criteria::EQUAL)
 	{
 		if (is_array($nomPeriode)) {
-			return $this->addUsingAlias(PeriodesPeer::NOM_PERIODE, $nomPeriode, Criteria::IN);
+			return $this->addUsingAlias(PeriodeNotePeer::NOM_PERIODE, $nomPeriode, Criteria::IN);
 		} elseif(preg_match('/[\%\*]/', $nomPeriode)) {
-			return $this->addUsingAlias(PeriodesPeer::NOM_PERIODE, str_replace('*', '%', $nomPeriode), Criteria::LIKE);
+			return $this->addUsingAlias(PeriodeNotePeer::NOM_PERIODE, str_replace('*', '%', $nomPeriode), Criteria::LIKE);
 		} else {
-			return $this->addUsingAlias(PeriodesPeer::NOM_PERIODE, $nomPeriode, $comparison);
+			return $this->addUsingAlias(PeriodeNotePeer::NOM_PERIODE, $nomPeriode, $comparison);
 		}
 	}
 
@@ -184,14 +184,14 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    PeriodesQuery The current query, for fluid interface
+	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
 	public function filterByNumPeriode($numPeriode = null, $comparison = Criteria::EQUAL)
 	{
 		if (is_array($numPeriode)) {
-			return $this->addUsingAlias(PeriodesPeer::NUM_PERIODE, $numPeriode, Criteria::IN);
+			return $this->addUsingAlias(PeriodeNotePeer::NUM_PERIODE, $numPeriode, Criteria::IN);
 		} else {
-			return $this->addUsingAlias(PeriodesPeer::NUM_PERIODE, $numPeriode, $comparison);
+			return $this->addUsingAlias(PeriodeNotePeer::NUM_PERIODE, $numPeriode, $comparison);
 		}
 	}
 
@@ -202,16 +202,16 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    PeriodesQuery The current query, for fluid interface
+	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
 	public function filterByVerouiller($verouiller = null, $comparison = Criteria::EQUAL)
 	{
 		if (is_array($verouiller)) {
-			return $this->addUsingAlias(PeriodesPeer::VEROUILLER, $verouiller, Criteria::IN);
+			return $this->addUsingAlias(PeriodeNotePeer::VEROUILLER, $verouiller, Criteria::IN);
 		} elseif(preg_match('/[\%\*]/', $verouiller)) {
-			return $this->addUsingAlias(PeriodesPeer::VEROUILLER, str_replace('*', '%', $verouiller), Criteria::LIKE);
+			return $this->addUsingAlias(PeriodeNotePeer::VEROUILLER, str_replace('*', '%', $verouiller), Criteria::LIKE);
 		} else {
-			return $this->addUsingAlias(PeriodesPeer::VEROUILLER, $verouiller, $comparison);
+			return $this->addUsingAlias(PeriodeNotePeer::VEROUILLER, $verouiller, $comparison);
 		}
 	}
 
@@ -222,14 +222,14 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    PeriodesQuery The current query, for fluid interface
+	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
 	public function filterByIdClasse($idClasse = null, $comparison = Criteria::EQUAL)
 	{
 		if (is_array($idClasse)) {
-			return $this->addUsingAlias(PeriodesPeer::ID_CLASSE, $idClasse, Criteria::IN);
+			return $this->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $idClasse, Criteria::IN);
 		} else {
-			return $this->addUsingAlias(PeriodesPeer::ID_CLASSE, $idClasse, $comparison);
+			return $this->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $idClasse, $comparison);
 		}
 	}
 
@@ -240,24 +240,24 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    PeriodesQuery The current query, for fluid interface
+	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
 	public function filterByDateVerrouillage($dateVerrouillage = null, $comparison = Criteria::EQUAL)
 	{
 		if (is_array($dateVerrouillage)) {
 			if (array_values($dateVerrouillage) === $dateVerrouillage) {
-				return $this->addUsingAlias(PeriodesPeer::DATE_VERROUILLAGE, $dateVerrouillage, Criteria::IN);
+				return $this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage, Criteria::IN);
 			} else {
 				if (isset($dateVerrouillage['min'])) {
-					$this->addUsingAlias(PeriodesPeer::DATE_VERROUILLAGE, $dateVerrouillage['min'], Criteria::GREATER_EQUAL);
+					$this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage['min'], Criteria::GREATER_EQUAL);
 				}
 				if (isset($dateVerrouillage['max'])) {
-					$this->addUsingAlias(PeriodesPeer::DATE_VERROUILLAGE, $dateVerrouillage['max'], Criteria::LESS_EQUAL);
+					$this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage['max'], Criteria::LESS_EQUAL);
 				}
 				return $this;	
 			}
 		} else {
-			return $this->addUsingAlias(PeriodesPeer::DATE_VERROUILLAGE, $dateVerrouillage, $comparison);
+			return $this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage, $comparison);
 		}
 	}
 
@@ -267,12 +267,12 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	 * @param     Classe $classe  the related object to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    PeriodesQuery The current query, for fluid interface
+	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
 	public function filterByClasse($classe, $comparison = Criteria::EQUAL)
 	{
 		return $this
-			->addUsingAlias(PeriodesPeer::ID_CLASSE, $classe->getId(), $comparison);
+			->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $classe->getId(), $comparison);
 	}
 
 	/**
@@ -281,7 +281,7 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
-	 * @return    PeriodesQuery The current query, for fluid interface
+	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
 	public function joinClasse($relationAlias = '', $joinType = Criteria::INNER_JOIN)
 	{
@@ -325,16 +325,16 @@ abstract class BasePeriodesQuery extends ModelCriteria
 	/**
 	 * Exclude object from result
 	 *
-	 * @param     Periodes $periodes Object to remove from the list of results
+	 * @param     PeriodeNote $periodeNote Object to remove from the list of results
 	 *
-	 * @return    PeriodesQuery The current query, for fluid interface
+	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
-	public function prune($periodes = null)
+	public function prune($periodeNote = null)
 	{
-		if ($periodes) {
-			$this->addCond('pruneCond0', $this->getAliasedColName(PeriodesPeer::NOM_PERIODE), $periodes->getNomPeriode(), Criteria::NOT_EQUAL);
-			$this->addCond('pruneCond1', $this->getAliasedColName(PeriodesPeer::NUM_PERIODE), $periodes->getNumPeriode(), Criteria::NOT_EQUAL);
-			$this->addCond('pruneCond2', $this->getAliasedColName(PeriodesPeer::ID_CLASSE), $periodes->getIdClasse(), Criteria::NOT_EQUAL);
+		if ($periodeNote) {
+			$this->addCond('pruneCond0', $this->getAliasedColName(PeriodeNotePeer::NOM_PERIODE), $periodeNote->getNomPeriode(), Criteria::NOT_EQUAL);
+			$this->addCond('pruneCond1', $this->getAliasedColName(PeriodeNotePeer::NUM_PERIODE), $periodeNote->getNumPeriode(), Criteria::NOT_EQUAL);
+			$this->addCond('pruneCond2', $this->getAliasedColName(PeriodeNotePeer::ID_CLASSE), $periodeNote->getIdClasse(), Criteria::NOT_EQUAL);
 			$this->combine(array('pruneCond0', 'pruneCond1', 'pruneCond2'), Criteria::LOGICAL_OR);
 	  }
 	  
@@ -372,4 +372,4 @@ abstract class BasePeriodesQuery extends ModelCriteria
 		return $this->preUpdate($values, $con);
 	}
 
-} // BasePeriodesQuery
+} // BasePeriodeNoteQuery

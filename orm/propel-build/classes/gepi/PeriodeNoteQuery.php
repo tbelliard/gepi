@@ -12,6 +12,6 @@
  *
  * @package    propel.generator.gepi
  */
-class PeriodesPeer extends BasePeriodesPeer {
+class PeriodeNoteQuery extends BasePeriodeNoteQuery {
 
-} // PeriodesPeer
+} // PeriodeNoteQuery

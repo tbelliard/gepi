@@ -252,7 +252,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [id_semaine] column value.
-	 * type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B. egal à 0 ou NULL si 
+	 * type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B.
 	 * @return     string
 	 */
 	public function getTypeSemaine()
@@ -468,7 +468,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [id_semaine] column.
-	 * type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B. egal à 0 ou NULL si 
+	 * type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B.
 	 * @param      string $v new value
 	 * @return     EdtEmplacementCours The current object (for fluent API support)
 	 */

@@ -97,18 +97,18 @@ if ($newClasse == null) {
 }
 
 //ajout d'une periode ouverte et d'un periode fermée à une classe
-$periode_fermee = new Periodes();
+$periode_fermee = new PeriodeNote();
 $periode_fermee->setNumPeriode(1);
 $periode_fermee->setVerouiller('O');
 $periode_fermee->setNomPeriode('1 Unit test');
-$newClasse->addPeriodes($periode_fermee);
+$newClasse->addPeriodeNote($periode_fermee);
 $periode_fermee->save();
 echo ($logger->getDisplay());
-$periode_ouverte = new Periodes();
+$periode_ouverte = new PeriodeNote();
 $periode_ouverte->setNumPeriode(2);
 $periode_ouverte->setVerouiller('N');
 $periode_ouverte->setNomPeriode('2 Unit test');
-$newClasse->addPeriodes($periode_ouverte);
+$newClasse->addPeriodeNote($periode_ouverte);
 $periode_ouverte->save();
 echo ($logger->getDisplay());
 

@@ -13,12 +13,12 @@
  *
  * @package    propel.generator.gepi.map
  */
-class PeriodesTableMap extends TableMap {
+class PeriodeNoteTableMap extends TableMap {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'gepi.map.PeriodesTableMap';
+	const CLASS_NAME = 'gepi.map.PeriodeNoteTableMap';
 
 	/**
 	 * Initialize the table attributes, columns and validators
@@ -31,8 +31,8 @@ class PeriodesTableMap extends TableMap {
 	{
 	  // attributes
 		$this->setName('periodes');
-		$this->setPhpName('Periodes');
-		$this->setClassname('Periodes');
+		$this->setPhpName('PeriodeNote');
+		$this->setClassname('PeriodeNote');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
 		// columns
@@ -52,4 +52,4 @@ class PeriodesTableMap extends TableMap {
     $this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
-} // PeriodesTableMap
+} // PeriodeNoteTableMap

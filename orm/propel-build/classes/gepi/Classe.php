@@ -88,12 +88,12 @@ class Classe extends BaseClasse {
 	 */
 	public function getPeriodeNoteOuverteActuelle() {
 		$criteria = new Criteria();
-		$criteria->add(PeriodesPeer::VEROUILLER,'N');
-		$periodes = $this->getPeriodess($criteria);
+		$criteria->add(PeriodeNotePeer::VEROUILLER,'N');
+		$periodes = $this->getPeriodeNotes($criteria);
 		if ($periodes->isEmpty()) {
 		    $criteria = new Criteria();
-		    $criteria->add(PeriodesPeer::VEROUILLER,'P');
-		    $periodes = $this->getPeriodess($criteria);
+		    $criteria->add(PeriodeNotePeer::VEROUILLER,'P');
+		    $periodes = $this->getPeriodeNotes($criteria);
 		}
 		if ($periodes->count() == 1) {
 		    return $periodes->getFirst();
@@ -101,8 +101,8 @@ class Classe extends BaseClasse {
 		    $calendrier_periode = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle();
 		    if ($calendrier_periode != null || $calendrier_periode->getNumeroPeriode() != null || $calendrier_periode->getNumeroPeriode() != 0) {
 			$criteria = new Criteria();
-			$criteria->add(PeriodesPeer::NUM_PERIODE,$calendrier_periode->getNumeroPeriode());
-			$periodes = $this->getPeriodess($criteria);
+			$criteria->add(PeriodeNotePeer::NUM_PERIODE,$calendrier_periode->getNumeroPeriode());
+			$periodes = $this->getPeriodeNotes($criteria);
 		    }
 		    if ($periodes->isEmpty()) {
 			return null;

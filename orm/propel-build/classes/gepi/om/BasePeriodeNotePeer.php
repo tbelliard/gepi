@@ -7,7 +7,7 @@
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BasePeriodesPeer {
+abstract class BasePeriodeNotePeer {
 
 	/** the default database name for this class */
 	const DATABASE_NAME = 'gepi';
@@ -16,13 +16,13 @@ abstract class BasePeriodesPeer {
 	const TABLE_NAME = 'periodes';
 
 	/** the related Propel class for this table */
-	const OM_CLASS = 'Periodes';
+	const OM_CLASS = 'PeriodeNote';
 
 	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'gepi.Periodes';
+	const CLASS_DEFAULT = 'gepi.PeriodeNote';
 
 	/** the related TableMap class for this table */
-	const TM_CLASS = 'PeriodesTableMap';
+	const TM_CLASS = 'PeriodeNoteTableMap';
 	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 5;
@@ -46,10 +46,10 @@ abstract class BasePeriodesPeer {
 	const DATE_VERROUILLAGE = 'periodes.DATE_VERROUILLAGE';
 
 	/**
-	 * An identiy map to hold any loaded instances of Periodes objects.
+	 * An identiy map to hold any loaded instances of PeriodeNote objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
 	 * queries.
-	 * @var        array Periodes[]
+	 * @var        array PeriodeNote[]
 	 */
 	public static $instances = array();
 
@@ -130,12 +130,12 @@ abstract class BasePeriodesPeer {
 	 *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
 	 * </code>
 	 * @param      string $alias The alias for the current table.
-	 * @param      string $column The column name for current table. (i.e. PeriodesPeer::COLUMN_NAME).
+	 * @param      string $column The column name for current table. (i.e. PeriodeNotePeer::COLUMN_NAME).
 	 * @return     string
 	 */
 	public static function alias($alias, $column)
 	{
-		return str_replace(PeriodesPeer::TABLE_NAME.'.', $alias.'.', $column);
+		return str_replace(PeriodeNotePeer::TABLE_NAME.'.', $alias.'.', $column);
 	}
 
 	/**
@@ -153,11 +153,11 @@ abstract class BasePeriodesPeer {
 	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
 		if (null === $alias) {
-			$criteria->addSelectColumn(PeriodesPeer::NOM_PERIODE);
-			$criteria->addSelectColumn(PeriodesPeer::NUM_PERIODE);
-			$criteria->addSelectColumn(PeriodesPeer::VEROUILLER);
-			$criteria->addSelectColumn(PeriodesPeer::ID_CLASSE);
-			$criteria->addSelectColumn(PeriodesPeer::DATE_VERROUILLAGE);
+			$criteria->addSelectColumn(PeriodeNotePeer::NOM_PERIODE);
+			$criteria->addSelectColumn(PeriodeNotePeer::NUM_PERIODE);
+			$criteria->addSelectColumn(PeriodeNotePeer::VEROUILLER);
+			$criteria->addSelectColumn(PeriodeNotePeer::ID_CLASSE);
+			$criteria->addSelectColumn(PeriodeNotePeer::DATE_VERROUILLAGE);
 		} else {
 			$criteria->addSelectColumn($alias . '.NOM_PERIODE');
 			$criteria->addSelectColumn($alias . '.NUM_PERIODE');
@@ -183,21 +183,21 @@ abstract class BasePeriodesPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(PeriodesPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(PeriodeNotePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			PeriodesPeer::addSelectColumns($criteria);
+			PeriodeNotePeer::addSelectColumns($criteria);
 		}
 
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
 
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 		// BasePeer returns a PDOStatement
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -215,7 +215,7 @@ abstract class BasePeriodesPeer {
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
-	 * @return     Periodes
+	 * @return     PeriodeNote
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -223,7 +223,7 @@ abstract class BasePeriodesPeer {
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
-		$objects = PeriodesPeer::doSelect($critcopy, $con);
+		$objects = PeriodeNotePeer::doSelect($critcopy, $con);
 		if ($objects) {
 			return $objects[0];
 		}
@@ -240,7 +240,7 @@ abstract class BasePeriodesPeer {
 	 */
 	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return PeriodesPeer::populateObjects(PeriodesPeer::doSelectStmt($criteria, $con));
+		return PeriodeNotePeer::populateObjects(PeriodeNotePeer::doSelectStmt($criteria, $con));
 	}
 	/**
 	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -258,12 +258,12 @@ abstract class BasePeriodesPeer {
 	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
-			PeriodesPeer::addSelectColumns($criteria);
+			PeriodeNotePeer::addSelectColumns($criteria);
 		}
 
 		// Set the correct dbName
@@ -281,10 +281,10 @@ abstract class BasePeriodesPeer {
 	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
 	 * and retrieveByPK*() calls.
 	 *
-	 * @param      Periodes $value A Periodes object.
+	 * @param      PeriodeNote $value A PeriodeNote object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Periodes $obj, $key = null)
+	public static function addInstanceToPool(PeriodeNote $obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -302,18 +302,18 @@ abstract class BasePeriodesPeer {
 	 * methods in your stub classes -- you may need to explicitly remove objects
 	 * from the cache in order to prevent returning objects that no longer exist.
 	 *
-	 * @param      mixed $value A Periodes object or a primary key value.
+	 * @param      mixed $value A PeriodeNote object or a primary key value.
 	 */
 	public static function removeInstanceFromPool($value)
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
-			if (is_object($value) && $value instanceof Periodes) {
+			if (is_object($value) && $value instanceof PeriodeNote) {
 				$key = serialize(array((string) $value->getNomPeriode(), (string) $value->getNumPeriode(), (string) $value->getIdClasse()));
 			} elseif (is_array($value) && count($value) === 3) {
 				// assume we've been passed a primary key
 				$key = serialize(array((string) $value[0], (string) $value[1], (string) $value[2]));
 			} else {
-				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or Periodes object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or PeriodeNote object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
 			}
 
@@ -328,7 +328,7 @@ abstract class BasePeriodesPeer {
 	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
 	 *
 	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-	 * @return     Periodes Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @return     PeriodeNote Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
 	 * @see        getPrimaryKeyHash()
 	 */
 	public static function getInstanceFromPool($key)
@@ -404,11 +404,11 @@ abstract class BasePeriodesPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = PeriodesPeer::getOMClass(false);
+		$cls = PeriodeNotePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key = PeriodesPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj = PeriodesPeer::getInstanceFromPool($key))) {
+			$key = PeriodeNotePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = PeriodeNotePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
@@ -417,7 +417,7 @@ abstract class BasePeriodesPeer {
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
-				PeriodesPeer::addInstanceToPool($obj, $key);
+				PeriodeNotePeer::addInstanceToPool($obj, $key);
 			} // if key exists
 		}
 		$stmt->closeCursor();
@@ -430,21 +430,21 @@ abstract class BasePeriodesPeer {
 	 * @param      int $startcol The 0-based offset for reading from the resultset row.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
-	 * @return     array (Periodes object, last column rank)
+	 * @return     array (PeriodeNote object, last column rank)
 	 */
 	public static function populateObject($row, $startcol = 0)
 	{
-		$key = PeriodesPeer::getPrimaryKeyHashFromRow($row, $startcol);
-		if (null !== ($obj = PeriodesPeer::getInstanceFromPool($key))) {
+		$key = PeriodeNotePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = PeriodeNotePeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://propel.phpdb.org/trac/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + PeriodesPeer::NUM_COLUMNS;
+			$col = $startcol + PeriodeNotePeer::NUM_COLUMNS;
 		} else {
-			$cls = PeriodesPeer::OM_CLASS;
+			$cls = PeriodeNotePeer::OM_CLASS;
 			$obj = new $cls();
 			$col = $obj->hydrate($row, $startcol);
-			PeriodesPeer::addInstanceToPool($obj, $key);
+			PeriodeNotePeer::addInstanceToPool($obj, $key);
 		}
 		return array($obj, $col);
 	}
@@ -466,14 +466,14 @@ abstract class BasePeriodesPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(PeriodesPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(PeriodeNotePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			PeriodesPeer::addSelectColumns($criteria);
+			PeriodeNotePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -482,10 +482,10 @@ abstract class BasePeriodesPeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(PeriodesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
+		$criteria->addJoin(PeriodeNotePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -500,11 +500,11 @@ abstract class BasePeriodesPeer {
 
 
 	/**
-	 * Selects a collection of Periodes objects pre-filled with their Classe objects.
+	 * Selects a collection of PeriodeNote objects pre-filled with their Classe objects.
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of Periodes objects.
+	 * @return     array Array of PeriodeNote objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -517,28 +517,28 @@ abstract class BasePeriodesPeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		PeriodesPeer::addSelectColumns($criteria);
-		$startcol = (PeriodesPeer::NUM_COLUMNS - PeriodesPeer::NUM_LAZY_LOAD_COLUMNS);
+		PeriodeNotePeer::addSelectColumns($criteria);
+		$startcol = (PeriodeNotePeer::NUM_COLUMNS - PeriodeNotePeer::NUM_LAZY_LOAD_COLUMNS);
 		ClassePeer::addSelectColumns($criteria);
 
-		$criteria->addJoin(PeriodesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
+		$criteria->addJoin(PeriodeNotePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = PeriodesPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = PeriodesPeer::getInstanceFromPool($key1))) {
+			$key1 = PeriodeNotePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = PeriodeNotePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = PeriodesPeer::getOMClass(false);
+				$cls = PeriodeNotePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				PeriodesPeer::addInstanceToPool($obj1, $key1);
+				PeriodeNotePeer::addInstanceToPool($obj1, $key1);
 			} // if $obj1 already loaded
 
 			$key2 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol);
@@ -553,8 +553,8 @@ abstract class BasePeriodesPeer {
 					ClassePeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 already loaded
 
-				// Add the $obj1 (Periodes) to $obj2 (Classe)
-				$obj2->addPeriodes($obj1);
+				// Add the $obj1 (PeriodeNote) to $obj2 (Classe)
+				$obj2->addPeriodeNote($obj1);
 
 			} // if joined row was not null
 
@@ -582,14 +582,14 @@ abstract class BasePeriodesPeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(PeriodesPeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(PeriodeNotePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			PeriodesPeer::addSelectColumns($criteria);
+			PeriodeNotePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -598,10 +598,10 @@ abstract class BasePeriodesPeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(PeriodesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
+		$criteria->addJoin(PeriodeNotePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -615,12 +615,12 @@ abstract class BasePeriodesPeer {
 	}
 
 	/**
-	 * Selects a collection of Periodes objects pre-filled with all related objects.
+	 * Selects a collection of PeriodeNote objects pre-filled with all related objects.
 	 *
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of Periodes objects.
+	 * @return     array Array of PeriodeNote objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -633,29 +633,29 @@ abstract class BasePeriodesPeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		PeriodesPeer::addSelectColumns($criteria);
-		$startcol2 = (PeriodesPeer::NUM_COLUMNS - PeriodesPeer::NUM_LAZY_LOAD_COLUMNS);
+		PeriodeNotePeer::addSelectColumns($criteria);
+		$startcol2 = (PeriodeNotePeer::NUM_COLUMNS - PeriodeNotePeer::NUM_LAZY_LOAD_COLUMNS);
 
 		ClassePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$criteria->addJoin(PeriodesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
+		$criteria->addJoin(PeriodeNotePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = PeriodesPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = PeriodesPeer::getInstanceFromPool($key1))) {
+			$key1 = PeriodeNotePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = PeriodeNotePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = PeriodesPeer::getOMClass(false);
+				$cls = PeriodeNotePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				PeriodesPeer::addInstanceToPool($obj1, $key1);
+				PeriodeNotePeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
 			// Add objects for joined Classe rows
@@ -672,8 +672,8 @@ abstract class BasePeriodesPeer {
 					ClassePeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 loaded
 
-				// Add the $obj1 (Periodes) to the collection in $obj2 (Classe)
-				$obj2->addPeriodes($obj1);
+				// Add the $obj1 (PeriodeNote) to the collection in $obj2 (Classe)
+				$obj2->addPeriodeNote($obj1);
 			} // if joined row not null
 
 			$results[] = $obj1;
@@ -699,10 +699,10 @@ abstract class BasePeriodesPeer {
 	 */
 	public static function buildTableMap()
 	{
-	  $dbMap = Propel::getDatabaseMap(BasePeriodesPeer::DATABASE_NAME);
-	  if (!$dbMap->hasTable(BasePeriodesPeer::TABLE_NAME))
+	  $dbMap = Propel::getDatabaseMap(BasePeriodeNotePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BasePeriodeNotePeer::TABLE_NAME))
 	  {
-	    $dbMap->addTableObject(new PeriodesTableMap());
+	    $dbMap->addTableObject(new PeriodeNoteTableMap());
 	  }
 	}
 
@@ -719,13 +719,13 @@ abstract class BasePeriodesPeer {
 	 */
 	public static function getOMClass($withPrefix = true)
 	{
-		return $withPrefix ? PeriodesPeer::CLASS_DEFAULT : PeriodesPeer::OM_CLASS;
+		return $withPrefix ? PeriodeNotePeer::CLASS_DEFAULT : PeriodeNotePeer::OM_CLASS;
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a Periodes or Criteria object.
+	 * Method perform an INSERT on the database, given a PeriodeNote or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or Periodes object containing data that is used to create the INSERT statement.
+	 * @param      mixed $values Criteria or PeriodeNote object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -734,13 +734,13 @@ abstract class BasePeriodesPeer {
 	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 		} else {
-			$criteria = $values->buildCriteria(); // build Criteria from Periodes object
+			$criteria = $values->buildCriteria(); // build Criteria from PeriodeNote object
 		}
 
 
@@ -762,9 +762,9 @@ abstract class BasePeriodesPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a Periodes or Criteria object.
+	 * Method perform an UPDATE on the database, given a PeriodeNote or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or Periodes object containing data that is used to create the UPDATE statement.
+	 * @param      mixed $values Criteria or PeriodeNote object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -773,7 +773,7 @@ abstract class BasePeriodesPeer {
 	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -781,31 +781,31 @@ abstract class BasePeriodesPeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(PeriodesPeer::NOM_PERIODE);
-			$value = $criteria->remove(PeriodesPeer::NOM_PERIODE);
+			$comparison = $criteria->getComparison(PeriodeNotePeer::NOM_PERIODE);
+			$value = $criteria->remove(PeriodeNotePeer::NOM_PERIODE);
 			if ($value) {
-				$selectCriteria->add(PeriodesPeer::NOM_PERIODE, $value, $comparison);
+				$selectCriteria->add(PeriodeNotePeer::NOM_PERIODE, $value, $comparison);
 			} else {
-				$selectCriteria->setPrimaryTableName(PeriodesPeer::TABLE_NAME);
+				$selectCriteria->setPrimaryTableName(PeriodeNotePeer::TABLE_NAME);
 			}
 
-			$comparison = $criteria->getComparison(PeriodesPeer::NUM_PERIODE);
-			$value = $criteria->remove(PeriodesPeer::NUM_PERIODE);
+			$comparison = $criteria->getComparison(PeriodeNotePeer::NUM_PERIODE);
+			$value = $criteria->remove(PeriodeNotePeer::NUM_PERIODE);
 			if ($value) {
-				$selectCriteria->add(PeriodesPeer::NUM_PERIODE, $value, $comparison);
+				$selectCriteria->add(PeriodeNotePeer::NUM_PERIODE, $value, $comparison);
 			} else {
-				$selectCriteria->setPrimaryTableName(PeriodesPeer::TABLE_NAME);
+				$selectCriteria->setPrimaryTableName(PeriodeNotePeer::TABLE_NAME);
 			}
 
-			$comparison = $criteria->getComparison(PeriodesPeer::ID_CLASSE);
-			$value = $criteria->remove(PeriodesPeer::ID_CLASSE);
+			$comparison = $criteria->getComparison(PeriodeNotePeer::ID_CLASSE);
+			$value = $criteria->remove(PeriodeNotePeer::ID_CLASSE);
 			if ($value) {
-				$selectCriteria->add(PeriodesPeer::ID_CLASSE, $value, $comparison);
+				$selectCriteria->add(PeriodeNotePeer::ID_CLASSE, $value, $comparison);
 			} else {
-				$selectCriteria->setPrimaryTableName(PeriodesPeer::TABLE_NAME);
+				$selectCriteria->setPrimaryTableName(PeriodeNotePeer::TABLE_NAME);
 			}
 
-		} else { // $values is Periodes object
+		} else { // $values is PeriodeNote object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
 		}
@@ -824,19 +824,19 @@ abstract class BasePeriodesPeer {
 	public static function doDeleteAll($con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += BasePeer::doDeleteAll(PeriodesPeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(PeriodeNotePeer::TABLE_NAME, $con);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
-			PeriodesPeer::clearInstancePool();
-			PeriodesPeer::clearRelatedInstancePool();
+			PeriodeNotePeer::clearInstancePool();
+			PeriodeNotePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -846,9 +846,9 @@ abstract class BasePeriodesPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a Periodes or Criteria object OR a primary key value.
+	 * Method perform a DELETE on the database, given a PeriodeNote or Criteria object OR a primary key value.
 	 *
-	 * @param      mixed $values Criteria or Periodes object or primary key or array of primary keys
+	 * @param      mixed $values Criteria or PeriodeNote object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
 	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -859,19 +859,19 @@ abstract class BasePeriodesPeer {
 	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			// invalidate the cache for all objects of this type, since we have no
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
-			PeriodesPeer::clearInstancePool();
+			PeriodeNotePeer::clearInstancePool();
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof Periodes) { // it's a model object
+		} elseif ($values instanceof PeriodeNote) { // it's a model object
 			// invalidate the cache for this single object
-			PeriodesPeer::removeInstanceFromPool($values);
+			PeriodeNotePeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
 		} else { // it's a primary key, or an array of pks
@@ -883,12 +883,12 @@ abstract class BasePeriodesPeer {
 				$values = array($values);
 			}
 			foreach ($values as $value) {
-				$criterion = $criteria->getNewCriterion(PeriodesPeer::NOM_PERIODE, $value[0]);
-				$criterion->addAnd($criteria->getNewCriterion(PeriodesPeer::NUM_PERIODE, $value[1]));
-				$criterion->addAnd($criteria->getNewCriterion(PeriodesPeer::ID_CLASSE, $value[2]));
+				$criterion = $criteria->getNewCriterion(PeriodeNotePeer::NOM_PERIODE, $value[0]);
+				$criterion->addAnd($criteria->getNewCriterion(PeriodeNotePeer::NUM_PERIODE, $value[1]));
+				$criterion->addAnd($criteria->getNewCriterion(PeriodeNotePeer::ID_CLASSE, $value[2]));
 				$criteria->addOr($criterion);
 				// we can invalidate the cache for this single PK
-				PeriodesPeer::removeInstanceFromPool($value);
+				PeriodeNotePeer::removeInstanceFromPool($value);
 			}
 		}
 
@@ -903,7 +903,7 @@ abstract class BasePeriodesPeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-			PeriodesPeer::clearRelatedInstancePool();
+			PeriodeNotePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -913,24 +913,24 @@ abstract class BasePeriodesPeer {
 	}
 
 	/**
-	 * Validates all modified columns of given Periodes object.
+	 * Validates all modified columns of given PeriodeNote object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.
 	 *
 	 * NOTICE: This does not apply to primary or foreign keys for now.
 	 *
-	 * @param      Periodes $obj The object to validate.
+	 * @param      PeriodeNote $obj The object to validate.
 	 * @param      mixed $cols Column name or array of column names.
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Periodes $obj, $cols = null)
+	public static function doValidate(PeriodeNote $obj, $cols = null)
 	{
 		$columns = array();
 
 		if ($cols) {
-			$dbMap = Propel::getDatabaseMap(PeriodesPeer::DATABASE_NAME);
-			$tableMap = $dbMap->getTable(PeriodesPeer::TABLE_NAME);
+			$dbMap = Propel::getDatabaseMap(PeriodeNotePeer::DATABASE_NAME);
+			$tableMap = $dbMap->getTable(PeriodeNotePeer::TABLE_NAME);
 
 			if (! is_array($cols)) {
 				$cols = array($cols);
@@ -946,7 +946,7 @@ abstract class BasePeriodesPeer {
 
 		}
 
-		return BasePeer::doValidate(PeriodesPeer::DATABASE_NAME, PeriodesPeer::TABLE_NAME, $columns);
+		return BasePeer::doValidate(PeriodeNotePeer::DATABASE_NAME, PeriodeNotePeer::TABLE_NAME, $columns);
 	}
 
 	/**
@@ -955,28 +955,28 @@ abstract class BasePeriodesPeer {
 	 * @param      int $num_periode
 	 * @param      int $id_classe
 	 * @param      PropelPDO $con
-	 * @return     Periodes
+	 * @return     PeriodeNote
 	 */
 	public static function retrieveByPK($nom_periode, $num_periode, $id_classe, PropelPDO $con = null) {
 		$key = serialize(array((string) $nom_periode, (string) $num_periode, (string) $id_classe));
- 		if (null !== ($obj = PeriodesPeer::getInstanceFromPool($key))) {
+ 		if (null !== ($obj = PeriodeNotePeer::getInstanceFromPool($key))) {
  			return $obj;
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
-		$criteria = new Criteria(PeriodesPeer::DATABASE_NAME);
-		$criteria->add(PeriodesPeer::NOM_PERIODE, $nom_periode);
-		$criteria->add(PeriodesPeer::NUM_PERIODE, $num_periode);
-		$criteria->add(PeriodesPeer::ID_CLASSE, $id_classe);
-		$v = PeriodesPeer::doSelect($criteria, $con);
+		$criteria = new Criteria(PeriodeNotePeer::DATABASE_NAME);
+		$criteria->add(PeriodeNotePeer::NOM_PERIODE, $nom_periode);
+		$criteria->add(PeriodeNotePeer::NUM_PERIODE, $num_periode);
+		$criteria->add(PeriodeNotePeer::ID_CLASSE, $id_classe);
+		$v = PeriodeNotePeer::doSelect($criteria, $con);
 
 		return !empty($v) ? $v[0] : null;
 	}
-} // BasePeriodesPeer
+} // BasePeriodeNotePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BasePeriodesPeer::buildTableMap();
+BasePeriodeNotePeer::buildTableMap();
 

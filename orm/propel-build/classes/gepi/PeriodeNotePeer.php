@@ -2,7 +2,7 @@
 
 
 /**
- * Skeleton subclass for representing a row from the 'periodes' table.
+ * Skeleton subclass for performing query and update operations on the 'periodes' table.
  *
  * Table regroupant les periodes de notes pour les classes
  *
@@ -12,6 +12,6 @@
  *
  * @package    propel.generator.gepi
  */
-class Periodes extends BasePeriodes {
+class PeriodeNotePeer extends BasePeriodeNotePeer {
 
-} // Periodes
+} // PeriodeNotePeer

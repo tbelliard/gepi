@@ -193,6 +193,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	    $edtCoursCol = $this->getEdtEmplacementCoursPeriodeCalendrierActuelle($v);
 
+	    require_once("helpers/EdtEmplacementCoursHelper.php");
 	    return EdtEmplacementCoursHelper::getEdtEmplacementCoursActuel($edtCoursCol, $v);
 	}
 

@@ -7,19 +7,19 @@
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BasePeriodes extends BaseObject  implements Persistent
+abstract class BasePeriodeNote extends BaseObject  implements Persistent
 {
 
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'PeriodesPeer';
+  const PEER = 'PeriodeNotePeer';
 
 	/**
 	 * The Peer class.
 	 * Instance provides a convenient way of calling static methods on a class
 	 * that calling code may not be able to identify.
-	 * @var        PeriodesPeer
+	 * @var        PeriodeNotePeer
 	 */
 	protected static $peer;
 
@@ -85,7 +85,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Initializes internal state of BasePeriodes object.
+	 * Initializes internal state of BasePeriodeNote object.
 	 * @see        applyDefaults()
 	 */
 	public function __construct()
@@ -171,7 +171,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 * Set the value of [nom_periode] column.
 	 * Nom de la periode de note
 	 * @param      string $v new value
-	 * @return     Periodes The current object (for fluent API support)
+	 * @return     PeriodeNote The current object (for fluent API support)
 	 */
 	public function setNomPeriode($v)
 	{
@@ -181,7 +181,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 
 		if ($this->nom_periode !== $v) {
 			$this->nom_periode = $v;
-			$this->modifiedColumns[] = PeriodesPeer::NOM_PERIODE;
+			$this->modifiedColumns[] = PeriodeNotePeer::NOM_PERIODE;
 		}
 
 		return $this;
@@ -191,7 +191,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 * Set the value of [num_periode] column.
 	 * identifiant numerique de la periode (1, 2 ou3)
 	 * @param      int $v new value
-	 * @return     Periodes The current object (for fluent API support)
+	 * @return     PeriodeNote The current object (for fluent API support)
 	 */
 	public function setNumPeriode($v)
 	{
@@ -201,7 +201,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 
 		if ($this->num_periode !== $v) {
 			$this->num_periode = $v;
-			$this->modifiedColumns[] = PeriodesPeer::NUM_PERIODE;
+			$this->modifiedColumns[] = PeriodeNotePeer::NUM_PERIODE;
 		}
 
 		return $this;
@@ -211,7 +211,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 * Set the value of [verouiller] column.
 	 * Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)
 	 * @param      string $v new value
-	 * @return     Periodes The current object (for fluent API support)
+	 * @return     PeriodeNote The current object (for fluent API support)
 	 */
 	public function setVerouiller($v)
 	{
@@ -221,7 +221,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 
 		if ($this->verouiller !== $v || $this->isNew()) {
 			$this->verouiller = $v;
-			$this->modifiedColumns[] = PeriodesPeer::VEROUILLER;
+			$this->modifiedColumns[] = PeriodeNotePeer::VEROUILLER;
 		}
 
 		return $this;
@@ -231,7 +231,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 * Set the value of [id_classe] column.
 	 * identifiant numerique de la classe.
 	 * @param      int $v new value
-	 * @return     Periodes The current object (for fluent API support)
+	 * @return     PeriodeNote The current object (for fluent API support)
 	 */
 	public function setIdClasse($v)
 	{
@@ -241,7 +241,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 
 		if ($this->id_classe !== $v) {
 			$this->id_classe = $v;
-			$this->modifiedColumns[] = PeriodesPeer::ID_CLASSE;
+			$this->modifiedColumns[] = PeriodeNotePeer::ID_CLASSE;
 		}
 
 		if ($this->aClasse !== null && $this->aClasse->getId() !== $v) {
@@ -256,7 +256,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 * date de verrouillage de la periode
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
 	 *						be treated as NULL for temporal objects.
-	 * @return     Periodes The current object (for fluent API support)
+	 * @return     PeriodeNote The current object (for fluent API support)
 	 */
 	public function setDateVerrouillage($v)
 	{
@@ -293,7 +293,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 					)
 			{
 				$this->date_verrouillage = ($dt ? $dt->format('H:i:s') : null);
-				$this->modifiedColumns[] = PeriodesPeer::DATE_VERROUILLAGE;
+				$this->modifiedColumns[] = PeriodeNotePeer::DATE_VERROUILLAGE;
 			}
 		} // if either are not null
 
@@ -349,10 +349,10 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 5; // 5 = PeriodesPeer::NUM_COLUMNS - PeriodesPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 5; // 5 = PeriodeNotePeer::NUM_COLUMNS - PeriodeNotePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
-			throw new PropelException("Error populating Periodes object", $e);
+			throw new PropelException("Error populating PeriodeNote object", $e);
 		}
 	}
 
@@ -398,13 +398,13 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		// We don't need to alter the object instance pool; we're just modifying this instance
 		// already in the pool.
 
-		$stmt = PeriodesPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$stmt = PeriodeNotePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
 		$row = $stmt->fetch(PDO::FETCH_NUM);
 		$stmt->closeCursor();
 		if (!$row) {
@@ -434,14 +434,14 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				PeriodesQuery::create()
+				PeriodeNoteQuery::create()
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
@@ -476,7 +476,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(PeriodesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
@@ -496,7 +496,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 					$this->postUpdate($con);
 				}
 				$this->postSave($con);
-				PeriodesPeer::addInstanceToPool($this);
+				PeriodeNotePeer::addInstanceToPool($this);
 			} else {
 				$affectedRows = 0;
 			}
@@ -546,7 +546,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 					$affectedRows += 1;
 					$this->setNew(false);
 				} else {
-					$affectedRows += PeriodesPeer::doUpdate($this, $con);
+					$affectedRows += PeriodeNotePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -630,7 +630,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 			}
 
 
-			if (($retval = PeriodesPeer::doValidate($this, $columns)) !== true) {
+			if (($retval = PeriodeNotePeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
@@ -653,7 +653,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = PeriodesPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = PeriodeNotePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		$field = $this->getByPosition($pos);
 		return $field;
 	}
@@ -705,7 +705,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
-		$keys = PeriodesPeer::getFieldNames($keyType);
+		$keys = PeriodeNotePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getNomPeriode(),
 			$keys[1] => $this->getNumPeriode(),
@@ -733,7 +733,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = PeriodesPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = PeriodeNotePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		return $this->setByPosition($pos, $value);
 	}
 
@@ -785,7 +785,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 */
 	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
 	{
-		$keys = PeriodesPeer::getFieldNames($keyType);
+		$keys = PeriodeNotePeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setNomPeriode($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setNumPeriode($arr[$keys[1]]);
@@ -801,13 +801,13 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 */
 	public function buildCriteria()
 	{
-		$criteria = new Criteria(PeriodesPeer::DATABASE_NAME);
+		$criteria = new Criteria(PeriodeNotePeer::DATABASE_NAME);
 
-		if ($this->isColumnModified(PeriodesPeer::NOM_PERIODE)) $criteria->add(PeriodesPeer::NOM_PERIODE, $this->nom_periode);
-		if ($this->isColumnModified(PeriodesPeer::NUM_PERIODE)) $criteria->add(PeriodesPeer::NUM_PERIODE, $this->num_periode);
-		if ($this->isColumnModified(PeriodesPeer::VEROUILLER)) $criteria->add(PeriodesPeer::VEROUILLER, $this->verouiller);
-		if ($this->isColumnModified(PeriodesPeer::ID_CLASSE)) $criteria->add(PeriodesPeer::ID_CLASSE, $this->id_classe);
-		if ($this->isColumnModified(PeriodesPeer::DATE_VERROUILLAGE)) $criteria->add(PeriodesPeer::DATE_VERROUILLAGE, $this->date_verrouillage);
+		if ($this->isColumnModified(PeriodeNotePeer::NOM_PERIODE)) $criteria->add(PeriodeNotePeer::NOM_PERIODE, $this->nom_periode);
+		if ($this->isColumnModified(PeriodeNotePeer::NUM_PERIODE)) $criteria->add(PeriodeNotePeer::NUM_PERIODE, $this->num_periode);
+		if ($this->isColumnModified(PeriodeNotePeer::VEROUILLER)) $criteria->add(PeriodeNotePeer::VEROUILLER, $this->verouiller);
+		if ($this->isColumnModified(PeriodeNotePeer::ID_CLASSE)) $criteria->add(PeriodeNotePeer::ID_CLASSE, $this->id_classe);
+		if ($this->isColumnModified(PeriodeNotePeer::DATE_VERROUILLAGE)) $criteria->add(PeriodeNotePeer::DATE_VERROUILLAGE, $this->date_verrouillage);
 
 		return $criteria;
 	}
@@ -822,10 +822,10 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 */
 	public function buildPkeyCriteria()
 	{
-		$criteria = new Criteria(PeriodesPeer::DATABASE_NAME);
-		$criteria->add(PeriodesPeer::NOM_PERIODE, $this->nom_periode);
-		$criteria->add(PeriodesPeer::NUM_PERIODE, $this->num_periode);
-		$criteria->add(PeriodesPeer::ID_CLASSE, $this->id_classe);
+		$criteria = new Criteria(PeriodeNotePeer::DATABASE_NAME);
+		$criteria->add(PeriodeNotePeer::NOM_PERIODE, $this->nom_periode);
+		$criteria->add(PeriodeNotePeer::NUM_PERIODE, $this->num_periode);
+		$criteria->add(PeriodeNotePeer::ID_CLASSE, $this->id_classe);
 
 		return $criteria;
 	}
@@ -873,7 +873,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 * If desired, this method can also make copies of all associated (fkey referrers)
 	 * objects.
 	 *
-	 * @param      object $copyObj An object of Periodes (or compatible) type.
+	 * @param      object $copyObj An object of PeriodeNote (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
 	 * @throws     PropelException
 	 */
@@ -897,7 +897,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 * objects.
 	 *
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-	 * @return     Periodes Clone of current object.
+	 * @return     PeriodeNote Clone of current object.
 	 * @throws     PropelException
 	 */
 	public function copy($deepCopy = false)
@@ -916,12 +916,12 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 * same instance for all member of this class. The method could therefore
 	 * be static, but this would prevent one from overriding the behavior.
 	 *
-	 * @return     PeriodesPeer
+	 * @return     PeriodeNotePeer
 	 */
 	public function getPeer()
 	{
 		if (self::$peer === null) {
-			self::$peer = new PeriodesPeer();
+			self::$peer = new PeriodeNotePeer();
 		}
 		return self::$peer;
 	}
@@ -930,7 +930,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 	 * Declares an association between this object and a Classe object.
 	 *
 	 * @param      Classe $v
-	 * @return     Periodes The current object (for fluent API support)
+	 * @return     PeriodeNote The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
 	public function setClasse(Classe $v = null)
@@ -946,7 +946,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 		// Add binding for other direction of this n:n relationship.
 		// If this object has already been added to the Classe object, it will not be re-added.
 		if ($v !== null) {
-			$v->addPeriodes($this);
+			$v->addPeriodeNote($this);
 		}
 
 		return $this;
@@ -969,7 +969,7 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aClasse->addPeriodess($this);
+			   $this->aClasse->addPeriodeNotes($this);
 			 */
 		}
 		return $this->aClasse;
@@ -1018,4 +1018,4 @@ abstract class BasePeriodes extends BaseObject  implements Persistent
 		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
-} // BasePeriodes
+} // BasePeriodeNote

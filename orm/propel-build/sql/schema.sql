@@ -1292,7 +1292,7 @@ CREATE TABLE edt_cours
 	id_definie_periode VARCHAR(3)  NOT NULL COMMENT 'id du creneau de la journee ou a lieu le cours - voir table edt_creneaux ',
 	duree VARCHAR(10) default '2' NOT NULL COMMENT 'duree du cours definie en demi-creneaux.1h de cours correspond a une duree=2. Les creneaux de pause ne sont pas comptabilisé',
 	heuredeb_dec VARCHAR(3) default '0' NOT NULL COMMENT '0 si le cours commence au debut du creneau - 0.5 s\'il commence au milieu',
-	id_semaine VARCHAR(3) default '' COMMENT 'type de semaine - typiquement, \'A\' ou \'B\' si on a une alternance semaine A, semaine B. egal à 0 ou NULL si ',
+	id_semaine VARCHAR(3) default '' COMMENT 'type de semaine - typiquement, \'A\' ou \'B\' si on a une alternance semaine A, semaine B.',
 	id_calendrier VARCHAR(3) COMMENT 'NULL = le cours a lieu toute l\'annee - sinon, id de la periode (EdtCalendrierPeriode) durant laquelle a lieu le cours',
 	modif_edt VARCHAR(3) COMMENT 'champ inutilise',
 	login_prof VARCHAR(50) COMMENT 'login du prof qui dispense le cours',

@@ -200,9 +200,9 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	protected $ects_fonction_signataire_attestation;
 
 	/**
-	 * @var        array Periodes[] Collection to store aggregation of Periodes objects.
+	 * @var        array PeriodeNote[] Collection to store aggregation of PeriodeNote objects.
 	 */
-	protected $collPeriodess;
+	protected $collPeriodeNotes;
 
 	/**
 	 * @var        array JGroupesClasses[] Collection to store aggregation of JGroupesClasses objects.
@@ -1272,7 +1272,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 
 		if ($deep) {  // also de-associate any related objects?
 
-			$this->collPeriodess = null;
+			$this->collPeriodeNotes = null;
 
 			$this->collJGroupesClassess = null;
 
@@ -1417,8 +1417,8 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
-			if ($this->collPeriodess !== null) {
-				foreach ($this->collPeriodess as $referrerFK) {
+			if ($this->collPeriodeNotes !== null) {
+				foreach ($this->collPeriodeNotes as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1536,8 +1536,8 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			}
 
 
-				if ($this->collPeriodess !== null) {
-					foreach ($this->collPeriodess as $referrerFK) {
+				if ($this->collPeriodeNotes !== null) {
+					foreach ($this->collPeriodeNotes as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -2042,9 +2042,9 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
 
-			foreach ($this->getPeriodess() as $relObj) {
+			foreach ($this->getPeriodeNotes() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addPeriodes($relObj->copy($deepCopy));
+					$copyObj->addPeriodeNote($relObj->copy($deepCopy));
 				}
 			}
 
@@ -2124,36 +2124,36 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Clears out the collPeriodess collection
+	 * Clears out the collPeriodeNotes collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
 	 *
 	 * @return     void
-	 * @see        addPeriodess()
+	 * @see        addPeriodeNotes()
 	 */
-	public function clearPeriodess()
+	public function clearPeriodeNotes()
 	{
-		$this->collPeriodess = null; // important to set this to NULL since that means it is uninitialized
+		$this->collPeriodeNotes = null; // important to set this to NULL since that means it is uninitialized
 	}
 
 	/**
-	 * Initializes the collPeriodess collection.
+	 * Initializes the collPeriodeNotes collection.
 	 *
-	 * By default this just sets the collPeriodess collection to an empty array (like clearcollPeriodess());
+	 * By default this just sets the collPeriodeNotes collection to an empty array (like clearcollPeriodeNotes());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
 	 * @return     void
 	 */
-	public function initPeriodess()
+	public function initPeriodeNotes()
 	{
-		$this->collPeriodess = new PropelObjectCollection();
-		$this->collPeriodess->setModel('Periodes');
+		$this->collPeriodeNotes = new PropelObjectCollection();
+		$this->collPeriodeNotes->setModel('PeriodeNote');
 	}
 
 	/**
-	 * Gets an array of Periodes objects which contain a foreign key that references this object.
+	 * Gets an array of PeriodeNote objects which contain a foreign key that references this object.
 	 *
 	 * If the $criteria is not null, it is used to always fetch the results from the database.
 	 * Otherwise the results are fetched from the database the first time, then cached.
@@ -2163,44 +2163,44 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 *
 	 * @param      Criteria $criteria
 	 * @param      PropelPDO $con
-	 * @return     PropelCollection|array Periodes[] List of Periodes objects
+	 * @return     PropelCollection|array PeriodeNote[] List of PeriodeNote objects
 	 * @throws     PropelException
 	 */
-	public function getPeriodess($criteria = null, PropelPDO $con = null)
+	public function getPeriodeNotes($criteria = null, PropelPDO $con = null)
 	{
-		if(null === $this->collPeriodess || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPeriodess) {
+		if(null === $this->collPeriodeNotes || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPeriodeNotes) {
 				// return empty collection
-				$this->initPeriodess();
+				$this->initPeriodeNotes();
 			} else {
-				$collPeriodess = PeriodesQuery::create(null, $criteria)
+				$collPeriodeNotes = PeriodeNoteQuery::create(null, $criteria)
 					->filterByClasse($this)
 					->find($con);
 				if (null !== $criteria) {
-					return $collPeriodess;
+					return $collPeriodeNotes;
 				}
-				$this->collPeriodess = $collPeriodess;
+				$this->collPeriodeNotes = $collPeriodeNotes;
 			}
 		}
-		return $this->collPeriodess;
+		return $this->collPeriodeNotes;
 	}
 
 	/**
-	 * Returns the number of related Periodes objects.
+	 * Returns the number of related PeriodeNote objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
 	 * @param      PropelPDO $con
-	 * @return     int Count of related Periodes objects.
+	 * @return     int Count of related PeriodeNote objects.
 	 * @throws     PropelException
 	 */
-	public function countPeriodess(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	public function countPeriodeNotes(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if(null === $this->collPeriodess || null !== $criteria) {
-			if ($this->isNew() && null === $this->collPeriodess) {
+		if(null === $this->collPeriodeNotes || null !== $criteria) {
+			if ($this->isNew() && null === $this->collPeriodeNotes) {
 				return 0;
 			} else {
-				$query = PeriodesQuery::create(null, $criteria);
+				$query = PeriodeNoteQuery::create(null, $criteria);
 				if($distinct) {
 					$query->distinct();
 				}
@@ -2209,25 +2209,25 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 					->count($con);
 			}
 		} else {
-			return count($this->collPeriodess);
+			return count($this->collPeriodeNotes);
 		}
 	}
 
 	/**
-	 * Method called to associate a Periodes object to this object
-	 * through the Periodes foreign key attribute.
+	 * Method called to associate a PeriodeNote object to this object
+	 * through the PeriodeNote foreign key attribute.
 	 *
-	 * @param      Periodes $l Periodes
+	 * @param      PeriodeNote $l PeriodeNote
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addPeriodes(Periodes $l)
+	public function addPeriodeNote(PeriodeNote $l)
 	{
-		if ($this->collPeriodess === null) {
-			$this->initPeriodess();
+		if ($this->collPeriodeNotes === null) {
+			$this->initPeriodeNotes();
 		}
-		if (!$this->collPeriodess->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPeriodess[]= $l;
+		if (!$this->collPeriodeNotes->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collPeriodeNotes[]= $l;
 			$l->setClasse($this);
 		}
 	}
@@ -3046,8 +3046,8 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
-			if ($this->collPeriodess) {
-				foreach ((array) $this->collPeriodess as $o) {
+			if ($this->collPeriodeNotes) {
+				foreach ((array) $this->collPeriodeNotes as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
@@ -3078,7 +3078,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			}
 		} // if ($deep)
 
-		$this->collPeriodess = null;
+		$this->collPeriodeNotes = null;
 		$this->collJGroupesClassess = null;
 		$this->collJEleveClasses = null;
 		$this->collJEleveProfesseurPrincipals = null;

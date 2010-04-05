@@ -40,7 +40,7 @@ class Eleve extends BaseEleve {
 	public function getClasse($periode) {
 		$c = new Criteria();
 		$c->add(JEleveClassePeer::PERIODE,$periode);
-		$jec = $this->getJEleveClasses($c);
+		$jec = $this->getJEleveClassesJoinClasse($c);
 		if ($jec->isEmpty()) {
 		    return null;
 		} else {
@@ -60,7 +60,9 @@ class Eleve extends BaseEleve {
 	public function getGroupes($periode) {
 		$groupes = new PropelObjectCollection();
 		$c = new Criteria();
-		$c->add(JEleveGroupePeer::PERIODE,$periode);
+		if ($periode != null) {
+		    $c->add(JEleveGroupePeer::PERIODE,$periode);
+		}
 		foreach($this->getJEleveGroupesJoinGroupe($c) as $ref) {
 			if ($ref->getGroupe() != NULL) {
 			    $groupes->append($ref->getGroupe());
@@ -255,140 +257,62 @@ class Eleve extends BaseEleve {
 
 	/**
 	 *
-	 * Renvoi la liste des cours (sur une semaine) d'un eleve pour
-	 * la periode corespondant à la date donnée.
-	 * Les cours sont retournés pour tous les types de semaine
+	 * Retourne l'emplacement de cours de l'heure temps reel. retourne null si pas pas de cours actuel
 	 *
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
 	 *						be treated as NULL for temporal objects.
-	 * @return     PropelObjectCollection EdtEmplacementCours[]
-	 *
+	 * @return EdtEmplacementCours l'emplacement de cours actuel ou null si pas de cours actuellement
 	 */
-	public function getEdtEmplacementCourssToutTypeDeSemaine($v = 'now') {
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		//$dt = new DateTime();
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
+	public function getEdtEmplacementCoursActuel($v = 'now'){
 
-		$edtEmplacementCourss = new PropelObjectCollection();
-		throw new PropelException("Pas encore implemente");
-		return $edtEmplacementCourss;
+	    $edtCoursCol = $this->getEdtEmplacementCoursPeriodeCalendrierActuelle($v);
+
+	    require_once("helpers/EdtEmplacementCoursHelper.php");
+	    return EdtEmplacementCoursHelper::getEdtEmplacementCoursActuel($edtCoursCol, $v);
 	}
 
 	/**
 	 *
-	 * Renvoi la liste des cours (sur une semaine) d'un eleve pour
-	 * la periode corespondant à la date donnée.
-	 * Les cours sont retourné pour tous le type de semaine correspondant à la date donnée
+	 * Retourne tous les emplacements de cours pour la periode précisée du calendrier.
+	 * On recupere aussi les emplacements dont la periode n'est pas definie ou vaut 0.
 	 *
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
-	 * @return     PropelObjectCollection EdtEmplacementCours[]
-	 *
+	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
 	 */
-	public function getEdtEmplacementCourssSemaineCourante($v = 'now') {
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		//$dt = new DateTime();
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
+	public function getEdtEmplacementCoursPeriodeCalendrierActuelle($v = 'now'){
+	    $query = EdtEmplacementCoursQuery::create()->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, 0)
+		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
+	    $periodeCalendrier = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
+	    if ($periodeCalendrier != null) {
+		   $query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $periodeCalendrier->getIdCalendrier());
+	    }
+	    //$periode = $this->getJE
 
-		$edtEmplacementCourss = new PropelObjectCollection();
-		throw new PropelException("Pas encore implemente");
-		return $edtEmplacementCourss;
+	    foreach ($this->getGroupes() as $groupe ) {
+
+	    }
+	    $edtCoursCol = $query->find();
+	    require_once("helpers/EdtEmplacementCoursHelper.php");
+	    EdtEmplacementCoursHelper::orderChronologically($edtCoursCol);
+
+	    return $edtCoursCol;
 	}
 
-	/**
+  	/**
 	 *
-	 * Renvoi la liste du cours se deroulant pendant l'heure specifié, ou null si pas de cours trouvé.
+	 * Retourne une periode de note pour laquelle l'eleve est affectée à une classe dont la periode est ouverte
 	 *
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
-	 * @return     EdtEmplacementCours
-	 *
+	 * @return Periode objet periode ou null si pas de periode ouverte
 	 */
-	public function getEdtEmplacementCoursActuel($v = 'now') {
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		//$dt = new DateTime();
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
+	public function getPeriodeActuelle($v = 'now') {
+		$classe = new JEleveClasses();
+		foreach ($this->getJEleveClassesJoinClasse() as $jclasse) {
+		    $periode = new Periode();
+		    $periode = $jclasse->getClasse()->getPeriodeNoteOuverteActuelle();
+		    if ($periode != null) {
+
+		    }
 		}
 
-		$edtEmplacementCours = new EdtEmplacementCours();
-		throw new PropelException("Pas encore implemente");
-		return $edtEmplacementCours;
-	}
-
-	/**
-	 *
-	 * Renvoi la liste du cours correspondant à un creneau donné, ou null si pas de cours
-	 * pendant ce creneau pour la periode de la date precisée
-	 *
-	 * @param      integer $id_definie_periode La cle primaire de l'objet EdtCreneau
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
-	 * @return     EdtEmplacementCours
-	 *
-	 */
-	public function getEdtEmplacementCoursDapresCreneau($id_definie_periode, $v = 'now') {
-		$edtEmplacementCours = new EdtEmplacementCours();
-		throw new PropelException("Pas encore implemente");
-		return $edtEmplacementCours;
 	}
 
 } // Eleve
