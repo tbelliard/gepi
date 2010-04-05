@@ -267,7 +267,7 @@ class Eleve extends BaseEleve {
 	 *						be treated as NULL for temporal objects.
 	 * @return EdtEmplacementCours l'emplacement de cours actuel ou null si pas de cours actuellement
 	 */
-	public function getEdtEmplacementCours($periode){
+	public function getEdtEmplacementCours($v){
 
 	    $edtCoursCol = $this->getEdtEmplacementCoursPeriodeCalendrierActuelle($v);
 
@@ -313,9 +313,7 @@ class Eleve extends BaseEleve {
 	 * @return PeriodeNote objet periode ou null si pas de periode ouverte
 	 */
 	public function getPeriodeNoteOuverte($v = 'now') {
-		$jclasse = new JEleveClasse();
 		foreach ($this->getJEleveClassesJoinClasse() as $jclasse) {
-		    $periode = new PeriodeNote();
 		    $periode = $jclasse->getClasse()->getPeriodeNoteOuverte($v);
 		    if ($periode != null && $periode->getNumPeriode() == $jclasse->getPeriode()) {
 			//on a une periode ouverte et l'eleve est inscrit dans cete classe pour cette periode, on va considerer que c'est la periode actuelle

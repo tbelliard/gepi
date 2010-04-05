@@ -189,7 +189,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 *						be treated as NULL for temporal objects.
 	 * @return EdtEmplacementCours l'emplacement de cours actuel ou null si pas de cours actuellement
 	 */
-	public function getEdtEmplacementCoursActuel($v = 'now'){
+	public function getEdtEmplacementCours($v = 'now'){
 
 	    $edtCoursCol = $this->getEdtEmplacementCoursPeriodeCalendrierActuelle($v);
 
