@@ -191,7 +191,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 */
 	public function getEdtEmplacementCours($v = 'now'){
 
-	    $edtCoursCol = $this->getEdtEmplacementCoursPeriodeCalendrierActuelle($v);
+	    $edtCoursCol = $this->getEdtEmplacementCourssPeriodeCalendrierActuelle($v);
 
 	    require_once("helpers/EdtEmplacementCoursHelper.php");
 	    return EdtEmplacementCoursHelper::getEdtEmplacementCoursActuel($edtCoursCol, $v);
@@ -206,8 +206,9 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * 
 	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
 	 */
-	public function getEdtEmplacementCoursPeriodeCalendrierActuelle($v = 'now'){
-	    $query = EdtEmplacementCoursQuery::create()->filterByLoginProf($this->getLogin())->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, 0)
+	public function getEdtEmplacementCourssPeriodeCalendrierActuelle($v = 'now'){
+	    $query = EdtEmplacementCoursQuery::create()->filterByLoginProf($this->getLogin())
+		    ->filterByIdCalendrier(0)
 		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
 
 	    if ($v instanceof EdtCalendrierPeriode) {

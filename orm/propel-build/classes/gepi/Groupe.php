@@ -247,4 +247,48 @@ class Groupe extends BaseGroupe {
 		$jEleveGroupe->save();
 	}
 
+	/**
+	 *
+	 * Retourne tous les emplacements de cours pour la periode précisée du calendrier.
+	 * On recupere aussi les emplacements dont la periode n'est pas definie ou vaut 0.
+	 *
+	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
+	 */
+	public function getEdtEmplacementCourssPeriodeCalendrierActuelle($v = 'now'){
+	    $query = EdtEmplacementCoursQuery::create()->filterByGroupe($this)
+		    ->filterByIdCalendrier(0)
+		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
+
+	    if ($v instanceof EdtCalendrierPeriode) {
+		$query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $v->getIdCalendrier());
+	    } else {
+		$periodeCalendrier = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
+		if ($periodeCalendrier != null) {
+		       $query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $periodeCalendrier->getIdCalendrier());
+		}
+	    }
+
+	    $edtCoursCol = $query->find();
+	    require_once("helpers/EdtEmplacementCoursHelper.php");
+	    EdtEmplacementCoursHelper::orderChronologically($edtCoursCol);
+
+	    return $edtCoursCol;
+	}
+
+	/**
+	 *
+	 * Retourne l'emplacement de cours de l'heure temps reel. retourne null si pas pas de cours actuel
+	 *
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return EdtEmplacementCours l'emplacement de cours actuel ou null si pas de cours actuellement
+	 */
+	public function getEdtEmplacementCours($v = 'now'){
+
+	    $edtCoursCol = $this->getEdtEmplacementCourssPeriodeCalendrierActuelle($v);
+
+	    require_once("helpers/EdtEmplacementCoursHelper.php");
+	    return EdtEmplacementCoursHelper::getEdtEmplacementCoursActuel($edtCoursCol, $v);
+	}
+
 } // Groupe

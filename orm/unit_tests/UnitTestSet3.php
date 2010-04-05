@@ -133,7 +133,7 @@ if ($colEdtCours->count() != 1) {
 	echo('test recuperation emplacement de cours du professeur a reussi<br/><br/>');
 }
 
-$colEdtCours = $newUtilisateurProfessionnel->getEdtEmplacementCoursPeriodeCalendrierActuelle();
+$colEdtCours = $newUtilisateurProfessionnel->getEdtEmplacementCourssPeriodeCalendrierActuelle();
 echo ($logger->getDisplay());
 if ($colEdtCours->count() != 1) {
 	echo('test recuperation emplacement de cours du professeur a <font color="red">echoue</font> <br><br/>');
@@ -154,6 +154,20 @@ echo ($logger->getDisplay());
 echo('emplacement de cours ajouté.<br>');
 echo('Debut du cours : '.$edtCours2->getHeureDebut().'<br>');
 echo('Fin du cours : '.$edtCours2->getHeureFin().'<br><br/>');
+echo ($logger->getDisplay());
+echo ("<br>");
+
+//on prend une date le lundi matin à 9h40
+$now = date('Y-m-d H:i',strtotime("next Monday 9:40"));
+$edtCoursTest = $groupe->getEdtEmplacementCours($now);
+echo ($logger->getDisplay());
+if ($edtCoursTest != null && $edtCoursTest->getIdDefiniePeriode() == $edtCours2->getIdDefiniePeriode()) {
+    echo('test recuperation emplacement de cours d\'un groupe a reussi<br/><br/>');
+} else {
+    echo('test recuperation emplacement de cours d\'un groupe a <font color="red">echoue</font> <br><br/>');
+}
+
+
 $colEdtCours = $newUtilisateurProfessionnel->getEdtEmplacementCourss();
 echo ($logger->getDisplay());
 if ($colEdtCours->count() != 2) {
@@ -162,7 +176,7 @@ if ($colEdtCours->count() != 2) {
 	echo('test recuperation emplacement de cours du professeur a reussi<br/><br/>');
 }
 
-$colEdtCours = $newUtilisateurProfessionnel->getEdtEmplacementCoursPeriodeCalendrierActuelle();
+$colEdtCours = $newUtilisateurProfessionnel->getEdtEmplacementCourssPeriodeCalendrierActuelle();
 echo ($logger->getDisplay());
 if ($colEdtCours->count() != 2) {
 	echo('test recuperation emplacement de cours du professeur a <font color="red">echoue</font> <br><br/>');
@@ -243,7 +257,7 @@ $groupe->save();
 echo ($logger->getDisplay());
 
 echo("<br/>");
-$edtEmplacementCol = $eleve->getEdtEmplacementCoursPeriodeCalendrierActuelle();
+$edtEmplacementCol = $eleve->getEdtEmplacementCourssPeriodeCalendrierActuelle();
 echo ($logger->getDisplay());
 if ($edtEmplacementCol->isEmpty()) {
     echo('test recuperation emplacement de cours d\'un eleve a reussi<br/><br/>');
@@ -256,7 +270,7 @@ $groupe->save();
 echo ($logger->getDisplay());
 
 echo("<br/>");
-$edtEmplacementCol = $eleve->getEdtEmplacementCoursPeriodeCalendrierActuelle();
+$edtEmplacementCol = $eleve->getEdtEmplacementCourssPeriodeCalendrierActuelle();
 echo ($logger->getDisplay());
 if ($edtEmplacementCol->count() == 2) {
     echo('test recuperation emplacement de cours d\'un eleve a reussi<br/><br/>');
@@ -274,11 +288,7 @@ if ($edtCoursTest != null && $edtCoursTest->getIdDefiniePeriode() == $edtCours2-
     echo('test recuperation emplacement de cours d\'un eleve  a <font color="red">echoue</font> <br><br/>');
 }
 
-echo ($logger->getDisplay());
-
 echo("<br/>");
-$eleve->getPeriodeNoteOuverte();
-echo ($logger->getDisplay());
 
 purgeDonneesTest($logger);
 Propel::setLogger(null);

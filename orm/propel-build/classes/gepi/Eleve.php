@@ -269,7 +269,7 @@ class Eleve extends BaseEleve {
 	 */
 	public function getEdtEmplacementCours($v){
 
-	    $edtCoursCol = $this->getEdtEmplacementCoursPeriodeCalendrierActuelle($v);
+	    $edtCoursCol = $this->getEdtEmplacementCourssPeriodeCalendrierActuelle($v);
 
 	    require_once("helpers/EdtEmplacementCoursHelper.php");
 	    return EdtEmplacementCoursHelper::getEdtEmplacementCoursActuel($edtCoursCol, $v);
@@ -282,7 +282,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
 	 */
-	public function getEdtEmplacementCoursPeriodeCalendrierActuelle($v = 'now'){
+	public function getEdtEmplacementCourssPeriodeCalendrierActuelle($v = 'now'){
 	    $groupe = new Groupe();
 	    $colGroupeId = $this->getGroupes($this->getPeriodeNoteOuverte($v))->getPrimaryKeys();
 
