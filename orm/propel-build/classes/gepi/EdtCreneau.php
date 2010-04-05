@@ -22,13 +22,34 @@ class EdtCreneau extends BaseEdtCreneau {
 	 *
 	 */
 	public function getNextEdtCreneau($type_creneau = null) {
+	    $found = false;
+	    //on recupere la liste complete des creneaux
+	    $all_creneau = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
+
+	    //on parcourt la liste
+	    $all_creneau->getFirst();
+	    while (!$found && ($all_creneau->getCurrent() != null)) {
+		if ($all_creneau->getCurrent()->getIdDefiniePeriode() == $this->getIdDefiniePeriode()) {
+		    $found = true;
+		} else {
+		    $all_creneau->getNext();
+		}
+	    }
+
+	    if (!$found) {
+		return null;
+	    }
+
 	    if ($type_creneau == null) {
-		return EdtCreneauQuery::create()->filterByHeuredebutDefiniePeriode($this->getHeuredebutDefiniePeriode(), Criteria::GREATER_THAN)
-		    ->addAscendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)->findOne();
+		return $all_creneau->getNext();
 	    } else {
-		return EdtCreneauQuery::create()->filterByHeuredebutDefiniePeriode($this->getHeuredebutDefiniePeriode(), Criteria::GREATER_THAN)
-		    ->filterByTypeCreneaux($type_creneau)
-		    ->addAscendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)->findOne();
+		$all_creneau->getNext();
+		while ($all_creneau->getCurrent() != null) {
+		    if ($all_creneau->getCurrent()->getTypeCreneaux() == $type_creneau) {
+			return $all_creneau->getCurrent();
+		    }
+		    $all_creneau->getNext();
+		}
 	    }
 	}
 
@@ -40,26 +61,35 @@ class EdtCreneau extends BaseEdtCreneau {
 	 *
 	 */
 	public function getPrevEdtCreneau($type_creneau = null) {
-	    if ($type_creneau == null) {
-		return EdtCreneauQuery::create()->filterByHeuredebutDefiniePeriode($this->getHeuredebutDefiniePeriode(), Criteria::LESS_THAN)
-		    ->addDescendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)->findOne();
-	    } else {
-		return EdtCreneauQuery::create()->filterByHeuredebutDefiniePeriode($this->getHeuredebutDefiniePeriode(), Criteria::LESS_THAN)
-		    ->filterByTypeCreneaux($type_creneau)
-		    ->addDescendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)->findOne();
-	    }
-	}
+	    $found = false;
+	    //on recupere la liste complete des creneaux
+	    $all_creneau = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 
-	/**
-	 *
-	 * Renvoi la liste de cours associes a un professeur sur ce creneau
-	 *
-	 * @return     PropelObjectCollection EdtEmplacementCours
-	 *
-	 */
-	public function getEdtEmplacementCours($utilisateur_professionnel_id) {
-		throw new PropelException("Pas encore implemente");
-		return new PropelObjectCollection();
+	    //on parcourt la liste
+	    $all_creneau->getFirst();
+	    while (!$found && ($all_creneau->getCurrent() != null)) {
+		if ($all_creneau->getCurrent()->getIdDefiniePeriode() == $this->getIdDefiniePeriode()) {
+		    $found = true;
+		} else {
+		    $all_creneau->getNext();
+		}
+	    }
+
+	    if (!$found) {
+		return null;
+	    }
+
+	    if ($type_creneau == null) {
+		return $all_creneau->getPrevious();
+	    } else {
+		$all_creneau->getNext();
+		while ($all_creneau->getCurrent() != null) {
+		    if ($all_creneau->getCurrent()->getTypeCreneaux() == $type_creneau) {
+			return $all_creneau->getCurrent();
+		    }
+		    $all_creneau->getPrevious();
+		}
+	    }
 	}
 
 } // EdtCreneau

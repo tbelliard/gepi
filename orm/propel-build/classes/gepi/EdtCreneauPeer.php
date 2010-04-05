@@ -19,13 +19,20 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
    */
   public static $_type_creneaux = array("cours", "pause", "repas", "vie scolaire");
 
+  private static $_all_creneaux;
+
   /**
    * Renvoie la liste des creneaux de la journee
    *
    * @return PropelObjectCollection EdtCreneau
    */
     public static function retrieveAllEdtCreneauxOrderByTime(){
-	    return EdtCreneauQuery::create()->addAscendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)->find();
+	    if (self::$_all_creneaux != null) {
+		return self::$_all_creneaux;
+	    } else {
+		self::$_all_creneaux = EdtCreneauQuery::create()->addAscendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)->find();
+		return self::$_all_creneaux;
+	    }
     }
 
 	/**
