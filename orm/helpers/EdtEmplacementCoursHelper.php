@@ -54,6 +54,65 @@ class EdtEmplacementCoursHelper {
 		$edtEmplacementCours->uasort(array("EdtEmplacementCoursHelper", "compareEdtEmplacementCours"));
 		return $edtEmplacementCours;
 	}
+
+ 	/**
+	 *
+	 * Renvoi le premiers cours de la collection qui correspond à l'heure donnée
+	 *
+	 * @param      PropelObjectCollection $edtEmplacementCours La collection d'emplacement de cours
+	 * @return     PropelObjectCollection $edtEmplacementCours Un collection ordonnés d'emplacement de cours
+	 * @throws     PropelException - si les types d'entrées ne sont pas bon.
+	 */
+	public static function getEdtEmplacementCoursActuel(PropelObjectCollection $edtEmplacementCoursCol, $v = 'now') {
+	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+	    // -- which is unexpected, to say the least.
+	    //$dt = new DateTime();
+	    if ($v === null || $v === '') {
+		    $dt = null;
+	    } elseif ($v instanceof DateTime) {
+		    $dt = $v;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($v)) { // if it's a unix timestamp
+				    $dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt = new DateTime($v);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+		    }
+	    }
+	    $num_semaine = $dt->format('W');
+	    $edtTypeSemaine = EdtTypeSemaineQuery::create()->filterByNumEdtSemaine($num_semaine)->findOne();
+	    if ($edtTypeSemaine == null) {
+		$type_semaine = '';
+	    } else {
+		$type_semaine = $edtTypeSemaine->getTypeEdtSemaine();
+	    }
+
+	    // On traduit le nom du jour
+	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
+	    $jour_semaine = $semaine_declaration[$dt->format("w")];
+
+	    $timeStampNow = strtotime($dt->format('H:i:s'));
+	    foreach ($edtEmplacementCoursCol as $edtCours) {
+		if ($jour_semaine == $edtCours->getJourSemaine() &&
+		    ($type_semaine == $edtCours->getTypeSemaine() || $edtCours->getTypeSemaine() == '')) {
+		    if (strtotime($edtCours->getHeureDebut()) <= $timeStampNow &&
+			$timeStampNow < strtotime($edtCours->getHeureFin())) {
+			return $edtCours;
+		    }
+		}
+	    }
+
+	    return null;
+	}
+
 }
 ?>
 

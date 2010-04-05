@@ -116,7 +116,7 @@ if ($newGroupes->count() != 1) {
 $edtCours = new EdtEmplacementCours();
 $edtCours->setGroupe($groupe);
 $edtCours->setUtilisateurProfessionnel($newUtilisateurProfessionnel);
-$edtCours->setEdtCreneau($creneau);
+$edtCours->setEdtCreneau(EdtCreneauPeer::retrieveFirstEdtCreneau());
 $edtCours->setJourSemaine('lundi');
 $edtCours->setTypeSemaine('');
 $edtCours->save();
