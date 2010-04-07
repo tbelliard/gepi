@@ -92,7 +92,7 @@ if ($aff_reglages == "oui") {
 
 	<p>Une partie de l'initialisation est commune avec le module absences :
 	<br />&nbsp;-&nbsp;<a href=\"../mod_absences/admin/admin_periodes_absences.php?action=visualiser\">les diff&eacute;rents cr&eacute;neaux</a> de la journ&eacute;e.
-	<br />&nbsp;-&nbsp;<a href=\"../mod_absences/admin/admin_config_semaines.php?action=visualiser\">le type de semaine</a> (paire/impaire, A/B/C, 1/2,...).
+	<br />&nbsp;-&nbsp;<a href=\"./admin_config_semaines.php?action=visualiser\">le type de semaine</a> (paire/impaire, A/B/C, 1/2,...).
 	<br />&nbsp;-&nbsp;<a href=\"../mod_absences/admin/admin_horaire_ouverture.php?action=visualiser\">les horaires de l'&eacute;tablissement</a>.</p>
 
 <hr />

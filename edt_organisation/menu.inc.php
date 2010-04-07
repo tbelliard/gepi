@@ -207,7 +207,7 @@ if (getSettingValue("mod_edt_gr") == "y") {
 			<dd id="sEdTmenu5" '.displaydd("5").'>
 				<ul>
 					<li><a href="edt_calendrier.php">'.PERIODS.'</a></li>
-					<li><a href="../mod_absences/admin/admin_config_semaines.php?action=visualiser">'.WEEKS.'</a></li>
+					<li><a href="./admin_config_semaines.php?action=visualiser">'.WEEKS.'</a></li>
 				</ul>
 			</dd>
 		';
