@@ -139,7 +139,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [type_saisie] column value.
-	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE
+	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE
 	 * @return     string
 	 */
 	public function getTypeSaisie()
@@ -249,7 +249,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [type_saisie] column.
-	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE
+	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE
 	 * @param      string $v new value
 	 * @return     AbsenceEleveType The current object (for fluent API support)
 	 */
