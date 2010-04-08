@@ -27,15 +27,17 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	    if ($type_code == "") {
 		return "";
 	    } elseif ($type_code == "DEBUT_ABS") {
-		return "Sasie imperative de l'heure du debut de l'absence";
+		return "Sasie de l'heure du debut de l'absence";
 	    } elseif ($type_code == "FIN_ABS") {
-		return "Sasie imperative de l'heure de fin debut de l'absence";
+		return "Sasie de l'heure de fin debut de l'absence";
 	    } elseif ($type_code == "DEBUT_ET_FIN_ABS") {
-		return "Sasie imperative de l'heure du debut et de fin de l'absence";
+		return "Sasie de l'heure du debut et de fin de l'absence";
 	    } elseif ($type_code == "NON_PRECISE") {
 		return "Type de saisie non précisé";
 	    } elseif ($type_code == "COMMENTAIRE_EXIGE") {
-		return "Sasie imperative d'un commentaire explicatif";
+		return "Sasie d'un commentaire explicatif";
+	    } elseif ($type_code == "DISCIPLINE") {
+		return "Sasie d'un incident dciplinaire";
 	    }
 	}
 

@@ -246,7 +246,7 @@ function ajoutTypesParDefaut() {
 	$type->setCommentaire("L'eleve est exclus de cours.");
 	$type->setJustificationExigible(false);
 	$type->setResponsabiliteEtablissement(true);
-	$type->setTypeSaisie('DEBUT_ABS');
+	$type->setTypeSaisie('DISCIPLINE');
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("professeur");
