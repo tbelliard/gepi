@@ -292,6 +292,11 @@ include_once("./../lib/header_template.inc");
   $expli = "Permet de contrôler le volume occupé par les dossiers temporaires (<i>utilisés notamment pour générer les fichiers tableur OpenOffice (ODS), lorsque la fonction est activée dans le module carnet de notes</i>), de supprimer ces dossiers,...";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli); 
   
+  $chemin = "gestion_base_test.php";
+  $titre = "Gestion des données de test";
+  $expli = "Permet d'inserer des données de test dans la base. Ne pas utiliser sur une base de production.";
+  $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
+
 /*
 <!--
 <table class='menu' summary='Menu initialisation'>

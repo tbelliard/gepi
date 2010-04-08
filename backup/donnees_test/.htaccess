@@ -1,0 +1,5 @@
+AuthGroupFile /dev/null
+AuthName "Acces restreint"
+AuthType Basic
+
+deny from all
