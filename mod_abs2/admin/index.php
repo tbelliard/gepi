@@ -66,6 +66,11 @@ if (isset($_POST['classement'])) {
 		$msg = "Erreur lors de l'enregistrement du paramètre de classementdes absences (TOP 10) !";
 	}
 }
+if (isset($_POST['installation_base'])) {
+            // Remise à zéro de la table des droits d'accès
+        require '../../utilitaires/updates/access_rights.inc.php';
+	require '../../utilitaires/updates/mod_abs2.inc.php';
+}
 
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
 
@@ -91,6 +96,11 @@ require_once("../../lib/header.inc");
 
 echo "<p class=bold><a href=\"../../accueil_modules.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
+    if (isset ($result)) {
+	    echo "<center><table width=\"80%\" border=\"1\" cellpadding=\"5\" cellspacing=\"1\" summary='Résultat de mise à jour'><tr><td><h2 align=\"center\">Résultat de la mise à jour</h2>";
+	    echo $result;
+	    echo "</td></tr></table></center>";
+    }
 ?>
 <h2>Gestion des absences par les CPE</h2>
 <p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune
@@ -157,6 +167,13 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 </p>
 
 <div class="centre"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></div>
+
+</form>
+
+<br/><br/>
+<form action="index.php" name="form2" method="post">
+<input type="hidden" name="installation_base" value="1" />
+<div class="centre"><input type="submit" value="Purger et installer les tables abs2 (pour le developpement uniquement)" style="font-variant: small-caps;"/></div>
 </form>
 
 <h2>Configuration avancée</h2>
