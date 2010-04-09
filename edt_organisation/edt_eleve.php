@@ -30,10 +30,13 @@ $niveau_arbo = 1;
 require_once("../lib/initialisations.inc.php");
 
 // fonctions edt
-
-require_once("./fonctions_edt.php");
-require_once("./fonctions_edt_eleve.php");
+require_once('./choix_langue.php');
+require_once("./fonctions_edt.php");            // --- fonctions de base communes à tous les emplois du temps
+require_once("./fonctions_edt_eleve.php");      // --- edt eleve
 require_once("./fonctions_calendrier.php");
+require_once("./fonctions_affichage.php");
+require_once("./req_database.php");
+
 
 $type_edt_2 = "eleve";
 $period_id=isset($_GET['period_id']) ? $_GET['period_id'] : (isset($_POST['period_id']) ? $_POST['period_id'] : NULL);
@@ -145,7 +148,7 @@ else {
 
     if ($_SESSION['statut'] == "eleve")
     {
-        $tab_data = ConstruireEDTEleve($_SESSION['statut'], $_SESSION['login'], $_SESSION['period_id'] );
+        $tab_data = ConstruireEDTEleve($_SESSION['login'], $_SESSION['period_id'] );
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
         $DisplayEDT = true;
@@ -153,7 +156,7 @@ else {
     }
     else if ($_SESSION['statut'] == "responsable")
     {
-        $tab_data = ConstruireEDTEleve("eleve", $login_edt, $_SESSION['period_id'] );
+        $tab_data = ConstruireEDTEleve($login_edt, $_SESSION['period_id'] );
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
         $DisplayEDT = true;
