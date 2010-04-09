@@ -1,11 +1,9 @@
 <?php
 
 /*
- *
- *
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -24,69 +22,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
-$niveau_arbo = 1;
-
-// Initialisations files
-require_once("../lib/initialisations.inc.php");
-
-
-$titre_page = "Consultation d'un ".$gepiSettings['denomination_eleve'];
-// fonctions complémentaires et/ou librairies utiles
-
-
-// Resume session
-$resultat_session = $session_gepi->security_check();
-if ($resultat_session == "c") {
-   header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
-   die();
-} else if ($resultat_session == "0") {
-    header("Location: ../logout.php?auto=1");
-    die();
+if(($_SERVER['SCRIPT_NAME']!="$gepiPath/eleves/visu_eleve.php")&&
+($_SERVER['SCRIPT_NAME']!="$gepiPath/mod_abs2/fiche_eleve.php")) {
+	echo "<p style='color:red'>Inclusion non autorisée depuis ".$_SERVER['SCRIPT_NAME']."</p>\n";
+	require_once("../lib/footer.inc.php");
+	die();
 }
 
-// Sécurité
-// SQL : INSERT INTO droits VALUES ( '/eleves/visu_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Consultation_d_un_eleve', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/eleves/visu_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Consultation_d_un_eleve', '');";
-//
-if (!checkAccess()) {
-    header("Location: ../logout.php?auto=2");
-    die();
-}
-
-// ======================== CSS et js particuliers ========================
-$utilisation_win = "oui";
-$utilisation_jsdivdrag = "oui";
-//$javascript_specifique = ".js";
-$style_specifique = "eleves/visu_eleve";
-
-
-$ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL);
-$onglet=isset($_POST['onglet']) ? $_POST['onglet'] : (isset($_GET['onglet']) ? $_GET['onglet'] : NULL);
-$onglet2=isset($_POST['onglet2']) ? $_POST['onglet2'] : (isset($_GET['onglet2']) ? $_GET['onglet2'] : NULL);
-$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
-
-//$date_debut_disc=isset($_POST['date_debut_disc']) ? $_POST['date_debut_disc'] : "";
-//$date_fin_disc=isset($_POST['date_fin_disc']) ? $_POST['date_fin_disc'] : "";
-
-$annee = strftime("%Y");
-$mois = strftime("%m");
-$jour = strftime("%d");
-
-if($mois>7) {$date_debut_tmp="01/09/$annee";} else {$date_debut_tmp="01/09/".($annee-1);}
-
-$date_debut_disc=isset($_POST['date_debut_disc']) ? $_POST['date_debut_disc'] : (isset($_SESSION['date_debut_disc']) ? $_SESSION['date_debut_disc'] : $date_debut_tmp);
-$date_fin_disc=isset($_POST['date_fin_disc']) ? $_POST['date_fin_disc'] : (isset($_SESSION['date_fin_disc']) ? $_SESSION['date_fin_disc'] : "$jour/$mois/$annee");
-
-// ===================== entete Gepi ======================================//
-require_once("../lib/header.inc");
-// ===================== fin entete =======================================//
-
-$page="visu_eleve.php";
-
-include('visu_eleve.inc.php');
-
-/*
 //debug_var();
 
 //echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
@@ -115,7 +57,8 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	function cherche_eleves() {
 		rech_nom=document.getElementById('rech_nom').value;
 
-		var url = 'liste_eleves.php';
+		//var url = 'liste_eleves.php';
+		var url = '../eleves/liste_eleves.php';
 		var myAjax = new Ajax.Request(
 			url,
 			{
@@ -158,6 +101,17 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 		$res_ele=mysql_query($sql);
 		if(mysql_num_rows($res_ele)>0) {
 			echo "<p>".ucfirst($gepiSettings['denomination_eleves'])." de la classe de ".get_class_from_id($id_classe).":</p>\n";
+
+			/*
+			echo "<table class='boireaus' border='1' summary='Tableau des élèves'>\n";
+			echo "<tr>\n";
+			echo "<th>Nom</th>\n";
+			echo "<th>Prénom</th>\n";
+			echo "</tr>\n";
+			while($lig_ele=mysql_query($res_ele)) {
+				echo "";
+			}
+			*/
 
 			$tab_txt=array();
 			$tab_lien=array();
@@ -219,7 +173,9 @@ elseif(isset($_POST['Recherche_sans_js'])) {
 	echo "</p>\n";
 	echo "</div>\n";
 
-	include("recherche_eleve.php");
+	//include("recherche_eleve.php");
+	//include("$gepiPath/eleves/recherche_eleve.php");
+	include("../eleves/recherche_eleve.php");
 }
 else {
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
@@ -239,6 +195,21 @@ else {
 	}
 
 	if(isset($id_classe)) {
+		/*
+		if($_SESSION['statut']=='administrateur') {
+			$sql="SELECT e.nom,e.prenom,e.login FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login ORDER BY e.nom, e.prenom;";
+		}
+		elseif($_SESSION['statut']=='scolarite') {
+			$sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jec.id_classe=jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jec.login='".$ele_login."';";
+			$test=mysql_query($sql);
+		}
+		elseif($_SESSION['statut']=='cpe') {
+			$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$ele_login."';";
+			$test=mysql_query($sql);
+		}
+		elseif($_SESSION['statut']=='professeur') {
+		}
+		*/
 
 		$sql="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom, e.prenom;";
 
@@ -762,6 +733,33 @@ Patientez pendant l'extraction des données... merci.
 		$p_releve_margin=getSettingValue("p_releve_margin") ? getSettingValue("p_releve_margin") : "";
 		$releve_textsize=getSettingValue("releve_textsize") ? getSettingValue("releve_textsize") : 10;
 		$releve_titlesize=getSettingValue("releve_titlesize") ? getSettingValue("releve_titlesize") : 16;
+/*
+		echo "<style type='text/css'>
+	.releve_grand {
+		color: #000000;
+		font-size: ".$releve_titlesize."pt;
+		font-style: normal;
+	}
+
+	.releve {
+		color: #000000;
+		font-size: ".$releve_textsize."pt;
+		font-style: normal;\n";
+		if($p_releve_margin!=""){
+			echo "      margin-top: ".$p_releve_margin."pt;\n";
+			echo "      margin-bottom: ".$p_releve_margin."pt;\n";
+		}
+		echo "}\n";
+
+		echo "td.releve_empty{
+		width:auto;
+		padding-right: 20%;
+	}
+
+	.boireaus td {
+		text-align:left;
+	}\n";
+		*/
 
 		$active_cahiers_texte=getSettingValue("active_cahiers_texte") ? getSettingValue("active_cahiers_texte") : "n";
 
@@ -869,7 +867,9 @@ Patientez pendant l'extraction des données... merci.
 
 
 		// Bibliothèque de fonctions:
-		include("visu_ele_func.lib.php");
+		//include("visu_ele_func.lib.php");
+		//include("$gepiPath/eleves/visu_ele_func.lib.php");
+		include("../eleves/visu_ele_func.lib.php");
 
 		// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
 		$tab_ele=info_eleve($ele_login);
@@ -1632,6 +1632,17 @@ Patientez pendant l'extraction des données... merci.
 				// Liste des infos à faire apparaitre sur le relevé de notes:
 				// Si des appréciations ont été saisies et que dans les paramètres du devoir il est précisé qu'elles doivent être visibles des parents, il n'y a pas de raison de ne pas les afficher
 				$tab_ele['rn_app']='y';
+				/*
+				$tab_ele['rn_app']='n';
+				$tab_ele['rn_nomdev']='y';
+				$tab_ele['rn_toutcoefdev']='y';
+				$tab_ele['rn_coefdev_si_diff']='y';
+				$tab_ele['rn_datedev']='y';
+				$tab_ele['rn_sign_chefetab']='n';
+				$tab_ele['rn_sign_pp']='n';
+				$tab_ele['rn_sign_resp']='n';
+				$tab_ele['rn_formule']='';
+				*/
 
 				for($n_per=$periode_numero_1;$n_per<=$periode_numero_2;$n_per++) {
 					$periode1=$n_per;
@@ -1678,6 +1689,9 @@ Patientez pendant l'extraction des données... merci.
 						echo "'>\n";
 						//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 						// IL MANQUE UN PAQUET D'INITIALISATIONS POUR LES APPELS global DANS releve_html()
+						//echo "<pre>";
+						//print_r($tab_ele);
+						//echo "</pre>";
 						releve_html($tab_ele,$id_classe,$periode1,$index_per);
 						//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 						echo "</div>\n";
@@ -1983,6 +1997,8 @@ Patientez pendant l'extraction des données... merci.
 
 				$nb_annees=mysql_num_rows($res_ant);
 
+				//echo "<p>Bulletins simplifiés:</p>\n";
+				//echo "<table border='0'>\n";
 				echo "<table class='boireaus' summary='Bulletins'>\n";
 				$alt=1;
 				echo "<tr class='lig$alt'>\n";
@@ -2168,10 +2184,4 @@ Patientez pendant l'extraction des données... merci.
 		echo "<p><br /></p>\n";
 	}
 }
-*/
-?>
-
-<?php
-// Inclusion du bas de page
-require_once("../lib/footer.inc.php");
 ?>

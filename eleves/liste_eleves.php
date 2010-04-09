@@ -50,5 +50,6 @@ if (!checkAccess()) {
 // La page est destinée à être appelée via Ajax.
 // Il n'y a donc ni entête HTML, ni pied de page.
 
-include("recherche_eleve.php");
+//include("recherche_eleve.php");
+include("../eleves/recherche_eleve.php");
 ?>

@@ -8,7 +8,8 @@
 	$rech_nom=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]","",$rech_nom);
 	$page=$_POST['page'];
 	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php.php")) {
-	if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {
+	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {
+	if(($page!="fiche_eleve.php")&&($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {
 		$page="../logout.php?auto=2";
 		// Remarque: Cela n'empêche pas de bricoler l'adresse destination des liens affichés...
 	}
