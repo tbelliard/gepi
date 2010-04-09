@@ -319,7 +319,7 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 // Traitement du téléchargement de fichier
 //
 // Ajout d'un document
-if ((!empty($doc_file['tmp_name'][0]) and $valide_form=='yes') or
+if (isset($doc_file['tmp_name']) AND (!empty($doc_file['tmp_name'][0]) and $valide_form=='yes') or
 // Changement de nom d'un document
 (isset($doc_name_modif) and isset($id_document) and ($id_document !=-1) and $valide_form=='yes'))
 include "traite_doc.php";
