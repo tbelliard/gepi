@@ -728,7 +728,8 @@ table.boireaus {
 	border-style: solid;
 	border-width: 1px;
 	border-color: black;
-	background-color: khaki;
+	/*background-color: khaki;*/
+	background-color: #fff5b1;
 	font-weight:bold;
 	text-align:center;
 	vertical-align: middle;
@@ -897,4 +898,58 @@ span.conteneur_infobulle_css:hover div.infobulle_css {
    border-top: 4px solid #4a4a59;
 }
 span.conteneur_infobulle_css div.infobulle_css:hover {display: inline;}
+
+
+div.conteneur_infobulle_css {
+  position:relative;
+}
+div.conteneur_infobulle_css:hover {
+   background: none; 
+   z-index: 500; 
+}
+div.conteneur_infobulle_css div.infobulle_css {display: none;}
+div.conteneur_infobulle_css:hover div.infobulle_css {
+   display: inline; 
+   position: absolute;
+   white-space: nowrap;
+   text-decoration: none;
+   /*font-size:10px;*/
+   font-weight:normal;
+   /*width:150px;*/
+   top: 1em;
+   left: 0.5em;
+   background: #DFDFDF;
+   padding: 3px;
+   border: 1px solid #4a4a59;
+   border-top: 4px solid #4a4a59;
+}
+div.conteneur_infobulle_css div.infobulle_css:hover {display: inline;}
+
+/*=====================================================*/
+/* Affichage/masquage de span.details_saisie_abs lorsqu'un champ radio .abs_crob avec LABEL est coché */
+input[type=radio].abs_crob:checked + label {
+	font-weight: bold;
+}
+.details_saisie_abs {
+	display:none;
+	font-weight: normal;
+}
+input[type=radio].abs_crob:checked +label span.details_saisie_abs {
+	display:inline;
+}
+input[type=radio].abs_crob:checked +label div.details_saisie_abs {
+	display:inline;
+}
+/*=====================================================*/
+/* Style des DIV d'aide,... accessibles par F2,... */
+div.info_abs {
+	/*
+	display: none;
+	position: absolute; 
+	color: white; 
+	width: 600px;
+	*/
+	background-color: gray;
+	border: 1px solid black;
+}
 /*=====================================================*/
