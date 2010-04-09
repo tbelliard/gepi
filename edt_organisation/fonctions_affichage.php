@@ -410,7 +410,7 @@ function EdtDuJourHorizontal($tab_data, $jour, $flags)
         $index_box++;
     }
 
-    $result .= "</div><div style=\"clear:both\"\n";
+    $result .= "</div><div style=\"clear:both\"></div>\n";
 
 	if ($flags & CRENEAUX_INVISIBLES) {
 		$result .= '</div>';
