@@ -407,25 +407,32 @@ fieldset#login_box div#header {
 
 /*=====================================================*/
 /* Utilisation des couleurs d'info bulles pour les onglets d'absences*/
+
+/* Intérieur des onglets de mod_abs2*/
 div.css-panes {
 	background-color: #$couleur_infobulle_fond_corps;
+	border-top:1px solid black;
 }
 
+/* Etiquette de l'onglet sélectionné */
 ul.css-tabs a.current {
 	background-color: #$couleur_infobulle_fond_corps;
 	border-bottom:2px solid #$couleur_infobulle_fond_corps;
 }
 
+/* Etiquettes non sélectionnées*/
 ul.css-tabs a {
 	background-color:#$couleur_infobulle_fond_corps;
 }
-/*
+
 ul.css-tabs a:hover {
-	background-color: #$couleur_infobulle_fond_corps;
+	/*background-color: #$couleur_infobulle_fond_corps;*/
+	background-color: white;
 }
-*/
+
+/* Fond de l'ensemble Etiquettes+Onglets */
 ul.css-tabs {
-	background-color:#$couleur_infobulle_fond_corps;
+	background-color:#".$_POST['style_body_backgroundcolor'].";
 }
 /*=====================================================*/
 span.conteneur_infobulle_css:hover span.infobulle_css {
@@ -437,6 +444,17 @@ span.conteneur_infobulle_css:hover div.infobulle_css {
    background: #$couleur_infobulle_fond_corps;
    border: 1px solid #$couleur_infobulle_fond_entete;
    border-top: 4px solid #$couleur_infobulle_fond_entete;
+}
+div.conteneur_infobulle_css:hover div.infobulle_css {
+   background: #$couleur_infobulle_fond_corps;
+   border: 1px solid #$couleur_infobulle_fond_entete;
+   border-top: 4px solid #$couleur_infobulle_fond_entete;
+}
+/*=====================================================*/
+/* Style des DIV d'aide,... accessibles par F2,... */
+div.info_abs {
+	background-color: #".$_POST['style_body_backgroundcolor'].";
+	border: 1px solid #$couleur_infobulle_fond_entete;
 }
 /*=====================================================*/
 ");
