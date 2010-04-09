@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -51,6 +51,21 @@ $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id
 $periode_num = isset($_POST['periode_num']) ? $_POST['periode_num'] : (isset($_GET['periode_num']) ? $_GET['periode_num'] : NULL);
 
 $step = isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
+
+//====================================================
+include "../lib/periodes.inc.php";
+$acces="n";
+if($ver_periode[$periode_num]=="N") {
+	$acces="y";
+}
+elseif(($ver_periode[$periode_num]=="P")&&($_SESSION['statut']=='secours')) {
+	$acces="y";
+}
+if($acces=="n") {
+	$msg="La période $periode_num est close pour cette classe.";
+	header("Location:index.php?id_classe=$id_classe&msg=$msg");
+}
+//====================================================
 
 if (!isset($step)) {
 	// On verifie que la table absences_gep est remplie
@@ -89,7 +104,7 @@ function affiche_debug($texte) {
 }
 
 
-include "../lib/periodes.inc.php";
+//include "../lib/periodes.inc.php";
 //**************** EN-TETE *****************
 $titre_page = "Outil d'importation des absences à partir du fichier F_EABS.DBF de la base GEP";
 require_once("../lib/header.inc");

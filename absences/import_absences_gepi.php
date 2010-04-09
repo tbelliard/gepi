@@ -114,10 +114,26 @@ $cal_2 = new Calendrier("form_absences", "au");
 	    $uid_post = my_eregi_replace('%20',' ',$uid_post);
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'yes'; } else { $valide_form = 'no'; }
 	$_SESSION['uid_prime'] = $uid;
-// fin de la fonction de sécuritée
+// fin de la fonction de sécurité
 
 include "../lib/periodes.inc.php";
 include "../mod_absences/lib/functions.php";
+
+//===========================================================
+$acces="n";
+if($ver_periode[$periode_num]=="N") {
+	$acces="y";
+}
+elseif(($ver_periode[$periode_num]=="P")&&($_SESSION['statut']=='secours')) {
+	$acces="y";
+}
+
+if($acces=="n") {
+	$msg="La période $periode_num est close pour cette classe.";
+	header("Location:index.php?id_classe=$id_classe&msg=$msg");
+}
+//===========================================================
+
 //**************** EN-TETE *****************
 $titre_page = "Outil d'importation des absences du module d'absence de GEPI";
 require_once("../lib/header.inc");
