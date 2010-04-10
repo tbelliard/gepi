@@ -115,6 +115,52 @@ if ((!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_trait
 array_walk($_SERVER, 'anti_inject');
 array_walk($_COOKIE, 'anti_inject');
 
+//===========================================================
+// Passer la variable à "y" pour tester... et trouver la liste d'attributs "idéale".
+// Il faudra peut-être mettre les $aAllowedTags et $aAllowedAttr dans global.inc
+$filtrage_html="n";
+if($filtrage_html=='y') {
+
+	$aAllowedTags = array("u", "b", "i", "span", "p", "blink", "blockquote", "br", "caption");
+	$aAllowedAttr = array("abbr", "align", "alt", "axis", "background", "behavior", "title", "class");
+
+	$oMyFilter = new InputFilter($aAllowedTags, $aAllowedAttr, 0, 0, 1);
+
+	foreach($_GET as $key => $value) {
+		if(!is_array($value)) {
+			$_GET[$key]=$oMyFilter->process($value);
+		}
+		else {
+			foreach($_GET[$key] as $key2 => $value2) {
+				$_GET[$key][$key2]=$oMyFilter->process($value2);
+			}
+		}
+	}
+
+	foreach($_POST as $key => $value) {
+		if(!is_array($value)) {
+			$_POST[$key]=$oMyFilter->process($value);
+		}
+		else {
+			foreach($_POST[$key] as $key2 => $value2) {
+				$_POST[$key][$key2]=$oMyFilter->process($value2);
+			}
+		}
+	}
+
+	if(isset($NON_PROTECT)) {
+		foreach($NON_PROTECT as $key => $value) {
+			if(!is_array($value)) {$NON_PROTECT[$key]=$oMyFilter->process($value);}
+			else {
+				foreach($NON_PROTECT[$key] as $key2 => $value2) {
+					$NON_PROTECT[$key][$key2]=$oMyFilter->process($value2);;
+				}
+			}
+		}
+	}
+}
+//===========================================================
+
 //On rétablit les "&" dans $_SERVER['REQUEST_URI']
 $_SERVER['REQUEST_URI'] = str_replace("&amp;","&",$_SERVER['REQUEST_URI']);
 
