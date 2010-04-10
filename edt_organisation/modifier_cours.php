@@ -202,6 +202,7 @@ if ($autorise == "oui") {
 		$rep_cours["jour_semaine"] = NULL;
 		$rep_cours["id_definie_periode"] = NULL;
 		$rep_cours["id_groupe"] = NULL;
+		$rep_cours["id_aid"] = NULL;		
 		$rep_cours["id_semaine"] = NULL;
 		$rep_cours["id_salle"] = NULL;
 		$rep_cours["id_calendrier"] = NULL;
