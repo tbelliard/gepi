@@ -170,23 +170,55 @@ if($filtrage_html=='y') {
 $_SERVER['REQUEST_URI'] = str_replace("&amp;","&",$_SERVER['REQUEST_URI']);
 
 // Et on traite les fichiers uploadés
+if (!isset($AllowedFilesExtensions)) {
+	$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif","ico","jpg","odg","odp","ods","odt","pdf","png","ppt","swf","txt","xcf","xls","zip","pps");
+}
 
-if (isset($_FILES) and isset($_FILES[0])) {
-    foreach ($_FILES as $file => $value) {
-        if (!is_uploaded_file($value['tmp_name'])) {
-            unset($_FILES[$file]);
-        }
-        trim($value['name']);
-        if (preg_match("/php$/",$value['name'])) unset($_FILES[$file]);
-        if (preg_match("/php3$/",$value['name'])) unset($_FILES[$file]);
-        if (preg_match("/php4$/",$value['name'])) unset($_FILES[$file]);
-        if (preg_match("/php5$/",$value['name'])) unset($_FILES[$file]);
-        if (preg_match("/cgi$/",$value['name'])) unset($_FILES[$file]);
-        if (preg_match("/pl$/",$value['name'])) unset($_FILES[$file]);
-        if (preg_match("/class$/",$value['name'])) unset($_FILES[$file]);
-        if (preg_match("/shtml$/",$value['name'])) unset($_FILES[$file]);
-        if (preg_match("/asp$/",$value['name'])) unset($_FILES[$file]);
-        if (preg_match("/cgi$/",$value['name'])) unset($_FILES[$file]);
+if (isset($_FILES) and !empty($_FILES)) {		
+    foreach ($_FILES as &$file) {
+		if (is_array($file['name'])) {
+			$i = 0;
+			while (isset($file['name'][$i])) {
+				if ($file['name'][$i] != "") {
+					if (!is_uploaded_file($file['tmp_name'][$i])) {
+						$file['name'][$i] = "";
+					}
+					$delete_file = true;
+					$k = 0;
+					trim($file['name'][$i]);
+					while (isset($AllowedFilesExtensions[$k])) {
+						if (preg_match("/".$AllowedFilesExtensions[$k]."$/i",$file['name'][$i])) $delete_file = false;
+						$k++;
+					}
+					if ($delete_file) {
+						$file['name'][$i] = "";
+						unlink($file['tmp_name'][$i]);
+					}
+				}
+				$i++;
+			}
+		}
+		else {
+			if (isset($file['name'])) {
+				if ($file['name'] != "") {
+					if (!is_uploaded_file($file['tmp_name'])) {
+						$file['name'] = "";
+					}
+					$delete_file = true;
+					$k = 0;
+					trim($file['name']);
+					while (isset($AllowedFilesExtensions[$k])) {
+						if (preg_match("/".$AllowedFilesExtensions[$k]."$/i",$file['name'])) $delete_file = false;
+						$k++;
+					}
+					if ($delete_file) {
+						$file['name'] = "";
+						unlink($file['tmp_name']);
+					}
+				}
+			}		
+		
+		}
     }
 }
 ?>
