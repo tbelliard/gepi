@@ -98,7 +98,7 @@ class InputFilter {
 				$tagLeft = substr($fromSpace, strlen($attr));
 				$currentSpace = strpos($tagLeft, ' ');
 			}
-			$tagFound = in_array(strtolower($tagName), $this->tagsArray);			
+			$tagFound = in_array(strtolower($tagName), $this->tagsArray);
 			if ((!$tagFound && $this->tagsMethod) || ($tagFound && !$this->tagsMethod)) {
 				if (!$isCloseTag) {
 					$attrSet = $this->filterAttr($attrSet);
@@ -119,7 +119,8 @@ class InputFilter {
 		$newSet = array();
 		for ($i = 0; $i <count($attrSet); $i++) {
 			if (!$attrSet[$i]) continue;
-			$attrSubSet = explode('=', trim($attrSet[$i]));
+			//$attrSubSet = explode('=', trim($attrSet[$i]));
+			$attrSubSet = explode('=', trim($attrSet[$i]), 2);
 			list($attrSubSet[0]) = explode(' ', $attrSubSet[0]);
 			if ((!eregi("^[a-z]*$",$attrSubSet[0])) || (($this->xssAuto) && ((in_array(strtolower($attrSubSet[0]), $this->attrBlacklist)) || (substr($attrSubSet[0], 0, 2) == 'on')))) 
 				continue;
