@@ -29,6 +29,8 @@ $titre_page = "Import absences SCONET";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 function extr_valeur($lig){
 	unset($tabtmp);
 	$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
@@ -796,10 +798,10 @@ function get_nom_class_from_id($id){
 
 									// Ajout d'un test sur le caractère clos de la période pour la classe
 									if($_SESSION['statut']=='secours'){
-										$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$periode_num' AND (verouiller='N' OR verouiller='P');";
+										$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$num_periode' AND (verouiller='N' OR verouiller='P');";
 									}
 									else {
-										$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$periode_num' AND verouiller='N';";
+										$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$num_periode' AND verouiller='N';";
 									}
 									$test_ver=mysql_query($sql);
 
@@ -841,7 +843,7 @@ function get_nom_class_from_id($id){
 											$test0=true;
 
 											// Requête pour tester que la période est bien close ou partiellement close pour cette classe
-											$sql="SELECT 1=1 FROM periodes p,j_eleves_classes jec WHERE p.id_classe='$id_classe[$i]' AND p.num_periode='$periode_num' AND (p.verouiller='N' OR p.verouiller='P') AND jec.login='$log_eleve[$i]' AND p.id_classe=jec.id_classe AND p.num_periode=jec.periode;";
+											$sql="SELECT 1=1 FROM periodes p,j_eleves_classes jec WHERE p.num_periode='$num_periode' AND (p.verouiller='N' OR p.verouiller='P') AND jec.login='$log_eleve[$i]' AND p.id_classe=jec.id_classe AND p.num_periode=jec.periode;";
 										}
 										else{
 											// L'élève est-il associé au CPE:
@@ -856,8 +858,9 @@ function get_nom_class_from_id($id){
 											}
 
 											// Requête pour tester que la période est bien close pour cette classe
-											$sql="SELECT 1=1 FROM periodes p,j_eleves_classes jec WHERE p.id_classe='$id_classe[$i]' AND p.num_periode='$periode_num' AND p.verouiller='N' AND jec.login='$log_eleve[$i]' AND p.id_classe=jec.id_classe AND p.num_periode=jec.periode;";
+											$sql="SELECT 1=1 FROM periodes p,j_eleves_classes jec WHERE p.num_periode='$num_periode' AND p.verouiller='N' AND jec.login='$log_eleve[$i]' AND p.id_classe=jec.id_classe AND p.num_periode=jec.periode;";
 										}
+										//echo "$sql<br />";
 										$test2=mysql_query($sql);
 
 										//if($test0==true){
@@ -899,6 +902,14 @@ function get_nom_class_from_id($id){
 												}
 											}
 										}
+										else {
+											if(!isset($liste_non_importes)) {
+												$liste_non_importes=$log_eleve[$i];
+											}
+											else {
+												$liste_non_importes.=", $log_eleve[$i]";
+											}
+										}
 									}
 								}
 								echo "</p>\n";
@@ -914,6 +925,10 @@ function get_nom_class_from_id($id){
 								}
 								echo "<p><br /></p>\n";
 
+								if(isset($liste_non_importes)) {
+									echo "<p>Aucune importation n'a été effectuée pour <span style='color:red'>$liste_non_importes</span>.<br />La période était peut-être close pour ces élèves.</p>\n";
+									echo "<p><br /></p>\n";
+								}
 
 								echo "<p>Contrôler les saisies pour la classe de:</p>\n";
 								/*
