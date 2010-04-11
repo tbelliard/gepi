@@ -705,8 +705,13 @@ else {
 			}
 			$chaine_cpt0_eleves.="'$tab_cpt_eleve[$i]'";
 		}
-		$chaine_cpt1_eleves.=",'$cpt'";
-	
+		if($chaine_cpt1_eleves!='') {
+			$chaine_cpt1_eleves.=",'$cpt'";
+		}
+		else {
+			// Une seule salle a été définie.
+			$chaine_cpt1_eleves.="'$cpt'";
+		}	
 	
 		echo "<script type='text/javascript'>
 
@@ -894,7 +899,14 @@ function coche(colonne,rang_groupe,mode) {
 			}
 			$chaine_cpt0_eleves.="'$tab_cpt_eleve[$i]'";
 		}
-		$chaine_cpt1_eleves.=",'$cpt'";
+		//$chaine_cpt1_eleves.=",'$cpt'";
+		if($chaine_cpt1_eleves!='') {
+			$chaine_cpt1_eleves.=",'$cpt'";
+		}
+		else {
+			// Une seule salle a été définie.
+			$chaine_cpt1_eleves.="'$cpt'";
+		}	
 
 		//echo "\$chaine_cpt0_eleves=$chaine_cpt0_eleves<br />";
 		//echo "\$chaine_cpt1_eleves=$chaine_cpt1_eleves<br />";
