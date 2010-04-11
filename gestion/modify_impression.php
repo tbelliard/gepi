@@ -31,13 +31,15 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
 die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 die();
 }
 include("../fckeditor/fckeditor.php") ;
+
+if(!isset($msg)){$msg="";}
 
 if (isset($_POST['ok'])) {
 	$error = false;
