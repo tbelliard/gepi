@@ -932,16 +932,26 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				// Permettre d'organiser les élèves en salles
 				// Générer CSV, PDF
 				echo "</li>\n";
-				echo "<li>\n";
-				echo "<a href='genere_emargement.php?id_epreuve=$id_epreuve'";
-				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">Générer les feuilles d'émargement</a><br />\n";
-				// Fiches avec:
-				// - NOM_PRENOM;Champ_signature
-				// - NOM_PRENOM;N_ANONYMAT;Champ_signature
-				// Permettre d'organiser les élèves en salles
-				// Générer CSV, PDF
-				echo "</li>\n";
+
+				// Il n'est pas possible de générer lesfeuilles d'émargement sans affecter les élèves dans des salles
+				$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle!='-1';";
+				$test_affect_salle=mysql_query($sql);
+				if(mysql_num_rows($test_affect_salle)>0) {
+					echo "<li>\n";
+					echo "<a href='genere_emargement.php?id_epreuve=$id_epreuve'";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo ">Générer les feuilles d'émargement</a><br />\n";
+					// Fiches avec:
+					// - NOM_PRENOM;Champ_signature
+					// - NOM_PRENOM;N_ANONYMAT;Champ_signature
+					// Permettre d'organiser les élèves en salles
+					// Générer CSV, PDF
+
+					$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle='-1';";
+					$test_affect_salle=mysql_query($sql);
+					if(mysql_num_rows($test_affect_salle)>0) {echo "<span style='color:red'>".mysql_num_rows($test_affect_salle)." élève(s) non affecté(s) dans une salle.</span>";}
+					echo "</li>\n";
+				}
 
 				if($etat!='clos') {
 					if(mysql_num_rows($res_profs)>0) {
