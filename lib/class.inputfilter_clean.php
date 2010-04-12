@@ -44,6 +44,7 @@ class InputFilter {
 		return $source;
 	}	
 	function filterTags($source) {
+		$source = str_replace("\n", " ", $source);
 		$preTag = NULL;
 		$postTag = $source;
 		$tagOpen_start = strpos($source, '<');
