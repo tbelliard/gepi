@@ -88,6 +88,10 @@
  * @method     UtilisateurProfessionnelQuery rightJoinAbsenceEleveEnvoi($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveEnvoi relation
  * @method     UtilisateurProfessionnelQuery innerJoinAbsenceEleveEnvoi($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveEnvoi relation
  *
+ * @method     UtilisateurProfessionnelQuery leftJoinJProfesseursMatieres($relationAlias = '') Adds a LEFT JOIN clause to the query using the JProfesseursMatieres relation
+ * @method     UtilisateurProfessionnelQuery rightJoinJProfesseursMatieres($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JProfesseursMatieres relation
+ * @method     UtilisateurProfessionnelQuery innerJoinJProfesseursMatieres($relationAlias = '') Adds a INNER JOIN clause to the query using the JProfesseursMatieres relation
+ *
  * @method     UtilisateurProfessionnelQuery leftJoinPreferenceUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the PreferenceUtilisateurProfessionnel relation
  * @method     UtilisateurProfessionnelQuery rightJoinPreferenceUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PreferenceUtilisateurProfessionnel relation
  * @method     UtilisateurProfessionnelQuery innerJoinPreferenceUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the PreferenceUtilisateurProfessionnel relation
@@ -1244,6 +1248,67 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query by a related JProfesseursMatieres object
+	 *
+	 * @param     JProfesseursMatieres $jProfesseursMatieres  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
+	 */
+	public function filterByJProfesseursMatieres($jProfesseursMatieres, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jProfesseursMatieres->getIdProfesseur(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the JProfesseursMatieres relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
+	 */
+	public function joinJProfesseursMatieres($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('JProfesseursMatieres');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'JProfesseursMatieres');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the JProfesseursMatieres relation JProfesseursMatieres object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    JProfesseursMatieresQuery A secondary query class using the current class as primary query
+	 */
+	public function useJProfesseursMatieresQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinJProfesseursMatieres($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'JProfesseursMatieres', 'JProfesseursMatieresQuery');
+	}
+
+	/**
 	 * Filter the query by a related PreferenceUtilisateurProfessionnel object
 	 *
 	 * @param     PreferenceUtilisateurProfessionnel $preferenceUtilisateurProfessionnel  the related object to use as filter
@@ -1396,6 +1461,23 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		return $this
 			->useJEleveCpeQuery()
 				->filterByEleve($eleve, $comparison)
+			->endUse();
+	}
+	
+	/**
+	 * Filter the query by a related Matiere object
+	 * using the j_professeurs_matieres table as cross reference
+	 *
+	 * @param     Matiere $matiere the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
+	 */
+	public function filterByMatiere($matiere, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->useJProfesseursMatieresQuery()
+				->filterByMatiere($matiere, $comparison)
 			->endUse();
 	}
 	

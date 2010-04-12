@@ -29,7 +29,7 @@
 		<column name="recalcul_rang" type="VARCHAR" size="10" description="recalcul_rang" />
 	</table>
 
-	<table name="j_groupes_professeurs" description="Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilise directement dans le code." isCrossRef="true">
+	<table name="j_groupes_professeurs" isCrossRef="true" description="Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilise directement dans le code.">
 		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe" />
 		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id"/>
@@ -39,6 +39,18 @@
 			<reference local="login" foreign="login"/>
 		</foreign-key>
 	</table>
+
+	<table name="j_groupes_matieres" description="Table permettant le jointure entre un enseignement et une matière." isCrossRef="true">
+		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe" />
+		<foreign-key foreignTable="groupes" onDelete="cascade">
+			<reference local="id_groupe" foreign="id"/>
+		</foreign-key>
+		<column name="id_matiere" type="VARCHAR" size="255" required="true" primaryKey="true" description="Cle primaire de la matiere" />
+		<foreign-key foreignTable="matieres" onDelete="cascade">
+			<reference local="id_matiere" foreign="matiere"/>
+		</foreign-key>
+	</table>
+
 
 	<table name="classes" phpName="Classe" description="Classe regroupant des eleves">
 		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire de la classe" />
@@ -63,23 +75,23 @@
 		<column name="rn_sign_resp" required="true" type="CHAR" size="1" default="n"/>
 		<column name="rn_sign_nblig" required="true" type="INTEGER" default="3"/>
 		<column name="rn_formule" required="true" type="LONGVARCHAR"/>
-        <column name="ects_type_formation" type="VARCHAR" size="255" />
-        <column name="ects_parcours" type="VARCHAR" size="255" />
-        <column name="ects_code_parcours" type="VARCHAR" size="255" />
-        <column name="ects_domaines_etude" type="VARCHAR" size="255" />
-        <column name="ects_fonction_signataire_attestation" type="VARCHAR" size="255" />
+    <column name="ects_type_formation" type="VARCHAR" size="255" />
+    <column name="ects_parcours" type="VARCHAR" size="255" />
+    <column name="ects_code_parcours" type="VARCHAR" size="255" />
+    <column name="ects_domaines_etude" type="VARCHAR" size="255" />
+    <column name="ects_fonction_signataire_attestation" type="VARCHAR" size="255" />
 	</table>
 
 	<table name="periodes" phpName="PeriodeNote" description="Table regroupant les periodes de notes pour les classes">
-		<column name="nom_periode" type="VARCHAR" size="10" required="false" primaryKey="true" description="Nom de la periode de note" />
+		<column name="nom_periode" type="VARCHAR" size="10" required="false" description="Nom de la periode de note" />
 		<column name="num_periode" type="INTEGER" size="10" required="true" primaryKey="true" description="identifiant numerique de la periode (1, 2 ou3)" />
 		<column name="verouiller" type="VARCHAR" size="1" required="true" default="O" description="Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)" />
-		<column name="id_classe" type="INTEGER" size="10" required="true" primaryKey="true" description="identifiant numerique de la classe." />
+		<column name="id_classe" type="INTEGER" size="11" required="true" primaryKey="true" description="identifiant numerique de la classe." />
 		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
 		<column name="date_verrouillage" type="TIME" required="false" description="date de verrouillage de la periode" />
 	</table>
 
-	<table name="j_groupes_classes" description="Table permettant la jointure entre groupe d'eleves et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
+	<table name="j_groupes_classes" description="Table permettant la jointure entre groupe d'enseignement et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
 		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe"/>
 		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id"/>
@@ -506,6 +518,19 @@
   </table>
 
 <!-- Fin des objets propel spécifiques au module ECTS -->
+
+  <table name="matieres" phpName="Matiere" description="Matières">
+    <column name="matiere" required="true" primaryKey="true" type="VARCHAR" size="255" description=""/>
+    <column name="nom_complet" type="VARCHAR" required="true" size="200" description="Nom complet"/>
+    <column name="priority" required="true" type="INTEGER" defaultValue="0" size="6" description="Priorite d'affichage"/>
+    <column name="matiere_aid" type="VARCHAR" defaultValue="n" size="1" description="Matiere AID"/>
+    <column name="matiere_atelier" type="VARCHAR" defaultValue="n" size="1" description="Matiere Atelier"/>
+    <column name="categorie_id" required="true" type="INTEGER" defaultValue="1" size="11" description="Association avec Categories de matieres"/>
+    <foreign-key foreignTable="matieres_categories">
+        <reference local="categorie_id" foreign="id"/>
+    </foreign-key>
+  </table>
+
   <table name="matieres_categories" phpName="CategorieMatiere" description="Categories de matiere, utilisees pour regrouper des enseignements">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
     <column name="nom_court" type="VARCHAR" required="true" size="255" description="Nom court"/>
@@ -513,7 +538,7 @@
     <column name="priority" required="true" type="INTEGER" size="6" description="Priorite d'affichage"/>
   </table>
 
-  <table name="j_matieres_categories_classes" phpName="JCategoriesMatieresClasses" description="Liaison entre categories de matiere et classes">
+  <table name="j_matieres_categories_classes" phpName="JCategoriesMatieresClasses" description="Liaison entre categories de matiere et classes" isCrossRef="true">
     <column name="categorie_id" required="true" primaryKey="true" type="INTEGER" size="11" description=""/>
     <foreign-key foreignTable="matieres_categories" onDelete="cascade"><reference local="categorie_id" foreign="id"/></foreign-key>
     <column name="classe_id" required="true" primaryKey="true" type="INTEGER" size="11" description=""/>
@@ -521,6 +546,19 @@
     <column name="affiche_moyenne" type="BOOLEAN" required="false" default="0" description="Nom complet"/>
     <column name="priority" required="true" type="INTEGER" size="6" description="Priorite d'affichage"/>
   </table>
+
+  <table name="j_professeurs_matieres" phpName="JProfesseursMatieres" description="Liaison entre les profs et les matières" isCrossRef="true">
+    <column name="id_matiere" required="true" type="VARCHAR" size="50" primaryKey="true" description=""/>
+    <foreign-key foreignTable="matieres" phpName="Matiere">
+      <reference local="id_matiere" foreign="matiere"/>
+    </foreign-key>
+    <column name="id_professeur" required="true" type="VARCHAR" size="50" primaryKey="true" description=""/>
+    <foreign-key foreignTable="utilisateurs" phpName="Professeur">
+      <reference local="id_professeur" foreign="login"/>
+    </foreign-key>
+    <column name="ordre_matieres" required="true" type="INTEGER" size="11" defaultValue='0' description="Priorite d'affichage"/>
+  </table>
+
 
 <!-- Début des objets propel spécifiques au module PLUGIN -->
   <table name="plugins" phpName="PlugIn" description="Liste des plugins installes sur ce Gepi">

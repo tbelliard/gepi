@@ -62,12 +62,10 @@ class Session {
 
 		# On charge les valeurs déjà présentes en session
 		$this->load_session_data();
-
 		# On charge des éléments de configuration liés à l'authentification
 		$this->auth_locale = getSettingValue("auth_locale") == 'yes' ? true : false;
 		$this->auth_ldap = getSettingValue("auth_ldap") == 'yes' ? true : false;
 		$this->auth_sso = in_array(getSettingValue("auth_sso"), array("lemon", "cas", "lcs")) ? getSettingValue("auth_sso") : false;
-
 		if (!$this->is_anonymous()) {
 		  # Il s'agit d'une session non anonyme qui existait déjà.
 		  # On regarde s'il n'y a pas de timeout
@@ -132,7 +130,7 @@ class Session {
 	    // pour l'utilisateur. Si l'utilisateur n'existe pas, on essaiera
 	    // l'authentification LDAP et le SSO quand même.
 		$auth_mode = self::user_auth_mode($_login);
-
+    
 		switch ($auth_mode) {
 			case "gepi":
 			  # Authentification locale sur la base de données Gepi
@@ -257,16 +255,23 @@ class Session {
 				# Si on ne parvient pas à charger les données, c'est que
 				# l'utilisateur n'est pas présent en base de données.
 				# On essaie d'importer son profil depuis le LDAP.
-				if (getSettingValue("may_import_user_profile") == "yes") {
-					if (!$this->import_user_profile()) {
-						return "6";
-						exit();
-					} else {
-						# Si l'import a réussi, on tente à nouveau de charger
-						# les données de l'utilisateur.
-						$this->load_user_data();
-					}
-				}
+        
+        # Si on a activé la synchro Scribe, on utilise alors l'import spécifique
+				if (getSettingValue("may_import_user_profile") == "yes" && getSettingValue("sso_scribe") == "yes") {
+          $load = $this->import_user_profile_from_scribe();
+        
+        # Sinon, on utilise l'import classique, très basique.
+        } elseif (getSettingValue("may_import_user_profile")) {
+          $load = $this->import_user_profile();
+        }
+        if (!$load) {
+          return "6";
+          exit();
+        } else {
+          # Si l'import a réussi, on tente à nouveau de charger
+          # les données de l'utilisateur.
+          $this->load_user_data();
+        }
 			}
 
 			# On vérifie que l'utilisateur est bien actif
@@ -931,6 +936,238 @@ class Session {
 			}
 		}
 	}
+
+
+	private function import_user_profile_from_scribe() {
+		# On ne peut arriver ici quand dans le cas où on a une authentification réussie.
+		# L'import d'un utilisateur ne peut se faire qu'à partir d'un LDAP de Scribe, ici.
+		if (!LDAPServer::is_setup()) {
+			return false;
+			die();
+		} else {
+      
+      // config_cas.inc.php est le fichier d'informations de connexions au serveur cas
+      $path = dirname(__FILE__)."/LDAPServerScribe.class.php";
+      include($path);
+      
+			# Le serveur LDAP est configuré, on y va.
+			# Encore un dernier petit test quand même : est-ce que l'utilisateur
+			# est bien absent de la base.
+			$sql = mysql_query("SELECT login FROM utilisateurs WHERE (login = '".$this->login."')");
+			if (mysql_num_rows($sql) != "0") {
+				return false;
+				die();
+			}
+
+			$ldap_server = new LDAPServerScribe;
+      
+			$user = $ldap_server->get_user_profile($this->login);
+			if ($user) {
+				# On ne refait pas de tests ou de formattage. La méthode get_user_profile
+				# s'occupe de tout.
+        
+        $errors = false;
+        
+        // On s'occupe de tous les traitements spécifiques à chaque statut
+        
+        // Eleve
+        if ($user['statut'] == 'eleve') {
+          // On a un élève : on vérifie s'il existe dans la table 'eleves',
+          // sur la base de son INE, ou nom et prénom.
+          $test = mysql_num_rows(mysql_query("SELECT * FROM eleves
+                                                WHERE (no_gep = '".$user['raw']['ine'][0]."'
+                                                        OR (nom = '".$user['nom']."' AND prenom = '".$user['prenom']."'))"));
+          if ($test == 0) {
+            // L'élève n'existe pas du tout. On va donc le créer.
+            $nouvel_eleve = new Eleve();
+            $nouvel_eleve->setLogin($this->login);
+            $nouvel_eleve->setNom($user['nom']);
+            $nouvel_eleve->setPrenom($user['prenom']);
+            $nouvel_eleve->setSexe($user['raw']['entpersonsexe'][0]);
+            
+            $naissance = $user['raw']['entpersondatenaissance'][0];
+            if ($naissance != '') {
+              $annee = substr($naissance, 0, 4);
+              $mois = substr($naissance, 4, 2);
+              $jour = substr($naissance, 6, 2);
+            } else {
+              $annee = '0000';
+              $mois = '00';
+              $jour = '00';
+            }
+            
+            $nouvel_eleve->setNaissance("$annee-$mois-$jour");
+            $nouvel_eleve->setLieuNaissance('');
+            $nouvel_eleve->setElenoet($user['raw']['employeenumber'][0] || '');
+            $nouvel_eleve->setEreno('');
+            $nouvel_eleve->setEleid($user['raw']['intid'][0] || '');
+            $nouvel_eleve->setNoGep($user['raw']['ine'][0] || '');
+            $nouvel_eleve->setEmail($user['email']);
+            
+            if (!$nouvel_eleve->save()) $errors = true;
+            
+            /*
+             * Récupération des CLASSES de l'eleve :
+             * Pour chaque eleve, on parcours ses classes, et on ne prend que celles
+             * qui correspondent à la branche de l'établissement courant, et on les stocke
+             */
+            $nb_classes = $user['raw']['enteleveclasses']['count'];
+
+            // Pour chaque classe trouvée..
+            $eleve_added_to_classe = false;
+            for ($cpt=0; $cpt<$nb_classes; $cpt++) {
+                if ($eleve_added_to_classe) break;
+                $classe_from_ldap = explode("$", $user['raw']['enteleveclasses'][$cpt]);
+                // $classe_from_ldap[0] contient le DN de l'établissement
+                // $classe_from_ldap[1] contient l'id de la classe
+                $code_classe = $classe_from_ldap[1];
+
+                // Si le SIREN de la classe trouvée correspond bien au SIREN de l'établissement courant,
+                // on crée une entrée correspondante dans le tableau des classes disponibles
+                // Sinon c'est une classe d'un autre établissement, on ne doit donc pas en tenir compte
+                if (strcmp($classe_from_ldap[0], $ldap_server->get_base_branch()) == 0) {
+
+                    /*
+                     * On test si la classe que l'on souhaite ajouter existe déjà
+                     * en la cherchant dans la base (
+                     */
+                    $classe_courante = ClasseQuery::create()
+                          ->filterByClasse($code_classe)
+                          ->findOne();
+
+                    if ($classe_courante) {
+                      
+                      foreach($classe_courante->getPeriodeNotes() as $periode) {
+                          // On associe l'élève à la classe
+                          $res = mysql_query("INSERT INTO j_eleves_classes SET
+                              login = '".$this->login."', 
+                              id_classe = '".$classe_courante->getId()."',
+                              periode = '".$periode->getNumPeriode()."'");
+                      } // Fin boucle périodes
+                      $eleve_added_to_classe = true;
+                    } // Fin test classe
+                } //Fin du if classe appartient a l'etablissement courant
+            } //Fin du parcours des classes de l'eleve
+
+            
+            // On a maintenant un élève en base, qui appartient à sa classe
+            // pour toutes les périodes à partir de la période courante
+            
+            // On ne l'associe pas aux enseignements, car c'est un peu trop
+            // risqué et bancal pour être réalisé dynamiquement ici, dans
+            // la mesure où l'on n'a pas une information précise sur la
+            // composition des groupes.
+            
+            
+          } else {
+            // L'élève existe déjà dans la base. On ne créé que l'utilisateur correspondant.
+            // Pour ça, on va devoir s'assurer que l'identifiant est identique !
+            $test_login = mysql_result(mysql_query("SELECT login FROM eleves
+                                                WHERE (no_gep = '".$user['raw']['ine'][0]."'
+                                                        OR (nom = '".$user['nom']."' AND prenom = '".$user['prenom']."'))"), 0);
+            if ($test_login != $this->login) {
+              // Le login est différent, on ne peut rien faire... Il faudrait renommer
+              // le login partout dans l'application, mais il n'existe pas de mécanisme
+              // pour le faire de manière fiable.
+              $errors = true;
+            }
+          }
+          
+        } elseif ($user['statut'] == 'responsable') {
+          // Si on a un responsable, il faut l'associer à un élève
+          
+          $resp = new ResponsableEleve();
+          $resp->setLogin($this->login);
+          $resp->setNom($user['nom']);
+          $resp->setPrenom($user['prenom']);
+          $resp->setCivilite($user['raw']['personaltitle'][0]);
+          $resp->setTelPers($user['raw']['homephone'][0]);
+          $resp->setTelProf($user['raw']['telephonenumber'][0]);
+          $resp->setTelPort($user['raw']['mobile'][0]);
+          $resp->setMel($user['email']);
+          $resp->setPersId($user['raw']['intid'][0]);
+                    
+          // On créé l'adresse associée
+          
+          $adr = new ResponsableEleveAdresse();
+          $adr->setAdrId($user['raw']['intid'][0]);
+          $adr->setAdr1($user['raw']['entpersonadresse'][0]);
+          $adr->setAdr2('');
+          $adr->setAdr3('');
+          $adr->setAdr4('');
+          $adr->setCommune($user['raw']['entpersonville'][0]);
+          $adr->setCp($user['raw']['entpersoncodepostal'][0]);
+          $adr->setPays($user['raw']['entpersonpays'][0]);
+          
+          $resp->setResponsableEleveAdresse($adr);
+          
+          $resp->save();
+
+          $nb_eleves_a_charge = $user['raw']['entauxpersreleleveeleve']['count'];
+
+          //pour chaque dn d'eleve
+          for ($i=0;$i<$nb_eleves_a_charge;$i++) {
+              $eleve_uid = explode(",",$user['raw']['entauxpersreleleveeleve'][$i]);
+              $eleve_associe_login = substr($eleve_uid[0], 4);
+              $eleve_query = mysql_query("SELECT ele_id FROM eleves WHERE login = '$eleve_associe_login'");
+              if (mysql_num_rows($eleve_query) == 1) {
+                $eleve_associe_ele_id = mysql_result($eleve_query, 0);
+                  
+                // Gepi donne un ordre aux responsables, il faut donc verifier combien de responsables sont deja enregistres pour l'eleve
+                // On initialise le numero de responsable
+                $numero_responsable = 1;
+                $req_nb_resp_deja_presents = "SELECT count(*) FROM responsables2 WHERE ele_id = '$eleve_associe_ele_id'";
+                $res_nb_resp = mysql_query($req_nb_resp_deja_presents);
+                $nb_resp = mysql_fetch_array($res_nb_resp);
+                if ($nb_resp[0] > 0) {
+                    // Si deja 1 ou plusieurs responsables legaux pour cet eleve,on ajoute le nouveau responsable en incrementant son numero
+                    $numero_responsable += $nb_resp[0];
+
+                    //--
+                    // TODO: tester si on a des adresses identiques, et n'utiliser qu'un seul objet adresse dans ce cas.
+                    //--
+                }
+
+                // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
+                $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getPersId()."','$numero_responsable','')";
+                mysql_query($req_ajout_lien_eleve_resp);
+              } // Fin test si élève existe
+          }
+          
+        } elseif ($user['statut'] == 'professeur') {
+          // Rien de spécial à ce stade.
+          
+        } else {
+          // Ici : que fait-on si l'on n'a pas un statut directement reconnu
+          // et compatible Gepi ?
+          // On applique le statut par défaut, configuré par l'admin.
+          $user['statut'] = getSettingValue("statut_utilisateur_defaut");
+        }
+        
+        // On créé l'utilisateur, s'il n'y a pas eu d'erreurs.
+        if (!$errors) {
+            $new_compte_utilisateur = new UtilisateurProfessionnel();
+            $new_compte_utilisateur->setAuthMode('sso');
+            $new_compte_utilisateur->setCivilite($user['civilite']);
+            $new_compte_utilisateur->setEmail($user['email']);
+            $new_compte_utilisateur->setEtat('actif');
+            $new_compte_utilisateur->setLogin($this->login);
+            $new_compte_utilisateur->setNom($user['nom']);
+            $new_compte_utilisateur->setPrenom($user['prenom']);
+            $new_compte_utilisateur->setShowEmail('no');
+            $new_compte_utilisateur->setStatut($user['statut']);
+            $new_compte_utilisateur->save();
+        }
+        
+			} else {
+				return false;
+			}
+		}
+	}
+
+
+
+
 
 	# Cette méthode sert à forcer PHP et MySQL à utiliser un fuseau horaire
 	# particulier.

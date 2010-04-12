@@ -1,52 +1,58 @@
 <?php
 
 /**
- * Base static class for performing query and update operations on the 'groupes' table.
+ * Base static class for performing query and update operations on the 'matieres' table.
  *
- * Groupe d'eleves permettant d'y affecter une matiere et un professeurs
+ * Matières
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseGroupePeer {
+abstract class BaseMatierePeer {
 
 	/** the default database name for this class */
 	const DATABASE_NAME = 'gepi';
 
 	/** the table name for this class */
-	const TABLE_NAME = 'groupes';
+	const TABLE_NAME = 'matieres';
 
 	/** the related Propel class for this table */
-	const OM_CLASS = 'Groupe';
+	const OM_CLASS = 'Matiere';
 
 	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'gepi.Groupe';
+	const CLASS_DEFAULT = 'gepi.Matiere';
 
 	/** the related TableMap class for this table */
-	const TM_CLASS = 'GroupeTableMap';
+	const TM_CLASS = 'MatiereTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 4;
+	const NUM_COLUMNS = 6;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
-	/** the column name for the ID field */
-	const ID = 'groupes.ID';
+	/** the column name for the MATIERE field */
+	const MATIERE = 'matieres.MATIERE';
 
-	/** the column name for the NAME field */
-	const NAME = 'groupes.NAME';
+	/** the column name for the NOM_COMPLET field */
+	const NOM_COMPLET = 'matieres.NOM_COMPLET';
 
-	/** the column name for the DESCRIPTION field */
-	const DESCRIPTION = 'groupes.DESCRIPTION';
+	/** the column name for the PRIORITY field */
+	const PRIORITY = 'matieres.PRIORITY';
 
-	/** the column name for the RECALCUL_RANG field */
-	const RECALCUL_RANG = 'groupes.RECALCUL_RANG';
+	/** the column name for the MATIERE_AID field */
+	const MATIERE_AID = 'matieres.MATIERE_AID';
+
+	/** the column name for the MATIERE_ATELIER field */
+	const MATIERE_ATELIER = 'matieres.MATIERE_ATELIER';
+
+	/** the column name for the CATEGORIE_ID field */
+	const CATEGORIE_ID = 'matieres.CATEGORIE_ID';
 
 	/**
-	 * An identiy map to hold any loaded instances of Groupe objects.
+	 * An identiy map to hold any loaded instances of Matiere objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
 	 * queries.
-	 * @var        array Groupe[]
+	 * @var        array Matiere[]
 	 */
 	public static $instances = array();
 
@@ -58,12 +64,12 @@ abstract class BaseGroupePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Description', 'RecalculRang', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'description', 'recalculRang', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::DESCRIPTION, self::RECALCUL_RANG, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NAME', 'DESCRIPTION', 'RECALCUL_RANG', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'description', 'recalcul_rang', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
+		BasePeer::TYPE_PHPNAME => array ('Matiere', 'NomComplet', 'Priority', 'MatiereAid', 'MatiereAtelier', 'CategorieId', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('matiere', 'nomComplet', 'priority', 'matiereAid', 'matiereAtelier', 'categorieId', ),
+		BasePeer::TYPE_COLNAME => array (self::MATIERE, self::NOM_COMPLET, self::PRIORITY, self::MATIERE_AID, self::MATIERE_ATELIER, self::CATEGORIE_ID, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('MATIERE', 'NOM_COMPLET', 'PRIORITY', 'MATIERE_AID', 'MATIERE_ATELIER', 'CATEGORIE_ID', ),
+		BasePeer::TYPE_FIELDNAME => array ('matiere', 'nom_complet', 'priority', 'matiere_aid', 'matiere_atelier', 'categorie_id', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -73,12 +79,12 @@ abstract class BaseGroupePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Description' => 2, 'RecalculRang' => 3, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'description' => 2, 'recalculRang' => 3, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::DESCRIPTION => 2, self::RECALCUL_RANG => 3, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NAME' => 1, 'DESCRIPTION' => 2, 'RECALCUL_RANG' => 3, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'description' => 2, 'recalcul_rang' => 3, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
+		BasePeer::TYPE_PHPNAME => array ('Matiere' => 0, 'NomComplet' => 1, 'Priority' => 2, 'MatiereAid' => 3, 'MatiereAtelier' => 4, 'CategorieId' => 5, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('matiere' => 0, 'nomComplet' => 1, 'priority' => 2, 'matiereAid' => 3, 'matiereAtelier' => 4, 'categorieId' => 5, ),
+		BasePeer::TYPE_COLNAME => array (self::MATIERE => 0, self::NOM_COMPLET => 1, self::PRIORITY => 2, self::MATIERE_AID => 3, self::MATIERE_ATELIER => 4, self::CATEGORIE_ID => 5, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('MATIERE' => 0, 'NOM_COMPLET' => 1, 'PRIORITY' => 2, 'MATIERE_AID' => 3, 'MATIERE_ATELIER' => 4, 'CATEGORIE_ID' => 5, ),
+		BasePeer::TYPE_FIELDNAME => array ('matiere' => 0, 'nom_complet' => 1, 'priority' => 2, 'matiere_aid' => 3, 'matiere_atelier' => 4, 'categorie_id' => 5, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -127,12 +133,12 @@ abstract class BaseGroupePeer {
 	 *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
 	 * </code>
 	 * @param      string $alias The alias for the current table.
-	 * @param      string $column The column name for current table. (i.e. GroupePeer::COLUMN_NAME).
+	 * @param      string $column The column name for current table. (i.e. MatierePeer::COLUMN_NAME).
 	 * @return     string
 	 */
 	public static function alias($alias, $column)
 	{
-		return str_replace(GroupePeer::TABLE_NAME.'.', $alias.'.', $column);
+		return str_replace(MatierePeer::TABLE_NAME.'.', $alias.'.', $column);
 	}
 
 	/**
@@ -150,15 +156,19 @@ abstract class BaseGroupePeer {
 	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
 		if (null === $alias) {
-			$criteria->addSelectColumn(GroupePeer::ID);
-			$criteria->addSelectColumn(GroupePeer::NAME);
-			$criteria->addSelectColumn(GroupePeer::DESCRIPTION);
-			$criteria->addSelectColumn(GroupePeer::RECALCUL_RANG);
+			$criteria->addSelectColumn(MatierePeer::MATIERE);
+			$criteria->addSelectColumn(MatierePeer::NOM_COMPLET);
+			$criteria->addSelectColumn(MatierePeer::PRIORITY);
+			$criteria->addSelectColumn(MatierePeer::MATIERE_AID);
+			$criteria->addSelectColumn(MatierePeer::MATIERE_ATELIER);
+			$criteria->addSelectColumn(MatierePeer::CATEGORIE_ID);
 		} else {
-			$criteria->addSelectColumn($alias . '.ID');
-			$criteria->addSelectColumn($alias . '.NAME');
-			$criteria->addSelectColumn($alias . '.DESCRIPTION');
-			$criteria->addSelectColumn($alias . '.RECALCUL_RANG');
+			$criteria->addSelectColumn($alias . '.MATIERE');
+			$criteria->addSelectColumn($alias . '.NOM_COMPLET');
+			$criteria->addSelectColumn($alias . '.PRIORITY');
+			$criteria->addSelectColumn($alias . '.MATIERE_AID');
+			$criteria->addSelectColumn($alias . '.MATIERE_ATELIER');
+			$criteria->addSelectColumn($alias . '.CATEGORIE_ID');
 		}
 	}
 
@@ -178,21 +188,21 @@ abstract class BaseGroupePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(GroupePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(MatierePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			GroupePeer::addSelectColumns($criteria);
+			MatierePeer::addSelectColumns($criteria);
 		}
 
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
 
 		if ($con === null) {
-			$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(MatierePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 		// BasePeer returns a PDOStatement
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -210,7 +220,7 @@ abstract class BaseGroupePeer {
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
-	 * @return     Groupe
+	 * @return     Matiere
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -218,7 +228,7 @@ abstract class BaseGroupePeer {
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
-		$objects = GroupePeer::doSelect($critcopy, $con);
+		$objects = MatierePeer::doSelect($critcopy, $con);
 		if ($objects) {
 			return $objects[0];
 		}
@@ -235,7 +245,7 @@ abstract class BaseGroupePeer {
 	 */
 	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return GroupePeer::populateObjects(GroupePeer::doSelectStmt($criteria, $con));
+		return MatierePeer::populateObjects(MatierePeer::doSelectStmt($criteria, $con));
 	}
 	/**
 	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -253,12 +263,12 @@ abstract class BaseGroupePeer {
 	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(MatierePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
-			GroupePeer::addSelectColumns($criteria);
+			MatierePeer::addSelectColumns($criteria);
 		}
 
 		// Set the correct dbName
@@ -276,14 +286,14 @@ abstract class BaseGroupePeer {
 	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
 	 * and retrieveByPK*() calls.
 	 *
-	 * @param      Groupe $value A Groupe object.
+	 * @param      Matiere $value A Matiere object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Groupe $obj, $key = null)
+	public static function addInstanceToPool(Matiere $obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = (string) $obj->getId();
+				$key = (string) $obj->getMatiere();
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -297,18 +307,18 @@ abstract class BaseGroupePeer {
 	 * methods in your stub classes -- you may need to explicitly remove objects
 	 * from the cache in order to prevent returning objects that no longer exist.
 	 *
-	 * @param      mixed $value A Groupe object or a primary key value.
+	 * @param      mixed $value A Matiere object or a primary key value.
 	 */
 	public static function removeInstanceFromPool($value)
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
-			if (is_object($value) && $value instanceof Groupe) {
-				$key = (string) $value->getId();
+			if (is_object($value) && $value instanceof Matiere) {
+				$key = (string) $value->getMatiere();
 			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
 				$key = (string) $value;
 			} else {
-				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or Groupe object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or Matiere object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
 			}
 
@@ -323,7 +333,7 @@ abstract class BaseGroupePeer {
 	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
 	 *
 	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-	 * @return     Groupe Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @return     Matiere Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
 	 * @see        getPrimaryKeyHash()
 	 */
 	public static function getInstanceFromPool($key)
@@ -347,40 +357,13 @@ abstract class BaseGroupePeer {
 	}
 	
 	/**
-	 * Method to invalidate the instance pool of all tables related to groupes
+	 * Method to invalidate the instance pool of all tables related to matieres
 	 * by a foreign key with ON DELETE CASCADE
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in JGroupesProfesseursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		JGroupesProfesseursPeer::clearInstancePool();
-
 		// invalidate objects in JGroupesMatieresPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		JGroupesMatieresPeer::clearInstancePool();
-
-		// invalidate objects in JGroupesClassesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		JGroupesClassesPeer::clearInstancePool();
-
-		// invalidate objects in CahierTexteCompteRenduPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		CahierTexteCompteRenduPeer::clearInstancePool();
-
-		// invalidate objects in CahierTexteTravailAFairePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		CahierTexteTravailAFairePeer::clearInstancePool();
-
-		// invalidate objects in CahierTexteNoticePriveePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		CahierTexteNoticePriveePeer::clearInstancePool();
-
-		// invalidate objects in JEleveGroupePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		JEleveGroupePeer::clearInstancePool();
-
-		// invalidate objects in AbsenceEleveSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		AbsenceEleveSaisiePeer::clearInstancePool();
-
-		// invalidate objects in CreditEctsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		CreditEctsPeer::clearInstancePool();
-
-		// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		EdtEmplacementCoursPeer::clearInstancePool();
 
 	}
 
@@ -414,7 +397,7 @@ abstract class BaseGroupePeer {
 	 */
 	public static function getPrimaryKeyFromRow($row, $startcol = 0)
 	{
-		return (int) $row[$startcol];
+		return (string) $row[$startcol];
 	}
 	
 	/**
@@ -429,11 +412,11 @@ abstract class BaseGroupePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = GroupePeer::getOMClass(false);
+		$cls = MatierePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key = GroupePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj = GroupePeer::getInstanceFromPool($key))) {
+			$key = MatierePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = MatierePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
@@ -442,7 +425,7 @@ abstract class BaseGroupePeer {
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
-				GroupePeer::addInstanceToPool($obj, $key);
+				MatierePeer::addInstanceToPool($obj, $key);
 			} // if key exists
 		}
 		$stmt->closeCursor();
@@ -455,24 +438,258 @@ abstract class BaseGroupePeer {
 	 * @param      int $startcol The 0-based offset for reading from the resultset row.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
-	 * @return     array (Groupe object, last column rank)
+	 * @return     array (Matiere object, last column rank)
 	 */
 	public static function populateObject($row, $startcol = 0)
 	{
-		$key = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol);
-		if (null !== ($obj = GroupePeer::getInstanceFromPool($key))) {
+		$key = MatierePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = MatierePeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://propel.phpdb.org/trac/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + GroupePeer::NUM_COLUMNS;
+			$col = $startcol + MatierePeer::NUM_COLUMNS;
 		} else {
-			$cls = GroupePeer::OM_CLASS;
+			$cls = MatierePeer::OM_CLASS;
 			$obj = new $cls();
 			$col = $obj->hydrate($row, $startcol);
-			GroupePeer::addInstanceToPool($obj, $key);
+			MatierePeer::addInstanceToPool($obj, $key);
 		}
 		return array($obj, $col);
 	}
+
+	/**
+	 * Returns the number of rows matching criteria, joining the related CategorieMatiere table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinCategorieMatiere(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(MatierePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			MatierePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(MatierePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria->addJoin(MatierePeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
+	 * Selects a collection of Matiere objects pre-filled with their CategorieMatiere objects.
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of Matiere objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinCategorieMatiere(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		MatierePeer::addSelectColumns($criteria);
+		$startcol = (MatierePeer::NUM_COLUMNS - MatierePeer::NUM_LAZY_LOAD_COLUMNS);
+		CategorieMatierePeer::addSelectColumns($criteria);
+
+		$criteria->addJoin(MatierePeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = MatierePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = MatierePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+
+				$cls = MatierePeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				MatierePeer::addInstanceToPool($obj1, $key1);
+			} // if $obj1 already loaded
+
+			$key2 = CategorieMatierePeer::getPrimaryKeyHashFromRow($row, $startcol);
+			if ($key2 !== null) {
+				$obj2 = CategorieMatierePeer::getInstanceFromPool($key2);
+				if (!$obj2) {
+
+					$cls = CategorieMatierePeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol);
+					CategorieMatierePeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 already loaded
+
+				// Add the $obj1 (Matiere) to $obj2 (CategorieMatiere)
+				$obj2->addMatiere($obj1);
+
+			} // if joined row was not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
+
+	/**
+	 * Returns the number of rows matching criteria, joining all related tables
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAll(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(MatierePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			MatierePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(MatierePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$criteria->addJoin(MatierePeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+	/**
+	 * Selects a collection of Matiere objects pre-filled with all related objects.
+	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of Matiere objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		MatierePeer::addSelectColumns($criteria);
+		$startcol2 = (MatierePeer::NUM_COLUMNS - MatierePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		CategorieMatierePeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (CategorieMatierePeer::NUM_COLUMNS - CategorieMatierePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		$criteria->addJoin(MatierePeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = MatierePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = MatierePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = MatierePeer::getOMClass(false);
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				MatierePeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+			// Add objects for joined CategorieMatiere rows
+
+			$key2 = CategorieMatierePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+			if ($key2 !== null) {
+				$obj2 = CategorieMatierePeer::getInstanceFromPool($key2);
+				if (!$obj2) {
+
+					$cls = CategorieMatierePeer::getOMClass(false);
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					CategorieMatierePeer::addInstanceToPool($obj2, $key2);
+				} // if obj2 loaded
+
+				// Add the $obj1 (Matiere) to the collection in $obj2 (CategorieMatiere)
+				$obj2->addMatiere($obj1);
+			} // if joined row not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
 	/**
 	 * Returns the TableMap related to this peer.
 	 * This method is not needed for general use but a specific application could have a need.
@@ -490,10 +707,10 @@ abstract class BaseGroupePeer {
 	 */
 	public static function buildTableMap()
 	{
-	  $dbMap = Propel::getDatabaseMap(BaseGroupePeer::DATABASE_NAME);
-	  if (!$dbMap->hasTable(BaseGroupePeer::TABLE_NAME))
+	  $dbMap = Propel::getDatabaseMap(BaseMatierePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseMatierePeer::TABLE_NAME))
 	  {
-	    $dbMap->addTableObject(new GroupeTableMap());
+	    $dbMap->addTableObject(new MatiereTableMap());
 	  }
 	}
 
@@ -510,13 +727,13 @@ abstract class BaseGroupePeer {
 	 */
 	public static function getOMClass($withPrefix = true)
 	{
-		return $withPrefix ? GroupePeer::CLASS_DEFAULT : GroupePeer::OM_CLASS;
+		return $withPrefix ? MatierePeer::CLASS_DEFAULT : MatierePeer::OM_CLASS;
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a Groupe or Criteria object.
+	 * Method perform an INSERT on the database, given a Matiere or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or Groupe object containing data that is used to create the INSERT statement.
+	 * @param      mixed $values Criteria or Matiere object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -525,17 +742,13 @@ abstract class BaseGroupePeer {
 	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(MatierePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 		} else {
-			$criteria = $values->buildCriteria(); // build Criteria from Groupe object
-		}
-
-		if ($criteria->containsKey(GroupePeer::ID) && $criteria->keyContainsValue(GroupePeer::ID) ) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key ('.GroupePeer::ID.')');
+			$criteria = $values->buildCriteria(); // build Criteria from Matiere object
 		}
 
 
@@ -557,9 +770,9 @@ abstract class BaseGroupePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a Groupe or Criteria object.
+	 * Method perform an UPDATE on the database, given a Matiere or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or Groupe object containing data that is used to create the UPDATE statement.
+	 * @param      mixed $values Criteria or Matiere object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -568,7 +781,7 @@ abstract class BaseGroupePeer {
 	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(MatierePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -576,15 +789,15 @@ abstract class BaseGroupePeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(GroupePeer::ID);
-			$value = $criteria->remove(GroupePeer::ID);
+			$comparison = $criteria->getComparison(MatierePeer::MATIERE);
+			$value = $criteria->remove(MatierePeer::MATIERE);
 			if ($value) {
-				$selectCriteria->add(GroupePeer::ID, $value, $comparison);
+				$selectCriteria->add(MatierePeer::MATIERE, $value, $comparison);
 			} else {
-				$selectCriteria->setPrimaryTableName(GroupePeer::TABLE_NAME);
+				$selectCriteria->setPrimaryTableName(MatierePeer::TABLE_NAME);
 			}
 
-		} else { // $values is Groupe object
+		} else { // $values is Matiere object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
 		}
@@ -596,28 +809,27 @@ abstract class BaseGroupePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the groupes table.
+	 * Method to DELETE all rows from the matieres table.
 	 *
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
 	public static function doDeleteAll($con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(MatierePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += GroupePeer::doOnDeleteCascade(new Criteria(GroupePeer::DATABASE_NAME), $con);
-			GroupePeer::doOnDeleteSetNull(new Criteria(GroupePeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(GroupePeer::TABLE_NAME, $con);
+			$affectedRows += MatierePeer::doOnDeleteCascade(new Criteria(MatierePeer::DATABASE_NAME), $con);
+			$affectedRows += BasePeer::doDeleteAll(MatierePeer::TABLE_NAME, $con);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
-			GroupePeer::clearInstancePool();
-			GroupePeer::clearRelatedInstancePool();
+			MatierePeer::clearInstancePool();
+			MatierePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -627,9 +839,9 @@ abstract class BaseGroupePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a Groupe or Criteria object OR a primary key value.
+	 * Method perform a DELETE on the database, given a Matiere or Criteria object OR a primary key value.
 	 *
-	 * @param      mixed $values Criteria or Groupe object or primary key or array of primary keys
+	 * @param      mixed $values Criteria or Matiere object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
 	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -640,18 +852,18 @@ abstract class BaseGroupePeer {
 	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(MatierePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof Groupe) { // it's a model object
+		} elseif ($values instanceof Matiere) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
 		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
-			$criteria->add(GroupePeer::ID, (array) $values, Criteria::IN);
+			$criteria->add(MatierePeer::MATIERE, (array) $values, Criteria::IN);
 		}
 
 		// Set the correct dbName
@@ -663,24 +875,23 @@ abstract class BaseGroupePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += GroupePeer::doOnDeleteCascade($criteria, $con);
-			GroupePeer::doOnDeleteSetNull($criteria, $con);
+			$affectedRows += MatierePeer::doOnDeleteCascade($criteria, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
 			if ($values instanceof Criteria) {
-				GroupePeer::clearInstancePool();
-			} elseif ($values instanceof Groupe) { // it's a model object
-				GroupePeer::removeInstanceFromPool($values);
+				MatierePeer::clearInstancePool();
+			} elseif ($values instanceof Matiere) { // it's a model object
+				MatierePeer::removeInstanceFromPool($values);
 			} else { // it's a primary key, or an array of pks
 				foreach ((array) $values as $singleval) {
-					GroupePeer::removeInstanceFromPool($singleval);
+					MatierePeer::removeInstanceFromPool($singleval);
 				}
 			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-			GroupePeer::clearRelatedInstancePool();
+			MatierePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -708,117 +919,38 @@ abstract class BaseGroupePeer {
 		$affectedRows = 0;
 
 		// first find the objects that are implicated by the $criteria
-		$objects = GroupePeer::doSelect($criteria, $con);
+		$objects = MatierePeer::doSelect($criteria, $con);
 		foreach ($objects as $obj) {
 
-
-			// delete related JGroupesProfesseurs objects
-			$criteria = new Criteria(JGroupesProfesseursPeer::DATABASE_NAME);
-			
-			$criteria->add(JGroupesProfesseursPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += JGroupesProfesseursPeer::doDelete($criteria, $con);
 
 			// delete related JGroupesMatieres objects
 			$criteria = new Criteria(JGroupesMatieresPeer::DATABASE_NAME);
 			
-			$criteria->add(JGroupesMatieresPeer::ID_GROUPE, $obj->getId());
+			$criteria->add(JGroupesMatieresPeer::ID_MATIERE, $obj->getMatiere());
 			$affectedRows += JGroupesMatieresPeer::doDelete($criteria, $con);
-
-			// delete related JGroupesClasses objects
-			$criteria = new Criteria(JGroupesClassesPeer::DATABASE_NAME);
-			
-			$criteria->add(JGroupesClassesPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += JGroupesClassesPeer::doDelete($criteria, $con);
-
-			// delete related CahierTexteCompteRendu objects
-			$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
-			
-			$criteria->add(CahierTexteCompteRenduPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += CahierTexteCompteRenduPeer::doDelete($criteria, $con);
-
-			// delete related CahierTexteTravailAFaire objects
-			$criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
-			
-			$criteria->add(CahierTexteTravailAFairePeer::ID_GROUPE, $obj->getId());
-			$affectedRows += CahierTexteTravailAFairePeer::doDelete($criteria, $con);
-
-			// delete related CahierTexteNoticePrivee objects
-			$criteria = new Criteria(CahierTexteNoticePriveePeer::DATABASE_NAME);
-			
-			$criteria->add(CahierTexteNoticePriveePeer::ID_GROUPE, $obj->getId());
-			$affectedRows += CahierTexteNoticePriveePeer::doDelete($criteria, $con);
-
-			// delete related JEleveGroupe objects
-			$criteria = new Criteria(JEleveGroupePeer::DATABASE_NAME);
-			
-			$criteria->add(JEleveGroupePeer::ID_GROUPE, $obj->getId());
-			$affectedRows += JEleveGroupePeer::doDelete($criteria, $con);
-
-			// delete related CreditEcts objects
-			$criteria = new Criteria(CreditEctsPeer::DATABASE_NAME);
-			
-			$criteria->add(CreditEctsPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += CreditEctsPeer::doDelete($criteria, $con);
-
-			// delete related EdtEmplacementCours objects
-			$criteria = new Criteria(EdtEmplacementCoursPeer::DATABASE_NAME);
-			
-			$criteria->add(EdtEmplacementCoursPeer::ID_GROUPE, $obj->getId());
-			$affectedRows += EdtEmplacementCoursPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
 
 	/**
-	 * This is a method for emulating ON DELETE SET NULL DBs that don't support this
-	 * feature (like MySQL or SQLite).
-	 *
-	 * This method is not very speedy because it must perform a query first to get
-	 * the implicated records and then perform the deletes by calling those Peer classes.
-	 *
-	 * This method should be used within a transaction if possible.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
-	 * @return     void
-	 */
-	protected static function doOnDeleteSetNull(Criteria $criteria, PropelPDO $con)
-	{
-
-		// first find the objects that are implicated by the $criteria
-		$objects = GroupePeer::doSelect($criteria, $con);
-		foreach ($objects as $obj) {
-
-			// set fkey col in related AbsenceEleveSaisie rows to NULL
-			$selectCriteria = new Criteria(GroupePeer::DATABASE_NAME);
-			$updateValues = new Criteria(GroupePeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceEleveSaisiePeer::ID_GROUPE, $obj->getId());
-			$updateValues->add(AbsenceEleveSaisiePeer::ID_GROUPE, null);
-
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
-
-		}
-	}
-
-	/**
-	 * Validates all modified columns of given Groupe object.
+	 * Validates all modified columns of given Matiere object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.
 	 *
 	 * NOTICE: This does not apply to primary or foreign keys for now.
 	 *
-	 * @param      Groupe $obj The object to validate.
+	 * @param      Matiere $obj The object to validate.
 	 * @param      mixed $cols Column name or array of column names.
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Groupe $obj, $cols = null)
+	public static function doValidate(Matiere $obj, $cols = null)
 	{
 		$columns = array();
 
 		if ($cols) {
-			$dbMap = Propel::getDatabaseMap(GroupePeer::DATABASE_NAME);
-			$tableMap = $dbMap->getTable(GroupePeer::TABLE_NAME);
+			$dbMap = Propel::getDatabaseMap(MatierePeer::DATABASE_NAME);
+			$tableMap = $dbMap->getTable(MatierePeer::TABLE_NAME);
 
 			if (! is_array($cols)) {
 				$cols = array($cols);
@@ -834,31 +966,31 @@ abstract class BaseGroupePeer {
 
 		}
 
-		return BasePeer::doValidate(GroupePeer::DATABASE_NAME, GroupePeer::TABLE_NAME, $columns);
+		return BasePeer::doValidate(MatierePeer::DATABASE_NAME, MatierePeer::TABLE_NAME, $columns);
 	}
 
 	/**
 	 * Retrieve a single object by pkey.
 	 *
-	 * @param      int $pk the primary key.
+	 * @param      string $pk the primary key.
 	 * @param      PropelPDO $con the connection to use
-	 * @return     Groupe
+	 * @return     Matiere
 	 */
 	public static function retrieveByPK($pk, PropelPDO $con = null)
 	{
 
-		if (null !== ($obj = GroupePeer::getInstanceFromPool((string) $pk))) {
+		if (null !== ($obj = MatierePeer::getInstanceFromPool((string) $pk))) {
 			return $obj;
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(MatierePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria = new Criteria(GroupePeer::DATABASE_NAME);
-		$criteria->add(GroupePeer::ID, $pk);
+		$criteria = new Criteria(MatierePeer::DATABASE_NAME);
+		$criteria->add(MatierePeer::MATIERE, $pk);
 
-		$v = GroupePeer::doSelect($criteria, $con);
+		$v = MatierePeer::doSelect($criteria, $con);
 
 		return !empty($v) > 0 ? $v[0] : null;
 	}
@@ -874,23 +1006,23 @@ abstract class BaseGroupePeer {
 	public static function retrieveByPKs($pks, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(MatierePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		$objs = null;
 		if (empty($pks)) {
 			$objs = array();
 		} else {
-			$criteria = new Criteria(GroupePeer::DATABASE_NAME);
-			$criteria->add(GroupePeer::ID, $pks, Criteria::IN);
-			$objs = GroupePeer::doSelect($criteria, $con);
+			$criteria = new Criteria(MatierePeer::DATABASE_NAME);
+			$criteria->add(MatierePeer::MATIERE, $pks, Criteria::IN);
+			$objs = MatierePeer::doSelect($criteria, $con);
 		}
 		return $objs;
 	}
 
-} // BaseGroupePeer
+} // BaseMatierePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseGroupePeer::buildTableMap();
+BaseMatierePeer::buildTableMap();
 

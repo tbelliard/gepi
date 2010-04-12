@@ -129,6 +129,16 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 	}
 	saveSetting("may_import_user_profile", $_POST['may_import_user_profile']);
 
+	if (isset($_POST['sso_scribe'])) {
+	    if ($_POST['sso_scribe'] != "yes") {
+	    	$_POST['sso_scribe'] = "no";
+	    }
+	} else {
+		$_POST['sso_scribe'] = "no";
+	}
+	saveSetting("sso_scribe", $_POST['sso_scribe']);
+
+
 	if (isset($_POST['statut_utilisateur_defaut'])) {
 	    if (!in_array($_POST['statut_utilisateur_defaut'], array("professeur","responsable","eleve"))) {
 	    	$_POST['statut_utilisateur_defaut'] = "professeur";
@@ -295,6 +305,14 @@ echo "<p><input type='checkbox' name='may_import_user_profile' value='yes' id='l
 if (getSettingValue("may_import_user_profile")=='yes' && $ldap_setup_valid) echo " checked ";
 if (!$ldap_setup_valid) echo " disabled";
 echo " /> <label for='label_import_user_profile' style='cursor: pointer;'>Import à la volée des comptes utilisateurs authentifiés correctement (en LDAP ou SSO).";
+if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>";
+echo "</label>";
+echo "</p>";
+
+echo "<p><input type='checkbox' name='sso_scribe' value='yes' id='label_sso_scribe'";
+if (getSettingValue("sso_scribe")=='yes' && $ldap_setup_valid) echo " checked ";
+if (!$ldap_setup_valid) echo " disabled";
+echo " /> <label for='label_sso_scribe' style='cursor: pointer;'>Utilisation avec l'annuaire LDAP de Scribe NG, versions 2.2 et supérieures (permet l'import à la volée de données plus complètes lorsque cet ENT est utilisé et que l'option 'Import à la volée', ci-dessus, est cochée).";
 if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>";
 echo "</label>";
 echo "</p>";

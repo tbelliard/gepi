@@ -82,16 +82,16 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	/**
 	 * Find object by primary key
 	 * <code>
-	 * $obj = $c->findPk(array(12, 34, 56), $con);
+	 * $obj = $c->findPk(array(12, 34), $con);
 	 * </code>
-	 * @param     array[$nom_periode, $num_periode, $id_classe] $key Primary key to use for the query
+	 * @param     array[$num_periode, $id_classe] $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
 	 * @return    PeriodeNote|array|mixed the result, formatted by the current formatter
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = PeriodeNotePeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1], (string) $key[2]))))) && $this->getFormatter()->isObjectFormatter()) {
+		if ((null !== ($obj = PeriodeNotePeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && $this->getFormatter()->isObjectFormatter()) {
 			// the object is alredy in the instance pool
 			return $obj;
 		} else {
@@ -129,9 +129,8 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKey($key)
 	{
-		$this->addUsingAlias(PeriodeNotePeer::NOM_PERIODE, $key[0], Criteria::EQUAL);
-		$this->addUsingAlias(PeriodeNotePeer::NUM_PERIODE, $key[1], Criteria::EQUAL);
-		$this->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $key[2], Criteria::EQUAL);
+		$this->addUsingAlias(PeriodeNotePeer::NUM_PERIODE, $key[0], Criteria::EQUAL);
+		$this->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $key[1], Criteria::EQUAL);
 		
 		return $this;
 	}
@@ -146,11 +145,9 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	public function filterByPrimaryKeys($keys)
 	{
 		foreach ($keys as $key) {
-			$cton0 = $this->getNewCriterion(PeriodeNotePeer::NOM_PERIODE, $key[0], Criteria::EQUAL);
-			$cton1 = $this->getNewCriterion(PeriodeNotePeer::NUM_PERIODE, $key[1], Criteria::EQUAL);
+			$cton0 = $this->getNewCriterion(PeriodeNotePeer::NUM_PERIODE, $key[0], Criteria::EQUAL);
+			$cton1 = $this->getNewCriterion(PeriodeNotePeer::ID_CLASSE, $key[1], Criteria::EQUAL);
 			$cton0->addAnd($cton1);
-			$cton2 = $this->getNewCriterion(PeriodeNotePeer::ID_CLASSE, $key[2], Criteria::EQUAL);
-			$cton0->addAnd($cton2);
 			$this->addOr($cton0);
 		}
 		
@@ -332,10 +329,9 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	public function prune($periodeNote = null)
 	{
 		if ($periodeNote) {
-			$this->addCond('pruneCond0', $this->getAliasedColName(PeriodeNotePeer::NOM_PERIODE), $periodeNote->getNomPeriode(), Criteria::NOT_EQUAL);
-			$this->addCond('pruneCond1', $this->getAliasedColName(PeriodeNotePeer::NUM_PERIODE), $periodeNote->getNumPeriode(), Criteria::NOT_EQUAL);
-			$this->addCond('pruneCond2', $this->getAliasedColName(PeriodeNotePeer::ID_CLASSE), $periodeNote->getIdClasse(), Criteria::NOT_EQUAL);
-			$this->combine(array('pruneCond0', 'pruneCond1', 'pruneCond2'), Criteria::LOGICAL_OR);
+			$this->addCond('pruneCond0', $this->getAliasedColName(PeriodeNotePeer::NUM_PERIODE), $periodeNote->getNumPeriode(), Criteria::NOT_EQUAL);
+			$this->addCond('pruneCond1', $this->getAliasedColName(PeriodeNotePeer::ID_CLASSE), $periodeNote->getIdClasse(), Criteria::NOT_EQUAL);
+			$this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
 	  }
 	  
 		return $this;

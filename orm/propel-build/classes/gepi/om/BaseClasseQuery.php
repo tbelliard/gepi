@@ -1166,6 +1166,23 @@ abstract class BaseClasseQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query by a related CategorieMatiere object
+	 * using the j_matieres_categories_classes table as cross reference
+	 *
+	 * @param     CategorieMatiere $categorieMatiere the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    ClasseQuery The current query, for fluid interface
+	 */
+	public function filterByCategorieMatiere($categorieMatiere, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->useJCategoriesMatieresClassesQuery()
+				->filterByCategorieMatiere($categorieMatiere, $comparison)
+			->endUse();
+	}
+	
+	/**
 	 * Exclude object from result
 	 *
 	 * @param     Classe $classe Object to remove from the list of results

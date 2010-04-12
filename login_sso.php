@@ -35,6 +35,7 @@ if (isset($_POST) && array_key_exists('logoutRequest', $_POST)) {
 }
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
+include("./lib/initialisationsPropel.inc.php");
 
 
 if ($session_gepi->auth_sso && isset($logout_request)) {

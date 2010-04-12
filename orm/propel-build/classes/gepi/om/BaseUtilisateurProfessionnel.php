@@ -188,6 +188,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	protected $collAbsenceEleveEnvois;
 
 	/**
+	 * @var        array JProfesseursMatieres[] Collection to store aggregation of JProfesseursMatieres objects.
+	 */
+	protected $collJProfesseursMatieress;
+
+	/**
 	 * @var        array PreferenceUtilisateurProfessionnel[] Collection to store aggregation of PreferenceUtilisateurProfessionnel objects.
 	 */
 	protected $collPreferenceUtilisateurProfessionnels;
@@ -206,6 +211,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * @var        array Eleve[] Collection to store aggregation of Eleve objects.
 	 */
 	protected $collEleves;
+
+	/**
+	 * @var        array Matiere[] Collection to store aggregation of Matiere objects.
+	 */
+	protected $collMatieres;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -1056,6 +1066,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 			$this->collAbsenceEleveEnvois = null;
 
+			$this->collJProfesseursMatieress = null;
+
 			$this->collPreferenceUtilisateurProfessionnels = null;
 
 			$this->collEdtEmplacementCourss = null;
@@ -1265,6 +1277,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			if ($this->collJProfesseursMatieress !== null) {
+				foreach ($this->collJProfesseursMatieress as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			if ($this->collPreferenceUtilisateurProfessionnels !== null) {
 				foreach ($this->collPreferenceUtilisateurProfessionnels as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1426,6 +1446,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 				if ($this->collAbsenceEleveEnvois !== null) {
 					foreach ($this->collAbsenceEleveEnvois as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJProfesseursMatieress !== null) {
+					foreach ($this->collJProfesseursMatieress as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1874,6 +1902,12 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			foreach ($this->getAbsenceEleveEnvois() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addAbsenceEleveEnvoi($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getJProfesseursMatieress() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJProfesseursMatieres($relObj->copy($deepCopy));
 				}
 			}
 
@@ -3464,6 +3498,135 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Clears out the collJProfesseursMatieress collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJProfesseursMatieress()
+	 */
+	public function clearJProfesseursMatieress()
+	{
+		$this->collJProfesseursMatieress = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJProfesseursMatieress collection.
+	 *
+	 * By default this just sets the collJProfesseursMatieress collection to an empty array (like clearcollJProfesseursMatieress());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initJProfesseursMatieress()
+	{
+		$this->collJProfesseursMatieress = new PropelObjectCollection();
+		$this->collJProfesseursMatieress->setModel('JProfesseursMatieres');
+	}
+
+	/**
+	 * Gets an array of JProfesseursMatieres objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this UtilisateurProfessionnel is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array JProfesseursMatieres[] List of JProfesseursMatieres objects
+	 * @throws     PropelException
+	 */
+	public function getJProfesseursMatieress($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collJProfesseursMatieress || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJProfesseursMatieress) {
+				// return empty collection
+				$this->initJProfesseursMatieress();
+			} else {
+				$collJProfesseursMatieress = JProfesseursMatieresQuery::create(null, $criteria)
+					->filterByProfesseur($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJProfesseursMatieress;
+				}
+				$this->collJProfesseursMatieress = $collJProfesseursMatieress;
+			}
+		}
+		return $this->collJProfesseursMatieress;
+	}
+
+	/**
+	 * Returns the number of related JProfesseursMatieres objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JProfesseursMatieres objects.
+	 * @throws     PropelException
+	 */
+	public function countJProfesseursMatieress(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collJProfesseursMatieress || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJProfesseursMatieress) {
+				return 0;
+			} else {
+				$query = JProfesseursMatieresQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByProfesseur($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collJProfesseursMatieress);
+		}
+	}
+
+	/**
+	 * Method called to associate a JProfesseursMatieres object to this object
+	 * through the JProfesseursMatieres foreign key attribute.
+	 *
+	 * @param      JProfesseursMatieres $l JProfesseursMatieres
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addJProfesseursMatieres(JProfesseursMatieres $l)
+	{
+		if ($this->collJProfesseursMatieress === null) {
+			$this->initJProfesseursMatieress();
+		}
+		if (!$this->collJProfesseursMatieress->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJProfesseursMatieress[]= $l;
+			$l->setProfesseur($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related JProfesseursMatieress from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 */
+	public function getJProfesseursMatieressJoinMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = JProfesseursMatieresQuery::create(null, $criteria);
+		$query->joinWith('Matiere', $join_behavior);
+
+		return $this->getJProfesseursMatieress($query, $con);
+	}
+
+	/**
 	 * Clears out the collPreferenceUtilisateurProfessionnels collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -4008,6 +4171,119 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Clears out the collMatieres collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addMatieres()
+	 */
+	public function clearMatieres()
+	{
+		$this->collMatieres = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collMatieres collection.
+	 *
+	 * By default this just sets the collMatieres collection to an empty collection (like clearMatieres());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initMatieres()
+	{
+		$this->collMatieres = new PropelObjectCollection();
+		$this->collMatieres->setModel('Matiere');
+	}
+
+	/**
+	 * Gets a collection of Matiere objects related by a many-to-many relationship
+	 * to the current object by way of the j_professeurs_matieres cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this UtilisateurProfessionnel is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array Matiere[] List of Matiere objects
+	 */
+	public function getMatieres($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collMatieres || null !== $criteria) {
+			if ($this->isNew() && null === $this->collMatieres) {
+				// return empty collection
+				$this->initMatieres();
+			} else {
+				$collMatieres = MatiereQuery::create(null, $criteria)
+					->filterByProfesseur($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collMatieres;
+				}
+				$this->collMatieres = $collMatieres;
+			}
+		}
+		return $this->collMatieres;
+	}
+
+	/**
+	 * Gets the number of Matiere objects related by a many-to-many relationship
+	 * to the current object by way of the j_professeurs_matieres cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related Matiere objects
+	 */
+	public function countMatieres($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collMatieres || null !== $criteria) {
+			if ($this->isNew() && null === $this->collMatieres) {
+				return 0;
+			} else {
+				$query = MatiereQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByProfesseur($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collMatieres);
+		}
+	}
+
+	/**
+	 * Associate a Matiere object to this object
+	 * through the j_professeurs_matieres cross reference table.
+	 *
+	 * @param      Matiere $matiere The JProfesseursMatieres object to relate
+	 * @return     void
+	 */
+	public function addMatiere($matiere)
+	{
+		if ($this->collMatieres === null) {
+			$this->initMatieres();
+		}
+		if (!$this->collMatieres->contains($matiere)) { // only add it if the **same** object is not already associated
+			$jProfesseursMatieres = new JProfesseursMatieres();
+			$jProfesseursMatieres->setMatiere($matiere);
+			$this->addJProfesseursMatieres($jProfesseursMatieres);
+			
+			$this->collMatieres[]= $matiere;
+		}
+	}
+
+	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
@@ -4097,6 +4373,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collJProfesseursMatieress) {
+				foreach ((array) $this->collJProfesseursMatieress as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collPreferenceUtilisateurProfessionnels) {
 				foreach ((array) $this->collPreferenceUtilisateurProfessionnels as $o) {
 					$o->clearAllReferences($deep);
@@ -4119,6 +4400,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$this->collAbsenceEleveSaisies = null;
 		$this->collAbsenceEleveTraitements = null;
 		$this->collAbsenceEleveEnvois = null;
+		$this->collJProfesseursMatieress = null;
 		$this->collPreferenceUtilisateurProfessionnels = null;
 		$this->collEdtEmplacementCourss = null;
 	}

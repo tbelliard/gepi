@@ -73,6 +73,29 @@ CREATE TABLE j_groupes_professeurs
 )Type=MyISAM COMMENT='Table permettant le jointure entre groupe d\'eleves et professeurs. Est rarement utilise directement dans le code.';
 
 #-----------------------------------------------------------------------------
+#-- j_groupes_matieres
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS j_groupes_matieres;
+
+
+CREATE TABLE j_groupes_matieres
+(
+	id_groupe INTEGER  NOT NULL COMMENT 'Cle primaire du groupe',
+	id_matiere VARCHAR(255)  NOT NULL COMMENT 'Cle primaire de la matiere',
+	PRIMARY KEY (id_groupe,id_matiere),
+	CONSTRAINT j_groupes_matieres_FK_1
+		FOREIGN KEY (id_groupe)
+		REFERENCES groupes (id)
+		ON DELETE CASCADE,
+	INDEX j_groupes_matieres_FI_2 (id_matiere),
+	CONSTRAINT j_groupes_matieres_FK_2
+		FOREIGN KEY (id_matiere)
+		REFERENCES matieres (matiere)
+		ON DELETE CASCADE
+)Type=MyISAM COMMENT='Table permettant le jointure entre un enseignement et une matière.';
+
+#-----------------------------------------------------------------------------
 #-- classes
 #-----------------------------------------------------------------------------
 
@@ -120,12 +143,12 @@ DROP TABLE IF EXISTS periodes;
 
 CREATE TABLE periodes
 (
-	nom_periode VARCHAR(10)  NOT NULL COMMENT 'Nom de la periode de note',
+	nom_periode VARCHAR(10) COMMENT 'Nom de la periode de note',
 	num_periode INTEGER(10)  NOT NULL COMMENT 'identifiant numerique de la periode (1, 2 ou3)',
 	verouiller VARCHAR(1) default 'O' NOT NULL COMMENT 'Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)',
-	id_classe INTEGER(10)  NOT NULL COMMENT 'identifiant numerique de la classe.',
+	id_classe INTEGER(11)  NOT NULL COMMENT 'identifiant numerique de la classe.',
 	date_verrouillage TIME COMMENT 'date de verrouillage de la periode',
-	PRIMARY KEY (nom_periode,num_periode,id_classe),
+	PRIMARY KEY (num_periode,id_classe),
 	INDEX periodes_FI_1 (id_classe),
 	CONSTRAINT periodes_FK_1
 		FOREIGN KEY (id_classe)
@@ -163,7 +186,7 @@ CREATE TABLE j_groupes_classes
 	CONSTRAINT j_groupes_classes_FK_3
 		FOREIGN KEY (categorie_id)
 		REFERENCES matieres_categories (id)
-)Type=MyISAM COMMENT='Table permettant la jointure entre groupe d\'eleves et une classe. Cette jointure permet de definir un enseignement, c\'est à dire un groupe d\'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe';
+)Type=MyISAM COMMENT='Table permettant la jointure entre groupe d\'enseignement et une classe. Cette jointure permet de definir un enseignement, c\'est à dire un groupe d\'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe';
 
 #-----------------------------------------------------------------------------
 #-- ct_entry
@@ -1076,6 +1099,28 @@ CREATE TABLE archivage_ects
 )Type=MyISAM COMMENT='Enregistrement d\'archive pour les credits ECTS, dont le rapport n\'est edite qu\'au depart de l\'eleve';
 
 #-----------------------------------------------------------------------------
+#-- matieres
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS matieres;
+
+
+CREATE TABLE matieres
+(
+	matiere VARCHAR(255)  NOT NULL,
+	nom_complet VARCHAR(200)  NOT NULL COMMENT 'Nom complet',
+	priority INTEGER(6) default 0 NOT NULL COMMENT 'Priorite d\'affichage',
+	matiere_aid VARCHAR(1) default 'n' COMMENT 'Matiere AID',
+	matiere_atelier VARCHAR(1) default 'n' COMMENT 'Matiere Atelier',
+	categorie_id INTEGER(11) default 1 NOT NULL COMMENT 'Association avec Categories de matieres',
+	PRIMARY KEY (matiere),
+	INDEX matieres_FI_1 (categorie_id),
+	CONSTRAINT matieres_FK_1
+		FOREIGN KEY (categorie_id)
+		REFERENCES matieres_categories (id)
+)Type=MyISAM COMMENT='Matières';
+
+#-----------------------------------------------------------------------------
 #-- matieres_categories
 #-----------------------------------------------------------------------------
 
@@ -1115,6 +1160,28 @@ CREATE TABLE j_matieres_categories_classes
 		REFERENCES classes (id)
 		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Liaison entre categories de matiere et classes';
+
+#-----------------------------------------------------------------------------
+#-- j_professeurs_matieres
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS j_professeurs_matieres;
+
+
+CREATE TABLE j_professeurs_matieres
+(
+	id_matiere VARCHAR(50)  NOT NULL,
+	id_professeur VARCHAR(50)  NOT NULL,
+	ordre_matieres INTEGER(11) default 0 NOT NULL COMMENT 'Priorite d\'affichage',
+	PRIMARY KEY (id_matiere,id_professeur),
+	CONSTRAINT j_professeurs_matieres_FK_1
+		FOREIGN KEY (id_matiere)
+		REFERENCES matieres (matiere),
+	INDEX j_professeurs_matieres_FI_2 (id_professeur),
+	CONSTRAINT j_professeurs_matieres_FK_2
+		FOREIGN KEY (id_professeur)
+		REFERENCES utilisateurs (login)
+)Type=MyISAM COMMENT='Liaison entre les profs et les matières';
 
 #-----------------------------------------------------------------------------
 #-- plugins

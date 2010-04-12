@@ -288,7 +288,7 @@ abstract class BasePeriodeNotePeer {
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = serialize(array((string) $obj->getNomPeriode(), (string) $obj->getNumPeriode(), (string) $obj->getIdClasse()));
+				$key = serialize(array((string) $obj->getNumPeriode(), (string) $obj->getIdClasse()));
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -308,10 +308,10 @@ abstract class BasePeriodeNotePeer {
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
 			if (is_object($value) && $value instanceof PeriodeNote) {
-				$key = serialize(array((string) $value->getNomPeriode(), (string) $value->getNumPeriode(), (string) $value->getIdClasse()));
-			} elseif (is_array($value) && count($value) === 3) {
+				$key = serialize(array((string) $value->getNumPeriode(), (string) $value->getIdClasse()));
+			} elseif (is_array($value) && count($value) === 2) {
 				// assume we've been passed a primary key
-				$key = serialize(array((string) $value[0], (string) $value[1], (string) $value[2]));
+				$key = serialize(array((string) $value[0], (string) $value[1]));
 			} else {
 				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or PeriodeNote object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
@@ -372,10 +372,10 @@ abstract class BasePeriodeNotePeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol] === null && $row[$startcol + 1] === null && $row[$startcol + 3] === null) {
+		if ($row[$startcol + 1] === null && $row[$startcol + 3] === null) {
 			return null;
 		}
-		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1], (string) $row[$startcol + 3]));
+		return serialize(array((string) $row[$startcol + 1], (string) $row[$startcol + 3]));
 	}
 
 	/**
@@ -389,7 +389,7 @@ abstract class BasePeriodeNotePeer {
 	 */
 	public static function getPrimaryKeyFromRow($row, $startcol = 0)
 	{
-		return array((string) $row[$startcol], (int) $row[$startcol + 1], (int) $row[$startcol + 3]);
+		return array((int) $row[$startcol + 1], (int) $row[$startcol + 3]);
 	}
 	
 	/**
@@ -781,14 +781,6 @@ abstract class BasePeriodeNotePeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(PeriodeNotePeer::NOM_PERIODE);
-			$value = $criteria->remove(PeriodeNotePeer::NOM_PERIODE);
-			if ($value) {
-				$selectCriteria->add(PeriodeNotePeer::NOM_PERIODE, $value, $comparison);
-			} else {
-				$selectCriteria->setPrimaryTableName(PeriodeNotePeer::TABLE_NAME);
-			}
-
 			$comparison = $criteria->getComparison(PeriodeNotePeer::NUM_PERIODE);
 			$value = $criteria->remove(PeriodeNotePeer::NUM_PERIODE);
 			if ($value) {
@@ -883,9 +875,8 @@ abstract class BasePeriodeNotePeer {
 				$values = array($values);
 			}
 			foreach ($values as $value) {
-				$criterion = $criteria->getNewCriterion(PeriodeNotePeer::NOM_PERIODE, $value[0]);
-				$criterion->addAnd($criteria->getNewCriterion(PeriodeNotePeer::NUM_PERIODE, $value[1]));
-				$criterion->addAnd($criteria->getNewCriterion(PeriodeNotePeer::ID_CLASSE, $value[2]));
+				$criterion = $criteria->getNewCriterion(PeriodeNotePeer::NUM_PERIODE, $value[0]);
+				$criterion->addAnd($criteria->getNewCriterion(PeriodeNotePeer::ID_CLASSE, $value[1]));
 				$criteria->addOr($criterion);
 				// we can invalidate the cache for this single PK
 				PeriodeNotePeer::removeInstanceFromPool($value);
@@ -951,14 +942,13 @@ abstract class BasePeriodeNotePeer {
 
 	/**
 	 * Retrieve object using using composite pkey values.
-	 * @param      string $nom_periode
 	 * @param      int $num_periode
 	 * @param      int $id_classe
 	 * @param      PropelPDO $con
 	 * @return     PeriodeNote
 	 */
-	public static function retrieveByPK($nom_periode, $num_periode, $id_classe, PropelPDO $con = null) {
-		$key = serialize(array((string) $nom_periode, (string) $num_periode, (string) $id_classe));
+	public static function retrieveByPK($num_periode, $id_classe, PropelPDO $con = null) {
+		$key = serialize(array((string) $num_periode, (string) $id_classe));
  		if (null !== ($obj = PeriodeNotePeer::getInstanceFromPool($key))) {
  			return $obj;
 		}
@@ -967,7 +957,6 @@ abstract class BasePeriodeNotePeer {
 			$con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 		$criteria = new Criteria(PeriodeNotePeer::DATABASE_NAME);
-		$criteria->add(PeriodeNotePeer::NOM_PERIODE, $nom_periode);
 		$criteria->add(PeriodeNotePeer::NUM_PERIODE, $num_periode);
 		$criteria->add(PeriodeNotePeer::ID_CLASSE, $id_classe);
 		$v = PeriodeNotePeer::doSelect($criteria, $con);

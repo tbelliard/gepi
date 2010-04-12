@@ -53,6 +53,11 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	protected $collJGroupesProfesseurss;
 
 	/**
+	 * @var        array JGroupesMatieres[] Collection to store aggregation of JGroupesMatieres objects.
+	 */
+	protected $collJGroupesMatieress;
+
+	/**
 	 * @var        array JGroupesClasses[] Collection to store aggregation of JGroupesClasses objects.
 	 */
 	protected $collJGroupesClassess;
@@ -96,6 +101,11 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	 * @var        array UtilisateurProfessionnel[] Collection to store aggregation of UtilisateurProfessionnel objects.
 	 */
 	protected $collUtilisateurProfessionnels;
+
+	/**
+	 * @var        array Matiere[] Collection to store aggregation of Matiere objects.
+	 */
+	protected $collMatieres;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -339,6 +349,8 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 
 			$this->collJGroupesProfesseurss = null;
 
+			$this->collJGroupesMatieress = null;
+
 			$this->collJGroupesClassess = null;
 
 			$this->collCahierTexteCompteRendus = null;
@@ -496,6 +508,14 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->collJGroupesMatieress !== null) {
+				foreach ($this->collJGroupesMatieress as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			if ($this->collJGroupesClassess !== null) {
 				foreach ($this->collJGroupesClassess as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -633,6 +653,14 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 
 				if ($this->collJGroupesProfesseurss !== null) {
 					foreach ($this->collJGroupesProfesseurss as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJGroupesMatieress !== null) {
+					foreach ($this->collJGroupesMatieress as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -937,6 +965,12 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 				}
 			}
 
+			foreach ($this->getJGroupesMatieress() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJGroupesMatieres($relObj->copy($deepCopy));
+				}
+			}
+
 			foreach ($this->getJGroupesClassess() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addJGroupesClasses($relObj->copy($deepCopy));
@@ -1157,6 +1191,135 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getJGroupesProfesseurss($query, $con);
+	}
+
+	/**
+	 * Clears out the collJGroupesMatieress collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJGroupesMatieress()
+	 */
+	public function clearJGroupesMatieress()
+	{
+		$this->collJGroupesMatieress = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJGroupesMatieress collection.
+	 *
+	 * By default this just sets the collJGroupesMatieress collection to an empty array (like clearcollJGroupesMatieress());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initJGroupesMatieress()
+	{
+		$this->collJGroupesMatieress = new PropelObjectCollection();
+		$this->collJGroupesMatieress->setModel('JGroupesMatieres');
+	}
+
+	/**
+	 * Gets an array of JGroupesMatieres objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      PropelPDO $con
+	 * @return     PropelCollection|array JGroupesMatieres[] List of JGroupesMatieres objects
+	 * @throws     PropelException
+	 */
+	public function getJGroupesMatieress($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collJGroupesMatieress || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJGroupesMatieress) {
+				// return empty collection
+				$this->initJGroupesMatieress();
+			} else {
+				$collJGroupesMatieress = JGroupesMatieresQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJGroupesMatieress;
+				}
+				$this->collJGroupesMatieress = $collJGroupesMatieress;
+			}
+		}
+		return $this->collJGroupesMatieress;
+	}
+
+	/**
+	 * Returns the number of related JGroupesMatieres objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JGroupesMatieres objects.
+	 * @throws     PropelException
+	 */
+	public function countJGroupesMatieress(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collJGroupesMatieress || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJGroupesMatieress) {
+				return 0;
+			} else {
+				$query = JGroupesMatieresQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collJGroupesMatieress);
+		}
+	}
+
+	/**
+	 * Method called to associate a JGroupesMatieres object to this object
+	 * through the JGroupesMatieres foreign key attribute.
+	 *
+	 * @param      JGroupesMatieres $l JGroupesMatieres
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addJGroupesMatieres(JGroupesMatieres $l)
+	{
+		if ($this->collJGroupesMatieress === null) {
+			$this->initJGroupesMatieress();
+		}
+		if (!$this->collJGroupesMatieress->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJGroupesMatieress[]= $l;
+			$l->setGroupe($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related JGroupesMatieress from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 */
+	public function getJGroupesMatieressJoinMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = JGroupesMatieresQuery::create(null, $criteria);
+		$query->joinWith('Matiere', $join_behavior);
+
+		return $this->getJGroupesMatieress($query, $con);
 	}
 
 	/**
@@ -2545,6 +2708,119 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collMatieres collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addMatieres()
+	 */
+	public function clearMatieres()
+	{
+		$this->collMatieres = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collMatieres collection.
+	 *
+	 * By default this just sets the collMatieres collection to an empty collection (like clearMatieres());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initMatieres()
+	{
+		$this->collMatieres = new PropelObjectCollection();
+		$this->collMatieres->setModel('Matiere');
+	}
+
+	/**
+	 * Gets a collection of Matiere objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_matieres cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array Matiere[] List of Matiere objects
+	 */
+	public function getMatieres($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collMatieres || null !== $criteria) {
+			if ($this->isNew() && null === $this->collMatieres) {
+				// return empty collection
+				$this->initMatieres();
+			} else {
+				$collMatieres = MatiereQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collMatieres;
+				}
+				$this->collMatieres = $collMatieres;
+			}
+		}
+		return $this->collMatieres;
+	}
+
+	/**
+	 * Gets the number of Matiere objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_matieres cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related Matiere objects
+	 */
+	public function countMatieres($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collMatieres || null !== $criteria) {
+			if ($this->isNew() && null === $this->collMatieres) {
+				return 0;
+			} else {
+				$query = MatiereQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collMatieres);
+		}
+	}
+
+	/**
+	 * Associate a Matiere object to this object
+	 * through the j_groupes_matieres cross reference table.
+	 *
+	 * @param      Matiere $matiere The JGroupesMatieres object to relate
+	 * @return     void
+	 */
+	public function addMatiere($matiere)
+	{
+		if ($this->collMatieres === null) {
+			$this->initMatieres();
+		}
+		if (!$this->collMatieres->contains($matiere)) { // only add it if the **same** object is not already associated
+			$jGroupesMatieres = new JGroupesMatieres();
+			$jGroupesMatieres->setMatiere($matiere);
+			$this->addJGroupesMatieres($jGroupesMatieres);
+			
+			$this->collMatieres[]= $matiere;
+		}
+	}
+
+	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
@@ -2571,6 +2847,11 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 		if ($deep) {
 			if ($this->collJGroupesProfesseurss) {
 				foreach ((array) $this->collJGroupesProfesseurss as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collJGroupesMatieress) {
+				foreach ((array) $this->collJGroupesMatieress as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
@@ -2617,6 +2898,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 		} // if ($deep)
 
 		$this->collJGroupesProfesseurss = null;
+		$this->collJGroupesMatieress = null;
 		$this->collJGroupesClassess = null;
 		$this->collCahierTexteCompteRendus = null;
 		$this->collCahierTexteTravailAFaires = null;

@@ -2,7 +2,7 @@
 
 
 /**
- * This class defines the structure of the 'periodes' table.
+ * This class defines the structure of the 'j_groupes_matieres' table.
  *
  *
  *
@@ -13,12 +13,12 @@
  *
  * @package    propel.generator.gepi.map
  */
-class PeriodeNoteTableMap extends TableMap {
+class JGroupesMatieresTableMap extends TableMap {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'gepi.map.PeriodeNoteTableMap';
+	const CLASS_NAME = 'gepi.map.JGroupesMatieresTableMap';
 
 	/**
 	 * Initialize the table attributes, columns and validators
@@ -30,17 +30,14 @@ class PeriodeNoteTableMap extends TableMap {
 	public function initialize()
 	{
 	  // attributes
-		$this->setName('periodes');
-		$this->setPhpName('PeriodeNote');
-		$this->setClassname('PeriodeNote');
+		$this->setName('j_groupes_matieres');
+		$this->setPhpName('JGroupesMatieres');
+		$this->setClassname('JGroupesMatieres');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
 		// columns
-		$this->addColumn('NOM_PERIODE', 'NomPeriode', 'VARCHAR', false, 10, null);
-		$this->addPrimaryKey('NUM_PERIODE', 'NumPeriode', 'INTEGER', true, 10, null);
-		$this->addColumn('VEROUILLER', 'Verouiller', 'VARCHAR', true, 1, 'O');
-		$this->addForeignPrimaryKey('ID_CLASSE', 'IdClasse', 'INTEGER' , 'classes', 'ID', true, 11, null);
-		$this->addColumn('DATE_VERROUILLAGE', 'DateVerrouillage', 'TIME', false, null, null);
+		$this->addForeignPrimaryKey('ID_GROUPE', 'IdGroupe', 'INTEGER' , 'groupes', 'ID', true, null, null);
+		$this->addForeignPrimaryKey('ID_MATIERE', 'IdMatiere', 'VARCHAR' , 'matieres', 'MATIERE', true, 255, null);
 		// validators
 	} // initialize()
 
@@ -49,7 +46,8 @@ class PeriodeNoteTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'CASCADE', null);
+    $this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
+    $this->addRelation('Matiere', 'Matiere', RelationMap::MANY_TO_ONE, array('id_matiere' => 'matiere', ), 'CASCADE', null);
 	} // buildRelations()
 
-} // PeriodeNoteTableMap
+} // JGroupesMatieresTableMap

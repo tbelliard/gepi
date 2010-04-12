@@ -363,9 +363,9 @@ if (LDAPServer::is_setup()) {
 	
 if (LDAPServer::is_setup()) {	
 	
-	$chemin="../init_scribe/index.php";
-	$titre = "Initialisation à partir de l'annuaire LDAP du serveur Eole Scribe";
-	$expli = "Permet d'importer les données ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matières directement depuis le serveur LDAP de Scribe.";
+	$chemin="../init_scribe_ng/index.php";
+	$titre = "Initialisation à partir de l'annuaire LDAP du serveur Eole Scribe NG";
+	$expli = "Permet d'importer les données ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matières directement depuis le serveur LDAP de Scribe NG.";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
 
 	$chemin="../init_lcs/index.php";

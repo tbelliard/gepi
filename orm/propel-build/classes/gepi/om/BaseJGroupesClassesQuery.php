@@ -4,7 +4,7 @@
 /**
  * Base class that represents a query for the 'j_groupes_classes' table.
  *
- * Table permettant la jointure entre groupe d'eleves et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe
+ * Table permettant la jointure entre groupe d'enseignement et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe
  *
  * @method     JGroupesClassesQuery orderByIdGroupe($order = Criteria::ASC) Order by the id_groupe column
  * @method     JGroupesClassesQuery orderByIdClasse($order = Criteria::ASC) Order by the id_classe column

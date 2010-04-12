@@ -230,6 +230,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	protected $collJCategoriesMatieresClassess;
 
 	/**
+	 * @var        array CategorieMatiere[] Collection to store aggregation of CategorieMatiere objects.
+	 */
+	protected $collCategorieMatieres;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -2995,6 +3000,119 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		$query->joinWith('CategorieMatiere', $join_behavior);
 
 		return $this->getJCategoriesMatieresClassess($query, $con);
+	}
+
+	/**
+	 * Clears out the collCategorieMatieres collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addCategorieMatieres()
+	 */
+	public function clearCategorieMatieres()
+	{
+		$this->collCategorieMatieres = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collCategorieMatieres collection.
+	 *
+	 * By default this just sets the collCategorieMatieres collection to an empty collection (like clearCategorieMatieres());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initCategorieMatieres()
+	{
+		$this->collCategorieMatieres = new PropelObjectCollection();
+		$this->collCategorieMatieres->setModel('CategorieMatiere');
+	}
+
+	/**
+	 * Gets a collection of CategorieMatiere objects related by a many-to-many relationship
+	 * to the current object by way of the j_matieres_categories_classes cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Classe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array CategorieMatiere[] List of CategorieMatiere objects
+	 */
+	public function getCategorieMatieres($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collCategorieMatieres || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCategorieMatieres) {
+				// return empty collection
+				$this->initCategorieMatieres();
+			} else {
+				$collCategorieMatieres = CategorieMatiereQuery::create(null, $criteria)
+					->filterByClasse($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collCategorieMatieres;
+				}
+				$this->collCategorieMatieres = $collCategorieMatieres;
+			}
+		}
+		return $this->collCategorieMatieres;
+	}
+
+	/**
+	 * Gets the number of CategorieMatiere objects related by a many-to-many relationship
+	 * to the current object by way of the j_matieres_categories_classes cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related CategorieMatiere objects
+	 */
+	public function countCategorieMatieres($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collCategorieMatieres || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCategorieMatieres) {
+				return 0;
+			} else {
+				$query = CategorieMatiereQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByClasse($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collCategorieMatieres);
+		}
+	}
+
+	/**
+	 * Associate a CategorieMatiere object to this object
+	 * through the j_matieres_categories_classes cross reference table.
+	 *
+	 * @param      CategorieMatiere $categorieMatiere The JCategoriesMatieresClasses object to relate
+	 * @return     void
+	 */
+	public function addCategorieMatiere($categorieMatiere)
+	{
+		if ($this->collCategorieMatieres === null) {
+			$this->initCategorieMatieres();
+		}
+		if (!$this->collCategorieMatieres->contains($categorieMatiere)) { // only add it if the **same** object is not already associated
+			$jCategoriesMatieresClasses = new JCategoriesMatieresClasses();
+			$jCategoriesMatieresClasses->setCategorieMatiere($categorieMatiere);
+			$this->addJCategoriesMatieresClasses($jCategoriesMatieresClasses);
+			
+			$this->collCategorieMatieres[]= $categorieMatiere;
+		}
 	}
 
 	/**

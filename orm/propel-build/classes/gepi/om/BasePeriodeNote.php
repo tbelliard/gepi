@@ -823,7 +823,6 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(PeriodeNotePeer::DATABASE_NAME);
-		$criteria->add(PeriodeNotePeer::NOM_PERIODE, $this->nom_periode);
 		$criteria->add(PeriodeNotePeer::NUM_PERIODE, $this->num_periode);
 		$criteria->add(PeriodeNotePeer::ID_CLASSE, $this->id_classe);
 
@@ -838,9 +837,8 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 	public function getPrimaryKey()
 	{
 		$pks = array();
-		$pks[0] = $this->getNomPeriode();
-		$pks[1] = $this->getNumPeriode();
-		$pks[2] = $this->getIdClasse();
+		$pks[0] = $this->getNumPeriode();
+		$pks[1] = $this->getIdClasse();
 		
 		return $pks;
 	}
@@ -853,9 +851,8 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 	 */
 	public function setPrimaryKey($keys)
 	{
-		$this->setNomPeriode($keys[0]);
-		$this->setNumPeriode($keys[1]);
-		$this->setIdClasse($keys[2]);
+		$this->setNumPeriode($keys[0]);
+		$this->setIdClasse($keys[1]);
 	}
 
 	/**
@@ -864,7 +861,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return (null === $this->getNomPeriode()) && (null === $this->getNumPeriode()) && (null === $this->getIdClasse());
+		return (null === $this->getNumPeriode()) && (null === $this->getIdClasse());
 	}
 
 	/**

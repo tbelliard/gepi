@@ -24,6 +24,10 @@
  * @method     CategorieMatiereQuery rightJoinJGroupesClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesClasses relation
  * @method     CategorieMatiereQuery innerJoinJGroupesClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JGroupesClasses relation
  *
+ * @method     CategorieMatiereQuery leftJoinMatiere($relationAlias = '') Adds a LEFT JOIN clause to the query using the Matiere relation
+ * @method     CategorieMatiereQuery rightJoinMatiere($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Matiere relation
+ * @method     CategorieMatiereQuery innerJoinMatiere($relationAlias = '') Adds a INNER JOIN clause to the query using the Matiere relation
+ *
  * @method     CategorieMatiereQuery leftJoinJCategoriesMatieresClasses($relationAlias = '') Adds a LEFT JOIN clause to the query using the JCategoriesMatieresClasses relation
  * @method     CategorieMatiereQuery rightJoinJCategoriesMatieresClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JCategoriesMatieresClasses relation
  * @method     CategorieMatiereQuery innerJoinJCategoriesMatieresClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JCategoriesMatieresClasses relation
@@ -293,6 +297,67 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query by a related Matiere object
+	 *
+	 * @param     Matiere $matiere  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    CategorieMatiereQuery The current query, for fluid interface
+	 */
+	public function filterByMatiere($matiere, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->addUsingAlias(CategorieMatierePeer::ID, $matiere->getCategorieId(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the Matiere relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    CategorieMatiereQuery The current query, for fluid interface
+	 */
+	public function joinMatiere($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('Matiere');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'Matiere');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the Matiere relation Matiere object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    MatiereQuery A secondary query class using the current class as primary query
+	 */
+	public function useMatiereQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinMatiere($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'Matiere', 'MatiereQuery');
+	}
+
+	/**
 	 * Filter the query by a related JCategoriesMatieresClasses object
 	 *
 	 * @param     JCategoriesMatieresClasses $jCategoriesMatieresClasses  the related object to use as filter
@@ -353,6 +418,23 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 			->useQuery($relationAlias ? $relationAlias : 'JCategoriesMatieresClasses', 'JCategoriesMatieresClassesQuery');
 	}
 
+	/**
+	 * Filter the query by a related Classe object
+	 * using the j_matieres_categories_classes table as cross reference
+	 *
+	 * @param     Classe $classe the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    CategorieMatiereQuery The current query, for fluid interface
+	 */
+	public function filterByClasse($classe, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->useJCategoriesMatieresClassesQuery()
+				->filterByClasse($classe, $comparison)
+			->endUse();
+	}
+	
 	/**
 	 * Exclude object from result
 	 *

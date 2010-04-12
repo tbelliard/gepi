@@ -684,4 +684,44 @@ if ($changes) {
 else {
     $result .= "<p style=\"color:blue;\">La table edt_semaines contient bien 53 enregistrements.</p>";
 }
+
+
+// ==== Harmonisation de la taille de clés étrangères
+
+$result .= "&nbsp;->Extension à 255 caractères du champ 'id_matiere' de la table 'j_groupes_matieres'<br />";
+$query = mysql_query("ALTER TABLE `j_groupes_matieres` CHANGE `id_matiere` `id_matiere` VARCHAR( 255 ) NOT NULL;");
+if ($query) {
+        $result .= "<font color=\"green\">Ok !</font><br />";
+} else {
+        $result .= "<font color=\"red\">Erreur</font><br />";
+}
+
+
+$result .= "&nbsp;->Passage du champ 'id' de la table 'classes' en type Integer(11)<br />";
+$query = mysql_query("ALTER TABLE `classes` CHANGE `id` `id` INT( 11 ) UNSIGNED NOT NULL AUTO_INCREMENT;");
+if ($query) {
+        $result .= "<font color=\"green\">Ok !</font><br />";
+} else {
+        $result .= "<font color=\"red\">Erreur</font><br />";
+}
+
+
+// Paramètre d'activation de la synchro à la volée Scribe NG
+
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_scribe'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('sso_scribe', 'no');");
+  if ($result_inter == '') {
+    $result.="<font color=\"green\">Définition du paramètre sso_scribe à 'no': Ok !</font><br />";
+  } else {
+    $result.="<font color=\"red\">Définition du paramètre sso_scribe à 'no': Erreur !</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">Le paramètre sso_scribe existe déjà dans la table setting.</font><br />";
+}
+
+
+
+
 ?>

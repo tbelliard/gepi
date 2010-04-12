@@ -1,85 +1,56 @@
 <?php
 
 /**
- * Base class that represents a row from the 'j_groupes_classes' table.
+ * Base class that represents a row from the 'j_professeurs_matieres' table.
  *
- * Table permettant la jointure entre groupe d'enseignement et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe
+ * Liaison entre les profs et les matières
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
+abstract class BaseJProfesseursMatieres extends BaseObject  implements Persistent
 {
 
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'JGroupesClassesPeer';
+  const PEER = 'JProfesseursMatieresPeer';
 
 	/**
 	 * The Peer class.
 	 * Instance provides a convenient way of calling static methods on a class
 	 * that calling code may not be able to identify.
-	 * @var        JGroupesClassesPeer
+	 * @var        JProfesseursMatieresPeer
 	 */
 	protected static $peer;
 
 	/**
-	 * The value for the id_groupe field.
-	 * @var        int
-	 */
-	protected $id_groupe;
-
-	/**
-	 * The value for the id_classe field.
-	 * @var        int
-	 */
-	protected $id_classe;
-
-	/**
-	 * The value for the priorite field.
-	 * @var        int
-	 */
-	protected $priorite;
-
-	/**
-	 * The value for the coef field.
+	 * The value for the id_matiere field.
 	 * @var        string
 	 */
-	protected $coef;
+	protected $id_matiere;
 
 	/**
-	 * The value for the categorie_id field.
-	 * @var        int
-	 */
-	protected $categorie_id;
-
-	/**
-	 * The value for the saisie_ects field.
-	 * Note: this column has a database default value of: false
-	 * @var        boolean
-	 */
-	protected $saisie_ects;
-
-	/**
-	 * The value for the valeur_ects field.
+	 * The value for the id_professeur field.
 	 * @var        string
 	 */
-	protected $valeur_ects;
+	protected $id_professeur;
 
 	/**
-	 * @var        Groupe
+	 * The value for the ordre_matieres field.
+	 * Note: this column has a database default value of: 0
+	 * @var        int
 	 */
-	protected $aGroupe;
+	protected $ordre_matieres;
 
 	/**
-	 * @var        Classe
+	 * @var        Matiere
 	 */
-	protected $aClasse;
+	protected $aMatiere;
 
 	/**
-	 * @var        CategorieMatiere
+	 * @var        UtilisateurProfessionnel
 	 */
-	protected $aCategorieMatiere;
+	protected $aProfesseur;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -103,11 +74,11 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 */
 	public function applyDefaultValues()
 	{
-		$this->saisie_ects = false;
+		$this->ordre_matieres = 0;
 	}
 
 	/**
-	 * Initializes internal state of BaseJGroupesClasses object.
+	 * Initializes internal state of BaseJProfesseursMatieres object.
 	 * @see        applyDefaults()
 	 */
 	public function __construct()
@@ -117,226 +88,102 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [id_groupe] column value.
-	 * Cle primaire du groupe
-	 * @return     int
-	 */
-	public function getIdGroupe()
-	{
-		return $this->id_groupe;
-	}
-
-	/**
-	 * Get the [id_classe] column value.
-	 * Cle primaire de la classe
-	 * @return     int
-	 */
-	public function getIdClasse()
-	{
-		return $this->id_classe;
-	}
-
-	/**
-	 * Get the [priorite] column value.
-	 * 
-	 * @return     int
-	 */
-	public function getPriorite()
-	{
-		return $this->priorite;
-	}
-
-	/**
-	 * Get the [coef] column value.
+	 * Get the [id_matiere] column value.
 	 * 
 	 * @return     string
 	 */
-	public function getCoef()
+	public function getIdMatiere()
 	{
-		return $this->coef;
+		return $this->id_matiere;
 	}
 
 	/**
-	 * Get the [categorie_id] column value.
+	 * Get the [id_professeur] column value.
 	 * 
-	 * @return     int
-	 */
-	public function getCategorieId()
-	{
-		return $this->categorie_id;
-	}
-
-	/**
-	 * Get the [saisie_ects] column value.
-	 * Active ou non la saisie ECTS pour cet enseignement
-	 * @return     boolean
-	 */
-	public function getSaisieEcts()
-	{
-		return $this->saisie_ects;
-	}
-
-	/**
-	 * Get the [valeur_ects] column value.
-	 * Valeur par défaut des ECTS pour cet enseignement
 	 * @return     string
 	 */
-	public function getValeurEcts()
+	public function getIdProfesseur()
 	{
-		return $this->valeur_ects;
+		return $this->id_professeur;
 	}
 
 	/**
-	 * Set the value of [id_groupe] column.
-	 * Cle primaire du groupe
-	 * @param      int $v new value
-	 * @return     JGroupesClasses The current object (for fluent API support)
+	 * Get the [ordre_matieres] column value.
+	 * Priorite d'affichage
+	 * @return     int
 	 */
-	public function setIdGroupe($v)
+	public function getOrdreMatieres()
 	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->id_groupe !== $v) {
-			$this->id_groupe = $v;
-			$this->modifiedColumns[] = JGroupesClassesPeer::ID_GROUPE;
-		}
-
-		if ($this->aGroupe !== null && $this->aGroupe->getId() !== $v) {
-			$this->aGroupe = null;
-		}
-
-		return $this;
-	} // setIdGroupe()
+		return $this->ordre_matieres;
+	}
 
 	/**
-	 * Set the value of [id_classe] column.
-	 * Cle primaire de la classe
-	 * @param      int $v new value
-	 * @return     JGroupesClasses The current object (for fluent API support)
-	 */
-	public function setIdClasse($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->id_classe !== $v) {
-			$this->id_classe = $v;
-			$this->modifiedColumns[] = JGroupesClassesPeer::ID_CLASSE;
-		}
-
-		if ($this->aClasse !== null && $this->aClasse->getId() !== $v) {
-			$this->aClasse = null;
-		}
-
-		return $this;
-	} // setIdClasse()
-
-	/**
-	 * Set the value of [priorite] column.
-	 * 
-	 * @param      int $v new value
-	 * @return     JGroupesClasses The current object (for fluent API support)
-	 */
-	public function setPriorite($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->priorite !== $v) {
-			$this->priorite = $v;
-			$this->modifiedColumns[] = JGroupesClassesPeer::PRIORITE;
-		}
-
-		return $this;
-	} // setPriorite()
-
-	/**
-	 * Set the value of [coef] column.
+	 * Set the value of [id_matiere] column.
 	 * 
 	 * @param      string $v new value
-	 * @return     JGroupesClasses The current object (for fluent API support)
+	 * @return     JProfesseursMatieres The current object (for fluent API support)
 	 */
-	public function setCoef($v)
+	public function setIdMatiere($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->coef !== $v) {
-			$this->coef = $v;
-			$this->modifiedColumns[] = JGroupesClassesPeer::COEF;
+		if ($this->id_matiere !== $v) {
+			$this->id_matiere = $v;
+			$this->modifiedColumns[] = JProfesseursMatieresPeer::ID_MATIERE;
+		}
+
+		if ($this->aMatiere !== null && $this->aMatiere->getMatiere() !== $v) {
+			$this->aMatiere = null;
 		}
 
 		return $this;
-	} // setCoef()
+	} // setIdMatiere()
 
 	/**
-	 * Set the value of [categorie_id] column.
+	 * Set the value of [id_professeur] column.
 	 * 
-	 * @param      int $v new value
-	 * @return     JGroupesClasses The current object (for fluent API support)
-	 */
-	public function setCategorieId($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->categorie_id !== $v) {
-			$this->categorie_id = $v;
-			$this->modifiedColumns[] = JGroupesClassesPeer::CATEGORIE_ID;
-		}
-
-		if ($this->aCategorieMatiere !== null && $this->aCategorieMatiere->getId() !== $v) {
-			$this->aCategorieMatiere = null;
-		}
-
-		return $this;
-	} // setCategorieId()
-
-	/**
-	 * Set the value of [saisie_ects] column.
-	 * Active ou non la saisie ECTS pour cet enseignement
-	 * @param      boolean $v new value
-	 * @return     JGroupesClasses The current object (for fluent API support)
-	 */
-	public function setSaisieEcts($v)
-	{
-		if ($v !== null) {
-			$v = (boolean) $v;
-		}
-
-		if ($this->saisie_ects !== $v || $this->isNew()) {
-			$this->saisie_ects = $v;
-			$this->modifiedColumns[] = JGroupesClassesPeer::SAISIE_ECTS;
-		}
-
-		return $this;
-	} // setSaisieEcts()
-
-	/**
-	 * Set the value of [valeur_ects] column.
-	 * Valeur par défaut des ECTS pour cet enseignement
 	 * @param      string $v new value
-	 * @return     JGroupesClasses The current object (for fluent API support)
+	 * @return     JProfesseursMatieres The current object (for fluent API support)
 	 */
-	public function setValeurEcts($v)
+	public function setIdProfesseur($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->valeur_ects !== $v) {
-			$this->valeur_ects = $v;
-			$this->modifiedColumns[] = JGroupesClassesPeer::VALEUR_ECTS;
+		if ($this->id_professeur !== $v) {
+			$this->id_professeur = $v;
+			$this->modifiedColumns[] = JProfesseursMatieresPeer::ID_PROFESSEUR;
+		}
+
+		if ($this->aProfesseur !== null && $this->aProfesseur->getLogin() !== $v) {
+			$this->aProfesseur = null;
 		}
 
 		return $this;
-	} // setValeurEcts()
+	} // setIdProfesseur()
+
+	/**
+	 * Set the value of [ordre_matieres] column.
+	 * Priorite d'affichage
+	 * @param      int $v new value
+	 * @return     JProfesseursMatieres The current object (for fluent API support)
+	 */
+	public function setOrdreMatieres($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->ordre_matieres !== $v || $this->isNew()) {
+			$this->ordre_matieres = $v;
+			$this->modifiedColumns[] = JProfesseursMatieresPeer::ORDRE_MATIERES;
+		}
+
+		return $this;
+	} // setOrdreMatieres()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -348,7 +195,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			if ($this->saisie_ects !== false) {
+			if ($this->ordre_matieres !== 0) {
 				return false;
 			}
 
@@ -374,13 +221,9 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	{
 		try {
 
-			$this->id_groupe = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->id_classe = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
-			$this->priorite = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-			$this->coef = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->categorie_id = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-			$this->saisie_ects = ($row[$startcol + 5] !== null) ? (boolean) $row[$startcol + 5] : null;
-			$this->valeur_ects = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->id_matiere = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
+			$this->id_professeur = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+			$this->ordre_matieres = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -389,10 +232,10 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 7; // 7 = JGroupesClassesPeer::NUM_COLUMNS - JGroupesClassesPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 3; // 3 = JProfesseursMatieresPeer::NUM_COLUMNS - JProfesseursMatieresPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
-			throw new PropelException("Error populating JGroupesClasses object", $e);
+			throw new PropelException("Error populating JProfesseursMatieres object", $e);
 		}
 	}
 
@@ -412,14 +255,11 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
-		if ($this->aGroupe !== null && $this->id_groupe !== $this->aGroupe->getId()) {
-			$this->aGroupe = null;
+		if ($this->aMatiere !== null && $this->id_matiere !== $this->aMatiere->getMatiere()) {
+			$this->aMatiere = null;
 		}
-		if ($this->aClasse !== null && $this->id_classe !== $this->aClasse->getId()) {
-			$this->aClasse = null;
-		}
-		if ($this->aCategorieMatiere !== null && $this->categorie_id !== $this->aCategorieMatiere->getId()) {
-			$this->aCategorieMatiere = null;
+		if ($this->aProfesseur !== null && $this->id_professeur !== $this->aProfesseur->getLogin()) {
+			$this->aProfesseur = null;
 		}
 	} // ensureConsistency
 
@@ -444,13 +284,13 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(JGroupesClassesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JProfesseursMatieresPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		// We don't need to alter the object instance pool; we're just modifying this instance
 		// already in the pool.
 
-		$stmt = JGroupesClassesPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$stmt = JProfesseursMatieresPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
 		$row = $stmt->fetch(PDO::FETCH_NUM);
 		$stmt->closeCursor();
 		if (!$row) {
@@ -460,9 +300,8 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 
 		if ($deep) {  // also de-associate any related objects?
 
-			$this->aGroupe = null;
-			$this->aClasse = null;
-			$this->aCategorieMatiere = null;
+			$this->aMatiere = null;
+			$this->aProfesseur = null;
 		} // if (deep)
 	}
 
@@ -482,14 +321,14 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(JGroupesClassesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JProfesseursMatieresPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JGroupesClassesQuery::create()
+				JProfesseursMatieresQuery::create()
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
@@ -524,7 +363,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(JGroupesClassesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JProfesseursMatieresPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
@@ -544,7 +383,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 					$this->postUpdate($con);
 				}
 				$this->postSave($con);
-				JGroupesClassesPeer::addInstanceToPool($this);
+				JProfesseursMatieresPeer::addInstanceToPool($this);
 			} else {
 				$affectedRows = 0;
 			}
@@ -578,25 +417,18 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aGroupe !== null) {
-				if ($this->aGroupe->isModified() || $this->aGroupe->isNew()) {
-					$affectedRows += $this->aGroupe->save($con);
+			if ($this->aMatiere !== null) {
+				if ($this->aMatiere->isModified() || $this->aMatiere->isNew()) {
+					$affectedRows += $this->aMatiere->save($con);
 				}
-				$this->setGroupe($this->aGroupe);
+				$this->setMatiere($this->aMatiere);
 			}
 
-			if ($this->aClasse !== null) {
-				if ($this->aClasse->isModified() || $this->aClasse->isNew()) {
-					$affectedRows += $this->aClasse->save($con);
+			if ($this->aProfesseur !== null) {
+				if ($this->aProfesseur->isModified() || $this->aProfesseur->isNew()) {
+					$affectedRows += $this->aProfesseur->save($con);
 				}
-				$this->setClasse($this->aClasse);
-			}
-
-			if ($this->aCategorieMatiere !== null) {
-				if ($this->aCategorieMatiere->isModified() || $this->aCategorieMatiere->isNew()) {
-					$affectedRows += $this->aCategorieMatiere->save($con);
-				}
-				$this->setCategorieMatiere($this->aCategorieMatiere);
+				$this->setProfesseur($this->aProfesseur);
 			}
 
 
@@ -608,7 +440,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 					$affectedRows += 1;
 					$this->setNew(false);
 				} else {
-					$affectedRows += JGroupesClassesPeer::doUpdate($this, $con);
+					$affectedRows += JProfesseursMatieresPeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -685,26 +517,20 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aGroupe !== null) {
-				if (!$this->aGroupe->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aGroupe->getValidationFailures());
+			if ($this->aMatiere !== null) {
+				if (!$this->aMatiere->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aMatiere->getValidationFailures());
 				}
 			}
 
-			if ($this->aClasse !== null) {
-				if (!$this->aClasse->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aClasse->getValidationFailures());
-				}
-			}
-
-			if ($this->aCategorieMatiere !== null) {
-				if (!$this->aCategorieMatiere->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aCategorieMatiere->getValidationFailures());
+			if ($this->aProfesseur !== null) {
+				if (!$this->aProfesseur->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aProfesseur->getValidationFailures());
 				}
 			}
 
 
-			if (($retval = JGroupesClassesPeer::doValidate($this, $columns)) !== true) {
+			if (($retval = JProfesseursMatieresPeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
@@ -727,7 +553,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = JGroupesClassesPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = JProfesseursMatieresPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		$field = $this->getByPosition($pos);
 		return $field;
 	}
@@ -743,25 +569,13 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	{
 		switch($pos) {
 			case 0:
-				return $this->getIdGroupe();
+				return $this->getIdMatiere();
 				break;
 			case 1:
-				return $this->getIdClasse();
+				return $this->getIdProfesseur();
 				break;
 			case 2:
-				return $this->getPriorite();
-				break;
-			case 3:
-				return $this->getCoef();
-				break;
-			case 4:
-				return $this->getCategorieId();
-				break;
-			case 5:
-				return $this->getSaisieEcts();
-				break;
-			case 6:
-				return $this->getValeurEcts();
+				return $this->getOrdreMatieres();
 				break;
 			default:
 				return null;
@@ -785,25 +599,18 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
-		$keys = JGroupesClassesPeer::getFieldNames($keyType);
+		$keys = JProfesseursMatieresPeer::getFieldNames($keyType);
 		$result = array(
-			$keys[0] => $this->getIdGroupe(),
-			$keys[1] => $this->getIdClasse(),
-			$keys[2] => $this->getPriorite(),
-			$keys[3] => $this->getCoef(),
-			$keys[4] => $this->getCategorieId(),
-			$keys[5] => $this->getSaisieEcts(),
-			$keys[6] => $this->getValeurEcts(),
+			$keys[0] => $this->getIdMatiere(),
+			$keys[1] => $this->getIdProfesseur(),
+			$keys[2] => $this->getOrdreMatieres(),
 		);
 		if ($includeForeignObjects) {
-			if (null !== $this->aGroupe) {
-				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns, true);
+			if (null !== $this->aMatiere) {
+				$result['Matiere'] = $this->aMatiere->toArray($keyType, $includeLazyLoadColumns, true);
 			}
-			if (null !== $this->aClasse) {
-				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns, true);
-			}
-			if (null !== $this->aCategorieMatiere) {
-				$result['CategorieMatiere'] = $this->aCategorieMatiere->toArray($keyType, $includeLazyLoadColumns, true);
+			if (null !== $this->aProfesseur) {
+				$result['Professeur'] = $this->aProfesseur->toArray($keyType, $includeLazyLoadColumns, true);
 			}
 		}
 		return $result;
@@ -821,7 +628,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = JGroupesClassesPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = JProfesseursMatieresPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		return $this->setByPosition($pos, $value);
 	}
 
@@ -837,25 +644,13 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	{
 		switch($pos) {
 			case 0:
-				$this->setIdGroupe($value);
+				$this->setIdMatiere($value);
 				break;
 			case 1:
-				$this->setIdClasse($value);
+				$this->setIdProfesseur($value);
 				break;
 			case 2:
-				$this->setPriorite($value);
-				break;
-			case 3:
-				$this->setCoef($value);
-				break;
-			case 4:
-				$this->setCategorieId($value);
-				break;
-			case 5:
-				$this->setSaisieEcts($value);
-				break;
-			case 6:
-				$this->setValeurEcts($value);
+				$this->setOrdreMatieres($value);
 				break;
 		} // switch()
 	}
@@ -879,15 +674,11 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 */
 	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
 	{
-		$keys = JGroupesClassesPeer::getFieldNames($keyType);
+		$keys = JProfesseursMatieresPeer::getFieldNames($keyType);
 
-		if (array_key_exists($keys[0], $arr)) $this->setIdGroupe($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setIdClasse($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setPriorite($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setCoef($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setCategorieId($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setSaisieEcts($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setValeurEcts($arr[$keys[6]]);
+		if (array_key_exists($keys[0], $arr)) $this->setIdMatiere($arr[$keys[0]]);
+		if (array_key_exists($keys[1], $arr)) $this->setIdProfesseur($arr[$keys[1]]);
+		if (array_key_exists($keys[2], $arr)) $this->setOrdreMatieres($arr[$keys[2]]);
 	}
 
 	/**
@@ -897,15 +688,11 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 */
 	public function buildCriteria()
 	{
-		$criteria = new Criteria(JGroupesClassesPeer::DATABASE_NAME);
+		$criteria = new Criteria(JProfesseursMatieresPeer::DATABASE_NAME);
 
-		if ($this->isColumnModified(JGroupesClassesPeer::ID_GROUPE)) $criteria->add(JGroupesClassesPeer::ID_GROUPE, $this->id_groupe);
-		if ($this->isColumnModified(JGroupesClassesPeer::ID_CLASSE)) $criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id_classe);
-		if ($this->isColumnModified(JGroupesClassesPeer::PRIORITE)) $criteria->add(JGroupesClassesPeer::PRIORITE, $this->priorite);
-		if ($this->isColumnModified(JGroupesClassesPeer::COEF)) $criteria->add(JGroupesClassesPeer::COEF, $this->coef);
-		if ($this->isColumnModified(JGroupesClassesPeer::CATEGORIE_ID)) $criteria->add(JGroupesClassesPeer::CATEGORIE_ID, $this->categorie_id);
-		if ($this->isColumnModified(JGroupesClassesPeer::SAISIE_ECTS)) $criteria->add(JGroupesClassesPeer::SAISIE_ECTS, $this->saisie_ects);
-		if ($this->isColumnModified(JGroupesClassesPeer::VALEUR_ECTS)) $criteria->add(JGroupesClassesPeer::VALEUR_ECTS, $this->valeur_ects);
+		if ($this->isColumnModified(JProfesseursMatieresPeer::ID_MATIERE)) $criteria->add(JProfesseursMatieresPeer::ID_MATIERE, $this->id_matiere);
+		if ($this->isColumnModified(JProfesseursMatieresPeer::ID_PROFESSEUR)) $criteria->add(JProfesseursMatieresPeer::ID_PROFESSEUR, $this->id_professeur);
+		if ($this->isColumnModified(JProfesseursMatieresPeer::ORDRE_MATIERES)) $criteria->add(JProfesseursMatieresPeer::ORDRE_MATIERES, $this->ordre_matieres);
 
 		return $criteria;
 	}
@@ -920,9 +707,9 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 */
 	public function buildPkeyCriteria()
 	{
-		$criteria = new Criteria(JGroupesClassesPeer::DATABASE_NAME);
-		$criteria->add(JGroupesClassesPeer::ID_GROUPE, $this->id_groupe);
-		$criteria->add(JGroupesClassesPeer::ID_CLASSE, $this->id_classe);
+		$criteria = new Criteria(JProfesseursMatieresPeer::DATABASE_NAME);
+		$criteria->add(JProfesseursMatieresPeer::ID_MATIERE, $this->id_matiere);
+		$criteria->add(JProfesseursMatieresPeer::ID_PROFESSEUR, $this->id_professeur);
 
 		return $criteria;
 	}
@@ -935,8 +722,8 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	public function getPrimaryKey()
 	{
 		$pks = array();
-		$pks[0] = $this->getIdGroupe();
-		$pks[1] = $this->getIdClasse();
+		$pks[0] = $this->getIdMatiere();
+		$pks[1] = $this->getIdProfesseur();
 		
 		return $pks;
 	}
@@ -949,8 +736,8 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 */
 	public function setPrimaryKey($keys)
 	{
-		$this->setIdGroupe($keys[0]);
-		$this->setIdClasse($keys[1]);
+		$this->setIdMatiere($keys[0]);
+		$this->setIdProfesseur($keys[1]);
 	}
 
 	/**
@@ -959,7 +746,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return (null === $this->getIdGroupe()) && (null === $this->getIdClasse());
+		return (null === $this->getIdMatiere()) && (null === $this->getIdProfesseur());
 	}
 
 	/**
@@ -968,19 +755,15 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 * If desired, this method can also make copies of all associated (fkey referrers)
 	 * objects.
 	 *
-	 * @param      object $copyObj An object of JGroupesClasses (or compatible) type.
+	 * @param      object $copyObj An object of JProfesseursMatieres (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
 	 * @throws     PropelException
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-		$copyObj->setIdGroupe($this->id_groupe);
-		$copyObj->setIdClasse($this->id_classe);
-		$copyObj->setPriorite($this->priorite);
-		$copyObj->setCoef($this->coef);
-		$copyObj->setCategorieId($this->categorie_id);
-		$copyObj->setSaisieEcts($this->saisie_ects);
-		$copyObj->setValeurEcts($this->valeur_ects);
+		$copyObj->setIdMatiere($this->id_matiere);
+		$copyObj->setIdProfesseur($this->id_professeur);
+		$copyObj->setOrdreMatieres($this->ordre_matieres);
 
 		$copyObj->setNew(true);
 	}
@@ -994,7 +777,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 * objects.
 	 *
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-	 * @return     JGroupesClasses Clone of current object.
+	 * @return     JProfesseursMatieres Clone of current object.
 	 * @throws     PropelException
 	 */
 	public function copy($deepCopy = false)
@@ -1013,37 +796,37 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 * same instance for all member of this class. The method could therefore
 	 * be static, but this would prevent one from overriding the behavior.
 	 *
-	 * @return     JGroupesClassesPeer
+	 * @return     JProfesseursMatieresPeer
 	 */
 	public function getPeer()
 	{
 		if (self::$peer === null) {
-			self::$peer = new JGroupesClassesPeer();
+			self::$peer = new JProfesseursMatieresPeer();
 		}
 		return self::$peer;
 	}
 
 	/**
-	 * Declares an association between this object and a Groupe object.
+	 * Declares an association between this object and a Matiere object.
 	 *
-	 * @param      Groupe $v
-	 * @return     JGroupesClasses The current object (for fluent API support)
+	 * @param      Matiere $v
+	 * @return     JProfesseursMatieres The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setGroupe(Groupe $v = null)
+	public function setMatiere(Matiere $v = null)
 	{
 		if ($v === null) {
-			$this->setIdGroupe(NULL);
+			$this->setIdMatiere(NULL);
 		} else {
-			$this->setIdGroupe($v->getId());
+			$this->setIdMatiere($v->getMatiere());
 		}
 
-		$this->aGroupe = $v;
+		$this->aMatiere = $v;
 
 		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the Groupe object, it will not be re-added.
+		// If this object has already been added to the Matiere object, it will not be re-added.
 		if ($v !== null) {
-			$v->addJGroupesClasses($this);
+			$v->addJProfesseursMatieres($this);
 		}
 
 		return $this;
@@ -1051,48 +834,48 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 
 
 	/**
-	 * Get the associated Groupe object
+	 * Get the associated Matiere object
 	 *
 	 * @param      PropelPDO Optional Connection object.
-	 * @return     Groupe The associated Groupe object.
+	 * @return     Matiere The associated Matiere object.
 	 * @throws     PropelException
 	 */
-	public function getGroupe(PropelPDO $con = null)
+	public function getMatiere(PropelPDO $con = null)
 	{
-		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
-			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe);
+		if ($this->aMatiere === null && (($this->id_matiere !== "" && $this->id_matiere !== null))) {
+			$this->aMatiere = MatiereQuery::create()->findPk($this->id_matiere);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aGroupe->addJGroupesClassess($this);
+			   $this->aMatiere->addJProfesseursMatieress($this);
 			 */
 		}
-		return $this->aGroupe;
+		return $this->aMatiere;
 	}
 
 	/**
-	 * Declares an association between this object and a Classe object.
+	 * Declares an association between this object and a UtilisateurProfessionnel object.
 	 *
-	 * @param      Classe $v
-	 * @return     JGroupesClasses The current object (for fluent API support)
+	 * @param      UtilisateurProfessionnel $v
+	 * @return     JProfesseursMatieres The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setClasse(Classe $v = null)
+	public function setProfesseur(UtilisateurProfessionnel $v = null)
 	{
 		if ($v === null) {
-			$this->setIdClasse(NULL);
+			$this->setIdProfesseur(NULL);
 		} else {
-			$this->setIdClasse($v->getId());
+			$this->setIdProfesseur($v->getLogin());
 		}
 
-		$this->aClasse = $v;
+		$this->aProfesseur = $v;
 
 		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the Classe object, it will not be re-added.
+		// If this object has already been added to the UtilisateurProfessionnel object, it will not be re-added.
 		if ($v !== null) {
-			$v->addJGroupesClasses($this);
+			$v->addJProfesseursMatieres($this);
 		}
 
 		return $this;
@@ -1100,74 +883,25 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 
 
 	/**
-	 * Get the associated Classe object
+	 * Get the associated UtilisateurProfessionnel object
 	 *
 	 * @param      PropelPDO Optional Connection object.
-	 * @return     Classe The associated Classe object.
+	 * @return     UtilisateurProfessionnel The associated UtilisateurProfessionnel object.
 	 * @throws     PropelException
 	 */
-	public function getClasse(PropelPDO $con = null)
+	public function getProfesseur(PropelPDO $con = null)
 	{
-		if ($this->aClasse === null && ($this->id_classe !== null)) {
-			$this->aClasse = ClasseQuery::create()->findPk($this->id_classe);
+		if ($this->aProfesseur === null && (($this->id_professeur !== "" && $this->id_professeur !== null))) {
+			$this->aProfesseur = UtilisateurProfessionnelQuery::create()->findPk($this->id_professeur);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aClasse->addJGroupesClassess($this);
+			   $this->aProfesseur->addJProfesseursMatieress($this);
 			 */
 		}
-		return $this->aClasse;
-	}
-
-	/**
-	 * Declares an association between this object and a CategorieMatiere object.
-	 *
-	 * @param      CategorieMatiere $v
-	 * @return     JGroupesClasses The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setCategorieMatiere(CategorieMatiere $v = null)
-	{
-		if ($v === null) {
-			$this->setCategorieId(NULL);
-		} else {
-			$this->setCategorieId($v->getId());
-		}
-
-		$this->aCategorieMatiere = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the CategorieMatiere object, it will not be re-added.
-		if ($v !== null) {
-			$v->addJGroupesClasses($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated CategorieMatiere object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     CategorieMatiere The associated CategorieMatiere object.
-	 * @throws     PropelException
-	 */
-	public function getCategorieMatiere(PropelPDO $con = null)
-	{
-		if ($this->aCategorieMatiere === null && ($this->categorie_id !== null)) {
-			$this->aCategorieMatiere = CategorieMatiereQuery::create()->findPk($this->categorie_id);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aCategorieMatiere->addJGroupesClassess($this);
-			 */
-		}
-		return $this->aCategorieMatiere;
+		return $this->aProfesseur;
 	}
 
 	/**
@@ -1175,13 +909,9 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 */
 	public function clear()
 	{
-		$this->id_groupe = null;
-		$this->id_classe = null;
-		$this->priorite = null;
-		$this->coef = null;
-		$this->categorie_id = null;
-		$this->saisie_ects = null;
-		$this->valeur_ects = null;
+		$this->id_matiere = null;
+		$this->id_professeur = null;
+		$this->ordre_matieres = null;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
 		$this->setNew(true);
@@ -1201,9 +931,8 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 		if ($deep) {
 		} // if ($deep)
 
-		$this->aGroupe = null;
-		$this->aClasse = null;
-		$this->aCategorieMatiere = null;
+		$this->aMatiere = null;
+		$this->aProfesseur = null;
 	}
 
 	/**
@@ -1217,4 +946,4 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
-} // BaseJGroupesClasses
+} // BaseJProfesseursMatieres

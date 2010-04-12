@@ -49,6 +49,7 @@ class GroupeTableMap extends TableMap {
 	public function buildRelations()
 	{
     $this->addRelation('JGroupesProfesseurs', 'JGroupesProfesseurs', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
+    $this->addRelation('JGroupesMatieres', 'JGroupesMatieres', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
     $this->addRelation('JGroupesClasses', 'JGroupesClasses', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
     $this->addRelation('CahierTexteCompteRendu', 'CahierTexteCompteRendu', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
     $this->addRelation('CahierTexteTravailAFaire', 'CahierTexteTravailAFaire', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
@@ -58,6 +59,7 @@ class GroupeTableMap extends TableMap {
     $this->addRelation('CreditEcts', 'CreditEcts', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
     $this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
     $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+    $this->addRelation('Matiere', 'Matiere', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
 } // GroupeTableMap

@@ -24,6 +24,10 @@
  * @method     GroupeQuery rightJoinJGroupesProfesseurs($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesProfesseurs relation
  * @method     GroupeQuery innerJoinJGroupesProfesseurs($relationAlias = '') Adds a INNER JOIN clause to the query using the JGroupesProfesseurs relation
  *
+ * @method     GroupeQuery leftJoinJGroupesMatieres($relationAlias = '') Adds a LEFT JOIN clause to the query using the JGroupesMatieres relation
+ * @method     GroupeQuery rightJoinJGroupesMatieres($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesMatieres relation
+ * @method     GroupeQuery innerJoinJGroupesMatieres($relationAlias = '') Adds a INNER JOIN clause to the query using the JGroupesMatieres relation
+ *
  * @method     GroupeQuery leftJoinJGroupesClasses($relationAlias = '') Adds a LEFT JOIN clause to the query using the JGroupesClasses relation
  * @method     GroupeQuery rightJoinJGroupesClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesClasses relation
  * @method     GroupeQuery innerJoinJGroupesClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JGroupesClasses relation
@@ -310,6 +314,67 @@ abstract class BaseGroupeQuery extends ModelCriteria
 		return $this
 			->joinJGroupesProfesseurs($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'JGroupesProfesseurs', 'JGroupesProfesseursQuery');
+	}
+
+	/**
+	 * Filter the query by a related JGroupesMatieres object
+	 *
+	 * @param     JGroupesMatieres $jGroupesMatieres  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    GroupeQuery The current query, for fluid interface
+	 */
+	public function filterByJGroupesMatieres($jGroupesMatieres, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->addUsingAlias(GroupePeer::ID, $jGroupesMatieres->getIdGroupe(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the JGroupesMatieres relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    GroupeQuery The current query, for fluid interface
+	 */
+	public function joinJGroupesMatieres($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('JGroupesMatieres');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'JGroupesMatieres');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the JGroupesMatieres relation JGroupesMatieres object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    JGroupesMatieresQuery A secondary query class using the current class as primary query
+	 */
+	public function useJGroupesMatieresQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinJGroupesMatieres($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'JGroupesMatieres', 'JGroupesMatieresQuery');
 	}
 
 	/**
@@ -814,6 +879,23 @@ abstract class BaseGroupeQuery extends ModelCriteria
 		return $this
 			->useJGroupesProfesseursQuery()
 				->filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison)
+			->endUse();
+	}
+	
+	/**
+	 * Filter the query by a related Matiere object
+	 * using the j_groupes_matieres table as cross reference
+	 *
+	 * @param     Matiere $matiere the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    GroupeQuery The current query, for fluid interface
+	 */
+	public function filterByMatiere($matiere, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->useJGroupesMatieresQuery()
+				->filterByMatiere($matiere, $comparison)
 			->endUse();
 	}
 	
