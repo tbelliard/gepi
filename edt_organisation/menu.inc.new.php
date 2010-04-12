@@ -107,8 +107,8 @@ if (!strstr($ua, "MSIE 6.0")) {
             <li><a href="./ajouter_salle.php">Créer/éditer les salles</a></li>
             <li><a href="./edt_calendrier.php">Créer/éditer les périodes</a></li>
             <li><a href="./admin_config_semaines.php?action=visualiser">Créer/éditer les semaines</a></li>
-            <li><a href="../mod_absences/admin/admin_horaire_ouverture.php?action=visualiser">Définir les horaires d\'ouverture</a></li>
-            <li><a href="../mod_absences/admin/admin_periodes_absences.php?action=visualiser">Définir les créneaux</a></li>
+            <li><a href="./admin_horaire_ouverture.php?action=visualiser">Définir les horaires d\'ouverture</a></li>
+            <li><a href="./admin_periodes_absences.php?action=visualiser">Définir les créneaux</a></li>
 
 		    <!--[if lte IE 6]></td></tr></table></a><![endif]-->
             </ul>

@@ -156,8 +156,8 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 
 <h2>Configuration avancée</h2>
 <blockquote>
-  <a href="admin_horaire_ouverture.php?action=visualiser">Définir les horaires d'ouverture de l'établissement</a><br />
-  <a href="admin_periodes_absences.php?action=visualiser">Définir les créneaux horaires</a><br />
+  <a href="../../edt_organisation/admin_horaire_ouverture.php?action=visualiser">Définir les horaires d'ouverture de l'établissement</a><br />
+  <a href="../../edt_organisation/admin_periodes_absences.php?action=visualiser">Définir les créneaux horaires</a><br />
 <?php // On vérifie si le module calendrier / edt est ouvert ou non pour savoir quel lien on lance
 $req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_admin'")) OR DIE ('Erreur requête req_setting () : '.mysql_error());
 $req_setting2 = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_tous'")) OR DIE ('Erreur requête req_setting2 () : '.mysql_error());
@@ -169,7 +169,7 @@ $req_setting2 = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE n
 		echo '<a href="admin_config_calendrier.php?action=visualiser">D&eacute;finir p&eacute;riodes de vacances et jours f&eacute;ri&eacute;s</a><br />';
 	}
 ?>
-	<a href="admin_config_semaines.php?action=visualiser">Définir les types de semaine</a><br />
+	<a href="../../edt_organisation/admin_config_semaines.php?action=visualiser">Définir les types de semaine</a><br />
 	<a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
 	<a href="admin_actions_absences.php?action=visualiser">Définir les actions sur le suivi des élèves</a>
 </blockquote>
