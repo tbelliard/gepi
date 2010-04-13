@@ -138,16 +138,16 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * Ajout manuel
 	 *
 	 * @param      String $name le nom de la preference à obtenir
-	 * @return     array Eleves[]
+	 * @return     String the associated value
 	 */
 	public function getPreferenceValeur($name){
 	    $criteria = new Criteria();
 	    $criteria->add(PreferenceUtilisateurProfessionnelPeer::NAME, $name);
 	    $prefs = $this->getPreferenceUtilisateurProfessionnels($criteria);
 	    if ($prefs->isEmpty()) {
-		return null;
+		return NULL;
 	    } else {
-		return $prefs->getFirst();
+		return $prefs->getFirst()->getValue();
 	    }
 	}
 
