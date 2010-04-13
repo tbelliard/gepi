@@ -35,7 +35,7 @@ Puis, dans le répertoire hôte de Gepi :
 - "mettre de côté" le fichier "connect.inc.php" situé dans le répertoire "secure"
 - vider tout le répertoire hôte, sauf les éléments cités ci-dessus (soit les répertoires "documents", "backup", "photos", le logo dans le répertoire "images", et "connect.inc.php" dans "secure")
 - copier dans le répertoire hôte l'intégralité de l'archive de la nouvelle version de Gepi. L'outil ftp va sans doute demander l'autorisation d'écraser quelques fichiers dans les répertoires conservés : accepter cet écrasement. Le logo (si l'admin lui a donné un nom différent de "logo.gif" ou "logo.png") et "connect.inc.php" ne devraient pas être écrasés : ils n'existent pas dans l'archive, de même que les documents attachés par les profs au cahier de texte ("documents"), vos sauvegardes précédentes ("backup") et les photos de vos élèves ("photos").
-- ne pas oublier de restaurer les droits d'écriture-exécution aux répertoires "documents", "images", "photos" et "backup"
+- ne pas oublier de restaurer les droits d'écriture-exécution aux répertoires "documents", "images", "photos", "backup", "temp", "mod_ooo/mes_modele", "mod_ooo/tmp", "mod_notanet/OOo/tmp", "lib/standalone/HTMLPurifier/DefinitionCache/Serializer".
 
 *********************************************************************
 Installation - Etape 2 : Renommer le fichier connect.inc si nécessaire

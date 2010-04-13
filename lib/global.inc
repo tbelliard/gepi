@@ -242,7 +242,10 @@ $style_screen_ajout='y';
 // Sans ce dispositif, il est possible de déposer un code sournois pour provoquer des dégats lors de la visite par l'utilisateur auquel le piège est destiné.
 // Il est très fortement recommandé de ne pas passer la variable ci-dessous à 'n'
 $filtrage_html="y";
-// Liste des balises autorisées:
+$classe_filtrage='HTMLPurifier'; // HTMLPurifier fonctionne à partir de php5.0.5 et est plus complet que InputFilter
+// Ou:
+$classe_filtrage='InputFilter'; // InputFilter fonctionne avec php4/php5
+// Liste des balises autorisées pour InputFilter:
 $aAllowedTags = array("a", "b", "blink", "blockquote", "br", "caption", "center", "col", "colgroup", "comment", "em", "font", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "i", "img", "li", "marquee", "ol", "p", "pre", "s", "small", "span", "strike", "strong", "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "tt", "u", "ul", "color");
 // N'ajoutez pas de balises sans y réfléchir à deux fois... ou demander avis sur la liste gepi-users
 // Liste des attributs autorisés:	

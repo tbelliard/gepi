@@ -118,47 +118,85 @@ array_walk($_COOKIE, 'anti_inject');
 //===========================================================
 // Passer la variable à "y" pour tester... et trouver la liste d'attributs "idéale".
 // Il faudra peut-être mettre les $aAllowedTags et $aAllowedAttr dans global.inc
-$filtrage_html="n";
 if($filtrage_html=='y') {
+	if($classe_filtrage=='HTMLPurifier') {
 
-	//$aAllowedTags = array("u", "b", "i", "span", "p", "blink", "blockquote", "br", "caption");
-	//$aAllowedAttr = array("abbr", "align", "alt", "axis", "background", "behavior", "title", "class");
-
-	$aAllowedTags = array("a", "b", "blink", "blockquote", "br", "caption", "center", "col", "colgroup", "comment", "em", "font", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "img", "li", "marquee", "ol", "p", "pre", "s", "small", "span", "strike", "strong", "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "tt", "u", "ul", "color");
+		$config = HTMLPurifier_Config::createDefault();
+		//$config->set('Core', 'Encoding', 'ISO-8859-15'); // replace with your encoding
+		$config->set('Core.Encoding', 'ISO-8859-15'); // replace with your encoding
+		//$config->set('HTML', 'Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+		//$config->set('HTML', 'Doctype', 'HTML 4.01 Strict'); // replace with your doctype
+		$config->set('HTML.Doctype', 'HTML 4.01 Strict'); // replace with your doctype
+		$purifier = new HTMLPurifier($config);
 	
-	$aAllowedAttr = array("abbr", "align", "alt", "axis", "background", "behavior", "bgcolor", "border", "bordercolor", "bordercolordark", "bordercolorlight", "bottompadding", "cellpadding", "cellspacing", "char", "charoff", "cite", "clear", "color", "cols", "direction", "face", "font-weight", "headers", "height", "href", "hspace", "leftpadding", "loop", "noshade", "nowrap", "point-size", "rel", "rev", "rightpadding", "rowspan", "rules", "scope", "scrollamount", "scrolldelay", "size", "span", "src", "start", "summary", "target", "title", "toppadding", "type", "valign", "value", "vspace", "width", "wrap", "style");
+		//$clean_html = $purifier->purify($dirty_html);
 
-
-	$oMyFilter = new InputFilter($aAllowedTags, $aAllowedAttr, 0, 0, 1);
-
-	foreach($_GET as $key => $value) {
-		if(!is_array($value)) {
-			$_GET[$key]=$oMyFilter->process($value);
-		}
-		else {
-			foreach($_GET[$key] as $key2 => $value2) {
-				$_GET[$key][$key2]=$oMyFilter->process($value2);
+		foreach($_GET as $key => $value) {
+			if(!is_array($value)) {
+				$_GET[$key]=$purifier->purify($value);
 			}
-		}
-	}
-
-	foreach($_POST as $key => $value) {
-		if(!is_array($value)) {
-			$_POST[$key]=$oMyFilter->process($value);
-		}
-		else {
-			foreach($_POST[$key] as $key2 => $value2) {
-				$_POST[$key][$key2]=$oMyFilter->process($value2);
-			}
-		}
-	}
-
-	if(isset($NON_PROTECT)) {
-		foreach($NON_PROTECT as $key => $value) {
-			if(!is_array($value)) {$NON_PROTECT[$key]=$oMyFilter->process($value);}
 			else {
-				foreach($NON_PROTECT[$key] as $key2 => $value2) {
-					$NON_PROTECT[$key][$key2]=$oMyFilter->process($value2);;
+				foreach($_GET[$key] as $key2 => $value2) {
+					$_GET[$key][$key2]=$purifier->purify($value2);
+				}
+			}
+		}
+	
+		foreach($_POST as $key => $value) {
+			if(!is_array($value)) {
+				$_POST[$key]=$purifier->purify($value);
+			}
+			else {
+				foreach($_POST[$key] as $key2 => $value2) {
+					$_POST[$key][$key2]=$purifier->purify($value2);
+				}
+			}
+		}
+	
+		if(isset($NON_PROTECT)) {
+			foreach($NON_PROTECT as $key => $value) {
+				if(!is_array($value)) {$NON_PROTECT[$key]=$purifier->purify($value);}
+				else {
+					foreach($NON_PROTECT[$key] as $key2 => $value2) {
+						$NON_PROTECT[$key][$key2]=$purifier->purify($value2);;
+					}
+				}
+			}
+		}
+
+	}
+	else {
+		$oMyFilter = new InputFilter($aAllowedTags, $aAllowedAttr, 0, 0, 1);
+	
+		foreach($_GET as $key => $value) {
+			if(!is_array($value)) {
+				$_GET[$key]=$oMyFilter->process($value);
+			}
+			else {
+				foreach($_GET[$key] as $key2 => $value2) {
+					$_GET[$key][$key2]=$oMyFilter->process($value2);
+				}
+			}
+		}
+	
+		foreach($_POST as $key => $value) {
+			if(!is_array($value)) {
+				$_POST[$key]=$oMyFilter->process($value);
+			}
+			else {
+				foreach($_POST[$key] as $key2 => $value2) {
+					$_POST[$key][$key2]=$oMyFilter->process($value2);
+				}
+			}
+		}
+	
+		if(isset($NON_PROTECT)) {
+			foreach($NON_PROTECT as $key => $value) {
+				if(!is_array($value)) {$NON_PROTECT[$key]=$oMyFilter->process($value);}
+				else {
+					foreach($NON_PROTECT[$key] as $key2 => $value2) {
+						$NON_PROTECT[$key][$key2]=$oMyFilter->process($value2);;
+					}
 				}
 			}
 		}
