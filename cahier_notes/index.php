@@ -52,7 +52,7 @@ if ($id_groupe == "no_group") {
     $_SESSION['id_groupe_session'] = "";
 }
 
-//on mets le groupe dans la session, pour naviguer entre absence, cahier de texte et autres
+//on met le groupe dans la session, pour naviguer entre absence, cahier de texte et autres
 if ($id_groupe != NULL) {
     $_SESSION['id_groupe_session'] = $id_groupe;
 } else if (isset($_SESSION['id_groupe_session']) && $_SESSION['id_groupe_session'] != "") {
@@ -61,6 +61,18 @@ if ($id_groupe != NULL) {
 }
 
 if (is_numeric($id_groupe) && $id_groupe > 0) {
+
+    $sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='".$_SESSION['login']."';";
+    $test_prof_groupe=mysql_query($sql);
+    if(mysql_num_rows($test_prof_groupe)==0) {
+        $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+		unset($_SESSION['id_groupe_session']);
+		tentative_intrusion(1, "Tentative d'accès à un carnet de notes qui ne lui appartient pas (id_groupe=$id_groupe)");
+        // Sans le unset($_SESSION['id_groupe_session']) avec ces tentative_intrusion(), une modif d'id_groupe en barre d'adresse me provoquait 7 insertions... d'où un score à +7 et une déconnexion
+        header("Location: index.php?msg=$mess");
+        die();
+    }
+
     $current_group = get_group($id_groupe);
 }
 
@@ -69,6 +81,8 @@ if ((isset($_POST['id_racine'])) or (isset($_GET['id_racine']))) {
     $id_racine = isset($_POST['id_racine']) ? $_POST['id_racine'] : (isset($_GET['id_racine']) ? $_GET['id_racine'] : NULL);
     if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
         $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+		unset($_SESSION['id_groupe_session']);
+		tentative_intrusion(1, "Tentative d'accès à un carnet de notes qui ne lui appartient pas (id_racine=$id_racine)");
         header("Location: index.php?msg=$mess");
         die();
     }
@@ -182,13 +196,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
     if ((isset($_GET['del_dev'])) and ($_GET['js_confirmed'] ==1)) {
         $temp = $_GET['del_dev'];
 
-		//echo "\$_SERVER['HTTP_REFERER']=".$_SERVER['HTTP_REFERER']."<br />";
-		$tmp_referer=explode("?",$_SERVER['HTTP_REFERER']);
-		//echo "\$tmp_referer=$tmp_referer[0]<br />";
-		//$fich="/tmp/test_faille.txt";
-		//$fp=fopen($fich,"a+");
-		if(my_ereg("/cahier_notes/index.php$",$tmp_referer[0])) {
-			//echo "<p style='color:green'>On vient bien de /cahier_notes/index.php</p>";
+	    if((isset($_GET['alea']))&&($_GET['alea']==$_SESSION['gepi_alea'])) {
 
 			$sql0="SELECT id_conteneur FROM cn_devoirs WHERE id='$temp'";
 			//echo "$sql0<br />";
@@ -222,48 +230,49 @@ if  (isset($id_racine) and ($id_racine!='')) {
 					mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_racine,$arret);
 				}
 			}
-			//fwrite($fp,"On vient bien de /cahier_notes/index.php\n");
 		}
 		else {
-			//echo "<p style='color:red'>On ne vient pas de /cahier_notes/index.php</p>";
-			//fwrite($fp,"On ne vient pas de /cahier_notes/index.php, mais de \$_SERVER['HTTP_REFERER']=".$_SERVER['HTTP_REFERER']."\nEt \$_SERVER['REQUEST_URI']=".$_SERVER['REQUEST_URI']."\n");
-
-			$texte_mail="Tentative de suppression de devoir depuis une page inattendue: \$_SERVER['HTTP_REFERER']=".$_SERVER['HTTP_REFERER']."\nau lieu de /cahier_notes/index.php.\nEt la suppression tentée était \$_SERVER['REQUEST_URI']=".$_SERVER['REQUEST_URI']."\n";
+			$texte_mail="Tentative de suppression de devoir avec un aléa qui ne coïncide pas avec celui de la session\nLa suppression tentée était \$_SERVER['REQUEST_URI']=".$_SERVER['REQUEST_URI']."\n";
 			mail_alerte("Anomalie de suppression de devoir",$texte_mail,'y');
-
+			echo "<p style='color:red'>$texte_mail</p>\n";
 		}
-		//fclose($fp);
-
     }
     //
     // Supression d'un conteneur
     //
     if ((isset($_GET['del_cont'])) and ($_GET['js_confirmed'] ==1)) {
-        $temp = $_GET['del_cont'];
-        $sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$temp'");
-        $nb_dev = mysql_num_rows($sql);
-        $sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$temp'");
-        $nb_cont = mysql_num_rows($sql);
-        if (($nb_dev != 0) or ($nb_cont != 0)) {
-            echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-            echo 'alert("Impossible de supprimer une boîte qui n\'est pas vide !");\n';
-            echo "</script>\n";
-        } else {
-            $sql = mysql_query("DELETE FROM cn_conteneurs WHERE id='$temp'");
-            $sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$temp'");
-            // On teste si le carnet de notes est vide
-            $sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_racine'");
-            $nb_dev = mysql_num_rows($sql);
-            $sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_racine'");
-            $nb_cont = mysql_num_rows($sql);
-            if (($nb_dev == 0) and ($nb_cont == 0)) {
-                $sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_racine'");
-            } else {
-                $arret = 'no';
-                mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_racine,$arret);
-            }
-
-        }
+	    if((isset($_GET['alea']))&&($_GET['alea']==$_SESSION['gepi_alea'])) {
+			$temp = $_GET['del_cont'];
+			$sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$temp'");
+			$nb_dev = mysql_num_rows($sql);
+			$sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$temp'");
+			$nb_cont = mysql_num_rows($sql);
+			if (($nb_dev != 0) or ($nb_cont != 0)) {
+				echo "<script type=\"text/javascript\" language=\"javascript\">\n";
+				echo 'alert("Impossible de supprimer une boîte qui n\'est pas vide !");\n';
+				echo "</script>\n";
+			} else {
+				$sql = mysql_query("DELETE FROM cn_conteneurs WHERE id='$temp'");
+				$sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$temp'");
+				// On teste si le carnet de notes est vide
+				$sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_racine'");
+				$nb_dev = mysql_num_rows($sql);
+				$sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_racine'");
+				$nb_cont = mysql_num_rows($sql);
+				if (($nb_dev == 0) and ($nb_cont == 0)) {
+					$sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_racine'");
+				} else {
+					$arret = 'no';
+					mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_racine,$arret);
+				}
+	
+			}
+		}
+		else {
+			$texte_mail="Tentative de suppression d'un conteneur avec un aléa qui ne coïncide pas avec celui de la session\nLa suppression tentée était \$_SERVER['REQUEST_URI']=".$_SERVER['REQUEST_URI']."\n";
+			mail_alerte("Anomalie de suppression de conteneur",$texte_mail,'y');
+			echo "<p style='color:red'>$texte_mail</p>\n";
+		}
     }
 
     //echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"index.php\" method=\"POST\">\n";
