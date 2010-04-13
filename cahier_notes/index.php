@@ -79,7 +79,7 @@ $titre_page = "Carnet de notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
-//debug_var();
+debug_var();
 
 //-----------------------------------------------------------------------------------
 if (isset($_GET['id_groupe']) and isset($_GET['periode_num'])) {
@@ -182,31 +182,51 @@ if  (isset($id_racine) and ($id_racine!='')) {
     if ((isset($_GET['del_dev'])) and ($_GET['js_confirmed'] ==1)) {
         $temp = $_GET['del_dev'];
 
-        $sql= mysql_query("SELECT id_conteneur FROM cn_devoirs WHERE id='$temp'");
-        $id_cont = mysql_result($sql, 0, 'id_conteneur');
-        $sql = mysql_query("DELETE FROM cn_notes_devoirs WHERE id_devoir='$temp'");
-        $sql = mysql_query("DELETE FROM cn_devoirs WHERE id='$temp'");
+		//echo "\$_SERVER['HTTP_REFERER']=".$_SERVER['HTTP_REFERER']."<br />";
+		$tmp_referer=explode("?",$_SERVER['HTTP_REFERER']);
+		//echo "\$tmp_referer=$tmp_referer[0]<br />";
+		//$fich="/tmp/test_faille.txt";
+		//$fp=fopen($fich,"a+");
+		if(my_ereg("/cahier_notes/index.php$",$tmp_referer[0])) {
+			echo "<p style='color:green'>On vient bien de /cahier_notes/index.php</p>";
 
-        // On teste si le conteneur est vide
-        $sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_cont'");
-        $nb_dev = mysql_num_rows($sql);
-        $sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_cont'");
-        $nb_cont = mysql_num_rows($sql);
-        if (($nb_dev == 0) or ($nb_cont == 0)) {
-            $sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_cont'");
-        }
+			$sql= mysql_query("SELECT id_conteneur FROM cn_devoirs WHERE id='$temp'");
+			$id_cont = mysql_result($sql, 0, 'id_conteneur');
+			$sql = mysql_query("DELETE FROM cn_notes_devoirs WHERE id_devoir='$temp'");
+			$sql = mysql_query("DELETE FROM cn_devoirs WHERE id='$temp'");
+	
+			// On teste si le conteneur est vide
+			$sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_cont'");
+			$nb_dev = mysql_num_rows($sql);
+			$sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_cont'");
+			$nb_cont = mysql_num_rows($sql);
+			if (($nb_dev == 0) or ($nb_cont == 0)) {
+				$sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_cont'");
+			}
+	
+			// On teste si le carnet de notes est vide
+			$sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_racine'");
+			$nb_dev = mysql_num_rows($sql);
+			$sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_racine'");
+			$nb_cont = mysql_num_rows($sql);
+			if (($nb_dev == 0) and ($nb_cont == 0)) {
+				$sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_racine'");
+			} else {
+				$arret = 'no';
+				mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_racine,$arret);
+			}
+			//fwrite($fp,"On vient bien de /cahier_notes/index.php\n");
+		}
+		else {
+			//echo "<p style='color:red'>On ne vient pas de /cahier_notes/index.php</p>";
+			//fwrite($fp,"On ne vient pas de /cahier_notes/index.php, mais de \$_SERVER['HTTP_REFERER']=".$_SERVER['HTTP_REFERER']."\nEt \$_SERVER['REQUEST_URI']=".$_SERVER['REQUEST_URI']."\n");
 
-        // On teste si le carnet de notes est vide
-        $sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_racine'");
-        $nb_dev = mysql_num_rows($sql);
-        $sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_racine'");
-        $nb_cont = mysql_num_rows($sql);
-        if (($nb_dev == 0) and ($nb_cont == 0)) {
-            $sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_racine'");
-        } else {
-            $arret = 'no';
-            mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_racine,$arret);
-        }
+			$texte_mail="Tentative de suppression de devoir depuis une page inattendue: \$_SERVER['HTTP_REFERER']=".$_SERVER['HTTP_REFERER']."\nau lieu de /cahier_notes/index.php.\nEt la suppression tentée était \$_SERVER['REQUEST_URI']=".$_SERVER['REQUEST_URI']."\n";
+			mail_alerte("Anomalie de suppression de devoir",$texte_mail,'y');
+
+		}
+		//fclose($fp);
+
     }
     //
     // Supression d'un conteneur
