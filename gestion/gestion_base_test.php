@@ -739,7 +739,7 @@ if ($n > 0) {
 
 
 <?php
-echo "<h3>Documentation dur la base de test : </h3>\n";
+echo "<h3>Documentation de la base de test : </h3>\n";
 include("../backup/$dirname/doc.html");
 
 require("../lib/footer.inc.php");
