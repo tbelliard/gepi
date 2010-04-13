@@ -163,7 +163,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	    $criteria = new Criteria();
 	    $criteria->add(PreferenceUtilisateurProfessionnelPeer::NAME, $name);
 	    $prefs = $this->getPreferenceUtilisateurProfessionnels($criteria);
-	    if ($pref->isEmty()) {
+	    if ($prefs->isEmpty()) {
 		//Creation d'une nouvelle entree dans les preferences
 		$nouvellePref = new PreferenceUtilisateurProfessionnel();
 		$nouvellePref->setName($name);
