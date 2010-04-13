@@ -79,7 +79,7 @@ $titre_page = "Carnet de notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
-debug_var();
+//debug_var();
 
 //-----------------------------------------------------------------------------------
 if (isset($_GET['id_groupe']) and isset($_GET['periode_num'])) {
@@ -177,7 +177,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
     include "../lib/periodes.inc.php";
 
     //
-    // Supression d'une évaluation
+    // Suppression d'une évaluation
     //
     if ((isset($_GET['del_dev'])) and ($_GET['js_confirmed'] ==1)) {
         $temp = $_GET['del_dev'];
@@ -188,32 +188,39 @@ if  (isset($id_racine) and ($id_racine!='')) {
 		//$fich="/tmp/test_faille.txt";
 		//$fp=fopen($fich,"a+");
 		if(my_ereg("/cahier_notes/index.php$",$tmp_referer[0])) {
-			echo "<p style='color:green'>On vient bien de /cahier_notes/index.php</p>";
+			//echo "<p style='color:green'>On vient bien de /cahier_notes/index.php</p>";
 
-			$sql= mysql_query("SELECT id_conteneur FROM cn_devoirs WHERE id='$temp'");
-			$id_cont = mysql_result($sql, 0, 'id_conteneur');
-			$sql = mysql_query("DELETE FROM cn_notes_devoirs WHERE id_devoir='$temp'");
-			$sql = mysql_query("DELETE FROM cn_devoirs WHERE id='$temp'");
-	
-			// On teste si le conteneur est vide
-			$sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_cont'");
-			$nb_dev = mysql_num_rows($sql);
-			$sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_cont'");
-			$nb_cont = mysql_num_rows($sql);
-			if (($nb_dev == 0) or ($nb_cont == 0)) {
-				$sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_cont'");
+			$sql0="SELECT id_conteneur FROM cn_devoirs WHERE id='$temp'";
+			//echo "$sql0<br />";
+			$sql= mysql_query($sql0);
+			if(mysql_num_rows($sql)==0) {
+				echo "<p style='color:red'>Le devoir $temp n'a pas été trouvé.</p>\n";
 			}
-	
-			// On teste si le carnet de notes est vide
-			$sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_racine'");
-			$nb_dev = mysql_num_rows($sql);
-			$sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_racine'");
-			$nb_cont = mysql_num_rows($sql);
-			if (($nb_dev == 0) and ($nb_cont == 0)) {
-				$sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_racine'");
-			} else {
-				$arret = 'no';
-				mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_racine,$arret);
+			else {
+				$id_cont = mysql_result($sql, 0, 'id_conteneur');
+				$sql = mysql_query("DELETE FROM cn_notes_devoirs WHERE id_devoir='$temp'");
+				$sql = mysql_query("DELETE FROM cn_devoirs WHERE id='$temp'");
+		
+				// On teste si le conteneur est vide
+				$sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_cont'");
+				$nb_dev = mysql_num_rows($sql);
+				$sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_cont'");
+				$nb_cont = mysql_num_rows($sql);
+				if (($nb_dev == 0) or ($nb_cont == 0)) {
+					$sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_cont'");
+				}
+		
+				// On teste si le carnet de notes est vide
+				$sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_racine'");
+				$nb_dev = mysql_num_rows($sql);
+				$sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_racine'");
+				$nb_cont = mysql_num_rows($sql);
+				if (($nb_dev == 0) and ($nb_cont == 0)) {
+					$sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_racine'");
+				} else {
+					$arret = 'no';
+					mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_racine,$arret);
+				}
 			}
 			//fwrite($fp,"On vient bien de /cahier_notes/index.php\n");
 		}
