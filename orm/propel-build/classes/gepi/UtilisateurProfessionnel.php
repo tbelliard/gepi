@@ -15,7 +15,7 @@
 class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	/**
-	 * @var        array $collGroupes[] Collection to store aggregation of Groupe objects.
+	 * @var        PropelObjectCollection $collGroupes[] Collection to store aggregation of Groupe objects.
 	 */
 	protected $collGroupes;
 
@@ -26,7 +26,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * It seems that the groupes are passed by values and not by references.
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     array Groupes[]
+	 * @return     PropelObjectCollection Groupes[]
 	 */
 	public function getGroupes($con = null) {
 		if ($this->collGroupes != null) {
@@ -79,7 +79,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * It seems that the groupes are passed by values and not by references.
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     array Eleves[]
+	 * @return     PropelObjectCollection Eleves[]
 	 */
 	public function getEleveProfesseurPrincipals($con = null) {
 		$eleves = new PropelObjectCollection();
@@ -98,7 +98,6 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * It seems that the groupes are passed by values and not by references.
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     array Eleves[]
 	 */
 	public function addEleveProfesseurPrincipal(Eleve $eleve) {
 		if ($eleve->getIdEleve() == null) {
@@ -115,7 +114,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * Renvoi sous forme d'un tableau la liste des eleves d'un utilisateur cpe
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     array Eleves[]
+	 * @return     PropelObjectCollection Eleves[]
 	 */
 	public function getEleveCpes($con = null) {
 		return $this->getEleves();
@@ -126,7 +125,6 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * Ajoute un eleve a un cpe
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     array Eleves[]
 	 */
 	public function addEleveCpe(Eleve $eleve) {
 		$this->addEleve($eleve);
@@ -157,7 +155,6 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * Ajout manuel
 	 *
 	 * @param      String $name le nom de la preference à obtenir
-	 * @return     array Eleves[]
 	 */
 	public function setPreferenceValeur($name, $value){
 	    $criteria = new Criteria();
@@ -226,6 +223,5 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	    return $edtCoursCol;
 	}
-
 
 }
