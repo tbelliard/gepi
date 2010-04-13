@@ -275,7 +275,7 @@ class ModelCriteria extends Criteria
 			// where('Book.AuthorId = ?', 12)
 			$criterion = $this->getCriterionForClause($clause, $value);
 		}
-		$this->add($criterion, null, null);
+		$this->addAnd($criterion, null, null);
 		
 		return $this;
 	}
@@ -855,7 +855,7 @@ class ModelCriteria extends Criteria
 	 * 
 	 * @param     PropelPDO $con an optional connection object
 	 *
-	 * @return     mixed the list of results, formatted by the current formatter
+	 * @return     PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function find($con = null)
 	{
@@ -1665,6 +1665,10 @@ EOT;
 			if(in_array($type, array('left', 'right', 'inner')))
 			{
 				$joinType = strtoupper($type) . ' JOIN';
+				// Test if first argument is suplied, else don't provide an alias to joinXXX (default value)
+        if (!isset($arguments[0])) {
+          $arguments[0] = '';
+        } 
 				array_push($arguments, $joinType);
 				$method = substr($name, $pos);
 				// no lcfirst in php<5.3...

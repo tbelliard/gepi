@@ -32,6 +32,8 @@ class DBOracle extends DBAdapter
 	 */
 	public function initConnection(PDO $con, array $settings)
 	{
+		$con->exec("ALTER SESSION SET NLS_DATE_FORMAT='YYYY-MM-DD'");
+		$con->exec("ALTER SESSION SET NLS_TIMESTAMP_FORMAT='YYYY-MM-DD HH24:MI:SS'");
 		if (isset($settings['queries']) && is_array($settings['queries'])) {
 			foreach ($settings['queries'] as $queries) {
 				foreach ((array)$queries as $query) {
@@ -39,8 +41,6 @@ class DBOracle extends DBAdapter
 				}
 			}
 		}
-		$con->exec("ALTER SESSION SET NLS_DATE_FORMAT='YYYY-MM-DD'");
-		$con->exec("ALTER SESSION SET NLS_TIMESTAMP_FORMAT='YYYY-MM-DD HH24:MI:SS'");
 	}
 	
 	/**
@@ -104,25 +104,23 @@ class DBOracle extends DBAdapter
 	/**
 	 * @see        DBAdapter::applyLimit()
 	 */
-	public function applyLimit(&$sql, $offset, $limit)
+	public function applyLimit(&$sql, $offset, $limit, $criteria = null)
 	{
-		 $sql =
-			'SELECT B.* FROM (  '
-			.  'SELECT A.*, rownum AS PROPEL_ROWNUM FROM (  '
-			. $sql
-			. '  ) A '
-			.  ' ) B WHERE ';
+		if (BasePeer::needsSelectAliases($criteria)) {
+			$selectSql = BasePeer::createSelectSqlPart($criteria, $params, true);
+			$sql = $selectSql . substr($sql, strpos('FROM', $sql));
+		}
+		$sql = 'SELECT B.* FROM ('
+			. 'SELECT A.*, rownum AS PROPEL_ROWNUM FROM (' . $sql . ') A '
+			. ') B WHERE ';
 
 		if ( $offset > 0 ) {
-			$sql				.= ' B.PROPEL_ROWNUM > ' . $offset;
-
-			if ( $limit > 0 )
-			{
-				$sql			.= ' AND B.PROPEL_ROWNUM <= '
-									. ( $offset + $limit );
+			$sql .= ' B.PROPEL_ROWNUM > ' . $offset;
+			if ( $limit > 0 ) {
+				$sql .= ' AND B.PROPEL_ROWNUM <= ' . ( $offset + $limit );
 			}
 		} else {
-			$sql				.= ' B.PROPEL_ROWNUM <= ' . $limit;
+			$sql .= ' B.PROPEL_ROWNUM <= ' . $limit;
 		}
 	}
 
