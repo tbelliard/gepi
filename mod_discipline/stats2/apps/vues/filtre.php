@@ -25,7 +25,7 @@
     <h3 class="red">Choix des filtres pour les données</h3>
 
     <div id="filtres">
-        <form action="index.php?ctrl=bilans&action=filtrer" method="post"
+        <form action="index.php?ctrl=bilans&action=filtrer&action_from=<?php echo $action_from;?>" method="post"
                   name="filtres" id="filtre_donnees">
             <div id="wrap">
             <div id="filtre_categories">

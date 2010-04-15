@@ -26,16 +26,22 @@ require_once ("Controleur.php");
 
 
 class ErrorCtrl extends Controleur {
-    function index(){
+
+ private $errors=Null;
+
+  function  __construct() {
+    parent::__construct();
+  }
+
+  function index(){
 
     }
 
     function select(){
-        $errors[]="Vous n'avez sélectionné aucune donnée à traîter";
-        $errors[].="Sélectionnez des individus ou des classes dans l'onglet sélection..";
-        include("error.php");
+        $this->errors[]="Vous n'avez sélectionné aucune donnée à traîter";
+        $this->errors[].="Sélectionnez des individus ou des classes dans l'onglet sélection..";
+        $this->vue->setVar('errors', $this->errors);
+        $this->vue->afficheVue("error.php",$this->vue->getVars());
     }
-
-
 }
 ?>

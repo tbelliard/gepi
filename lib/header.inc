@@ -161,6 +161,12 @@ if ($windows == 'oui') {
 	<link href="'.$gepiPath.'/edt_effets/themes/alphacube.css" rel="stylesheet" type="text/css"/>
 	 ';
  }
+// Utilisation de tablekit
+$tablekit = isset($utilisation_tablekit) ? $utilisation_tablekit : NULL;
+if ($tablekit == "ok") {
+  // On affiche le lien qui charge tablekit
+  echo '<script type="text/javascript" src="'.$gepiPath.'/lib/tablekit.js"></script>'."\n";
+}
 // js spécifique
 if(isset($javascript_specifique)) {
 	// Il faudrait filtrer le contenu de la variable...

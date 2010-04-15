@@ -23,9 +23,11 @@
 
 /**
  * Une classe implantant un controleur
+ * Code adapté du controleur de Philippe Rigaux:
+ * http://www.lamsade.dauphine.fr/rigaux/mysqlphp
  */
 //require_once('tbs_class_php5.php');
-
+require_once('Class.Vue.php');
 abstract class Controleur {
     // Objets utilitaires
     protected $vue; // Composant "vue" pour produire les pages HTML
@@ -42,7 +44,7 @@ abstract class Controleur {
      */
         // Instanciation du moteur de templates
        // $this->vue = new clsTinyButStrong ;
-
+    $this->vue = new ClassVue() ;
 
     }
 }

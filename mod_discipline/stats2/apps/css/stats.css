@@ -20,6 +20,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+ .mess_red {
+   text-align:center;
+   font-size:20px;
+   width:100%;
+   border: 1px solid red;
+   background-color: #FF7579;
+   color:#FFFFFF;
+}
+.mess_orange {
+   text-align:center;
+   font-size:20px;
+   width:100%;
+   border: 1px solid orange;
+   background-color: #FFAA60;
+   color:#FFFFFF;
+}
+.mess_green {
+   text-align:center;
+   font-size:20px;
+   width:100%;
+   border: 1px solid green;
+   background-color: #82FF46;
+   color:#FFFFFF;
+}
 div#select {
 
     float: left;
@@ -141,7 +165,7 @@ div#selected {
     min-height: 740px;
 }
 
-.update {
+.auto_complete {
     position: absolute;
     min-width: 304px;
     background-color: white;
@@ -150,20 +174,20 @@ div#selected {
     padding: 0px;
 }
 
-ul.contacts {
+ul.affichage_nom {
     list-style-type: none;
     margin: 0px;
     padding: 0px;
     text-align: left;
 }
 
-ul.contacts li.selected {
+ul.affichage_nom li.selected {
     width: 300px;
     background-color: #ffb;
     cursor: pointer;
 }
 
-li.contact {
+li.affichage_nom {
     list-style-type: none;
     display: block;
     margin: 0;
@@ -172,50 +196,33 @@ li.contact {
     height: 72px;
 }
 
-li.contact div.image {
+li.affichage_nom div.photo_trombi {
     float: left;
     width: 72px;
     height: 72px;
     margin-right: 8px;
 }
 
-li.contact div.nom {
+li.affichage_nom div.nom {
     font-weight: bold;
     font-size: 11px;
     line-height: 1em;
 }
 
-div.section,div#createNew {
+div.bloc {
     border: 1px solid #CCCCCC;
     margin: 10px 5px;
     padding: 0px 0px 10px 0px;
-    background-color: #EFEFEF;
+    background-color: #DCD8FF;
     width:230px;
-
-
 }
 
-div#createNew input { margin-left: 5px; }
-
-div#createNew h3, div.section h3{
+div.bloc h3{
     font-size: 14px;
     padding: 2px 5px;
     margin: 0 0 10px 0;
-    background-color: #CCCCCC;
-
-}
-
-div.section h3 {
+    background-color: #6078FF;
     cursor: move;
-}
-
-div.lineitem {
-    margin: 4px 10px;
-    padding: 2px;
-    background-color: #FED6FF;
-    cursor: move;
-    width:225px;
-
 }
 
 h1 {
@@ -225,10 +232,8 @@ h1 {
 div#Categories_incidents1{
     width:260px;
     float:left;
-
 }
 div#Categories_incidents2{
-
     width:260px;
     float:left;
 }
@@ -243,21 +248,7 @@ div#Natures_incidents{
     border: 1px dashed;
     border-color: red;
 }
-div#group1{
 
-}
-div#Categories_incidents{
-    margin:10px;
-    float:left;
-    width:580px;
-    background-color:#B0FFA8;
-    padding: 2px 5px;
-    border: 1px dashed;
-    border-color: green;
-}
-.hoverActive {
-    background-color: #ffffcc;
-}
 div #natures{
     margin:5px;
     float:left;
@@ -265,8 +256,6 @@ div #natures{
     padding: 2px 2px;
     border: 1px dashed;
     border-color: green;
-
-
 }
 div #categories{
     margin:5px;
@@ -279,9 +268,7 @@ div #categories{
 
 
 div #wrap {
-    overflow: hidden;
-    
-
+    overflow: hidden; 
 }
 .option {
     width:320px;
@@ -316,12 +303,7 @@ a.supp_filtre:active { COLOR: #0FD11F;  TEXT-DECORATION: none }
 a.supp_filtre:hover { COLOR: #c8373a;  TEXT-DECORATION: line-through  }
 
 
-/* autre fabtulous*/
-
-
-
-#banner {
-  
+#banner {  
   margin: 0px;
   padding:0px;
   background-color:#ddd;
@@ -329,16 +311,7 @@ a.supp_filtre:hover { COLOR: #c8373a;  TEXT-DECORATION: line-through  }
   border-left: 1px solid #666;;
   border-right: 1px solid #666;
   border-bottom: 0px;
-
-
 }
-
-.bar {
-    padding: 5px;
-    background-color: #3e3e3e;
-}
-
-
 .bar {
     padding: 5px;
     background-color: #3e3e3e;
@@ -349,20 +322,15 @@ a.supp_filtre:hover { COLOR: #c8373a;  TEXT-DECORATION: line-through  }
     background-color:#ffffff;
     margin: 0px;    
     padding:0px;
-   
-
 }
 
 .panel {
     clear: both;    
     padding: 1em;
 }
-
-
 .panel.active-tab-body {
     display: block;
 }
-
  tr.alt {
 	background-color: #C8FFC8;
 }
@@ -373,8 +341,6 @@ tr.fond  {
 	background-color:#cfe2e2;
 }
 
-
-/* root element for tabs  */
 ul.css-tabs {
 	margin:0 !important;
     padding:0;
@@ -382,7 +348,7 @@ ul.css-tabs {
      border-bottom:1px dashed #666;
 }
 
-/* single tab */
+
 ul.css-tabs li {
 	 /* Indispensable */
     display: -moz-inline-stack;
@@ -394,7 +360,6 @@ ul.css-tabs li {
         *display: inline;
 }
 
-/* link inside the tab. uses a background image */
 ul.css-tabs a {
 	float:left;
 	font-size:13px;
@@ -414,13 +379,10 @@ ul.css-tabs a {
 	top:1px;
 	
 }
-
 ul.css-tabs a:hover {
 	background-color:#F7F7F7;
 	color:#333;
 }
-
-/* selected tab */
 ul.css-tabs a.current {
 	background-color:#ddd;
 	border-bottom:1px dashed #666;
@@ -440,18 +402,9 @@ div.css-panes {
 
 table {
 	border-collapse: collapse;
-	
-        
 }
 
-.sortable td, th {
-	padding: 0.5em;
-	border: 1px solid #CCC;
-        text-align:center;
-        font-size: 12px;
-	/*white-space: nowrap;
-	overflow: hidden;*/
-}
+
 th{
     border-style: solid;
 	border-width: 1px;
@@ -464,42 +417,10 @@ th{
 thead, tfoot {
 	background-color: #DDD;
 }
-
-tr.rowodd {
-	background-color: #C8FFC8;
-}
-
-tr.roweven {
-	background-color: #FFE6AA;
-}
-
-.sortcol {
-	cursor: pointer;
-	padding-right: 20px;
-	background-repeat: no-repeat;
-	background-position: right center;
-}
-.sortasc {
-	background-color: #DDFFAC;
-	background-image: url(../img/up.gif);
-}
-.sortdesc {
-	background-color: #B9DDFF;
-	background-image: url(../img/down.gif);
-}
-.nosort {
-	cursor: default;
-}
-
-th.resize-handle-active {
-	cursor: e-resize;
-}
-
-div.resize-handle {
-	cursor: e-resize;
-	width: 2px;
-	border-right: 1px dashed #1E90FF;
-	position:absolute;
-	top:0;
-	left:0;
+div.float_left{
+  float:left;
+  margin: 2px;
+  padding: 2px;
+  border: 1px dashed;
+  border-color: red;
 }

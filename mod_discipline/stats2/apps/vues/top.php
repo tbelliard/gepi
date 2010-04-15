@@ -19,10 +19,83 @@
  * You should have received a copy of the GNU General Public License
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+*/
 ?>
 <div id="result">
-<p>Top 10 des sanctions</p>
+  <div id="wrap" >
+    <h3><font class="red">Top 10 des incidents pour la période du: <?php echo $_SESSION['stats_periodes']['du'];?> au <?php echo $_SESSION['stats_periodes']['au'];?> </font> </h3>
+    <?php ClassVue::afficheVue('parametres.php',$vars) ?>
+    <div id="tableaux">
+      <div class="float_left" >
+        <h3>Top 10 des incidents </h3>
+        <?php if($top_incidents): ?>
+        <table class="boireaus" >
+          <tr><th><font class='titre'>Nom</font></th><th><font class='titre'>Classe</font></th><th><font class='titre'>Nombre</font></th></tr>
+          <?php
+          $alt_b=1;
+          foreach ($top_incidents as $eleve) {
+            $alt_b=$alt_b*(-1); ?>
+          <tr class="lig<?php echo $alt_b;?>"><td><?php echo $eleve->nom.' '.$eleve->prenom; ?></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          </tr>
+            <?php } ?>
+        </table>
+        <?php else: ?>
+        <p>Pas d'incidents sur la période avec les filtres selectionnés</p>
+        <?php endif; ?>
+      </div>
+      <div class="float_left" >
+        <h3>Top 10 des sanctions </h3>
+        <?php if($top_sanctions): ?>
+        <table class="boireaus" >
+          <tr><th><font class='titre'>Nom</font></th><th><font class='titre'>Classe</font></th><th><font class='titre'>Nombre</font></th></tr>
+          <?php
+          $alt_b=1;
+          foreach ($top_sanctions as $eleve) {
+            $alt_b=$alt_b*(-1); ?>
+          <tr class="lig<?php echo $alt_b;?>"><td><?php echo $eleve->nom.' '.$eleve->prenom; ?></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          </tr>
+            <?php } ?>
+        </table>
+        <?php else: ?>
+        <p>Pas de sanctions sur la période avec les filtres selectionnés</p>
+        <?php endif; ?>
+      </div>
+      <div class="float_left" >
+        <h3>Top 10 des heures de retenues </h3>
+         <?php if($top_retenues): ?>
+        <table class="boireaus" >
+          <tr><th><font class='titre'>Nom</font></th><th><font class='titre'>Classe</font></th><th><font class='titre'>Nombre</font></th></tr>
+          <?php
+          $alt_b=1;
+          foreach ($top_retenues as $eleve) {
+            $alt_b=$alt_b*(-1); ?>
+          <tr class="lig<?php echo $alt_b;?>"><td><?php echo $eleve->nom.' '.$eleve->prenom; ?></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          </tr>
+            <?php } ?>
+        </table>
+        <?php else: ?>
+        <p>Pas de retenues sur la période avec les filtres selectionnés</p>
+        <?php endif; ?>
+      </div>
+      <div class="float_left" >
+        <h3>Top 10 du nombre d'exclusions </h3>
+         <?php if($top_exclusions): ?>
+        <table class="boireaus" >
+          <tr><th><font class='titre'>Nom</font></th><th><font class='titre'>Classe</font></th><th><font class='titre'>Nombre</font></th></tr>
+          <?php
+          $alt_b=1;
+          foreach ($top_exclusions as $eleve) {
+            $alt_b=$alt_b*(-1); ?>
+          <tr class="lig<?php echo $alt_b;?>"><td><?php echo $eleve->nom.' '.$eleve->prenom; ?></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          </tr>
+            <?php } ?>
+        </table>
+        <?php else: ?>
+        <p>Pas d'exclusions sur la période avec les filtres selectionnés</p>
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
 </div>
 
 

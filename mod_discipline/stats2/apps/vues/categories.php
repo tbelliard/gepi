@@ -56,8 +56,8 @@
                 $total=count($liste_categories);
                 $fin=ceil($total/2);
                 for ($i=0;$i<$fin;$i++) {?>
-                <div id='group<?php echo $i+2;?>' class='section'>
-                    <h3 class='handle'><a href="index.php?ctrl=categories&action=delete&categorie_id=<?php echo $liste_categories[$i]->id; ?>" class="supp" title="cliquez pour vider"><?php echo $liste_categories[$i]->categorie; ?></a></h3>
+                <div id='group<?php echo $i+2;?>' class='bloc'>
+                    <h3><a href="index.php?ctrl=categories&action=delete&categorie_id=<?php echo $liste_categories[$i]->id; ?>" class="supp" title="cliquez pour vider"><?php echo $liste_categories[$i]->categorie; ?></a></h3>
                         <?php
                         
                         foreach($liste_natures as $nature) { ?>
@@ -73,8 +73,8 @@
             <div id='Categories_incidents2'>
                 <?php
                 for ($i=$fin;$i<$total;$i++) {?>
-                <div id='group<?php echo $i+2;?>' class='section'>
-                    <h3 class='handle'><a href="index.php?ctrl=categories&action=delete&categorie_id=<?php echo $liste_categories[$i]->id; ?>" class="supp" title="cliquez pour vider"><?php echo $liste_categories[$i]->categorie;?></a></h3>
+                <div id='group<?php echo $i+2;?>' class='bloc'>
+                    <h3><a href="index.php?ctrl=categories&action=delete&categorie_id=<?php echo $liste_categories[$i]->id; ?>" class="supp" title="cliquez pour vider"><?php echo $liste_categories[$i]->categorie;?></a></h3>
                         <?php
                         foreach($liste_natures as $nature) {?>
                     <ul class='selected_titre'>

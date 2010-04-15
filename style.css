@@ -953,3 +953,56 @@ div.info_abs {
 	border: 1px solid black;
 }
 /*=====================================================*/
+/* style tablekit */
+.sortable td, th {
+	padding: 0.5em;
+	border: 1px solid #CCC;
+        text-align:center;
+        font-size: 12px;
+}
+
+.sortable tr.rowodd {
+	background-color: #C8FFC8;
+}
+.sortable table {
+	border-collapse: collapse;
+}
+
+.sortable tr.roweven {
+	background-color: #FFE6AA;
+}
+.sortable thead, tfoot {
+	background-color: #DDD;
+}
+
+.sortcol {
+	cursor: pointer;
+	padding-right: 20px;
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+.sortasc {
+	background-color: #DDFFAC;
+	background-image: url("./images/up.gif");
+}
+.sortdesc {
+	background-color: #B9DDFF;
+	background-image: url("./images/fleche_a.gif");
+}
+.nosort {
+	cursor: default;
+}
+
+th.resize-handle-active {
+	cursor: e-resize;
+}
+
+div.resize-handle {
+	cursor: e-resize;
+	width: 2px;
+	border-right: 1px dashed #1E90FF;
+	position:absolute;
+	top:0;
+	left:0;
+}
+/* ===================== */

@@ -26,8 +26,12 @@ require_once ("Controleur.php");
 
 
 class GraphCtrl extends Controleur {
-    function index(){
-        include('graph.php');
+
+  function __construct(){
+    parent::__construct();
+  }
+  function index(){
+        $this->vue->afficheVue('graph.php');
     }
 }
 

@@ -25,7 +25,7 @@ require_once('Class.Modele.php');
 Class modele_select extends Modele {
 
     public function test_edt(){
-      $this->sql = " SELECT 1=1 FROM setting WHERE name ='module_edt' AND value='y'";
+      $this->sql = " SELECT 1=1 FROM setting WHERE name ='autorise_edt_admin' AND value='y'";
       $this->res = mysql_query($this->sql);
       if(mysql_num_rows($this->res)>0) return true;
     }

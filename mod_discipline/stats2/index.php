@@ -97,11 +97,12 @@ switch ($_SESSION['type']) {
         break;
 }
 $utilisation_scriptaculous="ok";
+$utilisation_tablekit="ok";
 $utilisation_win = 'oui';
 $scriptaculous_effet="effects,controls,builder,dragdrop";
 $style_specifique = "mod_discipline/stats2/apps/css/stats";
 $javascript_specifique = "mod_discipline/stats2/apps/js/stats";
-//$javascript_specifique = "mod_discipline/stats2/lib/accordion/accordion.js";
+
 require_once("../../lib/header.inc");
 
 //**************** FIN EN-TETE *****************

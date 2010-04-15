@@ -24,6 +24,8 @@
 /**
  * Classe gérant les requêtes HTTP et les routant
  * vers le controleur et l'action appropriée
+ * Code adapté du controleur de Philippe Rigaux:
+ *  http://www.lamsade.dauphine.fr/rigaux/mysqlphp
  */
 
 class Frontal {

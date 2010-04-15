@@ -19,16 +19,30 @@
  * You should have received a copy of the GNU General Public License
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+*/
 require_once("Modele.Top.php");
 require_once ("Controleur.php");
 
 
-
 class TopCtrl extends Controleur {
-    function index(){
-        include('top.php');
+  function __construct() {
+    parent::__construct();
+
+  }
+
+  function index() {
+
+    $this->vue->afficheVue('top.php');
+  }
+
+  function affiche_top() {
+    try {
+      
     }
+    catch (Exception $e) {
+      echo 'Exception reçue : ',  $e->getMessage(), "\n";
+    }
+  }
 }
 
 
