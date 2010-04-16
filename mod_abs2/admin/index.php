@@ -103,15 +103,15 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
-		if (isset($_POST['abs2_modification_saisie_sans_limite'])) {
-			if (!saveSetting("abs2_modification_saisie_sans_limite", $_POST['abs2_modification_saisie_sans_limite'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
-			}
-		} else {
-			if (!saveSetting("abs2_modification_saisie_sans_limite", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
-			}
-		}
+//		if (isset($_POST['abs2_modification_saisie_sans_limite'])) {
+//			if (!saveSetting("abs2_modification_saisie_sans_limite", $_POST['abs2_modification_saisie_sans_limite'])) {
+//				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+//			}
+//		} else {
+//			if (!saveSetting("abs2_modification_saisie_sans_limite", 'n')) {
+//				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+//			}
+//		}
 
 	}
 }
@@ -124,6 +124,7 @@ if (isset($_POST['classement'])) {
 }
 if (isset($_POST['installation_base'])) {
             // Remise à zéro de la table des droits d'accès
+	$result = "";
         require '../../utilitaires/updates/access_rights.inc.php';
 	require '../../utilitaires/updates/mod_abs2.inc.php';
 }
@@ -215,11 +216,11 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	<?php if (getSettingValue("abs2_modification_saisie_une_heure")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie dans l'heure qui a suivi sa creation</label>
 </p>
-<p>
+<!--p>
 	<input type="checkbox" name="abs2_modification_saisie_sans_limite" value="y"
-	<?php if (getSettingValue("abs2_modification_saisie_sans_limite")=='y') echo " checked='checked'"; ?> />
+	<?php //if (getSettingValue("abs2_modification_saisie_sans_limite")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_modification_saisie_sans_limite">&nbsp;Permettre la modification d'une saisie sans limite de temps</label>
-</p>
+</p-->
 
 <h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
 <p style="font-style: italic">Vous pouvez permettre aux responsables d'acc&eacute;der aux donn&eacute;es brutes
