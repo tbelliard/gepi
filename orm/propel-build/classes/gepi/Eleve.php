@@ -61,15 +61,24 @@ class Eleve extends BaseEleve {
 	 * @return     PropelObjectCollection Groupes[]
 	 *
 	 */
-	public function getGroupes($periode) {
+	public function getGroupes($periode = null) {
+		if ($periode == null) {
+		    $periode = $this->getPeriodeNoteOuverte();
+		}
 		require_once("helpers/PeriodeNoteHelper.php");
 		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
 		$groupes = new PropelObjectCollection();
 		$c = new Criteria();
-		$c->add(JEleveGroupePeer::PERIODE,$periode_num);
+		if ($periode != null) {
+		    $c->add(JEleveGroupePeer::PERIODE,$periode_num);
+		}
+		
 		foreach($this->getJEleveGroupesJoinGroupe($c) as $ref) {
 			if ($ref->getGroupe() != NULL) {
-			    $groupes->append($ref->getGroupe());
+			    //ajout de l'eleve seulement si il n'y est pas deja
+			    if (!$groupes->contains($ref->getGroupe())) {
+				$groupes->append($ref->getGroupe());
+			    }
 			}
 		}
 		return $groupes;
