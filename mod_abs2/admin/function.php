@@ -123,11 +123,6 @@ function ajoutTypesParDefaut() {
 	$type->setTypeSaisie('FIN_ABS');
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
-	$statut->setStatut("professeur");
-	$type->addAbsenceEleveTypeStatutAutorise($statut);
-	$statut->save();
-
-	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
@@ -207,11 +202,6 @@ function ajoutTypesParDefaut() {
 	$type->setTypeSaisie('NON_PRECISE');
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
-	$statut->setStatut("professeur");
-	$type->addAbsenceEleveTypeStatutAutorise($statut);
-	$statut->save();
-
-	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
@@ -226,11 +216,6 @@ function ajoutTypesParDefaut() {
 	$type->setJustificationExigible(false);
 	$type->setResponsabiliteEtablissement(true);
 	$type->setTypeSaisie('NON_PRECISE');
-
-	$statut = new AbsenceEleveTypeStatutAutorise();
-	$statut->setStatut("professeur");
-	$type->addAbsenceEleveTypeStatutAutorise($statut);
-	$statut->save();
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
@@ -270,11 +255,6 @@ function ajoutTypesParDefaut() {
 	$type->setTypeSaisie('NON_PRECISE');
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
-	$statut->setStatut("professeur");
-	$type->addAbsenceEleveTypeStatutAutorise($statut);
-	$statut->save();
-
-	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
@@ -289,11 +269,6 @@ function ajoutTypesParDefaut() {
 	$type->setJustificationExigible(true);
 	$type->setResponsabiliteEtablissement(false);
 	$type->setTypeSaisie('NON_PRECISE');
-
-	$statut = new AbsenceEleveTypeStatutAutorise();
-	$statut->setStatut("professeur");
-	$type->addAbsenceEleveTypeStatutAutorise($statut);
-	$statut->save();
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");

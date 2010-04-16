@@ -85,11 +85,31 @@ if (isset($_POST['is_posted'])) {
 
 		if (isset($_POST['abs2_saisie_prof_hors_cours'])) {
 			if (!saveSetting("abs2_saisie_prof_hors_cours", $_POST['abs2_saisie_prof_hors_cours'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la sasie par les professeurs hors cours prévu !";
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie par les professeurs hors cours prévu !";
 			}
 		} else {
 			if (!saveSetting("abs2_saisie_prof_hors_cours", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la sasie par les professeurs hors cours prévu !";
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie par les professeurs hors cours prévu !";
+			}
+		}
+
+		if (isset($_POST['abs2_modification_saisie_une_heure'])) {
+			if (!saveSetting("abs2_modification_saisie_une_heure", $_POST['abs2_modification_saisie_une_heure'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+			}
+		} else {
+			if (!saveSetting("abs2_modification_saisie_une_heure", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+			}
+		}
+
+		if (isset($_POST['abs2_modification_saisie_sans_limite'])) {
+			if (!saveSetting("abs2_modification_saisie_sans_limite", $_POST['abs2_modification_saisie_sans_limite'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+			}
+		} else {
+			if (!saveSetting("abs2_modification_saisie_sans_limite", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
 			}
 		}
 
@@ -189,6 +209,16 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	<input type="checkbox" name="abs2_saisie_prof_hors_cours" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_hors_cours")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_saisie_prof_hors_cours">&nbsp;Permettre la saisie d'une absence hors des cours prevu dans l'emploi du temps du professeur</label>
+</p>
+<p>
+	<input type="checkbox" name="abs2_modification_saisie_une_heure" value="y"
+	<?php if (getSettingValue("abs2_modification_saisie_une_heure")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie dans l'heure qui a suivi sa creation</label>
+</p>
+<p>
+	<input type="checkbox" name="abs2_modification_saisie_sans_limite" value="y"
+	<?php if (getSettingValue("abs2_modification_saisie_sans_limite")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_modification_saisie_sans_limite">&nbsp;Permettre la modification d'une saisie sans limite de temps</label>
 </p>
 
 <h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
