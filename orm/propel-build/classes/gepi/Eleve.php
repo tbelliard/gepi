@@ -332,4 +332,157 @@ class Eleve extends BaseEleve {
 		return null;
 	}
 
+  	/**
+	 *
+	 * Retourne une liste d'absence du jour
+	 *
+	 * @return PropelCollection AbsenceEleveSaisie[]
+	 */
+	public function getAbsenceSaisiesDuJour($v = 'now') {
+	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+	    // -- which is unexpected, to say the least.
+	    //$dt = new DateTime();
+	    if ($v === null || $v === '') {
+		    $dt = null;
+	    } elseif ($v instanceof DateTime) {
+		    $dt = $v;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($v)) { // if it's a unix timestamp
+				    $dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt = new DateTime($v);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+		    }
+	    }
+	    $dt->setTime(0,0,0);
+	    $criteria = new Criteria();
+	    $criteria->add(AbsenceEleveSaisiePeer::FIN_ABS, $dt, Criteria::GREATER_EQUAL);
+	    $dt_fin = clone $dt;
+	    $dt_fin->setTime(23,59,59);
+	    $criteria->add(AbsenceEleveSaisiePeer::DEBUT_ABS, $dt_fin, Criteria::LESS_EQUAL);
+	    $col =  $this->getAbsenceEleveSaisies($criteria);
+	    return $col;
+	}
+
+  	/**
+	 *
+	 * Retourne une liste d'absence pour le creneau et le jour donné.
+	 *
+	 * @return PropelColection AbsenceEleveSaisie[]
+	 */
+	public function getAbsenceSaisiesDuCreneau($edtcreneau = null, $v = 'now') {
+	    if ($edtcreneau == null) {
+		$edtcreneau = EdtCreneauPeer::retrieveEdtCreneauActuel($v);
+	    }
+	    
+	    if (!($edtcreneau instanceof EdtCreneau)) {
+		throw new PropelException('Le premier argument n\'est pas un creneau');
+	    }
+	    
+	    $abs_col = $this->getAbsenceSaisiesDuJour($v);
+	    $result_col = new PropelCollection();
+	    foreach ($abs_col as $abs) {
+		//$abs = new AbsenceEleveSaisie();
+		//$edtcreneau = new EdtCreneau();
+		if ($abs->getEdtCreneau() != null && $abs->getEdtCreneau()->getIdDefiniePeriode() == $edtcreneau->getIdDefiniePeriode()) {
+		    if (!$result_col->contains($abs)) {
+			$result_col->append($abs);
+		    }
+		}
+
+		//on compare sur les horaires
+		if ($abs->getDebutAbs('Hi') <  $edtcreneau->getHeurefinDefiniePeriode('Hi') &&
+		    $abs->getFinAbs('Hi') >  $edtcreneau->getHeuredebutDefiniePeriode('Hi')) {
+		    if (!$result_col->contains($abs)) {
+			$result_col->append($abs);
+		    }
+		}
+
+		//on compare sur les cours
+		if ($abs->getEdtEmplacementCours() != null) {
+		    if ($abs->getEdtEmplacementCours()->getHeureDebut('Hi') <  $edtcreneau->getHeurefinDefiniePeriode('Hi') &&
+			$abs->getEdtEmplacementCours()->getHeureFin('Hi') >  $edtcreneau->getHeuredebutDefiniePeriode('Hi')) {
+			if (!$result_col->contains($abs)) {
+			    $result_col->append($abs);
+			}
+		    }
+		}
+	    }
+	    return $result_col;
+	}
+
+	/*
+	Renvoie le nom de la photo de l'élève
+	Renvoie une chaine vide si :
+	- le module trombinoscope n'est pas activé
+	- ou bien la photo n'existe pas.
+
+	$_elenoet_ou_loginc : selon les cas, soir l'elenoet de l'élève ou bien lelogin du professeur
+	$repertoire : "eleves"
+	$arbo : niveau d'aborescence (1 ou 2).
+	*/
+	public function getNomPhoto($arbo=1) {
+		if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
+		$repertoire = "eleves";
+		if (getSettingValue("active_module_trombinoscopes")!='y') {
+			return "";
+			die();
+		}
+		// Cas des élèves
+		// En multisite, le login est préférable à l'ELENOET
+		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+		    $_elenoet_ou_login = $this->getElenoet();
+		} else {
+		    $_elenoet_ou_login = $this->getLogin();
+		}
+
+		$photo= null;
+		if($_elenoet_ou_login!='') {
+			if(file_exists($chemin."../photos/eleves/".$this->getLogin().".jpg")) {
+				$photo="$_elenoet_ou_login.jpg";
+			}
+			else {
+				if(file_exists($chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
+					$photo=sprintf("%05d",$this->getLogin()).".jpg";
+				} else {
+					for($i=0;$i<5;$i++){
+						if(substr($this->getLogin(),$i,1)=="0"){
+							$test_photo=substr($this->getLogin(),$i+1);
+							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
+							if(($test_photo!='')&&(file_exists($chemin."../photos/eleves/".$test_photo.".jpg"))) {
+								$photo=$test_photo.".jpg";
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return $photo;
+	}
+
+	/**
+	 * renvoi la civilite 
+	 * M. ou Mlle
+	 * @return     string
+	 */
+	public function getCivilite()
+	{
+		if($this->getSexe()=="M") {
+			return "M.";
+		} elseif ($this->getSexe()=="F") {
+			return "Mlle";
+		}
+		return "";
+	}
+
 } // Eleve

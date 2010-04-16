@@ -27,12 +27,10 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
    * @return PropelObjectCollection EdtCreneau
    */
     public static function retrieveAllEdtCreneauxOrderByTime(){
-	    if (self::$_all_creneaux != null) {
-		return self::$_all_creneaux;
-	    } else {
+	    if (self::$_all_creneaux == null) {
 		self::$_all_creneaux = EdtCreneauQuery::create()->addAscendingOrderByColumn(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)->find();
-		return self::$_all_creneaux;
 	    }
+	    return clone self::$_all_creneaux;
     }
 
 	/**
@@ -79,7 +77,7 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
 	 *
 	 */
 	public static function retrieveFirstEdtCreneau() {
-		return self::retrieveAllEdtCreneauxOrderByTime()->getFirst();
+		return clone self::retrieveAllEdtCreneauxOrderByTime()->getFirst();
 	}
 
 	/**
@@ -90,7 +88,7 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
 	 *
 	 */
 	public static function retrieveLastEdtCreneau() {
-		return self::retrieveAllEdtCreneauxOrderByTime()->getLast();
+		return clone self::retrieveAllEdtCreneauxOrderByTime()->getLast();
 	}
 
 } // EdtCreneauPeer

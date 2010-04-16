@@ -41,4 +41,17 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	    }
 	}
 
+
+	/**
+	 * renvoi true ou false suivant l'autorisation
+	 * M. ou Mlle
+	 * @param $statut String
+	 * @return     boolean
+	 */
+	public function isStatutAutorise($statut)
+	{
+		$criteria = new Criteria();
+		$criteria->add(AbsenceEleveTypeStatutAutorisePeer::STATUT, $statut);
+		return !($this->getAbsenceEleveTypeStatutAutorises($criteria)->isEmpty());
+	}
 } // AbsenceEleveType
