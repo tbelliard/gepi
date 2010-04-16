@@ -21,13 +21,24 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	 * @return     DateTime
 	 *
 	 */
-	public function getHeureDebut() {
-		$start = strtotime($this->getEdtCreneau()->getHeuredebutDefiniePeriode());
-		if ($this->getHeuredebDec() == "0.5") {
-		    $addStart = strtotime($this->getEdtCreneau()->getHeurefinDefiniePeriode());
-		    $start = ($start + $addStart) / 2;
+	public function getHeureDebut($format = '%X') {
+	
+		if ($this->getHeuredebDec() == "0.5") {		    
+		    $dt = $this->getEdtCreneau()->getHeuredebutDefiniePeriode(NULL);
+		    $start = $dt->format('U'); //le formattage avec U nous donne un timestamp en secondes
+		    $addStart = $this->getEdtCreneau()->getHeurefinDefiniePeriode('U');
+		    $addSecond = ($addStart - $start) / 2;
+		    $dt->modify("+$addSecond second");
+		    if ($format === null) {
+			    return $dt;
+		    } elseif (strpos($format, '%') !== false) {
+			    return strftime($format, $dt->format('U'));
+		    } else {
+			    return $dt->format($format);
+		    }
+		} else {
+		    return $this->getEdtCreneau()->getHeuredebutDefiniePeriode($format);
 		}
-		return $datetime = date("H:i:s", $start);
 	}
 
 	/**
@@ -37,7 +48,7 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	 * @return     DateTime
 	 *
 	 */
-	public function getHeureFin() {
+	public function getHeureFin($format = '%X') {
 		$creneau = $this->getEdtCreneau();
 		$lastCreneau = new EdtCreneau();
 		$duree_modif = $this->getDuree();
@@ -52,17 +63,25 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 		}
 		if ($creneau == null) {
 		    // on est arrivé au bout, on va renvoye l'heure de fin du dernier creneau
-		    return $lastCreneau->getHeurefinDefiniePeriode();
+		    return $lastCreneau->getHeurefinDefiniePeriode($format);
 		}
 		if (($this->getDuree() % 2) == 0) {
 		    //il faut prendre la fin du creneau precedent
-		    return $lastCreneau->getHeurefinDefiniePeriode();
+		    return $lastCreneau->getHeurefinDefiniePeriode($format);
 		} else {
 		    //on prend le milieu du creneau en cours
-		    $end = strtotime($creneau->getHeuredebutDefiniePeriode());
-		    $addEnd = strtotime($creneau->getHeurefinDefiniePeriode());
-		    $end = ($end + $addEnd) / 2;
-		    return $datetime = date("H:i:s", $end);
+		    $dt = $creneau->getHeuredebutDefiniePeriode(NULL);
+		    $start = $dt->format('U'); //le formattage avec U nous donne un timestamp en secondes
+		    $addStart = $creneau->getHeurefinDefiniePeriode('U');
+		    $addSecond = ($addStart - $start) / 2;
+		    $dt->modify("+$addSecond second");
+		    if ($format === null) {
+			    return $dt;
+		    } elseif (strpos($format, '%') !== false) {
+			    return strftime($format, $dt->format('U'));
+		    } else {
+			    return $dt->format($format);
+		    }
 		}
 	}
 

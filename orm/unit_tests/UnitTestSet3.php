@@ -115,6 +115,7 @@ if ($newGroupes->count() != 1) {
 
 $edtCours = new EdtEmplacementCours();
 $edtCours->setGroupe($groupe);
+$edtCours->setHeuredebDec('0.5');
 $edtCours->setUtilisateurProfessionnel($newUtilisateurProfessionnel);
 $edtCours->setEdtCreneau(EdtCreneauPeer::retrieveFirstEdtCreneau());
 $edtCours->setJourSemaine('lundi');
@@ -122,8 +123,8 @@ $edtCours->setTypeSemaine('');
 $edtCours->save();
 echo ($logger->getDisplay());
 echo('emplacement de cours ajouté.<br>');
-echo('Debut du cours : '.$edtCours->getHeureDebut().'<br>');
-echo('Fin du cours : '.$edtCours->getHeureFin().'<br><br/>');
+echo('Debut du cours : '.$edtCours->getHeureDebut('H:i').'<br>');
+echo('Fin du cours : '.$edtCours->getHeureFin('H:i').'<br><br/>');
 
 $colEdtCours = $newUtilisateurProfessionnel->getEdtEmplacementCourss();
 echo ($logger->getDisplay());
@@ -152,8 +153,8 @@ $edtCours2->setDuree(5);
 $edtCours2->save();
 echo ($logger->getDisplay());
 echo('emplacement de cours ajouté.<br>');
-echo('Debut du cours : '.$edtCours2->getHeureDebut().'<br>');
-echo('Fin du cours : '.$edtCours2->getHeureFin().'<br><br/>');
+echo('Debut du cours : '.$edtCours2->getHeureDebut('H:i').'<br>');
+echo('Fin du cours : '.$edtCours2->getHeureFin('H:i').'<br><br/>');
 echo ($logger->getDisplay());
 echo ("<br>");
 
