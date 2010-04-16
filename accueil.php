@@ -613,7 +613,12 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
 // Gestion des ajout d'Absences par les professeurs
 //
   $chemin = array();
-  $chemin[] = "/mod_absences/professeurs/prof_ajout_abs.php";
+    if (getSettingValue("active_module_absence")=='y' ) {
+	$chemin[] = "/mod_absences/professeurs/prof_ajout_abs.php";
+    } else if (getSettingValue("active_module_absence")=='2' ) {
+	$chemin[] = "/mod_abs2/index.php";
+    }
+
 
   $titre = array();
   $titre[] = "Gestion des Absences par le ".$gepiSettings['denomination_professeur'];

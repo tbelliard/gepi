@@ -143,6 +143,10 @@ if ((($test_prof_matiere != "0") and (getSettingValue("active_cahiers_texte")=='
 	if (getSettingValue("active_module_absence_professeur")=='y'  and getSettingValue("active_module_absence")=='y' ) {
 		affiche_ligne( "/mod_absences/professeurs/prof_ajout_abs.php", "Absences",  "Cet outil vous permet de g&eacute;rer les absences durant vos cours.", $_SESSION['statut']);
 	}
+	
+	if (getSettingValue("active_module_absence_professeur")=='y'  and getSettingValue("active_module_absence")=='2' ) {
+		affiche_ligne( "/mod_ab2/index.php", "Absences",  "Cet outil vous permet de g&eacute;rer les absences durant vos cours.", $_SESSION['statut']);
+	}
 	echo '</tbody>';
 	echo '</table>';
 	echo "</div>";
