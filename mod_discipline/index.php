@@ -410,6 +410,12 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	echo "</tr>\n";
 	
 	echo "<tr>\n";
+	    echo "<td width='30%'><a href='../mod_discipline/stats2/index.php'>Accèder aux statistiques</a>";
+	echo "</td>\n";
+	echo "<td>Sélectionner la période de traitement, les données à traiter (établissement, classes, elèves, ...) en appliquant (ou non) des filtres afin d'obtenir des bilans plus ou moins détaillés. </br>Visualiser les évolutions sous la forme de graphiques. Editer le Top 10, ...</td>\n";
+	echo "</tr>\n";
+	
+	echo "<tr>\n";
 	//echo "<td width='30%'>Effectuer des recherches/statistiques diverses<br /><span style='color: red;'>A FAIRE</span>";
 		echo "<td width='30%'><a href='disc_stat.php'>Effectuer des recherches/statistiques diverses</a><br /><span style='color: red;'>A FAIRE</span>";
 	echo "</td>\n";
