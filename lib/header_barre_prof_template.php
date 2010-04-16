@@ -68,7 +68,12 @@ if (!$_SESSION["login"]) {
 	// module absence
 	if (getSettingValue("active_module_absence_professeur")=='y') {
 		//$barre_absence = '<li><a href="'.$gepiPath.'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs.'">Absences</a></li>';
-		$tbs_menu_prof[]=array("lien"=>'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs , "texte"=>"Absences");
+		if (getSettingValue("active_module_absence")=='y' ) {
+		    $tbs_menu_prof[]=array("lien"=>'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs , "texte"=>"Absences");
+		} else if (getSettingValue("active_module_absence")=='2' ) {
+		    $tbs_menu_prof[]=array("lien"=>'/mod_abs2/index.php'.$groupe_abs , "texte"=>"Absences");
+		}
+		
 	}else{$barre_absence = '';}
 
 	// Module Cahier de textes
