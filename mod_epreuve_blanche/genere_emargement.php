@@ -101,13 +101,13 @@ if(isset($imprime)) {
 					
 					switch ($imprime) {
 						case "sans_num_anonymat":
-							$csv.="Nom prénom;Signature;\n";
+							$csv.="Nom;Prénom;Signature;\n";
 						break;
 						case "avec_num_anonymat":
-							$csv.="Nom prénom;Numéro anonymat;Signature\n";
+							$csv.="Nom;Prénom;Numéro anonymat;Signature\n";
 						break;
 						case "tout":
-							$csv.="Nom prénom;Classe;Date_naissance;Numéro anonymat;Signature\n";
+							$csv.="Nom;Prénom;Classe;Date_naissance;Numéro anonymat;Signature\n";
 						break;
 					}
 					
@@ -116,13 +116,13 @@ if(isset($imprime)) {
 						switch ($imprime) {
 							case "sans_num_anonymat":
 								// PROBLEME: ON PEUT AVOIR DES HOMONYMES DANS UNE MÊME SALLE...
-								$csv.=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').";;\n";
+								$csv.=casse_mot($lig->nom).";".casse_mot($lig->prenom,'majf2').";;\n";
 							break;
 							case "avec_num_anonymat":
-								$csv.=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').";$lig->n_anonymat;\n";
+								$csv.=casse_mot($lig->nom).";".casse_mot($lig->prenom,'majf2').";$lig->n_anonymat;\n";
 							break;
 							case "tout":
-								$csv.=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').";$lig->classe;"."$lig->naissance;"."$lig->n_anonymat;\n";
+								$csv.=casse_mot($lig->nom).";".casse_mot($lig->prenom,'majf2').";$lig->classe;"."$lig->naissance;"."$lig->n_anonymat;\n";
 							break;
 						}
 					}
@@ -514,9 +514,9 @@ if(!isset($imprime)) {
 	echo "<ul>\n";
 	echo "<li><b>CSV</b>&nbsp;:\n";
 	 	echo "<ul>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=csv'>Avec les colonnes 'NOM_PRENOM;SIGNATURE'</a></li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=csv'>Avec les colonnes 'NOM_PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=tout&amp;mode=csv'>Avec les colonnes 'NOM_PRENOM;CLASSE;DATE_DE_NAISSANCE;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=csv'>Avec les colonnes 'NOM;PRENOM;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=csv'>Avec les colonnes 'NOM;PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=tout&amp;mode=csv'>Avec les colonnes 'NOM;PRENOM;CLASSE;DATE_DE_NAISSANCE;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
 		echo "</ul>\n";
 	echo "</li>\n";
 	echo "<li><b>PDF</b>&nbsp;:\n";
