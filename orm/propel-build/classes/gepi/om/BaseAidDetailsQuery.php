@@ -72,6 +72,10 @@
  * @method     AidDetailsQuery rightJoinJAidEleves($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JAidEleves relation
  * @method     AidDetailsQuery innerJoinJAidEleves($relationAlias = '') Adds a INNER JOIN clause to the query using the JAidEleves relation
  *
+ * @method     AidDetailsQuery leftJoinAbsenceEleveSaisie($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     AidDetailsQuery rightJoinAbsenceEleveSaisie($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     AidDetailsQuery innerJoinAbsenceEleveSaisie($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
+ *
  * @method     AidDetailsQuery leftJoinEdtEmplacementCours($relationAlias = '') Adds a LEFT JOIN clause to the query using the EdtEmplacementCours relation
  * @method     AidDetailsQuery rightJoinEdtEmplacementCours($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
  * @method     AidDetailsQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
@@ -910,6 +914,67 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		return $this
 			->joinJAidEleves($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'JAidEleves', 'JAidElevesQuery');
+	}
+
+	/**
+	 * Filter the query by a related AbsenceEleveSaisie object
+	 *
+	 * @param     AbsenceEleveSaisie $absenceEleveSaisie  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AidDetailsQuery The current query, for fluid interface
+	 */
+	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->addUsingAlias(AidDetailsPeer::ID, $absenceEleveSaisie->getIdAid(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the AbsenceEleveSaisie relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AidDetailsQuery The current query, for fluid interface
+	 */
+	public function joinAbsenceEleveSaisie($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('AbsenceEleveSaisie');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'AbsenceEleveSaisie');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the AbsenceEleveSaisie relation AbsenceEleveSaisie object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveSaisieQuery A secondary query class using the current class as primary query
+	 */
+	public function useAbsenceEleveSaisieQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinAbsenceEleveSaisie($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'AbsenceEleveSaisie', 'AbsenceEleveSaisieQuery');
 	}
 
 	/**

@@ -71,6 +71,7 @@ class AidDetailsTableMap extends TableMap {
     $this->addRelation('AidConfiguration', 'AidConfiguration', RelationMap::MANY_TO_ONE, array('indice_aid' => 'indice_aid', ), 'CASCADE', null);
     $this->addRelation('JAidUtilisateursProfessionnels', 'JAidUtilisateursProfessionnels', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'CASCADE', null);
     $this->addRelation('JAidEleves', 'JAidEleves', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'CASCADE', null);
+    $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'SET NULL', null);
     $this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'CASCADE', null);
 	} // buildRelations()
 

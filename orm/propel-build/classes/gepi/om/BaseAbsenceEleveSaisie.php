@@ -89,6 +89,13 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	protected $id_classe;
 
 	/**
+	 * The value for the id_aid field.
+	 * Note: this column has a database default value of: -1
+	 * @var        int
+	 */
+	protected $id_aid;
+
+	/**
 	 * The value for the created_at field.
 	 * @var        string
 	 */
@@ -131,6 +138,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	protected $aClasse;
 
 	/**
+	 * @var        AidDetails
+	 */
+	protected $aAidDetails;
+
+	/**
 	 * @var        array JTraitementSaisieEleve[] Collection to store aggregation of JTraitementSaisieEleve objects.
 	 */
 	protected $collJTraitementSaisieEleves;
@@ -167,6 +179,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->id_edt_emplacement_cours = -1;
 		$this->id_groupe = -1;
 		$this->id_classe = -1;
+		$this->id_aid = -1;
 	}
 
 	/**
@@ -323,6 +336,16 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function getIdClasse()
 	{
 		return $this->id_classe;
+	}
+
+	/**
+	 * Get the [id_aid] column value.
+	 * identifiant de l'aid pour lequel la saisie a ete effectuee
+	 * @return     int
+	 */
+	public function getIdAid()
+	{
+		return $this->id_aid;
 	}
 
 	/**
@@ -684,6 +707,30 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	} // setIdClasse()
 
 	/**
+	 * Set the value of [id_aid] column.
+	 * identifiant de l'aid pour lequel la saisie a ete effectuee
+	 * @param      int $v new value
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function setIdAid($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->id_aid !== $v || $this->isNew()) {
+			$this->id_aid = $v;
+			$this->modifiedColumns[] = AbsenceEleveSaisiePeer::ID_AID;
+		}
+
+		if ($this->aAidDetails !== null && $this->aAidDetails->getId() !== $v) {
+			$this->aAidDetails = null;
+		}
+
+		return $this;
+	} // setIdAid()
+
+	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
@@ -811,6 +858,10 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				return false;
 			}
 
+			if ($this->id_aid !== -1) {
+				return false;
+			}
+
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -843,8 +894,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$this->id_edt_emplacement_cours = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
 			$this->id_groupe = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
 			$this->id_classe = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
-			$this->created_at = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-			$this->updated_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+			$this->id_aid = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+			$this->created_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+			$this->updated_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -853,7 +905,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 12; // 12 = AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 13; // 13 = AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveSaisie object", $e);
@@ -893,6 +945,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		}
 		if ($this->aClasse !== null && $this->id_classe !== $this->aClasse->getId()) {
 			$this->aClasse = null;
+		}
+		if ($this->aAidDetails !== null && $this->id_aid !== $this->aAidDetails->getId()) {
+			$this->aAidDetails = null;
 		}
 	} // ensureConsistency
 
@@ -939,6 +994,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$this->aEdtEmplacementCours = null;
 			$this->aGroupe = null;
 			$this->aClasse = null;
+			$this->aAidDetails = null;
 			$this->collJTraitementSaisieEleves = null;
 
 		} // if (deep)
@@ -1106,6 +1162,13 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->setClasse($this->aClasse);
 			}
 
+			if ($this->aAidDetails !== null) {
+				if ($this->aAidDetails->isModified() || $this->aAidDetails->isNew()) {
+					$affectedRows += $this->aAidDetails->save($con);
+				}
+				$this->setAidDetails($this->aAidDetails);
+			}
+
 			if ($this->isNew() ) {
 				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::ID;
 			}
@@ -1244,6 +1307,12 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->aAidDetails !== null) {
+				if (!$this->aAidDetails->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aAidDetails->getValidationFailures());
+				}
+			}
+
 
 			if (($retval = AbsenceEleveSaisiePeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
@@ -1322,9 +1391,12 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				return $this->getIdClasse();
 				break;
 			case 10:
-				return $this->getCreatedAt();
+				return $this->getIdAid();
 				break;
 			case 11:
+				return $this->getCreatedAt();
+				break;
+			case 12:
 				return $this->getUpdatedAt();
 				break;
 			default:
@@ -1361,8 +1433,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$keys[7] => $this->getIdEdtEmplacementCours(),
 			$keys[8] => $this->getIdGroupe(),
 			$keys[9] => $this->getIdClasse(),
-			$keys[10] => $this->getCreatedAt(),
-			$keys[11] => $this->getUpdatedAt(),
+			$keys[10] => $this->getIdAid(),
+			$keys[11] => $this->getCreatedAt(),
+			$keys[12] => $this->getUpdatedAt(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
@@ -1382,6 +1455,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			}
 			if (null !== $this->aClasse) {
 				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aAidDetails) {
+				$result['AidDetails'] = $this->aAidDetails->toArray($keyType, $includeLazyLoadColumns, true);
 			}
 		}
 		return $result;
@@ -1445,9 +1521,12 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->setIdClasse($value);
 				break;
 			case 10:
-				$this->setCreatedAt($value);
+				$this->setIdAid($value);
 				break;
 			case 11:
+				$this->setCreatedAt($value);
+				break;
+			case 12:
 				$this->setUpdatedAt($value);
 				break;
 		} // switch()
@@ -1484,8 +1563,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if (array_key_exists($keys[7], $arr)) $this->setIdEdtEmplacementCours($arr[$keys[7]]);
 		if (array_key_exists($keys[8], $arr)) $this->setIdGroupe($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setIdClasse($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setCreatedAt($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setUpdatedAt($arr[$keys[11]]);
+		if (array_key_exists($keys[10], $arr)) $this->setIdAid($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setCreatedAt($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setUpdatedAt($arr[$keys[12]]);
 	}
 
 	/**
@@ -1507,6 +1587,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS)) $criteria->add(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $this->id_edt_emplacement_cours);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_GROUPE)) $criteria->add(AbsenceEleveSaisiePeer::ID_GROUPE, $this->id_groupe);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_CLASSE)) $criteria->add(AbsenceEleveSaisiePeer::ID_CLASSE, $this->id_classe);
+		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_AID)) $criteria->add(AbsenceEleveSaisiePeer::ID_AID, $this->id_aid);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::CREATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::UPDATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::UPDATED_AT, $this->updated_at);
 
@@ -1579,6 +1660,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$copyObj->setIdEdtEmplacementCours($this->id_edt_emplacement_cours);
 		$copyObj->setIdGroupe($this->id_groupe);
 		$copyObj->setIdClasse($this->id_classe);
+		$copyObj->setIdAid($this->id_aid);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
 
@@ -1933,6 +2015,55 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Declares an association between this object and a AidDetails object.
+	 *
+	 * @param      AidDetails $v
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setAidDetails(AidDetails $v = null)
+	{
+		if ($v === null) {
+			$this->setIdAid(-1);
+		} else {
+			$this->setIdAid($v->getId());
+		}
+
+		$this->aAidDetails = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the AidDetails object, it will not be re-added.
+		if ($v !== null) {
+			$v->addAbsenceEleveSaisie($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated AidDetails object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     AidDetails The associated AidDetails object.
+	 * @throws     PropelException
+	 */
+	public function getAidDetails(PropelPDO $con = null)
+	{
+		if ($this->aAidDetails === null && ($this->id_aid !== null)) {
+			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid);
+			/* The following can be used additionally to
+			   guarantee the related object contains a reference
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aAidDetails->addAbsenceEleveSaisies($this);
+			 */
+		}
+		return $this->aAidDetails;
+	}
+
+	/**
 	 * Clears out the collJTraitementSaisieEleves collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -2189,6 +2320,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->id_edt_emplacement_cours = null;
 		$this->id_groupe = null;
 		$this->id_classe = null;
+		$this->id_aid = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->clearAllReferences();
@@ -2222,6 +2354,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->aEdtEmplacementCours = null;
 		$this->aGroupe = null;
 		$this->aClasse = null;
+		$this->aAidDetails = null;
 	}
 
 	// timestampable behavior
