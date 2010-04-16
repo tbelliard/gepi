@@ -51,8 +51,11 @@ $_id      = isset($_POST["_id"]) ? $_POST["_id"] : NULL;
 
 // =================================================== Le code métier =======================================/
 
-$utilisateur = $_SESSION['utilisateurProfessionnel'];
-$__test = new UtilisateurProfessionnel();
+$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+if ($utilisateur == null) {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 if ($select == "nbre_sequences"){
 

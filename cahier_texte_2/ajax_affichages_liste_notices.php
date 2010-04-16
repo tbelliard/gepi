@@ -63,7 +63,7 @@ $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
 //$liste_comptes_rendus = new PropelObjectCollection();
 
 //récupération du groupe courant
-$utilisateur = $_SESSION['utilisateurProfessionnel'];
+$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();

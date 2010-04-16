@@ -47,7 +47,7 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 	die("Le module n'est pas activé.");
 }
 
-$utilisateur = $_SESSION['utilisateurProfessionnel'];
+$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();

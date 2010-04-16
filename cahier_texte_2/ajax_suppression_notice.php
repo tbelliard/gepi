@@ -48,11 +48,10 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 }
 
 // Vérification : est-ce que l'utilisateur a le droit de supprimer cette entré ?
-//$utilisateur = new Utilisateur();
-$utilisateur = $_SESSION['utilisateurProfessionnel'];
+$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
-    die();
+	die();
 }
 
 //récupération de la notice

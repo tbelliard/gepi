@@ -35,7 +35,7 @@ require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 require_once("../lib/traitement_data.inc.php");
 
-$utilisateur = $_SESSION['utilisateurProfessionnel'];
+$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();

@@ -54,7 +54,7 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 //$group = new Groupe();
 //$ctTravailAFaires = new PropelObjectCollection();
 
-$utilisateur = $_SESSION['utilisateurProfessionnel'];
+$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();

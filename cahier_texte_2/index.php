@@ -50,9 +50,11 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 }
 
 //recherche de l'utilisateur avec propel
-$utilisateur = UtilisateurProfessionnelPeer::retrieveByPK( $_SESSION['login']);
-$_SESSION['utilisateurProfessionnel'] = $utilisateur;
-
+$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+if ($utilisateur == null) {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 $edtEmplacementCourss = $utilisateur->getEdtEmplacementCourss();
 $cours = new EdtEmplacementCours();
 //$cours->get
