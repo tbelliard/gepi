@@ -63,9 +63,9 @@ function include(filename)
 //include('./webtoolkit.aim.js');
 //include('./ajax_functions.js');
 
-include('./calendar/calendar.js');
-include('./calendar/lang/calendar-fr.js');
-include('./calendar/calendar-setup.js');
+include('../lib/DHTMLcalendar/calendar.js');
+include('../lib/DHTMLcalendar/lang/calendar-fr.js');
+include('../lib/DHTMLcalendar/calendar-setup.js');
 include('../ckeditor/ckeditor.js');
 include('../edt_effets/javascripts/window.js');
 
