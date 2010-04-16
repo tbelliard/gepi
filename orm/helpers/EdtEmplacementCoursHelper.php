@@ -36,6 +36,8 @@ class EdtEmplacementCoursHelper {
 		    $result = ($start-$end);
 		} elseif ($a->getHeuredebDec() != $b->getHeuredebDec())  {
 		    $result = ($a->getHeuredebDec() - $b->getHeuredebDec());
+		} elseif ($a->getTypeSemaine() != $b->getTypeSemaine())  {
+		    $result = strcmp($a->getTypeSemaine(), $b->getTypeSemaine());
 		} else  {
 		    $result = ($a->getDuree() - $b->getDuree());
 		}

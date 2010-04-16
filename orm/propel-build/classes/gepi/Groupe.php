@@ -32,7 +32,7 @@ class Groupe extends BaseGroupe {
 	 * Manually added for N:M relationship
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     array Classes[]
+	 * @return     PropelObjectCollection Classes[]
 	 *
 	 */
 	public function getClasses($con = null) {
@@ -147,10 +147,16 @@ class Groupe extends BaseGroupe {
 	 * Manually added for N:M relationship
 	 *
 	 * @periode integer numero de la periode
-	 * @return     array Eleves[]
+	 * @return     PropelObjectCollection Eleves[]
 	 *
 	 */
-	public function getEleves($periode) {
+	public function getEleves($periode = NULL) {
+		if ($periode == NULL) {
+		    $periode = $this->getPeriodeNoteOuverte()->getNomPeriode();
+		    if ($periode == NULL) {
+			$periode = '1'; //la premiere periode sert de reference
+		    }
+		}
 		$eleves = new PropelObjectCollection();
 		$criteria = new Criteria();
 		$criteria->add(JEleveGroupePeer::PERIODE,$periode);
@@ -168,7 +174,7 @@ class Groupe extends BaseGroupe {
 	 * Manually added for N:M relationship
 	 *
 	 * @periode integer numero de la periode
-	 * @return     array Eleves[]
+	 * @return     PropelObjectCollection UtilisateurProfessionel[]
 	 *
 	 */
 	public function getProfesseurs() {
@@ -291,4 +297,17 @@ class Groupe extends BaseGroupe {
 	    return EdtEmplacementCoursHelper::getEdtEmplacementCoursActuel($edtCoursCol, $v);
 	}
 
+ 	/**
+	 * Retourne la periode de note actuelle pour une classe donnee.
+	 *
+	 * @return     PeriodeNote $periode la periode actuellement ouverte
+	 */
+	public function getPeriodeNoteOuverte($v = 'now') {
+	    $classes = $this->getClasses();
+	    if ($classes->isEmpty()) {
+		return null;
+	    } else {
+		return $classes->getFirst()->getPeriodeNoteOuverte($v);
+	    }
+	}
 } // Groupe

@@ -22,6 +22,9 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	 *
 	 */
 	public function getHeureDebut($format = '%X') {
+		if ($this->getEdtCreneau() == NULL) {
+		    throw new PropelException("Il n'y a pas de creneau associé a ce cours.");
+		}
 	
 		if ($this->getHeuredebDec() == "0.5") {		    
 		    $dt = $this->getEdtCreneau()->getHeuredebutDefiniePeriode(NULL);
@@ -49,6 +52,10 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	 *
 	 */
 	public function getHeureFin($format = '%X') {
+		if ($this->getEdtCreneau() == NULL) {
+		    throw new PropelException("Il n'y a pas de creneau associé a ce cours.");
+		}
+
 		$creneau = $this->getEdtCreneau();
 		$lastCreneau = new EdtCreneau();
 		$duree_modif = $this->getDuree();

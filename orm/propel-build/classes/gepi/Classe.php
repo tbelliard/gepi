@@ -84,7 +84,7 @@ class Classe extends BaseClasse {
  	/**
 	 * Retourne la periode de note actuelle pour une classe donnee.
 	 *
-	 * @return     Periode $periode la periode actuellement ouverte
+	 * @return     PeriodeNote $periode la periode actuellement ouverte
 	 */
 	public function getPeriodeNoteOuverte($v = 'now') {
 		$criteria = new Criteria();
