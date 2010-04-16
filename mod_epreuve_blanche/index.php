@@ -175,7 +175,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		if(strlen(my_ereg_replace("[A-Za-z0-9 _.-]","",remplace_accents($intitule,'all')))!=0) {$intitule=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸0-9_.-]"," ",$intitule);}
 		if($intitule=="") {$intitule="Epreuve blanche";}
 
-		$tab_anonymat=array('elenoet','ele_id','no_gep','alea');
+		$tab_anonymat=array('elenoet','ele_id','no_gep','alea','chrono');
 		if(!in_array($type_anonymat,$tab_anonymat)) {$type_anonymat="ele_id";}
 
 		if (isset($NON_PROTECT["description"])){
@@ -227,9 +227,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					$nettoyage=mysql_query($sql);
 
 					// Mettre à jour le type anonymat pour les copies déjà inscrites
-					$sql="SELECT e.* FROM eb_copies ec, eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login;";
+					// ERic : Ajout du order by pour numéroter dans l'ordre alphabétique (Le id_elv est là en cas d'homonyme)
+					$sql="SELECT e.* FROM eb_copies ec, eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login order by e.nom, e.prenom, e.id_eleve;";
 					//echo "$sql<br />";
 					$res=mysql_query($sql);
+					$cpt_ano = 1;
 					while($lig=mysql_fetch_object($res)) {
 						// Témoin d'une erreur anonymat pour l'élève courant
 						$temoin_erreur="n";
@@ -237,6 +239,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 							$n_anonymat=chaine_alea(3,4);
 							while(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$n_anonymat=chaine_alea(3,4);}
 							$tab_n_anonymat_affectes[]=$n_anonymat;
+							
+						} else if ($type_anonymat=='chrono'){// Eric Ajout du numéro d'anonymat chronologique
+							 $n_anonymat='MC'.sprintf("%05s",$cpt_ano); //MC00nnn
+							$tab_n_anonymat_affectes[]=$n_anonymat;
+							$cpt_ano += 1;		
 						}
 						else {
 							$n_anonymat=$lig->$type_anonymat;
@@ -247,7 +254,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 							}
 							$tab_n_anonymat_affectes[]=$n_anonymat;
 						}
-
+						
 						if($temoin_erreur=="n") {
 							$sql="UPDATE eb_copies SET n_anonymat='$n_anonymat' WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login';";
 							$update=mysql_query($sql);
@@ -272,7 +279,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$tab_tables=array('eb_profs', 'eb_salles', 'eb_groupes', 'eb_copies');
 		for($i=0;$i<count($tab_tables);$i++) {
 			//$sql="DELETE FROM eb_epreuves WHERE id='$id_epreuve';";
-			$sql="DELETE FROM $tab_tables[$i] WHERE id_exam='$id_exam';";
+			$sql="DELETE FROM $tab_tables[$i] WHERE id_epreuve='$id_epreuve';";
 			$suppr=mysql_query($sql);
 			if(!$suppr) {
 				$msg="ERREUR lors de la suppression de l'épreuve $id_epreuve";
@@ -313,7 +320,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			else {
 				$lig=mysql_fetch_object($res);
 				$type_anonymat=$lig->type_anonymat;
-				$tab_anonymat=array('elenoet','ele_id','no_gep','alea');
+				$tab_anonymat=array('elenoet','ele_id','no_gep','alea','chrono');
 				if(!in_array($type_anonymat,$tab_anonymat)) {$type_anonymat="ele_id";}
 
 				// On ne supprime que les enregistrements de copies pour lesquelles aucune note n'est encore saisie
@@ -337,7 +344,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						$msg.="Erreur lors de l'ajout du groupe n°$id_groupe[$i]<br />";
 					}
 
-					if($type_anonymat=='alea') {
+					if(($type_anonymat=='alea') ||($type_anonymat=='chrono')) {
 						$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$id_groupe[$i]';";
 					}
 					else {
@@ -345,6 +352,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					}
 					// Il faudra voir comment gérer le cas d'élèves partis en cours d'année... faire choisir la période?
 					$res=mysql_query($sql);
+					$cpt_ano = 1;
 					while($lig=mysql_fetch_object($res)) {
 						$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login';";
 						$test=mysql_query($sql);
@@ -353,12 +361,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 								$n_anonymat=chaine_alea(3,4);
 								while(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$n_anonymat=chaine_alea(3,4);}
 								$tab_n_anonymat_affectes[]=$n_anonymat;
-							}
+							} else if ($type_anonymat=='chrono'){// Eric Ajout du numéro d'anonymat chronologique
+							 $n_anonymat='MC'.sprintf("%05s",$cpt_ano); //MC00nnn
+							$tab_n_anonymat_affectes[]=$n_anonymat;
+							$cpt_ano += 1;		
+						    }
 							else {
 								$n_anonymat=$lig->$type_anonymat;
 								if(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$msg.="Erreur: Le numéro '$n_anonymat' de $lig->login est déjà affecté à un autre élève.<br />";}
 								$tab_n_anonymat_affectes[]=$n_anonymat;
 							}
+							
 							$sql="INSERT INTO eb_copies SET id_epreuve='$id_epreuve', login_ele='$lig->login', n_anonymat='$n_anonymat', statut='v';";
 							$insert=mysql_query($sql);
 	
@@ -846,6 +859,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "<option value='ele_id'>Identifiant Ele_id</option>\n";
 			echo "<option value='no_gep'>Numéro INE</option>\n";
 			echo "<option value='alea'>Chaine aléatoire</option>\n";
+			echo "<option value='chrono'>Numéro Chronologique MC00nnn</option>\n";
 			echo "</select>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -1107,6 +1121,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				echo "<option value='alea'";
 				if($lig->type_anonymat=='alea') {echo " selected='true'";}
 				echo ">Chaine aléatoire</option>\n";
+		
+				echo "<option value='chrono'";
+				if($lig->type_anonymat=='chrono') {echo " selected='true'";}
+				echo ">Numéro Chronologique MC00nnn</option>\n";
 		
 				echo "</select>\n";
 			}
@@ -1434,6 +1452,14 @@ function checkbox_change(cpt) {
 				echo "<p><b>Attention</b>&nbsp;: Lors de la validation de ce formulaire, les numéros d'anonymat sont générés/regénérés.<br />Vous ne devriez pas valider ce formulaire une fois que des étiquettes ont été collées ou des copies anonymées.</p>\n";
 				echo "</div>\n";
 			}
+			// Ajout Eric Mode chrono
+			if($lig->type_anonymat=='chrono') {
+				echo "<div style='float:right; width:20em; border: 1px solid black;'>\n";
+				echo "<p>Le type d'anonymat choisi est un numéro Chronologique.</p>\n";
+				echo "<p><b>Attention</b>&nbsp;: Lors de la validation de ce formulaire, les numéros d'anonymat sont générés/regénérés.<br />Vous ne devriez pas valider ce formulaire une fois que des étiquettes ont été collées ou des copies anonymées.</p>\n";
+				echo "</div>\n";
+			}
+
 
 			$tab_groupes_inscrits=array();
 			$sql="SELECT id_groupe FROM eb_groupes eg WHERE eg.id_epreuve='$id_epreuve';";
