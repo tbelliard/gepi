@@ -194,6 +194,7 @@ CREATE TABLE a_saisies
 	id_edt_emplacement_cours INTEGER(12) default -1 COMMENT 'identifiant du cours de l\'emploi du temps',
 	id_groupe INTEGER default -1 COMMENT 'identifiant du groupe pour lequel la saisie a ete effectuee',
 	id_classe INTEGER default -1 COMMENT 'identifiant de la classe pour lequel la saisie a ete effectuee',
+	id_aid INTEGER default -1 COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (id),
