@@ -384,7 +384,7 @@ class Eleve extends BaseEleve {
 	    }
 	    
 	    if (!($edtcreneau instanceof EdtCreneau)) {
-		throw new PropelException('Le premier argument n\'est pas un creneau');
+		throw new PropelException('Le premier argument doit etre de la classe EdtCreneau');
 	    }
 	    
 	    $abs_col = $this->getAbsenceSaisiesDuJour($v);

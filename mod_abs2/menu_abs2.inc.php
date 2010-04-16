@@ -5,13 +5,9 @@ $Id$
 
 echo "<ul class='css-tabs' id='menutabs'>\n";
 
-echo "<li><a href='index.php' ";
-if($onglet_abs=='index') {echo "class='current' ";}
-echo "title='Accueil du module'>Index</a></li>\n";
-
 echo "<li><a href='saisie_absences.php' ";
 if($onglet_abs=='saisie') {echo "class='current' ";}
-echo "title='Saisie des absences et des retards'>Saisie</a></li>\n";
+echo "title='Saisir des absences et des retards'>Saisir</a></li>\n";
 
 // Tests à remplacer par des tests sur les droits attribués aux statuts
 if(($_SESSION['statut']=='cpe')||
@@ -36,9 +32,9 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='parametrage') {echo "class='current' ";}
     echo "title='Paramètres : types, actions, motifs, justifications, créneaux'>Paramètres</a></li>\n";
 }
-echo "<li><a href='fiche_eleve.php' ";
-if($onglet_abs=='fiche_eleve') {echo "class='current' ";}
-echo "title='Informations sur les élèves'>Fiches élève</a></li>\n";
+echo "<li><a href='modifier_saisie.php' ";
+if($onglet_abs=='modifier_saisie') {echo "class='current' ";}
+echo "title='Visualiser / Modifier une saisie'>Visualiser / Modifier une saisie</a></li>\n";
 
 if (getSettingValue("active_mod_discipline") == "y") {
     echo "<li><a href='../mod_discipline/index.php' ";

@@ -63,8 +63,9 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 $id_creneau = isset($_POST["id_creneau"]) ? $_POST["id_creneau"] :(isset($_GET["id_creneau"]) ? $_GET["id_creneau"] :NULL);
 $id_cours = isset($_POST["id_cours"]) ? $_POST["id_cours"] :(isset($_GET["id_cours"]) ? $_GET["id_cours"] :NULL);
-$type_selection = isset($_POST["type_selection"]) ? $_POST["type_selection"] :(isset($_GET["type_selection"]) ? $_GET["type_selection"] :NULL);
-$d_date_absence_eleve = isset($_POST["d_date_absence_eleve"]) ? $_POST["d_date_absence_eleve"] : null;
+$id_saisie = isset($_POST["id_saisie"]) ? $_POST["id_saisie"] :(isset($_GET["id_saisie"]) ? $_GET["id_saisie"] :NULL);
+$d_date_debut_plage = isset($_POST["d_date_absence_eleve"]) ? $_POST["d_date_absence_eleve"] : null;
+$d_date_fin_plage = isset($_POST["d_date_absence_eleve"]) ? $_POST["d_date_absence_eleve"] : null;
 
 //initialisation des variable
 if ($d_date_absence_eleve == null) {
@@ -130,7 +131,7 @@ echo "<div class='css-panes' id='containDiv'>\n";
 
 //on affiche une boite de selection avec les groupes
 if (!$utilisateur->getGroupes()->isEmpty()) {
-    echo "<form action=\"./saisie_absences.php\" method=\"post\" style=\"width: 100%;\">\n";
+    echo "<form action=\"./modifier_saisie.php\" method=\"post\" style=\"width: 100%;\">\n";
     echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
     echo ("<select name=\"id_groupe\">");
     echo "<option value='-1'>choisissez un groupe</option>\n";
@@ -186,7 +187,7 @@ if (!$utilisateur->getGroupes()->isEmpty()) {
 //on affiche une boite de selection avec les cours
 $edt_cours_col = $utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle();
 if (!$edt_cours_col->isEmpty()) {
-    echo "<form action=\"./saisie_absences.php\" method=\"post\" style=\"width: 100%;\">\n";
+    echo "<form action=\"./modifier_saisie.php\" method=\"post\" style=\"width: 100%;\">\n";
     echo '<input type="hidden" name="type_selection" value="edt_cours"/>';
     echo ("<select name=\"id_cours\">");
 
@@ -234,17 +235,19 @@ if (isset($message_enregistrement)) {
 }
 
 //afichage des eleves
-$eleve_col = new PropelCollection();
-$groupe = GroupeQuery::create()->filterByPrimaryKey($id_groupe)->findOne();
-if ($groupe != null) {
-    $eleve_col = $groupe->getEleves();
+$saisie_col = new PropelCollection();
+
+$query = AbsenceEleveSaisieQuery::create();
+if ($id)
+
+
+if ($id_saisie != null) {
+    $saisie = AbsenceEleveSaisieQuery::create()->findPk($id_saisie);
+    if ($saisie != null && $saisie->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
+	$saisie_col->append($saisie);
+    }
 }
 
-//l'utilisateurs a-t-il deja saisie ce creneau ?
-$deja_saisie = false;
-if ($id_creneau != null && !$utilisateur->getEdtCreneauAbsenceSaisie($id_creneau, $d_date_absence_eleve)->isEmpty()) {
-    $deja_saisie = true;
-}
 
 
 
@@ -328,8 +331,6 @@ foreach($eleve_col as $eleve) {
 					$absences_du_creneau = $eleve->getAbsenceSaisiesDuCreneau($edt_creneau, $d_date_absence_eleve);
 					if (!$absences_du_creneau->isEmpty()) {
 					    $style = 'style="background-color : red"';
-					} else if ($deja_saisie && $id_creneau == $edt_creneau->getIdDefiniePeriode()) {
-					    $style = 'style="background-color : green"';;
 					} else {
 					    $style = '';
 					}
@@ -339,7 +340,7 @@ foreach($eleve_col as $eleve) {
 					if (getSettingValue("abs2_modification_saisie_une_heure")=='y') {
 					    foreach ($absences_du_creneau as $saisie) {
 						if ($saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && $saisie->getCreatedAt('U') > (time() - 3600)) {
-						    echo ("<a href='modifier_saisie.php'><nobr>Modif. saisie</nobr> <nobr>de ".$saisie->getCreatedAt("H:i")."</nobr></a><br>");
+						    echo ("<a href='modifier_saisie.php'>Modif. saisie de ".$saisie->getCreatedAt("H:i")."</a><br>");
 						}
 					    }
 					}

@@ -224,4 +224,59 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	    return $edtCoursCol;
 	}
 
+	/**
+	 *
+	 * Retourne la collection des absences saisies pour ce creneau
+	 *
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return PropelObjectCollection AbsenceEleveSaisie
+	 */
+	public function getEdtCreneauAbsenceSaisie($edtcreneau = null, $v = 'now'){
+	    if ($edtcreneau == null) {
+		$edtcreneau = EdtCreneauPeer::retrieveEdtCreneauActuel($v);
+	    }
+
+	    if (!($edtcreneau instanceof EdtCreneau)) {
+		$edtcreneau = EdtCreneauQuery::create()->findPk($edtcreneau);
+		if ($edtcreneau == null) {
+		    throw new PropelException('Le premier argument doit etre de la classe EdtCreneau ou un id d\EdtCreneau');
+		}
+	    }
+
+	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+	    // -- which is unexpected, to say the least.
+	    //$dt = new DateTime();
+	    if ($v === null || $v === '') {
+		    $dt = null;
+	    } elseif ($v instanceof DateTime) {
+		    $dt = $v;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($v)) { // if it's a unix timestamp
+				    $dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt = new DateTime($v);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+		    }
+	    }
+
+	    $criteria = new Criteria();
+	    $criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $edtcreneau->getPrimaryKey());
+	    $dt->setTime(0,0,0);
+	    $criteria->add(AbsenceEleveSaisiePeer::DEBUT_ABS, $dt, Criteria::GREATER_EQUAL);
+	    $dt_end = clone $dt;
+	    $dt_end->setTime(23,59,59);
+	    $criteria->add(AbsenceEleveSaisiePeer::DEBUT_ABS, $dt_end, Criteria::LESS_EQUAL);
+	    $col = $this->getAbsenceEleveSaisies($criteria);
+	    return $col;
+	}
+
 }
