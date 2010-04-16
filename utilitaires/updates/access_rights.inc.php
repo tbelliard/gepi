@@ -647,6 +647,8 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_motifs_absences.
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_types_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_justifications_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_actions_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Administration du module absences', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/saisie_absences.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Administration du module absences', '');";
 
 
 

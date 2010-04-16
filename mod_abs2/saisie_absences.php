@@ -1,6 +1,7 @@
 <?php
 /**
  *
+ *
  * @version $Id$
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stephane Boireau, Julien Jocal
@@ -22,12 +23,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
-$accessibilite="y";
-
 // Initialisations files
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
+
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -58,28 +58,4 @@ if (getSettingValue("active_module_absence")!='2') {
 if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_absence_professeur")!='y') {
     die("Le module n'est pas activé.");
 }
-
-//==============================================
-
-require_once("../lib/header.inc");
-//**************** FIN EN-TETE *****************
-
-//===========================
-
-
-
-echo "<div id='aidmenu' style='display: none;'>test</div>\n";
-
-// Etiquettes des onglets:
-$onglet_abs='index';
-include('menu_abs2.inc.php');
-//===========================
-
-echo "<div class='css-panes' id='containDiv'>\n";
-    echo "<div style=display:block'>\n";
-        echo "<p>Petit texte de présentation du module...</p>\n";
-    echo "</div>\n";
-echo "</div>\n";
-
-require_once("../lib/footer.inc.php");
-?>
+require("../lib/footer.inc.php");

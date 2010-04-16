@@ -3,15 +3,13 @@
 $Id$
  */
 
-echo "<div id='aidmenu' style='display: none;'>$aff_aide</div>\n";
-
 echo "<ul class='css-tabs' id='menutabs'>\n";
 
-echo "<li><a href='index2.php' ";
-if($onglet_abs=='index2') {echo "class='current' ";}
+echo "<li><a href='index.php' ";
+if($onglet_abs=='index') {echo "class='current' ";}
 echo "title='Accueil du module'>Index</a></li>\n";
 
-echo "<li><a href='saisie_abs2b.php' ";
+echo "<li><a href='saisie_absences.php' ";
 if($onglet_abs=='saisie') {echo "class='current' ";}
 echo "title='Saisie des absences et des retards'>Saisie</a></li>\n";
 
