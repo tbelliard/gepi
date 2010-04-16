@@ -60,7 +60,10 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
 }
 
 //==============================================
-
+$style_specifique[] = "mod_abs2/lib/abs_style";
+$titre_page = "Les absences";
+$utilisation_jsdivdrag = "non";
+$_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
