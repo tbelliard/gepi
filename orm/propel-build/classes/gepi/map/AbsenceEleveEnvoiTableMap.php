@@ -41,7 +41,7 @@ class AbsenceEleveEnvoiTableMap extends TableMap {
 		$this->addForeignKey('ID_TYPE_ENVOI', 'IdTypeEnvoi', 'INTEGER', 'a_type_envois', 'ID', true, 4, -1);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('STATUT_ENVOI', 'StatutEnvoi', 'VARCHAR', false, 20, '0');
-		$this->addColumn('DATE_ENVOI', 'DateEnvoi', 'TIME', false, null, null);
+		$this->addColumn('DATE_ENVOI', 'DateEnvoi', 'TIMESTAMP', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		// validators

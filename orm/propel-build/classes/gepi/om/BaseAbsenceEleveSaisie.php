@@ -238,21 +238,26 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
-	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
 	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 */
-	public function getDebutAbs($format = '%X')
+	public function getDebutAbs($format = 'Y-m-d H:i:s')
 	{
 		if ($this->debut_abs === null) {
 			return null;
 		}
 
 
-
-		try {
-			$dt = new DateTime($this->debut_abs);
-		} catch (Exception $x) {
-			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->debut_abs, true), $x);
+		if ($this->debut_abs === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->debut_abs);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->debut_abs, true), $x);
+			}
 		}
 
 		if ($format === null) {
@@ -271,21 +276,26 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
-	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
 	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 */
-	public function getFinAbs($format = '%X')
+	public function getFinAbs($format = 'Y-m-d H:i:s')
 	{
 		if ($this->fin_abs === null) {
 			return null;
 		}
 
 
-
-		try {
-			$dt = new DateTime($this->fin_abs);
-		} catch (Exception $x) {
-			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->fin_abs, true), $x);
+		if ($this->fin_abs === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->fin_abs);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->fin_abs, true), $x);
+			}
 		}
 
 		if ($format === null) {
@@ -547,13 +557,13 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ( $this->debut_abs !== null || $dt !== null ) {
 			// (nested ifs are a little easier to read in this case)
 
-			$currNorm = ($this->debut_abs !== null && $tmpDt = new DateTime($this->debut_abs)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
+			$currNorm = ($this->debut_abs !== null && $tmpDt = new DateTime($this->debut_abs)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
 
 			if ( ($currNorm !== $newNorm) // normalized values don't match 
 					)
 			{
-				$this->debut_abs = ($dt ? $dt->format('H:i:s') : null);
+				$this->debut_abs = ($dt ? $dt->format('Y-m-d H:i:s') : null);
 				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::DEBUT_ABS;
 			}
 		} // if either are not null
@@ -596,13 +606,13 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ( $this->fin_abs !== null || $dt !== null ) {
 			// (nested ifs are a little easier to read in this case)
 
-			$currNorm = ($this->fin_abs !== null && $tmpDt = new DateTime($this->fin_abs)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
+			$currNorm = ($this->fin_abs !== null && $tmpDt = new DateTime($this->fin_abs)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
 
 			if ( ($currNorm !== $newNorm) // normalized values don't match 
 					)
 			{
-				$this->fin_abs = ($dt ? $dt->format('H:i:s') : null);
+				$this->fin_abs = ($dt ? $dt->format('Y-m-d H:i:s') : null);
 				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::FIN_ABS;
 			}
 		} // if either are not null

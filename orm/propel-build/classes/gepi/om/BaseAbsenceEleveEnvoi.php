@@ -187,21 +187,26 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
-	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
 	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 */
-	public function getDateEnvoi($format = '%X')
+	public function getDateEnvoi($format = 'Y-m-d H:i:s')
 	{
 		if ($this->date_envoi === null) {
 			return null;
 		}
 
 
-
-		try {
-			$dt = new DateTime($this->date_envoi);
-		} catch (Exception $x) {
-			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_envoi, true), $x);
+		if ($this->date_envoi === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->date_envoi);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_envoi, true), $x);
+			}
 		}
 
 		if ($format === null) {
@@ -433,13 +438,13 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 		if ( $this->date_envoi !== null || $dt !== null ) {
 			// (nested ifs are a little easier to read in this case)
 
-			$currNorm = ($this->date_envoi !== null && $tmpDt = new DateTime($this->date_envoi)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
+			$currNorm = ($this->date_envoi !== null && $tmpDt = new DateTime($this->date_envoi)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
 
 			if ( ($currNorm !== $newNorm) // normalized values don't match 
 					)
 			{
-				$this->date_envoi = ($dt ? $dt->format('H:i:s') : null);
+				$this->date_envoi = ($dt ? $dt->format('Y-m-d H:i:s') : null);
 				$this->modifiedColumns[] = AbsenceEleveEnvoiPeer::DATE_ENVOI;
 			}
 		} // if either are not null
