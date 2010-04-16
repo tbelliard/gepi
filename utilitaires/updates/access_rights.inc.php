@@ -642,13 +642,16 @@ $tab_req[] = "INSERT INTO droits SET id='/init_scribe_ng/etape1.php',administrat
 $tab_req[] = "INSERT INTO droits SET id='/init_scribe_ng/etape2.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation Scribe NG - index',statut='';";
 $tab_req[] = "INSERT INTO droits SET id='/init_scribe_ng/etape3.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation Scribe NG - index',statut='';";
 $tab_req[] = "INSERT INTO droits SET id='/init_scribe_ng/etape4.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation Scribe NG - index',statut='';";
+
+
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_motifs_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_types_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_justifications_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_actions_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Administration du module absences', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/saisie_absences.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Administration du module absences', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/saisie_absences.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Affichage du formulaire de saisie de absences', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisies.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Enregistrement des saisies', '');";
 
 
 
