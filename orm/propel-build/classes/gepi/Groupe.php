@@ -152,17 +152,20 @@ class Groupe extends BaseGroupe {
 	 */
 	public function getEleves($periode = NULL) {
 		if ($periode == NULL) {
-		    $periode = $this->getPeriodeNoteOuverte()->getNomPeriode();
-		    if ($periode == NULL) {
-			$periode = '1'; //la premiere periode sert de reference
-		    }
+		    $periode = $this->getPeriodeNoteOuverte()->getNumPeriode();
 		}
 		$eleves = new PropelObjectCollection();
 		$criteria = new Criteria();
-		$criteria->add(JEleveGroupePeer::PERIODE,$periode);
+		if ($periode != NULL) {
+		    $criteria->add(JEleveGroupePeer::PERIODE,$periode);
+		}
+		$criteria->addAscendingOrderByColumn(JEleveGroupePeer::LOGIN);
 		foreach($this->getJEleveGroupesJoinEleve($criteria) as $ref) {
 		    if ($ref != null) {
-			$eleves->append($ref->getEleve());
+			//ajout de l'eleve seulement si il n'y est pas deja
+			if (!$eleves->contains($ref->getEleve())) {
+			    $eleves->append($ref->getEleve());
+			}
 		    }
 		}
 		return $eleves;
