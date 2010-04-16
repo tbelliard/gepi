@@ -32,9 +32,9 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='parametrage') {echo "class='current' ";}
     echo "title='Paramètres : types, actions, motifs, justifications, créneaux'>Paramètres</a></li>\n";
 }
-echo "<li><a href='modifier_saisie.php' ";
-if($onglet_abs=='modifier_saisie') {echo "class='current' ";}
-echo "title='Visualiser / Modifier une saisie'>Visualiser / Modifier une saisie</a></li>\n";
+echo "<li><a href='liste_saisies.php' ";
+if($onglet_abs=='liste_saisies') {echo "class='current' ";}
+echo "title='Visualiser les saisies'>Visualiser les saisies</a></li>\n";
 
 if (getSettingValue("active_mod_discipline") == "y") {
     echo "<li><a href='../mod_discipline/index.php' ";

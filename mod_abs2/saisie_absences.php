@@ -138,13 +138,7 @@ if (!$utilisateur->getGroupes()->isEmpty()) {
 	    echo "<option value='".$group->getId()."'";
 	    if ($id_groupe == $group->getId()) echo " SELECTED ";
 	    echo ">";
-	    echo $group->getDescription() . "&nbsp;-&nbsp;(";
-	    $str = null;
-	    foreach ($group->getClasses() as $classe) {
-		    $str .= $classe->getClasse() . ", ";
-	    }
-	    $str = substr($str, 0, -2);
-	    echo $str . ")&nbsp;\n";
+	    echo $group->getNameAvecClasses();
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
@@ -157,17 +151,15 @@ if (!$utilisateur->getGroupes()->isEmpty()) {
 	    echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
 	    if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
 	    echo ">";
-	    echo $edt_creneau->getNomDefiniePeriode() . "&nbsp;&nbsp;";
-	    echo $edt_creneau->getHeuredebutDefiniePeriode("H:i") . "&nbsp;-&nbsp;";
-	    echo $edt_creneau->getHeurefinDefiniePeriode("H:i");
+	    echo $edt_creneau->getDescription();
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
     if($d_date_absence_eleve == null) {
 	    $d_date_absence_eleve = new DateTime('d/m/Y');
     }
-    echo '<input size="10" id="d_date_absence_eleve" name="d_date_absence_eleve" value="'.$d_date_absence_eleve->format('d/m/Y').'" />';
-    echo '<input id="f_trigger_c" name="f_trigger_c" type="button" value="..."/>';
+    echo '<input size="10" id="d_date_absence_eleve" name="d_date_absence_eleve" value="'.$d_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
+    echo '<img id="f_trigger_c" src="../images/icons/calendrier.gif"/>';
     echo '
     <script type="text/javascript">
 	Calendar.setup({
@@ -195,26 +187,15 @@ if (!$edt_cours_col->isEmpty()) {
 	    echo "<option value='".$edt_cours->getIdCours()."'";
 	    if ($id_cours == $edt_cours->getIdCours()) echo " SELECTED ";
 	    echo ">";
-	    if ($edt_cours->getGroupe() != null) {
-		echo $edt_cours->getGroupe()->getNameAvecClasses() . "&nbsp;&nbsp;";
-	    }
-	    if ($edt_cours->getAidDetails() != null) {
-		echo "Aid : ".$edt_cours->getAidDetails()->getNom() . "&nbsp;&nbsp;";
-	    }
-	    echo $edt_cours->getJourSemaine() . "&nbsp;&nbsp;";
-	    echo $edt_cours->getHeureDebut("H:i") . "&nbsp;&nbsp;";
-	    echo $edt_cours->getHeureFin("H:i") . "&nbsp;-&nbsp;";
-	    if ($edt_cours->getTypeSemaine() != NULL && $edt_cours->getTypeSemaine() != '') {
-		echo " semaine : ".$edt_cours->getTypeSemaine();
-	    }
+	    echo $edt_cours->getDescription();
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
     if($d_date_absence_eleve == null) {
 	    $d_date_absence_eleve = new DateTime('d/m/Y');
     }
-    echo '<input size="10" id="d_date_absence_eleve_2" name="d_date_absence_eleve" value="'.$d_date_absence_eleve->format('d/m/Y').'" />';
-    echo '<input id="f_trigger_c_2" name="f_trigger_c_2" type="button" value="..."/>';
+    echo '<input size="10" id="d_date_absence_eleve_2" name="d_date_absence_eleve" value="'.$d_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
+    echo '<img id="f_trigger_c_2" src="../images/icons/calendrier.gif"/>';
     echo '
     <script type="text/javascript">
 	Calendar.setup({
