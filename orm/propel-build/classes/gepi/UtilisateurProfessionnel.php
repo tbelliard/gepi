@@ -20,6 +20,11 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	protected $collGroupes;
 
 	/**
+	 * @var        PropelObjectCollection $collAidDetailss[] Collection to store aggregation of AidDetails objects.
+	 */
+	protected $collAidDetailss;
+
+	/**
 	 * 
 	 * Renvoi sous forme d'un tableau la liste des groupes d'un utilisateur professeur. Le tableau est ordonné par le noms du groupes puis les classes du groupes.
 	 * Manually added for N:M relationship
@@ -41,6 +46,28 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		    require_once("helpers/GroupeHelper.php");
 		    $this->collGroupes = GroupeHelper::orderByGroupNameWithClasses($groupes);
 		    return $this->collGroupes;
+		}
+	}
+
+	/**
+	 *
+	 * Renvoi sous forme d'un propelObjectCollection la liste des Aid d'un utilisateur professeur. Le tableau est ordonné par le noms du groupes puis les classes du groupes.
+	 * Manually added for N:M relationship
+	 *
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     PropelObjectCollection AidDetails
+	 */
+	public function getAidDetailss($con = null) {
+		if ($this->collAidDetailss != null) {
+			return $this->collAidDetailss;
+		} else {
+		    $this->collAidDetailss = new PropelObjectCollection();
+		    foreach($this->getJAidUtilisateursProfessionnelssJoinAidDetails($con) as $ref) {
+			if ($ref != NULL) {
+			    $this->collAidDetailss->append($ref->getAidDetails());
+			}
+		    }
+		    return $this->collAidDetailss;
 		}
 	}
 

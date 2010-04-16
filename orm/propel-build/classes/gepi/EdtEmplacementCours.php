@@ -92,4 +92,34 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 		}
 	}
 
+	/**
+	 *
+	 * Renvoi une description intelligible du creneau
+	 *
+	 * @return     String description
+	 *
+	 */
+	public function getDescription() {
+	    $desc = '';
+	    if ($this->getGroupe() != null) {
+		$desc .= $this->getGroupe()->getNameAvecClasses() . " ";
+	    }
+	    if ($this->getAidDetails() != null) {
+		$desc .= $this->getAidDetails()->getNom() . " ";
+	    }
+	    $desc .= $this->getJourSemaine() . " ";
+	    $desc .= $this->getHeureDebut("H:i") . " - ";
+	    $desc .= $this->getHeureFin("H:i") . " ";
+	    if ($this->getTypeSemaine() != NULL && $this->getTypeSemaine() != '') {
+		$desc .= " sem. ".$this->getTypeSemaine(). " ";
+	    }
+	    if ($this->getEdtSalle() != null) {
+		$desc .= "salle ". $this->getEdtSalle()->getNomSalle();
+		if ($this->getEdtSalle()->getNumeroSalle() != null) {
+		    $desc .= $this->getEdtSalle()->getNumeroSalle();
+		}
+	    }
+	    return $desc;
+	}
+
 } // EdtEmplacementCours

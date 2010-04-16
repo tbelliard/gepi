@@ -92,4 +92,18 @@ class EdtCreneau extends BaseEdtCreneau {
 	    }
 	}
 
+	/**
+	 *
+	 * Renvoi une description intelligible du creneau
+	 *
+	 * @return     String description
+	 *
+	 */
+	public function getDescription() {
+	    $desc = '';
+	    $desc .= $this->getNomDefiniePeriode() . " ";
+	    $desc .= $this->getHeuredebutDefiniePeriode("H:i") . " - ";
+	    $desc .= $this->getHeurefinDefiniePeriode("H:i");
+	    return $desc;
+	}
 } // EdtCreneau
