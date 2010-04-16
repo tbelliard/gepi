@@ -52,14 +52,50 @@ if (isset($_POST['activer'])) {
 }
 if (isset($_POST['activer_prof'])) {
     if (!saveSetting("active_module_absence_professeur", $_POST['activer_prof'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie par les professeurs !";
 	}
 }
 if (isset($_POST['activer_resp'])) {
 	if (!saveSetting("active_absences_parents", $_POST['activer_resp'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la consultation par les responsables eleves !";
 	}
 }
+if (isset($_POST['is_posted'])) {
+	if ($_POST['is_posted']=='1') {
+
+		if (isset($_POST['abs2_saisie_prof_decale_journee'])) {
+			if (!saveSetting("abs2_saisie_prof_decale_journee", $_POST['abs2_saisie_prof_decale_journee'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie decale sur la journée pour les professeurs !";
+			}
+		} else {
+			if (!saveSetting("abs2_saisie_prof_decale_journee", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie decale sur la journée pour les professeurs !";
+			}
+		}
+
+		if (isset($_POST['abs2_saisie_prof_decale'])) {
+			if (!saveSetting("abs2_saisie_prof_decale", $_POST['abs2_saisie_prof_decale'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie decale sans limite pour les professeurs !";
+			}
+		} else {
+			if (!saveSetting("abs2_saisie_prof_decale", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie decale sans limite pour les professeurs !";
+			}
+		}
+
+		if (isset($_POST['abs2_saisie_prof_hors_cours'])) {
+			if (!saveSetting("abs2_saisie_prof_hors_cours", $_POST['abs2_saisie_prof_hors_cours'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la sasie par les professeurs hors cours prévu !";
+			}
+		} else {
+			if (!saveSetting("abs2_saisie_prof_hors_cours", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la sasie par les professeurs hors cours prévu !";
+			}
+		}
+
+	}
+}
+
 
 if (isset($_POST['classement'])) {
 	if (!saveSetting("absence_classement_top", $_POST['classement'])) {
@@ -138,6 +174,21 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	<?php if (getSettingValue("active_module_absence_professeur")=='n') echo " checked='checked'"; ?> />
 	<label for="activerProfN">&nbsp;Désactiver le module de la saisie des absences par les professeurs</label>
 	<input type="hidden" name="is_posted" value="1" />
+</p>
+<p>
+	<input type="checkbox" name="abs2_saisie_prof_decale_journee" value="y"
+	<?php if (getSettingValue("abs2_saisie_prof_decale_journee")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_saisie_prof_decale_journee">&nbsp;Permettre la saisie decalée sur la journée</label>
+</p>
+<p>
+	<input type="checkbox" name="abs2_saisie_prof_decale" value="y"
+	<?php if (getSettingValue("abs2_saisie_prof_decale")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_saisie_prof_decale">&nbsp;Permettre la saisie decalée sans limite de temps</label>
+</p>
+<p>
+	<input type="checkbox" name="abs2_saisie_prof_hors_cours" value="y"
+	<?php if (getSettingValue("abs2_saisie_prof_hors_cours")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_saisie_prof_hors_cours">&nbsp;Permettre la saisie d'une absence hors des cours prevu dans l'emploi du temps du professeur</label>
 </p>
 
 <h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
