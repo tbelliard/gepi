@@ -417,8 +417,8 @@
     <column name="eleve_id" type="INTEGER" size="11" default="-1" description="id_eleve de l'eleve objet de la saisie, egal à -1 si aucun eleve n'est saisi"/>
     <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="eleve_id" foreign="id_eleve"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire de l'utilisateur"/>
-    <column name="debut_abs" required="false" type="TIME" description="Debut de l'absence en timestamp UNIX"/>
-    <column name="fin_abs" required="false" type="TIME" description="Fin de l'absence en timestamp UNIX"/>
+    <column name="debut_abs" required="false" type="TIMESTAMP" description="Debut de l'absence en timestamp UNIX"/>
+    <column name="fin_abs" required="false" type="TIMESTAMP" description="Fin de l'absence en timestamp UNIX"/>
     <column name="id_edt_creneau" required="false" type="INTEGER" size="12" default="-1" description="identifiant du creneaux de l'emploi du temps"/>
     <foreign-key foreignTable="edt_creneaux" onDelete="setnull"><reference local="id_edt_creneau" foreign="id_definie_periode"/></foreign-key>
     <column name="id_edt_emplacement_cours" required="false" type="INTEGER" size="12" default="-1" description="identifiant du cours de l'emploi du temps"/>
@@ -466,7 +466,7 @@
     <foreign-key foreignTable="a_type_envois" onDelete="setnull"><reference local="id_type_envoi" foreign="id"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
     <column name="statut_envoi" required="false" type="VARCHAR" size="20" default="0" description="Statut de cet envoi (envoye, en cours,...)"/>
-    <column name="date_envoi" required="false" type="TIME" description="Date en timestamp UNIX de l'envoi"/>
+    <column name="date_envoi" required="false" type="TIMESTAMP" description="Date en timestamp UNIX de l'envoi"/>
     <behavior name="timestampable" />
   </table>
 

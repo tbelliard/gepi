@@ -188,8 +188,8 @@ CREATE TABLE a_saisies
 	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a saisi l\'absence',
 	eleve_id INTEGER(11) default -1 COMMENT 'id_eleve de l\'eleve objet de la saisie, egal à -1 si aucun eleve n\'est saisi',
 	commentaire TEXT COMMENT 'commentaire de l\'utilisateur',
-	debut_abs TIME COMMENT 'Debut de l\'absence en timestamp UNIX',
-	fin_abs TIME COMMENT 'Fin de l\'absence en timestamp UNIX',
+	debut_abs DATETIME COMMENT 'Debut de l\'absence en timestamp UNIX',
+	fin_abs DATETIME COMMENT 'Fin de l\'absence en timestamp UNIX',
 	id_edt_creneau INTEGER(12) default -1 COMMENT 'identifiant du creneaux de l\'emploi du temps',
 	id_edt_emplacement_cours INTEGER(12) default -1 COMMENT 'identifiant du cours de l\'emploi du temps',
 	id_groupe INTEGER default -1 COMMENT 'identifiant du groupe pour lequel la saisie a ete effectuee',
@@ -227,6 +227,11 @@ CREATE TABLE a_saisies
 	CONSTRAINT a_saisies_FK_6
 		FOREIGN KEY (id_classe)
 		REFERENCES classes (id)
+		ON DELETE SET NULL,
+	INDEX a_saisies_FI_7 (id_aid),
+	CONSTRAINT a_saisies_FK_7
+		FOREIGN KEY (id_aid)
+		REFERENCES aid (id)
 		ON DELETE SET NULL
 )Type=MyISAM COMMENT='Chaque saisie d\'absence doit faire l\'objet d\'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisé dans debut_abs. Un cours de l\'emploi du temps, le jours du cours etant precisé dans debut_abs.';
 ";
@@ -326,7 +331,7 @@ CREATE TABLE a_envois
 	id_type_envoi INTEGER(4) default -1 NOT NULL COMMENT 'id du type de l\'envoi',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	statut_envoi VARCHAR(20) default '0' COMMENT 'Statut de cet envoi (envoye, en cours,...)',
-	date_envoi TIME COMMENT 'Date en timestamp UNIX de l\'envoi',
+	date_envoi DATETIME COMMENT 'Date en timestamp UNIX de l\'envoi',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (id),
