@@ -36,7 +36,11 @@ if (!$_SESSION["login"]) {
 /* On fixe l'ensemble des modules qui sont ouverts pour faire la liste des <li> */
 	// module absence
 	if (getSettingValue("active_module_absence_professeur")=='y') {
+	    if (getSettingValue("active_module_absence")=='2') {
+		$barre_absence = '<li><a href="'.$gepiPath.'/mod_abs2/index.php'.$groupe_abs.'">Absences</a></li>';
+	    } else {
 		$barre_absence = '<li><a href="'.$gepiPath.'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs.'">Absences</a></li>';
+	    }
 	}else{$barre_absence = '';}
 
 	// Module Cahier de textes
