@@ -99,7 +99,7 @@ class Classe extends BaseClasse {
 		    return $periodes->getFirst();
 		} else {
 		    $calendrier_periode = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
-		    if ($calendrier_periode != null || $calendrier_periode->getNumeroPeriode() != null || $calendrier_periode->getNumeroPeriode() != 0) {
+		    if ($calendrier_periode != null && $calendrier_periode->getNumeroPeriode() != null && $calendrier_periode->getNumeroPeriode() != 0) {
 			$criteria = new Criteria();
 			$criteria->add(PeriodeNotePeer::NUM_PERIODE,$calendrier_periode->getNumeroPeriode());
 			$periodes = $this->getPeriodeNotes($criteria);
