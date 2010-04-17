@@ -82,25 +82,14 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    // Global configuration file
    require_once("./lib/global.inc");
    // Traitement des données
-   if($filtrage_html=="y") {
-      // HTMLPurifier fonctionne à partir de PHP 5.0.5
-      if($classe_filtrage=='HTMLPurifier') {
-         $tab_version_php=explode(".",phpversion());
-         if($tab_version_php[0]==4) {
-            $classe_filtrage=='InputFilter';
-         }
-         elseif(($tab_version_php[0]==5)&&($tab_version_php[1]==0)&&($tab_version_php[2]<5)) {
-            $classe_filtrage=='InputFilter';
-         }
-      }
+   require_once("./lib/filtrage_html.inc.php");
+	if($filtrage_html=="htmlpurifier") {
+		require_once("./lib/HTMLPurifier.standalone.php");
+	}
+	elseif($filtrage_html=="inputfilter") {
+		require_once("./lib/class.inputfilter_clean.php");
+	}
 
-      if($classe_filtrage=='HTMLPurifier') {
-         require_once("./lib/HTMLPurifier.standalone.php");
-      }
-      else {
-         require_once("./lib/class.inputfilter_clean.php");
-      }
-   }
    require_once("./lib/traitement_data.inc.php");
    // Libraries
    include "./lib/share.inc.php";
@@ -129,25 +118,13 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    // Global configuration file
    require_once("../../lib/global.inc");
    // Traitement des données
-   if($filtrage_html=="y") {
-      // HTMLPurifier fonctionne à partir de PHP 5.0.5
-      if($classe_filtrage=='HTMLPurifier') {
-         $tab_version_php=explode(".",phpversion());
-         if($tab_version_php[0]==4) {
-            $classe_filtrage=='InputFilter';
-         }
-         elseif(($tab_version_php[0]==5)&&($tab_version_php[1]==0)&&($tab_version_php[2]<5)) {
-            $classe_filtrage=='InputFilter';
-         }
-      }
-
-      if($classe_filtrage=='HTMLPurifier') {
-         require_once("../../lib/HTMLPurifier.standalone.php");
-      }
-      else {
-         require_once("../../lib/class.inputfilter_clean.php");
-      }
-   }
+   require_once("../../lib/filtrage_html.inc.php");
+	if($filtrage_html=="htmlpurifier") {
+		require_once("../../lib/HTMLPurifier.standalone.php");
+	}
+	elseif($filtrage_html=="inputfilter") {
+		require_once("../../lib/class.inputfilter_clean.php");
+	}
    require_once("../../lib/traitement_data.inc.php");
    // Libraries
    include "../../lib/share.inc.php";
@@ -176,25 +153,13 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    // Global configuration file
    require_once("../../../lib/global.inc");
    // Traitement des données
-   if($filtrage_html=="y") {
-      // HTMLPurifier fonctionne à partir de PHP 5.0.5
-      if($classe_filtrage=='HTMLPurifier') {
-         $tab_version_php=explode(".",phpversion());
-         if($tab_version_php[0]==4) {
-            $classe_filtrage=='InputFilter';
-         }
-         elseif(($tab_version_php[0]==5)&&($tab_version_php[1]==0)&&($tab_version_php[2]<5)) {
-            $classe_filtrage=='InputFilter';
-         }
-      }
-
-      if($classe_filtrage=='HTMLPurifier') {
-         require_once("../../../lib/HTMLPurifier.standalone.php");
-      }
-      else {
-         require_once("../../../lib/class.inputfilter_clean.php");
-      }
-   }
+   require_once("../../../lib/filtrage_html.inc.php");
+	if($filtrage_html=="htmlpurifier") {
+		require_once("../../../lib/HTMLPurifier.standalone.php");
+	}
+	elseif($filtrage_html=="inputfilter") {
+		require_once("../../../lib/class.inputfilter_clean.php");
+	}
    require_once("../../../lib/traitement_data.inc.php");
    // Libraries
    include "../../../lib/share.inc.php";
@@ -224,25 +189,13 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
     // Global configuration file
     require_once("../lib/global.inc");
     // Traitement des données
-   if($filtrage_html=="y") {
-      // HTMLPurifier fonctionne à partir de PHP 5.0.5
-      if($classe_filtrage=='HTMLPurifier') {
-         $tab_version_php=explode(".",phpversion());
-         if($tab_version_php[0]==4) {
-            $classe_filtrage=='InputFilter';
-         }
-         elseif(($tab_version_php[0]==5)&&($tab_version_php[1]==0)&&($tab_version_php[2]<5)) {
-            $classe_filtrage=='InputFilter';
-         }
-      }
-
-      if($classe_filtrage=='HTMLPurifier') {
-         require_once("../lib/HTMLPurifier.standalone.php");
-      }
-      else {
-         require_once("../lib/class.inputfilter_clean.php");
-      }
-   }
+   require_once("../lib/filtrage_html.inc.php");
+	if($filtrage_html=="htmlpurifier") {
+		require_once("../lib/HTMLPurifier.standalone.php");
+	}
+	elseif($filtrage_html=="inputfilter") {
+		require_once("../lib/class.inputfilter_clean.php");
+	}
     require_once("../lib/traitement_data.inc.php");
     // Libraries
     include "../lib/share.inc.php";
@@ -269,25 +222,13 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    // Global configuration file
    require_once("../lib/global.inc");
    // Traitement des données
-   if($filtrage_html=="y") {
-      // HTMLPurifier fonctionne à partir de PHP 5.0.5
-      if($classe_filtrage=='HTMLPurifier') {
-         $tab_version_php=explode(".",phpversion());
-         if($tab_version_php[0]==4) {
-            $classe_filtrage=='InputFilter';
-         }
-         elseif(($tab_version_php[0]==5)&&($tab_version_php[1]==0)&&($tab_version_php[2]<5)) {
-            $classe_filtrage=='InputFilter';
-         }
-      }
-
-      if($classe_filtrage=='HTMLPurifier') {
-         require_once("../lib/HTMLPurifier.standalone.php");
-      }
-      else {
-         require_once("../lib/class.inputfilter_clean.php");
-      }
-   }
+   require_once("../lib/filtrage_html.inc.php");
+	if($filtrage_html=="htmlpurifier") {
+		require_once("../lib/HTMLPurifier.standalone.php");
+	}
+	elseif($filtrage_html=="inputfilter") {
+		require_once("../lib/class.inputfilter_clean.php");
+	}
    require_once("../lib/traitement_data.inc.php");
    // Libraries
    include "../lib/share.inc.php";

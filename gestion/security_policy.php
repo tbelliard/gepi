@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -196,11 +196,52 @@ if (isset($_POST['security_alert2_probation_block_user'])) {
 		$msg = "Les données ont bien été enregistrées.";
 	}
 
-} // Fin : if isset($_POST)
+}
+
+//echo "\$filtrage_html=$filtrage_html<br />";
+if (isset($_POST['filtrage_html'])) {
+	if(($_POST['filtrage_html']=='inputfilter')||
+		($_POST['filtrage_html']=='htmlpurifier')||
+		($_POST['filtrage_html']=='pas_de_filtrage_html')) {
+
+		if (!saveSetting(("filtrage_html"), $_POST['filtrage_html'])) {
+			$msg = "Erreur lors de l'enregistrement de filtrage_html !";
+		}
+	}
+}
+// Fin : if isset($_POST)
+
+$htmlpurifier_autorise='y';
+$tab_version_php=explode(".",phpversion());
+if($tab_version_php[0]==4) {
+	$htmlpurifier_autorise='n';
+}
+elseif(($tab_version_php[0]==5)&&($tab_version_php[1]==0)&&($tab_version_php[2]<5)) {
+	$htmlpurifier_autorise='n';
+}
+
+$filtrage_html=getSettingValue('filtrage_html');
+if(($filtrage_html=='htmlpurifier')&&($htmlpurifier_autorise=='n')) {
+	saveSetting(("filtrage_html"), 'inputfilter');
+	$filtrage_html='inputfilter';
+}
+
+//echo "\$filtrage_html=$filtrage_html<br />";
+if(($filtrage_html!='inputfilter')&&
+	($filtrage_html!='htmlpurifier')&&
+	($filtrage_html!='pas_de_filtrage_html')) {
+	saveSetting(("filtrage_html"), 'htmlpurifier');
+
+	$filtrage_html=getSettingValue('filtrage_html');
+}
+//echo "\$filtrage_html=$filtrage_html<br />";
+
 //**************** EN-TETE *********************
 $titre_page = "Politique de sécurité";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
 
 //on récupère le chemin de la page d'appel pour en faire le lien de retour
 if(isset($_SERVER['HTTP_REFERER'])) {
@@ -221,119 +262,217 @@ debug_var();
 //$_SERVER['PHP_SELF']
 */
 
-echo "<p class='bold'><a href='".$url_retour['path']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+echo "<p class='bold'><a href='".$url_retour['path']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
-echo "<form action='security_policy.php' method='post'>";
-echo "<center><input type='submit' value='Enregistrer' /></center>";
+echo "<form action='security_policy.php' method='post'>\n";
+echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 
-// Options générales
-echo "<h2>Options générales</h2>";
-echo "<input type='checkbox' name='security_alert_email_admin' value='yes'";
-if (getSettingValue("security_alert_email_admin") == "yes") echo " CHECKED";
-echo " />";
-echo " Envoyer systématiquement un email à l'administrateur lors d'une tentative d'intrusion.<br/>\n";
-echo "Niveau de gravité minimal pour l'envoi du mail : ";
-echo "<select name='security_alert_email_min_level' size='1'>";
-for ($i = 1; $i <= 3;$i++) {
-	echo "<option value='$i'";
-	if (getSettingValue("security_alert_email_min_level") == $i) echo " SELECTED";
-	echo ">$i</option>";
-}
-echo "</select>";
-// Seuils d'alerte et actions à entreprendre
-echo "<h2>Seuils d'alertes</h2>";
-echo "<p>Vous pouvez définir deux seuils d'alerte et leurs actions associées. Ces seuils s'appliquent aux tentatives d'intrusion effectuées par les utilisateurs de Gepi. Chaque tentative a un niveau de gravité de 1 à 3 ; les seuils correspondent au cumul de ces niveaux de gravité pour un même utilisateur.</p>";
-echo "<p>Un utilisateur peut être placé en observation par l'administrateur, avec des seuils d'alerte distincts. Cela permet de définir une politique plus restrictive en cas de récidive.</p>";
+// Gestion des tentatives d'intrusion
+echo "<h2>Gestion des tentatives d'intrusion</h2>\n";
+echo "<div style='margin-left:3em;'>\n";
+	
+	// Options générales
+	echo "<h3>Options générales</h3>\n";
+	echo "<div style='margin-left:3em;'>\n";
+		echo "<input type='checkbox' name='security_alert_email_admin' value='yes'";
+		if (getSettingValue("security_alert_email_admin") == "yes") echo " CHECKED";
+		echo " />\n";
+		echo " Envoyer systématiquement un email à l'administrateur lors d'une tentative d'intrusion.<br/>\n";
+		echo "Niveau de gravité minimal pour l'envoi du mail : ";
+		echo "<select name='security_alert_email_min_level' size='1'>\n";
+		for ($i = 1; $i <= 3;$i++) {
+			echo "<option value='$i'";
+			if (getSettingValue("security_alert_email_min_level") == $i) echo " SELECTED";
+			echo ">$i</option>\n";
+		}
+		echo "</select>\n";
+	echo "</div>\n";
 
-echo "<table class='normal' summary=\"Seuils d'alerte\">";
-echo "<tr><th>Seuil</th><th>Utilisateur sans antécédent</th><th>Utilisateur surveillé</th></tr>";
+	// Seuils d'alerte et actions à entreprendre
+	echo "<h3>Seuils d'alertes</h3>\n";
+	echo "<div style='margin-left:3em;'>\n";
+		echo "<p>Vous pouvez définir deux seuils d'alerte et leurs actions associées. Ces seuils s'appliquent aux tentatives d'intrusion effectuées par les utilisateurs de Gepi. Chaque tentative a un niveau de gravité de 1 à 3 ; les seuils correspondent au cumul de ces niveaux de gravité pour un même utilisateur.</p>\n";
+		echo "<p>Un utilisateur peut être placé en observation par l'administrateur, avec des seuils d'alerte distincts. Cela permet de définir une politique plus restrictive en cas de récidive.</p>\n";
+		
+		echo "<table class='normal' summary=\"Seuils d'alerte\">\n";
+		echo "<tr>\n";
+		echo "<th>Seuil</th>\n";
+		echo "<th>Utilisateur sans antécédent</th>\n";
+		echo "<th>Utilisateur surveillé</th>\n";
+		echo "</tr>\n";
+		
+		// Niveau d'alerte 1
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<p>Seuil 1</p>\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		
+		// Utilisateur sans antécédent
+		echo "Niveau cumulé : ";
+		echo "<select name='security_alert1_normal_cumulated_level' size='1'>\n";
+		for ($i = 1; $i <= 15;$i++) {
+			echo "<option value='$i'";
+			if (getSettingValue("security_alert1_normal_cumulated_level") == $i) echo " SELECTED";
+			echo ">$i</option>\n";
+		}
+		echo "</select>\n";
+		echo "<br/>Actions :<br/>\n";
+		echo "<input type='checkbox' name='security_alert1_normal_email_admin' value='yes'";
+		if (getSettingValue("security_alert1_normal_email_admin") == "yes") echo " CHECKED";
+		echo " /> Envoyer un email à l'administrateur<br/>\n";
+		echo "<input type='checkbox' name='security_alert1_normal_block_user' value='yes'";
+		if (getSettingValue("security_alert1_normal_block_user") == "yes") echo " CHECKED";
+		echo " /> Désactiver le compte de l'utilisateur<br/>\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		
+		// Utilisateur en observation
+		echo "Niveau cumulé : ";
+		echo "<select name='security_alert1_probation_cumulated_level' size='1'>\n";
+		for ($i = 1; $i <= 15;$i++) {
+			echo "<option value='$i'";
+			if (getSettingValue("security_alert1_probation_cumulated_level") == $i) echo " SELECTED";
+			echo ">$i</option>\n";
+		}
+		echo "</select>\n";
+		echo "<br/>Actions :<br/>\n";
+		echo "<input type='checkbox' name='security_alert1_probation_email_admin' value='yes'";
+		if (getSettingValue("security_alert1_probation_email_admin") == "yes") echo " CHECKED";
+		echo " /> Envoyer un email à l'administrateur<br/>\n";
+		echo "<input type='checkbox' name='security_alert1_probation_block_user' value='yes'";
+		if (getSettingValue("security_alert1_probation_block_user") == "yes") echo " CHECKED";
+		echo " /> Désactiver le compte de l'utilisateur<br/>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+		
+		// Niveau d'alerte 2
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<p>Seuil 2</p>\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		
+		// Utilisateur sans antécédent
+		echo "Niveau cumulé : ";
+		echo "<select name='security_alert2_normal_cumulated_level' size='1'>\n";
+		for ($i = 1; $i <= 15;$i++) {
+			echo "<option value='$i'";
+			if (getSettingValue("security_alert2_normal_cumulated_level") == $i) echo " SELECTED";
+			echo ">$i</option>\n";
+		}
+		echo "</select>\n";
+		echo "<br/>Actions :<br/>\n";
+		echo "<input type='checkbox' name='security_alert2_normal_email_admin' value='yes'";
+		if (getSettingValue("security_alert2_normal_email_admin") == "yes") echo " CHECKED";
+		echo " /> Envoyer un email à l'administrateur<br/>\n";
+		echo "<input type='checkbox' name='security_alert2_normal_block_user' value='yes'";
+		if (getSettingValue("security_alert2_normal_block_user") == "yes") echo " CHECKED";
+		echo " /> Désactiver le compte de l'utilisateur<br/>\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		
+		// Utilisateur en observation
+		echo "Niveau cumulé : ";
+		echo "<select name='security_alert2_probation_cumulated_level' size='1'>\n";
+		for ($i = 1; $i <= 15;$i++) {
+			echo "<option value='$i'";
+			if (getSettingValue("security_alert2_probation_cumulated_level") == $i) echo " SELECTED";
+			echo ">$i</option>\n";
+		}
+		echo "</select>\n";
+		echo "<br/>Actions :<br/>\n";
+		echo "<input type='checkbox' name='security_alert2_probation_email_admin' value='yes'";
+		if (getSettingValue("security_alert2_probation_email_admin") == "yes") echo " CHECKED";
+		echo " /> Envoyer un email à l'administrateur<br/>\n";
+		echo "<input type='checkbox' name='security_alert2_probation_block_user' value='yes'";
+		if (getSettingValue("security_alert2_probation_block_user") == "yes") echo " CHECKED";
+		echo " /> Désactiver le compte de l'utilisateur<br/>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+		
+		echo "</table>\n";
+		echo "<br/><br/>\n";
+	echo "</div>\n";
+echo "</div>\n";
 
-// Niveau d'alerte 1
-echo "<tr><td>";
-echo "<p>Seuil 1</p>";
-echo "</td><td>";
+// Filtrage HTML
+echo "<h2>Filtrage HTML</h2>\n";
+echo "<div style='margin-left:3em;'>\n";
 
-// Utilisateur sans antécédent
-echo "Niveau cumulé : ";
-echo "<select name='security_alert1_normal_cumulated_level' size='1'>";
-for ($i = 1; $i <= 15;$i++) {
-	echo "<option value='$i'";
-	if (getSettingValue("security_alert1_normal_cumulated_level") == $i) echo " SELECTED";
-	echo ">$i</option>";
-}
-echo "</select>";
-echo "<br/>Actions :<br/>";
-echo "<input type='checkbox' name='security_alert1_normal_email_admin' value='yes'";
-if (getSettingValue("security_alert1_normal_email_admin") == "yes") echo " CHECKED";
-echo " /> Envoyer un email à l'administrateur<br/>";
-echo "<input type='checkbox' name='security_alert1_normal_block_user' value='yes'";
-if (getSettingValue("security_alert1_normal_block_user") == "yes") echo " CHECKED";
-echo " /> Désactiver le compte de l'utilisateur<br/>";
-echo "</td><td>";
+	echo "<p>Pour prévenir des tentatives d'injection de code HTML malicieux dans les formulaires, GEPI propose deux dispositifs&nbsp;:</p>\n";
+	echo "<table summary='Mode de filtrage'>\n";
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "<input type='radio' name='filtrage_html' id='filtrage_html_inputfilter' value='inputfilter' ";
+	if($filtrage_html=='inputfilter') {echo "checked ";}
+	echo "/>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<label for='filtrage_html_inputfilter'> InputFilter (<i>php4/php5</i>)</label><br />\n";
+	echo "<span style='font-size:small'>\n";
+	echo "Ce dispositif n'autorise que les balises et attributs suivants&nbsp;:<br />";
+	echo "<b>Balises&nbsp;:</b> ";
+	for($i=0;$i<count($aAllowedTags);$i++) {
+		if($i>0) {echo ", ";}
+		echo $aAllowedTags[$i];
+	}
+	echo "<br />\n";
+	echo "<b>Attributs&nbsp;:</b> ";
+	for($i=0;$i<count($aAllowedAttr);$i++) {
+		if($i>0) {echo ", ";}
+		echo $aAllowedAttr[$i];
+	}
+	echo "</span>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-// Utilisateur en observation
-echo "Niveau cumulé : ";
-echo "<select name='security_alert1_probation_cumulated_level' size='1'>";
-for ($i = 1; $i <= 15;$i++) {
-	echo "<option value='$i'";
-	if (getSettingValue("security_alert1_probation_cumulated_level") == $i) echo " SELECTED";
-	echo ">$i</option>";
-}
-echo "</select>";
-echo "<br/>Actions :<br/>";
-echo "<input type='checkbox' name='security_alert1_probation_email_admin' value='yes'";
-if (getSettingValue("security_alert1_probation_email_admin") == "yes") echo " CHECKED";
-echo " /> Envoyer un email à l'administrateur<br/>";
-echo "<input type='checkbox' name='security_alert1_probation_block_user' value='yes'";
-if (getSettingValue("security_alert1_probation_block_user") == "yes") echo " CHECKED";
-echo " /> Désactiver le compte de l'utilisateur<br/>";
-echo "</td></tr>";
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
 
-// Niveau d'alerte 2
-echo "<tr><td>";
-echo "<p>Seuil 2</p>";
-echo "</td><td>";
+	if($htmlpurifier_autorise=='n') {
+		echo "<img src='../images/disabled.png' width='20' height='20' alt='Mode non accessible' />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo " HTMLpurifier (<i color='red'>php>=5.0.5</i>)<br />\n";
+	}
+	else {
+		echo "<input type='radio' name='filtrage_html' id='filtrage_html_htmlpurifier' value='htmlpurifier' ";
+		if($filtrage_html=='htmlpurifier') {echo "checked ";}
+		echo "/>\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<label for='filtrage_html_htmlpurifier'> HTMLpurifier (<i>php>=5.0.5</i>)</label><br />\n";
+	}
+	echo "<span style='font-size:small'>\n";
+	echo "Plus complet qu'InputFilter dans les filtrages réalisés.<br />\n";
+	echo "Il tente également de rendre le code HTML plus correct/valide au sens W3C.<br />\n";
+	echo "</span>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-// Utilisateur sans antécédent
-echo "Niveau cumulé : ";
-echo "<select name='security_alert2_normal_cumulated_level' size='1'>";
-for ($i = 1; $i <= 15;$i++) {
-	echo "<option value='$i'";
-	if (getSettingValue("security_alert2_normal_cumulated_level") == $i) echo " SELECTED";
-	echo ">$i</option>";
-}
-echo "</select>";
-echo "<br/>Actions :<br/>";
-echo "<input type='checkbox' name='security_alert2_normal_email_admin' value='yes'";
-if (getSettingValue("security_alert2_normal_email_admin") == "yes") echo " CHECKED";
-echo " /> Envoyer un email à l'administrateur<br/>";
-echo "<input type='checkbox' name='security_alert2_normal_block_user' value='yes'";
-if (getSettingValue("security_alert2_normal_block_user") == "yes") echo " CHECKED";
-echo " /> Désactiver le compte de l'utilisateur<br/>";
-echo "</td><td>";
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "<input type='radio' name='filtrage_html' id='pas_de_filtrage_html' value='pas_de_filtrage_html' ";
+	if($filtrage_html=='pas_de_filtrage_html') {echo "checked ";}
+	echo "/>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<label for='pas_de_filtrage_html'> Pas de filtrage HTML</label><br />\n";
+	echo "<span style='font-size:small'>\n";
+	echo "Si vous optez pour ce choix, il est possible à des utilisateurs malintentionnés de déposer dans les formulaires du code dangereux.<br />\n";
+	echo "</span>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-// Utilisateur en observation
-echo "Niveau cumulé : ";
-echo "<select name='security_alert2_probation_cumulated_level' size='1'>";
-for ($i = 1; $i <= 15;$i++) {
-	echo "<option value='$i'";
-	if (getSettingValue("security_alert2_probation_cumulated_level") == $i) echo " SELECTED";
-	echo ">$i</option>";
-}
-echo "</select>";
-echo "<br/>Actions :<br/>";
-echo "<input type='checkbox' name='security_alert2_probation_email_admin' value='yes'";
-if (getSettingValue("security_alert2_probation_email_admin") == "yes") echo " CHECKED";
-echo " /> Envoyer un email à l'administrateur<br/>";
-echo "<input type='checkbox' name='security_alert2_probation_block_user' value='yes'";
-if (getSettingValue("security_alert2_probation_block_user") == "yes") echo " CHECKED";
-echo " /> Désactiver le compte de l'utilisateur<br/>";
-echo "</td></tr>";
+	echo "</table>\n";
 
-echo "</table>";
-echo "<br/><br/>";
-echo "<center><input type='submit' value='Enregistrer' /></center>";
-echo "</form>";
-echo "<br/><br/><br/>";
+	echo "<p style='font-weight:bold; color:red;'>Il est très fortement déconseillé de désactiver le filtrage.</p>\n";
+
+echo "</div>\n";
+
+echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+echo "</form>\n";
+echo "<br/><br/><br/>\n";
 require("../lib/footer.inc.php");
 ?>
