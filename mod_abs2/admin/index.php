@@ -172,7 +172,7 @@ suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accè
 <p>
 	<input type="radio" id="activer2" name="activer" value="2"
 	<?php if (getSettingValue("active_module_absence")=='2') echo ' checked="checked"'; ?> />
-	<label for="activerY">&nbsp;Activer le module de la gestion des absences version 2</label>
+	<label for="activer2">&nbsp;Activer le module de la gestion des absences version 2</label>
 </p>
 <p>
 	<input type="radio" id="activerN" name="activer" value="n"
