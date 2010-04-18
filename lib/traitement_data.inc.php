@@ -115,6 +115,82 @@ if ((!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_trait
 array_walk($_SERVER, 'anti_inject');
 array_walk($_COOKIE, 'anti_inject');
 
+function no_php_in_img($chaine) {
+	global $niveau_arbo;
+
+	if(isset($niveau_arbo)) {
+		if($niveau_arbo == "0") {
+			$pref_arbo="./";
+		}
+		elseif($niveau_arbo == "2") {
+			$pref_arbo="../../";
+		}
+		elseif($niveau_arbo == "3") {
+			$pref_arbo="../../../";
+		}
+	}
+	else {
+		$pref_arbo="../";
+	}
+
+	//$fich=fopen("/tmp/debug_img.txt","a+");
+
+	$chaine_corrigee="";
+	if(preg_match("/<img/i", $chaine)) {
+		unset($tab);
+		$tab=explode("<", $chaine);
+
+		//fwrite($fich,"=============================================\n");
+
+		// Il ne faut pas avoir de trucs du genre <img title='<' src='' />
+		for($i=0;$i<count($tab);$i++) {
+
+			//fwrite($fich,"\$tab[$i]=$tab[$i]\n++++++++++++++++++++++\n");
+
+			if(preg_match("/^img/i", $tab[$i])) {
+				unset($tab2);
+				$tab2=explode(">",$tab[$i],2);
+
+				//fwrite($fich,"\$tab2[0]=$tab2[0]\n\$tab2[1]=$tab2[1]\n++++++++++++++++++++++\n");
+
+				// Est-ce qu'un <img src='' sans fermeture de la balise est quand même interprêté?
+
+				unset($tab3);
+				$tab3=explode(" ",preg_replace("/ *=/","=",preg_replace("/= */","=", strtr($tab2[0], "\n\r","  "))));
+				for($j=0;$j<count($tab3);$j++) {
+					//fwrite($fich,"\$tab3[$j]=$tab3[$j]\n++++++++++++++++++++++\n");
+					if($j>0) {$chaine_corrigee.=" ";}
+					if((preg_match("/^src=/i", $tab3[$j]))&&(preg_match("/\.php/i", $tab3[$j]))) {
+						$chaine_corrigee.="src='".$pref_arbo."images/disabled.png'";
+					}
+					else {
+						$chaine_corrigee.=$tab3[$j];
+					}
+					//fwrite($fich,"1. \$chaine_corrigee=$chaine_corrigee\n++++++++++++++++++++++\n");
+				}
+
+				if(isset($tab2[1])) {$chaine_corrigee.=">".$tab2[1];}
+				//fwrite($fich,"2. \$chaine_corrigee=$chaine_corrigee\n++++++++++++++++++++++\n");
+			}
+			else {
+				$chaine_corrigee.=$tab[$i];
+				//if($i<count($tab)) {$chaine_corrigee.="<";}
+				//fwrite($fich,"3. \$chaine_corrigee=$chaine_corrigee\n++++++++++++++++++++++\n");
+			}
+			if($i<count($tab)-1) {$chaine_corrigee.="<";}
+			//fwrite($fich,"3b. \$chaine_corrigee=$chaine_corrigee\n++++++++++++++++++++++\n");
+		}
+	}
+	else {
+		$chaine_corrigee=$chaine;
+	}
+
+	//fwrite($fich,"4. \$chaine_corrigee=$chaine_corrigee\n++++++++++++++++++++++\n");
+	//fclose($fich);
+
+	return $chaine_corrigee;
+}
+
 //===========================================================
 if($filtrage_html=='htmlpurifier') {
 
@@ -192,6 +268,47 @@ elseif($filtrage_html=='inputfilter') {
 			else {
 				foreach($NON_PROTECT[$key] as $key2 => $value2) {
 					$NON_PROTECT[$key][$key2]=$oMyFilter->process($value2);;
+				}
+			}
+		}
+	}
+}
+
+$utiliser_no_php_in_img='n';
+if($utiliser_no_php_in_img=='y') {
+	if(isset($_GET)) {
+		foreach($_GET as $key => $value) {
+			if(!is_array($value)) {
+				$_GET[$key]=no_php_in_img($value);
+			}
+			else {
+				foreach($_GET[$key] as $key2 => $value2) {
+					$_GET[$key][$key2]=no_php_in_img($value2);
+				}
+			}
+		}
+	}
+	
+	if(isset($_POST)) {
+		foreach($_POST as $key => $value) {
+			if(!is_array($value)) {
+				$_POST[$key]=no_php_in_img($value);
+			}
+			else {
+				foreach($_POST[$key] as $key2 => $value2) {
+					$_POST[$key][$key2]=no_php_in_img($value2);
+				}
+			}
+		}
+	}
+	if(isset($NON_PROTECT)) {
+		foreach($NON_PROTECT as $key => $value) {
+			if(!is_array($value)) {
+				$NON_PROTECT[$key]=no_php_in_img($value);
+			}
+			else {
+				foreach($NON_PROTECT[$key] as $key2 => $value2) {
+					$NON_PROTECT[$key][$key2]=no_php_in_img($value2);
 				}
 			}
 		}
