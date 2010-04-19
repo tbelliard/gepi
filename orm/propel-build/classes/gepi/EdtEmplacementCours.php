@@ -122,4 +122,31 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	    return $desc;
 	}
 
+	/**
+	 *
+	 * Renvoi le jour de la semaine du cours sous forme d'un entier,
+	 * le jour 0 etant le dimanche, le retour est -1 si il y a un mauvais enregistrement dans la base
+	 *
+	 * @return     integer
+	 *
+	 */
+	public function getJourSemaineNumeric() {
+	    if ($this->getJourSemaine() == "dimanche") {
+		return 0;
+	    } else if ($this->getJourSemaine() == "lundi") {
+		return 1;
+	    } else if ($this->getJourSemaine() == "mardi") {
+		return 2;
+	    } else if ($this->getJourSemaine() == "mercredi") {
+		return 3;
+	    } else if ($this->getJourSemaine() == "jeudi") {
+		return 4;
+	    } else if ($this->getJourSemaine() == "vendredi") {
+		return 5;
+	    } else if ($this->getJourSemaine() == "samedi") {
+		return 6;
+	    }
+	    return -1;
+	}
+
 } // EdtEmplacementCours
