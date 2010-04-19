@@ -387,36 +387,47 @@ class Eleve extends BaseEleve {
 		throw new PropelException('Le premier argument doit etre de la classe EdtCreneau');
 	    }
 	    
-	    $abs_col = $this->getAbsenceSaisiesDuJour($v);
-	    $result_col = new PropelCollection();
-	    foreach ($abs_col as $abs) {
-		//$abs = new AbsenceEleveSaisie();
-		//$edtcreneau = new EdtCreneau();
-		if ($abs->getEdtCreneau() != null && $abs->getEdtCreneau()->getIdDefiniePeriode() == $edtcreneau->getIdDefiniePeriode()) {
-		    if (!$result_col->contains($abs)) {
-			$result_col->append($abs);
+	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+	    // -- which is unexpected, to say the least.
+	    //$dt = new DateTime();
+	    if ($v === null || $v === '') {
+		    $dt = null;
+	    } elseif ($v instanceof DateTime) {
+		    $dt = $v;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($v)) { // if it's a unix timestamp
+				    $dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt = new DateTime($v);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
 		    }
-		}
-
-		//on compare sur les horaires
-		if ($abs->getDebutAbs('Hi') <  $edtcreneau->getHeurefinDefiniePeriode('Hi') &&
-		    $abs->getFinAbs('Hi') >  $edtcreneau->getHeuredebutDefiniePeriode('Hi')) {
-		    if (!$result_col->contains($abs)) {
-			$result_col->append($abs);
-		    }
-		}
-
-		//on compare sur les cours
-		if ($abs->getEdtEmplacementCours() != null) {
-		    if ($abs->getEdtEmplacementCours()->getHeureDebut('Hi') <  $edtcreneau->getHeurefinDefiniePeriode('Hi') &&
-			$abs->getEdtEmplacementCours()->getHeureFin('Hi') >  $edtcreneau->getHeuredebutDefiniePeriode('Hi')) {
-			if (!$result_col->contains($abs)) {
-			    $result_col->append($abs);
-			}
-		    }
-		}
 	    }
-	    return $result_col;
+
+
+	    $query = AbsenceEleveSaisieQuery::create();
+	    $query->filterByEleveId($this->getIdEleve());
+
+	    $dt->setTime($edtcreneau->getHeuredebutDefiniePeriode('H'), $edtcreneau->getHeuredebutDefiniePeriode('i'), 0);
+	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
+	    
+	    $dt_fin_creneau = clone $dt;
+	    $dt_fin_creneau->setTime($edtcreneau->getHeurefinDefiniePeriode('H'), $edtcreneau->getHeurefinDefiniePeriode('i'), 0);
+	    $query->filterByDebutAbs($dt_fin_creneau, Criteria::LESS_THAN);
+
+	    $query->leftJoin('AbsenceEleveSaisie.EdtEmplacementCours');
+	    $query->condition('cond1', 'AbsenceEleveSaisie.IdEdtCreneau IS NULL');
+	    $query->condition('cond2', 'AbsenceEleveSaisie.IdEdtCreneau = ?', $edtcreneau->getIdDefiniePeriode());
+	    $query->condition('cond3', 'EdtEmplacementCours.IdDefiniePeriode = ?', $edtcreneau->getIdDefiniePeriode());
+	    $query->where(array('cond1', 'cond2', 'cond3'), 'or');
+	    return $query->find();
 	}
 
 	/*
