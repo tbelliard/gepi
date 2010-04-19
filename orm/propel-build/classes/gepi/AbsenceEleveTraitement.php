@@ -14,4 +14,29 @@
  */
 class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 
+	/**
+	 *
+	 * Renvoi une description intelligible du traitement
+	 *
+	 * @return     String description
+	 *
+	 */
+	public function getDescriptionCourte() {
+	    $desc = '';
+	    $desc .= strftime("%a %d %b %Y", $this->getUpdatedAt('U'));
+	    if ($this->getAbsenceEleveType() != null) {
+		$desc .= "; type : ".$this->getAbsenceEleveType()->getNom();
+	    }
+	    if ($this->getAbsenceEleveMotif() != null) {
+		$desc .= "; motif : ".$this->getAbsenceEleveMotif()->getNom();
+	    }
+	    if ($this->getAbsenceEleveJustification() != null) {
+		$desc .= "; justification : ".$this->getAbsenceEleveJustification()->getNom();
+	    }
+	    if ($this->getCommentaire() != null && $this->getCommentaire() != '') {
+		$desc .= "; Commentaire : ".$this->getCommentaire();
+	    }
+	    return $desc;
+	}
+
 } // AbsenceEleveTraitement

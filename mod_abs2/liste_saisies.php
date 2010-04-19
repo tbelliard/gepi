@@ -77,6 +77,8 @@ $filter_cours = isset($_POST["filter_cours"]) ? $_POST["filter_cours"] :(isset($
 $filter_date_creation_absence_debut_plage = isset($_POST["filter_date_creation_absence_debut_plage"]) ? $_POST["filter_date_creation_absence_debut_plage"] :(isset($_GET["filter_date_creation_absence_debut_plage"]) ? $_GET["filter_date_creation_absence_debut_plage"] :NULL);
 $filter_date_creation_absence_fin_plage = isset($_POST["filter_date_creation_absence_fin_plage"]) ? $_POST["filter_date_creation_absence_fin_plage"] :(isset($_GET["filter_date_creation_absence_fin_plage"]) ? $_GET["filter_date_creation_absence_fin_plage"] :NULL);
 $filter_date_modification = isset($_POST["filter_date_modification"]) ? $_POST["filter_date_modification"] :(isset($_GET["filter_date_modification"]) ? $_GET["filter_date_modification"] :NULL);
+$filter_date_traitement_absence_debut_plage = isset($_POST["filter_date_traitement_absence_debut_plage"]) ? $_POST["filter_date_traitement_absence_debut_plage"] :(isset($_GET["filter_date_traitement_absence_debut_plage"]) ? $_GET["filter_date_traitement_absence_debut_plage"] :NULL);
+$filter_date_traitement_absence_fin_plage = isset($_POST["filter_date_traitement_absence_fin_plage"]) ? $_POST["filter_date_traitement_absence_fin_plage"] :(isset($_GET["filter_date_traitement_absence_fin_plage"]) ? $_GET["filter_date_traitement_absence_fin_plage"] :NULL);
 
 $reinit_filtre = isset($_POST["reinit_filtre"]) ? $_POST["reinit_filtre"] :(isset($_GET["reinit_filtre"]) ? $_GET["reinit_filtre"] :NULL);
 if ($reinit_filtre == 'y') {
@@ -95,6 +97,8 @@ if ($reinit_filtre == 'y') {
     $filter_date_creation_absence_debut_plage = NULL;
     $filter_date_creation_absence_fin_plage = NULL;
     $filter_date_modification = NULL;
+    $filter_date_traitement_absence_debut_plage = NULL;
+    $filter_date_traitement_absence_fin_plage = NULL;
 }
 
 $page_number = isset($_POST["page_number"]) ? $_POST["page_number"] :(isset($_GET["page_number"]) ? $_GET["page_number"] :NULL);
@@ -205,6 +209,17 @@ if ($filter_date_creation_absence_fin_plage != null && $filter_date_creation_abs
 if ($filter_date_modification != null && $filter_date_modification == 'y') {
     $query->where('AbsenceEleveSaisie.CreatedAt != AbsenceEleveSaisie.UpdatedAt');
 }
+if ($filter_date_traitement_absence_debut_plage != null && $filter_date_traitement_absence_debut_plage != '-1') {
+    $date_traitement_absence_debut_plage = new DateTime(str_replace("/",".",$filter_date_traitement_absence_debut_plage));
+    $query->leftJoin('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoin('JTraitementSaisieEleve.AbsenceEleveTraitement')->where('AbsenceEleveTraitement.UpdatedAt >= ?', $date_traitement_absence_debut_plage);
+}
+if ($filter_date_traitement_absence_fin_plage != null && $filter_date_traitement_absence_fin_plage != '-1') {
+    $date_traitement_absence_fin_plage = new DateTime(str_replace("/",".",$filter_date_traitement_absence_fin_plage));
+    $query->leftJoin('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoin('JTraitementSaisieEleve.AbsenceEleveTraitement');
+    $query->condition('trait1', 'AbsenceEleveTraitement.UpdatedAt <= ?', $date_traitement_absence_fin_plage);
+    $query->condition('trait2', 'AbsenceEleveTraitement.UpdatedAt IS NULL');
+    $query->where(array('trait1', 'trait2'), 'or');
+}
 
 if ($order == "asc_id") {
     $query->orderBy('Id', Criteria::ASC);
@@ -250,6 +265,10 @@ if ($order == "asc_id") {
     $query->orderBy('UpdatedAt', Criteria::ASC);
 } else if ($order == "des_date_modification") {
     $query->orderBy('UpdatedAt', Criteria::DESC);
+} else if ($order == "asc_date_traitement") {
+    $query->leftJoin('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoin('JTraitementSaisieEleve.AbsenceEleveTraitement')->orderBy('AbsenceEleveTraitement.UpdatedAt', Criteria::ASC);
+} else if ($order == "des_date_traitement") {
+    $query->leftJoin('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoin('JTraitementSaisieEleve.AbsenceEleveTraitement')->orderBy('AbsenceEleveTraitement.UpdatedAt', Criteria::DESC);
 }
 
 $query->distinct();
@@ -279,7 +298,7 @@ echo "&nbsp;&nbsp;&nbsp;";
 echo '<button type="submit" name="reinit_filtre" value="y"/>Reinitialiser les filtres</button> ';
 echo '<button type="submit">Rechercher</button>';
 
-echo '<table class="tb_absences">';
+echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0;">';
 
 echo '<THEAD>';
 echo '<TR>';
@@ -289,10 +308,10 @@ echo '<TH>';
 echo '<nobr>';
 echo 'N°';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "asc_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_id"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "des_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_id"/>';
 echo '</nobr> ';
 echo '<input type="text" name="filter_id" value="'.$filter_id.'" size="3"/>';
@@ -303,13 +322,13 @@ echo '<TH>';
 echo '<nobr>';
 echo 'Utilisateur';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "asc_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_utilisateur"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "des_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_utilisateur"/>';
 echo '</nobr>';
-echo '<br><input type="text" name="filter_utilisateur" value="'.$filter_utilisateur.'" size="6"/>';
+echo '<br><input type="text" name="filter_utilisateur" value="'.$filter_utilisateur.'" size="12"/>';
 echo '</TH>';
 
 //en tete filtre eleve
@@ -317,13 +336,13 @@ echo '<TH>';
 echo '<nobr>';
 echo 'Eleve';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "asc_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_eleve"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_eleve"/>';
 echo '</nobr>';
-echo '<br><input type="text" name="filter_eleve" value="'.$filter_eleve.'" size="6"/>';
+echo '<br><input type="text" name="filter_eleve" value="'.$filter_eleve.'" size="8"/>';
 echo '</TH>';
 
 //en tete filtre classe
@@ -331,10 +350,10 @@ echo '<TH>';
 echo '<nobr>';
 echo 'Classe';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_classe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "asc_classe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_classe"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_classe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "des_classe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_classe"/>';
 echo '</nobr>';
 echo '<br>';
@@ -355,10 +374,10 @@ echo '<TH>';
 echo '<nobr>';
 echo 'Groupe';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_groupe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "asc_groupe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_groupe"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_groupe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "des_groupe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_groupe"/>';
 echo '</nobr>';
 echo '<br>';
@@ -379,10 +398,10 @@ echo '<TH>';
 echo '<nobr>';
 echo 'AID';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_aid") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "asc_aid") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_aid"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_aid") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "des_aid") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_aid"/>';
 echo '</nobr>';
 echo '<br>';
@@ -398,15 +417,39 @@ foreach ($utilisateur->getAidDetailss() as $aid) {
 echo "</select>";
 echo '</TH>';
 
+//en tete filtre creneaux
+echo '<TH>';
+echo '<nobr>';
+echo 'Creneau';
+echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "asc_creneau") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="asc_creneau"/>';
+echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "des_creneau") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="des_creneau"/>';
+echo '</nobr>';
+echo '<br>';
+echo ("<select name=\"filter_creneau\">");
+echo "<option value='-1'></option>\n";
+foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edt_creneau) {
+	echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
+	if ($filter_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
+	echo ">";
+	echo $edt_creneau->getDescription();
+	echo "</option>\n";
+}
+echo "</select>";
+echo '</TH>';
+
 //en tete filtre date debut
 echo '<TH>';
 echo '<nobr>';
 echo 'Date debut';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_date_debut") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "asc_date_debut") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_debut"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_date_debut") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "des_date_debut") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_debut"/>';
 echo '</nobr>';
 echo '<br>';
@@ -452,10 +495,10 @@ echo '<TH>';
 echo '<nobr>';
 echo 'Date fin';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_date_fin") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "asc_date_fin") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_fin"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_date_fin") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "des_date_fin") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_fin"/>';
 echo '</nobr>';
 echo '<br>';
@@ -496,31 +539,6 @@ echo '
 </script>';
 echo '</TH>';
 
-//en tete filtre creneaux
-echo '<TH>';
-echo '<nobr>';
-echo 'Creneau';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_creneau") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_creneau"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_creneau") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
-echo 'border-width:1px;" alt="" name="order" value="des_creneau"/>';
-echo '</nobr>';
-echo '<br>';
-echo ("<select name=\"filter_creneau\">");
-echo "<option value='-1'></option>\n";
-foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edt_creneau) {
-    //$edt_creneau = new EdtCreneau();
-	echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-	if ($filter_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
-	echo ">";
-	echo $edt_creneau->getDescription();
-	echo "</option>\n";
-}
-echo "</select>";
-echo '</TH>';
-
 //en tete filtre emplacement de cours
 echo '<TH>';
 echo '<nobr>';
@@ -544,10 +562,10 @@ echo '<TH>';
 echo '<nobr>';
 echo 'Date creation';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "asc_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_creation"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "des_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_creation"/>';
 echo '</nobr>';
 echo '<br>';
@@ -591,12 +609,12 @@ echo '</TH>';
 //en tete filtre date modification
 echo '<TH>';
 echo '<nobr>';
-echo 'Date modif. ';
+echo '';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_date_modification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "asc_date_modification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_modification"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_date_modification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: none;";}
+if ($order == "des_date_modification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_modification"/>';
 echo '</nobr> ';
 echo '<nobr>';
@@ -606,86 +624,219 @@ echo '> modifié';
 echo '</nobr>';
 echo '</TH>';
 
+//en tete filtre date traitement
+echo '<TH>';
+echo '<nobr>';
+echo 'Date traitement';
+echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "asc_date_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="asc_date_traitement"/>';
+echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "des_date_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="des_date_traitement"/>';
+echo '</nobr>';
+echo '<br>';
+echo '<nobr>';
+echo 'Entre : <input size="13" id="filter_date_traitement_absence_debut_plage" name="filter_date_traitement_absence_debut_plage" value="';
+if ($filter_date_traitement_absence_debut_plage != null) {echo $filter_date_traitement_absence_debut_plage;}
+echo '" />&nbsp;';
+echo '<img id="trigger_filter_date_traitement_absence_debut_plage" src="../images/icons/calendrier.gif"/>';
+echo '</nobr>';
+echo '
+<script type="text/javascript">
+    Calendar.setup({
+	inputField     :    "filter_date_traitement_absence_debut_plage",     // id of the input field
+	ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
+	button         :    "trigger_filter_date_traitement_absence_debut_plage",  // trigger for the calendar (button ID)
+	align          :    "Tl",           // alignment (defaults to "Bl")
+	singleClick    :    true,
+	showsTime	:   true
+    });
+</script>';
+echo '<br>';
+echo '<nobr>';
+echo 'Et : <input size="13" id="filter_date_traitement_absence_fin_plage" name="filter_date_traitement_absence_fin_plage" value="';
+if ($filter_date_traitement_absence_fin_plage != null) {echo $filter_date_traitement_absence_fin_plage;}
+echo '" />&nbsp;';
+echo '<img id="trigger_filter_date_traitement_absence_fin_plage" src="../images/icons/calendrier.gif"/>';
+echo '</nobr>';
+echo '
+<script type="text/javascript">
+    Calendar.setup({
+	inputField     :    "filter_date_traitement_absence_fin_plage",     // id of the input field
+	ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
+	button         :    "trigger_filter_date_traitement_absence_fin_plage",  // trigger for the calendar (button ID)
+	align          :    "Tl",           // alignment (defaults to "Bl")
+	singleClick    :    true,
+	showsTime	:   true
+    });
+</script>';
+echo '</TH>';
+
+//en tete commentaire
+echo '<TH>';
+echo 'commentaire';
+echo '</TH>';
+
 echo '</TR>';
 echo '</THEAD>';
 
 echo '<TBODY>';
-foreach ($saisies_col as $saisie) {
-    //$saisie = new AbsenceEleveSaisie();
-    echo '<TR>';
+$results = $saisies_col->getResults();
+foreach ($results as $saisie) {
+    if ($results->getPosition() %2 == '1') {
+	    $background_couleur="rgb(220, 220, 220);";
+    } else {
+	    $background_couleur="rgb(210, 220, 230);";
+    }
+
+    echo "<tr style='background-color :$background_couleur'>\n";
 
     echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     echo $saisie->getId();
+    echo "</a>";
     echo '</TD>';
 
     echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getUtilisateurProfessionnel() != null) {
 	echo $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom();
     }
+    echo "</a>";
     echo '</TD>';
 
     echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getEleve() != null) {
-	echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
+	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
+	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
+	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
+	echo ($saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom());
+	echo "</td>";
+	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
+ 	if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
+	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
+	    $photos = "../photos/eleves/".$nom_photo;
+	    if (($nom_photo != "") && (file_exists($photos))) {
+		$valeur = redimensionne_image_petit($photos);
+		echo ' <img src="'.$photos.'" align="right" width="'.$valeur[0].'px" height="'.$valeur[1].'px" alt="" title="" /> ';
+	    }
+	}
+	echo "</td></tr></table>";
+    } else {
+	echo "Aucun élève absent";
     }
+    echo "</a>";
     echo '</TD>';
 
     echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getClasse() != null) {
 	//$classe = new Classe();
 	echo $classe->getNomComplet();
+    } else {
+	echo "&nbsp;";
     }
+    echo "</a>";
     echo '</TD>';
 
     echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getGroupe() != null) {
 	//$groupe = new Groupe();
 	echo $saisie->getGroupe()->getNameAvecClasses();
+    } else {
+	echo "&nbsp;";
     }
+    echo "</a>";
     echo '</TD>';
 
     echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     if ($saisie->getAidDetails() != null) {
 	//$groupe = new Groupe();
 	echo $saisie->getAidDetails()->getNom();
+    } else {
+	echo "&nbsp;";
     }
+    echo "</a>";
     echo '</TD>';
 
-    echo '<TD><nobr>';
-    echo (strftime("%a %d %b %Y %H:%M", $saisie->getDebutAbs('U')));
-    echo '</nobr></TD>';
-
-    echo '<TD><nobr>';
-    echo (strftime("%a %d %b %Y %H:%M", $saisie->getFinAbs('U')));
-    echo '</nobr></TD>';
-
     echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     if ($saisie->getEdtCreneau() != null) {
 	//$groupe = new Groupe();
 	echo $saisie->getEdtCreneau()->getDescription();
+    } else {
+	echo "&nbsp;";
     }
     echo '</TD>';
 
+    echo '<TD><nobr>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo (strftime("%a %d %b %Y %H:%M", $saisie->getDebutAbs('U')));
+    echo "</a>";
+    echo '</nobr></TD>';
+
+    echo '<TD><nobr>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo (strftime("%a %d %b %Y %H:%M", $saisie->getFinAbs('U')));
+    echo "</a>";
+    echo '</nobr></TD>';
+
     echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     echo '<nobr>';
     if ($saisie->getEdtEmplacementCours() != null) {
 	//$groupe = new Groupe();
 	echo $saisie->getEdtEmplacementCours()->getDescription();
+    } else {
+	echo "&nbsp;";
     }
     echo '</nobr>';
+    echo "</a>";
     echo '</TD>';
 
     echo '<TD><nobr>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     echo (strftime("%a %d %b %Y %H:%M", $saisie->getCreatedAt('U')));
+    echo "</a>";
     echo '</nobr></TD>';
 
     echo '<TD><nobr>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     if ($saisie->getCreatedAt() != $saisie->getUpdatedAt()) {
 	echo (strftime("%a %d %b %Y %H:%M", $saisie->getUpdatedAt('U')));
+    } else {
+	echo "&nbsp;";
     }
+    echo "</a>";
     echo '</nobr></TD>';
 
+    echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+	echo "<table><tr><td>";
+	echo $traitement->getDescriptionCourte();
+	echo "</td></tr></table>";
+    }
+    if ($saisie->getAbsenceEleveTraitements()->isEmpty()) {
+	echo "&nbsp;";
+    }
+    echo "</a>";
+    echo '</TD>';
+
+    echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo ($saisie->getCommentaire());
+    echo "&nbsp;";
+    echo "</a>";
+    echo '</TD>';
+
     echo '</TR>';
+
+
 }
 
 echo '</TBODY>';
@@ -693,4 +844,28 @@ echo '</TBODY>';
 
 echo '</table>';
 
+//fonction redimensionne les photos petit format
+function redimensionne_image_petit($photo)
+ {
+    // prendre les informations sur l'image
+    $info_image = getimagesize($photo);
+    // largeur et hauteur de l'image d'origine
+    $largeur = $info_image[0];
+    $hauteur = $info_image[1];
+    // largeur et/ou hauteur maximum à afficher
+             $taille_max_largeur = 35;
+             $taille_max_hauteur = 35;
+
+    // calcule le ratio de redimensionnement
+     $ratio_l = $largeur / $taille_max_largeur;
+     $ratio_h = $hauteur / $taille_max_hauteur;
+     $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
+
+    // définit largeur et hauteur pour la nouvelle image
+     $nouvelle_largeur = $largeur / $ratio;
+     $nouvelle_hauteur = $hauteur / $ratio;
+
+   // on renvoit la largeur et la hauteur
+    return array($nouvelle_largeur, $nouvelle_hauteur);
+ }
 ?>
