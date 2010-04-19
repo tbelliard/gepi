@@ -84,9 +84,17 @@ if (!getSettingValue("abs2_modification_saisie_une_heure")=='y' || !$saisie->get
     die();
 }
 
-if ($commentaire != null) {
-    $saisie->setCommentaire($commentaire);
-}
+$saisie->setCommentaire($commentaire);
+$date_debut = new DateTime(str_replace("/",".",$_POST['date_debut']));
+$heure_debut = new DateTime($_POST['heure_debut']);
+$date_debut->setTime($heure_debut->format('H'), $heure_debut->format('i'));
+$saisie->setDebutAbs($date_debut);
+
+$date_fin = new DateTime(str_replace("/",".",$_POST['date_fin']));
+$heure_fin = new DateTime($_POST['heure_fin']);
+$date_fin->setTime($heure_fin->format('H'), $heure_fin->format('i'));
+$saisie->setFinAbs($date_fin);
+
 
 for($i=0; $i<$total_traitements; $i++) {
 
@@ -130,9 +138,13 @@ if ($ajout_type_absence != null && $ajout_type_absence != -1) {
     }
 }
 
-$saisie->save();
+if ($saisie->save()) {
+    $message_enregistrement .= 'Modification enregistrée';
+} else {
+    $message_enregistrement .= $saisie->getValidationFailures();
+    $saisie->reload();
+}
 
-$message_enregistrement .= 'Modification enregistrée';
 
 include("visu_saisie.php");
 ?>

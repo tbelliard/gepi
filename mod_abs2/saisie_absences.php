@@ -326,6 +326,11 @@ foreach($eleve_col as $eleve) {
 					}
 
 					if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) {
+					    //le message d'erreur provient du fichier enregistrement_saisies.php
+					    if (isset($message_erreur_eleve[$eleve->getIdEleve()])) {
+						echo "Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
+					    }
+
 					    //on a un creneau on va afficher la saisie sur ce creneau
 					    echo '<nobr><input style="font-size:88%;" name="active_absence_eleve['.$eleve_col->getPosition().']" value="1" type="checkbox" />';
 					    $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();

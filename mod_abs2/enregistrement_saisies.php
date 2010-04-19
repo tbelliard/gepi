@@ -156,11 +156,9 @@ for($i=0; $i<$total_eleves; $i++) {
 	    if ($type->isStatutAutorise($utilisateur->getStatut())) {
 		//on va creer un traitement avec le type d'absence associé
 		$traitement = new AbsenceEleveTraitement();
-		$saisie->save();
 		$traitement->addAbsenceEleveSaisie($saisie);
 		$traitement->setAbsenceEleveType($type);
 		$traitement->setUtilisateurProfessionnel($utilisateur);
-		$traitement->save();
 	    } else {
 		$message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	    }
@@ -169,9 +167,17 @@ for($i=0; $i<$total_eleves; $i++) {
 	}
     }
 
-    $saisie->save();
-    $message_enregistrement .= "Saisie enregistrée pour l'eleve : ".$eleve->getNom()."<br/>";
+    if ($saisie->save()) {
+	if (isset($traitement)) {
+	    $traitement->save();
+	}
+	$message_enregistrement .= "Saisie enregistrée pour l'eleve : ".$eleve->getNom()."<br/>";
+    } else {
+	$index = $_POST['id_eleve_absent'][$i];
+	$message_erreur_eleve[$index] = $saisie->getValidationFailures();
+    }
 }
+
 if (!isset($saisie) || $saisie == null) {
     //il n'y aucune saisie d'effectuer, on va enregistrer une saisie pour marquer le fait que l'appel a été effectué
     //on test si l'eleve est enregistré absent
@@ -193,9 +199,12 @@ if (!isset($saisie) || $saisie == null) {
 	$date_fin->setTime($creneau->getHeurefinDefiniePeriode('H'), $creneau->getHeurefinDefiniePeriode('i'));
 	$saisie->setFinAbs($date_fin);
 	
-	$message_enregistrement .= "Saisie enregistrée.<br/>";
 
-	$saisie->save();
+	if ($saisie->save()) {
+	    $message_enregistrement .= "Saisie enregistrée.<br/>";
+	} else {
+	    $message_enregistrement .= $saisie->getValidationFailures();
+	}
     }
 }
 

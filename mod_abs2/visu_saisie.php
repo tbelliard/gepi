@@ -189,20 +189,19 @@ echo '</TD><TD>';
 if (!$modifiable) {
     echo (strftime("%a %d %b %Y %H:%M", $saisie->getDebutAbs('U')));
 } else {
-echo '<input size="13" id="date_debut" name="date_debut" value="';
-    echo $saisie->getDebutAbs('d/m/Y H:i');
-    echo '" />&nbsp;';
-    echo '<img id="trigger_date_debut" src="../images/icons/calendrier.gif"/>';
+    echo '<nobr><input name="heure_debut" value="'.$saisie->getDebutAbs("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
+    echo '<input id="trigger_calendrier_debut" name="date_debut" value="'.$saisie->getDebutAbs('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+
+//    echo '<img id="trigger_date_debut" src="../images/icons/calendrier.gif"/>';
     echo '</nobr>';
     echo '
     <script type="text/javascript">
 	Calendar.setup({
-	    inputField     :    "date_debut",     // id of the input field
-	    ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
-	    button         :    "trigger_date_debut",  // trigger for the calendar (button ID)
+	    inputField     :    "trigger_calendrier_debut",     // id of the input field
+	    ifFormat       :    "%d/%m/%Y",      // format of the input field
+	    button         :    "trigger_calendrier_debut",  // trigger for the calendar (button ID)
 	    align          :    "Tl",           // alignment (defaults to "Bl")
-	    singleClick    :    true,
-	    showsTime	:   true
+	    singleClick    :    true
 	});
     </script>';
 }
@@ -214,20 +213,19 @@ echo '</TD><TD>';
 if (!$modifiable) {
     echo (strftime("%a %d %b %Y %H:%M", $saisie->getFinAbs('U')));
 } else {
-echo '<input size="13" id="date_fin" name="date_fin" value="';
-    echo $saisie->getFinAbs('d/m/Y H:i');
-    echo '" />&nbsp;';
-    echo '<img id="trigger_date_debut" src="../images/icons/calendrier.gif"/>';
+    echo '<nobr><input name="heure_fin" value="'.$saisie->getFinAbs("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
+    echo '<input id="trigger_calendrier_fin" name="date_fin" value="'.$saisie->getFinAbs('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+
+    //echo '<img id="trigger_date_debut" src="../images/icons/calendrier.gif"/>';
     echo '</nobr>';
     echo '
     <script type="text/javascript">
 	Calendar.setup({
-	    inputField     :    "date_fin",     // id of the input field
-	    ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
-	    button         :    "trigger_date_fin",  // trigger for the calendar (button ID)
+	    inputField     :    "trigger_calendrier_fin",     // id of the input field
+	    ifFormat       :    "%d/%m/%Y",      // format of the input field
+	    button         :    "trigger_calendrier_fin",  // trigger for the calendar (button ID)
 	    align          :    "Tl",           // alignment (defaults to "Bl")
-	    singleClick    :    true,
-	    showsTime	:   true
+	    singleClick    :    true
 	});
     </script>';
 }
