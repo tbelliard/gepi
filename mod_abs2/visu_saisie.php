@@ -77,8 +77,6 @@ $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-//===========================
-
 echo "<div id='aidmenu' style='display: none;'>test</div>\n";
 
 // Etiquettes des onglets:
@@ -119,9 +117,12 @@ if (!$modifiable) {
     echo "La saisie n'est pas modifiable";
 }
 
+if (isset($message_enregistrement)) {
+    echo $message_enregistrement;
+}
 
 echo '<table class="normal">';
-echo '<form method="post" action="enregistrement_modification_saisie.php">';
+echo '<form method="post" action="enregistrement_modif_saisie.php">';
 echo '<input type="hidden" name="id_saisie" value="'.$saisie->getPrimaryKey().'"/>';
 echo '<TBODY>';
 echo '<tr><TD>';
@@ -283,17 +284,19 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 }
 echo '<input type="hidden" name="total_traitements" value="'.$total_traitements.'"/>';
 
-echo ("<select name=\"ajout_type_absence\">");
-echo "<option value='-1'>Ajouter un type</option>\n";
-foreach ($type_autorises as $type) {
-    //$type = new AbsenceEleveTypeStatutAutorise();
-	echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
-	echo ">";
-	echo $type->getAbsenceEleveType()->getNom();
-	echo "</option>\n";
-}
-echo "</select>";
 
+if ($modifiable && $total_traitements == 0) {
+    echo ("<select name=\"ajout_type_absence\">");
+    echo "<option value='-1'></option>\n";
+    foreach ($type_autorises as $type) {
+	//$type = new AbsenceEleveTypeStatutAutorise();
+	    echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
+	    echo ">";
+	    echo $type->getAbsenceEleveType()->getNom();
+	    echo "</option>\n";
+    }
+    echo "</select>";
+}
 
 echo '</TD></tr>';
 
@@ -314,17 +317,18 @@ echo '</TD></tr>';
 
 if ($saisie->getCreatedAt() != $saisie->getUpdatedAt()) {
     echo '<tr><TD>';
-    echo 'Saisie le : ';
+    echo 'Modifiée le : ';
     echo '</TD><TD>';
     echo (strftime("%a %d %b %Y %H:%M", $saisie->getUpdatedAt('U')));
     echo '</TD></tr>';
 }
 
 echo '</TD></tr>';
-
-echo '<tr><TD colspan="2" style="text-align : center;">';
-echo '<button type="submit">Enregistrer les modifications</button>';
-echo '</TD></tr>';
+if ($modifiable) {
+    echo '<tr><TD colspan="2" style="text-align : center;">';
+    echo '<button type="submit">Enregistrer les modifications</button>';
+    echo '</TD></tr>';
+}
 
 echo '</TBODY>';
 
