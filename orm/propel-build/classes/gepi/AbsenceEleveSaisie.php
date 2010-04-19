@@ -14,4 +14,136 @@
  */
 class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
+	/**
+	 *
+	 * Renvoi true ou flase en fonction de la coherence de la saisie
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getValidationFailures() {
+	    $message = '';
+
+	    //on exclus mutuellement un id_classe, et id_groupe et un id_aid
+	    $id_relation = 0;
+	    if ($this->getIdAid() != null && $this->getIdAid() != -1) {
+		$id_relation = $id_relation + 1;
+		if ($this->getAidDetails() == null) {
+		    $message .= "L'id de l'aid est incorrect.<br/>";
+		}
+	    }
+	    if ($this->getIdClasse() != null && $this->getIdClasse() != -1) {
+		$id_relation = $id_relation + 1;
+		if ($this->getClasse() == null) {
+		    $message .= "L'id de la classe est incorrect.<br/>";
+		}
+	    }
+	    if ($this->getIdGroupe() != null && $this->getIdGroupe() != -1) {
+		$id_relation = $id_relation + 1;
+		if ($this->getGroupe() == null) {
+		    $message .= "L'id du groupe est incorrect.<br/>";
+		}
+	    }
+	    if ($id_relation > 1) {
+		$message .= "Il ne peut y avoir un groupe, une classe et une aid simultanéments pécisé.<br/>";
+	    }
+
+	    if ($this->getEleveId() != null && $this->getEleveId() != -1) {
+		if ($this->getEleve() == null) {
+		    $message .= "L'id de l'eleve est incorrect.<br/>";
+		}
+	    }
+
+	    if ($this->getIdEdtEmplacementCours() != null && $this->getIdEdtEmplacementCours() != -1) {
+		if ($this->getEdtEmplacementCours() == null) {
+		    $message .= "L'id de l'emplacement cours est incorrect.<br/>";
+		}
+
+		//on verifie la coherence avec le creneau
+		if ($this->getEdtEmplacementCours() == null ||
+		    $this->getEdtEmplacementCours()->getIdDefiniePeriode() != $this->getIdEdtCreneau()) {
+		    $message .= "Le creneau ne correspond pas à l'emplacement de cours.<br/>";
+		}
+
+		//on verifie la coherence avec les aid ou les groupes
+		if ($this->getIdClasse() != null) {
+		    $message .= "Il ne peut y avoir à la fois une classe et un emplacement de cours précisé.<br/>";
+		}
+		if ($this->getIdAid() != $this->getEdtEmplacementCours()->getIdAid()) {
+		    $message .= "L'aid de l'emplacement de cours et de la saisie d'absence ne correspondent pas.<br/>";
+		}
+
+		if ($this->getIdGroupe() != $this->getEdtEmplacementCours()->getIdGroupe()) {
+		    $message .= "Le groupe de l'emplacement de cours et de la saisie d'absence ne correspondent pas.<br/>";
+		}
+	    }
+
+	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, à la classe ou à l'aid précisé
+	    if ($this->getIdAid() != null && $this->getEleve() != null) {
+		$criteria = new Criteria();
+		$criteria->add(JAidElevesPeer::LOGIN, $this->getEleve()->getLogin());
+		if ($this->getAidDetails()->countJAidElevess($criteria) == 0) {
+		    $message .= "L'eleve n'appartient pas à l'aid selectionné.<br/>";
+		}
+	    }
+
+	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, à la classe ou à l'aid précisé
+	    if ($this->getIdGroupe() != null && $this->getEleve() != null) {
+		$criteria = new Criteria();
+		$criteria->add(JEleveGroupePeer::LOGIN, $this->getEleve()->getLogin());
+		if ($this->getGroupe()->countJEleveGroupes($criteria) == 0) {
+		    $message .= "L'eleve n'appartient pas au groupe selectionné.<br/>";
+		}
+	    }
+
+	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, à la classe ou à l'aid précisé
+	    if ($this->getIdClasse() != null && $this->getEleve() != null) {
+		$criteria = new Criteria();
+		$criteria->add(JEleveClassePeer::LOGIN, $this->getEleve()->getLogin());
+		if ($this->getClasse()->countJEleveClasses($criteria) == 0) {
+		    $message .= "L'eleve n'appartient pas à la classe selectionnée.<br/>";
+		}
+	    }
+
+	    if ($this->getUtilisateurId() == null) {
+		$message .= "Il faut preciser l'utilisateur qui rentre la saisie.<br/>";
+	    }
+
+	    if ($this->getDebutAbs() != null && $this->getFinAbs() != null) {
+		if ($this->getDebutAbs() >= $this->getFinAbs()) {
+		    $message .= "La date de debut d'absence doit etre strictement anterieure à la date de fin.<br/>";
+		}
+	    }
+
+	    if ($this->getDebutAbs() == null) {
+		$message .= "La date de debut d'absence ne doit pas etre nulle.<br/>";
+	    }
+
+	    if (($this->getIdEdtCreneau() == null && $this->getIdEdtCreneau() == -1) && $this->getFinAbs() == null) {
+		    $message .= "Il faut preciser au moins le creneau ou alors la date de fin d'absence.<br/>";
+	    }
+
+	    return $message;
+	}
+
+	/**
+	 *
+	 * Renvoi true ou false en fonction de la coherence de la saisie
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function isValid() {
+	    if ($this->getValidationFailures() == '') {
+		return true;
+	    } else {
+		return false;
+	    }
+
+	}
+
+	public function preSave(PropelPDO $con = null) {
+	    return $this->isValid();
+	}
+
 } // AbsenceEleveSaisie
