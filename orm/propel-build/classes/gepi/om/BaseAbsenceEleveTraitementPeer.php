@@ -25,7 +25,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	const TM_CLASS = 'AbsenceEleveTraitementTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 10;
+	const NUM_COLUMNS = 9;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -44,9 +44,6 @@ abstract class BaseAbsenceEleveTraitementPeer {
 
 	/** the column name for the A_JUSTIFICATION_ID field */
 	const A_JUSTIFICATION_ID = 'a_traitements.A_JUSTIFICATION_ID';
-
-	/** the column name for the TEXTE_JUSTIFICATION field */
-	const TEXTE_JUSTIFICATION = 'a_traitements.TEXTE_JUSTIFICATION';
 
 	/** the column name for the A_ACTION_ID field */
 	const A_ACTION_ID = 'a_traitements.A_ACTION_ID';
@@ -76,12 +73,12 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'ATypeId', 'AMotifId', 'AJustificationId', 'TexteJustification', 'AActionId', 'Commentaire', 'CreatedAt', 'UpdatedAt', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'aTypeId', 'aMotifId', 'aJustificationId', 'texteJustification', 'aActionId', 'commentaire', 'createdAt', 'updatedAt', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::A_TYPE_ID, self::A_MOTIF_ID, self::A_JUSTIFICATION_ID, self::TEXTE_JUSTIFICATION, self::A_ACTION_ID, self::COMMENTAIRE, self::CREATED_AT, self::UPDATED_AT, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'UTILISATEUR_ID', 'A_TYPE_ID', 'A_MOTIF_ID', 'A_JUSTIFICATION_ID', 'TEXTE_JUSTIFICATION', 'A_ACTION_ID', 'COMMENTAIRE', 'CREATED_AT', 'UPDATED_AT', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'a_type_id', 'a_motif_id', 'a_justification_id', 'texte_justification', 'a_action_id', 'commentaire', 'created_at', 'updated_at', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'ATypeId', 'AMotifId', 'AJustificationId', 'AActionId', 'Commentaire', 'CreatedAt', 'UpdatedAt', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'aTypeId', 'aMotifId', 'aJustificationId', 'aActionId', 'commentaire', 'createdAt', 'updatedAt', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::A_TYPE_ID, self::A_MOTIF_ID, self::A_JUSTIFICATION_ID, self::A_ACTION_ID, self::COMMENTAIRE, self::CREATED_AT, self::UPDATED_AT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'UTILISATEUR_ID', 'A_TYPE_ID', 'A_MOTIF_ID', 'A_JUSTIFICATION_ID', 'A_ACTION_ID', 'COMMENTAIRE', 'CREATED_AT', 'UPDATED_AT', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'a_type_id', 'a_motif_id', 'a_justification_id', 'a_action_id', 'commentaire', 'created_at', 'updated_at', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, )
 	);
 
 	/**
@@ -91,12 +88,12 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'ATypeId' => 2, 'AMotifId' => 3, 'AJustificationId' => 4, 'TexteJustification' => 5, 'AActionId' => 6, 'Commentaire' => 7, 'CreatedAt' => 8, 'UpdatedAt' => 9, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'aTypeId' => 2, 'aMotifId' => 3, 'aJustificationId' => 4, 'texteJustification' => 5, 'aActionId' => 6, 'commentaire' => 7, 'createdAt' => 8, 'updatedAt' => 9, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::A_TYPE_ID => 2, self::A_MOTIF_ID => 3, self::A_JUSTIFICATION_ID => 4, self::TEXTE_JUSTIFICATION => 5, self::A_ACTION_ID => 6, self::COMMENTAIRE => 7, self::CREATED_AT => 8, self::UPDATED_AT => 9, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'UTILISATEUR_ID' => 1, 'A_TYPE_ID' => 2, 'A_MOTIF_ID' => 3, 'A_JUSTIFICATION_ID' => 4, 'TEXTE_JUSTIFICATION' => 5, 'A_ACTION_ID' => 6, 'COMMENTAIRE' => 7, 'CREATED_AT' => 8, 'UPDATED_AT' => 9, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'a_type_id' => 2, 'a_motif_id' => 3, 'a_justification_id' => 4, 'texte_justification' => 5, 'a_action_id' => 6, 'commentaire' => 7, 'created_at' => 8, 'updated_at' => 9, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'ATypeId' => 2, 'AMotifId' => 3, 'AJustificationId' => 4, 'AActionId' => 5, 'Commentaire' => 6, 'CreatedAt' => 7, 'UpdatedAt' => 8, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'aTypeId' => 2, 'aMotifId' => 3, 'aJustificationId' => 4, 'aActionId' => 5, 'commentaire' => 6, 'createdAt' => 7, 'updatedAt' => 8, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::A_TYPE_ID => 2, self::A_MOTIF_ID => 3, self::A_JUSTIFICATION_ID => 4, self::A_ACTION_ID => 5, self::COMMENTAIRE => 6, self::CREATED_AT => 7, self::UPDATED_AT => 8, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'UTILISATEUR_ID' => 1, 'A_TYPE_ID' => 2, 'A_MOTIF_ID' => 3, 'A_JUSTIFICATION_ID' => 4, 'A_ACTION_ID' => 5, 'COMMENTAIRE' => 6, 'CREATED_AT' => 7, 'UPDATED_AT' => 8, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'a_type_id' => 2, 'a_motif_id' => 3, 'a_justification_id' => 4, 'a_action_id' => 5, 'commentaire' => 6, 'created_at' => 7, 'updated_at' => 8, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, )
 	);
 
 	/**
@@ -173,7 +170,6 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_TYPE_ID);
 			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_MOTIF_ID);
 			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID);
-			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::TEXTE_JUSTIFICATION);
 			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::A_ACTION_ID);
 			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::COMMENTAIRE);
 			$criteria->addSelectColumn(AbsenceEleveTraitementPeer::CREATED_AT);
@@ -184,7 +180,6 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$criteria->addSelectColumn($alias . '.A_TYPE_ID');
 			$criteria->addSelectColumn($alias . '.A_MOTIF_ID');
 			$criteria->addSelectColumn($alias . '.A_JUSTIFICATION_ID');
-			$criteria->addSelectColumn($alias . '.TEXTE_JUSTIFICATION');
 			$criteria->addSelectColumn($alias . '.A_ACTION_ID');
 			$criteria->addSelectColumn($alias . '.COMMENTAIRE');
 			$criteria->addSelectColumn($alias . '.CREATED_AT');

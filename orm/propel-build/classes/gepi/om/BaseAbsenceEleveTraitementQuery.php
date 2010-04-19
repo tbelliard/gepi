@@ -11,7 +11,6 @@
  * @method     AbsenceEleveTraitementQuery orderByATypeId($order = Criteria::ASC) Order by the a_type_id column
  * @method     AbsenceEleveTraitementQuery orderByAMotifId($order = Criteria::ASC) Order by the a_motif_id column
  * @method     AbsenceEleveTraitementQuery orderByAJustificationId($order = Criteria::ASC) Order by the a_justification_id column
- * @method     AbsenceEleveTraitementQuery orderByTexteJustification($order = Criteria::ASC) Order by the texte_justification column
  * @method     AbsenceEleveTraitementQuery orderByAActionId($order = Criteria::ASC) Order by the a_action_id column
  * @method     AbsenceEleveTraitementQuery orderByCommentaire($order = Criteria::ASC) Order by the commentaire column
  * @method     AbsenceEleveTraitementQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
@@ -22,7 +21,6 @@
  * @method     AbsenceEleveTraitementQuery groupByATypeId() Group by the a_type_id column
  * @method     AbsenceEleveTraitementQuery groupByAMotifId() Group by the a_motif_id column
  * @method     AbsenceEleveTraitementQuery groupByAJustificationId() Group by the a_justification_id column
- * @method     AbsenceEleveTraitementQuery groupByTexteJustification() Group by the texte_justification column
  * @method     AbsenceEleveTraitementQuery groupByAActionId() Group by the a_action_id column
  * @method     AbsenceEleveTraitementQuery groupByCommentaire() Group by the commentaire column
  * @method     AbsenceEleveTraitementQuery groupByCreatedAt() Group by the created_at column
@@ -66,7 +64,6 @@
  * @method     AbsenceEleveTraitement findOneByATypeId(int $a_type_id) Return the first AbsenceEleveTraitement filtered by the a_type_id column
  * @method     AbsenceEleveTraitement findOneByAMotifId(int $a_motif_id) Return the first AbsenceEleveTraitement filtered by the a_motif_id column
  * @method     AbsenceEleveTraitement findOneByAJustificationId(int $a_justification_id) Return the first AbsenceEleveTraitement filtered by the a_justification_id column
- * @method     AbsenceEleveTraitement findOneByTexteJustification(string $texte_justification) Return the first AbsenceEleveTraitement filtered by the texte_justification column
  * @method     AbsenceEleveTraitement findOneByAActionId(int $a_action_id) Return the first AbsenceEleveTraitement filtered by the a_action_id column
  * @method     AbsenceEleveTraitement findOneByCommentaire(string $commentaire) Return the first AbsenceEleveTraitement filtered by the commentaire column
  * @method     AbsenceEleveTraitement findOneByCreatedAt(string $created_at) Return the first AbsenceEleveTraitement filtered by the created_at column
@@ -77,7 +74,6 @@
  * @method     array findByATypeId(int $a_type_id) Return AbsenceEleveTraitement objects filtered by the a_type_id column
  * @method     array findByAMotifId(int $a_motif_id) Return AbsenceEleveTraitement objects filtered by the a_motif_id column
  * @method     array findByAJustificationId(int $a_justification_id) Return AbsenceEleveTraitement objects filtered by the a_justification_id column
- * @method     array findByTexteJustification(string $texte_justification) Return AbsenceEleveTraitement objects filtered by the texte_justification column
  * @method     array findByAActionId(int $a_action_id) Return AbsenceEleveTraitement objects filtered by the a_action_id column
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveTraitement objects filtered by the commentaire column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveTraitement objects filtered by the created_at column
@@ -308,26 +304,6 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 			}
 		} else {
 			return $this->addUsingAlias(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, $aJustificationId, $comparison);
-		}
-	}
-
-	/**
-	 * Filter the query on the texte_justification column
-	 * 
-	 * @param     string $texteJustification The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
-	 */
-	public function filterByTexteJustification($texteJustification = null, $comparison = Criteria::EQUAL)
-	{
-		if (is_array($texteJustification)) {
-			return $this->addUsingAlias(AbsenceEleveTraitementPeer::TEXTE_JUSTIFICATION, $texteJustification, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $texteJustification)) {
-			return $this->addUsingAlias(AbsenceEleveTraitementPeer::TEXTE_JUSTIFICATION, str_replace('*', '%', $texteJustification), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveTraitementPeer::TEXTE_JUSTIFICATION, $texteJustification, $comparison);
 		}
 	}
 

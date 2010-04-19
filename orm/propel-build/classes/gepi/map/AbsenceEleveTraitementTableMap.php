@@ -41,7 +41,6 @@ class AbsenceEleveTraitementTableMap extends TableMap {
 		$this->addForeignKey('A_TYPE_ID', 'ATypeId', 'INTEGER', 'a_types', 'ID', false, 4, -1);
 		$this->addForeignKey('A_MOTIF_ID', 'AMotifId', 'INTEGER', 'a_motifs', 'ID', false, 4, -1);
 		$this->addForeignKey('A_JUSTIFICATION_ID', 'AJustificationId', 'INTEGER', 'a_justifications', 'ID', false, 4, -1);
-		$this->addColumn('TEXTE_JUSTIFICATION', 'TexteJustification', 'VARCHAR', false, 250, null);
 		$this->addForeignKey('A_ACTION_ID', 'AActionId', 'INTEGER', 'a_actions', 'ID', false, 4, -1);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);

@@ -903,7 +903,6 @@ CREATE TABLE a_traitements
 	a_type_id INTEGER(4) default -1 COMMENT 'cle etrangere du type d\'absence',
 	a_motif_id INTEGER(4) default -1 COMMENT 'cle etrangere du motif d\'absence',
 	a_justification_id INTEGER(4) default -1 COMMENT 'cle etrangere de la justification de l\'absence',
-	texte_justification VARCHAR(250) COMMENT 'Texte additionnel à ce traitement',
 	a_action_id INTEGER(4) default -1 COMMENT 'cle etrangere de l\'action sur ce traitement',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	created_at DATETIME,
