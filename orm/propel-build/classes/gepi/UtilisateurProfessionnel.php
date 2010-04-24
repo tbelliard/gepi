@@ -253,7 +253,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	/**
 	 *
-	 * Retourne la collection des absences saisies pour ce creneau
+	 * Retourne la collection des absences saisies pour ce creneau. Si null, on prend le creneau actuel
 	 *
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
 	 *						be treated as NULL for temporal objects.
@@ -301,7 +301,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	    $criteria->add(AbsenceEleveSaisiePeer::DEBUT_ABS, $dt, Criteria::GREATER_EQUAL);
 	    $dt_end = clone $dt;
 	    $dt_end->setTime(23,59,59);
-	    $criteria->add(AbsenceEleveSaisiePeer::DEBUT_ABS, $dt_end, Criteria::LESS_EQUAL);
+	    $criteria->add(AbsenceEleveSaisiePeer::FIN_ABS, $dt_end, Criteria::LESS_EQUAL);
 	    $col = $this->getAbsenceEleveSaisies($criteria);
 	    return $col;
 	}
