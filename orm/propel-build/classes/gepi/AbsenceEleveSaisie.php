@@ -27,10 +27,12 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    //on exclus mutuellement un id_classe, et id_groupe et un id_aid
 	    $id_relation = 0;
 	    if ($this->getIdAid() != null && $this->getIdAid() != -1) {
+		
 		$id_relation = $id_relation + 1;
 		if ($this->getAidDetails() == null) {
 		    $message .= "L'id de l'aid est incorrect.<br/>";
 		}
+
 	    }
 	    if ($this->getIdClasse() != null && $this->getIdClasse() != -1) {
 		$id_relation = $id_relation + 1;
@@ -83,7 +85,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$criteria = new Criteria();
 		$criteria->add(JAidElevesPeer::LOGIN, $this->getEleve()->getLogin());
 		if ($this->getAidDetails()->countJAidElevess($criteria) == 0) {
-		    $message .= "L'eleve n'appartient pas à l'aid selectionné.<br/>";
+		    $message .= "L'eleve n'appartient pas à l'aid selectionné : ".$this->getAidDetails()->getNom()."<br/>";
 		}
 	    }
 

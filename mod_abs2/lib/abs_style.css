@@ -87,7 +87,7 @@ padding: 10px 5px 10px 5px; background-color: silver; color: white; font-weight:
 text-align: center; border: 1px solid pink;
 }
 #table_liste_absents th {
-text-align: center; color: white; background-color: silver; font-size:88%;
+text-align: center; color: white; background-color: silver; font-size:68%;
 }
 #table_liste_absents tr td {
 border: 1px solid rgb(200, 200, 200); text-align: center; margin: 2px 2px 2px 2px; border-spacing : 0px; font-size:88%;

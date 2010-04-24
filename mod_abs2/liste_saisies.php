@@ -61,7 +61,9 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
 
 //récupération des paramètres de la requète
 $order = isset($_POST["order"]) ? $_POST["order"] :(isset($_GET["order"]) ? $_GET["order"] :NULL);
-
+if ($order == null) {
+    $order = 'des_id';
+}
 $filter_id = isset($_POST["filter_id"]) ? $_POST["filter_id"] :(isset($_GET["filter_id"]) ? $_GET["filter_id"] :NULL);
 $filter_utilisateur = isset($_POST["filter_utilisateur"]) ? $_POST["filter_utilisateur"] :(isset($_GET["filter_utilisateur"]) ? $_GET["filter_utilisateur"] :NULL);
 $filter_eleve = isset($_POST["filter_eleve"]) ? $_POST["filter_eleve"] :(isset($_GET["filter_eleve"]) ? $_GET["filter_eleve"] :NULL);
@@ -114,7 +116,7 @@ if ($page_deplacement == "+") {
 
 $item_per_page = isset($_POST["item_per_page"]) ? $_POST["item_per_page"] :(isset($_GET["item_per_page"]) ? $_GET["item_per_page"] :NULL);
 if (!is_numeric($item_per_page)) {
-    $item_per_page = 30;
+    $item_per_page = 14;
 }
 if ($item_per_page < 1) {
     $item_per_page = 1;
@@ -140,7 +142,7 @@ echo "<div id='aidmenu' style='display: none;'>test</div>\n";
 $onglet_abs='liste_saisies';
 include('menu_abs2.inc.php');
 //===========================
-echo "<div class='css-panes' id='containDiv' style='overflow : auto;'>\n";
+echo "<div class='css-panes' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
 
 
 $query = AbsenceEleveSaisieQuery::create();
@@ -557,6 +559,55 @@ foreach ($utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle() as $ed
 echo "</select>";
 echo '</TH>';
 
+//en tete filtre date traitement
+echo '<TH>';
+echo '<nobr>';
+echo 'Date traitement';
+echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "asc_date_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="asc_date_traitement"/>';
+echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "des_date_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="des_date_traitement"/>';
+echo '</nobr>';
+echo '<br>';
+echo '<nobr>';
+echo 'Entre : <input size="13" id="filter_date_traitement_absence_debut_plage" name="filter_date_traitement_absence_debut_plage" value="';
+if ($filter_date_traitement_absence_debut_plage != null) {echo $filter_date_traitement_absence_debut_plage;}
+echo '" />&nbsp;';
+echo '<img id="trigger_filter_date_traitement_absence_debut_plage" src="../images/icons/calendrier.gif"/>';
+echo '</nobr>';
+echo '
+<script type="text/javascript">
+    Calendar.setup({
+	inputField     :    "filter_date_traitement_absence_debut_plage",     // id of the input field
+	ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
+	button         :    "trigger_filter_date_traitement_absence_debut_plage",  // trigger for the calendar (button ID)
+	align          :    "Tl",           // alignment (defaults to "Bl")
+	singleClick    :    true,
+	showsTime	:   true
+    });
+</script>';
+echo '<br>';
+echo '<nobr>';
+echo 'Et : <input size="13" id="filter_date_traitement_absence_fin_plage" name="filter_date_traitement_absence_fin_plage" value="';
+if ($filter_date_traitement_absence_fin_plage != null) {echo $filter_date_traitement_absence_fin_plage;}
+echo '" />&nbsp;';
+echo '<img id="trigger_filter_date_traitement_absence_fin_plage" src="../images/icons/calendrier.gif"/>';
+echo '</nobr>';
+echo '
+<script type="text/javascript">
+    Calendar.setup({
+	inputField     :    "filter_date_traitement_absence_fin_plage",     // id of the input field
+	ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
+	button         :    "trigger_filter_date_traitement_absence_fin_plage",  // trigger for the calendar (button ID)
+	align          :    "Tl",           // alignment (defaults to "Bl")
+	singleClick    :    true,
+	showsTime	:   true
+    });
+</script>';
+echo '</TH>';
+
 //en tete filtre date creation
 echo '<TH>';
 echo '<nobr>';
@@ -622,55 +673,6 @@ echo '<INPUT TYPE="CHECKBOX" value="y" NAME="filter_date_modification"';
 if ($filter_date_modification != null && $filter_date_modification == 'y') {echo "checked";}
 echo '> modifié';
 echo '</nobr>';
-echo '</TH>';
-
-//en tete filtre date traitement
-echo '<TH>';
-echo '<nobr>';
-echo 'Date traitement';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_date_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_date_traitement"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_date_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_date_traitement"/>';
-echo '</nobr>';
-echo '<br>';
-echo '<nobr>';
-echo 'Entre : <input size="13" id="filter_date_traitement_absence_debut_plage" name="filter_date_traitement_absence_debut_plage" value="';
-if ($filter_date_traitement_absence_debut_plage != null) {echo $filter_date_traitement_absence_debut_plage;}
-echo '" />&nbsp;';
-echo '<img id="trigger_filter_date_traitement_absence_debut_plage" src="../images/icons/calendrier.gif"/>';
-echo '</nobr>';
-echo '
-<script type="text/javascript">
-    Calendar.setup({
-	inputField     :    "filter_date_traitement_absence_debut_plage",     // id of the input field
-	ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
-	button         :    "trigger_filter_date_traitement_absence_debut_plage",  // trigger for the calendar (button ID)
-	align          :    "Tl",           // alignment (defaults to "Bl")
-	singleClick    :    true,
-	showsTime	:   true
-    });
-</script>';
-echo '<br>';
-echo '<nobr>';
-echo 'Et : <input size="13" id="filter_date_traitement_absence_fin_plage" name="filter_date_traitement_absence_fin_plage" value="';
-if ($filter_date_traitement_absence_fin_plage != null) {echo $filter_date_traitement_absence_fin_plage;}
-echo '" />&nbsp;';
-echo '<img id="trigger_filter_date_traitement_absence_fin_plage" src="../images/icons/calendrier.gif"/>';
-echo '</nobr>';
-echo '
-<script type="text/javascript">
-    Calendar.setup({
-	inputField     :    "filter_date_traitement_absence_fin_plage",     // id of the input field
-	ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
-	button         :    "trigger_filter_date_traitement_absence_fin_plage",  // trigger for the calendar (button ID)
-	align          :    "Tl",           // alignment (defaults to "Bl")
-	singleClick    :    true,
-	showsTime	:   true
-    });
-</script>';
 echo '</TH>';
 
 //en tete commentaire
@@ -798,6 +800,19 @@ foreach ($results as $saisie) {
     echo "</a>";
     echo '</TD>';
 
+    echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+	echo "<table><tr><td>";
+	echo $traitement->getDescriptionCourte();
+	echo "</td></tr></table>";
+    }
+    if ($saisie->getAbsenceEleveTraitements()->isEmpty()) {
+	echo "&nbsp;";
+    }
+    echo "</a>";
+    echo '</TD>';
+
     echo '<TD><nobr>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     echo (strftime("%a %d %b %Y %H:%M", $saisie->getCreatedAt('U')));
@@ -813,19 +828,6 @@ foreach ($results as $saisie) {
     }
     echo "</a>";
     echo '</nobr></TD>';
-
-    echo '<TD>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
-    foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-	echo "<table><tr><td>";
-	echo $traitement->getDescriptionCourte();
-	echo "</td></tr></table>";
-    }
-    if ($saisie->getAbsenceEleveTraitements()->isEmpty()) {
-	echo "&nbsp;";
-    }
-    echo "</a>";
-    echo '</TD>';
 
     echo '<TD>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";

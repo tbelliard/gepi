@@ -68,8 +68,9 @@ $id_cours = isset($_POST["id_cours"]) ? $_POST["id_cours"] :(isset($_GET["id_cou
 $d_date_absence_eleve = isset($_POST["d_date_absence_eleve"]) ? $_POST["d_date_absence_eleve"] :NULL;
 $total_eleves = isset($_POST["total_eleves"]) ? $_POST["total_eleves"] :(isset($_GET["total_eleves"]) ? $_GET["total_eleves"] :0);
 
+$message_enregistrement = "";
+
 //initialisation des variable
-$message_enregistrement = '';
 //if ($d_date_absence_eleve == null) {
 //    $message_enregistrement = 'Erreur, la date ne peut etre nulle.</br>';
 //    include("saisie_absences.php");
@@ -113,6 +114,10 @@ if ($id_cours != null) {
 	$id_cours = null;
     }
 }
+
+if ($id_groupe == '') $id_groupe = null;
+if ($id_classe == '') $id_classe = null;
+if ($id_aid == '') $id_aid = null;
 
 for($i=0; $i<$total_eleves; $i++) {
 
