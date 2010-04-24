@@ -7,7 +7,7 @@
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseEdtTypeSemainePeer {
+abstract class BaseEdtSemainePeer {
 
 	/** the default database name for this class */
 	const DATABASE_NAME = 'gepi';
@@ -16,16 +16,16 @@ abstract class BaseEdtTypeSemainePeer {
 	const TABLE_NAME = 'edt_semaines';
 
 	/** the related Propel class for this table */
-	const OM_CLASS = 'EdtTypeSemaine';
+	const OM_CLASS = 'EdtSemaine';
 
 	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'gepi.EdtTypeSemaine';
+	const CLASS_DEFAULT = 'gepi.EdtSemaine';
 
 	/** the related TableMap class for this table */
-	const TM_CLASS = 'EdtTypeSemaineTableMap';
+	const TM_CLASS = 'EdtSemaineTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 3;
+	const NUM_COLUMNS = 4;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -39,11 +39,14 @@ abstract class BaseEdtTypeSemainePeer {
 	/** the column name for the TYPE_EDT_SEMAINE field */
 	const TYPE_EDT_SEMAINE = 'edt_semaines.TYPE_EDT_SEMAINE';
 
+	/** the column name for the NUM_SEMAINES_ETAB field */
+	const NUM_SEMAINES_ETAB = 'edt_semaines.NUM_SEMAINES_ETAB';
+
 	/**
-	 * An identiy map to hold any loaded instances of EdtTypeSemaine objects.
+	 * An identiy map to hold any loaded instances of EdtSemaine objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
 	 * queries.
-	 * @var        array EdtTypeSemaine[]
+	 * @var        array EdtSemaine[]
 	 */
 	public static $instances = array();
 
@@ -55,12 +58,12 @@ abstract class BaseEdtTypeSemainePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('IdEdtSemaine', 'NumEdtSemaine', 'TypeEdtSemaine', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idEdtSemaine', 'numEdtSemaine', 'typeEdtSemaine', ),
-		BasePeer::TYPE_COLNAME => array (self::ID_EDT_SEMAINE, self::NUM_EDT_SEMAINE, self::TYPE_EDT_SEMAINE, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID_EDT_SEMAINE', 'NUM_EDT_SEMAINE', 'TYPE_EDT_SEMAINE', ),
-		BasePeer::TYPE_FIELDNAME => array ('id_edt_semaine', 'num_edt_semaine', 'type_edt_semaine', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, )
+		BasePeer::TYPE_PHPNAME => array ('IdEdtSemaine', 'NumEdtSemaine', 'TypeEdtSemaine', 'NumSemainesEtab', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idEdtSemaine', 'numEdtSemaine', 'typeEdtSemaine', 'numSemainesEtab', ),
+		BasePeer::TYPE_COLNAME => array (self::ID_EDT_SEMAINE, self::NUM_EDT_SEMAINE, self::TYPE_EDT_SEMAINE, self::NUM_SEMAINES_ETAB, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_EDT_SEMAINE', 'NUM_EDT_SEMAINE', 'TYPE_EDT_SEMAINE', 'NUM_SEMAINES_ETAB', ),
+		BasePeer::TYPE_FIELDNAME => array ('id_edt_semaine', 'num_edt_semaine', 'type_edt_semaine', 'num_semaines_etab', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
 	/**
@@ -70,12 +73,12 @@ abstract class BaseEdtTypeSemainePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('IdEdtSemaine' => 0, 'NumEdtSemaine' => 1, 'TypeEdtSemaine' => 2, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idEdtSemaine' => 0, 'numEdtSemaine' => 1, 'typeEdtSemaine' => 2, ),
-		BasePeer::TYPE_COLNAME => array (self::ID_EDT_SEMAINE => 0, self::NUM_EDT_SEMAINE => 1, self::TYPE_EDT_SEMAINE => 2, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID_EDT_SEMAINE' => 0, 'NUM_EDT_SEMAINE' => 1, 'TYPE_EDT_SEMAINE' => 2, ),
-		BasePeer::TYPE_FIELDNAME => array ('id_edt_semaine' => 0, 'num_edt_semaine' => 1, 'type_edt_semaine' => 2, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, )
+		BasePeer::TYPE_PHPNAME => array ('IdEdtSemaine' => 0, 'NumEdtSemaine' => 1, 'TypeEdtSemaine' => 2, 'NumSemainesEtab' => 3, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idEdtSemaine' => 0, 'numEdtSemaine' => 1, 'typeEdtSemaine' => 2, 'numSemainesEtab' => 3, ),
+		BasePeer::TYPE_COLNAME => array (self::ID_EDT_SEMAINE => 0, self::NUM_EDT_SEMAINE => 1, self::TYPE_EDT_SEMAINE => 2, self::NUM_SEMAINES_ETAB => 3, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_EDT_SEMAINE' => 0, 'NUM_EDT_SEMAINE' => 1, 'TYPE_EDT_SEMAINE' => 2, 'NUM_SEMAINES_ETAB' => 3, ),
+		BasePeer::TYPE_FIELDNAME => array ('id_edt_semaine' => 0, 'num_edt_semaine' => 1, 'type_edt_semaine' => 2, 'num_semaines_etab' => 3, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
 	/**
@@ -124,12 +127,12 @@ abstract class BaseEdtTypeSemainePeer {
 	 *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
 	 * </code>
 	 * @param      string $alias The alias for the current table.
-	 * @param      string $column The column name for current table. (i.e. EdtTypeSemainePeer::COLUMN_NAME).
+	 * @param      string $column The column name for current table. (i.e. EdtSemainePeer::COLUMN_NAME).
 	 * @return     string
 	 */
 	public static function alias($alias, $column)
 	{
-		return str_replace(EdtTypeSemainePeer::TABLE_NAME.'.', $alias.'.', $column);
+		return str_replace(EdtSemainePeer::TABLE_NAME.'.', $alias.'.', $column);
 	}
 
 	/**
@@ -147,13 +150,15 @@ abstract class BaseEdtTypeSemainePeer {
 	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
 		if (null === $alias) {
-			$criteria->addSelectColumn(EdtTypeSemainePeer::ID_EDT_SEMAINE);
-			$criteria->addSelectColumn(EdtTypeSemainePeer::NUM_EDT_SEMAINE);
-			$criteria->addSelectColumn(EdtTypeSemainePeer::TYPE_EDT_SEMAINE);
+			$criteria->addSelectColumn(EdtSemainePeer::ID_EDT_SEMAINE);
+			$criteria->addSelectColumn(EdtSemainePeer::NUM_EDT_SEMAINE);
+			$criteria->addSelectColumn(EdtSemainePeer::TYPE_EDT_SEMAINE);
+			$criteria->addSelectColumn(EdtSemainePeer::NUM_SEMAINES_ETAB);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID_EDT_SEMAINE');
 			$criteria->addSelectColumn($alias . '.NUM_EDT_SEMAINE');
 			$criteria->addSelectColumn($alias . '.TYPE_EDT_SEMAINE');
+			$criteria->addSelectColumn($alias . '.NUM_SEMAINES_ETAB');
 		}
 	}
 
@@ -173,21 +178,21 @@ abstract class BaseEdtTypeSemainePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(EdtTypeSemainePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(EdtSemainePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			EdtTypeSemainePeer::addSelectColumns($criteria);
+			EdtSemainePeer::addSelectColumns($criteria);
 		}
 
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
 
 		if ($con === null) {
-			$con = Propel::getConnection(EdtTypeSemainePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(EdtSemainePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 		// BasePeer returns a PDOStatement
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -205,7 +210,7 @@ abstract class BaseEdtTypeSemainePeer {
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
-	 * @return     EdtTypeSemaine
+	 * @return     EdtSemaine
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -213,7 +218,7 @@ abstract class BaseEdtTypeSemainePeer {
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
-		$objects = EdtTypeSemainePeer::doSelect($critcopy, $con);
+		$objects = EdtSemainePeer::doSelect($critcopy, $con);
 		if ($objects) {
 			return $objects[0];
 		}
@@ -230,7 +235,7 @@ abstract class BaseEdtTypeSemainePeer {
 	 */
 	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return EdtTypeSemainePeer::populateObjects(EdtTypeSemainePeer::doSelectStmt($criteria, $con));
+		return EdtSemainePeer::populateObjects(EdtSemainePeer::doSelectStmt($criteria, $con));
 	}
 	/**
 	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -248,12 +253,12 @@ abstract class BaseEdtTypeSemainePeer {
 	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(EdtTypeSemainePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(EdtSemainePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
-			EdtTypeSemainePeer::addSelectColumns($criteria);
+			EdtSemainePeer::addSelectColumns($criteria);
 		}
 
 		// Set the correct dbName
@@ -271,10 +276,10 @@ abstract class BaseEdtTypeSemainePeer {
 	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
 	 * and retrieveByPK*() calls.
 	 *
-	 * @param      EdtTypeSemaine $value A EdtTypeSemaine object.
+	 * @param      EdtSemaine $value A EdtSemaine object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(EdtTypeSemaine $obj, $key = null)
+	public static function addInstanceToPool(EdtSemaine $obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -292,18 +297,18 @@ abstract class BaseEdtTypeSemainePeer {
 	 * methods in your stub classes -- you may need to explicitly remove objects
 	 * from the cache in order to prevent returning objects that no longer exist.
 	 *
-	 * @param      mixed $value A EdtTypeSemaine object or a primary key value.
+	 * @param      mixed $value A EdtSemaine object or a primary key value.
 	 */
 	public static function removeInstanceFromPool($value)
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
-			if (is_object($value) && $value instanceof EdtTypeSemaine) {
+			if (is_object($value) && $value instanceof EdtSemaine) {
 				$key = (string) $value->getIdEdtSemaine();
 			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
 				$key = (string) $value;
 			} else {
-				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or EdtTypeSemaine object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or EdtSemaine object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
 			}
 
@@ -318,7 +323,7 @@ abstract class BaseEdtTypeSemainePeer {
 	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
 	 *
 	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-	 * @return     EdtTypeSemaine Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @return     EdtSemaine Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
 	 * @see        getPrimaryKeyHash()
 	 */
 	public static function getInstanceFromPool($key)
@@ -394,11 +399,11 @@ abstract class BaseEdtTypeSemainePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = EdtTypeSemainePeer::getOMClass(false);
+		$cls = EdtSemainePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key = EdtTypeSemainePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj = EdtTypeSemainePeer::getInstanceFromPool($key))) {
+			$key = EdtSemainePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = EdtSemainePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://propel.phpdb.org/trac/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
@@ -407,7 +412,7 @@ abstract class BaseEdtTypeSemainePeer {
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
-				EdtTypeSemainePeer::addInstanceToPool($obj, $key);
+				EdtSemainePeer::addInstanceToPool($obj, $key);
 			} // if key exists
 		}
 		$stmt->closeCursor();
@@ -420,21 +425,21 @@ abstract class BaseEdtTypeSemainePeer {
 	 * @param      int $startcol The 0-based offset for reading from the resultset row.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
-	 * @return     array (EdtTypeSemaine object, last column rank)
+	 * @return     array (EdtSemaine object, last column rank)
 	 */
 	public static function populateObject($row, $startcol = 0)
 	{
-		$key = EdtTypeSemainePeer::getPrimaryKeyHashFromRow($row, $startcol);
-		if (null !== ($obj = EdtTypeSemainePeer::getInstanceFromPool($key))) {
+		$key = EdtSemainePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = EdtSemainePeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://propel.phpdb.org/trac/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + EdtTypeSemainePeer::NUM_COLUMNS;
+			$col = $startcol + EdtSemainePeer::NUM_COLUMNS;
 		} else {
-			$cls = EdtTypeSemainePeer::OM_CLASS;
+			$cls = EdtSemainePeer::OM_CLASS;
 			$obj = new $cls();
 			$col = $obj->hydrate($row, $startcol);
-			EdtTypeSemainePeer::addInstanceToPool($obj, $key);
+			EdtSemainePeer::addInstanceToPool($obj, $key);
 		}
 		return array($obj, $col);
 	}
@@ -455,10 +460,10 @@ abstract class BaseEdtTypeSemainePeer {
 	 */
 	public static function buildTableMap()
 	{
-	  $dbMap = Propel::getDatabaseMap(BaseEdtTypeSemainePeer::DATABASE_NAME);
-	  if (!$dbMap->hasTable(BaseEdtTypeSemainePeer::TABLE_NAME))
+	  $dbMap = Propel::getDatabaseMap(BaseEdtSemainePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseEdtSemainePeer::TABLE_NAME))
 	  {
-	    $dbMap->addTableObject(new EdtTypeSemaineTableMap());
+	    $dbMap->addTableObject(new EdtSemaineTableMap());
 	  }
 	}
 
@@ -475,13 +480,13 @@ abstract class BaseEdtTypeSemainePeer {
 	 */
 	public static function getOMClass($withPrefix = true)
 	{
-		return $withPrefix ? EdtTypeSemainePeer::CLASS_DEFAULT : EdtTypeSemainePeer::OM_CLASS;
+		return $withPrefix ? EdtSemainePeer::CLASS_DEFAULT : EdtSemainePeer::OM_CLASS;
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a EdtTypeSemaine or Criteria object.
+	 * Method perform an INSERT on the database, given a EdtSemaine or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or EdtTypeSemaine object containing data that is used to create the INSERT statement.
+	 * @param      mixed $values Criteria or EdtSemaine object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -490,13 +495,13 @@ abstract class BaseEdtTypeSemainePeer {
 	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(EdtTypeSemainePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(EdtSemainePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 		} else {
-			$criteria = $values->buildCriteria(); // build Criteria from EdtTypeSemaine object
+			$criteria = $values->buildCriteria(); // build Criteria from EdtSemaine object
 		}
 
 
@@ -518,9 +523,9 @@ abstract class BaseEdtTypeSemainePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a EdtTypeSemaine or Criteria object.
+	 * Method perform an UPDATE on the database, given a EdtSemaine or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or EdtTypeSemaine object containing data that is used to create the UPDATE statement.
+	 * @param      mixed $values Criteria or EdtSemaine object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -529,7 +534,7 @@ abstract class BaseEdtTypeSemainePeer {
 	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(EdtTypeSemainePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(EdtSemainePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -537,15 +542,15 @@ abstract class BaseEdtTypeSemainePeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(EdtTypeSemainePeer::ID_EDT_SEMAINE);
-			$value = $criteria->remove(EdtTypeSemainePeer::ID_EDT_SEMAINE);
+			$comparison = $criteria->getComparison(EdtSemainePeer::ID_EDT_SEMAINE);
+			$value = $criteria->remove(EdtSemainePeer::ID_EDT_SEMAINE);
 			if ($value) {
-				$selectCriteria->add(EdtTypeSemainePeer::ID_EDT_SEMAINE, $value, $comparison);
+				$selectCriteria->add(EdtSemainePeer::ID_EDT_SEMAINE, $value, $comparison);
 			} else {
-				$selectCriteria->setPrimaryTableName(EdtTypeSemainePeer::TABLE_NAME);
+				$selectCriteria->setPrimaryTableName(EdtSemainePeer::TABLE_NAME);
 			}
 
-		} else { // $values is EdtTypeSemaine object
+		} else { // $values is EdtSemaine object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
 		}
@@ -564,19 +569,19 @@ abstract class BaseEdtTypeSemainePeer {
 	public static function doDeleteAll($con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(EdtTypeSemainePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(EdtSemainePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += BasePeer::doDeleteAll(EdtTypeSemainePeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(EdtSemainePeer::TABLE_NAME, $con);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
-			EdtTypeSemainePeer::clearInstancePool();
-			EdtTypeSemainePeer::clearRelatedInstancePool();
+			EdtSemainePeer::clearInstancePool();
+			EdtSemainePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -586,9 +591,9 @@ abstract class BaseEdtTypeSemainePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a EdtTypeSemaine or Criteria object OR a primary key value.
+	 * Method perform a DELETE on the database, given a EdtSemaine or Criteria object OR a primary key value.
 	 *
-	 * @param      mixed $values Criteria or EdtTypeSemaine object or primary key or array of primary keys
+	 * @param      mixed $values Criteria or EdtSemaine object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
 	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -599,27 +604,27 @@ abstract class BaseEdtTypeSemainePeer {
 	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(EdtTypeSemainePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(EdtSemainePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			// invalidate the cache for all objects of this type, since we have no
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
-			EdtTypeSemainePeer::clearInstancePool();
+			EdtSemainePeer::clearInstancePool();
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof EdtTypeSemaine) { // it's a model object
+		} elseif ($values instanceof EdtSemaine) { // it's a model object
 			// invalidate the cache for this single object
-			EdtTypeSemainePeer::removeInstanceFromPool($values);
+			EdtSemainePeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
 		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
-			$criteria->add(EdtTypeSemainePeer::ID_EDT_SEMAINE, (array) $values, Criteria::IN);
+			$criteria->add(EdtSemainePeer::ID_EDT_SEMAINE, (array) $values, Criteria::IN);
 			// invalidate the cache for this object(s)
 			foreach ((array) $values as $singleval) {
-				EdtTypeSemainePeer::removeInstanceFromPool($singleval);
+				EdtSemainePeer::removeInstanceFromPool($singleval);
 			}
 		}
 
@@ -634,7 +639,7 @@ abstract class BaseEdtTypeSemainePeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-			EdtTypeSemainePeer::clearRelatedInstancePool();
+			EdtSemainePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -644,24 +649,24 @@ abstract class BaseEdtTypeSemainePeer {
 	}
 
 	/**
-	 * Validates all modified columns of given EdtTypeSemaine object.
+	 * Validates all modified columns of given EdtSemaine object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.
 	 *
 	 * NOTICE: This does not apply to primary or foreign keys for now.
 	 *
-	 * @param      EdtTypeSemaine $obj The object to validate.
+	 * @param      EdtSemaine $obj The object to validate.
 	 * @param      mixed $cols Column name or array of column names.
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(EdtTypeSemaine $obj, $cols = null)
+	public static function doValidate(EdtSemaine $obj, $cols = null)
 	{
 		$columns = array();
 
 		if ($cols) {
-			$dbMap = Propel::getDatabaseMap(EdtTypeSemainePeer::DATABASE_NAME);
-			$tableMap = $dbMap->getTable(EdtTypeSemainePeer::TABLE_NAME);
+			$dbMap = Propel::getDatabaseMap(EdtSemainePeer::DATABASE_NAME);
+			$tableMap = $dbMap->getTable(EdtSemainePeer::TABLE_NAME);
 
 			if (! is_array($cols)) {
 				$cols = array($cols);
@@ -677,7 +682,7 @@ abstract class BaseEdtTypeSemainePeer {
 
 		}
 
-		return BasePeer::doValidate(EdtTypeSemainePeer::DATABASE_NAME, EdtTypeSemainePeer::TABLE_NAME, $columns);
+		return BasePeer::doValidate(EdtSemainePeer::DATABASE_NAME, EdtSemainePeer::TABLE_NAME, $columns);
 	}
 
 	/**
@@ -685,23 +690,23 @@ abstract class BaseEdtTypeSemainePeer {
 	 *
 	 * @param      int $pk the primary key.
 	 * @param      PropelPDO $con the connection to use
-	 * @return     EdtTypeSemaine
+	 * @return     EdtSemaine
 	 */
 	public static function retrieveByPK($pk, PropelPDO $con = null)
 	{
 
-		if (null !== ($obj = EdtTypeSemainePeer::getInstanceFromPool((string) $pk))) {
+		if (null !== ($obj = EdtSemainePeer::getInstanceFromPool((string) $pk))) {
 			return $obj;
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(EdtTypeSemainePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(EdtSemainePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria = new Criteria(EdtTypeSemainePeer::DATABASE_NAME);
-		$criteria->add(EdtTypeSemainePeer::ID_EDT_SEMAINE, $pk);
+		$criteria = new Criteria(EdtSemainePeer::DATABASE_NAME);
+		$criteria->add(EdtSemainePeer::ID_EDT_SEMAINE, $pk);
 
-		$v = EdtTypeSemainePeer::doSelect($criteria, $con);
+		$v = EdtSemainePeer::doSelect($criteria, $con);
 
 		return !empty($v) > 0 ? $v[0] : null;
 	}
@@ -717,23 +722,23 @@ abstract class BaseEdtTypeSemainePeer {
 	public static function retrieveByPKs($pks, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(EdtTypeSemainePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(EdtSemainePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		$objs = null;
 		if (empty($pks)) {
 			$objs = array();
 		} else {
-			$criteria = new Criteria(EdtTypeSemainePeer::DATABASE_NAME);
-			$criteria->add(EdtTypeSemainePeer::ID_EDT_SEMAINE, $pks, Criteria::IN);
-			$objs = EdtTypeSemainePeer::doSelect($criteria, $con);
+			$criteria = new Criteria(EdtSemainePeer::DATABASE_NAME);
+			$criteria->add(EdtSemainePeer::ID_EDT_SEMAINE, $pks, Criteria::IN);
+			$objs = EdtSemainePeer::doSelect($criteria, $con);
 		}
 		return $objs;
 	}
 
-} // BaseEdtTypeSemainePeer
+} // BaseEdtSemainePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseEdtTypeSemainePeer::buildTableMap();
+BaseEdtSemainePeer::buildTableMap();
 

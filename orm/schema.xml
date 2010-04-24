@@ -621,10 +621,11 @@
         <column name="ouvert_horaire_etablissement" required="true" type="BOOLEAN" description="1 = etablissement ouvert - 0 = etablissement ferme"/>
     </table>
 
-	<table name="edt_semaines" phpName="EdtTypeSemaine" description="Liste des semaines de l'annee scolaire courante - 53 enregistrements obligatoires (pas 52!), pour lesquel on assign eun type (A ou B par xexemple)">
-		<column name="id_edt_semaine" required="true" primaryKey="true" type="INTEGER" size="11" description="cle primaire"/>
-		<column name="num_edt_semaine" required="true" type="INTEGER" size="11" description="numero de la semaine dans l'annee civile"/>
+	<table name="edt_semaines" phpName="EdtSemaine" description="Liste des semaines de l'annee scolaire courante - 53 enregistrements obligatoires (pas 52!), pour lesquel on assign eun type (A ou B par xexemple)">
+		<column name="id_edt_semaine" required="true" primaryKey="true" type="INTEGER" size="10" description="cle primaire"/>
+		<column name="num_edt_semaine" required="true" type="INTEGER" size="10" description="numero de la semaine dans l'annee civile"/>
 		<column name="type_edt_semaine" required="false" type="VARCHAR" size="10" description="typiquement, champ egal a 'A' ou 'B' pour l'alternance des semaines"/>
+		<column name="num_semaines_etab" required="false" type="INTEGER" size="10" description="numero de la semaine propre a l'etablissement"/>
 	</table>
 
 	<table name="edt_calendrier" phpName="EdtCalendrierPeriode" description="Liste des periodes datees de l'annee courante(pour definir par exemple les trimestres)">

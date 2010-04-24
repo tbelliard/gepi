@@ -2,7 +2,7 @@
 
 
 /**
- * Skeleton subclass for representing a row from the 'edt_semaines' table.
+ * Skeleton subclass for performing query and update operations on the 'edt_semaines' table.
  *
  * Liste des semaines de l'annee scolaire courante - 53 enregistrements obligatoires (pas 52!), pour lesquel on assign eun type (A ou B par xexemple)
  *
@@ -12,6 +12,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtTypeSemaine extends BaseEdtTypeSemaine {
+class EdtSemainePeer extends BaseEdtSemainePeer {
 
-} // EdtTypeSemaine
+} // EdtSemainePeer

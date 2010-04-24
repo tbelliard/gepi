@@ -12,6 +12,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtTypeSemaineQuery extends BaseEdtTypeSemaineQuery {
+class EdtSemaineQuery extends BaseEdtSemaineQuery {
 
-} // EdtTypeSemaineQuery
+} // EdtSemaineQuery

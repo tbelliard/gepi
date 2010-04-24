@@ -13,12 +13,12 @@
  *
  * @package    propel.generator.gepi.map
  */
-class EdtTypeSemaineTableMap extends TableMap {
+class EdtSemaineTableMap extends TableMap {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'gepi.map.EdtTypeSemaineTableMap';
+	const CLASS_NAME = 'gepi.map.EdtSemaineTableMap';
 
 	/**
 	 * Initialize the table attributes, columns and validators
@@ -31,14 +31,15 @@ class EdtTypeSemaineTableMap extends TableMap {
 	{
 	  // attributes
 		$this->setName('edt_semaines');
-		$this->setPhpName('EdtTypeSemaine');
-		$this->setClassname('EdtTypeSemaine');
+		$this->setPhpName('EdtSemaine');
+		$this->setClassname('EdtSemaine');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
 		// columns
-		$this->addPrimaryKey('ID_EDT_SEMAINE', 'IdEdtSemaine', 'INTEGER', true, 11, null);
-		$this->addColumn('NUM_EDT_SEMAINE', 'NumEdtSemaine', 'INTEGER', true, 11, null);
+		$this->addPrimaryKey('ID_EDT_SEMAINE', 'IdEdtSemaine', 'INTEGER', true, 10, null);
+		$this->addColumn('NUM_EDT_SEMAINE', 'NumEdtSemaine', 'INTEGER', true, 10, null);
 		$this->addColumn('TYPE_EDT_SEMAINE', 'TypeEdtSemaine', 'VARCHAR', false, 10, null);
+		$this->addColumn('NUM_SEMAINES_ETAB', 'NumSemainesEtab', 'INTEGER', false, 10, null);
 		// validators
 	} // initialize()
 
@@ -49,4 +50,4 @@ class EdtTypeSemaineTableMap extends TableMap {
 	{
 	} // buildRelations()
 
-} // EdtTypeSemaineTableMap
+} // EdtSemaineTableMap

@@ -90,11 +90,11 @@ class EdtEmplacementCoursHelper {
 		    }
 	    }
 	    $num_semaine = $dt->format('W');
-	    $edtTypeSemaine = EdtTypeSemaineQuery::create()->filterByNumEdtSemaine($num_semaine)->findOne();
-	    if ($edtTypeSemaine == null) {
+	    $edtSemaine = EdtSemaineQuery::create()->filterByNumEdtSemaine($num_semaine)->findOne();
+	    if ($edtSemaine == null) {
 		$type_semaine = '';
 	    } else {
-		$type_semaine = $edtTypeSemaine->getTypeEdtSemaine();
+		$type_semaine = $edtSemaine->getTypeEdtSemaine();
 	    }
 
 	    // On traduit le nom du jour

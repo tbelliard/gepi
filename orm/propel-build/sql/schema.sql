@@ -1317,9 +1317,10 @@ DROP TABLE IF EXISTS edt_semaines;
 
 CREATE TABLE edt_semaines
 (
-	id_edt_semaine INTEGER(11)  NOT NULL COMMENT 'cle primaire',
-	num_edt_semaine INTEGER(11)  NOT NULL COMMENT 'numero de la semaine dans l\'annee civile',
+	id_edt_semaine INTEGER(10)  NOT NULL COMMENT 'cle primaire',
+	num_edt_semaine INTEGER(10)  NOT NULL COMMENT 'numero de la semaine dans l\'annee civile',
 	type_edt_semaine VARCHAR(10) COMMENT 'typiquement, champ egal a \'A\' ou \'B\' pour l\'alternance des semaines',
+	num_semaines_etab INTEGER(10) COMMENT 'numero de la semaine propre a l\'etablissement',
 	PRIMARY KEY (id_edt_semaine)
 )Type=MyISAM COMMENT='Liste des semaines de l\'annee scolaire courante - 53 enregistrements obligatoires (pas 52!), pour lesquel on assign eun type (A ou B par xexemple)';
 
