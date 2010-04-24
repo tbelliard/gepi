@@ -3,17 +3,17 @@
  * This is a logger class that stacks log into a string.
  *
  * To use it, add the following code into your php file
- * include("../propel/logger/STACKLogger.php");
- * $logger = new STACKLogger();
+ * $logger = new StackLogger();
  * Propel::setLogger($logger);
  *
- * Then execute the code with your propel objetcs and display the propel logs with :
+ * Then execute the code with your propel objects and display the propel logs with :
  * echo ($logger->getDisplay());
  *
- * @package    propel.logger
+ * @author     Josselin Jacquard
+ * @package    propel.runtime.logger
  */
 
-class STACKLogger {
+class StackLogger implements BasicLogger {
 
 	private $displayMessage;
 
@@ -49,8 +49,8 @@ class STACKLogger {
 		$this->log($m, Propel::LOG_DEBUG);
 	}
 
-	public function log($m, $priority) {
-		$this->display($m, $this->priorityToColor($priority));
+	public function log($message, $severity = null) {
+		$this->display($message, $this->priorityToColor($severity));
 	}
 
 	private function display($message, $color) {

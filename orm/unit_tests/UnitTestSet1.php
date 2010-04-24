@@ -33,8 +33,8 @@ include('UnitTestEleve.php');
 include('UnitTestGroupe.php');
 include('UnitTestClasse.php');
 include('UnitTestResponsableEleve.php');
-include("../propel/logger/STACKLogger.php");
-$logger = new STACKLogger();
+//include("../propel/logger/STACKLogger.php");
+$logger = new StackLogger();
 Propel::setLogger($logger);
 
 

@@ -194,6 +194,7 @@ class Propel
 		
 		'BasicLogger'         => 'logger/BasicLogger.php',
 		'MojaviLogAdapter'    => 'logger/MojaviLogAdapter.php',
+		'StackLogger'	      => 'logger/StackLogger.php',
 
 		'ColumnMap'           => 'map/ColumnMap.php',
 		'DatabaseMap'         => 'map/DatabaseMap.php',

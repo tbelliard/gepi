@@ -31,8 +31,7 @@ require_once("../../lib/initialisations.inc.php");
 include('UnitTestUtilisateurProfessionnel.php');
 include('UnitTestEleve.php');
 include('UnitTestAbsenceSaisie.php');
-include("../propel/logger/STACKLogger.php");
-$logger = new STACKLogger();
+$logger = new StackLogger();
 Propel::setLogger($logger);
 
 
