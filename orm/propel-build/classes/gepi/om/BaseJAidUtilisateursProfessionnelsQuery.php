@@ -8,11 +8,9 @@
  *
  * @method     JAidUtilisateursProfessionnelsQuery orderByIdAid($order = Criteria::ASC) Order by the id_aid column
  * @method     JAidUtilisateursProfessionnelsQuery orderByIdUtilisateur($order = Criteria::ASC) Order by the id_utilisateur column
- * @method     JAidUtilisateursProfessionnelsQuery orderByIndiceAid($order = Criteria::ASC) Order by the indice_aid column
  *
  * @method     JAidUtilisateursProfessionnelsQuery groupByIdAid() Group by the id_aid column
  * @method     JAidUtilisateursProfessionnelsQuery groupByIdUtilisateur() Group by the id_utilisateur column
- * @method     JAidUtilisateursProfessionnelsQuery groupByIndiceAid() Group by the indice_aid column
  *
  * @method     JAidUtilisateursProfessionnelsQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     JAidUtilisateursProfessionnelsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -26,18 +24,12 @@
  * @method     JAidUtilisateursProfessionnelsQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
  * @method     JAidUtilisateursProfessionnelsQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
- * @method     JAidUtilisateursProfessionnelsQuery leftJoinAidConfiguration($relationAlias = '') Adds a LEFT JOIN clause to the query using the AidConfiguration relation
- * @method     JAidUtilisateursProfessionnelsQuery rightJoinAidConfiguration($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AidConfiguration relation
- * @method     JAidUtilisateursProfessionnelsQuery innerJoinAidConfiguration($relationAlias = '') Adds a INNER JOIN clause to the query using the AidConfiguration relation
- *
  * @method     JAidUtilisateursProfessionnels findOne(PropelPDO $con = null) Return the first JAidUtilisateursProfessionnels matching the query
  * @method     JAidUtilisateursProfessionnels findOneByIdAid(string $id_aid) Return the first JAidUtilisateursProfessionnels filtered by the id_aid column
  * @method     JAidUtilisateursProfessionnels findOneByIdUtilisateur(string $id_utilisateur) Return the first JAidUtilisateursProfessionnels filtered by the id_utilisateur column
- * @method     JAidUtilisateursProfessionnels findOneByIndiceAid(int $indice_aid) Return the first JAidUtilisateursProfessionnels filtered by the indice_aid column
  *
  * @method     array findByIdAid(string $id_aid) Return JAidUtilisateursProfessionnels objects filtered by the id_aid column
  * @method     array findByIdUtilisateur(string $id_utilisateur) Return JAidUtilisateursProfessionnels objects filtered by the id_utilisateur column
- * @method     array findByIndiceAid(int $indice_aid) Return JAidUtilisateursProfessionnels objects filtered by the indice_aid column
  *
  * @package    propel.generator.gepi.om
  */
@@ -84,7 +76,7 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	 * <code>
 	 * $obj = $c->findPk(array(12, 34), $con);
 	 * </code>
-	 * @param     array[$id_aid, $indice_aid] $key Primary key to use for the query
+	 * @param     array[$id_aid, $id_utilisateur] $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
 	 * @return    JAidUtilisateursProfessionnels|array|mixed the result, formatted by the current formatter
@@ -130,7 +122,7 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	public function filterByPrimaryKey($key)
 	{
 		$this->addUsingAlias(JAidUtilisateursProfessionnelsPeer::ID_AID, $key[0], Criteria::EQUAL);
-		$this->addUsingAlias(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $key[1], Criteria::EQUAL);
+		$this->addUsingAlias(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $key[1], Criteria::EQUAL);
 		
 		return $this;
 	}
@@ -146,7 +138,7 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	{
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JAidUtilisateursProfessionnelsPeer::ID_AID, $key[0], Criteria::EQUAL);
-			$cton1 = $this->getNewCriterion(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $key[1], Criteria::EQUAL);
+			$cton1 = $this->getNewCriterion(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $key[1], Criteria::EQUAL);
 			$cton0->addAnd($cton1);
 			$this->addOr($cton0);
 		}
@@ -191,24 +183,6 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 			return $this->addUsingAlias(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, str_replace('*', '%', $idUtilisateur), Criteria::LIKE);
 		} else {
 			return $this->addUsingAlias(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $idUtilisateur, $comparison);
-		}
-	}
-
-	/**
-	 * Filter the query on the indice_aid column
-	 * 
-	 * @param     int|array $indiceAid The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    JAidUtilisateursProfessionnelsQuery The current query, for fluid interface
-	 */
-	public function filterByIndiceAid($indiceAid = null, $comparison = Criteria::EQUAL)
-	{
-		if (is_array($indiceAid)) {
-			return $this->addUsingAlias(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $indiceAid, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $indiceAid, $comparison);
 		}
 	}
 
@@ -335,67 +309,6 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query by a related AidConfiguration object
-	 *
-	 * @param     AidConfiguration $aidConfiguration  the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    JAidUtilisateursProfessionnelsQuery The current query, for fluid interface
-	 */
-	public function filterByAidConfiguration($aidConfiguration, $comparison = Criteria::EQUAL)
-	{
-		return $this
-			->addUsingAlias(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $aidConfiguration->getIndiceAid(), $comparison);
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the AidConfiguration relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    JAidUtilisateursProfessionnelsQuery The current query, for fluid interface
-	 */
-	public function joinAidConfiguration($relationAlias = '', $joinType = Criteria::INNER_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('AidConfiguration');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'AidConfiguration');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the AidConfiguration relation AidConfiguration object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    AidConfigurationQuery A secondary query class using the current class as primary query
-	 */
-	public function useAidConfigurationQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
-	{
-		return $this
-			->joinAidConfiguration($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'AidConfiguration', 'AidConfigurationQuery');
-	}
-
-	/**
 	 * Exclude object from result
 	 *
 	 * @param     JAidUtilisateursProfessionnels $jAidUtilisateursProfessionnels Object to remove from the list of results
@@ -406,7 +319,7 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	{
 		if ($jAidUtilisateursProfessionnels) {
 			$this->addCond('pruneCond0', $this->getAliasedColName(JAidUtilisateursProfessionnelsPeer::ID_AID), $jAidUtilisateursProfessionnels->getIdAid(), Criteria::NOT_EQUAL);
-			$this->addCond('pruneCond1', $this->getAliasedColName(JAidUtilisateursProfessionnelsPeer::INDICE_AID), $jAidUtilisateursProfessionnels->getIndiceAid(), Criteria::NOT_EQUAL);
+			$this->addCond('pruneCond1', $this->getAliasedColName(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR), $jAidUtilisateursProfessionnels->getIdUtilisateur(), Criteria::NOT_EQUAL);
 			$this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
 	  }
 	  

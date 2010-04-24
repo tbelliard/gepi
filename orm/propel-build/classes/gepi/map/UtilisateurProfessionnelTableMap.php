@@ -77,6 +77,7 @@ class UtilisateurProfessionnelTableMap extends TableMap {
     $this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('login' => 'login_prof', ), 'SET NULL', null);
     $this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
     $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
+    $this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
     $this->addRelation('Matiere', 'Matiere', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
 	} // buildRelations()
 

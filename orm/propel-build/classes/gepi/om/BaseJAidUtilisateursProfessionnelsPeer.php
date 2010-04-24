@@ -25,7 +25,7 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 	const TM_CLASS = 'JAidUtilisateursProfessionnelsTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 3;
+	const NUM_COLUMNS = 2;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -35,9 +35,6 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 
 	/** the column name for the ID_UTILISATEUR field */
 	const ID_UTILISATEUR = 'j_aid_utilisateurs.ID_UTILISATEUR';
-
-	/** the column name for the INDICE_AID field */
-	const INDICE_AID = 'j_aid_utilisateurs.INDICE_AID';
 
 	/**
 	 * An identiy map to hold any loaded instances of JAidUtilisateursProfessionnels objects.
@@ -55,12 +52,12 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('IdAid', 'IdUtilisateur', 'IndiceAid', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idAid', 'idUtilisateur', 'indiceAid', ),
-		BasePeer::TYPE_COLNAME => array (self::ID_AID, self::ID_UTILISATEUR, self::INDICE_AID, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID_AID', 'ID_UTILISATEUR', 'INDICE_AID', ),
-		BasePeer::TYPE_FIELDNAME => array ('id_aid', 'id_utilisateur', 'indice_aid', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, )
+		BasePeer::TYPE_PHPNAME => array ('IdAid', 'IdUtilisateur', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idAid', 'idUtilisateur', ),
+		BasePeer::TYPE_COLNAME => array (self::ID_AID, self::ID_UTILISATEUR, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_AID', 'ID_UTILISATEUR', ),
+		BasePeer::TYPE_FIELDNAME => array ('id_aid', 'id_utilisateur', ),
+		BasePeer::TYPE_NUM => array (0, 1, )
 	);
 
 	/**
@@ -70,12 +67,12 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('IdAid' => 0, 'IdUtilisateur' => 1, 'IndiceAid' => 2, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idAid' => 0, 'idUtilisateur' => 1, 'indiceAid' => 2, ),
-		BasePeer::TYPE_COLNAME => array (self::ID_AID => 0, self::ID_UTILISATEUR => 1, self::INDICE_AID => 2, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID_AID' => 0, 'ID_UTILISATEUR' => 1, 'INDICE_AID' => 2, ),
-		BasePeer::TYPE_FIELDNAME => array ('id_aid' => 0, 'id_utilisateur' => 1, 'indice_aid' => 2, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, )
+		BasePeer::TYPE_PHPNAME => array ('IdAid' => 0, 'IdUtilisateur' => 1, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idAid' => 0, 'idUtilisateur' => 1, ),
+		BasePeer::TYPE_COLNAME => array (self::ID_AID => 0, self::ID_UTILISATEUR => 1, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_AID' => 0, 'ID_UTILISATEUR' => 1, ),
+		BasePeer::TYPE_FIELDNAME => array ('id_aid' => 0, 'id_utilisateur' => 1, ),
+		BasePeer::TYPE_NUM => array (0, 1, )
 	);
 
 	/**
@@ -149,11 +146,9 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 		if (null === $alias) {
 			$criteria->addSelectColumn(JAidUtilisateursProfessionnelsPeer::ID_AID);
 			$criteria->addSelectColumn(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR);
-			$criteria->addSelectColumn(JAidUtilisateursProfessionnelsPeer::INDICE_AID);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID_AID');
 			$criteria->addSelectColumn($alias . '.ID_UTILISATEUR');
-			$criteria->addSelectColumn($alias . '.INDICE_AID');
 		}
 	}
 
@@ -278,7 +273,7 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = serialize(array((string) $obj->getIdAid(), (string) $obj->getIndiceAid()));
+				$key = serialize(array((string) $obj->getIdAid(), (string) $obj->getIdUtilisateur()));
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -298,7 +293,7 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
 			if (is_object($value) && $value instanceof JAidUtilisateursProfessionnels) {
-				$key = serialize(array((string) $value->getIdAid(), (string) $value->getIndiceAid()));
+				$key = serialize(array((string) $value->getIdAid(), (string) $value->getIdUtilisateur()));
 			} elseif (is_array($value) && count($value) === 2) {
 				// assume we've been passed a primary key
 				$key = serialize(array((string) $value[0], (string) $value[1]));
@@ -362,10 +357,10 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol] === null && $row[$startcol + 2] === null) {
+		if ($row[$startcol] === null && $row[$startcol + 1] === null) {
 			return null;
 		}
-		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 2]));
+		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1]));
 	}
 
 	/**
@@ -379,7 +374,7 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 	 */
 	public static function getPrimaryKeyFromRow($row, $startcol = 0)
 	{
-		return array((string) $row[$startcol], (int) $row[$startcol + 2]);
+		return array((string) $row[$startcol], (string) $row[$startcol + 1]);
 	}
 	
 	/**
@@ -540,56 +535,6 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related AidConfiguration table
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     int Number of matching rows.
-	 */
-	public static function doCountJoinAidConfiguration(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		// we're going to modify criteria, so copy it first
-		$criteria = clone $criteria;
-
-		// We need to set the primary table name, since in the case that there are no WHERE columns
-		// it will be impossible for the BasePeer::createSelectSql() method to determine which
-		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JAidUtilisateursProfessionnelsPeer::TABLE_NAME);
-
-		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->setDistinct();
-		}
-
-		if (!$criteria->hasSelectClause()) {
-			JAidUtilisateursProfessionnelsPeer::addSelectColumns($criteria);
-		}
-		
-		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
-		// Set the correct dbName
-		$criteria->setDbName(self::DATABASE_NAME);
-
-		if ($con === null) {
-			$con = Propel::getConnection(JAidUtilisateursProfessionnelsPeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
-
-		$stmt = BasePeer::doCount($criteria, $con);
-
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$count = (int) $row[0];
-		} else {
-			$count = 0; // no rows returned; we infer that means 0 matches.
-		}
-		$stmt->closeCursor();
-		return $count;
-	}
-
-
-	/**
 	 * Selects a collection of JAidUtilisateursProfessionnels objects pre-filled with their AidDetails objects.
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
@@ -722,72 +667,6 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 
 
 	/**
-	 * Selects a collection of JAidUtilisateursProfessionnels objects pre-filled with their AidConfiguration objects.
-	 * @param      Criteria  $criteria
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JAidUtilisateursProfessionnels objects.
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function doSelectJoinAidConfiguration(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$criteria = clone $criteria;
-
-		// Set the correct dbName if it has not been overridden
-		if ($criteria->getDbName() == Propel::getDefaultDB()) {
-			$criteria->setDbName(self::DATABASE_NAME);
-		}
-
-		JAidUtilisateursProfessionnelsPeer::addSelectColumns($criteria);
-		$startcol = (JAidUtilisateursProfessionnelsPeer::NUM_COLUMNS - JAidUtilisateursProfessionnelsPeer::NUM_LAZY_LOAD_COLUMNS);
-		AidConfigurationPeer::addSelectColumns($criteria);
-
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
-
-		$stmt = BasePeer::doSelect($criteria, $con);
-		$results = array();
-
-		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JAidUtilisateursProfessionnelsPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JAidUtilisateursProfessionnelsPeer::getInstanceFromPool($key1))) {
-				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
-				// $obj1->hydrate($row, 0, true); // rehydrate
-			} else {
-
-				$cls = JAidUtilisateursProfessionnelsPeer::getOMClass(false);
-
-				$obj1 = new $cls();
-				$obj1->hydrate($row);
-				JAidUtilisateursProfessionnelsPeer::addInstanceToPool($obj1, $key1);
-			} // if $obj1 already loaded
-
-			$key2 = AidConfigurationPeer::getPrimaryKeyHashFromRow($row, $startcol);
-			if ($key2 !== null) {
-				$obj2 = AidConfigurationPeer::getInstanceFromPool($key2);
-				if (!$obj2) {
-
-					$cls = AidConfigurationPeer::getOMClass(false);
-
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol);
-					AidConfigurationPeer::addInstanceToPool($obj2, $key2);
-				} // if obj2 already loaded
-
-				// Add the $obj1 (JAidUtilisateursProfessionnels) to $obj2 (AidConfiguration)
-				$obj2->addJAidUtilisateursProfessionnels($obj1);
-
-			} // if joined row was not null
-
-			$results[] = $obj1;
-		}
-		$stmt->closeCursor();
-		return $results;
-	}
-
-
-	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
 	 * @param      Criteria $criteria
@@ -826,8 +705,6 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
 
 		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -868,14 +745,9 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AidConfigurationPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (AidConfigurationPeer::NUM_COLUMNS - AidConfigurationPeer::NUM_LAZY_LOAD_COLUMNS);
-
 		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
 
 		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -930,24 +802,6 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 				$obj3->addJAidUtilisateursProfessionnels($obj1);
 			} // if joined row not null
 
-			// Add objects for joined AidConfiguration rows
-
-			$key4 = AidConfigurationPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-			if ($key4 !== null) {
-				$obj4 = AidConfigurationPeer::getInstanceFromPool($key4);
-				if (!$obj4) {
-
-					$cls = AidConfigurationPeer::getOMClass(false);
-
-					$obj4 = new $cls();
-					$obj4->hydrate($row, $startcol4);
-					AidConfigurationPeer::addInstanceToPool($obj4, $key4);
-				} // if obj4 loaded
-
-				// Add the $obj1 (JAidUtilisateursProfessionnels) to the collection in $obj4 (AidConfiguration)
-				$obj4->addJAidUtilisateursProfessionnels($obj1);
-			} // if joined row not null
-
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -992,8 +846,6 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 		}
 	
 		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -1045,60 +897,6 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 	
 		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
 
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
-
-		$stmt = BasePeer::doCount($criteria, $con);
-
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$count = (int) $row[0];
-		} else {
-			$count = 0; // no rows returned; we infer that means 0 matches.
-		}
-		$stmt->closeCursor();
-		return $count;
-	}
-
-
-	/**
-	 * Returns the number of rows matching criteria, joining the related AidConfiguration table
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     int Number of matching rows.
-	 */
-	public static function doCountJoinAllExceptAidConfiguration(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		// we're going to modify criteria, so copy it first
-		$criteria = clone $criteria;
-
-		// We need to set the primary table name, since in the case that there are no WHERE columns
-		// it will be impossible for the BasePeer::createSelectSql() method to determine which
-		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JAidUtilisateursProfessionnelsPeer::TABLE_NAME);
-		
-		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->setDistinct();
-		}
-
-		if (!$criteria->hasSelectClause()) {
-			JAidUtilisateursProfessionnelsPeer::addSelectColumns($criteria);
-		}
-		
-		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
-		// Set the correct dbName
-		$criteria->setDbName(self::DATABASE_NAME);
-
-		if ($con === null) {
-			$con = Propel::getConnection(JAidUtilisateursProfessionnelsPeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-	
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
-
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1138,12 +936,7 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AidConfigurationPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AidConfigurationPeer::NUM_COLUMNS - AidConfigurationPeer::NUM_LAZY_LOAD_COLUMNS);
-
 		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1182,25 +975,6 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 
 			} // if joined row is not null
 
-				// Add objects for joined AidConfiguration rows
-
-				$key3 = AidConfigurationPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-				if ($key3 !== null) {
-					$obj3 = AidConfigurationPeer::getInstanceFromPool($key3);
-					if (!$obj3) {
-	
-						$cls = AidConfigurationPeer::getOMClass(false);
-
-					$obj3 = new $cls();
-					$obj3->hydrate($row, $startcol3);
-					AidConfigurationPeer::addInstanceToPool($obj3, $key3);
-				} // if $obj3 already loaded
-
-				// Add the $obj1 (JAidUtilisateursProfessionnels) to the collection in $obj3 (AidConfiguration)
-				$obj3->addJAidUtilisateursProfessionnels($obj1);
-
-			} // if joined row is not null
-
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -1235,12 +1009,7 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 		AidDetailsPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AidConfigurationPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AidConfigurationPeer::NUM_COLUMNS - AidConfigurationPeer::NUM_LAZY_LOAD_COLUMNS);
-
 		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
-
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::INDICE_AID, AidConfigurationPeer::INDICE_AID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1276,122 +1045,6 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 
 				// Add the $obj1 (JAidUtilisateursProfessionnels) to the collection in $obj2 (AidDetails)
 				$obj2->addJAidUtilisateursProfessionnels($obj1);
-
-			} // if joined row is not null
-
-				// Add objects for joined AidConfiguration rows
-
-				$key3 = AidConfigurationPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-				if ($key3 !== null) {
-					$obj3 = AidConfigurationPeer::getInstanceFromPool($key3);
-					if (!$obj3) {
-	
-						$cls = AidConfigurationPeer::getOMClass(false);
-
-					$obj3 = new $cls();
-					$obj3->hydrate($row, $startcol3);
-					AidConfigurationPeer::addInstanceToPool($obj3, $key3);
-				} // if $obj3 already loaded
-
-				// Add the $obj1 (JAidUtilisateursProfessionnels) to the collection in $obj3 (AidConfiguration)
-				$obj3->addJAidUtilisateursProfessionnels($obj1);
-
-			} // if joined row is not null
-
-			$results[] = $obj1;
-		}
-		$stmt->closeCursor();
-		return $results;
-	}
-
-
-	/**
-	 * Selects a collection of JAidUtilisateursProfessionnels objects pre-filled with all related objects except AidConfiguration.
-	 *
-	 * @param      Criteria  $criteria
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JAidUtilisateursProfessionnels objects.
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function doSelectJoinAllExceptAidConfiguration(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$criteria = clone $criteria;
-
-		// Set the correct dbName if it has not been overridden
-		// $criteria->getDbName() will return the same object if not set to another value
-		// so == check is okay and faster
-		if ($criteria->getDbName() == Propel::getDefaultDB()) {
-			$criteria->setDbName(self::DATABASE_NAME);
-		}
-
-		JAidUtilisateursProfessionnelsPeer::addSelectColumns($criteria);
-		$startcol2 = (JAidUtilisateursProfessionnelsPeer::NUM_COLUMNS - JAidUtilisateursProfessionnelsPeer::NUM_LAZY_LOAD_COLUMNS);
-
-		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
-
-		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
-
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
-
-		$criteria->addJoin(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
-
-		$stmt = BasePeer::doSelect($criteria, $con);
-		$results = array();
-
-		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JAidUtilisateursProfessionnelsPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JAidUtilisateursProfessionnelsPeer::getInstanceFromPool($key1))) {
-				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
-				// $obj1->hydrate($row, 0, true); // rehydrate
-			} else {
-				$cls = JAidUtilisateursProfessionnelsPeer::getOMClass(false);
-
-				$obj1 = new $cls();
-				$obj1->hydrate($row);
-				JAidUtilisateursProfessionnelsPeer::addInstanceToPool($obj1, $key1);
-			} // if obj1 already loaded
-
-				// Add objects for joined AidDetails rows
-
-				$key2 = AidDetailsPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-				if ($key2 !== null) {
-					$obj2 = AidDetailsPeer::getInstanceFromPool($key2);
-					if (!$obj2) {
-	
-						$cls = AidDetailsPeer::getOMClass(false);
-
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol2);
-					AidDetailsPeer::addInstanceToPool($obj2, $key2);
-				} // if $obj2 already loaded
-
-				// Add the $obj1 (JAidUtilisateursProfessionnels) to the collection in $obj2 (AidDetails)
-				$obj2->addJAidUtilisateursProfessionnels($obj1);
-
-			} // if joined row is not null
-
-				// Add objects for joined UtilisateurProfessionnel rows
-
-				$key3 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-				if ($key3 !== null) {
-					$obj3 = UtilisateurProfessionnelPeer::getInstanceFromPool($key3);
-					if (!$obj3) {
-	
-						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
-
-					$obj3 = new $cls();
-					$obj3->hydrate($row, $startcol3);
-					UtilisateurProfessionnelPeer::addInstanceToPool($obj3, $key3);
-				} // if $obj3 already loaded
-
-				// Add the $obj1 (JAidUtilisateursProfessionnels) to the collection in $obj3 (UtilisateurProfessionnel)
-				$obj3->addJAidUtilisateursProfessionnels($obj1);
 
 			} // if joined row is not null
 
@@ -1508,10 +1161,10 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 				$selectCriteria->setPrimaryTableName(JAidUtilisateursProfessionnelsPeer::TABLE_NAME);
 			}
 
-			$comparison = $criteria->getComparison(JAidUtilisateursProfessionnelsPeer::INDICE_AID);
-			$value = $criteria->remove(JAidUtilisateursProfessionnelsPeer::INDICE_AID);
+			$comparison = $criteria->getComparison(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR);
+			$value = $criteria->remove(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR);
 			if ($value) {
-				$selectCriteria->add(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $value, $comparison);
+				$selectCriteria->add(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $value, $comparison);
 			} else {
 				$selectCriteria->setPrimaryTableName(JAidUtilisateursProfessionnelsPeer::TABLE_NAME);
 			}
@@ -1595,7 +1248,7 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 			}
 			foreach ($values as $value) {
 				$criterion = $criteria->getNewCriterion(JAidUtilisateursProfessionnelsPeer::ID_AID, $value[0]);
-				$criterion->addAnd($criteria->getNewCriterion(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $value[1]));
+				$criterion->addAnd($criteria->getNewCriterion(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $value[1]));
 				$criteria->addOr($criterion);
 				// we can invalidate the cache for this single PK
 				JAidUtilisateursProfessionnelsPeer::removeInstanceFromPool($value);
@@ -1662,12 +1315,12 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 	/**
 	 * Retrieve object using using composite pkey values.
 	 * @param      string $id_aid
-	 * @param      int $indice_aid
+	 * @param      string $id_utilisateur
 	 * @param      PropelPDO $con
 	 * @return     JAidUtilisateursProfessionnels
 	 */
-	public static function retrieveByPK($id_aid, $indice_aid, PropelPDO $con = null) {
-		$key = serialize(array((string) $id_aid, (string) $indice_aid));
+	public static function retrieveByPK($id_aid, $id_utilisateur, PropelPDO $con = null) {
+		$key = serialize(array((string) $id_aid, (string) $id_utilisateur));
  		if (null !== ($obj = JAidUtilisateursProfessionnelsPeer::getInstanceFromPool($key))) {
  			return $obj;
 		}
@@ -1677,7 +1330,7 @@ abstract class BaseJAidUtilisateursProfessionnelsPeer {
 		}
 		$criteria = new Criteria(JAidUtilisateursProfessionnelsPeer::DATABASE_NAME);
 		$criteria->add(JAidUtilisateursProfessionnelsPeer::ID_AID, $id_aid);
-		$criteria->add(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $indice_aid);
+		$criteria->add(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $id_utilisateur);
 		$v = JAidUtilisateursProfessionnelsPeer::doSelect($criteria, $con);
 
 		return !empty($v) ? $v[0] : null;

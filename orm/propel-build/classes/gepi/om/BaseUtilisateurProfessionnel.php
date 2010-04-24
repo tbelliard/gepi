@@ -213,6 +213,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	protected $collEleves;
 
 	/**
+	 * @var        array AidDetails[] Collection to store aggregation of AidDetails objects.
+	 */
+	protected $collAidDetailss;
+
+	/**
 	 * @var        array Matiere[] Collection to store aggregation of Matiere objects.
 	 */
 	protected $collMatieres;
@@ -2950,26 +2955,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		return $this->getJAidUtilisateursProfessionnelss($query, $con);
 	}
 
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this UtilisateurProfessionnel is new, it will return
-	 * an empty collection; or if this UtilisateurProfessionnel has previously
-	 * been saved, it will retrieve related JAidUtilisateursProfessionnelss from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in UtilisateurProfessionnel.
-	 */
-	public function getJAidUtilisateursProfessionnelssJoinAidConfiguration($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
-		$query->joinWith('AidConfiguration', $join_behavior);
-
-		return $this->getJAidUtilisateursProfessionnelss($query, $con);
-	}
-
 	/**
 	 * Clears out the collAbsenceEleveSaisies collection
 	 *
@@ -4187,6 +4172,119 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->addJEleveCpe($jEleveCpe);
 			
 			$this->collEleves[]= $eleve;
+		}
+	}
+
+	/**
+	 * Clears out the collAidDetailss collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addAidDetailss()
+	 */
+	public function clearAidDetailss()
+	{
+		$this->collAidDetailss = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collAidDetailss collection.
+	 *
+	 * By default this just sets the collAidDetailss collection to an empty collection (like clearAidDetailss());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initAidDetailss()
+	{
+		$this->collAidDetailss = new PropelObjectCollection();
+		$this->collAidDetailss->setModel('AidDetails');
+	}
+
+	/**
+	 * Gets a collection of AidDetails objects related by a many-to-many relationship
+	 * to the current object by way of the j_aid_utilisateurs cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this UtilisateurProfessionnel is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array AidDetails[] List of AidDetails objects
+	 */
+	public function getAidDetailss($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collAidDetailss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAidDetailss) {
+				// return empty collection
+				$this->initAidDetailss();
+			} else {
+				$collAidDetailss = AidDetailsQuery::create(null, $criteria)
+					->filterByUtilisateurProfessionnel($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collAidDetailss;
+				}
+				$this->collAidDetailss = $collAidDetailss;
+			}
+		}
+		return $this->collAidDetailss;
+	}
+
+	/**
+	 * Gets the number of AidDetails objects related by a many-to-many relationship
+	 * to the current object by way of the j_aid_utilisateurs cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related AidDetails objects
+	 */
+	public function countAidDetailss($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collAidDetailss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAidDetailss) {
+				return 0;
+			} else {
+				$query = AidDetailsQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUtilisateurProfessionnel($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collAidDetailss);
+		}
+	}
+
+	/**
+	 * Associate a AidDetails object to this object
+	 * through the j_aid_utilisateurs cross reference table.
+	 *
+	 * @param      AidDetails $aidDetails The JAidUtilisateursProfessionnels object to relate
+	 * @return     void
+	 */
+	public function addAidDetails($aidDetails)
+	{
+		if ($this->collAidDetailss === null) {
+			$this->initAidDetailss();
+		}
+		if (!$this->collAidDetailss->contains($aidDetails)) { // only add it if the **same** object is not already associated
+			$jAidUtilisateursProfessionnels = new JAidUtilisateursProfessionnels();
+			$jAidUtilisateursProfessionnels->setAidDetails($aidDetails);
+			$this->addJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels);
+			
+			$this->collAidDetailss[]= $aidDetails;
 		}
 	}
 

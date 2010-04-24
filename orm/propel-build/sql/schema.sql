@@ -695,8 +695,7 @@ CREATE TABLE j_aid_utilisateurs
 (
 	id_aid VARCHAR(100)  NOT NULL COMMENT 'cle etrangere vers l\'AID',
 	id_utilisateur VARCHAR(100)  NOT NULL COMMENT 'Login de l\'utilisateur professionnel',
-	indice_aid INTEGER(11) default 0 NOT NULL COMMENT 'cle etrangere vers la categorie d\'AID',
-	PRIMARY KEY (id_aid,indice_aid),
+	PRIMARY KEY (id_aid,id_utilisateur),
 	CONSTRAINT j_aid_utilisateurs_FK_1
 		FOREIGN KEY (id_aid)
 		REFERENCES aid (id)
@@ -705,11 +704,6 @@ CREATE TABLE j_aid_utilisateurs
 	CONSTRAINT j_aid_utilisateurs_FK_2
 		FOREIGN KEY (id_utilisateur)
 		REFERENCES utilisateurs (login)
-		ON DELETE CASCADE,
-	INDEX j_aid_utilisateurs_FI_3 (indice_aid),
-	CONSTRAINT j_aid_utilisateurs_FK_3
-		FOREIGN KEY (indice_aid)
-		REFERENCES aid_config (indice_aid)
 		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Table de liaison entre les AID et les utilisateurs professionnels';
 
@@ -724,21 +718,15 @@ CREATE TABLE j_aid_eleves
 (
 	id_aid VARCHAR(100)  NOT NULL COMMENT 'Clé etrangere vers l\'AID',
 	login VARCHAR(60)  NOT NULL COMMENT 'Login de l\'eleve qui est membre de cette AID',
-	indice_aid INTEGER(11) default 0 NOT NULL COMMENT 'cle etrangere vers la categorie d\'AID',
-	PRIMARY KEY (login,indice_aid),
-	INDEX j_aid_eleves_FI_1 (id_aid),
+	PRIMARY KEY (id_aid,login),
 	CONSTRAINT j_aid_eleves_FK_1
 		FOREIGN KEY (id_aid)
 		REFERENCES aid (id)
 		ON DELETE CASCADE,
+	INDEX j_aid_eleves_FI_2 (login),
 	CONSTRAINT j_aid_eleves_FK_2
 		FOREIGN KEY (login)
 		REFERENCES eleves (login)
-		ON DELETE CASCADE,
-	INDEX j_aid_eleves_FI_3 (indice_aid),
-	CONSTRAINT j_aid_eleves_FK_3
-		FOREIGN KEY (indice_aid)
-		REFERENCES aid_config (indice_aid)
 		ON DELETE CASCADE
 )Type=MyISAM COMMENT='Table de liaison entre les AID et les eleves qui en sont membres';
 

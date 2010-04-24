@@ -1039,6 +1039,40 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query by a related UtilisateurProfessionnel object
+	 * using the j_aid_utilisateurs table as cross reference
+	 *
+	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AidDetailsQuery The current query, for fluid interface
+	 */
+	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->useJAidUtilisateursProfessionnelsQuery()
+				->filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison)
+			->endUse();
+	}
+	
+	/**
+	 * Filter the query by a related Eleve object
+	 * using the j_aid_eleves table as cross reference
+	 *
+	 * @param     Eleve $eleve the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AidDetailsQuery The current query, for fluid interface
+	 */
+	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->useJAidElevesQuery()
+				->filterByEleve($eleve, $comparison)
+			->endUse();
+	}
+	
+	/**
 	 * Exclude object from result
 	 *
 	 * @param     AidDetails $aidDetails Object to remove from the list of results

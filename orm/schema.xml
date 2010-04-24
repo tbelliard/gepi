@@ -353,22 +353,22 @@
     <column name="feuille_presence" required="true" type="CHAR" size="1" default="n" description=""/>
   </table>
 
-  <table name="j_aid_utilisateurs" phpName="JAidUtilisateursProfessionnels" description="Table de liaison entre les AID et les utilisateurs professionnels">
+  <table name="j_aid_utilisateurs" phpName="JAidUtilisateursProfessionnels" description="Table de liaison entre les AID et les utilisateurs professionnels" isCrossRef="true">
     <column name="id_aid" required="true" primaryKey="true" type="VARCHAR" size="100" description="cle etrangere vers l'AID" />
     <foreign-key foreignTable="aid" onDelete="cascade"><reference local="id_aid" foreign="id"/></foreign-key>
-    <column name="id_utilisateur" required="true" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel" />
+    <column name="id_utilisateur" required="true" primaryKey="true" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel" />
     <foreign-key foreignTable="utilisateurs" onDelete="cascade"><reference local="id_utilisateur" foreign="login"/></foreign-key>
-    <column name="indice_aid" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere vers la categorie d'AID" />
-    <foreign-key foreignTable="aid_config" onDelete="cascade"><reference local="indice_aid" foreign="indice_aid"/></foreign-key>
+    <!--column name="indice_aid" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere vers la categorie d'AID" />
+    <foreign-key foreignTable="aid_config" onDelete="cascade"><reference local="indice_aid" foreign="indice_aid"/></foreign-key-->
   </table>
 
-  <table name="j_aid_eleves" phpName="JAidEleves" description="Table de liaison entre les AID et les eleves qui en sont membres">
-    <column name="id_aid" required="true" type="VARCHAR" size="100" description="Clé etrangere vers l'AID" />
+  <table name="j_aid_eleves" phpName="JAidEleves" description="Table de liaison entre les AID et les eleves qui en sont membres" isCrossRef="true">
+    <column name="id_aid" required="true" primaryKey="true" type="VARCHAR" size="100" description="Clé etrangere vers l'AID" />
     <foreign-key foreignTable="aid" onDelete="cascade"><reference local="id_aid" foreign="id"/></foreign-key>
     <column name="login" required="true" primaryKey="true" type="VARCHAR" size="60" description="Login de l'eleve qui est membre de cette AID" />
     <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
-    <column name="indice_aid" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere vers la categorie d'AID" />
-    <foreign-key foreignTable="aid_config" onDelete="cascade"><reference local="indice_aid" foreign="indice_aid"/></foreign-key>
+    <!-- column name="indice_aid" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere vers la categorie d'AID" />
+    <foreign-key foreignTable="aid_config" onDelete="cascade"><reference local="indice_aid" foreign="indice_aid"/></foreign-key-->
   </table>
 
   <table name="a_actions" phpName="AbsenceEleveAction" description="Liste des actions possibles sur une absence">

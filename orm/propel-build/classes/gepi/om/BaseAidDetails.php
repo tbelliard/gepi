@@ -202,6 +202,16 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	protected $collEdtEmplacementCourss;
 
 	/**
+	 * @var        array UtilisateurProfessionnel[] Collection to store aggregation of UtilisateurProfessionnel objects.
+	 */
+	protected $collUtilisateurProfessionnels;
+
+	/**
+	 * @var        array Eleve[] Collection to store aggregation of Eleve objects.
+	 */
+	protected $collEleves;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -2115,26 +2125,6 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 		return $this->getJAidUtilisateursProfessionnelss($query, $con);
 	}
 
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this AidDetails is new, it will return
-	 * an empty collection; or if this AidDetails has previously
-	 * been saved, it will retrieve related JAidUtilisateursProfessionnelss from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in AidDetails.
-	 */
-	public function getJAidUtilisateursProfessionnelssJoinAidConfiguration($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
-		$query->joinWith('AidConfiguration', $join_behavior);
-
-		return $this->getJAidUtilisateursProfessionnelss($query, $con);
-	}
-
 	/**
 	 * Clears out the collJAidElevess collection
 	 *
@@ -2260,26 +2250,6 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	{
 		$query = JAidElevesQuery::create(null, $criteria);
 		$query->joinWith('Eleve', $join_behavior);
-
-		return $this->getJAidElevess($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this AidDetails is new, it will return
-	 * an empty collection; or if this AidDetails has previously
-	 * been saved, it will retrieve related JAidElevess from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in AidDetails.
-	 */
-	public function getJAidElevessJoinAidConfiguration($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JAidElevesQuery::create(null, $criteria);
-		$query->joinWith('AidConfiguration', $join_behavior);
 
 		return $this->getJAidElevess($query, $con);
 	}
@@ -2720,6 +2690,232 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
 
 		return $this->getEdtEmplacementCourss($query, $con);
+	}
+
+	/**
+	 * Clears out the collUtilisateurProfessionnels collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addUtilisateurProfessionnels()
+	 */
+	public function clearUtilisateurProfessionnels()
+	{
+		$this->collUtilisateurProfessionnels = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collUtilisateurProfessionnels collection.
+	 *
+	 * By default this just sets the collUtilisateurProfessionnels collection to an empty collection (like clearUtilisateurProfessionnels());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initUtilisateurProfessionnels()
+	{
+		$this->collUtilisateurProfessionnels = new PropelObjectCollection();
+		$this->collUtilisateurProfessionnels->setModel('UtilisateurProfessionnel');
+	}
+
+	/**
+	 * Gets a collection of UtilisateurProfessionnel objects related by a many-to-many relationship
+	 * to the current object by way of the j_aid_utilisateurs cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this AidDetails is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array UtilisateurProfessionnel[] List of UtilisateurProfessionnel objects
+	 */
+	public function getUtilisateurProfessionnels($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collUtilisateurProfessionnels || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUtilisateurProfessionnels) {
+				// return empty collection
+				$this->initUtilisateurProfessionnels();
+			} else {
+				$collUtilisateurProfessionnels = UtilisateurProfessionnelQuery::create(null, $criteria)
+					->filterByAidDetails($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collUtilisateurProfessionnels;
+				}
+				$this->collUtilisateurProfessionnels = $collUtilisateurProfessionnels;
+			}
+		}
+		return $this->collUtilisateurProfessionnels;
+	}
+
+	/**
+	 * Gets the number of UtilisateurProfessionnel objects related by a many-to-many relationship
+	 * to the current object by way of the j_aid_utilisateurs cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related UtilisateurProfessionnel objects
+	 */
+	public function countUtilisateurProfessionnels($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collUtilisateurProfessionnels || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUtilisateurProfessionnels) {
+				return 0;
+			} else {
+				$query = UtilisateurProfessionnelQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByAidDetails($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collUtilisateurProfessionnels);
+		}
+	}
+
+	/**
+	 * Associate a UtilisateurProfessionnel object to this object
+	 * through the j_aid_utilisateurs cross reference table.
+	 *
+	 * @param      UtilisateurProfessionnel $utilisateurProfessionnel The JAidUtilisateursProfessionnels object to relate
+	 * @return     void
+	 */
+	public function addUtilisateurProfessionnel($utilisateurProfessionnel)
+	{
+		if ($this->collUtilisateurProfessionnels === null) {
+			$this->initUtilisateurProfessionnels();
+		}
+		if (!$this->collUtilisateurProfessionnels->contains($utilisateurProfessionnel)) { // only add it if the **same** object is not already associated
+			$jAidUtilisateursProfessionnels = new JAidUtilisateursProfessionnels();
+			$jAidUtilisateursProfessionnels->setUtilisateurProfessionnel($utilisateurProfessionnel);
+			$this->addJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels);
+			
+			$this->collUtilisateurProfessionnels[]= $utilisateurProfessionnel;
+		}
+	}
+
+	/**
+	 * Clears out the collEleves collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addEleves()
+	 */
+	public function clearEleves()
+	{
+		$this->collEleves = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collEleves collection.
+	 *
+	 * By default this just sets the collEleves collection to an empty collection (like clearEleves());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initEleves()
+	{
+		$this->collEleves = new PropelObjectCollection();
+		$this->collEleves->setModel('Eleve');
+	}
+
+	/**
+	 * Gets a collection of Eleve objects related by a many-to-many relationship
+	 * to the current object by way of the j_aid_eleves cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this AidDetails is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array Eleve[] List of Eleve objects
+	 */
+	public function getEleves($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collEleves || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEleves) {
+				// return empty collection
+				$this->initEleves();
+			} else {
+				$collEleves = EleveQuery::create(null, $criteria)
+					->filterByAidDetails($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collEleves;
+				}
+				$this->collEleves = $collEleves;
+			}
+		}
+		return $this->collEleves;
+	}
+
+	/**
+	 * Gets the number of Eleve objects related by a many-to-many relationship
+	 * to the current object by way of the j_aid_eleves cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related Eleve objects
+	 */
+	public function countEleves($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collEleves || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEleves) {
+				return 0;
+			} else {
+				$query = EleveQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByAidDetails($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collEleves);
+		}
+	}
+
+	/**
+	 * Associate a Eleve object to this object
+	 * through the j_aid_eleves cross reference table.
+	 *
+	 * @param      Eleve $eleve The JAidEleves object to relate
+	 * @return     void
+	 */
+	public function addEleve($eleve)
+	{
+		if ($this->collEleves === null) {
+			$this->initEleves();
+		}
+		if (!$this->collEleves->contains($eleve)) { // only add it if the **same** object is not already associated
+			$jAidEleves = new JAidEleves();
+			$jAidEleves->setEleve($eleve);
+			$this->addJAidEleves($jAidEleves);
+			
+			$this->collEleves[]= $eleve;
+		}
 	}
 
 	/**

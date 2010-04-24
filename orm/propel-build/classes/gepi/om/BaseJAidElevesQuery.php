@@ -8,11 +8,9 @@
  *
  * @method     JAidElevesQuery orderByIdAid($order = Criteria::ASC) Order by the id_aid column
  * @method     JAidElevesQuery orderByLogin($order = Criteria::ASC) Order by the login column
- * @method     JAidElevesQuery orderByIndiceAid($order = Criteria::ASC) Order by the indice_aid column
  *
  * @method     JAidElevesQuery groupByIdAid() Group by the id_aid column
  * @method     JAidElevesQuery groupByLogin() Group by the login column
- * @method     JAidElevesQuery groupByIndiceAid() Group by the indice_aid column
  *
  * @method     JAidElevesQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     JAidElevesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -26,18 +24,12 @@
  * @method     JAidElevesQuery rightJoinEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Eleve relation
  * @method     JAidElevesQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
  *
- * @method     JAidElevesQuery leftJoinAidConfiguration($relationAlias = '') Adds a LEFT JOIN clause to the query using the AidConfiguration relation
- * @method     JAidElevesQuery rightJoinAidConfiguration($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AidConfiguration relation
- * @method     JAidElevesQuery innerJoinAidConfiguration($relationAlias = '') Adds a INNER JOIN clause to the query using the AidConfiguration relation
- *
  * @method     JAidEleves findOne(PropelPDO $con = null) Return the first JAidEleves matching the query
  * @method     JAidEleves findOneByIdAid(string $id_aid) Return the first JAidEleves filtered by the id_aid column
  * @method     JAidEleves findOneByLogin(string $login) Return the first JAidEleves filtered by the login column
- * @method     JAidEleves findOneByIndiceAid(int $indice_aid) Return the first JAidEleves filtered by the indice_aid column
  *
  * @method     array findByIdAid(string $id_aid) Return JAidEleves objects filtered by the id_aid column
  * @method     array findByLogin(string $login) Return JAidEleves objects filtered by the login column
- * @method     array findByIndiceAid(int $indice_aid) Return JAidEleves objects filtered by the indice_aid column
  *
  * @package    propel.generator.gepi.om
  */
@@ -84,7 +76,7 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 * <code>
 	 * $obj = $c->findPk(array(12, 34), $con);
 	 * </code>
-	 * @param     array[$login, $indice_aid] $key Primary key to use for the query
+	 * @param     array[$id_aid, $login] $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
 	 * @return    JAidEleves|array|mixed the result, formatted by the current formatter
@@ -129,8 +121,8 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKey($key)
 	{
-		$this->addUsingAlias(JAidElevesPeer::LOGIN, $key[0], Criteria::EQUAL);
-		$this->addUsingAlias(JAidElevesPeer::INDICE_AID, $key[1], Criteria::EQUAL);
+		$this->addUsingAlias(JAidElevesPeer::ID_AID, $key[0], Criteria::EQUAL);
+		$this->addUsingAlias(JAidElevesPeer::LOGIN, $key[1], Criteria::EQUAL);
 		
 		return $this;
 	}
@@ -145,8 +137,8 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	public function filterByPrimaryKeys($keys)
 	{
 		foreach ($keys as $key) {
-			$cton0 = $this->getNewCriterion(JAidElevesPeer::LOGIN, $key[0], Criteria::EQUAL);
-			$cton1 = $this->getNewCriterion(JAidElevesPeer::INDICE_AID, $key[1], Criteria::EQUAL);
+			$cton0 = $this->getNewCriterion(JAidElevesPeer::ID_AID, $key[0], Criteria::EQUAL);
+			$cton1 = $this->getNewCriterion(JAidElevesPeer::LOGIN, $key[1], Criteria::EQUAL);
 			$cton0->addAnd($cton1);
 			$this->addOr($cton0);
 		}
@@ -191,24 +183,6 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 			return $this->addUsingAlias(JAidElevesPeer::LOGIN, str_replace('*', '%', $login), Criteria::LIKE);
 		} else {
 			return $this->addUsingAlias(JAidElevesPeer::LOGIN, $login, $comparison);
-		}
-	}
-
-	/**
-	 * Filter the query on the indice_aid column
-	 * 
-	 * @param     int|array $indiceAid The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    JAidElevesQuery The current query, for fluid interface
-	 */
-	public function filterByIndiceAid($indiceAid = null, $comparison = Criteria::EQUAL)
-	{
-		if (is_array($indiceAid)) {
-			return $this->addUsingAlias(JAidElevesPeer::INDICE_AID, $indiceAid, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JAidElevesPeer::INDICE_AID, $indiceAid, $comparison);
 		}
 	}
 
@@ -335,67 +309,6 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query by a related AidConfiguration object
-	 *
-	 * @param     AidConfiguration $aidConfiguration  the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    JAidElevesQuery The current query, for fluid interface
-	 */
-	public function filterByAidConfiguration($aidConfiguration, $comparison = Criteria::EQUAL)
-	{
-		return $this
-			->addUsingAlias(JAidElevesPeer::INDICE_AID, $aidConfiguration->getIndiceAid(), $comparison);
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the AidConfiguration relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    JAidElevesQuery The current query, for fluid interface
-	 */
-	public function joinAidConfiguration($relationAlias = '', $joinType = Criteria::INNER_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('AidConfiguration');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'AidConfiguration');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the AidConfiguration relation AidConfiguration object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    AidConfigurationQuery A secondary query class using the current class as primary query
-	 */
-	public function useAidConfigurationQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
-	{
-		return $this
-			->joinAidConfiguration($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'AidConfiguration', 'AidConfigurationQuery');
-	}
-
-	/**
 	 * Exclude object from result
 	 *
 	 * @param     JAidEleves $jAidEleves Object to remove from the list of results
@@ -405,8 +318,8 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	public function prune($jAidEleves = null)
 	{
 		if ($jAidEleves) {
-			$this->addCond('pruneCond0', $this->getAliasedColName(JAidElevesPeer::LOGIN), $jAidEleves->getLogin(), Criteria::NOT_EQUAL);
-			$this->addCond('pruneCond1', $this->getAliasedColName(JAidElevesPeer::INDICE_AID), $jAidEleves->getIndiceAid(), Criteria::NOT_EQUAL);
+			$this->addCond('pruneCond0', $this->getAliasedColName(JAidElevesPeer::ID_AID), $jAidEleves->getIdAid(), Criteria::NOT_EQUAL);
+			$this->addCond('pruneCond1', $this->getAliasedColName(JAidElevesPeer::LOGIN), $jAidEleves->getLogin(), Criteria::NOT_EQUAL);
 			$this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
 	  }
 	  

@@ -36,13 +36,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	protected $login;
 
 	/**
-	 * The value for the indice_aid field.
-	 * Note: this column has a database default value of: 0
-	 * @var        int
-	 */
-	protected $indice_aid;
-
-	/**
 	 * @var        AidDetails
 	 */
 	protected $aAidDetails;
@@ -51,11 +44,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	 * @var        Eleve
 	 */
 	protected $aEleve;
-
-	/**
-	 * @var        AidConfiguration
-	 */
-	protected $aAidConfiguration;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -70,27 +58,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
-
-	/**
-	 * Applies default values to this object.
-	 * This method should be called from the object's constructor (or
-	 * equivalent initialization method).
-	 * @see        __construct()
-	 */
-	public function applyDefaultValues()
-	{
-		$this->indice_aid = 0;
-	}
-
-	/**
-	 * Initializes internal state of BaseJAidEleves object.
-	 * @see        applyDefaults()
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->applyDefaultValues();
-	}
 
 	/**
 	 * Get the [id_aid] column value.
@@ -110,16 +77,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	public function getLogin()
 	{
 		return $this->login;
-	}
-
-	/**
-	 * Get the [indice_aid] column value.
-	 * cle etrangere vers la categorie d'AID
-	 * @return     int
-	 */
-	public function getIndiceAid()
-	{
-		return $this->indice_aid;
 	}
 
 	/**
@@ -171,30 +128,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	} // setLogin()
 
 	/**
-	 * Set the value of [indice_aid] column.
-	 * cle etrangere vers la categorie d'AID
-	 * @param      int $v new value
-	 * @return     JAidEleves The current object (for fluent API support)
-	 */
-	public function setIndiceAid($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->indice_aid !== $v || $this->isNew()) {
-			$this->indice_aid = $v;
-			$this->modifiedColumns[] = JAidElevesPeer::INDICE_AID;
-		}
-
-		if ($this->aAidConfiguration !== null && $this->aAidConfiguration->getIndiceAid() !== $v) {
-			$this->aAidConfiguration = null;
-		}
-
-		return $this;
-	} // setIndiceAid()
-
-	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -204,10 +137,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			if ($this->indice_aid !== 0) {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -232,7 +161,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 
 			$this->id_aid = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
 			$this->login = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-			$this->indice_aid = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -241,7 +169,7 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 3; // 3 = JAidElevesPeer::NUM_COLUMNS - JAidElevesPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 2; // 2 = JAidElevesPeer::NUM_COLUMNS - JAidElevesPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating JAidEleves object", $e);
@@ -269,9 +197,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 		}
 		if ($this->aEleve !== null && $this->login !== $this->aEleve->getLogin()) {
 			$this->aEleve = null;
-		}
-		if ($this->aAidConfiguration !== null && $this->indice_aid !== $this->aAidConfiguration->getIndiceAid()) {
-			$this->aAidConfiguration = null;
 		}
 	} // ensureConsistency
 
@@ -314,7 +239,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 
 			$this->aAidDetails = null;
 			$this->aEleve = null;
-			$this->aAidConfiguration = null;
 		} // if (deep)
 	}
 
@@ -444,13 +368,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 				$this->setEleve($this->aEleve);
 			}
 
-			if ($this->aAidConfiguration !== null) {
-				if ($this->aAidConfiguration->isModified() || $this->aAidConfiguration->isNew()) {
-					$affectedRows += $this->aAidConfiguration->save($con);
-				}
-				$this->setAidConfiguration($this->aAidConfiguration);
-			}
-
 
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
@@ -549,12 +466,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->aAidConfiguration !== null) {
-				if (!$this->aAidConfiguration->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aAidConfiguration->getValidationFailures());
-				}
-			}
-
 
 			if (($retval = JAidElevesPeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
@@ -600,9 +511,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 			case 1:
 				return $this->getLogin();
 				break;
-			case 2:
-				return $this->getIndiceAid();
-				break;
 			default:
 				return null;
 				break;
@@ -629,7 +537,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 		$result = array(
 			$keys[0] => $this->getIdAid(),
 			$keys[1] => $this->getLogin(),
-			$keys[2] => $this->getIndiceAid(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aAidDetails) {
@@ -637,9 +544,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 			}
 			if (null !== $this->aEleve) {
 				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns, true);
-			}
-			if (null !== $this->aAidConfiguration) {
-				$result['AidConfiguration'] = $this->aAidConfiguration->toArray($keyType, $includeLazyLoadColumns, true);
 			}
 		}
 		return $result;
@@ -678,9 +582,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 			case 1:
 				$this->setLogin($value);
 				break;
-			case 2:
-				$this->setIndiceAid($value);
-				break;
 		} // switch()
 	}
 
@@ -707,7 +608,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 
 		if (array_key_exists($keys[0], $arr)) $this->setIdAid($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setLogin($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setIndiceAid($arr[$keys[2]]);
 	}
 
 	/**
@@ -721,7 +621,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 
 		if ($this->isColumnModified(JAidElevesPeer::ID_AID)) $criteria->add(JAidElevesPeer::ID_AID, $this->id_aid);
 		if ($this->isColumnModified(JAidElevesPeer::LOGIN)) $criteria->add(JAidElevesPeer::LOGIN, $this->login);
-		if ($this->isColumnModified(JAidElevesPeer::INDICE_AID)) $criteria->add(JAidElevesPeer::INDICE_AID, $this->indice_aid);
 
 		return $criteria;
 	}
@@ -737,8 +636,8 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	public function buildPkeyCriteria()
 	{
 		$criteria = new Criteria(JAidElevesPeer::DATABASE_NAME);
+		$criteria->add(JAidElevesPeer::ID_AID, $this->id_aid);
 		$criteria->add(JAidElevesPeer::LOGIN, $this->login);
-		$criteria->add(JAidElevesPeer::INDICE_AID, $this->indice_aid);
 
 		return $criteria;
 	}
@@ -751,8 +650,8 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	public function getPrimaryKey()
 	{
 		$pks = array();
-		$pks[0] = $this->getLogin();
-		$pks[1] = $this->getIndiceAid();
+		$pks[0] = $this->getIdAid();
+		$pks[1] = $this->getLogin();
 		
 		return $pks;
 	}
@@ -765,8 +664,8 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	 */
 	public function setPrimaryKey($keys)
 	{
-		$this->setLogin($keys[0]);
-		$this->setIndiceAid($keys[1]);
+		$this->setIdAid($keys[0]);
+		$this->setLogin($keys[1]);
 	}
 
 	/**
@@ -775,7 +674,7 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return (null === $this->getLogin()) && (null === $this->getIndiceAid());
+		return (null === $this->getIdAid()) && (null === $this->getLogin());
 	}
 
 	/**
@@ -792,7 +691,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	{
 		$copyObj->setIdAid($this->id_aid);
 		$copyObj->setLogin($this->login);
-		$copyObj->setIndiceAid($this->indice_aid);
 
 		$copyObj->setNew(true);
 	}
@@ -936,64 +834,13 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Declares an association between this object and a AidConfiguration object.
-	 *
-	 * @param      AidConfiguration $v
-	 * @return     JAidEleves The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setAidConfiguration(AidConfiguration $v = null)
-	{
-		if ($v === null) {
-			$this->setIndiceAid(0);
-		} else {
-			$this->setIndiceAid($v->getIndiceAid());
-		}
-
-		$this->aAidConfiguration = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the AidConfiguration object, it will not be re-added.
-		if ($v !== null) {
-			$v->addJAidEleves($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated AidConfiguration object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     AidConfiguration The associated AidConfiguration object.
-	 * @throws     PropelException
-	 */
-	public function getAidConfiguration(PropelPDO $con = null)
-	{
-		if ($this->aAidConfiguration === null && ($this->indice_aid !== null)) {
-			$this->aAidConfiguration = AidConfigurationQuery::create()->findPk($this->indice_aid);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAidConfiguration->addJAidElevess($this);
-			 */
-		}
-		return $this->aAidConfiguration;
-	}
-
-	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
 	{
 		$this->id_aid = null;
 		$this->login = null;
-		$this->indice_aid = null;
 		$this->clearAllReferences();
-		$this->applyDefaultValues();
 		$this->setNew(true);
 	}
 
@@ -1013,7 +860,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 
 		$this->aAidDetails = null;
 		$this->aEleve = null;
-		$this->aAidConfiguration = null;
 	}
 
 	/**

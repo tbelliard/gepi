@@ -410,12 +410,6 @@ abstract class BaseAidConfigurationPeer {
 		// invalidate objects in AidDetailsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		AidDetailsPeer::clearInstancePool();
 
-		// invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		JAidUtilisateursProfessionnelsPeer::clearInstancePool();
-
-		// invalidate objects in JAidElevesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		JAidElevesPeer::clearInstancePool();
-
 	}
 
 	/**
@@ -745,18 +739,6 @@ abstract class BaseAidConfigurationPeer {
 			
 			$criteria->add(AidDetailsPeer::INDICE_AID, $obj->getIndiceAid());
 			$affectedRows += AidDetailsPeer::doDelete($criteria, $con);
-
-			// delete related JAidUtilisateursProfessionnels objects
-			$criteria = new Criteria(JAidUtilisateursProfessionnelsPeer::DATABASE_NAME);
-			
-			$criteria->add(JAidUtilisateursProfessionnelsPeer::INDICE_AID, $obj->getIndiceAid());
-			$affectedRows += JAidUtilisateursProfessionnelsPeer::doDelete($criteria, $con);
-
-			// delete related JAidEleves objects
-			$criteria = new Criteria(JAidElevesPeer::DATABASE_NAME);
-			
-			$criteria->add(JAidElevesPeer::INDICE_AID, $obj->getIndiceAid());
-			$affectedRows += JAidElevesPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}

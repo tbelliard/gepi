@@ -50,28 +50,6 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	}
 
 	/**
-	 *
-	 * Renvoi sous forme d'un propelObjectCollection la liste des Aid d'un utilisateur professeur. Le tableau est ordonné par le noms du groupes puis les classes du groupes.
-	 * Manually added for N:M relationship
-	 *
-	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     PropelObjectCollection AidDetails
-	 */
-	public function getAidDetailss($con = null) {
-		if ($this->collAidDetailss != null) {
-			return $this->collAidDetailss;
-		} else {
-		    $this->collAidDetailss = new PropelObjectCollection();
-		    foreach($this->getJAidUtilisateursProfessionnelssJoinAidDetails($con) as $ref) {
-			if ($ref != NULL) {
-			    $this->collAidDetailss->append($ref->getAidDetails());
-			}
-		    }
-		    return $this->collAidDetailss;
-		}
-	}
-
-	/**
 	 * Clears out the collGroupes collection (array).
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -267,15 +245,13 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	    if (!($edtcreneau instanceof EdtCreneau)) {
 		$edtcreneau = EdtCreneauQuery::create()->findPk($edtcreneau);
 		if ($edtcreneau == null) {
-		    throw new PropelException('Le premier argument doit etre de la classe EdtCreneau ou un id d\EdtCreneau');
+		    return new PropelObjectCollection();
 		}
 	    }
 
-	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-	    // -- which is unexpected, to say the least.
-	    //$dt = new DateTime();
+	    // we treat '' and NULL as 'now' for temporal
 	    if ($v === null || $v === '') {
-		    $dt = null;
+		    $dt = new DateTime('now');
 	    } elseif ($v instanceof DateTime) {
 		    $dt = $v;
 	    } else {

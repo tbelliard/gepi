@@ -37,8 +37,7 @@ class JAidUtilisateursProfessionnelsTableMap extends TableMap {
 		$this->setUseIdGenerator(false);
 		// columns
 		$this->addForeignPrimaryKey('ID_AID', 'IdAid', 'VARCHAR' , 'aid', 'ID', true, 100, null);
-		$this->addForeignKey('ID_UTILISATEUR', 'IdUtilisateur', 'VARCHAR', 'utilisateurs', 'LOGIN', true, 100, null);
-		$this->addForeignPrimaryKey('INDICE_AID', 'IndiceAid', 'INTEGER' , 'aid_config', 'INDICE_AID', true, 11, 0);
+		$this->addForeignPrimaryKey('ID_UTILISATEUR', 'IdUtilisateur', 'VARCHAR' , 'utilisateurs', 'LOGIN', true, 100, null);
 		// validators
 	} // initialize()
 
@@ -49,7 +48,6 @@ class JAidUtilisateursProfessionnelsTableMap extends TableMap {
 	{
     $this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'CASCADE', null);
     $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_utilisateur' => 'login', ), 'CASCADE', null);
-    $this->addRelation('AidConfiguration', 'AidConfiguration', RelationMap::MANY_TO_ONE, array('indice_aid' => 'indice_aid', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JAidUtilisateursProfessionnelsTableMap

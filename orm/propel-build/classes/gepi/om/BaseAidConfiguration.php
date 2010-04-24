@@ -134,16 +134,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	protected $collAidDetailss;
 
 	/**
-	 * @var        array JAidUtilisateursProfessionnels[] Collection to store aggregation of JAidUtilisateursProfessionnels objects.
-	 */
-	protected $collJAidUtilisateursProfessionnelss;
-
-	/**
-	 * @var        array JAidEleves[] Collection to store aggregation of JAidEleves objects.
-	 */
-	protected $collJAidElevess;
-
-	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -821,10 +811,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 
 			$this->collAidDetailss = null;
 
-			$this->collJAidUtilisateursProfessionnelss = null;
-
-			$this->collJAidElevess = null;
-
 		} // if (deep)
 	}
 
@@ -958,22 +944,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->collJAidUtilisateursProfessionnelss !== null) {
-				foreach ($this->collJAidUtilisateursProfessionnelss as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
-			if ($this->collJAidElevess !== null) {
-				foreach ($this->collJAidElevess as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
 			$this->alreadyInSave = false;
 
 		}
@@ -1047,22 +1017,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 
 				if ($this->collAidDetailss !== null) {
 					foreach ($this->collAidDetailss as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-				if ($this->collJAidUtilisateursProfessionnelss !== null) {
-					foreach ($this->collJAidUtilisateursProfessionnelss as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-				if ($this->collJAidElevess !== null) {
-					foreach ($this->collJAidElevess as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1414,18 +1368,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 				}
 			}
 
-			foreach ($this->getJAidUtilisateursProfessionnelss() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addJAidUtilisateursProfessionnels($relObj->copy($deepCopy));
-				}
-			}
-
-			foreach ($this->getJAidElevess() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addJAidEleves($relObj->copy($deepCopy));
-				}
-			}
-
 		} // if ($deepCopy)
 
 
@@ -1580,304 +1522,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Clears out the collJAidUtilisateursProfessionnelss collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addJAidUtilisateursProfessionnelss()
-	 */
-	public function clearJAidUtilisateursProfessionnelss()
-	{
-		$this->collJAidUtilisateursProfessionnelss = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collJAidUtilisateursProfessionnelss collection.
-	 *
-	 * By default this just sets the collJAidUtilisateursProfessionnelss collection to an empty array (like clearcollJAidUtilisateursProfessionnelss());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initJAidUtilisateursProfessionnelss()
-	{
-		$this->collJAidUtilisateursProfessionnelss = new PropelObjectCollection();
-		$this->collJAidUtilisateursProfessionnelss->setModel('JAidUtilisateursProfessionnels');
-	}
-
-	/**
-	 * Gets an array of JAidUtilisateursProfessionnels objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this AidConfiguration is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
-	 * @return     PropelCollection|array JAidUtilisateursProfessionnels[] List of JAidUtilisateursProfessionnels objects
-	 * @throws     PropelException
-	 */
-	public function getJAidUtilisateursProfessionnelss($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collJAidUtilisateursProfessionnelss || null !== $criteria) {
-			if ($this->isNew() && null === $this->collJAidUtilisateursProfessionnelss) {
-				// return empty collection
-				$this->initJAidUtilisateursProfessionnelss();
-			} else {
-				$collJAidUtilisateursProfessionnelss = JAidUtilisateursProfessionnelsQuery::create(null, $criteria)
-					->filterByAidConfiguration($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collJAidUtilisateursProfessionnelss;
-				}
-				$this->collJAidUtilisateursProfessionnelss = $collJAidUtilisateursProfessionnelss;
-			}
-		}
-		return $this->collJAidUtilisateursProfessionnelss;
-	}
-
-	/**
-	 * Returns the number of related JAidUtilisateursProfessionnels objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related JAidUtilisateursProfessionnels objects.
-	 * @throws     PropelException
-	 */
-	public function countJAidUtilisateursProfessionnelss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collJAidUtilisateursProfessionnelss || null !== $criteria) {
-			if ($this->isNew() && null === $this->collJAidUtilisateursProfessionnelss) {
-				return 0;
-			} else {
-				$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByAidConfiguration($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collJAidUtilisateursProfessionnelss);
-		}
-	}
-
-	/**
-	 * Method called to associate a JAidUtilisateursProfessionnels object to this object
-	 * through the JAidUtilisateursProfessionnels foreign key attribute.
-	 *
-	 * @param      JAidUtilisateursProfessionnels $l JAidUtilisateursProfessionnels
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addJAidUtilisateursProfessionnels(JAidUtilisateursProfessionnels $l)
-	{
-		if ($this->collJAidUtilisateursProfessionnelss === null) {
-			$this->initJAidUtilisateursProfessionnelss();
-		}
-		if (!$this->collJAidUtilisateursProfessionnelss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJAidUtilisateursProfessionnelss[]= $l;
-			$l->setAidConfiguration($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this AidConfiguration is new, it will return
-	 * an empty collection; or if this AidConfiguration has previously
-	 * been saved, it will retrieve related JAidUtilisateursProfessionnelss from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in AidConfiguration.
-	 */
-	public function getJAidUtilisateursProfessionnelssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
-		$query->joinWith('AidDetails', $join_behavior);
-
-		return $this->getJAidUtilisateursProfessionnelss($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this AidConfiguration is new, it will return
-	 * an empty collection; or if this AidConfiguration has previously
-	 * been saved, it will retrieve related JAidUtilisateursProfessionnelss from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in AidConfiguration.
-	 */
-	public function getJAidUtilisateursProfessionnelssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JAidUtilisateursProfessionnelsQuery::create(null, $criteria);
-		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
-
-		return $this->getJAidUtilisateursProfessionnelss($query, $con);
-	}
-
-	/**
-	 * Clears out the collJAidElevess collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addJAidElevess()
-	 */
-	public function clearJAidElevess()
-	{
-		$this->collJAidElevess = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collJAidElevess collection.
-	 *
-	 * By default this just sets the collJAidElevess collection to an empty array (like clearcollJAidElevess());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initJAidElevess()
-	{
-		$this->collJAidElevess = new PropelObjectCollection();
-		$this->collJAidElevess->setModel('JAidEleves');
-	}
-
-	/**
-	 * Gets an array of JAidEleves objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this AidConfiguration is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
-	 * @return     PropelCollection|array JAidEleves[] List of JAidEleves objects
-	 * @throws     PropelException
-	 */
-	public function getJAidElevess($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collJAidElevess || null !== $criteria) {
-			if ($this->isNew() && null === $this->collJAidElevess) {
-				// return empty collection
-				$this->initJAidElevess();
-			} else {
-				$collJAidElevess = JAidElevesQuery::create(null, $criteria)
-					->filterByAidConfiguration($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collJAidElevess;
-				}
-				$this->collJAidElevess = $collJAidElevess;
-			}
-		}
-		return $this->collJAidElevess;
-	}
-
-	/**
-	 * Returns the number of related JAidEleves objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related JAidEleves objects.
-	 * @throws     PropelException
-	 */
-	public function countJAidElevess(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collJAidElevess || null !== $criteria) {
-			if ($this->isNew() && null === $this->collJAidElevess) {
-				return 0;
-			} else {
-				$query = JAidElevesQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByAidConfiguration($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collJAidElevess);
-		}
-	}
-
-	/**
-	 * Method called to associate a JAidEleves object to this object
-	 * through the JAidEleves foreign key attribute.
-	 *
-	 * @param      JAidEleves $l JAidEleves
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addJAidEleves(JAidEleves $l)
-	{
-		if ($this->collJAidElevess === null) {
-			$this->initJAidElevess();
-		}
-		if (!$this->collJAidElevess->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJAidElevess[]= $l;
-			$l->setAidConfiguration($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this AidConfiguration is new, it will return
-	 * an empty collection; or if this AidConfiguration has previously
-	 * been saved, it will retrieve related JAidElevess from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in AidConfiguration.
-	 */
-	public function getJAidElevessJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JAidElevesQuery::create(null, $criteria);
-		$query->joinWith('AidDetails', $join_behavior);
-
-		return $this->getJAidElevess($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this AidConfiguration is new, it will return
-	 * an empty collection; or if this AidConfiguration has previously
-	 * been saved, it will retrieve related JAidElevess from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in AidConfiguration.
-	 */
-	public function getJAidElevessJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JAidElevesQuery::create(null, $criteria);
-		$query->joinWith('Eleve', $join_behavior);
-
-		return $this->getJAidElevess($query, $con);
-	}
-
-	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
@@ -1919,21 +1563,9 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collJAidUtilisateursProfessionnelss) {
-				foreach ((array) $this->collJAidUtilisateursProfessionnelss as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			if ($this->collJAidElevess) {
-				foreach ((array) $this->collJAidElevess as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
 		} // if ($deep)
 
 		$this->collAidDetailss = null;
-		$this->collJAidUtilisateursProfessionnelss = null;
-		$this->collJAidElevess = null;
 	}
 
 	/**

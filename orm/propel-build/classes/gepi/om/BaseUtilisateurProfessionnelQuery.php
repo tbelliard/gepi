@@ -1465,6 +1465,23 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	}
 	
 	/**
+	 * Filter the query by a related AidDetails object
+	 * using the j_aid_utilisateurs table as cross reference
+	 *
+	 * @param     AidDetails $aidDetails the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
+	 */
+	public function filterByAidDetails($aidDetails, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->useJAidUtilisateursProfessionnelsQuery()
+				->filterByAidDetails($aidDetails, $comparison)
+			->endUse();
+	}
+	
+	/**
 	 * Filter the query by a related Matiere object
 	 * using the j_professeurs_matieres table as cross reference
 	 *

@@ -36,9 +36,8 @@ class JAidElevesTableMap extends TableMap {
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
 		// columns
-		$this->addForeignKey('ID_AID', 'IdAid', 'VARCHAR', 'aid', 'ID', true, 100, null);
+		$this->addForeignPrimaryKey('ID_AID', 'IdAid', 'VARCHAR' , 'aid', 'ID', true, 100, null);
 		$this->addForeignPrimaryKey('LOGIN', 'Login', 'VARCHAR' , 'eleves', 'LOGIN', true, 60, null);
-		$this->addForeignPrimaryKey('INDICE_AID', 'IndiceAid', 'INTEGER' , 'aid_config', 'INDICE_AID', true, 11, 0);
 		// validators
 	} // initialize()
 
@@ -49,7 +48,6 @@ class JAidElevesTableMap extends TableMap {
 	{
     $this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'CASCADE', null);
     $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
-    $this->addRelation('AidConfiguration', 'AidConfiguration', RelationMap::MANY_TO_ONE, array('indice_aid' => 'indice_aid', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JAidElevesTableMap

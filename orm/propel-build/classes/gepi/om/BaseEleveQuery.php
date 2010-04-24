@@ -1230,6 +1230,23 @@ abstract class BaseEleveQuery extends ModelCriteria
 	}
 	
 	/**
+	 * Filter the query by a related AidDetails object
+	 * using the j_aid_eleves table as cross reference
+	 *
+	 * @param     AidDetails $aidDetails the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    EleveQuery The current query, for fluid interface
+	 */
+	public function filterByAidDetails($aidDetails, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->useJAidElevesQuery()
+				->filterByAidDetails($aidDetails, $comparison)
+			->endUse();
+	}
+	
+	/**
 	 * Exclude object from result
 	 *
 	 * @param     Eleve $eleve Object to remove from the list of results

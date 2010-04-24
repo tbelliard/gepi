@@ -70,6 +70,7 @@ class EleveTableMap extends TableMap {
     $this->addRelation('ArchiveEcts', 'ArchiveEcts', RelationMap::ONE_TO_MANY, array('no_gep' => 'ine', ), 'CASCADE', null);
     $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
     $this->addRelation('AncienEtablissement', 'AncienEtablissement', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+    $this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
 } // EleveTableMap
