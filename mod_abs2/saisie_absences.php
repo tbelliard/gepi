@@ -183,33 +183,52 @@ if (getSettingValue("abs2_saisie_prof_hors_cours")=='y' && !$utilisateur->getGro
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
-    echo ("<select name=\"id_creneau\">");
-    $edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 
-    echo "<option value='-1'>choisissez un creneau</option>\n";
-    foreach ($edt_creneau_col as $edt_creneau) {
-	//$edt_creneau = new EdtCreneau();
-	    echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-	    if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
-	    echo ">";
-	    echo $edt_creneau->getDescription();
-	    echo "</option>\n";
+    if (getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
+	echo ("<select name=\"id_creneau\">");
+	$edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
+
+	echo "<option value='-1'>choisissez un creneau</option>\n";
+	foreach ($edt_creneau_col as $edt_creneau) {
+	    //$edt_creneau = new EdtCreneau();
+		echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
+		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
+		echo ">";
+		echo $edt_creneau->getDescription();
+		echo "</option>\n";
+	}
+	echo "</select>&nbsp;";
+	if($d_date_absence_eleve == null) {
+		$d_date_absence_eleve = new DateTime();
+	}
+    } else {
+	$current_creneau = EdtCreneauPeer::retrieveEdtCreneauActuel();
+	if ($current_creneau != null) {
+	    echo " Creneau : ";
+	    echo $current_creneau->getDescription();
+	    echo "&nbsp;";
+	    echo '<input type="hidden" name="id_creneau" value="'.$id_creneau.'"/>';
+	} else {
+	    echo "Aucun creneau actuellement.&nbsp;";
+	}
     }
-    echo "</select>&nbsp;";
-    if($d_date_absence_eleve == null) {
-	    $d_date_absence_eleve = new DateTime();
+
+    if (getSettingValue("abs2_saisie_prof_decale")=='y') {
+	echo '<input size="8" id="d_date_absence_eleve" name="d_date_absence_eleve" value="'.$d_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
+	echo '
+	<script type="text/javascript">
+	    Calendar.setup({
+		inputField     :    "d_date_absence_eleve",     // id of the input field
+		ifFormat       :    "%d/%m/%Y",      // format of the input field
+		button         :    "d_date_absence_eleve",  // trigger for the calendar (button ID)
+		align          :    "Bl",           // alignment (defaults to "Bl")
+		singleClick    :    true
+	    });
+	</script>';
+    } else {
+	$d_date_absence_eleve = new DateTime('now');
+	echo $d_date_absence_eleve->format('d/m/Y');
     }
-    echo '<input size="8" id="d_date_absence_eleve" name="d_date_absence_eleve" value="'.$d_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
-    echo '
-    <script type="text/javascript">
-	Calendar.setup({
-	    inputField     :    "d_date_absence_eleve",     // id of the input field
-	    ifFormat       :    "%d/%m/%Y",      // format of the input field
-	    button         :    "d_date_absence_eleve",  // trigger for the calendar (button ID)
-	    align          :    "Bl",           // alignment (defaults to "Bl")
-	    singleClick    :    true
-	});
-    </script>';
     echo '<button type="submit">Afficher les eleves</button>';
     echo "</form>";
     echo "</td>";
@@ -229,33 +248,52 @@ if (getSettingValue("abs2_saisie_prof_hors_cours")=='y' && !$utilisateur->getAid
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
-    echo ("<select name=\"id_creneau\">");
-    $edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
+    
+    if (getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
+	echo ("<select name=\"id_creneau\">");
+	$edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 
-    echo "<option value='-1'>choisissez un creneau</option>\n";
-    foreach ($edt_creneau_col as $edt_creneau) {
-	//$edt_creneau = new EdtCreneau();
-	    echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-	    if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
-	    echo ">";
-	    echo $edt_creneau->getDescription();
-	    echo "</option>\n";
+	echo "<option value='-1'>choisissez un creneau</option>\n";
+	foreach ($edt_creneau_col as $edt_creneau) {
+	    //$edt_creneau = new EdtCreneau();
+		echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
+		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
+		echo ">";
+		echo $edt_creneau->getDescription();
+		echo "</option>\n";
+	}
+	echo "</select>&nbsp;";
+	if($d_date_absence_eleve == null) {
+		$d_date_absence_eleve = new DateTime();
+	}
+    } else {
+	$current_creneau = EdtCreneauPeer::retrieveEdtCreneauActuel();
+	if ($current_creneau != null) {
+	    echo " Creneau : ";
+	    echo $current_creneau->getDescription();
+	    echo "&nbsp;";
+	    echo '<input type="hidden" name="id_creneau" value="'.$id_creneau.'"/>';
+	} else {
+	    echo "Aucun creneau actuellement.&nbsp;";
+	}
     }
-    echo "</select>&nbsp;";
-    if($d_date_absence_eleve == null && $d_date_absence_eleve = '') {
-	    $d_date_absence_eleve = new DateTime();
+
+    if (getSettingValue("abs2_saisie_prof_decale")=='y') {
+	echo '<input size="8" id="d_date_absence_eleve" name="d_date_absence_eleve" value="'.$d_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
+	echo '
+	<script type="text/javascript">
+	    Calendar.setup({
+		inputField     :    "d_date_absence_eleve",     // id of the input field
+		ifFormat       :    "%d/%m/%Y",      // format of the input field
+		button         :    "d_date_absence_eleve",  // trigger for the calendar (button ID)
+		align          :    "Bl",           // alignment (defaults to "Bl")
+		singleClick    :    true
+	    });
+	</script>';
+    } else {
+	$d_date_absence_eleve = new DateTime('now');
+	echo $d_date_absence_eleve->format('d/m/Y');
     }
-    echo '<input size="8" id="d_date_absence_eleve_2" name="d_date_absence_eleve" value="'.$d_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
-    echo '
-    <script type="text/javascript">
-	Calendar.setup({
-	    inputField     :    "d_date_absence_eleve_2",     // id of the input field
-	    ifFormat       :    "%d/%m/%Y",      // format of the input field
-	    button         :    "d_date_absence_eleve_2",  // trigger for the calendar (button ID)
-	    align          :    "Bl",           // alignment (defaults to "Bl")
-	    singleClick    :    true
-	});
-    </script>';
     echo '<button type="submit">Afficher les eleves</button>';
     echo "</form>";
     echo "</td>";
@@ -270,6 +308,13 @@ if (!$edt_cours_col->isEmpty()) {
     echo ("<select name=\"id_cours\">");
     echo "<option value='-1'>choisissez un cours</option>\n";
     foreach ($edt_cours_col as $edt_cours) {
+	//$edt_cours = new EdtEmplacementCours();
+	    if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
+		if ($edt_cours->getJourSemaineNumeric() != date('w')) {
+		    //on affiche pas ce cours
+		    continue;
+		}
+	    }
 	    echo "<option value='".$edt_cours->getIdCours()."'";
 	    if ($id_cours == $edt_cours->getIdCours()) echo " SELECTED ";
 	    echo ">";
@@ -279,20 +324,27 @@ if (!$edt_cours_col->isEmpty()) {
     echo "</select>&nbsp;";
 
 
-    $col = EdtSemaineQuery::create()->find();    echo ("<select name=\"id_semaine\">");
-    echo "<option value='-1'>choisissez une semaine</option>\n";
-    //on va commencer la liste à la semaine 31 (miliu des vacances d'ete)
-    for ($i = 0; $i < $col->count(); $i++) {
-	$pos = ($i + 30) % $col->count();
-	$semaine = $col[$pos];
-	//$semaine = new EdtSemaine();
-	    echo "<option value='".$semaine->getPrimaryKey()."'";
-	    if ($id_semaine == $semaine->getPrimaryKey()) echo " SELECTED ";
-	    echo ">";
-	    echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
-	    echo "</option>\n";
+    if (getSettingValue("abs2_saisie_prof_decale")=='y') {
+	$col = EdtSemaineQuery::create()->find();
+	echo ("<select name=\"id_semaine\">");
+	echo "<option value='-1'>choisissez une semaine</option>\n";
+	//on va commencer la liste à la semaine 31 (miliu des vacances d'ete)
+	for ($i = 0; $i < $col->count(); $i++) {
+	    $pos = ($i + 30) % $col->count();
+	    $semaine = $col[$pos];
+	    //$semaine = new EdtSemaine();
+		echo "<option value='".$semaine->getPrimaryKey()."'";
+		if ($id_semaine == $semaine->getPrimaryKey()) echo " SELECTED ";
+		echo ">";
+		echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
+		echo "</option>\n";
+	}
+	echo "</select>&nbsp;";
+    } else {
+	$semaine = EdtSemaineQuery::create()->findPk($id_semaine);
+	echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
+	echo '<input type="hidden" name="id_semaine" value="'.$id_semaine.'"/>&nbsp;';
     }
-    echo "</select>&nbsp;";
 
     echo '<button type="submit">Afficher les eleves</button>';
     $current_semaine = EdtSemaineQuery::create()->findPk($id_semaine);
@@ -427,7 +479,7 @@ foreach($eleve_col as $eleve) {
 
 					if ($current_creneau != null && $current_creneau->getPrimaryKey() == $edt_creneau->getPrimaryKey()) {
 					    //le message d'erreur provient du fichier enregistrement_saisies.php
-					    if (isset($message_erreur_eleve[$eleve->getIdEleve()])) {
+					    if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
 						echo "Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
 					    }
 
@@ -447,9 +499,19 @@ foreach($eleve_col as $eleve) {
 					    }
 					    echo '</nobr> ';
 					    echo '<nobr><input style="font-size:88%;" name="heure_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$edt_creneau->getHeuredebutDefiniePeriode("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
-					    echo '<input style="font-size:88%;" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+					    if (getSettingValue("abs2_saisie_prof_decale")=='y') {
+						    echo '<input style="font-size:88%;" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+					    } else {
+						    echo '<input style="font-size:88%;" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
+						    echo "</nobr> ";
+					    }
 					    echo '<nobr><input style="font-size:88%;" name="heure_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$edt_creneau->getHeurefinDefiniePeriode("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
-					    echo '<input style="font-size:88%;" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr>';
+					    if (getSettingValue("abs2_saisie_prof_decale")=='y') {
+						    echo '<input style="font-size:88%;" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+					    } else {
+						    echo '<input style="font-size:88%;" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
+						    echo "</nobr> ";
+					    }
 					}
 					echo '</td>';
 				}

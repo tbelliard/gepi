@@ -119,7 +119,24 @@ if ($id_groupe == '') $id_groupe = null;
 if ($id_classe == '') $id_classe = null;
 if ($id_aid == '') $id_aid = null;
 
+//on verifie si l'utilisateur a le droit de saisir cela
+if ($utilisateur->getStatut() == 'professeur') {
+    if (getSettingValue("abs2_saisie_prof_decale_journee")!='y' && getSettingValue("abs2_saisie_prof_decale")!='y') {
+	$creneau_actuel = EdtCreneauPeer::retrieveEdtCreneauActuel();
+	if ($creneau_actuel == null || $creneau_actuel->getIdDefiniePeriode() != $id_creneau) {
+	    $message_enregistrement .=  $creneau_actuel->getIdDefiniePeriode();
+	    $message_enregistrement .=  " creneau : ".$id_creneau;
+	    $message_enregistrement .= "Saisie non autorisée hors du creneau en cours.<br/>";
+	}
+    }
+}
+
+$jours_actuel = date('d/m/Y');
+$creneau_actuel = EdtCreneauQuery::create()->findPk($id_creneau);
+
 for($i=0; $i<$total_eleves; $i++) {
+
+    $id_eleve = $index = $_POST['id_eleve_absent'][$i];
 
     //on test si l'eleve est enregistré absent
     if (!isset($_POST['active_absence_eleve'][$i]) &&
@@ -134,6 +151,8 @@ for($i=0; $i<$total_eleves; $i++) {
 	continue;
     }
 
+    $message_erreur_eleve[$id_eleve] = "";
+
     $saisie = new AbsenceEleveSaisie();
     $saisie->setEleveId($_POST['id_eleve_absent'][$i]);
     $saisie->setIdEdtCreneau($id_creneau);
@@ -146,12 +165,40 @@ for($i=0; $i<$total_eleves; $i++) {
     $date_debut = new DateTime(str_replace("/",".",$_POST['date_debut_absence_eleve'][$i]));
     $heure_debut = new DateTime($_POST['heure_debut_absence_eleve'][$i]);
     $date_debut->setTime($heure_debut->format('H'), $heure_debut->format('i'));
+    if ($utilisateur->getStatut() == 'professeur') {
+	if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
+	    if ($date_debut->format('d/m/Y') != $jours_actuel) {
+		$message_erreur_eleve[$id_eleve] .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
+		continue;
+	    }
+	}
+	if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
+	   if ($creneau_actuel == null || $creneau_actuel->getHeuredebutDefiniePeriode('Hi') > $date_debut->format('Hi')) {
+		$message_erreur_eleve[$id_eleve] .= "Saisie hors creneau actuel non autorisée.<br/>";
+		continue;
+	   }
+	}
+    }
     $saisie->setDebutAbs($date_debut);
 
     $date_fin = new DateTime(str_replace("/",".",$_POST['date_fin_absence_eleve'][$i]));
     $heure_fin = new DateTime($_POST['heure_fin_absence_eleve'][$i]);
     $date_fin->setTime($heure_fin->format('H'), $heure_fin->format('i'));
-    $saisie->setFinAbs($date_fin);
+    if ($utilisateur->getStatut() == 'professeur') {
+	if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
+	    if ($date_fin->format('d/m/Y') != $jours_actuel) {
+		$message_erreur_eleve[$id_eleve] .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
+		continue;
+	    }
+	}
+	if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
+	   if ($creneau_actuel == null || $creneau_actuel->getHeurefinDefiniePeriode('Hi') < $date_fin->format('Hi')) {
+		$message_erreur_eleve[$id_eleve] .= "Saisie hors creneau actuel non autorisée.<br/>";
+		continue;
+	   }
+	}
+    }
+     $saisie->setFinAbs($date_fin);
 
     $saisie->setUtilisateurId($utilisateur->getPrimaryKey());
 
@@ -178,8 +225,7 @@ for($i=0; $i<$total_eleves; $i++) {
 	}
 	$message_enregistrement .= "Saisie enregistrée pour l'eleve : ".$eleve->getNom()."<br/>";
     } else {
-	$index = $_POST['id_eleve_absent'][$i];
-	$message_erreur_eleve[$index] = $saisie->getValidationFailures();
+	$message_erreur_eleve[$id_eleve] .= $saisie->getValidationFailures();
     }
 }
 

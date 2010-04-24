@@ -88,11 +88,44 @@ $saisie->setCommentaire($commentaire);
 $date_debut = new DateTime(str_replace("/",".",$_POST['date_debut']));
 $heure_debut = new DateTime($_POST['heure_debut']);
 $date_debut->setTime($heure_debut->format('H'), $heure_debut->format('i'));
+$jours_actuel = date('d/m/Y');
+if ($utilisateur->getStatut() == 'professeur') {
+    if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
+	if ($date_debut->format('d/m/Y') != $jours_actuel) {
+	    $message_enregistrement .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
+	    include("visu_saisie.php");
+	    die();
+	}
+    }
+    if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
+       if ($saisie->getEdtCreneau() == null || $saisie->getEdtCreneau()->getHeuredebutDefiniePeriode('Hi') > $date_debut->format('Hi')) {
+	    $message_enregistrement .= "Saisie hors creneau actuel non autorisée.<br/>";
+	    include("visu_saisie.php");
+	    die();
+       }
+    }
+}
 $saisie->setDebutAbs($date_debut);
 
 $date_fin = new DateTime(str_replace("/",".",$_POST['date_fin']));
 $heure_fin = new DateTime($_POST['heure_fin']);
 $date_fin->setTime($heure_fin->format('H'), $heure_fin->format('i'));
+if ($utilisateur->getStatut() == 'professeur') {
+    if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
+	if ($date_fin->format('d/m/Y') != $jours_actuel) {
+	    $message_enregistrement .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
+	    include("visu_saisie.php");
+	    die();
+	}
+    }
+    if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
+       if ($saisie->getEdtCreneau() == null || $saisie->getEdtCreneau()->getHeurefinDefiniePeriode('Hi') < $date_fin->format('Hi')) {
+	    $message_enregistrement .= "Saisie hors creneau actuel non autorisée.<br/>";
+	    include("visu_saisie.php");
+	    die();
+       }
+    }
+}
 $saisie->setFinAbs($date_fin);
 
 
