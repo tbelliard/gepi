@@ -152,7 +152,9 @@ class Groupe extends BaseGroupe {
 	 */
 	public function getEleves($periode = NULL) {
 		if ($periode == NULL) {
-		    $periode = $this->getPeriodeNoteOuverte()->getNumPeriode();
+		    if ($this->getPeriodeNoteOuverte() != null) {
+			$periode = $this->getPeriodeNoteOuverte()->getNumPeriode();
+		    }
 		}
 		$eleves = new PropelObjectCollection();
 		$criteria = new Criteria();
