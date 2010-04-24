@@ -79,7 +79,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    }
 
 	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, à la classe ou à l'aid précisé
-	    if ($this->getIdAid() != null && $this->getEleve() != null) {
+	    if ($this->getAidDetails() != null && $this->getEleve() != null) {
 		$criteria = new Criteria();
 		$criteria->add(JAidElevesPeer::LOGIN, $this->getEleve()->getLogin());
 		if ($this->getAidDetails()->countJAidElevess($criteria) == 0) {
@@ -88,7 +88,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    }
 
 	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, à la classe ou à l'aid précisé
-	    if ($this->getIdGroupe() != null && $this->getEleve() != null) {
+	    if ($this->getGroupe() != null && $this->getEleve() != null) {
 		$criteria = new Criteria();
 		$criteria->add(JEleveGroupePeer::LOGIN, $this->getEleve()->getLogin());
 		if ($this->getGroupe()->countJEleveGroupes($criteria) == 0) {
@@ -97,7 +97,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    }
 
 	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, à la classe ou à l'aid précisé
-	    if ($this->getIdClasse() != null && $this->getEleve() != null) {
+	    if ($this->getClasse() != null && $this->getEleve() != null) {
 		$criteria = new Criteria();
 		$criteria->add(JEleveClassePeer::LOGIN, $this->getEleve()->getLogin());
 		if ($this->getClasse()->countJEleveClasses($criteria) == 0) {
