@@ -11,7 +11,7 @@ class UnitTestAbsenceSaise  {
 	public static function getAbsenceTraitement() {
 		//Creation d'une absence
 		$absenceTraitement = new AbsenceEleveTraitement();
-		$absenceTraitement->setTexteJustification('UnitTestTraitementAbsence');
+		$absenceTraitement->setCommentaire('UnitTestTraitementAbsence');
 		return $absenceTraitement;
 	}
 
