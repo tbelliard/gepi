@@ -72,6 +72,9 @@ $id_semaine = isset($_POST["id_semaine"]) ? $_POST["id_semaine"] : null;
 $current_cours = null;
 $current_groupe = null;
 $current_aid = null;
+if ($id_semaine == null || $id_semaine == -1) {
+    $id_semaine = date('W');
+}
 
 if ($type_selection == 'edt_cours') {
     $current_cours = new EdtEmplacementCours();
