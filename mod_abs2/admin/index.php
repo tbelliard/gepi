@@ -188,7 +188,6 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	<input type="radio" id="activerProfY" name="activer_prof" value="y"
 	<?php if (getSettingValue("active_module_absence_professeur")=='y') echo " checked='checked'"; ?> />
 	<label for="activerProfY">&nbsp;Activer le module de la saisie des absences par les professeurs</label>
-	<a href="./interface_abs.php">&nbsp;Param&eacute;trer l'interface des professeurs</a>
 </p>
 <p>
 	<input type="radio" id="activerProfN" name="activer_prof" value="n"
@@ -234,18 +233,6 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 	<input type="radio" id="activerRespKo" name="activer_resp" value="n"
 	<?php if (getSettingValue("active_absences_parents") == 'n') echo ' checked="checked"'; ?> />
 	<label for="activerRespKo">Ne pas permettre cet acc&egrave;s</label>
-</p>
-
-<h2>Param&eacute;trer le classement des absences (par d&eacute;faut TOP 10)</h2>
-<p>
-  <label for="idClass">Nombre de lignes pour le classement</label>
-  <select id="idCLass" name="classement">
-    <option value="10"<?php echo $selected10; ?>>10</option>
-    <option value="20"<?php echo $selected20; ?>>20</option>
-    <option value="30"<?php echo $selected30; ?>>30</option>
-    <option value="40"<?php echo $selected40; ?>>40</option>
-    <option value="50"<?php echo $selected50; ?>>50</option>
-  </select>
 </p>
 
 <div class="centre"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></div>

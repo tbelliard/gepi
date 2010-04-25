@@ -68,13 +68,13 @@ $type_selection = isset($_POST["type_selection"]) ? $_POST["type_selection"] :(i
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :(isset($_GET["date_absence_eleve"]) ? $_GET["date_absence_eleve"] :(isset($_SESSION["date_absence_eleve"]) ? $_SESSION["date_absence_eleve"] : NULL));
 $id_semaine = isset($_POST["id_semaine"]) ? $_POST["id_semaine"] :(isset($_GET["id_semaine"]) ? $_GET["id_semaine"] :(isset($_SESSION["id_semaine"]) ? $_SESSION["id_semaine"] : NULL));
 
-$_SESSION['id_groupe_abs'] = $id_groupe;
-$_SESSION['id_aid'] = $id_aid;
-$_SESSION['id_creneau'] = $id_creneau;
-$_SESSION['id_cours'] = $id_cours;
-$_SESSION['type_selection'] = $type_selection;
-$_SESSION['date_absence_eleve'] = $date_absence_eleve;
-$_SESSION['id_semaine'] = $id_semaine;
+if (isset($id_groupe) && $id_groupe != null) $_SESSION['id_groupe_abs'] = $id_groupe;
+if (isset($id_aid) && $id_aid != null) $_SESSION['id_aid'] = $id_aid;
+if (isset($id_creneau) && $id_creneau != null) $_SESSION['id_creneau'] = $id_creneau;
+if (isset($id_cours) && $id_cours != null) $_SESSION['id_cours'] = $id_cours;
+if (isset($type_selection) && $type_selection != null) $_SESSION['type_selection'] = $type_selection;
+if (isset($date_absence_eleve) && $date_absence_eleve != null) $_SESSION['date_absence_eleve'] = $date_absence_eleve;
+if (isset($id_semaine) && $id_semaine != null) $_SESSION['id_semaine'] = $id_semaine;
 
 
 //initialisation des variables

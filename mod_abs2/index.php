@@ -60,7 +60,7 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
 }
 
 //on va redirigé vers le bonee onglet
-if (isset($_SESSION['abs2_onglet'])) {
+if (isset($_SESSION['abs2_onglet']) && $_SESSION['abs2_onglet'] != 'index.php') {
     header("Location: ./".$_SESSION['abs2_onglet']);
     die();
 }

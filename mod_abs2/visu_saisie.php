@@ -61,7 +61,7 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
 
 //récupération des paramètres de la requète
 $id_saisie = isset($_POST["id_saisie"]) ? $_POST["id_saisie"] :(isset($_GET["id_saisie"]) ? $_GET["id_saisie"] :(isset($_SESSION["id_saisie"]) ? $_SESSION["id_saisie"] : NULL));
-$_SESSION['id_saisie'] = $id_saisie;
+if (isset($id_saisie) && $id_saisie != null) $_SESSION['id_saisie'] = $id_saisie;
 
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";

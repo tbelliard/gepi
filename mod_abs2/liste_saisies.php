@@ -107,45 +107,52 @@ if ($reinit_filtre == 'y') {
 }
 
 //on va mettre en session tout les parametres de la requete, pour la navigation par onglet
-$_SESSION['order'] = $order;
+if (isset($order) && $order != null) $_SESSION['order'] = $order;
 
-$_SESSION['filter_id'] = $filter_id;
-$_SESSION['filter_eleve'] = $filter_eleve;
-$_SESSION['filter_classe'] = $filter_classe;
-$_SESSION['filter_groupe'] = $filter_groupe;
-$_SESSION['filter_aid'] = $filter_aid;
-$_SESSION['filter_date_debut_absence_debut_plage'] = $filter_date_debut_absence_debut_plage;
-$_SESSION['filter_date_debut_absence_fin_plage'] = $filter_date_debut_absence_fin_plage;
-$_SESSION['filter_date_fin_absence_debut_plage'] = $filter_date_fin_absence_debut_plage;
-$_SESSION['filter_date_fin_absence_fin_plage'] = $filter_date_fin_absence_fin_plage;
-$_SESSION['filter_creneau'] = $filter_creneau;
-$_SESSION['filter_cours'] = $filter_cours;
-$_SESSION['filter_date_creation_absence_debut_plage'] = $filter_date_creation_absence_debut_plage;
-$_SESSION['filter_date_creation_absence_fin_plage'] = $filter_date_creation_absence_fin_plage;
-$_SESSION['filter_date_modification'] = $filter_date_modification;
-$_SESSION['filter_date_traitement_absence_debut_plage'] = $filter_date_traitement_absence_debut_plage;
-$_SESSION['filter_date_traitement_absence_fin_plage'] = $filter_date_traitement_absence_fin_plage;
-$_SESSION['filter_discipline'] = $filter_discipline;
+if (isset($filter_id) && $filter_id != null) $_SESSION['filter_id'] = $filter_id;
+if (isset($filter_eleve) && $filter_eleve != null) $_SESSION['filter_eleve'] = $filter_eleve;
+if (isset($filter_classe) && $filter_classe != null) $_SESSION['filter_classe'] = $filter_classe;
+if (isset($filter_groupe) && $filter_groupe != null) $_SESSION['filter_groupe'] = $filter_groupe;
+if (isset($filter_aid) && $filter_aid != null) $_SESSION['filter_aid'] = $filter_aid;
+if (isset($filter_date_debut_absence_debut_plage) && $filter_date_debut_absence_debut_plage != null) $_SESSION['filter_date_debut_absence_debut_plage'] = $filter_date_debut_absence_debut_plage;
+if (isset($filter_date_debut_absence_fin_plage) && $filter_date_debut_absence_fin_plage != null) $_SESSION['filter_date_debut_absence_fin_plage'] = $filter_date_debut_absence_fin_plage;
+if (isset($filter_date_fin_absence_debut_plage) && $filter_date_fin_absence_debut_plage != null) $_SESSION['filter_date_fin_absence_debut_plage'] = $filter_date_fin_absence_debut_plage;
+if (isset($filter_date_fin_absence_fin_plage) && $filter_date_fin_absence_fin_plage != null) $_SESSION['filter_date_fin_absence_fin_plage'] = $filter_date_fin_absence_fin_plage;
+if (isset($filter_creneau) && $filter_creneau != null) $_SESSION['filter_creneau'] = $filter_creneau;
+if (isset($filter_cours) && $filter_cours != null) $_SESSION['filter_cours'] = $filter_cours;
+if (isset($filter_date_creation_absence_debut_plage) && $filter_date_creation_absence_debut_plage != null) $_SESSION['filter_date_creation_absence_debut_plage'] = $filter_date_creation_absence_debut_plage;
+if (isset($filter_date_creation_absence_fin_plage) && $filter_date_creation_absence_fin_plage != null) $_SESSION['filter_date_creation_absence_fin_plage'] = $filter_date_creation_absence_fin_plage;
+if (isset($filter_date_modification) && $filter_date_modification != null) $_SESSION['filter_date_modification'] = $filter_date_modification;
+if (isset($filter_date_traitement_absence_debut_plage) && $filter_date_traitement_absence_debut_plage != null) $_SESSION['filter_date_traitement_absence_debut_plage'] = $filter_date_traitement_absence_debut_plage;
+if (isset($filter_date_traitement_absence_fin_plage) && $filter_date_traitement_absence_fin_plage != null) $_SESSION['filter_date_traitement_absence_fin_plage'] = $filter_date_traitement_absence_fin_plage;
+if (isset($filter_discipline) && $filter_discipline != null) $_SESSION['filter_discipline'] = $filter_discipline;
 
-$page_number = isset($_POST["page_number"]) ? $_POST["page_number"] :(isset($_GET["page_number"]) ? $_GET["page_number"] :NULL);
+$page_number = isset($_POST["page_number"]) ? $_POST["page_number"] :(isset($_GET["page_number"]) ? $_GET["page_number"] :(isset($_SESSION["page_number"]) ? $_SESSION["page_number"] : NULL));
 if (!is_numeric($page_number)) {
     $page_number = 1;
 }
+
 $page_deplacement = isset($_POST["page_deplacement"]) ? $_POST["page_deplacement"] :(isset($_GET["page_deplacement"]) ? $_GET["page_deplacement"] :NULL);
 if ($page_deplacement == "+") {
     $page_number = $page_number + 1;
 } else if ($page_deplacement == "-") {
     $page_number = $page_number - 1;
 }
+if ($page_number < 1) {
+    $page_number = 1;
+}
+if (isset($page_number) && $page_number != null) $_SESSION['page_number'] = $page_number;
+//if (isset($page_deplacement) && $page_deplacement != null) $_SESSION['page_deplacement'] = $page_deplacement;
 
-$item_per_page = isset($_POST["item_per_page"]) ? $_POST["item_per_page"] :(isset($_GET["item_per_page"]) ? $_GET["item_per_page"] :NULL);
+$item_per_page = isset($_POST["item_per_page"]) ? $_POST["item_per_page"] :(isset($_GET["item_per_page"]) ? $_GET["item_per_page"] :(isset($_SESSION["item_per_page"]) ? $_SESSION["item_per_page"] : NULL));
 if (!is_numeric($item_per_page)) {
     $item_per_page = 14;
 }
 if ($item_per_page < 1) {
     $item_per_page = 1;
 }
- 
+if (isset($item_per_page) && $item_per_page != null) $_SESSION['item_per_page'] = $item_per_page;
+
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
