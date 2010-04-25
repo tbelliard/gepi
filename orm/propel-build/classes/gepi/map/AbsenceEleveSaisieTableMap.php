@@ -47,6 +47,7 @@ class AbsenceEleveSaisieTableMap extends TableMap {
 		$this->addForeignKey('ID_GROUPE', 'IdGroupe', 'INTEGER', 'groupes', 'ID', false, null, -1);
 		$this->addForeignKey('ID_CLASSE', 'IdClasse', 'INTEGER', 'classes', 'ID', false, null, -1);
 		$this->addForeignKey('ID_AID', 'IdAid', 'INTEGER', 'aid', 'ID', false, null, -1);
+		$this->addColumn('ID_S_INCIDENTS', 'IdSIncidents', 'INTEGER', false, null, -1);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		// validators

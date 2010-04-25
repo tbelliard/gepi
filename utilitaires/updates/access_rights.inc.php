@@ -655,6 +655,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisies.php',
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/liste_saisies.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Enregistrement des saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/visu_saisie.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_modif_saisie.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_discipline/saisie_incident_abs2.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
 
 
 

@@ -41,12 +41,6 @@ echo "<li><a href='visu_saisie.php' ";
 if($onglet_abs=='visu_saisie') {echo "class='current' ";}
 echo "title='Visualiser une saisies'>Visualiser une saisies</a></li>\n";
 
-if (getSettingValue("active_mod_discipline") == "y") {
-    echo "<li><a href='../mod_discipline/index.php' ";
-    if($onglet_abs=='discipline') {echo "class='current' ";}
-    echo "title='Module discipline'>Discipline</a></li>";
-}
-
 echo "</ul>\n";
 
 ?>

@@ -81,6 +81,7 @@ $filter_date_creation_absence_fin_plage = isset($_POST["filter_date_creation_abs
 $filter_date_modification = isset($_POST["filter_date_modification"]) ? $_POST["filter_date_modification"] :(isset($_GET["filter_date_modification"]) ? $_GET["filter_date_modification"] :NULL);
 $filter_date_traitement_absence_debut_plage = isset($_POST["filter_date_traitement_absence_debut_plage"]) ? $_POST["filter_date_traitement_absence_debut_plage"] :(isset($_GET["filter_date_traitement_absence_debut_plage"]) ? $_GET["filter_date_traitement_absence_debut_plage"] :NULL);
 $filter_date_traitement_absence_fin_plage = isset($_POST["filter_date_traitement_absence_fin_plage"]) ? $_POST["filter_date_traitement_absence_fin_plage"] :(isset($_GET["filter_date_traitement_absence_fin_plage"]) ? $_GET["filter_date_traitement_absence_fin_plage"] :NULL);
+$filter_discipline = isset($_POST["filter_discipline"]) ? $_POST["filter_discipline"] :(isset($_GET["filter_discipline"]) ? $_GET["filter_discipline"] :NULL);
 
 $reinit_filtre = isset($_POST["reinit_filtre"]) ? $_POST["reinit_filtre"] :(isset($_GET["reinit_filtre"]) ? $_GET["reinit_filtre"] :NULL);
 if ($reinit_filtre == 'y') {
@@ -101,6 +102,7 @@ if ($reinit_filtre == 'y') {
     $filter_date_modification = NULL;
     $filter_date_traitement_absence_debut_plage = NULL;
     $filter_date_traitement_absence_fin_plage = NULL;
+    $filter_discipline = NULL;
 }
 
 $page_number = isset($_POST["page_number"]) ? $_POST["page_number"] :(isset($_GET["page_number"]) ? $_GET["page_number"] :NULL);
@@ -222,6 +224,10 @@ if ($filter_date_traitement_absence_fin_plage != null && $filter_date_traitement
     $query->condition('trait2', 'AbsenceEleveTraitement.UpdatedAt IS NULL');
     $query->where(array('trait1', 'trait2'), 'or');
 }
+if ($filter_discipline != null && $filter_discipline == 'y') {
+    $query->filterByIdSIncidents(null, Criteria::NOT_EQUAL);
+    $query->filterByIdSIncidents(-1, Criteria::NOT_EQUAL);
+}
 
 if ($order == "asc_id") {
     $query->orderBy('Id', Criteria::ASC);
@@ -271,6 +277,10 @@ if ($order == "asc_id") {
     $query->leftJoin('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoin('JTraitementSaisieEleve.AbsenceEleveTraitement')->orderBy('AbsenceEleveTraitement.UpdatedAt', Criteria::ASC);
 } else if ($order == "des_date_traitement") {
     $query->leftJoin('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoin('JTraitementSaisieEleve.AbsenceEleveTraitement')->orderBy('AbsenceEleveTraitement.UpdatedAt', Criteria::DESC);
+} else if ($order == "asc_dis") {
+    $query->orderBy('IdSIncidents', Criteria::ASC);
+} else if ($order == "des_dis") {
+    $query->orderBy('IdSIncidents', Criteria::DESC);
 }
 
 $query->distinct();
@@ -680,6 +690,23 @@ echo '<TH>';
 echo 'commentaire';
 echo '</TH>';
 
+//en tete disciplinne
+echo '<TH>';
+echo '<nobr>';
+echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "asc_dis") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="asc_dis"/>';
+echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "des_dis") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="des_dis"/>';
+echo '</nobr> ';
+echo '<nobr>';
+echo '<INPUT TYPE="CHECKBOX" value="y" NAME="filter_discipline"';
+if ($filter_discipline != null && $filter_discipline == 'y') {echo "checked";}
+echo '> Rapport<br/>d\'incident';
+echo '</nobr>';
+echo '</TH>';
+
 echo '</TR>';
 echo '</THEAD>';
 
@@ -835,6 +862,13 @@ foreach ($results as $saisie) {
     echo "&nbsp;";
     echo "</a>";
     echo '</TD>';
+
+    echo '<TD>';
+    if ($saisie->getIdSIncidents() != null && $saisie->getIdSIncidents() != -1) {
+	echo "<a href='../mod_discipline/saisie_incident.php?id_incident=".
+	$saisie->getIdSIncidents()."&step=2'>Visualiser l'incident </a>";
+    }
+    echo '</td>';
 
     echo '</TR>';
 

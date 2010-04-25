@@ -429,6 +429,7 @@
     <foreign-key foreignTable="classes" onDelete="setnull"><reference local="id_classe" foreign="id"/></foreign-key>
     <column name="id_aid" required="false" type="INTEGER" default="-1" description="identifiant de l'aid pour lequel la saisie a ete effectuee"/>
     <foreign-key foreignTable="aid" onDelete="setnull"><reference local="id_aid" foreign="id"/></foreign-key>
+    <column name="id_s_incidents" required="false" type="INTEGER" default="-1" description="identifiant de la saisie d'incident discipline"/>
     <behavior name="timestampable" />
   </table>
 

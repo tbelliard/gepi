@@ -198,7 +198,7 @@ for($i=0; $i<$total_eleves; $i++) {
 	   }
 	}
     }
-     $saisie->setFinAbs($date_fin);
+    $saisie->setFinAbs($date_fin);
 
     $saisie->setUtilisateurId($utilisateur->getPrimaryKey());
 
@@ -211,6 +211,10 @@ for($i=0; $i<$total_eleves; $i++) {
 		$traitement->addAbsenceEleveSaisie($saisie);
 		$traitement->setAbsenceEleveType($type);
 		$traitement->setUtilisateurProfessionnel($utilisateur);
+		if ($type->getTypeSaisie() == "DISCIPLINE" && getSettingValue("active_mod_discipline")=='y') {
+		    //on affiche un lien pour saisir le module discipline
+		    $saisie_discipline = true;
+		}
 	    } else {
 		$message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	    }
@@ -224,6 +228,10 @@ for($i=0; $i<$total_eleves; $i++) {
 	    $traitement->save();
 	}
 	$message_enregistrement .= "Saisie enregistrée pour l'eleve : ".$eleve->getNom()."<br/>";
+	if (isset($saisie_discipline) && $saisie_discipline == true) {
+	    $message_enregistrement .= "<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
+		$saisie->getId()."'>Saisir un incident disciplinaire pour l'eleve : ".$eleve->getNom()."</a>";
+	}
     } else {
 	$message_erreur_eleve[$id_eleve] .= $saisie->getValidationFailures();
     }

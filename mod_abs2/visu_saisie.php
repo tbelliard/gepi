@@ -331,6 +331,22 @@ if ($saisie->getCreatedAt() != $saisie->getUpdatedAt()) {
     echo '</TD></tr>';
 }
 
+if ($saisie->getIdSIncidents() != null && $saisie->getIdSIncidents() != -1) {
+    echo '<tr><TD>';
+    echo 'Discipline : ';
+    echo '</TD><TD>';
+    echo "<a href='../mod_discipline/saisie_incident.php?id_incident=".
+    $saisie->getIdSIncidents()."&step=2'>Visualiser l'incident </a>";
+    echo '</TD></tr>';
+} elseif ($modifiable && hasTypeSaisieDiscipline) {
+    echo '<tr><TD>';
+    echo 'Discipline : ';
+    echo '</TD><TD>';
+    echo "<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
+	$saisie->getId()."'>Saisir un incident disciplinaire</a>";
+    echo '</TD></tr>';
+}
+
 echo '</TD></tr>';
 if ($modifiable) {
     echo '<tr><TD colspan="2" style="text-align : center;">';

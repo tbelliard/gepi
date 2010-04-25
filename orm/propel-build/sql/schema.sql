@@ -837,6 +837,7 @@ CREATE TABLE a_saisies
 	id_groupe INTEGER default -1 COMMENT 'identifiant du groupe pour lequel la saisie a ete effectuee',
 	id_classe INTEGER default -1 COMMENT 'identifiant de la classe pour lequel la saisie a ete effectuee',
 	id_aid INTEGER default -1 COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
+	id_s_incidents INTEGER default -1 COMMENT 'identifiant de la saisie d\'incident discipline',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (id),

@@ -16,7 +16,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
 	 *
-	 * Renvoi true ou flase en fonction de la coherence de la saisie
+	 * Renvoi true ou false en fonction de la coherence de la saisie
 	 *
 	 * @return     boolean
 	 *
@@ -148,4 +148,21 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    return $this->isValid();
 	}
 
+	/**
+	 *
+	 * Renvoi true ou false en fonction des types associé
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function hasTypeSaisieDiscipline() {
+	    $traitements = $this->getAbsenceEleveTraitements();
+	    foreach ($traitements as $$traitement) {
+		if ($traitement->getAbsenceEleveType() != null &&
+		    $traitement->getAbsenceEleveType()->getTypeSaisie() == 'DISCIPLINE') {
+		    return true;
+		}
+	    }
+	    return false;
+	}
 } // AbsenceEleveSaisie
