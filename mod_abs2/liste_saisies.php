@@ -320,7 +320,7 @@ echo '<input type="text" name="filter_id" value="'.$filter_id.'" size="3"/>';
 echo '</TH>';
 
 //en tete filtre utilisateur
-echo '<TH>';
+/*echo '<TH>';
 echo '<nobr>';
 echo 'Utilisateur';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
@@ -331,7 +331,7 @@ if ($order == "des_utilisateur") {echo "border-style: solid; border-color: red;"
 echo 'border-width:1px;" alt="" name="order" value="des_utilisateur"/>';
 echo '</nobr>';
 echo '<br><input type="text" name="filter_utilisateur" value="'.$filter_utilisateur.'" size="12"/>';
-echo '</TH>';
+echo '</TH>';*/
 
 //en tete filtre eleve
 echo '<TH>';
@@ -700,13 +700,13 @@ foreach ($results as $saisie) {
     echo "</a>";
     echo '</TD>';
 
-    echo '<TD>';
+    /*echo '<TD>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getUtilisateurProfessionnel() != null) {
 	echo $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom();
     }
     echo "</a>";
-    echo '</TD>';
+    echo '</TD>';*/
 
     echo '<TD>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";

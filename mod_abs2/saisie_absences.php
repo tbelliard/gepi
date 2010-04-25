@@ -283,8 +283,7 @@ if (getSettingValue("abs2_saisie_prof_hors_cours")=='y' && !$utilisateur->getAid
 
     if (getSettingValue("abs2_saisie_prof_decale")=='y') {
 	echo '<input size="8" id="d_date_absence_eleve" name="d_date_absence_eleve" value="'.$d_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
-	echo '
-	<script type="text/javascript">
+	echo '<script type="text/javascript">
 	    Calendar.setup({
 		inputField     :    "d_date_absence_eleve",     // id of the input field
 		ifFormat       :    "%d/%m/%Y",      // format of the input field
@@ -313,7 +312,7 @@ if (!$edt_cours_col->isEmpty()) {
     foreach ($edt_cours_col as $edt_cours) {
 	//$edt_cours = new EdtEmplacementCours();
 	    if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
-		if ($edt_cours->getJourSemaineNumeric() != date('w')) {
+		if ($edt_cours->getJourSemaineNumeric() != date('W')) {
 		    //on affiche pas ce cours
 		    continue;
 		}
@@ -503,14 +502,32 @@ foreach($eleve_col as $eleve) {
 					    echo '</nobr> ';
 					    echo '<nobr><input style="font-size:88%;" name="heure_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$edt_creneau->getHeuredebutDefiniePeriode("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
 					    if (getSettingValue("abs2_saisie_prof_decale")=='y') {
-						    echo '<input style="font-size:88%;" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+						    echo '<input style="font-size:88%;" id="date_debut_absence_eleve_'.$eleve_col->getPosition().'" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+						    echo '<script type="text/javascript">
+							Calendar.setup({
+							    inputField     :    "date_debut_absence_eleve_'.$eleve_col->getPosition().'",     // id of the input field
+							    ifFormat       :    "%d/%m/%Y",      // format of the input field
+							    button         :    "date_debut_absence_eleve_'.$eleve_col->getPosition().'",  // trigger for the calendar (button ID)
+							    align          :    "Tl",           // alignment (defaults to "Bl")
+							    singleClick    :    true
+							});
+						    </script>';
 					    } else {
 						    echo '<input style="font-size:88%;" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
 						    echo "</nobr> ";
 					    }
 					    echo '<nobr><input style="font-size:88%;" name="heure_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$edt_creneau->getHeurefinDefiniePeriode("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
 					    if (getSettingValue("abs2_saisie_prof_decale")=='y') {
-						    echo '<input style="font-size:88%;" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+						    echo '<input style="font-size:88%;" id="date_fin_absence_eleve_'.$eleve_col->getPosition().'" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+						    echo '<script type="text/javascript">
+							Calendar.setup({
+							    inputField     :    "date_fin_absence_eleve_'.$eleve_col->getPosition().'",     // id of the input field
+							    ifFormat       :    "%d/%m/%Y",      // format of the input field
+							    button         :    "date_fin_absence_eleve_'.$eleve_col->getPosition().'",  // trigger for the calendar (button ID)
+							    align          :    "Tl",           // alignment (defaults to "Bl")
+							    singleClick    :    true
+							});
+						    </script>';
 					    } else {
 						    echo '<input style="font-size:88%;" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$d_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
 						    echo "</nobr> ";
