@@ -123,7 +123,7 @@ $_SESSION['filter_cours'] = $filter_cours;
 $_SESSION['filter_date_creation_absence_debut_plage'] = $filter_date_creation_absence_debut_plage;
 $_SESSION['filter_date_creation_absence_fin_plage'] = $filter_date_creation_absence_fin_plage;
 $_SESSION['filter_date_modification'] = $filter_date_modification;
-$_SESSION['filter_traitement_absence_debut_plage'] = $filter_traitement_absence_debut_plage;
+$_SESSION['filter_date_traitement_absence_debut_plage'] = $filter_date_traitement_absence_debut_plage;
 $_SESSION['filter_date_traitement_absence_fin_plage'] = $filter_date_traitement_absence_fin_plage;
 $_SESSION['filter_discipline'] = $filter_discipline;
 
