@@ -60,28 +60,29 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
 }
 
 //récupération des paramètres de la requète
-$order = isset($_POST["order"]) ? $_POST["order"] :(isset($_GET["order"]) ? $_GET["order"] :NULL);
+$order = isset($_POST["order"]) ? $_POST["order"] :(isset($_GET["order"]) ? $_GET["order"] :(isset($_SESSION["order"]) ? $_SESSION["order"] : NULL));
 if ($order == null) {
     $order = 'des_id';
 }
-$filter_id = isset($_POST["filter_id"]) ? $_POST["filter_id"] :(isset($_GET["filter_id"]) ? $_GET["filter_id"] :NULL);
-$filter_utilisateur = isset($_POST["filter_utilisateur"]) ? $_POST["filter_utilisateur"] :(isset($_GET["filter_utilisateur"]) ? $_GET["filter_utilisateur"] :NULL);
-$filter_eleve = isset($_POST["filter_eleve"]) ? $_POST["filter_eleve"] :(isset($_GET["filter_eleve"]) ? $_GET["filter_eleve"] :NULL);
-$filter_classe = isset($_POST["filter_classe"]) ? $_POST["filter_classe"] :(isset($_GET["filter_classe"]) ? $_GET["filter_classe"] :NULL);
-$filter_groupe = isset($_POST["filter_groupe"]) ? $_POST["filter_groupe"] :(isset($_GET["filter_groupe"]) ? $_GET["filter_groupe"] :NULL);
-$filter_aid = isset($_POST["filter_aid"]) ? $_POST["filter_aid"] :(isset($_GET["filter_aid"]) ? $_GET["filter_aid"] :NULL);
-$filter_date_debut_absence_debut_plage = isset($_POST["filter_date_debut_absence_debut_plage"]) ? $_POST["filter_date_debut_absence_debut_plage"] :(isset($_GET["filter_date_debut_absence_debut_plage"]) ? $_GET["filter_date_debut_absence_debut_plage"] :NULL);
-$filter_date_debut_absence_fin_plage = isset($_POST["filter_date_debut_absence_fin_plage"]) ? $_POST["filter_date_debut_absence_fin_plage"] :(isset($_GET["filter_date_debut_absence_fin_plage"]) ? $_GET["filter_date_debut_absence_fin_plage"] :NULL);
-$filter_date_fin_absence_debut_plage = isset($_POST["filter_date_fin_absence_debut_plage"]) ? $_POST["filter_date_fin_absence_debut_plage"] :(isset($_GET["filter_date_fin_absence_debut_plage"]) ? $_GET["filter_date_fin_absence_debut_plage"] :NULL);
-$filter_date_fin_absence_fin_plage = isset($_POST["filter_date_fin_absence_fin_plage"]) ? $_POST["filter_date_fin_absence_fin_plage"] :(isset($_GET["filter_date_fin_absence_fin_plage"]) ? $_GET["filter_date_fin_absence_fin_plage"] :NULL);
-$filter_creneau = isset($_POST["filter_creneau"]) ? $_POST["filter_creneau"] :(isset($_GET["filter_creneau"]) ? $_GET["filter_creneau"] :NULL);
-$filter_cours = isset($_POST["filter_cours"]) ? $_POST["filter_cours"] :(isset($_GET["filter_cours"]) ? $_GET["filter_cours"] :NULL);
-$filter_date_creation_absence_debut_plage = isset($_POST["filter_date_creation_absence_debut_plage"]) ? $_POST["filter_date_creation_absence_debut_plage"] :(isset($_GET["filter_date_creation_absence_debut_plage"]) ? $_GET["filter_date_creation_absence_debut_plage"] :NULL);
-$filter_date_creation_absence_fin_plage = isset($_POST["filter_date_creation_absence_fin_plage"]) ? $_POST["filter_date_creation_absence_fin_plage"] :(isset($_GET["filter_date_creation_absence_fin_plage"]) ? $_GET["filter_date_creation_absence_fin_plage"] :NULL);
-$filter_date_modification = isset($_POST["filter_date_modification"]) ? $_POST["filter_date_modification"] :(isset($_GET["filter_date_modification"]) ? $_GET["filter_date_modification"] :NULL);
-$filter_date_traitement_absence_debut_plage = isset($_POST["filter_date_traitement_absence_debut_plage"]) ? $_POST["filter_date_traitement_absence_debut_plage"] :(isset($_GET["filter_date_traitement_absence_debut_plage"]) ? $_GET["filter_date_traitement_absence_debut_plage"] :NULL);
-$filter_date_traitement_absence_fin_plage = isset($_POST["filter_date_traitement_absence_fin_plage"]) ? $_POST["filter_date_traitement_absence_fin_plage"] :(isset($_GET["filter_date_traitement_absence_fin_plage"]) ? $_GET["filter_date_traitement_absence_fin_plage"] :NULL);
-$filter_discipline = isset($_POST["filter_discipline"]) ? $_POST["filter_discipline"] :(isset($_GET["filter_discipline"]) ? $_GET["filter_discipline"] :NULL);
+
+$filter_id = isset($_POST["filter_id"]) ? $_POST["filter_id"] :(isset($_GET["filter_id"]) ? $_GET["filter_id"] :(isset($_SESSION["filter_id"]) ? $_SESSION["filter_id"] : NULL));
+$filter_utilisateur = isset($_POST["filter_utilisateur"]) ? $_POST["filter_utilisateur"] :(isset($_GET["filter_utilisateur"]) ? $_GET["filter_utilisateur"] :(isset($_SESSION["filter_utilisateur"]) ? $_SESSION["filter_utilisateur"] : NULL));
+$filter_eleve = isset($_POST["filter_eleve"]) ? $_POST["filter_eleve"] :(isset($_GET["filter_eleve"]) ? $_GET["filter_eleve"] :(isset($_SESSION["filter_eleve"]) ? $_SESSION["filter_eleve"] : NULL));
+$filter_classe = isset($_POST["filter_classe"]) ? $_POST["filter_classe"] :(isset($_GET["filter_classe"]) ? $_GET["filter_classe"] :(isset($_SESSION["filter_classe"]) ? $_SESSION["filter_classe"] : NULL));
+$filter_groupe = isset($_POST["filter_groupe"]) ? $_POST["filter_groupe"] :(isset($_GET["filter_groupe"]) ? $_GET["filter_groupe"] :(isset($_SESSION["filter_groupe"]) ? $_SESSION["filter_groupe"] : NULL));
+$filter_aid = isset($_POST["filter_aid"]) ? $_POST["filter_aid"] :(isset($_GET["filter_aid"]) ? $_GET["filter_aid"] :(isset($_SESSION["filter_aid"]) ? $_SESSION["filter_aid"] : NULL));
+$filter_date_debut_absence_debut_plage = isset($_POST["filter_date_debut_absence_debut_plage"]) ? $_POST["filter_date_debut_absence_debut_plage"] :(isset($_GET["filter_date_debut_absence_debut_plage"]) ? $_GET["filter_date_debut_absence_debut_plage"] :(isset($_SESSION["filter_date_debut_absence_debut_plage"]) ? $_SESSION["filter_date_debut_absence_debut_plage"] : NULL));
+$filter_date_debut_absence_fin_plage = isset($_POST["filter_date_debut_absence_fin_plage"]) ? $_POST["filter_date_debut_absence_fin_plage"] :(isset($_GET["filter_date_debut_absence_fin_plage"]) ? $_GET["filter_date_debut_absence_fin_plage"] :(isset($_SESSION["filter_date_debut_absence_fin_plage"]) ? $_SESSION["filter_date_debut_absence_fin_plage"] : NULL));
+$filter_date_fin_absence_debut_plage = isset($_POST["filter_date_fin_absence_debut_plage"]) ? $_POST["filter_date_fin_absence_debut_plage"] :(isset($_GET["filter_date_fin_absence_debut_plage"]) ? $_GET["filter_date_fin_absence_debut_plage"] :(isset($_SESSION["filter_date_fin_absence_debut_plage"]) ? $_SESSION["filter_date_fin_absence_debut_plage"] : NULL));
+$filter_date_fin_absence_fin_plage = isset($_POST["filter_date_fin_absence_fin_plage"]) ? $_POST["filter_date_fin_absence_fin_plage"] :(isset($_GET["filter_date_fin_absence_fin_plage"]) ? $_GET["filter_date_fin_absence_fin_plage"] :(isset($_SESSION["filter_date_fin_absence_fin_plage"]) ? $_SESSION["filter_date_fin_absence_fin_plage"] : NULL));
+$filter_creneau = isset($_POST["filter_creneau"]) ? $_POST["filter_creneau"] :(isset($_GET["filter_creneau"]) ? $_GET["filter_creneau"] :(isset($_SESSION["filter_creneau"]) ? $_SESSION["filter_creneau"] : NULL));
+$filter_cours = isset($_POST["filter_cours"]) ? $_POST["filter_cours"] :(isset($_GET["filter_cours"]) ? $_GET["filter_cours"] :(isset($_SESSION["filter_cours"]) ? $_SESSION["filter_cours"] : NULL));
+$filter_date_creation_absence_debut_plage = isset($_POST["filter_date_creation_absence_debut_plage"]) ? $_POST["filter_date_creation_absence_debut_plage"] :(isset($_GET["filter_date_creation_absence_debut_plage"]) ? $_GET["filter_date_creation_absence_debut_plage"] :(isset($_SESSION["filter_date_creation_absence_debut_plage"]) ? $_SESSION["filter_date_creation_absence_debut_plage"] : NULL));
+$filter_date_creation_absence_fin_plage = isset($_POST["filter_date_creation_absence_fin_plage"]) ? $_POST["filter_date_creation_absence_fin_plage"] :(isset($_GET["filter_date_creation_absence_fin_plage"]) ? $_GET["filter_date_creation_absence_fin_plage"] :(isset($_SESSION["filter_date_creation_absence_fin_plage"]) ? $_SESSION["filter_date_creation_absence_fin_plage"] : NULL));
+$filter_date_modification = isset($_POST["filter_date_modification"]) ? $_POST["filter_date_modification"] :(isset($_GET["filter_date_modification"]) ? $_GET["filter_date_modification"] :(isset($_SESSION["filter_date_modification"]) ? $_SESSION["filter_date_modification"] : NULL));
+$filter_date_traitement_absence_debut_plage = isset($_POST["filter_date_traitement_absence_debut_plage"]) ? $_POST["filter_date_traitement_absence_debut_plage"] :(isset($_GET["filter_date_traitement_absence_debut_plage"]) ? $_GET["filter_date_traitement_absence_debut_plage"] :(isset($_SESSION["filter_date_traitement_absence_debut_plage"]) ? $_SESSION["filter_date_traitement_absence_debut_plage"] : NULL));
+$filter_date_traitement_absence_fin_plage = isset($_POST["filter_date_traitement_absence_fin_plage"]) ? $_POST["filter_date_traitement_absence_fin_plage"] :(isset($_GET["filter_date_traitement_absence_fin_plage"]) ? $_GET["filter_date_traitement_absence_fin_plage"] :(isset($_SESSION["filter_date_traitement_absence_fin_plage"]) ? $_SESSION["filter_date_traitement_absence_fin_plage"] : NULL));
+$filter_discipline = isset($_POST["filter_discipline"]) ? $_POST["filter_discipline"] :(isset($_GET["filter_discipline"]) ? $_GET["filter_discipline"] :(isset($_SESSION["filter_discipline"]) ? $_SESSION["filter_discipline"] : NULL));
 
 $reinit_filtre = isset($_POST["reinit_filtre"]) ? $_POST["reinit_filtre"] :(isset($_GET["reinit_filtre"]) ? $_GET["reinit_filtre"] :NULL);
 if ($reinit_filtre == 'y') {
@@ -104,6 +105,27 @@ if ($reinit_filtre == 'y') {
     $filter_date_traitement_absence_fin_plage = NULL;
     $filter_discipline = NULL;
 }
+
+//on va mettre en session tout les parametres de la requete, pour la navigation par onglet
+$_SESSION['order'] = $order;
+
+$_SESSION['filter_id'] = $filter_id;
+$_SESSION['filter_eleve'] = $filter_eleve;
+$_SESSION['filter_classe'] = $filter_classe;
+$_SESSION['filter_groupe'] = $filter_groupe;
+$_SESSION['filter_aid'] = $filter_aid;
+$_SESSION['filter_date_debut_absence_debut_plage'] = $filter_date_debut_absence_debut_plage;
+$_SESSION['filter_date_debut_absence_fin_plage'] = $filter_date_debut_absence_fin_plage;
+$_SESSION['filter_date_fin_absence_debut_plage'] = $filter_date_fin_absence_debut_plage;
+$_SESSION['filter_date_fin_absence_fin_plage'] = $filter_date_fin_absence_fin_plage;
+$_SESSION['filter_creneau'] = $filter_creneau;
+$_SESSION['filter_cours'] = $filter_cours;
+$_SESSION['filter_date_creation_absence_debut_plage'] = $filter_date_creation_absence_debut_plage;
+$_SESSION['filter_date_creation_absence_fin_plage'] = $filter_date_creation_absence_fin_plage;
+$_SESSION['filter_date_modification'] = $filter_date_modification;
+$_SESSION['filter_traitement_absence_debut_plage'] = $filter_traitement_absence_debut_plage;
+$_SESSION['filter_date_traitement_absence_fin_plage'] = $filter_date_traitement_absence_fin_plage;
+$_SESSION['filter_discipline'] = $filter_discipline;
 
 $page_number = isset($_POST["page_number"]) ? $_POST["page_number"] :(isset($_GET["page_number"]) ? $_GET["page_number"] :NULL);
 if (!is_numeric($page_number)) {
