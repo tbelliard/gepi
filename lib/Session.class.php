@@ -26,6 +26,15 @@
 # Elle gère notamment l'authentification des utilisateurs
 # à partir de différentes sources.
 
+function my_warning_handler($errno, $errstr) {
+    if ($errno == E_WARNING && strpos($errstr, 'PHP_Incomplete_Class') !== false)  {
+	//ignore warning, this one is probably due to propel unserialization wuthout correct class declaration
+    	return true;
+    } else {
+	return false;
+    }
+}
+
 class Session {
 	public $login = false;
 	public $nom = false;
@@ -50,7 +59,10 @@ class Session {
 
 		# On initialise la session
 		session_name("GEPI");
+
+		set_error_handler("my_warning_handler", E_WARNING);
 		session_start();
+		restore_error_handler();
 
 		# Avant de faire quoi que ce soit, on initialise le fuseau horaire
 		if (isset($GLOBALS['timezone']) && $GLOBALS['timezone'] != '') {
