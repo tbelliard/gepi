@@ -162,8 +162,6 @@ require_once("../lib/header.inc");
 
 echo "<div id='aidmenu' style='display: none;'>test</div>\n";
 
-// Etiquettes des onglets:
-$onglet_abs='liste_saisies';
 include('menu_abs2.inc.php');
 //===========================
 echo "<div class='css-panes' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
@@ -888,7 +886,7 @@ foreach ($results as $saisie) {
     echo '<TD>';
     if ($saisie->getIdSIncidents() != null && $saisie->getIdSIncidents() != -1) {
 	echo "<a href='../mod_discipline/saisie_incident.php?id_incident=".
-	$saisie->getIdSIncidents()."&step=2'>Visualiser l'incident </a>";
+	$saisie->getIdSIncidents()."&step=2&return_url=no_return'>Visualiser l'incident </a>";
     }
     echo '</td>';
 

@@ -157,7 +157,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 */
 	public function hasTypeSaisieDiscipline() {
 	    $traitements = $this->getAbsenceEleveTraitements();
-	    foreach ($traitements as $$traitement) {
+	    foreach ($traitements as $traitement) {
 		if ($traitement->getAbsenceEleveType() != null &&
 		    $traitement->getAbsenceEleveType()->getTypeSaisie() == 'DISCIPLINE') {
 		    return true;

@@ -65,19 +65,12 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_
 $id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? $_GET["id_aid"] :NULL);
 $id_creneau = isset($_POST["id_creneau"]) ? $_POST["id_creneau"] :(isset($_GET["id_creneau"]) ? $_GET["id_creneau"] :NULL);
 $id_cours = isset($_POST["id_cours"]) ? $_POST["id_cours"] :(isset($_GET["id_cours"]) ? $_GET["id_cours"] :NULL);
-$d_date_absence_eleve = isset($_POST["d_date_absence_eleve"]) ? $_POST["d_date_absence_eleve"] :NULL;
+$date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :NULL;
 $total_eleves = isset($_POST["total_eleves"]) ? $_POST["total_eleves"] :(isset($_GET["total_eleves"]) ? $_GET["total_eleves"] :0);
 
 $message_enregistrement = "";
 
 //initialisation des variable
-//if ($d_date_absence_eleve == null) {
-//    $message_enregistrement = 'Erreur, la date ne peut etre nulle.</br>';
-//    include("saisie_absences.php");
-//    die();
-//} else {
-//    $date_time_absence_eleve = new DateTime(str_replace("/",".",$d_date_absence_eleve));
-//}
 if ($id_groupe != null) {
     if (GroupeQuery::create()->findPk($id_groupe) == null) {
 	$message_enregistrement .= "Probleme avec le parametre id_groupe<br/>";
@@ -230,7 +223,7 @@ for($i=0; $i<$total_eleves; $i++) {
 	$message_enregistrement .= "Saisie enregistrée pour l'eleve : ".$eleve->getNom()."<br/>";
 	if (isset($saisie_discipline) && $saisie_discipline == true) {
 	    $message_enregistrement .= "<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
-		$saisie->getId()."'>Saisir un incident disciplinaire pour l'eleve : ".$eleve->getNom()."</a>";
+		$saisie->getId()."&return_url=no_return'>Saisir un incident disciplinaire pour l'eleve : ".$eleve->getNom()."</a>";
 	}
     } else {
 	$message_erreur_eleve[$id_eleve] .= $saisie->getValidationFailures();
@@ -240,7 +233,7 @@ for($i=0; $i<$total_eleves; $i++) {
 if (!isset($saisie) || $saisie == null) {
     //il n'y aucune saisie d'effectuer, on va enregistrer une saisie pour marquer le fait que l'appel a été effectué
     //on test si l'eleve est enregistré absent
-    if (($id_groupe != null || $id_classe != null || $id_aid != null) && ($id_creneau != null) && ($d_date_absence_eleve != null)) {
+    if (($id_groupe != null || $id_classe != null || $id_aid != null) && ($id_creneau != null) && ($date_absence_eleve != null)) {
 	$saisie = new AbsenceEleveSaisie();
 
 	$saisie->setIdEdtCreneau($id_creneau);
@@ -250,11 +243,11 @@ if (!isset($saisie) || $saisie == null) {
 	$saisie->setIdAid($id_aid);
 	$saisie->setUtilisateurId($utilisateur->getPrimaryKey());
 
-	$d_date_absence_eleve = new DateTime(str_replace("/",".",$d_date_absence_eleve));
+	$dt_date_absence_eleve = new DateTime(str_replace("/",".",$date_absence_eleve));
 	$creneau = EdtCreneauQuery::create()->findPk($id_creneau);
-	$d_date_absence_eleve->setTime($creneau->getHeuredebutDefiniePeriode('H'), $creneau->getHeuredebutDefiniePeriode('i'));
-	$saisie->setDebutAbs($d_date_absence_eleve);
-	$date_fin = clone $d_date_absence_eleve;
+	$dt_date_absence_eleve->setTime($creneau->getHeuredebutDefiniePeriode('H'), $creneau->getHeuredebutDefiniePeriode('i'));
+	$saisie->setDebutAbs($dt_date_absence_eleve);
+	$date_fin = clone $dt_date_absence_eleve;
 	$date_fin->setTime($creneau->getHeurefinDefiniePeriode('H'), $creneau->getHeurefinDefiniePeriode('i'));
 	$saisie->setFinAbs($date_fin);
 	

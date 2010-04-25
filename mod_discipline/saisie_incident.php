@@ -190,6 +190,8 @@ function recherche_utilisateur($rech_nom,$page) {
 
 $id_incident=isset($_POST['id_incident']) ? $_POST['id_incident'] : (isset($_GET['id_incident']) ? $_GET['id_incident'] : NULL);
 
+$return_url=isset($_POST['return_url']) ? $_POST['return_url'] : (isset($_GET['return_url']) ? $_GET['return_url'] : NULL);
+
 $rech_nom=isset($_POST['rech_nom']) ? $_POST['rech_nom'] : (isset($_GET['rech_nom']) ? $_GET['rech_nom'] : "");
 
 $ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : array());
@@ -749,7 +751,12 @@ echo "<div id='div_svg_avertie' style='margin:auto; color:red; text-align:center
 
 $page="saisie_incident.php";
 
-echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+if (!isset($return_url) || $return_url == null) {
+    $return_url = 'index.php';
+}
+if ($return_url != 'no_return') {
+    echo "<p class='bold'><a href='".$return_url."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+}
 
 if(($_SESSION['statut']=='administrateur')||
 ($_SESSION['statut']=='cpe')||

@@ -55,33 +55,37 @@ if ($saisie == null) {
 }
 
 $msg = "";
-$sql="INSERT INTO s_incidents SET declarant='".$_SESSION['login']."',
-									date='".$saisie->getDebutAbs('Y-m-d')."',
-									heure='".$saisie->getDebutAbs('H:i')."',
-									nature='exclusion de cours',
-									description='".$description."',
-									id_lieu='',
-									message_id='';";
-//echo "$sql<br />\n";
-$res=mysql_query($sql);
-if(!$res) {
-	$msg.="ERREUR lors de l'enregistrement de l'incident&nbsp;:".$sql."<br />\n";
-}
-else {
-	$id_incident=mysql_insert_id();
-	$msg.="Enregistrement de l'incident n°".$id_incident." effectué.<br />\n";
-}
-$saisie->setIdSIncidents($id_incident);
-$saisie->save();
 
-$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$saisie->getEleve()->getLogin()."', statut='eleve', qualite='Responsable';";
-$res=mysql_query($sql);
-if(!$res) {
-	$msg.="ERREUR lors de l'enregistrement de ".$saisie->getEleve()->getLogin()."<br />\n";
+if ($saisie->getIdSIncidents() == null || $saisie->getIdSIncidents() == -1) {
+    //l'incident n'est pas encore enregistré, on l'enregistre donc
+    $sql="INSERT INTO s_incidents SET declarant='".$_SESSION['login']."',
+									    date='".$saisie->getDebutAbs('Y-m-d')."',
+									    heure='".$saisie->getDebutAbs('H:i')."',
+									    nature='exclusion de cours',
+									    description='".$saisie->getCommentaire()."',
+									    id_lieu='',
+									    message_id='';";
+    //echo "$sql<br />\n";
+    $res=mysql_query($sql);
+    if(!$res) {
+	    $msg.="ERREUR lors de l'enregistrement de l'incident&nbsp;:".$sql."<br />\n";
+    }
+    else {
+	    $id_incident=mysql_insert_id();
+	    $msg.="Enregistrement de l'incident n°".$id_incident." effectué.<br />\n";
+    }
+    $saisie->setIdSIncidents($id_incident);
+    $saisie->save();
+
+    $sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$saisie->getEleve()->getLogin()."', statut='eleve', qualite='Responsable';";
+    $res=mysql_query($sql);
+    if(!$res) {
+	    $msg.="ERREUR lors de l'enregistrement de ".$saisie->getEleve()->getLogin()."<br />\n";
+    }
 }
 
 //reglage des parametres
-$_GET['id_incident'] = $id_incident;
+$_GET['id_incident'] = $saisie->getIdSIncidents();
 $_GET['step'] = '2';
 
 include('saisie_incident.php');

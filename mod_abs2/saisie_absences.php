@@ -60,7 +60,7 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
 }
 
 //récupération des paramètres de la requète
-$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :(isset($_SESSION["id_groupe"]) ? $_SESSION["id_groupe"] : NULL));
+$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :(isset($_SESSION["id_groupe_abs"]) ? $_SESSION["id_groupe_abs"] : NULL));
 $id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? $_GET["id_aid"] :(isset($_SESSION["id_aid"]) ? $_SESSION["id_aid"] : NULL));
 $id_creneau = isset($_POST["id_creneau"]) ? $_POST["id_creneau"] :(isset($_GET["id_creneau"]) ? $_GET["id_creneau"] :(isset($_SESSION["id_creneau"]) ? $_SESSION["id_creneau"] : NULL));
 $id_cours = isset($_POST["id_cours"]) ? $_POST["id_cours"] :(isset($_GET["id_cours"]) ? $_GET["id_cours"] :(isset($_SESSION["id_cours"]) ? $_SESSION["id_cours"] : NULL));
@@ -68,7 +68,7 @@ $type_selection = isset($_POST["type_selection"]) ? $_POST["type_selection"] :(i
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :(isset($_GET["date_absence_eleve"]) ? $_GET["date_absence_eleve"] :(isset($_SESSION["date_absence_eleve"]) ? $_SESSION["date_absence_eleve"] : NULL));
 $id_semaine = isset($_POST["id_semaine"]) ? $_POST["id_semaine"] :(isset($_GET["id_semaine"]) ? $_GET["id_semaine"] :(isset($_SESSION["id_semaine"]) ? $_SESSION["id_semaine"] : NULL));
 
-$_SESSION['id_groupe'] = $id_groupe;
+$_SESSION['id_groupe_abs'] = $id_groupe;
 $_SESSION['id_aid'] = $id_aid;
 $_SESSION['id_creneau'] = $id_creneau;
 $_SESSION['id_cours'] = $id_cours;
@@ -171,8 +171,6 @@ $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-// Etiquettes des onglets:
-$onglet_abs='saisie';
 include('menu_abs2.inc.php');
 //===========================
 echo "<div class='css-panes' id='containDiv'>\n";

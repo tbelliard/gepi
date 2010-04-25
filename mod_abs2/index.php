@@ -59,6 +59,11 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
     die("Le module n'est pas activé.");
 }
 
+//on va redirigé vers le bonee onglet
+if (isset($_SESSION['abs2_onglet'])) {
+    header("Location: ./".$_SESSION['abs2_onglet']);
+    die();
+}
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $titre_page = "Les absences";
@@ -73,8 +78,6 @@ require_once("../lib/header.inc");
 
 echo "<div id='aidmenu' style='display: none;'>test</div>\n";
 
-// Etiquettes des onglets:
-$onglet_abs='index';
 include('menu_abs2.inc.php');
 //===========================
 

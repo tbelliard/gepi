@@ -77,8 +77,6 @@ require_once("../lib/header.inc");
 
 echo "<div id='aidmenu' style='display: none;'>test</div>\n";
 
-// Etiquettes des onglets:
-$onglet_abs='visu_saisie';
 include('menu_abs2.inc.php');
 //===========================
 echo "<div class='css-panes' id='containDiv' style='overflow : auto;'>\n";
@@ -334,14 +332,14 @@ if ($saisie->getIdSIncidents() != null && $saisie->getIdSIncidents() != -1) {
     echo 'Discipline : ';
     echo '</TD><TD>';
     echo "<a href='../mod_discipline/saisie_incident.php?id_incident=".
-    $saisie->getIdSIncidents()."&step=2'>Visualiser l'incident </a>";
+    $saisie->getIdSIncidents()."&step=2&return_url=no_return'>Visualiser l'incident </a>";
     echo '</TD></tr>';
-} elseif ($modifiable && hasTypeSaisieDiscipline) {
+} elseif ($modifiable && $saisie->hasTypeSaisieDiscipline()) {
     echo '<tr><TD>';
     echo 'Discipline : ';
     echo '</TD><TD>';
     echo "<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
-	$saisie->getId()."'>Saisir un incident disciplinaire</a>";
+	$saisie->getId()."&return_url=no_return'>Saisir un incident disciplinaire</a>";
     echo '</TD></tr>';
 }
 
