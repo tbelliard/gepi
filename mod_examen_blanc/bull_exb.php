@@ -268,7 +268,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					for($i=0;$i<$nb_classes;$i++) {
 						for($j=0;$j<$nb_matieres;$j++) {
 							//$sql="SELECT * FROM ex_groupes eg WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]';";
-							$sql="SELECT eg.id_dev, eg.id_groupe, eg.type, eg.valeur FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND jgc.id_groupe=eg.id_groupe AND jgc.id_classe='$tab_id_classe[$i]';";
+							$sql="SELECT eg.id AS id_ex_grp, eg.id_dev, eg.id_groupe, eg.type, eg.valeur FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND jgc.id_groupe=eg.id_groupe AND jgc.id_classe='$tab_id_classe[$i]';";
 							//echo "$sql<br />\n";
 							$res_groupe=mysql_query($sql);
 							if(mysql_num_rows($res_groupe)>0) {
@@ -373,7 +373,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 */
 									}
-									else {
+									elseif($lig_groupe->type=='') {
 
 										// Liste des profs du groupe
 										if(!isset($tab_prof[$lig_groupe->id_dev])) {
@@ -386,7 +386,6 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 												}
 											}
 										}
-
 
 										$sql="SELECT * FROM cn_notes_devoirs WHERE id_devoir='$lig_groupe->id_dev';";
 										//echo "$sql<br />\n";
@@ -443,6 +442,41 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 */	
 										}
 									}
+
+									elseif($lig_groupe->type='moy_plusieurs_periodes') {
+
+										// Liste des profs du groupe
+										if(!isset($tab_prof_grp[$lig_groupe->id_groupe])) {
+											$sql="SELECT DISTINCT u.nom,u.prenom,u.login FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND jgp.id_groupe='$lig_groupe->id_groupe';";
+											$res_prof=mysql_query($sql);
+											$tab_prof_grp[$lig_groupe->id_groupe]=array();
+											if(mysql_num_rows($res_prof)) {
+												while($lig_prof=mysql_fetch_object($res_prof)) {
+													$tab_prof_grp[$lig_groupe->id_groupe][]=$lig_prof->login;
+												}
+											}
+										}
+
+										$sql="SELECT en.* FROM ex_notes en WHERE en.id_ex_grp='$lig_groupe->id_ex_grp';";
+										//echo "$sql<br />\n";
+										$res_dev=mysql_query($sql);
+										while($lig_dev=mysql_fetch_object($res_dev)) {
+											// Comme on fait une requête sur j_eleves_classes pour lister les élèves, les entrées inutiles du tableau $tab_note ci-dessous ne seront pas prises en compte dans le tableau des résultats
+											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
+											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
+
+											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["coef"]=$tab_coef[$j];
+											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["bonus"]=$tab_bonus[$j];
+			
+											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nom_complet"]=$tab_matiere_nom_complet[$j];
+			
+											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]="Moyenne des périodes $lig_groupe->valeur.";
+
+											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_groupe"]=$lig_groupe->id_groupe;
+										}
+									}
+
+
 								}
 							}
 
@@ -451,7 +485,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				
 					for($j=0;$j<$nb_matieres;$j++) {
 						// Moyennes min/max/classe pour les notes hors enseignement
-						$sql="SELECT en.* FROM ex_groupes eg, ex_notes en WHERE eg.id=en.id_ex_grp AND eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]';";
+						//$sql="SELECT en.* FROM ex_groupes eg, ex_notes en WHERE eg.id=en.id_ex_grp AND eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]';";
+						$sql="SELECT en.* FROM ex_groupes eg, ex_notes en WHERE eg.id=en.id_ex_grp AND eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND eg.type='hors_enseignement';";
 						//echo "$sql<br />\n";
 						$res_dev=mysql_query($sql);
 						while($lig_dev=mysql_fetch_object($res_dev)) {
@@ -909,6 +944,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 												}
 											}
 
+											if(isset($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_groupe'])) {
+												$tab_ele['matieres']["$tab_matiere[$j]"]['profs_list']=$tab_prof_grp[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_groupe']];
+											}
+
 											$tab_ele['matieres']["$tab_matiere[$j]"]['coef']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['coef'];
 											$tab_ele['matieres']["$tab_matiere[$j]"]['bonus']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['bonus'];
 											$tab_ele['matieres']["$tab_matiere[$j]"]['nom_complet']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['nom_complet'];
@@ -917,7 +956,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['moyenne'];
 												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_min_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['min'];
 												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_max_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['max'];
-												$tab_ele['matieres']["$tab_matiere[$j]"]['app']="-";
+
+												if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"])) {
+													$tab_ele['matieres']["$tab_matiere[$j]"]['app']=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"];
+												}
+												else {
+													$tab_ele['matieres']["$tab_matiere[$j]"]['app']="-";
+												}
 											}
 											else {
 												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_classe_grp']="-";

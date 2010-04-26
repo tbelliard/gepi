@@ -246,12 +246,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					$tab_note=array();
 					$tab_dev=array();
 					$tab_bull=array();
+					$tab_moy_plusieurs_periodes=array();
 					for($i=0;$i<$nb_classes;$i++) {
 						//echo "\$tab_id_classe[$i]=$tab_id_classe[$i]<br />";
 						//echo "\$tab_classe[$i]=$tab_classe[$i]<br />";
 						for($j=0;$j<$nb_matieres;$j++) {
 							//$sql="SELECT * FROM ex_groupes eg WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]';";
-							$sql="SELECT eg.id_dev, eg.type, eg.valeur, eg.id_groupe FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND jgc.id_groupe=eg.id_groupe AND jgc.id_classe='$tab_id_classe[$i]';";
+							//$sql="SELECT eg.id_dev, eg.type, eg.valeur, eg.id_groupe FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND jgc.id_groupe=eg.id_groupe AND jgc.id_classe='$tab_id_classe[$i]';";
+							$sql="SELECT eg.id AS id_ex_grp,eg.id_dev, eg.type, eg.valeur, eg.id_groupe FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND jgc.id_groupe=eg.id_groupe AND jgc.id_classe='$tab_id_classe[$i]';";
 							//echo "$sql<br />\n";
 							$res_groupe=mysql_query($sql);
 							if(mysql_num_rows($res_groupe)>0) {
@@ -282,11 +284,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 												$texte.="<br />";
 
 												$reserve_header_tabdiv_infobulle[]=creer_div_infobulle('div_bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur,$titre,"",$texte,"",30,0,'y','y','n','n');
+												//$tabdiv_infobulle[]=creer_div_infobulle('div_bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur,$titre,"",$texte,"",30,0,'y','y','n','n');
 											}
 
 										}
 									}
-									else {
+									elseif($lig_groupe->type=='') {
 										$sql="SELECT * FROM cn_notes_devoirs WHERE id_devoir='$lig_groupe->id_dev';";
 										//echo "$sql<br />\n";
 										$res_dev=mysql_query($sql);
@@ -323,10 +326,35 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 												}
 												//$tabdiv_infobulle[]=creer_div_infobulle('div_dev_'.$lig_groupe->id_dev,$titre,"",$texte,"",30,0,'y','y','n','n');
 												$reserve_header_tabdiv_infobulle[]=creer_div_infobulle('div_dev_'.$lig_groupe->id_dev,$titre,"",$texte,"",30,0,'y','y','n','n');
+//echo "count(\$reserve_header_tabdiv_infobulle)=".count($reserve_header_tabdiv_infobulle)." pour div_dev_$lig_groupe->id_dev<br />";
 											}
 										}
 									}
+									elseif($lig_groupe->type='moy_plusieurs_periodes') {
 
+										$chaine_mpp="moy_plusieurs_periodes_".$lig_groupe->id_groupe."_".strtr($lig_groupe->valeur," ","_");
+
+										$sql="SELECT en.* FROM ex_notes en WHERE en.id_ex_grp='$lig_groupe->id_ex_grp';";
+										//echo "$sql<br />\n";
+										$res_dev=mysql_query($sql);
+										while($lig_dev=mysql_fetch_object($res_dev)) {
+											// Comme on fait une requête sur j_eleves_classes pour lister les élèves, les entrées inutiles du tableau $tab_note ci-dessous ne seront pas prises en compte dans le tableau des résultats
+											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
+											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
+											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["infobulle"]=$chaine_mpp;
+										}
+
+										if(!in_array($chaine_mpp,$tab_moy_plusieurs_periodes)) {
+											$tab_moy_plusieurs_periodes[]=$chaine_mpp;
+
+											$titre="Moyennes des périodes $lig_groupe->valeur";
+											$texte="<p><b>Moyennes des moyennes de bulletins pour les périodes $lig_groupe->valeur</b>";
+											$texte.="<br />";
+
+											$reserve_header_tabdiv_infobulle[]=creer_div_infobulle('div_'.$chaine_mpp,$titre,"",$texte,"",30,0,'y','y','n','n');
+											//$tabdiv_infobulle[]=creer_div_infobulle('div_bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur,$titre,"",$texte,"",30,0,'y','y','n','n');
+										}
+									}
 								}
 							}
 							/*
@@ -347,7 +375,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 					// On recherche les notes hors enseignement:
 					for($j=0;$j<$nb_matieres;$j++) {
-						$sql="SELECT en.* FROM ex_groupes eg, ex_notes en WHERE eg.id=en.id_ex_grp AND eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]';";
+						//$sql="SELECT en.* FROM ex_groupes eg, ex_notes en WHERE eg.id=en.id_ex_grp AND eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]';";
+						$sql="SELECT en.* FROM ex_groupes eg, ex_notes en WHERE eg.id=en.id_ex_grp AND eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND eg.type='hors_enseignement';";
 						//echo "$sql<br />\n";
 						$res_dev=mysql_query($sql);
 						while($lig_dev=mysql_fetch_object($res_dev)) {
@@ -445,7 +474,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	}
 }
 
-
+// Sauvegarde de $tabid_infobulle qui est réinitialisé dans le header
+if(isset($tabid_infobulle)) {
+	$reserve_tabid_infobulle=$tabid_infobulle;
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -456,7 +488,17 @@ require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
+// Restauration
+if(isset($reserve_tabid_infobulle)) {
+	$tabid_infobulle=$reserve_tabid_infobulle;
+}
+
 //debug_var();
+/*
+echo "<script type='text/javascript'>
+var change='no';
+</script>\n";
+*/
 
 //echo "<div class='noprint'>\n";
 //echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
@@ -622,7 +664,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 */
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//unset($tabdiv_infobulle);
-	if(isset($reserve_header_tabdiv_infobulle)) {$tabdiv_infobulle=$reserve_header_tabdiv_infobulle;}
+	//echo "BLI";
+	if(isset($reserve_header_tabdiv_infobulle)) {
+		$tabdiv_infobulle=$reserve_header_tabdiv_infobulle;
+		//echo "BLA";
+		//echo " count(\$tabdiv_infobulle)=".count($tabdiv_infobulle)."<br />";
+	}
 
 	echo "<div style='float:right; width: 5em; text-align:center; border: 1px solid black;'>\n";
 	echo "<a href='releve.php?id_exam=$id_exam&amp;mode=csv'";

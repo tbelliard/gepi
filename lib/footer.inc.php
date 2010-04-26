@@ -28,16 +28,31 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	// au risque de perturber l'affichage de la page si Javascript est désactivé.
 
 	if(isset($tabdiv_infobulle)){
-
+//echo "1";
 		// Pour éviter des cas de doublons...
 		$temoin_infobulle=array();
 
+		//echo count($tabdiv_infobulle);
 		if(count($tabdiv_infobulle)>0){
+//echo "2";
 			for($i=0;$i<count($tabdiv_infobulle);$i++){
-				if(!in_array($tabid_infobulle[$i],$temoin_infobulle)) {
+				//if(!in_array($tabid_infobulle[$i],$temoin_infobulle)) {
+				if((isset($tabid_infobulle[$i]))&&(!in_array($tabid_infobulle[$i],$temoin_infobulle))) {
 					echo $tabdiv_infobulle[$i]."\n";
 					$temoin_infobulle[]=$tabid_infobulle[$i];
 				}
+/*
+				if(isset($tabid_infobulle[$i])) {
+					if(!in_array($tabid_infobulle[$i],$temoin_infobulle)) {
+						//echo "$i ";
+						echo $tabdiv_infobulle[$i]."\n";
+						$temoin_infobulle[]=$tabid_infobulle[$i];
+					}
+				}
+				elseif(isset($tabdiv_infobulle[$i])) {
+					echo $tabdiv_infobulle[$i]."\n";
+				}
+*/
 			}
 		}
 	}

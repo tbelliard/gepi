@@ -514,14 +514,84 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			for($i=0;$i<count($id_groupe);$i++) {
 				$id_dev=isset($_POST['id_dev_'.$i]) ? $_POST['id_dev_'.$i] : 0;
 
-				if(substr($id_dev,0,1)=='P') {
+
+				if($id_dev=='Plusieurs_periodes') {
+					unset($id_dev_liste_periode);
+					$id_dev_liste_periode=isset($_POST['id_dev_'.$i.'_periodes']) ? $_POST['id_dev_'.$i.'_periodes'] : array();
+					if(count($id_dev_liste_periode)==0) {
+						$msg.="ERREUR: Aucune période n'a été choisie pour le groupe ".$id_groupe[$i].".<br />";
+					}
+					else {
+						$chaine_periodes=$id_dev_liste_periode[0];
+						for($j=1;$j<count($id_dev_liste_periode);$j++) {
+							$chaine_periodes.=" ".$id_dev_liste_periode[$j];
+						}
+
+						$sql="UPDATE ex_groupes SET id_dev='0', type='moy_plusieurs_periodes', valeur='$chaine_periodes' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
+						//echo "$sql<br />";
+						$res=mysql_query($sql);
+
+						// Et inscrire les valeurs dans ex_notes
+						$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]';";
+						//echo "$sql<br />";
+						$res_id_ex_grp=mysql_query($sql);
+						if(mysql_num_rows($res_id_ex_grp)==0) {
+							$msg.="Identifiant du groupe dans ex_groupe non trouvé pour l'examen $id_exam et le groupe $id_groupe[$i].<br />";
+						}
+						else {
+							$lig=mysql_fetch_object($res_id_ex_grp);
+							$id_ex_grp=$lig->id;
+
+							// Nettoyage
+							$sql="DELETE FROM ex_notes WHERE id_ex_grp='$id_ex_grp';";
+							$nettoyage=mysql_query($sql);
+
+							unset($tab_note_per);
+							for($j=0;$j<count($id_dev_liste_periode);$j++) {
+								$sql="SELECT * FROM matieres_notes WHERE id_groupe='$id_groupe[$i]' AND periode='$id_dev_liste_periode[$j]' ORDER BY login;";
+								$res=mysql_query($sql);
+								while($lig=mysql_fetch_object($res)) {
+									if($lig->statut=='') {
+										$tab_note_per[$lig->login][$lig->periode]=$lig->note;
+										//$tab_note_per[$lig->login]['total']
+									}
+								}
+							}
+							if(isset($tab_note_per)) {
+								foreach($tab_note_per as $ele_login => $tab_notes_eleve) {
+									//echo "<p>$ele_login ";
+									$total=0;
+									foreach($tab_notes_eleve as $tmp_periode => $tmp_note) {
+										$total+=$tmp_note;
+										//echo $tmp_note." - ";
+									}
+									//echo "Moyenne: $total/".count($tab_notes_eleve)."<br />";
+									$moyenne=round($total*10/count($tab_notes_eleve))/10;
+									//$moyenne=str_replace(",", ".", $moyenne);
+									$sql="INSERT INTO ex_notes SET id_ex_grp='$id_ex_grp', login='$ele_login', note='$moyenne';";
+									$insert=mysql_query($sql);
+								}
+							}
+						}
+					}
+				}
+				elseif(substr($id_dev,0,1)=='P') {
 					$tmp_per=substr($id_dev,1);
 					$sql="UPDATE ex_groupes SET id_dev='0', type='moy_bull', valeur='$tmp_per' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
+					$res=mysql_query($sql);
 				}
 				else {
-					$sql="UPDATE ex_groupes SET id_dev='$id_dev' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
+					// Vérifier que c'est un devoir valide.
+					$sql="SELECT 1=1 FROM cn_devoirs WHERE id='$id_dev';";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)==0) {
+						$msg.="Devoir $id_dev invalide pour le groupe $id_groupe[$i].<br />";
+					}
+					else {
+						$sql="UPDATE ex_groupes SET id_dev='$id_dev' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
+						$res=mysql_query($sql);
+					}
 				}
-				$res=mysql_query($sql);
 
 /*
 				if($id_dev==-1) {
@@ -1049,6 +1119,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 				$tab_dev=array();
 				$tab_bull=array();
+				$tab_moy_plusieurs_periodes=array();
 				for($j=0;$j<count($tab_matiere);$j++) {
 					echo "<tr>\n";
 					echo "<th>".htmlentities($tab_matiere[$j])."\n";
@@ -1220,6 +1291,77 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 									}
 
 									echo "</span>\n";
+								}
+								elseif($lig->type=='moy_plusieurs_periodes') {
+
+									echo "<br />\n";
+									echo "<span style='font-size:small;'>\n";
+
+									echo "<a href='#' onmouseover=\"delais_afficher_div('div_moy_plusieurs_periodes_".$lig->id."_".$lig->valeur."','y',10,-10,1000,20,20)\" onmouseout=\"cacher_div('div_moy_plusieurs_periodes_".$lig->id."_".$lig->valeur."')\" onclick='return false;'>";
+									echo "Moy.périodes ".$lig->valeur;
+									echo "</a>\n";
+
+									$chaine_mpp="moy_plusieurs_periodes_".$lig->id."_".strtr($lig->valeur," ","_");
+									if(!in_array($chaine_mpp,$tab_moy_plusieurs_periodes)) {
+										$tab_moy_plusieurs_periodes[]=$chaine_mpp;
+
+										$titre="Moyennes des périodes $lig->valeur";
+										$texte="<p><b>Moyenne des moyennes des élèves sur les bulletins pour les périodes $lig->valeur</b>";
+
+										// Effectif du groupe sur les périodes
+										$tab_per=explode(" ",$lig->valeur);
+										$chaine_sql="(periode='$tab_per[0]'";
+										for($loop=1;$loop<count($tab_per);$loop++) {
+											$chaine_sql.=" OR periode='$tab_per[0]'";
+										}
+										$chaine_sql.=")";
+
+										$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$lig->id' AND $chaine_sql;";
+										//echo "$sql<br />\n";
+										$res_grp=mysql_query($sql);
+										$eff_grp=mysql_num_rows($res_grp);
+
+										// Nombre de notes saisies
+										$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='$lig->id';";
+										//echo "$sql<br />";
+										$res_id_ex_grp=mysql_query($sql);
+										if(mysql_num_rows($res_id_ex_grp)==0) {
+											$texte.="<span style='color:red'>Identifiant du groupe dans ex_groupe non trouvé pour l'examen $id_exam et le groupe $id_groupe[$i].</span><br />";
+										}
+										else {
+											$lig_ex_grp=mysql_fetch_object($res_id_ex_grp);
+											$id_ex_grp=$lig_ex_grp->id;
+
+
+											//$sql="SELECT * FROM matieres_notes WHERE id_groupe='$lig->id' AND periode='$lig->valeur';";
+											$sql="SELECT * FROM ex_notes WHERE id_ex_grp='$id_ex_grp';";
+											//echo "$sql<br />\n";
+											$res_notes_mpp=mysql_query($sql);
+											$eff_notes_mpp=mysql_num_rows($res_notes_mpp);
+	
+											if($eff_notes_mpp>0) {
+												$texte.="<br />\n";
+	
+												if($eff_grp==$eff_notes_mpp) {
+													$texte.="<span style='color:green;'>$eff_notes_mpp/$eff_grp</span>";
+												}
+												else {
+													$texte.="<span style='color:red;'>$eff_notes_mpp/$eff_grp</span>";
+												}
+	
+												$texte.="<br />\n";
+											}
+											else {
+												$texte.="<span style='color:red;'>Aucune moyenne saisie</span>";
+											}
+	
+											$tabdiv_infobulle[]=creer_div_infobulle("div_moy_plusieurs_periodes_".$lig->id."_".$lig->valeur,$titre,"",$texte,"",30,0,'y','y','n','n');
+										}
+									}
+
+									echo "</span>\n";
+
+
 								}
 								/*
 								elseif($lig->id_dev==-1) {
@@ -1693,14 +1835,25 @@ function checkbox_change(cpt) {
 			echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Classe ".get_class_from_id($id_classe)." et matière $matiere</p>\n";
 
 			$tab_moy_bull_inscrits=array();
+			$tab_moy_pp_inscrits=array();
 			$tab_dev_inscrits=array();
 			//$sql="SELECT eg.id_dev FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$matiere';";
 			$sql="SELECT eg.id_dev,eg.id_groupe,eg.type,eg.valeur FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$matiere';";
+			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
 				while($lig=mysql_fetch_object($res)) {
 					if($lig->type=='moy_bull') {
 						$tab_moy_bull_inscrits[$lig->id_groupe]=$lig->valeur;
+					}
+					elseif($lig->type=='moy_plusieurs_periodes') {
+						//$tab_moy_pp_inscrits[$lig->id_groupe]=$lig->valeur;
+						$tab_tmp=explode(" ", $lig->valeur);
+						for($loop=0;$loop<count($tab_tmp);$loop++) {
+							if((!isset($tab_moy_pp_inscrits[$lig->id_groupe]))||(!in_array($tab_tmp[$loop],$tab_moy_pp_inscrits[$lig->id_groupe]))) {
+								$tab_moy_pp_inscrits[$lig->id_groupe][]=$tab_tmp[$loop];
+							}
+						}
 					}
 					elseif($lig->type=='') {
 						$tab_dev_inscrits[]=$lig->id_dev;
@@ -1760,10 +1913,14 @@ function checkbox_change(cpt) {
 									if(mysql_num_rows($res3)>0) {
 										$lig3=mysql_fetch_object($res3);
 										echo "<span class='bold'>".htmlentities($lig3->nom_periode)."</span>\n";
+
+										$tab_periodes[$cpt_grp][]=$lig2->periode;
 									}
 									else {
 										// Ca ne devrait pas arriver...
 										echo "<span class='bold'>Période ".$lig2->periode."</span>\n";
+
+										$tab_periodes[$cpt_grp][]=$lig2->periode;
 									}
 									echo "</label>\n";
 
@@ -1807,9 +1964,32 @@ function checkbox_change(cpt) {
 							echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlentities($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlentities($lig->description)."</span>)</span></label><br />\n";
 						*/
 
+
+						if(isset($tab_periodes[$cpt_grp])) {
+							echo "<hr />\n";
+							echo "<b>Ou</b><br />\n";
+							//echo "<b>Moyenne de plusieurs périodes:</b>\n";
+							echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='Plusieurs_periodes' ";
+							echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
+
+							//if(in_array($lig2->id,$tab_dev_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
+							if(isset($tab_moy_pp_inscrits[$lig->id])) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
+
+							echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'><span id='texte_id_dev_".$cpt_grp."_$cpt' $temp_style>Moyenne de plusieurs périodes&nbsp;:</span></label><br />\n";
+
+							for($j=0;$j<count($tab_periodes[$cpt_grp]);$j++) {
+								echo "<span style='margin-left:2em;'><input type='checkbox' name='id_dev_".$cpt_grp."_periodes[]' id='id_dev_".$cpt_grp."_periodes_$j' value='".$tab_periodes[$cpt_grp][$j]."' onchange=\"document.getElementById('id_dev_".$cpt_grp."_$cpt').checked=true;\" ";
+								if((isset($tab_moy_pp_inscrits[$lig->id]))&&(in_array($tab_periodes[$cpt_grp][$j],$tab_moy_pp_inscrits[$lig->id]))) {echo "checked ";}
+								echo "/><label for='id_dev_".$cpt_grp."_periodes_$j'>Période ".$tab_periodes[$cpt_grp][$j]."</label></span><br />\n";
+							}
+							$cpt++;
+						}
+
+
 						$cpt_grp++;
 					}
 				}
+
 				echo "</td>\n";
 			}
 			echo "</tr>\n";

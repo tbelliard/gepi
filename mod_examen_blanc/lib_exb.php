@@ -1738,14 +1738,17 @@ function bull_exb($tab_ele,$i) {
 							if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]=='1') { if($tab_modele_pdf["active_moyenne_max"][$classe_id]=='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
 
 							// On filtre si la moyenne est vide, on affiche seulement un tiret
-							if ($tab_ele['matieres']["$current_matiere"]['note']=="-") {
+							//if ($tab_ele['matieres']["$current_matiere"]['note']=="-") {
+							if (($tab_ele['matieres']["$current_matiere"]['note']=="-")||($tab_ele['matieres']["$current_matiere"]['statut']=="v")) {
 								$valeur = "-";
 							}
 							elseif($tab_ele['matieres']["$current_matiere"]['statut']!="") {
 								$valeur=$tab_ele['matieres']["$current_matiere"]['statut'];
 							}
 							else {
-								$valeur = present_nombre($tab_ele['matieres']["$current_matiere"]['note'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+								//$valeur = present_nombre($tab_ele['matieres']["$current_matiere"]['note'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+								$valeur = present_nombre(strtr($tab_ele['matieres']["$current_matiere"]['note'],",","."), $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+								//$valeur = $tab_ele['matieres']["$current_matiere"]['note'];
 							}
 							$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur,1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 							$valeur = "";
@@ -1772,7 +1775,8 @@ function bull_exb($tab_ele,$i) {
 
 								if($tab_modele_pdf["active_moyenne_min"][$classe_id]=='1') {
 									//if ($tab_bull['moy_min_classe_grp'][$m]=="-") {
-									if (($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="-")||($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="")) {
+									//if (($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="-")||($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="")) {
+									if (($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="-")||($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="")||($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="1000")) {
 										$valeur = "-";
 									} else {
 										$valeur = present_nombre($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
@@ -1783,7 +1787,9 @@ function bull_exb($tab_ele,$i) {
 
 								if($tab_modele_pdf["active_moyenne_max"][$classe_id]=='1') {
 									//if ($tab_bull['moy_max_classe_grp'][$m]=="-") {
-									if (($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="-")||($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="")) {
+									//if (($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="-")||($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="")) {
+									//if (($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="-")||($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="")||(strtr($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp'],",",".")<0)) {
+									if (($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="-")||($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="")||($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=='-1')) {
 										$valeur = "-";
 									} else {
 										$valeur = present_nombre($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
@@ -1839,7 +1845,7 @@ function bull_exb($tab_ele,$i) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
 							//if ($tab_bull['moy_min_classe_grp'][$m]=="-") {
-							if (($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="-")||($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="")) {
+							if (($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="-")||($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="")||($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp']=="1000")) {
 								$valeur = "-";
 							} else {
 								$valeur = present_nombre($tab_ele['matieres']["$current_matiere"]['moy_min_classe_grp'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
@@ -1858,7 +1864,7 @@ function bull_exb($tab_ele,$i) {
 						if( $tab_modele_pdf["active_moyenne_max"][$classe_id] == '1' and $tab_modele_pdf["active_moyenne"][$classe_id] == '1' and $ordre_moyenne[$cpt_ordre] == 'max' ) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 							//if ($tab_bull['moy_max_classe_grp'][$m]== "-") {
-							if (($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="-")||($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="")) {
+							if (($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="-")||($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=="")||($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp']=='-1')) {
 								$valeur = "-";
 							} else {
 								$valeur = present_nombre($tab_ele['matieres']["$current_matiere"]['moy_max_classe_grp'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
