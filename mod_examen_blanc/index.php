@@ -1120,8 +1120,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				$tab_dev=array();
 				$tab_bull=array();
 				$tab_moy_plusieurs_periodes=array();
+				$alt=1;
 				for($j=0;$j<count($tab_matiere);$j++) {
-					echo "<tr>\n";
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
 					echo "<th>".htmlentities($tab_matiere[$j])."\n";
 					echo "<input type='hidden' name='tab_matiere[$j]' value='$tab_matiere[$j]' size='2' />\n";
 					echo "</th>\n";
@@ -1770,6 +1772,8 @@ function checkbox_change(cpt) {
 			echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
 
+			echo "<p><a href='javascript:cocher_decocher(true)'>Cocher</a> / <a href='javascript:cocher_decocher(false)'>décocher</a> tous les groupes.</p>\n";
+
 			echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
 	if(document.getElementById('id_groupe_'+cpt)) {
@@ -1781,6 +1785,16 @@ function checkbox_change(cpt) {
 		}
 	}
 }
+
+// Tout cocher/décocher
+function cocher_decocher(mode) {
+	for (var k=0;k<$cpt;k++) {
+		if(document.getElementById('id_groupe_'+k)){
+			document.getElementById('id_groupe_'+k).checked=mode;
+		}
+	}
+}
+
 </script>\n";
 
 			echo "<p><br /></p>\n";
