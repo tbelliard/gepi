@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -118,11 +118,12 @@ if ($current_group) {
 		*/
 
 		$sql="SELECT note,statut FROM matieres_notes WHERE login='$eleve_login' AND periode='$periode_num' AND id_groupe='$id_groupe'";
+		//echo "$sql<br />\n";
 		$res_note=mysql_query($sql);
 		if(mysql_num_rows($res_note)){
 			$lig_note=mysql_fetch_object($res_note);
 			if($lig_note->statut==''){
-				$note=my_ereg_replace(".",",",$lig_note->note);
+				$note=my_ereg_replace("\.",",",$lig_note->note);
 			}
 			else{
 				$note=$lig_note->statut;
