@@ -118,7 +118,7 @@ else {
 
 		$tab_mat[$lig1->type_brevet]=array();
 
-		//for($j=101;$j<=122;$j++) {
+		//for($j=101;$j<=$indice_max_matieres;$j++) {
 		//	$tab_mat[$lig1->type_brevet][$j]=$id_matiere[$j];
 		//}
 

@@ -121,14 +121,14 @@
 	
 	// Le type_brevet est choisi
 	$tabmatieres=array();
-	for($j=101;$j<=122;$j++){
+	for($j=101;$j<=$indice_max_matieres;$j++){
 		$tabmatieres[$j]=array();
 	}
 	
 	$tabmatieres=tabmatieres($type_brevet);
 	$num_fb_col=$tabmatieres["num_fb_col"];
 	
-	for($j=101;$j<=122;$j++) {
+	for($j=101;$j<=$indice_max_matieres;$j++) {
 		if($tabmatieres[$j][0]!=''){
 			//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' LIMIT 1";
 			$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' LIMIT 1";
@@ -219,7 +219,7 @@
 	for($i=0;$i<count($id_classe);$i++) {
 		// Calcul des moyennes de classes... pb avec le statut...
 		$moy_classe=array();
-		for($j=101;$j<=122;$j++) {
+		for($j=101;$j<=$indice_max_matieres;$j++) {
 			if($tabmatieres[$j][0]!='') {
 				//$somme=0;
 				// Dans la table 'notanet', matiere='PREMIERE LANGUE VIVANTE'
@@ -547,7 +547,7 @@
 				//$y=100;
 				$nb_mat=0;
 				$nb_mat_notnonca=0;
-				for($j=101;$j<=122;$j++) {
+				for($j=101;$j<=$indice_max_matieres;$j++) {
 					//if($tabmatieres[$j][0]!='') {
 					if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j][-4]!='non dispensee dans l etablissement')) {
 						$nb_mat++;
@@ -576,7 +576,7 @@
 				// Les notes con calculées (à titre indicatif) sont en bas de tableau
 				$temoin_notnonca=0;
 				$cpt=0;
-				for($j=101;$j<=122;$j++) {
+				for($j=101;$j<=$indice_max_matieres;$j++) {
 					$temoin_note_non_numerique="n";
 
 					//$hauteur_texte=$fs_txt;

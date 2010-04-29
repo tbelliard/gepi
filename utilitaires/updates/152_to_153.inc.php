@@ -722,6 +722,31 @@ if ($res_test==0){
 }
 
 
+// Modification du type des champs id_mat pour pouvoir dépasser 127
+
+$result .= "&nbsp;->Modification de 'id_mat' de TINYINT en INT dans la table 'notanet'<br />";
+$query = mysql_query("ALTER TABLE notanet CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+if ($query) {
+        $result .= "<font color=\"green\">Ok !</font><br />";
+} else {
+        $result .= "<font color=\"red\">Erreur</font><br />";
+}
+
+$result .= "&nbsp;->Modification de 'id_mat' de TINYINT en INT dans la table 'notanet_corresp'<br />";
+$query = mysql_query("ALTER TABLE notanet_corresp CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+if ($query) {
+        $result .= "<font color=\"green\">Ok !</font><br />";
+} else {
+        $result .= "<font color=\"red\">Erreur</font><br />";
+}
+
+$result .= "&nbsp;->Modification de 'id_mat' de TINYINT en INT dans la table 'notanet_app'<br />";
+$query = mysql_query("ALTER TABLE notanet_app CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+if ($query) {
+        $result .= "<font color=\"green\">Ok !</font><br />";
+} else {
+        $result .= "<font color=\"red\">Erreur</font><br />";
+}
 
 
 ?>

@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 //======================================================================================
@@ -128,7 +128,7 @@ else {
 
 		$tab_mat[$lig1->type_brevet]=array();
 		/*
-		for($j=101;$j<=122;$j++) {
+		for($j=101;$j<=$indice_max_matieres;$j++) {
 			$tab_mat[$lig1->type_brevet][$j]=$id_matiere[$j];
 		}
 		*/
@@ -500,7 +500,7 @@ else {
 
 						unset($tab_opt_matiere_eleve);
 						$tab_opt_matiere_eleve=array();
-						for($j=101;$j<=122;$j++){
+						for($j=101;$j<=$indice_max_matieres;$j++){
 							//if($tabmatieres[$j][0]!=''){
 							if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')){
 								// Liste des valeurs spéciales autorisées pour la matière courante:
@@ -638,7 +638,7 @@ else {
 						if($erreur!="oui"){
 							// On génère l'export pour cet élève:
 							$TOT=0;
-							for($j=101;$j<=122;$j++){
+							for($j=101;$j<=$indice_max_matieres;$j++){
 								//if(isset($tabmatieres[$j][0])){
 								//if(isset($statut_matiere[$j])){
 								if(isset($moy_NOTANET[$j])) {

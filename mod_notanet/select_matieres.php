@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 
@@ -70,7 +70,7 @@ if(!isset($msg)) {$msg="";}
 include("lib_brevets.php");
 
 $id_matiere=array();
-for($j=101;$j<=122;$j++){
+for($j=101;$j<=$indice_max_matieres;$j++){
 	if(isset($_POST['id_matiere'.$j])){
 		$id_matiere[$j]=$_POST['id_matiere'.$j];
 
@@ -99,7 +99,7 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 		$nb_err=0;
 		$cpt_enr=0;
 		// Enregistrement des choix de matières dans 'notanet_corresp'
-		for($j=101;$j<=122;$j++){
+		for($j=101;$j<=$indice_max_matieres;$j++){
 			//if($tabmatieres[$j][0]!=''){
 			//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j]['socle']=='n')) {
 			if($tabmatieres[$j][0]!=''){
@@ -163,6 +163,8 @@ $titre_page = "Notanet: Associations type de brevet/matières";
 require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
+
+//debug_var();
 
 echo "<div class='noprint'>\n";
 echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Retour à l'accueil Notanet</a>";
@@ -289,7 +291,7 @@ else {
 		echo "</tr>\n";
 
 		$alt=1;
-		for($j=101;$j<=122;$j++){
+		for($j=101;$j<=$indice_max_matieres;$j++){
 			if($tabmatieres[$j][0]!=''){
 			//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j]['socle']=='n')) {
 				$alt=$alt*(-1);
@@ -349,7 +351,8 @@ else {
 
 					echo "<a name='ancre_$j'></a>";
 
-					$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' ORDER BY matiere;";
+					//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' ORDER BY matiere;";
+					$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' ORDER BY matiere;";
 					$res_test=mysql_query($sql);
 					if(mysql_num_rows($res_test)>0){
 						$cpt=0;
@@ -357,6 +360,7 @@ else {
 						while($lig_tmp=mysql_fetch_object($res_test)) {
 							echo "<input type='checkbox' name='id_matiere".$j."[]' id='id_matiere".$j."_$cpt' value='$lig_tmp->matiere' checked /><label for='id_matiere".$j."_$cpt'>$lig_tmp->matiere</label><br />";
 							$cpt++;
+
 						}
 					}
 					echo "<p align='center'>";
@@ -434,7 +438,7 @@ else {
 		}
 
 		// Enregistrement des choix de matières dans 'notanet_corresp'
-		for($j=101;$j<=122;$j++){
+		for($j=101;$j<=$indice_max_matieres;$j++){
 			if($tabmatieres[$j][0]!=''){
 				//$tabmatieres[$j][0]
 

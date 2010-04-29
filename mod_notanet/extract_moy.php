@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 //======================================================================================
@@ -110,10 +110,12 @@ else {
 
 	//=========================================================
 	unset($tab_mat);
-	$sql="SELECT * FROM notanet_corresp ORDER BY type_brevet;";
+	//$sql="SELECT * FROM notanet_corresp ORDER BY type_brevet;";
+	$sql="SELECT DISTINCT type_brevet FROM notanet_corresp ORDER BY type_brevet;";
 	$res1=mysql_query($sql);
 	while($lig1=mysql_fetch_object($res1)) {
 		$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$lig1->type_brevet';";
+		//echo "$sql<br />";
 		$res2=mysql_query($sql);
 
 		unset($id_matiere);
@@ -127,13 +129,40 @@ else {
 
 		$tab_mat[$lig1->type_brevet]=array();
 		/*
-		for($j=101;$j<=122;$j++) {
+		for($j=101;$j<=$indice_max_matieres;$j++) {
 			$tab_mat[$lig1->type_brevet][$j]=$id_matiere[$j];
 		}
 		*/
 		$tab_mat[$lig1->type_brevet]['id_matiere']=$id_matiere;
 		$tab_mat[$lig1->type_brevet]['statut_matiere']=$statut_matiere;
+
+		/*
+		echo "\$tab_mat[$lig1->type_brevet]['id_matiere']=$id_matiere<br />";
+		foreach($id_matiere as $key => $value) {
+			if(is_array($value)) {
+				foreach($value as $key2 => $value2) {
+					echo "\$tab_mat[$lig1->type_brevet]['id_matiere'][$key][$key2]=".$value2."<br />";
+				}
+			}
+			else {
+				echo "\$tab_mat[$lig1->type_brevet]['id_matiere'][$key]=".$value."<br />";
+			}
+		}
+		echo "\$tab_mat[$lig1->type_brevet]['statut_matiere']=$statut_matiere<br />";
+		foreach($statut_matiere as $key => $value) {
+			if(is_array($value)) {
+				foreach($value as $key2 => $value2) {
+					echo "\$tab_mat[$lig1->type_brevet]['statut_matiere'][$key][$key2]=".$value2."<br />";
+				}
+			}
+			else {
+				echo "\$tab_mat[$lig1->type_brevet]['statut_matiere'][$key]=".$value."<br />";
+			}
+		}
+		*/
 	}
+
+
 	//=========================================================
 
 	if(!isset($_POST['enregistrer_extract_moy'])) {
@@ -253,7 +282,7 @@ else {
 
 			$tabmatieres=tabmatieres($extract_mode);
 			$cpt_non_assoc=0;
-			for($i=101;$i<=122;$i++) {
+			for($i=101;$i<=$indice_max_matieres;$i++) {
 				//echo "\$tabmatieres[$i][0]=".$tabmatieres[$i][0]."<br />";
 				if(($tabmatieres[$i][0]!="")&&($tabmatieres[$i]['socle']=='n')) {
 					$temoin_assoc="n";
@@ -330,6 +359,7 @@ else {
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)>0) {
 						tab_extract_moy($tab_ele, $id_classe[$i]);
+						//echo "BLBLA";
 						flush();
 					}
 					else {
@@ -448,7 +478,7 @@ else {
 
 						unset($tab_opt_matiere_eleve);
 						$tab_opt_matiere_eleve=array();
-						for($j=101;$j<=122;$j++){
+						for($j=101;$j<=$indice_max_matieres;$j++){
 							//if($tabmatieres[$j][0]!=''){
 							if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')){
 								// Liste des valeurs spéciales autorisées pour la matière courante:
@@ -586,7 +616,7 @@ else {
 						if($erreur!="oui"){
 							// On génère l'export pour cet élève:
 							$TOT=0;
-							for($j=101;$j<=122;$j++){
+							for($j=101;$j<=$indice_max_matieres;$j++){
 								//if(isset($tabmatieres[$j][0])){
 								//if(isset($statut_matiere[$j])){
 								if(isset($moy_NOTANET[$j])) {
