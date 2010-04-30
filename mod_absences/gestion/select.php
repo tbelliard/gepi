@@ -90,11 +90,11 @@ if ($classe_choix == "tous"){
 									FROM eleves e, j_eleves_classes jec, classes c
 									WHERE e.login = jec.login
 									AND jec.id_classe = c.id
-									GROUP BY e.nom, e.prenom
+									GROUP BY e.login, e.nom, e.prenom
 									ORDER BY nom, prenom ASC";
 }else{
     settype($classe_choix,"integer");
-    $requete_liste_eleve = "SELECT eleves.login, eleves.nom, eleves.prenom, j_eleves_classes.login, j_eleves_classes.id_classe, j_eleves_classes.periode, classes.id, classes.classe, classes.nom_complet FROM eleves, j_eleves_classes, classes WHERE eleves.login=j_eleves_classes.login AND j_eleves_classes.id_classe=classes.id AND classes.id='".$classe_choix."' GROUP BY eleves.nom, eleves.prenom ORDER BY nom, prenom ASC";
+    $requete_liste_eleve = "SELECT eleves.login, eleves.nom, eleves.prenom, j_eleves_classes.login, j_eleves_classes.id_classe, j_eleves_classes.periode, classes.id, classes.classe, classes.nom_complet FROM eleves, j_eleves_classes, classes WHERE eleves.login=j_eleves_classes.login AND j_eleves_classes.id_classe=classes.id AND classes.id='".$classe_choix."' GROUP BY eleves.login, eleves.nom, eleves.prenom ORDER BY nom, prenom ASC";
 }
 
 $date_ce_jour = date('d/m/Y');
@@ -154,6 +154,9 @@ if ($_SESSION["statut"] == 'autre') {
       <td class="td_tableau_selection">
 	<form method="post" action="<?php echo $page; ?>.php?action=ajouter&amp;type=<?php echo $type; ?>" name="form2">
             <p>Sélection :<br />
+			<?php
+				//echo "$requete_liste_eleve<br />";
+			?>
             <select name="eleve_absent[]" size="10" <?php if ($type == "D" or $type == "I") {} else {?>multiple="multiple"<?php } ?> style="width: 350px;">
             <?php
 			$resultat_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
