@@ -823,16 +823,40 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 
     // ======================== Correctif : On récupère la période actuelle si elle a été paramétrée dans l'emploi du temps
 
-    $req_periode_courante = mysql_query("SELECT numero_periode FROM edt_calendrier WHERE
+	$sql="SELECT DISTINCT id_classe FROM j_groupes_classes WHERE id_groupe='$classe';";
+	$res_classes_du_groupe=mysql_query($sql);
+	$tab_classes_grp=array();
+	while($lig_tmp=mysql_fetch_object($res_classes_du_groupe)) {
+		$tab_classes_grp[]=$lig_tmp->id_classe;
+	}
+
+    //$req_periode_courante = mysql_query("SELECT numero_periode FROM edt_calendrier WHERE
+    //$sql="SELECT numero_periode FROM edt_calendrier WHERE
+    $sql="SELECT numero_periode, classe_concerne_calendrier FROM edt_calendrier WHERE
                                         debut_calendrier_ts < ".date("U")." AND
-                                        fin_calendrier_ts > ".date("U")."
-                            ");
+                                        fin_calendrier_ts > ".date("U");
+    $req_periode_courante = mysql_query($sql);
     if ($rep_periode_courante = mysql_fetch_array($req_periode_courante)) {
         if ($rep_periode_courante["numero_periode"] != 0) {
-            $_periode = $rep_periode_courante["numero_periode"];
+
+			$temoin_classe_concernee="n";
+			$tab_classe_concerne_calendrier=explode(";",$rep_periode_courante["classe_concerne_calendrier"]);
+			for($loop=0;$loop<count($tab_classes_grp);$loop++) {
+				if(in_array($tab_classes_grp[$loop],$tab_classe_concerne_calendrier)) {
+					$temoin_classe_concernee="y";
+					//$periode_edt_trouvee="y";
+					break;
+				}
+			}
+	
+			if($temoin_classe_concernee=="y") {
+	            $_periode = $rep_periode_courante["numero_periode"];
+				//$periode_edt_trouvee="y";
+				break;
+			}
         }
     }
-    //echo $_periode."<br/>";
+    //echo "\$_periode=".$_periode."<br/>";
     // ======================== fin de correctif
 
 	// on vérifie que l'enseignement envoyé n'est pas une AID
@@ -890,6 +914,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
         }
         
     }
+
+//echo "\$nbre_eleves=$nbre_eleves<br />";
 
 ?>
 	<div class="centre_tout_moyen">
