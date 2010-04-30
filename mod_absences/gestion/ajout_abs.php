@@ -115,12 +115,20 @@ if($mode === 'classe')
 
 	// christian modif du 15/01/2007 if($cpt_eleves === '0') { header("Location:select.php?type=$type"); }
 	//je recherche tous les élèves de la classe sélectionnée
+	/*
 	$requete_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet
 									FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes
 									WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
 									AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
 									AND id = '".$classe_choix_eleve."'
 								GROUP BY nom, prenom";
+	*/
+	$requete_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet
+									FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes
+									WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login
+									AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id
+									AND id = '".$classe_choix_eleve."'
+								GROUP BY eleves.login, nom, prenom"; // 20100430
 	$execution_eleve = mysql_query($requete_eleve) or die('Erreur SQL !'.$requete_eleve.'<br />'.mysql_error());
 	$cpt_eleve = 0;
 	while ($data_eleve = mysql_fetch_array($execution_eleve))
