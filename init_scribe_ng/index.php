@@ -69,6 +69,8 @@ require_once("../lib/header.inc");
     <br />
     <li><a href='etape6.php'>Procéder à la sixième phase</a> d'importation des enseignements.</li>
     <br />
+    <li><a href='etape7.php'>Procéder à la septième phase</a> d'importation des personnels non-enseignants.</li>
+    <br />
     <br />
 </li>
 <li>Une fois toute la procédure d'initialisation des données terminée, il vous sera possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</li>

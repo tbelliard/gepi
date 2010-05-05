@@ -71,7 +71,6 @@ if (isset($_POST['step'])) {
 
 
     // Données à importer
-    $classes = array();
     $nb_eleves=0;
     $nb_responsables=0;
     $nb_profs=0;
@@ -137,100 +136,115 @@ if (isset($_POST['step'])) {
             $nouvel_eleve->setSexe($eleves[$nb]['entpersonsexe'][0]);
             $nouvel_eleve->setNaissance(formater_date_pour_mysql($eleves[$nb]['entpersondatenaissance'][0]));
             $nouvel_eleve->setLieuNaissance('');
-            $nouvel_eleve->setElenoet($eleves[$nb]['employeenumber'][0]);
+            $ele_no_et = (array_key_exists('employeenumber', $eleves[$nb])) ? $eleves[$nb]['employeenumber'][0] : '';
+            $nouvel_eleve->setElenoet($ele_no_et);
             $nouvel_eleve->setEreno('');
-            $nouvel_eleve->setEleid($eleves[$nb]['intid'][0]);
+            
+            $ele_id = (array_key_exists('intid', $eleves[$nb])) ? $eleves[$nb]['intid'][0] : false;
+            // L'ele_id est très important dans Gepi pour le lien eleve/responsable, mais dans Scribe il ne peut pas
+            // etre spécifié manuellement (seulement à l'import depuis Sconet). En conséquence, s'il est absent,
+            // on le remplace par le noet, en espérant qu'il n'y ait pas de conflit ! (en principe non)
+            if (!$ele_id and $ele_no_et != '') $ele_id = $ele_no_et;
+            
+            $nouvel_eleve->setEleid($ele_id);
             $nouvel_eleve->setNoGep($eleves[$nb]['ine'][0]);
             $nouvel_eleve->setEmail($eleves[$nb][$ldap->champ_email][0]);
-            /*
-             * Récupération des CLASSES de l'eleve :
-             * Pour chaque eleve, on parcours ses classes, et on ne prend que celles
-             * qui correspondent à la branche de l'établissement courant, et on les stocke
-             */
-            $nb_classes = $eleves[$nb]['enteleveclasses']['count'];
-
-            // Pour chaque classe trouvée..
-            $classe_from_ldap = array();
-            for ($cpt=0; $cpt<$nb_classes; $cpt++) {
-                $classe_from_ldap = explode("$", $eleves[$nb]['enteleveclasses'][$cpt]);
-                // $classe_from_ldap[0] contient le DN de l'établissement
-                // $classe_from_ldap[1] contient l'id de la classe
-                $code_classe = $classe_from_ldap[1];
-
-                // Si le SIREN de la classe trouvée correspond bien au SIREN de l'établissement courant,
-                // on crée une entrée correspondante dans le tableau des classes disponibles
-                // Sinon c'est une classe d'un autre établissement, on ne doit donc pas en tenir compte
-                if (strcmp($classe_from_ldap[0], $ldap->get_base_branch()) == 0) {
-
-                    /*
-                     * On test si la classe que l'on souhaite ajouter existe déjà
-                     * en la cherchant dans la base (
-                     */
-                    $crit = new Criteria();
-                    $crit->add(ClassePeer::CLASSE, $code_classe);
-                    $classe_select = ClassePeer::doSelect($crit);
-                    $classe_courante = null;
-
-                    // Si elle n'existe pas
-                    if (count($classe_select) == 0) {
-                        /*
-                        * Creation de la classe correspondante
-                        */
-                        $nouvelle_classe = new Classe();
-                        $nouvelle_classe->setClasse($code_classe);
-
-                        $nouvelle_classe->save();
-                        $classes_inserees++;
-                        $classe_courante = $nouvelle_classe;
-                        // On crééra les périodes associées a la classe par la suite
-                    }
-                    else if (count($classe_select) == 1){
-                        $classe_courante = $classe_select[0];
-                    }
-                    // Si plus d'une classe trouvee, erreur...
-                    else {
-                        die ("erreur dans la base : plusieurs classes ont le meme nom.<br>");
-                    }
-
-                    // Comme on n'a pas encore de périodes, on va tricher un peu
-                    // pour la définition de l'association élève-classe
-                    $nouvelle_assoc_classe_eleve = new JEleveClasse();
-                    $nouvelle_assoc_classe_eleve->setClasse($classe_courante);
-                    $nouvelle_assoc_classe_eleve->setEleve($nouvel_eleve);
-                    // Pour le moment on met 0 dans l'id de periode, car on les créera plus tard.
-                    // On veut simplement garder l'association eleve/classe pour ne pas avoir
-                    // a refaire une connexion au LDAP a l'etape suivante
-                    $nouvelle_assoc_classe_eleve->setPeriode(0);
-                    $nouvelle_assoc_classe_eleve->save();
-                    $nouvel_eleve->addJEleveClasse($nouvelle_assoc_classe_eleve);
-                    $classes[$id_classe] = 1;
-
-                } //Fin du if classe appartient a l'etablissement courant
-            } //Fin du parcours des classes de l'eleve
-
-            $nouvel_eleve->save();
             
-            // On créé maintenant son compte d'accès à Gepi
-            // On test si l'uid est deja connu de GEPI
-            $compte_utilisateur_eleve = UtilisateurProfessionnelPeer::retrieveByPK($nouvel_eleve->getLogin());
-            if ($compte_utilisateur_eleve != null) {
-                // Un compte d'accès avec le même identifiant existe déjà. On ne touche à rien.
-                echo "Un compte existe déjà pour l'identifiant ".$nouvel_eleve->getLogin().".<br/>";
-            }
-            else {
-                $new_compte_utilisateur = new UtilisateurProfessionnel();
-                $new_compte_utilisateur->setAuthMode('sso');
-                $new_compte_utilisateur->setCivilite($eleves[$nb]['personaltitle'][0]);
-                $new_compte_utilisateur->setEmail($nouvel_eleve->getEmail());
-                $new_compte_utilisateur->setEtat('actif');
-                $new_compte_utilisateur->setLogin($nouvel_eleve->getLogin());
-                $new_compte_utilisateur->setNom($nouvel_eleve->getNom());
-                $new_compte_utilisateur->setPrenom($nouvel_eleve->getPrenom());
-                $new_compte_utilisateur->setShowEmail('no');
-                $new_compte_utilisateur->setStatut('eleve');
-                $new_compte_utilisateur->save();
-            }
-            $eleves_inseres++;
+            // On ne peut créer l'élève que s'il a un ele_id. Sinon, ça ne va pas marcher correctement !
+            if ($ele_id) {
+            
+              /*
+               * Récupération des CLASSES de l'eleve :
+               * Pour chaque eleve, on parcours ses classes, et on ne prend que celles
+               * qui correspondent à la branche de l'établissement courant, et on les stocke
+               */
+              $nb_classes = $eleves[$nb]['enteleveclasses']['count'];
+
+              // Pour chaque classe trouvée..
+              $classe_from_ldap = array();
+              for ($cpt=0; $cpt<$nb_classes; $cpt++) {
+                  $classe_from_ldap = explode("$", $eleves[$nb]['enteleveclasses'][$cpt]);
+                  // $classe_from_ldap[0] contient le DN de l'établissement
+                  // $classe_from_ldap[1] contient l'id de la classe
+                  $code_classe = $classe_from_ldap[1];
+
+                  // Si le SIREN de la classe trouvée correspond bien au SIREN de l'établissement courant,
+                  // on crée une entrée correspondante dans le tableau des classes disponibles
+                  // Sinon c'est une classe d'un autre établissement, on ne doit donc pas en tenir compte
+                  if (strcmp($classe_from_ldap[0], $ldap->get_base_branch()) == 0) {
+
+                      /*
+                       * On test si la classe que l'on souhaite ajouter existe déjà
+                       * en la cherchant dans la base (
+                       */
+                      $crit = new Criteria();
+                      $crit->add(ClassePeer::CLASSE, $code_classe);
+                      $classe_select = ClassePeer::doSelect($crit);
+                      $classe_courante = null;
+
+                      // Si elle n'existe pas
+                      if (count($classe_select) == 0) {
+                          /*
+                          * Creation de la classe correspondante
+                          */
+                          $nouvelle_classe = new Classe();
+                          $nouvelle_classe->setClasse($code_classe);
+
+                          $nouvelle_classe->save();
+                          $classes_inserees++;
+                          $classe_courante = $nouvelle_classe;
+                          // On crééra les périodes associées a la classe par la suite
+                      }
+                      else if (count($classe_select) == 1){
+                          $classe_courante = $classe_select[0];
+                      }
+                      // Si plus d'une classe trouvee, erreur...
+                      else {
+                          die ("erreur dans la base : plusieurs classes ont le meme nom.<br>");
+                      }
+
+                      // Comme on n'a pas encore de périodes, on va tricher un peu
+                      // pour la définition de l'association élève-classe
+                      $nouvelle_assoc_classe_eleve = new JEleveClasse();
+                      $nouvelle_assoc_classe_eleve->setClasse($classe_courante);
+                      $nouvelle_assoc_classe_eleve->setEleve($nouvel_eleve);
+                      // Pour le moment on met 0 dans l'id de periode, car on les créera plus tard.
+                      // On veut simplement garder l'association eleve/classe pour ne pas avoir
+                      // a refaire une connexion au LDAP a l'etape suivante
+                      $nouvelle_assoc_classe_eleve->setPeriode(0);
+                      $nouvelle_assoc_classe_eleve->save();
+                      $nouvel_eleve->addJEleveClasse($nouvelle_assoc_classe_eleve);
+
+                  } //Fin du if classe appartient a l'etablissement courant
+              } //Fin du parcours des classes de l'eleve
+
+              $nouvel_eleve->save();
+              
+              // On créé maintenant son compte d'accès à Gepi
+              // On test si l'uid est deja connu de GEPI
+              $compte_utilisateur_eleve = UtilisateurProfessionnelPeer::retrieveByPK($nouvel_eleve->getLogin());
+              if ($compte_utilisateur_eleve != null) {
+                  // Un compte d'accès avec le même identifiant existe déjà. On ne touche à rien.
+                  echo "Un compte existe déjà pour l'identifiant ".$nouvel_eleve->getLogin().".<br/>";
+              }
+              else {
+                  $new_compte_utilisateur = new UtilisateurProfessionnel();
+                  $new_compte_utilisateur->setAuthMode('sso');
+                  $new_compte_utilisateur->setCivilite($eleves[$nb]['personaltitle'][0]);
+                  $new_compte_utilisateur->setEmail($nouvel_eleve->getEmail());
+                  $new_compte_utilisateur->setEtat('actif');
+                  $new_compte_utilisateur->setLogin($nouvel_eleve->getLogin());
+                  $new_compte_utilisateur->setNom($nouvel_eleve->getNom());
+                  $new_compte_utilisateur->setPrenom($nouvel_eleve->getPrenom());
+                  $new_compte_utilisateur->setShowEmail('no');
+                  $new_compte_utilisateur->setStatut('eleve');
+                  $new_compte_utilisateur->save();
+              }
+              $eleves_inseres++;
+            
+          }
+            
+            
         }
     }
 
@@ -243,7 +257,6 @@ if (isset($_POST['step'])) {
 
     echo "<b>$classes_inserees</b> classes ins&eacute;r&eacute;es en base<br>";
 
-// Toutes les classes sont dans le tableau $classes
     // Les indices sont les id des classes de l'établissement
     // On a pris que les classes correspondant au SIREN de l'établissement
     echo "<br>";

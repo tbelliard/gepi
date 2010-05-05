@@ -168,8 +168,6 @@ if ($_POST['step'] == "2") {
                     $nouvelle_relation_ep->setClasse($classe_concerne); // On passe l'objet classe
                     $nouvelle_relation_ep->setPeriode($periodes_de_la_classe_row->num_periode); // On passe le numero de periode
                     $nouvelle_relation_ep->save();
-                    echo "Affectation de l'eleve ".$eleve_concerne->getLogin(). " &agrave; la p&eacute;riode ".
-                    $periodes_de_la_classe_row->num_periode." pour la classe ".$classe_concerne->getClasse()." <br>";
                 }
             }
             // Si on ne trouve pas de periodes pour cette association temporaire, on ne fait rien

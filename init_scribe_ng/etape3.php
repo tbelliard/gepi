@@ -95,26 +95,43 @@ if ($_POST['step'] == "3") {
         $resp->setNom($responsables[$nb][$ldap->champ_nom][0]);
         $resp->setPrenom($responsables[$nb][$ldap->champ_prenom][0]);
         $resp->setCivilite($responsables[$nb]['personaltitle'][0]);
-        $resp->setTelPers($responsables[$nb]['homephone'][0]);
-        $resp->setTelProf($responsables[$nb]['telephonenumber'][0]);
-        $resp->setTelPort($responsables[$nb]['mobile'][0]);
-        $resp->setMel($responsables[$nb][$ldap->champ_email][0]);
-        $resp->setPersId($responsables[$nb]['intid'][0]);
+        
+        $homephone = array_key_exists('homephone', $responsables[$nb]) ? $responsables[$nb]['homephone'][0] : '';
+        $resp->setTelPers($homephone);
+        
+        $profphone = array_key_exists('telephonenumber', $responsables[$nb]) ? $responsables[$nb]['telephonenumber'][0] : '';
+        $resp->setTelProf($profphone);
+        
+        $mobilephone = array_key_exists('mobile', $responsables[$nb]) ? $responsables[$nb]['mobile'][0] : '';
+        $resp->setTelPort($mobilephone);
+        
+        $respemail = array_key_exists($ldap->champ_email, $responsables[$nb]) ? $responsables[$nb][$ldap->champ_email][0] : '';
+        $resp->setMel($respemail);
+        
+        $pers_id = array_key_exists('intid', $responsables[$nb]) ? $responsables[$nb]['intid'][0] : '';
+        $resp->setPersId($pers_id);
         
         
         // On créé l'adresse associée
         
-        $adr = new ResponsableEleveAdresse();
-        $adr->setAdrId($responsables[$nb]['intid'][0]);
-        $adr->setAdr1($responsables[$nb]['entpersonadresse'][0]);
-        $adr->setAdr2('');
-        $adr->setAdr3('');
-        $adr->setAdr4('');
-        $adr->setCommune($responsables[$nb]['entpersonville'][0]);
-        $adr->setCp($responsables[$nb]['entpersoncodepostal'][0]);
-        $adr->setPays($responsables[$nb]['entpersonpays'][0]);
+        $resp_addr = array_key_exists('entpersonadresse', $responsables[$nb]) ? $responsables[$nb]['entpersonadresse'][0] : null;
+        $resp_ville = array_key_exists('entpersonville', $responsables[$nb]) ? $responsables[$nb]['entpersonville'][0] : '';
+        $resp_cp = array_key_exists('entpersoncodepostal', $responsables[$nb]) ? $responsables[$nb]['entpersoncodepostal'][0] : '';
+        $resp_pays = array_key_exists('entpersonpays', $responsables[$nb]) ? $responsables[$nb]['entpersonpays'][0] : '';
         
-        $resp->setResponsableEleveAdresse($adr);
+        if ($resp_addr) {
+          $adr = new ResponsableEleveAdresse();
+          $adr->setAdrId($pers_id);
+          $adr->setAdr1($resp_addr);
+          $adr->setAdr2('');
+          $adr->setAdr3('');
+          $adr->setAdr4('');
+          $adr->setCommune($resp_ville);
+          $adr->setCp($resp_cp);
+          $adr->setPays($resp_pays);
+        
+          $resp->setResponsableEleveAdresse($adr);
+        }
         
         $resp->save();
         $resp_inseres++;
@@ -124,51 +141,57 @@ if ($_POST['step'] == "3") {
 
 
         $nb_eleves_a_charge = $responsables[$nb]['entauxpersreleleveeleve']['count'];
-
+        $valid_associations = 0;
         //pour chaque dn d'eleve
         for ($i=0;$i<$nb_eleves_a_charge;$i++) {
             $eleve_uid = explode(",",$responsables[$nb]['entauxpersreleleveeleve'][$i]);
 
             $eleve_associe_login = substr($eleve_uid[0], 4);
             
-            $eleve_associe_ele_id = mysql_result(mysql_query("SELECT ele_id FROM eleves WHERE login = '$eleve_associe_login'"), 0);
-            /*
-             * Il faut ensuite effectuer le lien entre Responsable et Eleve
-             */
+            $req_eleid = mysql_query("SELECT ele_id FROM eleves WHERE login = '$eleve_associe_login'");
+            
+            // On s'assure qu'on a bien un élève correspondant !
+            if (mysql_num_rows($req_eleid) == 1) {
+              $eleve_associe_ele_id = mysql_result($req_eleid, 0);
+              /*
+               * Il faut ensuite effectuer le lien entre Responsable et Eleve
+               */
 
-            // Gepi donne un ordre aux responsables, il faut donc verifier combien de responsables sont deja enregistres pour l'eleve
-            // On initialise le numero de responsable
-            $numero_responsable = 1;
-            $req_nb_resp_deja_presents = "SELECT count(*) FROM responsables2 WHERE ele_id = '$eleve_associe_ele_id'";
-            $res_nb_resp = mysql_query($req_nb_resp_deja_presents);
-            if (mysql_errno() != 0) {
-                error_log("Erreur : ".mysql_error());
-                die("Une erreur s'est produite lors la r&eacute;cup&eacute;ration des responsables d&eacute;j&agrave; pr&eacute;sents.");
-            }
-            $nb_resp = mysql_fetch_array($res_nb_resp);
-            if ($nb_resp[0] > 0) {
-                // Si deja 1 ou plusieurs responsables legaux pour cet eleve,on ajoute le nouveau responsable en incrementant son numero
-                $numero_responsable += $nb_resp[0];
-                if ($numero_responsable > 2) {
-                    // On affichera un avertissement disant que l'eleve a plus de 2 responsables legaux, et que ce n'est pas normal.
-                    // gepi les affichera dans la fiche de l'eleve mais ils ne seront pas reconnus parfaitement (recherches impossibles)
-                    $avertissement_trop_de_responsables = 1;
-                }
+              // Gepi donne un ordre aux responsables, il faut donc verifier combien de responsables sont deja enregistres pour l'eleve
+              // On initialise le numero de responsable
+              $numero_responsable = 1;
+              $req_nb_resp_deja_presents = "SELECT count(*) FROM responsables2 WHERE ele_id = '$eleve_associe_ele_id'";
+              $res_nb_resp = mysql_query($req_nb_resp_deja_presents);
+              if (mysql_errno() != 0) {
+                  error_log("Erreur : ".mysql_error());
+                  die("Une erreur s'est produite lors la r&eacute;cup&eacute;ration des responsables d&eacute;j&agrave; pr&eacute;sents.");
+              }
+              $nb_resp = mysql_fetch_array($res_nb_resp);
+              if ($nb_resp[0] > 0) {
+                  // Si deja 1 ou plusieurs responsables legaux pour cet eleve,on ajoute le nouveau responsable en incrementant son numero
+                  $numero_responsable += $nb_resp[0];
+                  if ($numero_responsable > 2) {
+                      // On affichera un avertissement disant que l'eleve a plus de 2 responsables legaux, et que ce n'est pas normal.
+                      // gepi les affichera dans la fiche de l'eleve mais ils ne seront pas reconnus parfaitement (recherches impossibles)
+                      $avertissement_trop_de_responsables = 1;
+                  }
 
-                //--
-                // TODO: tester si on a des adresses identiques, et n'utiliser qu'un seul objet adresse dans ce cas.
-                //--
-            }
+                  //--
+                  // TODO: tester si on a des adresses identiques, et n'utiliser qu'un seul objet adresse dans ce cas.
+                  //--
+              }
 
-            // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
-            $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getPersId()."','$numero_responsable','')";
-            mysql_query($req_ajout_lien_eleve_resp);
-            if (mysql_errno() != 0) {
-                die("Une erreur s'est produite lors de l'affectation d'un &eacute;l&egrave;ve &agrave; son responsable l&eacute;gal.");
+              // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
+              $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getPersId()."','$numero_responsable','')";
+              mysql_query($req_ajout_lien_eleve_resp);
+              if (mysql_errno() != 0) {
+                  die("Une erreur s'est produite lors de l'affectation d'un &eacute;l&egrave;ve &agrave; son responsable l&eacute;gal.");
+              }
+              $valid_associations++;
             }
         }
         
-        if ($nb_eleves_a_charge > 0) {
+        if ($nb_eleves_a_charge > 0 && $valid_associations > 0) {
             // On créé maintenant son compte d'accès à Gepi
             // On test si l'uid est deja connu de GEPI
             $compte_utilisateur_resp = UtilisateurProfessionnelPeer::retrieveByPK($resp->getLogin());

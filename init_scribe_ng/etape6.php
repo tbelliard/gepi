@@ -133,7 +133,6 @@ if ($_POST['step'] == "6") {
                   foreach ($students as $student) {
                     
                     foreach ($classe_courante->getPeriodeNotes() as $periode) {
-                      echo " ".$periode->getNumPeriode();
                       $rec = mysql_query("INSERT INTO j_eleves_groupes SET
                                   login = '".$student."',
                                   id_groupe = '".$id_groupe."',
@@ -170,11 +169,12 @@ if ($_POST['step'] == "6") {
     echo "<br/>";
 
     echo "<br/>";
-    echo "<form enctype='multipart/form-data' action='../accueil_admin.php' method=post>";
+    echo "<form enctype='multipart/form-data' action='etape7.php' method=post>";
+    echo "<input type=hidden name='step' value='7'>";
+    echo "<input type=hidden name='record' value='no'>";
 
-    echo "<p>Si vous etes arriv&eacute;s &agrave; cette &eacute;tape, vous avez termin&eacute; l'import des donnees provenant de l'annuaire ENT.</p>";
-    echo "<p>Vous pouvez maintenant aller dans la partie gestion des bases.</p>";
-    echo "<input type='submit' value='Acc&eacute;der &agrave la gestion des bases'>";
+    echo "<p>Passer &agrave; l'&eacute;tape 7 :</p>";
+    echo "<input type='submit' value='Etape 7'>";
     echo "</form>";
 }
 
