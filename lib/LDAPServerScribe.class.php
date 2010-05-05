@@ -49,6 +49,23 @@ class LDAPServerScribe extends LDAPServer {
         return $profs;
     }
 
+    # Permet de récupérer tous les profs du LDAP
+    # Retourne la liste des profs ou false si aucun prof trouvé
+    #
+    public function get_all_personnels(){
+        $filter = "(entpersonprofils=administratif)";
+        error_log("Branche=".$this->get_base_branch()."<br>Filtre=".$filter);
+        $sr = ldap_search($this->ds, 'ou=local,ou=personnels,ou=utilisateurs,'.$this->get_base_branch(), $filter);
+        $profs = array();
+        $profs = ldap_get_entries($this->ds, $sr);
+        if (!array_key_exists(0, $profs)) {
+            $profs = false;
+            error_log("Aucun personnel trouve");
+        }
+        return $profs;
+    }
+
+
     public function get_all_responsables(){
         $filter = "(entpersonprofils=responsable)";
         error_log("Branche=".$this->get_base_branch()."<br>Filtre=".$filter);
