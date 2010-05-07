@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 
@@ -173,6 +173,28 @@ statut='';";
 $insert=mysql_query($sql);
 }
 
+
+if(!isset($msg)) {$msg="";}
+//===========================================================
+// Modification du type des champs id_mat pour pouvoir dépasser 127
+$query=mysql_query("ALTER TABLE notanet CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+if(!$query) {
+	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet'.<br />Cela risque de poser problème si vous devez saisir des notes de Langue Vivante Régionale.<br />";
+}
+
+$query = mysql_query("ALTER TABLE notanet_corresp CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+if(!$query) {
+	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet_corresp'.<br />Cela risque de poser problème si vous devez saisir des notes de Langue Vivante Régionale.<br />";
+}
+
+$query = mysql_query("ALTER TABLE notanet_app CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
+if(!$query) {
+	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet_app'.<br />Cela risque de poser problème si vous devez saisir des notes de Langue Vivante Régionale.<br />";
+}
+//===========================================================
+
+
+
 //**************** EN-TETE *****************
 $titre_page = "Notanet: Accueil";
 //echo "<div class='noprint'>\n";
@@ -284,6 +306,8 @@ if($_SESSION['statut']=="administrateur") {
 	echo "<li><a href='select_matieres.php'>Effectuer les associations Type de brevet/Matières</a>  (<i>en précisant le statut: imposées et options</i>)</li>\n";
 
 	echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nécessaire pour réaliser ensuite l'extraction des moyennes</i>)</li>\n";
+
+	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante Régionale</a> (<i>si un tel enseignement est évalué dans l'établissement</i>)</li>\n";
 
 	echo "<li><a href='extract_moy.php'>Effectuer une extraction des moyennes, affichage et traitement des cas particuliers</a></li>\n";
 

@@ -550,9 +550,13 @@
 				for($j=101;$j<=$indice_max_matieres;$j++) {
 					//if($tabmatieres[$j][0]!='') {
 					if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j][-4]!='non dispensee dans l etablissement')) {
-						$nb_mat++;
-						if($tabmatieres[$j][-1]=='NOTNONCA') {
-							$nb_mat_notnonca++;
+
+						// On n'a pas de LVR sur Rouen
+						if($j!=130) {
+							$nb_mat++;
+							if($tabmatieres[$j][-1]=='NOTNONCA') {
+								$nb_mat_notnonca++;
+							}
 						}
 					}
 				}
@@ -586,183 +590,200 @@
 							//$pdf->SetXY($marge,100+($j-101)*$h_par_matiere);
 							$y=$y_lignes_disc+$cpt*$h_par_matiere;
 							$pdf->SetXY($marge,$y);
-	
-							if(($temoin_notnonca==0)&&($tabmatieres[$j][-1]=='NOTNONCA')) {
-								// Insertion de la ligne 'A titre indicatif'
-								$pdf->SetFont('Arial','B',$fs_txt);
-								$pdf->Cell(210-2*$marge-2*$larg_col_note,$h_ligne_a_titre_indicatif, 'A titre indicatif','LRBT',2,'C');
-				
-								// Colonne LV2
-								$pdf->SetXY($x_col_note_glob,$y);
-								$texte='TOTAL DES POINTS';
-								$font_size=adjust_size_font($texte,$larg_col_note,$fs_txt,0.3);
-								$pdf->SetFontSize($font_size);
-								$pdf->Cell($larg_col_note,$h_ligne_a_titre_indicatif, $texte,'LRBT',2,'C');
+
+							// On n'a pas de LVR sur Rouen
+							if($j!=130) {
+
+								if(($temoin_notnonca==0)&&($tabmatieres[$j][-1]=='NOTNONCA')) {
+									// Insertion de la ligne 'A titre indicatif'
+									$pdf->SetFont('Arial','B',$fs_txt);
+									$pdf->Cell(210-2*$marge-2*$larg_col_note,$h_ligne_a_titre_indicatif, 'A titre indicatif','LRBT',2,'C');
 					
-								// Colonne DP6h
-								$pdf->SetXY($x_col_note_glob+$larg_col_note,$y);
-								$pdf->Cell($larg_col_note,$h_ligne_a_titre_indicatif, $texte,'LRBT',2,'C');
-				
-								//$temoin_notnonca++;
-							}
-	
-							//$hauteur_texte=12;
-							$pdf->SetFontSize($fs_txt);
-				
-							if($tabmatieres[$j][-1]=='NOTNONCA') {
-								// Correctif pour le décalage dû à la ligne 'A titre indicatif'
-								$y+=$h_ligne_a_titre_indicatif;
-								$temoin_notnonca++;
-							}
-							$pdf->SetXY($marge,$y);
-				
-							$pdf->SetFont('Arial','B',$fs_txt);
-
-							// Colonne Disciplines
-							$texte=ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
-	
-							//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
-							if($tabmatieres[$j][0]=="OPTION FACULTATIVE"){
-								// recherche de la matière facultative pour l'élève
-								$sql_mat_fac="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
-								$res_mat_fac=mysql_query($sql_mat_fac);
-								if(mysql_num_rows($res_mat_fac)>0){
-									$lig_mat_fac=mysql_fetch_object($res_mat_fac);
-									$texte.=": ".$lig_mat_fac->matiere;
+									// Colonne LV2
+									$pdf->SetXY($x_col_note_glob,$y);
+									$texte='TOTAL DES POINTS';
+									$font_size=adjust_size_font($texte,$larg_col_note,$fs_txt,0.3);
+									$pdf->SetFontSize($font_size);
+									$pdf->Cell($larg_col_note,$h_ligne_a_titre_indicatif, $texte,'LRBT',2,'C');
+						
+									// Colonne DP6h
+									$pdf->SetXY($x_col_note_glob+$larg_col_note,$y);
+									$pdf->Cell($larg_col_note,$h_ligne_a_titre_indicatif, $texte,'LRBT',2,'C');
+					
+									//$temoin_notnonca++;
 								}
-							}
-							$font_size=adjust_size_font($texte,$larg_col_disc,$fs_txt,0.3);
-							$pdf->SetFontSize($font_size);
-							$pdf->Cell($larg_col_disc,$h_par_matiere, $texte,'LRBT',2,'L');
-							// A REVOIR: Si la taille de police descend en dessous d'une valeur à choisir, mettre sur deux lignes
-
-							$pdf->SetFont('Arial','',$fs_txt);
-							//$pdf->SetFontSize($fs_txt);
-							$x=$x_col_note_mc;
-							$largeur_colonnes_moy=0;
-							if($tabmatieres[$j]['socle']!='y') {
-								// Moyenne classe
-								$pdf->SetXY($x,$y);
-								//$tmp="-";
-								//if($tabmatieres[$j]['socle']!='y') {$tmp=strtr($moy_classe[$j],".",",");}
-								$tmp="-";
-								if($fb_mode_moyenne==1) {
-									$tmp=strtr($moy_classe[$j],".",",");
+		
+								//$hauteur_texte=12;
+								$pdf->SetFontSize($fs_txt);
+					
+								if($tabmatieres[$j][-1]=='NOTNONCA') {
+									// Correctif pour le décalage dû à la ligne 'A titre indicatif'
+									$y+=$h_ligne_a_titre_indicatif;
+									$temoin_notnonca++;
 								}
-								else {
-									$sql="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
-									$res_mat=mysql_query($sql);
-									if(mysql_num_rows($res_mat)>0){
-										$lig_mat=mysql_fetch_object($res_mat);
-
-										$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND matiere='".$lig_mat->matiere."' AND note!='AB' AND note!='DI' AND note!='NN';";
-										//echo "$sql<br />";
-										$res_moy=mysql_query($sql);
-										if(mysql_num_rows($res_moy)>0){
-											$lig_moy=mysql_fetch_object($res_moy);
-											$tmp=strtr($lig_moy->moyenne_mat,".",",");
+								$pdf->SetXY($marge,$y);
+					
+								$pdf->SetFont('Arial','B',$fs_txt);
+	
+								// Colonne Disciplines
+								$texte=ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
+	
+								//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
+								if($tabmatieres[$j][0]=="OPTION FACULTATIVE"){
+									// recherche de la matière facultative pour l'élève
+									$sql_mat_fac="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
+									$res_mat_fac=mysql_query($sql_mat_fac);
+									if(mysql_num_rows($res_mat_fac)>0){
+										$lig_mat_fac=mysql_fetch_object($res_mat_fac);
+										$texte.=": ".$lig_mat_fac->matiere;
+									}
+								}
+								$font_size=adjust_size_font($texte,$larg_col_disc,$fs_txt,0.3);
+								$pdf->SetFontSize($font_size);
+								$pdf->Cell($larg_col_disc,$h_par_matiere, $texte,'LRBT',2,'L');
+								// A REVOIR: Si la taille de police descend en dessous d'une valeur à choisir, mettre sur deux lignes
+	
+								$pdf->SetFont('Arial','',$fs_txt);
+								//$pdf->SetFontSize($fs_txt);
+								$x=$x_col_note_mc;
+								$largeur_colonnes_moy=0;
+								if($tabmatieres[$j]['socle']!='y') {
+									// Moyenne classe
+									$pdf->SetXY($x,$y);
+									//$tmp="-";
+									//if($tabmatieres[$j]['socle']!='y') {$tmp=strtr($moy_classe[$j],".",",");}
+									$tmp="-";
+									if($fb_mode_moyenne==1) {
+										$tmp=strtr($moy_classe[$j],".",",");
+									}
+									else {
+										$sql="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
+										$res_mat=mysql_query($sql);
+										if(mysql_num_rows($res_mat)>0){
+											$lig_mat=mysql_fetch_object($res_mat);
+	
+											$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND matiere='".$lig_mat->matiere."' AND note!='AB' AND note!='DI' AND note!='NN';";
+											//echo "$sql<br />";
+											$res_moy=mysql_query($sql);
+											if(mysql_num_rows($res_moy)>0){
+												$lig_moy=mysql_fetch_object($res_moy);
+												$tmp=strtr($lig_moy->moyenne_mat,".",",");
+											}
 										}
 									}
-								}
-								$pdf->Cell($larg_col_note,$h_par_matiere, $tmp,'LRBT',2,'C');
-								$x+=$larg_col_note;
-								$largeur_colonnes_moy+=$larg_col_note;
-					
-								// Moyenne élève
-								$pdf->SetXY($x,$y);
-								$tmp="";
-								$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
-								$res_note=mysql_query($sql);
-								if(mysql_num_rows($res_note)>0){
-									$lig_note=mysql_fetch_object($res_note);
-									$tmp=strtr($lig_note->note,".",",");
-								}
-								$pdf->Cell($larg_col_note,$h_par_matiere, $tmp,'LRBT',2,'C');
-								//$pdf->Cell($larg_col_note,$h_par_matiere, $tmp." ".$y,'LRBT',2,'C');
-								$x+=$larg_col_note;
-								$largeur_colonnes_moy+=$larg_col_note;
-							}
-	
-							// Appréciation
-							$pdf->SetXY($x,$y);
-							$texte="";
-							if($avec_app=="y") {
-								$sql="SELECT appreciation FROM notanet_app na,
-																notanet_corresp nc
-															WHERE na.login='$lig1->login' AND
-																nc.notanet_mat='".$tabmatieres[$j][0]."' AND
-																nc.matiere=na.matiere;";
-								//echo "$sql<br />";
-								$res_app=mysql_query($sql);
-								if(mysql_num_rows($res_app)>0){
-									$lig_app=mysql_fetch_object($res_app);
-									$texte=trim($lig_app->appreciation);
-								}
-							}
-
-							if($tabmatieres[$j]['socle']!='y') {
-								//$largeur_dispo=100-$largeur_colonnes_moy;
-								$largeur_dispo=$larg_col_app;
-							}
-							else {
-								$largeur_dispo=$larg_col_app+2*$larg_col_note;
-							}
-
-							$h_cell=$h_par_matiere;
-							// Par précaution, si ma fonction cell_ajustee() posait pb:
-							if($use_cell_ajustee=="n") {
-								$font_size=adjust_size_font($texte,100-$largeur_colonnes_moy,$fs_txt,0.1);
-								$pdf->SetFontSize($font_size);
-								$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $h_cell, 'J', 'M', 1);
-							}
-							else {
-								$taille_max_police=$fs_txt;
-								$taille_min_police=ceil($fs_txt/3);
-								cell_ajustee(traite_accents_utf8($texte),$x,$y,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
-							}
-
-							//=========================================================
-							// Colonnes de droite: Moyennes et totaux Notanet
-							if($temoin_notnonca==0) {
-								$t_col1="";
-								$t_col2="";
-								if($tabmatieres[$j]['socle']!='y') {
-									$t_col1="    /".$tabmatieres[$j]['fb_col'][1];
-									$t_col2="    /".$tabmatieres[$j]['fb_col'][2];
-
-									$valeur_tmp="";
-	
-									// On traite le cas des notes non numériques AB, DI,... plus pour décrémenter les SUR_TOTAUX
-									if((strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
-										$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];
-									}
-									if((strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][2]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
-										$SUR_TOTAL[2]+=$tabmatieres[$j]['fb_col'][2];
-									}
-			
-									//$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."';";
-									$valeur_notanet_tmp="";
-									$sql="SELECT note,note_notanet FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."';";
-									//echo "$sql<br />\n";
+									$pdf->Cell($larg_col_note,$h_par_matiere, $tmp,'LRBT',2,'C');
+									$x+=$larg_col_note;
+									$largeur_colonnes_moy+=$larg_col_note;
+						
+									// Moyenne élève
+									$pdf->SetXY($x,$y);
+									$tmp="";
+									$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
 									$res_note=mysql_query($sql);
-									if(mysql_num_rows($res_note)){
-										//echo "1<br />\n";
+									if(mysql_num_rows($res_note)>0){
 										$lig_note=mysql_fetch_object($res_note);
-										if(($lig_note->note!='AB')&&($lig_note->note!='DI')&&($lig_note->note!='NN')&&($tabmatieres[$j]['socle']=='n')){
-											$valeur_tmp=$lig_note->note*$tabmatieres[$j][-2];
+										$tmp=strtr($lig_note->note,".",",");
+									}
+									$pdf->Cell($larg_col_note,$h_par_matiere, $tmp,'LRBT',2,'C');
+									//$pdf->Cell($larg_col_note,$h_par_matiere, $tmp." ".$y,'LRBT',2,'C');
+									$x+=$larg_col_note;
+									$largeur_colonnes_moy+=$larg_col_note;
+								}
+		
+								// Appréciation
+								$pdf->SetXY($x,$y);
+								$texte="";
+								if($avec_app=="y") {
+									$sql="SELECT appreciation FROM notanet_app na,
+																	notanet_corresp nc
+																WHERE na.login='$lig1->login' AND
+																	nc.notanet_mat='".$tabmatieres[$j][0]."' AND
+																	nc.matiere=na.matiere;";
+									//echo "$sql<br />";
+									$res_app=mysql_query($sql);
+									if(mysql_num_rows($res_app)>0){
+										$lig_app=mysql_fetch_object($res_app);
+										$texte=trim($lig_app->appreciation);
+									}
+								}
 	
-											$valeur_notanet_tmp=$lig_note->note_notanet;
+								if($tabmatieres[$j]['socle']!='y') {
+									//$largeur_dispo=100-$largeur_colonnes_moy;
+									$largeur_dispo=$larg_col_app;
+								}
+								else {
+									$largeur_dispo=$larg_col_app+2*$larg_col_note;
+								}
 	
-											// Le cas PTSUP est calculé plus loin
-											if($tabmatieres[$j][-1]!='PTSUP'){
-												$TOTAL+=$valeur_tmp;
+								$h_cell=$h_par_matiere;
+								// Par précaution, si ma fonction cell_ajustee() posait pb:
+								if($use_cell_ajustee=="n") {
+									$font_size=adjust_size_font($texte,100-$largeur_colonnes_moy,$fs_txt,0.1);
+									$pdf->SetFontSize($font_size);
+									$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $h_cell, 'J', 'M', 1);
+								}
+								else {
+									$taille_max_police=$fs_txt;
+									$taille_min_police=ceil($fs_txt/3);
+									cell_ajustee(traite_accents_utf8($texte),$x,$y,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+								}
+	
+								//=========================================================
+								// Colonnes de droite: Moyennes et totaux Notanet
+								if($temoin_notnonca==0) {
+									$t_col1="";
+									$t_col2="";
+									if($tabmatieres[$j]['socle']!='y') {
+										$t_col1="    /".$tabmatieres[$j]['fb_col'][1];
+										$t_col2="    /".$tabmatieres[$j]['fb_col'][2];
+	
+										$valeur_tmp="";
+		
+										// On traite le cas des notes non numériques AB, DI,... plus pour décrémenter les SUR_TOTAUX
+										if((strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
+											$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];
+										}
+										if((strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][2]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
+											$SUR_TOTAL[2]+=$tabmatieres[$j]['fb_col'][2];
+										}
+				
+										//$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."';";
+										$valeur_notanet_tmp="";
+										$sql="SELECT note,note_notanet FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."';";
+										//echo "$sql<br />\n";
+										$res_note=mysql_query($sql);
+										if(mysql_num_rows($res_note)){
+											//echo "1<br />\n";
+											$lig_note=mysql_fetch_object($res_note);
+											if(($lig_note->note!='AB')&&($lig_note->note!='DI')&&($lig_note->note!='NN')&&($tabmatieres[$j]['socle']=='n')){
+												$valeur_tmp=$lig_note->note*$tabmatieres[$j][-2];
+		
+												$valeur_notanet_tmp=$lig_note->note_notanet;
+		
+												// Le cas PTSUP est calculé plus loin
+												if($tabmatieres[$j][-1]!='PTSUP'){
+													$TOTAL+=$valeur_tmp;
+												}
+											}
+											else{
+												$valeur_tmp=$lig_note->note;
+												$temoin_note_non_numerique="y";
+												
+												if(($tabmatieres[$j][-1]!='PTSUP')){
+													if($num_fb_col==1){
+														$SUR_TOTAL[1]-=$tabmatieres[$j]['fb_col'][1];
+													}
+													else{
+														$SUR_TOTAL[2]-=$tabmatieres[$j]['fb_col'][2];
+													}
+												}
+												
 											}
 										}
 										else{
-											$valeur_tmp=$lig_note->note;
-											$temoin_note_non_numerique="y";
-											
-											if(($tabmatieres[$j][-1]!='PTSUP')){
+											//echo "2<br />\n";
+											// FAUT-IL UN TEMOIN POUR DECREMENTER LE SUR_TOTAL ?
+											if($tabmatieres[$j][-1]!='PTSUP'){
 												if($num_fb_col==1){
 													$SUR_TOTAL[1]-=$tabmatieres[$j]['fb_col'][1];
 												}
@@ -770,151 +791,162 @@
 													$SUR_TOTAL[2]-=$tabmatieres[$j]['fb_col'][2];
 												}
 											}
-											
 										}
-									}
-									else{
-										//echo "2<br />\n";
-										// FAUT-IL UN TEMOIN POUR DECREMENTER LE SUR_TOTAL ?
-										if($tabmatieres[$j][-1]!='PTSUP'){
-											if($num_fb_col==1){
-												$SUR_TOTAL[1]-=$tabmatieres[$j]['fb_col'][1];
-											}
-											else{
-												$SUR_TOTAL[2]-=$tabmatieres[$j]['fb_col'][2];
-											}
-										}
-									}
-									//echo "\$valeur_tmp=$valeur_tmp<br />\n";
-
-									if($num_fb_col==1) {
-										if($temoin_note_non_numerique=="n") {
-											if($tabmatieres[$j][-1]!='PTSUP') {
-												$t_col1=$valeur_tmp."/".$tabmatieres[$j]['fb_col'][1];
+										//echo "\$valeur_tmp=$valeur_tmp<br />\n";
+	
+										if($num_fb_col==1) {
+											if($temoin_note_non_numerique=="n") {
+												if($tabmatieres[$j][-1]!='PTSUP') {
+													$t_col1=$valeur_tmp."/".$tabmatieres[$j]['fb_col'][1];
+												}
+												else {
+													// Cas points>10
+													$t_col1=$valeur_notanet_tmp;
+													$t_col2="";
+	
+													$TOTAL+=$valeur_notanet_tmp;
+												}
 											}
 											else {
-												// Cas points>10
-												$t_col1=$valeur_notanet_tmp;
-												$t_col2="";
-
-												$TOTAL+=$valeur_notanet_tmp;
+												$t_col1=$valeur_tmp;
 											}
 										}
-										else {
-											$t_col1=$valeur_tmp;
-										}
-									}
-									elseif($num_fb_col==2) {
-										if($temoin_note_non_numerique=="n") {
-											if($tabmatieres[$j][-1]!='PTSUP') {
-												$t_col2=$valeur_tmp."/".$tabmatieres[$j]['fb_col'][2];
+										elseif($num_fb_col==2) {
+											if($temoin_note_non_numerique=="n") {
+												if($tabmatieres[$j][-1]!='PTSUP') {
+													$t_col2=$valeur_tmp."/".$tabmatieres[$j]['fb_col'][2];
+												}
+												else {
+													// Cas points>10
+													$t_col2=$valeur_notanet_tmp;
+													$t_col1="";
+	
+													$TOTAL+=$valeur_notanet_tmp;
+												}
 											}
 											else {
-												// Cas points>10
-												$t_col2=$valeur_notanet_tmp;
-												$t_col1="";
-
-												$TOTAL+=$valeur_notanet_tmp;
+												$t_col2=$valeur_tmp;
 											}
 										}
-										else {
-											$t_col2=$valeur_tmp;
-										}
-									}
-								}
-								else {
-									//$sql="SELECT note,note_notanet FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."';";
-									$sql="SELECT * FROM notanet_socles WHERE login='$lig1->login';";
-									//echo "$sql<br />";
-									$res_socles=mysql_query($sql);
-									if(mysql_num_rows($res_socles)==0) {
-										$note_b2i="";
-										$note_a2="";
 									}
 									else {
-										$lig_socle=mysql_fetch_object($res_socles);
-										$note_b2i=$lig_socle->b2i;
-										$note_a2=$lig_socle->a2;
-										$lv_a2=$lig_socle->lv;
+										//$sql="SELECT note,note_notanet FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."';";
+										$sql="SELECT * FROM notanet_socles WHERE login='$lig1->login';";
+										//echo "$sql<br />";
+										$res_socles=mysql_query($sql);
+										if(mysql_num_rows($res_socles)==0) {
+											$note_b2i="";
+											$note_a2="";
+										}
+										else {
+											$lig_socle=mysql_fetch_object($res_socles);
+											$note_b2i=$lig_socle->b2i;
+											$note_a2=$lig_socle->a2;
+											$lv_a2=$lig_socle->lv;
+										}
+	
+										if($j==114) {
+											if($num_fb_col==1) {
+												$t_col1=$note_b2i;
+												$t_col2="";
+											}
+											elseif($num_fb_col==2) {
+												$t_col1="";
+												$t_col2=$note_b2i;
+											}
+										}
+										elseif($j==115) {
+											if($num_fb_col==1) {
+												$t_col1=$note_a2;
+												$t_col2="";
+											}
+											elseif($num_fb_col==2) {
+												$t_col1="";
+												$t_col2=$note_a2;
+											}
+										}
+										/*
+										// Mise en commentaire de cette ébauche de modif... on n'a pas de LVR sur Rouen
+										elseif($j==130) {
+											$note_lvr="";
+											$sql="SELECT * FROM notanet_lvr_ele WHERE login='".$tab_ele['login']."';";
+											$res_lvr=mysql_query($sql);
+											if(mysql_num_rows($res_lvr)>0) {
+												$lig_lvr=mysql_fetch_object($res_lvr);
+												$note_lvr=$lig_lvr->note;
+											}
+	
+											if($num_fb_col==1) {
+												$t_col1=$note_lvr;
+												$t_col2="";
+											}
+											elseif($num_fb_col==2) {
+												$t_col1="";
+												$t_col2=$note_lvr;
+											}
+										}
+										*/
 									}
-
-									if($j==114) {
-										if($num_fb_col==1) {
-											$t_col1=$note_b2i;
-											$t_col2="";
-										}
-										elseif($num_fb_col==2) {
-											$t_col1="";
-											$t_col2=$note_b2i;
-										}
+	
+									$pdf->SetFontSize($fs_txt);
+									if($tabmatieres[$j][-1]!='PTSUP') {
+										// Colonne LV2
+										$pdf->SetXY($x_col_note_glob,$y);
+										$pdf->Cell($larg_col_note,$h_par_matiere, $t_col1,'LRBT',2,'C');
+							
+										// Colonne DP6h
+										$pdf->SetXY($x_col_note_glob+$larg_col_note,$y);
+										$pdf->Cell($larg_col_note,$h_par_matiere, $t_col2,'LRBT',2,'C');
 									}
-									elseif($j==115) {
-										if($num_fb_col==1) {
-											$t_col1=$note_a2;
-											$t_col2="";
-										}
-										elseif($num_fb_col==2) {
-											$t_col1="";
-											$t_col2=$note_a2;
-										}
+									else {
+										// Colonne LV2
+										$pdf->SetXY($x_col_note_glob,$y);
+										$pdf->SetFont('Arial','B',$fs_txt);
+										$font_size=adjust_size_font('Points > à 10',18,$fs_txt,0.3);
+										$pdf->Cell($larg_col_note,$h_par_matiere/2, 'Points > à 10','LRBT',2,'C');
+										$pdf->SetFont('Arial','',$fs_txt);
+										$pdf->SetXY($x_col_note_glob,$y+($h_par_matiere/2));
+										$pdf->Cell($larg_col_note,$h_par_matiere/2, $t_col1,'LRBT',2,'C');
+	
+										// Colonne DP6h
+										$pdf->SetXY($x_col_note_glob+$larg_col_note,$y);
+										$pdf->SetFont('Arial','B',$fs_txt);
+										$font_size=adjust_size_font('Points > à 10',18,$fs_txt,0.3);
+										$pdf->Cell($larg_col_note,$h_par_matiere/2, 'Points > à 10','LRBT',2,'C');
+										$pdf->SetFont('Arial','',$fs_txt);
+										$pdf->SetXY($x_col_note_glob+$larg_col_note,$y+($h_par_matiere/2));
+										$pdf->Cell($larg_col_note,$h_par_matiere/2, $t_col2,'LRBT',2,'C');
 									}
 								}
-
-								$pdf->SetFontSize($fs_txt);
-								if($tabmatieres[$j][-1]!='PTSUP') {
+								elseif($temoin_notnonca==1) {
+									// LIGNES TOTAUX
+									$pdf->SetFont('Arial','',$fs_txt);
+									//$pdf->SetFontSize($fs_txt);
+	
+									if($num_fb_col==1) {
+										$t_col1=$TOTAL."/".$SUR_TOTAL[1];
+										$t_col2="    /".$SUR_TOTAL[2];
+									}
+									else {
+										$t_col1="    /".$SUR_TOTAL[1];
+										$t_col2=$TOTAL."/".$SUR_TOTAL[2];
+									}
+	
 									// Colonne LV2
 									$pdf->SetXY($x_col_note_glob,$y);
-									$pdf->Cell($larg_col_note,$h_par_matiere, $t_col1,'LRBT',2,'C');
+									$pdf->Cell($larg_col_note,$nb_mat_notnonca*$h_par_matiere, $t_col1,'LRBT',2,'C');
 						
 									// Colonne DP6h
 									$pdf->SetXY($x_col_note_glob+$larg_col_note,$y);
-									$pdf->Cell($larg_col_note,$h_par_matiere, $t_col2,'LRBT',2,'C');
+									$pdf->Cell($larg_col_note,$nb_mat_notnonca*$h_par_matiere, $t_col2,'LRBT',2,'C');
+	
 								}
-								else {
-									// Colonne LV2
-									$pdf->SetXY($x_col_note_glob,$y);
-									$pdf->SetFont('Arial','B',$fs_txt);
-									$font_size=adjust_size_font('Points > à 10',18,$fs_txt,0.3);
-									$pdf->Cell($larg_col_note,$h_par_matiere/2, 'Points > à 10','LRBT',2,'C');
-									$pdf->SetFont('Arial','',$fs_txt);
-									$pdf->SetXY($x_col_note_glob,$y+($h_par_matiere/2));
-									$pdf->Cell($larg_col_note,$h_par_matiere/2, $t_col1,'LRBT',2,'C');
+	
+								$cpt++;
 
-									// Colonne DP6h
-									$pdf->SetXY($x_col_note_glob+$larg_col_note,$y);
-									$pdf->SetFont('Arial','B',$fs_txt);
-									$font_size=adjust_size_font('Points > à 10',18,$fs_txt,0.3);
-									$pdf->Cell($larg_col_note,$h_par_matiere/2, 'Points > à 10','LRBT',2,'C');
-									$pdf->SetFont('Arial','',$fs_txt);
-									$pdf->SetXY($x_col_note_glob+$larg_col_note,$y+($h_par_matiere/2));
-									$pdf->Cell($larg_col_note,$h_par_matiere/2, $t_col2,'LRBT',2,'C');
-								}
-							}
-							elseif($temoin_notnonca==1) {
-								// LIGNES TOTAUX
-								$pdf->SetFont('Arial','',$fs_txt);
-								//$pdf->SetFontSize($fs_txt);
 
-								if($num_fb_col==1) {
-									$t_col1=$TOTAL."/".$SUR_TOTAL[1];
-									$t_col2="    /".$SUR_TOTAL[2];
-								}
-								else {
-									$t_col1="    /".$SUR_TOTAL[1];
-									$t_col2=$TOTAL."/".$SUR_TOTAL[2];
-								}
+							} // On n'a pas de LVR sur Rouen
 
-								// Colonne LV2
-								$pdf->SetXY($x_col_note_glob,$y);
-								$pdf->Cell($larg_col_note,$nb_mat_notnonca*$h_par_matiere, $t_col1,'LRBT',2,'C');
-					
-								// Colonne DP6h
-								$pdf->SetXY($x_col_note_glob+$larg_col_note,$y);
-								$pdf->Cell($larg_col_note,$nb_mat_notnonca*$h_par_matiere, $t_col2,'LRBT',2,'C');
-
-							}
-
-							$cpt++;
 						}
 					}
 				}

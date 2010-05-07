@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -37,6 +37,26 @@ if ($resultat_session == 'c') {
 	die();
 }
 
+
+//==============================================
+/* Ajout des droits dans la table droits */
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/saisie_lvr.php';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+$sql="INSERT INTO droits SET id='/mod_notanet/saisie_lvr.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Notanet: Saisie des notes de Langue Vivante Regionale',
+statut='';";
+$insert=mysql_query($sql);
+}
+//==============================================
 
 // INSERT INTO droits VALUES('/mod_notanet/saisie_lvr.php','V','F','F','V','F','F','F','F','Notanet: Saisie des notes de Langue Vivante Regionale','');
 if (!checkAccess()) {

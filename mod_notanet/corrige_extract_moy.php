@@ -708,7 +708,9 @@ else {
 												$sql.="matiere='".$tab_opt_matiere_eleve[$j]."',";
 											}
 											//if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
-											if(($moy_NOTANET[$j]!="MS")&&($moy_NOTANET[$j]!="ME")&&($moy_NOTANET[$j]!="MN")&&($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+											//if(($moy_NOTANET[$j]!="MS")&&($moy_NOTANET[$j]!="ME")&&($moy_NOTANET[$j]!="MN")&&($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+											//if(($moy_NOTANET[$j]!="MS")&&($moy_NOTANET[$j]!="ME")&&($moy_NOTANET[$j]!="MN")&&($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")&&($moy_NOTANET[$j]!="VA")&&($moy_NOTANET[$j]!="NV")){
+											if(!in_array($moy_NOTANET[$j],$tab_liste_notes_non_numeriques)) {
 												$sql.="note='".formate_note_notanet($moy_NOTANET[$j])."',";
 											}
 											else{

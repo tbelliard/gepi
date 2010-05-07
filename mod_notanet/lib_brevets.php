@@ -1281,19 +1281,15 @@ function formate_note_notanet($chaine){
 }
 
 
+$tab_liste_notes_non_numeriques=array("MS","ME","MN","AB","DI","NN","VA","NV");
 
 
 function tab_extract_moy($tab_ele,$id_clas) {
 	global $num_eleve, $classe, $tab_mat;
 	global $indice_max_matieres;
 
-
-
 	$affiche_enregistrements_precedents="y";
 	//global $affiche_enregistrements_precedents;
-
-
-
 
 	//echo "\$tab_ele['type_brevet']=".$tab_ele['type_brevet']."<br />";
 	$tabmatieres=tabmatieres($tab_ele['type_brevet']);
@@ -1367,6 +1363,8 @@ function tab_extract_moy($tab_ele,$id_clas) {
 		// Initialisation de la moyenne pour la matière NOTANET courante.
 		$moy_NOTANET[$j]="";
 
+//echo "<tr><td colspan='5'>\$tabmatieres[$j][0]=".$tabmatieres[$j][0]."</td></tr>";
+//echo "<tr><td colspan='5'>\$statut_matiere[$j]=".$statut_matiere[$j]."</td></tr>";
 
 		// Compteur destiné à repérer des matières pour lesquelles l'élève aurait des notes dans plus d'une option.
 		// On ne sait alors pas quelle valeur retenir
@@ -1760,7 +1758,57 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					if($note_a2!="") {$moy_NOTANET[$j]=$note_a2;}
 
 				}
+				elseif($j==130) {
 
+					$note_lvr="";
+	
+					$sql="SELECT * FROM notanet_lvr_ele WHERE login='".$tab_ele['login']."';";
+					$res_lvr=mysql_query($sql);
+					if(mysql_num_rows($res_lvr)>0) {
+						$lig_lvr=mysql_fetch_object($res_lvr);
+						$note_lvr=$lig_lvr->note;
+
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+						echo "<td><span style='color:green;'>$j</span></td>\n";
+						echo "<td>".$tabmatieres[$j][0]."</td>\n";
+						echo "<td>&nbsp;</td>\n";
+	
+						echo "<td>&nbsp;</td>\n";
+						echo "<td>&nbsp;</td>\n";
+						echo "<td>&nbsp;</td>\n";
+	
+	
+						//if($note_b2i!="") {
+						if(($note_lvr=="VA")||($note_lvr=="NV")) {
+							$moy_NOTANET[$j]=$note_lvr;
+							echo "<td style='font-weight:bold;'>".$note_lvr."</td>\n";
+						}
+						else {
+							echo "<td style='font-weight:bold; background-color:red;'>&nbsp;</td>\n";
+							$temoin_notanet_eleve="ERREUR";
+						}
+						echo "<td><input type='text' name='moy_$j"."_0[$num_eleve]' value='$note_lvr' size='6' /></td>\n";
+	
+	
+						if($affiche_enregistrements_precedents=="y") {
+							echo "<td>\n";
+							$sql="SELECT note FROM notanet WHERE login='".$tab_ele['login']."' AND notanet_mat='".$tabmatieres[$j][0]."' AND id_mat='$j';";
+							$enr=mysql_query($sql);
+							if(mysql_num_rows($enr)>0) {
+								$lig_enr=mysql_fetch_object($enr);
+								echo $lig_enr->note;
+							}
+							else {
+								echo "&nbsp;";
+							}
+							echo "</td>\n";
+						}
+	
+	
+						echo "</tr>\n";
+					}
+				}
 			}
 		}
 
