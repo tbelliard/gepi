@@ -1661,6 +1661,8 @@ function test_ecriture_dossier() {
 	//$tab_dossiers_rw=array("documents","images","secure","photos","backup","temp","mod_ooo/mes_modele","mod_ooo/tmp","mod_notanet/OOo/tmp","lib/standalone/HTMLPurifier/DefinitionCache/Serializer");
 	$tab_dossiers_rw=array("documents","images","photos","backup","temp","mod_ooo/mes_modele","mod_ooo/tmp","mod_notanet/OOo/tmp","lib/standalone/HTMLPurifier/DefinitionCache/Serializer");
 
+	$nom_fichier_test='test_acces_rw';
+
 	echo "<table class='boireaus' summary='Tableau des dossiers qui doivent être accessibles en écriture'>\n";
 	echo "<tr>\n";
 	echo "<th>Dossier</th>\n";
@@ -1669,11 +1671,11 @@ function test_ecriture_dossier() {
 	$alt=1;
 	for($i=0;$i<count($tab_dossiers_rw);$i++) {
 		$ok_rw="no";
-		if ($f = @fopen("../".$tab_dossiers_rw[$i]."/test", "w")) {
+		if ($f = @fopen("../".$tab_dossiers_rw[$i]."/".$nom_fichier_test, "w")) {
 			@fputs($f, '<'.'?php $ok_rw = "yes"; ?'.'>');
 			@fclose($f);
-			include("../".$tab_dossiers_rw[$i]."/test");
-			$del = @unlink("../".$tab_dossiers_rw[$i]."/test");
+			include("../".$tab_dossiers_rw[$i]."/".$nom_fichier_test);
+			$del = @unlink("../".$tab_dossiers_rw[$i]."/".$nom_fichier_test);
 		}
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
