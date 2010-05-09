@@ -75,6 +75,9 @@ $dirname = getSettingValue("backup_directory");
 // Téléchargement d'un fichier vers backup
 if (isset($action) and ($action == 'upload'))  {
     $sav_file = isset($_FILES["sav_file"]) ? $_FILES["sav_file"] : NULL;
+
+//echo "\$sav_file['tmp_name']=".$sav_file['tmp_name']."<br />";
+
     if (!isset($sav_file['tmp_name']) or ($sav_file['tmp_name'] =='')) {
         $msg = "Erreur de téléchargement.";
     } else if (!file_exists($sav_file['tmp_name'])) {
@@ -1648,6 +1651,49 @@ echo "<br />\n";
 echo "<input type=\"hidden\" name=\"action\" value=\"zip\" />\n
 	  <input type=\"submit\" value=\"Créer l'archive\" name=\"bouton3\" />\n
 	  </form>\n";
+
+echo "<br /><hr />";
+
+
+function test_ecriture_dossier() {
+    global $gepiPath;
+
+	//$tab_dossiers_rw=array("documents","images","secure","photos","backup","temp","mod_ooo/mes_modele","mod_ooo/tmp","mod_notanet/OOo/tmp","lib/standalone/HTMLPurifier/DefinitionCache/Serializer");
+	$tab_dossiers_rw=array("documents","images","photos","backup","temp","mod_ooo/mes_modele","mod_ooo/tmp","mod_notanet/OOo/tmp","lib/standalone/HTMLPurifier/DefinitionCache/Serializer");
+
+	echo "<table class='boireaus' summary='Tableau des dossiers qui doivent être accessibles en écriture'>\n";
+	echo "<tr>\n";
+	echo "<th>Dossier</th>\n";
+	echo "<th>Ecriture</th>\n";
+	echo "</tr>\n";
+	$alt=1;
+	for($i=0;$i<count($tab_dossiers_rw);$i++) {
+		$ok_rw="no";
+		if ($f = @fopen("../".$tab_dossiers_rw[$i]."/test", "w")) {
+			@fputs($f, '<'.'?php $ok_rw = "yes"; ?'.'>');
+			@fclose($f);
+			include("../".$tab_dossiers_rw[$i]."/test");
+			$del = @unlink("../".$tab_dossiers_rw[$i]."/test");
+		}
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt white_hover'>\n";
+		echo "<td style='text-align:left;'>$gepiPath/$tab_dossiers_rw[$i]</td>\n";
+		echo "<td>";
+		if($ok_rw=='yes') {
+			echo "<img src='../images/enabled.png' height='20' width='20' alt=\"Le dossier est accessible en écriture.\" />";
+		}
+		else {
+			echo "<img src='../images/disabled.png' height='20' width='20' alt=\"Le dossier n'est pas accessible en écriture.\" />";
+		}
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+	echo "</table>\n";
+}
+
+echo "<h3 id=\"rw\">Contrôle des dossiers devant être accessibles en écriture</h3>\n";
+
+test_ecriture_dossier();
 echo "<br />";
 
 require("../lib/footer.inc.php");
