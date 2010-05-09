@@ -1,5 +1,9 @@
 <?php
 
+/*
+* $Id$
+*  */
+
 $tab_type_brevet=array();
 $tab_type_brevet[0]="COLLEGE, option de série LV2";
 $tab_type_brevet[1]="COLLEGE, option de série DP6";
