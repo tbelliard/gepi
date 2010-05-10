@@ -41,7 +41,7 @@ echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
 
 echo "<li><a href='visu_saisie.php' ";
 if($onglet_abs=='visu_saisie.php') {echo "class='current' ";}
-echo "title='Visualiser une saisies'>Visualiser une saisies</a></li>\n";
+echo "title='Visualiser une saisie'>Visualiser une saisie</a></li>\n";
 
 echo "</ul>\n";
 

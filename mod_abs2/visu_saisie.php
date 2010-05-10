@@ -304,13 +304,16 @@ if ($modifiable && $total_traitements == 0) {
 
 echo '</TD></tr>';
 
-echo '<tr><TD>';
-echo 'Commentaire : ';
-echo '</TD><TD>';
-if (!$modifiable) {
-    echo ($saisie->getCommentaire());
-} else {
-    echo '<input name="commentaire" value="'.$saisie->getCommentaire().'" type="text" maxlength="150" size="25"/>';
+if ($modifiable || ($saisie->getCommentaire() != null && $saisie->getCommentaire() != "")) {
+    echo '<tr><TD>';
+    echo 'Commentaire : ';
+    echo '</TD><TD>';
+    if (!$modifiable) {
+	echo ($saisie->getCommentaire());
+    } else {
+	echo '<input name="commentaire" value="'.$saisie->getCommentaire().'" type="text" maxlength="150" size="25"/>';
+    }
+    echo '</TD></tr>';
 }
 
 echo '<tr><TD>';
