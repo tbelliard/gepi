@@ -393,7 +393,7 @@ if ($id_creneau != null && !$utilisateur->getEdtCreneauAbsenceSaisie($id_creneau
 //afichage de la saisie des absences des eleves
 if (!$eleve_col->isEmpty()) {
 ?>
-    <div class="centre_tout_moyen">
+    <div class="centre_tout_moyen" style="width : 900px;">
 		<form method="post" action="enregistrement_saisies.php" id="liste_absence_eleve">
 		    <input type="hidden" name="total_eleves" value="<?php echo($eleve_col->count()); ?>"/>
 		    <?php if ($type_selection == 'id_aid') {?><input type="hidden" name="id_aid" value="<?php echo($id_aid); ?>"/><?php }?>
