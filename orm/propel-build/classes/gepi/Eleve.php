@@ -422,20 +422,20 @@ class Eleve extends BaseEleve {
 	    $dt_fin_creneau->setTime($edtcreneau->getHeurefinDefiniePeriode('H'), $edtcreneau->getHeurefinDefiniePeriode('i'), 0);
 	    $query->filterByDebutAbs($dt_fin_creneau, Criteria::LESS_THAN);
 
-	    $query->leftJoin('AbsenceEleveSaisie.EdtEmplacementCours');
-	    $query->condition('cond1', 'AbsenceEleveSaisie.IdEdtCreneau IS NULL');
-	    $query->condition('cond2', 'AbsenceEleveSaisie.IdEdtCreneau = ?', $edtcreneau->getIdDefiniePeriode());
-	    $query->where(array('cond1', 'cond2'), 'or');
+//	    $query->leftJoin('AbsenceEleveSaisie.EdtEmplacementCours');
+//	    $query->condition('cond1', 'AbsenceEleveSaisie.IdEdtCreneau IS NULL');
+//	    $query->condition('cond2', 'AbsenceEleveSaisie.IdEdtCreneau = ?', $edtcreneau->getIdDefiniePeriode());
+//	    $query->where(array('cond1', 'cond2'), 'or');
 
-	    $result = new PropelObjectCollection();
-	    foreach ($query->find() as $saisie) {
-		if ($saisie->getEdtEmplacementCours() == null ||
-		    ($saisie->getEdtEmplacementCours()->getHeureDebut() < $edtcreneau->getHeurefinDefiniePeriode() &&
-		    $saisie->getEdtEmplacementCours()->getHeureFin() > $edtcreneau->getHeuredebutDefiniePeriode()) ) {
-		    $result->append($saisie);
-		    }
-	    }
-	    return $result;
+//	    $result = new PropelObjectCollection();
+//	    foreach ($query->find() as $saisie) {
+//		if ($saisie->getEdtEmplacementCours() == null ||
+//		    ($saisie->getEdtEmplacementCours()->getHeureDebut() < $edtcreneau->getHeurefinDefiniePeriode() &&
+//		    $saisie->getEdtEmplacementCours()->getHeureFin() > $edtcreneau->getHeuredebutDefiniePeriode()) ) {
+//		    $result->append($saisie);
+//		    }
+//	    }
+	    return $query->find();
 	}
 
 	/*

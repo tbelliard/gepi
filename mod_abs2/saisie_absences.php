@@ -186,7 +186,6 @@ require_once("../lib/header.inc");
 include('menu_abs2.inc.php');
 //===========================
 echo "<div class='css-panes' id='containDiv'>\n";
-echo "cahier_texte : ".$cahier_texte;
 
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 //on affiche une boite de selection avec les groupes et les creneaux
@@ -540,7 +539,8 @@ foreach($eleve_col as $eleve) {
 					    echo '<nobr><input style="font-size:88%;" name="heure_debut_absence_eleve['.$eleve_col->getPosition().']" value="';
 					    if ($current_cours != null) {echo $current_cours->getHeureDebut("H:i");} else { echo $edt_creneau->getHeuredebutDefiniePeriode("H:i");};
 					    echo '" type="text" maxlength="5" size="4"/>&nbsp;';
-					    if (getSettingValue("abs2_saisie_prof_decale")=='y') {
+					    //if (getSettingValue("abs2_saisie_prof_decale")=='y') {
+					    if (false) {
 						    echo '<input style="font-size:88%;" id="date_debut_absence_eleve_'.$eleve_col->getPosition().'" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
 						    echo '<script type="text/javascript">
 							Calendar.setup({
@@ -558,7 +558,8 @@ foreach($eleve_col as $eleve) {
 					    echo '<nobr><input style="font-size:88%;" name="heure_fin_absence_eleve['.$eleve_col->getPosition().']" value="';
 					    if ($current_cours != null) {echo $current_cours->getHeureFin("H:i");} else { echo $edt_creneau->getHeurefinDefiniePeriode("H:i");};
 					    echo '" type="text" maxlength="5" size="4"/>&nbsp;';
-					    if (getSettingValue("abs2_saisie_prof_decale")=='y') {
+					    //if (getSettingValue("abs2_saisie_prof_decale")=='y') {
+					    if (false) {
 						    echo '<input style="font-size:88%;" id="date_fin_absence_eleve_'.$eleve_col->getPosition().'" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
 						    echo '<script type="text/javascript">
 							Calendar.setup({

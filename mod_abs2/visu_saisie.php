@@ -186,7 +186,8 @@ if (!$modifiable) {
     echo (strftime("%a %d %b %Y %H:%M", $saisie->getDebutAbs('U')));
 } else {
     echo '<nobr><input name="heure_debut" value="'.$saisie->getDebutAbs("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
-    if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
+    //if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
+    if (true) {
 	echo (strftime(" %a %d %b %Y", $saisie->getDebutAbs('U')));
 	echo '<input name="date_debut" value="'.$saisie->getDebutAbs('d/m/Y').'" type="hidden"/></nobr> ';
     } else {
@@ -215,7 +216,8 @@ if (!$modifiable) {
     echo (strftime("%a %d %b %Y %H:%M", $saisie->getFinAbs('U')));
 } else {
     echo '<nobr><input name="heure_fin" value="'.$saisie->getFinAbs("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
-    if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
+    //if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
+    if (true) {
 	echo (strftime(" %a %d %b %Y", $saisie->getDebutAbs('U')));
 	echo '<input name="date_fin" value="'.$saisie->getFinAbs('d/m/Y').'" type="hidden"/></nobr> ';
     } else {
