@@ -76,18 +76,27 @@ if ($id_groupe != null) {
 	$message_enregistrement .= "Probleme avec le parametre id_groupe<br/>";
 	$id_groupe = null;
     }
+    $id_classe = null;
+    $id_aid = null;
+    $id_cours = null;
 }
 if ($id_classe != null) {
     if (ClasseQuery::create()->findPk($id_classe) == null) {
 	$message_enregistrement .= "Probleme avec le parametre id_classe<br/>";
 	$id_classe = null;
     }
+    $id_groupe = null;
+    $id_aid = null;
+    $id_cours = null;
 }
 if ($id_aid != null) {
     if (AidDetailsQuery::create()->findPk($id_aid) == null) {
 	$message_enregistrement .= "Probleme avec le parametre id_aid<br/>";
 	$id_aid = null;
     }
+    $id_groupe = null;
+    $id_classe = null;
+    $id_cours = null;
 }
 if ($id_creneau != null) {
     if (EdtCreneauQuery::create()->findPk($id_creneau) == null) {
@@ -106,6 +115,10 @@ if ($id_cours != null) {
 	$message_enregistrement .= "Probleme avec le parametre id_cours<br/>";
 	$id_cours = null;
     }
+    $id_groupe = null;
+    $id_classe = null;
+    $id_aid = null;
+    $id_creneau = null;
 }
 
 if ($id_groupe == '') $id_groupe = null;

@@ -61,22 +61,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    $message .= "L'id de l'emplacement cours est incorrect.<br/>";
 		}
 
-		//on verifie la coherence avec le creneau
-		if ($this->getEdtEmplacementCours() == null ||
-		    $this->getEdtEmplacementCours()->getIdDefiniePeriode() != $this->getIdEdtCreneau()) {
-		    $message .= "Le creneau ne correspond pas à l'emplacement de cours.<br/>";
-		}
-
-		//on verifie la coherence avec les aid ou les groupes
-		if ($this->getIdClasse() != null) {
-		    $message .= "Il ne peut y avoir à la fois une classe et un emplacement de cours précisé.<br/>";
-		}
-		if ($this->getIdAid() != $this->getEdtEmplacementCours()->getIdAid()) {
-		    $message .= "L'aid de l'emplacement de cours et de la saisie d'absence ne correspondent pas.<br/>";
-		}
-
-		if ($this->getIdGroupe() != $this->getEdtEmplacementCours()->getIdGroupe()) {
-		    $message .= "Le groupe de l'emplacement de cours et de la saisie d'absence ne correspondent pas.<br/>";
+		//si on saisie un cours, alors le creneau doit etre vide ainsi le groupe, l'aid et la classe
+		if ($this->getIdAid() != null || $this->getIdClasse() != null || $this->getIdGroupe() != null || $this->getIdEdtCreneau() != null) {
+		    $message .= "Si un cours est precisé, l'aid, le groupe, la calsse et le creneau doivent etre nuls.<br/>";
 		}
 	    }
 

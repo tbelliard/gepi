@@ -425,9 +425,17 @@ class Eleve extends BaseEleve {
 	    $query->leftJoin('AbsenceEleveSaisie.EdtEmplacementCours');
 	    $query->condition('cond1', 'AbsenceEleveSaisie.IdEdtCreneau IS NULL');
 	    $query->condition('cond2', 'AbsenceEleveSaisie.IdEdtCreneau = ?', $edtcreneau->getIdDefiniePeriode());
-	    $query->condition('cond3', 'EdtEmplacementCours.IdDefiniePeriode = ?', $edtcreneau->getIdDefiniePeriode());
-	    $query->where(array('cond1', 'cond2', 'cond3'), 'or');
-	    return $query->find();
+	    $query->where(array('cond1', 'cond2'), 'or');
+
+	    $result = new PropelObjectCollection();
+	    foreach ($query->find() as $saisie) {
+		if ($saisie->getEdtEmplacementCours() == null ||
+		    ($saisie->getEdtEmplacementCours()->getHeureDebut() < $edtcreneau->getHeurefinDefiniePeriode() &&
+		    $saisie->getEdtEmplacementCours()->getHeureFin() > $edtcreneau->getHeuredebutDefiniePeriode()) ) {
+		    $result->append($saisie);
+		    }
+	    }
+	    return $result;
 	}
 
 	/*
