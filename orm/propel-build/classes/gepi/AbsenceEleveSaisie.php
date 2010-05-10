@@ -98,18 +98,27 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$message .= "Il faut preciser l'utilisateur qui rentre la saisie.<br/>";
 	    }
 
-	    if ($this->getDebutAbs() != null && $this->getFinAbs() != null) {
-		if ($this->getDebutAbs() >= $this->getFinAbs()) {
-		    $message .= "La date de debut d'absence doit etre strictement anterieure à la date de fin.<br/>";
-		}
-	    }
-
 	    if ($this->getDebutAbs() == null) {
 		$message .= "La date de debut d'absence ne doit pas etre nulle.<br/>";
 	    }
 
-	    if (($this->getIdEdtCreneau() == null && $this->getIdEdtCreneau() == -1) && $this->getFinAbs() == null) {
-		    $message .= "Il faut preciser au moins le creneau ou alors la date de fin d'absence.<br/>";
+	    if ($this->getFinAbs() == null) {
+		 $message .= "La date de fin d'absence ne doit pas etre nulle.<br/>";
+	    }
+
+	    if ($this->getDebutAbs() >= $this->getFinAbs()) {
+		 $message .= "La date de debut d'absence doit etre strictement anterieure à la date de fin.<br/>";
+	    }
+
+	    if ($this->getEdtEmplacementCours() != null) {
+		//un emplacement de cours est saisie, il faut verifier que les heure de debut et de fin d'absences sont coherent avec l'emplacement de cours.
+		if ($this->getDebutAbs("Hi") < $this->getEdtEmplacementCours()->getHeureDebut("Hi")) {
+		    $message .= "L'heure de debut d'absence ne peut pas etre anterieure au cours.<br/>";
+		} elseif ($this->getFinAbs("Hi") > $this->getEdtEmplacementCours()->getHeureFin("Hi")) {
+		    $message .= "L'heure de fin d'absence ne peut pas etre posterieure au cours.<br/>";
+		} elseif (($this->getFinAbs("U") - $this->getDebutAbs("U")) > ($this->getEdtEmplacementCours()->getHeureFin("U") - $this->getEdtEmplacementCours()->getHeureDebut("U"))) {
+		    $message .= "La durée de l'absence ne peut pas etre superieure à la durée du cours (verifier les date).<br/>";
+		}
 	    }
 
 	    return $message;

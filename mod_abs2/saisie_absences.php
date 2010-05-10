@@ -415,7 +415,7 @@ if (!$eleve_col->isEmpty()) {
 
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
-	<?php echo '<p>'.$eleve_col->count().' élèves.</p>'; ?>
+	<?php echo ('<p>'.$eleve_col->count().' élèves.</p>') ?>
 
 <!-- Fin de la legende -->
 <!-- <table style="text-align: left; width: 600px;" border="0" cellpadding="0" cellspacing="1"> -->
@@ -496,7 +496,6 @@ foreach($eleve_col as $eleve) {
 					}
 					
 					if (!$absences_du_creneau->isEmpty()) {
-					    echo ($absences_du_creneau->count());
 					    $style = 'style="background-color : red"';
 					} else if ($deja_saisie && $id_creneau == $edt_creneau->getIdDefiniePeriode()) {
 					    $style = 'style="background-color : green"';
