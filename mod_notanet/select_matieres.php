@@ -265,6 +265,7 @@ else {
 		echo "<input type='hidden' name='type_brevet' value='$type_brevet' />\n";
 
 		$sql="SELECT DISTINCT j_groupes_matieres.id_matiere FROM j_groupes_matieres,j_groupes_classes WHERE j_groupes_matieres.id_groupe=j_groupes_classes.id_groupe AND $conditions ORDER BY id_matiere";
+		//echo "$sql<br />";
 		$call_classe_infos = mysql_query($sql);
 
 		$nombre_lignes = mysql_num_rows($call_classe_infos);
@@ -332,6 +333,9 @@ else {
 				}
 
 				echo "<td>\n";
+
+				//echo "$sql<br />";
+
 				//echo "\$type_brevet=$type_brevet \$tabmatieres[$j]['socle']";
 				if($tabmatieres[$j]['socle']=='n') {
 					/*
@@ -352,7 +356,9 @@ else {
 					echo "<a name='ancre_$j'></a>";
 
 					//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' ORDER BY matiere;";
-					$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' ORDER BY matiere;";
+					//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' ORDER BY matiere;";
+					$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' AND matiere!='0' ORDER BY matiere;";
+					//echo "$sql<br />";
 					$res_test=mysql_query($sql);
 					if(mysql_num_rows($res_test)>0){
 						$cpt=0;
