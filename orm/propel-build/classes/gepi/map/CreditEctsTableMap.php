@@ -40,8 +40,9 @@ class CreditEctsTableMap extends TableMap {
 		$this->addForeignPrimaryKey('ID_ELEVE', 'IdEleve', 'INTEGER' , 'eleves', 'ID_ELEVE', true, 11, null);
 		$this->addPrimaryKey('NUM_PERIODE', 'NumPeriode', 'INTEGER', true, 11, null);
 		$this->addForeignPrimaryKey('ID_GROUPE', 'IdGroupe', 'INTEGER' , 'groupes', 'ID', true, 11, null);
-		$this->addColumn('VALEUR', 'Valeur', 'DECIMAL', true, null, null);
-		$this->addColumn('MENTION', 'Mention', 'VARCHAR', true, 255, null);
+		$this->addColumn('VALEUR', 'Valeur', 'DECIMAL', false, null, null);
+		$this->addColumn('MENTION', 'Mention', 'VARCHAR', false, 255, null);
+		$this->addColumn('MENTION_PROF', 'MentionProf', 'VARCHAR', false, 255, null);
 		// validators
 	} // initialize()
 

@@ -60,6 +60,12 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 	protected $mention;
 
 	/**
+	 * The value for the mention_prof field.
+	 * @var        string
+	 */
+	protected $mention_prof;
+
+	/**
 	 * @var        Eleve
 	 */
 	protected $aEleve;
@@ -125,7 +131,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [valeur] column value.
-	 * Nombre de crédits obtenus par l'eleve
+	 * Nombre de credits obtenus par l'eleve
 	 * @return     string
 	 */
 	public function getValeur()
@@ -141,6 +147,16 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 	public function getMention()
 	{
 		return $this->mention;
+	}
+
+	/**
+	 * Get the [mention_prof] column value.
+	 * Mention presaisie par le prof
+	 * @return     string
+	 */
+	public function getMentionProf()
+	{
+		return $this->mention_prof;
 	}
 
 	/**
@@ -233,7 +249,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [valeur] column.
-	 * Nombre de crédits obtenus par l'eleve
+	 * Nombre de credits obtenus par l'eleve
 	 * @param      string $v new value
 	 * @return     CreditEcts The current object (for fluent API support)
 	 */
@@ -270,6 +286,26 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 
 		return $this;
 	} // setMention()
+
+	/**
+	 * Set the value of [mention_prof] column.
+	 * Mention presaisie par le prof
+	 * @param      string $v new value
+	 * @return     CreditEcts The current object (for fluent API support)
+	 */
+	public function setMentionProf($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->mention_prof !== $v) {
+			$this->mention_prof = $v;
+			$this->modifiedColumns[] = CreditEctsPeer::MENTION_PROF;
+		}
+
+		return $this;
+	} // setMentionProf()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -309,6 +345,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 			$this->id_groupe = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
 			$this->valeur = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
 			$this->mention = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->mention_prof = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -317,7 +354,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 6; // 6 = CreditEctsPeer::NUM_COLUMNS - CreditEctsPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 7; // 7 = CreditEctsPeer::NUM_COLUMNS - CreditEctsPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating CreditEcts object", $e);
@@ -679,6 +716,9 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 			case 5:
 				return $this->getMention();
 				break;
+			case 6:
+				return $this->getMentionProf();
+				break;
 			default:
 				return null;
 				break;
@@ -709,6 +749,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 			$keys[3] => $this->getIdGroupe(),
 			$keys[4] => $this->getValeur(),
 			$keys[5] => $this->getMention(),
+			$keys[6] => $this->getMentionProf(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aEleve) {
@@ -766,6 +807,9 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 			case 5:
 				$this->setMention($value);
 				break;
+			case 6:
+				$this->setMentionProf($value);
+				break;
 		} // switch()
 	}
 
@@ -796,6 +840,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 		if (array_key_exists($keys[3], $arr)) $this->setIdGroupe($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setValeur($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setMention($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setMentionProf($arr[$keys[6]]);
 	}
 
 	/**
@@ -813,6 +858,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 		if ($this->isColumnModified(CreditEctsPeer::ID_GROUPE)) $criteria->add(CreditEctsPeer::ID_GROUPE, $this->id_groupe);
 		if ($this->isColumnModified(CreditEctsPeer::VALEUR)) $criteria->add(CreditEctsPeer::VALEUR, $this->valeur);
 		if ($this->isColumnModified(CreditEctsPeer::MENTION)) $criteria->add(CreditEctsPeer::MENTION, $this->mention);
+		if ($this->isColumnModified(CreditEctsPeer::MENTION_PROF)) $criteria->add(CreditEctsPeer::MENTION_PROF, $this->mention_prof);
 
 		return $criteria;
 	}
@@ -892,6 +938,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 		$copyObj->setIdGroupe($this->id_groupe);
 		$copyObj->setValeur($this->valeur);
 		$copyObj->setMention($this->mention);
+		$copyObj->setMentionProf($this->mention_prof);
 
 		$copyObj->setNew(true);
 		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1044,6 +1091,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 		$this->id_groupe = null;
 		$this->valeur = null;
 		$this->mention = null;
+		$this->mention_prof = null;
 		$this->clearAllReferences();
 		$this->setNew(true);
 	}

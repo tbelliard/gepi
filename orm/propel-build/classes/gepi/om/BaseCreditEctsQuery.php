@@ -12,6 +12,7 @@
  * @method     CreditEctsQuery orderByIdGroupe($order = Criteria::ASC) Order by the id_groupe column
  * @method     CreditEctsQuery orderByValeur($order = Criteria::ASC) Order by the valeur column
  * @method     CreditEctsQuery orderByMention($order = Criteria::ASC) Order by the mention column
+ * @method     CreditEctsQuery orderByMentionProf($order = Criteria::ASC) Order by the mention_prof column
  *
  * @method     CreditEctsQuery groupById() Group by the id column
  * @method     CreditEctsQuery groupByIdEleve() Group by the id_eleve column
@@ -19,6 +20,7 @@
  * @method     CreditEctsQuery groupByIdGroupe() Group by the id_groupe column
  * @method     CreditEctsQuery groupByValeur() Group by the valeur column
  * @method     CreditEctsQuery groupByMention() Group by the mention column
+ * @method     CreditEctsQuery groupByMentionProf() Group by the mention_prof column
  *
  * @method     CreditEctsQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     CreditEctsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -39,6 +41,7 @@
  * @method     CreditEcts findOneByIdGroupe(int $id_groupe) Return the first CreditEcts filtered by the id_groupe column
  * @method     CreditEcts findOneByValeur(string $valeur) Return the first CreditEcts filtered by the valeur column
  * @method     CreditEcts findOneByMention(string $mention) Return the first CreditEcts filtered by the mention column
+ * @method     CreditEcts findOneByMentionProf(string $mention_prof) Return the first CreditEcts filtered by the mention_prof column
  *
  * @method     array findById(int $id) Return CreditEcts objects filtered by the id column
  * @method     array findByIdEleve(int $id_eleve) Return CreditEcts objects filtered by the id_eleve column
@@ -46,6 +49,7 @@
  * @method     array findByIdGroupe(int $id_groupe) Return CreditEcts objects filtered by the id_groupe column
  * @method     array findByValeur(string $valeur) Return CreditEcts objects filtered by the valeur column
  * @method     array findByMention(string $mention) Return CreditEcts objects filtered by the mention column
+ * @method     array findByMentionProf(string $mention_prof) Return CreditEcts objects filtered by the mention_prof column
  *
  * @package    propel.generator.gepi.om
  */
@@ -285,6 +289,26 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 			return $this->addUsingAlias(CreditEctsPeer::MENTION, str_replace('*', '%', $mention), Criteria::LIKE);
 		} else {
 			return $this->addUsingAlias(CreditEctsPeer::MENTION, $mention, $comparison);
+		}
+	}
+
+	/**
+	 * Filter the query on the mention_prof column
+	 * 
+	 * @param     string $mentionProf The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    CreditEctsQuery The current query, for fluid interface
+	 */
+	public function filterByMentionProf($mentionProf = null, $comparison = Criteria::EQUAL)
+	{
+		if (is_array($mentionProf)) {
+			return $this->addUsingAlias(CreditEctsPeer::MENTION_PROF, $mentionProf, Criteria::IN);
+		} elseif(preg_match('/[\%\*]/', $mentionProf)) {
+			return $this->addUsingAlias(CreditEctsPeer::MENTION_PROF, str_replace('*', '%', $mentionProf), Criteria::LIKE);
+		} else {
+			return $this->addUsingAlias(CreditEctsPeer::MENTION_PROF, $mentionProf, $comparison);
 		}
 	}
 

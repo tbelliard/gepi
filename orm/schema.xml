@@ -494,8 +494,9 @@
     <column name="num_periode" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de la periode"/>
     <column name="id_groupe" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant du groupe"/>
     <foreign-key foreignTable="groupes" onDelete="cascade"><reference local="id_groupe" foreign="id"/></foreign-key>
-    <column name="valeur" type="DECIMAL" required="true" description="Nombre de crédits obtenus par l'eleve"/>
-    <column name="mention" type="VARCHAR" required="true" size="255" description="Mention obtenue"/>
+    <column name="valeur" type="DECIMAL" description="Nombre de credits obtenus par l'eleve"/>
+    <column name="mention" type="VARCHAR" size="255" description="Mention obtenue"/>
+    <column name="mention_prof" type="VARCHAR" size="255" description="Mention presaisie par le prof"/>
   </table>
 
   <table name="ects_global_credits" phpName="CreditEctsGlobal" description="Objet qui précise la mention globale obtenue pour un eleve">

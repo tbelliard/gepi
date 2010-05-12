@@ -187,6 +187,18 @@ class Eleve extends BaseEleve {
         return $credit == null ? true : $credit->delete();
 	}
 
+  // On remet à zéro le crédit ECTS concerné
+  // Cela signifie simplement que l'on efface la valeur et la mention 'officielle'
+  // pour ainsi ne conserver que l'éventuelle pré-saisie du prof
+	public function resetEctsCredit($periode,$id_groupe) {
+        $credit = $this->getEctsCredit($periode, $id_groupe);
+        if ($credit) {
+          $credit->setValeur(null);
+          $credit->setMention(null);
+        }
+        return $credit == null ? true : $credit->save();
+	}
+
 	public function getArchivedEctsCredits($annee,$periode) {
 		$criteria = new Criteria();
 		$criteria->add(ArchiveEctsPeer::NUM_PERIODE,$periode);
@@ -245,7 +257,7 @@ class Eleve extends BaseEleve {
     /**
 	 * Enregistre les crédits ECTS pour une période et un groupe
 	 */
-	public function setEctsCredit($periode,$id_groupe,$valeur_ects,$mention_ects) {
+	public function setEctsCredit($periode,$id_groupe,$valeur_ects,$mention_ects,$mention_prof = null) {
         $credit = $this->getEctsCredit($periode,$id_groupe);
         if ($credit == null) {
             $credit = new CreditEcts();
@@ -253,8 +265,13 @@ class Eleve extends BaseEleve {
             $credit->setIdGroupe($id_groupe);
             $credit->setNumPeriode($periode);
         }
-        $credit->setValeur($valeur_ects);
-        $credit->setMention($mention_ects);
+        // Si on enregistre une pré-saisie, alors on n'enregistre que ça, sans toucher au reste.
+        if ($mention_prof) {
+          $credit->setMentionProf($mention_prof);
+        } else {
+          $credit->setValeur($valeur_ects);
+          $credit->setMention($mention_ects);
+        }
         return $credit->save();
 	}
 

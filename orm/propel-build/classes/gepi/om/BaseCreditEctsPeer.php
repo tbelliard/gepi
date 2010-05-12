@@ -25,7 +25,7 @@ abstract class BaseCreditEctsPeer {
 	const TM_CLASS = 'CreditEctsTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 6;
+	const NUM_COLUMNS = 7;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -48,6 +48,9 @@ abstract class BaseCreditEctsPeer {
 	/** the column name for the MENTION field */
 	const MENTION = 'ects_credits.MENTION';
 
+	/** the column name for the MENTION_PROF field */
+	const MENTION_PROF = 'ects_credits.MENTION_PROF';
+
 	/**
 	 * An identiy map to hold any loaded instances of CreditEcts objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -64,12 +67,12 @@ abstract class BaseCreditEctsPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'IdEleve', 'NumPeriode', 'IdGroupe', 'Valeur', 'Mention', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'idEleve', 'numPeriode', 'idGroupe', 'valeur', 'mention', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::ID_ELEVE, self::NUM_PERIODE, self::ID_GROUPE, self::VALEUR, self::MENTION, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'ID_ELEVE', 'NUM_PERIODE', 'ID_GROUPE', 'VALEUR', 'MENTION', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'id_eleve', 'num_periode', 'id_groupe', 'valeur', 'mention', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'IdEleve', 'NumPeriode', 'IdGroupe', 'Valeur', 'Mention', 'MentionProf', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'idEleve', 'numPeriode', 'idGroupe', 'valeur', 'mention', 'mentionProf', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::ID_ELEVE, self::NUM_PERIODE, self::ID_GROUPE, self::VALEUR, self::MENTION, self::MENTION_PROF, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'ID_ELEVE', 'NUM_PERIODE', 'ID_GROUPE', 'VALEUR', 'MENTION', 'MENTION_PROF', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'id_eleve', 'num_periode', 'id_groupe', 'valeur', 'mention', 'mention_prof', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
 	/**
@@ -79,12 +82,12 @@ abstract class BaseCreditEctsPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'IdEleve' => 1, 'NumPeriode' => 2, 'IdGroupe' => 3, 'Valeur' => 4, 'Mention' => 5, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'idEleve' => 1, 'numPeriode' => 2, 'idGroupe' => 3, 'valeur' => 4, 'mention' => 5, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ID_ELEVE => 1, self::NUM_PERIODE => 2, self::ID_GROUPE => 3, self::VALEUR => 4, self::MENTION => 5, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'ID_ELEVE' => 1, 'NUM_PERIODE' => 2, 'ID_GROUPE' => 3, 'VALEUR' => 4, 'MENTION' => 5, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'id_eleve' => 1, 'num_periode' => 2, 'id_groupe' => 3, 'valeur' => 4, 'mention' => 5, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'IdEleve' => 1, 'NumPeriode' => 2, 'IdGroupe' => 3, 'Valeur' => 4, 'Mention' => 5, 'MentionProf' => 6, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'idEleve' => 1, 'numPeriode' => 2, 'idGroupe' => 3, 'valeur' => 4, 'mention' => 5, 'mentionProf' => 6, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ID_ELEVE => 1, self::NUM_PERIODE => 2, self::ID_GROUPE => 3, self::VALEUR => 4, self::MENTION => 5, self::MENTION_PROF => 6, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'ID_ELEVE' => 1, 'NUM_PERIODE' => 2, 'ID_GROUPE' => 3, 'VALEUR' => 4, 'MENTION' => 5, 'MENTION_PROF' => 6, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'id_eleve' => 1, 'num_periode' => 2, 'id_groupe' => 3, 'valeur' => 4, 'mention' => 5, 'mention_prof' => 6, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
 	);
 
 	/**
@@ -162,6 +165,7 @@ abstract class BaseCreditEctsPeer {
 			$criteria->addSelectColumn(CreditEctsPeer::ID_GROUPE);
 			$criteria->addSelectColumn(CreditEctsPeer::VALEUR);
 			$criteria->addSelectColumn(CreditEctsPeer::MENTION);
+			$criteria->addSelectColumn(CreditEctsPeer::MENTION_PROF);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
 			$criteria->addSelectColumn($alias . '.ID_ELEVE');
@@ -169,6 +173,7 @@ abstract class BaseCreditEctsPeer {
 			$criteria->addSelectColumn($alias . '.ID_GROUPE');
 			$criteria->addSelectColumn($alias . '.VALEUR');
 			$criteria->addSelectColumn($alias . '.MENTION');
+			$criteria->addSelectColumn($alias . '.MENTION_PROF');
 		}
 	}
 
