@@ -294,6 +294,7 @@ Patientez pendant l'extraction des données... merci.
 	$tab_couleur['anna']="blanchedalmond";
 	$tab_couleur['absences']="azure";
 	$tab_couleur['discipline']="salmon";
+    $tab_couleur['fp']="linen";
 
 	// On vérifie que l'élève existe
 	$sql="SELECT 1=1 FROM eleves WHERE login='$ele_login';";
@@ -350,6 +351,7 @@ Patientez pendant l'extraction des données... merci.
 		$acces_anna="n";
 		$acces_absences="n";
 		$acces_discipline="n";
+        $acces_fp="n";
 
 		$active_annees_anterieures=getSettingValue('active_annees_anterieures');
 
@@ -364,6 +366,7 @@ Patientez pendant l'extraction des données... merci.
 				$acces_anna="y";
 			}
 			$acces_discipline="y";
+            $acces_fp="y";
 		}
 		elseif($_SESSION['statut']=='scolarite') {
 			$sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jec.id_classe=jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jec.login='".$ele_login."';";
@@ -381,6 +384,7 @@ Patientez pendant l'extraction des données... merci.
 			$acces_absences="y";
 
 			$acces_discipline="y";
+            $acces_fp="y";
 
 			$GepiAccesReleveScol=getSettingValue('GepiAccesReleveScol');
 			if($GepiAccesReleveScol=="yes") {
@@ -420,6 +424,7 @@ Patientez pendant l'extraction des données... merci.
 			$acces_absences="y";
 
 			$acces_discipline="y";
+            $acces_fp="y";
 
 			$GepiAccesReleveCpe=getSettingValue('GepiAccesReleveCpe');
 			if($GepiAccesReleveCpe=="yes") {
@@ -453,6 +458,7 @@ Patientez pendant l'extraction des données... merci.
 			$acces_absences="n";
 
 			$acces_discipline="y";
+            $acces_fp="y";
 
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login='".$ele_login."' AND professeur='".$_SESSION['login']."';";
 			$test=mysql_query($sql);
@@ -695,6 +701,13 @@ Patientez pendant l'extraction des données... merci.
 		}
 		else {
 			$acces_cdt="n";
+		}
+        $test_outils_comp = sql_query1("select count(outils_complementaires) from aid_config where outils_complementaires='y'");
+        if ($test_outils_comp != 0) {
+            $acces_fp="y";
+        }
+        else {
+            $acces_fp="n";
 		}
 
 		$active_mod_discipline=getSettingValue("active_mod_discipline");
@@ -981,6 +994,22 @@ Patientez pendant l'extraction des données... merci.
 			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt' onclick=\"affiche_onglet('cdt');return false;\">Cahier de textes</a>";
 			echo "</div>\n";
 		}
+
+		// Onglet fiches projet
+		if($acces_fp=="y") {
+			echo "<div id='t_fp' class='t_onglet' style='";
+			if($onglet=='fp') {
+				echo "border-bottom-color: ".$tab_couleur['fp']."; ";
+			}
+			else {
+				echo "border-bottom-color: black; ";
+			}
+			echo "background-color: ".$tab_couleur['fp']."; ";
+			echo "'>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=fp' onclick=\"affiche_onglet('fp');return false;\">Tous les projets</a>";
+			echo "</div>\n";
+		}
+
 
 		// Onglet Absences
 		if($acces_absences=="y") {
@@ -1486,13 +1515,13 @@ Patientez pendant l'extraction des données... merci.
 							$tab_moy['periodes'][$periode_num]['moy_generale_classe1']=$moy_generale_classe1;
 							$tab_moy['periodes'][$periode_num]['moy_max_classe']=$moy_max_classe;
 							$tab_moy['periodes'][$periode_num]['moy_min_classe']=$moy_min_classe;
-						
+
 							// Il faudrait récupérer/stocker les catégories?
 							$tab_moy['periodes'][$periode_num]['moy_cat_eleve']=$moy_cat_eleve;               // [$i][$cat]
 							$tab_moy['periodes'][$periode_num]['moy_cat_classe']=$moy_cat_classe;             // [$i][$cat]
 							$tab_moy['periodes'][$periode_num]['moy_cat_min']=$moy_cat_min;                   // [$i][$cat]
 							$tab_moy['periodes'][$periode_num]['moy_cat_max']=$moy_cat_max;                   // [$i][$cat]
-						
+
 							$tab_moy['periodes'][$periode_num]['quartile1_classe_gen']=$quartile1_classe_gen;
 							$tab_moy['periodes'][$periode_num]['quartile2_classe_gen']=$quartile2_classe_gen;
 							$tab_moy['periodes'][$periode_num]['quartile3_classe_gen']=$quartile3_classe_gen;
@@ -1500,7 +1529,7 @@ Patientez pendant l'extraction des données... merci.
 							$tab_moy['periodes'][$periode_num]['quartile5_classe_gen']=$quartile5_classe_gen;
 							$tab_moy['periodes'][$periode_num]['quartile6_classe_gen']=$quartile6_classe_gen;
 							$tab_moy['periodes'][$periode_num]['place_eleve_classe']=$place_eleve_classe;
-						
+
 							$tab_moy['periodes'][$periode_num]['current_eleve_login']=$current_eleve_login;   // [$i]
 							//$tab_moy['periodes'][$periode_num]['current_group']=$current_group;
 							if($loop==$periode1) {
@@ -1511,7 +1540,7 @@ Patientez pendant l'extraction des données... merci.
 							//$tab_moy['periodes'][$periode_num]['current_group']=$current_group;
 							$tab_moy['periodes'][$periode_num]['current_coef']=$current_coef;                 // [$j]
 							$tab_moy['periodes'][$periode_num]['current_classe_matiere_moyenne']=$current_classe_matiere_moyenne; // [$j]
-						
+
 							$tab_moy['periodes'][$periode_num]['current_coef_eleve']=$current_coef_eleve;     // [$i][$j] ATTENTION
 							$tab_moy['periodes'][$periode_num]['moy_min_classe_grp']=$moy_min_classe_grp;     // [$j]
 							$tab_moy['periodes'][$periode_num]['moy_max_classe_grp']=$moy_max_classe_grp;     // [$j]
@@ -1526,7 +1555,7 @@ Patientez pendant l'extraction des données... merci.
 							$tab_moy['periodes'][$periode_num]['quartile5_grp']=$quartile5_grp;               // [$j]
 							$tab_moy['periodes'][$periode_num]['quartile6_grp']=$quartile6_grp;               // [$j]
 							$tab_moy['periodes'][$periode_num]['place_eleve_grp']=$place_eleve_grp;           // [$j][$i]
-						
+
 							$tab_moy['periodes'][$periode_num]['current_group_effectif_avec_note']=$current_group_effectif_avec_note; // [$j]
 							//======================================================================
 
@@ -1815,6 +1844,97 @@ Patientez pendant l'extraction des données... merci.
 			echo "</div>\n";
 		}
 
+
+		//=============================================
+
+		//========================
+		// Onglet FICHES PROJET
+		//========================
+
+		if($acces_fp=="y") {
+			echo "<div id='fp' class='onglet' style='";
+			if($onglet!="fp") {echo " display:none;";}
+			echo "background-color: ".$tab_couleur['fp']."; ";
+			echo "'>";
+      $call_data = mysql_query("SELECT j.indice_aid, j.id_aid FROM  j_aid_eleves j, aid_config a where
+       j.login='$ele_login' and a.indice_aid=j.indice_aid and a.outils_complementaires='y' order by j.indice_aid");
+
+      $nb_aid = mysql_num_rows($call_data);
+      if ($nb_aid>0) {
+  			echo "<h2>Tous les projets de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+        echo "<table width=\"80%\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">";
+        $z=0;
+        while ($z < $nb_aid) {
+          $indice_aid = @mysql_result($call_data, $z, "indice_aid");
+          $aid_id =  @mysql_result($call_data, $z, "id_aid");
+          $nom_type_aid =  sql_query1("SELECT nom FROM aid_config  WHERE (indice_aid='$indice_aid')");
+          $nom_aid = sql_query1("SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
+          $aid_prof_resp_query = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id' and indice_aid='$indice_aid')");
+          $nb_lig = mysql_num_rows($aid_prof_resp_query);
+          $n = '0';
+          while ($n < $nb_lig) {
+            $aid_prof_resp_login = @mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+            $aid_prof_query = @mysql_query("SELECT nom,prenom FROM utilisateurs WHERE login='$aid_prof_resp_login'");
+            $aid_prof_resp_nom[$n] = @mysql_result($aid_prof_query, 0, "nom");
+            $aid_prof_resp_prenom[$n] = @mysql_result($aid_prof_query, 0, "prenom");
+            $n++;
+          }
+          echo "<tr><td><span class='small'><b>$nom_type_aid</b>";
+          $n = '0';
+          while ($n < $nb_lig) {
+            echo "<br /><i>$aid_prof_resp_nom[$n] $aid_prof_resp_prenom[$n]</i>";
+            $n++;
+          }
+          echo "</span></td>";
+          echo "<td><span class='small'><a href='../aid/modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;annee=&amp;action=visu&amp;retour=' target='_blank'>$nom_aid</a></span></td></tr>";
+          $z++;
+        }
+        echo "</table>";
+      } else {
+  			echo "<h2>L'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']." n'est actuellement inscrit dans aucun projet.</h2>\n";
+      }
+
+      // Affichage des projets des années antérieures
+      $id_nat = sql_query1("select no_gep from eleves where login='".$ele_login."'");
+      $call_data = mysql_query("select ta.annee, ta.id, a.id, ta.nom, a.nom, a.responsables
+      from archivage_aids a, archivage_types_aid ta, archivage_aid_eleve ae
+      where ta.outils_complementaires='y' and
+      a.id=ae.id_aid and
+      ae.id_eleve='".$id_nat."' and
+      a.id_type_aid = ta.id
+      order by ta.annee");
+
+      $nb_aid = mysql_num_rows($call_data);
+      if ($nb_aid>0) {
+        echo "<h2>Les projets des années antérieures</h2>";
+        echo "<table width=\"$larg_tab\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">";
+        $z=0;
+        while ($z < $nb_aid) {
+          $annee = @mysql_result($call_data, $z, "ta.annee");
+          $indice_aid = @mysql_result($call_data, $z, "ta.id");
+          $aid_id =  @mysql_result($call_data, $z, "a.id");
+          $nom_type_aid = @mysql_result($call_data, $z, "ta.nom");
+          $nom_aid =  @mysql_result($call_data, $z, "a.nom");
+          $aid_prof_resp =  @mysql_result($call_data, $z, "a.responsables");
+          echo "<tr>\n";
+          echo "<td><span class='small'>".$annee."</td>\n";
+          echo "<td><span class='small'><b>$nom_type_aid</b>";
+          echo "<br /><i>$aid_prof_resp</i>";
+          echo "</span></td>\n";
+          echo "<td><span class='small'><a href='../aid/modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;annee=$annee&amp;action=visu&amp;retour=' target='_blank'>$nom_aid</a></span></td>\n</tr>\n";
+          $z++;
+        }
+        echo "</table>\n";
+      }
+
+      /****************
+      * spécificité LPI
+      ******************/
+      if (file_exists("../lpi/lib/autorisation_publication.inc.php")) require("../lpi/lib/autorisation_publication.inc.php");
+			echo "</div>\n";
+		}
+
+
 		//===================================================
 
 		//===================================================
@@ -1906,10 +2026,10 @@ Patientez pendant l'extraction des données... merci.
 			//========================
 			// Onglet DISCIPLINE
 			//========================
-	
+
 			//echo "\$acces_discipline=$acces_discipline<br />";
 			//echo "\$onglet=$onglet<br />";
-	
+
 			if($acces_discipline=="y") {
 				echo "<div id='discipline' class='onglet' style='";
 				if($onglet!="discipline") {echo " display:none;";}
@@ -1946,7 +2066,7 @@ Patientez pendant l'extraction des données... merci.
 				echo "</form>\n";
 
 				echo $tab_ele['tab_mod_discipline'];
-	
+
 				echo "</div>\n";
 			}
 		}
@@ -2086,7 +2206,7 @@ Patientez pendant l'extraction des données... merci.
 
 		// Liste des onglets de niveau 1
 		//$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins','cdt','anna','absences');
-		$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins','cdt','anna','absences','discipline');
+		$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins','cdt','fp','anna','absences','discipline');
 		$chaine_tab_onglets="tab_onglets=new Array(";
 		for($i=0;$i<count($tab_onglets);$i++) {
 			if($i>0) {$chaine_tab_onglets.=", ";}
