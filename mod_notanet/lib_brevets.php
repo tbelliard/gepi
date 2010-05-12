@@ -1,8 +1,8 @@
 <?php
 
 /*
-* $Id$
-*  */
+$Id$
+ */
 
 $tab_type_brevet=array();
 $tab_type_brevet[0]="COLLEGE, option de série LV2";
@@ -1055,7 +1055,7 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[116][0]='';
 			$tabmatieres[117][0]='';
-			$tabmatieres[118][0]='';
+			$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100512
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
 			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE EDUCATION CIVIQUE';
