@@ -46,17 +46,34 @@ if (!checkAccess()) {
     die();
 }
 
-// On teste si un professeur peut saisir les ECTS
-if (($_SESSION['statut'] == 'professeur') and $gepiSettings['GepiAccesSaisieEctsPP'] != 'yes') {
-   die("Droits insuffisants pour effectuer cette opération");
+// On va initialiser des marqueurs qui simplifieront les tests conditionnels par la suite
+$acces_prof_suivi = false;
+$acces_prof = false;
+$acces_scol = false;
+
+$prof_suivi = sql_count(sql_query("SELECT professeur FROM j_eleves_professeurs  WHERE professeur = '".$_SESSION['login']."'")) != "0" ? true : false;
+
+if (($_SESSION['statut'] == 'professeur') && $gepiSettings["GepiAccesSaisieEctsPP"] =='yes' && $prof_suivi) {
+  $acces_prof_suivi = true;
+}
+if (($_SESSION['statut'] == 'professeur') && $gepiSettings["GepiAccesSaisieEctsProf"] =='yes') {
+  $acces_prof = true;
+}
+if ((($_SESSION['statut'] == 'scolarite') and $gepiSettings["GepiAccesSaisieEctsScolarite"] =='yes') or $_SESSION['statut'] == 'secours') {
+  $acces_scol = true;
 }
 
-// On teste si le service scolarité peut saisir les avis
-if (($_SESSION['statut'] == 'scolarite') and $gepiSettings['GepiRubConseilScol'] !='yes') {
-   die("Droits insuffisants pour effectuer cette opération");
+if (!$acces_prof_suivi && !$acces_prof && !$acces_scol) {
+  die("Droits insuffisants pour accéder à cette page.");
 }
 
-// initialisation
+// initialisations
+$mode_saisie = isset($_POST["mode"]) ? $_POST["mode"] :(isset($_GET["mode"]) ? $_GET["mode"] : NULL);
+$presaisie = $mode_saisie == 'presaisie' ? true : false;
+if ($acces_scol) $presaisie = false; // On force une saisie normale si profil scolarité
+if ($acces_prof and !$acces_prof_suivi) $presaisie = true; // On force le mode 'présaisie' si on a un prof 'normal'
+// Maintenant on peut utiliser $presaisie dans les tests de manière relativement fiable.
+
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :NULL);
 $periode_num = isset($_POST["periode_num"]) ? $_POST["periode_num"] :(isset($_GET["periode_num"]) ? $_GET["periode_num"] :NULL);
 $fiche = isset($_POST["fiche"]) ? $_POST["fiche"] :(isset($_GET["fiche"]) ? $_GET["fiche"] :NULL);
@@ -65,16 +82,29 @@ $ind_eleve_login_suiv = isset($_POST["ind_eleve_login_suiv"]) ? $_POST["ind_elev
 $current_eleve_login_ap = isset($NON_PROTECT["current_eleve_login_ap"]) ? traitement_magic_quotes(corriger_caracteres($NON_PROTECT["current_eleve_login_ap"])) :NULL;
 $affiche_message = isset($_GET["affiche_message"]) ? $_GET["affiche_message"] :NULL;
 
+$CurrentUser = UtilisateurProfessionnelQuery::create()->findPK($_SESSION['login']);
+
+
+
+
 include "../lib/periodes.inc.php";
 
 //*******************************************************************************************************
 $msg = '';
-if (isset($_POST['is_posted'])) {
 
+// Le formulaire a été posté
+if (isset($_POST['is_posted'])) {
+  
+    // On s'assure que la période sur laquelle on effectue l'enregistrement est valide
     if (($periode_num < $nb_periode) and ($periode_num > 0) and ($ver_periode[$periode_num] == "N" OR $ver_periode[$periode_num] == "P"))  {
+      
         $reg = 'yes';
-        // si l'utilisateur n'a pas le statut scolarité, on vérifie qu'il est prof principal de l'élève
-        if (($_SESSION['statut'] != 'scolarite') and ($_SESSION['statut'] != 'secours')) {
+        
+        // On fait des tests de cohérence de droits d'accès
+        
+        // Si on est en mode de saisie globale et que l'on n'est pas 
+        if (!$presaisie and !$acces_scol) {
+             
              $test_prof_suivi = sql_query1("select professeur from j_eleves_professeurs
              where login = '$current_eleve_login' and
              professeur = '".$_SESSION['login']."' and
@@ -87,46 +117,62 @@ if (isset($_POST['is_posted'])) {
          }
          if ($reg == 'yes') {
 
+             // Suppression ou édition ?
              if (isset($_POST['delete'])) {
-                 // On a affaire à une suppression de données
-                 if (isset($_POST['delete_all']) and $_POST['delete_all'] == 'yes') {
-                     // La case a bien été cochée, on supprime.
-                    $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
-                    $groupes = $Eleve->getEctsGroupes($periode_num);
-                    foreach($groupes as $groupe) {
-                        // On a l'élève, le groupe, et la période. On peut supprimer.
-                        $Eleve->deleteEctsCredit($periode_num,$groupe->getId());
-                    }
-                    $msg = "Les données de cet élève viennent d'être supprimées.";
-                 } else {
-                     $msg = 'Pour supprimer des données, vous devez cocher la case au-dessus du bouton de validation de suppression.';
+                 if (!$presaisie) { // Pas de reset des données en mode 'présaisie' !
+                   if (isset($_POST['delete_all']) and $_POST['delete_all'] == 'yes') {
+                       // La case a bien été cochée, on supprime.
+                      $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
+                      $groupes = $Eleve->getEctsGroupes($periode_num);
+                      foreach($groupes as $groupe) {
+                          // On a l'élève, le groupe, et la période. On peut supprimer.
+                          $Eleve->resetEctsCredit($periode_num,$groupe->getId());
+                      }
+                      $msg = "Les données de cet élève viennent d'être supprimées.";
+                   } else {
+                       $msg = 'Pour supprimer des données, vous devez cocher la case au-dessus du bouton de validation de suppression.';
+                   }
                  }
 
              } else {
 
-                 // C'est ici que l'enregistrement se passe réellement.
-
+                 // Ici on a affaire à une édition. C'est dans ce bloc que l'enregistrement se passe réellement.
                 $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
                 $groupes = $Eleve->getEctsGroupes($periode_num);
                 foreach($groupes as $groupe) {
                     // On a l'élève, le groupe, et la période. On peut enregistrer.
-                    $valeur_ects = $_POST['valeur_ects_'.$groupe->getId()];
-                    $mention_ects = $_POST['mention_ects_'.$groupe->getId()];
-                    if (!empty($valeur_ects) && !is_numeric($valeur_ects)) $valeur_ects = "0";
-                    if (!in_array($mention_ects, array("A","B","C","D","E","F"))) $mention_ects = '';
-
-                    $Eleve->setEctsCredit($periode_num,$groupe->getId(),$valeur_ects,$mention_ects);
+                    if (!$presaisie) {
+                      $valeur_ects = $_POST['valeur_ects_'.$groupe->getId()];
+                      $mention_ects = $_POST['mention_ects_'.$groupe->getId()];
+                      if (!empty($valeur_ects) && !is_numeric($valeur_ects)) $valeur_ects = "0";
+                      if (!in_array($mention_ects, array("A","B","C","D","E","F"))) $mention_ects = '';
+                      $Eleve->setEctsCredit($periode_num,$groupe->getId(),$valeur_ects,$mention_ects);
+                    } else {
+                      // On vérifie que le prof est bien prof de ce groupe
+                      if ($groupe->getProfesseurs()->contains($CurrentUser)) {
+                        $mention_prof_ects = $_POST['mention_ects_'.$groupe->getId()];
+                        if (!in_array($mention_prof_ects, array("A","B","C","D","E","F"))) $mention_prof_ects = '';
+                        $Eleve->setEctsCredit($periode_num,$groupe->getId(),null,null,$mention_prof_ects);
+                      }
+                    }                    
                 }
-                $mention_globale = $_POST['credit_ects_global'];
-                $Eleve->setCreditEctsGlobal($mention_globale);
+                
+                // Le crédit global, uniquement saisi si accès complet
+                if (!$presaisie) {
+                  $mention_globale = $_POST['credit_ects_global'];
+                  if (!in_array($mention_globale, array("A","B","C","D","E","F"))) $mention_globale = '';
+                  $Eleve->setCreditEctsGlobal($mention_globale);
+                }
              }
         }
-
     } else {
         $msg = "La période sur laquelle vous voulez enregistrer est verrouillée";
     }
+
     if (isset($_POST['ok1']) OR isset($_POST['delete']))  {
-        if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
+        
+        // En accès complet ou en présaisie, on récupère tous les élèves de la classe.
+        if ($acces_scol) {
             $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
             WHERE (
             c.id_classe='$id_classe' AND
@@ -134,7 +180,9 @@ if (isset($_POST['is_posted'])) {
             c.periode = '".$periode_num."'
 
             ) ORDER BY nom,prenom");
-        } else {
+            
+        // Pour un prof principal, on ne récupère que les élèves dont il est responsable
+        } else if ($acces_prof_suivi && !$presaisie) {
             $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
             WHERE (c.id_classe='$id_classe' AND
             c.login = e.login AND
@@ -142,6 +190,20 @@ if (isset($_POST['is_posted'])) {
             p.professeur = '".$_SESSION['login']."' AND
             c.periode = '".$periode_num."'
             ) ORDER BY nom,prenom");
+            
+        // En présaisie, on ne propose que les élèves pour lesquels le prof enseigne au moins
+        // dans un groupe de la classe.
+        } else if ($presaisie) {
+            $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg, j_groupes_professeurs jgp
+              WHERE (
+                e.login = jeg.login AND
+                jeg.id_groupe = jgp.id_groupe AND
+                jgp.login = '".$_SESSION['login']."' AND
+                e.login IN (SELECT jec.login FROM j_eleves_classes jec
+                                  WHERE
+                                      jec.id_classe='$id_classe' AND
+                                      jec.periode = '".$periode_num."')              
+              ) ORDER BY nom,prenom");
         }
 
         $nb_eleve = mysql_num_rows($appel_donnees_eleves);
@@ -151,7 +213,7 @@ if (isset($_POST['is_posted'])) {
         }
         if ($ind_eleve_login_suiv >= $nb_eleve)  $ind_eleve_login_suiv = 0;
 
-        header("Location: saisie_ects.php?periode_num=$periode_num&id_classe=$id_classe&current_eleve_login=$current_eleve_login&ind_eleve_login_suiv=$ind_eleve_login_suiv&fiche=y&msg=$msg&affiche_message=$affiche_message#app");
+        header("Location: saisie_ects.php?mode=$mode_saisie&periode_num=$periode_num&id_classe=$id_classe&current_eleve_login=$current_eleve_login&ind_eleve_login_suiv=$ind_eleve_login_suiv&fiche=y&msg=$msg&affiche_message=$affiche_message#app");
     }
 }
 //*******************************************************************************************************
@@ -178,7 +240,7 @@ if (isset($id_classe) and (!isset($periode_num))) {
     echo "<ul>\n";
     while ($i < $nb_periode) {
         if ($ver_periode[$i] != "O") {
-            echo "<li><a href='saisie_ects.php?id_classe=".$id_classe."&amp;periode_num=".$i."'>".ucfirst($nom_periode[$i])."</a></li>\n";
+            echo "<li><a href='saisie_ects.php?mode=$mode_saisie&id_classe=".$id_classe."&amp;periode_num=".$i."'>".ucfirst($nom_periode[$i])."</a></li>\n";
         } else {
             echo "<li>".ucfirst($nom_periode[$i])." (".$gepiClosedPeriodLabel.", saisie impossible)</li>\n";
         }
@@ -201,10 +263,10 @@ if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
 	echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
 
 // Ajout lien classe précédente / classe suivante
-if($_SESSION['statut']=='scolarite'){
+if($_SESSION['statut'] == 'scolarite'){
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 }
-elseif($_SESSION['statut']=='professeur'){
+elseif($acces_prof_suivi && !$presaisie){
 	$sql="SELECT DISTINCT c.id,c.classe FROM classes c,
 										j_eleves_classes jec,
 										j_eleves_professeurs jep,
@@ -216,6 +278,11 @@ elseif($_SESSION['statut']=='professeur'){
                                         jgc.saisie_ects = TRUE AND
 										jep.professeur='".$_SESSION['login']."'
 								ORDER BY c.classe;";
+}
+elseif($presaisie) {
+  $sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE
+        (jgp.login = '" . $_SESSION['login'] . "' AND jgc.id_groupe = jgp.id_groupe AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)
+        ORDER BY c.classe;";
 }
 elseif($_SESSION['statut'] == 'autre'){
 	// On recherche toutes les classes pour ce statut qui n'est accessible que si l'admin a donné les bons droits
@@ -318,13 +385,13 @@ echo "</form>\n";
 
         <p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier les crédits ECTS.</p>
         <?php
-        if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
+        if ($acces_scol) {
             $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
             WHERE (c.id_classe='$id_classe' AND
                c.login = e.login AND
                c.periode = '".$periode_num."'
                ) ORDER BY nom,prenom";
-        } else {
+        } else if ($acces_prof_suivi && !$presaisie) {
             $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
             WHERE (c.id_classe='$id_classe' AND
                c.login = e.login AND
@@ -332,6 +399,17 @@ echo "</form>\n";
                p.professeur = '".$_SESSION['login']."' AND
                c.periode = '".$periode_num."'
                ) ORDER BY nom,prenom";
+        } else if ($presaisie) {
+            $sql = "SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg, j_groupes_professeurs jgp
+              WHERE (
+                e.login = jeg.login AND
+                jeg.id_groupe = jgp.id_groupe AND
+                jgp.login = '".$_SESSION['login']."' AND
+                e.login IN (SELECT jec.login FROM j_eleves_classes jec
+                                  WHERE
+                                      jec.id_classe='$id_classe' AND
+                                      jec.periode = '".$periode_num."')              
+              ) ORDER BY nom,prenom";
         }
 
         $appel_donnees_eleves = mysql_query($sql);
@@ -345,7 +423,7 @@ echo "</form>\n";
             $current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
             $current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
             $alt=$alt*(-1);
-            echo "<a href = 'saisie_ects.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'>$current_eleve_nom $current_eleve_prenom</a><br/>\n";
+            echo "<a href = 'saisie_ects.php?mode=$mode_saisie&periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'>$current_eleve_nom $current_eleve_prenom</a><br/>\n";
             $i++;
         }
     }
@@ -399,15 +477,15 @@ function updateMention(id,valeur){
     // On affiche les menus de navigation
   	echo "<form action='".$_SERVER['PHP_SELF']."' name='form_navigation' method='post'>\n";
 
-	echo "<div class='norme'><p class='bold'><a href='saisie_ects.php?id_classe=$id_classe&periode_num=$periode_num'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+	echo "<div class='norme'><p class='bold'><a href='saisie_ects.php?mode=$mode_saisie&id_classe=$id_classe&periode_num=$periode_num'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
-    if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
+    if ($acces_scol) {
         $sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes c
         WHERE (c.id_classe='$id_classe' AND
            c.login = e.login AND
            c.periode = '".$periode_num."'
            ) ORDER BY nom,prenom";
-    } else {
+    } else if ($acces_prof_suivi && !$presaisie) {
         $sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
         WHERE (c.id_classe='$id_classe' AND
            c.login = e.login AND
@@ -415,6 +493,17 @@ function updateMention(id,valeur){
            p.professeur = '".$_SESSION['login']."' AND
            c.periode = '".$periode_num."'
            ) ORDER BY nom,prenom";
+    } else if ($presaisie) {
+            $sql = "SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg, j_groupes_professeurs jgp
+              WHERE (
+                e.login = jeg.login AND
+                jeg.id_groupe = jgp.id_groupe AND
+                jgp.login = '".$_SESSION['login']."' AND
+                e.login IN (SELECT jec.login FROM j_eleves_classes jec
+                                  WHERE
+                                      jec.id_classe='$id_classe' AND
+                                      jec.periode = '".$periode_num."')              
+              ) ORDER BY nom,prenom";
     }
 
     $chaine_options_eleves="";
@@ -450,7 +539,7 @@ function updateMention(id,valeur){
     // =================================
 
     if($ele_login_prec!=""){
-        echo " | <a href='".$_SERVER['PHP_SELF']."?fiche=y&amp;periode_num=$periode_num&amp;current_eleve_login=$ele_login_prec&amp;id_classe=$id_classe";
+        echo " | <a href='".$_SERVER['PHP_SELF']."?mode=$mode_saisie&fiche=y&amp;periode_num=$periode_num&amp;current_eleve_login=$ele_login_prec&amp;id_classe=$id_classe";
         echo "'>".ucfirst($gepiSettings['denomination_eleve'])." précédent</a>";
     }
     if($chaine_options_eleves!="") {
@@ -459,7 +548,7 @@ function updateMention(id,valeur){
         echo "</select>\n";
     }
     if($ele_login_suiv!=""){
-        echo " | <a href='".$_SERVER['PHP_SELF']."?fiche=y&amp;periode_num=$periode_num&amp;current_eleve_login=$ele_login_suiv&amp;id_classe=$id_classe";
+        echo " | <a href='".$_SERVER['PHP_SELF']."?mode=$mode_saisie&fiche=y&amp;periode_num=$periode_num&amp;current_eleve_login=$ele_login_suiv&amp;id_classe=$id_classe";
         echo "'>".ucfirst($gepiSettings['denomination_eleve'])." suivant</a>";
     }
     echo " - ".$Classe->getClasse();
@@ -468,6 +557,7 @@ function updateMention(id,valeur){
     echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
     echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
     echo "<input type='hidden' name='fiche' value='y' />\n";
+    echo "<input type='hidden' name='mode' value='$mode_saisie' />\n";
 	echo "</p>\n";
 	echo "</div>\n";
 	echo "</form>\n";
@@ -602,11 +692,13 @@ function updateMention(id,valeur){
 
                 // Si on est rendu à la période courante :
                 if ($i == $periode_num) {
-                    if ($CreditEcts == null) $donnees_enregistrees = false; // On indique que des données n'ont pas été enregistrées en base de données
+                    if ($CreditEcts == null or $CreditEcts->getMention() == null or $CreditEcts->getMention() == '') $donnees_enregistrees = false; // On indique que des données n'ont pas été enregistrées en base de données
                     echo "<td class='bull_simple'>";
                     $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
+                    if ($valeur_ects == null) $valeur_ects = $group->getEctsDefaultValue($id_classe);
                     $max_ects = $group->getEctsDefaultValue($id_classe) >= $valeur_ects ? $group->getEctsDefaultValue($id_classe)+3 : $valeur_ects+3;
-                    echo "<select class='valeur' id='valeur_ects_".$group->getId()."' name='valeur_ects_".$group->getId()."' onchange=\"updatesum();updateMention('mention_ects_".$group->getId()."',this.selectedIndex);\">";
+                    $disability = $presaisie ? ' DISABLED ' : '';
+                    echo "<select class='valeur' id='valeur_ects_".$group->getId()."' name='valeur_ects_".$group->getId()."' onchange=\"updatesum();updateMention('mention_ects_".$group->getId()."',this.selectedIndex);\"$disability>";
                     for($c=0;$c<=$max_ects;$c++) {
                         echo "<option value='".$c."'";
                         if ($valeur_ects == $c) echo " SELECTED";
@@ -615,20 +707,31 @@ function updateMention(id,valeur){
                     echo "</select>";
                     echo "</td>";
                     echo "<td class='bull_simple' style='padding:10px;'>";
-                    $mention_ects = $CreditEcts == null ? '' : $CreditEcts->getMention();
-                    if ($mention_ects == '') $mention_ects = 'A';
+                    $mention_ects = $CreditEcts == null ? null : $CreditEcts->getMention();
+                    $official_credit_exists = $CreditEcts && $mention_ects != null && $mention_ects != '' ? true : false;
+                    if ($CreditEcts && ($mention_ects == null or $mention_ects == '')) {
+                      $mention_ects = $CreditEcts->getMentionProf();
+                    }
+                    
+                    $valeur_forcee = false;
+                    if (!$presaisie && (!$mention_ects || $mention_ects == '')) { $mention_ects = 'A'; $valeur_forcee = true;}
+                    
                     foreach($mentions as $mention) {
                         echo "<input id='mention_ects_".$group->getId()."_$mention' type='radio' name='mention_ects_".$group->getId()."' value='$mention'";
                         if ($mention == $mention_ects) echo " CHECKED ";
+                        if ($presaisie && (!$group->getProfesseurs()->contains($CurrentUser) or $official_credit_exists)) echo " DISABLED ";
                         if ($mention == 'F') {
                             echo "onclick=\"$('valeur_ects_".$group->getId()."').selectedIndex=0;\"";
                         } else {
                             echo "onclick=\"updateCredits('valeur_ects_".$group->getId()."','".$group->getEctsDefaultValue($id_classe)."');\"";
                         }
-                        echo "/><label for='mention_ects_".$group->getId()."_$mention'>$mention</label>";
+                        $style = !$valeur_forcee && !$official_credit_exists && $mention_ects == $mention ? 'text-decoration: underline; font-style: italic;' : '';
+                        echo "/><label for='mention_ects_".$group->getId()."_$mention' style='$style'>$mention</label>";
                     }
                     echo "</td>";
                     $total_valeur[$i] += $valeur_ects;
+                    
+                    
                 // Ici on est aux périodes précédentes
                 } else {
 
@@ -832,42 +935,44 @@ function updateMention(id,valeur){
         echo "</td>";
     }
 
-    echo "<td style='padding:10px;'>";
 
-    $credit_global = $Eleve->getCreditEctsGlobal();
-    if ($credit_global == null) {
-        $mention_globale = 'A';
-    } else {
-        $mention_globale = $credit_global->getMention();
-    }
-    foreach($mentions as $mention) {
-        echo "<input id='credit_global_$mention' type='radio' name='credit_ects_global' value='$mention'";
-        if ($mention_globale == $mention) echo " CHECKED ";
-        echo "/><label for='credit_global_$mention'>$mention</label>";
-    }
-    echo "</td></tr>";
+      echo "<td style='padding:10px;'>";
+      $credit_global = $Eleve->getCreditEctsGlobal();
+      if ($credit_global == null && !$presaisie) {
+          $mention_globale = 'A';
+      } else {
+          $mention_globale = $credit_global->getMention();
+      }
+      foreach($mentions as $mention) {
+          echo "<input id='credit_global_$mention' type='radio' name='credit_ects_global' value='$mention'";
+          if ($mention_globale == $mention) echo " CHECKED ";
+          if ($presaisie) echo " DISABLED ";
+          echo "/><label for='credit_global_$mention'>$mention</label>";
+      }
+      echo "</td>";
+    
+    echo "</tr>";
 
     // On affiche le statut des données
-
-    echo "<tr><td colspan='";
-    echo $nb_cols+1;
-    echo "'>";
-    if (!$donnees_enregistrees) {
-        echo "<p style='color: red;'>Dossier non-examiné<br/><span style='font-size: small;'>Les valeurs par défaut sont pré-saisies, mais ne sont pas encore enregistrées en base de données.</span></p>";
-    } else {
-        // Des données sont présentes en base de données. Seul les variations de total influent sur le message à afficher
-        if ($total_valeur[$periode_num] < 30) {
-            echo "<p style='color: red;'>Non validé<br/><span style='font-size: small;'>Des crédits sont enregistrés en base de données, mais le total est inférieur à 30.</span></p>";
-        } elseif ($total_valeur[$periode_num] == 30) {
-            echo "<p style='color: blue;'>Validé<br/><span style='font-size: small;'>30 crédits ECTS sont enregistrés en base de données pour cette période.</span></p>";
-        } else {
-            echo "<p style='color: red;'>Excès de crédit<br/><span style='font-size: small;'>Plus de 30 crédits sont enregistrés en base de données pour cette période.</span></p>";
-        }
+    if (!$presaisie) {
+      echo "<tr><td colspan='";
+      echo $nb_cols+1;
+      echo "'>";
+      if (!$donnees_enregistrees) {
+          echo "<p style='color: red;'>Dossier non-examiné<br/><span style='font-size: small;'>Les valeurs par défaut sont pré-saisies, mais ne sont pas encore enregistrées en base de données.</span></p>";
+      } else {
+          // Des données sont présentes en base de données. Seul les variations de total influent sur le message à afficher
+          if ($total_valeur[$periode_num] < 30) {
+              echo "<p style='color: red;'>Non validé<br/><span style='font-size: small;'>Des crédits sont enregistrés en base de données, mais le total est inférieur à 30.</span></p>";
+          } elseif ($total_valeur[$periode_num] == 30) {
+              echo "<p style='color: blue;'>Validé<br/><span style='font-size: small;'>30 crédits ECTS sont enregistrés en base de données pour cette période.</span></p>";
+          } else {
+              echo "<p style='color: red;'>Excès de crédit<br/><span style='font-size: small;'>Plus de 30 crédits sont enregistrés en base de données pour cette période.</span></p>";
+          }
+      }
+      echo "</td></tr>";
     }
-
-
-    echo "</td></tr>";
-
+    
     echo "<tr><td colspan='";
     echo $nb_cols+1;
     echo "' style='padding: 10px;'>";
@@ -877,16 +982,26 @@ function updateMention(id,valeur){
     ?>
     <input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" />
     </td></tr>
+<?php
+
+    if (!$presaisie) {
+
+?>
     <tr><td colspan="<?php echo $nb_cols+1;?>" style='padding: 10px;'>
     <p style='font-size: small;'>Si vous souhaitez supprimer toutes les données ECTS de cet élève pour cette période,<br/>cochez la case ci-dessous puis validez avec le bouton 'Supprimer les données'.<br/>Cette opération est irréversible.</p>
     <input id="delete_all" type="checkbox" name="delete_all" value="yes" /><label for="delete_all" style='font-size: small;color: red;'>Supprimez toutes les données.</label><br/>
     <br/>
     <input type="submit" NAME="delete" value="Supprimer les données" />
-    </td></tr>
+    </td></tr>    
+<?php
+
+    }
+?>
     </table>
     <input type=hidden name=id_classe value=<?php echo "$id_classe";?> />
     <input type=hidden name=is_posted value="yes" />
     <input type=hidden name=periode_num value="<?php echo "$periode_num";?>" />
+    <input type=hidden name=mode value="<?php echo "$mode_saisie";?>" />
     <input type=hidden name=current_eleve_login value="<?php echo "$current_eleve_login";?>" />
     <input type=hidden name=ind_eleve_login_suiv value="<?php echo "$ind_eleve_login_suiv";?>" />
     <!--br /-->
