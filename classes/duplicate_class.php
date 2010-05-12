@@ -101,20 +101,6 @@ if (isset($eleves_selected)) {
         if (!$register2) $msg .= "Erreur lors de l'enregistrement de la période $nom_periode.<br />";
     }
 
-    // table périodes observatoire
-    $get_data3 = mysql_query("SELECT * FROM periodes_observatoire WHERE id_classe='$id_classe'");
-    $nb3 = mysql_num_rows($get_data3);
-    for ($i3=0;$i3<$nb3;$i3++) {
-        $nom_periode = traitement_magic_quotes(corriger_caracteres(mysql_result($get_data3, $i3, "nom_periode")));
-        $num_periode = mysql_result($get_data3, $i3, "num_periode");
-        $verouiller = mysql_result($get_data3, $i3, "verouiller");
-        $date_limite = traitement_magic_quotes(corriger_caracteres(mysql_result($get_data3, $i3, "date_limite")));
-        $periode_affiliee = mysql_result($get_data3, $i3, "periode_affiliee");
-
-        $register3 = mysql_query("INSERT INTO periodes_observatoire SET nom_periode='$nom_periode',num_periode='$num_periode',verouiller='$verouiller',id_classe='$newclass_id',date_limite='$date_limite',periode_affiliee='$periode_affiliee'");
-        if (!$register3) $msg .= "Erreur lors de l'enregistrement de la période observatoire $nom_periode.<br />";
-    }
-
     // On appelle la liste pour faire un traitement élève par élève.
 
     $query = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' AND e.login = c.login)");
