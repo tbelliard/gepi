@@ -629,6 +629,16 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 		}
 	}
 
+	if (isset($_POST['GepiAccesSaisieEctsProf'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesSaisieEctsProf", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesSaisieEctsProf !";
+	}
+
+
 	if (isset($_POST['GepiAccesSaisieEctsPP'])) {
 		$temp = "yes";
 	} else {
@@ -856,7 +866,13 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			<?php
 				}
 			?>
-
+      
+      <!-- ECTS -->
+      <tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesSaisieEctsProf" id="GepiAccesSaisieEctsProf" value="yes" <?php if (getSettingValue("GepiAccesSaisieEctsProf")=='yes') echo "checked"; ?> onchange='changement();' /></td>
+				<td style='border: 0px;'><label for='GepiAccesSaisieEctsProf' style='cursor: pointer;'> a accès à la pré-saisie des mentions ECTS pour ses groupes.</label></td>
+			</tr>
+      
 			</table>
 		</td>
 	</tr>
@@ -920,11 +936,13 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 				<td style='border: 0px;'><input type="checkbox" name="AAProfPrinc" id="AAProfPrinc" value="yes" <?php if (getSettingValue("AAProfPrinc")=='yes') echo "checked"; ?> onchange='changement();' /></td>
 				<td style='border: 0px;'><label for='AAProfPrinc' style='cursor: pointer;'> a accès aux données d'années antérieures des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est <?php echo $gepiSettings['denomination_professeur']; ?> principal</label></td>
 			</tr>
-           	<tr valign='top'>
+      
+      <!-- ECTS -->
+      <tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesSaisieEctsPP" id="GepiAccesSaisieEctsPP" value="yes" <?php if (getSettingValue("GepiAccesSaisieEctsPP")=='yes') echo "checked"; ?> onchange='changement();' /></td>
 				<td style='border: 0px;'><label for='GepiAccesSaisieEctsPP' style='cursor: pointer;'> peut saisir les crédits ECTS pour sa classe</label></td>
 			</tr>
-           	<tr valign='top'>
+      <tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEditionDocsEctsPP" id="GepiAccesEditionDocsEctsPP" value="yes" <?php if (getSettingValue("GepiAccesEditionDocsEctsPP")=='yes') echo "checked"; ?> onchange='changement();' /></td>
 				<td style='border: 0px;'><label for='GepiAccesEditionDocsEctsPP' style='cursor: pointer;'> peut éditer les relevés ECTS pour sa classe</label></td>
 			</tr>
