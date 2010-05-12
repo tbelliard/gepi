@@ -459,6 +459,7 @@ else {
 
 			$tab_lvr_ele=array();
 			$sql="SELECT * FROM notanet_lvr_ele;";
+			//echo "$sql<br />";
 			$res_lvr_ele=mysql_query($sql);
 			while($lig_lvr_ele=mysql_fetch_object($res_lvr_ele)) {
 				$tab_lvr_ele[$lig_lvr_ele->login]=$lig_lvr_ele->id_lvr;
@@ -468,6 +469,7 @@ else {
 			$tab_id_lvr=array();
 			$tab_intitule_lvr=array();
 			$sql="SELECT DISTINCT id,intitule FROM notanet_lvr ORDER BY intitule;";
+			//echo "$sql<br />";
 			$res_lvr=mysql_query($sql);
 			while($lig_lvr=mysql_fetch_object($res_lvr)) {
 				$tab_intitule_lvr[]=$lig_lvr->intitule;
@@ -478,7 +480,16 @@ else {
 			$cpt=0;
 			while($lig_ele=mysql_fetch_object($res_ele)) {
 				if($classe_precedente!=$lig_ele->classe) {
+
+					if($classe_precedente!="") {
+						echo "</table>\n";
+						echo "</blockquote>\n";
+					}
+
+					$classe_precedente=$lig_ele->classe;
+
 					echo "<p class='bold'>Classe de $lig_ele->classe</p>\n";
+					echo "<blockquote>\n";
 
 					echo "<table class='boireaus' summary='Choix des LVR des élèves'>\n";
 	
@@ -503,9 +514,11 @@ else {
 					echo "<th>VA</th>\n";
 					echo "<th>NV</th>\n";
 					echo "</tr>\n";
-	
+
 					$alt=1;
-					while($lig_ele=mysql_fetch_object($res_ele)) {
+				}
+
+					//while($lig_ele=mysql_fetch_object($res_ele)) {
 						$alt=$alt*(-1);
 						echo "<tr class='lig$alt white_hover'>\n";
 						echo "<td align='left'>\n";
@@ -535,11 +548,13 @@ else {
 						}
 						echo "</tr>\n";
 						$cpt++;
-					}
-					echo "</table>\n";
+					//}
+					//echo "</table>\n";
 
-				}
+				//}
 			}
+			echo "</table>\n";
+			echo "</blockquote>\n";
 
 			echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
