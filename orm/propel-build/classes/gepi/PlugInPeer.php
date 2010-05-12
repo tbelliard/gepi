@@ -34,7 +34,7 @@ class PlugInPeer extends BasePlugInPeer {
   /**
    * Méthode qui enregistre le plugin en entier dans la base (avec autorisations et droits)
    *
-   * @param object $xml 
+   * @param object $xml
    */
   public static function addPluginComplet(SimpleXMLElement $xml){
     // On considère que le xml est vérifié et bon
@@ -71,7 +71,7 @@ class PlugInPeer extends BasePlugInPeer {
           $autorisation = new PlugInAutorisation();
           $autorisation->setUserStatut($liste_statuts[$marqueur]);
           $autorisation->setAuth('V');
-          $autorisation->setFichier('mod_plugins/' . $new->getNom() . '/' .$fichier[0]);
+          $autorisation->setFichier('mod_plugins/' . $new->getNom() . '/' .$fichier);
           $autorisation->setPluginId($new->getId());
           $autorisation->save();
 
@@ -100,7 +100,7 @@ class PlugInPeer extends BasePlugInPeer {
           $item_menu = new PlugInMiseEnOeuvreMenu();
           $item_menu->setPluginId($new->getId());
           $item_menu->setUserStatut($liste_statuts[$marqueur]);
-          $item_menu->setLienItem('mod_plugins/' . $new->getNom() . '/' .$item[0]);
+          $item_menu->setLienItem('mod_plugins/' . $new->getNom() . '/' .$item);
           $item_menu->setDescriptionItem($attributes["description"]);
           $item_menu->setTitreItem($attributes["titre"]);
           $item_menu->save();

@@ -216,9 +216,9 @@ foreach($liste_plugins as $plugin){
     echo '
     <tr>
       <td>'.str_replace("_", " ", $plugin->getNom()).'</td>
-      <td>'.$xml->description.'</td>
-      <td>'.$xml->auteur.'</td>
-      <td>'.$xml->version.'</td>
+      <td>'.iconv("utf-8","iso-8859-1",$xml->description).'</td>
+      <td>'.iconv("utf-8","iso-8859-1",$xml->auteur).'</td>
+      <td>'.iconv("utf-8","iso-8859-1",$xml->version).'</td>
       <td><a href="index.php?plugin_id='.$plugin->getId().'&amp;action=desinstaller" title="Voulez-vous le d&eacute;sinstaller ?">OUI</a></td>
       <td>'.$aff_ouvert.'</td>
     </tr>';

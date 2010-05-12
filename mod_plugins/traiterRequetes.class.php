@@ -65,14 +65,12 @@ class traiterRequetes {
   public function  __construct(simpleXMLElement $requetes) {
 
     $this->_requetes = $requetes;
-
-    foreach ($this->_requetes as $requete) {
-
+    foreach ($this->_requetes->requete as $requete) {
       // On est face à une liste de requêtes
-      if ($this->verifRequete($requete->requete) === true){
-        $this->insertRequete($requete->requete);
+      if ($this->verifRequete($requete) === true){
+        $this->insertRequete($requete);
       }else{
-        $this->retourneErreur(1, $requete->requete);
+        $this->retourneErreur(1, $requete);
       }
     }
 

@@ -20,8 +20,8 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
- 
+
+
 /* ---------Variables envoyées au gabarit
 *	$tbs_gere_connect							affichage ou non du nombre de connectés
 *	$tbs_alert_sums								nombre d'alertes de sécurités
@@ -68,7 +68,7 @@
 *	footer_template.inc.php
 *
  */
- 
+
 
 
 // Initialisation des feuilles de style après modification pour améliorer l'accessibilité
@@ -195,7 +195,7 @@ function acces($id,$statut) {
 
 
 
-function affiche_ligne($chemin_,$statut_) {	
+function affiche_ligne($chemin_,$statut_) {
 	if (acces($chemin_,$statut_)==1)  {
 		$temp = substr($chemin_,1);
 		/*echo "<tr>\n";
@@ -287,37 +287,37 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 */
 				//$texte.="</td><td>".$lig_pers->statut."</td></tr>\n";
 				$tbs_nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>strtoupper($lig_pers->nom)." ".ucfirst(strtolower($lig_pers->prenom)),"statut"=>$lig_pers->statut);
-				
+
 			}
 		}
 		//$texte.="</table>\n";
 		//$texte.="</div>\n";
-		
-		
-	
-			
-			
-			
+
+
+
+
+
+
 		//echo "<p>\nNombre de personnes actuellement connectées :<a href='#' onclick='return false;' onMouseover=\"delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);\"> $nb_connect </a>";
 		$tbs_nb_connect_lien = "#";
 	}else {
 		// echo "<p>\nNombre de personnes actuellement connectées : $nb_connect ";
 		$tbs_nb_connect_lien ="";
-		
+
 	}
-			
+
 	//echo "(<a href = 'gestion/gestion_connect.php?mode_navig=accueil'>Gestion des connexions</a>)\n</p>\n";
 	$tbs_gere_connect= "1";
-	
+
 //}
-		
+
 	// Lien vers le panneau de contrôle de sécurité
 	$alert_sums = mysql_result(mysql_query("SELECT SUM(niveau) FROM tentatives_intrusion WHERE (statut = 'new')"), 0);
 	if (empty($alert_sums)) $alert_sums = "0";
 	// echo "<p>\nAlertes sécurité (niveaux cumulés) : $alert_sums (<a href='gestion/security_panel.php'>Panneau de contrôle</a>)</p>\n";
 	$tbs_alert_sums = $alert_sums;
-	
-	
+
+
 // christian : demande d'enregistrement
 	//if (($force_ref) or (1==1)){
 	if (($force_ref)) {
@@ -327,7 +327,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 		$tbs_referencement[]=array("texte"=>"Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=explication","titre"=>"Pourquoi est-ce utile ?");
 		$tbs_referencement[]=array("texte"=>"Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=1","titre"=>"Référencer votre établissement");
 	}
-	
+
 // fin christian demande d'enregistrement
 
 	// Test du mode de connexion (http ou https) :
@@ -373,7 +373,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 		echo "<p style=\"color: red;\">Il y a eu un problème avec la mise à jour du répertoire temp.</p> \n";
 		echo "<p>Veuillez contacter l'administrateur pour résoudre ce problème.</p>\n";
 		echo "</div>\n";
-*/		
+*/
 		$tbs_probleme_dir[]="Il y a eu un problème avec la mise à jour du répertoire temp.";
 		$tbs_probleme_dir[]="Veuillez contacter l'administrateur pour résoudre ce problème.";
 		$_SESSION['user_temp_directory']='n';
@@ -388,7 +388,7 @@ if($_SESSION['statut']=="professeur"){
 	echo "<p class='bold'>\n";
 	echo "<a href='accueil_simpl_prof.php'>Interface graphique</a>";
 	echo "</p>\n";
-*/		
+*/
 	$tbs_interface_graphique[]=array("classe"=>"bold","lien"=>"accueil_simpl_prof.php","titre"=>"Interface graphique");
 }
 // correction Régis balise <center> invalide, remplacée par des données dans table.menu dans style.css
@@ -403,7 +403,7 @@ $appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, date_deco
     date_fin >= '".$today."'
     )
     order by id DESC");
-	
+
 $nb_messages = mysql_num_rows($appel_messages);
 //echo "\$nb_messages=$nb_messages<br />";
 $ind = 0;
@@ -413,15 +413,15 @@ $autre_message = "";
 while ($ind < $nb_messages) {
 	$destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
 $autre_message = "";
-	
+
 	if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
 		if ($affiche_messages == 'yes') {
 			$autre_message = "hr";
 		}
 		$affiche_messages = 'yes';
 		$content = mysql_result($appel_messages, $ind, 'texte');
-		//$texte_messages .= $content; 
-		
+		//$texte_messages .= $content;
+
 		// _DECOMPTE_
 		if(strstr($content, '_DECOMPTE_')) {
 			$nb_sec=mysql_result($appel_messages, $ind, 'date_decompte')-mktime();
@@ -451,9 +451,9 @@ $autre_message = "";
 
 			$content=my_ereg_replace("_DECOMPTE_",$decompte_remplace,$content);
 		}
-		
+
 		// fin _DECOMPTE_
-		
+
 		$tbs_message[]=array("suite"=>$autre_message,"message"=>$content);
 	}
 	$ind++;
@@ -526,15 +526,15 @@ if ($affiche=='yes') {
 	echo "<p class='small'>Les répertoires \"documents\" (<em>contenant les documents joints aux cahiers de textes</em>) et \"photos\" (<em>contenant les photos du trombinoscope</em>) ne seront pas sauvegardés.\n";
 	echo "Un outil de sauvegarde spécifique se trouve en bas de la page <a href='./gestion/accueil_sauve.php#zip'>gestion des sauvegardes</a></p>\n";
 	echo "</td></tr>";
-		
+
 	for ($i=0;$i<$nb_ligne;$i++) {
 		affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
 	}
-	echo "</table>\n";	
+	echo "</table>\n";
 */
 		$nummenu=0;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil'  , 'image'=>'./images/icons/configure.png'  , 'texte'=>'Administration');
-	
+
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -582,11 +582,11 @@ if (getSettingValue("active_module_absence")=='y') {
 		// for ($i=0;$i<$nb_ligne;$i++) {
 		// 	affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
 		// }
-		// echo "</table>\n";	
-		
+		// echo "</table>\n";
+
 		$nummenu=1;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil'  , 'image'=>'./images/icons/absences.png'  , 'texte'=>'Gestion des retards et absences');
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -646,10 +646,10 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
             affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
         }
         echo "</table>\n";
-*/	 
+*/
 		$nummenu=2;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil'  , 'image'=>'./images/icons/absences.png'  , 'texte'=>'Gestion des retards et absences','entree');
-		 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -730,7 +730,7 @@ while ($i < $nb_aid) {
 // Et récupérer le paquet commentaires_types sur... ADRESSE A DEFINIR:
 //if((file_exists('saisie/commentaires_types.php'))&&($commentaires_types=='y')){
 if(file_exists('saisie/commentaires_types.php')) {
-	
+
 	//echo "SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['statut']."'<br />";
 	//echo mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."'"))."<br />";
     if ((($_SESSION['statut']=='professeur') AND (getSettingValue("CommentairesTypesPP")=='yes') AND (mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."'"))>0))
@@ -765,10 +765,10 @@ if ($affiche=='yes') {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
     echo "</table>\n";
-*/	 
+*/
 	$nummenu=3;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil'  , 'image'=>'./images/icons/configure.png'  , 'texte'=>'Saisie');
-	 
+
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -867,10 +867,10 @@ if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
         }
         echo "</table>\n";
     */
-			 
+
 		$nummenu=4;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/configure.png' , 'texte'=>'Trombinoscope');
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -954,10 +954,10 @@ if ($affiche=='yes') {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
     echo "</table>\n";
-*/			 
+*/
 		$nummenu=5;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/releve.png' , 'texte'=>'Relevés de notes');
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -965,7 +965,7 @@ if ($affiche=='yes') {
 				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
-	
+
 
 }
 
@@ -1009,10 +1009,10 @@ if ($affiche=='yes') {
     echo "</table>\n";
 */
 
-		 
+
 	$nummenu=6;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/releve.png' , 'texte'=>'Documents ECTS');
- 
+
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -1065,11 +1065,11 @@ if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
     echo "</table>\n";
-*/    
- 		 
+*/
+
 	$nummenu=7;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Emploi du temps');
- 
+
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -1077,7 +1077,7 @@ if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
 			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 		}
 	}
-    
+
 }
 
 /************************
@@ -1200,7 +1200,7 @@ if ($affiche=='yes') {
 
 	$nummenu=8;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/vie_privee.png' , 'texte'=>'Consultation');
- 
+
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -1285,7 +1285,7 @@ if ($nb_total != 0) {
 */
 		$nummenu=9;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Outils de visualisation et d'édition des fiches projets");
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -1408,11 +1408,11 @@ if ($affiche=='yes') {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
     echo "</table>\n";
-*/  
- 		 
+*/
+
 	$nummenu=10;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Bulletins scolaires');
- 
+
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -1431,7 +1431,7 @@ if ($affiche=='yes') {
 /*************************************
 // Accès aux modules propres au LPI
 *************************************/
-		 
+
 	$nummenu=11;
 if (file_exists("./lpi/accueil_template.php")) require("./lpi/accueil_template.php");
 
@@ -1611,11 +1611,11 @@ if ($affiche=='yes') {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
     echo "</table>\n";
-*/       
-    		 
+*/
+
 	$nummenu=12;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/print.png' , 'texte'=>'Visualisation - Impression');
- 
+
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -1704,7 +1704,7 @@ L'opération renseigne également les tables nécessaires pour générer les Fiches b
 */
 	$nummenu=13;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Notanet/Fiches Brevet');
- 
+
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -1851,7 +1851,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 
 	$nummenu=14;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Années antérieures');
- 
+
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -1906,7 +1906,7 @@ if ($affiche=='yes') {
 
 	$nummenu=15;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/mail.png' , 'texte'=>"Panneau d'affichage");
- 
+
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -1958,7 +1958,7 @@ if (EstAutoriseAteliers($_SESSION["login"])) {
 
 		$nummenu=16;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Module Ateliers");
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -2014,7 +2014,7 @@ if (getSettingValue("active_inscription")=='y') {
 */
 		$nummenu=17;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Inscription");
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -2059,10 +2059,10 @@ if (getSettingValue("active_mod_discipline")=='y') {
 			}
 			echo "</table>";
 			*/
-			
+
 		$nummenu=18;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Discipline");
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -2110,7 +2110,7 @@ if (getSettingValue("active_mod_ooo")=='y') {
 */
 		$nummenu=19;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./mod_ooo/images/ico_gene_ooo.png' , 'texte'=>"Modèles Open Office");
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -2131,28 +2131,27 @@ if (getSettingValue("active_mod_ooo")=='y') {
 *****************************/
 
 $query = mysql_query('SELECT * FROM plugins WHERE ouvert = "y"');
-
-$chemin = array();
-$titre = array();
-$expli = array();
+$nummenu=200;
 
 while ($plugin = mysql_fetch_object($query)){
-
+  $chemin = array();
+  $titre = array();
+  $expli = array();
   $querymenu = mysql_query('SELECT * FROM plugins_menus WHERE plugin_id = "'.$plugin->id.'"');
   while ($menuItem = mysql_fetch_object($querymenu)){
     if ($menuItem->user_statut == $_SESSION['statut']){
       $chemin[] = $menuItem->lien_item;
 
-      $titre[]  = $menuItem->titre_item;
+      $titre[]  = iconv("utf-8","iso-8859-1",$menuItem->titre_item);
 
-      $expli[]  = $menuItem->description_item;
+      $expli[]  = iconv("utf-8","iso-8859-1",$menuItem->description_item);
     }
   }
 
       $nb_ligne = count($chemin);
 
     if ($nb_ligne >= 1){
-    	$nomPlugin= str_replace("_", " ", $plugin->nom)." (plugin)";
+    	$nomPlugin= str_replace("_", " ", iconv("utf-8","iso-8859-1",$plugin->description))." (plugin)";
 /*
       echo "<h2 class='accueil'><img src='./images/icons/package.png' alt='#' /> - ".str_replace("_", " ", $plugin->nom)." (plugin)</h2>
     <table class='menu' summary=\"Plugins de Gepi. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
@@ -2168,9 +2167,9 @@ while ($plugin = mysql_fetch_object($query)){
 			echo "</table>";
 */
 
-		$nummenu=20;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/package.png' , 'texte'=>'Plugins');
-	 
+		$nummenu+=$nummenu;
+		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/package.png' , 'texte'=>$nomPlugin);
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin[$i] , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
@@ -2180,8 +2179,8 @@ while ($plugin = mysql_fetch_object($query)){
 				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 */
-		}		
-			
+		}
+
     }
 
 }
@@ -2224,7 +2223,7 @@ if (getSettingValue("active_mod_genese_classes")=='y') {
 
 		$nummenu=21;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Génèse des classes");
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -2273,7 +2272,7 @@ if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") 
 			</tr>
 		';
 */
-		
+
 	}elseif(getSettingValue("rss_acces_ele") == 'csv'){
 		$tbs_canal_rss[]=array("lien"=>"" , "texte"=>"", "mode"=>2, "expli"=>"");
 /*
@@ -2314,13 +2313,13 @@ if ($_SESSION["statut"] == 'autre') {
 
 	//for($a = 1 ; $a < $nbre ; $a++){
 */
-	
+
 	$nummenu=23;
 	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Navigation");
 
 	$a = 1;
 	while($a < $nbre_a){
-		
+
 			$numitem=$a;
 		// On récupère le droit sur le fichier
 		$sql_f = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$_SESSION["statut_special_id"]."' AND nom_fichier = '".$autorise[$a][0]."' ORDER BY id";
@@ -2371,7 +2370,7 @@ if ($_SESSION["statut"] == 'autre') {
 				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
-*/	 
+*/
 }
 // ========================== fin Statut AUTRE =============================
 
@@ -2407,7 +2406,7 @@ if (getSettingValue("active_mod_epreuve_blanche")=='y') {
 
 		$nummenu=24;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Epreuves blanches");
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -2453,7 +2452,7 @@ if (getSettingValue("active_mod_examen_blanc")=='y') {
 
 		$nummenu=25;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Examens blancs");
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -2490,7 +2489,7 @@ if (getSettingValue("active_mod_apb")=='y') {
 	if ($affiche=='yes') {
 		$nummenu=26;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Export Post-Bac");
-	 
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
@@ -2519,7 +2518,7 @@ require_once ("./lib/footer_template.inc.php");
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
-}	
+}
 
 //==================================
 // Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
