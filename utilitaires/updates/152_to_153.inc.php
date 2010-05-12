@@ -749,4 +749,58 @@ if ($query) {
 }
 
 
+// Ajout d'une colonne sur les ECTS, pour permettre une présaisie par le prof
+$result .= "<br />Modification de la table 'ects_credits' (ajout de la colonne 'mention_prof').<br />";
+$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ects_credits LIKE 'mention_prof'"));
+if ($test == 0) {
+  $query = mysql_query("ALTER TABLE `ects_credits` ADD `mention_prof` VARCHAR(255) AFTER `mention` ;");
+  if ($query) {
+    $result .= "<font color=\"green\">Ok !</font><br />";
+  } else {
+    $result .= "<font color=\"red\">Erreur</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">La colonne 'mention_prof' existe deja.</font><br />";
+}
+
+$result .= "<br />Modification de la table 'ects_credits' (changements sur la colonne 'valeur').<br />";
+$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ects_credits LIKE 'valeur'"));
+if ($test == 1) {
+  $query = mysql_query("ALTER TABLE `ects_credits` CHANGE `valeur` `valeur` VARCHAR(255);");
+  if ($query) {
+    $result .= "<font color=\"green\">Ok !</font><br />";
+  } else {
+    $result .= "<font color=\"red\">Erreur</font><br />";
+  }
+} else {
+  $result .= "<font color=\"red\">La colonne 'valeur' n'existe pas, modification impossible.</font><br />";
+}
+
+$result .= "<br />Modification de la table 'ects_credits' (changements sur la colonne 'mention').<br />";
+$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ects_credits LIKE 'mention'"));
+if ($test == 1) {
+  $query = mysql_query("ALTER TABLE `ects_credits` CHANGE `mention` `mention` VARCHAR(255);");
+  if ($query) {
+    $result .= "<font color=\"green\">Ok !</font><br />";
+  } else {
+    $result .= "<font color=\"red\">Erreur</font><br />";
+  }
+} else {
+  $result .= "<font color=\"red\">La colonne 'mention' n'existe pas, modification impossible.</font><br />";
+}
+
+// Ajout d'un paramètre de droits d'accès à la pré-saisie des ECTS pour les profs
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'GepiAccesSaisieEctsProf'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('GepiAccesSaisieEctsProf', 'no');");
+  if ($result_inter == '') {
+    $result.="<font color=\"green\">Initialisation du paramètre GepiAccesSaisieEctsProf à 'n': Ok !</font><br />";
+  } else {
+    $result.="<font color=\"red\">Initialisation du paramètre GepiAccesSaisieEctsProf à 'n': Erreur !</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">Le paramètre GepiAccesSaisieEctsProf existe déjà dans la table setting.</font><br />";
+}
+
 ?>
