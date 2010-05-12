@@ -713,6 +713,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			$tabmatieres[115][-3]='MS ME MN AB';
 
+			$tabmatieres[130][-3]='AB VA NV'; // 20100512
 
 			// Colonnes pour les fiches brevet:
 			//for($j=101;$j<=122;$j++){
@@ -1102,6 +1103,8 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			$tabmatieres[115][-3]='MS ME MN AB';
 
+			$tabmatieres[130][-3]='AB VA NV'; // 20100512
+
 
 			// Colonnes pour les fiches brevet:
 			//for($j=101;$j<=122;$j++){
@@ -1216,7 +1219,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV'; // 20100425
+			$tabmatieres[130][-3]='AB VA NV'; // 20100512
 
 			// Colonnes pour les fiches brevet:
 			// Il n'y a qu'une seule colonne pour les fiches brevet en agricole
