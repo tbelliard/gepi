@@ -804,6 +804,7 @@ INSERT INTO droits VALUES ( '/mod_notanet/fb_lille_pdf.php', 'V', 'F', 'F', 'F',
 INSERT INTO droits VALUES ( '/mod_notanet/fb_creteil_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Fiches brevet PDF pour Creteil', '');
 INSERT INTO droits VALUES ( '/mod_plugins/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajouter/enlever des plugins', '');
 INSERT INTO setting VALUES ('active_mod_ects', 'n');
+INSERT INTO setting VALUES ('GepiAccesSaisieEctsProf', 'no');
 INSERT INTO setting VALUES ('GepiAccesSaisieEctsPP', 'no');
 INSERT INTO setting VALUES ('GepiAccesSaisieEctsScolarite', 'yes');
 INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsPP', 'no');
