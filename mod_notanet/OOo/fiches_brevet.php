@@ -142,7 +142,7 @@ if (isset($_GET['parametrer'])) {
 			$fb_session=$tmp_date['year'];
 		}
 	}
-	
+
 	$alt=$alt*(-1);
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
@@ -202,7 +202,7 @@ if (isset($_GET['parametrer'])) {
 	echo "</tr>\n";
 
 	echo "</table>\n";
-	
+
 	echo "<p align='center'><input type='submit' name='enregistrer_param' value='Enregistrer' /></p>\n";
 	echo "</form>\n";
 
@@ -294,13 +294,13 @@ if(!isset($type_brevet)) {
 					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 2 :
-					echo "<li>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 3 :
-					echo "<li>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 4 :
-					echo "<li>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 5 :
 					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
@@ -309,7 +309,7 @@ if(!isset($type_brevet)) {
 					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 7 :
-					echo "<li>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 			}
 		}
@@ -365,7 +365,7 @@ if (!isset($id_classe)) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?parametrer=y'>Paramétrer</a>";
 	echo "</p>\n";
 	echo "</div>\n";
-	
+
 	// Les tables notanet ne sont pas renseignées, on s'arrête
 	$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, notanet n,notanet_ele_type net WHERE p.id_classe = c.id AND c.id=n.id_classe AND n.login=net.login AND net.type_brevet='$type_brevet' ORDER BY classe");
 	if(!$call_data){
@@ -399,15 +399,15 @@ if (!isset($id_classe)) {
 	echo "</select></p>\n";
 	echo "<p>\n<label id='avec_app_label' style='cursor: pointer;'><input type='checkbox' name='avec_app' id='avec_app' value='y' checked='checked' /> Avec les appréciations</label>\n";
 	echo "<input type='submit' name='choix_classe' value='Envoyer' />\n</p>\n";
-	
+
 	echo "</blockquote>\n";
 	echo "</form>\n";
-	
+
 	// Fermeture du DIV container initialisé dans le header.inc
 	echo "</div>\n";
 	require("../../lib/footer.inc.php");
 	die();
-	
+
 }
 
 //====================================
@@ -418,7 +418,7 @@ if (!isset($id_classe)) {
 //==============================
 // === Construction du tableau fiche brevet===
 //==============================
-	
+
 // On récupère le tableau des paramètres associés à ce type de brevet:
 $tabmatieres=tabmatieres($type_brevet);
 
@@ -468,7 +468,7 @@ if($fb_session==""){
 }
 // Mode de calcul des moyennes
 $fb_mode_moyenne=getSettingValue("fb_mode_moyenne");
-if($fb_mode_moyenne!=2){$fb_mode_moyenne=1;}			
+if($fb_mode_moyenne!=2){$fb_mode_moyenne=1;}
 
 
 /***** Fin des données communes *****/
@@ -550,10 +550,10 @@ for($i=0;$i<count($id_classe);$i++){
 			$tab_eleves_OOo[$nb_eleve]['adresse2']=$gepiSchoolAdress2;
 			$tab_eleves_OOo[$nb_eleve]['codeposte']=$gepiSchoolZipCode;
 			$tab_eleves_OOo[$nb_eleve]['commune']=$gepiSchoolCity;
-			$tab_eleves_OOo[$nb_eleve]['acad']=$fb_academie;
+			$tab_eleves_OOo[$nb_eleve]['acad']=strtoupper($fb_academie);
 			$tab_eleves_OOo[$nb_eleve]['departe']=$fb_departement;
 			$tab_eleves_OOo[$nb_eleve]['session']=$fb_session;
-			
+
 			$sql="SELECT doublant FROM j_eleves_regime WHERE login='".$lig1->login."';";
 			$res_reg=mysql_query($sql);
 			$doublant='n';
@@ -566,40 +566,54 @@ for($i=0;$i<count($id_classe);$i++){
 			$tab_eleves_OOo[$nb_eleve]['redoublant']=$doublant;
 
 			//=======================================
-							
-			if(($type_brevet==0)||($type_brevet==1)||($type_brevet==5)||($type_brevet==6)){
+
+			if(($type_brevet==0)||($type_brevet==1)||($type_brevet==2)||($type_brevet==3)||($type_brevet==4)||($type_brevet==5)||($type_brevet==6)||($type_brevet==7)){
 
 				$TOTAL=0;
 				$TOTAL_COEF=0;
 				$TOTAL_POINTS=0;
 				for($j=101;$j<=122;$j++){
-				
+
 					//if ($tab_champs_OOo[$j][0]!='') {
 					if ((isset($tab_champs_OOo[$j][0]))&&($tab_champs_OOo[$j][0]!='')) {
-					
+
 						$tab_eleves_OOo[$nb_eleve][$j]=array();
-						for($l=0;$l<=4;$l++){																				
-							$tab_eleves_OOo[$nb_eleve][$j][$l]=""; 										// on initialise les champs pour ne pas avoir d'erreurs
+						for($l=0;$l<=4;$l++){
+							$tab_eleves_OOo[$nb_eleve][$j][$l]=""; 						// on initialise les champs pour ne pas avoir d'erreurs
 						}
 						if($tab_champs_OOo[$j][3]>-2) {$tab_eleves_OOo[$nb_eleve][$j][3] = $moy_classe[$j];}
-					
+
 						$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
 						$res_note=mysql_query($sql);
 						if(mysql_num_rows($res_note)>0){
 							$lig_note=mysql_fetch_object($res_note);
 							$tab_eleves_OOo[$nb_eleve][$j][0]=$lig_note->note;			// On récupère la note
-							
+
 							switch($tab_champs_OOo[$j][3]){
-								case '-2':																							// Socle B2I et A2
-									// rien à faire ?
+								case '-2':      										// Socle B2I et A2
+								  // rechercher la langue
+								  if ($j=='115') {
+									$sql_langue="SELECT m.nom_complet FROM matieres m,
+																		   notanet_socles s
+																	  WHERE m.matiere=s.lv AND
+																			login='$lig1->login'";
+									$res_lang=mysql_query($sql_langue);
+									if(mysql_num_rows($res_lang)>0){
+									  $lig_matiere=mysql_fetch_object($res_lang);
+									  $tab_eleves_OOo[$nb_eleve][115][1]=$lig_matiere->nom_complet;
+									}
+									else {
+									  $tab_eleves_OOo[$nb_eleve][115][1]='';
+									}
+								  }
 								break;
-								case '-1':																							// Note non prise en compte dans le calcul
+								case '-1':												// Note non prise en compte dans le calcul
 									// on calcule la moyenne de la matière
-									include("fb_moyenne.inc.php");	
+									include("fb_moyenne.inc.php");
 									// on va chercher les appréciations si besoin
-									include("fb_appreciation.inc.php");				
-								break;			
-								case '0':																							// Seuls les points au dessus de la moyenne comptent
+									include("fb_appreciation.inc.php");
+								break;
+								case '0':												// Seuls les points au dessus de la moyenne comptent
 									// on cherche le nom de l'option
 									$sql_mat_fac="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
 									$res_mat_fac=mysql_query($sql_mat_fac);
@@ -609,87 +623,94 @@ for($i=0;$i<count($id_classe);$i++){
 									}
 									// on calcule la moyenne de la matière
 									include("fb_moyenne.inc.php");
-									
+
 									// on va chercher les appréciations si besoin
 									include("fb_appreciation.inc.php");
-									
+
 									// on extrait les points à ajouter
 									if($tab_eleves_OOo[$nb_eleve][$j][0]>10) {
 										$tab_eleves_OOo[$nb_eleve][$j][1]=($lig_note->note)-10;
 										$TOTAL_POINTS= $TOTAL_POINTS+$tab_eleves_OOo[$nb_eleve][$j][1];
 									}
-								break;				
-								default:									
+								break;
+								default:
 									// on cherche le nom de la matière
 									$sql_mat_fac="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
 									$res_mat_fac=mysql_query($sql_mat_fac);
 									if(mysql_num_rows($res_mat_fac)>0){
 										$lig_mat_fac=mysql_fetch_object($res_mat_fac);
 										$tab_eleves_OOo[$nb_eleve][$j][2]=ucfirst(accent_min(strtolower($lig_mat_fac->matiere)));
-									}							
-									
+									}
+
 									// On calcul la note coefficientée
 									if($tab_eleves_OOo[$nb_eleve][$j][0]!="DI" && $tab_eleves_OOo[$nb_eleve][$j][0]!="NN" && $tab_eleves_OOo[$nb_eleve][$j][0]!="ABS") {
 										$tab_eleves_OOo[$nb_eleve][$j][1]=($lig_note->note)*$tab_champs_OOo[$j][3];
 										$TOTAL_POINTS =$TOTAL_POINTS+$tab_eleves_OOo[$nb_eleve][$j][1];
 										$TOTAL_COEF= $TOTAL_COEF+$tab_champs_OOo[$j][3];
 									}else {
-										$tab_eleves_OOo[$nb_eleve][$j][1]="";
+										$tab_eleves_OOo[$nb_eleve][$j][1]=$tab_eleves_OOo[$nb_eleve][$j][0];
 									}
 									// on calcule la moyenne de la matière
 									include("fb_moyenne.inc.php");
-									
+
 									// on va chercher les appréciations si besoin
 									include("fb_appreciation.inc.php");
-									
-								//break;																	
+
+								//break;
 							}
 						}else{				// l'éleve n'a pas de note
 							// on va chercher les appréciations si besoin
 							include("fb_appreciation.inc.php");
 						}
 					}
-				}					
+				}
+                // Langue régionale
+
+                $sql="SELECT * FROM notanet_lvr_ele WHERE login='$lig1->login' ";
+                $res_note=mysql_query($sql);
+                if(mysql_num_rows($res_note)>0){
+                  $lig_note=mysql_fetch_object($res_note);
+                  $tab_eleves_OOo[$nb_eleve][130][0]=$lig_note->note;
+                  $sql_lvr="SELECT Intitule FROM notanet_lvr WHERE id='$lig_note->id_lvr' ";
+                  $res_lvr=mysql_query($sql_lvr);
+                  if(mysql_num_rows($res_lvr)>0){
+                    $lig_lvr=mysql_fetch_object($res_lvr);
+                    $tab_eleves_OOo[$nb_eleve][130][1]=$lig_lvr->Intitule;
+                  }
+                }
+                else{
+                    $tab_eleves_OOo[$nb_eleve][130][0]="";
+                    $tab_eleves_OOo[$nb_eleve][130][1]="";
+                }
+
 			}
 			// ************************************************************************************************
 			// ************************************************************************************************
-			// ************************************************************************************************	
-			
-			// AUTRE TYPE DE BREVET
-			elseif(($type_brevet==2)||($type_brevet==3)){
-				// à faire
-			}
 			// ************************************************************************************************
-			// ************************************************************************************************
-			// ************************************************************************************************
-			// AUTRE TYPE DE BREVET
-			elseif(($type_brevet==4)||($type_brevet==7)){
-				// à faire
-			}
 			else{
 				// echo "<p>BIZARRE! Ce type de brevet n'est pas prévu</p>";
 			}
-			
+
 			// ************************************************************************************************
 			//	 On récupère l'avis du chef d'établissement
 			$tab_eleves_OOo[$nb_eleve]['decision']="";						// on initialise le champ pour ne pas avoir d'erreur
 			$tab_eleves_OOo[$nb_eleve]['appreciation']= "";			// on initialise le champ pour ne pas avoir d'erreur
-			
+
 			$sql="SELECT * FROM notanet_avis WHERE login='$lig1->login';";
 			$res_avis=mysql_query($sql);
 			if(mysql_num_rows($res_avis)>0) {
 				$lig_avis=mysql_fetch_object($res_avis);
-				if($lig_avis->favorable=="O") {$tab_eleves_OOo[$nb_eleve]['decision']="Avis favorable.";}
-				elseif($lig_avis->favorable=="N") {$tab_eleves_OOo[$nb_eleve]['decision']="Avis défavorable.";}
+				if($lig_avis->favorable=="O") {$tab_eleves_OOo[$nb_eleve]['decision']="Avis favorable";}
+				elseif($lig_avis->favorable=="N") {$tab_eleves_OOo[$nb_eleve]['decision']="Avis défavorable";}
 				$tab_eleves_OOo[$nb_eleve]['appreciation']= htmlentities($lig_avis->avis);
 			}
-			
+
 			$tab_eleves_OOo[$nb_eleve]['totalpoints']=$TOTAL_POINTS;
 			$tab_eleves_OOo[$nb_eleve]['totalcoef']=$TOTAL_COEF*20;
 			$tab_eleves_OOo[$nb_eleve]['classe']=get_classe_from_id($id_classe[$i]);
-			
-				
-			
+
+
+
 			$nb_eleve=$nb_eleve+1;
 		}
 		// Fin de la boucle sur la liste des élèves
@@ -701,8 +722,6 @@ for($i=0;$i<count($id_classe);$i++){
 //================================
 // === Fin construction du tableau fiche brevet===
 //================================
-
-
 
 
 ?>

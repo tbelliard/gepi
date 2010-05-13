@@ -27,7 +27,7 @@ $mode_ooo="imprime";
 
 
 
-include('init_secure.inc.php');	
+include('init_secure.inc.php');
 
 
 
@@ -66,31 +66,39 @@ include_once('../../mod_ooo/lib/tinyDoc.class.php');
 //
 //Le chemin et le nom du fichier ooo à traiter (le modèle de document)
 switch($type_brevet){
-	case '0':	
-		$nom_fichier_modele_ooo ='fb_nantes_lv2.odt';																						// Collège LV2
-	break;			
-	case '1':	
-		$nom_fichier_modele_ooo ='fb_nantes_dp6.odt';																					// Collège DP6
-	break;			
-	case '2':	
-		$nom_fichier_modele_ooo ='fb_pro_sopt.odt';																			// Professionnel sans option
-	break;			
-	case '3':	
-		$nom_fichier_modele_ooo ='fb_pro_dp6.odt';																			// Professionnel DP6
-	break;			
-	case '4':	
-		$nom_fichier_modele_ooo ='fb_pro_agri.odt';																			// Professionnel agricole
-	break;			
-	case '5':	
-		$nom_fichier_modele_ooo ='fb_nantes_tech_smdp.odt';																		// Technologique sans option
-	break;			
-	case '6':	
-		$nom_fichier_modele_ooo ='fb_nantes_tech_dp6.odt';																		// Technologique DP6
-	break;			
-	case '7':	
-		$nom_fichier_modele_ooo ='fb_tech_agri.odt';																		// Technologique agricole
-	break;		
-	default:	
+	case '0':
+		$nom_fichier_modele_ooo  ='fb_CLG_lv2.ods';
+// Collège LV2
+	break;
+	case '1':
+		$nom_fichier_modele_ooo ='fb_CLG_dp6.ods';
+// Collège DP6
+	break;
+	case '2':
+		$nom_fichier_modele_ooo ='fb_PRO.ods';
+// Professionnel sans option
+	break;
+	case '3':
+		$nom_fichier_modele_ooo ='fb_PRO_dp6.ods';
+// Professionnel DP6
+	break;
+	case '4':
+		$nom_fichier_modele_ooo ='fb_PRO_agri.ods';
+// Professionnel agricole
+	break;
+	case '5':
+		$nom_fichier_modele_ooo  ='fb_TECHNO.ods';
+// Technologique sans option
+	break;
+	case '6':
+		$nom_fichier_modele_ooo ='fb_TECHNO_dp6.ods';
+// Technologique DP6
+	break;
+	case '7':
+		$nom_fichier_modele_ooo ='fb_TECHNO_agri.ods';
+// Technologique agricole
+	break;
+	default:
 	die();
 }
 
@@ -146,7 +154,6 @@ else {
 	header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
 	header('Pragma: no-cache');
 }
-
 // display
 header('Content-type: '.$OOo->getMimetype());
 header('Content-Length: '.filesize($OOo->GetPathname()));
