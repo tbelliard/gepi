@@ -328,7 +328,8 @@ if($_SESSION['statut']=="administrateur") {
 		<li><a href='fb_lille_pdf.php'>Lille (<i>version PDF</i>)</a></li>\n";
 	$gepi_version=getSettingValue('version');
 	if(($gepi_version!='1.5.1')&&($gepi_version!='1.5.0')) {
-		echo "		<li>Modèle Nantes au format <a href='OOo/imprime_ooo.php'>OpenOffice</a> </li>\n";
+		//echo "		<li>Modèle Nantes au format <a href='OOo/imprime_ooo.php'>OpenOffice</a> </li>\n";
+		echo "		<li><a href='OOo/imprime_ooo.php'>Modèle au format OpenOffice</a> <a href='https://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'><img src='../images/icons/ico_question.png' alt='aide construction gabarit' /></a></li>\n";
 	}
 	echo "	</ul>
 </li>\n";
