@@ -108,7 +108,13 @@ $nom_dossier_temporaire = $tempdirOOo;
 //par defaut content.xml
 $nom_fichier_xml_a_traiter ='content.xml';
 //les chemins contenant les données
-$nom_dossier_modele_a_utiliser="../../mod_ooo/modeles_gepi/";
+$fb_gab_perso=getSettingValue("fb_gab_perso");
+if($fb_gab_perso=="1"){
+  $nom_dossier_modele_a_utiliser="../../mod_ooo/mes_modeles/";
+}
+else{
+  $nom_dossier_modele_a_utiliser="../../mod_ooo/modeles_gepi/";
+}
 
 // Création d'une classe tinyDoc
 $OOo = new tinyDoc();

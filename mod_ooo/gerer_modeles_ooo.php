@@ -50,7 +50,7 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     //Le nom du fichier en minuscule avec son extension
 	//La description du document
     //Retenue
-    $fich[]="retenue.odt"; 
+    $fich[]="retenue.odt";
     $utilisation[]="Formulaire de retenue";
 
 
@@ -58,7 +58,26 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $fich[]="rapport_incident.odt";
     $utilisation[]="Formulaire de rapport d'incident";
 
-	
+
+    //Fiches brevet
+    $fich[]="fb_CLG_lv2.ods";
+    $utilisation[]="Fiche brevet série collège LV2";
+    $fich[]="fb_CLG_dp6.ods";
+    $utilisation[]="Fiche brevet série collège ODP 6 heures";
+    $fich[]="fb_PRO.ods";
+    $utilisation[]="Fiche brevet série professionnelle sans ODP";
+    $fich[]="fb_PRO_dp6.ods";
+    $utilisation[]="Fiche brevet série professionnelle ODP 6 heures";
+    $fich[]="fb_PRO_agri.ods";
+    $utilisation[]="Fiche brevet série professionnelle option agricole";
+    $fich[]="fb_TECHNO.ods";
+    $utilisation[]="Fiche brevet série technologique sans ODP";
+    $fich[]="fb_TECHNO_dp6.ods";
+    $utilisation[]="Fiche brevet série technologique ODP 6 heures";
+    $fich[]="fb_TECHNO_agri.ods";
+    $utilisation[]="Fiche brevet série technologique option agricole";
+
+
     $nbfich=sizeof($fich);
 // Fin liste des fichiers
 
@@ -80,10 +99,10 @@ echo "<p>Ce module est destiné à gérer les modèles Open Office de Gepi.</p>\n";
 echo "</p>\n";
 echo "<BR />\n";
 
-if (isset($_GET['op'])) { $op=$_GET["op"]; } 
-if (isset($_GET['fic'])) { $fic=$_GET["fic"]; } 
-if (isset($_POST['btn'])) { $btn=$_POST["btn"]; } 
-if (isset($_POST['fich_cible'])) { $fich_cible=$_POST["fich_cible"]; } 
+if (isset($_GET['op'])) { $op=$_GET["op"]; }
+if (isset($_GET['fic'])) { $fic=$_GET["fic"]; }
+if (isset($_POST['btn'])) { $btn=$_POST["btn"]; }
+if (isset($_POST['fich_cible'])) { $fich_cible=$_POST["fich_cible"]; }
 
 if ((isset($op)) && ($op=="supp")) { //Supprimer un fichier perso
      // alert("EFFACER $fic");
@@ -122,12 +141,12 @@ if (!isset($btn)) { //premier passage : formulaire
          echo "</td>\n";
          if  (file_exists($nom_dossier_modeles_ooo_mes_modeles.$rne.$fich[$i]))   {
 		 echo "<td align='center'><a href=\"$PHP_SELF?op=supp&fic=$fich[$i]\" onclick='return confirmer()'><img src=\"./images/poubelle.gif\" border=\"0\" title=\"ATTENTION, suppression immédiate !\"></a>\n";
-         echo "&nbsp;&nbsp;<a HREF=\"$nom_dossier_modeles_ooo_mes_modeles$rne$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le nouveau modèle\"></a>\n";	
+         echo "&nbsp;&nbsp;<a HREF=\"$nom_dossier_modeles_ooo_mes_modeles$rne$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le nouveau modèle\"></a>\n";
 		 echo "</td>\n";
 		 } else {
 		 echo "</td>\n<td>&nbsp;</td>\n";
 		 }
-		 
+
       echo "<td>$fich[$i]</td><td>\n";
       echo "$utilisation[$i]</td><td>\n";
       echo "<INPUT TYPE=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"512000\">";

@@ -62,6 +62,12 @@ if (isset($_POST['enregistrer_param'])) {
 		}
 	}
 
+	if (isset($_POST['fb_gab_perso'])) {
+		if (!saveSetting("fb_gab_perso", $_POST['fb_gab_perso'])) {
+			$msg .= "Erreur lors de l'enregistrement de fb_gab_perso !";
+		}
+	}
+
 	if($msg==""){$msg="Enregistrement effectué.";}
 }
 
@@ -169,7 +175,7 @@ if (isset($_GET['parametrer'])) {
 		echo "<td valign='top'>\n";
 		echo "<input type='radio' name='fb_mode_moyenne' value='1' ";
 		if($fb_mode_moyenne!="2"){
-			echo "checked />";
+			echo "checked='checked' />";
 		}
 		else{
 			echo "/>";
@@ -185,7 +191,7 @@ if (isset($_GET['parametrer'])) {
 		echo "<td valign='top'>\n";
 		echo "<input type='radio' name='fb_mode_moyenne' value='2' ";
 		if($fb_mode_moyenne=="2"){
-			echo "checked />";
+			echo "checked='checked' />";
 		}
 		else{
 			echo "/>";
@@ -200,10 +206,35 @@ if (isset($_GET['parametrer'])) {
 
 	echo "</td>\n";
 	echo "</tr>\n";
-
+// choix des gabarits
+$alt=$alt*(-1);
+$fb_gab_perso=getSettingValue("fb_gab_perso");
+	echo "<tr";
+	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
+	echo ">\n";
+	echo "<td valign='top'>Gabarits : <br />Vous pouvez utiliser les gabarits intégrés à Gépi (construits à partir des fiches brevets de Nantes) <br />ou utiliser le module OpenOffice pour enregistrer vos propres gabarits</td>\n";
+	echo "<td>";
+	echo "<input type='radio' name='fb_gab_perso' value='1' ";
+	if($fb_gab_perso=="1"){
+	  echo "checked='checked' />";
+	}
+	else{
+	  echo "/>";
+	}
+	echo " Gabarits personnels <br />";
+	echo "<input type='radio' name='fb_gab_perso' value='0' ";
+	if($fb_gab_perso=="0"){
+	  echo "checked='checked' />";
+	}
+	else{
+	  echo "/>";
+	}
+	echo " Gabarits Gépi <br />";
+	echo "</td>\n";
+	echo "</tr>\n";
 	echo "</table>\n";
 
-	echo "<p align='center'><input type='submit' name='enregistrer_param' value='Enregistrer' /></p>\n";
+	echo "<p style='text-align: center;'><input type='submit' name='enregistrer_param' value='Enregistrer' /></p>\n";
 	echo "</form>\n";
 
 	require("../../lib/footer.inc.php");
@@ -392,7 +423,7 @@ if (!isset($id_classe)) {
 		$classe = mysql_result($call_data, $i, "classe");
 		$ide_classe = mysql_result($call_data, $i, "id");
 		echo "<option value='$ide_classe'";
-		if($nombre_lignes==1) {echo " selected";}
+		if($nombre_lignes==1) {echo " selected='selected'";}
 		echo ">$classe</option>\n";
 		$i++;
 	}

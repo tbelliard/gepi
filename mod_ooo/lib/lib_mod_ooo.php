@@ -1,4 +1,5 @@
 <?PHP
+/* $Id: lib_mod_ooo.php $ */
 //fonction qui renvoie l'extension du fichier
 function extension_nom_fichier($nom_fichier) {
   $lng =strlen($nom_fichier);
@@ -13,6 +14,9 @@ function renvoi_nom_image ($extension) {
 	    return "stock_new-text-36.png";
 	    break;
 	case "odf":
+	    return "stock_new-spreadsheet-36.png";
+	    break;
+	case "ods":
 	    return "stock_new-spreadsheet-36.png";
 	    break;
 	}
