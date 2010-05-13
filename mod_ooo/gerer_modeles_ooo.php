@@ -165,7 +165,7 @@ else { // passage 2 : le nom du fichier a été choisi
        echo "w.document.writeln('<h3>Fermeture en cours...</h3>');";
        echo "// - JavaScript - -->";
        echo "</script>";
-       goto($dest);
+       aller_a($dest);
     }
     else {
         echo "<script language='JavaScript'>\n";

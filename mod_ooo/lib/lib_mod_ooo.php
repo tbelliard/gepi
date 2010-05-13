@@ -90,7 +90,7 @@ function alert($message) {
   $message=addcslashes(addslashes($message),"\n\t");
   js("alert('$message')");
 }
-function goto($url) {
+function aller_a($url) {
   js("window.location.replace('$url');");
 }
 
