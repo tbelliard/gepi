@@ -275,6 +275,22 @@ PRIMARY KEY ( login )
 );";
 $create_table=mysql_query($sql);
 
+$sql="CREATE TABLE IF NOT EXISTS notanet_lvr (
+id int(11) NOT NULL auto_increment,
+intitule VARCHAR( 255 ) NOT NULL ,
+PRIMARY KEY ( id )
+);";
+$create_table=mysql_query($sql);
+
+$sql="CREATE TABLE IF NOT EXISTS notanet_lvr_ele (
+id int(11) NOT NULL auto_increment,
+login VARCHAR( 255 ) NOT NULL ,
+id_lvr INT( 11 ) NOT NULL ,
+note ENUM ('', 'VA','NV') NOT NULL DEFAULT '',
+PRIMARY KEY ( id )
+);";
+$create_table=mysql_query($sql);
+
 if($_SESSION['statut']=="administrateur") {
 	$truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
 	if($truncate_tables=='y') {
