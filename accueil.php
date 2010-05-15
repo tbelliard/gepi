@@ -2134,12 +2134,26 @@ $query = mysql_query('SELECT * FROM plugins WHERE ouvert = "y"');
 $nummenu=200;
 
 while ($plugin = mysql_fetch_object($query)){
+  $nomPlugin=$plugin->nom;
+  // On offre la possibilité d'inclure un fichier functions_nom_du_plugin.php
+  // Ce fichier peut lui-même contenir une fonction calcul_autorisation_nom_du_plugin voir plus bas.
+  if (file_exists("./mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php"))
+    include_once("./mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php");
   $chemin = array();
   $titre = array();
   $expli = array();
   $querymenu = mysql_query('SELECT * FROM plugins_menus WHERE plugin_id = "'.$plugin->id.'"');
   while ($menuItem = mysql_fetch_object($querymenu)){
-    if ($menuItem->user_statut == $_SESSION['statut']){
+    // On regarde si le plugin a prévu une surcharge dans le calcul de l'affichage de l'item dans le menu
+    // On commence par regarder si une fonction du type calcul_autorisation_nom_du_plugin existe
+    $nom_fonction_autorisation = "calcul_autorisation_".$nomPlugin;
+    if (function_exists($nom_fonction_autorisation))
+      // Si une fonction du type calcul_autorisation_nom_du_plugin existe, on calcule le droit de l'utilisateur à afficher cet item dans le menu
+      $result_autorisation = $nom_fonction_autorisation($_SESSION['login'],$menuItem->lien_item);
+    else
+      $result_autorisation=true;
+    if (($menuItem->user_statut == $_SESSION['statut']) and ($result_autorisation)) {
+
       $chemin[] = $menuItem->lien_item;
 
       $titre[]  = iconv("utf-8","iso-8859-1",$menuItem->titre_item);
@@ -2151,7 +2165,7 @@ while ($plugin = mysql_fetch_object($query)){
       $nb_ligne = count($chemin);
 
     if ($nb_ligne >= 1){
-    	$nomPlugin= str_replace("_", " ", iconv("utf-8","iso-8859-1",$plugin->description))." (plugin)";
+    	$descriptionPlugin= iconv("utf-8","iso-8859-1",$plugin->description)." (plugin)";
 /*
       echo "<h2 class='accueil'><img src='./images/icons/package.png' alt='#' /> - ".str_replace("_", " ", $plugin->nom)." (plugin)</h2>
     <table class='menu' summary=\"Plugins de Gepi. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
@@ -2168,7 +2182,7 @@ while ($plugin = mysql_fetch_object($query)){
 */
 
 		$nummenu+=$nummenu;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/package.png' , 'texte'=>$nomPlugin);
+		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/package.png' , 'texte'=>$descriptionPlugin);
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;

@@ -1987,7 +1987,6 @@ INSERT INTO setting  values ('total_max_size', '5242880');
 INSERT INTO setting  values ('col_note_largeur', '30');
 INSERT INTO setting  values ('active_cahiers_texte', 'y');
 INSERT INTO setting  values ('active_carnets_notes', 'y');
-INSERT INTO setting  values ('active_observatoire', 'n');
 INSERT INTO setting  values ('logo_etab', 'logo.gif');
 INSERT INTO setting  values ('longmin_pwd', '5');
 INSERT INTO setting  values ('duree_conservation_logs', '365');
