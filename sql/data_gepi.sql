@@ -25,7 +25,6 @@ INSERT INTO setting VALUES ('total_max_size', '5242880');
 INSERT INTO setting VALUES ('col_note_largeur', '30');
 INSERT INTO setting VALUES ('active_cahiers_texte', 'y');
 INSERT INTO setting VALUES ('active_carnets_notes', 'y');
-INSERT INTO setting VALUES ('active_observatoire', 'n');
 INSERT INTO setting VALUES ('logo_etab', 'logo.gif');
 INSERT INTO setting VALUES ('longmin_pwd', '5');
 INSERT INTO setting VALUES ('duree_conservation_logs', '365');
