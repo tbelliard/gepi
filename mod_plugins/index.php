@@ -177,6 +177,8 @@ include '../lib/header.inc';
 //print_r($liste_plugins);
 //aff_debug($testXML);
 ?>
+
+
 <h3 class="Gepi">Liste des plugins install&eacute;s</h3>
 <p>Pour plus d'informations concernant les plugins de Gepi, voyez
   <a onclick="window.open(this.href, '_blank'); return false;" href="http://projects.sylogix.org/gepi/wiki/plugin">la page sur TRAC</a>
@@ -219,7 +221,7 @@ foreach($liste_plugins as $plugin){
       <td>'.iconv("utf-8","iso-8859-1",$xml->description).'</td>
       <td>'.iconv("utf-8","iso-8859-1",$xml->auteur).'</td>
       <td>'.iconv("utf-8","iso-8859-1",$xml->version).'</td>
-      <td><a href="index.php?plugin_id='.$plugin->getId().'&amp;action=desinstaller" title="Voulez-vous le d&eacute;sinstaller ?">OUI</a></td>
+      <td><a href="index.php?plugin_id='.$plugin->getId().'&amp;action=desinstaller" title="Voulez-vous le d&eacute;sinstaller ?" onclick="return confirm('."'La desinstallation d\'un plugin entraîne la suppression des tables éventuellement associées et des données qu\'elles contiennent. Etes-vous sûr de vouloir désinstaller ce plugin ?'".');">OUI</a></td>
       <td>'.$aff_ouvert.'</td>
     </tr>';
   }
