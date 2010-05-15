@@ -1927,10 +1927,16 @@ Patientez pendant l'extraction des données... merci.
         echo "</table>\n";
       }
 
-      /****************
-      * spécificité LPI
-      ******************/
-      if (file_exists("../lpi/lib/autorisation_publication.inc.php")) require("../lpi/lib/autorisation_publication.inc.php");
+      /**************************************************************************
+      * Cas ou le plugin "gestion_autorisations_publications" existe et est activé
+      ****************************************************************************/
+      //On vérifie si le module est activé
+      $test_plugin = sql_query1("select ouvert from plugins where nom='gestion_autorisations_publications'");
+      if ($test_plugin=='y') {
+        include_once("../mod_plugins/gestion_autorisations_publications/functions_gestion_autorisations_publications.php");
+        echo verifie_autorisation_publication($ele_login);
+      }
+
 			echo "</div>\n";
 		}
 

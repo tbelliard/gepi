@@ -194,13 +194,12 @@ if (getSettingValue("active_carnets_notes")=='y') {
 
 }
 
-//On vérifie si le module observatoire est activé
+//On vérifie si le plugin suivi_eleves est activé
+$test_plugin = sql_query1("select ouvert from plugins where nom='suivi_eleves'");
+if ($test_plugin=='y') {
+    echo "<h2>Destinataires des données relatives au module de suivi des élèves</h2>\n";
 
-if (getSettingValue("active_observatoire")=='y') {
-
-    echo "<h2>Destinataires des données relatives à l'observatoire</h2>\n";
-
-    echo "Chaque professeur dispose dans GEPI d'un observatoire pour chacune de ses classes, qu'il peut tenir à jour
+    echo "Chaque professeur dispose dans GEPI d'un outil de suivi des élèves (\"observatoire\") pour chacune de ses classes, qu'il peut tenir à jour
 
     en étant connecté.
 
@@ -218,9 +217,7 @@ if (getSettingValue("active_observatoire")=='y') {
 
     <br /><br />L'observatoire et les données qui y figurent sont accessibles à l'ensemble de l'équipe pédagogique de l'établissement.
 
-    <br /><br />Dans le respect de la loi informatique et liberté 78-17 du 6 janvier 1978, les élèves sont avertis de l'existence de ces données les concernant et
-
-    disposent d'une droit d'accès";
+    <br /><br />Dans le respect de la loi informatique et liberté 78-17 du 6 janvier 1978, chaque élève a également accès dans son espace GEPI aux données qui le concernent";
 
 }
 require("../lib/footer.inc.php");
