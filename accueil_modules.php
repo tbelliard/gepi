@@ -212,6 +212,12 @@ $titre[] = "Admissions Post-Bac";
 $expli[] = "Pour gérer l'export XML vers la plateforme 'Admissions post-bac'.";
 $key_setting[]='active_mod_apb';
 
+//Module "Admissions Post-Bac"
+$chemin[] = "/mod_gest_aid/admin.php";
+$titre[] = "Gestionnaires d'AID";
+$expli[] = "Pour ouvrir la possibilité de définir des gestionnaires pour chaque AID.";
+$key_setting[]='active_mod_gest_aid';
+
 $nb_ligne = count($chemin);
 //
 // Outils d'administration

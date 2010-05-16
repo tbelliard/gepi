@@ -164,7 +164,7 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10)
 echo "<th>&nbsp;</th>";
   // En tete de la colonne "Ajouter, supprimer des gestionnairess"
 if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10)
-  if (getSettingValue("active_version152")=="y")  // lorsque le trunk sera officiellement en 1.5.2, on supprimera ce test
+  if (getSettingValue("active_mod_gest_aid")=="y")
     echo "<th>&nbsp;</th>";
 // colonne publier la fiche
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
@@ -231,7 +231,7 @@ while ($i < $nombreligne){
         echo "<td><p class='medium'><a href='modify_aid.php?flag=eleve&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des élèves</a></p></td>\n";
     // colonne "Ajouter, supprimer des gestionnaires"
     if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10)
-      if (getSettingValue("active_version152")=="y")  // lorsque le trunk sera officiellement en 1.5.2, on supprimera ce test
+      if (getSettingValue("active_mod_gest_aid")=="y")
             echo "<td><p class='medium'><a href='modify_aid.php?flag=prof_gest&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des gestionnaires</a></p></td>\n";
     if ((NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10) and ($activer_outils_comp == "y")) {
         // La fiche est-elle publique ?

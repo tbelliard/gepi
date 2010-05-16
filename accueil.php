@@ -2518,10 +2518,66 @@ if (getSettingValue("active_mod_apb")=='y') {
       Fin module APB
 *****************************/
 
+/*******************************
+      Module Gestionnaire d'AID
+*******************************/
 
+if (getSettingValue("active_mod_gest_aid")=='y') {
+	$chemin = array();
+	$titre = array();
+  $expli = array();
+  $sql = "SELECT * FROM aid_config ";
+  // on exclue la rubrique permettant de visualiser quels élèves ont le droit d'envoyer/modifier leur photo
+  $flag_where = 'n';
+  if (getSettingValue("num_aid_trombinoscopes") != "") {
+    $sql .= "WHERE indice_aid!= '".getSettingValue("num_aid_trombinoscopes")."'";
+    $flag_where = 'y';
+  }
+  // si le plugin "gestion_autorisations_publications" existe et est activé, on exclue la rubrique correspondante
+  $test_plugin = sql_query1("select ouvert from plugins where nom='gestion_autorisations_publications'");
+  if (($test_plugin=='y') and (getSettingValue("indice_aid_autorisations_publi") != ""))
+  if ($flag_where == 'n')
+    $sql .= "WHERE indice_aid!= '".getSettingValue("indice_aid_autorisations_publi")."'";
+  else
+    $sql .= "and indice_aid!= '".getSettingValue("indice_aid_autorisations_publi")."'";
 
+  $sql .= " ORDER BY nom";
+  $call_data = mysql_query($sql);
+  $nb_aid = mysql_num_rows($call_data);
+  $i=0;
+  while ($i < $nb_aid) {
+        $indice_aid = @mysql_result($call_data, $i, "indice_aid");
+        $call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_SESSION['login'] . "' and indice_aid = '$indice_aid')");
+        $nb_result = mysql_num_rows($call_prof);
+        if (($nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
+            $nom_aid = @mysql_result($call_data, $i, "nom");
+            $chemin[] = "/aid/index2.php?indice_aid=".$indice_aid;
+            $titre[] = $nom_aid;
+            $expli[] = "Cet outil vous permet de gérer l'appartenance des élèves aux différents groupes.";
+        }
+        $i++;
+  }
+	$nb_ligne = count($chemin);
+	$affiche = 'no';
+	for ($i=0;$i<$nb_ligne;$i++) {
+		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+	}
+	if ($affiche=='yes') {
+		$nummenu=27;
+		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Gestion des AID");
 
-
+		for ($i=0;$i<$nb_ligne;$i++) {
+			$numitem=$i;
+			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
+			if ($adresse != false) {
+				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			}
+		}
+	}
+}
+/*******************************
+  Fin Module Gestionnaire d'AID
+*******************************/
 
 $tbs_microtime	="";
 $tbs_pmv="";

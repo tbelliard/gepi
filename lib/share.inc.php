@@ -75,7 +75,7 @@ function test_unique_login($s) {
  */
 function test_unique_e_login($s, $indice) {
     //  $s
-    // 
+    //
 /*    $test1 = mysql_num_rows(mysql_query("SELECT login FROM a1_eleves WHERE (login='$s')"));
     $test2 = mysql_num_rows(mysql_query("SELECT login FROM a2_eleves WHERE (login='$s')"));
     $test3 = mysql_num_rows(mysql_query("SELECT login FROM a3_eleves WHERE (login='$s')"));
@@ -2786,7 +2786,7 @@ function debug_var() {
 			elseif(isset($debug_var_count[$chaine_tab_niv1])) {
 				$debug_var_count[$chaine_tab_niv1]++;
 			}
-	
+
 			echo "</td></tr>\n";
 		}
 		echo "</table>\n";
@@ -3304,53 +3304,50 @@ fonction qui calcul le niveau de gestion des AIDs
 10 : Peut tout faire
 */
 function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
-    if (getSettingValue("active_version152")!="y") {// lorsque le trunk sera officiellement en 1.5.2, on supprimera ce test
-        return 10;
-        die();
-    }
     if ($_SESSION['statut'] == "administrateur") {
         return 10;
         die();
     }
-    // l'id de l'aid n'est pas défini : on regarde si l'utilisateur est gestionnaire d'au moins une aid dans la catégorie
-    if ($_id_aid == "") {
+    if (getSettingValue("active_mod_gest_aid")=="y") {
+      // l'id de l'aid n'est pas défini : on regarde si l'utilisateur est gestionnaire d'au moins une aid dans la catégorie
+      if ($_id_aid == "") {
         $test = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
         if ($test >= 1) {
             return 1;
         } else {
             return 0;
         }
-    } else {
-    // l'id de l'aid est défini : on regarde si l'utilisateur est gestionnaire de cette aid
+      } else {
+      // l'id de l'aid est défini : on regarde si l'utilisateur est gestionnaire de cette aid
         $test = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."' and id_aid = '".$_id_aid."')");
         if ($test == 1) {
             return 1;
         } else {
             return 0;
         }
-    }
+      }
+    } else
+      return 0;
 }
 
 /* Gestion des droits d'accès à confirm_query.php
 */
 function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cible3) {
-    if (getSettingValue("active_version152")!="y") {// lorsque le trunk sera officiellement en 1.5.2, on supprimera ce test
-        return TRUE;
-        die();
-    }
     if ($_SESSION['statut'] == "administrateur") {
         return TRUE;
         die();
     }
-    if ($_action=="del_eleve_aid") {
-    // on regarde si l'utilisateur est gestionnaire de l'aid
+    if (getSettingValue("active_mod_gest_aid")=="y") {
+      if ($_action=="del_eleve_aid") {
+      // on regarde si l'utilisateur est gestionnaire de l'aid
         $test = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_cible3."' and id_aid = '".$_cible2."')");
         if ($test == 1) {
             return TRUE;
         } else {
             return FALSE;
         }
-    }
+      }
+    } else
     return FALSE;
 }
 
@@ -3674,7 +3671,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 
 		unset($ligne);
 		$ligne=array();
-	
+
 		$tab=split(" ",$texte);
 		$cpt=0;
 		$i=0;
@@ -3704,7 +3701,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 			$i++;
 			if(!isset($tab[$i])) {break;}
 		}
-	
+
 		// Recherche de la plus longue ligne:
 		$taille_texte_ligne=0;
 		$num=0;
@@ -3718,7 +3715,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 		$hauteur_texte_mm=$hauteur_texte*26/100;
 		// Hauteur totale: Nombre de lignes multiplié par la hauteur de police avec les marges verticales
 		$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
-	
+
 		// echo "On calcule la taille de la police d'après \$ligne[$num]=".$ligne[$num]."<br/>";
 		// On ajuste la taille de police avec la plus grande ligne pour que cela tienne en largeur
 		// et on contrôle aussi que cela tient en hauteur, sinon on continue à réduire la police.
@@ -3753,8 +3750,8 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 			$tab_lig[$j]['marge_verticale']=$marge_verticale;
 			// Tableau des lignes
 			$tab_lig[$j]['lignes']=$ligne;
-	
-			// On choisit la hauteur de police la plus grande possible pour laquelle les lignes tiennent en hauteur 
+
+			// On choisit la hauteur de police la plus grande possible pour laquelle les lignes tiennent en hauteur
 			// (la largeur a déjà été utilisée pour découper en lignes).
 			if(($hauteur_texte>$fmax)&&($tab_lig[$j]['hauteur_totale']<=$h_cell)) {
 				$ifmax=$j;
@@ -3773,7 +3770,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 
 			unset($ligne);
 			$ligne=array();
-		
+
 			$tab=split(" ",trim(my_ereg_replace("\n"," ",$texte)));
 			$cpt=0;
 			$i=0;
@@ -3790,7 +3787,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 				$i++;
 				if(!isset($tab[$i])) {break;}
 			}
-		
+
 			// Recherche de la plus longue ligne:
 			$taille_texte_ligne=0;
 			$num=0;
@@ -3804,7 +3801,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 			$hauteur_texte_mm=$hauteur_texte*26/100;
 			// Hauteur totale: Nombre de lignes multiplié par la hauteur de police avec les marges verticales
 			$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
-		
+
 			// echo "On calcule la taille de la police d'après \$ligne[$num]=".$ligne[$num]."<br/>";
 			// On ajuste la taille de police avec la plus grande ligne pour que cela tienne en largeur
 			// et on contrôle aussi que cela tient en hauteur, sinon on continue à réduire la police.
@@ -3839,8 +3836,8 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 				$tab_lig[$j]['marge_verticale']=$marge_verticale;
 				// Tableau des lignes
 				$tab_lig[$j]['lignes']=$ligne;
-		
-				// On choisit la hauteur de police la plus grande possible pour laquelle les lignes tiennent en hauteur 
+
+				// On choisit la hauteur de police la plus grande possible pour laquelle les lignes tiennent en hauteur
 				// (la largeur a déjà été utilisée pour découper en lignes).
 				if(($hauteur_texte>$fmax)&&($tab_lig[$j]['hauteur_totale']<=$h_cell)) {
 					$ifmax=$j;
@@ -3924,7 +3921,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 	$pdf->SetXY($x,$y);
 	$pdf->Cell($largeur_dispo,$h_cell, '',$bordure,2,'');
 
-	// On va écrire les lignes avec la taille de police optimale déterminée (cf. $ifmax)	
+	// On va écrire les lignes avec la taille de police optimale déterminée (cf. $ifmax)
 	//$marge_h=round(($h_cell-(count($ligne)*$hauteur_texte_mm+(count($ligne)-1)*$marge_verticale))/2);
 	//$marge_h=round(($h_cell-$tab_lig[$ifmax]['hauteur_totale'])/2);
 	$nb_lig=count($tab_lig[$ifmax]['lignes']);
@@ -3933,7 +3930,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 	$bord_debug='';
 	//$bord_debug='LRBT';
 	for($i=0;$i<count($tab_lig[$ifmax]['lignes']);$i++) {
-		
+
 		//$pdf->SetXY(10,$y+$i*($hauteur_texte_mm+$marge_verticale)+$marge_h);
 		$pdf->SetXY($x,$y+$i*($tab_lig[$ifmax]['hauteur_texte_mm']+$tab_lig[$ifmax]['marge_verticale']));
 
@@ -4020,13 +4017,13 @@ function javascript_tab_stat($pref_id,$cpt) {
 	echo "<th>3è quartile</th>\n";
 	echo "<td id='".$pref_id."q3'></td>\n";
 	echo "</tr>\n";
-	
+
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 	echo "<th>Min</th>\n";
 	echo "<td id='".$pref_id."min'></td>\n";
 	echo "</tr>\n";
-	
+
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 	echo "<th>Max</th>\n";
@@ -4147,7 +4144,7 @@ function calcule_moy_mediane_quartiles($tab) {
 		*/
 
 		$moyenne=round(10*$total/count($tab2))/10;
-	
+
 		if(count($tab2)%2==0) {
 			$mediane=($tab2[count($tab2)/2-1]+$tab2[count($tab2)/2])/2;
 		}
