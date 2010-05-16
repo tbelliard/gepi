@@ -679,13 +679,17 @@ if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (ge
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $chemin[] = "/cahier_notes/index.php";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $chemin[] = "/saisie/index.php";
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $chemin[] = "/saisie/saisie_avis.php";
+
 // Saisie ECTS - ne doit être affichée que si l'utilisateur a bien des classes ouvrant droit à ECTS
 if ($_SESSION['statut'] == 'professeur') {
-    $test_prof_ects = sql_count(sql_query("SELECT jgc.saisie_ects FROM j_groupes_classes jgc, j_eleves_professeurs jep, j_eleves_groupes jeg WHERE (jgc.saisie_ects = TRUE AND jgc.id_groupe = jeg.id_groupe AND jeg.login = jep.login AND jep.professeur = '".$_SESSION['login']."')"));
+    $test_prof_ects = sql_count(sql_query("SELECT jgc.saisie_ects FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgc.saisie_ects = TRUE AND jgc.id_groupe = jgp.id_groupe AND jgp.login = '".$_SESSION['login']."')"));
+    $test_prof_suivi_ects = sql_count(sql_query("SELECT jgc.saisie_ects FROM j_groupes_classes jgc, j_eleves_professeurs jep, j_eleves_groupes jeg WHERE (jgc.saisie_ects = TRUE AND jgc.id_groupe = jeg.id_groupe AND jeg.login = jep.login AND jep.professeur = '".$_SESSION['login']."')"));
 } else {
     $test_scol_ects = sql_count(sql_query("SELECT jgc.saisie_ects FROM j_groupes_classes jgc, j_scol_classes jsc WHERE (jgc.saisie_ects = TRUE AND jgc.id_classe = jsc.id_classe AND jsc.login = '".$_SESSION['login']."')"));
 }
-$conditions_ects = ($gepiSettings['active_mod_ects'] == 'y' and (($test_prof_suivi != "0" and $gepiSettings['GepiAccesSaisieEctsPP'] =='yes' and $test_prof_ects != "0")
+$conditions_ects = ($gepiSettings['active_mod_ects'] == 'y' and
+      (($test_prof_suivi != "0" and $gepiSettings['GepiAccesSaisieEctsPP'] =='yes' and $test_prof_suivi_ects != "0")
+      or ($_SESSION['statut'] == 'professeur' and $gepiSettings['GepiAccesSaisieEctsProf'] =='yes' and $test_prof_ects != "0")
       or ($_SESSION['statut']=='scolarite' and $gepiSettings['GepiAccesSaisieEctsScolarite'] =='yes' and $test_scol_ects != "0")
       or ($_SESSION['statut']=='secours')));
 if ($conditions_ects) $chemin[] = "/mod_ects/index_saisie.php";
