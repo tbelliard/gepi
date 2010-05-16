@@ -118,10 +118,10 @@ else{
 
 // Création d'une classe tinyDoc
 $OOo = new tinyDoc();
-$OOo->setZipMethod('ziparchive');
-// $OOo->setZipMethod('shell');
-// $OOo->setZipBinary('zip');
-// $OOo->setUnzipBinary('unzip');
+// $OOo->setZipMethod('ziparchive');
+$OOo->setZipMethod('shell');
+$OOo->setZipBinary('zip');
+$OOo->setUnzipBinary('unzip');
 
 // setting the object
 $OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
