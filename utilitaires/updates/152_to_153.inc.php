@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * $Id$
  *
  * Fichier de mise à jour de la version 1.5.2 à la version 1.5.3
@@ -802,5 +802,21 @@ if ($res_test==0){
 } else {
   $result .= "<font color=\"blue\">Le paramètre GepiAccesSaisieEctsProf existe déjà dans la table setting.</font><br />";
 }
+
+// Ajout d'un champ autoriser_inscript_multiples à la table aid_config
+$result .= "&nbsp;->Ajout d'un champ autoriser_inscript_multiples à la table 'aid_config'<br />";
+$test_autoriser_inscript_multiples=mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid_config LIKE 'autoriser_inscript_multiples';"));
+if ($test_autoriser_inscript_multiples>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE aid_config ADD autoriser_inscript_multiples CHAR(1) DEFAULT 'n';");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
 
 ?>

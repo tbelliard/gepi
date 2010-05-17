@@ -58,6 +58,8 @@ $aff_infos_g = "";
 $aff_classes_g = "";
 $aff_aid_d = "";
 $aff_classes_m = "";
+$autoriser_inscript_multiples = sql_query1("select autoriser_inscript_multiples from aid_config where indice_aid='".$indice_aid."'");
+
 
 //+++++++++++++++++ CSS AID++++++++
 $style_specifique = "aid/style_aid";
@@ -88,7 +90,10 @@ require_once("../lib/header.inc");
 			for($i=0; $i<$nbre_login; $i++){
 				$rep_log_eleve[$i]["login"] = mysql_result($req_login, $i, "login");
 				// On teste si cet élève n'est pas déjà membre de l'AID
-				$req_verif = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.mysql_error().'.');
+        if ($autoriser_inscript_multiples == 'y')
+  				$req_verif = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.mysql_error().'.');
+        else
+  				$req_verif = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND id_aid = '".$id_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.mysql_error().'.');
 				$verif = mysql_num_rows($req_verif);
 				if ($verif === 0) {
 					$req_ajout = mysql_query("INSERT INTO j_aid_eleves SET login='".$rep_log_eleve[$i]["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
@@ -187,7 +192,10 @@ if (isset($aff_liste_m)) {
 			$aff_ele_m[$b]["sexe"] = mysql_result($req_ele, $b, "sexe");
 
 			// On vérifie que cet élève n'est pas déjà membre de l'AID
-			$req_verif = mysql_query("SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' AND indice_aid = '".$indice_aid."'");
+			if ($autoriser_inscript_multiples == 'y')
+  			$req_verif = mysql_query("SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' and id_aid='$id_aid' AND indice_aid = '".$indice_aid."'");
+  		else
+  			$req_verif = mysql_query("SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' AND indice_aid = '".$indice_aid."'");
 			$nbre_verif = mysql_num_rows($req_verif);
 				if ($nbre_verif >> 0) {
 					$aff_classes_m .= "

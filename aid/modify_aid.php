@@ -87,6 +87,11 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_pro
     }
     $flag = "prof_gest";
 }
+// On appelle les informations de l'aid pour les afficher :
+$call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+$nom_aid = @mysql_result($call_data, 0, "nom");
+$activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
+$autoriser_inscript_multiples = @mysql_result($call_data, 0, "autoriser_inscript_multiples");
 
 if (isset($add_eleve) and ($add_eleve == "yes")) {
     // Les élèves responsable : à chercher parmi les élèves de l'AID
@@ -105,7 +110,10 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
     }
 
     // On commence par vérifier que l'élève n'est pas déjà présent dans cette liste, ni dans aucune.
-    $test = mysql_query("SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and indice_aid='$indice_aid')");
+    if ($autoriser_inscript_multiples == 'y')
+      $test = mysql_query("SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and id_aid='$aid_id' and indice_aid='$indice_aid')");
+    else
+      $test = mysql_query("SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and indice_aid='$indice_aid')");
     $test2 = mysql_num_rows($test);
     if ($test2 != "0") {
         $msg = "L'élève que vous avez tenté d'ajouter appartient déjà à une AID";
@@ -206,11 +214,6 @@ if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
     $flag = "prof_gest";
     if ($msg == '') $msg = "Les modifications ont été enregistrées.";
 }
-
-// On appelle les informations de l'aid pour les afficher :
-$call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-$nom_aid = @mysql_result($call_data, 0, "nom");
-$activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
 
 $calldata = mysql_query("SELECT nom FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
 $aid_nom = mysql_result($calldata, 0, "nom");
@@ -549,11 +552,17 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
     if ($vide == 1) {
         echo "<br /><p style=\"color: red;\">Il n'y a pas actuellement d'élèves dans cette AID !</p>";
     }
-    $call_eleve = mysql_query("SELECT e.login, e.nom, e.prenom, e.elenoet
+    if ($autoriser_inscript_multiples == 'y')
+      $requete = "SELECT distinct e.login, e.nom, e.prenom, e.elenoet
 						FROM eleves e LEFT JOIN j_aid_eleves j ON
 						(e.login = j.login  and
-						j.indice_aid = '$indice_aid')
-						WHERE j.login is null order by e.nom, e.prenom");
+  						j.id_aid = '$aid_id')  WHERE j.login is null order by e.nom, e.prenom";
+    else
+        $requete = "SELECT e.login, e.nom, e.prenom, e.elenoet
+						FROM eleves e LEFT JOIN j_aid_eleves j ON
+						(e.login = j.login  and
+						j.indice_aid = '$indice_aid') WHERE j.login is null order by e.nom, e.prenom";
+    $call_eleve = mysql_query($requete);
     $nombreligne = mysql_num_rows($call_eleve);
     if ($nombreligne != 0) {
 

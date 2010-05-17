@@ -54,6 +54,7 @@ $message = isset($_POST["message"]) ? $_POST["message"] : NULL;
 $display_nom = isset($_POST["display_nom"]) ? $_POST["display_nom"] : NULL;
 $indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : (isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : NULL);
 $display_bulletin = isset($_POST["display_bulletin"]) ? $_POST["display_bulletin"] : 'n';
+$autoriser_inscript_multiples = isset($_POST["autoriser_inscript_multiples"]) ? $_POST["autoriser_inscript_multiples"] : 'n';
 $bull_simplifie = isset($_POST["bull_simplifie"]) ? $_POST["bull_simplifie"] : 'n';
 $activer_outils_comp = isset($_POST["activer_outils_comp"]) ? $_POST["activer_outils_comp"] : 'n';
 $feuille_presence = isset($_POST["feuille_presence"]) ? $_POST["feuille_presence"] : 'n';
@@ -62,6 +63,14 @@ $is_posted = isset($_POST["is_posted"]) ? $_POST["is_posted"] : NULL;
 
 if (isset($is_posted) and ($is_posted == "1")) {
   $msg_inter = "";
+  if ($autoriser_inscript_multiples != 'y') {
+    $test = sql_query1("select count(login) c from j_aid_eleves where indice_aid='".$indice_aid."' group by login order by c desc limit 1");
+    if ($test > 1) {
+      $msg_inter = "Actuellement, un ou plusieurs élèves sont inscrits dans plusieurs AID à la fois.
+      Impossible donc de supprimer l'autorisation d'inscrire un &eacute;l&egrave;ve &agrave; plusieurs AID d'une m&ecirc;me cat&eacute;gorie.";
+      $autoriser_inscript_multiples = 'y';
+    }
+  }
 	if ($display_end < $display_begin) {$display_end = $display_begin;}
 	$del = mysql_query("DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."'");
 	echo "<!-- DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."' -->";
@@ -78,6 +87,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
 			display_nom='".$display_nom."',
 			indice_aid='".$indice_aid."',
 			display_bulletin='".$display_bulletin."',
+			autoriser_inscript_multiples='".$autoriser_inscript_multiples."',
 			bull_simplifie = '".$bull_simplifie."',
 			feuille_presence = '".$feuille_presence."',
 			outils_complementaires = '".$activer_outils_comp."'");
@@ -179,12 +189,13 @@ if (isset($indice_aid)) {
     $message = @mysql_result($call_data, 0, "message");
     $display_nom = @mysql_result($call_data, 0, "display_nom");
     $display_bulletin = @mysql_result($call_data, 0, "display_bulletin");
+    $autoriser_inscript_multiples = @mysql_result($call_data, 0, "autoriser_inscript_multiples");
     $bull_simplifie = @mysql_result($call_data, 0, "bull_simplifie");
     $activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
     $feuille_presence = @mysql_result($call_data, 0, "feuille_presence");
-
     // Compatibilité avec version
     if ($display_bulletin=='')  $display_bulletin = "y";
+    if ($autoriser_inscript_multiples=='')  $autoriser_inscript_multiples = "n";
 } else {
     $call_data = mysql_query("SELECT max(indice_aid) max FROM aid_config");
     $indice_aid = @mysql_result($call_data, 0, "max");
@@ -198,6 +209,7 @@ if (isset($indice_aid)) {
     $order_display2 = '';
     $type_note = "every";
     $display_bulletin = "y";
+    $autoriser_inscript_multiples = "n";
     $bull_simplifie = "y";
     $activer_outils_comp = "n";
     $feuille_presence = "n";
@@ -338,14 +350,24 @@ Position par rapport aux autres aid (entrez un nombre entre 1 et 100) :
 
 <hr />
 
-<p>Affichage :  </p>
+<p><b>Affichage :  </b></p>
 <p>
-<input type="checkbox" id="displayBulletin" name="display_bulletin" value="y" <?php if ($display_bulletin == "y") { echo ' checked="checked"';} ?> />
-<label for="displayBulletin">L'AID apparaît dans le bulletin officiel</label>
+<input type="checkbox" id="display_Bulletin" name="display_bulletin" value="y" <?php if ($display_bulletin == "y") { echo ' checked="checked"';} ?> />
+<label for="display_Bulletin">L'AID apparaît dans le bulletin officiel</label>
 </p>
 <p>
 <input type="checkbox" id="bullSimplifie" name="bull_simplifie" value='y' <?php if ($bull_simplifie == "y") { echo ' checked="checked"';} ?> />
 <label for="bullSimplifie">L'AID appara&icirc;t dans le bulletin simplifi&eacute;.</label>
+</p>
+
+<hr />
+
+<p><b>Inscriptions multiples :  </b></p>
+<p>
+Par d&eacute;faut, un &eacute;l&egrave;ve ne peut &ecirc;tre inscrit dans plus d'un AID par cat&eacute;gorie d'AID.
+<br />Cependant, dans certains cas, il peut &ecirc;tre utile d'autoriser l'inscription d'un &eacute;l&egrave;ve &agrave; plusieurs AID d'une m&ecirc;me cat&eacute;gorie.</p>
+<input type="checkbox" id="autoriser_inscript_multiples" name="autoriser_inscript_multiples" value="y" <?php if ($autoriser_inscript_multiples == "y") { echo ' checked="checked"';} ?> />
+<label for="autoriser_inscript_multiples">Autoriser les inscriptions multiples</label>
 </p>
 
 <hr />
