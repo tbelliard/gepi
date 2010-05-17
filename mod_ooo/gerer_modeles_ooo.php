@@ -77,6 +77,9 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $fich[]="fb_TECHNO_agri.ods";
     $utilisation[]="Fiche brevet série technologique option agricole";
 
+    //rapport incident
+    $fich[]="documents_ects.odt";
+    $utilisation[]="Documents ECTS (pour BTS, prépas...)";
 
     $nbfich=sizeof($fich);
 // Fin liste des fichiers
