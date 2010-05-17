@@ -386,34 +386,76 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
 
 // Affichage de la liste des élèves sans projet
 if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves_sans_projet")) {
+  echo "<h2>Liste des élèves non affectés</h2>";
+  echo "<p class=bold>";
+  echo "<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+  echo "</p>";
+
+  // Choix des classes à exclure
+  if (!isset($_GET['choix_classes'])) {
+    echo "<form method=\"get\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+    $sql="SELECT id,classe FROM classes ORDER BY classe;";
+    $res_classes=mysql_query($sql);
+    $nb_classes=mysql_num_rows($res_classes);
+    echo "<p>Selectionnez les classes à exclure de la recherche&nbsp;:\n";
+    echo "</p>\n";
+    // Affichage sur 4/5 colonnes
+    $nb_classes_par_colonne=round($nb_classes/4);
+    echo "<table width='100%' summary='Choix des classes'>\n";
+    echo "<tr valign='top' align='center'>\n";
+    $cpt_i = 0;
+    echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
+    echo "<td align='left'>\n";
+    while($lig_clas=mysql_fetch_object($res_classes)) {
+    	//affichage 2 colonnes
+    	if(($cpt_i>0)&&(round($cpt_i/$nb_classes_par_colonne)==$cpt_i/$nb_classes_par_colonne)){
+    		echo "</td>\n";
+    		echo "<td align='left'>\n";
+    	}
+    	echo "<input type='checkbox' name='id_classe[]' id='id_classe_$cpt_i' value='$lig_clas->classe' /><label for='id_classe_$cpt_i'>$lig_clas->classe</label>";
+    	echo "<br />\n";
+    	$cpt_i++;
+    }
+    echo "</td>\n";
+    echo "</tr>\n";
+    echo "</table>\n";
+    echo "<p><input type='submit' name='choix_classes' value='Valider' /></p>\n";
+  	echo "<input type='hidden' name='action'  value='".$_GET['action']."'  />";
+  	echo "<input type='hidden' name='indice_aid'  value='".$_GET['indice_aid']."'  />";
+    echo "</form>\n";
+  } else {
+    // On affiche les élèves non affectés
     $order_by2 = isset($_POST["order_by2"]) ? $_POST["order_by2"] : (isset($_GET["order_by2"]) ? $_GET["order_by2"] : 'nom');
     if ($order_by2 == "nom") $order_by2 = "e.nom, e.prenom";
     if ($order_by2 == "classe") $order_by2 = "c.classe, e.nom, e.prenom";
-    echo "<p class=bold>";
-    echo "<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-    echo "</p>";
-    echo "<h2>Liste des élèves non affectés</h2>";
     echo "Cliquez sur l'en-tête de la première ligne pour classer les ".$gepiSettings['denomination_eleves']." par nom et prénom ou classe<br /><br />";
 
-    $call_liste_data = mysql_query("SELECT distinct e.nom, e.prenom, c.classe, c.id, e.login
-    FROM eleves e, classes c, j_eleves_classes jec
-    WHERE (
-    jec.login = e.login and
-    jec.id_classe = c.id and
-    c.classe != 'CIRA-APP1' and
-    c.classe != 'CIRA-APP2' and
-    c.classe != 'CIRA1' and
-    c.classe != 'CIRA2' and
-    c.classe != 'IRIS1' and
-    c.classe != 'IRIS2'
 
-    ) ORDER BY ".$order_by2);
+
+    $sql = "SELECT distinct e.nom, e.prenom, c.classe, c.id, e.login
+    FROM eleves e, classes c, j_eleves_classes jec WHERE (
+    jec.login = e.login and
+    jec.id_classe = c.id ";
+
+    $id_classe = array();
+    if (isset($_GET['id_classe_serie'])) {
+      $id_classe = unserialize(stripslashes($_GET['id_classe_serie']));
+    } else if (isset($_GET['id_classe']))
+      $id_classe = $_GET['id_classe'];
+    if (isset($id_classe))
+    foreach($id_classe as $classe){
+     $sql .="and c.classe != '".$classe."'";
+    }
+    $sql .= ") ORDER BY ".$order_by2;
+
+    $call_liste_data = mysql_query($sql);
+
 
     echo "<table width=\"90%\" border=\"1\" cellpadding=\"3\">\n";
     echo "<tr>
-    <td width=\"50%\"><b><a href='index_fiches.php?order_by2=nom&amp;action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."'>Nom Prénom</a></b></td>\n
+      <td width=\"50%\"><b><a href='index_fiches.php?order_by2=nom&amp;action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."&amp;id_classe_serie=".serialize($id_classe)."&amp;choix_classes=y'>Nom Prénom</a></b></td>\n
     <td width=\"50%\"><b>Identifiant</b></td>\n
-    <td><b><a href='index_fiches.php?order_by2=classe&amp;action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."'>Classe</a></b></td>\n
+    <td><b><a href='index_fiches.php?order_by2=classe&amp;action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."&amp;id_classe_serie=".serialize($id_classe)."&amp;choix_classes=y'>Classe</a></b></td>\n
     </tr>\n";
     $nombre = mysql_num_rows($call_liste_data);
     $i = "0";
@@ -438,7 +480,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves_sans_projet")) 
     if ($vide == 1) {
         echo "<br /><font color = red>Actuellement tous les ".$gepiSettings['denomination_eleves']." sont inscrits dans un projet !</font>\n";
     }
-
+  }
 }
 include "../lib/footer.inc.php";
 ?>
