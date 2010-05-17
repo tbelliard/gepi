@@ -466,6 +466,7 @@ function updateMention(id,valeur){
 <?php
 
     $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
+    $redoublant = sql_count(sql_query("SELECT * FROM j_eleves_regime WHERE login = '".$Eleve->getLogin()."' AND doublant = 'R'")) != "0" ? true : false;
     $Classe = ClassePeer::retrieveByPK($id_classe);
     $annees_precedentes = $Eleve->getEctsAnneesPrecedentes();
     $nb_cols = 0;
@@ -582,7 +583,9 @@ function updateMention(id,valeur){
 
     echo "<td colspan='";
     echo $periode_num+1;
-    echo "'>".$gepiSettings['gepiYear']."</td>";
+    echo "'>".$gepiSettings['gepiYear'];
+    if ($redoublant) echo " - <b>Redoublant</b>";
+    echo "</td>";
 
     echo "</tr>";
 
@@ -662,6 +665,10 @@ function updateMention(id,valeur){
         // On traite tous les groupes présents pour la catégorie.
         // Ces groupes sont basés sur la période courante.
         foreach($categorie[1] as $group) {
+         
+            // On va stocker les dernières valeurs archivées, pour le cas des redoublants
+            $derniere_annee_archivee = array();
+            
             echo "<tr>";
             echo "<td class='bull_simple'>";
             // Information sur la matière
@@ -677,6 +684,7 @@ function updateMention(id,valeur){
                         // On stocke l'ID pour voir plus tard si on a bien affiché tous les crédits obtenus par le passé
                         $archives_id[] = $archive->getId();
                         echo $archive->getValeur()." - ".$archive->getMention();
+                        $derniere_annee_archivee[$p_num] = array('mention' => $archive->getMention(), 'valeur' => $archive->getValeur());
                         $archives_valeurs_globales[$a['annee']][$p_num] += $archive->getValeur();
                         echo "</td>";
                         $archives_id[] = $archive->getId();
@@ -700,9 +708,11 @@ function updateMention(id,valeur){
                     $disability = $presaisie ? ' DISABLED ' : '';
                     echo "<select class='valeur' id='valeur_ects_".$group->getId()."' name='valeur_ects_".$group->getId()."' onchange=\"updatesum();updateMention('mention_ects_".$group->getId()."',this.selectedIndex);\"$disability>";
                     for($c=0;$c<=$max_ects;$c++) {
+                      if (!$redoublant || ($redoublant && $derniere_annee_archivee[$i]['valeur'] <= $c)) {
                         echo "<option value='".$c."'";
                         if ($valeur_ects == $c) echo " SELECTED";
                         echo ">".$c."</option>";
+                      }
                     }
                     echo "</select>";
                     echo "</td>";
@@ -716,10 +726,19 @@ function updateMention(id,valeur){
                     $valeur_forcee = false;
                     if (!$presaisie && (!$mention_ects || $mention_ects == '')) { $mention_ects = 'A'; $valeur_forcee = true;}
                     
+                    $block_lower_credits = false;
                     foreach($mentions as $mention) {
                         echo "<input id='mention_ects_".$group->getId()."_$mention' type='radio' name='mention_ects_".$group->getId()."' value='$mention'";
                         if ($mention == $mention_ects) echo " CHECKED ";
-                        if ($presaisie && (!$group->getProfesseurs()->contains($CurrentUser) or $official_credit_exists)) echo " DISABLED ";
+                        
+                        if ($block_lower_credits || ($presaisie && (!$group->getProfesseurs()->contains($CurrentUser) or $official_credit_exists))) echo " DISABLED ";
+                        
+                        // Si on a un redoublant et qu'on atteint le crédit de l'année précédente,
+                        // on empêche la sélection des crédits inférieurs.
+                        if ($redoublant && $mention == $derniere_annee_archivee[$i]['mention']) {
+                          $block_lower_credits = true;
+                        }
+                        
                         if ($mention == 'F') {
                             echo "onclick=\"$('valeur_ects_".$group->getId()."').selectedIndex=0;\"";
                         } else {
