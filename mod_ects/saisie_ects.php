@@ -657,6 +657,8 @@ function updateMention(id,valeur){
         }
     }
 
+    $dossier_valide_conseil = false;
+
     foreach($categories as $categorie) {
             echo "<tr><td colspan='";
                 echo 1+$nb_cols;
@@ -719,6 +721,7 @@ function updateMention(id,valeur){
                     echo "<td class='bull_simple' style='padding:10px;'>";
                     $mention_ects = $CreditEcts == null ? null : $CreditEcts->getMention();
                     $official_credit_exists = $CreditEcts && $mention_ects != null && $mention_ects != '' ? true : false;
+                    if ($official_credit_exists) $dossier_valide_conseil = true;
                     if ($CreditEcts && ($mention_ects == null or $mention_ects == '')) {
                       $mention_ects = $CreditEcts->getMentionProf();
                     }
@@ -971,6 +974,15 @@ function updateMention(id,valeur){
       echo "</td>";
     
     echo "</tr>";
+
+    // On affiche un message si le dossier a été validé en conseil de classe
+    if ($presaisie && $dossier_valide_conseil) {
+      echo "<tr><td colspan='";
+      echo $nb_cols+1;
+      echo "'>";
+      echo "<p style='color: red;'>Dossier validé en conseil de classe</p>";
+      echo "</td></tr>";
+    }
 
     // On affiche le statut des données
     if (!$presaisie) {
