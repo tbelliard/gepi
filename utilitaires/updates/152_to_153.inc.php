@@ -789,6 +789,20 @@ if ($test == 1) {
   $result .= "<font color=\"red\">La colonne 'mention' n'existe pas, modification impossible.</font><br />";
 }
 
+$result .= "<br />Modification de la table 'j_groupes_classes' (changements sur la colonne 'valeur_ects').<br />";
+$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM j_groupes_classes LIKE 'valeur_ects'"));
+if ($test == 1) {
+  $query = mysql_query("ALTER TABLE `j_groupes_classes` CHANGE `valeur_ects` `valeur_ects` INT(11) NULL;");
+  if ($query) {
+    $result .= "<font color=\"green\">Ok !</font><br />";
+  } else {
+    $result .= "<font color=\"red\">Erreur</font><br />";
+  }
+} else {
+  $result .= "<font color=\"red\">La colonne 'valeur_ects' n'existe pas, modification impossible.</font><br />";
+}
+
+
 // Ajout d'un paramètre de droits d'accès à la pré-saisie des ECTS pour les profs
 $req_test=mysql_query("SELECT value FROM setting WHERE name = 'GepiAccesSaisieEctsProf'");
 $res_test=mysql_num_rows($req_test);
