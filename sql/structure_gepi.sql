@@ -94,7 +94,7 @@ CREATE TABLE `absences_motifs` (`id_motif_absence` int(11) NOT NULL auto_increme
 DROP TABLE IF EXISTS groupes;
 CREATE TABLE `groupes` (`id` int(11) NOT NULL auto_increment, `name` varchar(60) NOT NULL default '', `description` text NOT NULL, `recalcul_rang` varchar(10) NOT NULL default '', PRIMARY KEY  (`id`), INDEX id_name (`id`,`name`));
 DROP TABLE IF EXISTS j_groupes_classes;
-CREATE TABLE `j_groupes_classes` (`id_groupe` int(11) NOT NULL default '0', `id_classe` int(11) NOT NULL default '0', `priorite` smallint(6) NOT NULL, `coef` decimal(3,1) NOT NULL, `categorie_id` int(11) NOT NULL default '1', saisie_ects TINYINT(1) NOT NULL DEFAULT 0, valeur_ects DECIMAL(3,1) NOT NULL, mode_moy enum('-','sup10','bonus') NOT NULL default '-', apb_langue_vivante varchar(3) NOT NULL DEFAULT '', PRIMARY KEY  (`id_groupe`,`id_classe`), INDEX id_classe_coef (`id_classe`,`coef`), INDEX saisie_ects_id_groupe (`saisie_ects`,`id_groupe`));
+CREATE TABLE `j_groupes_classes` (`id_groupe` int(11) NOT NULL default '0', `id_classe` int(11) NOT NULL default '0', `priorite` smallint(6) NOT NULL, `coef` decimal(3,1) NOT NULL, `categorie_id` int(11) NOT NULL default '1', saisie_ects TINYINT(1) NOT NULL DEFAULT 0, valeur_ects INT(11) NULL, mode_moy enum('-','sup10','bonus') NOT NULL default '-', apb_langue_vivante varchar(3) NOT NULL DEFAULT '', PRIMARY KEY  (`id_groupe`,`id_classe`), INDEX id_classe_coef (`id_classe`,`coef`), INDEX saisie_ects_id_groupe (`saisie_ects`,`id_groupe`));
 DROP TABLE IF EXISTS j_groupes_matieres;
 CREATE TABLE `j_groupes_matieres` (`id_groupe` int(11) NOT NULL default '0',`id_matiere` varchar(50) NOT NULL default '', PRIMARY KEY  (`id_groupe`,`id_matiere`));
 DROP TABLE IF EXISTS j_groupes_professeurs;
