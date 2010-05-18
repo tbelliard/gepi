@@ -727,7 +727,7 @@ function updateMention(id,valeur){
                     }
                     
                     $valeur_forcee = false;
-                    if (!$presaisie && (!$mention_ects || $mention_ects == '')) { $mention_ects = 'A'; $valeur_forcee = true;}
+                    if ((!$presaisie || ($presaisie && ($group->getProfesseurs()->contains($CurrentUser)))) && (!$mention_ects || $mention_ects == '')) { $mention_ects = 'A'; $valeur_forcee = true;}
                     
                     $block_lower_credits = false;
                     foreach($mentions as $mention) {
@@ -960,7 +960,7 @@ function updateMention(id,valeur){
 
       echo "<td style='padding:10px;'>";
       $credit_global = $Eleve->getCreditEctsGlobal();
-      if ($credit_global == null && !$presaisie) {
+      if ($credit_global == null) {
           $mention_globale = 'A';
       } else {
           $mention_globale = $credit_global->getMention();
@@ -974,6 +974,7 @@ function updateMention(id,valeur){
       echo "</td>";
     
     echo "</tr>";
+
 
     // On affiche un message si le dossier a été validé en conseil de classe
     if ($presaisie && $dossier_valide_conseil) {
@@ -1002,7 +1003,7 @@ function updateMention(id,valeur){
           }
       }
       echo "</td></tr>";
-    }
+    }    
     
     if (!$presaisie || ($presaisie && !$dossier_valide_conseil)) {
       echo "<tr><td colspan='";
