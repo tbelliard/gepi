@@ -176,21 +176,4 @@ class gepiPlugIn {
     }
 
 }
-
-/*
-  Vérifier si le statut de l'utilisateur permet d'accéder au script $nom_fichier d'un plugin
-*/
-function checkAccess_Plugin($nom_fichier='') {
- global $gepiPath;
- if ($nom_fichier=='') {
-   $url = parse_url($_SERVER['REQUEST_URI']);
-   $nom_fichier = substr($url['path'], (strlen($gepiPath) + 1));
- }
- $test = sql_query1("select user_statut from plugins_autorisations where user_statut='".$_SESSION['statut']."' and fichier='".$nom_fichier."' and auth='V'");
-  if ($test!=-1)
-   return true;
-  else
-    return false;
-}
-
 ?>
