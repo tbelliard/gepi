@@ -128,6 +128,7 @@ if (isset($_POST['is_posted'])) {
                           // On a l'élève, le groupe, et la période. On peut supprimer.
                           $Eleve->resetEctsCredit($periode_num,$groupe->getId());
                       }
+                      $Eleve->setCreditEctsGlobal(null);
                       $msg = "Les données de cet élève viennent d'être supprimées.";
                    } else {
                        $msg = 'Pour supprimer des données, vous devez cocher la case au-dessus du bouton de validation de suppression.';
@@ -447,8 +448,17 @@ function updatesum() {
 }
 
 function updateCredits(id,valeur){
-    if ($(id).selectedIndex == 0){
-        $(id).selectedIndex = valeur;
+    selectElmt = $(id)
+    if (selectElmt.options[selectElmt.selectedIndex].value == '0'){
+      // On cherche l'index de l'option avec la bonne valeur
+      for(var i=0; i< selectElmt.options.length; i++)
+      {
+        if(selectElmt.options[i].value == valeur){
+          newSelectedIndex = i;
+        }
+      }
+      selectElmt.selectedIndex = newSelectedIndex;
+      updatesum();
     }
 }
 
@@ -708,11 +718,11 @@ function updateMention(id,valeur){
                     if ($valeur_ects == null) $valeur_ects = $group->getEctsDefaultValue($id_classe);
                     $max_ects = $group->getEctsDefaultValue($id_classe) >= $valeur_ects ? $group->getEctsDefaultValue($id_classe)+3 : $valeur_ects+3;
                     $disability = $presaisie ? ' DISABLED ' : '';
-                    echo "<select class='valeur' id='valeur_ects_".$group->getId()."' name='valeur_ects_".$group->getId()."' onchange=\"updatesum();updateMention('mention_ects_".$group->getId()."',this.selectedIndex);\"$disability>";
+                    echo "\n<select class='valeur' id='valeur_ects_".$group->getId()."' name='valeur_ects_".$group->getId()."' onchange=\"updatesum();updateMention('mention_ects_".$group->getId()."',this.options[this.selectedIndex].value);\"$disability>";
                     for($c=0;$c<=$max_ects;$c++) {
-                      if (!$redoublant || ($redoublant && $derniere_annee_archivee[$i]['valeur'] <= $c)) {
-                        echo "<option value='".$c."'";
-                        if ($valeur_ects == $c) echo " SELECTED";
+                      if (!$redoublant || ($redoublant && $derniere_annee_archivee[$i]['valeur'] <= $c) || $c == 0) {
+                        echo "\n<option value='".$c."'";
+                        if ($valeur_ects == $c || ($redoublant && $derniere_annee_archivee[$i]['valeur'] == $c)) echo " SELECTED";
                         echo ">".$c."</option>";
                       }
                     }
@@ -731,7 +741,7 @@ function updateMention(id,valeur){
                     
                     $block_lower_credits = false;
                     foreach($mentions as $mention) {
-                        echo "<input id='mention_ects_".$group->getId()."_$mention' type='radio' name='mention_ects_".$group->getId()."' value='$mention'";
+                        echo "\n<input id='mention_ects_".$group->getId()."_$mention' type='radio' name='mention_ects_".$group->getId()."' value='$mention'";
                         if ($mention == $mention_ects) echo " CHECKED ";
                         
                         if ($block_lower_credits || ($presaisie && (!$group->getProfesseurs()->contains($CurrentUser) or $official_credit_exists))) echo " DISABLED ";
@@ -960,7 +970,7 @@ function updateMention(id,valeur){
 
       echo "<td style='padding:10px;'>";
       $credit_global = $Eleve->getCreditEctsGlobal();
-      if ($credit_global == null) {
+      if ($credit_global == null || $credit_global->getMention() == null) {
           $mention_globale = 'A';
       } else {
           $mention_globale = $credit_global->getMention();
