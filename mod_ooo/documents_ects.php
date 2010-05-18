@@ -296,11 +296,24 @@ foreach($Eleves as $Eleve) {
 
     // On commence par les années archivées
     // On récupère la liste des années archivées pour l'élève
-    $annees = mysql_query("SELECT DISTINCT(a.annee) FROM archivage_ects a WHERE a.ine = '".$Eleve->getNoGep()."'");
+    $annees = mysql_query("SELECT DISTINCT(a.annee) FROM archivage_ects a WHERE a.ine = '".$Eleve->getNoGep()."' ORDER BY a.annee ASC");
     $annees_archivees = array();
     $nb_annees = mysql_num_rows($annees);
+    $t_index = 0;
     for ($a=0;$a<$nb_annees;$a++) {
-        $annees_archivees[] = mysql_result($annees, $a);
+        $valeur_annee = mysql_result($annees, $a);
+        $redoublant = sql_count(sql_query("SELECT * FROM archivage_eleves2 WHERE ine = '".$Eleve->getNoGep()."' and annee = '".$valeur_annee."' AND doublant = 'R'")) != "0" ? true : false;
+        // Si l'année est une année de redoublement, on va écraser l'année précédente.
+        if ($test_redoublant == 'R' and $t_index > 0) $t_index--;
+        $annees_archivees[$t_index] = $valeur_annee;
+        $t_index++;
+    }
+    // Enfin, si on a un redoublant pour l'année en cours, alors on supprime
+    // la dernière année archivée
+    $redoublant = sql_count(sql_query("SELECT * FROM j_eleves_regime WHERE login = '".$Eleve->getLogin()."' AND doublant = 'R'")) != "0" ? true : false;
+    if ($redoublant) {
+      $t_index--;
+      unset($annees_archivees[$t_index]);
     }
 
     // Tableau qui contient le total des crédits par année
