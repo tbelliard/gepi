@@ -584,7 +584,7 @@ function updateMention(id,valeur){
     echo "<td colspan='";
     echo $periode_num+1;
     echo "'>".$gepiSettings['gepiYear'];
-    if ($redoublant) echo " - <b>Redoublant</b>";
+    if ($redoublant) echo " - <span style='font-weight:bold; color: red;'>Redoublant</span>";
     echo "</td>";
 
     echo "</tr>";
@@ -1004,16 +1004,19 @@ function updateMention(id,valeur){
       echo "</td></tr>";
     }
     
-    echo "<tr><td colspan='";
-    echo $nb_cols+1;
-    echo "' style='padding: 10px;'>";
-    if($ele_login_suiv!=""){
-        echo "<input type='submit' NAME='ok1' value=\"Enregistrer et passer à l'élève suivant\" />";
-    }
-    ?>
-    <input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" />
-    </td></tr>
+    if (!$presaisie || ($presaisie && !$dossier_valide_conseil)) {
+      echo "<tr><td colspan='";
+      echo $nb_cols+1;
+      echo "' style='padding: 10px;'>";
+      if($ele_login_suiv!=""){
+          echo "<input type='submit' NAME='ok1' value=\"Enregistrer et passer à l'élève suivant\" />";
+      }
+      ?>
+      <input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" />
+      </td></tr>
 <?php
+
+    }
 
     if (!$presaisie) {
 
