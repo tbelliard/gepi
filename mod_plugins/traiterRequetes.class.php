@@ -55,7 +55,7 @@ class traiterRequetes {
    *
    * @var array Liste des requêtes possibles
    */
-  private $_requetes_possibles = array('insert', 'INSERT', 'delete', 'DELETE', 'create', 'CREATE', 'update', 'UPDATE', 'drop', 'DROP');
+  private $_requetes_possibles = array('insert', 'INSERT', 'create', 'CREATE', 'update', 'UPDATE', 'drop', 'DROP');
 
   /**
    * Vérification et envoie des requêtes par Propel::PDO
