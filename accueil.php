@@ -1425,19 +1425,6 @@ if ($affiche=='yes') {
 	Fin de gestion des Bulletins scolaires
 *******************************************/
 
-
-/*************************************
-// Accès aux modules propres au LPI
-*************************************/
-
-	$nummenu=11;
-if (file_exists("./lpi/accueil_template.php")) require("./lpi/accueil_template.php");
-
-/*************************************
-	Fin accès aux modules propres au LPI
-*************************************/
-
-
 /*******************************
 	Visualisation / Impression
 *******************************/
