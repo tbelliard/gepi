@@ -52,7 +52,7 @@ $ine_password=my_ereg_replace("[^A-Za-z0-9]","",$ine_password);
 
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
     $user_statut = sql_query1("SELECT statut FROM utilisateurs WHERE login='".$user_login."'");
-    if (($user_statut == 'professeur') or ($user_statut == 'cpe')) {
+    if (($user_statut == 'professeur') or ($user_statut == 'cpe') or ($user_statut == 'responsable')) {
         // Mot de passe comportant des lettres et des chiffres
         $flag = 0;
 	}
@@ -145,7 +145,7 @@ if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] != "yes") {
 echo "<p class='grand'>Changement du mot de passe</p>\n";
 //if ($user_login != $_SESSION['login']) {
 if (strtoupper($user_login) != strtoupper($_SESSION['login'])) {
-    if ($user_statut == 'professeur') {
+    if (($user_statut == 'professeur') or ($user_statut == 'cpe') or ($user_statut == 'responsable')) {
         // Mot de passe comportant des lettres et des chiffres
         $flag = 0;
 	}
