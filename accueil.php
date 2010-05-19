@@ -1257,13 +1257,17 @@ if ($nb_total != 0) {
         $expli[] = "Tableau récapitulatif, liste des ".$gepiSettings['denomination_eleves'].", ...";
         $i++;
     }
-  $nb_ligne = count($chemin);
   $affiche = 'no';
   for ($i=0;$i<$nb_ligne;$i++) {
       if ((acces($chemin[$i],$_SESSION['statut'])==1) and AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))  {$affiche = 'yes';}
   }
-  if (($nb_aid_annees_anterieures > 0) and (acces("/aid/annees_anterieures_accueil.php",$_SESSION['statut'])==1))
+  if (($nb_aid_annees_anterieures > 0) and (acces("/aid/annees_anterieures_accueil.php",$_SESSION['statut'])==1)) {
     $affiche = 'yes';
+    $chemin[]="/aid/annees_anterieures_accueil.php";
+    $titre[] = "Fiches projets des années antérieures";
+    $expli[]= "Accès administrateur aux fiches projets des années antérieures";
+  }
+  $nb_ligne = count($chemin);
 
   if ($affiche=='yes') {
 /*
@@ -1279,27 +1283,17 @@ if ($nb_total != 0) {
       	if (AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))
       		affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
       	}
-      if (($nb_aid_annees_anterieures > 0) and (acces("/aid/annees_anterieures_accueil.php",$_SESSION['statut'])==1)) {
-        $chemin_="/aid/annees_anterieures_accueil.php";
-        $titre_ = "Fiches projets des années antérieures";
-        $expli_ = "Accès administrateur aux fiches projets des années antérieures";
-        affiche_ligne($chemin_,$titre_,$expli_,$tab,$_SESSION['statut']);
-      }
       echo "</table>";
 */
 		$nummenu=9;
 		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Outils de visualisation et d'édition des fiches projets");
-
-		for ($i=0;$i<$nb_ligne;$i++) {
-			$numitem=$i;
-			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
-			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
-			}else{
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>"" , 'titre'=>"", 'expli'=>"");
-			}
-		}
-
+    for ($i=0;$i<$nb_ligne;$i++) {
+  		$numitem=$i;
+  		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
+  		if ($adresse != false) {
+  			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+  		}
+  	}
   }
 }
 /**************************************************
