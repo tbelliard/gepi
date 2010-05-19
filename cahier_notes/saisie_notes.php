@@ -238,6 +238,36 @@ if (isset($_POST['notes'])) {
 	}
 }
 
+// Ajout delineau -> fonctionnalité de copier/coller d'appréciations
+//-------------------------------------------------------------------------------------------------------------------
+if (isset($_POST['appreciations'])) {
+	$temp = $_POST['appreciations']." 1";
+	$temp = ereg_replace("\\\\r","`",$temp);
+	$temp = ereg_replace("\\\\n","",$temp);
+	$temp = unslashes($temp);
+ 	$longueur = strlen($temp);
+	$i = 0;
+	$fin_app = 'yes';
+	$indice = $_POST['debut_import']-2;
+	$tempo = "";
+	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
+		$car = substr($temp, $i, 1);
+		if (!ereg ("^[`]{1}$", $car)) {
+			if (($fin_app=='yes') or ($i == $longueur-1)) {
+				$fin_app = 'no';
+				$appreciations_import[$indice] = $tempo;
+				$indice++;
+				$tempo = '';
+			}
+			$tempo=$tempo.$car;
+		} else {
+  			$fin_app = 'yes';
+		}
+		$i++;
+	}
+}
+// Fin ajout delineau -> fonctionnalité de copier/coller d'appréciations
+
 
 if (isset($_POST['is_posted'])) {
 
@@ -435,6 +465,7 @@ echo "<script type=\"text/javascript\" language=\"javascript\">";
 if (isset($_POST['debut_import'])) {
 	$temp = $_POST['debut_import']-1;
 	if ((isset($note_import[$temp])) and ($note_import[$temp] != '')) echo "change = 'yes';"; else echo "change = 'no';";
+
 } else {
 	echo "change = 'no';";
 }
@@ -977,7 +1008,13 @@ foreach ($liste_eleves as $eleve) {
 				// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
 				if($mode_commentaire_20080422!="no_anti_inject") {
 					//$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=30 wrap='virtual' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
-					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=30 class='wrap' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
+					// Ajout delineau -> fonctionnalité de copier/coller d'appréciations
+					if ((isset($appreciations_import[$current_displayed_line])) and  ($appreciations_import[$current_displayed_line] != '')) {
+				     $eleve_comment = $appreciations_import[$current_displayed_line];
+				  }
+					// Fin ajout delineau -> fonctionnalité de copier/coller d'appréciations
+
+					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=60 class='wrap' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
 				}
 				else {
 					//$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='no_anti_inject_comment_eleve".$i."' rows=1 cols=30 wrap='virtual' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
@@ -1844,7 +1881,7 @@ if((!isset($id_devoir))||($id_devoir=='')||($id_devoir=='0')) {
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form_calcul_mediane'>\n";
 	echo $chaine_input_moy;
 	echo "</form>\n";
-	
+
 	//echo "<div id='div_quartiles' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
 	echo "<div id='div_q_p' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
 		echo "<div id='div_quartiles' style='text-align:center; display:none;'>\n";
@@ -1908,9 +1945,58 @@ if ($id_devoir) {
 		//-->
 		</script>\n";
 	}
+	// Ajout delineau -> fonctionnalité de copier/coller d'appréciations
+  if (isset($_POST['appreciations'])) {
+  	echo "<script type=\"text/javascript\" language=\"javascript\">
+  	<!--
+  	alert(\"Attention, les appréciations importées ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton 'Enregistrer') !\");
+  	//-->
+  	</script>\n";
+  }
+	// Fin ajout delineau -> fonctionnalité de copier/coller d'appréciations
+
 	//=======================================================
 
 }
+
+// Ajout delineau -> fonctionnalité de copier/coller d'appréciations
+if ($id_devoir) {
+	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
+	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
+	echo "<h3 class='gepi'>Importation directe des appréciations par copier/coller à partir d'un tableur</h3>\n";
+	echo "<table summary=\"Tableau d'import\"><tr>\n";
+	echo "<td>De la ligne : ";
+		echo "<SELECT name='debut_import' size='1'>\n";
+	$k = 1;
+	while ($k < $current_displayed_line+1) {
+		echo "<option value='$k'>$k</option>\n";
+		$k++;
+	}
+	echo "</select>\n";
+
+	echo "<br /> à la ligne : \n";
+	echo "<SELECT name='fin_import' size='1'>\n";
+	$k = 1;
+	while ($k < $current_displayed_line+1) {
+		echo "<option value='$k'";
+		if ($k == $current_displayed_line) echo " SELECTED ";
+		echo ">$k</option>\n";
+		$k++;
+	}
+	echo "</select>\n";
+	echo "</td><td>\n";
+	echo "Coller ci-dessous les données à importer : <br />\n";
+	if (isset($_POST['appreciations'])) $appreciations = $_POST['appreciations']; $appreciations='';
+	echo "<textarea name='appreciations' rows='3' cols='40' class='wrap'>$appreciations</textarea>\n";
+	echo "</td></tr></table>\n";
+	echo "<input type='hidden' name='id_conteneur' value='$id_conteneur' />\n";
+	echo "<input type='hidden' name='id_devoir' value='$id_devoir' />\n";
+	echo "<input type='hidden' name='order_by' value='$order_by' />\n";
+	echo "<center><input type='submit' value='Importer'  onclick=\"return confirm_abandon (this, change, '$themessage')\" /></center>\n";
+	echo "<p><b>Remarque importante :</b> l'importation ne prend en compte que les élèves dont le nom est affiché ci-dessus !<br />Soyez donc vigilant à ne coller que les appréciations de ces élèves, dans le bon ordre.</p>\n";
+	echo "</form></fieldset>\n";
+}
+// Fin ajout delineau -> fonctionnalité de copier/coller d'appréciations
 
 // Pour qu'un professeur puisse avoir une préférence d'affichage par défaut ou non des quartiles:
 $aff_quartiles_par_defaut=getPref($_SESSION['login'],'aff_quartiles_cn',"n");
