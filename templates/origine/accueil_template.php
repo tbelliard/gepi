@@ -9,11 +9,11 @@
 <head>
 <!-- on inclut l'entête -->
 	<?php include('templates/origine/header_template.php');?>
-	
+
 	<link rel="stylesheet" type="text/css" href="./templates/origine/css/accueil.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="./templates/origine/css/bandeau.css" media="screen" />
-	
-<!-- corrections internet Exploreur -->	
+
+<!-- corrections internet Exploreur -->
 	<!--[if lte IE 7]>
 		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie.css' media='screen' />
 		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/bandeau_ie.css' media='screen' />
@@ -24,8 +24,8 @@
 	<!--[if IE 7]>
 		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie7.css' media='screen' />
 	<![endif]-->
-	
-	
+
+
 <!-- Fin des styles -->
 
 
@@ -45,13 +45,13 @@
 
 <!-- on inclut le bandeau -->
 	<?php include('templates/origine/bandeau_template.php');?>
-	
+
 <!-- fin bandeau_template.html      -->
 
 <div id='container'>
-	
+
 <!-- droits dossiers -->
-			
+
 <?php
 	if (count($tbs_message_admin)) {
 		$message_admin = array_values($tbs_message_admin);
@@ -70,28 +70,28 @@
 ?>
 
 <!-- messages connections -->
-	<div>		
+	<div>
 
-<!-- Connexions	-->			
+<!-- Connexions	-->
 <?php
 	if ($tbs_gere_connect==1) {
 		echo "
 		<p>
-			Nombre de personnes actuellement connectées : 
+			Nombre de personnes actuellement connectées :
 			<a href='$tbs_nb_connect_lien' onmouseover=\"delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);\">
 				$tbs_nb_connect
 			</a>
 			(
 			<a href = 'gestion/gestion_connect.php?mode_navig=accueil'>
-				Gestion des connexions		
+				Gestion des connexions
 			</a>
 			)
 		</p>
 		";
 	}
-?>	
+?>
 
-<!-- Alertes sécurités	-->		
+<!-- Alertes sécurités	-->
 <?php
 	if ($tbs_alert_sums>0) {
 		echo "
@@ -101,11 +101,11 @@
 		</p>
 		";
 	}
-?>	
+?>
 
 <!-- Référencement	-->
 
-		<?php		
+		<?php
 			if (count($tbs_referencement)) {
 				$referencement = array_values($tbs_referencement);
 				if ($referencement[0]['texte']!="") {
@@ -124,10 +124,10 @@
 					}
 				}
 			}
-		?>	
+		?>
 
 <!-- messages de sécurité -->
-		<?php		
+		<?php
 			if (count($tbs_probleme_dir)) {
 			$probleme_dir=array_values($tbs_probleme_dir);
 				if ("$probleme_dir[0]"!="") {
@@ -141,10 +141,10 @@
 					}
 				}
 			}
-		?>	
-				
+		?>
+
 </div>
-<a name="contenu" class="invisible">Début de la page</a>	
+<a name="contenu" class="invisible">Début de la page</a>
 
 <!-- Signalements d'erreurs d'affectations -->
 <?php
@@ -153,8 +153,8 @@
 	}
 ?>
 
-<!-- messagerie -->	
-		<?php	
+<!-- messagerie -->
+		<?php
 			if (count($tbs_message)) {
 				$message=array_values($tbs_message);
 				if ($message[0]['message']!="") {
@@ -163,7 +163,7 @@
 						";
 					foreach ($message as $value) {
 						echo "
-		<div>	
+		<div>
 						";
 						if ($value['suite']=='') {
 							echo "";
@@ -187,36 +187,37 @@
 						";
 				}
 			}
-		?>	
-	
+		?>
+
 
 		<?php
-			if ($tbs_statut_utilisateur=="professeur") {	
+			if ($tbs_statut_utilisateur=="professeur") {
 				echo "
 	<p class='bold'>
 		<a href='accueil_simpl_prof.php'>Interface graphique</a>
 	</p>
 				";
 			}
-		?>	
+		?>
 
 <!-- début corps menu	-->
-	
+
 	<!-- menu	général -->
-	
-		<?php		
+
+		<?php
 			if (count($tbs_menu)) {
-				$menu=array_values($tbs_menu);
-				if ($menu[0]['texte']!="") {
-					foreach ($tbs_menu as $value) {
+				$w = 0;
+				for ($w=0;$w<max($ordre_menus)+1;$w++) {
+if (isset($tbs_menu[$w]['texte'])) {
+$value = $tbs_menu[$w];
 						echo "
-	<h2 class='$value[classe]' style='margin-bottom:0;'> 
+	<h2 class='$value[classe]' style='margin-bottom:0;'>
 		<img src='$value[image]' alt='' /> - $value[texte]
 	</h2>
 				";
 						if ($value['texte']=="Administration") {
 							echo "
-<!-- sauvegarde -->	
+<!-- sauvegarde -->
 	<div class=\"div_tableau cellule_1\">
 		<form enctype=\"multipart/form-data\" action=\"gestion/accueil_sauve.php\" method=\"post\" id=\"formulaire\" >
 			<p>
@@ -228,11 +229,11 @@
 			Les répertoires \"documents\" (<em>contenant les documents joints aux cahiers de texte</em>) et \"photos\" (<em>contenant les photos du trombinoscope</em>) ne seront pas sauvegardés.<br />
 			Un outil de sauvegarde spécifique se trouve en bas de la page <a href='./gestion/accueil_sauve.php#zip'>gestion des sauvegardes</a>.
 		</p>
-	</div>	
+	</div>
 				";
 						}
 							echo "
-<!-- autres menus -->		
+<!-- autres menus -->
 <!-- accueil_menu_template.php -->
 				";
 						if (count($value['entree'])) {
@@ -246,18 +247,18 @@
 					}
 				}
 			}
-		?>	
-	
+		?>
 
-<!-- début RSS	-->	
-		<?php		
 
-	
+<!-- début RSS	-->
+		<?php
+
+
 			if ($tbs_canal_rss_flux==1) {
 							echo "
 	<div>
 		<h2 class='accueil'>
-			<img src='./images/icons/rss.png' alt=''/> - Votre flux rss			
+			<img src='./images/icons/rss.png' alt=''/> - Votre flux rss
 		</h2>
 				";
 /*
@@ -309,7 +310,7 @@
 	</a>
 		</span>
 	</p>
-	
+
 </div>
 	</div>
 				";
@@ -324,9 +325,9 @@
 				";
 		}
 	}
-?>	
+?>
 <!-- fin RSS	-->
-					
+
 <!-- Début du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
@@ -353,7 +354,7 @@
 		</div>
 		<div>
 			<div style=\"padding-left: 1px;\">
-				<div style=\"text-align:center;\">	
+				<div style=\"text-align:center;\">
 					<table class='boireaus'>
 						<tr>
 							<th>Personne</th>
@@ -376,7 +377,7 @@
    			";
 		}
 		echo "
-						
+
 					</table>
 				</div>
 			</div>
@@ -394,24 +395,24 @@
 	cacher_div('personnes_connectees');
 	</script>
 
-	
+
 </div>
 
-		<?php	
+		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en "; 
+   <p class='microtime'>Page générée en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";
 	}
-?>	
+?>
 
 		<?php
 			if ($tbs_pmv!="") {
 				echo "
 	<script type='text/javascript'>
-		//<![CDATA[ 
+		//<![CDATA[
    			";
 				echo $tbs_pmv;
 				echo "
@@ -419,8 +420,8 @@
 	</script>
    			";
 		}
-?>	
-	
+?>
+
 </body>
 </html>
 

@@ -83,6 +83,11 @@ $gepiPathJava=".";
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
 
+function verif_exist_ordre_menu($_item){
+  global $ordre_menus;
+  if (!isset($ordre_menus[$_item]))
+    $ordre_menus[$_item] = max($ordre_menus)+1;
+}
 
 // On teste s'il y a une mise à jour de la base de données à effectuer
 if (test_maj()) {
@@ -532,14 +537,14 @@ if ($affiche=='yes') {
 	}
 	echo "</table>\n";
 */
-		$nummenu=0;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil'  , 'image'=>'./images/icons/configure.png'  , 'texte'=>'Administration');
+		verif_exist_ordre_menu('bloc_administration');
+		$tbs_menu[$ordre_menus['bloc_administration']]=array('classe'=>'accueil'  , 'image'=>'./images/icons/configure.png'  , 'texte'=>'Administration');
 
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 		if ($adresse != false) {
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			$tbs_menu[$ordre_menus['bloc_administration']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 		}
 	}
 }
@@ -584,14 +589,14 @@ if (getSettingValue("active_module_absence")=='y') {
 		// }
 		// echo "</table>\n";
 
-		$nummenu=1;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil'  , 'image'=>'./images/icons/absences.png'  , 'texte'=>'Gestion des retards et absences');
+		verif_exist_ordre_menu('bloc_absences_vie_scol');
+		$tbs_menu[$ordre_menus['bloc_absences_vie_scol']]=array('classe'=>'accueil'  , 'image'=>'./images/icons/absences.png'  , 'texte'=>'Gestion des retards et absences');
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_absences_vie_scol']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 	}
@@ -647,14 +652,14 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
         }
         echo "</table>\n";
 */
-		$nummenu=2;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil'  , 'image'=>'./images/icons/absences.png'  , 'texte'=>'Gestion des retards et absences','entree');
+		verif_exist_ordre_menu('bloc_absences_professeur');
+		$tbs_menu[$ordre_menus['bloc_absences_professeur']]=array('classe'=>'accueil'  , 'image'=>'./images/icons/absences.png'  , 'texte'=>'Gestion des retards et absences','entree');
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_absences_professeur']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
     }
 	}
@@ -770,14 +775,14 @@ if ($affiche=='yes') {
     }
     echo "</table>\n";
 */
-	$nummenu=3;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil'  , 'image'=>'./images/icons/configure.png'  , 'texte'=>'Saisie');
+	verif_exist_ordre_menu('bloc_saisie');
+	$tbs_menu[$ordre_menus['bloc_saisie']]=array('classe'=>'accueil'  , 'image'=>'./images/icons/configure.png'  , 'texte'=>'Saisie');
 
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 		if ($adresse != false) {
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			$tbs_menu[$ordre_menus['bloc_saisie']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 		}
 	}
 }
@@ -871,15 +876,14 @@ if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
         }
         echo "</table>\n";
     */
-
-		$nummenu=4;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/configure.png' , 'texte'=>'Trombinoscope');
+  	verif_exist_ordre_menu('bloc_trombinoscope');
+		$tbs_menu[$ordre_menus['bloc_trombinoscope']]=array('classe'=>'accueil' , 'image'=>'./images/icons/configure.png' , 'texte'=>'Trombinoscope');
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_trombinoscope']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 	}
@@ -959,14 +963,14 @@ if ($affiche=='yes') {
     }
     echo "</table>\n";
 */
-		$nummenu=5;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/releve.png' , 'texte'=>'Relevés de notes');
+  	verif_exist_ordre_menu('bloc_releve_notes');
+		$tbs_menu[$ordre_menus['bloc_releve_notes']]=array('classe'=>'accueil' , 'image'=>'./images/icons/releve.png' , 'texte'=>'Relevés de notes');
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_releve_notes']]['releve_notes'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 
@@ -1014,14 +1018,14 @@ if ($affiche=='yes') {
 */
 
 
-	$nummenu=6;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/releve.png' , 'texte'=>'Documents ECTS');
+ 	verif_exist_ordre_menu('bloc_releve_ects');
+	$tbs_menu[$ordre_menus['bloc_releve_ects']]=array('classe'=>'accueil' , 'image'=>'./images/icons/releve.png' , 'texte'=>'Documents ECTS');
 
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 		if ($adresse != false) {
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			$tbs_menu[$ordre_menus['bloc_releve_ects']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 		}
 	}
 }
@@ -1071,14 +1075,14 @@ if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
     echo "</table>\n";
 */
 
-	$nummenu=7;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Emploi du temps');
+ 	verif_exist_ordre_menu('bloc_emploi_du_temps');
+	$tbs_menu[$ordre_menus['bloc_emploi_du_temps']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Emploi du temps');
 
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 		if ($adresse != false) {
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			$tbs_menu[$ordre_menus['bloc_emploi_du_temps']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 		}
 	}
 
@@ -1202,14 +1206,14 @@ if ($affiche=='yes') {
     echo "</table>\n";
 */
 
-	$nummenu=8;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/vie_privee.png' , 'texte'=>'Consultation');
+  verif_exist_ordre_menu('bloc_responsable');
+	$tbs_menu[$ordre_menus['bloc_responsable']]=array('classe'=>'accueil' , 'image'=>'./images/icons/vie_privee.png' , 'texte'=>'Consultation');
 
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 		if ($adresse != false) {
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			$tbs_menu[$ordre_menus['bloc_responsable']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 		}
 	}
 
@@ -1285,13 +1289,13 @@ if ($nb_total != 0) {
       	}
       echo "</table>";
 */
-		$nummenu=9;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Outils de visualisation et d'édition des fiches projets");
+    verif_exist_ordre_menu('bloc_outil_comp_gestion_aid');
+		$tbs_menu[$ordre_menus['bloc_outil_comp_gestion_aid']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Outils de visualisation et d'édition des fiches projets");
     for ($i=0;$i<$nb_ligne;$i++) {
   		$numitem=$i;
   		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
   		if ($adresse != false) {
-  			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+  			$tbs_menu[$ordre_menus['bloc_outil_comp_gestion_aid']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
   		}
   	}
   }
@@ -1408,14 +1412,14 @@ if ($affiche=='yes') {
     echo "</table>\n";
 */
 
-	$nummenu=10;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Bulletins scolaires');
+   verif_exist_ordre_menu('bloc_gestion_bulletins_scolaires');
+	$tbs_menu[$ordre_menus['bloc_gestion_bulletins_scolaires']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Bulletins scolaires');
 
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 		if ($adresse != false) {
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			$tbs_menu[$ordre_menus['bloc_gestion_bulletins_scolaires']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 		}
 	}
 
@@ -1598,14 +1602,14 @@ if ($affiche=='yes') {
     echo "</table>\n";
 */
 
-	$nummenu=12;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/print.png' , 'texte'=>'Visualisation - Impression');
+  verif_exist_ordre_menu('bloc_visulation_impression');
+	$tbs_menu[$ordre_menus['bloc_visulation_impression']]=array('classe'=>'accueil' , 'image'=>'./images/icons/print.png' , 'texte'=>'Visualisation - Impression');
 
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 		if ($adresse != false) {
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			$tbs_menu[$ordre_menus['bloc_visulation_impression']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 		}
 	}
 
@@ -1687,14 +1691,14 @@ L'opération renseigne également les tables nécessaires pour générer les Fiches b
 		}
 		echo "</table>\n";
 */
-	$nummenu=13;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Notanet/Fiches Brevet');
+  verif_exist_ordre_menu('bloc_notanet_fiches_brevet');
+	$tbs_menu[$ordre_menus['bloc_notanet_fiches_brevet']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Notanet/Fiches Brevet');
 
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 		if ($adresse != false) {
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			$tbs_menu[$ordre_menus['bloc_notanet_fiches_brevet']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 		}
 	}
 
@@ -1834,14 +1838,14 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 		echo "</table>\n";
 */
 
-	$nummenu=14;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Années antérieures');
+  verif_exist_ordre_menu('bloc_annees_antérieures');
+	$tbs_menu[$ordre_menus['bloc_annees_antérieures']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Années antérieures');
 
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 		if ($adresse != false) {
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			$tbs_menu[$ordre_menus['bloc_annees_antérieures']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 		}
 	}
 
@@ -1889,14 +1893,14 @@ if ($affiche=='yes') {
     echo "</table>\n";
 */
 
-	$nummenu=15;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/mail.png' , 'texte'=>"Panneau d'affichage");
+  verif_exist_ordre_menu('bloc_panneau_affichage');
+	$tbs_menu[$ordre_menus['bloc_panneau_affichage']]=array('classe'=>'accueil' , 'image'=>'./images/icons/mail.png' , 'texte'=>"Panneau d'affichage");
 
 	for ($i=0;$i<$nb_ligne;$i++) {
 		$numitem=$i;
 		$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 		if ($adresse != false) {
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			$tbs_menu[$ordre_menus['bloc_panneau_affichage']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 		}
 	}
 
@@ -1905,60 +1909,6 @@ if ($affiche=='yes') {
 /*************************
 	Fin gestion des messages
 *************************/
-
-
-/********************
-	Module Ateliers
-********************/
-
-if (EstAutoriseAteliers($_SESSION["login"])) {
-  $chemin = array();
-  $titre = array();
-  $expli = array();
-
-  $chemin[]="/mod_ateliers/ateliers_accueil_admin.php";
-  $titre[] = "Configuration du module Ateliers";
-  $expli[] = "Configuration des événements, des disciplines, des ".$gepiSettings['denomination_professeurs'].", des salles.";
-
-  $nb_ligne = count($chemin);
-  $affiche = 'no';
-  for ($i=0;$i<$nb_ligne;$i++) {
-      if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
-  }
-  if ($affiche=='yes') {
- /*
-		// modification Régis : créer des <h2> pour faciliter la navigation
-		echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Module Ateliers</h2>\n";
-		//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-		echo "<table class='menu' summary=\"Module Ateliers. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
-      //echo "<table class='menu' summary=\"Module Ateliers\">\n";
-      //echo "<tr>\n";
-      //echo "<th colspan='2'><img src='./images/icons/document.png' alt='Inscription' class='link'/> - Module Ateliers </th>\n";
-     // echo "</tr>\n";
-      for ($i=0;$i<$nb_ligne;$i++) {
-          affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-      }
-      echo "</table>";
-*/
-
-		$nummenu=16;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Module Ateliers");
-
-		for ($i=0;$i<$nb_ligne;$i++) {
-			$numitem=$i;
-			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
-			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
-			}
-		}
-
-  }
-}
-
-/************************
-	Fin module Ateliers
-************************/
-
 
 /*************************
 	Module inscription
@@ -1997,14 +1947,14 @@ if (getSettingValue("active_inscription")=='y') {
       }
       echo "</table>";
 */
-		$nummenu=17;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Inscription");
+  verif_exist_ordre_menu('bloc_module_inscriptions');
+		$tbs_menu[$ordre_menus['bloc_module_inscriptions']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Inscription");
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_module_inscriptions']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 
@@ -2045,14 +1995,14 @@ if (getSettingValue("active_mod_discipline")=='y') {
 			echo "</table>";
 			*/
 
-		$nummenu=18;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Discipline");
+      verif_exist_ordre_menu('bloc_module_discipline');
+			$tbs_menu[$ordre_menus['bloc_module_discipline']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Discipline");
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_module_discipline']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 	}
@@ -2093,14 +2043,14 @@ if (getSettingValue("active_mod_ooo")=='y') {
 			}
 			echo "</table>";
 */
-		$nummenu=19;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./mod_ooo/images/ico_gene_ooo.png' , 'texte'=>"Modèles Open Office");
+     verif_exist_ordre_menu('bloc_modeles_Open_Office');
+		$tbs_menu[$ordre_menus['bloc_modeles_Open_Office']]=array('classe'=>'accueil' , 'image'=>'./mod_ooo/images/ico_gene_ooo.png' , 'texte'=>"Modèles Open Office");
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_modeles_Open_Office']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 
@@ -2115,8 +2065,7 @@ if (getSettingValue("active_mod_ooo")=='y') {
  * Module plugins : affichage des menus des plugins en fonction des droits
 *****************************/
 
-$query = mysql_query('SELECT * FROM plugins WHERE ouvert = "y"');
-$nummenu=200;
+$query = mysql_query('SELECT * FROM plugins WHERE ouvert = "y" order by description');
 
 while ($plugin = mysql_fetch_object($query)){
   $nomPlugin=$plugin->nom;
@@ -2127,7 +2076,7 @@ while ($plugin = mysql_fetch_object($query)){
   $chemin = array();
   $titre = array();
   $expli = array();
-  $querymenu = mysql_query('SELECT * FROM plugins_menus WHERE plugin_id = "'.$plugin->id.'"');
+  $querymenu = mysql_query('SELECT * FROM plugins_menus WHERE plugin_id = "'.$plugin->id.'" order by titre_item');
   while ($menuItem = mysql_fetch_object($querymenu)){
     // On regarde si le plugin a prévu une surcharge dans le calcul de l'affichage de l'item dans le menu
     // On commence par regarder si une fonction du type calcul_autorisation_nom_du_plugin existe
@@ -2141,7 +2090,7 @@ while ($plugin = mysql_fetch_object($query)){
 
       $chemin[] = $menuItem->lien_item;
 
-      $titre[]  = iconv("utf-8","iso-8859-1",$menuItem->titre_item);
+      $titre[]  = supprimer_numero(iconv("utf-8","iso-8859-1",$menuItem->titre_item));
 
       $expli[]  = iconv("utf-8","iso-8859-1",$menuItem->description_item);
     }
@@ -2150,7 +2099,7 @@ while ($plugin = mysql_fetch_object($query)){
       $nb_ligne = count($chemin);
 
     if ($nb_ligne >= 1){
-    	$descriptionPlugin= iconv("utf-8","iso-8859-1",$plugin->description)." (plugin)";
+    	$descriptionPlugin= iconv("utf-8","iso-8859-1",$plugin->description);
 /*
       echo "<h2 class='accueil'><img src='./images/icons/package.png' alt='#' /> - ".str_replace("_", " ", $plugin->nom)." (plugin)</h2>
     <table class='menu' summary=\"Plugins de Gepi. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
@@ -2165,13 +2114,12 @@ while ($plugin = mysql_fetch_object($query)){
 			}
 			echo "</table>";
 */
-
-		$nummenu+=$nummenu;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/package.png' , 'texte'=>$descriptionPlugin);
+    verif_exist_ordre_menu($nomPlugin);
+		$tbs_menu[$ordre_menus[$nomPlugin]]=array('classe'=>'accueil' , 'image'=>'./images/icons/package.png' , 'texte'=>$descriptionPlugin);
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin[$i] , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+			$tbs_menu[$ordre_menus[$nomPlugin]]['entree'][]=array('lien'=>$chemin[$i] , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 /*
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
@@ -2220,14 +2168,14 @@ if (getSettingValue("active_mod_genese_classes")=='y') {
 			echo "</table>";
 			*/
 
-		$nummenu=21;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Génèse des classes");
+    verif_exist_ordre_menu('bloc_Genese_classes');
+		$tbs_menu[$ordre_menus['bloc_Genese_classes']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Génèse des classes");
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_Genese_classes']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 	}
@@ -2313,8 +2261,8 @@ if ($_SESSION["statut"] == 'autre') {
 	//for($a = 1 ; $a < $nbre ; $a++){
 */
 
-	$nummenu=23;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Navigation");
+  verif_exist_ordre_menu('bloc_navigation');
+	$tbs_menu[$ordre_menus['bloc_navigation']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Navigation");
 
 	$a = 1;
 	while($a < $nbre_a){
@@ -2355,7 +2303,7 @@ if ($_SESSION["statut"] == 'autre') {
 			$adresse= $gepiPath.$autorise[$a][0].$var;
 			$titre= $menu_accueil[$a][0];
 			$expli=$menu_accueil[$a][1];
-			$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre, 'expli'=>$expli);
+			$tbs_menu[$ordre_menus['bloc_navigation']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre, 'expli'=>$expli);
 			}
 		}
 		$a++;
