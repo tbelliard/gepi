@@ -3280,21 +3280,6 @@ function LibelleChampAid($champ) {
     return $nom;
 }
 
-/* Module Atelier
-fonction qui vérifie si la personne a le droit d'être ici
-*/
-function EstAutoriseAteliers($_login) {
-    if (getSettingValue("active_ateliers")!='y') {
-        return False;
-        die();
-    }
-    $test = sql_query1("SELECT count(nom_champ) FROM ateliers_config WHERE (nom_champ='ateliers_resp' and content='$_login')");
-    if ($test == "0") {
-        return false;
-    } else {
-        return true;
-    }
-}
 /* Gestion des AIDs
 fonction qui calcul le niveau de gestion des AIDs
 0 : aucun droit
@@ -4262,5 +4247,11 @@ function civ_nom_prenom($login,$mode='prenom') {
 		}
 	}
 	return $retour;
+}
+
+// Enleve le numéro des titres numérotés ("1. Titre" -> "Titre")
+// Exemple :  "12. Titre"  donne "Titre"
+function supprimer_numero($texte) {
+ return preg_replace(",^[[:space:]]*([0-9]+)([.)])[[:space:]]+,S","", $texte);
 }
 ?>
