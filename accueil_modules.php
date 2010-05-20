@@ -117,7 +117,7 @@ $key_setting[]='active_module_trombinoscopes';
 $chemin[] = "/mod_notanet/notanet_admin.php";
 $key_setting[]='active_notanet';
 $chemin[] = "/mod_inscription/inscription_admin.php";
-$key_setting[]='active_inscription%';
+$key_setting[]='active_inscription';
 $chemin[] = "/cahier_texte_admin/rss_cdt_admin.php";
 $key_setting[]='rss_cdt_eleve';
 
