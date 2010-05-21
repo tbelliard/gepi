@@ -68,6 +68,12 @@ if (isset($_POST['enregistrer_param'])) {
 		}
 	}
 
+	if (isset($_POST['fb_dezip_ooo'])) {
+		if (!saveSetting("fb_dezip_ooo", $_POST['fb_dezip_ooo'])) {
+			$msg .= "Erreur lors de l'enregistrement de fb_dezip_ooo !";
+		}
+	}
+
 	if($msg==""){$msg="Enregistrement effectué.";}
 }
 
@@ -206,6 +212,7 @@ if (isset($_GET['parametrer'])) {
 
 	echo "</td>\n";
 	echo "</tr>\n";
+
 // choix des gabarits
 $alt=$alt*(-1);
 $fb_gab_perso=getSettingValue("fb_gab_perso");
@@ -232,6 +239,49 @@ $fb_gab_perso=getSettingValue("fb_gab_perso");
 	echo " Gabarits Gépi <br />";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+// choix du dézippeur
+$alt=$alt*(-1);
+$fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
+	echo "<tr";
+	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
+	echo ">\n";
+
+	echo "<td valign='top'>Décompresseur d'archive : <br />Gépi a besoin d'un décompresseur d'archive pour créer les fiches brevets. Vous devez sélectionner celui que vous voulez utiliser.</td>\n";
+	echo "</td>";
+	echo "<td>";
+
+	echo "<input type='radio' name='fb_dezip_ooo' value='0' ";
+	if($fb_dezip_ooo=="0"){
+	  echo "checked='checked' />";
+	}
+	else{
+	  echo "/>";
+	}
+	echo " ZIPARCHIVE et TinyDoc : le choix par défaut mais peut créer des fichiers corrompus si votre version de PHP est inférieur à 5.2.8 (utiliser OOo 3.2 pour réparer les fichiers) <br />\n";
+	
+	echo "<input type='radio' name='fb_dezip_ooo' value='1' ";
+	if($fb_dezip_ooo=="1"){
+	  echo "checked='checked' />";
+	}
+	else{
+	  echo "/>";
+	}
+	echo " ZIP-UNZIP et TinyDoc : nécessite que ZIP et UNZIP soient installés sur le serveur et que leurs chemins soient définis dans la variable d'environnement PATH <br />\n";
+
+	echo "<input type='radio' name='fb_dezip_ooo' value='2' ";
+	if($fb_dezip_ooo=="2"){
+	  echo "checked='checked' />";
+	}
+	else{
+	  echo "/>";
+	}
+	echo " PCLZIP et TBSooo : classe plus ancienne, toutes les fonctionnalités de TinyDoc ne sont pas disponible dans les gabarits mais fonctionne avec PHP 5.2 <br />\n";
+
+	echo "</td>\n";
+
+	echo "</tr>\n";
+
 	echo "</table>\n";
 
 	echo "<p style='text-align: center;'><input type='submit' name='enregistrer_param' value='Enregistrer' /></p>\n";

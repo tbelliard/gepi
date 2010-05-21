@@ -35,144 +35,16 @@ include('fiches_brevet.php');		// calcul du tableau de données
 
 
 
-// Remplacement des anciennes versions vers la nouvelle lib TinyDoc
-// include_once('../../mod_ooo/lib/lib_mod_ooo.php');
-// include_once('../../mod_ooo/lib/tbs_class.php');
-// include_once('../../mod_ooo/lib/tbsooo_class.php');
-
 $tempdir=get_user_temp_directory();
 
-include_once('../../mod_ooo/lib/tinyButStrong.class.php');
-include_once('../../mod_ooo/lib/tinyDoc.class.php');
-
-
-
-
-
-
-
-
-//*****************************************************************************************************************************************
-// else {
-
-//=======================================
-// AFFICHAGE DES DONNÉES
-//=======================================
-
-// Et maintenant on s'occupe du fichier proprement dit
-
-//
-//Les variables à modifier pour le traitement  du modèle ooo
-//
-//Le chemin et le nom du fichier ooo à traiter (le modèle de document)
-switch($type_brevet){
-	case '0':
-		$nom_fichier_modele_ooo  ='fb_CLG_lv2.ods';
-// Collège LV2
-	break;
-	case '1':
-		$nom_fichier_modele_ooo ='fb_CLG_dp6.ods';
-// Collège DP6
-	break;
-	case '2':
-		$nom_fichier_modele_ooo ='fb_PRO.ods';
-// Professionnel sans option
-	break;
-	case '3':
-		$nom_fichier_modele_ooo ='fb_PRO_dp6.ods';
-// Professionnel DP6
-	break;
-	case '4':
-		$nom_fichier_modele_ooo ='fb_PRO_agri.ods';
-// Professionnel agricole
-	break;
-	case '5':
-		$nom_fichier_modele_ooo  ='fb_TECHNO.ods';
-// Technologique sans option
-	break;
-	case '6':
-		$nom_fichier_modele_ooo ='fb_TECHNO_dp6.ods';
-// Technologique DP6
-	break;
-	case '7':
-		$nom_fichier_modele_ooo ='fb_TECHNO_agri.ods';
-// Technologique agricole
-	break;
-	default:
-	die();
+$fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
+switch($fb_dezip_ooo){
+  case '2':
+	// pclzip.lib.php
+	include('imprime_ooo_2.php');
+default:
+  // ziparchive ou zip-unzip
+	include('imprime_ooo_1.php');
 }
-
-// Par defaut tmp
-$tempdirOOo="../../temp/".$tempdir;
-$nom_dossier_temporaire = $tempdirOOo;
-//par defaut content.xml
-$nom_fichier_xml_a_traiter ='content.xml';
-//les chemins contenant les données
-$fb_gab_perso=getSettingValue("fb_gab_perso");
-if($fb_gab_perso=="1"){
-  $nom_dossier_modele_a_utiliser="../../mod_ooo/mes_modeles/";
-}
-else{
-  $nom_dossier_modele_a_utiliser="../../mod_ooo/modeles_gepi/";
-}
-
-// Création d'une classe tinyDoc
-$OOo = new tinyDoc();
-// $OOo->setZipMethod('ziparchive');
-$OOo->setZipMethod('shell');
-$OOo->setZipBinary('zip');
-$OOo->setUnzipBinary('unzip');
-
-// setting the object
-$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
-// create a new openoffice document from the template with an unique id
-$OOo->createFrom($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
-// merge data with openoffice file named 'content.xml'
-$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
-
-
-// Traitement des tableaux
-// On insère ici les lignes concernant la gestion des tableaux
-
-// $OOo->mergeXmlBlock('eleves',$tab_eleves_OOo);
-
-$OOo->mergeXml(
-	array(
-		'name'      => 'eleves',
-		'type'      => 'block',
-		'data_type' => 'array',
-		'charset'   => 'ISO 8859-15'
-	 ),$tab_eleves_OOo);
-
-$OOo->SaveXml(); //traitement du fichier extrait
-
-//Génération du nom du fichier
-$now = gmdate('d_M_Y_H:i:s');
-$nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
-$nom_fic = $nom_fichier_modele[0]."_généré_le_".$now.".".$nom_fichier_modele[1];
-header('Expires: ' . $now);
-if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
-	header('Content-Disposition: inline; filename="' . $nom_fic . '"');
-	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-	header('Pragma: public');
-}
-else {
-	header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
-	header('Pragma: no-cache');
-}
-// display
-header('Content-type: '.$OOo->getMimetype());
-header('Content-Length: '.filesize($OOo->GetPathname()));
-
-$OOo->sendResponse(); //envoi du fichier traité
-$OOo->remove(); //suppression des fichiers de travail
-// Fin de traitement des tableaux
-$OOo->close();
-
-//=======================================
-// FIN AFFICHAGE DES DONNÉES
-//=======================================
-
-
 
 ?>
