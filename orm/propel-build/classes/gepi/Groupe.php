@@ -164,10 +164,7 @@ class Groupe extends BaseGroupe {
 		$criteria->addAscendingOrderByColumn(JEleveGroupePeer::LOGIN);
 		foreach($this->getJEleveGroupesJoinEleve($criteria) as $ref) {
 		    if ($ref != null) {
-			//ajout de l'eleve seulement si il n'y est pas deja
-			if (!$eleves->contains($ref->getEleve())) {
-			    $eleves->append($ref->getEleve());
-			}
+			$eleves->add($ref->getEleve());
 		    }
 		}
 		return $eleves;
