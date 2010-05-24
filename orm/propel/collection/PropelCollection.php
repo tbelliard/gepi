@@ -399,26 +399,47 @@ class PropelCollection extends ArrayObject implements Serializable
 	}
 
 	/**
-	 * Add a collection of elements
+	 * Add a collection of elements, preventing duplicates
 	 *
 	 * @param     array $collection The collection
 	 *
 	 * @return    int the number of new element in the collection
 	 */
-	public function add($collection)
+	public function addCollection($collection)
 	{
 		$i = 0;
 		foreach($collection as $ref) {
-			if ($ref != NULL) {
-			    if (!$this->contains($ref)) {
-				$this->append($ref);
-				$i = $i + 1;
-			    }
-			}
+		    if ($this->add($ref)) {
+			$i = $i + 1;
+		    }
 		}
 		return $i;
 	}
-	
+
+	/**
+	 * Add a an element to the collection, preventing duplicates
+	 *
+	 * @param     $element The element
+	 *
+	 * @return    bool if the element was added or not
+	 */
+	public function add($element)
+	{
+		if ($element != NULL) {
+		    if (!$this->contains($element)) {
+			try {
+			    $this->get($element->getPrimaryKey());
+			} catch (Exception $x) {
+			    //il semble que l'element ne soit pas dans la collection
+			    $this->append($element);
+			    return true;
+			}
+		    }
+		}
+		
+		return false;
+	}
+
 }
 
 ?>
