@@ -20,11 +20,6 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	protected $collGroupes;
 
 	/**
-	 * @var        PropelObjectCollection $collAidDetailss[] Collection to store aggregation of AidDetails objects.
-	 */
-	protected $collAidDetailss;
-
-	/**
 	 * @var        PropelObjectCollection $collGroupes[] Collection to store aggregation of Groupe objects.
 	 */
 	protected $collClasses;
@@ -49,18 +44,30 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 			}
 		    }
 
-		    if ($this->statut == "professeur") {
-			$temp_collection = GroupeQuery::create()->useJEleveGroupeQuery()->useEleveQuery()->useJEleveProfesseurPrincipalQuery()->filterByUtilisateurProfessionnel($this)->endUse()->find();
-			$classes->add($temp_collection);
-		    } else if ($this->statut == "cpe") {
-			$temp_collection = GroupeQuery::create()->useJEleveGroupeQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find();
-			$groupes->add($temp_collection);
+		    if ($this->statut == "cpe") {
+			$temp_collection = GroupeQuery::create()->distinct()->useJEleveGroupeQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find();
+			$groupes->addCollection($temp_collection);
 		    }
 
 		    require_once("helpers/GroupeHelper.php");
 		    $this->collGroupes = GroupeHelper::orderByGroupNameWithClasses($groupes);
 		    return $this->collGroupes;
 		}
+	}
+
+		/**
+	 *
+	 * Renvoi sous forme d'un tableau la liste des classes d'un utilisateur. Le tableau est ordonné par les noms des classes.
+	 * Manually added for N:M relationship
+	 * It seems that the groupes are passed by values and not by references.
+	 *
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     PropelObjectCollection Classe[]
+	 */
+	public function getGroupesProfesseurPrincipal($con = null) {
+		return GroupeHelper::orderByGroupNameWithClasses(
+			GroupeQuery::create()->distinct()->useJEleveGroupeQuery()->useEleveQuery()->useJEleveProfesseurPrincipalQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find()
+			);
 	}
 
 	/**
@@ -296,7 +303,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	    return $col;
 	}
 
-		/**
+	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un utilisateur. Le tableau est ordonné par les noms des classes.
 	 * Manually added for N:M relationship
@@ -312,21 +319,49 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		    $classes = new PropelObjectCollection();
 
 		    if ($this->statut == "professeur") {
-			$temp_collection = ClasseQuery::create()->useJGroupesClassesQuery()->useGroupeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->find();
-			$classes->add($temp_collection);
-
-			$temp_collection = ClasseQuery::create()->useJEleveProfesseurPrincipalQuery()->filterByUtilisateurProfessionnel($this)->endUse()->find();
-			$classes->add($temp_collection);
+			$classes = ClasseQuery::create()->distinct()->orderByNomComplet()->useJGroupesClassesQuery()->useGroupeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->find();
 		    } else if ($this->statut == "cpe") {
-			$temp_collection = ClasseQuery::create()->useJEleveClasseQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find();
-			$classes->add($temp_collection);
+			$classes = ClasseQuery::create()->distinct()->orderByNomComplet()->useJEleveClasseQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find();
 		    }
 
-		    require_once("helpers/ClasseHelper.php");
-		    $this->collGroupes = ClasseHelper::orderByNomComplet($classes);
+		    $this->collClasses = $classes;
 
 		    return $this->collClasses;
 		}
 	}
+
+	/**
+	 *
+	 * Renvoi sous forme d'un tableau la liste des classes d'un utilisateur. Le tableau est ordonné par les noms des classes.
+	 * Manually added for N:M relationship
+	 * It seems that the groupes are passed by values and not by references.
+	 *
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     PropelObjectCollection Classe[]
+	 */
+	public function getClassesProfesseurPrincipal($con = null) {
+		return ClasseQuery::create()->distinct()->orderByNomComplet()->useJGroupesClassesQuery()->useGroupeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->find();
+	}
+
+		/**
+	 *
+	 * Renvoi sous forme d'un tableau la liste des groupes d'un utilisateur professeur. Le tableau est ordonné par le noms du groupes puis les classes du groupes.
+	 * Manually added for N:M relationship
+	 * It seems that the groupes are passed by values and not by references.
+	 *
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     PropelObjectCollection Groupes[]
+	 */
+	public function getAidDetailss() {
+	    $temp_collection = parent::getAidDetailss();
+
+	    if ($this->statut == "cpe") {
+		$temp_collection->addCollection(
+			AidDetailsQuery::create()->distinct()->useJAidElevesQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find()
+			);
+	    }
+	    return $temp_collection;
+	}
+
 
 }
