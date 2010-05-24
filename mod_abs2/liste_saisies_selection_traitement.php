@@ -318,7 +318,7 @@ if ($page_number > $nb_pages) {
     $page_number = $nb_pages;
 }
 
-echo '<form method="post" action="liste_saisies.php" id="liste_saisies">';
+echo '<form method="post" action="liste_saisies_selection_traitement.php" id="liste_saisies">';
 
 if ($saisies_col->haveToPaginate()) {
     echo "Page ";
@@ -357,7 +357,7 @@ echo '<input type="text" name="filter_id" value="'.$filter_id.'" size="3"/>';
 echo '</TH>';
 
 //en tete filtre utilisateur
-/*echo '<TH>';
+echo '<TH>';
 echo '<nobr>';
 echo 'Utilisateur';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
@@ -368,7 +368,7 @@ if ($order == "des_utilisateur") {echo "border-style: solid; border-color: red;"
 echo 'border-width:1px;" alt="" name="order" value="des_utilisateur"/>';
 echo '</nobr>';
 echo '<br><input type="text" name="filter_utilisateur" value="'.$filter_utilisateur.'" size="12"/>';
-echo '</TH>';*/
+echo '</TH>';
 
 //en tete filtre eleve
 echo '<TH>';
@@ -398,7 +398,7 @@ echo '</nobr>';
 echo '<br>';
 echo ("<select name=\"filter_classe\">");
 echo "<option value='-1'></option>\n";
-foreach (ClasseQuery::create()->distinct()->find() as $classe) {
+foreach ($utilisateur->getClasses() as $classe) {
 	echo "<option value='".$classe->getId()."'";
 	if ($filter_classe == $classe->getId()) echo " SELECTED ";
 	echo ">";
@@ -422,7 +422,7 @@ echo '</nobr>';
 echo '<br>';
 echo ("<select name=\"filter_groupe\">");
 echo "<option value='-1'></option>\n";
-foreach ($utilisateur->getGroupes() as $group) {
+foreach ($utilisateur->getGroupes()  as $group) {
 	echo "<option value='".$group->getId()."'";
 	if ($filter_groupe == $group->getId()) echo " SELECTED ";
 	echo ">";
@@ -446,7 +446,9 @@ echo '</nobr>';
 echo '<br>';
 echo ("<select name=\"filter_aid\">");
 echo "<option value='-1'></option>\n";
-foreach ($utilisateur->getAidDetailss() as $aid) {
+$temp_collection = $utilisateur->getAidDetailss();
+//$temp_collection->add(AidDetailsQuery::create()->useJAidElevesQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($utilisateur)->endUse()->endUse()->endUse()->find());
+foreach ($temp_collection as $aid) {
 	echo "<option value='".$aid->getId()."'";
 	if ($filter_aid == $aid->getId()) echo " SELECTED ";
 	echo ">";
@@ -740,6 +742,25 @@ echo '</THEAD>';
 echo '<TBODY>';
 $results = $saisies_col->getResults();
 foreach ($results as $saisie) {
+//    $filter_id = NULL;
+//    $filter_utilisateur = NULL;
+//    $filter_eleve = NULL;
+//    $filter_classe = NULL;
+//    $filter_groupe = NULL;
+//    $filter_aid = NULL;
+//    $filter_date_debut_absence_debut_plage = NULL;
+//    $filter_date_debut_absence_fin_plage = NULL;
+//    $filter_date_fin_absence_debut_plage = NULL;
+//    $filter_date_fin_absence_fin_plage = NULL;
+//    $filter_creneau = NULL;
+//    $filter_cours = NULL;
+//    $filter_date_creation_absence_debut_plage = NULL;
+//    $filter_date_creation_absence_fin_plage = NULL;
+//    $filter_date_modification = NULL;
+//    $filter_date_traitement_absence_debut_plage = NULL;
+//    $filter_date_traitement_absence_fin_plage = NULL;
+//    $filter_discipline = NULL;
+
     if ($results->getPosition() %2 == '1') {
 	    $background_couleur="rgb(220, 220, 220);";
     } else {
@@ -754,17 +775,17 @@ foreach ($results as $saisie) {
     echo "</a>";
     echo '</TD>';
 
-    /*echo '<TD>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+    echo '<TD>';
+    echo "<a href='liste_saisies_selection_traitement.php?filter_utilisateur=".$saisie->getUtilisateurProfessionnel()->getNom()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getUtilisateurProfessionnel() != null) {
 	echo $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom();
     }
     echo "</a>";
-    echo '</TD>';*/
+    echo '</TD>';
 
     echo '<TD>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getEleve() != null) {
+	echo "<a href='liste_saisies_selection_traitement.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%; color: #330033'> ";
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
@@ -787,8 +808,8 @@ foreach ($results as $saisie) {
     echo '</TD>';
 
     echo '<TD>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getClasse() != null) {
+	echo "<a href='liste_saisies_selection_traitement.php?filter_classe=".$saisie->getClasse()->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
 	//$classe = new Classe();
 	echo $classe->getNomComplet();
     } else {
@@ -798,8 +819,8 @@ foreach ($results as $saisie) {
     echo '</TD>';
 
     echo '<TD>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getGroupe() != null) {
+	echo "<a href='liste_saisies_selection_traitement.php?filter_groupe=".$saisie->getGroupe()->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
 	//$groupe = new Groupe();
 	echo $saisie->getGroupe()->getNameAvecClasses();
     } else {
@@ -809,11 +830,12 @@ foreach ($results as $saisie) {
     echo '</TD>';
 
     echo '<TD>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     if ($saisie->getAidDetails() != null) {
+	echo "<a href='liste_saisies_selection_traitement.php?filter_aid=".$saisie->getAidDetails()->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
 	//$groupe = new Groupe();
 	echo $saisie->getAidDetails()->getNom();
     } else {
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
 	echo "&nbsp;";
     }
     echo "</a>";
