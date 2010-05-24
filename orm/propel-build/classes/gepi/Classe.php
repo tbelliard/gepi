@@ -40,7 +40,12 @@ class Classe extends BaseClasse {
 	public function getEleves($num_periode_notes = null) {
 		$eleves = new PropelObjectCollection();
 		$criteria = new Criteria();
-		$criteria->add(JEleveClassePeer::PERIODE,$num_periode_notes);
+		if ($num_periode_notes == null) {
+		    $num_periode_notes = $this->getPeriodeNoteOuverte();
+		}
+		if ($num_periode_notes != null) {
+		    $criteria->add(JEleveClassePeer::PERIODE,$num_periode_notes->getNumPeriode());
+		}
 		foreach($this->getJEleveClassesJoinEleve($criteria) as $ref) {
 		    if ($ref->getEleve() != null) {
 			$eleves->append($ref->getEleve());
@@ -72,7 +77,7 @@ class Classe extends BaseClasse {
 			throw new PropelException("Eleve id ne doit pas etre null");
 		}
 		if ($num_periode_notes == null) {
-			$num_periode_notes = getPeriodeNoteOuverteActuelle();
+			$num_periode_notes = $this->getPeriodeNoteOuverte();
 		}
 		$jEleveClasse = new JEleveClasse();
 		$jEleveClasse->setEleve($eleve);
