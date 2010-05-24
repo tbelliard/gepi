@@ -25,6 +25,11 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	protected $collAidDetailss;
 
 	/**
+	 * @var        PropelObjectCollection $collGroupes[] Collection to store aggregation of Groupe objects.
+	 */
+	protected $collClasses;
+
+	/**
 	 * 
 	 * Renvoi sous forme d'un tableau la liste des groupes d'un utilisateur professeur. Le tableau est ordonné par le noms du groupes puis les classes du groupes.
 	 * Manually added for N:M relationship
@@ -43,6 +48,15 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 			    $groupes->append($ref->getGroupe());
 			}
 		    }
+
+		    if ($this->statut == "professeur") {
+			$temp_collection = GroupeQuery::create()->useJEleveGroupeQuery()->useEleveQuery()->useJEleveProfesseurPrincipalQuery()->filterByUtilisateurProfessionnel($this)->endUse()->find();
+			$classes->add($temp_collection);
+		    } else if ($this->statut == "cpe") {
+			$temp_collection = GroupeQuery::create()->useJEleveGroupeQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find();
+			$groupes->add($temp_collection);
+		    }
+
 		    require_once("helpers/GroupeHelper.php");
 		    $this->collGroupes = GroupeHelper::orderByGroupNameWithClasses($groupes);
 		    return $this->collGroupes;
@@ -280,6 +294,39 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	    $criteria->add(AbsenceEleveSaisiePeer::FIN_ABS, $dt_end, Criteria::LESS_EQUAL);
 	    $col = $this->getAbsenceEleveSaisies($criteria);
 	    return $col;
+	}
+
+		/**
+	 *
+	 * Renvoi sous forme d'un tableau la liste des classes d'un utilisateur. Le tableau est ordonné par les noms des classes.
+	 * Manually added for N:M relationship
+	 * It seems that the groupes are passed by values and not by references.
+	 *
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     PropelObjectCollection Groupes[]
+	 */
+	public function getClasses($con = null) {
+		if ($this->collClasses != null) {
+			return $this->collClasses;
+		} else {
+		    $classes = new PropelObjectCollection();
+
+		    if ($this->statut == "professeur") {
+			$temp_collection = ClasseQuery::create()->useJGroupesClassesQuery()->useGroupeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->find();
+			$classes->add($temp_collection);
+
+			$temp_collection = ClasseQuery::create()->useJEleveProfesseurPrincipalQuery()->filterByUtilisateurProfessionnel($this)->endUse()->find();
+			$classes->add($temp_collection);
+		    } else if ($this->statut == "cpe") {
+			$temp_collection = ClasseQuery::create()->useJEleveClasseQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find();
+			$classes->add($temp_collection);
+		    }
+
+		    require_once("helpers/ClasseHelper.php");
+		    $this->collGroupes = ClasseHelper::orderByNomComplet($classes);
+
+		    return $this->collClasses;
+		}
 	}
 
 }
