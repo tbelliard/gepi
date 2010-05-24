@@ -561,8 +561,11 @@ $retardnj='';
 					$l_graphique = '370'; //536
 // temporaire
 
-$du = '01/09/2008';
-$au = '30/06/2009';
+//$du = '01/09/2008';
+//$au = '30/06/2009';
+$du = date("d/m/Y",getSettingValue('begin_bookings'));
+$au = date("d/m/Y",getSettingValue('end_bookings'));
+
 $du_explose = explode('/',$du);
 	$au_explose = explode('/',$au);
 		$jour_du = '1';
