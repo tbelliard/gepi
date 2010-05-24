@@ -29,6 +29,7 @@ function initPage () {
 	//si id_group_init est renseigné on affiche le groupe concerné, sinon on affiche les dernieres notices
 	var id_groupe_init = $('id_groupe_init').value;
 	if (id_groupe_init != '') {
+	    id_groupe = id_groupe_init;
 	    getWinDernieresNotices().hide();
 	    getWinListeNotices();
 	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'ISO-8859-1'});
