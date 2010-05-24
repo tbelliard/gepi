@@ -397,6 +397,27 @@ class PropelCollection extends ArrayObject implements Serializable
 		
 		return Propel::getConnection($databaseName, $type);
 	}
+
+	/**
+	 * Add a collection of elements
+	 *
+	 * @param     array $collection The collection
+	 *
+	 * @return    int the number of new element in the collection
+	 */
+	public function add($collection)
+	{
+		$i = 0;
+		foreach($collection as $ref) {
+			if ($ref != NULL) {
+			    if (!$this->contains($ref)) {
+				$this->append($ref);
+				$i = $i + 1;
+			    }
+			}
+		}
+		return $i;
+	}
 	
 }
 
