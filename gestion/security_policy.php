@@ -447,6 +447,7 @@ echo "<div style='margin-left:3em;'>\n";
 	echo "<span style='font-size:small'>\n";
 	echo "Plus complet qu'InputFilter dans les filtrages réalisés.<br />\n";
 	echo "Il tente également de rendre le code HTML plus correct/valide au sens W3C.<br />\n";
+	echo "<i>A noter&nbsp;:</i> HTMLpurifier ne fonctionne pas bien lorsque les magic_quotes_gpc sont activées (<i>cf. <a href='http://htmlpurifier.org/docs#toclink4'>http://htmlpurifier.org/docs#toclink4</a></i>).<br />\nCe dispositif doit disparaître à terme avec PHP6, mais s'il est activé, on bascule de HTMLpurifier à InputFilter pour éviter le problème.";
 	echo "</span>\n";
 	echo "</td>\n";
 	echo "</tr>\n";

@@ -104,6 +104,7 @@ if (isset($_ajouter_fichier_anti_inject)){
   $liste_scripts_non_traites[] = "/mod_plugins/" . $_ajouter_fichier_anti_inject;
 }
 
+
 $url = parse_url($_SERVER['REQUEST_URI']);
 // On traite les données postées si nécessaire
 if ((!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
@@ -114,6 +115,7 @@ if ((!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_trait
 // On nettoie aussi $_SERVER et $_COOKIE de manière systématique
 array_walk($_SERVER, 'anti_inject');
 array_walk($_COOKIE, 'anti_inject');
+
 
 function no_php_in_img($chaine) {
 	global $niveau_arbo;
@@ -143,6 +145,7 @@ function no_php_in_img($chaine) {
 		//fwrite($fich,"=============================================\n");
 
 		// Il ne faut pas avoir de trucs du genre <img title='<' src='' />
+		// htmlpurifier le change avant en <img title='&lt;' src='' />
 		for($i=0;$i<count($tab);$i++) {
 
 			//fwrite($fich,"\$tab[$i]=$tab[$i]\n++++++++++++++++++++++\n");
@@ -217,7 +220,9 @@ if($filtrage_html=='htmlpurifier') {
 
 	foreach($_POST as $key => $value) {
 		if(!is_array($value)) {
+//echo "<p>Avant \$_POST[$key]=$_POST[$key]<br />";
 			$_POST[$key]=$purifier->purify($value);
+//echo "Après \$_POST[$key]=$_POST[$key]<br />";
 		}
 		else {
 			foreach($_POST[$key] as $key2 => $value2) {
@@ -274,7 +279,8 @@ elseif($filtrage_html=='inputfilter') {
 	}
 }
 
-$utiliser_no_php_in_img='n';
+//$utiliser_no_php_in_img='n';
+//echo "utiliser_no_php_in_img=$utiliser_no_php_in_img<br />";
 if($utiliser_no_php_in_img=='y') {
 	if(isset($_GET)) {
 		foreach($_GET as $key => $value) {
@@ -315,6 +321,21 @@ if($utiliser_no_php_in_img=='y') {
 	}
 }
 //===========================================================
+
+
+/*
+$url = parse_url($_SERVER['REQUEST_URI']);
+// On traite les données postées si nécessaire
+if ((!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
+  array_walk($_GET, 'anti_inject');
+  array_walk($_POST, 'anti_inject');
+}
+
+// On nettoie aussi $_SERVER et $_COOKIE de manière systématique
+array_walk($_SERVER, 'anti_inject');
+array_walk($_COOKIE, 'anti_inject');
+*/
+
 
 //On rétablit les "&" dans $_SERVER['REQUEST_URI']
 $_SERVER['REQUEST_URI'] = str_replace("&amp;","&",$_SERVER['REQUEST_URI']);

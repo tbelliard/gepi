@@ -356,6 +356,9 @@ if (isset($titre_page)) {
 	// AJOUT boireaus 20080806
 	//=====================
 
+	// insert into setting set name='afficher_temoin_filtrage_html',value='y';
+	$tbs_afficher_temoin_filtrage_html=getSettingValue('afficher_temoin_filtrage_html');
+
 	//=== Titre de la page ===
 	
 	//=== Nom Prénom utilisateur ===

@@ -27,6 +27,22 @@
 			<img src="<?php echo $tbs_bouton_taille;?>/images/down.png" alt='Afficher le bandeau' title='Afficher le bandeau' />
 		</a>
 
+		<?php
+			//=====================================
+			if($tbs_afficher_temoin_filtrage_html=='y') {
+				if($filtrage_html=='htmlpurifier') {
+					echo " <img src='$gepiPath/images/bulle_verte.png' width='9' height='9' alt='Filtrage HTML avec HTMLPurifier' title='Filtrage HTML avec HTMLPurifier' />\n";
+				}
+				elseif($filtrage_html=='inputfilter') {
+					echo " <img src='$gepiPath/images/bulle_bleue.png' width='9' height='9' alt='Filtrage HTML avec InputFilter' title='Filtrage HTML avec InputFilter' />\n";
+				}
+				else {
+					echo " <img src='$gepiPath/images/bulle_rouge.png' width='9' height='9' alt='Pas de filtrage HTML' title='Pas de filtrage HTML' />\n";
+				}
+			}
+			//=====================================
+		?>
+
 	<!-- titre de la page -->	
 		<h1><?php echo $titre_page; ?></h1>
 		
