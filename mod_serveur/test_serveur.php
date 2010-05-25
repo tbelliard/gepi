@@ -109,6 +109,26 @@ if ($test->versionGd()) {
 	<br />
 	- La durée maximum de session est réglée à '.ini_get("session.gc_maxlifetime").' secondes, soit un maximum de '.(ini_get("session.gc_maxlifetime")/60).' minutes (<i>session.maxlifetime</i> dans le fichier php.ini).';
 
+	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+	if($suhosin_post_max_totalname_length!='') {
+		echo "<h4>Configuration suhosin</h4>\n";
+		echo "<p>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire (<i>comme par exemple dans la page de saisie des appréciations par les professeurs</i>)</p>\n";
+
+		$tab_suhosin=array('suhosin.cookie.max_totalname_length', 
+		'suhosin.get.max_totalname_length', 
+		'suhosin.post.max_totalname_length', 
+		'suhosin.post.max_value_length', 
+		'suhosin.request.max_totalname_length', 
+		'suhosin.request.max_value_length', 
+		'suhosin.request.max_vars');
+
+		for($i=0;$i<count($tab_suhosin);$i++) {
+			echo "- ".$tab_suhosin[$i]." = ".ini_get($tab_suhosin[$i])."<br />\n";
+		}
+
+		echo "En cas de problème, vous pouvez, soit désactiver le module, soit augmenter les valeurs.<br />\n";
+		echo "Le fichier de configuration de suhosin est habituellement en /etc/php5/conf.d/suhosin.ini<br />\nEn cas de modification de ce fichier, pensez à relancer le service apache ensuite pour prendre en compte la modification.<br />\n";
+	}
 echo '<br /><br /><br />';
 
 // inclusion du footer
