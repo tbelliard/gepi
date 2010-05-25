@@ -321,7 +321,8 @@
 	// Taille des textes
 	$fs_titre=14;
 	$fs_titre_mm=fs_pt2mm($fs_titre);
-	$fs_txt=12;
+	//$fs_txt=12;
+	$fs_txt=10;
 	$fs_txt_mm=fs_pt2mm($fs_txt);
 
 	// Ratio de l'interligne par rapport à la taille de police
@@ -362,7 +363,9 @@
 
 	// Hauteur cadre du bas (avis du chef d'établissement,...)
 	$h_cadre_bas=40;
-	$y_cadre_bas=297-$marge-$h_cadre_bas;
+	$h_notes_bas_de_page=10;
+	$y_cadre_bas=297-$marge-$h_cadre_bas-$h_notes_bas_de_page;
+	$y_notes_bas_de_page=297-$marge-$h_notes_bas_de_page;
 
 	$bord_debug='';
 	//$bord_debug='LRBT';
@@ -569,7 +572,8 @@
 				$h_ligne_a_titre_indicatif=fs_pt2mm($fs_txt)*$sc_interligne;
 
 				// Hauteur pour chaque matière:
-				$hauteur_toutes_matieres=$y_cadre_bas-$marge-$y; // 10 pour la ligne 'A titre indicatif'
+				//$hauteur_toutes_matieres=$y_cadre_bas-$marge-$y; // 10 pour la ligne 'A titre indicatif'
+				$hauteur_toutes_matieres=$y_cadre_bas-$h_ligne_a_titre_indicatif-$y; // 10 pour la ligne 'A titre indicatif'
 				$h_par_matiere=$hauteur_toutes_matieres/$nb_mat;
 			
 				// Boucle sur les matières
@@ -637,7 +641,11 @@
 										$lig_mat_fac=mysql_fetch_object($res_mat_fac);
 										$texte.=": ".$lig_mat_fac->matiere;
 									}
+
+									$texte.=" (1)";
 								}
+								elseif($tabmatieres[$j]['socle']=='y') {$texte.=" (2)";}
+
 								$font_size=adjust_size_font($texte,$larg_col_disc,$fs_txt,0.3);
 								$pdf->SetFontSize($font_size);
 								$pdf->Cell($larg_col_disc,$h_par_matiere, $texte,'LRBT',2,'L');
@@ -993,6 +1001,15 @@
 				$pdf->Cell($larg_col_note, $h_cadre_bas-$pdf->FontSize*$sc_interligne, "",'LRBT',0,'C');
 				$pdf->Cell($larg_col_note, $h_cadre_bas-$pdf->FontSize*$sc_interligne, "",'LRBT',0,'C');
 
+				$pdf->SetXY($marge,$y_notes_bas_de_page);
+				$pdf->SetFont('Arial','',8);
+				if(($type_brevet==0)||($type_brevet==1)) {
+					$pdf->Cell(210-2*$marge,5,"(1) 2ème langue vivante ou latin ou grec ou découverte professionnelle option 3 heures ou histoire des arts", 0, 1, 'L');
+				}
+				else {
+					$pdf->Cell(210-2*$marge,5,"(1) histoire des arts", 0, 1, 'L');
+				}
+				$pdf->Cell(210-2*$marge,5,"(2) Valeurs possibles : MS - ME - MN", 0, 0, 'L');
 			}
 		}
 	}
