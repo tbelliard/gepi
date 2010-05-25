@@ -109,6 +109,11 @@ $ordre_menus['bloc_module_discipline'] = 16; // Module "Discipline"
 $ordre_menus['bloc_modeles_Open_Office'] = 17; // Modèles Open Office
 $ordre_menus['bloc_Genese_classes'] = 18; // Génèse des classes
 $ordre_menus['bloc_navigation'] = 19; // Navigation
+$ordre_menus['bloc_epreuve_blanche'] = 20; // Epreuve blanche
+$ordre_menus['bloc_examen_blanc'] = 21; // Examen blanc
+$ordre_menus['bloc_admissions_post_bac'] = 22; // Module Admissions Post-Bac
+$ordre_menus['bloc_Gestionnaire_aid'] = 23 ;// Module Gestionnaire d'AID
+
 
 ####################################################
 #                                                  #

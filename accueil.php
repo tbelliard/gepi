@@ -2350,15 +2350,14 @@ if (getSettingValue("active_mod_epreuve_blanche")=='y') {
 		}
 		echo "</table>";
 */
-
-		$nummenu=24;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Epreuves blanches");
+		verif_exist_ordre_menu('bloc_epreuve_blanche');
+		$tbs_menu[$ordre_menus['bloc_epreuve_blanche']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Epreuves blanches");
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_epreuve_blanche']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 	}
@@ -2397,14 +2396,14 @@ if (getSettingValue("active_mod_examen_blanc")=='y') {
 		echo "</table>";
 */
 
-		$nummenu=25;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Examens blancs");
+		verif_exist_ordre_menu('bloc_examen_blanc');
+		$tbs_menu[$ordre_menus['bloc_examen_blanc']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Examens blancs");
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_examen_blanc']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 	}
@@ -2434,14 +2433,14 @@ if (getSettingValue("active_mod_apb")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
-		$nummenu=26;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Export Post-Bac");
+		verif_exist_ordre_menu('bloc_admissions_post_bac');
+		$tbs_menu[$ordre_menus['bloc_admissions_post_bac']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Export Post-Bac");
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_admissions_post_bac']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 	}
@@ -2496,14 +2495,14 @@ if (getSettingValue("active_mod_gest_aid")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
-		$nummenu=27;
-		$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Gestion des AID");
+		verif_exist_ordre_menu('bloc_Gestionnaire_aid');
+		$tbs_menu[$ordre_menus['bloc_Gestionnaire_aid']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Gestion des AID");
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_Gestionnaire_aid']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 	}
