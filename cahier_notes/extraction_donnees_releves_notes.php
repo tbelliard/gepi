@@ -60,6 +60,10 @@
 
 	$tab_rn_aff_classe_nom=isset($_POST['rn_aff_classe_nom']) ? $_POST['rn_aff_classe_nom'] : array();
 
+	// 20100526
+	$tab_rn_moy_min_max_classe=isset($_POST['rn_moy_min_max_classe']) ? $_POST['rn_moy_min_max_classe'] : array();
+	$tab_rn_moy_classe=isset($_POST['rn_moy_classe']) ? $_POST['rn_moy_classe'] : array();
+
 	//+++++++++++++++++++++++++++++++++++
 	// A FAIRE
 	// Contrôler les paramètres reçus en fonction de
@@ -208,6 +212,9 @@
 			$affiche_adresse=$tab_releve[$id_classe][$periode_num]['rn_adr_resp'];
 			$tab_releve[$id_classe][$periode_num]['affiche_adresse']=$affiche_adresse;
 
+			// 20100526
+			$tab_releve[$id_classe][$periode_num]['rn_moy_min_max_classe']=isset($tab_rn_moy_min_max_classe[$loop_classe]) ? "y" : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_moy_classe']=isset($tab_rn_moy_classe[$loop_classe]) ? "y" : "n";
 
 			//echo "\$tab_releve[$id_classe][$periode_num]['affiche_adresse']=".$tab_releve[$id_classe][$periode_num]['affiche_adresse']."<br />";
 
@@ -613,7 +620,8 @@
 							//if ($choix_periode ==0) {
 							if ($choix_periode=="intervalle") {
 								//$sql1="SELECT d.coef, nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-								$sql1="SELECT cn.id_cahier_notes, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+								//$sql1="SELECT cn.id_cahier_notes, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+								$sql1="SELECT cn.id_cahier_notes, d.id, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								nd.login = '".$current_eleve_login[$i]."' and
 								nd.id_devoir = d.id and
 								d.display_parents='1' and
@@ -626,7 +634,8 @@
 								";
 							}
 							else {
-								$sql1 = "SELECT cn.id_cahier_notes, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+								//$sql1 = "SELECT cn.id_cahier_notes, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+								$sql1 = "SELECT cn.id_cahier_notes, d.id, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								nd.login = '".$current_eleve_login[$i]."' and
 								nd.id_devoir = d.id and
 								d.display_parents='1' and
@@ -669,6 +678,7 @@
 								}
 
 								if($visible=="y") {
+
 									$eleve_display_app = @mysql_result($query_notes,$mm,'d.display_parents_app');
 									$eleve_app = @mysql_result($query_notes,$mm,'nd.comment');
 									if(getSettingValue("note_autre_que_sur_referentiel")=="V" || mysql_result($query_notes,$mm,'d.note_sur')!=getSettingValue("referentiel_note")) {
@@ -699,6 +709,34 @@
 									//echo "\$eleve_nom_court=$eleve_nom_court<br />";
 									//echo "\$eleve_note=$eleve_note<br />";
 									//echo "\$eleve_statut=$eleve_statut<br />";
+
+									//=================================
+									// 20100626
+									// Ne faire l'extraction que si les min/classe/max sont demandés... il faut récupérer l'info: classe concernée
+									//if() {
+										$id_dev= @mysql_result($query_notes,$mm,'d.id');
+										if(!isset($tab_moy_min_max_classe[$id_dev])) {
+											$tab_moy_min_max_classe[$id_dev]=array();
+											$sql2="SELECT min(note) AS note_min_classe, max(note) AS note_max_classe, ROUND(AVG(note),1) AS moy_classe FROM cn_notes_devoirs WHERE id_devoir='$id_dev' AND statut='';";
+											//echo "$sql2<br />\n";
+											$res_min_max_classe=mysql_query($sql2);
+											if(mysql_num_rows($res_min_max_classe)>0) {
+												$lig_min_max_classe=mysql_fetch_object($res_min_max_classe);
+												$tab_moy_min_max_classe[$id_dev]['min']=$lig_min_max_classe->note_min_classe;
+												$tab_moy_min_max_classe[$id_dev]['max']=$lig_min_max_classe->note_max_classe;
+												$tab_moy_min_max_classe[$id_dev]['moy_classe']=$lig_min_max_classe->moy_classe;
+											}
+											else {
+												$tab_moy_min_max_classe[$id_dev]['min']="-";
+												$tab_moy_min_max_classe[$id_dev]['max']="-";
+												$tab_moy_min_max_classe[$id_dev]['moy_classe']="-";
+											}
+										}
+									//}
+									$tab_ele['groupe'][$j]['devoir'][$m]['min']=$tab_moy_min_max_classe[$id_dev]['min'];
+									$tab_ele['groupe'][$j]['devoir'][$m]['max']=$tab_moy_min_max_classe[$id_dev]['max'];
+									$tab_ele['groupe'][$j]['devoir'][$m]['moy_classe']=$tab_moy_min_max_classe[$id_dev]['moy_classe'];
+									//=================================
 
 									$m++;
 								}

@@ -30,6 +30,7 @@
 	$tab_traduc['rn_sign_pp']="Avec case pour signature du $gepiProfSuivi";
 	$tab_item[]='rn_sign_resp';
 	$tab_traduc['rn_sign_resp']="Avec case pour signature des responsables";
+
 	/*
 	$tab_item[]='rn_sign_nblig';
 	$tab_traduc['rn_sign_nblig']="Nombre de lignes pour la signature";
@@ -120,6 +121,43 @@
 	echo "<a href=\"javascript:CocheLigne('rn_app')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne('rn_app')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+
+	//=================================
+	// 20100526
+	// Il ne faut peut-être pas l'autoriser pour tous les utilisateurs?
+	if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+		echo "<td style='text-align:left;'>Avec la moyenne de la classe pour chaque devoir\n";
+		echo "</td>\n";
+		for($i=0;$i<count($tab_id_classe);$i++) {
+			echo "<td>\n";
+			echo "<input type='checkbox' name='rn_moy_classe[$i]' id='rn_moy_classe_".$i."' size='2' value='y' />\n";
+			echo "</td>\n";
+		}
+	
+		echo "<td>\n";
+		echo "<a href=\"javascript:CocheLigne('rn_moy_classe')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne('rn_moy_classe')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+		echo "</td>\n";
+		echo "</tr>\n";
+	
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+		echo "<td style='text-align:left;'>Avec les moyennes min/classe/max de chaque devoir\n";
+		echo "</td>\n";
+		for($i=0;$i<count($tab_id_classe);$i++) {
+			echo "<td>\n";
+			echo "<input type='checkbox' name='rn_moy_min_max_classe[$i]' id='rn_moy_min_max_classe_".$i."' size='2' value='y' />\n";
+			echo "</td>\n";
+		}
+	
+		echo "<td>\n";
+		echo "<a href=\"javascript:CocheLigne('rn_moy_min_max_classe')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne('rn_moy_min_max_classe')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+	//=================================
 
 
 	if (($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
