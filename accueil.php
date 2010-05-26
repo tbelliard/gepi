@@ -970,7 +970,7 @@ if ($affiche=='yes') {
 			$numitem=$i;
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
-				$tbs_menu[$ordre_menus['bloc_releve_notes']]['releve_notes'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
+				$tbs_menu[$ordre_menus['bloc_releve_notes']]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 		}
 
