@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -59,6 +59,8 @@ if (isset($id_classe)) {
 		}
 	}
 }
+
+$javascript_specifique="prepa_conseil/colorisation_visu_toutes_notes";
 
 //**************** EN-TETE *****************
 $titre_page = "Visualisation des notes";
@@ -275,6 +277,7 @@ if (isset($id_classe)) {
 	$sql="SELECT DISTINCT jgc.id_groupe, g.name, g.description, jgc.coef, jgc.mode_moy FROM groupes g, j_groupes_classes jgc WHERE id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY g.name;";
 	//echo "$sql<br />";
 	$res_coef_grp=mysql_query($sql);
+
 	echo "<input type='checkbox' id='utiliser_coef_perso' name='utiliser_coef_perso' value='y' onchange=\"display_div_coef_perso()\" /><label for='utiliser_coef_perso'> Utiliser des coefficients personnalisés.</label><br />\n";
 
 	echo "<div id='div_coef_perso'>\n";
@@ -357,6 +360,159 @@ if (isset($id_classe)) {
 	echo "<p><i>Remarque:</i> Si des coefficients spécifiques ont été mis en place pour certains élèves (<i>voir en compte administrateur Gestion des bases/Gestion des classes/Enseignements/&lt;ENSEIGNEMENT&gt;/Eleves inscrits</i>), ils ne seront pas écrasés par les valeurs saisies ici.</p>\n";
 	echo "</div>\n";
 
+	//============================================
+	// Colorisation des résultats
+	echo "<input type='checkbox' id='vtn_coloriser_resultats' name='vtn_coloriser_resultats' value='y' onchange=\"display_div_coloriser()\" /><label for='vtn_coloriser_resultats'> Coloriser les résultats.</label><br />\n";
+	
+
+	// Tableau des couleurs HTML:
+	$chaine_couleurs='"aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen"';
+	$tabcouleur=Array($chaine_couleurs);
+
+	echo "<div id='div_coloriser'>\n";
+	echo "<table id='table_couleur' class='boireaus' summary='Coloriser les résultats'>\n";
+	echo "<thead>\n";
+		echo "<tr>\n";
+		echo "<th><a href='#colorisation_resultats' onclick='add_tr_couleur();return false;'>Borne<br />supérieure</a></th>\n";
+		echo "<th>Couleur texte</th>\n";
+		echo "<th>Couleur cellule</th>\n";
+		echo "<th>Supprimer</th>\n";
+		echo "</tr>\n";
+	echo "</thead>\n";
+	echo "<tbody id='table_body_couleur'>\n";
+	echo "</tbody>\n";
+	echo "</table>\n";
+	echo "<a name='colorisation_resultats'></a>\n";
+
+	echo "<script type='text/javascript'>
+	// Couleurs prises en compte dans colorisation_visu_toutes_notes.js
+	var tab_couleur=new Array($chaine_couleurs);
+
+	// Pour démarrer avec trois lignes:
+	add_tr_couleur();
+	add_tr_couleur();
+	add_tr_couleur();
+	// A modifier par la suite pour récupérer les préférences enregistrées
+</script>\n";
+
+/*
+	$tab_couleur_texte_defaut=array('red', 'orange', 'green');
+	$tab_couleur_cellule_defaut=array('', '', '');
+
+	$j=0;
+	$alt=1;
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<td><input type='checkbox' name='utiliser_couleur[$j]' value='y' checked /></td>\n";
+	echo "<td>Jusqu'à <input type='text' name='borne_couleur[$j]' value='8' size='2' /></td>\n";
+	echo "<td>";
+	echo "<select name=\"couleur_texte[]\">\n";
+	for($i=0;$i<count($tabcouleur);$i++){
+		if($tabcouleur[$i]=="$tab_couleur_texte_defaut[$j]"){
+			$checked=" selected=\"true\"";
+		}
+		else{
+			$checked="";
+		}
+		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
+	}
+	echo "</select>\n";
+	echo "</td>\n";
+
+	echo "<td>";
+	echo "<select name=\"couleur_cellule[]\">\n";
+	echo "<option value=''>---</option>\n";
+	for($i=0;$i<count($tabcouleur);$i++){
+		if($tabcouleur[$i]=="$tab_couleur_cellule_defaut[$j]"){
+			$checked=" selected=\"true\"";
+		}
+		else{
+			$checked="";
+		}
+		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
+	}
+	echo "</select>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	$j=1;
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<td><input type='checkbox' name='utiliser_couleur[$j]' value='y' checked /></td>\n";
+	echo "<td>Jusqu'à <input type='text' name='borne_couleur[$j]' value='12' size='2' /></td>\n";
+	echo "<td>";
+	echo "<select name=\"couleur_texte[]\">\n";
+	for($i=0;$i<count($tabcouleur);$i++){
+		if($tabcouleur[$i]=="$tab_couleur_texte_defaut[$j]"){
+			$checked=" selected=\"true\"";
+		}
+		else{
+			$checked="";
+		}
+		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
+	}
+	echo "</select>\n";
+	echo "</td>\n";
+
+	echo "<td>";
+	echo "<select name=\"couleur_cellule[]\">\n";
+	echo "<option value=''>---</option>\n";
+	for($i=0;$i<count($tabcouleur);$i++){
+		if($tabcouleur[$i]=="$tab_couleur_cellule_defaut[$j]"){
+			$checked=" selected=\"true\"";
+		}
+		else{
+			$checked="";
+		}
+		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
+	}
+	echo "</select>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+
+	$j=2;
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<td><input type='checkbox' name='utiliser_couleur[$j]' value='y' checked /></td>\n";
+	echo "<td>Jusqu'à <input type='text' name='borne_couleur[$j]' value='20' size='2' /></td>\n";
+	echo "<td>";
+	echo "<select name=\"couleur_texte[]\">\n";
+	for($i=0;$i<count($tabcouleur);$i++){
+		if($tabcouleur[$i]=="$tab_couleur_texte_defaut[$j]"){
+			$checked=" selected=\"true\"";
+		}
+		else{
+			$checked="";
+		}
+		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
+	}
+	echo "</select>\n";
+	echo "</td>\n";
+
+	echo "<td>";
+	echo "<select name=\"couleur_cellule[]\">\n";
+	echo "<option value=''>---</option>\n";
+	for($i=0;$i<count($tabcouleur);$i++){
+		if($tabcouleur[$i]=="$tab_couleur_cellule_defaut[$j]"){
+			$checked=" selected=\"true\"";
+		}
+		else{
+			$checked="";
+		}
+		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
+	}
+	echo "</select>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+
+	echo "</table>\n";
+*/
+	//echo "<p><i>Remarque:</i> ...</p>\n";
+	echo "<p><br /></p>\n";
+	echo "</div>\n";
+
 	echo "<script type='text/javascript'>
 function display_div_coef_perso() {
 //alert('grrrr');
@@ -368,6 +524,16 @@ document.getElementById('div_coef_perso').style.display='none';
 }
 }
 display_div_coef_perso();
+
+function display_div_coloriser() {
+if(document.getElementById('vtn_coloriser_resultats').checked==true) {
+document.getElementById('div_coloriser').style.display='';
+}
+else {
+document.getElementById('div_coloriser').style.display='none';
+}
+}
+display_div_coloriser();
 </script>\n";
 
 	echo "</form>\n";

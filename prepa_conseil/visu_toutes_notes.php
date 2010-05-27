@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -113,6 +113,20 @@ $aff_date_naiss = isset($_POST['aff_date_naiss']) ? $_POST['aff_date_naiss'] : (
 //============================
 
 $couleur_alterne = isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] :  NULL;
+
+//============================
+// Colorisation des résultats
+$vtn_couleur_texte=isset($_POST['vtn_couleur_texte']) ? $_POST['vtn_couleur_texte'] : array();
+$vtn_couleur_cellule=isset($_POST['vtn_couleur_cellule']) ? $_POST['vtn_couleur_cellule'] : array();
+$vtn_borne_couleur=isset($_POST['vtn_borne_couleur']) ? $_POST['vtn_borne_couleur'] : array();
+$vtn_coloriser_resultats=isset($_POST['vtn_coloriser_resultats']) ? $_POST['vtn_coloriser_resultats'] : "n";
+/*
+for($i=0;$i<count($vtn_borne_couleur);$i++) {
+echo "\$vtn_borne_couleur[$i]=$vtn_borne_couleur[$i]<br />\n";
+}
+*/
+//============================
+
 include "../lib/periodes.inc.php";
 
 // On appelle les élèves
@@ -616,6 +630,11 @@ if($temoin_note_sup10=='y') {
 // définition des colonnes matières
 //
 $i= '0';
+
+$num_debut_colonnes_matieres=$nb_col+1;
+$num_debut_lignes_eleves=$ligne_supl;
+//echo "\$num_debut_colonnes_matieres=$num_debut_colonnes_matieres<br />";
+//echo "\$num_debut_lignes_eleves=$num_debut_lignes_eleves<br />";
 
 //pour calculer la moyenne annee de chaque matiere
 $moyenne_annee_matiere=array();
@@ -1787,6 +1806,19 @@ if($utiliser_coef_perso=='y') {
 		foreach($note_sup_10 as $key => $value) {
 			echo "<input type='hidden' name='note_sup_10[$key]' value='$value' />\n";
 		}
+	}
+}
+
+if($vtn_coloriser_resultats=='y') {
+	echo "<input type='hidden' name='vtn_coloriser_resultats' value='$vtn_coloriser_resultats' />\n";
+	foreach($vtn_couleur_texte as $key => $value) {
+		echo "<input type='hidden' name='vtn_couleur_texte[$key]' value='$value' />\n";
+	}
+	foreach($vtn_couleur_cellule as $key => $value) {
+		echo "<input type='hidden' name='vtn_couleur_cellule[$key]' value='$value' />\n";
+	}
+	foreach($vtn_borne_couleur as $key => $value) {
+		echo "<input type='hidden' name='vtn_borne_couleur[$key]' value='$value' />\n";
 	}
 }
 

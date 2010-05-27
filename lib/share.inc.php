@@ -1369,6 +1369,10 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
     // $col_centre = 1 --> toutes les autres colonnes sont centrées.
     // $col_centre = 0 --> toutes les autres colonnes sont alignées.
     // $couleur_alterne --> les couleurs de fond des lignes sont alternés
+	global $num_debut_colonnes_matieres, $num_debut_lignes_eleves, $vtn_coloriser_resultats, $vtn_borne_couleur, $vtn_couleur_texte, $vtn_couleur_cellule;
+
+	//echo "\$num_debut_colonnes_matieres=$num_debut_colonnes_matieres<br />";
+	//echo "\$coloriser_resultats=$coloriser_resultats<br />";
 
     echo "<table border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\" summary=\"Tableau\">\n";
     echo "<tr>\n";
@@ -1384,21 +1388,51 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
     $flag = "1";
     while($i < $nombre_lignes) {
         if ($couleur_alterne) {
-            if ($flag==1) $bg_color = "bgcolor=\"#C0C0C0\""; else $bg_color = "     " ;
+            if ($flag==1) {$bg_color = "bgcolor=\"#C0C0C0\"";} else {$bg_color = "     ";}
         }
 
         echo "<tr>\n";
         $j = 1;
         while($j < $nb_col+1) {
-            if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))){
-                echo "<td class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+            if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))) {
+
+				echo "<td class='small' ".$bg_color;
+				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
+					if(strlen(my_ereg_replace('[0-9.,]','',$col[$j][$i]))==0) {
+						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
+							if(my_ereg_replace(',','.',$col[$j][$i])<=my_ereg_replace(',','.',$vtn_borne_couleur[$loop])) {
+								echo " style='";
+								if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
+								if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
+								echo "'";
+								break;
+							}
+						}
+					}
+				}
+				echo ">{$col[$j][$i]}</td>\n";
+
             } else {
-                echo "<td align=\"center\" class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+				echo "<td align=\"center\" class='small' ".$bg_color;
+				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
+					if(strlen(my_ereg_replace('[0-9.,]','',$col[$j][$i]))==0) {
+						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
+							if(my_ereg_replace(',','.',$col[$j][$i])<=my_ereg_replace(',','.',$vtn_borne_couleur[$loop])) {
+								echo " style='";
+								if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
+								if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
+								echo "'";
+								break;
+							}
+						}
+					}
+				}
+				echo ">{$col[$j][$i]}</td>\n";
             }
             $j++;
         }
         echo "</tr>\n";
-        if ($flag == "1") $flag = "0"; else $flag = "1";
+        if ($flag == "1") {$flag = "0";} else {$flag = "1";}
         $i++;
     }
     echo "</table>\n";
