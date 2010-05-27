@@ -135,3 +135,17 @@ $Id$
 			}
 		}
 	}
+
+	function vtn_couleurs_par_defaut() {
+		tab_couleur_defaut=new Array('red','orangered','green');
+		for(i=1;i<=tab_couleur_defaut.length;i++) {
+			if(document.getElementById('vtn_couleur_texte_'+i)) {
+				for(j=0;j<tab_couleur.length;j++) {
+					if(tab_couleur[j]==tab_couleur_defaut[i-1]) {
+						document.getElementById('vtn_couleur_texte_'+i).selectedIndex=j+1;
+						break;
+					}
+				}
+			}
+		}
+	}

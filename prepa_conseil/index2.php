@@ -392,6 +392,7 @@ if (isset($id_classe)) {
 	add_tr_couleur();
 	add_tr_couleur();
 	add_tr_couleur();
+	vtn_couleurs_par_defaut();
 	// A modifier par la suite pour récupérer les préférences enregistrées
 </script>\n";
 
