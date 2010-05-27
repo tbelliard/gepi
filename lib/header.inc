@@ -4,7 +4,7 @@
  *
  * Basé sur  header.inc 2968 2009-03-03 20:11:00Z jjocal $
  * modifié avec getSettingValue("contact_admin_mailto")=='y'
- 
+
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
  *
  * This file is part of GEPI.
@@ -452,7 +452,7 @@ if (isset($titre_page)) {
 				//=== Titre de la page ===
 				echo "<h1>".$titre_page."</h1>\n";
 				echo "<!-- Dernière connexion -->\n";
-				
+
 				//=== Nom Prénom utilisateur ===
 				echo "<p id='bd_nom'>\n";
 					// echo "<span id='bd_nom'>";
@@ -473,19 +473,19 @@ if (isset($titre_page)) {
 					}
 					// echo "</span>\n";
 				echo "</p>\n";
-				
+
 				//=== Dernière connexion ===
 				if (isset($affiche_connexion)) {
 					echo "<p id='dern_connect'>".last_connection();
 					echo "&nbsp;"; // Pour éviter un <p></p> lors de la première connexion
 					echo "</p>\n";
 				}
-				
+
 				//=== statut utilisateur ===
 				echo "<p id='bd_parent'>\n";
 					if ($_SESSION['statut'] == "administrateur") {
 						echo "<span class='red'>Administrateur</span>\n";
-					} 
+					}
 					elseif ($_SESSION['statut'] == "professeur") {
 						$nom_complet_matiere = sql_query1("select nom_complet from matieres
 						where matiere = '".$_SESSION['matiere']."'");
@@ -495,17 +495,17 @@ if (isset($titre_page)) {
 						} else {
 							echo "Invité";
 						}
-					} 
+					}
 					elseif ($_SESSION['statut'] == "scolarite") {
 						echo "Scolarité";
-					} 
+					}
 					elseif ($_SESSION['statut'] == "cpe") {
 						echo "CPE";
-					} 
+					}
 					elseif ($_SESSION['statut'] == "eleve") {
 						$tab_tmp_info_classes=get_noms_classes_from_ele_login($_SESSION['login']);
 						echo "Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1];
-					} 
+					}
 					elseif ($_SESSION['statut'] == "responsable") {
 						$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
 						$chaine_enfants="";
@@ -530,14 +530,14 @@ if (isset($titre_page)) {
 						echo $_SESSION["statut_special"];
 					}
 				echo "</p>\n";
-					
+
 				//On vérifie si le module de mise à jour est activé
 				if (getSettingValue("active_module_msj")==='y' and $_SESSION['statut'] == 'administrateur') {
 					echo "<a href='javascript:ouvre_popup()'>";
 						echo "<img style='border: 0px; width: 15px; height: 15px;' src='$gepiPath/images/info.png' alt='info' title='info' align='top' />";
 					echo "</a>\n<br />\n";
 				}
-				
+
 				//christian
 				// menus de droite
 				// menu accueil
@@ -604,7 +604,7 @@ if (isset($titre_page)) {
 							}
 							else {
 								//echo("<a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
-								echo("<a href=\"$gepiPath/gestion/contacter_admin.php\" onclick=\"centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes');return false;\" target='_blank'>Contacter l'administrateur</a>");
+								echo("<a href=\"$gepiPath/gestion/contacter_admin.php\" onclick=\"centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes');return false;\" >Contacter l'administrateur</a>");
 							}
 						}
 					echo "</li>\n";
@@ -615,9 +615,9 @@ if (isset($titre_page)) {
 						echo "<a href='javascript:centrerpopup(\"$gepiPath/gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
 					echo "</li>\n";
 				echo "</ol>\n";
-				
+
 				// echo "<div class='spacer_bas'> </div>\n"; // bloque les menus dans le bandeau
-	
+
 		 //=== Affichage de la version de Gepi ===
 				if ($_SESSION['statut'] == "administrateur") {
 					  $version_gepi = '';
