@@ -1262,7 +1262,7 @@ if ($nb_total != 0) {
         $i++;
     }
   $affiche = 'no';
-  for ($i=0;$i<$nb_ligne;$i++) {
+  for ($i=0;$i<$nb_aid;$i++) {
       if ((acces($chemin[$i],$_SESSION['statut'])==1) and AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))  {$affiche = 'yes';}
   }
   if (($nb_aid_annees_anterieures > 0) and (acces("/aid/annees_anterieures_accueil.php",$_SESSION['statut'])==1)) {
