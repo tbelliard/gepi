@@ -55,7 +55,7 @@ else {
 }
 
 $phpversion=phpversion();
-$tab_tmp=split(".",$phpversion);
+$tab_tmp=explode(".",$phpversion);
 if(($tab_tmp[0]>=5)&&($tab_tmp[1]>=3)) {
 	$val_tmp='y';
 }
