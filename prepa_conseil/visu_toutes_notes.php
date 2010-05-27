@@ -1692,6 +1692,24 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
+if($vtn_coloriser_resultats=='y') {
+	$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_%';";
+	$del=mysql_query($sql);
+
+	foreach($vtn_couleur_texte as $key => $value) {
+		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_couleur_texte$key', value='$value';";
+		$insert=mysql_query($sql);
+	}
+	foreach($vtn_couleur_cellule as $key => $value) {
+		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_couleur_cellule$key', value='$value';";
+		$insert=mysql_query($sql);
+	}
+	foreach($vtn_borne_couleur as $key => $value) {
+		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_borne_couleur$key', value='$value';";
+		$insert=mysql_query($sql);
+	}
+}
+
 $classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 
 // Lien pour générer un CSV

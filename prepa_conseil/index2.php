@@ -367,7 +367,8 @@ if (isset($id_classe)) {
 
 	// Tableau des couleurs HTML:
 	$chaine_couleurs='"aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen"';
-	$tabcouleur=Array($chaine_couleurs);
+
+	$tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
 
 	echo "<div id='div_coloriser'>\n";
 	echo "<table id='table_couleur' class='boireaus' summary='Coloriser les résultats'>\n";
@@ -380,21 +381,97 @@ if (isset($id_classe)) {
 		echo "</tr>\n";
 	echo "</thead>\n";
 	echo "<tbody id='table_body_couleur'>\n";
-	echo "</tbody>\n";
-	echo "</table>\n";
-	echo "<a name='colorisation_resultats'></a>\n";
 
-	echo "<script type='text/javascript'>
-	// Couleurs prises en compte dans colorisation_visu_toutes_notes.js
-	var tab_couleur=new Array($chaine_couleurs);
+	$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_%' ORDER BY name;";
+	$res_pref=mysql_query($sql);
+	if(mysql_num_rows($res_pref)>0) {
+		while($lig_pref=mysql_fetch_object($res_pref)) {
+			if(substr($lig_pref->name,0,17)=='vtn_couleur_texte') {
+				$vtn_couleur_texte[]=$lig_pref->value;
+			}
+			elseif(substr($lig_pref->name,0,19)=='vtn_couleur_cellule') {
+				$vtn_couleur_cellule[]=$lig_pref->value;
+			}
+			elseif(substr($lig_pref->name,0,17)=='vtn_borne_couleur') {
+				$vtn_borne_couleur[]=$lig_pref->value;
+			}
+		}
 
-	// Pour démarrer avec trois lignes:
+		//$cpt_couleur=0;
+		function add_tr_couleur() {
+			global $cpt_couleur, $tabcouleur, $vtn_borne_couleur, $vtn_couleur_texte, $vtn_couleur_cellule;
+
+			$cpt_tmp=$cpt_couleur+1;
+
+			$alt=pow((-1),$cpt_couleur);
+			echo "<tr id='tr_couleur_$cpt_tmp' class='lig$alt'>\n";
+			echo "<td>\n";
+			echo "<input size='2' value='".$vtn_borne_couleur[$cpt_couleur]."' id='vtn_borne_couleur_$cpt_tmp' name='vtn_borne_couleur[]' type='text'>\n";
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "<select id='vtn_couleur_texte_$cpt_tmp' name='vtn_couleur_texte[]'>\n";
+			echo "<option value=''>---</option>\n";
+			for($i=0;$i<count($tabcouleur);$i++) {
+				echo "<option style='background-color: $tabcouleur[$i];' value='$tabcouleur[$i]'";
+				if($tabcouleur[$i]==$vtn_couleur_texte[$cpt_couleur]) {echo " selected='true'";}
+				echo ">$tabcouleur[$i]</option>\n";
+			}
+			echo "</select>\n";
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "<select id='vtn_couleur_cellule_$cpt_tmp' name='vtn_couleur_cellule[]'>\n";
+			echo "<option value=''>---</option>\n";
+			for($i=0;$i<count($tabcouleur);$i++) {
+				echo "<option style='background-color: $tabcouleur[$i];' value='$tabcouleur[$i]'";
+				if($tabcouleur[$i]==$vtn_couleur_cellule[$cpt_couleur]) {echo " selected='true'";}
+				echo ">$tabcouleur[$i]</option>\n";
+			}
+			echo "</select>\n";
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "<a href='#colorisation_resultats' onclick='suppr_ligne_couleur($cpt_tmp);return false;'><img src='../images/delete16.png' height='16' width='16' alt='Supprimer la ligne' /></a>\n";
+			echo "</td>n";
+
+			echo "</tr>\n";
+		}
+
+		for($cpt_couleur=0;$cpt_couleur<count($vtn_borne_couleur);$cpt_couleur++) {add_tr_couleur();}
+		$cpt_couleur++;
+
+		echo "</tbody>\n";
+		echo "</table>\n";
+		echo "<a name='colorisation_resultats'></a>\n";
+	
+		echo "<script type='text/javascript'>
+		// Couleurs prises en compte dans colorisation_visu_toutes_notes.js
+		var tab_couleur=new Array($chaine_couleurs);
+
+		var cpt_couleur=$cpt_couleur;
+
+		//retouches_tab_couleur();
+\n";
+
+	}
+	else {
+		echo "</tbody>\n";
+		echo "</table>\n";
+		echo "<a name='colorisation_resultats'></a>\n";
+	
+		echo "<script type='text/javascript'>
+		// Couleurs prises en compte dans colorisation_visu_toutes_notes.js
+		var tab_couleur=new Array($chaine_couleurs);\n";
+
+		echo "	// Pour démarrer avec trois lignes:
 	add_tr_couleur();
 	add_tr_couleur();
 	add_tr_couleur();
-	vtn_couleurs_par_defaut();
-	// A modifier par la suite pour récupérer les préférences enregistrées
-</script>\n";
+	vtn_couleurs_par_defaut();\n";
+	}
+	echo "</script>\n";
+//}
 
 /*
 	$tab_couleur_texte_defaut=array('red', 'orange', 'green');

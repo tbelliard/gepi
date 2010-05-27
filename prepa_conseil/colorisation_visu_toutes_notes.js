@@ -32,7 +32,7 @@ $Id$
 		add_select_couleur(nouveauTD2,'vtn_couleur_texte');
 		add_select_couleur(nouveauTD3,'vtn_couleur_cellule');
 
-		nouveauTD4.innerHTML='<a href=\'#colorisation_resultats\' onclick=\'suppr_ligne_couleur('+cpt_couleur+');return false;\'>Suppr</a>';
+		nouveauTD4.innerHTML='<a href=\'#colorisation_resultats\' onclick=\'suppr_ligne_couleur('+cpt_couleur+');return false;\'><img src=\'../images/delete16.png\' height=\'16\' width=\'16\' alt=\'Supprimer la ligne\' /></a>';
 
 		// Pour ré-étaler les valeurs de bornes et refaire l'alternance des couleurs
 		retouches_tab_couleur();
