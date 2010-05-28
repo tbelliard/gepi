@@ -94,7 +94,7 @@ $Id$
 			//           ... si bien que si on supprime une ligne autre que la dernière, la ligne de dernier rang ne correspond plus au rang cpt_couleur, mais à cpt_couleur-1
 			document.getElementById('table_couleur').deleteRow(cpt_couleur-nb_suppr_couleur);
 			nb_suppr_couleur++;
-			retouches_tab();
+			retouches_tab_couleur();
 		}
 	}
 
