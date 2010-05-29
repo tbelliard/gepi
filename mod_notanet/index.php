@@ -344,9 +344,8 @@ if($_SESSION['statut']=="administrateur") {
 		<li><a href='fb_creteil_pdf.php'>Creteil (<i>version PDF</i>)</a></li>
 		<li><a href='fb_lille_pdf.php'>Lille (<i>version PDF</i>)</a></li>\n";
 	$gepi_version=getSettingValue('version');
-	if(($gepi_version!='1.5.1')&&($gepi_version!='1.5.0')) {
-	  
-		echo "		<li><a href='OOo/imprime_ooo.php'>Modèle au format OpenOffice</a> <a href='https://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'><img src='../images/icons/ico_question.png' alt='aide construction gabarit' /></a></li>\n";
+	if(($gepi_version!='1.5.1')&&($gepi_version!='1.5.0')) {  
+		echo "		<li><a href='OOo/imprime_ooo.php'>Modèle au format OpenOffice</a> <a href='https://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'><img src='../images/icons/ico_question.png' alt='aide construction gabarit' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' /></a></li>\n";
 	}
 	echo "	</ul>
 </li>\n";
