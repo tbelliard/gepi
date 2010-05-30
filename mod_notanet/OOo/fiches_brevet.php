@@ -776,6 +776,7 @@ for($i=0;$i<count($id_classe);$i++){
 			//	 On récupère l'avis du chef d'établissement
 			$tab_eleves_OOo[$nb_eleve]['decision']="";						// on initialise le champ pour ne pas avoir d'erreur
 			$tab_eleves_OOo[$nb_eleve]['appreciation']= "";			// on initialise le champ pour ne pas avoir d'erreur
+			$tab_eleves_OOo[$nb_eleve]['avis']= "";			// on initialise le champ pour ne pas avoir d'erreur
 
 			$sql="SELECT * FROM notanet_avis WHERE login='$lig1->login';";
 			$res_avis=mysql_query($sql);
@@ -783,7 +784,8 @@ for($i=0;$i<count($id_classe);$i++){
 				$lig_avis=mysql_fetch_object($res_avis);
 				if($lig_avis->favorable=="O") {$tab_eleves_OOo[$nb_eleve]['decision']="Avis favorable";}
 				elseif($lig_avis->favorable=="N") {$tab_eleves_OOo[$nb_eleve]['decision']="Avis défavorable";}
-				$tab_eleves_OOo[$nb_eleve]['appreciation']= htmlentities($lig_avis->avis);
+				//$tab_eleves_OOo[$nb_eleve]['appreciation']= htmlentities($lig_avis->avis);
+				$tab_eleves_OOo[$nb_eleve]['appreciation']= $lig_avis->avis;
 				$tab_eleves_OOo[$nb_eleve]['avis']=$lig_avis->favorable;
 			}
 
