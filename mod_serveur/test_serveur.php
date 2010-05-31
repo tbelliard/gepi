@@ -129,6 +129,14 @@ if ($test->versionGd()) {
 		echo "En cas de problème, vous pouvez, soit désactiver le module, soit augmenter les valeurs.<br />\n";
 		echo "Le fichier de configuration de suhosin est habituellement en /etc/php5/conf.d/suhosin.ini<br />\nEn cas de modification de ce fichier, pensez à relancer le service apache ensuite pour prendre en compte la modification.<br />\n";
 	}
+
+	echo "<br />\n";
+	echo "<hr />\n";
+	echo "<h4>Droits sur les dossiers : </h4>\n";
+	echo "Certains dossiers doivent être accessibles en écriture pour Gepi.<br />\n";
+	test_ecriture_dossier();
+	echo "Si les droits ne sont pas corrects, vous devrez les corriger en FTP, SFTP ou en console selon l'accès dont vous disposez sur le serveur.<br />\n";
+
 echo '<br /><br /><br />';
 
 // inclusion du footer
