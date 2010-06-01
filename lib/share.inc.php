@@ -4295,7 +4295,7 @@ function test_ecriture_dossier() {
 
 	//$tab_dossiers_rw=array("documents","images","secure","photos","backup","temp","mod_ooo/mes_modele","mod_ooo/tmp","mod_notanet/OOo/tmp","lib/standalone/HTMLPurifier/DefinitionCache/Serializer");
 	//$tab_dossiers_rw=array("documents","images","photos","backup","temp","mod_ooo/mes_modele","mod_ooo/tmp","mod_notanet/OOo/tmp","lib/standalone/HTMLPurifier/DefinitionCache/Serializer");
-	$tab_dossiers_rw=array("documents","images","photos","backup","temp","mod_ooo/mes_modeles","mod_ooo/tmp","lib/standalone/HTMLPurifier/DefinitionCache/Serializer","artichow/cache");
+	$tab_dossiers_rw=array("artichow/cache","backup","documents","images","images/background","lib/standalone/HTMLPurifier/DefinitionCache/Serializer","mod_ooo/mes_modeles","mod_ooo/tmp","photos","temp");
 
 	$nom_fichier_test='test_acces_rw';
 
