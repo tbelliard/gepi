@@ -16,8 +16,7 @@
 
 	<link rel="stylesheet" type="text/css" href="<?php echo $gepiPath;?>/templates/origine/css/accueil.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="<?php echo $gepiPath;?>/templates/origine/css/bandeau.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="<?php echo $gepiPath;?>/templates/origine/css/gestion_generale.css" media="screen" />
-	
+
 <!-- corrections internet Exploreur -->	
 	<!--[if lte IE 7]>
 		<link title='bandeau' rel='stylesheet' type='text/css' href='<?php echo $gepiPath;?>/templates/origine/css/accueil_ie.css' media='screen' />
