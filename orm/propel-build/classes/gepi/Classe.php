@@ -51,7 +51,7 @@ class Classe extends BaseClasse {
 		}
 		foreach($this->getJEleveClassesJoinEleve($criteria) as $ref) {
 		    if ($ref->getEleve() != null) {
-			$eleves->append($ref->getEleve());
+			$eleves->add($ref->getEleve());
 		    }
 		}
 		return $eleves;
@@ -63,7 +63,7 @@ class Classe extends BaseClasse {
 		$criteria->add(JEleveProfesseurPrincipalPeer::PROFESSEUR,$login_prof);
 		foreach($this->getJEleveProfesseurPrincipalsJoinEleve($criteria) as $ref) {
 		    if ($ref->getEleve() != null) {
-			$eleves->append($ref->getEleve());
+			$eleves->add($ref->getEleve());
 		    }
 		}
 		return $eleves;
@@ -80,7 +80,10 @@ class Classe extends BaseClasse {
 			throw new PropelException("Eleve id ne doit pas etre null");
 		}
 		if ($num_periode_notes == null) {
-			$num_periode_notes = $this->getPeriodeNoteOuverte();
+		    $periode = $this->getPeriodeNoteOuverte();
+		    if ($periode != null) {
+			$num_periode_notes = $periode->getNumPeriode();
+		    }
 		}
 		$jEleveClasse = new JEleveClasse();
 		$jEleveClasse->setEleve($eleve);
