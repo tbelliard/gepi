@@ -720,9 +720,9 @@ function updateMention(id,valeur){
                     $disability = $presaisie ? ' DISABLED ' : '';
                     echo "\n<select class='valeur' id='valeur_ects_".$group->getId()."' name='valeur_ects_".$group->getId()."' onchange=\"updatesum();updateMention('mention_ects_".$group->getId()."',this.options[this.selectedIndex].value);\"$disability>";
                     for($c=0;$c<=$max_ects;$c++) {
-                      if (!$redoublant || ($redoublant && $derniere_annee_archivee[$i]['valeur'] <= $c) || $c == 0) {
+                      if (!$redoublant || ($redoublant && isset($derniere_annee_archivee[$i]) && $derniere_annee_archivee[$i]['valeur'] <= $c) || $c == 0) {
                         echo "\n<option value='".$c."'";
-                        if ($valeur_ects == $c || ($redoublant && $derniere_annee_archivee[$i]['valeur'] == $c)) echo " SELECTED";
+                        if ($valeur_ects == $c || ($redoublant && isset($derniere_annee_archivee[$i]) && $derniere_annee_archivee[$i]['valeur'] == $c)) echo " SELECTED";
                         echo ">".$c."</option>";
                       }
                     }
@@ -748,7 +748,7 @@ function updateMention(id,valeur){
                         
                         // Si on a un redoublant et qu'on atteint le crédit de l'année précédente,
                         // on empêche la sélection des crédits inférieurs.
-                        if ($redoublant && $mention == $derniere_annee_archivee[$i]['mention']) {
+                        if ($redoublant && isset($derniere_annee_archivee[$i]) && $mention == $derniere_annee_archivee[$i]['mention']) {
                           $block_lower_credits = true;
                         }
                         
