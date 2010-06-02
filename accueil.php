@@ -626,10 +626,10 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
 
 
   $titre = array();
-  $titre[] = "Gestion des Absences par le ".$gepiSettings['denomination_professeur'];
+  $titre[] = "Gestion des Absences";
 
   $expli = array();
-  $expli[] = "Cet outil vous permet de gérer les absences durant vos cours.";
+  $expli[] = "Cet outil vous permet de gérer les absences des élèves";
 
   $nb_ligne = count($chemin);
   $affiche = 'no';
