@@ -426,7 +426,10 @@ class PropelCollection extends ArrayObject implements Serializable
 	public function add($element)
 	{
 		if ($element != NULL) {
-		    if (!$this->contains($element)) {
+		    if ($this->isEmpty()) {
+			$this->append($element);
+			return true;
+		    } else if (!$this->contains($element)) {
 			try {
 			    $this->get($element->getPrimaryKey());
 			} catch (Exception $x) {
