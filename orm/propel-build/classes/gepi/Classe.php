@@ -41,10 +41,13 @@ class Classe extends BaseClasse {
 		$eleves = new PropelObjectCollection();
 		$criteria = new Criteria();
 		if ($num_periode_notes == null) {
-		    $num_periode_notes = $this->getPeriodeNoteOuverte();
+        $periode_note = $this->getPeriodeNoteOuverte();
+		    if ($periode_note) {
+          $num_periode_notes = $periode_note->getNumPeriode();
+        }
 		}
 		if ($num_periode_notes != null) {
-		    $criteria->add(JEleveClassePeer::PERIODE,$num_periode_notes->getNumPeriode());
+		    $criteria->add(JEleveClassePeer::PERIODE,$num_periode_notes);
 		}
 		foreach($this->getJEleveClassesJoinEleve($criteria) as $ref) {
 		    if ($ref->getEleve() != null) {
