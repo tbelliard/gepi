@@ -149,4 +149,43 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	    return -1;
 	}
 
+
+
+	/**
+	 *
+	 * Renvoi la date du cours d'apres la semaine precisee
+	 * prise en compte de l'annee courante avec comme pivot la semaine 30
+	 *
+	 * @param     integer $id_semaine le numero de la semaine. Par defaut la semaine courante
+	 *
+	 * @return     DateTime
+	 *
+	 */
+	public function getDate($id_semaine = null) {
+	    //on va utiliser le numero de semaine precisée pour regler la date
+	    if ($id_semaine == null || $id_semaine == -1) {
+		$id_semaine = date('W');
+	    }
+	    $day_of_the_week = $this->getJourSemaineNumeric();
+	    $week_of_the_year = $id_semaine;
+	    $current_week_of_the_year = date('W');
+	    $year = date('Y');
+	    //if faut peut etre decaler l'année
+	    if ($current_week_of_the_year > 30 && $week_of_the_year > 30) {
+		//ne rien faire on garde la meme annee
+	    } else if ($current_week_of_the_year < 30 && $week_of_the_year < 30) {
+		//ne rien faire on garde la meme annee
+	    } else if ($current_week_of_the_year > 30 && $week_of_the_year < 30) {
+		//on augmente d'un an
+		$year = $year + 1;
+	    } else if ($current_week_of_the_year < 30 && $week_of_the_year > 30) {
+		//on reduit  d'un an
+		$year = $year - 1;
+	    }
+	    if (strlen($week_of_the_year) == 1) {
+		$week_of_the_year = '0'.$week_of_the_year;
+	    }
+	    return new DateTime($year.'-W'.$week_of_the_year.'-'.$day_of_the_week);
+
+	}
 } // EdtEmplacementCours
