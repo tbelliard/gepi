@@ -430,13 +430,13 @@ class PropelCollection extends ArrayObject implements Serializable
 			$this->append($element);
 			return true;
 		    } else if (!$this->contains($element)) {
-			try {
-			    $this->get($element->getPrimaryKey());
-			} catch (Exception $x) {
-			    //il semble que l'element ne soit pas dans la collection
-			    $this->append($element);
-			    return true;
-			}
+				try {
+					$this->get($element->getPrimaryKey());
+				} catch (Exception $x) {
+					//il semble que l'element ne soit pas dans la collection
+					$this->append($element);
+					return true;
+				}
 		    }
 		}
 		
