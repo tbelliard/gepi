@@ -354,12 +354,20 @@ echo '
 	singleClick    :    true
     });
 </script></nobr><br/>';
+echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
 echo 'De <input name="heure_debut_absence_eleve" value="';
 echo $edt_creneau_col->getFirst()->getHeuredebutDefiniePeriode("H:i");
 echo '" type="text" maxlength="5" size="4"/> à ';
 echo '<input name="heure_fin_absence_eleve" value="';
 echo $edt_creneau_col->getLast()->getHeurefinDefiniePeriode("H:i");
-echo '" type="text" maxlength="5" size="4"/></nobr><br/> <nobr>ou ';
+echo '" type="text" maxlength="5" size="4"/></nobr><br/>';
+echo ' <nobr><input type="radio" name="multisaisie" value="n" checked="checked" />';
+echo '	Créer une seule saisie </nobr><br/>';
+echo '	<nobr><input type="radio" name="multisaisie" value="y"/>';
+echo '	Créer une saisie par jours';
+echo '</nobr></div>';
+echo 'ou ';
+echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
 
     echo ("<select name=\"id_creneau\">");
     
@@ -374,7 +382,7 @@ echo '" type="text" maxlength="5" size="4"/></nobr><br/> <nobr>ou ';
 	    echo "</option>\n";
     }
     echo "</select></nobr></div>";
-
+echo '</div>';
 //on affiche une boite de selection avec les cours
 if (!$cours_col->isEmpty()) {
 	echo '<br/>ou<br/><br/>';

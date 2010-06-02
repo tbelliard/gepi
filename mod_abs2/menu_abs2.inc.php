@@ -32,7 +32,11 @@ if(($_SESSION['statut']=='cpe')||
 
     echo "<li><a href='saisie_eleve.php' ";
     if($onglet_abs=='saisie_eleve.php') {echo "class='current' ";}
-    echo "title='Paramètres : types, actions, motifs, justifications, créneaux'>Saisir pour un eleve</a></li>\n";
+    echo "title='Saisir pour un eleve'>Saisir pour un eleve</a></li>\n";
+
+    echo "<li><a href='traitement.php' ";
+    if($onglet_abs=='traitement.php') {echo "class='current' ";}
+    echo "title='Traitement'>Traitement</a></li>\n";
 }
 
 if($_SESSION['statut']=='cpe') {

@@ -65,6 +65,7 @@ $id_cours = isset($_POST["id_cours"]) ? $_POST["id_cours"] :(isset($_GET["id_cou
 $type_absence = isset($_POST["type_absence"]) ? $_POST["type_absence"] :NULL;
 $commentaire = isset($_POST["commentaire"]) ? $_POST["commentaire"] :NULL;
 $total_eleves = isset($_POST["total_eleves"]) ? $_POST["total_eleves"] :(isset($_GET["total_eleves"]) ? $_GET["total_eleves"] :0);
+$multisaisie = isset($_POST["multisaisie"]) ? $_POST["multisaisie"] :NULL;
 
 $message_enregistrement = "";
 
@@ -79,7 +80,7 @@ if ($id_creneau != null && $id_creneau != -1) {
     $creneau = null;
 }
 
-if ($id_cours != null) {
+if ($id_cours != null && $id_cours != -1) {
     $current_cours = EdtEmplacementCoursQuery::create()->findPk($id_cours);
     if ($current_cours != null) {
     } else {
@@ -144,6 +145,7 @@ if ($current_cours != null) {
     }
 
     if ($creneau != null) {
+	$multisaisie = 'y'; //on fait une saisie par jour
 	$heure_debut = $creneau->getHeuredebutDefiniePeriode(null);
 	$heure_fin = $creneau->getHeurefinDefiniePeriode(null);
     } else {
@@ -163,13 +165,34 @@ if ($current_cours != null) {
 	$message_enregistrement .= "La date de debut d'absence ne peut pas être postérieure à la date de fin.<br/>";
     }
 
-    //on va creer une saisie par jour
-    $date_compteur = $date_debut;
     if ($message_enregistrement == "") {
-	while (!($date_compteur > $date_fin)) {
-	    $date_debut_saisie = clone $date_compteur;
+	if ($multisaisie == 'y') {
+	//on va creer une saisie par jour
+	    $date_compteur = $date_debut;
+	    $compteur = 0;
+	    while (!($date_compteur > $date_fin) && $compteur < 50) { //maximum 50 saisies simultanées
+		$compteur = $compteur + 1;
+		$date_debut_saisie = clone $date_compteur;
+		$date_debut_saisie->setTime($heure_debut->format('H'), $heure_debut->format('i'));
+		$date_fin_saisie = clone $date_compteur;
+		$date_fin_saisie->setTime($heure_fin->format('H'), $heure_fin->format('i'));
+
+		$saisie = new AbsenceEleveSaisie();
+		$saisie->setUtilisateurProfessionnel($utilisateur);
+		$saisie->setCommentaire($commentaire);
+
+		$saisie->setDebutAbs($date_debut_saisie);
+		$saisie->setFinAbs($date_fin_saisie);
+		if ($creneau != null) {
+		     $saisie->setEdtCreneau($creneau);
+		}
+		$saisie_col_modele->append($saisie);
+		$date_compteur->modify("+1 day");
+	    }
+	} else {
+	    $date_debut_saisie = clone $date_debut;
 	    $date_debut_saisie->setTime($heure_debut->format('H'), $heure_debut->format('i'));
-	    $date_fin_saisie = clone $date_compteur;
+	    $date_fin_saisie = clone $date_fin;
 	    $date_fin_saisie->setTime($heure_fin->format('H'), $heure_fin->format('i'));
 
 	    $saisie = new AbsenceEleveSaisie();
@@ -182,10 +205,8 @@ if ($current_cours != null) {
 		 $saisie->setEdtCreneau($creneau);
 	    }
 	    $saisie_col_modele->append($saisie);
-	    $date_compteur->modify("+1 day");
 	}
     }
-
 }
 
 for($i=0; $i<$total_eleves; $i++) {

@@ -55,10 +55,27 @@ if (getSettingValue("active_module_absence")!='2') {
     die("Le module n'est pas activé.");
 }
 
-if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_absence_professeur")!='y') {
-    die("Le module n'est pas activé.");
+if ($utilisateur->getStatut()!="cpe") {
+    die("acces interdit");
 }
 
+if ( isset($_POST["creation_traitement"])) {
+    $traitement = new AbsenceEleveTraitement();
+    $traitement->setUtilisateurProfessionnel($utilisateur);
+    for($i=0; $i<$_POST["item_per_page"]; $i++) {
+	if (isset($_POST["select_saisie"][$i]) &&  $_POST["select_saisie"][$i] == '1') {
+	    $id_saisie = $_POST['id_saisie'][$i];
+	    $traitement->addAbsenceEleveSaisie(AbsenceEleveSaisieQuery::create()->findPk($id_saisie));
+	}
+    }
+    if ($traitement->getAbsenceEleveSaisies()->isEmpty()) {
+	$message_erreur_creation_traitement = ' Erreur : aucune saisie sélectionnée';
+    } else {
+	$traitement->save();
+	header("Location: ./traitement.php?id_traitement=".$traitement->getId());
+    }
+    //include '';
+}
 //récupération des paramètres de la requète
 $order = isset($_POST["order"]) ? $_POST["order"] :(isset($_GET["order"]) ? $_GET["order"] :(isset($_SESSION["order"]) ? $_SESSION["order"] : NULL));
 if ($order == null) {
@@ -335,12 +352,22 @@ echo $saisies_col->count();
 
 echo "&nbsp;&nbsp;&nbsp;";
 echo '<button type="submit" name="reinit_filtre" value="y"/>Reinitialiser les filtres</button> ';
-echo '<button type="submit">Rechercher</button>';
+echo '<button type="submit">Rechercher</button><br/>';
 
+echo '<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>';
+if (isset($message_erreur_creation_traitement)) {
+    echo $message_erreur_creation_traitement;
+}
+if (isset($_POST["traiter"])) {
+    //todo message d'erreur
+}
 echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0;">';
 
 echo '<THEAD>';
 echo '<TR>';
+
+echo '<TH>';
+echo '</TH>';
 
 //en tete filtre id
 echo '<TH>';
@@ -769,6 +796,9 @@ foreach ($results as $saisie) {
 
     echo "<tr style='background-color :$background_couleur'>\n";
 
+    echo '<td><input name="select_saisie['.$results->getPosition().']" value="1" type="checkbox" /></td>';
+    echo '<input type="hidden" name="id_saisie['.$results->getPosition().']" value="'.$saisie->getPrimaryKey().'"/>';
+
     echo '<TD>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     echo $saisie->getId();
@@ -928,6 +958,12 @@ echo '</TBODY>';
 echo '</TBODY>';
 
 echo '</table>';
+
+echo '<button type="submit">Traiter les absences</button>';
+if (isset($message_erreur_creation_traitement)) {
+    echo $message_erreur_creation_traitement;
+}
+echo '</form>';
 
 //fonction redimensionne les photos petit format
 function redimensionne_image_petit($photo)
