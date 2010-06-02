@@ -95,36 +95,11 @@ if ($date_absence_eleve != null) {
 }
 
 if ($type_selection == 'id_cours') {
-    $current_cours = new EdtEmplacementCours();
     $current_cours = EdtEmplacementCoursQuery::create()->filterByUtilisateurProfessionnel($utilisateur)->findPk($id_cours);
     if ($current_cours != null) {
 	$current_creneau = $current_cours->getEdtCreneau();
 	$current_groupe = $current_cours->getGroupe();
-
-	//on va utiliser le numero de semaine precisée pour regler la date
-	if ($id_semaine == null || $id_semaine == -1) {
-	    $id_semaine = date('W');
-	}
-	$day_of_the_week = $current_cours->getJourSemaineNumeric();
-	$week_of_the_year = $id_semaine;
-	$current_week_of_the_year = date('W');
-	$year = date('Y');
-	//if faut peut etre decaler l'année
-	if ($current_week_of_the_year > 30 && $week_of_the_year > 30) {
-	    //ne rien faire on garde la meme annee
-	} else if ($current_week_of_the_year < 30 && $week_of_the_year < 30) {
-	    //ne rien faire on garde la meme annee
-	} else if ($current_week_of_the_year > 30 && $week_of_the_year < 30) {
-	    //on augmente d'un an
-	    $year = $year + 1;
-	} else if ($current_week_of_the_year < 30 && $week_of_the_year > 30) {
-	    //on reduit  d'un an
-	    $year = $year - 1;
-	}
-	if (strlen($week_of_the_year) == 1) {
-	    $week_of_the_year = '0'.$week_of_the_year;
-	}
-	$dt_date_absence_eleve = new DateTime($year.'-W'.$week_of_the_year.'-'.$day_of_the_week);
+	$dt_date_absence_eleve = $current_cours->getDate($id_semaine);
     }
 } else if ($type_selection == 'id_groupe') {
     if ($utilisateur->getStatut() == "professeur") {

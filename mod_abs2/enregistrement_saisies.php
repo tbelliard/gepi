@@ -142,7 +142,7 @@ $creneau_actuel = EdtCreneauQuery::create()->findPk($id_creneau);
 
 for($i=0; $i<$total_eleves; $i++) {
 
-    $id_eleve = $index = $_POST['id_eleve_absent'][$i];
+    $id_eleve = $_POST['id_eleve_absent'][$i];
 
     //on test si l'eleve est enregistré absent
     if (!isset($_POST['active_absence_eleve'][$i]) &&
@@ -168,8 +168,18 @@ for($i=0; $i<$total_eleves; $i++) {
     $saisie->setIdAid($id_aid);
     $saisie->setCommentaire($_POST['commentaire_absence_eleve'][$i]);
 
-    $date_debut = new DateTime(str_replace("/",".",$_POST['date_debut_absence_eleve'][$i]));
-    $heure_debut = new DateTime($_POST['heure_debut_absence_eleve'][$i]);
+    try {
+	$date_debut = new DateTime(str_replace("/",".",$_POST['date_debut_absence_eleve'][$i]));
+    } catch (Exception $x) {
+	$message_erreur_eleve[$id_eleve] .= "Mauvais format de date.<br/>";
+	continue;
+    }
+    try {
+	$heure_debut = new DateTime($_POST['heure_debut_absence_eleve'][$i]);
+    } catch (Exception $x) {
+	$message_erreur_eleve[$id_eleve] .= "Mauvais format d'heure.<br/>";
+	continue;
+    }
     $date_debut->setTime($heure_debut->format('H'), $heure_debut->format('i'));
     if ($utilisateur->getStatut() == 'professeur') {
 	if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
@@ -187,8 +197,18 @@ for($i=0; $i<$total_eleves; $i++) {
     }
     $saisie->setDebutAbs($date_debut);
 
-    $date_fin = new DateTime(str_replace("/",".",$_POST['date_fin_absence_eleve'][$i]));
-    $heure_fin = new DateTime($_POST['heure_fin_absence_eleve'][$i]);
+    try {
+	$date_fin = new DateTime(str_replace("/",".",$_POST['date_fin_absence_eleve'][$i]));
+    } catch (Exception $x) {
+	$message_erreur_eleve[$id_eleve] .= "Mauvais format de date.<br/>";
+	continue;
+    }
+    try {
+	$heure_fin = new DateTime($_POST['heure_fin_absence_eleve'][$i]);
+    } catch (Exception $x) {
+	$message_erreur_eleve[$id_eleve] .= "Mauvais format d'heure.<br/>";
+	continue;
+    }
     $date_fin->setTime($heure_fin->format('H'), $heure_fin->format('i'));
     if ($utilisateur->getStatut() == 'professeur') {
 	if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
@@ -233,11 +253,12 @@ for($i=0; $i<$total_eleves; $i++) {
 	if (isset($traitement)) {
 	    $traitement->save();
 	}
-	$message_enregistrement .= "Saisie enregistrée pour l'eleve : ".$eleve->getNom()."<br/>";
+	$message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrée pour l'eleve : ".$eleve->getNom()."</a>";
 	if (isset($saisie_discipline) && $saisie_discipline == true) {
 	    $message_enregistrement .= "<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
 		$saisie->getId()."&return_url=no_return'>Saisir un incident disciplinaire pour l'eleve : ".$eleve->getNom()."</a>";
 	}
+	$message_enregistrement .= "<br/>";
     } else {
 	$message_erreur_eleve[$id_eleve] .= $saisie->getValidationFailures();
     }
