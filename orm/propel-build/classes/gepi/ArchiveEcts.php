@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Skeleton subclass for representing a row from the 'archivage_ects' table.
  *

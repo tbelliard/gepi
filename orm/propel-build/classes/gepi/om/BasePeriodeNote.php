@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'periodes' table.
  *
@@ -982,8 +983,11 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 		$this->verouiller = null;
 		$this->id_classe = null;
 		$this->date_verrouillage = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

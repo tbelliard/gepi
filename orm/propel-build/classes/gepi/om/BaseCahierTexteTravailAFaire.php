@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'ct_devoirs_entry' table.
  *
@@ -1258,8 +1259,8 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 	 * If this CahierTexteTravailAFaire is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array CahierTexteTravailAFaireFichierJoint[] List of CahierTexteTravailAFaireFichierJoint objects
 	 * @throws     PropelException
 	 */
@@ -1341,8 +1342,11 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 		$this->id_groupe = null;
 		$this->id_login = null;
 		$this->id_sequence = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

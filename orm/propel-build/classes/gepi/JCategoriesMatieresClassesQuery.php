@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Skeleton subclass for performing query and update operations on the 'j_matieres_categories_classes' table.
  *

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'utilisateurs' table.
  *
@@ -511,7 +512,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$key = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = UtilisateurProfessionnelPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -538,7 +539,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 		$key = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = UtilisateurProfessionnelPeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + UtilisateurProfessionnelPeer::NUM_COLUMNS;
 		} else {
@@ -684,7 +685,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$con->beginTransaction();
 			$affectedRows += UtilisateurProfessionnelPeer::doOnDeleteCascade(new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME), $con);
 			UtilisateurProfessionnelPeer::doOnDeleteSetNull(new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(UtilisateurProfessionnelPeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(UtilisateurProfessionnelPeer::TABLE_NAME, $con, UtilisateurProfessionnelPeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).

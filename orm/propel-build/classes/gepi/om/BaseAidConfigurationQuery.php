@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'aid_config' table.
  *
@@ -137,10 +138,11 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -156,6 +158,7 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -194,15 +197,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByNom($nom = null, $comparison = Criteria::EQUAL)
+	public function filterByNom($nom = null, $comparison = null)
 	{
-		if (is_array($nom)) {
-			return $this->addUsingAlias(AidConfigurationPeer::NOM, $nom, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $nom)) {
-			return $this->addUsingAlias(AidConfigurationPeer::NOM, str_replace('*', '%', $nom), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::NOM, $nom, $comparison);
+		if (null === $comparison) {
+			if (is_array($nom)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nom)) {
+				$nom = str_replace('*', '%', $nom);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::NOM, $nom, $comparison);
 	}
 
 	/**
@@ -214,15 +219,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByNomComplet($nomComplet = null, $comparison = Criteria::EQUAL)
+	public function filterByNomComplet($nomComplet = null, $comparison = null)
 	{
-		if (is_array($nomComplet)) {
-			return $this->addUsingAlias(AidConfigurationPeer::NOM_COMPLET, $nomComplet, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $nomComplet)) {
-			return $this->addUsingAlias(AidConfigurationPeer::NOM_COMPLET, str_replace('*', '%', $nomComplet), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::NOM_COMPLET, $nomComplet, $comparison);
+		if (null === $comparison) {
+			if (is_array($nomComplet)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nomComplet)) {
+				$nomComplet = str_replace('*', '%', $nomComplet);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::NOM_COMPLET, $nomComplet, $comparison);
 	}
 
 	/**
@@ -234,23 +241,26 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByNoteMax($noteMax = null, $comparison = Criteria::EQUAL)
+	public function filterByNoteMax($noteMax = null, $comparison = null)
 	{
 		if (is_array($noteMax)) {
-			if (array_values($noteMax) === $noteMax) {
-				return $this->addUsingAlias(AidConfigurationPeer::NOTE_MAX, $noteMax, Criteria::IN);
-			} else {
-				if (isset($noteMax['min'])) {
-					$this->addUsingAlias(AidConfigurationPeer::NOTE_MAX, $noteMax['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($noteMax['max'])) {
-					$this->addUsingAlias(AidConfigurationPeer::NOTE_MAX, $noteMax['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($noteMax['min'])) {
+				$this->addUsingAlias(AidConfigurationPeer::NOTE_MAX, $noteMax['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::NOTE_MAX, $noteMax, $comparison);
+			if (isset($noteMax['max'])) {
+				$this->addUsingAlias(AidConfigurationPeer::NOTE_MAX, $noteMax['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::NOTE_MAX, $noteMax, $comparison);
 	}
 
 	/**
@@ -262,15 +272,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByOrderDisplay1($orderDisplay1 = null, $comparison = Criteria::EQUAL)
+	public function filterByOrderDisplay1($orderDisplay1 = null, $comparison = null)
 	{
-		if (is_array($orderDisplay1)) {
-			return $this->addUsingAlias(AidConfigurationPeer::ORDER_DISPLAY1, $orderDisplay1, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $orderDisplay1)) {
-			return $this->addUsingAlias(AidConfigurationPeer::ORDER_DISPLAY1, str_replace('*', '%', $orderDisplay1), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::ORDER_DISPLAY1, $orderDisplay1, $comparison);
+		if (null === $comparison) {
+			if (is_array($orderDisplay1)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $orderDisplay1)) {
+				$orderDisplay1 = str_replace('*', '%', $orderDisplay1);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::ORDER_DISPLAY1, $orderDisplay1, $comparison);
 	}
 
 	/**
@@ -282,23 +294,26 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByOrderDisplay2($orderDisplay2 = null, $comparison = Criteria::EQUAL)
+	public function filterByOrderDisplay2($orderDisplay2 = null, $comparison = null)
 	{
 		if (is_array($orderDisplay2)) {
-			if (array_values($orderDisplay2) === $orderDisplay2) {
-				return $this->addUsingAlias(AidConfigurationPeer::ORDER_DISPLAY2, $orderDisplay2, Criteria::IN);
-			} else {
-				if (isset($orderDisplay2['min'])) {
-					$this->addUsingAlias(AidConfigurationPeer::ORDER_DISPLAY2, $orderDisplay2['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($orderDisplay2['max'])) {
-					$this->addUsingAlias(AidConfigurationPeer::ORDER_DISPLAY2, $orderDisplay2['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($orderDisplay2['min'])) {
+				$this->addUsingAlias(AidConfigurationPeer::ORDER_DISPLAY2, $orderDisplay2['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::ORDER_DISPLAY2, $orderDisplay2, $comparison);
+			if (isset($orderDisplay2['max'])) {
+				$this->addUsingAlias(AidConfigurationPeer::ORDER_DISPLAY2, $orderDisplay2['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::ORDER_DISPLAY2, $orderDisplay2, $comparison);
 	}
 
 	/**
@@ -310,15 +325,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByTypeNote($typeNote = null, $comparison = Criteria::EQUAL)
+	public function filterByTypeNote($typeNote = null, $comparison = null)
 	{
-		if (is_array($typeNote)) {
-			return $this->addUsingAlias(AidConfigurationPeer::TYPE_NOTE, $typeNote, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $typeNote)) {
-			return $this->addUsingAlias(AidConfigurationPeer::TYPE_NOTE, str_replace('*', '%', $typeNote), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::TYPE_NOTE, $typeNote, $comparison);
+		if (null === $comparison) {
+			if (is_array($typeNote)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $typeNote)) {
+				$typeNote = str_replace('*', '%', $typeNote);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::TYPE_NOTE, $typeNote, $comparison);
 	}
 
 	/**
@@ -330,23 +347,26 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByDisplayBegin($displayBegin = null, $comparison = Criteria::EQUAL)
+	public function filterByDisplayBegin($displayBegin = null, $comparison = null)
 	{
 		if (is_array($displayBegin)) {
-			if (array_values($displayBegin) === $displayBegin) {
-				return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_BEGIN, $displayBegin, Criteria::IN);
-			} else {
-				if (isset($displayBegin['min'])) {
-					$this->addUsingAlias(AidConfigurationPeer::DISPLAY_BEGIN, $displayBegin['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($displayBegin['max'])) {
-					$this->addUsingAlias(AidConfigurationPeer::DISPLAY_BEGIN, $displayBegin['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($displayBegin['min'])) {
+				$this->addUsingAlias(AidConfigurationPeer::DISPLAY_BEGIN, $displayBegin['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_BEGIN, $displayBegin, $comparison);
+			if (isset($displayBegin['max'])) {
+				$this->addUsingAlias(AidConfigurationPeer::DISPLAY_BEGIN, $displayBegin['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_BEGIN, $displayBegin, $comparison);
 	}
 
 	/**
@@ -358,23 +378,26 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByDisplayEnd($displayEnd = null, $comparison = Criteria::EQUAL)
+	public function filterByDisplayEnd($displayEnd = null, $comparison = null)
 	{
 		if (is_array($displayEnd)) {
-			if (array_values($displayEnd) === $displayEnd) {
-				return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_END, $displayEnd, Criteria::IN);
-			} else {
-				if (isset($displayEnd['min'])) {
-					$this->addUsingAlias(AidConfigurationPeer::DISPLAY_END, $displayEnd['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($displayEnd['max'])) {
-					$this->addUsingAlias(AidConfigurationPeer::DISPLAY_END, $displayEnd['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($displayEnd['min'])) {
+				$this->addUsingAlias(AidConfigurationPeer::DISPLAY_END, $displayEnd['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_END, $displayEnd, $comparison);
+			if (isset($displayEnd['max'])) {
+				$this->addUsingAlias(AidConfigurationPeer::DISPLAY_END, $displayEnd['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_END, $displayEnd, $comparison);
 	}
 
 	/**
@@ -386,15 +409,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByMessage($message = null, $comparison = Criteria::EQUAL)
+	public function filterByMessage($message = null, $comparison = null)
 	{
-		if (is_array($message)) {
-			return $this->addUsingAlias(AidConfigurationPeer::MESSAGE, $message, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $message)) {
-			return $this->addUsingAlias(AidConfigurationPeer::MESSAGE, str_replace('*', '%', $message), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::MESSAGE, $message, $comparison);
+		if (null === $comparison) {
+			if (is_array($message)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $message)) {
+				$message = str_replace('*', '%', $message);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::MESSAGE, $message, $comparison);
 	}
 
 	/**
@@ -406,15 +431,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByDisplayNom($displayNom = null, $comparison = Criteria::EQUAL)
+	public function filterByDisplayNom($displayNom = null, $comparison = null)
 	{
-		if (is_array($displayNom)) {
-			return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_NOM, $displayNom, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $displayNom)) {
-			return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_NOM, str_replace('*', '%', $displayNom), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_NOM, $displayNom, $comparison);
+		if (null === $comparison) {
+			if (is_array($displayNom)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $displayNom)) {
+				$displayNom = str_replace('*', '%', $displayNom);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_NOM, $displayNom, $comparison);
 	}
 
 	/**
@@ -426,13 +453,12 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByIndiceAid($indiceAid = null, $comparison = Criteria::EQUAL)
+	public function filterByIndiceAid($indiceAid = null, $comparison = null)
 	{
-		if (is_array($indiceAid)) {
-			return $this->addUsingAlias(AidConfigurationPeer::INDICE_AID, $indiceAid, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::INDICE_AID, $indiceAid, $comparison);
+		if (is_array($indiceAid) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::INDICE_AID, $indiceAid, $comparison);
 	}
 
 	/**
@@ -444,15 +470,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByDisplayBulletin($displayBulletin = null, $comparison = Criteria::EQUAL)
+	public function filterByDisplayBulletin($displayBulletin = null, $comparison = null)
 	{
-		if (is_array($displayBulletin)) {
-			return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_BULLETIN, $displayBulletin, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $displayBulletin)) {
-			return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_BULLETIN, str_replace('*', '%', $displayBulletin), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_BULLETIN, $displayBulletin, $comparison);
+		if (null === $comparison) {
+			if (is_array($displayBulletin)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $displayBulletin)) {
+				$displayBulletin = str_replace('*', '%', $displayBulletin);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::DISPLAY_BULLETIN, $displayBulletin, $comparison);
 	}
 
 	/**
@@ -464,15 +492,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByBullSimplifie($bullSimplifie = null, $comparison = Criteria::EQUAL)
+	public function filterByBullSimplifie($bullSimplifie = null, $comparison = null)
 	{
-		if (is_array($bullSimplifie)) {
-			return $this->addUsingAlias(AidConfigurationPeer::BULL_SIMPLIFIE, $bullSimplifie, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $bullSimplifie)) {
-			return $this->addUsingAlias(AidConfigurationPeer::BULL_SIMPLIFIE, str_replace('*', '%', $bullSimplifie), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::BULL_SIMPLIFIE, $bullSimplifie, $comparison);
+		if (null === $comparison) {
+			if (is_array($bullSimplifie)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $bullSimplifie)) {
+				$bullSimplifie = str_replace('*', '%', $bullSimplifie);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::BULL_SIMPLIFIE, $bullSimplifie, $comparison);
 	}
 
 	/**
@@ -484,15 +514,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByOutilsComplementaires($outilsComplementaires = null, $comparison = Criteria::EQUAL)
+	public function filterByOutilsComplementaires($outilsComplementaires = null, $comparison = null)
 	{
-		if (is_array($outilsComplementaires)) {
-			return $this->addUsingAlias(AidConfigurationPeer::OUTILS_COMPLEMENTAIRES, $outilsComplementaires, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $outilsComplementaires)) {
-			return $this->addUsingAlias(AidConfigurationPeer::OUTILS_COMPLEMENTAIRES, str_replace('*', '%', $outilsComplementaires), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::OUTILS_COMPLEMENTAIRES, $outilsComplementaires, $comparison);
+		if (null === $comparison) {
+			if (is_array($outilsComplementaires)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $outilsComplementaires)) {
+				$outilsComplementaires = str_replace('*', '%', $outilsComplementaires);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::OUTILS_COMPLEMENTAIRES, $outilsComplementaires, $comparison);
 	}
 
 	/**
@@ -504,15 +536,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByFeuillePresence($feuillePresence = null, $comparison = Criteria::EQUAL)
+	public function filterByFeuillePresence($feuillePresence = null, $comparison = null)
 	{
-		if (is_array($feuillePresence)) {
-			return $this->addUsingAlias(AidConfigurationPeer::FEUILLE_PRESENCE, $feuillePresence, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $feuillePresence)) {
-			return $this->addUsingAlias(AidConfigurationPeer::FEUILLE_PRESENCE, str_replace('*', '%', $feuillePresence), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AidConfigurationPeer::FEUILLE_PRESENCE, $feuillePresence, $comparison);
+		if (null === $comparison) {
+			if (is_array($feuillePresence)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $feuillePresence)) {
+				$feuillePresence = str_replace('*', '%', $feuillePresence);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AidConfigurationPeer::FEUILLE_PRESENCE, $feuillePresence, $comparison);
 	}
 
 	/**
@@ -523,7 +557,7 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByAidDetails($aidDetails, $comparison = Criteria::EQUAL)
+	public function filterByAidDetails($aidDetails, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AidConfigurationPeer::INDICE_AID, $aidDetails->getIndiceAid(), $comparison);
@@ -546,6 +580,9 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -590,37 +627,6 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseAidConfigurationQuery

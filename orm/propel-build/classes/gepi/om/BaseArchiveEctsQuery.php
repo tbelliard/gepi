@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'archivage_ects' table.
  *
@@ -120,10 +121,11 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -139,6 +141,7 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -193,13 +196,12 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::ID, $id, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(ArchiveEctsPeer::ID, $id, $comparison);
+		if (is_array($id) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(ArchiveEctsPeer::ID, $id, $comparison);
 	}
 
 	/**
@@ -211,15 +213,17 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterByAnnee($annee = null, $comparison = Criteria::EQUAL)
+	public function filterByAnnee($annee = null, $comparison = null)
 	{
-		if (is_array($annee)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::ANNEE, $annee, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $annee)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::ANNEE, str_replace('*', '%', $annee), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ArchiveEctsPeer::ANNEE, $annee, $comparison);
+		if (null === $comparison) {
+			if (is_array($annee)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $annee)) {
+				$annee = str_replace('*', '%', $annee);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ArchiveEctsPeer::ANNEE, $annee, $comparison);
 	}
 
 	/**
@@ -231,15 +235,17 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterByIne($ine = null, $comparison = Criteria::EQUAL)
+	public function filterByIne($ine = null, $comparison = null)
 	{
-		if (is_array($ine)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::INE, $ine, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $ine)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::INE, str_replace('*', '%', $ine), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ArchiveEctsPeer::INE, $ine, $comparison);
+		if (null === $comparison) {
+			if (is_array($ine)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $ine)) {
+				$ine = str_replace('*', '%', $ine);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ArchiveEctsPeer::INE, $ine, $comparison);
 	}
 
 	/**
@@ -251,15 +257,17 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterByClasse($classe = null, $comparison = Criteria::EQUAL)
+	public function filterByClasse($classe = null, $comparison = null)
 	{
-		if (is_array($classe)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::CLASSE, $classe, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $classe)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::CLASSE, str_replace('*', '%', $classe), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ArchiveEctsPeer::CLASSE, $classe, $comparison);
+		if (null === $comparison) {
+			if (is_array($classe)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $classe)) {
+				$classe = str_replace('*', '%', $classe);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ArchiveEctsPeer::CLASSE, $classe, $comparison);
 	}
 
 	/**
@@ -271,13 +279,12 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterByNumPeriode($numPeriode = null, $comparison = Criteria::EQUAL)
+	public function filterByNumPeriode($numPeriode = null, $comparison = null)
 	{
-		if (is_array($numPeriode)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::NUM_PERIODE, $numPeriode, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(ArchiveEctsPeer::NUM_PERIODE, $numPeriode, $comparison);
+		if (is_array($numPeriode) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(ArchiveEctsPeer::NUM_PERIODE, $numPeriode, $comparison);
 	}
 
 	/**
@@ -289,15 +296,17 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterByNomPeriode($nomPeriode = null, $comparison = Criteria::EQUAL)
+	public function filterByNomPeriode($nomPeriode = null, $comparison = null)
 	{
-		if (is_array($nomPeriode)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::NOM_PERIODE, $nomPeriode, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $nomPeriode)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::NOM_PERIODE, str_replace('*', '%', $nomPeriode), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ArchiveEctsPeer::NOM_PERIODE, $nomPeriode, $comparison);
+		if (null === $comparison) {
+			if (is_array($nomPeriode)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nomPeriode)) {
+				$nomPeriode = str_replace('*', '%', $nomPeriode);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ArchiveEctsPeer::NOM_PERIODE, $nomPeriode, $comparison);
 	}
 
 	/**
@@ -309,15 +318,17 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterBySpecial($special = null, $comparison = Criteria::EQUAL)
+	public function filterBySpecial($special = null, $comparison = null)
 	{
-		if (is_array($special)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::SPECIAL, $special, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $special)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::SPECIAL, str_replace('*', '%', $special), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ArchiveEctsPeer::SPECIAL, $special, $comparison);
+		if (null === $comparison) {
+			if (is_array($special)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $special)) {
+				$special = str_replace('*', '%', $special);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ArchiveEctsPeer::SPECIAL, $special, $comparison);
 	}
 
 	/**
@@ -329,15 +340,17 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterByMatiere($matiere = null, $comparison = Criteria::EQUAL)
+	public function filterByMatiere($matiere = null, $comparison = null)
 	{
-		if (is_array($matiere)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::MATIERE, $matiere, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $matiere)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::MATIERE, str_replace('*', '%', $matiere), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ArchiveEctsPeer::MATIERE, $matiere, $comparison);
+		if (null === $comparison) {
+			if (is_array($matiere)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $matiere)) {
+				$matiere = str_replace('*', '%', $matiere);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ArchiveEctsPeer::MATIERE, $matiere, $comparison);
 	}
 
 	/**
@@ -349,15 +362,17 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterByProfs($profs = null, $comparison = Criteria::EQUAL)
+	public function filterByProfs($profs = null, $comparison = null)
 	{
-		if (is_array($profs)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::PROFS, $profs, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $profs)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::PROFS, str_replace('*', '%', $profs), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ArchiveEctsPeer::PROFS, $profs, $comparison);
+		if (null === $comparison) {
+			if (is_array($profs)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $profs)) {
+				$profs = str_replace('*', '%', $profs);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ArchiveEctsPeer::PROFS, $profs, $comparison);
 	}
 
 	/**
@@ -369,23 +384,26 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterByValeur($valeur = null, $comparison = Criteria::EQUAL)
+	public function filterByValeur($valeur = null, $comparison = null)
 	{
 		if (is_array($valeur)) {
-			if (array_values($valeur) === $valeur) {
-				return $this->addUsingAlias(ArchiveEctsPeer::VALEUR, $valeur, Criteria::IN);
-			} else {
-				if (isset($valeur['min'])) {
-					$this->addUsingAlias(ArchiveEctsPeer::VALEUR, $valeur['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($valeur['max'])) {
-					$this->addUsingAlias(ArchiveEctsPeer::VALEUR, $valeur['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($valeur['min'])) {
+				$this->addUsingAlias(ArchiveEctsPeer::VALEUR, $valeur['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(ArchiveEctsPeer::VALEUR, $valeur, $comparison);
+			if (isset($valeur['max'])) {
+				$this->addUsingAlias(ArchiveEctsPeer::VALEUR, $valeur['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(ArchiveEctsPeer::VALEUR, $valeur, $comparison);
 	}
 
 	/**
@@ -397,15 +415,17 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterByMention($mention = null, $comparison = Criteria::EQUAL)
+	public function filterByMention($mention = null, $comparison = null)
 	{
-		if (is_array($mention)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::MENTION, $mention, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $mention)) {
-			return $this->addUsingAlias(ArchiveEctsPeer::MENTION, str_replace('*', '%', $mention), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ArchiveEctsPeer::MENTION, $mention, $comparison);
+		if (null === $comparison) {
+			if (is_array($mention)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $mention)) {
+				$mention = str_replace('*', '%', $mention);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ArchiveEctsPeer::MENTION, $mention, $comparison);
 	}
 
 	/**
@@ -416,7 +436,7 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ArchiveEctsPeer::INE, $eleve->getNoGep(), $comparison);
@@ -439,6 +459,9 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -487,37 +510,6 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseArchiveEctsQuery

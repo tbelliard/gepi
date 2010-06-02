@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'j_groupes_professeurs' table.
  *
@@ -838,7 +839,10 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 	{
 		$this->id_groupe = null;
 		$this->login = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

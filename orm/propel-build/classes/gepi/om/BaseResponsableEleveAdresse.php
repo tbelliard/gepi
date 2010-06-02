@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'resp_adr' table.
  *
@@ -1011,8 +1012,8 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * If this ResponsableEleveAdresse is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array ResponsableEleve[] List of ResponsableEleve objects
 	 * @throws     PropelException
 	 */
@@ -1095,7 +1096,10 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 		$this->cp = null;
 		$this->pays = null;
 		$this->commune = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'responsables2' table.
  *
@@ -96,10 +97,11 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -115,6 +117,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -163,15 +166,17 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
 	 */
-	public function filterByEleId($eleId = null, $comparison = Criteria::EQUAL)
+	public function filterByEleId($eleId = null, $comparison = null)
 	{
-		if (is_array($eleId)) {
-			return $this->addUsingAlias(ResponsableInformationPeer::ELE_ID, $eleId, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $eleId)) {
-			return $this->addUsingAlias(ResponsableInformationPeer::ELE_ID, str_replace('*', '%', $eleId), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableInformationPeer::ELE_ID, $eleId, $comparison);
+		if (null === $comparison) {
+			if (is_array($eleId)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $eleId)) {
+				$eleId = str_replace('*', '%', $eleId);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableInformationPeer::ELE_ID, $eleId, $comparison);
 	}
 
 	/**
@@ -183,15 +188,17 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
 	 */
-	public function filterByPersId($persId = null, $comparison = Criteria::EQUAL)
+	public function filterByPersId($persId = null, $comparison = null)
 	{
-		if (is_array($persId)) {
-			return $this->addUsingAlias(ResponsableInformationPeer::PERS_ID, $persId, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $persId)) {
-			return $this->addUsingAlias(ResponsableInformationPeer::PERS_ID, str_replace('*', '%', $persId), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableInformationPeer::PERS_ID, $persId, $comparison);
+		if (null === $comparison) {
+			if (is_array($persId)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $persId)) {
+				$persId = str_replace('*', '%', $persId);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableInformationPeer::PERS_ID, $persId, $comparison);
 	}
 
 	/**
@@ -203,15 +210,17 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
 	 */
-	public function filterByRespLegal($respLegal = null, $comparison = Criteria::EQUAL)
+	public function filterByRespLegal($respLegal = null, $comparison = null)
 	{
-		if (is_array($respLegal)) {
-			return $this->addUsingAlias(ResponsableInformationPeer::RESP_LEGAL, $respLegal, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $respLegal)) {
-			return $this->addUsingAlias(ResponsableInformationPeer::RESP_LEGAL, str_replace('*', '%', $respLegal), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableInformationPeer::RESP_LEGAL, $respLegal, $comparison);
+		if (null === $comparison) {
+			if (is_array($respLegal)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $respLegal)) {
+				$respLegal = str_replace('*', '%', $respLegal);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableInformationPeer::RESP_LEGAL, $respLegal, $comparison);
 	}
 
 	/**
@@ -223,15 +232,17 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
 	 */
-	public function filterByPersContact($persContact = null, $comparison = Criteria::EQUAL)
+	public function filterByPersContact($persContact = null, $comparison = null)
 	{
-		if (is_array($persContact)) {
-			return $this->addUsingAlias(ResponsableInformationPeer::PERS_CONTACT, $persContact, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $persContact)) {
-			return $this->addUsingAlias(ResponsableInformationPeer::PERS_CONTACT, str_replace('*', '%', $persContact), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableInformationPeer::PERS_CONTACT, $persContact, $comparison);
+		if (null === $comparison) {
+			if (is_array($persContact)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $persContact)) {
+				$persContact = str_replace('*', '%', $persContact);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableInformationPeer::PERS_CONTACT, $persContact, $comparison);
 	}
 
 	/**
@@ -242,7 +253,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ResponsableInformationPeer::ELE_ID, $eleve->getEleId(), $comparison);
@@ -265,6 +276,9 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -303,7 +317,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
 	 */
-	public function filterByResponsableEleve($responsableEleve, $comparison = Criteria::EQUAL)
+	public function filterByResponsableEleve($responsableEleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ResponsableInformationPeer::PERS_ID, $responsableEleve->getPersId(), $comparison);
@@ -326,6 +340,9 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -372,37 +389,6 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseResponsableInformationQuery

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'utilisateurs' table.
  *
@@ -2010,8 +2011,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JGroupesProfesseurs[] List of JGroupesProfesseurs objects
 	 * @throws     PropelException
 	 */
@@ -2092,6 +2093,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JGroupesProfesseurs[] List of JGroupesProfesseurs objects
 	 */
 	public function getJGroupesProfesseurssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2139,8 +2145,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array CahierTexteCompteRendu[] List of CahierTexteCompteRendu objects
 	 * @throws     PropelException
 	 */
@@ -2221,6 +2227,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteCompteRendu[] List of CahierTexteCompteRendu objects
 	 */
 	public function getCahierTexteCompteRendusJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2241,6 +2252,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteCompteRendu[] List of CahierTexteCompteRendu objects
 	 */
 	public function getCahierTexteCompteRendusJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2288,8 +2304,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array CahierTexteTravailAFaire[] List of CahierTexteTravailAFaire objects
 	 * @throws     PropelException
 	 */
@@ -2370,6 +2386,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteTravailAFaire[] List of CahierTexteTravailAFaire objects
 	 */
 	public function getCahierTexteTravailAFairesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2390,6 +2411,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteTravailAFaire[] List of CahierTexteTravailAFaire objects
 	 */
 	public function getCahierTexteTravailAFairesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2437,8 +2463,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array CahierTexteNoticePrivee[] List of CahierTexteNoticePrivee objects
 	 * @throws     PropelException
 	 */
@@ -2519,6 +2545,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteNoticePrivee[] List of CahierTexteNoticePrivee objects
 	 */
 	public function getCahierTexteNoticePriveesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2539,6 +2570,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteNoticePrivee[] List of CahierTexteNoticePrivee objects
 	 */
 	public function getCahierTexteNoticePriveesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2586,8 +2622,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JEleveCpe[] List of JEleveCpe objects
 	 * @throws     PropelException
 	 */
@@ -2668,6 +2704,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JEleveCpe[] List of JEleveCpe objects
 	 */
 	public function getJEleveCpesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2715,8 +2756,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JEleveProfesseurPrincipal[] List of JEleveProfesseurPrincipal objects
 	 * @throws     PropelException
 	 */
@@ -2797,6 +2838,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JEleveProfesseurPrincipal[] List of JEleveProfesseurPrincipal objects
 	 */
 	public function getJEleveProfesseurPrincipalsJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2817,6 +2863,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JEleveProfesseurPrincipal[] List of JEleveProfesseurPrincipal objects
 	 */
 	public function getJEleveProfesseurPrincipalsJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2864,8 +2915,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JAidUtilisateursProfessionnels[] List of JAidUtilisateursProfessionnels objects
 	 * @throws     PropelException
 	 */
@@ -2946,6 +2997,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JAidUtilisateursProfessionnels[] List of JAidUtilisateursProfessionnels objects
 	 */
 	public function getJAidUtilisateursProfessionnelssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2993,8 +3049,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 * @throws     PropelException
 	 */
@@ -3075,6 +3131,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3095,6 +3156,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3115,6 +3181,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinEdtEmplacementCours($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3135,6 +3206,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3155,6 +3231,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3175,6 +3256,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3222,8 +3308,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
 	 * @throws     PropelException
 	 */
@@ -3304,6 +3390,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
 	 */
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveType($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3324,6 +3415,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
 	 */
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveMotif($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3344,6 +3440,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
 	 */
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveJustification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3364,6 +3465,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
 	 */
 	public function getAbsenceEleveTraitementsJoinAbsenceEleveAction($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3411,8 +3517,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array AbsenceEleveEnvoi[] List of AbsenceEleveEnvoi objects
 	 * @throws     PropelException
 	 */
@@ -3493,6 +3599,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveEnvoi[] List of AbsenceEleveEnvoi objects
 	 */
 	public function getAbsenceEleveEnvoisJoinAbsenceEleveTypeEnvoi($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3540,8 +3651,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JProfesseursMatieres[] List of JProfesseursMatieres objects
 	 * @throws     PropelException
 	 */
@@ -3622,6 +3733,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JProfesseursMatieres[] List of JProfesseursMatieres objects
 	 */
 	public function getJProfesseursMatieressJoinMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3669,8 +3785,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array PreferenceUtilisateurProfessionnel[] List of PreferenceUtilisateurProfessionnel objects
 	 * @throws     PropelException
 	 */
@@ -3778,8 +3894,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * If this UtilisateurProfessionnel is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
 	 * @throws     PropelException
 	 */
@@ -3860,6 +3976,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
 	 */
 	public function getEdtEmplacementCourssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3880,6 +4001,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
 	 */
 	public function getEdtEmplacementCourssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3900,6 +4026,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
 	 */
 	public function getEdtEmplacementCourssJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3920,6 +4051,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
 	 */
 	public function getEdtEmplacementCourssJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -3940,6 +4076,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
 	 */
 	public function getEdtEmplacementCourssJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -4424,8 +4565,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$this->temp_dir = null;
 		$this->numind = null;
 		$this->auth_mode = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

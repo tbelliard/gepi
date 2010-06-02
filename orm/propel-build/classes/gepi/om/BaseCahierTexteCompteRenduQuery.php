@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'ct_entry' table.
  *
@@ -125,10 +126,11 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -144,6 +146,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -182,13 +185,12 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByIdCt($idCt = null, $comparison = Criteria::EQUAL)
+	public function filterByIdCt($idCt = null, $comparison = null)
 	{
-		if (is_array($idCt)) {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_CT, $idCt, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_CT, $idCt, $comparison);
+		if (is_array($idCt) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_CT, $idCt, $comparison);
 	}
 
 	/**
@@ -200,23 +202,26 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByHeureEntry($heureEntry = null, $comparison = Criteria::EQUAL)
+	public function filterByHeureEntry($heureEntry = null, $comparison = null)
 	{
 		if (is_array($heureEntry)) {
-			if (array_values($heureEntry) === $heureEntry) {
-				return $this->addUsingAlias(CahierTexteCompteRenduPeer::HEURE_ENTRY, $heureEntry, Criteria::IN);
-			} else {
-				if (isset($heureEntry['min'])) {
-					$this->addUsingAlias(CahierTexteCompteRenduPeer::HEURE_ENTRY, $heureEntry['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($heureEntry['max'])) {
-					$this->addUsingAlias(CahierTexteCompteRenduPeer::HEURE_ENTRY, $heureEntry['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($heureEntry['min'])) {
+				$this->addUsingAlias(CahierTexteCompteRenduPeer::HEURE_ENTRY, $heureEntry['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::HEURE_ENTRY, $heureEntry, $comparison);
+			if (isset($heureEntry['max'])) {
+				$this->addUsingAlias(CahierTexteCompteRenduPeer::HEURE_ENTRY, $heureEntry['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteCompteRenduPeer::HEURE_ENTRY, $heureEntry, $comparison);
 	}
 
 	/**
@@ -228,23 +233,26 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByDateCt($dateCt = null, $comparison = Criteria::EQUAL)
+	public function filterByDateCt($dateCt = null, $comparison = null)
 	{
 		if (is_array($dateCt)) {
-			if (array_values($dateCt) === $dateCt) {
-				return $this->addUsingAlias(CahierTexteCompteRenduPeer::DATE_CT, $dateCt, Criteria::IN);
-			} else {
-				if (isset($dateCt['min'])) {
-					$this->addUsingAlias(CahierTexteCompteRenduPeer::DATE_CT, $dateCt['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($dateCt['max'])) {
-					$this->addUsingAlias(CahierTexteCompteRenduPeer::DATE_CT, $dateCt['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($dateCt['min'])) {
+				$this->addUsingAlias(CahierTexteCompteRenduPeer::DATE_CT, $dateCt['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::DATE_CT, $dateCt, $comparison);
+			if (isset($dateCt['max'])) {
+				$this->addUsingAlias(CahierTexteCompteRenduPeer::DATE_CT, $dateCt['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteCompteRenduPeer::DATE_CT, $dateCt, $comparison);
 	}
 
 	/**
@@ -256,15 +264,17 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByContenu($contenu = null, $comparison = Criteria::EQUAL)
+	public function filterByContenu($contenu = null, $comparison = null)
 	{
-		if (is_array($contenu)) {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::CONTENU, $contenu, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $contenu)) {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::CONTENU, str_replace('*', '%', $contenu), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::CONTENU, $contenu, $comparison);
+		if (null === $comparison) {
+			if (is_array($contenu)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $contenu)) {
+				$contenu = str_replace('*', '%', $contenu);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteCompteRenduPeer::CONTENU, $contenu, $comparison);
 	}
 
 	/**
@@ -276,15 +286,17 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByVise($vise = null, $comparison = Criteria::EQUAL)
+	public function filterByVise($vise = null, $comparison = null)
 	{
-		if (is_array($vise)) {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::VISE, $vise, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $vise)) {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::VISE, str_replace('*', '%', $vise), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::VISE, $vise, $comparison);
+		if (null === $comparison) {
+			if (is_array($vise)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $vise)) {
+				$vise = str_replace('*', '%', $vise);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteCompteRenduPeer::VISE, $vise, $comparison);
 	}
 
 	/**
@@ -296,15 +308,17 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByVisa($visa = null, $comparison = Criteria::EQUAL)
+	public function filterByVisa($visa = null, $comparison = null)
 	{
-		if (is_array($visa)) {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::VISA, $visa, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $visa)) {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::VISA, str_replace('*', '%', $visa), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::VISA, $visa, $comparison);
+		if (null === $comparison) {
+			if (is_array($visa)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $visa)) {
+				$visa = str_replace('*', '%', $visa);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteCompteRenduPeer::VISA, $visa, $comparison);
 	}
 
 	/**
@@ -316,23 +330,26 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByIdGroupe($idGroupe = null, $comparison = Criteria::EQUAL)
+	public function filterByIdGroupe($idGroupe = null, $comparison = null)
 	{
 		if (is_array($idGroupe)) {
-			if (array_values($idGroupe) === $idGroupe) {
-				return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_GROUPE, $idGroupe, Criteria::IN);
-			} else {
-				if (isset($idGroupe['min'])) {
-					$this->addUsingAlias(CahierTexteCompteRenduPeer::ID_GROUPE, $idGroupe['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idGroupe['max'])) {
-					$this->addUsingAlias(CahierTexteCompteRenduPeer::ID_GROUPE, $idGroupe['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($idGroupe['min'])) {
+				$this->addUsingAlias(CahierTexteCompteRenduPeer::ID_GROUPE, $idGroupe['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_GROUPE, $idGroupe, $comparison);
+			if (isset($idGroupe['max'])) {
+				$this->addUsingAlias(CahierTexteCompteRenduPeer::ID_GROUPE, $idGroupe['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_GROUPE, $idGroupe, $comparison);
 	}
 
 	/**
@@ -344,15 +361,17 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByIdLogin($idLogin = null, $comparison = Criteria::EQUAL)
+	public function filterByIdLogin($idLogin = null, $comparison = null)
 	{
-		if (is_array($idLogin)) {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_LOGIN, $idLogin, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $idLogin)) {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_LOGIN, str_replace('*', '%', $idLogin), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_LOGIN, $idLogin, $comparison);
+		if (null === $comparison) {
+			if (is_array($idLogin)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $idLogin)) {
+				$idLogin = str_replace('*', '%', $idLogin);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_LOGIN, $idLogin, $comparison);
 	}
 
 	/**
@@ -364,23 +383,26 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByIdSequence($idSequence = null, $comparison = Criteria::EQUAL)
+	public function filterByIdSequence($idSequence = null, $comparison = null)
 	{
 		if (is_array($idSequence)) {
-			if (array_values($idSequence) === $idSequence) {
-				return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_SEQUENCE, $idSequence, Criteria::IN);
-			} else {
-				if (isset($idSequence['min'])) {
-					$this->addUsingAlias(CahierTexteCompteRenduPeer::ID_SEQUENCE, $idSequence['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idSequence['max'])) {
-					$this->addUsingAlias(CahierTexteCompteRenduPeer::ID_SEQUENCE, $idSequence['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($idSequence['min'])) {
+				$this->addUsingAlias(CahierTexteCompteRenduPeer::ID_SEQUENCE, $idSequence['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_SEQUENCE, $idSequence, $comparison);
+			if (isset($idSequence['max'])) {
+				$this->addUsingAlias(CahierTexteCompteRenduPeer::ID_SEQUENCE, $idSequence['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteCompteRenduPeer::ID_SEQUENCE, $idSequence, $comparison);
 	}
 
 	/**
@@ -391,7 +413,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByGroupe($groupe, $comparison = Criteria::EQUAL)
+	public function filterByGroupe($groupe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(CahierTexteCompteRenduPeer::ID_GROUPE, $groupe->getId(), $comparison);
@@ -414,6 +436,9 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -452,7 +477,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = Criteria::EQUAL)
+	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(CahierTexteCompteRenduPeer::ID_LOGIN, $utilisateurProfessionnel->getLogin(), $comparison);
@@ -475,6 +500,9 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -513,7 +541,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByCahierTexteSequence($cahierTexteSequence, $comparison = Criteria::EQUAL)
+	public function filterByCahierTexteSequence($cahierTexteSequence, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(CahierTexteCompteRenduPeer::ID_SEQUENCE, $cahierTexteSequence->getId(), $comparison);
@@ -536,6 +564,9 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -574,7 +605,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function filterByCahierTexteCompteRenduFichierJoint($cahierTexteCompteRenduFichierJoint, $comparison = Criteria::EQUAL)
+	public function filterByCahierTexteCompteRenduFichierJoint($cahierTexteCompteRenduFichierJoint, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(CahierTexteCompteRenduPeer::ID_CT, $cahierTexteCompteRenduFichierJoint->getIdCt(), $comparison);
@@ -597,6 +628,9 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -641,37 +675,6 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseCahierTexteCompteRenduQuery

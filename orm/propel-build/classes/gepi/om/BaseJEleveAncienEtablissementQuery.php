@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'j_eleves_etablissements' table.
  *
@@ -88,10 +89,11 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -107,6 +109,7 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -155,15 +158,17 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    JEleveAncienEtablissementQuery The current query, for fluid interface
 	 */
-	public function filterByIdEleve($idEleve = null, $comparison = Criteria::EQUAL)
+	public function filterByIdEleve($idEleve = null, $comparison = null)
 	{
-		if (is_array($idEleve)) {
-			return $this->addUsingAlias(JEleveAncienEtablissementPeer::ID_ELEVE, $idEleve, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $idEleve)) {
-			return $this->addUsingAlias(JEleveAncienEtablissementPeer::ID_ELEVE, str_replace('*', '%', $idEleve), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(JEleveAncienEtablissementPeer::ID_ELEVE, $idEleve, $comparison);
+		if (null === $comparison) {
+			if (is_array($idEleve)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $idEleve)) {
+				$idEleve = str_replace('*', '%', $idEleve);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(JEleveAncienEtablissementPeer::ID_ELEVE, $idEleve, $comparison);
 	}
 
 	/**
@@ -175,15 +180,17 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    JEleveAncienEtablissementQuery The current query, for fluid interface
 	 */
-	public function filterByIdEtablissement($idEtablissement = null, $comparison = Criteria::EQUAL)
+	public function filterByIdEtablissement($idEtablissement = null, $comparison = null)
 	{
-		if (is_array($idEtablissement)) {
-			return $this->addUsingAlias(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $idEtablissement, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $idEtablissement)) {
-			return $this->addUsingAlias(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, str_replace('*', '%', $idEtablissement), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $idEtablissement, $comparison);
+		if (null === $comparison) {
+			if (is_array($idEtablissement)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $idEtablissement)) {
+				$idEtablissement = str_replace('*', '%', $idEtablissement);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $idEtablissement, $comparison);
 	}
 
 	/**
@@ -194,7 +201,7 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    JEleveAncienEtablissementQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JEleveAncienEtablissementPeer::ID_ELEVE, $eleve->getIdEleve(), $comparison);
@@ -217,6 +224,9 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -255,7 +265,7 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    JEleveAncienEtablissementQuery The current query, for fluid interface
 	 */
-	public function filterByAncienEtablissement($ancienEtablissement, $comparison = Criteria::EQUAL)
+	public function filterByAncienEtablissement($ancienEtablissement, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $ancienEtablissement->getId(), $comparison);
@@ -278,6 +288,9 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -324,37 +337,6 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseJEleveAncienEtablissementQuery

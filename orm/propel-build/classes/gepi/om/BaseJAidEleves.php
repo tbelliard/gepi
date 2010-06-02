@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'j_aid_eleves' table.
  *
@@ -840,7 +841,10 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	{
 		$this->id_aid = null;
 		$this->login = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

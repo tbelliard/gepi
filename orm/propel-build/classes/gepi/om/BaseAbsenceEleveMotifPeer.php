@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'a_motifs' table.
  *
@@ -415,7 +416,7 @@ abstract class BaseAbsenceEleveMotifPeer {
 			$key = AbsenceEleveMotifPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = AbsenceEleveMotifPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -442,7 +443,7 @@ abstract class BaseAbsenceEleveMotifPeer {
 		$key = AbsenceEleveMotifPeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = AbsenceEleveMotifPeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + AbsenceEleveMotifPeer::NUM_COLUMNS;
 		} else {
@@ -591,7 +592,7 @@ abstract class BaseAbsenceEleveMotifPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			AbsenceEleveMotifPeer::doOnDeleteSetNull(new Criteria(AbsenceEleveMotifPeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(AbsenceEleveMotifPeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(AbsenceEleveMotifPeer::TABLE_NAME, $con, AbsenceEleveMotifPeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).

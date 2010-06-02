@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'j_groupes_classes' table.
  *
@@ -420,7 +421,7 @@ abstract class BaseJGroupesClassesPeer {
 			$key = JGroupesClassesPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = JGroupesClassesPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -447,7 +448,7 @@ abstract class BaseJGroupesClassesPeer {
 		$key = JGroupesClassesPeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = JGroupesClassesPeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + JGroupesClassesPeer::NUM_COLUMNS;
 		} else {
@@ -640,7 +641,7 @@ abstract class BaseJGroupesClassesPeer {
 			$key1 = JGroupesClassesPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JGroupesClassesPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -706,7 +707,7 @@ abstract class BaseJGroupesClassesPeer {
 			$key1 = JGroupesClassesPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JGroupesClassesPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -772,7 +773,7 @@ abstract class BaseJGroupesClassesPeer {
 			$key1 = JGroupesClassesPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JGroupesClassesPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -904,7 +905,7 @@ abstract class BaseJGroupesClassesPeer {
 			$key1 = JGroupesClassesPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JGroupesClassesPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = JGroupesClassesPeer::getOMClass(false);
@@ -1173,7 +1174,7 @@ abstract class BaseJGroupesClassesPeer {
 			$key1 = JGroupesClassesPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JGroupesClassesPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = JGroupesClassesPeer::getOMClass(false);
@@ -1270,7 +1271,7 @@ abstract class BaseJGroupesClassesPeer {
 			$key1 = JGroupesClassesPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JGroupesClassesPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = JGroupesClassesPeer::getOMClass(false);
@@ -1367,7 +1368,7 @@ abstract class BaseJGroupesClassesPeer {
 			$key1 = JGroupesClassesPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JGroupesClassesPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = JGroupesClassesPeer::getOMClass(false);
@@ -1562,7 +1563,7 @@ abstract class BaseJGroupesClassesPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += BasePeer::doDeleteAll(JGroupesClassesPeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(JGroupesClassesPeer::TABLE_NAME, $con, JGroupesClassesPeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
@@ -1687,8 +1688,8 @@ abstract class BaseJGroupesClassesPeer {
 	 * @return     JGroupesClasses
 	 */
 	public static function retrieveByPK($id_groupe, $id_classe, PropelPDO $con = null) {
-		$key = serialize(array((string) $id_groupe, (string) $id_classe));
- 		if (null !== ($obj = JGroupesClassesPeer::getInstanceFromPool($key))) {
+		$_instancePoolKey = serialize(array((string) $id_groupe, (string) $id_classe));
+ 		if (null !== ($obj = JGroupesClassesPeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
 

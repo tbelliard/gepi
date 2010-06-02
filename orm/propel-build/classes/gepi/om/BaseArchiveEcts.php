@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'archivage_ects' table.
  *
@@ -1208,7 +1209,10 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 		$this->profs = null;
 		$this->valeur = null;
 		$this->mention = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

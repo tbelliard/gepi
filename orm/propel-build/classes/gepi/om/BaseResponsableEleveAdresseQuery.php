@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'resp_adr' table.
  *
@@ -109,10 +110,11 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -128,6 +130,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -166,15 +169,17 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function filterByAdrId($adrId = null, $comparison = Criteria::EQUAL)
+	public function filterByAdrId($adrId = null, $comparison = null)
 	{
-		if (is_array($adrId)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $adrId, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $adrId)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, str_replace('*', '%', $adrId), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $adrId, $comparison);
+		if (null === $comparison) {
+			if (is_array($adrId)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $adrId)) {
+				$adrId = str_replace('*', '%', $adrId);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $adrId, $comparison);
 	}
 
 	/**
@@ -186,15 +191,17 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function filterByAdr1($adr1 = null, $comparison = Criteria::EQUAL)
+	public function filterByAdr1($adr1 = null, $comparison = null)
 	{
-		if (is_array($adr1)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR1, $adr1, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $adr1)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR1, str_replace('*', '%', $adr1), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR1, $adr1, $comparison);
+		if (null === $comparison) {
+			if (is_array($adr1)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $adr1)) {
+				$adr1 = str_replace('*', '%', $adr1);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR1, $adr1, $comparison);
 	}
 
 	/**
@@ -206,15 +213,17 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function filterByAdr2($adr2 = null, $comparison = Criteria::EQUAL)
+	public function filterByAdr2($adr2 = null, $comparison = null)
 	{
-		if (is_array($adr2)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR2, $adr2, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $adr2)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR2, str_replace('*', '%', $adr2), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR2, $adr2, $comparison);
+		if (null === $comparison) {
+			if (is_array($adr2)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $adr2)) {
+				$adr2 = str_replace('*', '%', $adr2);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR2, $adr2, $comparison);
 	}
 
 	/**
@@ -226,15 +235,17 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function filterByAdr3($adr3 = null, $comparison = Criteria::EQUAL)
+	public function filterByAdr3($adr3 = null, $comparison = null)
 	{
-		if (is_array($adr3)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR3, $adr3, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $adr3)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR3, str_replace('*', '%', $adr3), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR3, $adr3, $comparison);
+		if (null === $comparison) {
+			if (is_array($adr3)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $adr3)) {
+				$adr3 = str_replace('*', '%', $adr3);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR3, $adr3, $comparison);
 	}
 
 	/**
@@ -246,15 +257,17 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function filterByAdr4($adr4 = null, $comparison = Criteria::EQUAL)
+	public function filterByAdr4($adr4 = null, $comparison = null)
 	{
-		if (is_array($adr4)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR4, $adr4, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $adr4)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR4, str_replace('*', '%', $adr4), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR4, $adr4, $comparison);
+		if (null === $comparison) {
+			if (is_array($adr4)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $adr4)) {
+				$adr4 = str_replace('*', '%', $adr4);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR4, $adr4, $comparison);
 	}
 
 	/**
@@ -266,15 +279,17 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function filterByCp($cp = null, $comparison = Criteria::EQUAL)
+	public function filterByCp($cp = null, $comparison = null)
 	{
-		if (is_array($cp)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::CP, $cp, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $cp)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::CP, str_replace('*', '%', $cp), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::CP, $cp, $comparison);
+		if (null === $comparison) {
+			if (is_array($cp)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $cp)) {
+				$cp = str_replace('*', '%', $cp);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableEleveAdressePeer::CP, $cp, $comparison);
 	}
 
 	/**
@@ -286,15 +301,17 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function filterByPays($pays = null, $comparison = Criteria::EQUAL)
+	public function filterByPays($pays = null, $comparison = null)
 	{
-		if (is_array($pays)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::PAYS, $pays, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $pays)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::PAYS, str_replace('*', '%', $pays), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::PAYS, $pays, $comparison);
+		if (null === $comparison) {
+			if (is_array($pays)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $pays)) {
+				$pays = str_replace('*', '%', $pays);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableEleveAdressePeer::PAYS, $pays, $comparison);
 	}
 
 	/**
@@ -306,15 +323,17 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function filterByCommune($commune = null, $comparison = Criteria::EQUAL)
+	public function filterByCommune($commune = null, $comparison = null)
 	{
-		if (is_array($commune)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::COMMUNE, $commune, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $commune)) {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::COMMUNE, str_replace('*', '%', $commune), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ResponsableEleveAdressePeer::COMMUNE, $commune, $comparison);
+		if (null === $comparison) {
+			if (is_array($commune)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $commune)) {
+				$commune = str_replace('*', '%', $commune);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ResponsableEleveAdressePeer::COMMUNE, $commune, $comparison);
 	}
 
 	/**
@@ -325,7 +344,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function filterByResponsableEleve($responsableEleve, $comparison = Criteria::EQUAL)
+	public function filterByResponsableEleve($responsableEleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $responsableEleve->getAdrId(), $comparison);
@@ -348,6 +367,9 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -392,37 +414,6 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseResponsableEleveAdresseQuery

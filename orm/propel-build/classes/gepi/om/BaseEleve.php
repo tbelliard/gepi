@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'eleves' table.
  *
@@ -1631,8 +1632,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * If this Eleve is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JEleveClasse[] List of JEleveClasse objects
 	 * @throws     PropelException
 	 */
@@ -1713,6 +1714,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JEleveClasse[] List of JEleveClasse objects
 	 */
 	public function getJEleveClassesJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -1760,8 +1766,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * If this Eleve is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JEleveCpe[] List of JEleveCpe objects
 	 * @throws     PropelException
 	 */
@@ -1842,6 +1848,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JEleveCpe[] List of JEleveCpe objects
 	 */
 	public function getJEleveCpesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -1889,8 +1900,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * If this Eleve is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JEleveGroupe[] List of JEleveGroupe objects
 	 * @throws     PropelException
 	 */
@@ -1971,6 +1982,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JEleveGroupe[] List of JEleveGroupe objects
 	 */
 	public function getJEleveGroupesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2018,8 +2034,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * If this Eleve is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JEleveProfesseurPrincipal[] List of JEleveProfesseurPrincipal objects
 	 * @throws     PropelException
 	 */
@@ -2100,6 +2116,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JEleveProfesseurPrincipal[] List of JEleveProfesseurPrincipal objects
 	 */
 	public function getJEleveProfesseurPrincipalsJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2120,6 +2141,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JEleveProfesseurPrincipal[] List of JEleveProfesseurPrincipal objects
 	 */
 	public function getJEleveProfesseurPrincipalsJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2132,7 +2158,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	/**
 	 * Gets a single EleveRegimeDoublant object, which is related to this object by a one-to-one relationship.
 	 *
-	 * @param      PropelPDO $con
+	 * @param      PropelPDO $con optional connection object
 	 * @return     EleveRegimeDoublant
 	 * @throws     PropelException
 	 */
@@ -2149,16 +2175,16 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	/**
 	 * Sets a single EleveRegimeDoublant object as related to this object by a one-to-one relationship.
 	 *
-	 * @param      EleveRegimeDoublant $l EleveRegimeDoublant
+	 * @param      EleveRegimeDoublant $v EleveRegimeDoublant
 	 * @return     Eleve The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setEleveRegimeDoublant(EleveRegimeDoublant $v)
+	public function setEleveRegimeDoublant(EleveRegimeDoublant $v = null)
 	{
 		$this->singleEleveRegimeDoublant = $v;
 
 		// Make sure that that the passed-in EleveRegimeDoublant isn't already associated with this object
-		if ($v->getEleve() === null) {
+		if ($v !== null && $v->getEleve() === null) {
 			$v->setEleve($this);
 		}
 
@@ -2203,8 +2229,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * If this Eleve is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array ResponsableInformation[] List of ResponsableInformation objects
 	 * @throws     PropelException
 	 */
@@ -2285,6 +2311,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array ResponsableInformation[] List of ResponsableInformation objects
 	 */
 	public function getResponsableInformationsJoinResponsableEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2332,8 +2363,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * If this Eleve is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JEleveAncienEtablissement[] List of JEleveAncienEtablissement objects
 	 * @throws     PropelException
 	 */
@@ -2414,6 +2445,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JEleveAncienEtablissement[] List of JEleveAncienEtablissement objects
 	 */
 	public function getJEleveAncienEtablissementsJoinAncienEtablissement($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2461,8 +2497,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * If this Eleve is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JAidEleves[] List of JAidEleves objects
 	 * @throws     PropelException
 	 */
@@ -2543,6 +2579,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JAidEleves[] List of JAidEleves objects
 	 */
 	public function getJAidElevessJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2590,8 +2631,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * If this Eleve is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 * @throws     PropelException
 	 */
@@ -2672,6 +2713,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2692,6 +2738,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2712,6 +2763,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinEdtEmplacementCours($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2732,6 +2788,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2752,6 +2813,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2772,6 +2838,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
 	 */
 	public function getAbsenceEleveSaisiesJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2819,8 +2890,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * If this Eleve is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array CreditEcts[] List of CreditEcts objects
 	 * @throws     PropelException
 	 */
@@ -2901,6 +2972,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CreditEcts[] List of CreditEcts objects
 	 */
 	public function getCreditEctssJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -2948,8 +3024,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * If this Eleve is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array CreditEctsGlobal[] List of CreditEctsGlobal objects
 	 * @throws     PropelException
 	 */
@@ -3057,8 +3133,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * If this Eleve is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array ArchiveEcts[] List of ArchiveEcts objects
 	 * @throws     PropelException
 	 */
@@ -3484,8 +3560,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$this->ele_id = null;
 		$this->email = null;
 		$this->id_eleve = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'a_types_statut' table.
  *
@@ -809,7 +810,10 @@ abstract class BaseAbsenceEleveTypeStatutAutorise extends BaseObject  implements
 		$this->id = null;
 		$this->id_a_type = null;
 		$this->statut = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

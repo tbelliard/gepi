@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'j_aid_utilisateurs' table.
  *
@@ -838,7 +839,10 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 	{
 		$this->id_aid = null;
 		$this->id_utilisateur = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

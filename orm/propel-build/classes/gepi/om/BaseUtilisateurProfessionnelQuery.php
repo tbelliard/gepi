@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'utilisateurs' table.
  *
@@ -197,10 +198,11 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -216,6 +218,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -254,15 +257,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByLogin($login = null, $comparison = Criteria::EQUAL)
+	public function filterByLogin($login = null, $comparison = null)
 	{
-		if (is_array($login)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $login, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $login)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, str_replace('*', '%', $login), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $login, $comparison);
+		if (null === $comparison) {
+			if (is_array($login)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $login)) {
+				$login = str_replace('*', '%', $login);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $login, $comparison);
 	}
 
 	/**
@@ -274,15 +279,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByNom($nom = null, $comparison = Criteria::EQUAL)
+	public function filterByNom($nom = null, $comparison = null)
 	{
-		if (is_array($nom)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::NOM, $nom, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $nom)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::NOM, str_replace('*', '%', $nom), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::NOM, $nom, $comparison);
+		if (null === $comparison) {
+			if (is_array($nom)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nom)) {
+				$nom = str_replace('*', '%', $nom);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::NOM, $nom, $comparison);
 	}
 
 	/**
@@ -294,15 +301,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByPrenom($prenom = null, $comparison = Criteria::EQUAL)
+	public function filterByPrenom($prenom = null, $comparison = null)
 	{
-		if (is_array($prenom)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::PRENOM, $prenom, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $prenom)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::PRENOM, str_replace('*', '%', $prenom), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::PRENOM, $prenom, $comparison);
+		if (null === $comparison) {
+			if (is_array($prenom)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $prenom)) {
+				$prenom = str_replace('*', '%', $prenom);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::PRENOM, $prenom, $comparison);
 	}
 
 	/**
@@ -314,15 +323,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByCivilite($civilite = null, $comparison = Criteria::EQUAL)
+	public function filterByCivilite($civilite = null, $comparison = null)
 	{
-		if (is_array($civilite)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::CIVILITE, $civilite, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $civilite)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::CIVILITE, str_replace('*', '%', $civilite), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::CIVILITE, $civilite, $comparison);
+		if (null === $comparison) {
+			if (is_array($civilite)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $civilite)) {
+				$civilite = str_replace('*', '%', $civilite);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::CIVILITE, $civilite, $comparison);
 	}
 
 	/**
@@ -334,15 +345,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByPassword($password = null, $comparison = Criteria::EQUAL)
+	public function filterByPassword($password = null, $comparison = null)
 	{
-		if (is_array($password)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::PASSWORD, $password, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $password)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::PASSWORD, str_replace('*', '%', $password), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::PASSWORD, $password, $comparison);
+		if (null === $comparison) {
+			if (is_array($password)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $password)) {
+				$password = str_replace('*', '%', $password);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::PASSWORD, $password, $comparison);
 	}
 
 	/**
@@ -354,15 +367,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByEmail($email = null, $comparison = Criteria::EQUAL)
+	public function filterByEmail($email = null, $comparison = null)
 	{
-		if (is_array($email)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::EMAIL, $email, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $email)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::EMAIL, str_replace('*', '%', $email), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::EMAIL, $email, $comparison);
+		if (null === $comparison) {
+			if (is_array($email)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $email)) {
+				$email = str_replace('*', '%', $email);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::EMAIL, $email, $comparison);
 	}
 
 	/**
@@ -374,15 +389,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByShowEmail($showEmail = null, $comparison = Criteria::EQUAL)
+	public function filterByShowEmail($showEmail = null, $comparison = null)
 	{
-		if (is_array($showEmail)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::SHOW_EMAIL, $showEmail, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $showEmail)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::SHOW_EMAIL, str_replace('*', '%', $showEmail), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::SHOW_EMAIL, $showEmail, $comparison);
+		if (null === $comparison) {
+			if (is_array($showEmail)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $showEmail)) {
+				$showEmail = str_replace('*', '%', $showEmail);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::SHOW_EMAIL, $showEmail, $comparison);
 	}
 
 	/**
@@ -394,15 +411,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByStatut($statut = null, $comparison = Criteria::EQUAL)
+	public function filterByStatut($statut = null, $comparison = null)
 	{
-		if (is_array($statut)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::STATUT, $statut, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $statut)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::STATUT, str_replace('*', '%', $statut), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::STATUT, $statut, $comparison);
+		if (null === $comparison) {
+			if (is_array($statut)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $statut)) {
+				$statut = str_replace('*', '%', $statut);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::STATUT, $statut, $comparison);
 	}
 
 	/**
@@ -414,15 +433,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByEtat($etat = null, $comparison = Criteria::EQUAL)
+	public function filterByEtat($etat = null, $comparison = null)
 	{
-		if (is_array($etat)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::ETAT, $etat, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $etat)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::ETAT, str_replace('*', '%', $etat), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::ETAT, $etat, $comparison);
+		if (null === $comparison) {
+			if (is_array($etat)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $etat)) {
+				$etat = str_replace('*', '%', $etat);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::ETAT, $etat, $comparison);
 	}
 
 	/**
@@ -434,15 +455,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByChangeMdp($changeMdp = null, $comparison = Criteria::EQUAL)
+	public function filterByChangeMdp($changeMdp = null, $comparison = null)
 	{
-		if (is_array($changeMdp)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::CHANGE_MDP, $changeMdp, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $changeMdp)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::CHANGE_MDP, str_replace('*', '%', $changeMdp), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::CHANGE_MDP, $changeMdp, $comparison);
+		if (null === $comparison) {
+			if (is_array($changeMdp)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $changeMdp)) {
+				$changeMdp = str_replace('*', '%', $changeMdp);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::CHANGE_MDP, $changeMdp, $comparison);
 	}
 
 	/**
@@ -454,23 +477,26 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByDateVerrouillage($dateVerrouillage = null, $comparison = Criteria::EQUAL)
+	public function filterByDateVerrouillage($dateVerrouillage = null, $comparison = null)
 	{
 		if (is_array($dateVerrouillage)) {
-			if (array_values($dateVerrouillage) === $dateVerrouillage) {
-				return $this->addUsingAlias(UtilisateurProfessionnelPeer::DATE_VERROUILLAGE, $dateVerrouillage, Criteria::IN);
-			} else {
-				if (isset($dateVerrouillage['min'])) {
-					$this->addUsingAlias(UtilisateurProfessionnelPeer::DATE_VERROUILLAGE, $dateVerrouillage['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($dateVerrouillage['max'])) {
-					$this->addUsingAlias(UtilisateurProfessionnelPeer::DATE_VERROUILLAGE, $dateVerrouillage['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($dateVerrouillage['min'])) {
+				$this->addUsingAlias(UtilisateurProfessionnelPeer::DATE_VERROUILLAGE, $dateVerrouillage['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::DATE_VERROUILLAGE, $dateVerrouillage, $comparison);
+			if (isset($dateVerrouillage['max'])) {
+				$this->addUsingAlias(UtilisateurProfessionnelPeer::DATE_VERROUILLAGE, $dateVerrouillage['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::DATE_VERROUILLAGE, $dateVerrouillage, $comparison);
 	}
 
 	/**
@@ -482,15 +508,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByPasswordTicket($passwordTicket = null, $comparison = Criteria::EQUAL)
+	public function filterByPasswordTicket($passwordTicket = null, $comparison = null)
 	{
-		if (is_array($passwordTicket)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::PASSWORD_TICKET, $passwordTicket, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $passwordTicket)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::PASSWORD_TICKET, str_replace('*', '%', $passwordTicket), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::PASSWORD_TICKET, $passwordTicket, $comparison);
+		if (null === $comparison) {
+			if (is_array($passwordTicket)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $passwordTicket)) {
+				$passwordTicket = str_replace('*', '%', $passwordTicket);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::PASSWORD_TICKET, $passwordTicket, $comparison);
 	}
 
 	/**
@@ -502,23 +530,26 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByTicketExpiration($ticketExpiration = null, $comparison = Criteria::EQUAL)
+	public function filterByTicketExpiration($ticketExpiration = null, $comparison = null)
 	{
 		if (is_array($ticketExpiration)) {
-			if (array_values($ticketExpiration) === $ticketExpiration) {
-				return $this->addUsingAlias(UtilisateurProfessionnelPeer::TICKET_EXPIRATION, $ticketExpiration, Criteria::IN);
-			} else {
-				if (isset($ticketExpiration['min'])) {
-					$this->addUsingAlias(UtilisateurProfessionnelPeer::TICKET_EXPIRATION, $ticketExpiration['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($ticketExpiration['max'])) {
-					$this->addUsingAlias(UtilisateurProfessionnelPeer::TICKET_EXPIRATION, $ticketExpiration['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($ticketExpiration['min'])) {
+				$this->addUsingAlias(UtilisateurProfessionnelPeer::TICKET_EXPIRATION, $ticketExpiration['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::TICKET_EXPIRATION, $ticketExpiration, $comparison);
+			if (isset($ticketExpiration['max'])) {
+				$this->addUsingAlias(UtilisateurProfessionnelPeer::TICKET_EXPIRATION, $ticketExpiration['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::TICKET_EXPIRATION, $ticketExpiration, $comparison);
 	}
 
 	/**
@@ -530,23 +561,26 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByNiveauAlerte($niveauAlerte = null, $comparison = Criteria::EQUAL)
+	public function filterByNiveauAlerte($niveauAlerte = null, $comparison = null)
 	{
 		if (is_array($niveauAlerte)) {
-			if (array_values($niveauAlerte) === $niveauAlerte) {
-				return $this->addUsingAlias(UtilisateurProfessionnelPeer::NIVEAU_ALERTE, $niveauAlerte, Criteria::IN);
-			} else {
-				if (isset($niveauAlerte['min'])) {
-					$this->addUsingAlias(UtilisateurProfessionnelPeer::NIVEAU_ALERTE, $niveauAlerte['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($niveauAlerte['max'])) {
-					$this->addUsingAlias(UtilisateurProfessionnelPeer::NIVEAU_ALERTE, $niveauAlerte['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($niveauAlerte['min'])) {
+				$this->addUsingAlias(UtilisateurProfessionnelPeer::NIVEAU_ALERTE, $niveauAlerte['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::NIVEAU_ALERTE, $niveauAlerte, $comparison);
+			if (isset($niveauAlerte['max'])) {
+				$this->addUsingAlias(UtilisateurProfessionnelPeer::NIVEAU_ALERTE, $niveauAlerte['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::NIVEAU_ALERTE, $niveauAlerte, $comparison);
 	}
 
 	/**
@@ -558,23 +592,26 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByObservationSecurite($observationSecurite = null, $comparison = Criteria::EQUAL)
+	public function filterByObservationSecurite($observationSecurite = null, $comparison = null)
 	{
 		if (is_array($observationSecurite)) {
-			if (array_values($observationSecurite) === $observationSecurite) {
-				return $this->addUsingAlias(UtilisateurProfessionnelPeer::OBSERVATION_SECURITE, $observationSecurite, Criteria::IN);
-			} else {
-				if (isset($observationSecurite['min'])) {
-					$this->addUsingAlias(UtilisateurProfessionnelPeer::OBSERVATION_SECURITE, $observationSecurite['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($observationSecurite['max'])) {
-					$this->addUsingAlias(UtilisateurProfessionnelPeer::OBSERVATION_SECURITE, $observationSecurite['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($observationSecurite['min'])) {
+				$this->addUsingAlias(UtilisateurProfessionnelPeer::OBSERVATION_SECURITE, $observationSecurite['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::OBSERVATION_SECURITE, $observationSecurite, $comparison);
+			if (isset($observationSecurite['max'])) {
+				$this->addUsingAlias(UtilisateurProfessionnelPeer::OBSERVATION_SECURITE, $observationSecurite['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::OBSERVATION_SECURITE, $observationSecurite, $comparison);
 	}
 
 	/**
@@ -586,15 +623,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByTempDir($tempDir = null, $comparison = Criteria::EQUAL)
+	public function filterByTempDir($tempDir = null, $comparison = null)
 	{
-		if (is_array($tempDir)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::TEMP_DIR, $tempDir, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $tempDir)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::TEMP_DIR, str_replace('*', '%', $tempDir), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::TEMP_DIR, $tempDir, $comparison);
+		if (null === $comparison) {
+			if (is_array($tempDir)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $tempDir)) {
+				$tempDir = str_replace('*', '%', $tempDir);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::TEMP_DIR, $tempDir, $comparison);
 	}
 
 	/**
@@ -606,15 +645,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByNumind($numind = null, $comparison = Criteria::EQUAL)
+	public function filterByNumind($numind = null, $comparison = null)
 	{
-		if (is_array($numind)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::NUMIND, $numind, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $numind)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::NUMIND, str_replace('*', '%', $numind), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::NUMIND, $numind, $comparison);
+		if (null === $comparison) {
+			if (is_array($numind)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $numind)) {
+				$numind = str_replace('*', '%', $numind);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::NUMIND, $numind, $comparison);
 	}
 
 	/**
@@ -626,15 +667,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByAuthMode($authMode = null, $comparison = Criteria::EQUAL)
+	public function filterByAuthMode($authMode = null, $comparison = null)
 	{
-		if (is_array($authMode)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::AUTH_MODE, $authMode, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $authMode)) {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::AUTH_MODE, str_replace('*', '%', $authMode), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(UtilisateurProfessionnelPeer::AUTH_MODE, $authMode, $comparison);
+		if (null === $comparison) {
+			if (is_array($authMode)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $authMode)) {
+				$authMode = str_replace('*', '%', $authMode);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::AUTH_MODE, $authMode, $comparison);
 	}
 
 	/**
@@ -645,7 +688,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByJGroupesProfesseurs($jGroupesProfesseurs, $comparison = Criteria::EQUAL)
+	public function filterByJGroupesProfesseurs($jGroupesProfesseurs, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jGroupesProfesseurs->getLogin(), $comparison);
@@ -668,6 +711,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -706,7 +752,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByCahierTexteCompteRendu($cahierTexteCompteRendu, $comparison = Criteria::EQUAL)
+	public function filterByCahierTexteCompteRendu($cahierTexteCompteRendu, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $cahierTexteCompteRendu->getIdLogin(), $comparison);
@@ -729,6 +775,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -767,7 +816,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByCahierTexteTravailAFaire($cahierTexteTravailAFaire, $comparison = Criteria::EQUAL)
+	public function filterByCahierTexteTravailAFaire($cahierTexteTravailAFaire, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $cahierTexteTravailAFaire->getIdLogin(), $comparison);
@@ -790,6 +839,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -828,7 +880,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByCahierTexteNoticePrivee($cahierTexteNoticePrivee, $comparison = Criteria::EQUAL)
+	public function filterByCahierTexteNoticePrivee($cahierTexteNoticePrivee, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $cahierTexteNoticePrivee->getIdLogin(), $comparison);
@@ -851,6 +903,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -889,7 +944,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByJEleveCpe($jEleveCpe, $comparison = Criteria::EQUAL)
+	public function filterByJEleveCpe($jEleveCpe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jEleveCpe->getCpeLogin(), $comparison);
@@ -912,6 +967,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -950,7 +1008,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByJEleveProfesseurPrincipal($jEleveProfesseurPrincipal, $comparison = Criteria::EQUAL)
+	public function filterByJEleveProfesseurPrincipal($jEleveProfesseurPrincipal, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jEleveProfesseurPrincipal->getProfesseur(), $comparison);
@@ -973,6 +1031,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1011,7 +1072,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels, $comparison = Criteria::EQUAL)
+	public function filterByJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jAidUtilisateursProfessionnels->getIdUtilisateur(), $comparison);
@@ -1034,6 +1095,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1072,7 +1136,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = Criteria::EQUAL)
+	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveSaisie->getUtilisateurId(), $comparison);
@@ -1095,6 +1159,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1133,7 +1200,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveTraitement($absenceEleveTraitement, $comparison = Criteria::EQUAL)
+	public function filterByAbsenceEleveTraitement($absenceEleveTraitement, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveTraitement->getUtilisateurId(), $comparison);
@@ -1156,6 +1223,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1194,7 +1264,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveEnvoi($absenceEleveEnvoi, $comparison = Criteria::EQUAL)
+	public function filterByAbsenceEleveEnvoi($absenceEleveEnvoi, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveEnvoi->getUtilisateurId(), $comparison);
@@ -1217,6 +1287,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1255,7 +1328,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByJProfesseursMatieres($jProfesseursMatieres, $comparison = Criteria::EQUAL)
+	public function filterByJProfesseursMatieres($jProfesseursMatieres, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jProfesseursMatieres->getIdProfesseur(), $comparison);
@@ -1278,6 +1351,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1316,7 +1392,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByPreferenceUtilisateurProfessionnel($preferenceUtilisateurProfessionnel, $comparison = Criteria::EQUAL)
+	public function filterByPreferenceUtilisateurProfessionnel($preferenceUtilisateurProfessionnel, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $preferenceUtilisateurProfessionnel->getLogin(), $comparison);
@@ -1339,6 +1415,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1377,7 +1456,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = Criteria::EQUAL)
+	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $edtEmplacementCours->getLoginProf(), $comparison);
@@ -1400,6 +1479,9 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1512,37 +1594,6 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseUtilisateurProfessionnelQuery

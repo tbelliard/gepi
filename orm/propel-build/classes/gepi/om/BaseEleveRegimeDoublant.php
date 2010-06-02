@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'j_eleves_regime' table.
  *
@@ -797,7 +798,10 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 		$this->login = null;
 		$this->doublant = null;
 		$this->regime = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

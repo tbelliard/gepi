@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'periodes' table.
  *
@@ -96,10 +97,11 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -115,6 +117,7 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -163,15 +166,17 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
-	public function filterByNomPeriode($nomPeriode = null, $comparison = Criteria::EQUAL)
+	public function filterByNomPeriode($nomPeriode = null, $comparison = null)
 	{
-		if (is_array($nomPeriode)) {
-			return $this->addUsingAlias(PeriodeNotePeer::NOM_PERIODE, $nomPeriode, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $nomPeriode)) {
-			return $this->addUsingAlias(PeriodeNotePeer::NOM_PERIODE, str_replace('*', '%', $nomPeriode), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PeriodeNotePeer::NOM_PERIODE, $nomPeriode, $comparison);
+		if (null === $comparison) {
+			if (is_array($nomPeriode)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nomPeriode)) {
+				$nomPeriode = str_replace('*', '%', $nomPeriode);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PeriodeNotePeer::NOM_PERIODE, $nomPeriode, $comparison);
 	}
 
 	/**
@@ -183,13 +188,12 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
-	public function filterByNumPeriode($numPeriode = null, $comparison = Criteria::EQUAL)
+	public function filterByNumPeriode($numPeriode = null, $comparison = null)
 	{
-		if (is_array($numPeriode)) {
-			return $this->addUsingAlias(PeriodeNotePeer::NUM_PERIODE, $numPeriode, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(PeriodeNotePeer::NUM_PERIODE, $numPeriode, $comparison);
+		if (is_array($numPeriode) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(PeriodeNotePeer::NUM_PERIODE, $numPeriode, $comparison);
 	}
 
 	/**
@@ -201,15 +205,17 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
-	public function filterByVerouiller($verouiller = null, $comparison = Criteria::EQUAL)
+	public function filterByVerouiller($verouiller = null, $comparison = null)
 	{
-		if (is_array($verouiller)) {
-			return $this->addUsingAlias(PeriodeNotePeer::VEROUILLER, $verouiller, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $verouiller)) {
-			return $this->addUsingAlias(PeriodeNotePeer::VEROUILLER, str_replace('*', '%', $verouiller), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PeriodeNotePeer::VEROUILLER, $verouiller, $comparison);
+		if (null === $comparison) {
+			if (is_array($verouiller)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $verouiller)) {
+				$verouiller = str_replace('*', '%', $verouiller);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PeriodeNotePeer::VEROUILLER, $verouiller, $comparison);
 	}
 
 	/**
@@ -221,13 +227,12 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
-	public function filterByIdClasse($idClasse = null, $comparison = Criteria::EQUAL)
+	public function filterByIdClasse($idClasse = null, $comparison = null)
 	{
-		if (is_array($idClasse)) {
-			return $this->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $idClasse, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $idClasse, $comparison);
+		if (is_array($idClasse) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $idClasse, $comparison);
 	}
 
 	/**
@@ -239,23 +244,26 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
-	public function filterByDateVerrouillage($dateVerrouillage = null, $comparison = Criteria::EQUAL)
+	public function filterByDateVerrouillage($dateVerrouillage = null, $comparison = null)
 	{
 		if (is_array($dateVerrouillage)) {
-			if (array_values($dateVerrouillage) === $dateVerrouillage) {
-				return $this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage, Criteria::IN);
-			} else {
-				if (isset($dateVerrouillage['min'])) {
-					$this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($dateVerrouillage['max'])) {
-					$this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($dateVerrouillage['min'])) {
+				$this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage, $comparison);
+			if (isset($dateVerrouillage['max'])) {
+				$this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage, $comparison);
 	}
 
 	/**
@@ -266,7 +274,7 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
-	public function filterByClasse($classe, $comparison = Criteria::EQUAL)
+	public function filterByClasse($classe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $classe->getId(), $comparison);
@@ -289,6 +297,9 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -335,37 +346,6 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BasePeriodeNoteQuery

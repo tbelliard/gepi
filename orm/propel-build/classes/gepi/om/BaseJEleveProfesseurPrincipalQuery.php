@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'j_eleves_professeurs' table.
  *
@@ -96,10 +97,11 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -115,6 +117,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -166,15 +169,17 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
-	public function filterByLogin($login = null, $comparison = Criteria::EQUAL)
+	public function filterByLogin($login = null, $comparison = null)
 	{
-		if (is_array($login)) {
-			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $login, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $login)) {
-			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, str_replace('*', '%', $login), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $login, $comparison);
+		if (null === $comparison) {
+			if (is_array($login)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $login)) {
+				$login = str_replace('*', '%', $login);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $login, $comparison);
 	}
 
 	/**
@@ -186,15 +191,17 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
-	public function filterByProfesseur($professeur = null, $comparison = Criteria::EQUAL)
+	public function filterByProfesseur($professeur = null, $comparison = null)
 	{
-		if (is_array($professeur)) {
-			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $professeur, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $professeur)) {
-			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, str_replace('*', '%', $professeur), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $professeur, $comparison);
+		if (null === $comparison) {
+			if (is_array($professeur)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $professeur)) {
+				$professeur = str_replace('*', '%', $professeur);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $professeur, $comparison);
 	}
 
 	/**
@@ -206,13 +213,12 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
-	public function filterByIdClasse($idClasse = null, $comparison = Criteria::EQUAL)
+	public function filterByIdClasse($idClasse = null, $comparison = null)
 	{
-		if (is_array($idClasse)) {
-			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $idClasse, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $idClasse, $comparison);
+		if (is_array($idClasse) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $idClasse, $comparison);
 	}
 
 	/**
@@ -223,7 +229,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $eleve->getLogin(), $comparison);
@@ -246,6 +252,9 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -284,7 +293,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
-	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = Criteria::EQUAL)
+	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $utilisateurProfessionnel->getLogin(), $comparison);
@@ -307,6 +316,9 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -345,7 +357,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
-	public function filterByClasse($classe, $comparison = Criteria::EQUAL)
+	public function filterByClasse($classe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $classe->getId(), $comparison);
@@ -368,6 +380,9 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -415,37 +430,6 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseJEleveProfesseurPrincipalQuery

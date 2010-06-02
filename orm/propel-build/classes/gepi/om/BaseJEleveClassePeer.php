@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'j_eleves_classes' table.
  *
@@ -405,7 +406,7 @@ abstract class BaseJEleveClassePeer {
 			$key = JEleveClassePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = JEleveClassePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -432,7 +433,7 @@ abstract class BaseJEleveClassePeer {
 		$key = JEleveClassePeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = JEleveClassePeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + JEleveClassePeer::NUM_COLUMNS;
 		} else {
@@ -575,7 +576,7 @@ abstract class BaseJEleveClassePeer {
 			$key1 = JEleveClassePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JEleveClassePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -641,7 +642,7 @@ abstract class BaseJEleveClassePeer {
 			$key1 = JEleveClassePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JEleveClassePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -766,7 +767,7 @@ abstract class BaseJEleveClassePeer {
 			$key1 = JEleveClassePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JEleveClassePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = JEleveClassePeer::getOMClass(false);
@@ -956,7 +957,7 @@ abstract class BaseJEleveClassePeer {
 			$key1 = JEleveClassePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JEleveClassePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = JEleveClassePeer::getOMClass(false);
@@ -1029,7 +1030,7 @@ abstract class BaseJEleveClassePeer {
 			$key1 = JEleveClassePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = JEleveClassePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = JEleveClassePeer::getOMClass(false);
@@ -1213,7 +1214,7 @@ abstract class BaseJEleveClassePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += BasePeer::doDeleteAll(JEleveClassePeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(JEleveClassePeer::TABLE_NAME, $con, JEleveClassePeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
@@ -1340,8 +1341,8 @@ abstract class BaseJEleveClassePeer {
 	 * @return     JEleveClasse
 	 */
 	public static function retrieveByPK($login, $id_classe, $periode, PropelPDO $con = null) {
-		$key = serialize(array((string) $login, (string) $id_classe, (string) $periode));
- 		if (null !== ($obj = JEleveClassePeer::getInstanceFromPool($key))) {
+		$_instancePoolKey = serialize(array((string) $login, (string) $id_classe, (string) $periode));
+ 		if (null !== ($obj = JEleveClassePeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
 

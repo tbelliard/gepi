@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'ects_global_credits' table.
  *
@@ -88,10 +89,11 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -107,6 +109,7 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -155,13 +158,12 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsGlobalQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id)) {
-			return $this->addUsingAlias(CreditEctsGlobalPeer::ID, $id, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(CreditEctsGlobalPeer::ID, $id, $comparison);
+		if (is_array($id) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(CreditEctsGlobalPeer::ID, $id, $comparison);
 	}
 
 	/**
@@ -173,13 +175,12 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsGlobalQuery The current query, for fluid interface
 	 */
-	public function filterByIdEleve($idEleve = null, $comparison = Criteria::EQUAL)
+	public function filterByIdEleve($idEleve = null, $comparison = null)
 	{
-		if (is_array($idEleve)) {
-			return $this->addUsingAlias(CreditEctsGlobalPeer::ID_ELEVE, $idEleve, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(CreditEctsGlobalPeer::ID_ELEVE, $idEleve, $comparison);
+		if (is_array($idEleve) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(CreditEctsGlobalPeer::ID_ELEVE, $idEleve, $comparison);
 	}
 
 	/**
@@ -191,15 +192,17 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsGlobalQuery The current query, for fluid interface
 	 */
-	public function filterByMention($mention = null, $comparison = Criteria::EQUAL)
+	public function filterByMention($mention = null, $comparison = null)
 	{
-		if (is_array($mention)) {
-			return $this->addUsingAlias(CreditEctsGlobalPeer::MENTION, $mention, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $mention)) {
-			return $this->addUsingAlias(CreditEctsGlobalPeer::MENTION, str_replace('*', '%', $mention), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(CreditEctsGlobalPeer::MENTION, $mention, $comparison);
+		if (null === $comparison) {
+			if (is_array($mention)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $mention)) {
+				$mention = str_replace('*', '%', $mention);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(CreditEctsGlobalPeer::MENTION, $mention, $comparison);
 	}
 
 	/**
@@ -210,7 +213,7 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsGlobalQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(CreditEctsGlobalPeer::ID_ELEVE, $eleve->getIdEleve(), $comparison);
@@ -233,6 +236,9 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -279,37 +285,6 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseCreditEctsGlobalQuery

@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'a_types' table.
  *
@@ -109,10 +110,11 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -128,6 +130,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -166,13 +169,12 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id)) {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::ID, $id, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::ID, $id, $comparison);
+		if (is_array($id) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(AbsenceEleveTypePeer::ID, $id, $comparison);
 	}
 
 	/**
@@ -184,15 +186,17 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterByNom($nom = null, $comparison = Criteria::EQUAL)
+	public function filterByNom($nom = null, $comparison = null)
 	{
-		if (is_array($nom)) {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::NOM, $nom, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $nom)) {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::NOM, str_replace('*', '%', $nom), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::NOM, $nom, $comparison);
+		if (null === $comparison) {
+			if (is_array($nom)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nom)) {
+				$nom = str_replace('*', '%', $nom);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveTypePeer::NOM, $nom, $comparison);
 	}
 
 	/**
@@ -204,9 +208,9 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterByJustificationExigible($justificationExigible = null, $comparison = Criteria::EQUAL)
+	public function filterByJustificationExigible($justificationExigible = null, $comparison = null)
 	{
-		if(is_string($justificationExigible)) {
+		if (is_string($justificationExigible)) {
 			$justification_exigible = in_array(strtolower($justificationExigible), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
 		}
 		return $this->addUsingAlias(AbsenceEleveTypePeer::JUSTIFICATION_EXIGIBLE, $justificationExigible, $comparison);
@@ -221,9 +225,9 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterByResponsabiliteEtablissement($responsabiliteEtablissement = null, $comparison = Criteria::EQUAL)
+	public function filterByResponsabiliteEtablissement($responsabiliteEtablissement = null, $comparison = null)
 	{
-		if(is_string($responsabiliteEtablissement)) {
+		if (is_string($responsabiliteEtablissement)) {
 			$responsabilite_etablissement = in_array(strtolower($responsabiliteEtablissement), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
 		}
 		return $this->addUsingAlias(AbsenceEleveTypePeer::RESPONSABILITE_ETABLISSEMENT, $responsabiliteEtablissement, $comparison);
@@ -238,15 +242,17 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterByTypeSaisie($typeSaisie = null, $comparison = Criteria::EQUAL)
+	public function filterByTypeSaisie($typeSaisie = null, $comparison = null)
 	{
-		if (is_array($typeSaisie)) {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::TYPE_SAISIE, $typeSaisie, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $typeSaisie)) {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::TYPE_SAISIE, str_replace('*', '%', $typeSaisie), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::TYPE_SAISIE, $typeSaisie, $comparison);
+		if (null === $comparison) {
+			if (is_array($typeSaisie)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $typeSaisie)) {
+				$typeSaisie = str_replace('*', '%', $typeSaisie);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveTypePeer::TYPE_SAISIE, $typeSaisie, $comparison);
 	}
 
 	/**
@@ -258,15 +264,17 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterByCommentaire($commentaire = null, $comparison = Criteria::EQUAL)
+	public function filterByCommentaire($commentaire = null, $comparison = null)
 	{
-		if (is_array($commentaire)) {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::COMMENTAIRE, $commentaire, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $commentaire)) {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::COMMENTAIRE, str_replace('*', '%', $commentaire), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::COMMENTAIRE, $commentaire, $comparison);
+		if (null === $comparison) {
+			if (is_array($commentaire)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $commentaire)) {
+				$commentaire = str_replace('*', '%', $commentaire);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveTypePeer::COMMENTAIRE, $commentaire, $comparison);
 	}
 
 	/**
@@ -278,23 +286,26 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterBySortableRank($sortableRank = null, $comparison = Criteria::EQUAL)
+	public function filterBySortableRank($sortableRank = null, $comparison = null)
 	{
 		if (is_array($sortableRank)) {
-			if (array_values($sortableRank) === $sortableRank) {
-				return $this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank, Criteria::IN);
-			} else {
-				if (isset($sortableRank['min'])) {
-					$this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($sortableRank['max'])) {
-					$this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($sortableRank['min'])) {
+				$this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank, $comparison);
+			if (isset($sortableRank['max'])) {
+				$this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank, $comparison);
 	}
 
 	/**
@@ -305,7 +316,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveTypeStatutAutorise($absenceEleveTypeStatutAutorise, $comparison = Criteria::EQUAL)
+	public function filterByAbsenceEleveTypeStatutAutorise($absenceEleveTypeStatutAutorise, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveTypePeer::ID, $absenceEleveTypeStatutAutorise->getIdAType(), $comparison);
@@ -328,6 +339,9 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -366,7 +380,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveTraitement($absenceEleveTraitement, $comparison = Criteria::EQUAL)
+	public function filterByAbsenceEleveTraitement($absenceEleveTraitement, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveTypePeer::ID, $absenceEleveTraitement->getATypeId(), $comparison);
@@ -389,6 +403,9 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -433,37 +450,6 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// sortable behavior

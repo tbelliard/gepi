@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'ects_credits' table.
  *
@@ -108,10 +109,11 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -127,6 +129,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -181,13 +184,12 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id)) {
-			return $this->addUsingAlias(CreditEctsPeer::ID, $id, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(CreditEctsPeer::ID, $id, $comparison);
+		if (is_array($id) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(CreditEctsPeer::ID, $id, $comparison);
 	}
 
 	/**
@@ -199,13 +201,12 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsQuery The current query, for fluid interface
 	 */
-	public function filterByIdEleve($idEleve = null, $comparison = Criteria::EQUAL)
+	public function filterByIdEleve($idEleve = null, $comparison = null)
 	{
-		if (is_array($idEleve)) {
-			return $this->addUsingAlias(CreditEctsPeer::ID_ELEVE, $idEleve, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(CreditEctsPeer::ID_ELEVE, $idEleve, $comparison);
+		if (is_array($idEleve) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(CreditEctsPeer::ID_ELEVE, $idEleve, $comparison);
 	}
 
 	/**
@@ -217,13 +218,12 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsQuery The current query, for fluid interface
 	 */
-	public function filterByNumPeriode($numPeriode = null, $comparison = Criteria::EQUAL)
+	public function filterByNumPeriode($numPeriode = null, $comparison = null)
 	{
-		if (is_array($numPeriode)) {
-			return $this->addUsingAlias(CreditEctsPeer::NUM_PERIODE, $numPeriode, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(CreditEctsPeer::NUM_PERIODE, $numPeriode, $comparison);
+		if (is_array($numPeriode) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(CreditEctsPeer::NUM_PERIODE, $numPeriode, $comparison);
 	}
 
 	/**
@@ -235,13 +235,12 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsQuery The current query, for fluid interface
 	 */
-	public function filterByIdGroupe($idGroupe = null, $comparison = Criteria::EQUAL)
+	public function filterByIdGroupe($idGroupe = null, $comparison = null)
 	{
-		if (is_array($idGroupe)) {
-			return $this->addUsingAlias(CreditEctsPeer::ID_GROUPE, $idGroupe, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(CreditEctsPeer::ID_GROUPE, $idGroupe, $comparison);
+		if (is_array($idGroupe) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(CreditEctsPeer::ID_GROUPE, $idGroupe, $comparison);
 	}
 
 	/**
@@ -253,23 +252,26 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsQuery The current query, for fluid interface
 	 */
-	public function filterByValeur($valeur = null, $comparison = Criteria::EQUAL)
+	public function filterByValeur($valeur = null, $comparison = null)
 	{
 		if (is_array($valeur)) {
-			if (array_values($valeur) === $valeur) {
-				return $this->addUsingAlias(CreditEctsPeer::VALEUR, $valeur, Criteria::IN);
-			} else {
-				if (isset($valeur['min'])) {
-					$this->addUsingAlias(CreditEctsPeer::VALEUR, $valeur['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($valeur['max'])) {
-					$this->addUsingAlias(CreditEctsPeer::VALEUR, $valeur['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($valeur['min'])) {
+				$this->addUsingAlias(CreditEctsPeer::VALEUR, $valeur['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(CreditEctsPeer::VALEUR, $valeur, $comparison);
+			if (isset($valeur['max'])) {
+				$this->addUsingAlias(CreditEctsPeer::VALEUR, $valeur['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(CreditEctsPeer::VALEUR, $valeur, $comparison);
 	}
 
 	/**
@@ -281,15 +283,17 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsQuery The current query, for fluid interface
 	 */
-	public function filterByMention($mention = null, $comparison = Criteria::EQUAL)
+	public function filterByMention($mention = null, $comparison = null)
 	{
-		if (is_array($mention)) {
-			return $this->addUsingAlias(CreditEctsPeer::MENTION, $mention, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $mention)) {
-			return $this->addUsingAlias(CreditEctsPeer::MENTION, str_replace('*', '%', $mention), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(CreditEctsPeer::MENTION, $mention, $comparison);
+		if (null === $comparison) {
+			if (is_array($mention)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $mention)) {
+				$mention = str_replace('*', '%', $mention);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(CreditEctsPeer::MENTION, $mention, $comparison);
 	}
 
 	/**
@@ -301,15 +305,17 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsQuery The current query, for fluid interface
 	 */
-	public function filterByMentionProf($mentionProf = null, $comparison = Criteria::EQUAL)
+	public function filterByMentionProf($mentionProf = null, $comparison = null)
 	{
-		if (is_array($mentionProf)) {
-			return $this->addUsingAlias(CreditEctsPeer::MENTION_PROF, $mentionProf, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $mentionProf)) {
-			return $this->addUsingAlias(CreditEctsPeer::MENTION_PROF, str_replace('*', '%', $mentionProf), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(CreditEctsPeer::MENTION_PROF, $mentionProf, $comparison);
+		if (null === $comparison) {
+			if (is_array($mentionProf)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $mentionProf)) {
+				$mentionProf = str_replace('*', '%', $mentionProf);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(CreditEctsPeer::MENTION_PROF, $mentionProf, $comparison);
 	}
 
 	/**
@@ -320,7 +326,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(CreditEctsPeer::ID_ELEVE, $eleve->getIdEleve(), $comparison);
@@ -343,6 +349,9 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -381,7 +390,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsQuery The current query, for fluid interface
 	 */
-	public function filterByGroupe($groupe, $comparison = Criteria::EQUAL)
+	public function filterByGroupe($groupe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(CreditEctsPeer::ID_GROUPE, $groupe->getId(), $comparison);
@@ -404,6 +413,9 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -452,37 +464,6 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseCreditEctsQuery

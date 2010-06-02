@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'classes' table.
  *
@@ -205,10 +206,11 @@ abstract class BaseClasseQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -224,6 +226,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -262,13 +265,12 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id)) {
-			return $this->addUsingAlias(ClassePeer::ID, $id, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(ClassePeer::ID, $id, $comparison);
+		if (is_array($id) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(ClassePeer::ID, $id, $comparison);
 	}
 
 	/**
@@ -280,15 +282,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByClasse($classe = null, $comparison = Criteria::EQUAL)
+	public function filterByClasse($classe = null, $comparison = null)
 	{
-		if (is_array($classe)) {
-			return $this->addUsingAlias(ClassePeer::CLASSE, $classe, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $classe)) {
-			return $this->addUsingAlias(ClassePeer::CLASSE, str_replace('*', '%', $classe), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::CLASSE, $classe, $comparison);
+		if (null === $comparison) {
+			if (is_array($classe)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $classe)) {
+				$classe = str_replace('*', '%', $classe);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::CLASSE, $classe, $comparison);
 	}
 
 	/**
@@ -300,15 +304,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByNomComplet($nomComplet = null, $comparison = Criteria::EQUAL)
+	public function filterByNomComplet($nomComplet = null, $comparison = null)
 	{
-		if (is_array($nomComplet)) {
-			return $this->addUsingAlias(ClassePeer::NOM_COMPLET, $nomComplet, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $nomComplet)) {
-			return $this->addUsingAlias(ClassePeer::NOM_COMPLET, str_replace('*', '%', $nomComplet), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::NOM_COMPLET, $nomComplet, $comparison);
+		if (null === $comparison) {
+			if (is_array($nomComplet)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nomComplet)) {
+				$nomComplet = str_replace('*', '%', $nomComplet);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::NOM_COMPLET, $nomComplet, $comparison);
 	}
 
 	/**
@@ -320,15 +326,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterBySuiviPar($suiviPar = null, $comparison = Criteria::EQUAL)
+	public function filterBySuiviPar($suiviPar = null, $comparison = null)
 	{
-		if (is_array($suiviPar)) {
-			return $this->addUsingAlias(ClassePeer::SUIVI_PAR, $suiviPar, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $suiviPar)) {
-			return $this->addUsingAlias(ClassePeer::SUIVI_PAR, str_replace('*', '%', $suiviPar), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::SUIVI_PAR, $suiviPar, $comparison);
+		if (null === $comparison) {
+			if (is_array($suiviPar)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $suiviPar)) {
+				$suiviPar = str_replace('*', '%', $suiviPar);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::SUIVI_PAR, $suiviPar, $comparison);
 	}
 
 	/**
@@ -340,15 +348,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByFormule($formule = null, $comparison = Criteria::EQUAL)
+	public function filterByFormule($formule = null, $comparison = null)
 	{
-		if (is_array($formule)) {
-			return $this->addUsingAlias(ClassePeer::FORMULE, $formule, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $formule)) {
-			return $this->addUsingAlias(ClassePeer::FORMULE, str_replace('*', '%', $formule), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::FORMULE, $formule, $comparison);
+		if (null === $comparison) {
+			if (is_array($formule)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $formule)) {
+				$formule = str_replace('*', '%', $formule);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::FORMULE, $formule, $comparison);
 	}
 
 	/**
@@ -360,15 +370,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByFormatNom($formatNom = null, $comparison = Criteria::EQUAL)
+	public function filterByFormatNom($formatNom = null, $comparison = null)
 	{
-		if (is_array($formatNom)) {
-			return $this->addUsingAlias(ClassePeer::FORMAT_NOM, $formatNom, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $formatNom)) {
-			return $this->addUsingAlias(ClassePeer::FORMAT_NOM, str_replace('*', '%', $formatNom), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::FORMAT_NOM, $formatNom, $comparison);
+		if (null === $comparison) {
+			if (is_array($formatNom)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $formatNom)) {
+				$formatNom = str_replace('*', '%', $formatNom);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::FORMAT_NOM, $formatNom, $comparison);
 	}
 
 	/**
@@ -380,15 +392,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByDisplayRang($displayRang = null, $comparison = Criteria::EQUAL)
+	public function filterByDisplayRang($displayRang = null, $comparison = null)
 	{
-		if (is_array($displayRang)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_RANG, $displayRang, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $displayRang)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_RANG, str_replace('*', '%', $displayRang), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_RANG, $displayRang, $comparison);
+		if (null === $comparison) {
+			if (is_array($displayRang)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $displayRang)) {
+				$displayRang = str_replace('*', '%', $displayRang);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::DISPLAY_RANG, $displayRang, $comparison);
 	}
 
 	/**
@@ -400,15 +414,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByDisplayAddress($displayAddress = null, $comparison = Criteria::EQUAL)
+	public function filterByDisplayAddress($displayAddress = null, $comparison = null)
 	{
-		if (is_array($displayAddress)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_ADDRESS, $displayAddress, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $displayAddress)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_ADDRESS, str_replace('*', '%', $displayAddress), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_ADDRESS, $displayAddress, $comparison);
+		if (null === $comparison) {
+			if (is_array($displayAddress)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $displayAddress)) {
+				$displayAddress = str_replace('*', '%', $displayAddress);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::DISPLAY_ADDRESS, $displayAddress, $comparison);
 	}
 
 	/**
@@ -420,15 +436,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByDisplayCoef($displayCoef = null, $comparison = Criteria::EQUAL)
+	public function filterByDisplayCoef($displayCoef = null, $comparison = null)
 	{
-		if (is_array($displayCoef)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_COEF, $displayCoef, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $displayCoef)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_COEF, str_replace('*', '%', $displayCoef), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_COEF, $displayCoef, $comparison);
+		if (null === $comparison) {
+			if (is_array($displayCoef)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $displayCoef)) {
+				$displayCoef = str_replace('*', '%', $displayCoef);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::DISPLAY_COEF, $displayCoef, $comparison);
 	}
 
 	/**
@@ -440,15 +458,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByDisplayMatCat($displayMatCat = null, $comparison = Criteria::EQUAL)
+	public function filterByDisplayMatCat($displayMatCat = null, $comparison = null)
 	{
-		if (is_array($displayMatCat)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_MAT_CAT, $displayMatCat, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $displayMatCat)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_MAT_CAT, str_replace('*', '%', $displayMatCat), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_MAT_CAT, $displayMatCat, $comparison);
+		if (null === $comparison) {
+			if (is_array($displayMatCat)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $displayMatCat)) {
+				$displayMatCat = str_replace('*', '%', $displayMatCat);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::DISPLAY_MAT_CAT, $displayMatCat, $comparison);
 	}
 
 	/**
@@ -460,15 +480,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByDisplayNbdev($displayNbdev = null, $comparison = Criteria::EQUAL)
+	public function filterByDisplayNbdev($displayNbdev = null, $comparison = null)
 	{
-		if (is_array($displayNbdev)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_NBDEV, $displayNbdev, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $displayNbdev)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_NBDEV, str_replace('*', '%', $displayNbdev), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_NBDEV, $displayNbdev, $comparison);
+		if (null === $comparison) {
+			if (is_array($displayNbdev)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $displayNbdev)) {
+				$displayNbdev = str_replace('*', '%', $displayNbdev);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::DISPLAY_NBDEV, $displayNbdev, $comparison);
 	}
 
 	/**
@@ -480,15 +502,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByDisplayMoyGen($displayMoyGen = null, $comparison = Criteria::EQUAL)
+	public function filterByDisplayMoyGen($displayMoyGen = null, $comparison = null)
 	{
-		if (is_array($displayMoyGen)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_MOY_GEN, $displayMoyGen, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $displayMoyGen)) {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_MOY_GEN, str_replace('*', '%', $displayMoyGen), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::DISPLAY_MOY_GEN, $displayMoyGen, $comparison);
+		if (null === $comparison) {
+			if (is_array($displayMoyGen)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $displayMoyGen)) {
+				$displayMoyGen = str_replace('*', '%', $displayMoyGen);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::DISPLAY_MOY_GEN, $displayMoyGen, $comparison);
 	}
 
 	/**
@@ -500,15 +524,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByModeleBulletinPdf($modeleBulletinPdf = null, $comparison = Criteria::EQUAL)
+	public function filterByModeleBulletinPdf($modeleBulletinPdf = null, $comparison = null)
 	{
-		if (is_array($modeleBulletinPdf)) {
-			return $this->addUsingAlias(ClassePeer::MODELE_BULLETIN_PDF, $modeleBulletinPdf, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $modeleBulletinPdf)) {
-			return $this->addUsingAlias(ClassePeer::MODELE_BULLETIN_PDF, str_replace('*', '%', $modeleBulletinPdf), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::MODELE_BULLETIN_PDF, $modeleBulletinPdf, $comparison);
+		if (null === $comparison) {
+			if (is_array($modeleBulletinPdf)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $modeleBulletinPdf)) {
+				$modeleBulletinPdf = str_replace('*', '%', $modeleBulletinPdf);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::MODELE_BULLETIN_PDF, $modeleBulletinPdf, $comparison);
 	}
 
 	/**
@@ -520,15 +546,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByRnNomdev($rnNomdev = null, $comparison = Criteria::EQUAL)
+	public function filterByRnNomdev($rnNomdev = null, $comparison = null)
 	{
-		if (is_array($rnNomdev)) {
-			return $this->addUsingAlias(ClassePeer::RN_NOMDEV, $rnNomdev, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $rnNomdev)) {
-			return $this->addUsingAlias(ClassePeer::RN_NOMDEV, str_replace('*', '%', $rnNomdev), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::RN_NOMDEV, $rnNomdev, $comparison);
+		if (null === $comparison) {
+			if (is_array($rnNomdev)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $rnNomdev)) {
+				$rnNomdev = str_replace('*', '%', $rnNomdev);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::RN_NOMDEV, $rnNomdev, $comparison);
 	}
 
 	/**
@@ -540,15 +568,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByRnToutcoefdev($rnToutcoefdev = null, $comparison = Criteria::EQUAL)
+	public function filterByRnToutcoefdev($rnToutcoefdev = null, $comparison = null)
 	{
-		if (is_array($rnToutcoefdev)) {
-			return $this->addUsingAlias(ClassePeer::RN_TOUTCOEFDEV, $rnToutcoefdev, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $rnToutcoefdev)) {
-			return $this->addUsingAlias(ClassePeer::RN_TOUTCOEFDEV, str_replace('*', '%', $rnToutcoefdev), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::RN_TOUTCOEFDEV, $rnToutcoefdev, $comparison);
+		if (null === $comparison) {
+			if (is_array($rnToutcoefdev)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $rnToutcoefdev)) {
+				$rnToutcoefdev = str_replace('*', '%', $rnToutcoefdev);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::RN_TOUTCOEFDEV, $rnToutcoefdev, $comparison);
 	}
 
 	/**
@@ -560,15 +590,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByRnCoefdevSiDiff($rnCoefdevSiDiff = null, $comparison = Criteria::EQUAL)
+	public function filterByRnCoefdevSiDiff($rnCoefdevSiDiff = null, $comparison = null)
 	{
-		if (is_array($rnCoefdevSiDiff)) {
-			return $this->addUsingAlias(ClassePeer::RN_COEFDEV_SI_DIFF, $rnCoefdevSiDiff, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $rnCoefdevSiDiff)) {
-			return $this->addUsingAlias(ClassePeer::RN_COEFDEV_SI_DIFF, str_replace('*', '%', $rnCoefdevSiDiff), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::RN_COEFDEV_SI_DIFF, $rnCoefdevSiDiff, $comparison);
+		if (null === $comparison) {
+			if (is_array($rnCoefdevSiDiff)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $rnCoefdevSiDiff)) {
+				$rnCoefdevSiDiff = str_replace('*', '%', $rnCoefdevSiDiff);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::RN_COEFDEV_SI_DIFF, $rnCoefdevSiDiff, $comparison);
 	}
 
 	/**
@@ -580,15 +612,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByRnDatedev($rnDatedev = null, $comparison = Criteria::EQUAL)
+	public function filterByRnDatedev($rnDatedev = null, $comparison = null)
 	{
-		if (is_array($rnDatedev)) {
-			return $this->addUsingAlias(ClassePeer::RN_DATEDEV, $rnDatedev, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $rnDatedev)) {
-			return $this->addUsingAlias(ClassePeer::RN_DATEDEV, str_replace('*', '%', $rnDatedev), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::RN_DATEDEV, $rnDatedev, $comparison);
+		if (null === $comparison) {
+			if (is_array($rnDatedev)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $rnDatedev)) {
+				$rnDatedev = str_replace('*', '%', $rnDatedev);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::RN_DATEDEV, $rnDatedev, $comparison);
 	}
 
 	/**
@@ -600,15 +634,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByRnSignChefetab($rnSignChefetab = null, $comparison = Criteria::EQUAL)
+	public function filterByRnSignChefetab($rnSignChefetab = null, $comparison = null)
 	{
-		if (is_array($rnSignChefetab)) {
-			return $this->addUsingAlias(ClassePeer::RN_SIGN_CHEFETAB, $rnSignChefetab, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $rnSignChefetab)) {
-			return $this->addUsingAlias(ClassePeer::RN_SIGN_CHEFETAB, str_replace('*', '%', $rnSignChefetab), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::RN_SIGN_CHEFETAB, $rnSignChefetab, $comparison);
+		if (null === $comparison) {
+			if (is_array($rnSignChefetab)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $rnSignChefetab)) {
+				$rnSignChefetab = str_replace('*', '%', $rnSignChefetab);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::RN_SIGN_CHEFETAB, $rnSignChefetab, $comparison);
 	}
 
 	/**
@@ -620,15 +656,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByRnSignPp($rnSignPp = null, $comparison = Criteria::EQUAL)
+	public function filterByRnSignPp($rnSignPp = null, $comparison = null)
 	{
-		if (is_array($rnSignPp)) {
-			return $this->addUsingAlias(ClassePeer::RN_SIGN_PP, $rnSignPp, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $rnSignPp)) {
-			return $this->addUsingAlias(ClassePeer::RN_SIGN_PP, str_replace('*', '%', $rnSignPp), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::RN_SIGN_PP, $rnSignPp, $comparison);
+		if (null === $comparison) {
+			if (is_array($rnSignPp)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $rnSignPp)) {
+				$rnSignPp = str_replace('*', '%', $rnSignPp);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::RN_SIGN_PP, $rnSignPp, $comparison);
 	}
 
 	/**
@@ -640,15 +678,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByRnSignResp($rnSignResp = null, $comparison = Criteria::EQUAL)
+	public function filterByRnSignResp($rnSignResp = null, $comparison = null)
 	{
-		if (is_array($rnSignResp)) {
-			return $this->addUsingAlias(ClassePeer::RN_SIGN_RESP, $rnSignResp, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $rnSignResp)) {
-			return $this->addUsingAlias(ClassePeer::RN_SIGN_RESP, str_replace('*', '%', $rnSignResp), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::RN_SIGN_RESP, $rnSignResp, $comparison);
+		if (null === $comparison) {
+			if (is_array($rnSignResp)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $rnSignResp)) {
+				$rnSignResp = str_replace('*', '%', $rnSignResp);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::RN_SIGN_RESP, $rnSignResp, $comparison);
 	}
 
 	/**
@@ -660,23 +700,26 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByRnSignNblig($rnSignNblig = null, $comparison = Criteria::EQUAL)
+	public function filterByRnSignNblig($rnSignNblig = null, $comparison = null)
 	{
 		if (is_array($rnSignNblig)) {
-			if (array_values($rnSignNblig) === $rnSignNblig) {
-				return $this->addUsingAlias(ClassePeer::RN_SIGN_NBLIG, $rnSignNblig, Criteria::IN);
-			} else {
-				if (isset($rnSignNblig['min'])) {
-					$this->addUsingAlias(ClassePeer::RN_SIGN_NBLIG, $rnSignNblig['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($rnSignNblig['max'])) {
-					$this->addUsingAlias(ClassePeer::RN_SIGN_NBLIG, $rnSignNblig['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($rnSignNblig['min'])) {
+				$this->addUsingAlias(ClassePeer::RN_SIGN_NBLIG, $rnSignNblig['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(ClassePeer::RN_SIGN_NBLIG, $rnSignNblig, $comparison);
+			if (isset($rnSignNblig['max'])) {
+				$this->addUsingAlias(ClassePeer::RN_SIGN_NBLIG, $rnSignNblig['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::RN_SIGN_NBLIG, $rnSignNblig, $comparison);
 	}
 
 	/**
@@ -688,15 +731,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByRnFormule($rnFormule = null, $comparison = Criteria::EQUAL)
+	public function filterByRnFormule($rnFormule = null, $comparison = null)
 	{
-		if (is_array($rnFormule)) {
-			return $this->addUsingAlias(ClassePeer::RN_FORMULE, $rnFormule, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $rnFormule)) {
-			return $this->addUsingAlias(ClassePeer::RN_FORMULE, str_replace('*', '%', $rnFormule), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::RN_FORMULE, $rnFormule, $comparison);
+		if (null === $comparison) {
+			if (is_array($rnFormule)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $rnFormule)) {
+				$rnFormule = str_replace('*', '%', $rnFormule);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::RN_FORMULE, $rnFormule, $comparison);
 	}
 
 	/**
@@ -708,15 +753,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByEctsTypeFormation($ectsTypeFormation = null, $comparison = Criteria::EQUAL)
+	public function filterByEctsTypeFormation($ectsTypeFormation = null, $comparison = null)
 	{
-		if (is_array($ectsTypeFormation)) {
-			return $this->addUsingAlias(ClassePeer::ECTS_TYPE_FORMATION, $ectsTypeFormation, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $ectsTypeFormation)) {
-			return $this->addUsingAlias(ClassePeer::ECTS_TYPE_FORMATION, str_replace('*', '%', $ectsTypeFormation), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::ECTS_TYPE_FORMATION, $ectsTypeFormation, $comparison);
+		if (null === $comparison) {
+			if (is_array($ectsTypeFormation)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $ectsTypeFormation)) {
+				$ectsTypeFormation = str_replace('*', '%', $ectsTypeFormation);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::ECTS_TYPE_FORMATION, $ectsTypeFormation, $comparison);
 	}
 
 	/**
@@ -728,15 +775,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByEctsParcours($ectsParcours = null, $comparison = Criteria::EQUAL)
+	public function filterByEctsParcours($ectsParcours = null, $comparison = null)
 	{
-		if (is_array($ectsParcours)) {
-			return $this->addUsingAlias(ClassePeer::ECTS_PARCOURS, $ectsParcours, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $ectsParcours)) {
-			return $this->addUsingAlias(ClassePeer::ECTS_PARCOURS, str_replace('*', '%', $ectsParcours), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::ECTS_PARCOURS, $ectsParcours, $comparison);
+		if (null === $comparison) {
+			if (is_array($ectsParcours)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $ectsParcours)) {
+				$ectsParcours = str_replace('*', '%', $ectsParcours);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::ECTS_PARCOURS, $ectsParcours, $comparison);
 	}
 
 	/**
@@ -748,15 +797,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByEctsCodeParcours($ectsCodeParcours = null, $comparison = Criteria::EQUAL)
+	public function filterByEctsCodeParcours($ectsCodeParcours = null, $comparison = null)
 	{
-		if (is_array($ectsCodeParcours)) {
-			return $this->addUsingAlias(ClassePeer::ECTS_CODE_PARCOURS, $ectsCodeParcours, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $ectsCodeParcours)) {
-			return $this->addUsingAlias(ClassePeer::ECTS_CODE_PARCOURS, str_replace('*', '%', $ectsCodeParcours), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::ECTS_CODE_PARCOURS, $ectsCodeParcours, $comparison);
+		if (null === $comparison) {
+			if (is_array($ectsCodeParcours)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $ectsCodeParcours)) {
+				$ectsCodeParcours = str_replace('*', '%', $ectsCodeParcours);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::ECTS_CODE_PARCOURS, $ectsCodeParcours, $comparison);
 	}
 
 	/**
@@ -768,15 +819,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByEctsDomainesEtude($ectsDomainesEtude = null, $comparison = Criteria::EQUAL)
+	public function filterByEctsDomainesEtude($ectsDomainesEtude = null, $comparison = null)
 	{
-		if (is_array($ectsDomainesEtude)) {
-			return $this->addUsingAlias(ClassePeer::ECTS_DOMAINES_ETUDE, $ectsDomainesEtude, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $ectsDomainesEtude)) {
-			return $this->addUsingAlias(ClassePeer::ECTS_DOMAINES_ETUDE, str_replace('*', '%', $ectsDomainesEtude), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::ECTS_DOMAINES_ETUDE, $ectsDomainesEtude, $comparison);
+		if (null === $comparison) {
+			if (is_array($ectsDomainesEtude)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $ectsDomainesEtude)) {
+				$ectsDomainesEtude = str_replace('*', '%', $ectsDomainesEtude);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::ECTS_DOMAINES_ETUDE, $ectsDomainesEtude, $comparison);
 	}
 
 	/**
@@ -788,15 +841,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByEctsFonctionSignataireAttestation($ectsFonctionSignataireAttestation = null, $comparison = Criteria::EQUAL)
+	public function filterByEctsFonctionSignataireAttestation($ectsFonctionSignataireAttestation = null, $comparison = null)
 	{
-		if (is_array($ectsFonctionSignataireAttestation)) {
-			return $this->addUsingAlias(ClassePeer::ECTS_FONCTION_SIGNATAIRE_ATTESTATION, $ectsFonctionSignataireAttestation, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $ectsFonctionSignataireAttestation)) {
-			return $this->addUsingAlias(ClassePeer::ECTS_FONCTION_SIGNATAIRE_ATTESTATION, str_replace('*', '%', $ectsFonctionSignataireAttestation), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(ClassePeer::ECTS_FONCTION_SIGNATAIRE_ATTESTATION, $ectsFonctionSignataireAttestation, $comparison);
+		if (null === $comparison) {
+			if (is_array($ectsFonctionSignataireAttestation)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $ectsFonctionSignataireAttestation)) {
+				$ectsFonctionSignataireAttestation = str_replace('*', '%', $ectsFonctionSignataireAttestation);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(ClassePeer::ECTS_FONCTION_SIGNATAIRE_ATTESTATION, $ectsFonctionSignataireAttestation, $comparison);
 	}
 
 	/**
@@ -807,7 +862,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByPeriodeNote($periodeNote, $comparison = Criteria::EQUAL)
+	public function filterByPeriodeNote($periodeNote, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ClassePeer::ID, $periodeNote->getIdClasse(), $comparison);
@@ -830,6 +885,9 @@ abstract class BaseClasseQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -868,7 +926,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByJGroupesClasses($jGroupesClasses, $comparison = Criteria::EQUAL)
+	public function filterByJGroupesClasses($jGroupesClasses, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ClassePeer::ID, $jGroupesClasses->getIdClasse(), $comparison);
@@ -891,6 +949,9 @@ abstract class BaseClasseQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -929,7 +990,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByJEleveClasse($jEleveClasse, $comparison = Criteria::EQUAL)
+	public function filterByJEleveClasse($jEleveClasse, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ClassePeer::ID, $jEleveClasse->getIdClasse(), $comparison);
@@ -952,6 +1013,9 @@ abstract class BaseClasseQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -990,7 +1054,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByJEleveProfesseurPrincipal($jEleveProfesseurPrincipal, $comparison = Criteria::EQUAL)
+	public function filterByJEleveProfesseurPrincipal($jEleveProfesseurPrincipal, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ClassePeer::ID, $jEleveProfesseurPrincipal->getIdClasse(), $comparison);
@@ -1013,6 +1077,9 @@ abstract class BaseClasseQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1051,7 +1118,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = Criteria::EQUAL)
+	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ClassePeer::ID, $absenceEleveSaisie->getIdClasse(), $comparison);
@@ -1074,6 +1141,9 @@ abstract class BaseClasseQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1112,7 +1182,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByJCategoriesMatieresClasses($jCategoriesMatieresClasses, $comparison = Criteria::EQUAL)
+	public function filterByJCategoriesMatieresClasses($jCategoriesMatieresClasses, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(ClassePeer::ID, $jCategoriesMatieresClasses->getClasseId(), $comparison);
@@ -1135,6 +1205,9 @@ abstract class BaseClasseQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1196,37 +1269,6 @@ abstract class BaseClasseQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseClasseQuery

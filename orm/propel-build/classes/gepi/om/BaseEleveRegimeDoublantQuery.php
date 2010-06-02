@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'j_eleves_regime' table.
  *
@@ -89,10 +90,11 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -108,6 +110,7 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -146,15 +149,17 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 	 *
 	 * @return    EleveRegimeDoublantQuery The current query, for fluid interface
 	 */
-	public function filterByLogin($login = null, $comparison = Criteria::EQUAL)
+	public function filterByLogin($login = null, $comparison = null)
 	{
-		if (is_array($login)) {
-			return $this->addUsingAlias(EleveRegimeDoublantPeer::LOGIN, $login, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $login)) {
-			return $this->addUsingAlias(EleveRegimeDoublantPeer::LOGIN, str_replace('*', '%', $login), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EleveRegimeDoublantPeer::LOGIN, $login, $comparison);
+		if (null === $comparison) {
+			if (is_array($login)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $login)) {
+				$login = str_replace('*', '%', $login);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EleveRegimeDoublantPeer::LOGIN, $login, $comparison);
 	}
 
 	/**
@@ -166,15 +171,17 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 	 *
 	 * @return    EleveRegimeDoublantQuery The current query, for fluid interface
 	 */
-	public function filterByDoublant($doublant = null, $comparison = Criteria::EQUAL)
+	public function filterByDoublant($doublant = null, $comparison = null)
 	{
-		if (is_array($doublant)) {
-			return $this->addUsingAlias(EleveRegimeDoublantPeer::DOUBLANT, $doublant, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $doublant)) {
-			return $this->addUsingAlias(EleveRegimeDoublantPeer::DOUBLANT, str_replace('*', '%', $doublant), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EleveRegimeDoublantPeer::DOUBLANT, $doublant, $comparison);
+		if (null === $comparison) {
+			if (is_array($doublant)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $doublant)) {
+				$doublant = str_replace('*', '%', $doublant);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EleveRegimeDoublantPeer::DOUBLANT, $doublant, $comparison);
 	}
 
 	/**
@@ -186,15 +193,17 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 	 *
 	 * @return    EleveRegimeDoublantQuery The current query, for fluid interface
 	 */
-	public function filterByRegime($regime = null, $comparison = Criteria::EQUAL)
+	public function filterByRegime($regime = null, $comparison = null)
 	{
-		if (is_array($regime)) {
-			return $this->addUsingAlias(EleveRegimeDoublantPeer::REGIME, $regime, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $regime)) {
-			return $this->addUsingAlias(EleveRegimeDoublantPeer::REGIME, str_replace('*', '%', $regime), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EleveRegimeDoublantPeer::REGIME, $regime, $comparison);
+		if (null === $comparison) {
+			if (is_array($regime)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $regime)) {
+				$regime = str_replace('*', '%', $regime);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EleveRegimeDoublantPeer::REGIME, $regime, $comparison);
 	}
 
 	/**
@@ -205,7 +214,7 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 	 *
 	 * @return    EleveRegimeDoublantQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EleveRegimeDoublantPeer::LOGIN, $eleve->getLogin(), $comparison);
@@ -228,6 +237,9 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -272,37 +284,6 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseEleveRegimeDoublantQuery

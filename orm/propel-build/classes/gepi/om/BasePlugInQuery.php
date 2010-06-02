@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'plugins' table.
  *
@@ -101,10 +102,11 @@ abstract class BasePlugInQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -120,6 +122,7 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -158,13 +161,12 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id)) {
-			return $this->addUsingAlias(PlugInPeer::ID, $id, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(PlugInPeer::ID, $id, $comparison);
+		if (is_array($id) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(PlugInPeer::ID, $id, $comparison);
 	}
 
 	/**
@@ -176,15 +178,17 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
 	 */
-	public function filterByNom($nom = null, $comparison = Criteria::EQUAL)
+	public function filterByNom($nom = null, $comparison = null)
 	{
-		if (is_array($nom)) {
-			return $this->addUsingAlias(PlugInPeer::NOM, $nom, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $nom)) {
-			return $this->addUsingAlias(PlugInPeer::NOM, str_replace('*', '%', $nom), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PlugInPeer::NOM, $nom, $comparison);
+		if (null === $comparison) {
+			if (is_array($nom)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nom)) {
+				$nom = str_replace('*', '%', $nom);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PlugInPeer::NOM, $nom, $comparison);
 	}
 
 	/**
@@ -196,15 +200,17 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
 	 */
-	public function filterByRepertoire($repertoire = null, $comparison = Criteria::EQUAL)
+	public function filterByRepertoire($repertoire = null, $comparison = null)
 	{
-		if (is_array($repertoire)) {
-			return $this->addUsingAlias(PlugInPeer::REPERTOIRE, $repertoire, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $repertoire)) {
-			return $this->addUsingAlias(PlugInPeer::REPERTOIRE, str_replace('*', '%', $repertoire), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PlugInPeer::REPERTOIRE, $repertoire, $comparison);
+		if (null === $comparison) {
+			if (is_array($repertoire)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $repertoire)) {
+				$repertoire = str_replace('*', '%', $repertoire);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PlugInPeer::REPERTOIRE, $repertoire, $comparison);
 	}
 
 	/**
@@ -216,15 +222,17 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
 	 */
-	public function filterByDescription($description = null, $comparison = Criteria::EQUAL)
+	public function filterByDescription($description = null, $comparison = null)
 	{
-		if (is_array($description)) {
-			return $this->addUsingAlias(PlugInPeer::DESCRIPTION, $description, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $description)) {
-			return $this->addUsingAlias(PlugInPeer::DESCRIPTION, str_replace('*', '%', $description), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PlugInPeer::DESCRIPTION, $description, $comparison);
+		if (null === $comparison) {
+			if (is_array($description)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $description)) {
+				$description = str_replace('*', '%', $description);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PlugInPeer::DESCRIPTION, $description, $comparison);
 	}
 
 	/**
@@ -236,15 +244,17 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
 	 */
-	public function filterByOuvert($ouvert = null, $comparison = Criteria::EQUAL)
+	public function filterByOuvert($ouvert = null, $comparison = null)
 	{
-		if (is_array($ouvert)) {
-			return $this->addUsingAlias(PlugInPeer::OUVERT, $ouvert, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $ouvert)) {
-			return $this->addUsingAlias(PlugInPeer::OUVERT, str_replace('*', '%', $ouvert), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PlugInPeer::OUVERT, $ouvert, $comparison);
+		if (null === $comparison) {
+			if (is_array($ouvert)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $ouvert)) {
+				$ouvert = str_replace('*', '%', $ouvert);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PlugInPeer::OUVERT, $ouvert, $comparison);
 	}
 
 	/**
@@ -255,7 +265,7 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
 	 */
-	public function filterByPlugInAutorisation($plugInAutorisation, $comparison = Criteria::EQUAL)
+	public function filterByPlugInAutorisation($plugInAutorisation, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PlugInPeer::ID, $plugInAutorisation->getPluginId(), $comparison);
@@ -278,6 +288,9 @@ abstract class BasePlugInQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -316,7 +329,7 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
 	 */
-	public function filterByPlugInMiseEnOeuvreMenu($plugInMiseEnOeuvreMenu, $comparison = Criteria::EQUAL)
+	public function filterByPlugInMiseEnOeuvreMenu($plugInMiseEnOeuvreMenu, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PlugInPeer::ID, $plugInMiseEnOeuvreMenu->getPluginId(), $comparison);
@@ -339,6 +352,9 @@ abstract class BasePlugInQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -383,37 +399,6 @@ abstract class BasePlugInQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BasePlugInQuery

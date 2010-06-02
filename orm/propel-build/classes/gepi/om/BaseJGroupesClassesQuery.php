@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'j_groupes_classes' table.
  *
@@ -112,10 +113,11 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -131,6 +133,7 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -179,13 +182,12 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery The current query, for fluid interface
 	 */
-	public function filterByIdGroupe($idGroupe = null, $comparison = Criteria::EQUAL)
+	public function filterByIdGroupe($idGroupe = null, $comparison = null)
 	{
-		if (is_array($idGroupe)) {
-			return $this->addUsingAlias(JGroupesClassesPeer::ID_GROUPE, $idGroupe, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JGroupesClassesPeer::ID_GROUPE, $idGroupe, $comparison);
+		if (is_array($idGroupe) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(JGroupesClassesPeer::ID_GROUPE, $idGroupe, $comparison);
 	}
 
 	/**
@@ -197,13 +199,12 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery The current query, for fluid interface
 	 */
-	public function filterByIdClasse($idClasse = null, $comparison = Criteria::EQUAL)
+	public function filterByIdClasse($idClasse = null, $comparison = null)
 	{
-		if (is_array($idClasse)) {
-			return $this->addUsingAlias(JGroupesClassesPeer::ID_CLASSE, $idClasse, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JGroupesClassesPeer::ID_CLASSE, $idClasse, $comparison);
+		if (is_array($idClasse) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(JGroupesClassesPeer::ID_CLASSE, $idClasse, $comparison);
 	}
 
 	/**
@@ -215,23 +216,26 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery The current query, for fluid interface
 	 */
-	public function filterByPriorite($priorite = null, $comparison = Criteria::EQUAL)
+	public function filterByPriorite($priorite = null, $comparison = null)
 	{
 		if (is_array($priorite)) {
-			if (array_values($priorite) === $priorite) {
-				return $this->addUsingAlias(JGroupesClassesPeer::PRIORITE, $priorite, Criteria::IN);
-			} else {
-				if (isset($priorite['min'])) {
-					$this->addUsingAlias(JGroupesClassesPeer::PRIORITE, $priorite['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($priorite['max'])) {
-					$this->addUsingAlias(JGroupesClassesPeer::PRIORITE, $priorite['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($priorite['min'])) {
+				$this->addUsingAlias(JGroupesClassesPeer::PRIORITE, $priorite['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(JGroupesClassesPeer::PRIORITE, $priorite, $comparison);
+			if (isset($priorite['max'])) {
+				$this->addUsingAlias(JGroupesClassesPeer::PRIORITE, $priorite['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(JGroupesClassesPeer::PRIORITE, $priorite, $comparison);
 	}
 
 	/**
@@ -243,23 +247,26 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery The current query, for fluid interface
 	 */
-	public function filterByCoef($coef = null, $comparison = Criteria::EQUAL)
+	public function filterByCoef($coef = null, $comparison = null)
 	{
 		if (is_array($coef)) {
-			if (array_values($coef) === $coef) {
-				return $this->addUsingAlias(JGroupesClassesPeer::COEF, $coef, Criteria::IN);
-			} else {
-				if (isset($coef['min'])) {
-					$this->addUsingAlias(JGroupesClassesPeer::COEF, $coef['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($coef['max'])) {
-					$this->addUsingAlias(JGroupesClassesPeer::COEF, $coef['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($coef['min'])) {
+				$this->addUsingAlias(JGroupesClassesPeer::COEF, $coef['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(JGroupesClassesPeer::COEF, $coef, $comparison);
+			if (isset($coef['max'])) {
+				$this->addUsingAlias(JGroupesClassesPeer::COEF, $coef['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(JGroupesClassesPeer::COEF, $coef, $comparison);
 	}
 
 	/**
@@ -271,23 +278,26 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery The current query, for fluid interface
 	 */
-	public function filterByCategorieId($categorieId = null, $comparison = Criteria::EQUAL)
+	public function filterByCategorieId($categorieId = null, $comparison = null)
 	{
 		if (is_array($categorieId)) {
-			if (array_values($categorieId) === $categorieId) {
-				return $this->addUsingAlias(JGroupesClassesPeer::CATEGORIE_ID, $categorieId, Criteria::IN);
-			} else {
-				if (isset($categorieId['min'])) {
-					$this->addUsingAlias(JGroupesClassesPeer::CATEGORIE_ID, $categorieId['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($categorieId['max'])) {
-					$this->addUsingAlias(JGroupesClassesPeer::CATEGORIE_ID, $categorieId['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($categorieId['min'])) {
+				$this->addUsingAlias(JGroupesClassesPeer::CATEGORIE_ID, $categorieId['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(JGroupesClassesPeer::CATEGORIE_ID, $categorieId, $comparison);
+			if (isset($categorieId['max'])) {
+				$this->addUsingAlias(JGroupesClassesPeer::CATEGORIE_ID, $categorieId['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(JGroupesClassesPeer::CATEGORIE_ID, $categorieId, $comparison);
 	}
 
 	/**
@@ -299,9 +309,9 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery The current query, for fluid interface
 	 */
-	public function filterBySaisieEcts($saisieEcts = null, $comparison = Criteria::EQUAL)
+	public function filterBySaisieEcts($saisieEcts = null, $comparison = null)
 	{
-		if(is_string($saisieEcts)) {
+		if (is_string($saisieEcts)) {
 			$saisie_ects = in_array(strtolower($saisieEcts), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
 		}
 		return $this->addUsingAlias(JGroupesClassesPeer::SAISIE_ECTS, $saisieEcts, $comparison);
@@ -316,23 +326,26 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery The current query, for fluid interface
 	 */
-	public function filterByValeurEcts($valeurEcts = null, $comparison = Criteria::EQUAL)
+	public function filterByValeurEcts($valeurEcts = null, $comparison = null)
 	{
 		if (is_array($valeurEcts)) {
-			if (array_values($valeurEcts) === $valeurEcts) {
-				return $this->addUsingAlias(JGroupesClassesPeer::VALEUR_ECTS, $valeurEcts, Criteria::IN);
-			} else {
-				if (isset($valeurEcts['min'])) {
-					$this->addUsingAlias(JGroupesClassesPeer::VALEUR_ECTS, $valeurEcts['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($valeurEcts['max'])) {
-					$this->addUsingAlias(JGroupesClassesPeer::VALEUR_ECTS, $valeurEcts['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($valeurEcts['min'])) {
+				$this->addUsingAlias(JGroupesClassesPeer::VALEUR_ECTS, $valeurEcts['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(JGroupesClassesPeer::VALEUR_ECTS, $valeurEcts, $comparison);
+			if (isset($valeurEcts['max'])) {
+				$this->addUsingAlias(JGroupesClassesPeer::VALEUR_ECTS, $valeurEcts['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(JGroupesClassesPeer::VALEUR_ECTS, $valeurEcts, $comparison);
 	}
 
 	/**
@@ -343,7 +356,7 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery The current query, for fluid interface
 	 */
-	public function filterByGroupe($groupe, $comparison = Criteria::EQUAL)
+	public function filterByGroupe($groupe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JGroupesClassesPeer::ID_GROUPE, $groupe->getId(), $comparison);
@@ -366,6 +379,9 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -404,7 +420,7 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery The current query, for fluid interface
 	 */
-	public function filterByClasse($classe, $comparison = Criteria::EQUAL)
+	public function filterByClasse($classe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JGroupesClassesPeer::ID_CLASSE, $classe->getId(), $comparison);
@@ -427,6 +443,9 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -465,7 +484,7 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery The current query, for fluid interface
 	 */
-	public function filterByCategorieMatiere($categorieMatiere, $comparison = Criteria::EQUAL)
+	public function filterByCategorieMatiere($categorieMatiere, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JGroupesClassesPeer::CATEGORIE_ID, $categorieMatiere->getId(), $comparison);
@@ -488,6 +507,9 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -534,37 +556,6 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseJGroupesClassesQuery

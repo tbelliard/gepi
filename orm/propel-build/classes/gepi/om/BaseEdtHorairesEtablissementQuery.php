@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'horaires_etablissement' table.
  *
@@ -101,10 +102,11 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -120,6 +122,7 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -158,13 +161,12 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
 	 */
-	public function filterByIdHoraireEtablissement($idHoraireEtablissement = null, $comparison = Criteria::EQUAL)
+	public function filterByIdHoraireEtablissement($idHoraireEtablissement = null, $comparison = null)
 	{
-		if (is_array($idHoraireEtablissement)) {
-			return $this->addUsingAlias(EdtHorairesEtablissementPeer::ID_HORAIRE_ETABLISSEMENT, $idHoraireEtablissement, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(EdtHorairesEtablissementPeer::ID_HORAIRE_ETABLISSEMENT, $idHoraireEtablissement, $comparison);
+		if (is_array($idHoraireEtablissement) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(EdtHorairesEtablissementPeer::ID_HORAIRE_ETABLISSEMENT, $idHoraireEtablissement, $comparison);
 	}
 
 	/**
@@ -176,23 +178,26 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
 	 */
-	public function filterByDateHoraireEtablissement($dateHoraireEtablissement = null, $comparison = Criteria::EQUAL)
+	public function filterByDateHoraireEtablissement($dateHoraireEtablissement = null, $comparison = null)
 	{
 		if (is_array($dateHoraireEtablissement)) {
-			if (array_values($dateHoraireEtablissement) === $dateHoraireEtablissement) {
-				return $this->addUsingAlias(EdtHorairesEtablissementPeer::DATE_HORAIRE_ETABLISSEMENT, $dateHoraireEtablissement, Criteria::IN);
-			} else {
-				if (isset($dateHoraireEtablissement['min'])) {
-					$this->addUsingAlias(EdtHorairesEtablissementPeer::DATE_HORAIRE_ETABLISSEMENT, $dateHoraireEtablissement['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($dateHoraireEtablissement['max'])) {
-					$this->addUsingAlias(EdtHorairesEtablissementPeer::DATE_HORAIRE_ETABLISSEMENT, $dateHoraireEtablissement['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($dateHoraireEtablissement['min'])) {
+				$this->addUsingAlias(EdtHorairesEtablissementPeer::DATE_HORAIRE_ETABLISSEMENT, $dateHoraireEtablissement['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtHorairesEtablissementPeer::DATE_HORAIRE_ETABLISSEMENT, $dateHoraireEtablissement, $comparison);
+			if (isset($dateHoraireEtablissement['max'])) {
+				$this->addUsingAlias(EdtHorairesEtablissementPeer::DATE_HORAIRE_ETABLISSEMENT, $dateHoraireEtablissement['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtHorairesEtablissementPeer::DATE_HORAIRE_ETABLISSEMENT, $dateHoraireEtablissement, $comparison);
 	}
 
 	/**
@@ -204,15 +209,17 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
 	 */
-	public function filterByJourHoraireEtablissement($jourHoraireEtablissement = null, $comparison = Criteria::EQUAL)
+	public function filterByJourHoraireEtablissement($jourHoraireEtablissement = null, $comparison = null)
 	{
-		if (is_array($jourHoraireEtablissement)) {
-			return $this->addUsingAlias(EdtHorairesEtablissementPeer::JOUR_HORAIRE_ETABLISSEMENT, $jourHoraireEtablissement, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $jourHoraireEtablissement)) {
-			return $this->addUsingAlias(EdtHorairesEtablissementPeer::JOUR_HORAIRE_ETABLISSEMENT, str_replace('*', '%', $jourHoraireEtablissement), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtHorairesEtablissementPeer::JOUR_HORAIRE_ETABLISSEMENT, $jourHoraireEtablissement, $comparison);
+		if (null === $comparison) {
+			if (is_array($jourHoraireEtablissement)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $jourHoraireEtablissement)) {
+				$jourHoraireEtablissement = str_replace('*', '%', $jourHoraireEtablissement);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtHorairesEtablissementPeer::JOUR_HORAIRE_ETABLISSEMENT, $jourHoraireEtablissement, $comparison);
 	}
 
 	/**
@@ -224,23 +231,26 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
 	 */
-	public function filterByOuvertureHoraireEtablissement($ouvertureHoraireEtablissement = null, $comparison = Criteria::EQUAL)
+	public function filterByOuvertureHoraireEtablissement($ouvertureHoraireEtablissement = null, $comparison = null)
 	{
 		if (is_array($ouvertureHoraireEtablissement)) {
-			if (array_values($ouvertureHoraireEtablissement) === $ouvertureHoraireEtablissement) {
-				return $this->addUsingAlias(EdtHorairesEtablissementPeer::OUVERTURE_HORAIRE_ETABLISSEMENT, $ouvertureHoraireEtablissement, Criteria::IN);
-			} else {
-				if (isset($ouvertureHoraireEtablissement['min'])) {
-					$this->addUsingAlias(EdtHorairesEtablissementPeer::OUVERTURE_HORAIRE_ETABLISSEMENT, $ouvertureHoraireEtablissement['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($ouvertureHoraireEtablissement['max'])) {
-					$this->addUsingAlias(EdtHorairesEtablissementPeer::OUVERTURE_HORAIRE_ETABLISSEMENT, $ouvertureHoraireEtablissement['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($ouvertureHoraireEtablissement['min'])) {
+				$this->addUsingAlias(EdtHorairesEtablissementPeer::OUVERTURE_HORAIRE_ETABLISSEMENT, $ouvertureHoraireEtablissement['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtHorairesEtablissementPeer::OUVERTURE_HORAIRE_ETABLISSEMENT, $ouvertureHoraireEtablissement, $comparison);
+			if (isset($ouvertureHoraireEtablissement['max'])) {
+				$this->addUsingAlias(EdtHorairesEtablissementPeer::OUVERTURE_HORAIRE_ETABLISSEMENT, $ouvertureHoraireEtablissement['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtHorairesEtablissementPeer::OUVERTURE_HORAIRE_ETABLISSEMENT, $ouvertureHoraireEtablissement, $comparison);
 	}
 
 	/**
@@ -252,23 +262,26 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
 	 */
-	public function filterByFermetureHoraireEtablissement($fermetureHoraireEtablissement = null, $comparison = Criteria::EQUAL)
+	public function filterByFermetureHoraireEtablissement($fermetureHoraireEtablissement = null, $comparison = null)
 	{
 		if (is_array($fermetureHoraireEtablissement)) {
-			if (array_values($fermetureHoraireEtablissement) === $fermetureHoraireEtablissement) {
-				return $this->addUsingAlias(EdtHorairesEtablissementPeer::FERMETURE_HORAIRE_ETABLISSEMENT, $fermetureHoraireEtablissement, Criteria::IN);
-			} else {
-				if (isset($fermetureHoraireEtablissement['min'])) {
-					$this->addUsingAlias(EdtHorairesEtablissementPeer::FERMETURE_HORAIRE_ETABLISSEMENT, $fermetureHoraireEtablissement['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($fermetureHoraireEtablissement['max'])) {
-					$this->addUsingAlias(EdtHorairesEtablissementPeer::FERMETURE_HORAIRE_ETABLISSEMENT, $fermetureHoraireEtablissement['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($fermetureHoraireEtablissement['min'])) {
+				$this->addUsingAlias(EdtHorairesEtablissementPeer::FERMETURE_HORAIRE_ETABLISSEMENT, $fermetureHoraireEtablissement['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtHorairesEtablissementPeer::FERMETURE_HORAIRE_ETABLISSEMENT, $fermetureHoraireEtablissement, $comparison);
+			if (isset($fermetureHoraireEtablissement['max'])) {
+				$this->addUsingAlias(EdtHorairesEtablissementPeer::FERMETURE_HORAIRE_ETABLISSEMENT, $fermetureHoraireEtablissement['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtHorairesEtablissementPeer::FERMETURE_HORAIRE_ETABLISSEMENT, $fermetureHoraireEtablissement, $comparison);
 	}
 
 	/**
@@ -280,23 +293,26 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
 	 */
-	public function filterByPauseHoraireEtablissement($pauseHoraireEtablissement = null, $comparison = Criteria::EQUAL)
+	public function filterByPauseHoraireEtablissement($pauseHoraireEtablissement = null, $comparison = null)
 	{
 		if (is_array($pauseHoraireEtablissement)) {
-			if (array_values($pauseHoraireEtablissement) === $pauseHoraireEtablissement) {
-				return $this->addUsingAlias(EdtHorairesEtablissementPeer::PAUSE_HORAIRE_ETABLISSEMENT, $pauseHoraireEtablissement, Criteria::IN);
-			} else {
-				if (isset($pauseHoraireEtablissement['min'])) {
-					$this->addUsingAlias(EdtHorairesEtablissementPeer::PAUSE_HORAIRE_ETABLISSEMENT, $pauseHoraireEtablissement['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($pauseHoraireEtablissement['max'])) {
-					$this->addUsingAlias(EdtHorairesEtablissementPeer::PAUSE_HORAIRE_ETABLISSEMENT, $pauseHoraireEtablissement['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($pauseHoraireEtablissement['min'])) {
+				$this->addUsingAlias(EdtHorairesEtablissementPeer::PAUSE_HORAIRE_ETABLISSEMENT, $pauseHoraireEtablissement['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtHorairesEtablissementPeer::PAUSE_HORAIRE_ETABLISSEMENT, $pauseHoraireEtablissement, $comparison);
+			if (isset($pauseHoraireEtablissement['max'])) {
+				$this->addUsingAlias(EdtHorairesEtablissementPeer::PAUSE_HORAIRE_ETABLISSEMENT, $pauseHoraireEtablissement['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtHorairesEtablissementPeer::PAUSE_HORAIRE_ETABLISSEMENT, $pauseHoraireEtablissement, $comparison);
 	}
 
 	/**
@@ -308,9 +324,9 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
 	 */
-	public function filterByOuvertHoraireEtablissement($ouvertHoraireEtablissement = null, $comparison = Criteria::EQUAL)
+	public function filterByOuvertHoraireEtablissement($ouvertHoraireEtablissement = null, $comparison = null)
 	{
-		if(is_string($ouvertHoraireEtablissement)) {
+		if (is_string($ouvertHoraireEtablissement)) {
 			$ouvert_horaire_etablissement = in_array(strtolower($ouvertHoraireEtablissement), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
 		}
 		return $this->addUsingAlias(EdtHorairesEtablissementPeer::OUVERT_HORAIRE_ETABLISSEMENT, $ouvertHoraireEtablissement, $comparison);
@@ -330,37 +346,6 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseEdtHorairesEtablissementQuery

@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'edt_semaines' table.
  *
@@ -89,10 +90,11 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -108,6 +110,7 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -146,13 +149,12 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 	 *
 	 * @return    EdtSemaineQuery The current query, for fluid interface
 	 */
-	public function filterByIdEdtSemaine($idEdtSemaine = null, $comparison = Criteria::EQUAL)
+	public function filterByIdEdtSemaine($idEdtSemaine = null, $comparison = null)
 	{
-		if (is_array($idEdtSemaine)) {
-			return $this->addUsingAlias(EdtSemainePeer::ID_EDT_SEMAINE, $idEdtSemaine, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(EdtSemainePeer::ID_EDT_SEMAINE, $idEdtSemaine, $comparison);
+		if (is_array($idEdtSemaine) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(EdtSemainePeer::ID_EDT_SEMAINE, $idEdtSemaine, $comparison);
 	}
 
 	/**
@@ -164,23 +166,26 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 	 *
 	 * @return    EdtSemaineQuery The current query, for fluid interface
 	 */
-	public function filterByNumEdtSemaine($numEdtSemaine = null, $comparison = Criteria::EQUAL)
+	public function filterByNumEdtSemaine($numEdtSemaine = null, $comparison = null)
 	{
 		if (is_array($numEdtSemaine)) {
-			if (array_values($numEdtSemaine) === $numEdtSemaine) {
-				return $this->addUsingAlias(EdtSemainePeer::NUM_EDT_SEMAINE, $numEdtSemaine, Criteria::IN);
-			} else {
-				if (isset($numEdtSemaine['min'])) {
-					$this->addUsingAlias(EdtSemainePeer::NUM_EDT_SEMAINE, $numEdtSemaine['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($numEdtSemaine['max'])) {
-					$this->addUsingAlias(EdtSemainePeer::NUM_EDT_SEMAINE, $numEdtSemaine['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($numEdtSemaine['min'])) {
+				$this->addUsingAlias(EdtSemainePeer::NUM_EDT_SEMAINE, $numEdtSemaine['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtSemainePeer::NUM_EDT_SEMAINE, $numEdtSemaine, $comparison);
+			if (isset($numEdtSemaine['max'])) {
+				$this->addUsingAlias(EdtSemainePeer::NUM_EDT_SEMAINE, $numEdtSemaine['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtSemainePeer::NUM_EDT_SEMAINE, $numEdtSemaine, $comparison);
 	}
 
 	/**
@@ -192,15 +197,17 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 	 *
 	 * @return    EdtSemaineQuery The current query, for fluid interface
 	 */
-	public function filterByTypeEdtSemaine($typeEdtSemaine = null, $comparison = Criteria::EQUAL)
+	public function filterByTypeEdtSemaine($typeEdtSemaine = null, $comparison = null)
 	{
-		if (is_array($typeEdtSemaine)) {
-			return $this->addUsingAlias(EdtSemainePeer::TYPE_EDT_SEMAINE, $typeEdtSemaine, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $typeEdtSemaine)) {
-			return $this->addUsingAlias(EdtSemainePeer::TYPE_EDT_SEMAINE, str_replace('*', '%', $typeEdtSemaine), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtSemainePeer::TYPE_EDT_SEMAINE, $typeEdtSemaine, $comparison);
+		if (null === $comparison) {
+			if (is_array($typeEdtSemaine)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $typeEdtSemaine)) {
+				$typeEdtSemaine = str_replace('*', '%', $typeEdtSemaine);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtSemainePeer::TYPE_EDT_SEMAINE, $typeEdtSemaine, $comparison);
 	}
 
 	/**
@@ -212,23 +219,26 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 	 *
 	 * @return    EdtSemaineQuery The current query, for fluid interface
 	 */
-	public function filterByNumSemainesEtab($numSemainesEtab = null, $comparison = Criteria::EQUAL)
+	public function filterByNumSemainesEtab($numSemainesEtab = null, $comparison = null)
 	{
 		if (is_array($numSemainesEtab)) {
-			if (array_values($numSemainesEtab) === $numSemainesEtab) {
-				return $this->addUsingAlias(EdtSemainePeer::NUM_SEMAINES_ETAB, $numSemainesEtab, Criteria::IN);
-			} else {
-				if (isset($numSemainesEtab['min'])) {
-					$this->addUsingAlias(EdtSemainePeer::NUM_SEMAINES_ETAB, $numSemainesEtab['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($numSemainesEtab['max'])) {
-					$this->addUsingAlias(EdtSemainePeer::NUM_SEMAINES_ETAB, $numSemainesEtab['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($numSemainesEtab['min'])) {
+				$this->addUsingAlias(EdtSemainePeer::NUM_SEMAINES_ETAB, $numSemainesEtab['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtSemainePeer::NUM_SEMAINES_ETAB, $numSemainesEtab, $comparison);
+			if (isset($numSemainesEtab['max'])) {
+				$this->addUsingAlias(EdtSemainePeer::NUM_SEMAINES_ETAB, $numSemainesEtab['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtSemainePeer::NUM_SEMAINES_ETAB, $numSemainesEtab, $comparison);
 	}
 
 	/**
@@ -245,37 +255,6 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseEdtSemaineQuery

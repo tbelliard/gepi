@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'j_eleves_groupes' table.
  *
@@ -92,10 +93,11 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -111,6 +113,7 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -162,15 +165,17 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
 	 */
-	public function filterByLogin($login = null, $comparison = Criteria::EQUAL)
+	public function filterByLogin($login = null, $comparison = null)
 	{
-		if (is_array($login)) {
-			return $this->addUsingAlias(JEleveGroupePeer::LOGIN, $login, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $login)) {
-			return $this->addUsingAlias(JEleveGroupePeer::LOGIN, str_replace('*', '%', $login), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(JEleveGroupePeer::LOGIN, $login, $comparison);
+		if (null === $comparison) {
+			if (is_array($login)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $login)) {
+				$login = str_replace('*', '%', $login);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(JEleveGroupePeer::LOGIN, $login, $comparison);
 	}
 
 	/**
@@ -182,13 +187,12 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
 	 */
-	public function filterByIdGroupe($idGroupe = null, $comparison = Criteria::EQUAL)
+	public function filterByIdGroupe($idGroupe = null, $comparison = null)
 	{
-		if (is_array($idGroupe)) {
-			return $this->addUsingAlias(JEleveGroupePeer::ID_GROUPE, $idGroupe, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JEleveGroupePeer::ID_GROUPE, $idGroupe, $comparison);
+		if (is_array($idGroupe) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(JEleveGroupePeer::ID_GROUPE, $idGroupe, $comparison);
 	}
 
 	/**
@@ -200,13 +204,12 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
 	 */
-	public function filterByPeriode($periode = null, $comparison = Criteria::EQUAL)
+	public function filterByPeriode($periode = null, $comparison = null)
 	{
-		if (is_array($periode)) {
-			return $this->addUsingAlias(JEleveGroupePeer::PERIODE, $periode, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JEleveGroupePeer::PERIODE, $periode, $comparison);
+		if (is_array($periode) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(JEleveGroupePeer::PERIODE, $periode, $comparison);
 	}
 
 	/**
@@ -217,7 +220,7 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JEleveGroupePeer::LOGIN, $eleve->getLogin(), $comparison);
@@ -240,6 +243,9 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -278,7 +284,7 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
 	 */
-	public function filterByGroupe($groupe, $comparison = Criteria::EQUAL)
+	public function filterByGroupe($groupe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JEleveGroupePeer::ID_GROUPE, $groupe->getId(), $comparison);
@@ -301,6 +307,9 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -348,37 +357,6 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseJEleveGroupeQuery

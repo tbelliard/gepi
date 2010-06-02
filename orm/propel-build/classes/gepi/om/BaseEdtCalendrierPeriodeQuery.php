@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'edt_calendrier' table.
  *
@@ -125,10 +126,11 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -144,6 +146,7 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -182,13 +185,12 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByIdCalendrier($idCalendrier = null, $comparison = Criteria::EQUAL)
+	public function filterByIdCalendrier($idCalendrier = null, $comparison = null)
 	{
-		if (is_array($idCalendrier)) {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::ID_CALENDRIER, $idCalendrier, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::ID_CALENDRIER, $idCalendrier, $comparison);
+		if (is_array($idCalendrier) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::ID_CALENDRIER, $idCalendrier, $comparison);
 	}
 
 	/**
@@ -200,15 +202,17 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByClasseConcerneCalendrier($classeConcerneCalendrier = null, $comparison = Criteria::EQUAL)
+	public function filterByClasseConcerneCalendrier($classeConcerneCalendrier = null, $comparison = null)
 	{
-		if (is_array($classeConcerneCalendrier)) {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::CLASSE_CONCERNE_CALENDRIER, $classeConcerneCalendrier, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $classeConcerneCalendrier)) {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::CLASSE_CONCERNE_CALENDRIER, str_replace('*', '%', $classeConcerneCalendrier), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::CLASSE_CONCERNE_CALENDRIER, $classeConcerneCalendrier, $comparison);
+		if (null === $comparison) {
+			if (is_array($classeConcerneCalendrier)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $classeConcerneCalendrier)) {
+				$classeConcerneCalendrier = str_replace('*', '%', $classeConcerneCalendrier);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::CLASSE_CONCERNE_CALENDRIER, $classeConcerneCalendrier, $comparison);
 	}
 
 	/**
@@ -220,15 +224,17 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByNomCalendrier($nomCalendrier = null, $comparison = Criteria::EQUAL)
+	public function filterByNomCalendrier($nomCalendrier = null, $comparison = null)
 	{
-		if (is_array($nomCalendrier)) {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::NOM_CALENDRIER, $nomCalendrier, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $nomCalendrier)) {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::NOM_CALENDRIER, str_replace('*', '%', $nomCalendrier), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::NOM_CALENDRIER, $nomCalendrier, $comparison);
+		if (null === $comparison) {
+			if (is_array($nomCalendrier)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nomCalendrier)) {
+				$nomCalendrier = str_replace('*', '%', $nomCalendrier);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::NOM_CALENDRIER, $nomCalendrier, $comparison);
 	}
 
 	/**
@@ -240,23 +246,26 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByDebutCalendrierTs($debutCalendrierTs = null, $comparison = Criteria::EQUAL)
+	public function filterByDebutCalendrierTs($debutCalendrierTs = null, $comparison = null)
 	{
 		if (is_array($debutCalendrierTs)) {
-			if (array_values($debutCalendrierTs) === $debutCalendrierTs) {
-				return $this->addUsingAlias(EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS, $debutCalendrierTs, Criteria::IN);
-			} else {
-				if (isset($debutCalendrierTs['min'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS, $debutCalendrierTs['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($debutCalendrierTs['max'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS, $debutCalendrierTs['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($debutCalendrierTs['min'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS, $debutCalendrierTs['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS, $debutCalendrierTs, $comparison);
+			if (isset($debutCalendrierTs['max'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS, $debutCalendrierTs['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS, $debutCalendrierTs, $comparison);
 	}
 
 	/**
@@ -268,23 +277,26 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByFinCalendrierTs($finCalendrierTs = null, $comparison = Criteria::EQUAL)
+	public function filterByFinCalendrierTs($finCalendrierTs = null, $comparison = null)
 	{
 		if (is_array($finCalendrierTs)) {
-			if (array_values($finCalendrierTs) === $finCalendrierTs) {
-				return $this->addUsingAlias(EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS, $finCalendrierTs, Criteria::IN);
-			} else {
-				if (isset($finCalendrierTs['min'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS, $finCalendrierTs['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($finCalendrierTs['max'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS, $finCalendrierTs['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($finCalendrierTs['min'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS, $finCalendrierTs['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS, $finCalendrierTs, $comparison);
+			if (isset($finCalendrierTs['max'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS, $finCalendrierTs['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS, $finCalendrierTs, $comparison);
 	}
 
 	/**
@@ -296,23 +308,26 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByJourdebutCalendrier($jourdebutCalendrier = null, $comparison = Criteria::EQUAL)
+	public function filterByJourdebutCalendrier($jourdebutCalendrier = null, $comparison = null)
 	{
 		if (is_array($jourdebutCalendrier)) {
-			if (array_values($jourdebutCalendrier) === $jourdebutCalendrier) {
-				return $this->addUsingAlias(EdtCalendrierPeriodePeer::JOURDEBUT_CALENDRIER, $jourdebutCalendrier, Criteria::IN);
-			} else {
-				if (isset($jourdebutCalendrier['min'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::JOURDEBUT_CALENDRIER, $jourdebutCalendrier['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($jourdebutCalendrier['max'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::JOURDEBUT_CALENDRIER, $jourdebutCalendrier['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($jourdebutCalendrier['min'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::JOURDEBUT_CALENDRIER, $jourdebutCalendrier['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::JOURDEBUT_CALENDRIER, $jourdebutCalendrier, $comparison);
+			if (isset($jourdebutCalendrier['max'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::JOURDEBUT_CALENDRIER, $jourdebutCalendrier['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::JOURDEBUT_CALENDRIER, $jourdebutCalendrier, $comparison);
 	}
 
 	/**
@@ -324,23 +339,26 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByHeuredebutCalendrier($heuredebutCalendrier = null, $comparison = Criteria::EQUAL)
+	public function filterByHeuredebutCalendrier($heuredebutCalendrier = null, $comparison = null)
 	{
 		if (is_array($heuredebutCalendrier)) {
-			if (array_values($heuredebutCalendrier) === $heuredebutCalendrier) {
-				return $this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREDEBUT_CALENDRIER, $heuredebutCalendrier, Criteria::IN);
-			} else {
-				if (isset($heuredebutCalendrier['min'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREDEBUT_CALENDRIER, $heuredebutCalendrier['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($heuredebutCalendrier['max'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREDEBUT_CALENDRIER, $heuredebutCalendrier['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($heuredebutCalendrier['min'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREDEBUT_CALENDRIER, $heuredebutCalendrier['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREDEBUT_CALENDRIER, $heuredebutCalendrier, $comparison);
+			if (isset($heuredebutCalendrier['max'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREDEBUT_CALENDRIER, $heuredebutCalendrier['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREDEBUT_CALENDRIER, $heuredebutCalendrier, $comparison);
 	}
 
 	/**
@@ -352,23 +370,26 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByJourfinCalendrier($jourfinCalendrier = null, $comparison = Criteria::EQUAL)
+	public function filterByJourfinCalendrier($jourfinCalendrier = null, $comparison = null)
 	{
 		if (is_array($jourfinCalendrier)) {
-			if (array_values($jourfinCalendrier) === $jourfinCalendrier) {
-				return $this->addUsingAlias(EdtCalendrierPeriodePeer::JOURFIN_CALENDRIER, $jourfinCalendrier, Criteria::IN);
-			} else {
-				if (isset($jourfinCalendrier['min'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::JOURFIN_CALENDRIER, $jourfinCalendrier['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($jourfinCalendrier['max'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::JOURFIN_CALENDRIER, $jourfinCalendrier['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($jourfinCalendrier['min'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::JOURFIN_CALENDRIER, $jourfinCalendrier['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::JOURFIN_CALENDRIER, $jourfinCalendrier, $comparison);
+			if (isset($jourfinCalendrier['max'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::JOURFIN_CALENDRIER, $jourfinCalendrier['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::JOURFIN_CALENDRIER, $jourfinCalendrier, $comparison);
 	}
 
 	/**
@@ -380,23 +401,26 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByHeurefinCalendrier($heurefinCalendrier = null, $comparison = Criteria::EQUAL)
+	public function filterByHeurefinCalendrier($heurefinCalendrier = null, $comparison = null)
 	{
 		if (is_array($heurefinCalendrier)) {
-			if (array_values($heurefinCalendrier) === $heurefinCalendrier) {
-				return $this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREFIN_CALENDRIER, $heurefinCalendrier, Criteria::IN);
-			} else {
-				if (isset($heurefinCalendrier['min'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREFIN_CALENDRIER, $heurefinCalendrier['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($heurefinCalendrier['max'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREFIN_CALENDRIER, $heurefinCalendrier['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($heurefinCalendrier['min'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREFIN_CALENDRIER, $heurefinCalendrier['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREFIN_CALENDRIER, $heurefinCalendrier, $comparison);
+			if (isset($heurefinCalendrier['max'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREFIN_CALENDRIER, $heurefinCalendrier['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::HEUREFIN_CALENDRIER, $heurefinCalendrier, $comparison);
 	}
 
 	/**
@@ -408,23 +432,26 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByNumeroPeriode($numeroPeriode = null, $comparison = Criteria::EQUAL)
+	public function filterByNumeroPeriode($numeroPeriode = null, $comparison = null)
 	{
 		if (is_array($numeroPeriode)) {
-			if (array_values($numeroPeriode) === $numeroPeriode) {
-				return $this->addUsingAlias(EdtCalendrierPeriodePeer::NUMERO_PERIODE, $numeroPeriode, Criteria::IN);
-			} else {
-				if (isset($numeroPeriode['min'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::NUMERO_PERIODE, $numeroPeriode['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($numeroPeriode['max'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::NUMERO_PERIODE, $numeroPeriode['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($numeroPeriode['min'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::NUMERO_PERIODE, $numeroPeriode['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::NUMERO_PERIODE, $numeroPeriode, $comparison);
+			if (isset($numeroPeriode['max'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::NUMERO_PERIODE, $numeroPeriode['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::NUMERO_PERIODE, $numeroPeriode, $comparison);
 	}
 
 	/**
@@ -436,23 +463,26 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByEtabfermeCalendrier($etabfermeCalendrier = null, $comparison = Criteria::EQUAL)
+	public function filterByEtabfermeCalendrier($etabfermeCalendrier = null, $comparison = null)
 	{
 		if (is_array($etabfermeCalendrier)) {
-			if (array_values($etabfermeCalendrier) === $etabfermeCalendrier) {
-				return $this->addUsingAlias(EdtCalendrierPeriodePeer::ETABFERME_CALENDRIER, $etabfermeCalendrier, Criteria::IN);
-			} else {
-				if (isset($etabfermeCalendrier['min'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::ETABFERME_CALENDRIER, $etabfermeCalendrier['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($etabfermeCalendrier['max'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::ETABFERME_CALENDRIER, $etabfermeCalendrier['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($etabfermeCalendrier['min'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::ETABFERME_CALENDRIER, $etabfermeCalendrier['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::ETABFERME_CALENDRIER, $etabfermeCalendrier, $comparison);
+			if (isset($etabfermeCalendrier['max'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::ETABFERME_CALENDRIER, $etabfermeCalendrier['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::ETABFERME_CALENDRIER, $etabfermeCalendrier, $comparison);
 	}
 
 	/**
@@ -464,23 +494,26 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByEtabvacancesCalendrier($etabvacancesCalendrier = null, $comparison = Criteria::EQUAL)
+	public function filterByEtabvacancesCalendrier($etabvacancesCalendrier = null, $comparison = null)
 	{
 		if (is_array($etabvacancesCalendrier)) {
-			if (array_values($etabvacancesCalendrier) === $etabvacancesCalendrier) {
-				return $this->addUsingAlias(EdtCalendrierPeriodePeer::ETABVACANCES_CALENDRIER, $etabvacancesCalendrier, Criteria::IN);
-			} else {
-				if (isset($etabvacancesCalendrier['min'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::ETABVACANCES_CALENDRIER, $etabvacancesCalendrier['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($etabvacancesCalendrier['max'])) {
-					$this->addUsingAlias(EdtCalendrierPeriodePeer::ETABVACANCES_CALENDRIER, $etabvacancesCalendrier['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($etabvacancesCalendrier['min'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::ETABVACANCES_CALENDRIER, $etabvacancesCalendrier['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCalendrierPeriodePeer::ETABVACANCES_CALENDRIER, $etabvacancesCalendrier, $comparison);
+			if (isset($etabvacancesCalendrier['max'])) {
+				$this->addUsingAlias(EdtCalendrierPeriodePeer::ETABVACANCES_CALENDRIER, $etabvacancesCalendrier['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCalendrierPeriodePeer::ETABVACANCES_CALENDRIER, $etabvacancesCalendrier, $comparison);
 	}
 
 	/**
@@ -491,7 +524,7 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = Criteria::EQUAL)
+	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EdtCalendrierPeriodePeer::ID_CALENDRIER, $edtEmplacementCours->getIdCalendrier(), $comparison);
@@ -514,6 +547,9 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -558,37 +594,6 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseEdtCalendrierPeriodeQuery

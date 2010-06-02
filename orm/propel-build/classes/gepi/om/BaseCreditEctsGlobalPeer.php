@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'ects_global_credits' table.
  *
@@ -400,7 +401,7 @@ abstract class BaseCreditEctsGlobalPeer {
 			$key = CreditEctsGlobalPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = CreditEctsGlobalPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -427,7 +428,7 @@ abstract class BaseCreditEctsGlobalPeer {
 		$key = CreditEctsGlobalPeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = CreditEctsGlobalPeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + CreditEctsGlobalPeer::NUM_COLUMNS;
 		} else {
@@ -520,7 +521,7 @@ abstract class BaseCreditEctsGlobalPeer {
 			$key1 = CreditEctsGlobalPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CreditEctsGlobalPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -638,7 +639,7 @@ abstract class BaseCreditEctsGlobalPeer {
 			$key1 = CreditEctsGlobalPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CreditEctsGlobalPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CreditEctsGlobalPeer::getOMClass(false);
@@ -817,7 +818,7 @@ abstract class BaseCreditEctsGlobalPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += BasePeer::doDeleteAll(CreditEctsGlobalPeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(CreditEctsGlobalPeer::TABLE_NAME, $con, CreditEctsGlobalPeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
@@ -942,8 +943,8 @@ abstract class BaseCreditEctsGlobalPeer {
 	 * @return     CreditEctsGlobal
 	 */
 	public static function retrieveByPK($id, $id_eleve, PropelPDO $con = null) {
-		$key = serialize(array((string) $id, (string) $id_eleve));
- 		if (null !== ($obj = CreditEctsGlobalPeer::getInstanceFromPool($key))) {
+		$_instancePoolKey = serialize(array((string) $id, (string) $id_eleve));
+ 		if (null !== ($obj = CreditEctsGlobalPeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
 

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'aid_config' table.
  *
@@ -1450,8 +1451,8 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	 * If this AidConfiguration is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array AidDetails[] List of AidDetails objects
 	 * @throws     PropelException
 	 */
@@ -1541,8 +1542,11 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 		$this->bull_simplifie = null;
 		$this->outils_complementaires = null;
 		$this->feuille_presence = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'plugins_menus' table.
  *
@@ -953,7 +954,10 @@ abstract class BasePlugInMiseEnOeuvreMenu extends BaseObject  implements Persist
 		$this->titre_item = null;
 		$this->lien_item = null;
 		$this->description_item = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

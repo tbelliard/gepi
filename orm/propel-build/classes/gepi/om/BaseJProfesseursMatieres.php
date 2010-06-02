@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'j_professeurs_matieres' table.
  *
@@ -912,8 +913,11 @@ abstract class BaseJProfesseursMatieres extends BaseObject  implements Persisten
 		$this->id_matiere = null;
 		$this->id_professeur = null;
 		$this->ordre_matieres = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

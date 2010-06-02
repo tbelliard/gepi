@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'plugins_autorisations' table.
  *
@@ -905,7 +906,10 @@ abstract class BasePlugInAutorisation extends BaseObject  implements Persistent
 		$this->fichier = null;
 		$this->user_statut = null;
 		$this->auth = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

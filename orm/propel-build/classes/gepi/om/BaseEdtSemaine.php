@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'edt_semaines' table.
  *
@@ -757,7 +758,10 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent
 		$this->num_edt_semaine = null;
 		$this->type_edt_semaine = null;
 		$this->num_semaines_etab = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

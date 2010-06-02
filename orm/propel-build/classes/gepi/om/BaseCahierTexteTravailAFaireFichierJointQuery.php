@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'ct_devoirs_documents' table.
  *
@@ -97,10 +98,11 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -116,6 +118,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -154,13 +157,12 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 	 *
 	 * @return    CahierTexteTravailAFaireFichierJointQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id)) {
-			return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::ID, $id, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::ID, $id, $comparison);
+		if (is_array($id) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::ID, $id, $comparison);
 	}
 
 	/**
@@ -172,23 +174,26 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 	 *
 	 * @return    CahierTexteTravailAFaireFichierJointQuery The current query, for fluid interface
 	 */
-	public function filterByIdCtDevoir($idCtDevoir = null, $comparison = Criteria::EQUAL)
+	public function filterByIdCtDevoir($idCtDevoir = null, $comparison = null)
 	{
 		if (is_array($idCtDevoir)) {
-			if (array_values($idCtDevoir) === $idCtDevoir) {
-				return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, $idCtDevoir, Criteria::IN);
-			} else {
-				if (isset($idCtDevoir['min'])) {
-					$this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, $idCtDevoir['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idCtDevoir['max'])) {
-					$this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, $idCtDevoir['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($idCtDevoir['min'])) {
+				$this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, $idCtDevoir['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, $idCtDevoir, $comparison);
+			if (isset($idCtDevoir['max'])) {
+				$this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, $idCtDevoir['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, $idCtDevoir, $comparison);
 	}
 
 	/**
@@ -200,15 +205,17 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 	 *
 	 * @return    CahierTexteTravailAFaireFichierJointQuery The current query, for fluid interface
 	 */
-	public function filterByTitre($titre = null, $comparison = Criteria::EQUAL)
+	public function filterByTitre($titre = null, $comparison = null)
 	{
-		if (is_array($titre)) {
-			return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::TITRE, $titre, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $titre)) {
-			return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::TITRE, str_replace('*', '%', $titre), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::TITRE, $titre, $comparison);
+		if (null === $comparison) {
+			if (is_array($titre)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $titre)) {
+				$titre = str_replace('*', '%', $titre);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::TITRE, $titre, $comparison);
 	}
 
 	/**
@@ -220,23 +227,26 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 	 *
 	 * @return    CahierTexteTravailAFaireFichierJointQuery The current query, for fluid interface
 	 */
-	public function filterByTaille($taille = null, $comparison = Criteria::EQUAL)
+	public function filterByTaille($taille = null, $comparison = null)
 	{
 		if (is_array($taille)) {
-			if (array_values($taille) === $taille) {
-				return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::TAILLE, $taille, Criteria::IN);
-			} else {
-				if (isset($taille['min'])) {
-					$this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::TAILLE, $taille['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($taille['max'])) {
-					$this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::TAILLE, $taille['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($taille['min'])) {
+				$this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::TAILLE, $taille['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::TAILLE, $taille, $comparison);
+			if (isset($taille['max'])) {
+				$this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::TAILLE, $taille['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::TAILLE, $taille, $comparison);
 	}
 
 	/**
@@ -248,15 +258,17 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 	 *
 	 * @return    CahierTexteTravailAFaireFichierJointQuery The current query, for fluid interface
 	 */
-	public function filterByEmplacement($emplacement = null, $comparison = Criteria::EQUAL)
+	public function filterByEmplacement($emplacement = null, $comparison = null)
 	{
-		if (is_array($emplacement)) {
-			return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::EMPLACEMENT, $emplacement, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $emplacement)) {
-			return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::EMPLACEMENT, str_replace('*', '%', $emplacement), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::EMPLACEMENT, $emplacement, $comparison);
+		if (null === $comparison) {
+			if (is_array($emplacement)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $emplacement)) {
+				$emplacement = str_replace('*', '%', $emplacement);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::EMPLACEMENT, $emplacement, $comparison);
 	}
 
 	/**
@@ -267,7 +279,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 	 *
 	 * @return    CahierTexteTravailAFaireFichierJointQuery The current query, for fluid interface
 	 */
-	public function filterByCahierTexteTravailAFaire($cahierTexteTravailAFaire, $comparison = Criteria::EQUAL)
+	public function filterByCahierTexteTravailAFaire($cahierTexteTravailAFaire, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::ID_CT_DEVOIR, $cahierTexteTravailAFaire->getIdCt(), $comparison);
@@ -290,6 +302,9 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -334,37 +349,6 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseCahierTexteTravailAFaireFichierJointQuery

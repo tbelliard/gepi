@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'edt_creneaux' table.
  *
@@ -109,10 +110,11 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -128,6 +130,7 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -166,13 +169,12 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
 	 */
-	public function filterByIdDefiniePeriode($idDefiniePeriode = null, $comparison = Criteria::EQUAL)
+	public function filterByIdDefiniePeriode($idDefiniePeriode = null, $comparison = null)
 	{
-		if (is_array($idDefiniePeriode)) {
-			return $this->addUsingAlias(EdtCreneauPeer::ID_DEFINIE_PERIODE, $idDefiniePeriode, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(EdtCreneauPeer::ID_DEFINIE_PERIODE, $idDefiniePeriode, $comparison);
+		if (is_array($idDefiniePeriode) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(EdtCreneauPeer::ID_DEFINIE_PERIODE, $idDefiniePeriode, $comparison);
 	}
 
 	/**
@@ -184,15 +186,17 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
 	 */
-	public function filterByNomDefiniePeriode($nomDefiniePeriode = null, $comparison = Criteria::EQUAL)
+	public function filterByNomDefiniePeriode($nomDefiniePeriode = null, $comparison = null)
 	{
-		if (is_array($nomDefiniePeriode)) {
-			return $this->addUsingAlias(EdtCreneauPeer::NOM_DEFINIE_PERIODE, $nomDefiniePeriode, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $nomDefiniePeriode)) {
-			return $this->addUsingAlias(EdtCreneauPeer::NOM_DEFINIE_PERIODE, str_replace('*', '%', $nomDefiniePeriode), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtCreneauPeer::NOM_DEFINIE_PERIODE, $nomDefiniePeriode, $comparison);
+		if (null === $comparison) {
+			if (is_array($nomDefiniePeriode)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nomDefiniePeriode)) {
+				$nomDefiniePeriode = str_replace('*', '%', $nomDefiniePeriode);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtCreneauPeer::NOM_DEFINIE_PERIODE, $nomDefiniePeriode, $comparison);
 	}
 
 	/**
@@ -204,23 +208,26 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
 	 */
-	public function filterByHeuredebutDefiniePeriode($heuredebutDefiniePeriode = null, $comparison = Criteria::EQUAL)
+	public function filterByHeuredebutDefiniePeriode($heuredebutDefiniePeriode = null, $comparison = null)
 	{
 		if (is_array($heuredebutDefiniePeriode)) {
-			if (array_values($heuredebutDefiniePeriode) === $heuredebutDefiniePeriode) {
-				return $this->addUsingAlias(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE, $heuredebutDefiniePeriode, Criteria::IN);
-			} else {
-				if (isset($heuredebutDefiniePeriode['min'])) {
-					$this->addUsingAlias(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE, $heuredebutDefiniePeriode['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($heuredebutDefiniePeriode['max'])) {
-					$this->addUsingAlias(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE, $heuredebutDefiniePeriode['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($heuredebutDefiniePeriode['min'])) {
+				$this->addUsingAlias(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE, $heuredebutDefiniePeriode['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE, $heuredebutDefiniePeriode, $comparison);
+			if (isset($heuredebutDefiniePeriode['max'])) {
+				$this->addUsingAlias(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE, $heuredebutDefiniePeriode['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE, $heuredebutDefiniePeriode, $comparison);
 	}
 
 	/**
@@ -232,23 +239,26 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
 	 */
-	public function filterByHeurefinDefiniePeriode($heurefinDefiniePeriode = null, $comparison = Criteria::EQUAL)
+	public function filterByHeurefinDefiniePeriode($heurefinDefiniePeriode = null, $comparison = null)
 	{
 		if (is_array($heurefinDefiniePeriode)) {
-			if (array_values($heurefinDefiniePeriode) === $heurefinDefiniePeriode) {
-				return $this->addUsingAlias(EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE, $heurefinDefiniePeriode, Criteria::IN);
-			} else {
-				if (isset($heurefinDefiniePeriode['min'])) {
-					$this->addUsingAlias(EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE, $heurefinDefiniePeriode['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($heurefinDefiniePeriode['max'])) {
-					$this->addUsingAlias(EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE, $heurefinDefiniePeriode['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($heurefinDefiniePeriode['min'])) {
+				$this->addUsingAlias(EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE, $heurefinDefiniePeriode['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE, $heurefinDefiniePeriode, $comparison);
+			if (isset($heurefinDefiniePeriode['max'])) {
+				$this->addUsingAlias(EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE, $heurefinDefiniePeriode['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE, $heurefinDefiniePeriode, $comparison);
 	}
 
 	/**
@@ -260,23 +270,26 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
 	 */
-	public function filterBySuiviDefiniePeriode($suiviDefiniePeriode = null, $comparison = Criteria::EQUAL)
+	public function filterBySuiviDefiniePeriode($suiviDefiniePeriode = null, $comparison = null)
 	{
 		if (is_array($suiviDefiniePeriode)) {
-			if (array_values($suiviDefiniePeriode) === $suiviDefiniePeriode) {
-				return $this->addUsingAlias(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE, $suiviDefiniePeriode, Criteria::IN);
-			} else {
-				if (isset($suiviDefiniePeriode['min'])) {
-					$this->addUsingAlias(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE, $suiviDefiniePeriode['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($suiviDefiniePeriode['max'])) {
-					$this->addUsingAlias(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE, $suiviDefiniePeriode['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($suiviDefiniePeriode['min'])) {
+				$this->addUsingAlias(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE, $suiviDefiniePeriode['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE, $suiviDefiniePeriode, $comparison);
+			if (isset($suiviDefiniePeriode['max'])) {
+				$this->addUsingAlias(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE, $suiviDefiniePeriode['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE, $suiviDefiniePeriode, $comparison);
 	}
 
 	/**
@@ -288,15 +301,17 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
 	 */
-	public function filterByTypeCreneaux($typeCreneaux = null, $comparison = Criteria::EQUAL)
+	public function filterByTypeCreneaux($typeCreneaux = null, $comparison = null)
 	{
-		if (is_array($typeCreneaux)) {
-			return $this->addUsingAlias(EdtCreneauPeer::TYPE_CRENEAUX, $typeCreneaux, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $typeCreneaux)) {
-			return $this->addUsingAlias(EdtCreneauPeer::TYPE_CRENEAUX, str_replace('*', '%', $typeCreneaux), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtCreneauPeer::TYPE_CRENEAUX, $typeCreneaux, $comparison);
+		if (null === $comparison) {
+			if (is_array($typeCreneaux)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $typeCreneaux)) {
+				$typeCreneaux = str_replace('*', '%', $typeCreneaux);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtCreneauPeer::TYPE_CRENEAUX, $typeCreneaux, $comparison);
 	}
 
 	/**
@@ -308,15 +323,17 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
 	 */
-	public function filterByJourCreneau($jourCreneau = null, $comparison = Criteria::EQUAL)
+	public function filterByJourCreneau($jourCreneau = null, $comparison = null)
 	{
-		if (is_array($jourCreneau)) {
-			return $this->addUsingAlias(EdtCreneauPeer::JOUR_CRENEAU, $jourCreneau, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $jourCreneau)) {
-			return $this->addUsingAlias(EdtCreneauPeer::JOUR_CRENEAU, str_replace('*', '%', $jourCreneau), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtCreneauPeer::JOUR_CRENEAU, $jourCreneau, $comparison);
+		if (null === $comparison) {
+			if (is_array($jourCreneau)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $jourCreneau)) {
+				$jourCreneau = str_replace('*', '%', $jourCreneau);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtCreneauPeer::JOUR_CRENEAU, $jourCreneau, $comparison);
 	}
 
 	/**
@@ -327,7 +344,7 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = Criteria::EQUAL)
+	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EdtCreneauPeer::ID_DEFINIE_PERIODE, $absenceEleveSaisie->getIdEdtCreneau(), $comparison);
@@ -350,6 +367,9 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -388,7 +408,7 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
 	 */
-	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = Criteria::EQUAL)
+	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EdtCreneauPeer::ID_DEFINIE_PERIODE, $edtEmplacementCours->getIdDefiniePeriode(), $comparison);
@@ -411,6 +431,9 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -455,37 +478,6 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseEdtCreneauQuery

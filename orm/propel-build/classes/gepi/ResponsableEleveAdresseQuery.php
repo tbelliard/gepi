@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Skeleton subclass for performing query and update operations on the 'resp_adr' table.
  *

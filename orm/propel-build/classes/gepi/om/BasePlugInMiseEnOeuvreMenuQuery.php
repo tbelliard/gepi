@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'plugins_menus' table.
  *
@@ -101,10 +102,11 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -120,6 +122,7 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -158,13 +161,12 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 	 *
 	 * @return    PlugInMiseEnOeuvreMenuQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id)) {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::ID, $id, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::ID, $id, $comparison);
+		if (is_array($id) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::ID, $id, $comparison);
 	}
 
 	/**
@@ -176,23 +178,26 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 	 *
 	 * @return    PlugInMiseEnOeuvreMenuQuery The current query, for fluid interface
 	 */
-	public function filterByPluginId($pluginId = null, $comparison = Criteria::EQUAL)
+	public function filterByPluginId($pluginId = null, $comparison = null)
 	{
 		if (is_array($pluginId)) {
-			if (array_values($pluginId) === $pluginId) {
-				return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $pluginId, Criteria::IN);
-			} else {
-				if (isset($pluginId['min'])) {
-					$this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $pluginId['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($pluginId['max'])) {
-					$this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $pluginId['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($pluginId['min'])) {
+				$this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $pluginId['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $pluginId, $comparison);
+			if (isset($pluginId['max'])) {
+				$this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $pluginId['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $pluginId, $comparison);
 	}
 
 	/**
@@ -204,15 +209,17 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 	 *
 	 * @return    PlugInMiseEnOeuvreMenuQuery The current query, for fluid interface
 	 */
-	public function filterByUserStatut($userStatut = null, $comparison = Criteria::EQUAL)
+	public function filterByUserStatut($userStatut = null, $comparison = null)
 	{
-		if (is_array($userStatut)) {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::USER_STATUT, $userStatut, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $userStatut)) {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::USER_STATUT, str_replace('*', '%', $userStatut), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::USER_STATUT, $userStatut, $comparison);
+		if (null === $comparison) {
+			if (is_array($userStatut)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $userStatut)) {
+				$userStatut = str_replace('*', '%', $userStatut);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::USER_STATUT, $userStatut, $comparison);
 	}
 
 	/**
@@ -224,15 +231,17 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 	 *
 	 * @return    PlugInMiseEnOeuvreMenuQuery The current query, for fluid interface
 	 */
-	public function filterByTitreItem($titreItem = null, $comparison = Criteria::EQUAL)
+	public function filterByTitreItem($titreItem = null, $comparison = null)
 	{
-		if (is_array($titreItem)) {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::TITRE_ITEM, $titreItem, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $titreItem)) {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::TITRE_ITEM, str_replace('*', '%', $titreItem), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::TITRE_ITEM, $titreItem, $comparison);
+		if (null === $comparison) {
+			if (is_array($titreItem)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $titreItem)) {
+				$titreItem = str_replace('*', '%', $titreItem);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::TITRE_ITEM, $titreItem, $comparison);
 	}
 
 	/**
@@ -244,15 +253,17 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 	 *
 	 * @return    PlugInMiseEnOeuvreMenuQuery The current query, for fluid interface
 	 */
-	public function filterByLienItem($lienItem = null, $comparison = Criteria::EQUAL)
+	public function filterByLienItem($lienItem = null, $comparison = null)
 	{
-		if (is_array($lienItem)) {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::LIEN_ITEM, $lienItem, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $lienItem)) {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::LIEN_ITEM, str_replace('*', '%', $lienItem), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::LIEN_ITEM, $lienItem, $comparison);
+		if (null === $comparison) {
+			if (is_array($lienItem)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $lienItem)) {
+				$lienItem = str_replace('*', '%', $lienItem);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::LIEN_ITEM, $lienItem, $comparison);
 	}
 
 	/**
@@ -264,15 +275,17 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 	 *
 	 * @return    PlugInMiseEnOeuvreMenuQuery The current query, for fluid interface
 	 */
-	public function filterByDescriptionItem($descriptionItem = null, $comparison = Criteria::EQUAL)
+	public function filterByDescriptionItem($descriptionItem = null, $comparison = null)
 	{
-		if (is_array($descriptionItem)) {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::DESCRIPTION_ITEM, $descriptionItem, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $descriptionItem)) {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::DESCRIPTION_ITEM, str_replace('*', '%', $descriptionItem), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::DESCRIPTION_ITEM, $descriptionItem, $comparison);
+		if (null === $comparison) {
+			if (is_array($descriptionItem)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $descriptionItem)) {
+				$descriptionItem = str_replace('*', '%', $descriptionItem);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::DESCRIPTION_ITEM, $descriptionItem, $comparison);
 	}
 
 	/**
@@ -283,7 +296,7 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 	 *
 	 * @return    PlugInMiseEnOeuvreMenuQuery The current query, for fluid interface
 	 */
-	public function filterByPlugIn($plugIn, $comparison = Criteria::EQUAL)
+	public function filterByPlugIn($plugIn, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, $plugIn->getId(), $comparison);
@@ -306,6 +319,9 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -350,37 +366,6 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BasePlugInMiseEnOeuvreMenuQuery

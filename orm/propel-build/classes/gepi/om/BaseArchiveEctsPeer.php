@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'archivage_ects' table.
  *
@@ -440,7 +441,7 @@ abstract class BaseArchiveEctsPeer {
 			$key = ArchiveEctsPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = ArchiveEctsPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -467,7 +468,7 @@ abstract class BaseArchiveEctsPeer {
 		$key = ArchiveEctsPeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = ArchiveEctsPeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + ArchiveEctsPeer::NUM_COLUMNS;
 		} else {
@@ -560,7 +561,7 @@ abstract class BaseArchiveEctsPeer {
 			$key1 = ArchiveEctsPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = ArchiveEctsPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -678,7 +679,7 @@ abstract class BaseArchiveEctsPeer {
 			$key1 = ArchiveEctsPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = ArchiveEctsPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = ArchiveEctsPeer::getOMClass(false);
@@ -873,7 +874,7 @@ abstract class BaseArchiveEctsPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += BasePeer::doDeleteAll(ArchiveEctsPeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(ArchiveEctsPeer::TABLE_NAME, $con, ArchiveEctsPeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
@@ -1002,8 +1003,8 @@ abstract class BaseArchiveEctsPeer {
 	 * @return     ArchiveEcts
 	 */
 	public static function retrieveByPK($id, $ine, $num_periode, $special, PropelPDO $con = null) {
-		$key = serialize(array((string) $id, (string) $ine, (string) $num_periode, (string) $special));
- 		if (null !== ($obj = ArchiveEctsPeer::getInstanceFromPool($key))) {
+		$_instancePoolKey = serialize(array((string) $id, (string) $ine, (string) $num_periode, (string) $special));
+ 		if (null !== ($obj = ArchiveEctsPeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
 

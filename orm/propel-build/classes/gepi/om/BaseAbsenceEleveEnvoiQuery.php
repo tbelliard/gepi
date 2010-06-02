@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'a_envois' table.
  *
@@ -117,10 +118,11 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -136,6 +138,7 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -174,13 +177,12 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveEnvoiQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id)) {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::ID, $id, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::ID, $id, $comparison);
+		if (is_array($id) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(AbsenceEleveEnvoiPeer::ID, $id, $comparison);
 	}
 
 	/**
@@ -192,15 +194,17 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveEnvoiQuery The current query, for fluid interface
 	 */
-	public function filterByUtilisateurId($utilisateurId = null, $comparison = Criteria::EQUAL)
+	public function filterByUtilisateurId($utilisateurId = null, $comparison = null)
 	{
-		if (is_array($utilisateurId)) {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $utilisateurId, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $utilisateurId)) {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, str_replace('*', '%', $utilisateurId), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $utilisateurId, $comparison);
+		if (null === $comparison) {
+			if (is_array($utilisateurId)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $utilisateurId)) {
+				$utilisateurId = str_replace('*', '%', $utilisateurId);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $utilisateurId, $comparison);
 	}
 
 	/**
@@ -212,23 +216,26 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveEnvoiQuery The current query, for fluid interface
 	 */
-	public function filterByIdTypeEnvoi($idTypeEnvoi = null, $comparison = Criteria::EQUAL)
+	public function filterByIdTypeEnvoi($idTypeEnvoi = null, $comparison = null)
 	{
 		if (is_array($idTypeEnvoi)) {
-			if (array_values($idTypeEnvoi) === $idTypeEnvoi) {
-				return $this->addUsingAlias(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, $idTypeEnvoi, Criteria::IN);
-			} else {
-				if (isset($idTypeEnvoi['min'])) {
-					$this->addUsingAlias(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, $idTypeEnvoi['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idTypeEnvoi['max'])) {
-					$this->addUsingAlias(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, $idTypeEnvoi['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($idTypeEnvoi['min'])) {
+				$this->addUsingAlias(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, $idTypeEnvoi['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, $idTypeEnvoi, $comparison);
+			if (isset($idTypeEnvoi['max'])) {
+				$this->addUsingAlias(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, $idTypeEnvoi['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, $idTypeEnvoi, $comparison);
 	}
 
 	/**
@@ -240,15 +247,17 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveEnvoiQuery The current query, for fluid interface
 	 */
-	public function filterByCommentaire($commentaire = null, $comparison = Criteria::EQUAL)
+	public function filterByCommentaire($commentaire = null, $comparison = null)
 	{
-		if (is_array($commentaire)) {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::COMMENTAIRE, $commentaire, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $commentaire)) {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::COMMENTAIRE, str_replace('*', '%', $commentaire), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::COMMENTAIRE, $commentaire, $comparison);
+		if (null === $comparison) {
+			if (is_array($commentaire)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $commentaire)) {
+				$commentaire = str_replace('*', '%', $commentaire);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveEnvoiPeer::COMMENTAIRE, $commentaire, $comparison);
 	}
 
 	/**
@@ -260,15 +269,17 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveEnvoiQuery The current query, for fluid interface
 	 */
-	public function filterByStatutEnvoi($statutEnvoi = null, $comparison = Criteria::EQUAL)
+	public function filterByStatutEnvoi($statutEnvoi = null, $comparison = null)
 	{
-		if (is_array($statutEnvoi)) {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::STATUT_ENVOI, $statutEnvoi, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $statutEnvoi)) {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::STATUT_ENVOI, str_replace('*', '%', $statutEnvoi), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::STATUT_ENVOI, $statutEnvoi, $comparison);
+		if (null === $comparison) {
+			if (is_array($statutEnvoi)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $statutEnvoi)) {
+				$statutEnvoi = str_replace('*', '%', $statutEnvoi);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveEnvoiPeer::STATUT_ENVOI, $statutEnvoi, $comparison);
 	}
 
 	/**
@@ -280,23 +291,26 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveEnvoiQuery The current query, for fluid interface
 	 */
-	public function filterByDateEnvoi($dateEnvoi = null, $comparison = Criteria::EQUAL)
+	public function filterByDateEnvoi($dateEnvoi = null, $comparison = null)
 	{
 		if (is_array($dateEnvoi)) {
-			if (array_values($dateEnvoi) === $dateEnvoi) {
-				return $this->addUsingAlias(AbsenceEleveEnvoiPeer::DATE_ENVOI, $dateEnvoi, Criteria::IN);
-			} else {
-				if (isset($dateEnvoi['min'])) {
-					$this->addUsingAlias(AbsenceEleveEnvoiPeer::DATE_ENVOI, $dateEnvoi['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($dateEnvoi['max'])) {
-					$this->addUsingAlias(AbsenceEleveEnvoiPeer::DATE_ENVOI, $dateEnvoi['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($dateEnvoi['min'])) {
+				$this->addUsingAlias(AbsenceEleveEnvoiPeer::DATE_ENVOI, $dateEnvoi['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::DATE_ENVOI, $dateEnvoi, $comparison);
+			if (isset($dateEnvoi['max'])) {
+				$this->addUsingAlias(AbsenceEleveEnvoiPeer::DATE_ENVOI, $dateEnvoi['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveEnvoiPeer::DATE_ENVOI, $dateEnvoi, $comparison);
 	}
 
 	/**
@@ -308,23 +322,26 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveEnvoiQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
 	{
 		if (is_array($createdAt)) {
-			if (array_values($createdAt) === $createdAt) {
-				return $this->addUsingAlias(AbsenceEleveEnvoiPeer::CREATED_AT, $createdAt, Criteria::IN);
-			} else {
-				if (isset($createdAt['min'])) {
-					$this->addUsingAlias(AbsenceEleveEnvoiPeer::CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($createdAt['max'])) {
-					$this->addUsingAlias(AbsenceEleveEnvoiPeer::CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($createdAt['min'])) {
+				$this->addUsingAlias(AbsenceEleveEnvoiPeer::CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::CREATED_AT, $createdAt, $comparison);
+			if (isset($createdAt['max'])) {
+				$this->addUsingAlias(AbsenceEleveEnvoiPeer::CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveEnvoiPeer::CREATED_AT, $createdAt, $comparison);
 	}
 
 	/**
@@ -336,23 +353,26 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveEnvoiQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
 	{
 		if (is_array($updatedAt)) {
-			if (array_values($updatedAt) === $updatedAt) {
-				return $this->addUsingAlias(AbsenceEleveEnvoiPeer::UPDATED_AT, $updatedAt, Criteria::IN);
-			} else {
-				if (isset($updatedAt['min'])) {
-					$this->addUsingAlias(AbsenceEleveEnvoiPeer::UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($updatedAt['max'])) {
-					$this->addUsingAlias(AbsenceEleveEnvoiPeer::UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($updatedAt['min'])) {
+				$this->addUsingAlias(AbsenceEleveEnvoiPeer::UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveEnvoiPeer::UPDATED_AT, $updatedAt, $comparison);
+			if (isset($updatedAt['max'])) {
+				$this->addUsingAlias(AbsenceEleveEnvoiPeer::UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveEnvoiPeer::UPDATED_AT, $updatedAt, $comparison);
 	}
 
 	/**
@@ -363,7 +383,7 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveEnvoiQuery The current query, for fluid interface
 	 */
-	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = Criteria::EQUAL)
+	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $utilisateurProfessionnel->getLogin(), $comparison);
@@ -386,6 +406,9 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -424,7 +447,7 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveEnvoiQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveTypeEnvoi($absenceEleveTypeEnvoi, $comparison = Criteria::EQUAL)
+	public function filterByAbsenceEleveTypeEnvoi($absenceEleveTypeEnvoi, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveEnvoiPeer::ID_TYPE_ENVOI, $absenceEleveTypeEnvoi->getId(), $comparison);
@@ -447,6 +470,9 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -485,7 +511,7 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveEnvoiQuery The current query, for fluid interface
 	 */
-	public function filterByJTraitementEnvoiEleve($jTraitementEnvoiEleve, $comparison = Criteria::EQUAL)
+	public function filterByJTraitementEnvoiEleve($jTraitementEnvoiEleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveEnvoiPeer::ID, $jTraitementEnvoiEleve->getAEnvoiId(), $comparison);
@@ -508,6 +534,9 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -569,37 +598,6 @@ abstract class BaseAbsenceEleveEnvoiQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// timestampable behavior

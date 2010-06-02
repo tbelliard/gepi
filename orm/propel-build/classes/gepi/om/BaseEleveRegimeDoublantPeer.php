@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'j_eleves_regime' table.
  *
@@ -400,7 +401,7 @@ abstract class BaseEleveRegimeDoublantPeer {
 			$key = EleveRegimeDoublantPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = EleveRegimeDoublantPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -427,7 +428,7 @@ abstract class BaseEleveRegimeDoublantPeer {
 		$key = EleveRegimeDoublantPeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = EleveRegimeDoublantPeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + EleveRegimeDoublantPeer::NUM_COLUMNS;
 		} else {
@@ -520,7 +521,7 @@ abstract class BaseEleveRegimeDoublantPeer {
 			$key1 = EleveRegimeDoublantPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = EleveRegimeDoublantPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -639,7 +640,7 @@ abstract class BaseEleveRegimeDoublantPeer {
 			$key1 = EleveRegimeDoublantPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = EleveRegimeDoublantPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = EleveRegimeDoublantPeer::getOMClass(false);
@@ -806,7 +807,7 @@ abstract class BaseEleveRegimeDoublantPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += BasePeer::doDeleteAll(EleveRegimeDoublantPeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(EleveRegimeDoublantPeer::TABLE_NAME, $con, EleveRegimeDoublantPeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).

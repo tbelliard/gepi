@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'edt_calendrier' table.
  *
@@ -448,7 +449,7 @@ abstract class BaseEdtCalendrierPeriodePeer {
 			$key = EdtCalendrierPeriodePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = EdtCalendrierPeriodePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -475,7 +476,7 @@ abstract class BaseEdtCalendrierPeriodePeer {
 		$key = EdtCalendrierPeriodePeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = EdtCalendrierPeriodePeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + EdtCalendrierPeriodePeer::NUM_COLUMNS;
 		} else {
@@ -620,7 +621,7 @@ abstract class BaseEdtCalendrierPeriodePeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			EdtCalendrierPeriodePeer::doOnDeleteSetNull(new Criteria(EdtCalendrierPeriodePeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(EdtCalendrierPeriodePeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(EdtCalendrierPeriodePeer::TABLE_NAME, $con, EdtCalendrierPeriodePeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).

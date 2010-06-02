@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'edt_cours' table.
  *
@@ -149,10 +150,11 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -168,6 +170,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -206,13 +209,12 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByIdCours($idCours = null, $comparison = Criteria::EQUAL)
+	public function filterByIdCours($idCours = null, $comparison = null)
 	{
-		if (is_array($idCours)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_COURS, $idCours, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_COURS, $idCours, $comparison);
+		if (is_array($idCours) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_COURS, $idCours, $comparison);
 	}
 
 	/**
@@ -224,15 +226,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByIdGroupe($idGroupe = null, $comparison = Criteria::EQUAL)
+	public function filterByIdGroupe($idGroupe = null, $comparison = null)
 	{
-		if (is_array($idGroupe)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $idGroupe, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $idGroupe)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, str_replace('*', '%', $idGroupe), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $idGroupe, $comparison);
+		if (null === $comparison) {
+			if (is_array($idGroupe)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $idGroupe)) {
+				$idGroupe = str_replace('*', '%', $idGroupe);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $idGroupe, $comparison);
 	}
 
 	/**
@@ -244,15 +248,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByIdAid($idAid = null, $comparison = Criteria::EQUAL)
+	public function filterByIdAid($idAid = null, $comparison = null)
 	{
-		if (is_array($idAid)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $idAid, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $idAid)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, str_replace('*', '%', $idAid), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $idAid, $comparison);
+		if (null === $comparison) {
+			if (is_array($idAid)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $idAid)) {
+				$idAid = str_replace('*', '%', $idAid);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $idAid, $comparison);
 	}
 
 	/**
@@ -264,15 +270,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByIdSalle($idSalle = null, $comparison = Criteria::EQUAL)
+	public function filterByIdSalle($idSalle = null, $comparison = null)
 	{
-		if (is_array($idSalle)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $idSalle, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $idSalle)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, str_replace('*', '%', $idSalle), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $idSalle, $comparison);
+		if (null === $comparison) {
+			if (is_array($idSalle)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $idSalle)) {
+				$idSalle = str_replace('*', '%', $idSalle);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $idSalle, $comparison);
 	}
 
 	/**
@@ -284,15 +292,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByJourSemaine($jourSemaine = null, $comparison = Criteria::EQUAL)
+	public function filterByJourSemaine($jourSemaine = null, $comparison = null)
 	{
-		if (is_array($jourSemaine)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::JOUR_SEMAINE, $jourSemaine, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $jourSemaine)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::JOUR_SEMAINE, str_replace('*', '%', $jourSemaine), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::JOUR_SEMAINE, $jourSemaine, $comparison);
+		if (null === $comparison) {
+			if (is_array($jourSemaine)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $jourSemaine)) {
+				$jourSemaine = str_replace('*', '%', $jourSemaine);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::JOUR_SEMAINE, $jourSemaine, $comparison);
 	}
 
 	/**
@@ -304,15 +314,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByIdDefiniePeriode($idDefiniePeriode = null, $comparison = Criteria::EQUAL)
+	public function filterByIdDefiniePeriode($idDefiniePeriode = null, $comparison = null)
 	{
-		if (is_array($idDefiniePeriode)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $idDefiniePeriode, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $idDefiniePeriode)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, str_replace('*', '%', $idDefiniePeriode), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $idDefiniePeriode, $comparison);
+		if (null === $comparison) {
+			if (is_array($idDefiniePeriode)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $idDefiniePeriode)) {
+				$idDefiniePeriode = str_replace('*', '%', $idDefiniePeriode);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $idDefiniePeriode, $comparison);
 	}
 
 	/**
@@ -324,15 +336,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByDuree($duree = null, $comparison = Criteria::EQUAL)
+	public function filterByDuree($duree = null, $comparison = null)
 	{
-		if (is_array($duree)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::DUREE, $duree, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $duree)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::DUREE, str_replace('*', '%', $duree), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::DUREE, $duree, $comparison);
+		if (null === $comparison) {
+			if (is_array($duree)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $duree)) {
+				$duree = str_replace('*', '%', $duree);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::DUREE, $duree, $comparison);
 	}
 
 	/**
@@ -344,15 +358,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByHeuredebDec($heuredebDec = null, $comparison = Criteria::EQUAL)
+	public function filterByHeuredebDec($heuredebDec = null, $comparison = null)
 	{
-		if (is_array($heuredebDec)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::HEUREDEB_DEC, $heuredebDec, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $heuredebDec)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::HEUREDEB_DEC, str_replace('*', '%', $heuredebDec), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::HEUREDEB_DEC, $heuredebDec, $comparison);
+		if (null === $comparison) {
+			if (is_array($heuredebDec)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $heuredebDec)) {
+				$heuredebDec = str_replace('*', '%', $heuredebDec);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::HEUREDEB_DEC, $heuredebDec, $comparison);
 	}
 
 	/**
@@ -364,15 +380,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByTypeSemaine($typeSemaine = null, $comparison = Criteria::EQUAL)
+	public function filterByTypeSemaine($typeSemaine = null, $comparison = null)
 	{
-		if (is_array($typeSemaine)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SEMAINE, $typeSemaine, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $typeSemaine)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SEMAINE, str_replace('*', '%', $typeSemaine), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SEMAINE, $typeSemaine, $comparison);
+		if (null === $comparison) {
+			if (is_array($typeSemaine)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $typeSemaine)) {
+				$typeSemaine = str_replace('*', '%', $typeSemaine);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_SEMAINE, $typeSemaine, $comparison);
 	}
 
 	/**
@@ -384,15 +402,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByIdCalendrier($idCalendrier = null, $comparison = Criteria::EQUAL)
+	public function filterByIdCalendrier($idCalendrier = null, $comparison = null)
 	{
-		if (is_array($idCalendrier)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_CALENDRIER, $idCalendrier, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $idCalendrier)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_CALENDRIER, str_replace('*', '%', $idCalendrier), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_CALENDRIER, $idCalendrier, $comparison);
+		if (null === $comparison) {
+			if (is_array($idCalendrier)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $idCalendrier)) {
+				$idCalendrier = str_replace('*', '%', $idCalendrier);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::ID_CALENDRIER, $idCalendrier, $comparison);
 	}
 
 	/**
@@ -404,15 +424,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByModifEdt($modifEdt = null, $comparison = Criteria::EQUAL)
+	public function filterByModifEdt($modifEdt = null, $comparison = null)
 	{
-		if (is_array($modifEdt)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::MODIF_EDT, $modifEdt, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $modifEdt)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::MODIF_EDT, str_replace('*', '%', $modifEdt), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::MODIF_EDT, $modifEdt, $comparison);
+		if (null === $comparison) {
+			if (is_array($modifEdt)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $modifEdt)) {
+				$modifEdt = str_replace('*', '%', $modifEdt);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::MODIF_EDT, $modifEdt, $comparison);
 	}
 
 	/**
@@ -424,15 +446,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByLoginProf($loginProf = null, $comparison = Criteria::EQUAL)
+	public function filterByLoginProf($loginProf = null, $comparison = null)
 	{
-		if (is_array($loginProf)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::LOGIN_PROF, $loginProf, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $loginProf)) {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::LOGIN_PROF, str_replace('*', '%', $loginProf), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtEmplacementCoursPeer::LOGIN_PROF, $loginProf, $comparison);
+		if (null === $comparison) {
+			if (is_array($loginProf)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $loginProf)) {
+				$loginProf = str_replace('*', '%', $loginProf);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtEmplacementCoursPeer::LOGIN_PROF, $loginProf, $comparison);
 	}
 
 	/**
@@ -443,7 +467,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByGroupe($groupe, $comparison = Criteria::EQUAL)
+	public function filterByGroupe($groupe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $groupe->getId(), $comparison);
@@ -466,6 +490,9 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -504,7 +531,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByAidDetails($aidDetails, $comparison = Criteria::EQUAL)
+	public function filterByAidDetails($aidDetails, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $aidDetails->getId(), $comparison);
@@ -527,6 +554,9 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -565,7 +595,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByEdtSalle($edtSalle, $comparison = Criteria::EQUAL)
+	public function filterByEdtSalle($edtSalle, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $edtSalle->getIdSalle(), $comparison);
@@ -588,6 +618,9 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -626,7 +659,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByEdtCreneau($edtCreneau, $comparison = Criteria::EQUAL)
+	public function filterByEdtCreneau($edtCreneau, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $edtCreneau->getIdDefiniePeriode(), $comparison);
@@ -649,6 +682,9 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -687,7 +723,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByEdtCalendrierPeriode($edtCalendrierPeriode, $comparison = Criteria::EQUAL)
+	public function filterByEdtCalendrierPeriode($edtCalendrierPeriode, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EdtEmplacementCoursPeer::ID_CALENDRIER, $edtCalendrierPeriode->getIdCalendrier(), $comparison);
@@ -710,6 +746,9 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -748,7 +787,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = Criteria::EQUAL)
+	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EdtEmplacementCoursPeer::LOGIN_PROF, $utilisateurProfessionnel->getLogin(), $comparison);
@@ -771,6 +810,9 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -809,7 +851,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = Criteria::EQUAL)
+	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EdtEmplacementCoursPeer::ID_COURS, $absenceEleveSaisie->getIdEdtEmplacementCours(), $comparison);
@@ -832,6 +874,9 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -876,37 +921,6 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseEdtEmplacementCoursQuery

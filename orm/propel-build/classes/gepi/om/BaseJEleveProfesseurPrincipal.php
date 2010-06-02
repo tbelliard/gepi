@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'j_eleves_professeurs' table.
  *
@@ -969,7 +970,10 @@ abstract class BaseJEleveProfesseurPrincipal extends BaseObject  implements Pers
 		$this->login = null;
 		$this->professeur = null;
 		$this->id_classe = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

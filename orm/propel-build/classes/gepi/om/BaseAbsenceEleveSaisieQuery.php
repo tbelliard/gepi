@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'a_saisies' table.
  *
@@ -161,10 +162,11 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -180,6 +182,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -218,13 +221,12 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id)) {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID, $id, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID, $id, $comparison);
+		if (is_array($id) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID, $id, $comparison);
 	}
 
 	/**
@@ -236,15 +238,17 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByUtilisateurId($utilisateurId = null, $comparison = Criteria::EQUAL)
+	public function filterByUtilisateurId($utilisateurId = null, $comparison = null)
 	{
-		if (is_array($utilisateurId)) {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $utilisateurId, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $utilisateurId)) {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::UTILISATEUR_ID, str_replace('*', '%', $utilisateurId), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $utilisateurId, $comparison);
+		if (null === $comparison) {
+			if (is_array($utilisateurId)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $utilisateurId)) {
+				$utilisateurId = str_replace('*', '%', $utilisateurId);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $utilisateurId, $comparison);
 	}
 
 	/**
@@ -256,23 +260,26 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByEleveId($eleveId = null, $comparison = Criteria::EQUAL)
+	public function filterByEleveId($eleveId = null, $comparison = null)
 	{
 		if (is_array($eleveId)) {
-			if (array_values($eleveId) === $eleveId) {
-				return $this->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleveId, Criteria::IN);
-			} else {
-				if (isset($eleveId['min'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleveId['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($eleveId['max'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleveId['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($eleveId['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleveId['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleveId, $comparison);
+			if (isset($eleveId['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleveId['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleveId, $comparison);
 	}
 
 	/**
@@ -284,15 +291,17 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByCommentaire($commentaire = null, $comparison = Criteria::EQUAL)
+	public function filterByCommentaire($commentaire = null, $comparison = null)
 	{
-		if (is_array($commentaire)) {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::COMMENTAIRE, $commentaire, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $commentaire)) {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::COMMENTAIRE, str_replace('*', '%', $commentaire), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::COMMENTAIRE, $commentaire, $comparison);
+		if (null === $comparison) {
+			if (is_array($commentaire)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $commentaire)) {
+				$commentaire = str_replace('*', '%', $commentaire);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::COMMENTAIRE, $commentaire, $comparison);
 	}
 
 	/**
@@ -304,23 +313,26 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByDebutAbs($debutAbs = null, $comparison = Criteria::EQUAL)
+	public function filterByDebutAbs($debutAbs = null, $comparison = null)
 	{
 		if (is_array($debutAbs)) {
-			if (array_values($debutAbs) === $debutAbs) {
-				return $this->addUsingAlias(AbsenceEleveSaisiePeer::DEBUT_ABS, $debutAbs, Criteria::IN);
-			} else {
-				if (isset($debutAbs['min'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::DEBUT_ABS, $debutAbs['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($debutAbs['max'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::DEBUT_ABS, $debutAbs['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($debutAbs['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::DEBUT_ABS, $debutAbs['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::DEBUT_ABS, $debutAbs, $comparison);
+			if (isset($debutAbs['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::DEBUT_ABS, $debutAbs['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::DEBUT_ABS, $debutAbs, $comparison);
 	}
 
 	/**
@@ -332,23 +344,26 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByFinAbs($finAbs = null, $comparison = Criteria::EQUAL)
+	public function filterByFinAbs($finAbs = null, $comparison = null)
 	{
 		if (is_array($finAbs)) {
-			if (array_values($finAbs) === $finAbs) {
-				return $this->addUsingAlias(AbsenceEleveSaisiePeer::FIN_ABS, $finAbs, Criteria::IN);
-			} else {
-				if (isset($finAbs['min'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::FIN_ABS, $finAbs['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($finAbs['max'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::FIN_ABS, $finAbs['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($finAbs['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::FIN_ABS, $finAbs['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::FIN_ABS, $finAbs, $comparison);
+			if (isset($finAbs['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::FIN_ABS, $finAbs['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::FIN_ABS, $finAbs, $comparison);
 	}
 
 	/**
@@ -360,23 +375,26 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByIdEdtCreneau($idEdtCreneau = null, $comparison = Criteria::EQUAL)
+	public function filterByIdEdtCreneau($idEdtCreneau = null, $comparison = null)
 	{
 		if (is_array($idEdtCreneau)) {
-			if (array_values($idEdtCreneau) === $idEdtCreneau) {
-				return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $idEdtCreneau, Criteria::IN);
-			} else {
-				if (isset($idEdtCreneau['min'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $idEdtCreneau['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idEdtCreneau['max'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $idEdtCreneau['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($idEdtCreneau['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $idEdtCreneau['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $idEdtCreneau, $comparison);
+			if (isset($idEdtCreneau['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $idEdtCreneau['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $idEdtCreneau, $comparison);
 	}
 
 	/**
@@ -388,23 +406,26 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByIdEdtEmplacementCours($idEdtEmplacementCours = null, $comparison = Criteria::EQUAL)
+	public function filterByIdEdtEmplacementCours($idEdtEmplacementCours = null, $comparison = null)
 	{
 		if (is_array($idEdtEmplacementCours)) {
-			if (array_values($idEdtEmplacementCours) === $idEdtEmplacementCours) {
-				return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $idEdtEmplacementCours, Criteria::IN);
-			} else {
-				if (isset($idEdtEmplacementCours['min'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $idEdtEmplacementCours['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idEdtEmplacementCours['max'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $idEdtEmplacementCours['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($idEdtEmplacementCours['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $idEdtEmplacementCours['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $idEdtEmplacementCours, $comparison);
+			if (isset($idEdtEmplacementCours['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $idEdtEmplacementCours['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $idEdtEmplacementCours, $comparison);
 	}
 
 	/**
@@ -416,23 +437,26 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByIdGroupe($idGroupe = null, $comparison = Criteria::EQUAL)
+	public function filterByIdGroupe($idGroupe = null, $comparison = null)
 	{
 		if (is_array($idGroupe)) {
-			if (array_values($idGroupe) === $idGroupe) {
-				return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $idGroupe, Criteria::IN);
-			} else {
-				if (isset($idGroupe['min'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $idGroupe['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idGroupe['max'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $idGroupe['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($idGroupe['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $idGroupe['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $idGroupe, $comparison);
+			if (isset($idGroupe['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $idGroupe['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $idGroupe, $comparison);
 	}
 
 	/**
@@ -444,23 +468,26 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByIdClasse($idClasse = null, $comparison = Criteria::EQUAL)
+	public function filterByIdClasse($idClasse = null, $comparison = null)
 	{
 		if (is_array($idClasse)) {
-			if (array_values($idClasse) === $idClasse) {
-				return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $idClasse, Criteria::IN);
-			} else {
-				if (isset($idClasse['min'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $idClasse['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idClasse['max'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $idClasse['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($idClasse['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $idClasse['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $idClasse, $comparison);
+			if (isset($idClasse['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $idClasse['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $idClasse, $comparison);
 	}
 
 	/**
@@ -472,23 +499,26 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByIdAid($idAid = null, $comparison = Criteria::EQUAL)
+	public function filterByIdAid($idAid = null, $comparison = null)
 	{
 		if (is_array($idAid)) {
-			if (array_values($idAid) === $idAid) {
-				return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_AID, $idAid, Criteria::IN);
-			} else {
-				if (isset($idAid['min'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_AID, $idAid['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idAid['max'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_AID, $idAid['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($idAid['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_AID, $idAid['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_AID, $idAid, $comparison);
+			if (isset($idAid['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_AID, $idAid['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_AID, $idAid, $comparison);
 	}
 
 	/**
@@ -500,23 +530,26 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByIdSIncidents($idSIncidents = null, $comparison = Criteria::EQUAL)
+	public function filterByIdSIncidents($idSIncidents = null, $comparison = null)
 	{
 		if (is_array($idSIncidents)) {
-			if (array_values($idSIncidents) === $idSIncidents) {
-				return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_S_INCIDENTS, $idSIncidents, Criteria::IN);
-			} else {
-				if (isset($idSIncidents['min'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_S_INCIDENTS, $idSIncidents['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($idSIncidents['max'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_S_INCIDENTS, $idSIncidents['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($idSIncidents['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_S_INCIDENTS, $idSIncidents['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_S_INCIDENTS, $idSIncidents, $comparison);
+			if (isset($idSIncidents['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_S_INCIDENTS, $idSIncidents['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_S_INCIDENTS, $idSIncidents, $comparison);
 	}
 
 	/**
@@ -528,23 +561,26 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = Criteria::EQUAL)
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
 	{
 		if (is_array($createdAt)) {
-			if (array_values($createdAt) === $createdAt) {
-				return $this->addUsingAlias(AbsenceEleveSaisiePeer::CREATED_AT, $createdAt, Criteria::IN);
-			} else {
-				if (isset($createdAt['min'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($createdAt['max'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($createdAt['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::CREATED_AT, $createdAt, $comparison);
+			if (isset($createdAt['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::CREATED_AT, $createdAt, $comparison);
 	}
 
 	/**
@@ -556,23 +592,26 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = Criteria::EQUAL)
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
 	{
 		if (is_array($updatedAt)) {
-			if (array_values($updatedAt) === $updatedAt) {
-				return $this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, $updatedAt, Criteria::IN);
-			} else {
-				if (isset($updatedAt['min'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($updatedAt['max'])) {
-					$this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($updatedAt['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, $updatedAt, $comparison);
+			if (isset($updatedAt['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, $updatedAt, $comparison);
 	}
 
 	/**
@@ -583,7 +622,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = Criteria::EQUAL)
+	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $utilisateurProfessionnel->getLogin(), $comparison);
@@ -606,6 +645,9 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -644,7 +686,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleve->getIdEleve(), $comparison);
@@ -667,6 +709,9 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -705,7 +750,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByEdtCreneau($edtCreneau, $comparison = Criteria::EQUAL)
+	public function filterByEdtCreneau($edtCreneau, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $edtCreneau->getIdDefiniePeriode(), $comparison);
@@ -728,6 +773,9 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -766,7 +814,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = Criteria::EQUAL)
+	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $edtEmplacementCours->getIdCours(), $comparison);
@@ -789,6 +837,9 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -827,7 +878,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByGroupe($groupe, $comparison = Criteria::EQUAL)
+	public function filterByGroupe($groupe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $groupe->getId(), $comparison);
@@ -850,6 +901,9 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -888,7 +942,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByClasse($classe, $comparison = Criteria::EQUAL)
+	public function filterByClasse($classe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $classe->getId(), $comparison);
@@ -911,6 +965,9 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -949,7 +1006,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByAidDetails($aidDetails, $comparison = Criteria::EQUAL)
+	public function filterByAidDetails($aidDetails, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveSaisiePeer::ID_AID, $aidDetails->getId(), $comparison);
@@ -972,6 +1029,9 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1010,7 +1070,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByJTraitementSaisieEleve($jTraitementSaisieEleve, $comparison = Criteria::EQUAL)
+	public function filterByJTraitementSaisieEleve($jTraitementSaisieEleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(AbsenceEleveSaisiePeer::ID, $jTraitementSaisieEleve->getASaisieId(), $comparison);
@@ -1033,6 +1093,9 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -1094,37 +1157,6 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 	// timestampable behavior

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'preferences' table.
  *
@@ -808,7 +809,10 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 		$this->name = null;
 		$this->value = null;
 		$this->login = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

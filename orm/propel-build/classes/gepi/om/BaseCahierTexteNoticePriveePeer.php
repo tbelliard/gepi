@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'ct_private_entry' table.
  *
@@ -420,7 +421,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 			$key = CahierTexteNoticePriveePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = CahierTexteNoticePriveePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -447,7 +448,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		$key = CahierTexteNoticePriveePeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = CahierTexteNoticePriveePeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + CahierTexteNoticePriveePeer::NUM_COLUMNS;
 		} else {
@@ -640,7 +641,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 			$key1 = CahierTexteNoticePriveePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteNoticePriveePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -706,7 +707,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 			$key1 = CahierTexteNoticePriveePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteNoticePriveePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -772,7 +773,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 			$key1 = CahierTexteNoticePriveePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteNoticePriveePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -904,7 +905,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 			$key1 = CahierTexteNoticePriveePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteNoticePriveePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CahierTexteNoticePriveePeer::getOMClass(false);
@@ -1173,7 +1174,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 			$key1 = CahierTexteNoticePriveePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteNoticePriveePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CahierTexteNoticePriveePeer::getOMClass(false);
@@ -1270,7 +1271,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 			$key1 = CahierTexteNoticePriveePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteNoticePriveePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CahierTexteNoticePriveePeer::getOMClass(false);
@@ -1367,7 +1368,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 			$key1 = CahierTexteNoticePriveePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteNoticePriveePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CahierTexteNoticePriveePeer::getOMClass(false);
@@ -1558,7 +1559,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += BasePeer::doDeleteAll(CahierTexteNoticePriveePeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(CahierTexteNoticePriveePeer::TABLE_NAME, $con, CahierTexteNoticePriveePeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).

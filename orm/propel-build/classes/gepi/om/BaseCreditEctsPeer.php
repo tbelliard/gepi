@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'ects_credits' table.
  *
@@ -420,7 +421,7 @@ abstract class BaseCreditEctsPeer {
 			$key = CreditEctsPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = CreditEctsPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -447,7 +448,7 @@ abstract class BaseCreditEctsPeer {
 		$key = CreditEctsPeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = CreditEctsPeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + CreditEctsPeer::NUM_COLUMNS;
 		} else {
@@ -590,7 +591,7 @@ abstract class BaseCreditEctsPeer {
 			$key1 = CreditEctsPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CreditEctsPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -656,7 +657,7 @@ abstract class BaseCreditEctsPeer {
 			$key1 = CreditEctsPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CreditEctsPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -781,7 +782,7 @@ abstract class BaseCreditEctsPeer {
 			$key1 = CreditEctsPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CreditEctsPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CreditEctsPeer::getOMClass(false);
@@ -971,7 +972,7 @@ abstract class BaseCreditEctsPeer {
 			$key1 = CreditEctsPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CreditEctsPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CreditEctsPeer::getOMClass(false);
@@ -1044,7 +1045,7 @@ abstract class BaseCreditEctsPeer {
 			$key1 = CreditEctsPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CreditEctsPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CreditEctsPeer::getOMClass(false);
@@ -1240,7 +1241,7 @@ abstract class BaseCreditEctsPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += BasePeer::doDeleteAll(CreditEctsPeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(CreditEctsPeer::TABLE_NAME, $con, CreditEctsPeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
@@ -1369,8 +1370,8 @@ abstract class BaseCreditEctsPeer {
 	 * @return     CreditEcts
 	 */
 	public static function retrieveByPK($id, $id_eleve, $num_periode, $id_groupe, PropelPDO $con = null) {
-		$key = serialize(array((string) $id, (string) $id_eleve, (string) $num_periode, (string) $id_groupe));
- 		if (null !== ($obj = CreditEctsPeer::getInstanceFromPool($key))) {
+		$_instancePoolKey = serialize(array((string) $id, (string) $id_eleve, (string) $num_periode, (string) $id_groupe));
+ 		if (null !== ($obj = CreditEctsPeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
 

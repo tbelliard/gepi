@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'ct_entry' table.
  *
@@ -433,7 +434,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$key = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = CahierTexteCompteRenduPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -460,7 +461,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		$key = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = CahierTexteCompteRenduPeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + CahierTexteCompteRenduPeer::NUM_COLUMNS;
 		} else {
@@ -653,7 +654,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -719,7 +720,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -785,7 +786,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -917,7 +918,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CahierTexteCompteRenduPeer::getOMClass(false);
@@ -1186,7 +1187,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CahierTexteCompteRenduPeer::getOMClass(false);
@@ -1283,7 +1284,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CahierTexteCompteRenduPeer::getOMClass(false);
@@ -1380,7 +1381,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			$key1 = CahierTexteCompteRenduPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = CahierTexteCompteRenduPeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = CahierTexteCompteRenduPeer::getOMClass(false);
@@ -1572,7 +1573,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += CahierTexteCompteRenduPeer::doOnDeleteCascade(new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(CahierTexteCompteRenduPeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(CahierTexteCompteRenduPeer::TABLE_NAME, $con, CahierTexteCompteRenduPeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).

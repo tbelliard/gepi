@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'etablissements' table.
  *
@@ -956,8 +957,8 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 * If this AncienEtablissement is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JEleveAncienEtablissement[] List of JEleveAncienEtablissement objects
 	 * @throws     PropelException
 	 */
@@ -1038,6 +1039,11 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in AncienEtablissement.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JEleveAncienEtablissement[] List of JEleveAncienEtablissement objects
 	 */
 	public function getJEleveAncienEtablissementsJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -1171,8 +1177,11 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 		$this->type = null;
 		$this->cp = null;
 		$this->ville = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

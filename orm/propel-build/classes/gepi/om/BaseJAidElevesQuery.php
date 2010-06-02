@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'j_aid_eleves' table.
  *
@@ -88,10 +89,11 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -107,6 +109,7 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -155,15 +158,17 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 *
 	 * @return    JAidElevesQuery The current query, for fluid interface
 	 */
-	public function filterByIdAid($idAid = null, $comparison = Criteria::EQUAL)
+	public function filterByIdAid($idAid = null, $comparison = null)
 	{
-		if (is_array($idAid)) {
-			return $this->addUsingAlias(JAidElevesPeer::ID_AID, $idAid, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $idAid)) {
-			return $this->addUsingAlias(JAidElevesPeer::ID_AID, str_replace('*', '%', $idAid), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(JAidElevesPeer::ID_AID, $idAid, $comparison);
+		if (null === $comparison) {
+			if (is_array($idAid)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $idAid)) {
+				$idAid = str_replace('*', '%', $idAid);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(JAidElevesPeer::ID_AID, $idAid, $comparison);
 	}
 
 	/**
@@ -175,15 +180,17 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 *
 	 * @return    JAidElevesQuery The current query, for fluid interface
 	 */
-	public function filterByLogin($login = null, $comparison = Criteria::EQUAL)
+	public function filterByLogin($login = null, $comparison = null)
 	{
-		if (is_array($login)) {
-			return $this->addUsingAlias(JAidElevesPeer::LOGIN, $login, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $login)) {
-			return $this->addUsingAlias(JAidElevesPeer::LOGIN, str_replace('*', '%', $login), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(JAidElevesPeer::LOGIN, $login, $comparison);
+		if (null === $comparison) {
+			if (is_array($login)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $login)) {
+				$login = str_replace('*', '%', $login);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(JAidElevesPeer::LOGIN, $login, $comparison);
 	}
 
 	/**
@@ -194,7 +201,7 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 *
 	 * @return    JAidElevesQuery The current query, for fluid interface
 	 */
-	public function filterByAidDetails($aidDetails, $comparison = Criteria::EQUAL)
+	public function filterByAidDetails($aidDetails, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JAidElevesPeer::ID_AID, $aidDetails->getId(), $comparison);
@@ -217,6 +224,9 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -255,7 +265,7 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 *
 	 * @return    JAidElevesQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JAidElevesPeer::LOGIN, $eleve->getLogin(), $comparison);
@@ -278,6 +288,9 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -324,37 +337,6 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseJAidElevesQuery

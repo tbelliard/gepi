@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'edt_creneaux' table.
  *
@@ -426,7 +427,7 @@ abstract class BaseEdtCreneauPeer {
 			$key = EdtCreneauPeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = EdtCreneauPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -453,7 +454,7 @@ abstract class BaseEdtCreneauPeer {
 		$key = EdtCreneauPeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = EdtCreneauPeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + EdtCreneauPeer::NUM_COLUMNS;
 		} else {
@@ -603,7 +604,7 @@ abstract class BaseEdtCreneauPeer {
 			$con->beginTransaction();
 			$affectedRows += EdtCreneauPeer::doOnDeleteCascade(new Criteria(EdtCreneauPeer::DATABASE_NAME), $con);
 			EdtCreneauPeer::doOnDeleteSetNull(new Criteria(EdtCreneauPeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(EdtCreneauPeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(EdtCreneauPeer::TABLE_NAME, $con, EdtCreneauPeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).

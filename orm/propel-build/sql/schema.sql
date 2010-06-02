@@ -374,13 +374,8 @@ CREATE TABLE eleves
 	id_eleve INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire autoincremente',
 	PRIMARY KEY (id_eleve),
 	INDEX I_referenced_j_eleves_classes_FK_1_1 (login),
-	INDEX I_referenced_j_eleves_cpe_FK_1_2 (login),
-	INDEX I_referenced_j_eleves_groupes_FK_1_3 (login),
-	INDEX I_referenced_j_eleves_professeurs_FK_1_4 (login),
-	INDEX I_referenced_j_eleves_regime_FK_1_5 (login),
-	INDEX I_referenced_responsables2_FK_1_6 (ele_id),
-	INDEX I_referenced_j_aid_eleves_FK_2_7 (login),
-	INDEX I_referenced_archivage_ects_FK_1_8 (no_gep)
+	INDEX I_referenced_responsables2_FK_1_2 (ele_id),
+	INDEX I_referenced_archivage_ects_FK_1_3 (no_gep)
 )Type=MyISAM COMMENT='Liste des eleves de l\'etablissement';
 
 #-----------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'responsables2' table.
  *
@@ -936,7 +937,10 @@ abstract class BaseResponsableInformation extends BaseObject  implements Persist
 		$this->pers_id = null;
 		$this->resp_legal = null;
 		$this->pers_contact = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

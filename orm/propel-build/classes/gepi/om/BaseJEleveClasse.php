@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'j_eleves_classes' table.
  *
@@ -977,8 +978,11 @@ abstract class BaseJEleveClasse extends BaseObject  implements Persistent
 		$this->id_classe = null;
 		$this->periode = null;
 		$this->rang = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

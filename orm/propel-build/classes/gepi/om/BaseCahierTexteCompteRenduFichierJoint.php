@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'ct_documents' table.
  *
@@ -937,8 +938,11 @@ abstract class BaseCahierTexteCompteRenduFichierJoint extends BaseObject  implem
 		$this->titre = null;
 		$this->taille = null;
 		$this->emplacement = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

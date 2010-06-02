@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'j_eleves_classes' table.
  *
@@ -96,10 +97,11 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -115,6 +117,7 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -166,15 +169,17 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
 	 */
-	public function filterByLogin($login = null, $comparison = Criteria::EQUAL)
+	public function filterByLogin($login = null, $comparison = null)
 	{
-		if (is_array($login)) {
-			return $this->addUsingAlias(JEleveClassePeer::LOGIN, $login, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $login)) {
-			return $this->addUsingAlias(JEleveClassePeer::LOGIN, str_replace('*', '%', $login), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(JEleveClassePeer::LOGIN, $login, $comparison);
+		if (null === $comparison) {
+			if (is_array($login)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $login)) {
+				$login = str_replace('*', '%', $login);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(JEleveClassePeer::LOGIN, $login, $comparison);
 	}
 
 	/**
@@ -186,13 +191,12 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
 	 */
-	public function filterByIdClasse($idClasse = null, $comparison = Criteria::EQUAL)
+	public function filterByIdClasse($idClasse = null, $comparison = null)
 	{
-		if (is_array($idClasse)) {
-			return $this->addUsingAlias(JEleveClassePeer::ID_CLASSE, $idClasse, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JEleveClassePeer::ID_CLASSE, $idClasse, $comparison);
+		if (is_array($idClasse) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(JEleveClassePeer::ID_CLASSE, $idClasse, $comparison);
 	}
 
 	/**
@@ -204,13 +208,12 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
 	 */
-	public function filterByPeriode($periode = null, $comparison = Criteria::EQUAL)
+	public function filterByPeriode($periode = null, $comparison = null)
 	{
-		if (is_array($periode)) {
-			return $this->addUsingAlias(JEleveClassePeer::PERIODE, $periode, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JEleveClassePeer::PERIODE, $periode, $comparison);
+		if (is_array($periode) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(JEleveClassePeer::PERIODE, $periode, $comparison);
 	}
 
 	/**
@@ -222,23 +225,26 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
 	 */
-	public function filterByRang($rang = null, $comparison = Criteria::EQUAL)
+	public function filterByRang($rang = null, $comparison = null)
 	{
 		if (is_array($rang)) {
-			if (array_values($rang) === $rang) {
-				return $this->addUsingAlias(JEleveClassePeer::RANG, $rang, Criteria::IN);
-			} else {
-				if (isset($rang['min'])) {
-					$this->addUsingAlias(JEleveClassePeer::RANG, $rang['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($rang['max'])) {
-					$this->addUsingAlias(JEleveClassePeer::RANG, $rang['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($rang['min'])) {
+				$this->addUsingAlias(JEleveClassePeer::RANG, $rang['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(JEleveClassePeer::RANG, $rang, $comparison);
+			if (isset($rang['max'])) {
+				$this->addUsingAlias(JEleveClassePeer::RANG, $rang['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(JEleveClassePeer::RANG, $rang, $comparison);
 	}
 
 	/**
@@ -249,7 +255,7 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JEleveClassePeer::LOGIN, $eleve->getLogin(), $comparison);
@@ -272,6 +278,9 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -310,7 +319,7 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
 	 */
-	public function filterByClasse($classe, $comparison = Criteria::EQUAL)
+	public function filterByClasse($classe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JEleveClassePeer::ID_CLASSE, $classe->getId(), $comparison);
@@ -333,6 +342,9 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -380,37 +392,6 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseJEleveClasseQuery

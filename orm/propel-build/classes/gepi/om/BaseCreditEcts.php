@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'ects_credits' table.
  *
@@ -1092,7 +1093,10 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 		$this->valeur = null;
 		$this->mention = null;
 		$this->mention_prof = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

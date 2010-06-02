@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'j_traitements_saisies' table.
  *
@@ -88,10 +89,11 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -107,6 +109,7 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -155,13 +158,12 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	 *
 	 * @return    JTraitementSaisieEleveQuery The current query, for fluid interface
 	 */
-	public function filterByASaisieId($aSaisieId = null, $comparison = Criteria::EQUAL)
+	public function filterByASaisieId($aSaisieId = null, $comparison = null)
 	{
-		if (is_array($aSaisieId)) {
-			return $this->addUsingAlias(JTraitementSaisieElevePeer::A_SAISIE_ID, $aSaisieId, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JTraitementSaisieElevePeer::A_SAISIE_ID, $aSaisieId, $comparison);
+		if (is_array($aSaisieId) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(JTraitementSaisieElevePeer::A_SAISIE_ID, $aSaisieId, $comparison);
 	}
 
 	/**
@@ -173,13 +175,12 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	 *
 	 * @return    JTraitementSaisieEleveQuery The current query, for fluid interface
 	 */
-	public function filterByATraitementId($aTraitementId = null, $comparison = Criteria::EQUAL)
+	public function filterByATraitementId($aTraitementId = null, $comparison = null)
 	{
-		if (is_array($aTraitementId)) {
-			return $this->addUsingAlias(JTraitementSaisieElevePeer::A_TRAITEMENT_ID, $aTraitementId, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JTraitementSaisieElevePeer::A_TRAITEMENT_ID, $aTraitementId, $comparison);
+		if (is_array($aTraitementId) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(JTraitementSaisieElevePeer::A_TRAITEMENT_ID, $aTraitementId, $comparison);
 	}
 
 	/**
@@ -190,7 +191,7 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	 *
 	 * @return    JTraitementSaisieEleveQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = Criteria::EQUAL)
+	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JTraitementSaisieElevePeer::A_SAISIE_ID, $absenceEleveSaisie->getId(), $comparison);
@@ -213,6 +214,9 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -251,7 +255,7 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	 *
 	 * @return    JTraitementSaisieEleveQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveTraitement($absenceEleveTraitement, $comparison = Criteria::EQUAL)
+	public function filterByAbsenceEleveTraitement($absenceEleveTraitement, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JTraitementSaisieElevePeer::A_TRAITEMENT_ID, $absenceEleveTraitement->getId(), $comparison);
@@ -274,6 +278,9 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -320,37 +327,6 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseJTraitementSaisieEleveQuery

@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'preferences' table.
  *
@@ -88,10 +89,11 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -107,6 +109,7 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -155,15 +158,17 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    PreferenceUtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByName($name = null, $comparison = Criteria::EQUAL)
+	public function filterByName($name = null, $comparison = null)
 	{
-		if (is_array($name)) {
-			return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::NAME, $name, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $name)) {
-			return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::NAME, str_replace('*', '%', $name), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::NAME, $name, $comparison);
+		if (null === $comparison) {
+			if (is_array($name)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $name)) {
+				$name = str_replace('*', '%', $name);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::NAME, $name, $comparison);
 	}
 
 	/**
@@ -175,15 +180,17 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    PreferenceUtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByValue($value = null, $comparison = Criteria::EQUAL)
+	public function filterByValue($value = null, $comparison = null)
 	{
-		if (is_array($value)) {
-			return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::VALUE, $value, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $value)) {
-			return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::VALUE, str_replace('*', '%', $value), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::VALUE, $value, $comparison);
+		if (null === $comparison) {
+			if (is_array($value)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $value)) {
+				$value = str_replace('*', '%', $value);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::VALUE, $value, $comparison);
 	}
 
 	/**
@@ -195,15 +202,17 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    PreferenceUtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByLogin($login = null, $comparison = Criteria::EQUAL)
+	public function filterByLogin($login = null, $comparison = null)
 	{
-		if (is_array($login)) {
-			return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::LOGIN, $login, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $login)) {
-			return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::LOGIN, str_replace('*', '%', $login), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::LOGIN, $login, $comparison);
+		if (null === $comparison) {
+			if (is_array($login)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $login)) {
+				$login = str_replace('*', '%', $login);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::LOGIN, $login, $comparison);
 	}
 
 	/**
@@ -214,7 +223,7 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    PreferenceUtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = Criteria::EQUAL)
+	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::LOGIN, $utilisateurProfessionnel->getLogin(), $comparison);
@@ -237,6 +246,9 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -283,37 +295,6 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BasePreferenceUtilisateurProfessionnelQuery

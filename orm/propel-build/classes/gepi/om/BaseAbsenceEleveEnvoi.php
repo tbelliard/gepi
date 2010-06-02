@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'a_envois' table.
  *
@@ -750,18 +751,21 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 		$isInsert = $this->isNew();
 		try {
 			$ret = $this->preSave($con);
-			// timestampable behavior
-			if (!$this->isColumnModified(AbsenceEleveEnvoiPeer::UPDATED_AT)) {
-				$this->setUpdatedAt(time());
-			}
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
 				// timestampable behavior
 				if (!$this->isColumnModified(AbsenceEleveEnvoiPeer::CREATED_AT)) {
 					$this->setCreatedAt(time());
 				}
+				if (!$this->isColumnModified(AbsenceEleveEnvoiPeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// timestampable behavior
+				if ($this->isModified() && !$this->isColumnModified(AbsenceEleveEnvoiPeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
 			}
 			if ($ret) {
 				$affectedRows = $this->doSave($con);
@@ -1411,8 +1415,8 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 	 * If this AbsenceEleveEnvoi is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JTraitementEnvoiEleve[] List of JTraitementEnvoiEleve objects
 	 * @throws     PropelException
 	 */
@@ -1493,6 +1497,11 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in AbsenceEleveEnvoi.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JTraitementEnvoiEleve[] List of JTraitementEnvoiEleve objects
 	 */
 	public function getJTraitementEnvoiElevesJoinAbsenceEleveTraitement($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -1628,8 +1637,11 @@ abstract class BaseAbsenceEleveEnvoi extends BaseObject  implements Persistent
 		$this->date_envoi = null;
 		$this->created_at = null;
 		$this->updated_at = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

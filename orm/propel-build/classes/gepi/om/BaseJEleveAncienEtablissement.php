@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'j_eleves_etablissements' table.
  *
@@ -864,8 +865,11 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	{
 		$this->id_eleve = null;
 		$this->id_etablissement = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

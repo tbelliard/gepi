@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'plugins' table.
  *
@@ -907,8 +908,8 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	 * If this PlugIn is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array PlugInAutorisation[] List of PlugInAutorisation objects
 	 * @throws     PropelException
 	 */
@@ -1016,8 +1017,8 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	 * If this PlugIn is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array PlugInMiseEnOeuvreMenu[] List of PlugInMiseEnOeuvreMenu objects
 	 * @throws     PropelException
 	 */
@@ -1097,7 +1098,10 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 		$this->repertoire = null;
 		$this->description = null;
 		$this->ouvert = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

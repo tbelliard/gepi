@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'matieres_categories' table.
  *
@@ -894,8 +895,8 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	 * If this CategorieMatiere is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JGroupesClasses[] List of JGroupesClasses objects
 	 * @throws     PropelException
 	 */
@@ -976,6 +977,11 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in CategorieMatiere.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JGroupesClasses[] List of JGroupesClasses objects
 	 */
 	public function getJGroupesClassessJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -996,6 +1002,11 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in CategorieMatiere.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JGroupesClasses[] List of JGroupesClasses objects
 	 */
 	public function getJGroupesClassessJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -1043,8 +1054,8 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	 * If this CategorieMatiere is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array Matiere[] List of Matiere objects
 	 * @throws     PropelException
 	 */
@@ -1152,8 +1163,8 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	 * If this CategorieMatiere is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
 	 * @return     PropelCollection|array JCategoriesMatieresClasses[] List of JCategoriesMatieresClasses objects
 	 * @throws     PropelException
 	 */
@@ -1234,6 +1245,11 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
 	 * actually need in CategorieMatiere.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JCategoriesMatieresClasses[] List of JCategoriesMatieresClasses objects
 	 */
 	public function getJCategoriesMatieresClassessJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
@@ -1365,7 +1381,10 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 		$this->nom_court = null;
 		$this->nom_complet = null;
 		$this->priority = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

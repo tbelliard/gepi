@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'resp_pers' table.
  *
@@ -438,7 +439,7 @@ abstract class BaseResponsableElevePeer {
 			$key = ResponsableElevePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = ResponsableElevePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -465,7 +466,7 @@ abstract class BaseResponsableElevePeer {
 		$key = ResponsableElevePeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = ResponsableElevePeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + ResponsableElevePeer::NUM_COLUMNS;
 		} else {
@@ -558,7 +559,7 @@ abstract class BaseResponsableElevePeer {
 			$key1 = ResponsableElevePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = ResponsableElevePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
@@ -676,7 +677,7 @@ abstract class BaseResponsableElevePeer {
 			$key1 = ResponsableElevePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj1 = ResponsableElevePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 				$cls = ResponsableElevePeer::getOMClass(false);
@@ -844,7 +845,7 @@ abstract class BaseResponsableElevePeer {
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
 			$affectedRows += ResponsableElevePeer::doOnDeleteCascade(new Criteria(ResponsableElevePeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(ResponsableElevePeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(ResponsableElevePeer::TABLE_NAME, $con, ResponsableElevePeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).

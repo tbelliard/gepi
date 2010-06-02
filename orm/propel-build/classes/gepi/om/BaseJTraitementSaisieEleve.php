@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'j_traitements_saisies' table.
  *
@@ -838,7 +839,10 @@ abstract class BaseJTraitementSaisieEleve extends BaseObject  implements Persist
 	{
 		$this->a_saisie_id = null;
 		$this->a_traitement_id = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

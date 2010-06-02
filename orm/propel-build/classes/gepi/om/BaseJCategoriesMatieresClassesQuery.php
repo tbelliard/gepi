@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'j_matieres_categories_classes' table.
  *
@@ -96,10 +97,11 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -115,6 +117,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -163,13 +166,12 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
 	 */
-	public function filterByCategorieId($categorieId = null, $comparison = Criteria::EQUAL)
+	public function filterByCategorieId($categorieId = null, $comparison = null)
 	{
-		if (is_array($categorieId)) {
-			return $this->addUsingAlias(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $categorieId, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $categorieId, $comparison);
+		if (is_array($categorieId) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $categorieId, $comparison);
 	}
 
 	/**
@@ -181,13 +183,12 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
 	 */
-	public function filterByClasseId($classeId = null, $comparison = Criteria::EQUAL)
+	public function filterByClasseId($classeId = null, $comparison = null)
 	{
-		if (is_array($classeId)) {
-			return $this->addUsingAlias(JCategoriesMatieresClassesPeer::CLASSE_ID, $classeId, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(JCategoriesMatieresClassesPeer::CLASSE_ID, $classeId, $comparison);
+		if (is_array($classeId) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(JCategoriesMatieresClassesPeer::CLASSE_ID, $classeId, $comparison);
 	}
 
 	/**
@@ -199,9 +200,9 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
 	 */
-	public function filterByAfficheMoyenne($afficheMoyenne = null, $comparison = Criteria::EQUAL)
+	public function filterByAfficheMoyenne($afficheMoyenne = null, $comparison = null)
 	{
-		if(is_string($afficheMoyenne)) {
+		if (is_string($afficheMoyenne)) {
 			$affiche_moyenne = in_array(strtolower($afficheMoyenne), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
 		}
 		return $this->addUsingAlias(JCategoriesMatieresClassesPeer::AFFICHE_MOYENNE, $afficheMoyenne, $comparison);
@@ -216,23 +217,26 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
 	 */
-	public function filterByPriority($priority = null, $comparison = Criteria::EQUAL)
+	public function filterByPriority($priority = null, $comparison = null)
 	{
 		if (is_array($priority)) {
-			if (array_values($priority) === $priority) {
-				return $this->addUsingAlias(JCategoriesMatieresClassesPeer::PRIORITY, $priority, Criteria::IN);
-			} else {
-				if (isset($priority['min'])) {
-					$this->addUsingAlias(JCategoriesMatieresClassesPeer::PRIORITY, $priority['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($priority['max'])) {
-					$this->addUsingAlias(JCategoriesMatieresClassesPeer::PRIORITY, $priority['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($priority['min'])) {
+				$this->addUsingAlias(JCategoriesMatieresClassesPeer::PRIORITY, $priority['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(JCategoriesMatieresClassesPeer::PRIORITY, $priority, $comparison);
+			if (isset($priority['max'])) {
+				$this->addUsingAlias(JCategoriesMatieresClassesPeer::PRIORITY, $priority['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(JCategoriesMatieresClassesPeer::PRIORITY, $priority, $comparison);
 	}
 
 	/**
@@ -243,7 +247,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
 	 */
-	public function filterByCategorieMatiere($categorieMatiere, $comparison = Criteria::EQUAL)
+	public function filterByCategorieMatiere($categorieMatiere, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $categorieMatiere->getId(), $comparison);
@@ -266,6 +270,9 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -304,7 +311,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
 	 */
-	public function filterByClasse($classe, $comparison = Criteria::EQUAL)
+	public function filterByClasse($classe, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JCategoriesMatieresClassesPeer::CLASSE_ID, $classe->getId(), $comparison);
@@ -327,6 +334,9 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -373,37 +383,6 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseJCategoriesMatieresClassesQuery

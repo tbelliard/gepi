@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'plugins_autorisations' table.
  *
@@ -97,10 +98,11 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -116,6 +118,7 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -154,13 +157,12 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
 	 */
-	public function filterById($id = null, $comparison = Criteria::EQUAL)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($id)) {
-			return $this->addUsingAlias(PlugInAutorisationPeer::ID, $id, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(PlugInAutorisationPeer::ID, $id, $comparison);
+		if (is_array($id) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(PlugInAutorisationPeer::ID, $id, $comparison);
 	}
 
 	/**
@@ -172,23 +174,26 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
 	 */
-	public function filterByPluginId($pluginId = null, $comparison = Criteria::EQUAL)
+	public function filterByPluginId($pluginId = null, $comparison = null)
 	{
 		if (is_array($pluginId)) {
-			if (array_values($pluginId) === $pluginId) {
-				return $this->addUsingAlias(PlugInAutorisationPeer::PLUGIN_ID, $pluginId, Criteria::IN);
-			} else {
-				if (isset($pluginId['min'])) {
-					$this->addUsingAlias(PlugInAutorisationPeer::PLUGIN_ID, $pluginId['min'], Criteria::GREATER_EQUAL);
-				}
-				if (isset($pluginId['max'])) {
-					$this->addUsingAlias(PlugInAutorisationPeer::PLUGIN_ID, $pluginId['max'], Criteria::LESS_EQUAL);
-				}
-				return $this;	
+			$useMinMax = false;
+			if (isset($pluginId['min'])) {
+				$this->addUsingAlias(PlugInAutorisationPeer::PLUGIN_ID, $pluginId['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
 			}
-		} else {
-			return $this->addUsingAlias(PlugInAutorisationPeer::PLUGIN_ID, $pluginId, $comparison);
+			if (isset($pluginId['max'])) {
+				$this->addUsingAlias(PlugInAutorisationPeer::PLUGIN_ID, $pluginId['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
+		return $this->addUsingAlias(PlugInAutorisationPeer::PLUGIN_ID, $pluginId, $comparison);
 	}
 
 	/**
@@ -200,15 +205,17 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
 	 */
-	public function filterByFichier($fichier = null, $comparison = Criteria::EQUAL)
+	public function filterByFichier($fichier = null, $comparison = null)
 	{
-		if (is_array($fichier)) {
-			return $this->addUsingAlias(PlugInAutorisationPeer::FICHIER, $fichier, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $fichier)) {
-			return $this->addUsingAlias(PlugInAutorisationPeer::FICHIER, str_replace('*', '%', $fichier), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PlugInAutorisationPeer::FICHIER, $fichier, $comparison);
+		if (null === $comparison) {
+			if (is_array($fichier)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $fichier)) {
+				$fichier = str_replace('*', '%', $fichier);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PlugInAutorisationPeer::FICHIER, $fichier, $comparison);
 	}
 
 	/**
@@ -220,15 +227,17 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
 	 */
-	public function filterByUserStatut($userStatut = null, $comparison = Criteria::EQUAL)
+	public function filterByUserStatut($userStatut = null, $comparison = null)
 	{
-		if (is_array($userStatut)) {
-			return $this->addUsingAlias(PlugInAutorisationPeer::USER_STATUT, $userStatut, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $userStatut)) {
-			return $this->addUsingAlias(PlugInAutorisationPeer::USER_STATUT, str_replace('*', '%', $userStatut), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PlugInAutorisationPeer::USER_STATUT, $userStatut, $comparison);
+		if (null === $comparison) {
+			if (is_array($userStatut)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $userStatut)) {
+				$userStatut = str_replace('*', '%', $userStatut);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PlugInAutorisationPeer::USER_STATUT, $userStatut, $comparison);
 	}
 
 	/**
@@ -240,15 +249,17 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
 	 */
-	public function filterByAuth($auth = null, $comparison = Criteria::EQUAL)
+	public function filterByAuth($auth = null, $comparison = null)
 	{
-		if (is_array($auth)) {
-			return $this->addUsingAlias(PlugInAutorisationPeer::AUTH, $auth, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $auth)) {
-			return $this->addUsingAlias(PlugInAutorisationPeer::AUTH, str_replace('*', '%', $auth), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(PlugInAutorisationPeer::AUTH, $auth, $comparison);
+		if (null === $comparison) {
+			if (is_array($auth)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $auth)) {
+				$auth = str_replace('*', '%', $auth);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(PlugInAutorisationPeer::AUTH, $auth, $comparison);
 	}
 
 	/**
@@ -259,7 +270,7 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
 	 */
-	public function filterByPlugIn($plugIn, $comparison = Criteria::EQUAL)
+	public function filterByPlugIn($plugIn, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(PlugInAutorisationPeer::PLUGIN_ID, $plugIn->getId(), $comparison);
@@ -282,6 +293,9 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -326,37 +340,6 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BasePlugInAutorisationQuery

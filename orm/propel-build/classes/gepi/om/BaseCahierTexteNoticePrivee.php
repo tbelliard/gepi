@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'ct_private_entry' table.
  *
@@ -1248,8 +1249,11 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		$this->id_groupe = null;
 		$this->id_login = null;
 		$this->id_sequence = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

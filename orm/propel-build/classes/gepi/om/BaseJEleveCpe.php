@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'j_eleves_cpe' table.
  *
@@ -872,8 +873,11 @@ abstract class BaseJEleveCpe extends BaseObject  implements Persistent
 	{
 		$this->e_login = null;
 		$this->cpe_login = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

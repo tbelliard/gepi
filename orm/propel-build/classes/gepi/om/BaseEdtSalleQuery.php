@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'salle_cours' table.
  *
@@ -89,10 +90,11 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -108,6 +110,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -146,13 +149,12 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 *
 	 * @return    EdtSalleQuery The current query, for fluid interface
 	 */
-	public function filterByIdSalle($idSalle = null, $comparison = Criteria::EQUAL)
+	public function filterByIdSalle($idSalle = null, $comparison = null)
 	{
-		if (is_array($idSalle)) {
-			return $this->addUsingAlias(EdtSallePeer::ID_SALLE, $idSalle, Criteria::IN);
-		} else {
-			return $this->addUsingAlias(EdtSallePeer::ID_SALLE, $idSalle, $comparison);
+		if (is_array($idSalle) && null === $comparison) {
+			$comparison = Criteria::IN;
 		}
+		return $this->addUsingAlias(EdtSallePeer::ID_SALLE, $idSalle, $comparison);
 	}
 
 	/**
@@ -164,15 +166,17 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 *
 	 * @return    EdtSalleQuery The current query, for fluid interface
 	 */
-	public function filterByNumeroSalle($numeroSalle = null, $comparison = Criteria::EQUAL)
+	public function filterByNumeroSalle($numeroSalle = null, $comparison = null)
 	{
-		if (is_array($numeroSalle)) {
-			return $this->addUsingAlias(EdtSallePeer::NUMERO_SALLE, $numeroSalle, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $numeroSalle)) {
-			return $this->addUsingAlias(EdtSallePeer::NUMERO_SALLE, str_replace('*', '%', $numeroSalle), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtSallePeer::NUMERO_SALLE, $numeroSalle, $comparison);
+		if (null === $comparison) {
+			if (is_array($numeroSalle)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $numeroSalle)) {
+				$numeroSalle = str_replace('*', '%', $numeroSalle);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtSallePeer::NUMERO_SALLE, $numeroSalle, $comparison);
 	}
 
 	/**
@@ -184,15 +188,17 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 *
 	 * @return    EdtSalleQuery The current query, for fluid interface
 	 */
-	public function filterByNomSalle($nomSalle = null, $comparison = Criteria::EQUAL)
+	public function filterByNomSalle($nomSalle = null, $comparison = null)
 	{
-		if (is_array($nomSalle)) {
-			return $this->addUsingAlias(EdtSallePeer::NOM_SALLE, $nomSalle, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $nomSalle)) {
-			return $this->addUsingAlias(EdtSallePeer::NOM_SALLE, str_replace('*', '%', $nomSalle), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(EdtSallePeer::NOM_SALLE, $nomSalle, $comparison);
+		if (null === $comparison) {
+			if (is_array($nomSalle)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nomSalle)) {
+				$nomSalle = str_replace('*', '%', $nomSalle);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(EdtSallePeer::NOM_SALLE, $nomSalle, $comparison);
 	}
 
 	/**
@@ -203,7 +209,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 *
 	 * @return    EdtSalleQuery The current query, for fluid interface
 	 */
-	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = Criteria::EQUAL)
+	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(EdtSallePeer::ID_SALLE, $edtEmplacementCours->getIdSalle(), $comparison);
@@ -226,6 +232,9 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -270,37 +279,6 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseEdtSalleQuery

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base static class for performing query and update operations on the 'classes' table.
  *
@@ -538,7 +539,7 @@ abstract class BaseClassePeer {
 			$key = ClassePeer::getPrimaryKeyHashFromRow($row, 0);
 			if (null !== ($obj = ClassePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://propel.phpdb.org/trac/ticket/509
+				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
 				$results[] = $obj;
 			} else {
@@ -565,7 +566,7 @@ abstract class BaseClassePeer {
 		$key = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol);
 		if (null !== ($obj = ClassePeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
-			// See http://propel.phpdb.org/trac/ticket/509
+			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
 			$col = $startcol + ClassePeer::NUM_COLUMNS;
 		} else {
@@ -715,7 +716,7 @@ abstract class BaseClassePeer {
 			$con->beginTransaction();
 			$affectedRows += ClassePeer::doOnDeleteCascade(new Criteria(ClassePeer::DATABASE_NAME), $con);
 			ClassePeer::doOnDeleteSetNull(new Criteria(ClassePeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(ClassePeer::TABLE_NAME, $con);
+			$affectedRows += BasePeer::doDeleteAll(ClassePeer::TABLE_NAME, $con, ClassePeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).

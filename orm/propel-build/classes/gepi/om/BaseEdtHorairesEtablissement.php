@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'horaires_etablissement' table.
  *
@@ -1122,7 +1123,10 @@ abstract class BaseEdtHorairesEtablissement extends BaseObject  implements Persi
 		$this->fermeture_horaire_etablissement = null;
 		$this->pause_horaire_etablissement = null;
 		$this->ouvert_horaire_etablissement = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 

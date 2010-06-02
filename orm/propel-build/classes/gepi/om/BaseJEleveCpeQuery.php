@@ -1,6 +1,7 @@
 <?php
 
 
+
 /**
  * Base class that represents a query for the 'j_eleves_cpe' table.
  *
@@ -88,10 +89,11 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 			return $obj;
 		} else {
 			// the object has not been requested yet, or the formatter is not an object formatter
-			$stmt = $this
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
 				->filterByPrimaryKey($key)
 				->getSelectStatement($con);
-			return $this->getFormatter()->formatOne($stmt);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
 	}
 
@@ -107,6 +109,7 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{	
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
 			->find($con);
@@ -155,15 +158,17 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveCpeQuery The current query, for fluid interface
 	 */
-	public function filterByELogin($eLogin = null, $comparison = Criteria::EQUAL)
+	public function filterByELogin($eLogin = null, $comparison = null)
 	{
-		if (is_array($eLogin)) {
-			return $this->addUsingAlias(JEleveCpePeer::E_LOGIN, $eLogin, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $eLogin)) {
-			return $this->addUsingAlias(JEleveCpePeer::E_LOGIN, str_replace('*', '%', $eLogin), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(JEleveCpePeer::E_LOGIN, $eLogin, $comparison);
+		if (null === $comparison) {
+			if (is_array($eLogin)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $eLogin)) {
+				$eLogin = str_replace('*', '%', $eLogin);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(JEleveCpePeer::E_LOGIN, $eLogin, $comparison);
 	}
 
 	/**
@@ -175,15 +180,17 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveCpeQuery The current query, for fluid interface
 	 */
-	public function filterByCpeLogin($cpeLogin = null, $comparison = Criteria::EQUAL)
+	public function filterByCpeLogin($cpeLogin = null, $comparison = null)
 	{
-		if (is_array($cpeLogin)) {
-			return $this->addUsingAlias(JEleveCpePeer::CPE_LOGIN, $cpeLogin, Criteria::IN);
-		} elseif(preg_match('/[\%\*]/', $cpeLogin)) {
-			return $this->addUsingAlias(JEleveCpePeer::CPE_LOGIN, str_replace('*', '%', $cpeLogin), Criteria::LIKE);
-		} else {
-			return $this->addUsingAlias(JEleveCpePeer::CPE_LOGIN, $cpeLogin, $comparison);
+		if (null === $comparison) {
+			if (is_array($cpeLogin)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $cpeLogin)) {
+				$cpeLogin = str_replace('*', '%', $cpeLogin);
+				$comparison = Criteria::LIKE;
+			}
 		}
+		return $this->addUsingAlias(JEleveCpePeer::CPE_LOGIN, $cpeLogin, $comparison);
 	}
 
 	/**
@@ -194,7 +201,7 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveCpeQuery The current query, for fluid interface
 	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
+	public function filterByEleve($eleve, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JEleveCpePeer::E_LOGIN, $eleve->getLogin(), $comparison);
@@ -217,6 +224,9 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -255,7 +265,7 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveCpeQuery The current query, for fluid interface
 	 */
-	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = Criteria::EQUAL)
+	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
 		return $this
 			->addUsingAlias(JEleveCpePeer::CPE_LOGIN, $utilisateurProfessionnel->getLogin(), $comparison);
@@ -278,6 +288,9 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
 		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
 		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
@@ -324,37 +337,6 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	  }
 	  
 		return $this;
-	}
-
-	/**
-	 * Code to execute before every SELECT statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreSelect(PropelPDO $con)
-	{
-		return $this->preSelect($con);
-	}
-
-	/**
-	 * Code to execute before every DELETE statement
-	 * 
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreDelete(PropelPDO $con)
-	{
-		return $this->preDelete($con);
-	}
-
-	/**
-	 * Code to execute before every UPDATE statement
-	 * 
-	 * @param     array $values The associatiove array of columns and values for the update
-	 * @param     PropelPDO $con The connection object used by the query
-	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
-	{
-		return $this->preUpdate($values, $con);
 	}
 
 } // BaseJEleveCpeQuery

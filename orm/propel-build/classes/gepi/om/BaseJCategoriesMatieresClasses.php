@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Base class that represents a row from the 'j_matieres_categories_classes' table.
  *
@@ -960,8 +961,11 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 		$this->classe_id = null;
 		$this->affiche_moyenne = null;
 		$this->priority = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
 		$this->applyDefaultValues();
+		$this->resetModified();
 		$this->setNew(true);
 	}
 
