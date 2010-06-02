@@ -30,11 +30,10 @@ if (file_exists("./secure/connect.inc.php")) {
             require_once("./lib/global.inc");
             // Premier test
             $liste2 = array();
-            $tableNames = mysql_list_tables($dbDb);
-            $j = '0';
-            while ($j < mysql_num_rows($tableNames)) {
-                $liste2[$j] = mysql_tablename($tableNames, $j);
-                $j++;
+            
+            $tableNames = mysql_query("SHOW TABLES FROM `$dbDb`");
+            while ($row = mysql_fetch_row($tableNames)) {
+                $liste2[] = $row[0];
             }
             
             $flag = 'no';
