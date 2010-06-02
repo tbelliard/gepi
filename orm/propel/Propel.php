@@ -28,6 +28,11 @@
 class Propel
 {
 	/**
+	 * The Propel version.
+	 */
+	const VERSION = '1.5.2-dev';
+	
+	/**
 	 * A constant for <code>default</code>.
 	 */
 	const DEFAULT_NAME = "default";
@@ -71,11 +76,6 @@ class Propel
 	 * A constant defining 'Debug-level messages' logging level
 	 */
 	const LOG_DEBUG = 7;
-
-	/**
-	 * The Propel version.
-	 */
-	const VERSION = '1.5.0-dev';
 
 	/**
 	 * The class name for a PDO object.
@@ -153,10 +153,14 @@ class Propel
 	private static $forceMasterConnection = false;
 
 	/**
+	 * @var        string Base directory to use for autoloading. Initialized in self::initBaseDir()
+	 */
+  protected static $baseDir;
+  
+	/**
 	 * @var        array A map of class names and their file paths for autoloading
 	 */
-	private static $autoloadMap = array(
-		'PropelException'     => 'PropelException.php',
+	protected static $autoloadMap = array(
 
 		'DBAdapter'           => 'adapter/DBAdapter.php',
 		'DBMSSQL'             => 'adapter/DBMSSQL.php',
@@ -186,6 +190,7 @@ class Propel
 
 		'PropelException'     => 'exception/PropelException.php',
 		
+		'ModelWith'           => 'formatter/ModelWith.php',
 		'PropelArrayFormatter' => 'formatter/PropelArrayFormatter.php',
 		'PropelFormatter'     => 'formatter/PropelFormatter.php',
 		'PropelObjectFormatter' => 'formatter/PropelObjectFormatter.php',
@@ -221,6 +226,7 @@ class Propel
 		'BasePeer'            => 'util/BasePeer.php',
 		'NodePeer'            => 'util/NodePeer.php',
 		'PeerInfo'            => 'util/PeerInfo.php',
+		'PropelAutoloader'    => 'util/PropelAutoloader.php',
 		'PropelColumnTypes'   => 'util/PropelColumnTypes.php',
 		'PropelConditionalProxy' => 'util/PropelConditionalProxy.php',
 		'PropelModelPager'    => 'util/PropelModelPager.php',
@@ -258,7 +264,8 @@ class Propel
 		self::$connectionMap = array();
 		
 		if (isset(self::$configuration['classmap']) && is_array(self::$configuration['classmap'])) {
-		  self::$autoloadMap = array_merge(self::$configuration['classmap'], self::$autoloadMap);
+		  PropelAutoloader::getInstance()->addClassPaths(self::$configuration['classmap']);
+		  PropelAutoloader::getInstance()->register();
 	  }
 		
 		self::$isInit = true;
@@ -797,14 +804,24 @@ class Propel
 	public static function autoload($className)
 	{
 		if (isset(self::$autoloadMap[$className])) {
-			require(self::$autoloadMap[$className]);
+			require self::$baseDir . self::$autoloadMap[$className];
 			return true;
 		}
 		return false;
 	}
+	
+	/**
+	 * Initialize the base directory for the autoloader.
+	 * Avoids a call to dirname(__FILE__) each time self::autoload() is called.
+	 * FIXME put in the constructor if the Propel class ever becomes a singleton
+	 */
+	public static function initBaseDir()
+	{
+		self::$baseDir = dirname(__FILE__) . '/';
+	}
 
 	/**
-	 * Include once a file specified in DOT notation and reutrn unqualified clasname.
+	 * Include once a file specified in DOT notation and return unqualified classname.
 	 *
 	 * Typically, Propel uses autoload is used to load classes and expects that all classes
 	 * referenced within Propel are included in Propel's autoload map.  This method is only
@@ -856,18 +873,32 @@ class Propel
 
 	/**
 	 * Disable instance pooling.
+	 * 
+	 * @return boolean true if the method changed the instance pooling state,
+	 *                 false if it was already disabled
 	 */
 	public static function disableInstancePooling()
 	{
+		if (!self::$instancePoolingEnabled) {
+			return false;
+		}
 		self::$instancePoolingEnabled = false;
+		return true;
 	}
 
 	/**
 	 * Enable instance pooling (enabled by default).
+	 * 
+	 * @return boolean true if the method changed the instance pooling state,
+	 *                 false if it was already enabled
 	 */
 	public static function enableInstancePooling()
 	{
+		if (self::$instancePoolingEnabled) {
+			return false;
+		}
 		self::$instancePoolingEnabled = true;
+		return true;
 	}
 
 	/**
@@ -881,4 +912,6 @@ class Propel
 	}
 }
 
+// Since the Propel class is not a true singleton, this code cannot go into the __construct()
+Propel::initBaseDir();
 spl_autoload_register(array('Propel', 'autoload'));

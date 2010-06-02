@@ -113,54 +113,49 @@ class BasePeer
 
 		// Set up a list of required tables (one DELETE statement will
 		// be executed per table)
-
-		$tables_keys = array();
-		foreach ($criteria as $c) {
-			foreach ($c->getAllTables() as $tableName) {
-				$tableName2 = $criteria->getTableForAlias($tableName);
-				if ($tableName2 !== null) {
-					$tables_keys[$tableName2 . ' ' . $tableName] = true;
-				} else {
-					$tables_keys[$tableName] = true;
-				}
-			}
-		} // foreach criteria->keys()
-
-		$affectedRows = 0; // initialize this in case the next loop has no iterations.
-
-		$tables = array_keys($tables_keys);
-		
+		$tables = $criteria->getTablesColumns();
 		if (empty($tables)) {
 			throw new PropelException("Cannot delete from an empty Criteria");
 		}
+
+		$affectedRows = 0; // initialize this in case the next loop has no iterations.
 		
-		foreach ($tables as $tableName) {
+		foreach ($tables as $tableName => $columns) {
 
 			$whereClause = array();
-			$selectParams = array();
-			foreach ($dbMap->getTable($tableName)->getColumns() as $colMap) {
-				$key = $tableName . '.' . $colMap->getColumnName();
-				if ($criteria->containsKey($key)) {
+			$params = array();
+			$stmt = null;
+			try {
+				$sql = 'DELETE ';
+				if ($queryComment = $criteria->getComment()) {
+					$sql .= '/* ' . $queryComment . ' */ ';
+				}
+				if ($realTableName = $criteria->getTableForAlias($tableName)) {
+					if ($db->useQuoteIdentifier()) {
+						$realTableName = $db->quoteIdentifierTable($realTableName);
+					}
+					$sql .= $tableName . ' FROM ' . $realTableName . ' AS ' . $tableName;
+				} else {
+					if ($db->useQuoteIdentifier()) {
+						$tableName = $db->quoteIdentifierTable($tableName);
+					}
+					$sql .= 'FROM ' . $tableName;
+				}
+
+				foreach ($columns as $colName) {
 					$sb = "";
-					$criteria->getCriterion($key)->appendPsTo($sb, $selectParams);
+					$criteria->getCriterion($colName)->appendPsTo($sb, $params);
 					$whereClause[] = $sb;
 				}
-			}
+				$sql .= " WHERE " .  implode(" AND ", $whereClause);
 
-			if (empty($whereClause)) {
-				throw new PropelException("Cowardly refusing to delete from table $tableName with empty WHERE clause.");
-			}
-
-			// Execute the statement.
-			try {
-				$sql = "DELETE FROM " . $tableName . " WHERE " .  implode(" AND ", $whereClause);
 				$stmt = $con->prepare($sql);
-				self::populateStmtValues($stmt, $selectParams, $dbMap, $db);
+				self::populateStmtValues($stmt, $params, $dbMap, $db);
 				$stmt->execute();
 				$affectedRows = $stmt->rowCount();
 			} catch (Exception $e) {
 				Propel::log($e->getMessage(), Propel::LOG_ERR);
-				throw new PropelException("Unable to execute DELETE statement.",$e);
+				throw new PropelException(sprintf('Unable to execute DELETE statement [%s]', $sql), $e);
 			}
 
 		} // for each table
@@ -176,27 +171,32 @@ class BasePeer
 	 * public static function doDeleteAll($con = null)
 	 * {
 	 *   if ($con === null) $con = Propel::getConnection(self::DATABASE_NAME);
-	 *   BasePeer::doDeleteAll(self::TABLE_NAME, $con);
+	 *   BasePeer::doDeleteAll(self::TABLE_NAME, $con, self::DATABASE_NAME);
 	 * }
 	 * </code>
 	 *
 	 * @param      string $tableName The name of the table to empty.
 	 * @param      PropelPDO $con A PropelPDO connection object.
+	 * @param      string $databaseName the name of the database.
 	 * @return     int	The number of rows affected by the statement.  Note
 	 * 				that the return value does require that this information
 	 * 				is returned (supported) by the Propel db driver.
 	 * @throws     PropelException - wrapping SQLException caught from statement execution.
 	 */
-	public static function doDeleteAll($tableName, PropelPDO $con)
+	public static function doDeleteAll($tableName, PropelPDO $con, $databaseName = null)
 	{
 		try {
+			$db = Propel::getDB($databaseName);
+			if ($db->useQuoteIdentifier()) {
+				$tableName = $db->quoteIdentifierTable($tableName);
+			}
 			$sql = "DELETE FROM " . $tableName;
 			$stmt = $con->prepare($sql);
 			$stmt->execute();
 			return $stmt->rowCount();
 		} catch (Exception $e) {
 			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException("Unable to perform DELETE ALL operation.", $e);
+			throw new PropelException(sprintf('Unable to execute DELETE ALL statement [%s]', $sql), $e);
 		}
 	}
 
@@ -276,6 +276,7 @@ class BasePeer
 			// add identifiers
 			if ($adapter->useQuoteIdentifier()) {
 				$columns = array_map(array($adapter, 'quoteIdentifier'), $columns);
+				$tableName = $adapter->quoteIdentifierTable($tableName); 
 			}
 
 			$sql = 'INSERT INTO ' . $tableName
@@ -294,7 +295,7 @@ class BasePeer
 
 		} catch (Exception $e) {
 			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException("Unable to execute INSERT statement.", $e);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
 		}
 
 		// If the primary key column is auto-incremented, get the id now.
@@ -349,13 +350,26 @@ class BasePeer
 		foreach ($tablesColumns as $tableName => $columns) {
 
 			$whereClause = array();
-			
 			$params = array();
-
 			$stmt = null;
 			try {
-
-				$sql = "UPDATE " . $tableName . " SET ";
+				$sql = 'UPDATE ';
+				if ($queryComment = $selectCriteria->getComment()) {
+					$sql .= '/* ' . $queryComment . ' */ ';
+				}
+				// is it a table alias?
+				if ($tableName2 = $selectCriteria->getTableForAlias($tableName)) {
+					$udpateTable = $tableName2 . ' ' . $tableName;
+					$tableName = $tableName2;
+				} else {
+					$udpateTable = $tableName;
+				}
+				if ($db->useQuoteIdentifier()) {
+					$sql .= $db->quoteIdentifierTable($udpateTable); 
+				} else { 
+					$sql .= $udpateTable;
+				}
+				$sql .= " SET ";
 				$p = 1;
 				foreach ($updateTablesColumns[$tableName] as $col) {
 					$updateColumnName = substr($col, strrpos($col, '.') + 1);
@@ -420,7 +434,7 @@ class BasePeer
 			} catch (Exception $e) {
 				if ($stmt) $stmt = null; // close
 				Propel::log($e->getMessage(), Propel::LOG_ERR);
-				throw new PropelException("Unable to execute UPDATE statement.", $e);
+				throw new PropelException(sprintf('Unable to execute UPDATE statement [%s]', $sql), $e);
 			}
 
 		} // foreach table in the criteria
@@ -474,7 +488,7 @@ class BasePeer
 				$con->rollBack();
 			}
 			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException($e);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
 		}
 
 		return $stmt;
@@ -546,7 +560,7 @@ class BasePeer
 				$con->rollBack();
 			}
 			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException($e);
+			throw new PropelException(sprintf('Unable to execute COUNT statement [%s]', $sql), $e);
 		}
 
 		return $stmt;
@@ -932,7 +946,7 @@ class BasePeer
 				if ($criteria->isIgnoreCase() && $column && $column->isText()) {
 					$ignoreCaseColumn = $db->ignoreCaseInOrderBy("$tableAlias.$columnAlias");
 					$orderByClause[] =  $ignoreCaseColumn . $direction;
-					$selectSql .= ' ' . $ignoreCaseColumn;
+					$selectSql .= ', ' . $ignoreCaseColumn;
 				} else {
 					$orderByClause[] = $orderByColumn;
 				}
@@ -1030,9 +1044,11 @@ class BasePeer
 		}
 
 		$selectModifiers = $criteria->getSelectModifiers();
+		$queryComment = $criteria->getComment();
 		
 		// Build the SQL from the arrays we compiled
 		$sql =  "SELECT " 
+		. ($queryComment ? '/* ' . $queryComment . ' */ ' : '')
 		. ($selectModifiers ? (implode(' ', $selectModifiers) . ' ') : '')
 		. implode(", ", $selectClause);
 

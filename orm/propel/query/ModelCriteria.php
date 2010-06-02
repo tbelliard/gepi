@@ -48,6 +48,7 @@ class ModelCriteria extends Criteria
 	protected $with = array();
 	protected $isWithOneToMany = false;
 	protected $previousJoin = null; // this is introduced to prevent useQuery->join from going wrong
+	protected $isKeepQuery = false; // whether to clone the current object before termination methods
 		
 	/**
 	 * Creates a new instance with the default capacity which corresponds to
@@ -155,7 +156,6 @@ class ModelCriteria extends Criteria
 		if (!$formatter instanceof PropelFormatter) {
 			throw new PropelException('setFormatter() only accepts classes extending PropelFormatter');
 		}
-		$formatter->setCriteria($this);
 		$this->formatter = $formatter;
 		
 		return $this;
@@ -170,7 +170,8 @@ class ModelCriteria extends Criteria
 	public function getFormatter()
 	{
 		if (null === $this->formatter) {
-			$this->setFormatter($this->defaultFormatterClass);
+			$formatterClass = $this->defaultFormatterClass;
+			$this->formatter = new $formatterClass();
 		}
 		return $this->formatter;
 	}
@@ -466,6 +467,18 @@ class ModelCriteria extends Criteria
 	}
 
 	/**
+	 * This method returns an already defined join clause from the query
+	 * 
+	 * @param      string $name    The name of the join clause
+	 * 
+	 * @return Join A join object 
+	 */
+	public function getJoin($name)
+	{
+		return $this->joins[$name];
+	}
+  	
+	/**
 	 * Adds a JOIN clause to the query
 	 * Infers the ON clause from a relation name
 	 * Uses the Propel table maps, based on the schema, to guess the related columns
@@ -606,6 +619,7 @@ class ModelCriteria extends Criteria
 			// For performance reasons, the formatters will use a special routine in this case
 			$this->isWithOneToMany = true;
 		}
+		
 		// check that the columns of the main class are already added (but only if this isn't a useQuery)
 		if (!$this->hasSelectClause() && !$this->getPrimaryCriteria()) {
 			$this->addSelfSelectColumns();
@@ -614,13 +628,14 @@ class ModelCriteria extends Criteria
 		$this->addRelationSelectColumns($relation);
 		
 		// list the join for later hydration in the formatter
-		$this->with[]= $join;
+		$this->with[$relation] = $join;
 		
 		return $this;
 	}
 
 	/**
-	 * Gets the array of joins to hydrate together with the main object
+	 * Gets the array of ModelWith specifying which objects must be hydrated
+	 * together with the main object.
 	 * 
 	 * @see       with()
 	 * @return    array
@@ -644,6 +659,8 @@ class ModelCriteria extends Criteria
 	 * @param     string $name   Optional alias for the added column
 	 *                           If no alias is provided, the clause is used as a column alias
 	 *                           This alias is used for retrieving the column via BaseObject::getVirtualColumn($alias)
+	 *
+	 * @return     ModelCriteria The current object, for fluid interface
 	 */
 	public function withColumn($clause, $name = null)
 	{
@@ -699,7 +716,7 @@ class ModelCriteria extends Criteria
 	public function endUse()
 	{
 		if (isset($this->aliases[$this->modelAlias])) {
-			unset($this->aliases[$this->modelAlias]);
+			$this->removeAlias($this->modelAlias);
 		}
 		$primaryCriteria = $this->getPrimaryCriteria();
 		$primaryCriteria->mergeWith($this);
@@ -713,12 +730,14 @@ class ModelCriteria extends Criteria
 	 * @see Criteria::mergeWith()
 	 * 
 	 * @param     Criteria $criteria The criteria to read properties from
+	 * @param     string $operator The logical operator used to combine conditions
+	 *              Defaults to Criteria::LOGICAL_AND, also accapts Criteria::LOGICAL_OR
 	 *
 	 * @return    ModelCriteria The primary criteria object
 	 */
-	public function mergeWith(Criteria $criteria)
+	public function mergeWith(Criteria $criteria, $operator = Criteria::LOGICAL_AND)
 	{
-		parent::mergeWith($criteria);
+		parent::mergeWith($criteria, $operator);
 		
 		// merge with
 		if ($criteria instanceof ModelCriteria) {
@@ -833,7 +852,34 @@ class ModelCriteria extends Criteria
 		
 		return $relationName; 
 	}
+	
+	/**
+	 * Triggers the automated cloning on termination.
+	 * By default, temrination methods don't clone the current object, 
+	 * even though they modify it. If the query must be reused after termination,
+	 * you must call this method prior to temrination.
+	 *
+	 * @param     boolean $isKeepQuery
+	 *
+	 * @return     ModelCriteria The current object, for fluid interface
+	 */
+	public function keepQuery($isKeepQuery = true)
+	{
+		$this->isKeepQuery = (bool) $isKeepQuery;
 		
+		return $this;
+	}
+	
+	/**
+	 * Checks whether the automated cloning on termination is enabled.
+	 *
+	 * @return     boolean true if cloning must be done before termination
+	 */
+	public function isKeepQuery()
+	{
+		return $this->isKeepQuery;
+	}
+	
 	/**
 	 * Code to execute before every SELECT statement
 	 * 
@@ -859,9 +905,10 @@ class ModelCriteria extends Criteria
 	 */
 	public function find($con = null)
 	{
-		$stmt = $this->getSelectStatement($con);
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria->getSelectStatement($con);
 		
-		return $this->getFormatter()->format($stmt);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -875,10 +922,11 @@ class ModelCriteria extends Criteria
 	 */
 	public function findOne($con = null)
 	{
-		$this->limit(1);
-		$stmt = $this->getSelectStatement($con);
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$criteria->limit(1);
+		$stmt = $criteria->getSelectStatement($con);
 		
-		return $this->getFormatter()->formatOne($stmt);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 	
 	/**
@@ -948,20 +996,17 @@ class ModelCriteria extends Criteria
 	  if ($con === null) {
 			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
 		}
-		
-		// we may modify criteria, so copy it first
-		$criteria = clone $this;
 
 		// check that the columns of the main class are already added (if this is the primary ModelCriteria)
 		if (!$this->hasSelectClause() && !$this->getPrimaryCriteria()) {
-			$criteria->addSelfSelectColumns();
+			$this->addSelfSelectColumns();
 		}
 		
 		$con->beginTransaction();
 		try {
-			$criteria->basePreSelect($con);
+			$this->basePreSelect($con);
 			$params = array();
-			$sql = BasePeer::createSelectSql($criteria, $params);
+			$sql = BasePeer::createSelectSql($this, $params);
 			$stmt = $con->prepare($sql);
 			BasePeer::populateStmtValues($stmt, $params, $dbMap, $db);
 			$stmt->execute();
@@ -1075,7 +1120,7 @@ class ModelCriteria extends Criteria
 			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
 		}
 		
-		$criteria = clone $this;
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		$criteria->setDbName($this->getDbName()); // Set the correct dbName
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 
@@ -1084,20 +1129,7 @@ class ModelCriteria extends Criteria
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(constant($this->modelPeerName.'::TABLE_NAME'));
 
-		if (!$criteria->hasSelectClause()) {
-			call_user_func(array($this->modelPeerName, 'addSelectColumns'), $criteria);
-		}
-
-		$con->beginTransaction();
-		try {
-			$criteria->basePreSelect($con);
-			$stmt = BasePeer::doCount($criteria, $con);
-			$con->commit();
-		} catch (PropelException $e) {
-			$con->rollback();
-			throw $e;
-		}		
-
+		$stmt = $criteria->getCountStatement($con);
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$count = (int) $row[0];
 		} else {
@@ -1106,6 +1138,55 @@ class ModelCriteria extends Criteria
 		$stmt->closeCursor();
 		
 		return $count;
+	}
+	
+	protected function getCountStatement($con = null)
+	{
+		$dbMap = Propel::getDatabaseMap($this->getDbName());
+		$db = Propel::getDB($this->getDbName());
+	  if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		
+		// check that the columns of the main class are already added (if this is the primary ModelCriteria)
+		if (!$this->hasSelectClause() && !$this->getPrimaryCriteria()) {
+			$this->addSelfSelectColumns();
+		}
+
+		$needsComplexCount = $this->getGroupByColumns()
+			|| $this->getOffset()
+			|| $this->getLimit() 
+			|| $this->getHaving() 
+			|| in_array(Criteria::DISTINCT, $this->getSelectModifiers());
+		
+		$con->beginTransaction();
+		try {
+			$this->basePreSelect($con);
+			$params = array();
+			if ($needsComplexCount) {
+				if (BasePeer::needsSelectAliases($this)) {
+					if ($this->getHaving()) {
+						throw new PropelException('Propel cannot create a COUNT query when using HAVING and  duplicate column names in the SELECT part');
+					}
+					BasePeer::turnSelectColumnsToAliases($this);
+				}
+				$selectSql = BasePeer::createSelectSql($this, $params);
+				$sql = 'SELECT COUNT(*) FROM (' . $selectSql . ') propelmatch4cnt';
+			} else {
+				// Replace SELECT columns with COUNT(*)
+				$this->clearSelectColumns()->addSelectColumn('COUNT(*)');
+				$sql = BasePeer::createSelectSql($this, $params);
+			}
+			$stmt = $con->prepare($sql);
+			BasePeer::populateStmtValues($stmt, $params, $dbMap, $db);
+			$stmt->execute();
+			$con->commit();
+		} catch (PropelException $e) {
+			$con->rollback();
+			throw $e;
+		}
+		
+		return $stmt;
 	}
 	
 	/**
@@ -1121,7 +1202,8 @@ class ModelCriteria extends Criteria
 	 */
 	public function paginate($page = 1, $maxPerPage = 10, $con = null)
 	{
-		$pager = new PropelModelPager($this, $maxPerPage);
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$pager = new PropelModelPager($criteria, $maxPerPage);
 		$pager->setPage($page);
 		$pager->init();
 		
@@ -1141,7 +1223,22 @@ class ModelCriteria extends Criteria
 	protected function preDelete(PropelPDO $con)
 	{
 	}
+
+	/**
+	 * Code to execute after every DELETE statement
+	 * 
+	 * @param     int $affectedRows the number of deleted rows
+	 * @param     PropelPDO $con The connection object used by the query
+	 */
+	protected function basePostDelete($affectedRows, PropelPDO $con)
+	{
+		return $this->postDelete($affectedRows, $con);
+	}
 	
+	protected function postDelete($affectedRows, PropelPDO $con)
+	{
+	}
+		
 	/**
 	 * Issue a DELETE query based on the current ModelCriteria
 	 * An optional hook on basePreDelete() can prevent the actual deletion
@@ -1160,7 +1257,7 @@ class ModelCriteria extends Criteria
 			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
 		}
 		
-		$criteria = clone $this;
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		$criteria->setDbName($this->getDbName());
 
 		$con->beginTransaction();
@@ -1168,6 +1265,7 @@ class ModelCriteria extends Criteria
 			if(!$affectedRows = $criteria->basePreDelete($con)) {
 				$affectedRows = $criteria->doDelete($con);
 			}
+			$criteria->basePostDelete($affectedRows, $con);
 			$con->commit();
 		} catch (PropelException $e) {
 			$con->rollback();
@@ -1210,6 +1308,7 @@ class ModelCriteria extends Criteria
 			if(!$affectedRows = $this->basePreDelete($con)) {
 				$affectedRows = $this->doDeleteAll($con);
 			}
+			$this->basePostDelete($affectedRows, $con);
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1240,16 +1339,32 @@ class ModelCriteria extends Criteria
 	 * 
 	 * @param     array $values The associatiove array of columns and values for the update
 	 * @param     PropelPDO $con The connection object used by the query
+	 * @param      boolean $forceIndividualSaves If false (default), the resulting call is a BasePeer::doUpdate(), ortherwise it is a series of save() calls on all the found objects
 	 */
-	protected function basePreUpdate(&$values, PropelPDO $con)
+	protected function basePreUpdate(&$values, PropelPDO $con, $forceIndividualSaves = false)
 	{
-		return $this->preUpdate($values, $con);
+		return $this->preUpdate($values, $con, $forceIndividualSaves);
 	}
 
-	protected function preUpdate(&$values, PropelPDO $con)
+	protected function preUpdate(&$values, PropelPDO $con, $forceIndividualSaves = false)
 	{
 	}
+
+	/**
+	 * Code to execute after every UPDATE statement
+	 * 
+	 * @param     int $affectedRows the number of updated rows
+	 * @param     PropelPDO $con The connection object used by the query
+	 */
+	protected function basePostUpdate($affectedRows, PropelPDO $con)
+	{
+		return $this->postUpdate($affectedRows, $con);
+	}
 	
+	protected function postUpdate($affectedRows, PropelPDO $con)
+	{
+	}
+		
 	/**
 	* Issue an UPDATE query based the current ModelCriteria and a list of changes.
 	* An optional hook on basePreUpdate() can prevent the actual update.
@@ -1275,7 +1390,7 @@ class ModelCriteria extends Criteria
 			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_WRITE);
 		}
 		
-		$criteria = clone $this;
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		$criteria->setPrimaryTableName(constant($this->modelPeerName.'::TABLE_NAME'));
 		
 		$con->beginTransaction();
@@ -1284,6 +1399,7 @@ class ModelCriteria extends Criteria
 			if(!$affectedRows = $criteria->basePreUpdate($values, $con, $forceIndividualSaves)) {
 				$affectedRows = $criteria->doUpdate($values, $con, $forceIndividualSaves);
 			}
+			$criteria->basePostUpdate($affectedRows, $con);
 			
 			$con->commit();
 		} catch (PropelException $e) {
@@ -1678,5 +1794,19 @@ EOT;
 		}
    
 		throw new PropelException(sprintf('Undefined method %s::%s()', __CLASS__, $name));
+	}
+	
+	/**
+	 * Ensures deep cloning of attached objects
+	 */
+	public function __clone()
+	{
+		parent::__clone();
+		foreach ($this->with as $key => $join) {
+			$this->with[$key] = clone $join;
+		}
+		if (null !== $this->formatter) {
+			$this->formatter = clone $this->formatter;
+		}
 	}
 }
